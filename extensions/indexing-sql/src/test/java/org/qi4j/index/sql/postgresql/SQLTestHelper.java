@@ -15,22 +15,18 @@
 package org.qi4j.index.sql.postgresql;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.sql.DataSource;
 
 import org.junit.Assume;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
-import org.qi4j.index.sql.support.common.DBNames;
+import org.qi4j.index.sql.support.common.RebuildingStrategy;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
-import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
@@ -38,7 +34,6 @@ import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.slf4j.Logger;
 
 public class SQLTestHelper
 {
@@ -87,73 +82,17 @@ public class SQLTestHelper
         config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
         // END SNIPPET: assembly
 
-        // Always re-index because of possible different app structure of multiple tests.
-        mainModule.services( ReindexingStrategy.ReindexingStrategyService.class ).withMixins(
-            ReindexingStrategy.AlwaysNeed.class );
+        // Always re-build schema in test scenarios because of possibly different app structure in
+        // various tests
+        mainModule.services( RebuildingStrategy.class )
+            .withMixins( RebuildingStrategy.AlwaysNeed.class ).visibleIn( Visibility.module );
+
+        // Always re-index in test scenarios
+        mainModule.services( ReindexingStrategy.class ).withMixins(
+            ReindexingStrategy.AlwaysNeed.class ).visibleIn( Visibility.module );
         config.entities( ReindexerConfiguration.class ).visibleIn( Visibility.layer );
 
         return dsAssembler;
-    }
-
-    public static void tearDownTest( Module module, Logger log )
-    {
-        UnitOfWork uow;
-        Boolean created = false;
-        if( !module.isUnitOfWorkActive() )
-        {
-            uow = module.newUnitOfWork();
-            created = true;
-        }
-        else
-        {
-            uow = module.currentUnitOfWork();
-        }
-
-        try
-        {
-            SQLTestHelper.deleteTestData( log, uow, module );
-        }
-        catch ( Throwable t )
-        {
-            // Ignore, for now. Happens when assumptions are not true (no DB connection)
-            log.error( "Error when deleting test data.", t );
-        }
-        finally
-        {
-            if( created )
-            {
-                uow.discard();
-            }
-        }
-    }
-
-    private static void deleteTestData( Logger log, UnitOfWork uow, Module module )
-        throws SQLException
-    {
-
-        SQLConfiguration config = uow.get( SQLConfiguration.class, SQL_INDEXING_SERVICE_NAME );
-        Connection connection = module.findService( DataSource.class ).get().getConnection();
-        String schemaName = config.schemaName().get();
-        if( schemaName == null )
-        {
-            schemaName = PostgreSQLAppStartup.DEFAULT_SCHEMA_NAME;
-        }
-        log.debug( "Will use '{}' as schema name", schemaName );
-
-        Statement stmt = null;
-        try
-        {
-            connection.setReadOnly( false );
-            stmt = connection.createStatement();
-            stmt.execute( String.format( "DELETE FROM %s." + DBNames.ENTITY_TABLE_NAME, schemaName ) );
-            connection.commit();
-        }
-        finally
-        {
-            SQLUtil.closeQuietly( stmt );
-            SQLUtil.closeQuietly( connection );
-        }
-        log.info( "Test data deleted" );
     }
 
     public static void setUpTest( Module module )

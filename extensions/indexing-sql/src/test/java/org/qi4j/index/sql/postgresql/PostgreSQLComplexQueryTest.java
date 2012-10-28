@@ -58,13 +58,4 @@ public class PostgreSQLComplexQueryTest
             throw e;
         }
     }
-
-    @Override
-    public void tearDown()
-        throws Exception
-    {
-        SQLTestHelper.tearDownTest( module, LOGGER );
-        super.tearDown();
-    }
-
 }

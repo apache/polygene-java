@@ -53,12 +53,4 @@ public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
             throw e;
         }
     }
-
-    @Override
-    public void tearDown()
-        throws Exception
-    {
-        SQLTestHelper.tearDownTest( module, getLog() );
-        super.tearDown();
-    }
 }

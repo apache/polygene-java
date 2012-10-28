@@ -39,9 +39,7 @@ import org.qi4j.test.AbstractQi4jTest;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-// (TODO refactor this test so that it deletes the schema in setup so that indexing is forced to
-// rebuilt it. Or even better, add some kind of 'RebuildStrategy' to Indexing, so that schema
-// rebuilding behaviour would be forced through it.)
+//(should pass with actual DB running)
 @Ignore
 public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
 {
@@ -72,14 +70,6 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         {
             SQLTestHelper.setUpTest( this.module );
         }
-    }
-
-    @Override
-    public void tearDown()
-        throws Exception
-    {
-        SQLTestHelper.tearDownTest( module, getLog() );
-        super.tearDown();
     }
 
     @Test
@@ -114,7 +104,9 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
                     public void beginProcessRowInfo( String schemaNamee, String tableName,
                             Object[] rowContents )
                     {
-                        if( tableName.startsWith( DBNames.QNAME_TABLE_NAME_PREFIX )
+                        if( ( tableName.startsWith( DBNames.QNAME_TABLE_NAME_PREFIX )
+                                && ( tableName.equals( DBNames.QNAME_TABLE_NAME_PREFIX + 0 ) || tableName
+                            .equals( DBNames.QNAME_TABLE_NAME_PREFIX + 1 ) ) )
                                 || tableName.equals( DBNames.ALL_QNAMES_TABLE_NAME )
                                 || tableName.equals( DBNames.ENTITY_TABLE_NAME ) )
                         {

@@ -48,7 +48,6 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -69,6 +68,7 @@ import java.util.regex.Pattern;
 import javax.sql.DataSource;
 
 import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.configuration.Configuration;
@@ -96,6 +96,7 @@ import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
 import org.qi4j.index.sql.support.common.QNameInfo.QNameType;
+import org.qi4j.index.sql.support.common.RebuildingStrategy;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
@@ -152,7 +153,12 @@ public abstract class AbstractSQLStartup
     private Configuration<SQLConfiguration> _configuration;
 
     @Service
+    @Optional
     private ReindexingStrategy _reindexingStrategy;
+
+    @Service
+    @Optional
+    private RebuildingStrategy _rebuildingStrategy;
 
     @Service
     private DataSource _dataSource;
@@ -380,61 +386,68 @@ public abstract class AbstractSQLStartup
         throws SQLException
     {
         String schemaName = this._state.schemaName().get();
-        ResultSet rs = connection.getMetaData().getSchemas();
+        String appVersion = this._app.version();
+        String dbAppVersion = this.readAppVersionFromDB( connection, schemaName );
 
-        Boolean schemaFound = false;
+        // Rebuild if needed
+        boolean rebuildingNeeded = dbAppVersion == null;
+
+        if( !rebuildingNeeded && this._rebuildingStrategy != null )
+        {
+            rebuildingNeeded =
+                this._rebuildingStrategy.rebuildingRequired( dbAppVersion, appVersion );
+        }
+
+        ApplicationInfo appInfo = this.constructApplicationInfo( !rebuildingNeeded );
+
+        if( rebuildingNeeded )
+        {
+            _log.debug( "(Re)building schema " + schemaName );
+            this.destroyNeededSchemaTables( connection, schemaName, this._state.qNameInfos().get()
+                .size() );
+
+            Map<String, Long> tablePKs = new HashMap<String, Long>();
+            this.createSchemaAndRequiredTables( connection, schemaName, tablePKs );
+            this.writeAppMetadataToDB( connection, appInfo, tablePKs );
+        }
+        else
+        {
+            this.testRequiredCapabilities( connection );
+            this.readAppMetadataFromDB( connection, appInfo.entityDescriptors );
+            _log.debug( "Application metadata loaded from database" );
+        }
+
+        boolean reindexingNeeded = dbAppVersion == null;
+        if( !reindexingNeeded && this._reindexingStrategy != null )
+        {
+            reindexingNeeded = this._reindexingStrategy.reindexingNeeded( dbAppVersion, appVersion );
+        }
+
+        if( reindexingNeeded )
+        {
+            _log.debug( "(Re)indexing entitystore, using schema " + schemaName );
+            this.performReindex( connection );
+        }
+    }
+
+    private void createSchemaAndRequiredTables( Connection connection, String schemaName,
+            Map<String, Long> tablePKs )
+        throws SQLException
+    {
+        boolean schemaFound = false;
+
+        ResultSet rs = connection.getMetaData().getSchemas();
         try
         {
             while( rs.next() && !schemaFound )
             {
                 schemaFound = rs.getString( 1 ).equals( schemaName );
             }
-
-            Boolean reindexingRequired =
-                schemaFound ? this.isReindexingNeeded( connection ) : false;
-            ApplicationInfo appInfo = this.constructApplicationInfo( schemaFound );
-
-            if( schemaFound && reindexingRequired )
-            {
-                _log.debug( "Schema Found & Reindexing Required" );
-                clearSchema( connection, schemaName, this._vendor );
-                _log.debug( "Reindexing needed, Application metadata from database has been cleared." );
-            }
-
-            if( schemaFound )
-            {
-                _log.debug( "Schema {}Found & Reindexing {}Required", schemaFound ? "" : "NOT ",
-                    reindexingRequired ? "" : "NOT " );
-                this.testRequiredCapabilities( connection );
-                _log.debug( "Underlying database fullfill required capabilities" );
-                this.readAppMetadataFromDB( connection, appInfo.entityDescriptors );
-                _log.debug( "Application metadata loaded from database" );
-            }
-            else
-            {
-                _log.debug( "Schema {}Found & Reindexing {}Required", schemaFound ? "" : "NOT ",
-                    reindexingRequired ? "" : "NOT " );
-                Map<String, Long> tablePKs = new HashMap<String, Long>();
-                this.createSchema( connection, schemaFound, tablePKs );
-                this.writeAppMetadataToDB( connection, appInfo, tablePKs );
-            }
-
-            if( reindexingRequired )
-            {
-                this.performReindex( connection );
-            }
         }
         finally
         {
             SQLUtil.closeQuietly( rs );
         }
-    }
-
-    private void createSchema( Connection connection, Boolean schemaFound,
-            Map<String, Long> tablePKs )
-        throws SQLException
-    {
-        String schemaName = this._state.schemaName().get();
 
         SQLVendor vendor = this._vendor;
         DefinitionFactory d = vendor.getDefinitionFactory();
@@ -519,7 +532,6 @@ public abstract class AbstractSQLStartup
 
             tablePKs.put( ENTITY_TYPES_TABLE_NAME, 0L );
 
-            ResultSet rs = null;
             try
             {
                 rs = connection.getMetaData().getTables( null, schemaName, ENTITY_TABLE_NAME, new String[]
@@ -1275,6 +1287,46 @@ public abstract class AbstractSQLStartup
         return result;
     }
     
+    private String readAppVersionFromDB(Connection connection, String schemaName) throws SQLException
+    {
+        Statement stmt = connection.createStatement();
+        String result = null;
+        try
+        {
+            QueryExpression getAppVersionQuery =
+                this._vendor
+                    .getQueryFactory()
+                    .simpleQueryBuilder()
+                    .select( APP_VERSION_PK_COLUMN_NAME )
+                    .from(
+                        this._vendor.getTableReferenceFactory().tableName( schemaName,
+                            APP_VERSION_TABLE_NAME ) )
+                    .createExpression();
+            ResultSet rs = null;
+            try
+            {
+                rs = stmt.executeQuery( getAppVersionQuery.toString() );
+
+                if (rs.next())
+                {
+                    result = rs.getString( 1 );
+                }
+            }
+            catch ( SQLException sqle )
+            {
+                // Sometimes meta data claims table exists, even when it really doesn't exist
+            } finally
+            {
+                SQLUtil.closeQuietly( rs );
+            }
+        } finally
+        {
+            SQLUtil.closeQuietly( stmt );
+        }
+        
+        return result;
+    }
+    
     private static void clearSchema(Connection connection, String schemaName, SQLVendor vendor) throws SQLException
     {
         ModificationFactory m = vendor.getModificationFactory();
@@ -1296,30 +1348,24 @@ public abstract class AbstractSQLStartup
         }
     }
 
-    // In the future: this should be used when rebuilding schema
-    private void destroySchema( Connection connection )
+    private void destroyNeededSchemaTables( Connection connection, String schemaName, int maxQNameUsed )
         throws SQLException
     {
-        String schemaName = this._state.schemaName().get();
-        DatabaseMetaData metaData = connection.getMetaData();
-
         Statement stmt = connection.createStatement();
         try
         {
+            this.dropTablesIfExist( schemaName, ENTITY_TABLE_NAME, stmt );
+            this.dropTablesIfExist( schemaName, ALL_QNAMES_TABLE_NAME, stmt );
+            this.dropTablesIfExist( schemaName, APP_VERSION_TABLE_NAME, stmt );
+            this.dropTablesIfExist( schemaName, ENTITY_TYPES_TABLE_NAME, stmt );
+            this.dropTablesIfExist( schemaName, ENUM_LOOKUP_TABLE_NAME, stmt );
+            this.dropTablesIfExist( schemaName, USED_CLASSES_TABLE_NAME, stmt );
+            this.dropTablesIfExist( schemaName, USED_QNAMES_TABLE_NAME, stmt );
 
-            // Don't drop all entities table.
-            this.dropTablesIfExist( metaData, schemaName, ALL_QNAMES_TABLE_NAME, stmt );
-            this.dropTablesIfExist( metaData, schemaName, APP_VERSION_TABLE_NAME, stmt );
-            this.dropTablesIfExist( metaData, schemaName, ENTITY_TYPES_TABLE_NAME, stmt );
-            this.dropTablesIfExist( metaData, schemaName, ENUM_LOOKUP_TABLE_NAME, stmt );
-            this.dropTablesIfExist( metaData, schemaName, USED_CLASSES_TABLE_NAME, stmt );
-            this.dropTablesIfExist( metaData, schemaName, USED_QNAMES_TABLE_NAME, stmt );
-
-            Integer x = 0;
-            while( this.dropTablesIfExist( metaData, schemaName, DBNames.QNAME_TABLE_NAME_PREFIX
-                    + x, stmt ) )
+            for (int x = 0; x <= maxQNameUsed; ++x)
             {
-                ++x;
+                this.dropTablesIfExist( schemaName, DBNames.QNAME_TABLE_NAME_PREFIX
+                    + x, stmt );
             }
         }
         finally
@@ -1566,7 +1612,7 @@ public abstract class AbstractSQLStartup
     protected abstract void testRequiredCapabilities( Connection connection )
         throws SQLException;
 
-    protected boolean dropTablesIfExist( DatabaseMetaData metaData,
+    protected boolean dropTablesIfExist(
             String schemaName,
             String tableName,
             Statement stmt
