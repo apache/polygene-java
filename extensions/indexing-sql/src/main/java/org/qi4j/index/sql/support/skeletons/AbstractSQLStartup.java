@@ -14,6 +14,35 @@
  */
 package org.qi4j.index.sql.support.skeletons;
 
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_MODIFIED_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_VERSION_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_NAME_PREFIX;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_PK_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_QNAME_COLUMN_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -33,7 +62,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import javax.sql.DataSource;
+
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
@@ -62,6 +93,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql.generation.api.grammar.builders.definition.TableElementListBuilder;
 import org.sql.generation.api.grammar.common.datatypes.SQLDataType;
+import org.sql.generation.api.grammar.definition.table.AutoGenerationPolicy;
 import org.sql.generation.api.grammar.definition.table.ConstraintCharacteristics;
 import org.sql.generation.api.grammar.definition.table.ReferentialAction;
 import org.sql.generation.api.grammar.definition.table.UniqueSpecification;
@@ -77,16 +109,12 @@ import org.sql.generation.api.grammar.modification.DeleteBySearch;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
-import static org.qi4j.functional.Iterables.first;
-import static org.qi4j.index.sql.support.common.DBNames.*;
-
 /**
- * TODO SQL-Generator now has support for auto-generated columns. Use it in e.g. indexing ( should make some things quite faster and simpler ).
  * 
  * @author Stanislav Muhametsin
  */
 public abstract class AbstractSQLStartup
-    implements SQLAppStartup
+        implements SQLAppStartup
 {
     private interface SQLTypeCustomizer
     {
@@ -96,7 +124,7 @@ public abstract class AbstractSQLStartup
     public static final String DEFAULT_SCHEMA_NAME = "qi4j";
 
     private static final Logger _log = LoggerFactory.getLogger( AbstractSQLStartup.class.getName() );
-    
+
     static final ThreadLocal<Connection> CONNECTION_FOR_REINDEXING = new ThreadLocal<Connection>()
     {
         @Override
@@ -137,12 +165,12 @@ public abstract class AbstractSQLStartup
         throws SQLException
     {
         this._configuration.refresh();
-        
+
         this._vendor = this.descriptor.metaInfo( SQLVendor.class );
         this.setVendor( this._vendor );
         this.initTypes();
         this.modifyPrimitiveTypes( this._primitiveTypes, this._state.javaTypes2SQLTypes().get() );
-        
+
         String schemaName = this._configuration.get().schemaName().get();
         if( schemaName == null )
         {
@@ -173,8 +201,9 @@ public abstract class AbstractSQLStartup
         {
             SQLUtil.closeQuietly( connection );
         }
-        
-        if ( _log.isDebugEnabled() ) {
+
+        if( _log.isDebugEnabled() )
+        {
 
             String newline = "\n";
             String tab = "\t";
@@ -184,38 +213,54 @@ public abstract class AbstractSQLStartup
             report.append( "schemaName: " ).append( _state.schemaName().get() ).append( newline );
 
             report.append( "qNameInfos: " ).append( newline );
-            for ( Map.Entry<QualifiedName, QNameInfo> entry : _state.qNameInfos().get().entrySet() ) {
-                report.append( tab ).append( entry.getKey() ).append( colonspace ).append( entry.getValue() ).append( newline );
+            for( Map.Entry<QualifiedName, QNameInfo> entry : _state.qNameInfos().get().entrySet() )
+            {
+                report.append( tab ).append( entry.getKey() ).append( colonspace )
+                    .append( entry.getValue() ).append( newline );
             }
 
             report.append( "entityUsedQNames:" ).append( newline );
-            for ( Map.Entry<String, Set<QualifiedName>> entry : _state.entityUsedQNames().get().entrySet() ) {
-                report.append( tab ).append( entry.getKey() ).append( colonspace ).append( entry.getValue() ).append( newline );
+            for( Map.Entry<String, Set<QualifiedName>> entry : _state.entityUsedQNames().get()
+                .entrySet() )
+            {
+                report.append( tab ).append( entry.getKey() ).append( colonspace )
+                    .append( entry.getValue() ).append( newline );
             }
 
             report.append( "tablePKs:" ).append( newline );
-            for ( Map.Entry<String, Long> entry : _state.tablePKs().get().entrySet() ) {
-                report.append( tab ).append( entry.getKey() ).append( colonspace ).append( entry.getValue() ).append( newline );
+            for( Map.Entry<String, Long> entry : _state.tablePKs().get().entrySet() )
+            {
+                report.append( tab ).append( entry.getKey() ).append( colonspace )
+                    .append( entry.getValue() ).append( newline );
             }
 
             report.append( "usedClassesPKs:" ).append( newline );
-            for ( Map.Entry<String, Integer> entry : _state.usedClassesPKs().get().entrySet() ) {
-                report.append( tab ).append( entry.getKey() ).append( colonspace ).append( entry.getValue() ).append( newline );
+            for( Map.Entry<String, Integer> entry : _state.usedClassesPKs().get().entrySet() )
+            {
+                report.append( tab ).append( entry.getKey() ).append( colonspace )
+                    .append( entry.getValue() ).append( newline );
             }
 
             report.append( "entityTypeInfos:" ).append( newline );
-            for ( Map.Entry<String, EntityTypeInfo> entry : _state.entityTypeInfos().get().entrySet() ) {
-                report.append( tab ).append( entry.getKey() ).append( colonspace ).append( entry.getValue() ).append( newline );
+            for( Map.Entry<String, EntityTypeInfo> entry : _state.entityTypeInfos().get()
+                .entrySet() )
+            {
+                report.append( tab ).append( entry.getKey() ).append( colonspace )
+                    .append( entry.getValue() ).append( newline );
             }
 
             report.append( "javaTypes2SQLTypes:" ).append( newline );
-            for ( Map.Entry<Class<?>, Integer> entry : _state.javaTypes2SQLTypes().get().entrySet() ) {
-                report.append( tab ).append( entry.getKey() ).append( colonspace ).append( entry.getValue() ).append( newline );
+            for( Map.Entry<Class<?>, Integer> entry : _state.javaTypes2SQLTypes().get().entrySet() )
+            {
+                report.append( tab ).append( entry.getKey() ).append( colonspace )
+                    .append( entry.getValue() ).append( newline );
             }
 
             report.append( "enumPKs:" ).append( newline );
-            for ( Map.Entry<String, Integer> entry : _state.enumPKs().get().entrySet() ) {
-                report.append( tab ).append( entry.getKey() ).append( colonspace ).append( entry.getValue() ).append( newline );
+            for( Map.Entry<String, Integer> entry : _state.enumPKs().get().entrySet() )
+            {
+                report.append( tab ).append( entry.getKey() ).append( colonspace )
+                    .append( entry.getValue() ).append( newline );
             }
 
             _log.debug( "SQLDBState after initConnection:\n{}", report.toString() );
@@ -258,35 +303,35 @@ public abstract class AbstractSQLStartup
 
         this._customizableTypes = new HashMap<Class<?>, SQLTypeCustomizer>();
         this._customizableTypes.put( //
-                                     String.class, //
-                                     new SQLTypeCustomizer()
-                                     {
-                                         public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
-                                         {
-                                             return _vendor.getDataTypeFactory().sqlVarChar( sqlTypeInfo.maxLength() );
-                                         }
-                                     } //
-        );
+            String.class, //
+            new SQLTypeCustomizer()
+            {
+                public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
+                {
+                    return _vendor.getDataTypeFactory().sqlVarChar( sqlTypeInfo.maxLength() );
+                }
+            } //
+            );
         this._customizableTypes.put( //
-                                     BigInteger.class, //
-                                     new SQLTypeCustomizer()
-                                     {
-                                         public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
-                                         {
-                                             return _vendor.getDataTypeFactory().decimal( sqlTypeInfo.maxLength() );
-                                         }
-                                     } //
-        );
+            BigInteger.class, //
+            new SQLTypeCustomizer()
+            {
+                public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
+                {
+                    return _vendor.getDataTypeFactory().decimal( sqlTypeInfo.maxLength() );
+                }
+            } //
+            );
         this._customizableTypes.put( //
-                                     BigDecimal.class, //
-                                     new SQLTypeCustomizer()
-                                     {
-                                         public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
-                                         {
-                                             return _vendor.getDataTypeFactory().decimal( sqlTypeInfo.maxLength() );
-                                         }
-                                     } //
-        );
+            BigDecimal.class, //
+            new SQLTypeCustomizer()
+            {
+                public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
+                {
+                    return _vendor.getDataTypeFactory().decimal( sqlTypeInfo.maxLength() );
+                }
+            } //
+            );
     }
 
     protected void checkSchemaName( String schemaName )
@@ -297,11 +342,12 @@ public abstract class AbstractSQLStartup
             throw new IllegalStateException( "Illegal schema name: " + schemaName + "." );
         }
     }
-    
+
     private static class ApplicationInfo
     {
 
-        private Map<String, EntityDescriptor> entityDescriptors = new HashMap<String, EntityDescriptor>();
+        private Map<String, EntityDescriptor> entityDescriptors =
+            new HashMap<String, EntityDescriptor>();
 
         private Set<String> usedClassNames = new HashSet<String>();
 
@@ -323,8 +369,10 @@ public abstract class AbstractSQLStartup
                 schemaFound = rs.getString( 1 ).equals( schemaName );
             }
 
-            Boolean reindexingRequired = schemaFound ? this.isReindexingNeeded( connection ) : false;
-            ApplicationInfo appInfo = this.constructApplicationInfo( false ); // !reindexingRequired );
+            Boolean reindexingRequired =
+                schemaFound ? this.isReindexingNeeded( connection ) : false;
+            ApplicationInfo appInfo = this.constructApplicationInfo( false ); // !reindexingRequired
+                                                                              // );
 
             if( schemaFound && reindexingRequired )
             {
@@ -342,7 +390,8 @@ public abstract class AbstractSQLStartup
             }
             else
             {
-                _log.debug( "Schema {}Found & Reindexing {}Required", schemaFound ? "" : "NOT ", reindexingRequired ? "" : "NOT " );
+                _log.debug( "Schema {}Found & Reindexing {}Required", schemaFound ? "" : "NOT ",
+                    reindexingRequired ? "" : "NOT " );
                 this.createSchema( connection, schemaFound );
                 this.writeAppMetadataToDB( connection, appInfo );
 
@@ -462,7 +511,7 @@ public abstract class AbstractSQLStartup
                                 .setTableContentsSource(
                                     d.createTableElementListBuilder()
                                         .addTableElement( d.createColumnDefinition( ENTITY_TABLE_PK_COLUMN_NAME, this._primitiveTypes
-                                            .get( Long.class ), false ) )
+                                            .get( Long.class ), false, AutoGenerationPolicy.BY_DEFAULT ) )
                                         .addTableElement( d.createColumnDefinition( ENTITY_TYPES_TABLE_PK_COLUMN_NAME, this
                                             ._primitiveTypes
                                             .get( Integer.class ), false ) )
@@ -669,11 +718,12 @@ public abstract class AbstractSQLStartup
         {
             CONNECTION_FOR_REINDEXING.set( null );
         }
-        
+
         _log.info( "Reindexing complete." );
     }
 
-    private void readAppMetadataFromDB( Connection connection, Map<String, EntityDescriptor> entityDescriptors )
+    private void readAppMetadataFromDB( Connection connection,
+            Map<String, EntityDescriptor> entityDescriptors )
         throws SQLException
     {
 
@@ -779,9 +829,8 @@ public abstract class AbstractSQLStartup
         ModificationFactory m = vendor.getModificationFactory();
         TableReferenceFactory t = vendor.getTableReferenceFactory();
         LiteralFactory l = vendor.getLiteralFactory();
-        
 
-            // @formatter:off
+        // @formatter:off
             PreparedStatement ps = connection.prepareStatement(
                 vendor.toString(
                     m.insert()

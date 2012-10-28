@@ -17,7 +17,9 @@ package org.qi4j.index.sql.postgresql;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 import javax.sql.DataSource;
+
 import org.junit.Assume;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Module;
@@ -40,42 +42,45 @@ import org.slf4j.Logger;
 
 public class SQLTestHelper
 {
-    public static final String SQL_INDEXING_SERVICE_NAME = PostgreSQLAssembler.INDEXING_SERVICE_NAME;
+    public static final String SQL_INDEXING_SERVICE_NAME =
+        PostgreSQLAssembler.INDEXING_SERVICE_NAME;
 
     public static final String SEPARATE_MODULE_NAME = "actual_module";
 
     public static void assembleWithMemoryEntityStore( ModuleAssembly mainModule )
         throws AssemblyException
     {
-        doCommonAssembling( mainModule );
+        // EntityStore
+        mainModule.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class )
+            .visibleIn( Visibility.application );
 
+        doCommonAssembling( mainModule );
     }
 
-    public static void assembleWithSQLEntityStore( ModuleAssembly mainModule )
+    // public static void assembleWithSQLEntityStore( ModuleAssembly mainModule )
+    // throws AssemblyException
+    // {
+    // new PostgreSQLEntityStoreAssembler( Visibility.application, doCommonAssembling( mainModule )
+    // )
+    // .assemble( mainModule );
+    // }
+
+    protected static DataSourceAssembler doCommonAssembling( ModuleAssembly mainModule )
         throws AssemblyException
-    {
-        doCommonAssembling( mainModule );
-    }
-
-    protected static void doCommonAssembling( ModuleAssembly mainModule )
-            throws AssemblyException
     {
         ModuleAssembly config = mainModule.layer().module( "config" );
         config.services( MemoryEntityStoreService.class ).visibleIn( Visibility.module );
 
-        // EntityStore
-        mainModule.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
-
         // START SNIPPET: assembly
         // DataSourceService + Index/Query's DataSource
         new DBCPDataSourceServiceAssembler( "postgres-datasource-service",
-                                            Visibility.module,
-                                            config,
-                                            Visibility.layer ).assemble( mainModule );
+            Visibility.module,
+            config,
+            Visibility.layer ).assemble( mainModule );
         DataSourceAssembler dsAssembler = new DataSourceAssembler( "postgres-datasource-service",
-                                                                   "postgres-datasource",
-                                                                   Visibility.module,
-                                                                   DataSources.newDataSourceCircuitBreaker() );
+            "postgres-datasource",
+            Visibility.module,
+            DataSources.newDataSourceCircuitBreaker() );
 
         // Index/Query
         new PostgreSQLAssembler( Visibility.module, dsAssembler ).assemble( mainModule );
@@ -83,19 +88,23 @@ public class SQLTestHelper
         // END SNIPPET: assembly
 
         // Always re-index because of possible different app structure of multiple tests.
-        mainModule.services( ReindexingStrategy.ReindexingStrategyService.class ).withMixins( ReindexingStrategy.AlwaysNeed.class );
+        mainModule.services( ReindexingStrategy.ReindexingStrategyService.class ).withMixins(
+            ReindexingStrategy.AlwaysNeed.class );
         config.entities( ReindexerConfiguration.class ).visibleIn( Visibility.layer );
+
+        return dsAssembler;
     }
 
     public static void tearDownTest( Module module, Logger log )
     {
         UnitOfWork uow;
         Boolean created = false;
-        if( !module.isUnitOfWorkActive())
+        if( !module.isUnitOfWorkActive() )
         {
             uow = module.newUnitOfWork();
             created = true;
-        } else
+        }
+        else
         {
             uow = module.currentUnitOfWork();
         }
@@ -104,7 +113,7 @@ public class SQLTestHelper
         {
             SQLTestHelper.deleteTestData( log, uow, module );
         }
-        catch( Throwable t )
+        catch ( Throwable t )
         {
             // Ignore, for now. Happens when assumptions are not true (no DB connection)
             log.error( "Error when deleting test data.", t );
@@ -150,18 +159,23 @@ public class SQLTestHelper
     public static void setUpTest( Module module )
     {
         Connection connection = null;
-        try {
+        try
+        {
 
             DataSource ds = module.findService( DataSource.class ).get();
             connection = ds.getConnection();
             Assume.assumeNotNull( connection );
 
-        } catch ( Throwable t ) {
+        }
+        catch ( Throwable t )
+        {
 
             t.printStackTrace();
             Assume.assumeNoException( t );
 
-        } finally {
+        }
+        finally
+        {
 
             SQLUtil.closeQuietly( connection );
 

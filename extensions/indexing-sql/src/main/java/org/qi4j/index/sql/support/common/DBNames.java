@@ -59,7 +59,7 @@ public class DBNames
 
     public static final String ENTITY_TYPES_TABLE_NAME = "entity_types";
 
-    public static final String ENTITY_TABLE_NAME = "entities";
+    public static final String ENTITY_TABLE_NAME = "indexing_entities";
 
     public static final String ENTITY_TABLE_PK_COLUMN_NAME = "entity_pk";
 

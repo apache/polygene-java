@@ -14,6 +14,10 @@
 
 package org.qi4j.index.sql.support.skeletons;
 
+import java.sql.Types;
+import java.util.Map;
+import java.util.Set;
+
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.Property;
@@ -21,14 +25,11 @@ import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
 
-import java.sql.Types;
-import java.util.Map;
-import java.util.Set;
-
 /**
- * The state-type interface containing some important database-related data, in order to create proper SQL statements in
- * indexing ({@link SQLIndexing}), querying ({@link org.qi4j.index.sql.support.api.SQLQuerying}) and application
- * startup ({@link org.qi4j.index.sql.support.api.SQLAppStartup}.
+ * The state-type interface containing some important database-related data, in order to create
+ * proper SQL statements in indexing ({@link SQLIndexing}), querying (
+ * {@link org.qi4j.index.sql.support.api.SQLQuerying}) and application startup (
+ * {@link org.qi4j.index.sql.support.api.SQLAppStartup}.
  * 
  * @author Stanislav Muhametsin
  */
@@ -52,18 +53,22 @@ public interface SQLDBState
     Property<Map<QualifiedName, QNameInfo>> qNameInfos();
 
     /**
-     * Information about all used qualified names in a certain entity type. The interface name of entity type serves as
-     * the key.
+     * Information about all used qualified names in a certain entity type. The interface name of
+     * entity type serves as the key.
      * 
      * @return Information about all used qualified names in a certain entity type.
      */
     @Optional
-    Property<Map<String, Set<QualifiedName>>> entityUsedQNames();
+    Property<Map<String, Set<QualifiedName>>> entityUsedQNames(); // TODO make key as
+                                                                  // EntityDescriptor instead.
+                                                                  // (because entity may have
+                                                                  // multiple types)
 
     /**
-     * Information about next primary keys for all used tables. Table name is the key. Each primary key needs to be
-     * specifically kept cached like this, because it is quite damn hard, if not impossible, to use auto-generated keys
-     * with batch-updates (and batch-updates are very efficient when committing changed entity states to DB).
+     * Information about next primary keys for all used tables. Table name is the key. Each primary
+     * key needs to be specifically kept cached like this, because it is quite damn hard, if not
+     * impossible, to use auto-generated keys with batch-updates (and batch-updates are very
+     * efficient when committing changed entity states to DB).
      * 
      * @return Information about next primary keys for all used tables.
      */
@@ -71,8 +76,8 @@ public interface SQLDBState
     Property<Map<String, Long>> tablePKs();
 
     /**
-     * Primary keys of all used classes (of value composites) in all entity types. Value composite type name (interface
-     * name) is the key.
+     * Primary keys of all used classes (of value composites) in all entity types. Value composite
+     * type name (interface name) is the key.
      * 
      * @return Primary keys of all used classes (of value composites) in all entity types.
      */
