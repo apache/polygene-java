@@ -53,6 +53,27 @@ public interface C3P0DataSourceServiceImporter
             pool.setDriverClass( config.driver().get() );
             pool.setJdbcUrl( config.url().get() );
 
+            if ( !config.username().get().equals( "" ) ) {
+                pool.setUser( config.username().get() );
+                pool.setPassword( config.password().get() );
+            }
+
+            if ( config.minPoolSize().get() != null ) {
+                pool.setMinPoolSize( config.minPoolSize().get() );
+            }
+            if ( config.maxPoolSize().get() != null ) {
+                pool.setMaxPoolSize( config.maxPoolSize().get() );
+            }
+            if ( config.loginTimeoutSeconds().get() != null ) {
+                pool.setLoginTimeout( config.loginTimeoutSeconds().get() );
+            }
+            if ( config.maxConnectionAgeSeconds().get() != null ) {
+                pool.setMaxIdleTime( config.maxConnectionAgeSeconds().get() );
+            }
+            if ( config.validationQuery().get() != null ) {
+                pool.setPreferredTestQuery( config.validationQuery().get() );
+            }
+
             String props = config.properties().get();
             String[] properties = props.split( "," );
             Properties poolProperties = new Properties();
@@ -63,12 +84,6 @@ public interface C3P0DataSourceServiceImporter
                 }
             }
             pool.setProperties( poolProperties );
-
-            if ( !config.username().get().equals( "" ) ) {
-                pool.setUser( config.username().get() );
-                pool.setPassword( config.password().get() );
-            }
-            pool.setMaxConnectionAge( 60 * 60 ); // One hour max age
 
             return pool;
         }

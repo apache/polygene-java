@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,24 +12,13 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.common;
+package org.qi4j.sample.sqlsupport;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
-/**
- * Typical configuration for service, which uses a {@link DataSource} as connection to SQL
- * database, and given schema name as schema to create tables in.
- */
-public interface SQLConfiguration
-        extends ConfigurationComposite
+public interface PretextEntity
 {
 
-    /**
-     * The schema name to use to create/find tables.
-     */
-    @Optional
-    Property<String> schemaName();
+    Property<String> reason();
 
 }

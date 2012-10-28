@@ -29,7 +29,7 @@ https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/dci-cargo[Browse Source]
 
 == Forum Sample ==
 
-Sample of how to build a web forum using <<library-rest-server>>, 
+Sample of how to build a web forum using <<library-rest-server>>,
 <<extension-es-neo4j>> and <<library-fileconfig>>.
 
 https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/forum[Browse Source]
@@ -46,6 +46,17 @@ https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/rental[Browse Source]
 Sample of how to use Scala with Qi4j.
 
 https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/scala[Browse Source]
+
+== SQL Support Sample ==
+
+NOTE: This sample use PostgreSQL and drop all of its data once run in order to be runnable multiple times.
+
+Sample of how to fully use Qi4j SQL support : <<extension-es-sql>> and <<extension-indexing-sql>>.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/sql-support[Browse Source]
+
+A gradle task runSample is defined in this module as a shortcut to run the example. See <<build-system>>.
+
 
 == Struts2 Sample ==
 

@@ -37,25 +37,25 @@ public final class ActivationDelegate
     {
         this.target = target;
     }
-    
+
     public void activate( ActivatorsInstance targetActivators, Activation child )
             throws Exception
     {
         activate( targetActivators, Collections.singleton( child ), null );
     }
-    
+
     public void activate( ActivatorsInstance targetActivators, Activation child, Runnable callback )
         throws Exception
     {
         activate( targetActivators, Collections.singleton( child ), callback );
     }
-    
+
     public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children )
         throws Exception
     {
         activate( targetActivators, children, null );
     }
-    
+
     public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children, Runnable callback )
         throws Exception
     {
@@ -109,7 +109,7 @@ public final class ActivationDelegate
     {
         passivate( ( Runnable ) null );
     }
-    
+
     public void passivate( Runnable callback  )
         throws Exception
     {
@@ -252,6 +252,25 @@ public final class ActivationDelegate
         public void deregisterActivationEventListener( ActivationEventListener listener )
         {
             reference.deregisterActivationEventListener( listener );
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return identity().hashCode();
+        }
+
+        @Override
+        public boolean equals( Object obj )
+        {
+            if ( obj == null ) {
+                return false;
+            }
+            if ( getClass() != obj.getClass() ) {
+                return false;
+            }
+            final ServiceReference other = ( ServiceReference ) obj;
+            return identity().equals( other.identity() );
         }
 
     }

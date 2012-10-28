@@ -43,6 +43,7 @@ public interface DatabaseSQLServiceSpi
         @This
         private DatabaseSQLServiceState state;
 
+        @Override
         public boolean schemaExists( Connection connection )
                 throws SQLException
         {
@@ -64,6 +65,7 @@ public interface DatabaseSQLServiceSpi
             }
         }
 
+        @Override
         public String getCurrentSchemaName()
         {
             return this.state.schemaName().get();

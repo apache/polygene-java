@@ -35,7 +35,7 @@ public interface DBCPDataSourceServiceImporter
 
         @Override
         protected BasicDataSource setupDataSourcePool( DataSourceConfigurationValue config )
-                throws ClassNotFoundException
+                throws Exception
         {
             BasicDataSource pool = new BasicDataSource();
 
@@ -46,6 +46,22 @@ public interface DBCPDataSourceServiceImporter
             if ( !config.username().get().equals( "" ) ) {
                 pool.setUsername( config.username().get() );
                 pool.setPassword( config.password().get() );
+            }
+
+            if ( config.minPoolSize().get() != null ) {
+                pool.setMinIdle( config.minPoolSize().get() );
+            }
+            if ( config.maxPoolSize().get() != null ) {
+                pool.setMaxActive( config.maxPoolSize().get() );
+            }
+            if ( config.loginTimeoutSeconds().get() != null ) {
+                pool.setLoginTimeout( config.loginTimeoutSeconds().get() );
+            }
+            if ( config.maxConnectionAgeSeconds().get() != null ) {
+                pool.setMinEvictableIdleTimeMillis( config.maxConnectionAgeSeconds().get() * 1000 );
+            }
+            if ( config.validationQuery().get() != null ) {
+                pool.setValidationQuery( config.validationQuery().get() );
             }
 
             return pool;
