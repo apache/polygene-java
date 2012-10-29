@@ -262,6 +262,13 @@ public abstract class AbstractSQLStartup
                     .append( entry.getValue() ).append( newline );
             }
 
+            report.append( "entityTypePKs:" ).append( newline );
+            for( Map.Entry<String, Integer> entry : _state.entityTypePKs().get().entrySet() )
+            {
+                report.append( tab ).append( entry.getKey() ).append( colonspace )
+                    .append( entry.getValue() ).append( newline );
+            }
+
             report.append( "enumPKs:" ).append( newline );
             for( Map.Entry<String, Integer> entry : _state.enumPKs().get().entrySet() )
             {
