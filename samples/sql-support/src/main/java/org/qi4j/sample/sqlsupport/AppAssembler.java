@@ -24,8 +24,8 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
+import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.index.sql.support.common.ReindexingStrategy.AlwaysNeed;
-import org.qi4j.index.sql.support.common.ReindexingStrategy.ReindexingStrategyService;
 import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
@@ -82,7 +82,7 @@ public class AppAssembler
                                                                             Visibility.module,
                                                                             DataSources.newDataSourceCircuitBreaker() );
             new PostgreSQLAssembler( Visibility.application, indexDsAssembler ).assemble( persistenceModule );
-            persistenceModule.services( ReindexingStrategyService.class ).withMixins( AlwaysNeed.class );
+            persistenceModule.services( ReindexingStrategy.class ).withMixins( AlwaysNeed.class );
             configModule.entities( ReindexerConfiguration.class ).visibleIn( Visibility.application );
 
             // SQL Configuration
