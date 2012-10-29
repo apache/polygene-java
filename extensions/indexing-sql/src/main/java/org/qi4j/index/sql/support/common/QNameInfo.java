@@ -326,7 +326,7 @@ public final class QNameInfo
     @Override
     public String toString()
     {
-        return "[table: " + this._tableName + ", SQL type: " + this._finalType + ", qNameType: "
+        return "[table: " + this._tableName + ", final type: " + this._finalType + ", qNameType: "
                 + this._qNameType + ", qName: " + this._qName + "]";
     }
 

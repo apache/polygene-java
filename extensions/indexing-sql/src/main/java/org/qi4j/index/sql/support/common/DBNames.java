@@ -71,6 +71,9 @@ public class DBNames
 
     public static final String ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME = "application_version";
 
+    public static final String ENTITY_TYPES_JOIN_TABLE_NAME = ENTITY_TABLE_NAME + "_"
+            + ENTITY_TYPES_TABLE_NAME;
+
     public static final String APP_VERSION_TABLE_NAME = "app_version";
 
     public static final String APP_VERSION_PK_COLUMN_NAME = "app_version";

@@ -24,7 +24,6 @@ import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.index.sql.support.api.SQLIndexing;
-import org.qi4j.index.sql.support.common.EntityTypeInfo;
 import org.qi4j.index.sql.support.common.QNameInfo;
 
 /**
@@ -64,21 +63,16 @@ public interface SQLDBState
     Property<Map<EntityDescriptor, Set<QualifiedName>>> entityUsedQNames();
 
     /**
-     * Primary keys of all used composites in all entity types. Value composite type name (interface
-     * name) is the key.
+     * Primary keys of all used composites in all entities of this application. (Value) Composite
+     * descriptor is the key.
      * 
      * @return Primary keys of all used classes (of value composites) in all entity types.
      */
     @Optional
     Property<Map<CompositeDescriptor, Integer>> usedClassesPKs();
 
-    /**
-     * Information about each used entity type. Entity type name (interface name) is the key.
-     * 
-     * @return Information about each used entity type.
-     */
     @Optional
-    Property<Map<String, EntityTypeInfo>> entityTypeInfos();
+    Property<Map<String, Integer>> entityTypePKs();
 
     /**
      * A mapping between java type and the ones in {@link Types}. The class of java type is the key.
