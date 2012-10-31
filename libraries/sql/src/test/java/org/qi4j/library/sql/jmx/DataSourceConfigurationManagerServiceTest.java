@@ -32,9 +32,9 @@ import org.qi4j.io.Outputs;
 import org.qi4j.io.Receiver;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.jmx.JMXAssembler;
-import org.qi4j.library.sql.c3p0.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceJMXAssembler;
+import org.qi4j.library.sql.c3p0.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.datasource.Databases;
 import org.qi4j.library.sql.liquibase.LiquibaseConfiguration;
@@ -45,6 +45,7 @@ import org.qi4j.library.sql.liquibase.LiquibaseService;
  */
 public class DataSourceConfigurationManagerServiceTest
 {
+
     public static void main( String[] args )
     {
 
@@ -52,13 +53,10 @@ public class DataSourceConfigurationManagerServiceTest
         instance.testDataSources();
 
         // Hang so it becomes possible to connect through VisualVM and check the JMX beans
-        synchronized(instance)
-        {
-            try
-            {
+        synchronized( instance ) {
+            try {
                 instance.wait();
-            } catch( InterruptedException e )
-            {
+            } catch ( InterruptedException e ) {
                 e.printStackTrace();
             }
         }
@@ -70,7 +68,8 @@ public class DataSourceConfigurationManagerServiceTest
         SingletonAssembler assembler = new SingletonAssembler()
         {
             @Override
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                    throws AssemblyException
             {
                 new JMXAssembler().assemble( module );
 
@@ -78,16 +77,18 @@ public class DataSourceConfigurationManagerServiceTest
                 module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
 
                 // Set up DataSource service that will manage the connection pools
-                new C3P0DataSourceServiceAssembler( "datasource-service", Visibility.layer, module, Visibility.module ).assemble( module );
+                new C3P0DataSourceServiceAssembler().identifiedBy( "datasource-service" ).visibleIn( Visibility.layer ).assemble( module );
 
                 {
                     ModuleAssembly testModule = module.layer().module( "TestDS" );
 
                     // Create a specific DataSource that uses the "datasource" service to do the main work
-                    new DataSourceAssembler( "datasource-service",
-                                             "testds",
-                                             Visibility.module,
-                                             DataSources.newDataSourceCircuitBreaker() ).assemble( testModule );
+                    new DataSourceAssembler().
+                            withDataSourceServiceIdentity( "datasource-service" ).
+                            identifiedBy( "testds" ).
+                            visibleIn( Visibility.module ).
+                            withCircuitBreaker( DataSources.newDataSourceCircuitBreaker() ).
+                            assemble( testModule );
 
                     // Set up Liquibase service that will create the tables
                     testModule.services( LiquibaseService.class ).identifiedBy( "liquibase1" ).instantiateOnStartup();
@@ -101,10 +102,12 @@ public class DataSourceConfigurationManagerServiceTest
 
                     // Create another specific DataSource that uses the "datasource" service to do the main work
                     // Use DataSourceAssembler to assemble the DataSource.
-                    new DataSourceAssembler( "datasource-service",
-                                             "testds2",
-                                             Visibility.module,
-                                             DataSources.newDataSourceCircuitBreaker() ).assemble( testModule2 );
+                    new DataSourceAssembler().
+                            withDataSourceServiceIdentity( "datasource-service" ).
+                            identifiedBy( "testds2" ).
+                            visibleIn( Visibility.module ).
+                            withCircuitBreaker( DataSources.newDataSourceCircuitBreaker() ).
+                            assemble( testModule2 );
 
                     // Set up Liquibase service that will create the tables
                     testModule2.services( LiquibaseService.class ).identifiedBy( "liquibase2" ).instantiateOnStartup();
@@ -114,16 +117,18 @@ public class DataSourceConfigurationManagerServiceTest
                 }
 
                 // START SNIPPET: jmx
-                new DataSourceJMXAssembler( Visibility.module ).assemble( module );
+                new DataSourceJMXAssembler().visibleIn( Visibility.module ).assemble( module );
                 // END SNIPPET: jmx
 
             }
+
         };
 
 //        assembler.application().findModule( "Layer 1","Test" ).objectBuilderFactory().newObjectBuilder( DataSourceConfigurationManagerServiceTest.class ).injectTo( this );
     }
 
-    public void init( @Service @IdentifiedBy("testds") DataSource dataSource, @Service @IdentifiedBy("testds2") ServiceReference<DataSource> dataSource2 ) throws SQLException, PropertyVetoException
+    public void init( @Service @IdentifiedBy( "testds" ) DataSource dataSource, @Service @IdentifiedBy( "testds2" ) ServiceReference<DataSource> dataSource2 )
+            throws SQLException, PropertyVetoException
     {
         Databases databases = new Databases( dataSource );
 
@@ -132,11 +137,13 @@ public class DataSourceConfigurationManagerServiceTest
         databases.query( "select * from test" ).transferTo( Outputs.withReceiver( new Receiver<ResultSet, SQLException>()
         {
             @Override
-            public void receive( ResultSet item ) throws SQLException
+            public void receive( ResultSet item )
+                    throws SQLException
             {
                 System.out.println( item.getString( "id" ) );
             }
-        } ));
+
+        } ) );
 
         Databases databases2 = new Databases( dataSource2.get() );
 
@@ -145,31 +152,33 @@ public class DataSourceConfigurationManagerServiceTest
         databases2.query( "select * from test" ).transferTo( Outputs.withReceiver( new Receiver<ResultSet, SQLException>()
         {
             @Override
-            public void receive( ResultSet item ) throws SQLException
+            public void receive( ResultSet item )
+                    throws SQLException
             {
-                System.out.println(item.getString( "id" ));
+                System.out.println( item.getString( "id" ) );
             }
-        }));
+
+        } ) );
 
         // Trip the CB
         dataSource2.metaInfo( CircuitBreaker.class ).trip();
 
         // This should now fail
-        try
-        {
+        try {
             databases2.query( "select * from test" ).transferTo( Outputs.withReceiver( new Receiver<ResultSet, SQLException>()
             {
                 @Override
-                public void receive( ResultSet item ) throws SQLException
+                public void receive( ResultSet item )
+                        throws SQLException
                 {
-                    System.out.println(item.getString( "id" ));
+                    System.out.println( item.getString( "id" ) );
                 }
-            }));
+
+            } ) );
 
             Assert.fail();
 
-        } catch( Throwable e )
-        {
+        } catch ( Throwable e ) {
             // Correct
         }
 
@@ -180,11 +189,14 @@ public class DataSourceConfigurationManagerServiceTest
         databases2.query( "select * from test" ).transferTo( Outputs.withReceiver( new Receiver<ResultSet, SQLException>()
         {
             @Override
-            public void receive( ResultSet item ) throws SQLException
+            public void receive( ResultSet item )
+                    throws SQLException
             {
                 System.out.println( item.getString( "id" ) );
             }
-        } ));
+
+        } ) );
 
     }
+
 }

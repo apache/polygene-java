@@ -16,6 +16,7 @@ package org.qi4j.entitystore.sql.assembly;
 
 import java.io.IOException;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.sql.SQLEntityStoreService;
@@ -24,35 +25,47 @@ import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceCoreMixin;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceSpi;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLServiceStatementsMixin;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLStringsBuilder;
-import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.common.AbstractSQLAssembler;
+import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-abstract class AbstractSQLEntityStoreAssembler
-        extends AbstractSQLAssembler
+abstract class AbstractSQLEntityStoreAssembler<T extends AbstractSQLEntityStoreAssembler>
+        implements Assembler
 {
 
-    private static final Visibility DEFAULT_VISIBILITY = Visibility.module;
+    public static final String DEFAULT_ENTITYSTORE_IDENTITY = "entitystore-sql";
 
-    public AbstractSQLEntityStoreAssembler( DataSourceAssembler dataSourceAssembler )
+    private String identity = DEFAULT_ENTITYSTORE_IDENTITY;
+
+    private Visibility visibility = Visibility.module;
+
+    private ModuleAssembly configModule;
+
+    private Visibility configVisibility = Visibility.module;
+
+    public T identifiedBy( String identity )
     {
-        this( DEFAULT_VISIBILITY, dataSourceAssembler );
+        this.identity = identity;
+        return ( T ) this;
     }
 
-    public AbstractSQLEntityStoreAssembler( Visibility visibility, DataSourceAssembler dataSourceAssembler )
+    public T visibleIn( Visibility visibility )
     {
-        super( visibility, dataSourceAssembler );
+        this.visibility = visibility;
+        return ( T ) this;
     }
 
-    protected abstract String getEntityStoreServiceName();
-
-    protected abstract Class<?> getDatabaseSQLServiceSpecializationMixin();
-
-    protected Class<?> getDatabaseStringBuilderMixin()
+    public T withConfig( ModuleAssembly configModule )
     {
-        return DatabaseSQLStringsBuilder.CommonMixin.class;
+        this.configModule = configModule;
+        return ( T ) this;
+    }
+
+    public T withConfigVisibility( Visibility configVisibility )
+    {
+        this.configVisibility = configVisibility;
+        return ( T ) this;
     }
 
     protected SQLVendor getSQLVendor()
@@ -61,29 +74,41 @@ abstract class AbstractSQLEntityStoreAssembler
         return SQLVendorProvider.createVendor( SQLVendor.class );
     }
 
-    @SuppressWarnings( "unchecked" )
+    protected Class<?> getDatabaseStringBuilderMixin()
+    {
+        return DatabaseSQLStringsBuilder.CommonMixin.class;
+    }
+
+    protected abstract Class<?> getDatabaseSQLServiceSpecializationMixin();
+
     @Override
-    public final void doAssemble( ModuleAssembly module )
+    public final void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-
-        module.services( SQLEntityStoreService.class ).visibleIn( this.getVisibility() );
-
+        if ( configModule == null ) {
+            configModule = module;
+        }
         try {
             SQLVendor sqlVendor = this.getSQLVendor();
             if ( sqlVendor == null ) {
                 throw new AssemblyException( "SQL Vendor could not be determined." );
             }
-            module.services( DatabaseSQLServiceComposite.class ).withMixins( DatabaseSQLServiceCoreMixin.class,
-                                                                             DatabaseSQLServiceSpi.CommonMixin.class,
-                                                                             getDatabaseStringBuilderMixin(),
-                                                                             DatabaseSQLServiceStatementsMixin.class,
-                                                                             getDatabaseSQLServiceSpecializationMixin() ).
-                    identifiedBy( getEntityStoreServiceName() ).visibleIn( Visibility.module ).setMetaInfo( sqlVendor );
+            module.services( DatabaseSQLServiceComposite.class ).
+                    withMixins( DatabaseSQLServiceCoreMixin.class,
+                                DatabaseSQLServiceSpi.CommonMixin.class,
+                                getDatabaseStringBuilderMixin(),
+                                DatabaseSQLServiceStatementsMixin.class,
+                                getDatabaseSQLServiceSpecializationMixin() ).
+                    identifiedBy( identity ).
+                    visibleIn( Visibility.module ).
+                    setMetaInfo( sqlVendor );
         } catch ( IOException ioe ) {
             throw new AssemblyException( ioe );
         }
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( this.getVisibility() );
+        module.services( SQLEntityStoreService.class, UuidIdentityGeneratorService.class ).
+                visibleIn( visibility );
+        configModule.entities( SQLConfiguration.class ).
+                visibleIn( configVisibility );
     }
 
 }

@@ -15,9 +15,7 @@
 package org.qi4j.index.sql.postgresql;
 
 import java.sql.Connection;
-
 import javax.sql.DataSource;
-
 import org.junit.Assume;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Module;
@@ -25,20 +23,16 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
+import org.qi4j.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.qi4j.index.sql.support.common.RebuildingStrategy;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
-import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class SQLTestHelper
 {
-    public static final String SQL_INDEXING_SERVICE_NAME =
-        PostgreSQLAssembler.INDEXING_SERVICE_NAME;
 
     public static final String SEPARATE_MODULE_NAME = "actual_module";
 
@@ -52,34 +46,35 @@ public class SQLTestHelper
         doCommonAssembling( mainModule );
     }
 
-    // public static void assembleWithSQLEntityStore( ModuleAssembly mainModule )
-    // throws AssemblyException
-    // {
-    // new PostgreSQLEntityStoreAssembler( Visibility.application, doCommonAssembling( mainModule )
-    // )
-    // .assemble( mainModule );
-    // }
-
-    protected static DataSourceAssembler doCommonAssembling( ModuleAssembly mainModule )
+    protected static void doCommonAssembling( ModuleAssembly mainModule )
         throws AssemblyException
     {
         ModuleAssembly config = mainModule.layer().module( "config" );
         config.services( MemoryEntityStoreService.class ).visibleIn( Visibility.module );
 
         // START SNIPPET: assembly
-        // DataSourceService + Index/Query's DataSource
-        new DBCPDataSourceServiceAssembler( "postgres-datasource-service",
-            Visibility.module,
-            config,
-            Visibility.layer ).assemble( mainModule );
-        DataSourceAssembler dsAssembler = new DataSourceAssembler( "postgres-datasource-service",
-            "postgres-datasource",
-            Visibility.module,
-            DataSources.newDataSourceCircuitBreaker() );
+        // DataSourceService
+        new DBCPDataSourceServiceAssembler().
+                identifiedBy( "postgres-datasource-service" ).
+                visibleIn( Visibility.module ).
+                withConfig( config ).
+                withConfigVisibility( Visibility.layer ).
+                assemble( mainModule );
 
-        // Index/Query
-        new PostgreSQLAssembler( Visibility.module, dsAssembler ).assemble( mainModule );
-        config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
+        // DataSource
+        new DataSourceAssembler().
+                withDataSourceServiceIdentity( "postgres-datasource-service" ).
+                identifiedBy( "postgres-datasource" ).
+                visibleIn( Visibility.module ).
+                withCircuitBreaker().
+                assemble( mainModule );
+
+        // SQL Index/Query
+        new PostgreSQLIndexQueryAssembler().
+                visibleIn( Visibility.application ).
+                withConfig( config ).
+                withConfigVisibility( Visibility.layer ).
+                assemble( mainModule );
         // END SNIPPET: assembly
 
         // Always re-build schema in test scenarios because of possibly different app structure in
@@ -91,8 +86,6 @@ public class SQLTestHelper
         mainModule.services( ReindexingStrategy.class ).withMixins(
             ReindexingStrategy.AlwaysNeed.class ).visibleIn( Visibility.module );
         config.entities( ReindexerConfiguration.class ).visibleIn( Visibility.layer );
-
-        return dsAssembler;
     }
 
     public static void setUpTest( Module module )

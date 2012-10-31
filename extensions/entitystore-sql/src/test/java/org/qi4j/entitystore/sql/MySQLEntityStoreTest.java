@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -28,7 +29,6 @@ import org.qi4j.entitystore.sql.internal.SQLs;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
@@ -48,19 +48,28 @@ public class MySQLEntityStoreTest
         config.services( MemoryEntityStoreService.class );
 
         // START SNIPPET: assembly
-        // DataSourceService + EntityStore's DataSource using DBCP connection pool
-        new DBCPDataSourceServiceAssembler( "mysql-datasource-service",
-                                            Visibility.module,
-                                            config,
-                                            Visibility.layer ).assemble( module );
-        DataSourceAssembler dsAssembler = new DataSourceAssembler( "mysql-datasource-service",
-                                                                   "mysql-datasource",
-                                                                   Visibility.module,
-                                                                   DataSources.newDataSourceCircuitBreaker() );
+        // DataSourceService
+        new DBCPDataSourceServiceAssembler().
+                identifiedBy( "mysql-datasource-service" ).
+                visibleIn( Visibility.module ).
+                withConfig( config ).
+                withConfigVisibility( Visibility.layer ).
+                assemble( module );
+
+        // DataSource
+        new DataSourceAssembler().
+                withDataSourceServiceIdentity( "mysql-datasource-service" ).
+                identifiedBy( "mysql-datasource" ).
+                visibleIn( Visibility.module ).
+                withCircuitBreaker().
+                assemble( module );
 
         // SQL EntityStore
-        new MySQLEntityStoreAssembler( dsAssembler ).assemble( module );
-        config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
+        new MySQLEntityStoreAssembler().
+                visibleIn( Visibility.application ).
+                withConfig( config ).
+                withConfigVisibility( Visibility.layer ).
+                assemble( module );
     }
     // END SNIPPET: assembly
 
@@ -71,9 +80,11 @@ public class MySQLEntityStoreTest
         if ( true ) {
             return;
         }
-        UnitOfWork uow = this.module.newUnitOfWork();
+        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase(
+                "Delete " + getClass().getSimpleName() + " test data" ) );
         try {
-            SQLConfiguration config = uow.get( SQLConfiguration.class, MySQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
+            SQLConfiguration config = uow.get( SQLConfiguration.class,
+                                               MySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = module.findService( DataSource.class ).get().getConnection();
             String schemaName = config.schemaName().get();
             if ( schemaName == null ) {

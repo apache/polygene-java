@@ -20,6 +20,7 @@ import javax.sql.DataSource;
 import org.junit.Ignore;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -28,7 +29,6 @@ import org.qi4j.entitystore.sql.internal.SQLs;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
@@ -78,19 +78,27 @@ public class PostgreSQLEntityStoreTest
         config.services( MemoryEntityStoreService.class );
 
         // START SNIPPET: assembly
-        // DataSourceService + EntityStore's DataSource using DBCP connection pool
-        new DBCPDataSourceServiceAssembler( "postgresql-datasource-service",
-                                            Visibility.module,
-                                            config,
-                                            Visibility.layer ).assemble( module );
-        DataSourceAssembler dsAssembler = new DataSourceAssembler( "postgresql-datasource-service",
-                                                                   "postgresql-datasource",
-                                                                   Visibility.module,
-                                                                   DataSources.newDataSourceCircuitBreaker() );
+        // DataSourceService
+        new DBCPDataSourceServiceAssembler().
+                identifiedBy( "postgresql-datasource-service" ).
+                visibleIn( Visibility.module ).
+                withConfig( config ).
+                withConfigVisibility( Visibility.layer ).
+                assemble( module );
+
+        // DataSource
+        new DataSourceAssembler().
+                withDataSourceServiceIdentity( "postgresql-datasource-service" ).
+                identifiedBy( "postgresql-datasource" ).
+                visibleIn( Visibility.module ).
+                withCircuitBreaker();
 
         // SQL EntityStore
-        new PostgreSQLEntityStoreAssembler( dsAssembler ).assemble( module );
-        config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
+        new PostgreSQLEntityStoreAssembler().
+                visibleIn( Visibility.application ).
+                withConfig( config ).
+                withConfigVisibility( Visibility.layer ).
+                assemble( module );
     }
     // END SNIPPET: assembly
 
@@ -99,10 +107,11 @@ public class PostgreSQLEntityStoreTest
             throws Exception
     {
 
-        UnitOfWork uow = this.module.newUnitOfWork();
+        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase(
+                "Delete " + getClass().getSimpleName() + " test data" ) );
         try {
             SQLConfiguration config = uow.get( SQLConfiguration.class,
-                                               PostgreSQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
+                                               PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = module.findService( DataSource.class ).get().getConnection();
             String schemaName = config.schemaName().get();
             if ( schemaName == null ) {

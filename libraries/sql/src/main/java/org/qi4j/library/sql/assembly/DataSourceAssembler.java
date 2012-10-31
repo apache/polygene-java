@@ -15,7 +15,6 @@
 package org.qi4j.library.sql.assembly;
 
 import javax.sql.DataSource;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.importer.ServiceInstanceImporter;
 import org.qi4j.api.util.NullArgumentException;
@@ -23,6 +22,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
+import org.qi4j.library.sql.datasource.DataSources;
 
 /**
  * Use this Assembler to register a javax.sql.DataSource.
@@ -31,28 +31,48 @@ public class DataSourceAssembler
         implements Assembler
 {
 
-    private final String dataSourceServiceId;
+    public static String DEFAULT_DATASOURCE_IDENTITY = "datasource";
 
-    private final String dataSourceId;
+    private String dataSourceServiceId = AbstractPooledDataSourceServiceAssembler.DEFAULT_DATASOURCE_SERVICE_IDENTITY;
 
-    private final Visibility visibility;
+    private String dataSourceId = DEFAULT_DATASOURCE_IDENTITY;
 
-    private final CircuitBreaker circuitBreaker;
+    private Visibility visibility = Visibility.module;
 
-    public DataSourceAssembler( String dataSourceServiceId, String dataSourceId, Visibility visibility )
-    {
-        this( dataSourceServiceId, dataSourceId, visibility, null );
-    }
+    private CircuitBreaker circuitBreaker;
 
-    public DataSourceAssembler( String dataSourceServiceId, String dataSourceId, Visibility visibility, CircuitBreaker circuitBreaker )
+    public DataSourceAssembler withDataSourceServiceIdentity( String dataSourceServiceId )
     {
         NullArgumentException.validateNotNull( "DataSourceService identity", dataSourceServiceId );
-        NullArgumentException.validateNotNull( "DataSource identity", dataSourceId );
-        NullArgumentException.validateNotNull( "DataSource visibility", visibility );
         this.dataSourceServiceId = dataSourceServiceId;
+        return this;
+    }
+
+    public DataSourceAssembler identifiedBy( String dataSourceId )
+    {
+        NullArgumentException.validateNotNull( "DataSource identity", dataSourceId );
         this.dataSourceId = dataSourceId;
+        return this;
+    }
+
+    public DataSourceAssembler visibleIn( Visibility visibility )
+    {
+        NullArgumentException.validateNotNull( "DataSource visibility", visibility );
         this.visibility = visibility;
+        return this;
+    }
+
+    public DataSourceAssembler withCircuitBreaker()
+    {
+        this.circuitBreaker = DataSources.newDataSourceCircuitBreaker();
+        return this;
+    }
+
+    public DataSourceAssembler withCircuitBreaker( CircuitBreaker circuitBreaker )
+    {
+        NullArgumentException.validateNotNull( "CircuitBreaker", circuitBreaker );
         this.circuitBreaker = circuitBreaker;
+        return this;
     }
 
     @Override

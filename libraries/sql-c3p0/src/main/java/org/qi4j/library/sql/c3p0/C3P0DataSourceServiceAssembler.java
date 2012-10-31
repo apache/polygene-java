@@ -21,18 +21,13 @@ import org.qi4j.library.sql.assembly.AbstractPooledDataSourceServiceAssembler;
  * Use this Assembler to register a DataSourceService based on C3P0 and its Configuration entity.
  */
 public class C3P0DataSourceServiceAssembler
-        extends AbstractPooledDataSourceServiceAssembler
+        extends AbstractPooledDataSourceServiceAssembler<C3P0DataSourceServiceAssembler>
 {
 
-    public C3P0DataSourceServiceAssembler( String dataSourceServiceId, Visibility visibility, ModuleAssembly configModuleAssembly, Visibility configVisibility )
-    {
-        super( dataSourceServiceId, visibility, configModuleAssembly, configVisibility );
-    }
-
     @Override
-    protected void onAssemble( ModuleAssembly module )
+    protected void onAssemble( ModuleAssembly module, String identity, Visibility visibility )
     {
-        module.services( C3P0DataSourceServiceImporter.class ).identifiedBy( dataSourceServiceId ).visibleIn( visibility );
+        module.services( C3P0DataSourceServiceImporter.class ).identifiedBy( identity ).visibleIn( visibility );
     }
 
 }

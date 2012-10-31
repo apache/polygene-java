@@ -16,11 +16,8 @@
 package org.qi4j.index.sql.postgresql;
 
 import java.sql.Connection;
-
 import javax.sql.DataSource;
-
 import junit.framework.Assert;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
@@ -29,6 +26,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer;
 import org.qi4j.index.sql.support.common.GenericDatabaseExplorer.DatabaseProcessorAdapter;
@@ -39,8 +37,7 @@ import org.qi4j.test.AbstractQi4jTest;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-//(should pass with actual DB running)
-@Ignore
+@Ignore( "should pass with actual DB running " )
 public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
 {
 
@@ -82,8 +79,7 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
 
         uow = this.module.newUnitOfWork();
         entity = uow.get( entity );
-        SQLConfiguration config =
-            uow.get( SQLConfiguration.class, SQLTestHelper.SQL_INDEXING_SERVICE_NAME );
+        SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLIndexQueryAssembler.DEFAULT_IDENTITY );
         String schemaName = config.schemaName().get();
         if( schemaName == null )
         {

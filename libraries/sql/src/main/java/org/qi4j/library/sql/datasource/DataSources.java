@@ -19,14 +19,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.ConnectException;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.service.ServiceImporterException;
-import static org.qi4j.functional.Specifications.not;
-
 import org.qi4j.functional.Specification;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
+
+import static org.qi4j.functional.Specifications.not;
 import static org.qi4j.library.circuitbreaker.CircuitBreakers.in;
 import static org.qi4j.library.circuitbreaker.CircuitBreakers.rootCause;
 
@@ -35,7 +33,6 @@ public class DataSources
 
     public static CircuitBreaker newDataSourceCircuitBreaker()
     {
-
         return newDataSourceCircuitBreaker( 5, 1000 * 60 * 5 );
     }
 
@@ -51,7 +48,6 @@ public class DataSources
         // Create wrapper
         InvocationHandler handler = new InvocationHandler()
         {
-
             @Override
             public Object invoke( Object proxy, Method method, Object[] args )
                     throws Throwable

@@ -14,7 +14,6 @@
 package org.qi4j.library.sql.assembly;
 
 import javax.sql.DataSource;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.bootstrap.Assembler;
@@ -27,34 +26,56 @@ public class ExternalDataSourceAssembler
         implements Assembler
 {
 
-    private final String dataSourceId;
+    public static String DEFAULT_DATASOURCE_IDENTITY = "external-datasource";
 
-    private final Visibility visibility;
+    private DataSource externalDataSource;
 
-    private final DataSource externalDataSource;
+    private String dataSourceId = DEFAULT_DATASOURCE_IDENTITY;
 
-    public ExternalDataSourceAssembler( String dataSourceId, Visibility visibility, DataSource externalDataSource )
+    private Visibility visibility = Visibility.module;
+
+    private CircuitBreaker circuitBreaker;
+
+    public ExternalDataSourceAssembler( DataSource externalDataSource )
     {
-        this( dataSourceId, visibility, externalDataSource, null );
+        NullArgumentException.validateNotNull( "DataSource", externalDataSource );
+        this.externalDataSource = externalDataSource;
     }
 
-    public ExternalDataSourceAssembler( String dataSourceId, Visibility visibility, DataSource externalDataSource, CircuitBreaker circuitBreaker )
+    public ExternalDataSourceAssembler identifiedBy( String dataSourceId )
     {
         NullArgumentException.validateNotNull( "DataSource identity", dataSourceId );
-        NullArgumentException.validateNotNull( "DataSource visibility", visibility );
-        NullArgumentException.validateNotNull( "DataSource", externalDataSource );
         this.dataSourceId = dataSourceId;
-        this.visibility = visibility;
-        if ( circuitBreaker != null ) {
-            this.externalDataSource = DataSources.wrapWithCircuitBreaker( dataSourceId, externalDataSource, circuitBreaker );
-        } else {
-            this.externalDataSource = externalDataSource;
-        }
+        return this;
     }
 
+    public ExternalDataSourceAssembler visibleIn( Visibility visibility )
+    {
+        NullArgumentException.validateNotNull( "DataSource visibility", visibility );
+        this.visibility = visibility;
+        return this;
+    }
+
+    public ExternalDataSourceAssembler withCircuitBreaker()
+    {
+        this.circuitBreaker = DataSources.newDataSourceCircuitBreaker();
+        return this;
+    }
+
+    public ExternalDataSourceAssembler withCircuitBreaker( CircuitBreaker circuitBreaker )
+    {
+        NullArgumentException.validateNotNull( "CircuitBreaker", circuitBreaker );
+        this.circuitBreaker = circuitBreaker;
+        return this;
+    }
+
+    @Override
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
+        if ( circuitBreaker != null ) {
+            externalDataSource = DataSources.wrapWithCircuitBreaker( dataSourceId, externalDataSource, circuitBreaker );
+        }
         module.importedServices( DataSource.class ).
                 identifiedBy( dataSourceId ).
                 visibleIn( visibility ).

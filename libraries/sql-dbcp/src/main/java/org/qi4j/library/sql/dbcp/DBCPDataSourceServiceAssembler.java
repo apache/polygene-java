@@ -21,18 +21,13 @@ import org.qi4j.library.sql.assembly.AbstractPooledDataSourceServiceAssembler;
  * Use this Assembler to register a DataSourceService based on DBCP and its Configuration entity.
  */
 public class DBCPDataSourceServiceAssembler
-        extends AbstractPooledDataSourceServiceAssembler
+        extends AbstractPooledDataSourceServiceAssembler<DBCPDataSourceServiceAssembler>
 {
 
-    public DBCPDataSourceServiceAssembler( String dataSourceServiceId, Visibility visibility, ModuleAssembly configModuleAssembly, Visibility configVisibility )
-    {
-        super( dataSourceServiceId, visibility, configModuleAssembly, configVisibility );
-    }
-
     @Override
-    protected void onAssemble( ModuleAssembly module )
+    protected void onAssemble( ModuleAssembly module, String identity, Visibility visibility )
     {
-        module.services( DBCPDataSourceServiceImporter.class ).identifiedBy( dataSourceServiceId ).visibleIn( visibility );
+        module.services( DBCPDataSourceServiceImporter.class ).identifiedBy( identity ).visibleIn( visibility );
     }
 
 }

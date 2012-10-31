@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2010, Stanislav Muhametsin.
  * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,29 +12,29 @@
  * limitations under the License.
  *
  */
-package org.qi4j.entitystore.sql.assembly;
+package org.qi4j.index.sql.assembly;
 
 import java.io.IOException;
-import org.qi4j.entitystore.sql.internal.H2SQLDatabaseSQLServiceMixin;
-import org.sql.generation.api.vendor.H2Vendor;
+import org.qi4j.index.sql.support.postgresql.PostgreSQLService;
+import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-public class H2SQLEntityStoreAssembler
-        extends AbstractSQLEntityStoreAssembler<H2SQLEntityStoreAssembler>
+public class PostgreSQLIndexQueryAssembler
+        extends AbstractSQLIndexQueryAssembler<PostgreSQLIndexQueryAssembler>
 {
-
-    @Override
-    protected Class<?> getDatabaseSQLServiceSpecializationMixin()
-    {
-        return H2SQLDatabaseSQLServiceMixin.class;
-    }
 
     @Override
     protected SQLVendor getSQLVendor()
             throws IOException
     {
-        return SQLVendorProvider.createVendor( H2Vendor.class );
+        return SQLVendorProvider.createVendor( PostgreSQLVendor.class );
+    }
+
+    @Override
+    protected Class<?> getIndexQueryServiceType()
+    {
+        return PostgreSQLService.class;
     }
 
 }

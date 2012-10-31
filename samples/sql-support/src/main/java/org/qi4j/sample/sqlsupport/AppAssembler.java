@@ -24,11 +24,10 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
+import org.qi4j.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.index.sql.support.common.ReindexingStrategy.AlwaysNeed;
-import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 
@@ -64,29 +63,37 @@ public class AppAssembler
         {
             // SQL DataSource Service
             String dataSourceServiceIdentity = "postgresql-datasource-service";
-            new DBCPDataSourceServiceAssembler( dataSourceServiceIdentity,
-                                                Visibility.module,
-                                                configModule,
-                                                Visibility.application ).assemble( persistenceModule );
+            new DBCPDataSourceServiceAssembler().
+                    identifiedBy( dataSourceServiceIdentity ).
+                    visibleIn( Visibility.module ).
+                    withConfig( configModule ).
+                    withConfigVisibility( Visibility.application ).
+                    assemble( persistenceModule );
 
             // SQL EntityStore DataSource and Service
-            DataSourceAssembler esDsAssembler = new DataSourceAssembler( dataSourceServiceIdentity,
-                                                                         "postgresql-es-datasource",
-                                                                         Visibility.module,
-                                                                         DataSources.newDataSourceCircuitBreaker() );
-            new PostgreSQLEntityStoreAssembler( Visibility.application, esDsAssembler ).assemble( persistenceModule );
+            new DataSourceAssembler().
+                    withDataSourceServiceIdentity( dataSourceServiceIdentity ).
+                    identifiedBy( "postgresql-es-datasource" ).
+                    visibleIn( Visibility.module ).
+                    withCircuitBreaker( DataSources.newDataSourceCircuitBreaker() ).assemble( persistenceModule );
+            new PostgreSQLEntityStoreAssembler().
+                    visibleIn( Visibility.application ).
+                    withConfig( configModule ).
+                    withConfigVisibility( Visibility.application ).
+                    assemble( persistenceModule );
 
             // SQL Index/Query DataSource and Service
-            DataSourceAssembler indexDsAssembler = new DataSourceAssembler( dataSourceServiceIdentity,
-                                                                            "postgresql-index-datasource",
-                                                                            Visibility.module,
-                                                                            DataSources.newDataSourceCircuitBreaker() );
-            new PostgreSQLAssembler( Visibility.application, indexDsAssembler ).assemble( persistenceModule );
-            persistenceModule.services( ReindexingStrategy.class ).withMixins( AlwaysNeed.class );
-            configModule.entities( ReindexerConfiguration.class ).visibleIn( Visibility.application );
-
-            // SQL Configuration
-            configModule.entities( SQLConfiguration.class ).visibleIn( Visibility.application );
+            new DataSourceAssembler().
+                    withDataSourceServiceIdentity( dataSourceServiceIdentity ).
+                    identifiedBy( "postgresql-index-datasource" ).
+                    visibleIn( Visibility.module ).
+                    withCircuitBreaker().
+                    assemble( persistenceModule );
+            new PostgreSQLIndexQueryAssembler().
+                    visibleIn( Visibility.application ).
+                    withConfig( configModule ).
+                    withConfigVisibility( Visibility.application ).
+                    assemble( persistenceModule );
         }
 
         // App

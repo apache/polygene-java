@@ -22,39 +22,61 @@ import org.qi4j.library.conversion.values.EntityToValueService;
 import org.qi4j.library.sql.datasource.DataSourceConfiguration;
 import org.qi4j.library.sql.datasource.DataSourceConfigurationValue;
 
-public abstract class AbstractPooledDataSourceServiceAssembler
+public abstract class AbstractPooledDataSourceServiceAssembler<T extends AbstractPooledDataSourceServiceAssembler>
         implements Assembler
 {
 
-    protected final String dataSourceServiceId;
+    public static String DEFAULT_DATASOURCE_SERVICE_IDENTITY = "datasource-service";
 
-    protected final Visibility visibility;
+    private String dataSourceServiceId = DEFAULT_DATASOURCE_SERVICE_IDENTITY;
 
-    private final ModuleAssembly configModuleAssembly;
+    private Visibility visibility = Visibility.module;
 
-    private final Visibility configVisibility;
+    private ModuleAssembly configModuleAssembly;
 
-    public AbstractPooledDataSourceServiceAssembler( String dataSourceServiceId, Visibility visibility, ModuleAssembly configModuleAssembly, Visibility configVisibility )
+    private Visibility configVisibility = Visibility.module;
+
+    public T identifiedBy( String dataSourceServiceId )
     {
         NullArgumentException.validateNotNull( "DataSourceService identity", dataSourceServiceId );
-        NullArgumentException.validateNotNull( "DataSourceService visibility", visibility );
-        NullArgumentException.validateNotNull( "Configuration ModuleAssembly", configModuleAssembly );
-        NullArgumentException.validateNotNull( "Configuration visibility", configVisibility );
         this.dataSourceServiceId = dataSourceServiceId;
-        this.visibility = visibility;
-        this.configModuleAssembly = configModuleAssembly;
-        this.configVisibility = configVisibility;
+        return ( T ) this;
     }
 
-    public void assemble( ModuleAssembly module )
+    public T visibleIn( Visibility visibility )
+    {
+        NullArgumentException.validateNotNull( "DataSourceService visibility", visibility );
+        this.visibility = visibility;
+        return ( T ) this;
+    }
+
+    public T withConfig( ModuleAssembly configModule )
+    {
+        NullArgumentException.validateNotNull( "Configuration ModuleAssembly", configModule );
+        this.configModuleAssembly = configModule;
+        return ( T ) this;
+    }
+
+    public T withConfigVisibility( Visibility configVisibility )
+    {
+        NullArgumentException.validateNotNull( "Configuration Visibility", configVisibility );
+        this.configVisibility = configVisibility;
+        return ( T ) this;
+    }
+
+    @Override
+    public final void assemble( ModuleAssembly module )
             throws AssemblyException
     {
+        if ( configModuleAssembly == null ) {
+            configModuleAssembly = module;
+        }
         module.values( DataSourceConfigurationValue.class ).visibleIn( Visibility.module );
         module.services( EntityToValueService.class ).visibleIn( Visibility.module );
         configModuleAssembly.entities( DataSourceConfiguration.class ).visibleIn( configVisibility );
-        onAssemble( module );
+        onAssemble( module, dataSourceServiceId, visibility );
     }
 
-    protected abstract void onAssemble( ModuleAssembly module );
+    protected abstract void onAssemble( ModuleAssembly module, String identity, Visibility visibility );
 
 }

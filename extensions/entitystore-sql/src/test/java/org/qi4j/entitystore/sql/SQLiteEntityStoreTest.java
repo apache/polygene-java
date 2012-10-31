@@ -23,8 +23,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.SQLiteEntityStoreAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
@@ -52,19 +50,28 @@ public class SQLiteEntityStoreTest
         config.services( MemoryEntityStoreService.class );
 
         // START SNIPPET: assembly
-        // DataSourceService + EntityStore's DataSource using DBCP connection pool
-        new DBCPDataSourceServiceAssembler( "sqlite-datasource-service",
-                                            Visibility.module,
-                                            config,
-                                            Visibility.layer ).assemble( module );
-        DataSourceAssembler dsAssembler = new DataSourceAssembler( "sqlite-datasource-service",
-                                                                   "sqlite-datasource",
-                                                                   Visibility.module,
-                                                                   DataSources.newDataSourceCircuitBreaker() );
+        // DataSourceService
+        new DBCPDataSourceServiceAssembler().
+                identifiedBy( "sqlite-datasource-service" ).
+                visibleIn( Visibility.module ).
+                withConfig( config ).
+                withConfigVisibility( Visibility.layer ).
+                assemble( module );
+
+        // DataSource
+        new DataSourceAssembler().
+                withDataSourceServiceIdentity( "sqlite-datasource-service" ).
+                identifiedBy( "sqlite-datasource" ).
+                visibleIn( Visibility.module ).
+                withCircuitBreaker().
+                assemble( module );
 
         // SQL EntityStore
-        new SQLiteEntityStoreAssembler( dsAssembler ).assemble( module );
-        config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
+        new SQLiteEntityStoreAssembler().
+                visibleIn( Visibility.application ).
+                withConfig( config ).
+                withConfigVisibility( Visibility.layer ).
+                assemble( module );
     }
     // END SNIPPET: assembly
 
@@ -75,7 +82,8 @@ public class SQLiteEntityStoreTest
         if ( module == null ) {
             return;
         }
-        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" ) );
+        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase(
+                "Delete " + getClass().getSimpleName() + " test data" ) );
         try {
 
             FileUtil.removeDirectory( "target/qi4j-data" );

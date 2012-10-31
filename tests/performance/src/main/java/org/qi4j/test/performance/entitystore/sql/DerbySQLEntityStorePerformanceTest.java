@@ -13,21 +13,17 @@
  */
 package org.qi4j.test.performance.entitystore.sql;
 
+import org.apache.derby.iapi.services.io.FileUtil;
 import org.junit.Test;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
-import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.datasource.DataSources;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanceTest;
-
-import org.apache.derby.iapi.services.io.FileUtil;
 
 /**
  * Performance test for SQLEntityStoreComposite
@@ -45,27 +41,33 @@ public class DerbySQLEntityStorePerformanceTest
     {
         return new Assembler()
         {
-
-            @SuppressWarnings( "unchecked" )
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
                 ModuleAssembly config = module.layer().module( "config" );
                 config.services( MemoryEntityStoreService.class );
 
-                // DataSourceService + EntityStore's DataSource
-                new DBCPDataSourceServiceAssembler( "derby-datasource-service",
-                                                    Visibility.module,
-                                                    config,
-                                                    Visibility.layer ).assemble( module );
-                DataSourceAssembler dsAssembler = new DataSourceAssembler( "derby-datasource-service",
-                                                                           "derby-datasource",
-                                                                           Visibility.module,
-                                                                           DataSources.newDataSourceCircuitBreaker() );
+                // DataSourceService
+                new DBCPDataSourceServiceAssembler().
+                        identifiedBy( "derby-datasource-service" ).
+                        visibleIn( Visibility.module ).
+                        withConfig( config ).
+                        withConfigVisibility( Visibility.layer ).
+                        assemble( module );
 
-                // EntityStore
-                new DerbySQLEntityStoreAssembler( dsAssembler ).assemble( module );
-                config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
+                // DataSource
+                new DataSourceAssembler().
+                        withDataSourceServiceIdentity( "derby-datasource-service" ).
+                        identifiedBy( "derby-datasource" ).
+                        withCircuitBreaker().
+                        assemble( module );
+
+                // SQL EntityStore
+                new DerbySQLEntityStoreAssembler().
+                        withConfig( config ).
+                        withConfigVisibility( Visibility.layer ).
+                        assemble( module );
             }
 
         };

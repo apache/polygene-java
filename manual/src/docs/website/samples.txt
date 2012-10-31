@@ -55,7 +55,7 @@ Sample of how to fully use Qi4j SQL support : <<extension-es-sql>> and <<extensi
 
 https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/sql-support[Browse Source]
 
-A gradle task runSample is defined in this module as a shortcut to run the example. See <<build-system>>.
+A gradle task `runSample` is defined in this module as a shortcut to run the example. See <<build-system>>.
 
 
 == Struts2 Sample ==

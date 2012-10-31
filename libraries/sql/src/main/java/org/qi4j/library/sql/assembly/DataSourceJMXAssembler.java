@@ -23,18 +23,15 @@ public class DataSourceJMXAssembler
         implements Assembler
 {
 
-    private final Visibility visibility;
+    private Visibility visibility = Visibility.module;
 
-    public DataSourceJMXAssembler()
-    {
-        this( Visibility.layer );
-    }
-
-    public DataSourceJMXAssembler( Visibility visibility )
+    public DataSourceJMXAssembler visibleIn( Visibility visibility )
     {
         this.visibility = visibility;
+        return this;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {

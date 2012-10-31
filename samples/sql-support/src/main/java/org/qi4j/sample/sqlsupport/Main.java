@@ -26,8 +26,8 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
+import org.qi4j.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
-import org.qi4j.index.sql.support.postgresql.assembly.PostgreSQLAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
 
@@ -100,7 +100,7 @@ public class Main
             UnitOfWork uow = persistenceModule.newUnitOfWork();
             try {
                 SQLConfiguration config = uow.get( SQLConfiguration.class,
-                                                   PostgreSQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
+                                                   PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
                 Connection connection = persistenceModule.findService( DataSource.class ).get().getConnection();
                 connection.setAutoCommit( false );
                 connection.setReadOnly( false );
@@ -126,7 +126,7 @@ public class Main
         {
             UnitOfWork uow = persistenceModule.newUnitOfWork();
             try {
-                SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLAssembler.INDEXING_SERVICE_NAME );
+                SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLIndexQueryAssembler.DEFAULT_IDENTITY );
                 Connection connection = persistenceModule.findService( DataSource.class ).get().getConnection();
                 connection.setAutoCommit( false );
                 connection.setReadOnly( false );

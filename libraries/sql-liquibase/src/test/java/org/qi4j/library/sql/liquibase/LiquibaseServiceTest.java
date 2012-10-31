@@ -38,7 +38,6 @@ import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.c3p0.C3P0DataSourceServiceAssembler;
-import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.datasource.Databases;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -60,11 +59,14 @@ public class LiquibaseServiceTest
             @Override
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
-                new C3P0DataSourceServiceAssembler( "datasource-service", Visibility.module, module, Visibility.module ).assemble( module );
-                new DataSourceAssembler( "datasource-service",
-                                         "testds-liquibase",
-                                         Visibility.module,
-                                         DataSources.newDataSourceCircuitBreaker() ).assemble( module );
+                new C3P0DataSourceServiceAssembler().
+                        identifiedBy( "datasource-service" ).
+                        assemble( module );
+                new DataSourceAssembler().
+                        withDataSourceServiceIdentity( "datasource-service").
+                        identifiedBy( "testds-liquibase").
+                        withCircuitBreaker().
+                        assemble( module );
 
                 module.values( SomeValue.class );
 

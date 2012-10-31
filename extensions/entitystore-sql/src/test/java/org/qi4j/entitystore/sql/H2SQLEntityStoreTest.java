@@ -22,8 +22,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.H2SQLEntityStoreAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
@@ -42,19 +40,28 @@ public class H2SQLEntityStoreTest
         config.services( MemoryEntityStoreService.class );
 
         // START SNIPPET: assembly
-        // DataSourceService + EntityStore's DataSource using DBCP connection pool
-        new DBCPDataSourceServiceAssembler( "h2-datasource-service",
-                                            Visibility.module,
-                                            config,
-                                            Visibility.layer ).assemble( module );
-        DataSourceAssembler dsAssembler = new DataSourceAssembler( "h2-datasource-service",
-                                                                   "h2-datasource",
-                                                                   Visibility.module,
-                                                                   DataSources.newDataSourceCircuitBreaker() );
+        // DataSourceService
+        new DBCPDataSourceServiceAssembler().
+                identifiedBy( "h2-datasource-service" ).
+                visibleIn( Visibility.module ).
+                withConfig( config ).
+                withConfigVisibility( Visibility.layer ).
+                assemble( module );
+
+        // DataSource
+        new DataSourceAssembler().
+                withDataSourceServiceIdentity( "h2-datasource-service" ).
+                identifiedBy( "h2-datasource" ).
+                visibleIn( Visibility.module ).
+                withCircuitBreaker().
+                assemble( module );
 
         // SQL EntityStore
-        new H2SQLEntityStoreAssembler( dsAssembler ).assemble( module );
-        config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
+        new H2SQLEntityStoreAssembler().
+                visibleIn( Visibility.application ).
+                withConfig( config ).
+                withConfigVisibility( Visibility.layer ).
+                assemble( module );
     }
     // END SNIPPET: assembly
 
@@ -65,7 +72,8 @@ public class H2SQLEntityStoreTest
         if ( module == null ) {
             return;
         }
-        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" ) );
+        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase(
+                "Delete " + getClass().getSimpleName() + " test data" ) );
         try {
 
             FileUtil.removeDirectory( "target/qi4j-data" );

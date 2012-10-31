@@ -21,18 +21,13 @@ import org.qi4j.library.sql.assembly.AbstractPooledDataSourceServiceAssembler;
  * Use this Assembler to register a DataSourceService based on BoneCP and its Configuration entity.
  */
 public class BoneCPDataSourceServiceAssembler
-        extends AbstractPooledDataSourceServiceAssembler
+        extends AbstractPooledDataSourceServiceAssembler<BoneCPDataSourceServiceAssembler>
 {
 
-    public BoneCPDataSourceServiceAssembler( String dataSourceServiceId, Visibility visibility, ModuleAssembly configModuleAssembly, Visibility configVisibility )
-    {
-        super( dataSourceServiceId, visibility, configModuleAssembly, configVisibility );
-    }
-
     @Override
-    protected void onAssemble( ModuleAssembly module )
+    protected void onAssemble( ModuleAssembly module, String identity, Visibility visibility )
     {
-        module.services( BoneCPDataSourceServiceImporter.class ).identifiedBy( dataSourceServiceId ).visibleIn( visibility );
+        module.services( BoneCPDataSourceServiceImporter.class ).identifiedBy( identity ).visibleIn( visibility );
     }
 
 }

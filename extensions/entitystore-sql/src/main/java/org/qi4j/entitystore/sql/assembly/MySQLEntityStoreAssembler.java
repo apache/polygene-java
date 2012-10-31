@@ -15,34 +15,14 @@
 package org.qi4j.entitystore.sql.assembly;
 
 import java.io.IOException;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.sql.internal.MySQLDatabaseSQLServiceMixin;
-import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.sql.generation.api.vendor.MySQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
 public class MySQLEntityStoreAssembler
-        extends AbstractSQLEntityStoreAssembler
+        extends AbstractSQLEntityStoreAssembler<MySQLEntityStoreAssembler>
 {
-
-    public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-mysql";
-
-    public MySQLEntityStoreAssembler( DataSourceAssembler assembler )
-    {
-        super( assembler );
-    }
-
-    public MySQLEntityStoreAssembler( Visibility visibility, DataSourceAssembler assembler )
-    {
-        super( visibility, assembler );
-    }
-
-    @Override
-    protected String getEntityStoreServiceName()
-    {
-        return ENTITYSTORE_SERVICE_NAME;
-    }
 
     @Override
     protected Class<?> getDatabaseSQLServiceSpecializationMixin()

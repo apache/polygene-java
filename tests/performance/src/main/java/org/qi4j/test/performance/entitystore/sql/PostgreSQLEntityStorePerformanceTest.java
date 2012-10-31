@@ -16,9 +16,7 @@ package org.qi4j.test.performance.entitystore.sql;
 
 import java.sql.Connection;
 import java.sql.Statement;
-
 import org.junit.Ignore;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
@@ -32,11 +30,10 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
-import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.library.sql.datasource.DataSources;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanceTest;
 
 /**
@@ -61,26 +58,33 @@ public class PostgreSQLEntityStorePerformanceTest
     {
         return new Assembler()
         {
-
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
                 ModuleAssembly config = module.layer().module( "config" );
                 config.services( MemoryEntityStoreService.class );
 
-                // DataSourceService + EntityStore's DataSource
-                new DBCPDataSourceServiceAssembler( "postgresql-datasource-service",
-                                                    Visibility.module,
-                                                    config,
-                                                    Visibility.layer ).assemble( module );
-                DataSourceAssembler dsAssembler = new DataSourceAssembler( "postgresql-datasource-service",
-                                                                           "postgresql-datasource",
-                                                                           Visibility.module,
-                                                                           DataSources.newDataSourceCircuitBreaker() );
+                // DataSourceService
+                new DBCPDataSourceServiceAssembler().
+                        identifiedBy( "postgresql-datasource-service" ).
+                        visibleIn( Visibility.module ).
+                        withConfig( config ).
+                        withConfigVisibility( Visibility.layer ).
+                        assemble( module );
 
-                // EntityStore
-                new PostgreSQLEntityStoreAssembler( dsAssembler ).assemble( module );
-                config.entities( SQLConfiguration.class ).visibleIn( Visibility.layer );
+                // DataSource
+                new DataSourceAssembler().
+                        withDataSourceServiceIdentity( "postgresql-datasource-service" ).
+                        identifiedBy( "postgresql-datasource" ).
+                        withCircuitBreaker().
+                        assemble( module );
+
+                // SQL EntityStore
+                new PostgreSQLEntityStoreAssembler().
+                        withConfig( config ).
+                        withConfigVisibility( Visibility.layer ).
+                        assemble( module );
             }
 
         };
@@ -112,7 +116,7 @@ public class PostgreSQLEntityStorePerformanceTest
             UnitOfWork uow = uowf.newUnitOfWork();
             try {
                 SQLConfiguration config = uow.get( SQLConfiguration.class,
-                                                   PostgreSQLEntityStoreAssembler.ENTITYSTORE_SERVICE_NAME );
+                                                   PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
                 // TODO fix AbstractEntityStorePerformanceTest to extend from AbstractQi4jTest
                 Connection connection = null; // SQLUtil.getConnection( this.serviceLocator );
                 String schemaName = config.schemaName().get();

@@ -15,35 +15,15 @@
 package org.qi4j.entitystore.sql.assembly;
 
 import java.io.IOException;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.sql.internal.PostgreSQLDatabaseSQLServiceMixin;
 import org.qi4j.entitystore.sql.internal.PostgreSQLStringBuilderMixin;
-import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
 public class PostgreSQLEntityStoreAssembler
-        extends AbstractSQLEntityStoreAssembler
+        extends AbstractSQLEntityStoreAssembler<PostgreSQLEntityStoreAssembler>
 {
-
-    public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-postgresql";
-
-    public PostgreSQLEntityStoreAssembler( DataSourceAssembler assembler )
-    {
-        super( assembler );
-    }
-
-    public PostgreSQLEntityStoreAssembler( Visibility visibility, DataSourceAssembler assembler )
-    {
-        super( visibility, assembler );
-    }
-
-    @Override
-    protected String getEntityStoreServiceName()
-    {
-        return ENTITYSTORE_SERVICE_NAME;
-    }
 
     @Override
     protected Class<?> getDatabaseSQLServiceSpecializationMixin()

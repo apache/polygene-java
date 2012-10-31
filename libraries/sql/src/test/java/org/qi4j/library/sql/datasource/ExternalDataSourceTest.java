@@ -15,11 +15,9 @@ package org.qi4j.library.sql.datasource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
+import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Test;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -27,12 +25,11 @@ import org.qi4j.library.sql.assembly.ExternalDataSourceAssembler;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.test.AbstractQi4jTest;
 
-import org.apache.commons.dbcp.BasicDataSource;
-
 public class ExternalDataSourceTest
         extends AbstractQi4jTest
 {
 
+    @Override
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
@@ -40,10 +37,11 @@ public class ExternalDataSourceTest
         externalDataSource.setDriverClassName( "org.apache.derby.jdbc.EmbeddedDriver" );
         externalDataSource.setUrl( "jdbc:derby:memory:testdbexternal;create=true" );
         // START SNIPPET: assembly
-        new ExternalDataSourceAssembler( "datasource-external-id",
-                                         Visibility.module,
-                                         externalDataSource,
-                                         DataSources.newDataSourceCircuitBreaker() ).assemble( module );
+        new ExternalDataSourceAssembler( externalDataSource ).
+                visibleIn( Visibility.module ).
+                identifiedBy( "datasource-external-id" ).
+                withCircuitBreaker( DataSources.newDataSourceCircuitBreaker() ).
+                assemble( module );
         // END SNIPPET: assembly
     }
 

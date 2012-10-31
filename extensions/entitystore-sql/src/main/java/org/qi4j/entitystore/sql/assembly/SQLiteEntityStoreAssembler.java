@@ -14,34 +14,14 @@
 package org.qi4j.entitystore.sql.assembly;
 
 import java.io.IOException;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.entitystore.sql.internal.SQLiteDatabaseSQLServiceMixin;
-import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 import org.sql.generation.api.vendor.SQLiteVendor;
 
 public class SQLiteEntityStoreAssembler
-        extends AbstractSQLEntityStoreAssembler
+        extends AbstractSQLEntityStoreAssembler<SQLiteEntityStoreAssembler>
 {
-
-    public static final String ENTITYSTORE_SERVICE_NAME = "entitystore-sqlite";
-
-    public SQLiteEntityStoreAssembler( DataSourceAssembler assembler )
-    {
-        super( assembler );
-    }
-
-    public SQLiteEntityStoreAssembler( Visibility visibility, DataSourceAssembler assembler )
-    {
-        super( visibility, assembler );
-    }
-
-    @Override
-    protected String getEntityStoreServiceName()
-    {
-        return ENTITYSTORE_SERVICE_NAME;
-    }
 
     @Override
     protected Class<?> getDatabaseSQLServiceSpecializationMixin()

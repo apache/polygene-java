@@ -51,15 +51,19 @@ class DocumentationSupport
         DataSource dataSource; // Wrapped with a CircuitBreaker proxy
         // END SNIPPET: cb-datasource
 
+        @Override
         public void assemble( ModuleAssembly module )
                 throws AssemblyException
         {
             // START SNIPPET: cb-assembly
             CircuitBreaker circuitBreaker = newDataSourceCircuitBreaker( 5 /* threshold */,
                                                                          1000 * 60 * 5 /* 5min timeout */ );
-            new DataSourceAssembler( DS_SERVICE_ID, DS_ID,
-                                     Visibility.layer,
-                                     circuitBreaker ).assemble( module );
+            new DataSourceAssembler().
+                    withDataSourceServiceIdentity( DS_SERVICE_ID ).
+                    identifiedBy( DS_ID ).
+                    visibleIn( Visibility.layer ).
+                    withCircuitBreaker( circuitBreaker ).
+                    assemble( module );
             // END SNIPPET: cb-assembly
         }
 
@@ -69,6 +73,7 @@ class DocumentationSupport
             implements Assembler
     {
 
+        @Override
         public void assemble( ModuleAssembly module )
                 throws AssemblyException
         {
@@ -76,27 +81,47 @@ class DocumentationSupport
 
             // START SNIPPET: bonecp
             // Assemble the BoneCP based Service Importer
-            new BoneCPDataSourceServiceAssembler( DS_SERVICE_ID, Visibility.module,
-                                                config, Visibility.layer ).assemble( module );
+            new BoneCPDataSourceServiceAssembler().
+                    identifiedBy( DS_SERVICE_ID ).
+                    visibleIn( Visibility.module ).
+                    withConfig( config ).
+                    withConfigVisibility( Visibility.layer ).
+                    assemble( module );
             // END SNIPPET: bonecp
 
             // START SNIPPET: c3p0
             // Assemble the C3P0 based Service Importer
-            new C3P0DataSourceServiceAssembler( DS_SERVICE_ID, Visibility.module,
-                                                config, Visibility.layer ).assemble( module );
+            new C3P0DataSourceServiceAssembler().
+                    identifiedBy( DS_SERVICE_ID ).
+                    visibleIn( Visibility.module ).
+                    withConfig( config ).
+                    withConfigVisibility( Visibility.layer ).
+                    assemble( module );
             // END SNIPPET: c3p0
 
             // START SNIPPET: dbcp
             // Assemble the Apache DBCP based Service Importer
-            new DBCPDataSourceServiceAssembler( DS_SERVICE_ID, Visibility.module,
-                                                config, Visibility.layer ).assemble( module );
+            new DBCPDataSourceServiceAssembler().
+                    identifiedBy( DS_SERVICE_ID ).
+                    visibleIn( Visibility.module ).
+                    withConfig( config ).
+                    withConfigVisibility( Visibility.layer ).
+                    assemble( module );
             // END SNIPPET: dbcp
 
             // START SNIPPET: datasource
             // Assemble a DataSource
-            new DataSourceAssembler( DS_SERVICE_ID, DS_ID, Visibility.module ).assemble( module );
+            new DataSourceAssembler().
+                    withDataSourceServiceIdentity( DS_SERVICE_ID ).
+                    identifiedBy( DS_ID ).
+                    visibleIn( Visibility.module ).
+                    assemble( module );
             // Another DataSource managed by the same C3P0 connection pool
-            new DataSourceAssembler( DS_SERVICE_ID, OTHER_DS_ID, Visibility.module ).assemble( module );
+            new DataSourceAssembler().
+                    withDataSourceServiceIdentity( DS_SERVICE_ID ).
+                    identifiedBy( OTHER_DS_ID ).
+                    visibleIn( Visibility.module ).
+                    assemble( module );
             // END SNIPPET: datasource
 
         }
