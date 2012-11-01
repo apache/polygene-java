@@ -1,3 +1,4 @@
+[[home,Qi4j Home Page]]
 = Home =
 
 NOTE: Qi4j™ SDK 2.0 is under development. Six alphas versions later we are aiming at the first release candidate. If you

@@ -52,6 +52,10 @@ include::../../../../tutorials/services/src/docs/tut-services.txt[]
 
 :leveloffset: 2
 
+include::../tutorials/howto-depend-on-qi4j.txt[]
+
+:leveloffset: 2
+
 include::../tutorials/howto-assembly-application.txt[]
 
 :leveloffset: 2

@@ -1,0 +1,198 @@
+[[howto-depend-on-qi4j,Depend on Qi4j in your build]]
+= Depend on Qi4j in your build =
+
+Qi4j SDK Distribution is downloadable from the <<home>> or from the <<continuous-integration>>.
+
+NOTE: Some of Qi4j <<libraries>> and <<extensions>> depend on artifacts that are not deployed in central, you'll need to
+add other repositories to your build scripts accordingly.
+
+Release artifacts are deployed to
+http://repository.ops4j.org/maven2/[http://repository.ops4j.org/maven2/].
+
+Snapshot artifacts are deployed to
+https://repository-qi4j.forge.cloudbees.com/snapshot/[https://repository-qi4j.forge.cloudbees.com/snapshot/].
+
+As they are not deployed to central you need to add the repositories to your build scripts.
+
+
+== Manually ==
+
+If you don't rely on your build scripts dependency resolution mechanism you should download the SDK distribution from
+the <<home>> or from the <<continuous-integration>>.
+
+If you're in manual dependency management you should be able to find out which JAR files you'll need to add to your
+projects.
+
+
+== Using Maven ==
+
+First you need to register the Qi4j repositories:
+
+[source,xml]
+----
+<!-- ... -->
+<repositories>
+    <!-- ... -->
+    <repository>
+        <id>qi4j-snapshots</id>
+        <url>https://repository-qi4j.forge.cloudbees.com/snapshot/</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>qi4j-releases</id>
+        <url>http://repository.ops4j.org/maven2/</url>
+    </repository>
+    <!-- ... -->
+</repositories>
+<!-- ... -->
+----
+
+After that you can declare dependencies on Qi4j artifacts:
+
+[source,xml]
+----
+<!-- ... -->
+<dependencies>
+    <!-- ... -->
+    <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>org.qi4j.core.bootstrap</artifactId>
+        <version>2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>org.qi4j.core.runtime</artifactId>
+        <version>2.0-SNAPSHOT</version>
+        <scope>runtime</scope>
+    </dependency>
+    <!-- ... -->
+</dependencies>
+<!-- ... -->
+----
+
+
+== Using Gradle ==
+
+First you need to register the Qi4j repositories:
+
+[source,groovy]
+----
+// ...
+repositories {
+    // ...
+    mavenRepo name: 'qi4j-releases', url: "http://repository.ops4j.org/maven2/"
+    mavenRepo name: 'qi4j-snapshots', url: "https://repository-qi4j.forge.cloudbees.com/snapshot/"
+    // ...
+}
+// ...
+----
+
+After that you can declare dependencies on Qi4j artifacts:
+
+[source,groovy]
+----
+// ...
+dependencies {
+    // ...
+    compile "org.qi4j.core:org.qi4j.core.bootstrap:2.0-SNAPSHOT"
+    runtime "org.qi4j.core:org.qi4j.core.runtime:2.0-SNAPSHOT"
+    // ...
+}
+// ...
+----
+
+
+== Using Buildr ==
+
+First you need to register the Qi4j repositories:
+
+[source,ruby]
+----
+# ...
+repositories.remote << 'http://repository.ops4j.org/maven2/'
+repositories.remote << 'https://repository-qi4j.forge.cloudbees.com/snapshot/'
+# ...
+----
+
+After that you can declare dependencies on Qi4j artifacts:
+
+[source,ruby]
+----
+# ...
+compile.with 'org.qi4j.core:org.qi4j.core.bootstrap:2.0-SNAPSHOT'
+package(:war).with :libs => 'org.qi4j.core:org.qi4j.core.runtime:2.0-SNAPSHOT'
+# ...
+----
+
+
+== Using SBT ==
+
+First you need to register the Qi4j repositories:
+
+[source,scala]
+----
+// ...
+resolvers += "qi4j-releases" at "http://repository.ops4j.org/maven2/"
+resolvers += "qi4j-snapshots" at "https://repository-qi4j.forge.cloudbees.com/snapshot/"
+// ...
+----
+
+After that you can declare dependencies on Qi4j artifacts:
+
+[source,scala]
+----
+// ...
+libraryDependencies += \
+    "org.qi4j.core" % "org.qi4j.core.bootstrap" % "2.0-SNAPSHOT" \
+    withSources() withJavadoc()
+libraryDependencies += \
+    "org.qi4j.core" % "org.qi4j.core.runtime" % "2.0-SNAPSHOT" % "runtime" \
+    withSources() withJavadoc()
+// ...
+----
+
+
+== Using Ivy ==
+
+First you need to register the Qi4j repositories in a `ivysettings.xml` file:
+
+[source,xml]
+----
+<ivysettings>
+    <settings defaultResolver="chain"/>
+    <resolvers>
+        <chain name="chain">
+            <!-- ... -->
+            <ibiblio name="qi4j-releases"  m2compatible="true"
+                     root="http://repository.ops4j.org/maven2/"/>
+            <ibiblio name="qi4j-snapshots" m2compatible="true"
+                     root="https://repository-qi4j.forge.cloudbees.com/snapshot/"/>
+            <!-- ... -->
+        </chain>
+    </resolvers>
+</ivysettings>
+----
+
+After that you can declare dependencies on Qi4j artifacts:
+
+[source,xml]
+----
+<ivy-module>
+    <!-- ... -->
+    <dependencies>
+        <!-- ... -->
+        <dependency org="org.qi4j.core" name="org.qi4j.core.bootstrap"
+                    rev="2.0-SNAPSHOT"  conf="default" />
+        <dependency org="org.qi4j.core" name="org.qi4j.core.runtime"
+                    rev="2.0-SNAPSHOT"  conf="runtime" />
+        <!-- ... -->
+    </dependencies>
+    <!-- ... -->
+</ivy-module>
+----
+
