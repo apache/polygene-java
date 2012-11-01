@@ -18,6 +18,7 @@
 
 package org.qi4j.index.reindexer.internal;
 
+import java.util.ArrayList;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
@@ -36,8 +37,6 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 
 public class ReindexerMixin
         implements Reindexer
@@ -67,6 +66,7 @@ public class ReindexerMixin
 
    private Logger logger = LoggerFactory.getLogger(Reindexer.class);
 
+    @Override
    public void reindex()
    {
       configuration.refresh();
@@ -106,6 +106,7 @@ public class ReindexerMixin
          reindexState();
       }
 
+       @Override
       public void receive(EntityState item)
               throws RuntimeException
       {

@@ -17,7 +17,6 @@ package org.qi4j.index.sql.support.skeletons;
 import java.sql.Types;
 import java.util.Map;
 import java.util.Set;
-
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.CompositeDescriptor;
@@ -31,14 +30,14 @@ import org.qi4j.index.sql.support.common.QNameInfo;
  * proper SQL statements in indexing ({@link SQLIndexing}), querying (
  * {@link org.qi4j.index.sql.support.api.SQLQuerying}) and application startup (
  * {@link org.qi4j.index.sql.support.api.SQLAppStartup}.
- * 
+ *
  * @author Stanislav Muhametsin
  */
 public interface SQLDBState
 {
     /**
      * The schema name where all the required tables are located.
-     * 
+     *
      * @return The schema name where all the required tables are located.
      */
     @Optional
@@ -46,7 +45,7 @@ public interface SQLDBState
 
     /**
      * Information about all used qualified names.
-     * 
+     *
      * @return Information about all used qualified names.
      * @see QNameInfo
      */
@@ -56,7 +55,7 @@ public interface SQLDBState
     /**
      * Information about all used qualified names in a certain entity type. The interface name of
      * entity type serves as the key.
-     * 
+     *
      * @return Information about all used qualified names in a certain entity type.
      */
     @Optional
@@ -65,7 +64,7 @@ public interface SQLDBState
     /**
      * Primary keys of all used composites in all entities of this application. (Value) Composite
      * descriptor is the key.
-     * 
+     *
      * @return Primary keys of all used classes (of value composites) in all entity types.
      */
     @Optional
@@ -76,7 +75,7 @@ public interface SQLDBState
 
     /**
      * A mapping between java type and the ones in {@link Types}. The class of java type is the key.
-     * 
+     *
      * @return A mapping between java type and the ones in {@link Types}.
      */
     @Optional

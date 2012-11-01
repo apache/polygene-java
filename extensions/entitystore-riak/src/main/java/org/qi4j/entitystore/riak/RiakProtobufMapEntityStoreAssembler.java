@@ -51,13 +51,14 @@ public class RiakProtobufMapEntityStoreAssembler
         return this;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
         if ( configModule == null ) {
             configModule = module;
         }
-        
+
         module.services( UuidIdentityGeneratorService.class ).
                 visibleIn( visibility );
 

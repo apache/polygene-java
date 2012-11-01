@@ -1,5 +1,7 @@
 package org.qi4j.entitystore.neo4j;
 
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 import org.neo4j.graphdb.Node;
 import org.neo4j.index.IndexService;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
@@ -9,9 +11,6 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.*;
-
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -44,17 +43,20 @@ public class NeoEntityStoreUnitOfWork
         this.module = module;
     }
 
+    @Override
     public StateCommitter applyChanges()
         throws EntityStoreException
     {
         return this;
     }
 
+    @Override
     public long currentTime()
     {
         return currentTime;
     }
 
+    @Override
     public void discard()
     {
         cancel();
@@ -71,6 +73,7 @@ public class NeoEntityStoreUnitOfWork
         return node;
     }
 
+    @Override
     public EntityState getEntityState( EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException
     {
@@ -78,6 +81,7 @@ public class NeoEntityStoreUnitOfWork
                                    EntityStatus.LOADED );
     }
 
+    @Override
     public EntityState newEntityState( EntityReference anIdentity,
                                        EntityDescriptor entityDescriptor
     )
@@ -104,6 +108,7 @@ public class NeoEntityStoreUnitOfWork
         return new NeoEntityState( this, node, EntityStatus.NEW );
     }
 
+    @Override
     public void cancel()
     {
         try
@@ -117,6 +122,7 @@ public class NeoEntityStoreUnitOfWork
         }
     }
 
+    @Override
     public void commit()
     {
         try
@@ -183,6 +189,7 @@ public class NeoEntityStoreUnitOfWork
         return indexService;
     }
 
+    @Override
     public String identity()
     {
         return identity;

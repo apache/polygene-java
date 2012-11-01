@@ -37,13 +37,13 @@ public interface EmbeddedSolrService extends ServiceComposite
    SolrServer getSolrServer();
 
    SolrCore getSolrCore();
-   
+
     void activateSolr()
             throws Exception;
 
     void passivateSolr()
             throws Exception;
-    
+
     class Activator extends ActivatorAdapter<ServiceReference<EmbeddedSolrService>>
     {
 
@@ -60,7 +60,7 @@ public interface EmbeddedSolrService extends ServiceComposite
         {
             passivating.get().passivateSolr();
         }
-        
+
     }
 
    abstract class Mixin
@@ -113,11 +113,13 @@ public interface EmbeddedSolrService extends ServiceComposite
          SolrConfig.config = null;
       }
 
+       @Override
       public SolrServer getSolrServer()
       {
          return server;
       }
 
+       @Override
       public SolrCore getSolrCore()
       {
          return core;

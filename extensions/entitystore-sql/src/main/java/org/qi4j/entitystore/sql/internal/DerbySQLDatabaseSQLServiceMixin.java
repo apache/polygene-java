@@ -14,15 +14,14 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.library.sql.common.SQLUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.library.sql.common.SQLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("ProtectedField")
 public abstract class DerbySQLDatabaseSQLServiceMixin
@@ -34,6 +33,7 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
     @This
     protected DatabaseSQLServiceSpi spi;
 
+    @Override
     public boolean tableExists( Connection connection )
         throws SQLException
     {
@@ -55,6 +55,7 @@ public abstract class DerbySQLDatabaseSQLServiceMixin
         }
     }
 
+    @Override
     public EntityValueResult getEntityValue( ResultSet rs )
         throws SQLException
     {

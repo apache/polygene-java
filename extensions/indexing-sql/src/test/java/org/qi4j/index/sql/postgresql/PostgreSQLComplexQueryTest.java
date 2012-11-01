@@ -21,8 +21,7 @@ import org.qi4j.test.indexing.AbstractComplexQueryTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//(should pass with actual DB running)
-@Ignore
+@Ignore( "should pass with actual DB running" )
 public class PostgreSQLComplexQueryTest
         extends AbstractComplexQueryTest
 {

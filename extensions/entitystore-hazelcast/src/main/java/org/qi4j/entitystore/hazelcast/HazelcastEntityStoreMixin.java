@@ -94,6 +94,7 @@ public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
         return stringMap;
     }
 
+    @Override
     public Reader get( EntityReference ref )
         throws EntityStoreException
     {
@@ -105,12 +106,14 @@ public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
         return new StringReader( serializedState );
     }
 
+    @Override
     public void applyChanges( MapChanges changes )
         throws IOException
     {
         changes.visitMap( new MapChanger()
         {
 
+            @Override
             public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
                 throws IOException
             {
@@ -127,12 +130,14 @@ public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
                 };
             }
 
+            @Override
             public Writer updateEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                 throws IOException
             {
                 return newEntity( ref, entityDescriptor );
             }
 
+            @Override
             public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                 throws EntityNotFoundException
             {
@@ -141,6 +146,7 @@ public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
         } );
     }
 
+    @Override
     public Input<Reader, IOException> entityStates()
     {
         return new Input<Reader, IOException>()

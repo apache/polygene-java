@@ -14,6 +14,11 @@
 
 package org.qi4j.index.solr.internal;
 
+import java.lang.reflect.Member;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -35,12 +40,6 @@ import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Member;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * JAVADOC
@@ -116,6 +115,7 @@ public class SolrEntityQueryMixin
         return Iterables.count( findEntities( resultType, whereClause, null, 0, 1, variables ) );
     }
 
+    @Override
     public SolrDocumentList search( String queryString ) throws SolrServerException
     {
         SolrServer server = solr.getSolrServer();

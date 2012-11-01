@@ -35,12 +35,14 @@ public class AddAssociation
         this.defaultValue = defaultReference;
     }
 
+    @Override
     public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
         return migrator.addAssociation( state, association, defaultValue );
     }
 
+    @Override
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {

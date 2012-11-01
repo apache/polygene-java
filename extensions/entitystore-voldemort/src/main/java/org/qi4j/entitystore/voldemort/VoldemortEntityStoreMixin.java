@@ -16,10 +16,16 @@
  */
 package org.qi4j.entitystore.voldemort;
 
+import java.io.*;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReadWriteLock;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
@@ -29,13 +35,6 @@ import voldemort.client.*;
 import voldemort.client.protocol.RequestFormatType;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Versioned;
-
-import java.io.*;
-import java.util.ConcurrentModificationException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
-import org.qi4j.api.service.ServiceActivation;
 
 /**
  * JDBM implementation of SerializationStore
@@ -240,6 +239,7 @@ public class VoldemortEntityStoreMixin
       factory.close();
    }
 
+    @Override
    public Reader get(EntityReference entityReference)
            throws EntityStoreException
    {
@@ -258,6 +258,7 @@ public class VoldemortEntityStoreMixin
       }
    }
 
+    @Override
    public void applyChanges(MapChanges changes)
            throws IOException
    {
@@ -265,6 +266,7 @@ public class VoldemortEntityStoreMixin
       {
          changes.visitMap(new MapChanger()
          {
+            @Override
             public Writer newEntity(final EntityReference ref, EntityDescriptor descriptor )
                     throws IOException
             {
@@ -281,6 +283,7 @@ public class VoldemortEntityStoreMixin
                };
             }
 
+            @Override
             public Writer updateEntity(final EntityReference ref, EntityDescriptor descriptor)
                     throws IOException
             {
@@ -301,11 +304,10 @@ public class VoldemortEntityStoreMixin
                                 "Concurrent modification attempted for " + ref.identity());
                      }
                   }
-               }
-
-                       ;
+               };
             }
 
+            @Override
             public void removeEntity(EntityReference ref, EntityDescriptor descriptor)
                     throws EntityNotFoundException
             {
@@ -322,13 +324,12 @@ public class VoldemortEntityStoreMixin
             throw (EntityStoreException) e;
          } else
          {
-            IOException exception = new IOException();
-            exception.initCause(e);
-            throw exception;
+            throw new IOException( e );
          }
       }
    }
 
+    @Override
    public Input<Reader, IOException> entityStates()
    {
       return new Input<Reader, IOException>()

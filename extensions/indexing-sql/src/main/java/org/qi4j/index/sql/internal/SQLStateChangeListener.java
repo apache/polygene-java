@@ -15,13 +15,11 @@
 package org.qi4j.index.sql.internal;
 
 import java.sql.SQLException;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.StateChangeListener;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +32,7 @@ public class SQLStateChangeListener
     @Service
     private SQLIndexing _indexing;
 
+    @Override
     public void notifyChanges( Iterable<EntityState> changedStates )
     {
         try {

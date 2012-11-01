@@ -25,6 +25,7 @@ public abstract class EhCachePoolMixin
         caches = new ConcurrentHashMap<String, EhCacheImpl>();
     }
 
+    @Override
     public <T> Cache<T> fetchCache( String cacheId, Class<T> valueType )
     {
         // Note: Small bug in Ehcache; If the cache name is an empty String it will actually work until
@@ -53,6 +54,7 @@ public abstract class EhCachePoolMixin
         return new EhCacheImpl<T>( cacheId, cache, valueType );
     }
 
+    @Override
     public void returnCache( Cache cache )
     {
         EhCacheImpl eh = (EhCacheImpl) cache;

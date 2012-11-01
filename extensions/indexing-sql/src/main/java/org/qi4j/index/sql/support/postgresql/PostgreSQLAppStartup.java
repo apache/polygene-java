@@ -18,7 +18,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
-
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLStartup;

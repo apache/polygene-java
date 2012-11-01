@@ -1,5 +1,8 @@
 package org.qi4j.entitystore.neo4j;
 
+import java.io.File;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -12,6 +15,7 @@ import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.io.Input;
@@ -22,11 +26,6 @@ import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.*;
-
-import java.io.File;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-import org.qi4j.api.service.ServiceActivation;
 
 public class NeoEntityStoreMixin
         implements ServiceActivation, EntityStore, EntityStoreSPI
@@ -69,11 +68,13 @@ public class NeoEntityStoreMixin
       neo.shutdown();
    }
 
+    @Override
    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
    {
       return new NeoEntityStoreUnitOfWork(neo, indexService, newUnitOfWorkId(), module, currentTime);
    }
 
+    @Override
    public Input<EntityState, EntityStoreException> entityStates(final Module module)
    {
       return new Input<EntityState, EntityStoreException>()
@@ -113,6 +114,7 @@ public class NeoEntityStoreMixin
       };
    }
 
+    @Override
    public StateCommitter applyChanges( EntityStoreUnitOfWork unitofwork, Iterable<EntityState> state )
    {
       for (EntityState firstState : state)
@@ -125,11 +127,13 @@ public class NeoEntityStoreMixin
       return null;
    }
 
+    @Override
    public EntityState getEntityState(EntityStoreUnitOfWork unitOfWork, EntityReference identity)
    {
       return unitOfWork.getEntityState(identity);
    }
 
+    @Override
    public EntityState newEntityState( EntityStoreUnitOfWork uow, EntityReference ref, EntityDescriptor descriptor )
    {
       return uow.newEntityState(ref, descriptor);

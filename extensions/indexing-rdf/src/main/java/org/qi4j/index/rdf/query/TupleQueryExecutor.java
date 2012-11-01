@@ -17,6 +17,8 @@
  */
 package org.qi4j.index.rdf.query;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.*;
@@ -28,9 +30,6 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.spi.query.EntityFinderException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Mixins( TupleQueryExecutor.TupleQueryExecutorMixin.class )
 public interface TupleQueryExecutor
@@ -44,6 +43,7 @@ public interface TupleQueryExecutor
         @Service
         private Repository repository;
 
+        @Override
         public long performTupleQuery( QueryLanguage language, String query, Map<String, Object> bindings, QualifiedIdentityResultCallback callback )
             throws EntityFinderException
         {

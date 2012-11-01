@@ -65,11 +65,13 @@ import org.slf4j.LoggerFactory;
         bucketKey = null;
     }
 
+    @Override
     public IRiakClient riakClient()
     {
         return riakClient;
     }
 
+    @Override
     public String bucket()
     {
         return bucketKey;

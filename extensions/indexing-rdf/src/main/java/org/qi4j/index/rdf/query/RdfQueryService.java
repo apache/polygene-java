@@ -17,6 +17,7 @@
  */
 package org.qi4j.index.rdf.query;
 
+import java.util.Map;
 import org.openrdf.query.QueryLanguage;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
@@ -29,8 +30,6 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
-
-import java.util.Map;
 
 /**
  * JAVADOC Add JavaDoc
@@ -54,6 +53,7 @@ public interface RdfQueryService
         @This
         TupleQueryExecutor tupleExecutor;
 
+        @Override
         public Iterable<EntityReference> findEntities( Class<?> resultType,
                                                        Specification<Composite> whereClause,
                                                        OrderBy[] orderBySegments,
@@ -81,6 +81,7 @@ public interface RdfQueryService
             }
         }
 
+        @Override
         public EntityReference findEntity( Class<?> resultType, Specification<Composite> whereClause, Map<String, Object> variables )
             throws EntityFinderException
         {
@@ -100,6 +101,7 @@ public interface RdfQueryService
             }
         }
 
+        @Override
         public long countEntities( Class<?> resultType, Specification<Composite> whereClause, Map<String, Object> variables )
             throws EntityFinderException
         {

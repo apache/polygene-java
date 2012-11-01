@@ -14,12 +14,11 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.injection.scope.This;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.This;
 
 public abstract class DatabaseSQLServiceStatementsMixin
         implements DatabaseSQLService
@@ -31,30 +30,35 @@ public abstract class DatabaseSQLServiceStatementsMixin
     //
     // Used by the EntityStore, will probably remain the same even if we support several sql servers
     //
+    @Override
     public PreparedStatement prepareGetAllEntitiesStatement( Connection connection )
             throws SQLException
     {
         return connection.prepareStatement( sqlStrings.buildSQLForSelectAllEntitiesStatement() );
     }
 
+    @Override
     public PreparedStatement prepareGetEntityStatement( Connection connection )
             throws SQLException
     {
         return connection.prepareStatement( sqlStrings.buildSQLForSelectEntityStatement() );
     }
 
+    @Override
     public PreparedStatement prepareInsertEntityStatement( Connection connection )
             throws SQLException
     {
         return connection.prepareStatement( sqlStrings.buildSQLForInsertEntityStatement() );
     }
 
+    @Override
     public PreparedStatement prepareRemoveEntityStatement( Connection connection )
             throws SQLException
     {
         return connection.prepareStatement( sqlStrings.buildSQLForRemoveEntityStatement() );
     }
 
+    @Override
     public PreparedStatement prepareUpdateEntityStatement( Connection connection )
             throws SQLException
     {
@@ -64,18 +68,21 @@ public abstract class DatabaseSQLServiceStatementsMixin
     //
     // Populate statement methods, to move in a separated fragment if needed for multi sql server support
     //
+    @Override
     public void populateGetAllEntitiesStatement( PreparedStatement ps )
             throws SQLException
     {
         // Nothing to do.
     }
 
+    @Override
     public void populateGetEntityStatement( PreparedStatement ps, EntityReference ref )
             throws SQLException
     {
         ps.setString( 1, ref.identity() );
     }
 
+    @Override
     public void populateInsertEntityStatement( PreparedStatement ps, EntityReference ref, String entity, Long lastModified )
             throws SQLException
     {
@@ -84,12 +91,14 @@ public abstract class DatabaseSQLServiceStatementsMixin
         ps.setLong( 3, lastModified );
     }
 
+    @Override
     public void populateRemoveEntityStatement( PreparedStatement ps, Long entityPK, EntityReference ref )
             throws SQLException
     {
         ps.setLong( 1, entityPK );
     }
 
+    @Override
     public void populateUpdateEntityStatement( PreparedStatement ps, Long entityPK, Long entityOptimisticLock, EntityReference ref, String entity, Long lastModified )
             throws SQLException
     {

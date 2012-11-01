@@ -37,6 +37,7 @@ public class VoldemortAssembler
         this.visibility = visibility;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

@@ -1,12 +1,12 @@
 package org.qi4j.index.solr.internal;
 
-import org.apache.solr.analysis.BaseTokenizerFactory;
-
 import java.io.Reader;
+import org.apache.solr.analysis.BaseTokenizerFactory;
 
 public class SingleTokenTokenizerFactory
       extends BaseTokenizerFactory
 {
+   @Override
    public SingleTokenTokenizer create( Reader input )
    {
       return new SingleTokenTokenizer( input );

@@ -17,16 +17,16 @@
  */
 package org.qi4j.index.rdf.query;
 
-import org.qi4j.api.entity.EntityReference;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import org.qi4j.api.entity.EntityReference;
 
 public class CollectingQualifiedIdentityResultCallback
     implements QualifiedIdentityResultCallback
 {
     private final Collection<EntityReference> entities = new ArrayList<EntityReference>();
 
+    @Override
     public boolean processRow( long row, EntityReference entityReference )
     {
         entities.add( entityReference );

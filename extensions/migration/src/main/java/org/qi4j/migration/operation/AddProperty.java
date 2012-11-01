@@ -35,12 +35,14 @@ public class AddProperty
         this.defaultValue = defaultValue;
     }
 
+    @Override
     public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
         return migrator.addProperty( state, property, defaultValue );
     }
 
+    @Override
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {

@@ -107,6 +107,7 @@ public class PreferencesEntityStoreMixin
         reloadExecutor.setExecuteExistingDelayedTasksAfterShutdownPolicy( false );
         reloadExecutor.scheduleAtFixedRate( new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -152,11 +153,13 @@ public class PreferencesEntityStoreMixin
         reloadExecutor.awaitTermination( 10, TimeUnit.SECONDS );
     }
 
+    @Override
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, currentTime );
     }
 
+    @Override
     public Input<EntityState, EntityStoreException> entityStates( final Module module )
     {
         return new Input<EntityState, EntityStoreException>()
@@ -196,6 +199,7 @@ public class PreferencesEntityStoreMixin
         };
     }
 
+    @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
                                        EntityReference identity,
                                        EntityDescriptor entityDescriptor
@@ -204,6 +208,7 @@ public class PreferencesEntityStoreMixin
         return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
     }
 
+    @Override
     public EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
     {
         try
@@ -254,6 +259,7 @@ public class PreferencesEntityStoreMixin
                         properties.put( persistentPropertyDescriptor.qualifiedName(),
                                         this.getNumber( propsPrefs, persistentPropertyDescriptor, new NumberParser<Long>()
                                         {
+                                            @Override
                                             public Long parse( String str )
                                             {
                                                 return Long.parseLong( str );
@@ -265,6 +271,7 @@ public class PreferencesEntityStoreMixin
                         properties.put( persistentPropertyDescriptor.qualifiedName(),
                                         this.getNumber( propsPrefs, persistentPropertyDescriptor, new NumberParser<Integer>()
                                         {
+                                            @Override
                                             public Integer parse( String str )
                                             {
                                                 return Integer.parseInt( str );
@@ -276,6 +283,7 @@ public class PreferencesEntityStoreMixin
                         properties.put( persistentPropertyDescriptor.qualifiedName(),
                                         this.getNumber( propsPrefs, persistentPropertyDescriptor, new NumberParser<Double>()
                                         {
+                                            @Override
                                             public Double parse( String str )
                                             {
                                                 return Double.parseDouble( str );
@@ -287,6 +295,7 @@ public class PreferencesEntityStoreMixin
                         properties.put( persistentPropertyDescriptor.qualifiedName(),
                                         this.getNumber( propsPrefs, persistentPropertyDescriptor, new NumberParser<Float>()
                                         {
+                                            @Override
                                             public Float parse( String str )
                                             {
                                                 return Float.parseFloat( str );
@@ -427,10 +436,12 @@ public class PreferencesEntityStoreMixin
         }
     }
 
+    @Override
     public StateCommitter applyChanges( final EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> state )
     {
         return new StateCommitter()
         {
+            @Override
             public void commit()
             {
                 try
@@ -464,6 +475,7 @@ public class PreferencesEntityStoreMixin
                 }
             }
 
+            @Override
             public void cancel()
             {
             }

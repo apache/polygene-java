@@ -90,6 +90,7 @@ public abstract class SolrEntityIndexerMixin
         indexedFields = null;
     }
 
+    @Override
     public void notifyChanges( Iterable<EntityState> entityStates )
     {
         try

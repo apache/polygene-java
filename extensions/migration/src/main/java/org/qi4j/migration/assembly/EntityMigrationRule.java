@@ -14,13 +14,12 @@
 
 package org.qi4j.migration.assembly;
 
+import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.migration.Migrator;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 import org.qi4j.spi.entitystore.helpers.StateStore;
-
-import java.util.Arrays;
 
 /**
  * Migration rule for a specific set of entity types

@@ -24,6 +24,7 @@ public class SingleQualifiedIdentityResultCallback
 {
     private EntityReference entityReference;
 
+    @Override
     public boolean processRow( long row, EntityReference entityReference )
     {
         this.entityReference = entityReference;

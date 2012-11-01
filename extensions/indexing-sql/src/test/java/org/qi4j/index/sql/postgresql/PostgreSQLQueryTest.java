@@ -21,8 +21,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractQueryTest;
 
-//(should pass with actual DB running)
-@Ignore
+@Ignore("should pass with actual DB running")
 public class PostgreSQLQueryTest extends AbstractQueryTest
 {
     @Override

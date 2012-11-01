@@ -43,6 +43,7 @@ public class RdfRdbmsSesameStoreAssembler
         this.repositoryVisibility = repositoryVisibility;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

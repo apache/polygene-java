@@ -35,12 +35,14 @@ public class RenameManyAssociation
         this.to = to;
     }
 
+    @Override
     public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
         return migrator.renameManyAssociation( state, from, to );
     }
 
+    @Override
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {

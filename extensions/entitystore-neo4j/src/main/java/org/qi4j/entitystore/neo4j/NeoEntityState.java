@@ -59,6 +59,7 @@ public class NeoEntityState
         return DynamicRelationshipType.withName( "association::" + stateName.toString() );
     }
 
+    @Override
     public ManyAssociationState getManyAssociation( QualifiedName stateName )
     {
         RelationshipType manyAssociation = manyAssociation( stateName );
@@ -73,6 +74,7 @@ public class NeoEntityState
         return new NeoManyAssociationState( uow, this, node );
     }
 
+    @Override
     public EntityReference getAssociation( QualifiedName stateName )
     {
         Relationship rel = underlyingNode.getSingleRelationship( association( stateName ), Direction.OUTGOING );
@@ -84,6 +86,7 @@ public class NeoEntityState
         return null;
     }
 
+    @Override
     public void setAssociation( QualifiedName stateName, EntityReference newEntity )
     {
         RelationshipType association = association( stateName );
@@ -110,6 +113,7 @@ public class NeoEntityState
         }
     }
 
+    @Override
     public Object getProperty( QualifiedName stateName )
     {
         try
@@ -147,6 +151,7 @@ public class NeoEntityState
         }
     }
 
+    @Override
     public void setProperty( QualifiedName stateName, Object prop )
     {
         try
@@ -215,13 +220,14 @@ public class NeoEntityState
         return false;
     }
 
+    @Override
     public void remove()
     {
         // Apparently remove should just force remove associations instead
         // of throwing exception if the entity has incomming associations
 //            if ( underlyingNode.hasRelationship( Direction.INCOMING ) )
 //            {
-//                throw new IllegalStateException( 
+//                throw new IllegalStateException(
 //                    "Cannot remove entity with reference: " + identity()
 //                    + ". It has incoming associtaions.");
 //            }
@@ -253,6 +259,7 @@ public class NeoEntityState
         status = EntityStatus.REMOVED;
     }
 
+    @Override
     public EntityDescriptor entityDescriptor()
     {
         Node typeNode = underlyingNode.getSingleRelationship( RelTypes.IS_OF_TYPE, Direction.OUTGOING ).getEndNode();
@@ -265,6 +272,7 @@ public class NeoEntityState
         // TODO
     }
 
+    @Override
     public EntityReference identity()
     {
         return new EntityReference( (String) underlyingNode.getProperty( ENTITY_ID ) );
@@ -278,17 +286,20 @@ public class NeoEntityState
         return typeName.equals( type.getName() );
     }
 
+    @Override
     public long lastModified()
     {
         long modified = (Long) underlyingNode.getProperty( MODIFIED );
         return modified;
     }
 
+    @Override
     public EntityStatus status()
     {
         return status;
     }
 
+    @Override
     public String version()
     {
         long version = (Long) underlyingNode.getProperty( VERSION );

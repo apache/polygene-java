@@ -36,12 +36,14 @@ public class RemoveProperty
         this.defaultValue = defaultValue;
     }
 
+    @Override
     public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
         return migrator.removeProperty( state, property );
     }
 
+    @Override
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {

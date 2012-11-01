@@ -14,36 +14,6 @@
  */
 package org.qi4j.index.sql.support.skeletons;
 
-import static org.qi4j.functional.Iterables.first;
-import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ALL_QNAMES_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.APP_VERSION_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_MODIFIED_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_VERSION_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_JOIN_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_TABLE_TYPE_NAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENUM_LOOKUP_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_ASSOCIATION_INDEX_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_NAME_PREFIX;
-import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_PARENT_QNAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_CLASS_NAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_CLASSES_TABLE_PK_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_QNAME_COLUMN_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -65,9 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
@@ -121,8 +89,11 @@ import org.sql.generation.api.grammar.modification.InsertStatement;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.index.sql.support.common.DBNames.*;
+
 /**
- * 
+ *
  * @author Stanislav Muhametsin
  */
 public abstract class AbstractSQLStartup
@@ -183,6 +154,7 @@ public abstract class AbstractSQLStartup
         this._vendor = descriptor.metaInfo( SQLVendor.class );
     }
 
+    @Override
     public void initConnection()
         throws SQLException
     {
@@ -319,6 +291,7 @@ public abstract class AbstractSQLStartup
             String.class, //
             new SQLTypeCustomizer()
             {
+                @Override
                 public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
                 {
                     return _vendor.getDataTypeFactory().sqlVarChar( sqlTypeInfo.maxLength() );
@@ -329,6 +302,7 @@ public abstract class AbstractSQLStartup
             BigInteger.class, //
             new SQLTypeCustomizer()
             {
+                @Override
                 public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
                 {
                     return _vendor.getDataTypeFactory().decimal( sqlTypeInfo.maxLength() );
@@ -339,6 +313,7 @@ public abstract class AbstractSQLStartup
             BigDecimal.class, //
             new SQLTypeCustomizer()
             {
+                @Override
                 public SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo )
                 {
                     return _vendor.getDataTypeFactory().decimal( sqlTypeInfo.maxLength() );
@@ -486,11 +461,11 @@ public abstract class AbstractSQLStartup
                 );
                 _log.debug( "Database schema created" );
             }
-            
+
             this.testRequiredCapabilities( connection );
             _log.debug( "Underlying database fullfill required capabilities" );
-            
-           
+
+
             stmt.execute(
                 vendor.toString(
                     d.createTableDefinitionBuilder()
@@ -585,7 +560,7 @@ public abstract class AbstractSQLStartup
                         )
                     );
                     tablePKs.put( ENTITY_TABLE_NAME, 0L );
-                    
+
             stmt.execute(
                 d.createTableDefinitionBuilder()
                     .setTableName( t.tableName( schemaName, ENTITY_TYPES_JOIN_TABLE_NAME ) )
@@ -835,7 +810,7 @@ public abstract class AbstractSQLStartup
                 {
                     pk = rs.getInt( 1 );
                     String descriptorTextualFormat = rs.getString( 2 );
-                    this._state.usedClassesPKs().get().put( stringToCompositeDescriptor(ValueDescriptor.class, this._app.descriptor(),  descriptorTextualFormat), (int) pk );                    
+                    this._state.usedClassesPKs().get().put( stringToCompositeDescriptor(ValueDescriptor.class, this._app.descriptor(),  descriptorTextualFormat), (int) pk );
                 }
             } finally
             {
@@ -863,7 +838,7 @@ public abstract class AbstractSQLStartup
             {
                 SQLUtil.closeQuietly( rs );
             }
-            
+
             rs = stmt.executeQuery(
                 q.simpleQueryBuilder()
                     .select( USED_QNAMES_TABLE_QNAME_COLUMN_NAME, USED_QNAMES_TABLE_TABLE_NAME_COLUMN_NAME )
@@ -883,7 +858,7 @@ public abstract class AbstractSQLStartup
             {
                 SQLUtil.closeQuietly( rs );
             }
-            
+
             // @formatter:on
         }
         finally
@@ -1314,7 +1289,7 @@ public abstract class AbstractSQLStartup
 
         return result;
     }
-    
+
     private String readAppVersionFromDB(Connection connection, String schemaName) throws SQLException
     {
         Statement stmt = connection.createStatement();
@@ -1351,10 +1326,10 @@ public abstract class AbstractSQLStartup
         {
             SQLUtil.closeQuietly( stmt );
         }
-        
+
         return result;
     }
-    
+
     private static void clearSchema(Connection connection, String schemaName, SQLVendor vendor) throws SQLException
     {
         ModificationFactory m = vendor.getModificationFactory();
@@ -1449,6 +1424,7 @@ public abstract class AbstractSQLStartup
                     return true;
                 }
 
+                @Override
                 public boolean visitLeave( Object visited )
                 {
                     if( visited instanceof LayerDescriptor || visited instanceof ModuleDescriptor )
@@ -1525,6 +1501,7 @@ public abstract class AbstractSQLStartup
                             // other Serializable
                             if( Iterables.matchesAny( new Specification<Class<?>>()
                             {
+                                @Override
                                 public boolean satisfiedBy( Class<?> item )
                                 {
                                     return vTypeClass.isAssignableFrom( item );
@@ -1753,6 +1730,7 @@ public abstract class AbstractSQLStartup
                 return thisResult;
             }
 
+            @Override
             public boolean visitLeave( Object visited )
             {
                 return result[0] == null;

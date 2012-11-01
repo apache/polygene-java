@@ -118,6 +118,7 @@ public class GaeEntityState
         return entity;
     }
 
+    @Override
     public EntityReference identity()
     {
         EntityReference ref = new EntityReference( entity.getKey().getName() );
@@ -125,6 +126,7 @@ public class GaeEntityState
         return ref;
     }
 
+    @Override
     public String version()
     {
         String version = (String) entity.getProperty( "$version" );
@@ -132,6 +134,7 @@ public class GaeEntityState
         return version;
     }
 
+    @Override
     public long lastModified()
     {
         Long lastModified = (Long) entity.getProperty( "$lastModified" );
@@ -139,12 +142,14 @@ public class GaeEntityState
         return lastModified;
     }
 
+    @Override
     public void remove()
     {
         System.out.println( "remove()" );
         status = EntityStatus.REMOVED;
     }
 
+    @Override
     public EntityStatus status()
     {
         System.out.println( "status()  -->  " + status );
@@ -158,12 +163,14 @@ public class GaeEntityState
         return false;
     }
 
+    @Override
     public EntityDescriptor entityDescriptor()
     {
         System.out.println( "entityDescriptor()  -->  " + descriptor );
         return descriptor;
     }
 
+    @Override
     public Object getProperty( QualifiedName stateName )
     {
         String uri = stateName.toURI();
@@ -198,6 +205,7 @@ public class GaeEntityState
         return value;
     }
 
+    @Override
     public void setProperty( QualifiedName stateName, Object value )
     {
         System.out.println( "setProperty( " + stateName + ", " + value + " )" );
@@ -225,6 +233,7 @@ public class GaeEntityState
         entity.setUnindexedProperty( stateName.toURI(), value );
     }
 
+    @Override
     public EntityReference getAssociation( QualifiedName stateName )
     {
         String uri = stateName.toURI();
@@ -234,6 +243,7 @@ public class GaeEntityState
         return ref;
     }
 
+    @Override
     public void setAssociation( QualifiedName stateName, EntityReference newEntity )
     {
         System.out.println( "setAssociation( " + stateName + ", " + newEntity + " )" );
@@ -246,6 +256,7 @@ public class GaeEntityState
         entity.setUnindexedProperty( uri, id );
     }
 
+    @Override
     public ManyAssociationState getManyAssociation( QualifiedName stateName )
     {
         List<String> assocs = (List<String>) entity.getProperty( stateName.toURI() );
@@ -278,16 +289,19 @@ public class GaeEntityState
             }
         }
 
+        @Override
         public int count()
         {
             return assocs.size();
         }
 
+        @Override
         public boolean contains( EntityReference entityReference )
         {
             return assocs.contains( entityReference.identity() );
         }
 
+        @Override
         public boolean add( int index, EntityReference entityReference )
         {
             System.out.println( "NICLAS::" + entityReference );
@@ -303,17 +317,20 @@ public class GaeEntityState
             return true;
         }
 
+        @Override
         public boolean remove( EntityReference entityReference )
         {
             return assocs.remove( entityReference.identity() );
         }
 
+        @Override
         public EntityReference get( int index )
         {
             String id = assocs.get( index );
             return new EntityReference( id );
         }
 
+        @Override
         public Iterator<EntityReference> iterator()
         {
             ArrayList<EntityReference> result = new ArrayList<EntityReference>();

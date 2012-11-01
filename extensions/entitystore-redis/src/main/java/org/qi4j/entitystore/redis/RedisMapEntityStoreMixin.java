@@ -55,6 +55,7 @@ public abstract class RedisMapEntityStoreMixin
 
     private JedisPool pool;
 
+    @Override
     public void activateService()
             throws Exception
     {
@@ -70,6 +71,7 @@ public abstract class RedisMapEntityStoreMixin
         pool = new JedisPool( new JedisPoolConfig(), host, port, timeout, password, database );
     }
 
+    @Override
     public void passivateService()
             throws Exception
     {
@@ -77,11 +79,13 @@ public abstract class RedisMapEntityStoreMixin
         pool = null;
     }
 
+    @Override
     public JedisPool jedisPool()
     {
         return pool;
     }
 
+    @Override
     public Reader get( EntityReference entityReference )
             throws EntityStoreException
     {

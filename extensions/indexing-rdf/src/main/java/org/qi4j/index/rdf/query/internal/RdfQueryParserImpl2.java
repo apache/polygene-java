@@ -115,6 +115,7 @@ public class RdfQueryParserImpl2
         this.spi = spi;
     }
 
+    @Override
     public String getQuery( final Class<?> resultType,
                             final Specification<Composite> specification,
                             final OrderBy[] orderBySegments,

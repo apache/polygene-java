@@ -36,6 +36,7 @@ public class RenameEntity
         this.toName = toName;
     }
 
+    @Override
     public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
@@ -52,6 +53,7 @@ public class RenameEntity
         }
     }
 
+    @Override
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {

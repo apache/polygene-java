@@ -1,14 +1,13 @@
 package org.qi4j.entitystore.neo4j;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.ManyAssociationState;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class NeoManyAssociationState
     implements ManyAssociationState
@@ -29,6 +28,7 @@ public class NeoManyAssociationState
         this.underlyingNode = node;
     }
 
+    @Override
     public boolean add( int index, EntityReference entityReference )
     {
         if( index < 0 || index > count() )
@@ -79,6 +79,7 @@ public class NeoManyAssociationState
         underlyingNode.setProperty( COUNT, --count );
     }
 
+    @Override
     public boolean contains( EntityReference entityReference )
     {
         Node entityNode = uow.getEntityStateNode( entityReference );
@@ -93,11 +94,13 @@ public class NeoManyAssociationState
         return false;
     }
 
+    @Override
     public int count()
     {
         return (Integer) underlyingNode.getProperty( COUNT );
     }
 
+    @Override
     public EntityReference get( int index )
     {
         if( index < 0 || index > count() )
@@ -118,6 +121,7 @@ public class NeoManyAssociationState
         return null;
     }
 
+    @Override
     public boolean remove( EntityReference entityReference )
     {
         Node entityNode = uow.getEntityStateNode( entityReference );
@@ -150,6 +154,7 @@ public class NeoManyAssociationState
         return true;
     }
 
+    @Override
     public Iterator<EntityReference> iterator()
     {
         List<EntityReference> list = new ArrayList<EntityReference>( count() );

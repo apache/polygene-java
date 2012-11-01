@@ -22,9 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
@@ -47,7 +45,7 @@ public class SQLEntityFinder
 
     /**
      * Helper interface to perform some SQL query. Using this simplifies the structure of some of the methods.
-     * 
+     *
      * @param <ReturnType> The return type of something to be done.
      */
     private interface DoQuery<ReturnType>
@@ -67,6 +65,7 @@ public class SQLEntityFinder
         return this.performQuery( new DoQuery<Long>()
         {
 
+            @Override
             public Long doIt( Connection connection )
                 throws SQLException
             {
@@ -103,6 +102,7 @@ public class SQLEntityFinder
 
             result = this.performQuery( new DoQuery<Iterable<EntityReference>>()
             {
+                @Override
                 public Iterable<EntityReference> doIt( Connection connection )
                     throws SQLException
                 {
@@ -159,6 +159,7 @@ public class SQLEntityFinder
 
         return this.performQuery( new DoQuery<EntityReference>()
         {
+            @Override
             public EntityReference doIt( Connection connection )
                 throws SQLException
             {

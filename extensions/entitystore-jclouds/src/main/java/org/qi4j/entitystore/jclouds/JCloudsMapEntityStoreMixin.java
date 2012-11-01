@@ -159,6 +159,7 @@ public abstract class JCloudsMapEntityStoreMixin
         }
     }
 
+    @Override
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
@@ -191,6 +192,7 @@ public abstract class JCloudsMapEntityStoreMixin
         }
     }
 
+    @Override
     public void applyChanges( MapChanges changes )
         throws IOException
     {
@@ -199,6 +201,7 @@ public abstract class JCloudsMapEntityStoreMixin
         changes.visitMap( new MapChanger()
         {
 
+            @Override
             public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
                 throws IOException
             {
@@ -216,6 +219,7 @@ public abstract class JCloudsMapEntityStoreMixin
                 };
             }
 
+            @Override
             public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
                 throws IOException
             {
@@ -237,6 +241,7 @@ public abstract class JCloudsMapEntityStoreMixin
                 };
             }
 
+            @Override
             public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                 throws EntityNotFoundException
             {
@@ -249,17 +254,20 @@ public abstract class JCloudsMapEntityStoreMixin
         } );
     }
 
+    @Override
     public Input<Reader, IOException> entityStates()
     {
         return new Input<Reader, IOException>()
         {
 
+            @Override
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
                 throws IOException, ReceiverThrowableType
             {
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
 
+                    @Override
                     public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, IOException
                     {

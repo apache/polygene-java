@@ -54,6 +54,7 @@ public class JCloudsMapEntityStoreAssembler
         return this;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {

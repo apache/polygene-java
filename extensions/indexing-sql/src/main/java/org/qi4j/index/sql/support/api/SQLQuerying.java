@@ -14,20 +14,19 @@
 
 package org.qi4j.index.sql.support.api;
 
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinderException;
 
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Map;
-
 /**
  * This interface provides parsing support from Qi4j queries to SQL queries. The idea is that this interface produces
  * SQL which can be used when creating a {@link PreparedStatement}.
- * 
+ *
  * @author Stanislav Muhametsin
  */
 public interface SQLQuerying
@@ -35,7 +34,7 @@ public interface SQLQuerying
     /**
      * This method will be called when parsing needs to be done from Qi4j query to SQL query. This method is supposed to
      * return one single SQL query, which can be used with {@link PreparedStatement}.
-     * 
+     *
      * @param resultType The result type of Qi4j query.
      * @param whereClause The where clause of Qi4j query.
      * @param orderBySegments The order by segments of Qi4j query.

@@ -53,6 +53,7 @@ public class HazelcastEntityStoreAssembler
         return this;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {

@@ -35,12 +35,14 @@ public class RenameProperty
         this.toProperty = toProperty;
     }
 
+    @Override
     public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
         return migrator.renameProperty( state, fromProperty, toProperty );
     }
 
+    @Override
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {

@@ -18,7 +18,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.skeletons.AbstractSQLIndexing;
 import org.qi4j.library.sql.common.SQLUtil;
@@ -34,7 +33,7 @@ import org.sql.generation.api.grammar.modification.ValueSource;
 import org.sql.generation.api.vendor.SQLVendor;
 
 /**
- * 
+ *
  * @author Stanislav Muhametsin
  */
 public class PostgreSQLIndexing extends AbstractSQLIndexing

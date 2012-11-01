@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.PropertyDescriptor;
@@ -28,7 +27,7 @@ import org.qi4j.api.property.PropertyDescriptor;
 /**
  * A helper interface to encapsulate information about qualified name and how it appears in
  * database.
- * 
+ *
  * @author Stanislav Muhametsin
  */
 public final class QNameInfo
@@ -93,7 +92,7 @@ public final class QNameInfo
         this._qName = qName;
         this._qNameType = qNameType;
         this._collectionClasses =
-            ( collectionClasses == null || collectionClasses.size() == 0 ? EMPTY_COLL_CLASSES
+            ( collectionClasses == null || collectionClasses.isEmpty() ? EMPTY_COLL_CLASSES
                     : collectionClasses );
         this._tableName = tableName;
         this._finalType = finalType;
@@ -120,7 +119,7 @@ public final class QNameInfo
      * {@code Property<Set<Set<X>>>} this returns {@code 2}, etc. If qualified name represented by
      * this interface is not a property or a property with no collection type, this method returns
      * {@code 0}.
-     * 
+     *
      * @return The collection depth ({@code > 0}) of qualified name, if this interface represents
      *         qualified name with collection property; {@code 0} otherwise.
      */
@@ -133,7 +132,7 @@ public final class QNameInfo
      * Returns the non-collection type of this qualified name. That is, for {@code Property<X>} this
      * returns {@code X} if {@code X} is not a collection type, and for {@code Property<Set<Y>>}
      * this returns {@code Y} if {@code Y} is not a collection type.
-     * 
+     *
      * @return The non-collection type of this qualified name.
      */
     public Type getFinalType()
@@ -143,7 +142,7 @@ public final class QNameInfo
 
     /**
      * Gets the qualified name this interface represents.
-     * 
+     *
      * @return The qualified name this interface represents.
      * @see QualifiedName
      */
@@ -155,7 +154,7 @@ public final class QNameInfo
     /**
      * Gets the table name in database, used to store values of the qualified name this interface
      * represents.
-     * 
+     *
      * @return The table name in database, used to store values of the qualified name this interface
      *         represents. May be {@code null} if it is not yet decided.
      */
@@ -167,7 +166,7 @@ public final class QNameInfo
     /**
      * Sets the previously undecided table name to some specific one. This method only works when
      * argument is {@code non-null} and current table name is {@code null}.
-     * 
+     *
      * @param tableName The new table name. Must be {@code non-null}.
      * @throws IllegalArgumentException If {@code tableName} is {@code null}.
      * @throws IllegalStateException If current table name is {@code non-null}.
@@ -192,7 +191,7 @@ public final class QNameInfo
      * Returns whether the final (non-collection) type of this qualified name is not seen as value
      * composite. Always returns {@code false} for qualified names of type
      * {@link QNameType#ASSOCIATION} and {@link QNameType#MANY_ASSOCIATION}.
-     * 
+     *
      * @return {@code true} if {@link #getFinalType()} is not seen as value composite type;
      *         {@code false} otherwise.
      */
@@ -204,7 +203,7 @@ public final class QNameInfo
     /**
      * Returns {@link PropertyDescriptor} associated with this property, if this qualified name info
      * represents a property. Returns {@code null} otherwise.
-     * 
+     *
      * @return {@link PropertyDescriptor} if this qualified name info is associated with property,
      *         {@code null} otherwise.
      */
@@ -216,7 +215,7 @@ public final class QNameInfo
     /**
      * Returns {@link AssociationDescriptor} associated with this association, if this qualified
      * name info represents an association. Returns {@code null} otherwise.
-     * 
+     *
      * @return {@link AssociationDescriptor} if this qualified name info is associated with
      *         association, {@code null} otherwise.
      */
@@ -228,7 +227,7 @@ public final class QNameInfo
     /**
      * Returns {@link AssociationDescriptor} associated with this many-association, if this
      * qualified name info represents a many-association. Returns {@code null} otherwise.
-     * 
+     *
      * @return {@link AssociationDescriptor} if this qualified name info is associated with
      *         many-association, {@code null} otherwise.
      */
@@ -241,7 +240,7 @@ public final class QNameInfo
      * Gets the type of represented qualified name: either {@link QNameType#PROPERTY} for
      * properties, {@link QNameType#ASSOCIATION} for associations, or
      * {@link QNameType#MANY_ASSOCIATION} for many-associations.
-     * 
+     *
      * @return The type of represented qualified name: either {@link QNameType#PROPERTY},
      *         {@link QNameType#ASSOCIATION}, or {@link QNameType#MANY_ASSOCIATION}.
      */
@@ -252,7 +251,7 @@ public final class QNameInfo
 
     /**
      * Creates information about specified qualified name which represents a property.
-     * 
+     *
      * @param qName The qualified name of property.
      * @param tableName The table name where the values of all instances of propertiy with this
      *        qualified name will be stored. May be {@code null} if it is to be decided later.
@@ -283,7 +282,7 @@ public final class QNameInfo
 
     /**
      * Creates information about specified qualified name which represents an association.
-     * 
+     *
      * @param qName The qualified name of the association.
      * @param tableName The table name where the values of all instances of association with this
      *        qualified name will be stored. May be {@code null} if it is to be decided later.
@@ -304,7 +303,7 @@ public final class QNameInfo
 
     /**
      * Creates information about specified qualified name which represents a many-association.
-     * 
+     *
      * @param qName The qualified name of the many-association.
      * @param tableName The table name where the values of all instances of many-association with
      *        this qualified name will be stored. May be {@code null} if it is to be decided later.

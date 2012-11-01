@@ -48,9 +48,6 @@ import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 
-/**
- * JDBM implementation of MapEntityStore
- */
 public class FileEntityStoreMixin
     implements FileEntityStoreActivation, MapEntityStore, BackupRestore
 {
@@ -64,7 +61,6 @@ public class FileEntityStoreMixin
     private File dataDirectory;
     private int slices;
 
-    @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
     @Override
     public void initialize()
         throws Exception
@@ -87,8 +83,10 @@ public class FileEntityStoreMixin
         dataDirectory = new File( rootDirectory, "data" );
         if( !dataDirectory.exists() )
         {
-            boolean success = dataDirectory.mkdirs();
-            new Object();
+            if( !dataDirectory.mkdirs() )
+            {
+                throw new IOException( "Unable to create directory " + dataDirectory );
+            }
         }
         File slicesFile = new File( dataDirectory, "slices" );
         if( slicesFile.exists() )
@@ -159,6 +157,7 @@ public class FileEntityStoreMixin
         }
     }
 
+    @Override
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
@@ -193,6 +192,7 @@ public class FileEntityStoreMixin
         return baos.toByteArray();
     }
 
+    @Override
     public void applyChanges( MapChanges changes )
         throws IOException
     {
@@ -200,6 +200,7 @@ public class FileEntityStoreMixin
         {
             changes.visitMap( new MapChanger()
             {
+                @Override
                 public Writer newEntity( final EntityReference ref, EntityDescriptor descriptor )
                     throws IOException
                 {
@@ -217,6 +218,7 @@ public class FileEntityStoreMixin
                     };
                 }
 
+                @Override
                 public Writer updateEntity( final EntityReference ref, EntityDescriptor descriptor )
                     throws IOException
                 {
@@ -234,7 +236,7 @@ public class FileEntityStoreMixin
                     };
                 }
 
-                @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
+                @Override
                 public void removeEntity( EntityReference ref, EntityDescriptor descriptor )
                     throws EntityNotFoundException
                 {
@@ -255,13 +257,12 @@ public class FileEntityStoreMixin
             }
             else
             {
-                IOException exception = new IOException();
-                exception.initCause( e );
-                throw exception;
+                throw new IOException( e );
             }
         }
     }
 
+    @Override
     public Input<String, IOException> backup()
     {
         return new Input<String, IOException>()
@@ -290,6 +291,7 @@ public class FileEntityStoreMixin
         };
     }
 
+    @Override
     public Output<String, IOException> restore()
     {
         return new Output<String, IOException>()
@@ -300,6 +302,7 @@ public class FileEntityStoreMixin
             {
                 sender.sendTo( new Receiver<String, IOException>()
                 {
+                    @Override
                     public void receive( String item )
                         throws IOException
                     {
@@ -313,6 +316,7 @@ public class FileEntityStoreMixin
         };
     }
 
+    @Override
     public Input<Reader, IOException> entityStates()
     {
         return new Input<Reader, IOException>()

@@ -14,10 +14,9 @@
 
 package org.qi4j.migration.assembly;
 
+import java.io.IOException;
 import org.qi4j.migration.Migrator;
 import org.qi4j.spi.entitystore.helpers.StateStore;
-
-import java.io.IOException;
 
 /**
  * Migration rule that does not apply to a specific entity type

@@ -62,41 +62,49 @@ public interface SQLEntityState
             this.entityOptimisticLock = entityOptimisticLock;
         }
 
+        @Override
         public Long getEntityPK()
         {
             return entityPK;
         }
 
+        @Override
         public Long getEntityOptimisticLock()
         {
             return entityOptimisticLock;
         }
 
+        @Override
         public DefaultEntityState getDefaultEntityState()
         {
             return state;
         }
 
+        @Override
         public EntityDescriptor entityDescriptor()
         {
             return state.entityDescriptor();
         }
 
+        @Override
         public EntityReference getAssociation( QualifiedName stateName )
         {
             return state.getAssociation( stateName );
         }
 
+        @Override
         public ManyAssociationState getManyAssociation( QualifiedName stateName )
         {
             return state.getManyAssociation( stateName );
         }
 
+        @Override
         public Object getProperty( QualifiedName stateName )
         {
             return state.getProperty( stateName );
         }
 
+        @Override
         public EntityReference identity()
         {
             return state.identity();
@@ -108,31 +116,37 @@ public interface SQLEntityState
             return state.isAssignableTo( type );
         }
 
+        @Override
         public long lastModified()
         {
             return state.lastModified();
         }
 
+        @Override
         public void remove()
         {
             state.remove();
         }
 
+        @Override
         public void setAssociation( QualifiedName stateName, EntityReference newEntity )
         {
             state.setAssociation( stateName, newEntity );
         }
 
+        @Override
         public void setProperty( QualifiedName stateName, Object json )
         {
             state.setProperty( stateName, json );
         }
 
+        @Override
         public EntityStatus status()
         {
             return state.status();
         }
 
+        @Override
         public String version()
         {
             return state.version();

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
@@ -96,7 +95,7 @@ import org.sql.generation.api.grammar.query.joins.JoinType;
 import org.sql.generation.api.vendor.SQLVendor;
 
 /**
- * 
+ *
  * @author Stanislav Muhametsin
  */
 public abstract class AbstractSQLQuerying
@@ -224,6 +223,7 @@ public abstract class AbstractSQLQuerying
         _sqlOperators.put( EqSpecification.class, new SQLBooleanCreator()
         {
 
+            @Override
             public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
                     BooleanFactory factory,
                     NonBooleanExpression left, NonBooleanExpression right )
@@ -234,6 +234,7 @@ public abstract class AbstractSQLQuerying
         _sqlOperators.put( GeSpecification.class, new SQLBooleanCreator()
         {
 
+            @Override
             public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
                     BooleanFactory factory,
                     NonBooleanExpression left, NonBooleanExpression right )
@@ -244,6 +245,7 @@ public abstract class AbstractSQLQuerying
         _sqlOperators.put( GtSpecification.class, new SQLBooleanCreator()
         {
 
+            @Override
             public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
                     BooleanFactory factory,
                     NonBooleanExpression left, NonBooleanExpression right )
@@ -254,6 +256,7 @@ public abstract class AbstractSQLQuerying
         _sqlOperators.put( LeSpecification.class, new SQLBooleanCreator()
         {
 
+            @Override
             public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
                     BooleanFactory factory,
                     NonBooleanExpression left, NonBooleanExpression right )
@@ -264,6 +267,7 @@ public abstract class AbstractSQLQuerying
         _sqlOperators.put( LtSpecification.class, new SQLBooleanCreator()
         {
 
+            @Override
             public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
                     BooleanFactory factory,
                     NonBooleanExpression left, NonBooleanExpression right )
@@ -274,6 +278,7 @@ public abstract class AbstractSQLQuerying
         _sqlOperators.put( ManyAssociationContainsSpecification.class, new SQLBooleanCreator()
         {
 
+            @Override
             public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
                     BooleanFactory factory,
                     NonBooleanExpression left, NonBooleanExpression right )
@@ -284,6 +289,7 @@ public abstract class AbstractSQLQuerying
         _sqlOperators.put( MatchesSpecification.class, new SQLBooleanCreator()
         {
 
+            @Override
             public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
                     BooleanFactory factory,
                     NonBooleanExpression left, NonBooleanExpression right )
@@ -294,6 +300,7 @@ public abstract class AbstractSQLQuerying
         _sqlOperators.put( ContainsSpecification.class, new SQLBooleanCreator()
         {
 
+            @Override
             public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
                     BooleanFactory factory,
                     NonBooleanExpression left, NonBooleanExpression right )
@@ -304,6 +311,7 @@ public abstract class AbstractSQLQuerying
         _sqlOperators.put( ContainsAllSpecification.class, new SQLBooleanCreator()
         {
 
+            @Override
             public org.sql.generation.api.grammar.booleans.BooleanExpression getExpression(
                     BooleanFactory factory,
                     NonBooleanExpression left, NonBooleanExpression right )
@@ -734,11 +742,13 @@ public abstract class AbstractSQLQuerying
 
     }
 
+    @Override
     public Integer getResultSetType( Integer firstResult, Integer maxResults )
     {
         return ResultSet.TYPE_FORWARD_ONLY;
     }
 
+    @Override
     public Boolean isFirstResultSettingSupported()
     {
         return true;
@@ -747,6 +757,7 @@ public abstract class AbstractSQLQuerying
     @Uses
     private ServiceDescriptor descriptor;
 
+    @Override
     public String constructQuery( Class<?> resultType, //
             Specification<Composite> whereClause, //
             OrderBy[] orderBySegments, //
@@ -874,7 +885,7 @@ public abstract class AbstractSQLQuerying
         TableReferenceBuilder from = t.tableBuilder( t.table(
             t.tableName( this._state.schemaName().get(), DBNames.ENTITY_TABLE_NAME ),
             t.tableAlias( tableAlias ) ) );
-        
+
         this.addTypeJoin( vendor, from, 0 );
 
         QuerySpecificationBuilder query = this.getBuilderForPredicate( vendor, tableAlias );
@@ -902,6 +913,7 @@ public abstract class AbstractSQLQuerying
             new WhereClauseProcessor()
             {
 
+                @Override
                 public void processWhereClause( QuerySpecificationBuilder builder,
                         BooleanBuilder afterWhere,
                         JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
@@ -944,6 +956,7 @@ public abstract class AbstractSQLQuerying
             new WhereClauseProcessor()
             {
 
+                @Override
                 public void processWhereClause( QuerySpecificationBuilder builder,
                         BooleanBuilder afterWhere,
                         JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
@@ -994,6 +1007,7 @@ public abstract class AbstractSQLQuerying
             new WhereClauseProcessor()
             {
 
+                @Override
                 public void processWhereClause( QuerySpecificationBuilder builder,
                         BooleanBuilder afterWhere,
                         JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
@@ -1119,6 +1133,7 @@ public abstract class AbstractSQLQuerying
             entityTypeCondition, //
             new WhereClauseProcessor()
             {
+                @Override
                 public void processWhereClause( QuerySpecificationBuilder builder,
                         BooleanBuilder afterWhere,
                         JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
@@ -1199,6 +1214,7 @@ public abstract class AbstractSQLQuerying
             new WhereClauseProcessor()
             {
 
+                @Override
                 public void processWhereClause( QuerySpecificationBuilder builder,
                         BooleanBuilder afterWhere,
                         JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
@@ -1280,12 +1296,12 @@ public abstract class AbstractSQLQuerying
     {
         Integer startingIndex = 0;
         TableReferenceFactory t = vendor.getTableReferenceFactory();
-       
+
         QuerySpecificationBuilder builder = this.getBuilderForPredicate( vendor, TABLE_NAME_PREFIX + startingIndex );
         TableReferenceBuilder from = t.tableBuilder( t.table(
             t.tableName( this._state.schemaName().get(), DBNames.ENTITY_TABLE_NAME ),
             t.tableAlias( TABLE_NAME_PREFIX + startingIndex ) ) );
-        
+
         this.addTypeJoin( vendor, from, startingIndex );
 
         Integer lastTableIndex = null;
@@ -1325,7 +1341,7 @@ public abstract class AbstractSQLQuerying
 
         return builder.createExpression();
     }
-    
+
     protected void addTypeJoin(SQLVendor vendor, TableReferenceBuilder from, int startingIndex)
     {
         TableReferenceFactory t = vendor.getTableReferenceFactory();

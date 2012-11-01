@@ -17,16 +17,15 @@
  */
 package org.qi4j.index.rdf.query.internal;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.query.grammar.AssociationFunction;
 import org.qi4j.api.query.grammar.ManyAssociationFunction;
 import org.qi4j.api.query.grammar.PropertyFunction;
 import org.qi4j.api.util.Classes;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import static java.lang.String.format;
 

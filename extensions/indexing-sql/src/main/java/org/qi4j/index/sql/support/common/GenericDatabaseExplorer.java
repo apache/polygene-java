@@ -14,24 +14,22 @@
 
 package org.qi4j.index.sql.support.common;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.spi.query.IndexExporter;
 import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
 import org.sql.generation.api.grammar.factories.QueryFactory;
 import org.sql.generation.api.grammar.factories.TableReferenceFactory;
 import org.sql.generation.api.vendor.SQLVendor;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.qi4j.library.sql.common.SQLUtil;
-
 /**
  * This is a helper class to traverse through all content in specified tables in database. Typical usecase would be by
  * {@link IndexExporter} implementation.
- * 
+ *
  * @author Stanislav Muhametsin
  */
 public final class GenericDatabaseExplorer
@@ -234,51 +232,63 @@ public final class GenericDatabaseExplorer
         implements DatabaseProcessor
     {
 
+        @Override
         public void beginProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
             ForeignKeyInfo fkInfo )
         {
         }
 
+        @Override
         public void beginProcessColumns( String schemaName, String tableName, String tableRemarks )
         {
         }
 
+        @Override
         public void beginProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
         {
         }
 
+        @Override
         public void beginProcessRows( String schemaName, String tableName, String tableRemarks )
         {
         }
 
+        @Override
         public void beginProcessSchemaInfo( String schemaName )
         {
         }
 
+        @Override
         public void beginProcessTableInfo( String schemaName, String tableName, String remarks )
         {
         }
 
+        @Override
         public void endProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo )
         {
         }
 
+        @Override
         public void endProcessColumns( String schemaName, String tableName, String tableRemarks )
         {
         }
 
+        @Override
         public void endProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
         {
         }
 
+        @Override
         public void endProcessRows( String schemaName, String tableName, String tableRemarks )
         {
         }
 
+        @Override
         public void endProcessSchemaInfo( String schemaName )
         {
         }
 
+        @Override
         public void endProcessTableInfo( String schemaName, String tableName, String remarks )
         {
         }

@@ -55,11 +55,13 @@ public class GaeEntityStoreMixin
       datastoreService = DatastoreServiceFactory.getDatastoreService();
    }
 
+    @Override
    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
    {
       return new GaeEntityStoreUnitOfWork(datastoreService, generateId(), module, currentTime);
    }
 
+    @Override
    public Input<EntityState, EntityStoreException> entityStates(final Module module)
    {
       return new Input<EntityState, EntityStoreException>()

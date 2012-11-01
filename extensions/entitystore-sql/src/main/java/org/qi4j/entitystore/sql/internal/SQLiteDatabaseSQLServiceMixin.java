@@ -31,6 +31,7 @@ public abstract class SQLiteDatabaseSQLServiceMixin
     @This
     protected DatabaseSQLServiceSpi spi;
 
+    @Override
     public boolean tableExists( Connection connection )
             throws SQLException
     {
@@ -46,6 +47,7 @@ public abstract class SQLiteDatabaseSQLServiceMixin
         }
     }
 
+    @Override
     public EntityValueResult getEntityValue( ResultSet rs )
             throws SQLException
     {

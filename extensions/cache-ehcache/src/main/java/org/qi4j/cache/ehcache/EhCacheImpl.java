@@ -18,6 +18,7 @@ public class EhCacheImpl<T>
         this.valueType = valueType;
     }
 
+    @Override
     public T get( String key )
     {
         Element element = backingCache.get( key );
@@ -28,6 +29,7 @@ public class EhCacheImpl<T>
         return valueType.cast( element.getValue() );
     }
 
+    @Override
     public T remove( String key )
     {
         T old = valueType.cast( backingCache.get( key ).getValue() );
@@ -35,12 +37,14 @@ public class EhCacheImpl<T>
         return old;
     }
 
+    @Override
     public void put( String key, T value )
     {
         Element element = new Element( key, value );
         backingCache.put( element );
     }
 
+    @Override
     public boolean exists( String key )
     {
         return backingCache.isKeyInCache( key );

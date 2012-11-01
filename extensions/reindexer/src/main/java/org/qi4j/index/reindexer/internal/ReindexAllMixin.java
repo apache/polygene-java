@@ -32,6 +32,7 @@ public class ReindexAllMixin
     @Uses
     private ServiceDescriptor descriptor;
 
+    @Override
     public void reindex()
     {
         for( ServiceReference<Reindexer> ref : reindexers )

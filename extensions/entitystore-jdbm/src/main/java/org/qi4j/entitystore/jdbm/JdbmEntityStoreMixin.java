@@ -77,14 +77,15 @@ public class JdbmEntityStoreMixin
 
     @This
     ReadWriteLock lock;
-    
-    @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
+
+    @Override
     public void setUpJdbm()
         throws Exception
     {
         initialize();
     }
 
+    @Override
     public void tearDownJdbm()
         throws Exception
     {
@@ -92,6 +93,7 @@ public class JdbmEntityStoreMixin
     }
 
     @ReadLock
+    @Override
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
@@ -120,6 +122,7 @@ public class JdbmEntityStoreMixin
     }
 
     @WriteLock
+    @Override
     public void applyChanges( MapChanges changes )
         throws IOException
     {
@@ -127,6 +130,7 @@ public class JdbmEntityStoreMixin
         {
             changes.visitMap( new MapChanger()
             {
+                @Override
                 public Writer newEntity( final EntityReference ref, EntityDescriptor descriptor )
                     throws IOException
                 {
@@ -146,6 +150,7 @@ public class JdbmEntityStoreMixin
                     };
                 }
 
+                @Override
                 public Writer updateEntity( final EntityReference ref, EntityDescriptor descriptor )
                     throws IOException
                 {
@@ -164,6 +169,7 @@ public class JdbmEntityStoreMixin
                     };
                 }
 
+                @Override
                 public void removeEntity( EntityReference ref, EntityDescriptor descriptor )
                     throws EntityNotFoundException
                 {
@@ -196,13 +202,12 @@ public class JdbmEntityStoreMixin
             }
             else
             {
-                IOException exception = new IOException();
-                exception.initCause( e );
-                throw exception;
+                throw new IOException( e );
             }
         }
     }
 
+    @Override
     public Input<Reader, IOException> entityStates()
     {
         return new Input<Reader, IOException>()
@@ -250,6 +255,7 @@ public class JdbmEntityStoreMixin
         };
     }
 
+    @Override
     public Input<String, IOException> backup()
     {
         return new Input<String, IOException>()
@@ -297,6 +303,7 @@ public class JdbmEntityStoreMixin
         };
     }
 
+    @Override
     public Output<String, IOException> restore()
     {
         return new Output<String, IOException>()
@@ -323,6 +330,7 @@ public class JdbmEntityStoreMixin
                     {
                         int counter = 0;
 
+                        @Override
                         public void receive( String item )
                             throws IOException
                         {

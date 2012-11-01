@@ -18,13 +18,13 @@ package org.qi4j.index.sql.support.common;
  * Helper interface to let the user of SQL-Indexing decide when to re-build SQL schema. Rebuilding
  * means first deleting all tables that are going to be used, and then creating them. Useful for
  * tests or when your app is in dev mode.
- * 
+ *
  * You can decide your application's re-building policy for example like this:
  * {@code mainModule.addServices(RebuildingStrategy.class).withMixins(RebuildingStrategy.AlwaysNeed.class);}
  * . This way your application will always re-build all index data at startup.
- * 
+ *
  * @author Stanislav Muhametsin
- * 
+ *
  */
 public interface RebuildingStrategy
 {
@@ -33,11 +33,12 @@ public interface RebuildingStrategy
     /**
      * The re-building strategy which ALWAYS re-builds the database schema. Useful with tests and
      * during early development stage of application.
-     * 
+     *
      * @author Stanislav Muhametsin
      */
     public class AlwaysNeed implements RebuildingStrategy
     {
+        @Override
         public boolean rebuildingRequired( String dbAppVersion, String currentAppVersion )
         {
             return true;
@@ -47,11 +48,12 @@ public interface RebuildingStrategy
     /**
      * The re-building strategy which NEVER re-builds the database schema. Useful when current
      * Qi4j-related database schema structure must be preserved at all costs.
-     * 
+     *
      * @author Stanislav Muhametsin
      */
     public class NeverNeed implements RebuildingStrategy
     {
+        @Override
         public boolean rebuildingRequired( String dbAppVersion, String currentAppVersion )
         {
             return false;
@@ -62,7 +64,7 @@ public interface RebuildingStrategy
      * The re-building strategy, which re-builds everything when application version changes. Useful
      * when migration from versions is implemented, or when application structure changes along with
      * version (but not during same version).
-     * 
+     *
      * @author Stanislav Muhametsin
      */
     public class NeedOnChange implements RebuildingStrategy

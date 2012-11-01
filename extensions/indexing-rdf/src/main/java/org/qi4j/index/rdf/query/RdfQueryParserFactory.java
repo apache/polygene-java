@@ -37,6 +37,7 @@ public interface RdfQueryParserFactory
         @Structure
         private Qi4jSPI spi;
 
+        @Override
         public RdfQueryParser newQueryParser( QueryLanguage language )
         {
             if( language.equals( QueryLanguage.SPARQL ) )

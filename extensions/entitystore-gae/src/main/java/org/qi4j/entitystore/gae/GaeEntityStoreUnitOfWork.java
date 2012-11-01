@@ -19,6 +19,7 @@
 package org.qi4j.entitystore.gae;
 
 import com.google.appengine.api.datastore.*;
+import java.util.LinkedList;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
@@ -28,8 +29,6 @@ import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
-
-import java.util.LinkedList;
 
 public class GaeEntityStoreUnitOfWork
     implements EntityStoreUnitOfWork
@@ -49,16 +48,19 @@ public class GaeEntityStoreUnitOfWork
         this.identity = identity;
     }
 
+    @Override
     public String identity()
     {
         return identity;
     }
 
+    @Override
     public long currentTime()
     {
         return currentTime;
     }
 
+    @Override
     public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
         throws EntityStoreException
     {
@@ -68,6 +70,7 @@ public class GaeEntityStoreUnitOfWork
         return state;
     }
 
+    @Override
     public EntityState getEntityState( EntityReference reference )
         throws EntityStoreException, EntityNotFoundException
     {
@@ -85,6 +88,7 @@ public class GaeEntityStoreUnitOfWork
         }
     }
 
+    @Override
     public StateCommitter applyChanges()
         throws EntityStoreException
     {
@@ -105,6 +109,7 @@ public class GaeEntityStoreUnitOfWork
         return new GaeStateCommitter( transaction );
     }
 
+    @Override
     public void discard()
     {
         // nothing to do??
@@ -120,11 +125,13 @@ public class GaeEntityStoreUnitOfWork
             this.transaction = transaction;
         }
 
+        @Override
         public void commit()
         {
             transaction.commit();
         }
 
+        @Override
         public void cancel()
         {
             transaction.rollback();

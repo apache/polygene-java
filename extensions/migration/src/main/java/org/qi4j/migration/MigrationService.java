@@ -103,6 +103,7 @@ public interface MigrationService
         @Service
         Iterable<MigrationEvents> migrationEvents;
 
+        @Override
         public boolean migrate( JSONObject state, String toVersion, StateStore stateStore )
             throws JSONException
         {
@@ -182,6 +183,7 @@ public interface MigrationService
         }
 
         // Migrator implementation
+        @Override
         public boolean addProperty( JSONObject state, String name, Object defaultValue )
             throws JSONException
         {
@@ -210,6 +212,7 @@ public interface MigrationService
             }
         }
 
+        @Override
         public boolean removeProperty( JSONObject state, String name )
             throws JSONException
         {
@@ -230,6 +233,7 @@ public interface MigrationService
             }
         }
 
+        @Override
         public boolean renameProperty( JSONObject state, String from, String to )
             throws JSONException
         {
@@ -251,6 +255,7 @@ public interface MigrationService
             }
         }
 
+        @Override
         public boolean addAssociation( JSONObject state, String name, String defaultReference )
             throws JSONException
         {
@@ -279,6 +284,7 @@ public interface MigrationService
             }
         }
 
+        @Override
         public boolean removeAssociation( JSONObject state, String name )
             throws JSONException
         {
@@ -299,6 +305,7 @@ public interface MigrationService
             }
         }
 
+        @Override
         public boolean renameAssociation( JSONObject state, String from, String to )
             throws JSONException
         {
@@ -321,6 +328,7 @@ public interface MigrationService
             }
         }
 
+        @Override
         public boolean addManyAssociation( JSONObject state, String name, String... defaultReferences )
             throws JSONException
         {
@@ -347,6 +355,7 @@ public interface MigrationService
             }
         }
 
+        @Override
         public boolean removeManyAssociation( JSONObject state, String name )
             throws JSONException
         {
@@ -367,6 +376,7 @@ public interface MigrationService
             }
         }
 
+        @Override
         public boolean renameManyAssociation( JSONObject state, String from, String to )
             throws JSONException
         {
@@ -389,6 +399,7 @@ public interface MigrationService
             }
         }
 
+        @Override
         public void changeEntityType( JSONObject state, String newEntityType )
             throws JSONException
         {

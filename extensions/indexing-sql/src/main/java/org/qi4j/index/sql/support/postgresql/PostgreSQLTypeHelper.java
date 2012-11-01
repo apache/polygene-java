@@ -14,24 +14,23 @@
 
 package org.qi4j.index.sql.support.postgresql;
 
-import org.qi4j.api.common.Optional;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.index.sql.support.skeletons.SQLDBState;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.index.sql.support.skeletons.SQLDBState;
 
 /**
  * A little helper interface to convert java types to SQL types when inserting objects to prepared statements. It will
  * first preprocess the object and possibly convert it to something else (like Character to Integer). Then it will use
  * the {@link SQLDBState#javaTypes2SQLTypes()} mapping to determine which SQL datatype to use when inserting the
  * object to prepared statement.
- * 
+ *
  * @author Stanislav Muhametsin
  */
 @Mixins(
@@ -43,7 +42,7 @@ public interface PostgreSQLTypeHelper
 
     /**
      * Adds the specified object at specified index in specified prepared statement.
-     * 
+     *
      * @param ps The prepared statement.
      * @param index The index for the object to be inserted in prepared statemtent ({@code > 0}).
      * @param primitive The object to insert.
@@ -89,6 +88,7 @@ public interface PostgreSQLTypeHelper
             return primitive;
         }
 
+        @Override
         public void addPrimitiveToPS( PreparedStatement ps, Integer index, Object primitive, Type primitiveType )
             throws SQLException
         {
@@ -97,6 +97,7 @@ public interface PostgreSQLTypeHelper
             ps.setObject( index, primitive, sqlType );
         }
 
+        @Override
         public Integer getSQLType( Object primitive )
         {
             primitive = processJavaPrimitiveBeforeUsingInStatement( primitive );

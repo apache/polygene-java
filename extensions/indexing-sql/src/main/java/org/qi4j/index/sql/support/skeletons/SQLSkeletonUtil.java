@@ -1,7 +1,6 @@
 package org.qi4j.index.sql.support.skeletons;
 
 import java.lang.reflect.AccessibleObject;
-
 import org.qi4j.api.entity.Queryable;
 
 /* package */final class SQLSkeletonUtil
@@ -19,9 +18,9 @@ import org.qi4j.api.entity.Queryable;
 
     /**
      * Required for Lazy.
-     * 
+     *
      * @author Stanislav Muhametsin
-     * 
+     *
      * @param <T> The result variable type.
      */
     public static interface LazyInit<T, TException extends Throwable>
@@ -32,9 +31,9 @@ import org.qi4j.api.entity.Queryable;
     /**
      * Non-threadsafe implementation of C#'s Lazy&lt;T&gt;. I wonder if Java has something like this
      * already done?
-     * 
+     *
      * @author Stanislav Muhametsin
-     * 
+     *
      * @param <T> The result variable type.
      */
     public static final class Lazy<T, TException extends Throwable>

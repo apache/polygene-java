@@ -14,10 +14,9 @@
 
 package org.qi4j.migration;
 
+import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
 
 /**
  * MigrationEvents implementation that logs the events.
@@ -27,51 +26,61 @@ public class MigrationEventLogger
 {
     protected Logger logger = LoggerFactory.getLogger( getClass().getName() );
 
+    @Override
     public void propertyAdded( String entity, String name, Object value )
     {
         logger.info( "Added property " + name + " with value " + (value==null?"null":value.toString()) + " in " + entity );
     }
 
+    @Override
     public void propertyRemoved( String entity, String name )
     {
         logger.info( "Removed property " + name + " in " + entity );
     }
 
+    @Override
     public void propertyRenamed( String entity, String from, String to )
     {
         logger.info( "Renamed property from " + from + " to " + to + " in " + entity );
     }
 
+    @Override
     public void associationAdded( String entity, String name, String value )
     {
         logger.info( "Added association " + name + " with value " + value + " in " + entity );
     }
 
+    @Override
     public void associationRemoved( String entity, String name )
     {
         logger.info( "Removed association " + name + " in " + entity );
     }
 
+    @Override
     public void associationRenamed( String entity, String from, String to )
     {
         logger.info( "Renamed association from " + from + " to " + to + " in " + entity );
     }
 
+    @Override
     public void manyAssociationAdded( String entity, String name, String... value )
     {
         logger.info( "Added many-association " + name + " with values " + Arrays.asList( value ) + " in " + entity );
     }
 
+    @Override
     public void manyAssociationRemoved( String entity, String name )
     {
         logger.info( "Removed many-association " + name + " in " + entity );
     }
 
+    @Override
     public void manyAssociationRenamed( String entity, String from, String to )
     {
         logger.info( "Renamed many-association from " + from + " to " + to + " in " + entity );
     }
 
+    @Override
     public void entityTypeChanged( String entity, String newEntityType )
     {
         logger.info( "Changed entitytype to " + newEntityType + " in " + entity );

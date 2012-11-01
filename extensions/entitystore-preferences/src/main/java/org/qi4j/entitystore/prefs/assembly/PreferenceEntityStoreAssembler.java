@@ -17,6 +17,7 @@
  */
 package org.qi4j.entitystore.prefs.assembly;
 
+import java.util.prefs.Preferences;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -24,8 +25,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.prefs.PreferencesEntityStoreInfo;
 import org.qi4j.entitystore.prefs.PreferencesEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-
-import java.util.prefs.Preferences;
 
 public class PreferenceEntityStoreAssembler
     implements Assembler
@@ -37,6 +36,7 @@ public class PreferenceEntityStoreAssembler
         this.visibility = visibility;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

@@ -17,6 +17,7 @@ public class EhCacheAssembler
         this.visibility = visibility;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

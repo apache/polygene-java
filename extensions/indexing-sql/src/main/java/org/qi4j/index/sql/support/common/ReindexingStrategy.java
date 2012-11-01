@@ -18,11 +18,11 @@ package org.qi4j.index.sql.support.common;
  * Service to decide when complete re-indexing is needed, along with default implementations. TODO
  * maybe add {@code void beganReindexing()} and {@code void finishedReindexing()} methods? For
  * example, for UI interaction.
- * 
+ *
  * You can decide your application's re-indexing policy for example like this:
  * {@code mainModule.addServices(ReindexingStrategy.class).withMixins(ReindexingStrategy.AlwaysNeed.class);}
  * . This way your application will always re-index all entity store data at startup.
- * 
+ *
  * @author Stanislav Muhametsin
  */
 public interface ReindexingStrategy
@@ -32,11 +32,12 @@ public interface ReindexingStrategy
     /**
      * The re-indexing strategy which ALWAYS re-indexes everything. Useful with tests and during
      * early development stage of application.
-     * 
+     *
      * @author Stanislav Muhametsin
      */
     public class AlwaysNeed implements ReindexingStrategy
     {
+        @Override
         public boolean reindexingNeeded( String dbAppVersion, String currentAppVersion )
         {
             return true;
@@ -46,11 +47,12 @@ public interface ReindexingStrategy
     /**
      * The re-indexing strategy which NEVER re-indexes anything. Useful when deleting and re-reading
      * data is something to be avoided at all costs.
-     * 
+     *
      * @author Stanislav Muhametsin
      */
     public class NeverNeed implements ReindexingStrategy
     {
+        @Override
         public boolean reindexingNeeded( String dbAppVersion, String currentAppVersion )
         {
             return false;
@@ -61,11 +63,12 @@ public interface ReindexingStrategy
      * The re-indexing strategy, which re-indexes everything when application version changes.
      * Useful when migration from versions is implemented, or when application structure changes
      * along with version (but not during same version).
-     * 
+     *
      * @author Stanislav Muhametsin
      */
     public class NeedOnChange implements ReindexingStrategy
     {
+        @Override
         public boolean reindexingNeeded( String dbAppVersion, String currentAppVersion )
         {
             return !dbAppVersion.equals( currentAppVersion );

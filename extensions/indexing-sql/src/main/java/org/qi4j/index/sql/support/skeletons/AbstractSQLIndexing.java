@@ -14,9 +14,6 @@
  */
 package org.qi4j.index.sql.support.skeletons;
 
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
-import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_JOIN_TABLE_NAME;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.Connection;
@@ -30,9 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.sql.DataSource;
-
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
@@ -78,12 +73,15 @@ import org.sql.generation.api.grammar.modification.UpdateStatement;
 import org.sql.generation.api.grammar.query.QueryExpression;
 import org.sql.generation.api.vendor.SQLVendor;
 
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TABLE_NAME;
+import static org.qi4j.index.sql.support.common.DBNames.ENTITY_TYPES_JOIN_TABLE_NAME;
+
 /**
  * TODO SQL-Generator now has support for auto-generated columns. Use it in indexing ( should make
  * some things quite faster and simpler ).
- * 
+ *
  * @author Stanislav Muhametsin
- * 
+ *
  */
 public abstract class AbstractSQLIndexing
         implements SQLIndexing
@@ -143,6 +141,7 @@ public abstract class AbstractSQLIndexing
             new Lazy<PreparedStatement, SQLException>(
                 new LazyInit<PreparedStatement, SQLException>()
                 {
+                    @Override
                     public PreparedStatement create() throws SQLException
                     {
                         return connection.prepareStatement( vendor.toString(

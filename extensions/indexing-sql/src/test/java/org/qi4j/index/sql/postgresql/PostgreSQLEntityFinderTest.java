@@ -20,8 +20,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 
-//(Should pass with actual DB running)
-@Ignore
+@Ignore("Should pass with actual DB running")
 public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
 {
     @Override

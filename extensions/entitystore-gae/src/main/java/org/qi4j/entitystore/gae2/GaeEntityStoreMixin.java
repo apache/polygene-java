@@ -86,6 +86,7 @@ public class GaeEntityStoreMixin
         );
     }
 
+    @Override
     public Reader get( EntityReference ref )
         throws EntityStoreException
     {
@@ -108,6 +109,7 @@ public class GaeEntityStoreMixin
         }
     }
 
+    @Override
     public void applyChanges( MapChanges changes )
         throws IOException
 
@@ -130,13 +132,12 @@ public class GaeEntityStoreMixin
             }
             else
             {
-                IOException exception = new IOException();
-                exception.initCause( e );
-                throw exception;
+                throw new IOException( e );
             }
         }
     }
 
+    @Override
     public Input<Reader, IOException> entityStates()
     {
         return new Input<Reader, IOException>()
@@ -176,6 +177,7 @@ public class GaeEntityStoreMixin
             this.transaction = transaction;
         }
 
+        @Override
         public Writer newEntity( final EntityReference ref, final EntityDescriptor descriptor )
         {
             return new StringWriter( 1000 )
@@ -196,6 +198,7 @@ public class GaeEntityStoreMixin
             };
         }
 
+        @Override
         public Writer updateEntity( final EntityReference ref, final EntityDescriptor descriptor )
         {
             return new StringWriter( 1000 )
@@ -216,6 +219,7 @@ public class GaeEntityStoreMixin
             };
         }
 
+        @Override
         public void removeEntity( EntityReference ref, EntityDescriptor descriptor )
             throws EntityNotFoundException
         {

@@ -34,6 +34,7 @@ public class FileEntityStoreAssembler
         this.visibility = visibility;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

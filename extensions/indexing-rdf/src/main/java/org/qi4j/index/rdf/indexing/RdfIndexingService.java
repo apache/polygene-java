@@ -50,9 +50,9 @@ public interface RdfIndexingService
     extends StateChangeListener
 {
     void initialize();
-    
+
     File dataDir();
-    
+
     class Activator extends ActivatorAdapter<ServiceReference<RdfIndexingService>>
     {
 
@@ -62,7 +62,7 @@ public interface RdfIndexingService
         {
             activated.get().initialize();
         }
-        
+
     }
 
     /**
@@ -89,6 +89,7 @@ public interface RdfIndexingService
             indexedEntityTypes = new HashSet<EntityDescriptor>();
         }
 
+        @Override
         public void notifyChanges( Iterable<EntityState> entityStates )
         {
             try
@@ -222,6 +223,7 @@ public interface RdfIndexingService
             return valueFactory;
         }
 
+        @Override
         public File dataDir()
         {
             return repository.get().getDataDir();

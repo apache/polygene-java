@@ -14,7 +14,6 @@
 package org.qi4j.entitystore.jclouds;
 
 import java.util.Map;
-
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;

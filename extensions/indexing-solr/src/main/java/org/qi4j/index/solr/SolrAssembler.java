@@ -26,6 +26,7 @@ import org.qi4j.library.rdf.entity.EntityStateSerializer;
 public class SolrAssembler
    implements Assembler
 {
+    @Override
    public void assemble( ModuleAssembly module ) throws AssemblyException
    {
       module.services( EmbeddedSolrService.class ).identifiedBy( "solr" ).instantiateOnStartup();

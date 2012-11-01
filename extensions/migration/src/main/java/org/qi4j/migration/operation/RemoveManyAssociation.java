@@ -14,13 +14,12 @@
 
 package org.qi4j.migration.operation;
 
+import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.migration.Migrator;
 import org.qi4j.migration.assembly.EntityMigrationOperation;
 import org.qi4j.spi.entitystore.helpers.StateStore;
-
-import java.util.Arrays;
 
 /**
  * Add a many-association
@@ -37,12 +36,14 @@ public class RemoveManyAssociation
         this.defaultReferences = defaultReferences;
     }
 
+    @Override
     public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
         return migrator.removeManyAssociation( state, association );
     }
 
+    @Override
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {

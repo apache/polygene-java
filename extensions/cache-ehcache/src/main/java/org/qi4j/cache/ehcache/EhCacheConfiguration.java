@@ -5,8 +5,6 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
-import java.util.List;
-
 public interface EhCacheConfiguration
     extends ConfigurationComposite
 {
