@@ -54,6 +54,7 @@ public final class Usecase
      *
      * @return the previously stored metaInfo of the given type for the usecase.
      */
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );

@@ -239,6 +239,7 @@ public final class QualifiedName
         return 31 * typeName.hashCode() + name.hashCode();
     }
 
+    @Override
     public int compareTo( QualifiedName other )
     {
         final int result = typeName.compareTo( other.typeName );

@@ -38,11 +38,13 @@ public final class InjectedMethodModel
         this.parameters = parameters;
     }
 
+    @Override
     public Method method()
     {
         return method;
     }
 
+    @Override
     public Iterable<DependencyModel> dependencies()
     {
         return parameters.dependencies();

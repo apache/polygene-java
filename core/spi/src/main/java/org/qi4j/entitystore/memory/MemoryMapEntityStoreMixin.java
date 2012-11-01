@@ -36,6 +36,7 @@ public class MemoryMapEntityStoreMixin
         store = new HashMap<EntityReference, String>();
     }
 
+    @Override
     public void activateMapEntityStore()
         throws Exception
     {
@@ -48,6 +49,7 @@ public class MemoryMapEntityStoreMixin
         return store.containsKey( entityReference );
     }
 
+    @Override
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
@@ -60,12 +62,14 @@ public class MemoryMapEntityStoreMixin
         return new StringReader( state );
     }
 
+    @Override
     public void applyChanges( MapEntityStore.MapChanges changes )
         throws IOException
     {
         changes.visitMap( new MemoryMapChanger() );
     }
 
+    @Override
     public Input<Reader, IOException> entityStates()
     {
         return new Input<Reader, IOException>()
@@ -90,6 +94,7 @@ public class MemoryMapEntityStoreMixin
         };
     }
 
+    @Override
     public Input<String, IOException> backup()
     {
         return new Input<String, IOException>()
@@ -114,6 +119,7 @@ public class MemoryMapEntityStoreMixin
         };
     }
 
+    @Override
     public Output<String, IOException> restore()
     {
         return new Output<String, IOException>()
@@ -128,6 +134,7 @@ public class MemoryMapEntityStoreMixin
                 {
                     sender.sendTo( new Receiver<String, IOException>()
                     {
+                        @Override
                         public void receive( String item )
                             throws IOException
                         {
@@ -157,6 +164,7 @@ public class MemoryMapEntityStoreMixin
     private class MemoryMapChanger
         implements MapChanger
     {
+        @Override
         public Writer newEntity( final EntityReference ref, EntityDescriptor descriptor )
         {
             return new StringWriter( 1000 )
@@ -176,6 +184,7 @@ public class MemoryMapEntityStoreMixin
             };
         }
 
+        @Override
         public Writer updateEntity( final EntityReference ref, EntityDescriptor descriptor )
             throws IOException
         {
@@ -196,6 +205,7 @@ public class MemoryMapEntityStoreMixin
             };
         }
 
+        @Override
         public void removeEntity( EntityReference ref, EntityDescriptor descriptor )
             throws EntityNotFoundException
         {

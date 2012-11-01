@@ -41,6 +41,7 @@ public final class ValueBuilderInstance<T>
         this.currentModule = currentModule;
     }
 
+    @Override
     public T prototype()
     {
         return prototypeInstance.<T>proxy();
@@ -52,11 +53,13 @@ public final class ValueBuilderInstance<T>
         return prototypeInstance.state();
     }
 
+    @Override
     public <K> K prototypeFor( Class<K> mixinType )
     {
         return prototypeInstance.newProxy(mixinType);
     }
 
+    @Override
     public T newInstance()
         throws ConstructionException
     {

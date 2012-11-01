@@ -37,11 +37,13 @@ public final class JSONManyAssociationState
         this.references = references;
     }
 
+    @Override
     public int count()
     {
         return references.length();
     }
 
+    @Override
     public boolean contains( EntityReference entityReference )
     {
         try
@@ -61,6 +63,7 @@ public final class JSONManyAssociationState
         }
     }
 
+    @Override
     public boolean add( int idx, EntityReference entityReference )
     {
         try
@@ -80,6 +83,7 @@ public final class JSONManyAssociationState
         }
     }
 
+    @Override
     public boolean remove( EntityReference entityReference )
     {
         try
@@ -102,6 +106,7 @@ public final class JSONManyAssociationState
         }
     }
 
+    @Override
     public EntityReference get( int i )
     {
         try
@@ -114,17 +119,20 @@ public final class JSONManyAssociationState
         }
     }
 
+    @Override
     public Iterator<EntityReference> iterator()
     {
         return new Iterator<EntityReference>()
         {
             int idx = 0;
 
+            @Override
             public boolean hasNext()
             {
                 return idx < references.length();
             }
 
+            @Override
             public EntityReference next()
             {
                 try
@@ -139,6 +147,7 @@ public final class JSONManyAssociationState
                 }
             }
 
+            @Override
             public void remove()
             {
                 throw new UnsupportedOperationException( "remove() is not supported on ManyAssociation iterators." );

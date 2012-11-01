@@ -32,6 +32,7 @@ public final class UsedLayersModel
         this.usedLayers = usedLayers;
     }
 
+    @Override
     public Iterable<LayerModel> layers()
     {
         return usedLayers;

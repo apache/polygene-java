@@ -34,6 +34,7 @@ public class ApplicationAssemblerAdapter
         this.assemblers = assemblers;
     }
 
+    @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
         throws AssemblyException
     {

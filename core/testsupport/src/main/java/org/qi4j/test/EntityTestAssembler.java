@@ -39,6 +39,7 @@ public class EntityTestAssembler
         this( Visibility.application );
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

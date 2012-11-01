@@ -213,42 +213,50 @@ public final class ActivationDelegate
             this.reference = reference;
         }
 
+        @Override
         public String identity()
         {
             return reference.identity();
         }
 
+        @Override
         public Object get()
         {
             throw new IllegalStateException( "Service is passive, either activating and"
                     + " cannot be used yet or passivating and cannot be used anymore." );
         }
 
+        @Override
         public boolean isActive()
         {
             return false;
         }
 
+        @Override
         public boolean isAvailable()
         {
             return false;
         }
 
+        @Override
         public Iterable<Class<?>> types()
         {
             return reference.types();
         }
 
+        @Override
         public <T> T metaInfo( Class<T> infoType )
         {
             return reference.metaInfo( infoType );
         }
 
+        @Override
         public void registerActivationEventListener( ActivationEventListener listener )
         {
             reference.registerActivationEventListener( listener );
         }
 
+        @Override
         public void deregisterActivationEventListener( ActivationEventListener listener )
         {
             reference.deregisterActivationEventListener( listener );

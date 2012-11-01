@@ -48,6 +48,7 @@ public final class MetaInfoDeclaration
         return propertyDeclarationHolder;
     }
 
+    @Override
     public MetaInfo getMetaInfo( AccessibleObject accessor )
     {
         for( Map.Entry<Class<?>, InfoHolder<?>> entry : mixinPropertyDeclarations.entrySet() )
@@ -70,6 +71,7 @@ public final class MetaInfoDeclaration
             .withAnnotations( accessor instanceof Method ? ( (Method) accessor ).getReturnType() : ( (Field) accessor ).getType() );
     }
 
+    @Override
     public Object getInitialValue( AccessibleObject accessor )
     {
         for( InfoHolder<?> propertyDeclarationHolder : mixinPropertyDeclarations.values() )
@@ -122,6 +124,7 @@ public final class MetaInfoDeclaration
             this.mixinType = mixinType;
         }
 
+        @Override
         public Object invoke( Object o, Method method, Object[] objects )
             throws Throwable
         {
@@ -135,6 +138,7 @@ public final class MetaInfoDeclaration
                 return Proxy.newProxyInstance( returnType.getClassLoader(), new Class[]{ returnType },
                                                new InvocationHandler()
                                                {
+                                                   @Override
                                                    public Object invoke( Object o, Method method, Object[] objects )
                                                        throws Throwable
                                                    {
@@ -158,6 +162,7 @@ public final class MetaInfoDeclaration
             return methodInfos.get( accessor );
         }
 
+        @Override
         public MetaInfo getMetaInfo( AccessibleObject accessor )
         {
             final MethodInfo methodInfo = matches( accessor );
@@ -168,6 +173,7 @@ public final class MetaInfoDeclaration
             return methodInfo.metaInfo;
         }
 
+        @Override
         public Object getInitialValue( AccessibleObject accessor )
         {
             final MethodInfo methodInfo = matches( accessor );
@@ -191,12 +197,14 @@ public final class MetaInfoDeclaration
 
         // DSL Interface
 
+        @Override
         public T declareDefaults()
         {
             return mixinType.cast(
                 Proxy.newProxyInstance( mixinType.getClassLoader(), new Class[]{ mixinType }, this ) );
         }
 
+        @Override
         public MixinDeclaration<T> setMetaInfo( Object info )
         {
             if( metaInfo == null )

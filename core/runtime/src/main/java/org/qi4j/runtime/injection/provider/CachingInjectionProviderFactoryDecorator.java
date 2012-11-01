@@ -33,6 +33,7 @@ public class CachingInjectionProviderFactoryDecorator
         this.decoratedFactory = decoratedFactory;
     }
 
+    @Override
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {

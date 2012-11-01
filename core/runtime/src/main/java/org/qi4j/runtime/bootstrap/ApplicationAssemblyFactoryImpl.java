@@ -27,12 +27,14 @@ import org.qi4j.bootstrap.ModuleAssembly;
 public final class ApplicationAssemblyFactoryImpl
     implements ApplicationAssemblyFactory
 {
+    @Override
     public ApplicationAssembly newApplicationAssembly( Assembler assembler )
         throws AssemblyException
     {
         return newApplicationAssembly( new Assembler[][][]{ { { assembler } } } );
     }
 
+    @Override
     public ApplicationAssembly newApplicationAssembly( Assembler[][][] assemblers )
         throws AssemblyException
     {
@@ -63,6 +65,7 @@ public final class ApplicationAssemblyFactoryImpl
         return applicationAssembly;
     }
 
+    @Override
     public ApplicationAssembly newApplicationAssembly()
     {
         return new ApplicationAssemblyImpl();

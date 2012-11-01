@@ -58,10 +58,12 @@ public @interface HasMetaInfo
     public static class HasMetaInfoQualifier
         implements AnnotationQualifier<HasMetaInfo>
     {
+        @Override
         public <T> Specification<ServiceReference<?>> qualifier( final HasMetaInfo hasMetaInfo )
         {
             return new Specification<ServiceReference<?>>()
             {
+                @Override
                 public boolean satisfiedBy( ServiceReference<?> service )
                 {
                     for( Class metaInfoType : hasMetaInfo.value() )

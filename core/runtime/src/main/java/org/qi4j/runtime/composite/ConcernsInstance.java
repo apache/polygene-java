@@ -43,6 +43,7 @@ public final class ConcernsInstance
         return firstConcern == mixinInvocationHandler;
     }
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] params )
         throws Throwable
     {

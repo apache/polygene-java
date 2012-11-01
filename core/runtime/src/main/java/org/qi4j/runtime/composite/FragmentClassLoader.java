@@ -14,18 +14,17 @@
 
 package org.qi4j.runtime.composite;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 import org.objectweb.asm.*;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Methods;
 import org.qi4j.functional.Iterables;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.Type.getInternalName;
@@ -60,6 +59,7 @@ public class FragmentClassLoader
         super( parent );
     }
 
+    @Override
     protected Class findClass( String name )
         throws ClassNotFoundException
     {

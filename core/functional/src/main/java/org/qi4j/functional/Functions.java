@@ -234,6 +234,7 @@ public final class Functions
         {
             Map<T, Comparable> compareKeys = new HashMap<T, Comparable>();
 
+            @Override
             public int compare( T o1, T o2 )
             {
                 Comparable key1 = compareKeys.get( o1 );

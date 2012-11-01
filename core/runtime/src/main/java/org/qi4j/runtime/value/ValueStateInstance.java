@@ -1,5 +1,9 @@
 package org.qi4j.runtime.value;
 
+import java.lang.reflect.AccessibleObject;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.entity.EntityReference;
@@ -14,11 +18,6 @@ import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
-
-import java.lang.reflect.AccessibleObject;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * TODO
@@ -76,6 +75,7 @@ public final class ValueStateInstance
         }
     }
 
+    @Override
     public <T> PropertyInstance<T> propertyFor( AccessibleObject accessor )
         throws IllegalArgumentException
     {
@@ -95,6 +95,7 @@ public final class ValueStateInstance
         return properties.values();
     }
 
+    @Override
     public <T> AssociationInstance<T> associationFor( AccessibleObject accessor )
     {
         AssociationInstance<T> association = (AssociationInstance<T>) associations.get( accessor );
@@ -113,6 +114,7 @@ public final class ValueStateInstance
         return associations.values();
     }
 
+    @Override
     public <T> ManyAssociationInstance<T> manyAssociationFor( AccessibleObject accessor )
     {
         ManyAssociationInstance<T> manyAssociation = (ManyAssociationInstance<T>) manyAssociations.get( accessor );

@@ -84,6 +84,7 @@ public final class InjectedFieldsModel
         this.fields.add( injectedFieldModel );
     }
 
+    @Override
     public Iterable<DependencyModel> dependencies()
     {
         return Iterables.map( new Function<InjectedFieldModel, DependencyModel>()

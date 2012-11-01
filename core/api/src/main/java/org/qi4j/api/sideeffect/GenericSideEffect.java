@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.api.sideeffect;
 
@@ -31,6 +31,7 @@ public abstract class GenericSideEffect
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object invoke( final Object proxy, final Method method, final Object[] args )
         throws Throwable
     {

@@ -71,6 +71,7 @@ public abstract class CompositeModel
     }
 
     // Model
+    @Override
     public Iterable<Class<?>> types()
     {
         return types;
@@ -81,11 +82,13 @@ public abstract class CompositeModel
         return stateModel;
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
     }
 
+    @Override
     public Visibility visibility()
     {
         return visibility;
@@ -126,11 +129,13 @@ public abstract class CompositeModel
         return primaryType;
     }
 
+    @Override
     public Iterable<Class<?>> mixinTypes()
     {
         return mixinsModel.mixinTypes();
     }
 
+    @Override
     public Iterable<DependencyModel> dependencies()
     {
         return Iterables.flatten( mixinsModel.dependencies(), compositeMethodsModel.dependencies() );

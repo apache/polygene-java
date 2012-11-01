@@ -32,6 +32,7 @@ public final class ValueDeclarationImpl
         this.assemblies = assemblies;
     }
 
+    @Override
     public ValueDeclaration setMetaInfo( Object info )
     {
         for( ValueAssemblyImpl assembly : assemblies )
@@ -41,6 +42,7 @@ public final class ValueDeclarationImpl
         return this;
     }
 
+    @Override
     public ValueDeclaration visibleIn( Visibility visibility )
     {
         for( ValueAssemblyImpl assembly : assemblies )
@@ -50,6 +52,7 @@ public final class ValueDeclarationImpl
         return this;
     }
 
+    @Override
     public ValueDeclaration withConcerns( Class<?>... concerns )
     {
         for( ValueAssemblyImpl assembly : assemblies )
@@ -59,6 +62,7 @@ public final class ValueDeclarationImpl
         return this;
     }
 
+    @Override
     public ValueDeclaration withSideEffects( Class<?>... sideEffects )
     {
         for( ValueAssemblyImpl assembly : assemblies )
@@ -68,6 +72,7 @@ public final class ValueDeclarationImpl
         return this;
     }
 
+    @Override
     public ValueDeclaration withMixins( Class<?>... mixins )
     {
         for( ValueAssemblyImpl assembly : assemblies )
@@ -77,6 +82,7 @@ public final class ValueDeclarationImpl
         return this;
     }
 
+    @Override
     public ValueDeclaration withTypes( Class<?>... types )
     {
         for( ValueAssemblyImpl assembly : assemblies )

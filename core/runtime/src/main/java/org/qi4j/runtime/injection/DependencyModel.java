@@ -175,6 +175,7 @@ public final class DependencyModel
         return type;
     }
 
+    // FIXME This method is unused, remove it.
     private Type extractDependencyType( Type injectionType )
     {
         if( injectionType instanceof ParameterizedType )
@@ -189,16 +190,19 @@ public final class DependencyModel
     }
 
     // Model
+    @Override
     public Annotation injectionAnnotation()
     {
         return injectionAnnotation;
     }
 
+    @Override
     public Type injectionType()
     {
         return injectionType;
     }
 
+    @Override
     public Class<?> injectedClass()
     {
         return injectedClass;
@@ -213,21 +217,25 @@ public final class DependencyModel
      *
      * @return raw injection type.
      */
+    @Override
     public Class<?> rawInjectionType()
     {
         return rawInjectionClass;
     }
 
+    @Override
     public boolean optional()
     {
         return optional;
     }
 
+    @Override
     public Annotation[] annotations()
     {
         return annotations;
     }
 
+    @Override
     public void bind( Resolution resolution )
         throws BindingException
     {
@@ -373,6 +381,7 @@ public final class DependencyModel
             this.scope = scope;
         }
 
+        @Override
         public boolean satisfiedBy( DependencyModel model )
         {
             return model.hasScope( scope );

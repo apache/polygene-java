@@ -30,6 +30,7 @@ public final class ObjectDeclarationImpl
         this.assemblies = assemblies;
     }
 
+    @Override
     public ObjectDeclaration setMetaInfo( Object info )
     {
         for( ObjectAssemblyImpl assembly : assemblies )
@@ -39,6 +40,7 @@ public final class ObjectDeclarationImpl
         return this;
     }
 
+    @Override
     public ObjectDeclaration visibleIn( Visibility visibility )
         throws IllegalStateException
     {

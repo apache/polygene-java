@@ -47,6 +47,7 @@ public final class Annotations
     {
         return new Specification<AnnotatedElement>()
         {
+            @Override
             public boolean satisfiedBy( AnnotatedElement element )
             {
                 return element.getAnnotation( annotationType ) != null;
@@ -70,6 +71,7 @@ public final class Annotations
     {
         return new Specification<Annotation>()
         {
+            @Override
             public boolean satisfiedBy( Annotation annotation )
             {
                 return annotation.annotationType().equals( annotationType );

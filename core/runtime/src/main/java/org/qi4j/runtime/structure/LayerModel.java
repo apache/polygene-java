@@ -51,6 +51,7 @@ public final class LayerModel
         this.modules = modules;
     }
 
+    @Override
     public String name()
     {
         return name;
@@ -66,6 +67,7 @@ public final class LayerModel
         return modules;
     }
 
+    @Override
     public UsedLayersModel usedLayers()
     {
         return usedLayersModel;

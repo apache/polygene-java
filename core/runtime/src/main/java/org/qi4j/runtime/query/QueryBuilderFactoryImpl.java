@@ -14,7 +14,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.runtime.query;
 
@@ -49,6 +49,7 @@ public final class QueryBuilderFactoryImpl
     /**
      * @see QueryBuilderFactory#newQueryBuilder(Class)
      */
+    @Override
     public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
     {
         NotQueryableException.throwIfNotQueryable( resultType );

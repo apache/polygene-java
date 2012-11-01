@@ -19,6 +19,7 @@ public class ValueBuilderWithState<T> implements ValueBuilder<T>
         this.prototypeInstance = instance;
     }
 
+    @Override
     public T prototype()
     {
         verifyUnderConstruction();
@@ -32,6 +33,7 @@ public class ValueBuilderWithState<T> implements ValueBuilder<T>
         return prototypeInstance.state();
     }
 
+    @Override
     public <K> K prototypeFor( Class<K> mixinType )
     {
         verifyUnderConstruction();
@@ -39,6 +41,7 @@ public class ValueBuilderWithState<T> implements ValueBuilder<T>
         return prototypeInstance.newProxy( mixinType );
     }
 
+    @Override
     public T newInstance()
         throws ConstructionException
     {

@@ -1,5 +1,8 @@
 package org.qi4j.runtime.injection.provider;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.InvalidInjectionException;
@@ -11,10 +14,6 @@ import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
-
 import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.functional.Iterables.iterable;
 
@@ -24,6 +23,7 @@ import static org.qi4j.functional.Iterables.iterable;
 public final class ThisInjectionProviderFactory
     implements InjectionProviderFactory
 {
+    @Override
     public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
@@ -97,6 +97,7 @@ public final class ThisInjectionProviderFactory
             }
         }
 
+        @Override
         public Object provideInjection( InjectionContext context )
         {
             try

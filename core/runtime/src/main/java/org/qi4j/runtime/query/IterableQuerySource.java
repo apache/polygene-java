@@ -172,6 +172,7 @@ public class IterableQuerySource
             this.orderBySegments = orderBySegments;
         }
 
+        @Override
         public int compare( T o1, T o2 )
         {
             for( OrderBy orderBySegment : orderBySegments )

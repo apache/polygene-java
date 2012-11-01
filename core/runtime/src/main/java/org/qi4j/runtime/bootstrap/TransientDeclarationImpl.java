@@ -32,6 +32,7 @@ public final class TransientDeclarationImpl
         this.assemblies = assemblies;
     }
 
+    @Override
     public TransientDeclaration setMetaInfo( Object info )
     {
         for( TransientAssemblyImpl assembly : assemblies )
@@ -41,6 +42,7 @@ public final class TransientDeclarationImpl
         return this;
     }
 
+    @Override
     public TransientDeclaration visibleIn( Visibility visibility )
     {
         for( TransientAssemblyImpl assembly : assemblies )
@@ -50,6 +52,7 @@ public final class TransientDeclarationImpl
         return this;
     }
 
+    @Override
     public TransientDeclaration withConcerns( Class<?>... concerns )
     {
         for( TransientAssemblyImpl assembly : assemblies )
@@ -59,6 +62,7 @@ public final class TransientDeclarationImpl
         return this;
     }
 
+    @Override
     public TransientDeclaration withSideEffects( Class<?>... sideEffects )
     {
         for( TransientAssemblyImpl assembly : assemblies )
@@ -68,6 +72,7 @@ public final class TransientDeclarationImpl
         return this;
     }
 
+    @Override
     public TransientDeclaration withMixins( Class<?>... mixins )
     {
         for( TransientAssemblyImpl assembly : assemblies )
@@ -77,6 +82,7 @@ public final class TransientDeclarationImpl
         return this;
     }
 
+    @Override
     public TransientDeclaration withTypes( Class<?>... types )
     {
         for( TransientAssemblyImpl assembly : assemblies )

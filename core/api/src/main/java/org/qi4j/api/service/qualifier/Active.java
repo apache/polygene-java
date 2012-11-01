@@ -36,6 +36,7 @@ public @interface Active
     public final class ActiveQualifier
         implements AnnotationQualifier<Active>
     {
+        @Override
         public <T> Specification<ServiceReference<?>> qualifier( Active active )
         {
             return ServiceQualifier.whereActive();

@@ -37,6 +37,7 @@ public final class CachingInjectionProviderDecorator
         return decoratedProvider;
     }
 
+    @Override
     public Object provideInjection( InjectionContext context )
         throws InjectionProviderException
     {

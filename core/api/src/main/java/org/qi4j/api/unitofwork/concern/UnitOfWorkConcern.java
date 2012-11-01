@@ -57,6 +57,7 @@ public class UnitOfWorkConcern
      *
      * @throws Throwable Thrown if the method invocation throw exception.
      */
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {

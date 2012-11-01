@@ -18,16 +18,19 @@ public class ManyAssociationValueState
         this.references = references;
     }
 
+    @Override
     public int count()
     {
         return references.size();
     }
 
+    @Override
     public boolean contains( EntityReference entityReference )
     {
         return references.contains( entityReference );
     }
 
+    @Override
     public boolean add( int i, EntityReference entityReference )
     {
         if( references.contains( entityReference ) )
@@ -39,17 +42,20 @@ public class ManyAssociationValueState
         return true;
     }
 
+    @Override
     public boolean remove( EntityReference entity )
     {
         boolean removed = references.remove( entity );
         return removed;
     }
 
+    @Override
     public EntityReference get( int i )
     {
         return references.get( i );
     }
 
+    @Override
     public Iterator<EntityReference> iterator()
     {
         final Iterator<EntityReference> iter = references.iterator();
@@ -58,17 +64,20 @@ public class ManyAssociationValueState
         {
             EntityReference current;
 
+            @Override
             public boolean hasNext()
             {
                 return iter.hasNext();
             }
 
+            @Override
             public EntityReference next()
             {
                 current = iter.next();
                 return current;
             }
 
+            @Override
             public void remove()
             {
                 iter.remove();

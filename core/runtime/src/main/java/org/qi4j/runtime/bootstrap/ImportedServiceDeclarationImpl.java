@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceImporter;
@@ -39,6 +38,7 @@ public final class ImportedServiceDeclarationImpl
         this.assemblies = assemblies;
     }
 
+    @Override
     public ImportedServiceDeclaration importOnStartup()
     {
         for( ImportedServiceAssemblyImpl assembly : assemblies )
@@ -47,7 +47,8 @@ public final class ImportedServiceDeclarationImpl
         }
         return this;
     }
-    
+
+    @Override
     public ImportedServiceDeclaration visibleIn( Visibility visibility )
     {
         for( ImportedServiceAssemblyImpl assembly : assemblies )
@@ -57,6 +58,7 @@ public final class ImportedServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ImportedServiceDeclaration importedBy( Class<? extends ServiceImporter> sip )
     {
         for( ImportedServiceAssemblyImpl assembly : assemblies )
@@ -66,6 +68,7 @@ public final class ImportedServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ImportedServiceDeclaration identifiedBy( String identity )
     {
         for( ImportedServiceAssemblyImpl assembly : assemblies )
@@ -75,6 +78,7 @@ public final class ImportedServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ImportedServiceDeclaration taggedWith( String... tags )
     {
         for( ImportedServiceAssemblyImpl serviceAssembly : assemblies )
@@ -96,6 +100,7 @@ public final class ImportedServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ImportedServiceDeclaration setMetaInfo( Object serviceAttribute )
     {
         for( ImportedServiceAssemblyImpl assembly : assemblies )
@@ -104,7 +109,8 @@ public final class ImportedServiceDeclarationImpl
         }
         return this;
     }
-    
+
+    @Override
     public ImportedServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
     {
         for ( ImportedServiceAssemblyImpl serviceAssembly : assemblies ) {

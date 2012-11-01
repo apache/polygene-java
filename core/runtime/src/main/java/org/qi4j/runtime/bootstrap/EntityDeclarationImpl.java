@@ -32,6 +32,7 @@ public final class EntityDeclarationImpl
         this.entities = entities;
     }
 
+    @Override
     public EntityDeclaration setMetaInfo( Object info )
     {
         for( EntityAssemblyImpl entity : entities )
@@ -41,6 +42,7 @@ public final class EntityDeclarationImpl
         return this;
     }
 
+    @Override
     public EntityDeclaration visibleIn( Visibility visibility )
     {
         for( EntityAssemblyImpl entity : entities )
@@ -50,6 +52,7 @@ public final class EntityDeclarationImpl
         return this;
     }
 
+    @Override
     public EntityDeclaration withConcerns( Class<?>... concerns )
     {
         for( EntityAssemblyImpl entity : entities )
@@ -59,6 +62,7 @@ public final class EntityDeclarationImpl
         return this;
     }
 
+    @Override
     public EntityDeclaration withSideEffects( Class<?>... sideEffects )
     {
         for( EntityAssemblyImpl entity : entities )
@@ -68,6 +72,7 @@ public final class EntityDeclarationImpl
         return this;
     }
 
+    @Override
     public EntityDeclaration withMixins( Class<?>... mixins )
     {
         for( EntityAssemblyImpl entity : entities )
@@ -77,6 +82,7 @@ public final class EntityDeclarationImpl
         return this;
     }
 
+    @Override
     public EntityDeclaration withTypes( Class<?>... types )
     {
         for( EntityAssemblyImpl entity : entities )

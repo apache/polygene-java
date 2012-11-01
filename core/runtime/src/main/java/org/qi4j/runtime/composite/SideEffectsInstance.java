@@ -41,6 +41,7 @@ public final class SideEffectsInstance
         this.invoker = invoker;
     }
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {

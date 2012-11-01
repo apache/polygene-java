@@ -45,6 +45,7 @@ public class ValueType
         return first( types );
     }
 
+    @Override
     public Iterable<Class<?>> types()
     {
         return types;

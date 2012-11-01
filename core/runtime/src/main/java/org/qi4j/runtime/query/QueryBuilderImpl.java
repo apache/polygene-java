@@ -14,7 +14,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.runtime.query;
 
@@ -79,6 +79,7 @@ final class QueryBuilderImpl<T>
         return new QueryBuilderImpl<T>( entityFinder, resultType, specification );
     }
 
+    @Override
     public Query<T> newQuery( Iterable<T> iterable )
     {
         return new QueryImpl<T>( resultType, whereClause, new IterableQuerySource( iterable ) );

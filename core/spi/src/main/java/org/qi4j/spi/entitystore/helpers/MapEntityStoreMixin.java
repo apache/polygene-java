@@ -89,6 +89,7 @@ public class MapEntityStoreMixin
 
     // EntityStore
 
+    @Override
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, Module module, long currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo, currentTime );
@@ -96,6 +97,7 @@ public class MapEntityStoreMixin
 
     // EntityStoreSPI
 
+    @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
                                        EntityReference identity,
                                        EntityDescriptor entityDescriptor
@@ -104,6 +106,7 @@ public class MapEntityStoreMixin
         return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
     }
 
+    @Override
     public synchronized EntityState getEntityState( EntityStoreUnitOfWork unitofwork, EntityReference identity )
     {
         DefaultEntityStoreUnitOfWork unitOfWork = (DefaultEntityStoreUnitOfWork) unitofwork;
@@ -111,18 +114,21 @@ public class MapEntityStoreMixin
         return readEntityState( unitOfWork, in );
     }
 
+    @Override
     public StateCommitter applyChanges( final EntityStoreUnitOfWork unitofwork, final Iterable<EntityState> state
     )
         throws EntityStoreException
     {
         return new StateCommitter()
         {
+            @Override
             public void commit()
             {
                 try
                 {
                     mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
                     {
+                        @Override
                         public void visitMap( MapEntityStore.MapChanger changer )
                             throws IOException
                         {
@@ -157,12 +163,14 @@ public class MapEntityStoreMixin
                 }
             }
 
+            @Override
             public void cancel()
             {
             }
         };
     }
 
+    @Override
     public Input<EntityState, EntityStoreException> entityStates( final Module module )
     {
         return new Input<EntityState, EntityStoreException>()
@@ -198,6 +206,7 @@ public class MapEntityStoreMixin
                                 {
                                     sender.sendTo( new Receiver<Reader, ReceiverThrowableType>()
                                     {
+                                        @Override
                                         public void receive( Reader item )
                                             throws ReceiverThrowableType
                                         {
@@ -240,6 +249,7 @@ public class MapEntityStoreMixin
         {
             mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
             {
+                @Override
                 public void visitMap( MapEntityStore.MapChanger changer )
                     throws IOException
                 {
@@ -449,6 +459,7 @@ public class MapEntityStoreMixin
         }
     }
 
+    @Override
     public JSONObject getState( String id )
         throws IOException
     {
@@ -460,7 +471,7 @@ public class MapEntityStoreMixin
         }
         catch( JSONException e )
         {
-            throw (IOException) new IOException().initCause( e );
+            throw new IOException( e );
         }
         reader.close();
         return jsonObject;

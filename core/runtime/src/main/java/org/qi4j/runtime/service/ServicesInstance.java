@@ -50,6 +50,7 @@ public class ServicesInstance
         }
     }
 
+    @Override
     public void activate()
         throws Exception
     {
@@ -57,6 +58,7 @@ public class ServicesInstance
         activation.activate( ActivatorsInstance.EMPTY, activatees );
     }
 
+    @Override
     public void passivate()
         throws Exception
     {
@@ -90,11 +92,13 @@ public class ServicesInstance
         return str += " }";
     }
 
+    @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.registerActivationEventListener( listener );
     }
 
+    @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.deregisterActivationEventListener( listener );

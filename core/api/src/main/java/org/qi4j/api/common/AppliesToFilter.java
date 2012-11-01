@@ -60,6 +60,7 @@ public interface AppliesToFilter
      */
     AppliesToFilter ALWAYS = new AppliesToFilter()
     {
+        @Override
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
         {
             return true;

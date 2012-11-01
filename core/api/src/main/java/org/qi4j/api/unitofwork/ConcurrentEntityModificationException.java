@@ -37,6 +37,7 @@ public class ConcurrentEntityModificationException
         return concurrentlyModifiedEntities;
     }
 
+    @Override
     public String getMessage()
     {
         return "Entities changed concurrently :" + concurrentlyModifiedEntities;

@@ -165,6 +165,7 @@ public interface Configuration<T>
         {
         }
 
+        @Override
         public synchronized T get()
         {
             if( configuration == null )
@@ -184,6 +185,7 @@ public interface Configuration<T>
             return configuration;
         }
 
+        @Override
         public synchronized void refresh()
         {
             if( configuration != null )
@@ -194,6 +196,7 @@ public interface Configuration<T>
             }
         }
 
+        @Override
         public void save()
         {
             if( uow != null )

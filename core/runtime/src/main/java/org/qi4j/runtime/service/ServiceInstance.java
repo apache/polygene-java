@@ -54,12 +54,14 @@ public class ServiceInstance
                                   && Enabled.class.isAssignableFrom( compositeModel.configurationType() );
     }
 
+    @Override
     public void activate()
         throws Exception
     {
         // NOOP
     }
 
+    @Override
     public void passivate()
         throws Exception
     {

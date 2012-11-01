@@ -46,6 +46,7 @@ public final class InstanceImporter<T>
     @Structure
     private Module module;
 
+    @Override
     public T importService( final ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
@@ -70,6 +71,7 @@ public final class InstanceImporter<T>
         return instance;
     }
 
+    @Override
     public boolean isAvailable( T instance )
     {
         return true;

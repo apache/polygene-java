@@ -46,6 +46,7 @@ public interface Identity
         @State
         private Property<String> identity;
 
+        @Override
         public Property<String> identity()
         {
             return identity;

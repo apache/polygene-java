@@ -35,6 +35,7 @@ public final class InjectedParametersModel
         parameterDependencies = new ArrayList<DependencyModel>();
     }
 
+    @Override
     public Iterable<DependencyModel> dependencies()
     {
         return parameterDependencies;

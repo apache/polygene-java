@@ -29,12 +29,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 
 import static org.qi4j.api.util.Classes.RAW_CLASS;
 import static org.qi4j.api.util.Classes.interfacesOf;
-import static org.qi4j.functional.Iterables.filter;
-import static org.qi4j.functional.Iterables.flattenIterables;
-import static org.qi4j.functional.Iterables.iterable;
-import static org.qi4j.functional.Iterables.map;
-import static org.qi4j.functional.Iterables.toArray;
-import static org.qi4j.functional.Iterables.unique;
+import static org.qi4j.functional.Iterables.*;
 
 /**
  * JAVADOC

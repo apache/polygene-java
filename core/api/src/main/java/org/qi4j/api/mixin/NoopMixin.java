@@ -32,6 +32,7 @@ public final class NoopMixin
     private static final Float FLOAT_DEFAULT = 0f;
     private static final Double DOUBLE_DEFAULT = 0.0;
 
+    @Override
     public Object invoke( Object object, Method method, Object[] args )
         throws Throwable
     {

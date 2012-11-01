@@ -41,6 +41,7 @@ public final class ConcernsModel
         this.concernsFor = concernsFor;
     }
 
+    @Override
     public Iterable<DependencyModel> dependencies()
     {
         return Iterables.flattenIterables( Iterables.map( Dependencies.DEPENDENCIES_FUNCTION, concernsFor ) );

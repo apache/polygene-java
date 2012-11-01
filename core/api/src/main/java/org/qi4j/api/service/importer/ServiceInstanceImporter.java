@@ -40,6 +40,7 @@ public class ServiceInstanceImporter<T>
 
     String serviceId;
 
+    @Override
     public T importService( ImportedServiceDescriptor importedServiceDescriptor )
         throws ServiceImporterException
     {
@@ -48,6 +49,7 @@ public class ServiceInstanceImporter<T>
         return getServiceImporter().importService( importedServiceDescriptor );
     }
 
+    @Override
     public boolean isAvailable( T instance )
     {
         return getServiceImporter().isAvailable( instance );

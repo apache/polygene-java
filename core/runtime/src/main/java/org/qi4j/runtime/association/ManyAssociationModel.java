@@ -88,31 +88,37 @@ public final class ManyAssociationModel
         this.queryable = queryable == null || queryable.value();
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
     }
 
+    @Override
     public QualifiedName qualifiedName()
     {
         return qualifiedName;
     }
 
+    @Override
     public Type type()
     {
         return type;
     }
 
+    @Override
     public boolean isImmutable()
     {
         return immutable;
     }
 
+    @Override
     public boolean isAggregated()
     {
         return aggregated;
     }
 
+    @Override
     public AccessibleObject accessor()
     {
         return accessor;
@@ -141,6 +147,7 @@ public final class ManyAssociationModel
         }, state.getManyAssociation( qualifiedName ) );
     }
 
+    @Override
     public void checkConstraints( Object composite )
         throws ConstraintViolationException
     {
@@ -215,6 +222,7 @@ public final class ManyAssociationModel
         }
     }
 
+    @Override
     public boolean equals( Object o )
     {
         if( this == o )
@@ -231,6 +239,7 @@ public final class ManyAssociationModel
         return accessor.equals( that.accessor );
     }
 
+    @Override
     public int hashCode()
     {
         return accessor.hashCode();

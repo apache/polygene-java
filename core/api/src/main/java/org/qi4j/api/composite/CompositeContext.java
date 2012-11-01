@@ -63,6 +63,7 @@ public class CompositeContext<T extends TransientComposite>
         implements InvocationHandler
     {
 
+        @Override
         public Object invoke( Object object, Method method, Object[] objects )
             throws Throwable
         {

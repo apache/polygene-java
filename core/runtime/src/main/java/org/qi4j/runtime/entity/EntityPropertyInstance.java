@@ -43,6 +43,7 @@ public class EntityPropertyInstance<T>
      *
      * @param aNewValue The new value.
      */
+    @Override
     public void set( T aNewValue )
     {
         super.set( aNewValue );

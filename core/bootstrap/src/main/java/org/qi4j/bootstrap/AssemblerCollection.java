@@ -56,6 +56,7 @@ public final class AssemblerCollection
         this.assemblers = assemblers;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

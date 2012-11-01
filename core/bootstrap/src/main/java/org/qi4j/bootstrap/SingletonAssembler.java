@@ -50,6 +50,7 @@ public abstract class SingletonAssembler
         {
             applicationInstance = qi4j.newApplication( new ApplicationAssembler()
             {
+                @Override
                 public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                     throws AssemblyException
                 {
@@ -89,7 +90,7 @@ public abstract class SingletonAssembler
     {
         return moduleInstance;
     }
-    
+
     protected void beforeActivation( Application application )
     {
     }

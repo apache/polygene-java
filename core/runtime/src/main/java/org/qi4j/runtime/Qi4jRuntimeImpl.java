@@ -78,21 +78,25 @@ public final class Qi4jRuntimeImpl
         applicationModelFactory = new ApplicationModelFactoryImpl();
     }
 
+    @Override
     public ApplicationAssemblyFactory applicationAssemblyFactory()
     {
         return applicationAssemblyFactory;
     }
 
+    @Override
     public ApplicationModelFactory applicationModelFactory()
     {
         return applicationModelFactory;
     }
 
+    @Override
     public Qi4j api()
     {
         return this;
     }
 
+    @Override
     public Qi4jSPI spi()
     {
         return this;
@@ -100,6 +104,7 @@ public final class Qi4jRuntimeImpl
 
     // API
 
+    @Override
     public <T> T dereference( T composite )
     {
         InvocationHandler handler = getInvocationHandler( composite );
@@ -114,6 +119,7 @@ public final class Qi4jRuntimeImpl
         return null;
     }
 
+    @Override
     public Module getModule( Object compositeOrServiceReferenceOrUow )
     {
         if( compositeOrServiceReferenceOrUow instanceof TransientComposite )
@@ -214,6 +220,7 @@ public final class Qi4jRuntimeImpl
 
     // Descriptors
 
+    @Override
     public TransientDescriptor getTransientDescriptor( Object transsient )
     {
         if( transsient instanceof TransientComposite )
@@ -224,11 +231,13 @@ public final class Qi4jRuntimeImpl
         throw new IllegalArgumentException( "Wrong type. Must be subtype of " + TransientComposite.class );
     }
 
+    @Override
     public StateHolder getState( TransientComposite composite )
     {
         return TransientInstance.getCompositeInstance( composite ).state();
     }
 
+    @Override
     public EntityDescriptor getEntityDescriptor( Object entity )
     {
         if( entity instanceof EntityComposite )
@@ -239,11 +248,13 @@ public final class Qi4jRuntimeImpl
         throw new IllegalArgumentException( "Wrong type. Must be subtype of " + EntityComposite.class );
     }
 
+    @Override
     public AssociationStateHolder getState( EntityComposite composite )
     {
         return EntityInstance.getEntityInstance( composite ).state();
     }
 
+    @Override
     public ValueDescriptor getValueDescriptor( Object value )
     {
         if( value instanceof ValueComposite )
@@ -254,11 +265,13 @@ public final class Qi4jRuntimeImpl
         throw new IllegalArgumentException( "Wrong type. Must be subtype of " + ValueComposite.class );
     }
 
+    @Override
     public AssociationStateHolder getState( ValueComposite composite )
     {
         return ValueInstance.getValueInstance( composite ).state();
     }
 
+    @Override
     public ServiceDescriptor getServiceDescriptor( Object service )
     {
         if( service instanceof ServiceReferenceInstance )
@@ -286,6 +299,7 @@ public final class Qi4jRuntimeImpl
         return (PropertyDescriptor) ( (PropertyInstance) property ).getPropertyInfo();
     }
 
+    @Override
     public AssociationDescriptor getAssociationDescriptor( AbstractAssociation association )
     {
         while( association instanceof AssociationWrapper )
@@ -302,6 +316,7 @@ public final class Qi4jRuntimeImpl
     }
 
     // SPI
+    @Override
     public EntityState getEntityState( EntityComposite composite )
     {
         return EntityInstance.getEntityInstance( composite ).entityState();

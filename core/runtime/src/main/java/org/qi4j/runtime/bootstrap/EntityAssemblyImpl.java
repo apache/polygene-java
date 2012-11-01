@@ -114,6 +114,7 @@ public final class EntityAssemblyImpl
         }
     }
 
+    @Override
     protected void addStateFor( AccessibleObject accessor,
                                 Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
     )

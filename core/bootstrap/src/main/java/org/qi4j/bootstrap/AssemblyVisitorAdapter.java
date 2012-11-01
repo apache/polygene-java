@@ -21,46 +21,55 @@ package org.qi4j.bootstrap;
 public class AssemblyVisitorAdapter<ThrowableType extends Throwable>
     implements AssemblyVisitor<ThrowableType>
 {
+    @Override
     public void visitApplication( ApplicationAssembly assembly )
         throws ThrowableType
     {
     }
 
+    @Override
     public void visitLayer( LayerAssembly assembly )
         throws ThrowableType
     {
     }
 
+    @Override
     public void visitModule( ModuleAssembly assembly )
         throws ThrowableType
     {
     }
 
+    @Override
     public void visitComposite( TransientDeclaration declaration )
         throws ThrowableType
     {
     }
 
+    @Override
     public void visitEntity( EntityDeclaration declaration )
         throws ThrowableType
     {
     }
 
+    @Override
     public void visitService( ServiceDeclaration declaration )
         throws ThrowableType
     {
     }
 
+    @Override
     public void visitImportedService( ImportedServiceDeclaration declaration )
         throws ThrowableType
     {
     }
 
+    @Override
     public void visitValue( ValueDeclaration declaration )
         throws ThrowableType
     {
     }
 
+    @Override
     public void visitObject( ObjectDeclaration declaration )
         throws ThrowableType
     {

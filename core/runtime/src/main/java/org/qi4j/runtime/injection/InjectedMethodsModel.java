@@ -90,6 +90,7 @@ public final class InjectedMethodsModel
         }
     }
 
+    @Override
     public Iterable<DependencyModel> dependencies()
     {
         return flattenIterables( map( Dependencies.DEPENDENCIES_FUNCTION, methodModels ) );

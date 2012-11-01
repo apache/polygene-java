@@ -24,6 +24,7 @@ import org.qi4j.api.composite.StatefulCompositeDescriptor;
 public interface EntityDescriptor
     extends CompositeDescriptor, StatefulCompositeDescriptor
 {
+    @Override
     AssociationStateDescriptor state();
 
     boolean queryable();

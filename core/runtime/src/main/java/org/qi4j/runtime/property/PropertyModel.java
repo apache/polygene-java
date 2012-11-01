@@ -96,6 +96,7 @@ public class PropertyModel
         this.queryable = queryable == null || queryable.value();
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
@@ -106,16 +107,19 @@ public class PropertyModel
         return qualifiedName.name();
     }
 
+    @Override
     public QualifiedName qualifiedName()
     {
         return qualifiedName;
     }
 
+    @Override
     public Type type()
     {
         return type;
     }
 
+    @Override
     public AccessibleObject accessor()
     {
         return accessor;
@@ -127,6 +131,7 @@ public class PropertyModel
         return valueType;
     }
 
+    @Override
     public boolean isImmutable()
     {
         return immutable;
@@ -137,11 +142,13 @@ public class PropertyModel
         return builderInfo;
     }
 
+    @Override
     public boolean queryable()
     {
         return queryable;
     }
 
+    @Override
     public Object initialValue( Module module )
     {
         // Use supplied value from assembly
@@ -187,6 +194,7 @@ public class PropertyModel
         return visitor.visit( this );
     }
 
+    @Override
     public void checkConstraints( Object value )
         throws ConstraintViolationException
     {

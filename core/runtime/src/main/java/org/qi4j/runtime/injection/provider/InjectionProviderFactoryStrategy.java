@@ -62,6 +62,7 @@ public final class InjectionProviderFactoryStrategy
         generalProviderFactories.put( Uses.class, new UsesInjectionProviderFactory() );
     }
 
+    @Override
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {

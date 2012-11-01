@@ -41,6 +41,7 @@ public abstract class AbstractEntityStoreTest
     @Service
     private EntityStore store;
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

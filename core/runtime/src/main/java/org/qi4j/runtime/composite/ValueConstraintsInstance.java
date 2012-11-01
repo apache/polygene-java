@@ -105,9 +105,11 @@ public final class ValueConstraintsInstance
         return violations;
     }
 
+    @SuppressWarnings( "AnnotationAsSuperInterface" )
     private static class OptionalDummy
         implements Optional
     {
+        @Override
         public Class<? extends Annotation> annotationType()
         {
             return Optional.class;

@@ -30,12 +30,14 @@ public final class NewObjectImporter<T>
     @Structure
     private ObjectFactory obf;
 
+    @Override
     public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
         return (T) obf.newObject( Iterables.first( serviceDescriptor.types() ) );
     }
 
+    @Override
     public boolean isAvailable( T instance )
     {
         return true;

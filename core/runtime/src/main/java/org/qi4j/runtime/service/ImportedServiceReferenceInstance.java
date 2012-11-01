@@ -49,6 +49,7 @@ public final class ImportedServiceReferenceInstance<T>
         this.serviceModel = serviceModel;
     }
 
+    @Override
     public String identity()
     {
         return serviceModel.identity();
@@ -60,11 +61,13 @@ public final class ImportedServiceReferenceInstance<T>
         return serviceModel.types();
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return serviceModel.metaInfo( infoType );
     }
 
+    @Override
     public synchronized T get()
     {
         return getInstance();
@@ -75,6 +78,7 @@ public final class ImportedServiceReferenceInstance<T>
         return serviceModel;
     }
 
+    @Override
     public void activate()
         throws Exception
     {
@@ -84,6 +88,7 @@ public final class ImportedServiceReferenceInstance<T>
         }
     }
 
+    @Override
     public void passivate()
             throws Exception
     {
@@ -94,6 +99,7 @@ public final class ImportedServiceReferenceInstance<T>
                 activation.passivate( new Runnable()
                 {
 
+                    @Override
                     public void run()
                     {
                         active = false;
@@ -108,11 +114,13 @@ public final class ImportedServiceReferenceInstance<T>
         }
     }
 
+    @Override
     public boolean isActive()
     {
         return active;
     }
 
+    @Override
     public boolean isAvailable()
     {
         try
@@ -151,6 +159,7 @@ public final class ImportedServiceReferenceInstance<T>
                         activation.activate( serviceModel.newActivatorsInstance(), serviceInstance, new Runnable()
                         {
 
+                            @Override
                             public void run()
                             {
                                 active = true;
@@ -177,11 +186,13 @@ public final class ImportedServiceReferenceInstance<T>
         return serviceModel.identity() + ", active=" + isActive() + ", module='" + serviceModel.moduleName() + "'";
     }
 
+    @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.registerActivationEventListener( listener );
     }
 
+    @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.deregisterActivationEventListener( listener );

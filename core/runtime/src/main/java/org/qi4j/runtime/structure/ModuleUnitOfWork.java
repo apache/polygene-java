@@ -93,6 +93,7 @@ public class ModuleUnitOfWork
         return uow;
     }
 
+    @Override
     public UnitOfWorkFactory unitOfWorkFactory()
     {
         return moduleInstance;
@@ -104,6 +105,7 @@ public class ModuleUnitOfWork
         return uow.currentTime();
     }
 
+    @Override
     public Usecase usecase()
     {
         return uow.usecase();
@@ -129,24 +131,28 @@ public class ModuleUnitOfWork
         return queryBuilderSPI.newQuery( new UoWQuerySource( this ) );
     }
 
+    @Override
     public <T> T newEntity( Class<T> type )
         throws EntityTypeNotFoundException, LifecycleException
     {
         return newEntity( type, null );
     }
 
+    @Override
     public <T> T newEntity( Class<T> type, String identity )
         throws EntityTypeNotFoundException, LifecycleException
     {
         return newEntityBuilder( type, identity ).newInstance();
     }
 
+    @Override
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
         throws EntityTypeNotFoundException
     {
         return newEntityBuilder( type, null );
     }
 
+    @Override
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
         throws EntityTypeNotFoundException
     {
@@ -180,6 +186,7 @@ public class ModuleUnitOfWork
         return builder;
     }
 
+    @Override
     public <T> T get( Class<T> type, String identity )
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
@@ -193,6 +200,7 @@ public class ModuleUnitOfWork
         return uow.get( parseEntityReference( identity ), this, models, type );
     }
 
+    @Override
     public <T> T get( T entity )
         throws EntityTypeNotFoundException
     {
@@ -203,6 +211,7 @@ public class ModuleUnitOfWork
         return uow.get( compositeInstance.identity(), this, Collections.singletonList( model ), type );
     }
 
+    @Override
     public void remove( Object entity )
         throws LifecycleException
     {
@@ -227,42 +236,50 @@ public class ModuleUnitOfWork
         }
     }
 
+    @Override
     public void complete()
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
     {
         uow.complete();
     }
 
+    @Override
     public void discard()
     {
         uow.discard();
     }
 
+    @Override
     public boolean isOpen()
     {
         return uow.isOpen();
     }
 
+    @Override
     public boolean isPaused()
     {
         return uow.isPaused();
     }
 
+    @Override
     public void pause()
     {
         uow.pause();
     }
 
+    @Override
     public void resume()
     {
         uow.resume();
     }
 
+    @Override
     public void addUnitOfWorkCallback( UnitOfWorkCallback callback )
     {
         uow.addUnitOfWorkCallback( callback );
     }
 
+    @Override
     public void removeUnitOfWorkCallback( UnitOfWorkCallback callback )
     {
         uow.removeUnitOfWorkCallback( callback );
@@ -397,11 +414,13 @@ public class ModuleUnitOfWork
 
                 return new Iterator<T>()
                 {
+                    @Override
                     public boolean hasNext()
                     {
                         return foundEntities.hasNext();
                     }
 
+                    @Override
                     public T next()
                     {
                         final EntityReference foundEntity = foundEntities.next();
@@ -416,6 +435,7 @@ public class ModuleUnitOfWork
                         }
                     }
 
+                    @Override
                     public void remove()
                     {
                         throw new UnsupportedOperationException();

@@ -19,6 +19,7 @@ public final class TransientStateInstance
         this.properties = properties;
     }
 
+    @Override
     public <T> Property<T> propertyFor( AccessibleObject accessor )
         throws IllegalArgumentException
     {

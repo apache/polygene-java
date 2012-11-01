@@ -45,25 +45,30 @@ public final class BuilderEntityState
         manyAssociations = new HashMap<QualifiedName, ManyAssociationState>();
     }
 
+    @Override
     public EntityReference identity()
     {
         return reference;
     }
 
+    @Override
     public String version()
     {
         return "";
     }
 
+    @Override
     public long lastModified()
     {
         return 0;
     }
 
+    @Override
     public void remove()
     {
     }
 
+    @Override
     public EntityStatus status()
     {
         return EntityStatus.NEW;
@@ -75,31 +80,37 @@ public final class BuilderEntityState
         return Classes.exactTypeSpecification( type ).satisfiedBy( entityType );
     }
 
+    @Override
     public EntityDescriptor entityDescriptor()
     {
         return entityType;
     }
 
+    @Override
     public Object getProperty( QualifiedName stateName )
     {
         return properties.get( stateName );
     }
 
+    @Override
     public EntityReference getAssociation( QualifiedName stateName )
     {
         return associations.get( stateName );
     }
 
+    @Override
     public void setProperty( QualifiedName stateName, Object newValue )
     {
         properties.put( stateName, newValue );
     }
 
+    @Override
     public void setAssociation( QualifiedName stateName, EntityReference newEntity )
     {
         associations.put( stateName, newEntity );
     }
 
+    @Override
     public ManyAssociationState getManyAssociation( QualifiedName stateName )
     {
         ManyAssociationState state = manyAssociations.get( stateName );

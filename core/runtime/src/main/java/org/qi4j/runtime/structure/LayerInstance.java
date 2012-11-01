@@ -72,11 +72,13 @@ public class LayerInstance
         return applicationInstance;
     }
 
+    @Override
     public String name()
     {
         return layerModel.name();
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return layerModel.metaInfo( infoType );
@@ -170,6 +172,7 @@ public class LayerInstance
         throw new IllegalArgumentException( "No such module:" + moduleName );
     }
 
+    @Override
     public void activate()
         throws Exception
     {
@@ -178,6 +181,7 @@ public class LayerInstance
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
+    @Override
     public void passivate()
         throws Exception
     {
@@ -192,11 +196,13 @@ public class LayerInstance
         return layerModel.toString();
     }
 
+    @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.registerActivationEventListener( listener );
     }
 
+    @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.deregisterActivationEventListener( listener );

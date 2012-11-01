@@ -32,6 +32,7 @@ final class AndAppliesToFilter
         this.right = right;
     }
 
+    @Override
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
         return left.appliesTo( method, mixin, compositeType, fragmentClass ) &&

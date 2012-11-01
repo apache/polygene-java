@@ -3,14 +3,14 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
  * implied.
- * 
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -87,43 +87,51 @@ public final class DefaultEntityState
 
     // EntityState implementation
 
+    @Override
     public final String version()
     {
         return version;
     }
 
+    @Override
     public long lastModified()
     {
         return lastModified;
     }
 
+    @Override
     public EntityReference identity()
     {
         return identity;
     }
 
+    @Override
     public Object getProperty( QualifiedName stateName )
     {
         return properties.get( stateName );
     }
 
+    @Override
     public void setProperty( QualifiedName stateName, Object newValue )
     {
         properties.put( stateName, newValue );
         markUpdated();
     }
 
+    @Override
     public EntityReference getAssociation( QualifiedName stateName )
     {
         return associations.get( stateName );
     }
 
+    @Override
     public void setAssociation( QualifiedName stateName, EntityReference newEntity )
     {
         associations.put( stateName, newEntity );
         markUpdated();
     }
 
+    @Override
     public ManyAssociationState getManyAssociation( QualifiedName stateName )
     {
         List<EntityReference> manyAssociationState = manyAssociations.get( stateName );
@@ -163,21 +171,25 @@ public final class DefaultEntityState
         entityState.lastModified = lastModified;
     }
 
+    @Override
     public void remove()
     {
         status = EntityStatus.REMOVED;
     }
 
+    @Override
     public EntityStatus status()
     {
         return status;
     }
 
+    @Override
     public boolean isAssignableTo( Class<?> type )
     {
         return Classes.exactTypeSpecification( type ).satisfiedBy( entityDescriptor );
     }
 
+    @Override
     public EntityDescriptor entityDescriptor()
     {
         return entityDescriptor;

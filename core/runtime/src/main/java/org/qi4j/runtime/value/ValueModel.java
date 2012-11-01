@@ -52,6 +52,7 @@ public final class ValueModel
         valueType = new ValueCompositeType( this );
     }
 
+    @Override
     public ValueCompositeType valueType()
     {
         return valueType;

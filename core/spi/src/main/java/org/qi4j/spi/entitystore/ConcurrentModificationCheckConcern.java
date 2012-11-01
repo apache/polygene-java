@@ -44,6 +44,7 @@ public abstract class ConcurrentModificationCheckConcern
     @Structure
     private Qi4j api;
 
+    @Override
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
     {
         final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, module, currentTime );
@@ -72,6 +73,7 @@ public abstract class ConcurrentModificationCheckConcern
             this.currentTime = currentTime;
         }
 
+        @Override
         public String identity()
         {
             return uow.identity();
@@ -83,12 +85,14 @@ public abstract class ConcurrentModificationCheckConcern
             return uow.currentTime();
         }
 
+        @Override
         public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
             throws EntityStoreException
         {
             return uow.newEntityState( anIdentity, entityDescriptor );
         }
 
+        @Override
         public StateCommitter applyChanges()
             throws EntityStoreException
         {
@@ -98,12 +102,14 @@ public abstract class ConcurrentModificationCheckConcern
 
             return new StateCommitter()
             {
+                @Override
                 public void commit()
                 {
                     committer.commit();
                     versions.forgetVersions( loaded );
                 }
 
+                @Override
                 public void cancel()
                 {
                     committer.cancel();
@@ -112,6 +118,7 @@ public abstract class ConcurrentModificationCheckConcern
             };
         }
 
+        @Override
         public void discard()
         {
             try
@@ -124,6 +131,7 @@ public abstract class ConcurrentModificationCheckConcern
             }
         }
 
+        @Override
         public EntityState getEntityState( EntityReference anIdentity )
             throws EntityStoreException, EntityNotFoundException
         {

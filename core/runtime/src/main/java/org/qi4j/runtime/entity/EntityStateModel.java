@@ -53,6 +53,7 @@ public final class EntityStateModel
         return associationsModel.getAssociation( accessor );
     }
 
+    @Override
     public AssociationDescriptor getAssociationByName( String name )
         throws IllegalArgumentException
     {
@@ -72,6 +73,7 @@ public final class EntityStateModel
         return manyAssociationsModel.getManyAssociation( accessor );
     }
 
+    @Override
     public AssociationDescriptor getManyAssociationByName( String name )
         throws IllegalArgumentException
     {
@@ -85,11 +87,13 @@ public final class EntityStateModel
         return manyAssociationsModel.getManyAssociationByQualifiedName( name );
     }
 
+    @Override
     public Iterable<AssociationModel> associations()
     {
         return associationsModel.associations();
     }
 
+    @Override
     public Iterable<ManyAssociationModel> manyAssociations()
     {
         return manyAssociationsModel.manyAssociations();

@@ -24,6 +24,7 @@ public final class ForEach<T>
         this.iterable = iterable;
     }
 
+    @Override
     public Iterator<T> iterator()
     {
         return iterable.iterator();

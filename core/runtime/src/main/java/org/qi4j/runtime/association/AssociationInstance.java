@@ -39,11 +39,13 @@ public final class AssociationInstance<T>
     }
 
     // Association implementation
+    @Override
     public T get()
     {
         return getEntity( associationState.get() );
     }
 
+    @Override
     public void set( T newValue )
         throws IllegalArgumentException
     {

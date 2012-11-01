@@ -303,6 +303,7 @@ public class Inputs
                                 {
                                     sender.sendTo( new Receiver<T, ReceiverThrowableType>()
                                     {
+                                        @Override
                                         public void receive( T item )
                                             throws ReceiverThrowableType
                                         {

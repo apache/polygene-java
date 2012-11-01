@@ -20,6 +20,7 @@ import org.qi4j.runtime.model.Resolution;
 public final class InvocationInjectionProviderFactory
     implements InjectionProviderFactory
 {
+    @Override
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
@@ -50,6 +51,7 @@ public final class InvocationInjectionProviderFactory
             this.dependencyModel = dependencyModel;
         }
 
+        @Override
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {

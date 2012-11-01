@@ -61,6 +61,7 @@ public final class MixinModel
         thisMixinTypes = buildThisMixinTypes();
     }
 
+    @Override
     public Class mixinClass()
     {
         return mixinClass;

@@ -37,6 +37,7 @@ public final class ServiceDeclarationImpl
         this.serviceAssemblies = serviceAssemblies;
     }
 
+    @Override
     public ServiceDeclaration visibleIn( Visibility visibility )
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
@@ -46,6 +47,7 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ServiceDeclaration identifiedBy( String identity )
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
@@ -77,6 +79,7 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ServiceDeclaration instantiateOnStartup()
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
@@ -86,6 +89,7 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ServiceDeclaration setMetaInfo( Object serviceAttribute )
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
@@ -95,6 +99,7 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ServiceDeclaration withConcerns( Class<?>... concerns )
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
@@ -104,6 +109,7 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ServiceDeclaration withSideEffects( Class<?>... sideEffects )
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
@@ -113,6 +119,7 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ServiceDeclaration withMixins( Class<?>... mixins )
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
@@ -122,6 +129,7 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ServiceDeclaration withTypes( Class<?>... types )
     {
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
@@ -131,6 +139,7 @@ public final class ServiceDeclarationImpl
         return this;
     }
 
+    @Override
     public ServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
     {
         for ( ServiceAssemblyImpl serviceAssembly : serviceAssemblies ) {

@@ -27,6 +27,7 @@ public final class LayerName
         this.name = name;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

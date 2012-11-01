@@ -62,6 +62,7 @@ public final class ApplicationModel
         ipf = new InjectionProviderFactoryStrategy( metaInfo );
     }
 
+    @Override
     public String name()
     {
         return name;
@@ -106,6 +107,7 @@ public final class ApplicationModel
         return visitor.visitLeave( this );
     }
 
+    @Override
     public ApplicationInstance newInstance( Qi4j runtime, Object... importedServiceInstances )
         throws InvalidApplicationException
     {

@@ -32,6 +32,7 @@ public abstract class AbstractConstraintModel
         this.annotation = annotation;
     }
 
+    @Override
     public Annotation annotation()
     {
         return annotation;

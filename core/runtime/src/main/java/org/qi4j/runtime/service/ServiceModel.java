@@ -94,21 +94,24 @@ public final class ServiceModel extends CompositeModel
         this.configurationType = calculateConfigurationType();
     }
 
+    @Override
     public boolean isInstantiateOnStartup()
     {
         return instantiateOnStartup;
     }
 
+    @Override
     public String identity()
     {
         return identity;
     }
-    
+
     public ActivatorsInstance<?> newActivatorsInstance() throws Exception
     {
         return new ActivatorsInstance( activatorsModel.newInstances() );
     }
 
+    @Override
     public <T> Class<T> configurationType()
     {
         return configurationType;

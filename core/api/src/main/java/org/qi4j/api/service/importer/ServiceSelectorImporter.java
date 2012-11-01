@@ -42,6 +42,7 @@ public final class ServiceSelectorImporter<T>
     @Structure
     private ServiceFinder locator;
 
+    @Override
     public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
@@ -68,6 +69,7 @@ public final class ServiceSelectorImporter<T>
         return service;
     }
 
+    @Override
     public boolean isAvailable( T instance )
     {
         return !( instance instanceof Availability ) || ( (Availability) instance ).isAvailable();

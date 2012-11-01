@@ -30,6 +30,7 @@ public final class ManyAssociationMixin
     @State
     private AssociationStateHolder associations;
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
@@ -39,6 +40,7 @@ public final class ManyAssociationMixin
     public static class AssociationFilter
         implements AppliesToFilter
     {
+        @Override
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
         {
             return ManyAssociation.class.isAssignableFrom( method.getReturnType() );

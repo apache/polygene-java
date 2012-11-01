@@ -40,6 +40,7 @@ public class AbstractAnyQueryTest extends AbstractQi4jTest
 {
     protected UnitOfWork unitOfWork;
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

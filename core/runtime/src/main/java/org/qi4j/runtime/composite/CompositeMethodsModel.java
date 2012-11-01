@@ -124,6 +124,7 @@ public final class CompositeMethodsModel
         return modelVisitor.visitLeave( this );
     }
 
+    @Override
     public String toString()
     {
         return methods().toString();

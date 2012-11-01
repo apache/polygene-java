@@ -56,17 +56,20 @@ public final class ObjectModel
         injectedMethodsModel = new InjectedMethodsModel( objectType );
     }
 
+    @Override
     public Iterable<Class<?>> types()
     {
         Iterable<? extends Class<?>> iterable = iterable( objectType );
         return (Iterable<Class<?>>) iterable;
     }
 
+    @Override
     public Visibility visibility()
     {
         return visibility;
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );

@@ -29,26 +29,24 @@ import java.util.Set;
  */
 public final class DefaultValues
 {
-    private static final Map<Type, Object> defaultValues = createDefaultValues();
+    private static final Map<Type, Object> DEFAULT_VALUES = new HashMap<Type, Object>();
 
-    private static Map<Type, Object> createDefaultValues()
+    static
     {
-        Map<Type, Object> defaultValues = new HashMap<Type, Object>();
-        defaultValues.put( Byte.class, 0 );
-        defaultValues.put( Short.class, 0 );
-        defaultValues.put( Character.class, 0 );
-        defaultValues.put( Integer.class, 0 );
-        defaultValues.put( Long.class, 0L );
-        defaultValues.put( Double.class, 0D );
-        defaultValues.put( Float.class, 0F );
-        defaultValues.put( Boolean.class, false );
-        defaultValues.put( String.class, "" );
-        return defaultValues;
+        DEFAULT_VALUES.put( Byte.class, 0 );
+        DEFAULT_VALUES.put( Short.class, 0 );
+        DEFAULT_VALUES.put( Character.class, 0 );
+        DEFAULT_VALUES.put( Integer.class, 0 );
+        DEFAULT_VALUES.put( Long.class, 0L );
+        DEFAULT_VALUES.put( Double.class, 0D );
+        DEFAULT_VALUES.put( Float.class, 0F );
+        DEFAULT_VALUES.put( Boolean.class, false );
+        DEFAULT_VALUES.put( String.class, "" );
     }
 
     public static Object getDefaultValue( Type type )
     {
-        Object value = defaultValues.get( type );
+        Object value = DEFAULT_VALUES.get( type );
         if( value != null )
         {
             return value;

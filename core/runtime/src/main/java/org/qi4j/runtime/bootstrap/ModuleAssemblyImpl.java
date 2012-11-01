@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -53,6 +52,7 @@ import org.qi4j.bootstrap.ValueAssembly;
 import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
+import org.qi4j.runtime.activation.ActivatorsModel;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.TransientsModel;
 import org.qi4j.runtime.entity.EntitiesModel;
@@ -69,7 +69,6 @@ import org.qi4j.runtime.value.ValuesModel;
 
 import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.functional.Iterables.iterable;
-import org.qi4j.runtime.activation.ActivatorsModel;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,
@@ -101,17 +100,20 @@ public final class ModuleAssemblyImpl
         this.name = name;
     }
 
+    @Override
     public LayerAssembly layer()
     {
         return layerAssembly;
     }
 
+    @Override
     public ModuleAssembly setName( String name )
     {
         this.name = name;
         return this;
     }
 
+    @Override
     public String name()
     {
         return name;
@@ -123,12 +125,14 @@ public final class ModuleAssemblyImpl
         return this;
     }
 
+    @Override
     public ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators )
     {
         this.activators.addAll( Arrays.asList( activators ) );
         return this;
     }
 
+    @Override
     public ValueDeclaration values( Class<?>... valueTypes )
     {
         List<ValueAssemblyImpl> assemblies = new ArrayList<ValueAssemblyImpl>();
@@ -165,6 +169,7 @@ public final class ModuleAssemblyImpl
         return new ValueDeclarationImpl( assemblies );
     }
 
+    @Override
     public TransientDeclaration transients( Class<?>... transientTypes )
     {
         List<TransientAssemblyImpl> assemblies = new ArrayList<TransientAssemblyImpl>();
@@ -186,6 +191,7 @@ public final class ModuleAssemblyImpl
         return new TransientDeclarationImpl( assemblies );
     }
 
+    @Override
     public TransientDeclaration transients( Specification<? super TransientAssembly> specification )
     {
         List<TransientAssemblyImpl> assemblies = new ArrayList<TransientAssemblyImpl>();
@@ -200,6 +206,7 @@ public final class ModuleAssemblyImpl
         return new TransientDeclarationImpl( assemblies );
     }
 
+    @Override
     public EntityDeclaration entities( Class<?>... entityTypes )
     {
         List<EntityAssemblyImpl> assemblies = new ArrayList<EntityAssemblyImpl>();
@@ -221,6 +228,7 @@ public final class ModuleAssemblyImpl
         return new EntityDeclarationImpl( assemblies );
     }
 
+    @Override
     public EntityDeclaration entities( Specification<? super EntityAssembly> specification )
     {
         List<EntityAssemblyImpl> assemblies = new ArrayList<EntityAssemblyImpl>();
@@ -235,6 +243,7 @@ public final class ModuleAssemblyImpl
         return new EntityDeclarationImpl( assemblies );
     }
 
+    @Override
     public ObjectDeclaration objects( Class<?>... objectTypes )
         throws AssemblyException
     {
@@ -261,6 +270,7 @@ public final class ModuleAssemblyImpl
         return new ObjectDeclarationImpl( assemblies );
     }
 
+    @Override
     public ObjectDeclaration objects( Specification<? super ObjectAssembly> specification )
     {
         List<ObjectAssemblyImpl> assemblies = new ArrayList<ObjectAssemblyImpl>();
@@ -290,6 +300,7 @@ public final class ModuleAssemblyImpl
         return new ServiceDeclarationImpl( assemblies );
     }
 
+    @Override
     public ServiceDeclaration services( Class<?>... serviceTypes )
     {
         List<ServiceAssemblyImpl> assemblies = new ArrayList<ServiceAssemblyImpl>();
@@ -311,6 +322,7 @@ public final class ModuleAssemblyImpl
         return new ServiceDeclarationImpl( assemblies );
     }
 
+    @Override
     public ServiceDeclaration services( Specification<? super ServiceAssembly> specification )
     {
         List<ServiceAssemblyImpl> assemblies = new ArrayList<ServiceAssemblyImpl>();
@@ -325,6 +337,7 @@ public final class ModuleAssemblyImpl
         return new ServiceDeclarationImpl( assemblies );
     }
 
+    @Override
     public ImportedServiceDeclaration importedServices( Class<?>... serviceTypes )
     {
         List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<ImportedServiceAssemblyImpl>();
@@ -346,6 +359,7 @@ public final class ModuleAssemblyImpl
         return new ImportedServiceDeclarationImpl( assemblies );
     }
 
+    @Override
     public ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification )
     {
         List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<ImportedServiceAssemblyImpl>();
@@ -360,11 +374,13 @@ public final class ModuleAssemblyImpl
         return new ImportedServiceDeclarationImpl( assemblies );
     }
 
+    @Override
     public <T> MixinDeclaration<T> forMixin( Class<T> mixinType )
     {
         return metaInfoDeclaration.on( mixinType );
     }
 
+    @Override
     public <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType
     {

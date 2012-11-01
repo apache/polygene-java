@@ -27,5 +27,6 @@ public interface ValueDescriptor
 {
     ValueCompositeType valueType();
 
+    @Override
     AssociationStateDescriptor state();
 }

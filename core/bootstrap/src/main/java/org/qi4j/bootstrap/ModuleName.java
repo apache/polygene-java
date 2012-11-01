@@ -27,6 +27,7 @@ public final class ModuleName
         this.name = name;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

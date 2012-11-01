@@ -30,6 +30,7 @@ final class AnnotationAppliesToFilter
         this.annotationType = type;
     }
 
+    @Override
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
         return method.getAnnotation( annotationType ) != null;

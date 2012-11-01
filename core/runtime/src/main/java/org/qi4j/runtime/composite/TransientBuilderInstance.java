@@ -48,6 +48,7 @@ public final class TransientBuilderInstance<T>
         this.uses = uses;
     }
 
+    @Override
     public TransientBuilder<T> use( Object... usedObjects )
     {
         uses = uses.use( usedObjects );
@@ -55,6 +56,7 @@ public final class TransientBuilderInstance<T>
         return this;
     }
 
+    @Override
     public T prototype()
     {
         // Instantiate given value type
@@ -66,6 +68,7 @@ public final class TransientBuilderInstance<T>
         return prototypeInstance.<T>proxy();
     }
 
+    @Override
     public <K> K prototypeFor( Class<K> mixinType )
     {
         // Instantiate given value type
@@ -77,6 +80,7 @@ public final class TransientBuilderInstance<T>
         return prototypeInstance.newProxy( mixinType );
     }
 
+    @Override
     public T newInstance()
         throws ConstructionException
     {

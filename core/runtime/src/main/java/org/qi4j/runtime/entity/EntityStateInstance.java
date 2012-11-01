@@ -53,6 +53,7 @@ public final class EntityStateInstance
         };
     }
 
+    @Override
     public <T> Property<T> propertyFor( AccessibleObject accessor )
         throws IllegalArgumentException
     {
@@ -88,6 +89,7 @@ public final class EntityStateInstance
         }, stateModel.properties() );
     }
 
+    @Override
     public <T> Association<T> associationFor( AccessibleObject accessor )
         throws IllegalArgumentException
     {
@@ -136,6 +138,7 @@ public final class EntityStateInstance
         }, stateModel.associations() );
     }
 
+    @Override
     public <T> ManyAssociation<T> manyAssociationFor( AccessibleObject accessor )
     {
         Map<AccessibleObject, Object> state = state();

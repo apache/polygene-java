@@ -19,6 +19,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.MethodDescriptor;
@@ -78,6 +79,7 @@ public final class CompositeMethodModel
 
     // Model
 
+    @Override
     public Method method()
     {
         return method;
@@ -88,6 +90,7 @@ public final class CompositeMethodModel
         return mixins.mixinFor( method );
     }
 
+    @Override
     public Iterable<DependencyModel> dependencies()
     {
         return flattenIterables( filter( notNull(), iterable( concerns != null ? concerns.dependencies() : null,
@@ -197,6 +200,7 @@ public final class CompositeMethodModel
     public class CompositeMethodAnnotatedElement
         implements AnnotatedElement
     {
+        @Override
         public boolean isAnnotationPresent( Class<? extends Annotation> annotationClass )
         {
             // Check method
@@ -223,6 +227,7 @@ public final class CompositeMethodModel
             }
         }
 
+        @Override
         public <T extends Annotation> T getAnnotation( Class<T> annotationClass )
         {
             // Check mixin
@@ -249,6 +254,7 @@ public final class CompositeMethodModel
             return method.getAnnotation( annotationClass );
         }
 
+        @Override
         public Annotation[] getAnnotations()
         {
             // Add mixin annotations
@@ -258,10 +264,7 @@ public final class CompositeMethodModel
             if( !GenericSpecification.INSTANCE.satisfiedBy( model.mixinClass() ) )
             {
                 mixinAnnotations = model.mixinClass().getAnnotations();
-                for( int i = 0; i < mixinAnnotations.length; i++ )
-                {
-                    annotations.add( mixinAnnotations[ i ] );
-                }
+                annotations.addAll( Arrays.asList( mixinAnnotations ) );
             }
 
             // Add method annotations, but don't include duplicates
@@ -283,6 +286,7 @@ public final class CompositeMethodModel
             return annotations.toArray( new Annotation[ annotations.size() ] );
         }
 
+        @Override
         public Annotation[] getDeclaredAnnotations()
         {
             return new Annotation[ 0 ];

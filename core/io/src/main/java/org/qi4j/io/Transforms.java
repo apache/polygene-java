@@ -56,6 +56,7 @@ public class Transforms
                     {
                         sender.sendTo( new Receiver<T, ReceiverThrowableType>()
                         {
+                            @Override
                             public void receive( T item )
                                 throws ReceiverThrowableType
                             {
@@ -100,6 +101,7 @@ public class Transforms
                     {
                         sender.sendTo( new Receiver<From, ReceiverThrowableType>()
                         {
+                            @Override
                             public void receive( From item )
                                 throws ReceiverThrowableType
                             {
@@ -143,6 +145,7 @@ public class Transforms
                     {
                         sender.sendTo( new Receiver<T, ReceiverThrowableType>()
                         {
+                            @Override
                             public void receive( T item )
                                 throws ReceiverThrowableType
                             {
@@ -285,6 +288,7 @@ public class Transforms
             return count;
         }
 
+        @Override
         public T map( T t )
         {
             count++;
@@ -306,6 +310,7 @@ public class Transforms
             this.charSet = charSet;
         }
 
+        @Override
         public byte[] map( String s )
         {
             return s.getBytes( charSet );
@@ -325,6 +330,7 @@ public class Transforms
             this.charSet = charSet;
         }
 
+        @Override
         public String map( ByteBuffer buffer )
         {
             return new String( buffer.array(), charSet );
@@ -337,6 +343,7 @@ public class Transforms
     public static class ObjectToString
         implements Function<Object, String>
     {
+        @Override
         public String map( Object o )
         {
             return o.toString();
@@ -361,6 +368,7 @@ public class Transforms
             this.format = new MessageFormat( format );
         }
 
+        @Override
         public T map( T item )
         {
             logger.info( format.format( new String[]{ item.toString() } ) );
@@ -399,6 +407,7 @@ public class Transforms
             counter = new Counter<T>();
         }
 
+        @Override
         public T map( T t )
         {
             counter.map( t );

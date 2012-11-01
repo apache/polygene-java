@@ -24,8 +24,8 @@ import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.Qi4jRuntime;
-import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.activation.ActivationDelegate;
+import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 
 /**
  * Instance of a Qi4j application. Contains a list of layers which are managed by this application
@@ -53,6 +53,7 @@ public class ApplicationInstance
         layerInstances.add( layer );
     }
 
+    @Override
     public ApplicationDescriptor descriptor()
     {
         return applicationModel;
@@ -63,21 +64,25 @@ public class ApplicationInstance
         return runtime;
     }
 
+    @Override
     public String name()
     {
         return applicationModel.name();
     }
 
+    @Override
     public String version()
     {
         return applicationModel.version();
     }
 
+    @Override
     public Mode mode()
     {
         return applicationModel.mode();
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return instanceMetaInfo.get( infoType );
@@ -88,6 +93,7 @@ public class ApplicationInstance
         return layerInstances;
     }
 
+    @Override
     public Layer findLayer( String layerName )
     {
         for( LayerInstance layerInstance : layerInstances )
@@ -101,6 +107,7 @@ public class ApplicationInstance
         throw new IllegalArgumentException( "No such layer:" + layerName );
     }
 
+    @Override
     public Module findModule( String layerName, String moduleName )
     {
         for( LayerInstance layerInstance : layerInstances )
@@ -114,6 +121,7 @@ public class ApplicationInstance
         throw new IllegalArgumentException( "No such layer:" + layerName );
     }
 
+    @Override
     public void activate()
         throws Exception
     {
@@ -122,6 +130,7 @@ public class ApplicationInstance
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
+    @Override
     public void passivate()
         throws Exception
     {
@@ -136,11 +145,13 @@ public class ApplicationInstance
         return name();
     }
 
+    @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.registerActivationEventListener( listener );
     }
 
+    @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.deregisterActivationEventListener( listener );

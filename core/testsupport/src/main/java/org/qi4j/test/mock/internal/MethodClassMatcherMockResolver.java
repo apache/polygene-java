@@ -33,6 +33,7 @@ public class MethodClassMatcherMockResolver
         this.methodClass = methodClass;
     }
 
+    @Override
     public InvocationHandler getInvocationHandler( Object proxy, Method method, Object[] args )
     {
         if( method.getDeclaringClass().equals( methodClass ) )
@@ -42,6 +43,7 @@ public class MethodClassMatcherMockResolver
         return null;
     }
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {

@@ -19,7 +19,7 @@ package org.qi4j.api.activation;
 
 /**
  * Adapter for Activator.
- * 
+ *
  * @param ActivateeType Type of the activatee.
  */
 public class ActivatorAdapter<ActivateeType>
@@ -29,6 +29,7 @@ public class ActivatorAdapter<ActivateeType>
     /**
      * Called before activatee activation.
      */
+    @Override
     public void beforeActivation( ActivateeType activating )
             throws Exception
     {
@@ -37,6 +38,7 @@ public class ActivatorAdapter<ActivateeType>
     /**
      * Called after activatee activation.
      */
+    @Override
     public void afterActivation( ActivateeType activated )
             throws Exception
     {
@@ -45,6 +47,7 @@ public class ActivatorAdapter<ActivateeType>
     /**
      * Called before activatee passivation.
      */
+    @Override
     public void beforePassivation( ActivateeType passivating )
             throws Exception
     {
@@ -53,6 +56,7 @@ public class ActivatorAdapter<ActivateeType>
     /**
      * Called after activatee passivation.
      */
+    @Override
     public void afterPassivation( ActivateeType passivated )
             throws Exception
     {

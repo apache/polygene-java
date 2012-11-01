@@ -97,6 +97,7 @@ public final class ValueAssemblyImpl
         }
     }
 
+    @Override
     protected void addStateFor( AccessibleObject accessor,
                                 Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
     )

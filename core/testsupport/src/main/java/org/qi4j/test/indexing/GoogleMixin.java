@@ -31,6 +31,7 @@ public class GoogleMixin
     @Structure
     UnitOfWorkFactory unitOfWorkFactory;
 
+    @Override
     public Iterable<Person> bornIn( String city )
     {
 //        QueryBuilder<Person> queryBuilder = module.newUnitOfWork().queryBuilderFactory()

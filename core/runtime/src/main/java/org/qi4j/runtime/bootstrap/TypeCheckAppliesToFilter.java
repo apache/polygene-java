@@ -30,6 +30,7 @@ final class TypeCheckAppliesToFilter
         this.type = type;
     }
 
+    @Override
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
         return type.isAssignableFrom( compositeType );

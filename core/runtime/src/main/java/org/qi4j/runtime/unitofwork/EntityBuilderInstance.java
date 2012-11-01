@@ -74,18 +74,21 @@ public final class EntityBuilderInstance<T>
     }
 
     @SuppressWarnings( "unchecked" )
+    @Override
     public T instance()
     {
         checkValid();
         return prototypeInstance.<T>proxy();
     }
 
+    @Override
     public <K> K instanceFor( Class<K> mixinType )
     {
         checkValid();
         return prototypeInstance.newProxy( mixinType );
     }
 
+    @Override
     public T newInstance()
         throws LifecycleException
     {

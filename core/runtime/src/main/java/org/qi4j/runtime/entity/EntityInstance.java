@@ -76,6 +76,7 @@ public final class EntityInstance
         proxy = (EntityComposite) entityModel.newProxy( this );
     }
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
@@ -87,28 +88,33 @@ public final class EntityInstance
         return identity;
     }
 
+    @Override
     public <T> T proxy()
     {
         return (T) proxy;
     }
 
+    @Override
     public CompositeDescriptor descriptor()
     {
         return entityModel;
     }
 
+    @Override
     public <T> T newProxy( Class<T> mixinType )
         throws IllegalArgumentException
     {
         return entityModel.newProxy( this, mixinType );
     }
 
+    @Override
     public Object invokeComposite( Method method, Object[] args )
         throws Throwable
     {
         return entityModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return entityModel.metaInfo( infoType );
@@ -119,11 +125,13 @@ public final class EntityInstance
         return entityModel;
     }
 
+    @Override
     public Iterable<Class<?>> types()
     {
         return entityModel.types();
     }
 
+    @Override
     public ModuleInstance module()
     {
         return moduleInstance;
@@ -139,6 +147,7 @@ public final class EntityInstance
         return entityState;
     }
 
+    @Override
     public EntityStateInstance state()
     {
         if( state == null )
@@ -154,6 +163,7 @@ public final class EntityInstance
         return entityState.status();
     }
 
+    @Override
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )
         throws Throwable
     {
@@ -172,6 +182,7 @@ public final class EntityInstance
         return methodInstance.invoke( proxy, params, mixin );
     }
 
+    @Override
     public Object invokeObject( Object proxy, Object[] args, Method method )
         throws Throwable
     {

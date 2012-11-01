@@ -45,6 +45,7 @@ public class DecoratorMixin
         this.delegate = delegate;
     }
 
+    @Override
     public Object invoke( Object object, Method method, Object[] args )
         throws Throwable
     {

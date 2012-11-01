@@ -68,6 +68,7 @@ public class ModuleModel
         this.importedServicesModel = importedServicesModel;
     }
 
+    @Override
     public String name()
     {
         return name;
@@ -77,7 +78,7 @@ public class ModuleModel
     {
         return metaInfo.get( infoType );
     }
-    
+
     public ActivatorsInstance<Module> newActivatorsInstance() throws Exception
     {
         return new ActivatorsInstance<Module>( activatorsModel.newInstances() );

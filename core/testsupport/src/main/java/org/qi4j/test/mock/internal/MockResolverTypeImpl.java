@@ -29,6 +29,7 @@ public class MockResolverTypeImpl
         this.proxy = proxy;
     }
 
+    @Override
     public void forClass( final Class clazz )
     {
         proxy.setMock( new MethodClassMatcherMockResolver( proxy.getRegisteredMock(), clazz ) );

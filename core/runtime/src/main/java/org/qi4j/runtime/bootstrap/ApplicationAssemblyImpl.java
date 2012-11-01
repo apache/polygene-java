@@ -48,6 +48,7 @@ public final class ApplicationAssemblyImpl
         mode = Application.Mode.valueOf( System.getProperty( "mode", "production" ) );
     }
 
+    @Override
     public LayerAssembly layer( String name )
     {
         if( name != null )
@@ -63,36 +64,42 @@ public final class ApplicationAssemblyImpl
         return layerAssembly;
     }
 
+    @Override
     public ApplicationAssembly setName( String name )
     {
         this.name = name;
         return this;
     }
 
+    @Override
     public ApplicationAssembly setVersion( String version )
     {
         this.version = version;
         return this;
     }
 
+    @Override
     public ApplicationAssembly setMode( Application.Mode mode )
     {
         this.mode = mode;
         return this;
     }
 
+    @Override
     public ApplicationAssembly setMetaInfo( Object info )
     {
         metaInfo.set( info );
         return this;
     }
 
+    @Override
     public ApplicationAssembly withActivators( Class<? extends Activator<Application>>... activators )
     {
         this.activators.addAll( Arrays.asList( activators ) );
         return this;
     }
-    
+
+    @Override
     public <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
@@ -118,6 +125,7 @@ public final class ApplicationAssemblyImpl
         return metaInfo;
     }
 
+    @Override
     public String name()
     {
         return name;
@@ -128,6 +136,7 @@ public final class ApplicationAssemblyImpl
         return version;
     }
 
+    @Override
     public Application.Mode mode()
     {
         return mode;

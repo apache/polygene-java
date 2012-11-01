@@ -32,6 +32,7 @@ public final class CompositeConstraintModel
         this.constraintsModel = constraintsModel;
     }
 
+    @Override
     public ConstraintInstance<?, ?> newInstance()
     {
         try
@@ -56,10 +57,11 @@ public final class CompositeConstraintModel
             this.valueConstraintsInstance = valueConstraintsInstance;
         }
 
+        @Override
         public boolean isValid( Annotation annotation, Object value )
             throws NullPointerException
         {
-            return valueConstraintsInstance.checkConstraints( value ).size() == 0;
+            return valueConstraintsInstance.checkConstraints( value ).isEmpty();
         }
     }
 }

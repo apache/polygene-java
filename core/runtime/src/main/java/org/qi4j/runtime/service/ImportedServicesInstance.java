@@ -52,6 +52,7 @@ public class ImportedServicesInstance
         }
     }
 
+    @Override
     public void activate()
             throws Exception
     {
@@ -59,6 +60,7 @@ public class ImportedServicesInstance
         activation.activate( ActivatorsInstance.EMPTY, activatees );
     }
 
+    @Override
     public void passivate()
             throws Exception
     {
@@ -92,11 +94,13 @@ public class ImportedServicesInstance
         return str += "}";
     }
 
+    @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.registerActivationEventListener( listener );
     }
 
+    @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.deregisterActivationEventListener( listener );

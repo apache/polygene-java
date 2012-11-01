@@ -672,6 +672,7 @@ public final class Iterables
             this.function = function;
         }
 
+        @Override
         public Iterator<TO> iterator()
         {
             return new MapIterator<FROM, TO>( from.iterator(), function );
@@ -689,17 +690,20 @@ public final class Iterables
                 this.function = function;
             }
 
+            @Override
             public boolean hasNext()
             {
                 return fromIterator.hasNext();
             }
 
+            @Override
             public TO next()
             {
                 FROM from = fromIterator.next();
                 return function.map( from );
             }
 
+            @Override
             public void remove()
             {
                 fromIterator.remove();
@@ -720,6 +724,7 @@ public final class Iterables
             this.specification = specification;
         }
 
+        @Override
         public Iterator<T> iterator()
         {
             return new FilterIterator<T>( iterable.iterator(), specification );
@@ -764,6 +769,7 @@ public final class Iterables
                 return found;
             }
 
+            @Override
             public T next()
             {
                 if( !nextConsumed )
@@ -785,12 +791,14 @@ public final class Iterables
                 return null;
             }
 
+            @Override
             public boolean hasNext()
             {
                 return !finished &&
                        ( !nextConsumed || moveToNextValid() );
             }
 
+            @Override
             public void remove()
             {
             }
@@ -807,6 +815,7 @@ public final class Iterables
             this.iterable = iterable;
         }
 
+        @Override
         public Iterator<T> iterator()
         {
             return new FlattenIterator<T, I>( iterable.iterator() );
@@ -824,6 +833,7 @@ public final class Iterables
                 currentIterator = null;
             }
 
+            @Override
             public boolean hasNext()
             {
                 if( currentIterator == null )
@@ -848,11 +858,13 @@ public final class Iterables
                 return currentIterator.hasNext();
             }
 
+            @Override
             public T next()
             {
                 return currentIterator.next();
             }
 
+            @Override
             public void remove()
             {
                 if( currentIterator == null )

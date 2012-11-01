@@ -48,11 +48,13 @@ public final class InjectedFieldModel
         this.dependencyModel = dependencyModel;
     }
 
+    @Override
     public DependencyModel dependency()
     {
         return dependencyModel;
     }
 
+    @Override
     public Field field()
     {
         return injectedField;

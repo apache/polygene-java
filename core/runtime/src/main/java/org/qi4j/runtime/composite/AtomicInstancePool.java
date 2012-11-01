@@ -26,6 +26,7 @@ public final class AtomicInstancePool
 {
     private final AtomicReference<CompositeMethodInstance> first = new AtomicReference<CompositeMethodInstance>();
 
+    @Override
     public CompositeMethodInstance getInstance()
     {
         CompositeMethodInstance firstInstance;
@@ -38,6 +39,7 @@ public final class AtomicInstancePool
         return firstInstance;
     }
 
+    @Override
     public void returnInstance( CompositeMethodInstance compositeMethodInstance )
     {
         CompositeMethodInstance firstInstance;

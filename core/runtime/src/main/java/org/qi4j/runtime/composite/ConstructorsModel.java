@@ -27,12 +27,8 @@ import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.InvalidCompositeException;
-import org.qi4j.api.concern.ConcernOf;
-import org.qi4j.api.constraint.Constraint;
 import org.qi4j.api.injection.InjectionScope;
-import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
@@ -107,6 +103,7 @@ public final class ConstructorsModel
         throw new InvalidCompositeException( "Inner classes can not be used. Use static nested classes instead: " + fragmentClass );
     }
 
+    @Override
     public Iterable<DependencyModel> dependencies()
     {
         Function<ConstructorModel, Iterable<DependencyModel>> constructorDependencies = new Function<ConstructorModel, Iterable<DependencyModel>>()
@@ -211,6 +208,7 @@ public final class ConstructorsModel
     }
 
     // Binding
+    @Override
     public void bind( final Resolution resolution )
         throws BindingException
     {
@@ -241,7 +239,7 @@ public final class ConstructorsModel
             }
         }
 
-        if( boundConstructors.size() == 0 )
+        if( boundConstructors.isEmpty() )
         {
             StringBuilder messageBuilder = new StringBuilder( "Found no constructor that could be bound: " );
             if( resolution.model() instanceof CompositeDescriptor )
@@ -268,6 +266,7 @@ public final class ConstructorsModel
         // Sort based on parameter count
         Collections.sort( boundConstructors, new Comparator<ConstructorModel>()
         {
+            @Override
             public int compare( ConstructorModel o1, ConstructorModel o2 )
             {
                 Integer model2ParametersCount = o2.constructor().getParameterTypes().length;

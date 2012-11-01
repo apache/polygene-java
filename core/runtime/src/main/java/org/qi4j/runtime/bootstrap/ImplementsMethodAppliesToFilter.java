@@ -24,6 +24,7 @@ import org.qi4j.api.common.AppliesToFilter;
 final class ImplementsMethodAppliesToFilter
     implements AppliesToFilter
 {
+    @Override
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
         try

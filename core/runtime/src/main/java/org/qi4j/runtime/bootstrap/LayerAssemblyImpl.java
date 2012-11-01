@@ -71,6 +71,7 @@ public final class LayerAssemblyImpl
         uses = new LinkedHashSet<LayerAssembly>();
     }
 
+    @Override
     public ModuleAssembly module( String name )
     {
         if( name != null )
@@ -86,23 +87,27 @@ public final class LayerAssemblyImpl
         return moduleAssembly;
     }
 
+    @Override
     public ApplicationAssembly application()
     {
         return applicationAssembly;
     }
 
+    @Override
     public LayerAssembly setName( String name )
     {
         this.name = name;
         return this;
     }
 
+    @Override
     public LayerAssembly setMetaInfo( Object info )
     {
         metaInfo.set( info );
         return this;
     }
 
+    @Override
     public LayerAssembly uses( LayerAssembly... layerAssembly )
         throws IllegalArgumentException
     {
@@ -110,12 +115,14 @@ public final class LayerAssemblyImpl
         return this;
     }
 
+    @Override
     public LayerAssembly withActivators( Class<? extends Activator<Layer>>... activators )
     {
         this.activators.addAll( Arrays.asList( activators ) );
         return this;
     }
 
+    @Override
     public <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType
     {
@@ -596,6 +603,7 @@ public final class LayerAssemblyImpl
         return metaInfo;
     }
 
+    @Override
     public String name()
     {
         return name;

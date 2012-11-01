@@ -101,6 +101,7 @@ public class TransientClassLoader
         super( parent );
     }
 
+    @Override
     protected Class findClass( String name )
         throws ClassNotFoundException
     {

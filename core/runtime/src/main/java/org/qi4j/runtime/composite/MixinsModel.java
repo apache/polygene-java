@@ -119,6 +119,7 @@ public class MixinsModel
     }
 
     // Binding
+    @Override
     public void bind( final Resolution resolution )
         throws BindingException
     {
@@ -223,6 +224,7 @@ public class MixinsModel
     private class Uses
         implements UsageGraph.Use<MixinModel>
     {
+        @Override
         public Collection<MixinModel> uses( MixinModel source )
         {
             Iterable<Class<?>> thisMixinTypes = source.thisMixinTypes();

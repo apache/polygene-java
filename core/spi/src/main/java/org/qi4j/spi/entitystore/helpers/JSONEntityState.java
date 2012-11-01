@@ -98,21 +98,25 @@ public final class JSONEntityState
 
     // EntityState implementation
 
+    @Override
     public final String version()
     {
         return version;
     }
 
+    @Override
     public long lastModified()
     {
         return lastModified;
     }
 
+    @Override
     public EntityReference identity()
     {
         return identity;
     }
 
+    @Override
     public Object getProperty( QualifiedName stateName )
     {
         try
@@ -143,6 +147,7 @@ public final class JSONEntityState
         }
     }
 
+    @Override
     public void setProperty( QualifiedName stateName, Object newValue )
     {
         try
@@ -182,6 +187,7 @@ public final class JSONEntityState
         return new JSONObject( jsonObject, names );
     }
 
+    @Override
     public EntityReference getAssociation( QualifiedName stateName )
     {
         try
@@ -202,6 +208,7 @@ public final class JSONEntityState
         }
     }
 
+    @Override
     public void setAssociation( QualifiedName stateName, EntityReference newEntity )
     {
         try
@@ -217,6 +224,7 @@ public final class JSONEntityState
         }
     }
 
+    @Override
     public ManyAssociationState getManyAssociation( QualifiedName stateName )
     {
         try
@@ -236,11 +244,13 @@ public final class JSONEntityState
         }
     }
 
+    @Override
     public void remove()
     {
         status = EntityStatus.REMOVED;
     }
 
+    @Override
     public EntityStatus status()
     {
         return status;
@@ -252,6 +262,7 @@ public final class JSONEntityState
         return entityDescriptor.isAssignableTo( type );
     }
 
+    @Override
     public EntityDescriptor entityDescriptor()
     {
         return entityDescriptor;

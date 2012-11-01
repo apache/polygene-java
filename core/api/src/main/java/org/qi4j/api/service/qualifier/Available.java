@@ -36,6 +36,7 @@ public @interface Available
     public final class AvailableQualifier
         implements AnnotationQualifier<Available>
     {
+        @Override
         public <T> Specification<ServiceReference<?>> qualifier( Available active )
         {
             return ServiceQualifier.whereAvailable();

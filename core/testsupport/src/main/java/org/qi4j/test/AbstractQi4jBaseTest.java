@@ -60,6 +60,7 @@ public abstract class AbstractQi4jBaseTest
     {
         ApplicationAssembler assembler = new ApplicationAssembler()
         {
+            @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                 throws AssemblyException
             {

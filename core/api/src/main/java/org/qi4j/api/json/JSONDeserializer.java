@@ -47,7 +47,7 @@ import static org.qi4j.functional.Iterables.first;
  */
 public class JSONDeserializer
 {
-    private static Set<Class<?>> nonStringClasses = new HashSet<Class<?>>();
+    private static final Set<Class<?>> NON_STRING_CLASSES = new HashSet<Class<?>>();
 
     /**
      * Check if the given value type should be represented as a JSON string. This can be used
@@ -65,7 +65,7 @@ public class JSONDeserializer
         }
         else
         {
-            return !nonStringClasses.contains( first( valueType.types() ) );
+            return !NON_STRING_CLASSES.contains( first( valueType.types() ) );
         }
     }
 
@@ -90,13 +90,13 @@ public class JSONDeserializer
 
     static
     {
-        nonStringClasses.add( Boolean.class );
-        nonStringClasses.add( Short.class );
-        nonStringClasses.add( Integer.class );
-        nonStringClasses.add( Long.class );
-        nonStringClasses.add( Byte.class );
-        nonStringClasses.add( Float.class );
-        nonStringClasses.add( Double.class );
+        NON_STRING_CLASSES.add( Boolean.class );
+        NON_STRING_CLASSES.add( Short.class );
+        NON_STRING_CLASSES.add( Integer.class );
+        NON_STRING_CLASSES.add( Long.class );
+        NON_STRING_CLASSES.add( Byte.class );
+        NON_STRING_CLASSES.add( Float.class );
+        NON_STRING_CLASSES.add( Double.class );
 
         registerDeserializer( String.class, new Function<Object, String>()
         {

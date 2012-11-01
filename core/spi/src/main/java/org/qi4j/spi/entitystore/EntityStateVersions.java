@@ -47,6 +47,7 @@ public interface EntityStateVersions
 
         private final Map<EntityReference, String> versions = new WeakHashMap<EntityReference, String>();
 
+        @Override
         public synchronized void forgetVersions( Iterable<EntityState> states )
         {
             for( EntityState state : states )
@@ -55,11 +56,13 @@ public interface EntityStateVersions
             }
         }
 
+        @Override
         public synchronized void rememberVersion( EntityReference identity, String version )
         {
             versions.put( identity, version );
         }
 
+        @Override
         public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded,
                                                                  Module module,
                                                                  long currentTime

@@ -58,6 +58,7 @@ public final class TypeName
         return type.getName().equals( name );
     }
 
+    @Override
     public boolean equals( final Object o )
     {
         if( this == o )
@@ -74,11 +75,13 @@ public final class TypeName
         return name.equals( other.name );
     }
 
+    @Override
     public int hashCode()
     {
         return name.hashCode();
     }
 
+    @Override
     public int compareTo( final TypeName typeName )
     {
         return this.name.compareTo( typeName.name );

@@ -40,6 +40,7 @@ public @interface IdentifiedBy
     public final class IdentifiedByQualifier
         implements AnnotationQualifier<IdentifiedBy>
     {
+        @Override
         public <T> Specification<ServiceReference<?>> qualifier( IdentifiedBy identifiedBy )
         {
             return ServiceQualifier.withId( identifiedBy.value() );

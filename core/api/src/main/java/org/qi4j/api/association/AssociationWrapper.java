@@ -42,7 +42,7 @@ public class AssociationWrapper
     @Override
     public boolean equals( Object obj )
     {
-        return next.equals( obj );    //To change body of overridden methods use File | Settings | File Templates.
+        return next.equals( obj );
     }
 
     @Override

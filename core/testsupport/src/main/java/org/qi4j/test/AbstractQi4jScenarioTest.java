@@ -77,6 +77,7 @@ public abstract class AbstractQi4jScenarioTest
 
         ApplicationAssembler assembler = new ApplicationAssembler()
         {
+            @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                 throws AssemblyException
             {

@@ -86,6 +86,7 @@ public class Outputs
                 {
                     sender.sendTo( new Receiver<String, IOException>()
                     {
+                        @Override
                         public void receive( String item )
                             throws IOException
                         {
@@ -145,6 +146,7 @@ public class Outputs
                 {
                     sender.sendTo( new Receiver<ByteBuffer, IOException>()
                     {
+                        @Override
                         public void receive( ByteBuffer item )
                             throws IOException
                         {
@@ -200,6 +202,7 @@ public class Outputs
                 {
                     sender.sendTo( new Receiver<ByteBuffer, IOException>()
                     {
+                        @Override
                         public void receive( ByteBuffer item )
                             throws IOException
                         {
@@ -252,6 +255,7 @@ public class Outputs
                 {
                     sender.sendTo( new Receiver<byte[], IOException>()
                     {
+                        @Override
                         public void receive( byte[] item )
                             throws IOException
                         {
@@ -298,6 +302,7 @@ public class Outputs
     {
         return withReceiver( new Receiver<T, RuntimeException>()
         {
+            @Override
             public void receive( T item )
                 throws RuntimeException
             {
@@ -349,6 +354,7 @@ public class Outputs
             {
                 sender.sendTo( new Receiver<Object, RuntimeException>()
                 {
+                    @Override
                     public void receive( Object item )
                     {
                         System.out.println( item );
@@ -374,6 +380,7 @@ public class Outputs
             {
                 sender.sendTo( new Receiver<T, RuntimeException>()
                 {
+                    @Override
                     public void receive( T item )
                         throws RuntimeException
                     {

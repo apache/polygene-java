@@ -81,6 +81,7 @@ public final class EntityModel extends CompositeModel
         this.queryable = queryable == null || queryable.value();
     }
 
+    @Override
     public boolean queryable()
     {
         return queryable;

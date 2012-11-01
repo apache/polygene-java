@@ -43,6 +43,7 @@ public final class ConstructorModel
         this.constructor.setAccessible( true );
     }
 
+    @Override
     public Constructor constructor()
     {
         return constructor;

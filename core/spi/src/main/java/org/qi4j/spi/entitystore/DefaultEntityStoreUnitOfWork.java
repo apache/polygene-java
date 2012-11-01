@@ -48,6 +48,7 @@ public final class DefaultEntityStoreUnitOfWork
         this.currentTime = currentTime;
     }
 
+    @Override
     public String identity()
     {
         return identity;
@@ -58,6 +59,7 @@ public final class DefaultEntityStoreUnitOfWork
         return module;
     }
 
+    @Override
     public long currentTime()
     {
         return currentTime;
@@ -70,6 +72,7 @@ public final class DefaultEntityStoreUnitOfWork
 
     // EntityStore
 
+    @Override
     public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor descriptor )
         throws EntityStoreException
     {
@@ -78,6 +81,7 @@ public final class DefaultEntityStoreUnitOfWork
         return state;
     }
 
+    @Override
     public EntityState getEntityState( EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException
     {
@@ -86,12 +90,14 @@ public final class DefaultEntityStoreUnitOfWork
         return entityState;
     }
 
+    @Override
     public StateCommitter applyChanges()
         throws EntityStoreException
     {
         return entityStoreSPI.applyChanges( this, states );
     }
 
+    @Override
     public void discard()
     {
     }

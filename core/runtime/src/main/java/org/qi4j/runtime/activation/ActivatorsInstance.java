@@ -23,7 +23,7 @@ import org.qi4j.functional.Iterables;
 /**
  * Instance of a Qi4j Activators of one Activation target. Contains ordered
  * Activators and roll the Activation on the target.
- * 
+ *
  * @param <ActivateeType> Type of the activation target
  */
 public class ActivatorsInstance<ActivateeType>
@@ -38,6 +38,7 @@ public class ActivatorsInstance<ActivateeType>
         this.activators = activators;
     }
 
+    @Override
     public void beforeActivation( ActivateeType activating )
             throws Exception
     {
@@ -46,6 +47,7 @@ public class ActivatorsInstance<ActivateeType>
         }
     }
 
+    @Override
     public void afterActivation( ActivateeType activated )
             throws Exception
     {
@@ -54,6 +56,7 @@ public class ActivatorsInstance<ActivateeType>
         }
     }
 
+    @Override
     public void beforePassivation( ActivateeType passivating )
             throws Exception
     {
@@ -78,6 +81,7 @@ public class ActivatorsInstance<ActivateeType>
         throw new PassivationException( exceptions );
     }
 
+    @Override
     public void afterPassivation( ActivateeType passivated )
             throws Exception
     {

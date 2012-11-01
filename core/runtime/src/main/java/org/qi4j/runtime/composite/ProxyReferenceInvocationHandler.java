@@ -41,6 +41,7 @@ public final class ProxyReferenceInvocationHandler
         proxy = null;
     }
 
+    @Override
     public Object invokeComposite( Method method, Object[] args )
         throws Throwable
     {
@@ -59,6 +60,7 @@ public final class ProxyReferenceInvocationHandler
         }
     }
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {

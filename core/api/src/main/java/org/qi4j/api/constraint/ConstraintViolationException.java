@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.api.constraint;
 
@@ -191,6 +191,7 @@ public class ConstraintViolationException
             {
                 classes = "[" + Iterables.<Class<?>>toString( instanceTypes, new Function<Class<?>, String>()
                 {
+                    @Override
                     public String map( Class<?> from )
                     {
                         return from.getSimpleName();
@@ -219,7 +220,7 @@ public class ConstraintViolationException
     public String localizedMessage()
     {
         String[] messages = getLocalizedMessages( null );
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         boolean first = true;
         for( String message : messages )
         {

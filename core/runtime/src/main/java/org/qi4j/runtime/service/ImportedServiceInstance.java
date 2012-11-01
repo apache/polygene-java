@@ -48,12 +48,14 @@ public final class ImportedServiceInstance<T>
         return importer.isAvailable( instance );
     }
 
+    @Override
     public void activate()
             throws Exception
     {
         // NOOP
     }
 
+    @Override
     public void passivate()
             throws Exception
     {

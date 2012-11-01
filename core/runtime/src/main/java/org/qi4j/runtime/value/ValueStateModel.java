@@ -14,6 +14,7 @@
 
 package org.qi4j.runtime.value;
 
+import java.util.List;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.common.QualifiedName;
@@ -27,8 +28,6 @@ import org.qi4j.runtime.association.ManyAssociationModel;
 import org.qi4j.runtime.association.ManyAssociationsModel;
 import org.qi4j.runtime.composite.StateModel;
 import org.qi4j.runtime.property.PropertiesModel;
-
-import java.util.List;
 
 /**
  * JAVADOC
@@ -50,6 +49,7 @@ public final class ValueStateModel
         this.manyAssociationsModel = manyAssociationsModel;
     }
 
+    @Override
     public AssociationDescriptor getAssociationByName( String name )
     {
         return associationsModel.getAssociationByName( name );
@@ -61,6 +61,7 @@ public final class ValueStateModel
         return associationsModel.getAssociationByQualifiedName( name );
     }
 
+    @Override
     public AssociationDescriptor getManyAssociationByName( String name )
     {
         return manyAssociationsModel.getManyAssociationByName( name );
@@ -72,11 +73,13 @@ public final class ValueStateModel
         return manyAssociationsModel.getManyAssociationByQualifiedName( name );
     }
 
+    @Override
     public Iterable<AssociationModel> associations()
     {
         return associationsModel.associations();
     }
 
+    @Override
     public Iterable<ManyAssociationModel> manyAssociations()
     {
         return manyAssociationsModel.manyAssociations();

@@ -65,6 +65,7 @@ public class PropertyInstance<T>
      *
      * @return This property value.
      */
+    @Override
     public T get()
     {
         return value;
@@ -75,6 +76,7 @@ public class PropertyInstance<T>
      *
      * @param aNewValue The new value.
      */
+    @Override
     public void set( T aNewValue )
     {
         if( model.isImmutable() )
@@ -97,6 +99,7 @@ public class PropertyInstance<T>
      *
      * @return Returns a {@code boolean} indicator whether this object is equals the other.
      */
+    @Override
     public boolean equals( Object o )
     {
         if( this == o )
@@ -123,6 +126,7 @@ public class PropertyInstance<T>
      *
      * @return the hashcode of this instance.
      */
+    @Override
     public int hashCode()
     {
         int hash = getClass().hashCode();

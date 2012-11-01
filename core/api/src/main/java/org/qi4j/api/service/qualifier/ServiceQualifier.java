@@ -54,6 +54,7 @@ public abstract class ServiceQualifier
     {
         return new Specification<ServiceReference<?>>()
         {
+            @Override
             public boolean satisfiedBy( ServiceReference<?> service )
             {
                 return service.identity().equals( anId );
@@ -65,6 +66,7 @@ public abstract class ServiceQualifier
     {
         return new Specification<ServiceReference<?>>()
         {
+            @Override
             public boolean satisfiedBy( ServiceReference<?> service )
             {
                 Object metaObject = service.metaInfo( metaInfo.getClass() );
@@ -77,6 +79,7 @@ public abstract class ServiceQualifier
     {
         return new Specification<ServiceReference<?>>()
         {
+            @Override
             public boolean satisfiedBy( ServiceReference<?> service )
             {
                 return service.isActive();
@@ -88,6 +91,7 @@ public abstract class ServiceQualifier
     {
         return new Specification<ServiceReference<?>>()
         {
+            @Override
             public boolean satisfiedBy( ServiceReference<?> service )
             {
                 return service.isAvailable();
@@ -99,6 +103,7 @@ public abstract class ServiceQualifier
     {
         return new Specification<ServiceReference<?>>()
         {
+            @Override
             public boolean satisfiedBy( ServiceReference<?> service )
             {
                 ServiceTags serviceTags = service.metaInfo( ServiceTags.class );

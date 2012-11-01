@@ -28,6 +28,7 @@ import org.qi4j.runtime.model.Resolution;
 public final class StateInjectionProviderFactory
     implements InjectionProviderFactory
 {
+    @Override
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
@@ -133,6 +134,7 @@ public final class StateInjectionProviderFactory
             this.propertyDescriptor = propertyDescriptor;
         }
 
+        @Override
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
@@ -158,6 +160,7 @@ public final class StateInjectionProviderFactory
             this.associationDescriptor = associationDescriptor;
         }
 
+        @Override
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
@@ -184,6 +187,7 @@ public final class StateInjectionProviderFactory
             this.manyAssociationDescriptor = manyAssociationDescriptor;
         }
 
+        @Override
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
@@ -203,6 +207,7 @@ public final class StateInjectionProviderFactory
     static private class StateInjectionProvider
         implements InjectionProvider
     {
+        @Override
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
@@ -214,6 +219,7 @@ public final class StateInjectionProviderFactory
         implements InjectionProvider
     {
 
+        @Override
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {

@@ -58,54 +58,64 @@ public class TransientInstance
         proxy = compositeModel.newProxy( this );
     }
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
         return compositeModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
+    @Override
     public <T> T proxy()
     {
         return (T) proxy;
     }
 
+    @Override
     public <T> T newProxy( Class<T> mixinType )
         throws IllegalArgumentException
     {
         return compositeModel.newProxy( this, mixinType );
     }
 
+    @Override
     public Object invokeComposite( Method method, Object[] args )
         throws Throwable
     {
         return compositeModel.invoke( this, proxy, method, args, moduleInstance );
     }
 
+    @Override
     public CompositeModel descriptor()
     {
         return compositeModel;
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return compositeModel.metaInfo( infoType );
     }
 
+    @Override
     public Iterable<Class<?>> types()
     {
         return compositeModel.types();
     }
 
+    @Override
     public ModuleInstance module()
     {
         return moduleInstance;
     }
 
+    @Override
     public StateHolder state()
     {
         return state;
     }
 
+    @Override
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )
         throws Throwable
     {
@@ -113,6 +123,7 @@ public class TransientInstance
         return methodInstance.invoke( proxy, params, mixin );
     }
 
+    @Override
     public Object invokeObject( Object proxy, Object[] args, Method method )
         throws Throwable
     {
@@ -160,7 +171,7 @@ public class TransientInstance
     @Override
     public String toString()
     {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         boolean first = true;
         for( Object mixin : mixins )
         {

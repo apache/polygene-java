@@ -42,6 +42,7 @@ public final class SideEffectsModel
         this.sideEffectModels = sideEffectModels;
     }
 
+    @Override
     public Iterable<DependencyModel> dependencies()
     {
         return Iterables.flattenIterables( Iterables.map( Dependencies.DEPENDENCIES_FUNCTION, sideEffectModels ) );

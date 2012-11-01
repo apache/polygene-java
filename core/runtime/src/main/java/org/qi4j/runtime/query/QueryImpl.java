@@ -14,7 +14,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.runtime.query;
 
@@ -84,6 +84,7 @@ class QueryImpl<T>
     /**
      * @see org.qi4j.api.query.Query#orderBy(org.qi4j.api.query.grammar.OrderBy[])
      */
+    @Override
     public Query<T> orderBy( final OrderBy... segments )
     {
         orderBySegments = Iterables.iterable( segments );
@@ -114,6 +115,7 @@ class QueryImpl<T>
     /**
      * @see org.qi4j.api.query.Query#firstResult(int)
      */
+    @Override
     public Query<T> firstResult( int firstResult )
     {
         this.firstResult = firstResult;
@@ -123,6 +125,7 @@ class QueryImpl<T>
     /**
      * @see org.qi4j.api.query.Query#maxResults(int)
      */
+    @Override
     public Query<T> maxResults( int maxResults )
     {
         this.maxResults = maxResults;
@@ -133,6 +136,7 @@ class QueryImpl<T>
      * @see org.qi4j.api.query.Query#setVariable(String, Object)
      */
     @SuppressWarnings( "unchecked" )
+    @Override
     public Query<T> setVariable( final String name, final Object value )
     {
         if( variables == null )
@@ -148,6 +152,7 @@ class QueryImpl<T>
      * @see org.qi4j.api.query.Query#getVariable(String)
      */
     @SuppressWarnings( "unchecked" )
+    @Override
     public <V> V getVariable( final String name )
     {
         if( variables == null )
@@ -160,6 +165,7 @@ class QueryImpl<T>
         }
     }
 
+    @Override
     public Class<T> resultType()
     {
         return resultType;

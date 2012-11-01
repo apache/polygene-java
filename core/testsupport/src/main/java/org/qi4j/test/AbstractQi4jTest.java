@@ -33,6 +33,7 @@ public abstract class AbstractQi4jTest extends AbstractQi4jBaseTest
     protected Module module;
 
     @Before
+    @Override
     public void setUp()
         throws Exception
     {
@@ -56,6 +57,7 @@ public abstract class AbstractQi4jTest extends AbstractQi4jBaseTest
     }
 
     @After
+    @Override
     public void tearDown()
         throws Exception
     {

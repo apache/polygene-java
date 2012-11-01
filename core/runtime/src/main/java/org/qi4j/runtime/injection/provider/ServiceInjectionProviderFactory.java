@@ -39,6 +39,7 @@ import static org.qi4j.functional.Iterables.*;
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
 {
+    @Override
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
@@ -98,6 +99,7 @@ public final class ServiceInjectionProviderFactory
             super( serviceType, serviceQualifier );
         }
 
+        @Override
         public synchronized Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
@@ -116,6 +118,7 @@ public final class ServiceInjectionProviderFactory
             super( serviceType, serviceQualifier );
         }
 
+        @Override
         public synchronized Object provideInjection( final InjectionContext context )
             throws InjectionProviderException
         {
@@ -137,6 +140,7 @@ public final class ServiceInjectionProviderFactory
             super( serviceType, qualifier );
         }
 
+        @Override
         public synchronized Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
@@ -152,6 +156,7 @@ public final class ServiceInjectionProviderFactory
             super( serviceType, qualifier );
         }
 
+        @Override
         public synchronized Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {

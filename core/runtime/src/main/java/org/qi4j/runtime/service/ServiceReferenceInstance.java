@@ -56,6 +56,7 @@ public final class ServiceReferenceInstance<T>
         serviceProxy = newProxy();
     }
 
+    @Override
     public String identity()
     {
         return serviceModel.identity();
@@ -67,21 +68,25 @@ public final class ServiceReferenceInstance<T>
         return serviceModel.types();
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return serviceModel.metaInfo( infoType );
     }
 
+    @Override
     public synchronized T get()
     {
         return serviceProxy;
     }
 
+    @Override
     public boolean isActive()
     {
         return active;
     }
 
+    @Override
     public boolean isAvailable()
     {
         return getInstance().isAvailable();
@@ -92,6 +97,7 @@ public final class ServiceReferenceInstance<T>
         return module;
     }
 
+    @Override
     public void activate()
         throws Exception
     {
@@ -101,6 +107,7 @@ public final class ServiceReferenceInstance<T>
         }
     }
 
+    @Override
     public void passivate()
         throws Exception
     {
@@ -111,6 +118,7 @@ public final class ServiceReferenceInstance<T>
                 activation.passivate( new Runnable()
                 {
 
+                    @Override
                     public void run()
                     {
                         active = false;
@@ -143,6 +151,7 @@ public final class ServiceReferenceInstance<T>
                         activation.activate( serviceModel.newActivatorsInstance(), instance, new Runnable()
                         {
 
+                            @Override
                             public void run()
                             {
                                 active = true;
@@ -226,6 +235,7 @@ public final class ServiceReferenceInstance<T>
             return getInstance().state();
         }
 
+        @Override
         public Object invoke( Object object, Method method, Object[] objects )
             throws Throwable
         {
@@ -264,17 +274,20 @@ public final class ServiceReferenceInstance<T>
             return serviceModel.toString();
         }
 
+        @Override
         public Module module()
         {
             return module;
         }
     }
 
+    @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.registerActivationEventListener( listener );
     }
 
+    @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.deregisterActivationEventListener( listener );

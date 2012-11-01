@@ -166,17 +166,19 @@ public class ModuleInstance
         classLoader = new ModuleClassLoader( Thread.currentThread().getContextClassLoader() );
     }
 
+    @Override
     public String name()
     {
         return moduleModel.name();
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return moduleModel.metaInfo( infoType );
     }
 
-    public ModuleModel model()
+    ModuleModel model()
     {
         return moduleModel;
     }
@@ -186,23 +188,14 @@ public class ModuleInstance
         return layerInstance;
     }
 
-    public ServicesInstance services()
-    {
-        return services;
-    }
-
-    public ImportedServicesInstance importedServices()
-    {
-        return importedServices;
-    }
-
+    @Override
     public EntityDescriptor entityDescriptor( String name )
     {
         try
         {
             Class<?> type = classLoader().loadClass( name );
-            Iterable<ModelModule<EntityModel>> entityModels = findEntityModels( type );
-            return first( map( ModelModule.<EntityModel>modelFunction(), entityModels ) );
+            Iterable<ModelModule<EntityModel>> allEntityModels = findEntityModels( type );
+            return first( map( ModelModule.<EntityModel>modelFunction(), allEntityModels ) );
         }
         catch( ClassNotFoundException e )
         {
@@ -210,6 +203,7 @@ public class ModuleInstance
         }
     }
 
+    @Override
     public ObjectDescriptor objectDescriptor( String typeName )
     {
         try
@@ -223,6 +217,7 @@ public class ModuleInstance
         }
     }
 
+    @Override
     public TransientDescriptor transientDescriptor( String name )
     {
         try
@@ -236,6 +231,7 @@ public class ModuleInstance
         }
     }
 
+    @Override
     public ValueDescriptor valueDescriptor( String name )
     {
         try
@@ -254,11 +250,13 @@ public class ModuleInstance
         }
     }
 
+    @Override
     public ClassLoader classLoader()
     {
         return classLoader;
     }
 
+    @Override
     public void activate()
         throws Exception
     {
@@ -267,6 +265,7 @@ public class ModuleInstance
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
+    @Override
     public void passivate()
         throws Exception
     {
@@ -286,7 +285,7 @@ public class ModuleInstance
         return entityFunction;
     }
 
-    public Iterable<ModelModule<EntityModel>> findEntityModels( final Class type )
+    Iterable<ModelModule<EntityModel>> findEntityModels( final Class type )
     {
         Iterable<ModelModule<EntityModel>> models = entityModels.get( type );
 
@@ -311,7 +310,7 @@ public class ModuleInstance
         return models;
     }
 
-    public ModelModule<TransientModel> findTransientModels( final Class type )
+    ModelModule<TransientModel> findTransientModels( final Class type )
     {
         ModelModule<TransientModel> model = transientModels.get( type );
 
@@ -342,7 +341,7 @@ public class ModuleInstance
         return model;
     }
 
-    public ModelModule<ObjectModel> findObjectModels( final Class type )
+    ModelModule<ObjectModel> findObjectModels( final Class type )
     {
         ModelModule<ObjectModel> model = objectModels.get( type );
 
@@ -462,7 +461,7 @@ public class ModuleInstance
         return store;
     }
 
-    public IdentityGenerator identityGenerator()
+    IdentityGenerator identityGenerator()
     {
         synchronized( this )
         {
@@ -475,7 +474,7 @@ public class ModuleInstance
         }
     }
 
-    public MetricsProvider metricsProvider()
+    MetricsProvider metricsProvider()
     {
         synchronized( this )
         {
@@ -496,6 +495,7 @@ public class ModuleInstance
     }
 
     // Implementation of TransientBuilderFactory
+    @Override
     public <T> TransientBuilder<T> newTransientBuilder( Class<T> mixinType )
         throws NoSuchTransientException
     {
@@ -521,6 +521,7 @@ public class ModuleInstance
         return new TransientBuilderInstance<T>( model, state, UsesInstance.EMPTY_USES );
     }
 
+    @Override
     public <T> T newTransient( final Class<T> mixinType, Object... uses )
         throws NoSuchTransientException, ConstructionException
     {
@@ -528,6 +529,7 @@ public class ModuleInstance
     }
 
     // Implementation of ObjectFactory
+    @Override
     public <T> T newObject( Class<T> mixinType, Object... uses )
         throws NoSuchObjectException
     {
@@ -559,12 +561,14 @@ public class ModuleInstance
     }
 
     // Implementation of ValueBuilderFactory
+    @Override
     public <T> T newValue( Class<T> mixinType )
         throws NoSuchValueException, ConstructionException
     {
         return newValueBuilder( mixinType ).newInstance();
     }
 
+    @Override
     public <T> ValueBuilder<T> newValueBuilder( Class<T> mixinType )
         throws NoSuchValueException
     {
@@ -681,6 +685,7 @@ public class ModuleInstance
         return new ValueBuilderWithPrototype<T>( model, this, prototype);
     }
 
+    @Override
     public <T> T newValueFromJSON( Class<T> mixinType, String jsonValue )
         throws NoSuchValueException, ConstructionException
     {
@@ -705,16 +710,19 @@ public class ModuleInstance
     }
 
     // Implementation of UnitOfWorkFactory
+    @Override
     public UnitOfWork newUnitOfWork()
     {
         return newUnitOfWork( Usecase.DEFAULT );
     }
 
+    @Override
     public UnitOfWork newUnitOfWork( long currentTime )
     {
         return newUnitOfWork( Usecase.DEFAULT, currentTime );
     }
 
+    @Override
     public UnitOfWork newUnitOfWork( Usecase usecase )
     {
         if( usecase == null )
@@ -738,6 +746,7 @@ public class ModuleInstance
         return !stack.isEmpty();
     }
 
+    @Override
     public UnitOfWork currentUnitOfWork()
     {
         Stack<UnitOfWorkInstance> stack = UnitOfWorkInstance.getCurrent();
@@ -748,6 +757,7 @@ public class ModuleInstance
         return new ModuleUnitOfWork( ModuleInstance.this, stack.peek() );
     }
 
+    @Override
     public UnitOfWork getUnitOfWork( EntityComposite entity )
     {
         EntityInstance instance = EntityInstance.getEntityInstance( entity );
@@ -883,6 +893,7 @@ public class ModuleInstance
     /**
      * @see QueryBuilderFactory#newQueryBuilder(Class)
      */
+    @Override
     public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
     {
         return queryBuilderFactory.newQueryBuilder( resultType );
@@ -1049,11 +1060,13 @@ public class ModuleInstance
         };
     }
 
+    @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.registerActivationEventListener( listener );
     }
 
+    @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.deregisterActivationEventListener( listener );

@@ -32,6 +32,7 @@ public final class ConstraintModel
         this.constraintClass = constraintClass;
     }
 
+    @Override
     public ConstraintInstance<?, ?> newInstance()
     {
         try

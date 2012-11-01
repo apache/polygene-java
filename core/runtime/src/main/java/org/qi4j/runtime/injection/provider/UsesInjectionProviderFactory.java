@@ -22,6 +22,7 @@ public final class UsesInjectionProviderFactory
     {
     }
 
+    @Override
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
@@ -39,6 +40,7 @@ public final class UsesInjectionProviderFactory
         }
 
         @SuppressWarnings( "unchecked" )
+        @Override
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {

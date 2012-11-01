@@ -70,22 +70,26 @@ public final class ImportedServiceModel
         return importOnStartup;
     }
 
+    @Override
     public Iterable<Class<?>> types()
     {
         Iterable<? extends Class<?>> iterable = iterable( type );
         return (Iterable<Class<?>>) iterable;
     }
 
+    @Override
     public Visibility visibility()
     {
         return visibility;
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
     }
 
+    @Override
     public Class<? extends ServiceImporter> serviceImporter()
     {
         return serviceImporter;
@@ -97,6 +101,7 @@ public final class ImportedServiceModel
         return type;
     }
 
+    @Override
     public String identity()
     {
         return identity;

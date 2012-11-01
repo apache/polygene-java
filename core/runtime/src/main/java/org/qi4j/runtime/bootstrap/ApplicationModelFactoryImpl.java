@@ -46,6 +46,7 @@ import org.qi4j.runtime.structure.UsedLayersModel;
 public final class ApplicationModelFactoryImpl
     implements ApplicationModelFactory
 {
+    @Override
     public ApplicationDescriptor newApplicationModel( ApplicationAssembly assembly )
         throws AssemblyException
     {
