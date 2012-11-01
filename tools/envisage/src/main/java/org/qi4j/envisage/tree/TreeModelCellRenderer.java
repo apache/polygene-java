@@ -16,13 +16,12 @@
 */
 package org.qi4j.envisage.tree;
 
-import org.qi4j.tools.model.descriptor.*;
-
+import java.awt.*;
+import java.util.ResourceBundle;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import java.awt.*;
-import java.util.ResourceBundle;
+import org.qi4j.tools.model.descriptor.*;
 
 /**
  * TreeCellRenderer

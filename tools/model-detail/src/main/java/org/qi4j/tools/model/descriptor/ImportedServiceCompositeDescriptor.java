@@ -16,15 +16,14 @@
 */
 package org.qi4j.tools.model.descriptor;
 
+import java.util.LinkedList;
+import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Iterables;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * XXX Workaround for inconsistency in Qi4J core-api/spi
@@ -47,21 +46,25 @@ public class ImportedServiceCompositeDescriptor
         return importedService;
     }
 
+    @Override
     public Iterable<Class<?>> mixinTypes()
     {
         return mixins;
     }
 
+    @Override
     public Class<?> primaryType()
     {
         return importedService.type();
     }
 
+    @Override
     public Visibility visibility()
     {
         return importedService.visibility();
     }
 
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return importedService.metaInfo( infoType );

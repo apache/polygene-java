@@ -16,13 +16,12 @@
 */
 package org.qi4j.envisage.detail;
 
+import java.awt.*;
+import java.util.ResourceBundle;
+import javax.swing.*;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.tools.model.descriptor.ImportedServiceDetailDescriptor;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.ResourceBundle;
 
 /**
  * Implementation of ImportedService imported by
@@ -41,6 +40,7 @@ public class ImportedByPane
         this.add( contentPane, BorderLayout.CENTER );
     }
 
+    @Override
     public void setDescriptor( Object objectDesciptor )
     {
         clear();

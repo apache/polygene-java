@@ -16,9 +16,9 @@
 */
 package org.qi4j.envisage.event;
 
-import javax.swing.text.html.HTMLEditorKit;
 import java.awt.*;
 import java.util.EventObject;
+import javax.swing.text.html.HTMLEditorKit;
 
 public class LinkEvent
     extends EventObject

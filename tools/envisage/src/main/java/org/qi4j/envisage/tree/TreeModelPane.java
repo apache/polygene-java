@@ -16,16 +16,15 @@
 */
 package org.qi4j.envisage.tree;
 
-import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ResourceBundle;
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.*;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
 
 /**
  * Application Model View as Swing Component.
@@ -99,6 +98,7 @@ public class TreeModelPane
 
         viewAsCombo.addItemListener( new ItemListener()
         {
+            @Override
             public void itemStateChanged( ItemEvent evt )
             {
                 if( evt.getStateChange() == ItemEvent.DESELECTED )
@@ -134,6 +134,7 @@ public class TreeModelPane
 
         structureTree.addTreeSelectionListener( new TreeSelectionListener()
         {
+            @Override
             public void valueChanged( TreeSelectionEvent evt )
             {
                 structureTreeValueChanged();
@@ -142,6 +143,7 @@ public class TreeModelPane
 
         typeTree.addTreeSelectionListener( new TreeSelectionListener()
         {
+            @Override
             public void valueChanged( TreeSelectionEvent evt )
             {
                 typeTreeValueChanged();

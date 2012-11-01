@@ -16,26 +16,25 @@
 */
 package org.qi4j.envisage.detail;
 
-import org.qi4j.api.composite.DependencyDescriptor;
-import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.tools.model.descriptor.InjectedFieldDetailDescriptor;
-import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.tools.model.descriptor.ServiceUsage;
-import org.qi4j.tools.model.util.DescriptorUtilities;
-import org.qi4j.envisage.util.TableRow;
-import org.qi4j.envisage.util.TableRowUtilities;
-
-import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
+import org.qi4j.api.composite.DependencyDescriptor;
+import org.qi4j.envisage.event.LinkEvent;
+import org.qi4j.envisage.util.TableRow;
+import org.qi4j.envisage.util.TableRowUtilities;
+import org.qi4j.tools.model.descriptor.InjectedFieldDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ServiceUsage;
+import org.qi4j.tools.model.util.DescriptorUtilities;
 
 /**
  * Service Usage tab, which shows all the 'users' of the Service,
@@ -84,6 +83,7 @@ public class ServiceUsagePane
 
         MouseInputAdapter mouseInputListener = new MouseInputAdapter()
         {
+            @Override
             public void mouseMoved( MouseEvent evt )
             {
                 // Column 1 is the Owner Column
@@ -101,6 +101,7 @@ public class ServiceUsagePane
                 }
             }
 
+            @Override
             public void mouseClicked( MouseEvent evt )
             {
                 /*if( evt.getClickCount() < 2 )
@@ -140,6 +141,7 @@ public class ServiceUsagePane
         detailModelPane.fireLinkActivated( linkEvt );
     }
 
+    @Override
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
@@ -238,6 +240,7 @@ public class ServiceUsagePane
             fireTableRowsInserted( i1, i1 + 1 );
         }
 
+        @Override
         public Object getValueAt( int rowIndex, int columnIndex )
         {
             TableRow row = rows.get( rowIndex );
@@ -250,16 +253,19 @@ public class ServiceUsagePane
             fireTableDataChanged();
         }
 
+        @Override
         public int getColumnCount()
         {
             return columnNames.length;
         }
 
+        @Override
         public String getColumnName( int col )
         {
             return columnNames[ col ];
         }
 
+        @Override
         public int getRowCount()
         {
             return rows.size();

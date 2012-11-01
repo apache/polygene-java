@@ -35,7 +35,7 @@ public class ColorUtilities
      *
      * @return the AWT {@code Color} or null if fail to parse
      */
-    public static final Color hexStringToColor( String hexString )
+    public static Color hexStringToColor( String hexString )
     {
         Color color = null;
         int r = 0;

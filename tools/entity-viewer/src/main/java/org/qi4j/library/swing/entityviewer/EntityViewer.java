@@ -109,6 +109,7 @@ public class EntityViewer
 
         entitiesCombo.addItemListener( new ItemListener()
         {
+            @Override
             public void itemStateChanged( ItemEvent evt )
             {
                 entitiesComboItemStateChanged( evt );
@@ -117,6 +118,7 @@ public class EntityViewer
 
         treePanel.getTreeComponent().addTreeSelectionListener( new TreeSelectionListener()
         {
+            @Override
             public void valueChanged( TreeSelectionEvent evt )
             {
                 treePanelValueChanged( evt );

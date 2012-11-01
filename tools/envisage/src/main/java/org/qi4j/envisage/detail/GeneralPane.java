@@ -16,20 +16,19 @@
 */
 package org.qi4j.envisage.detail;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumnModel;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.tools.model.descriptor.*;
 import org.qi4j.envisage.util.TableRow;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumnModel;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
+import org.qi4j.tools.model.descriptor.*;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -64,6 +63,7 @@ public class GeneralPane
         tableModel.clear();
     }
 
+    @Override
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
@@ -186,6 +186,7 @@ public class GeneralPane
             fireTableDataChanged();
         }
 
+        @Override
         public Object getValueAt( int rowIndex, int columnIndex )
         {
             TableRow row = this.rows.get( rowIndex );
@@ -198,16 +199,19 @@ public class GeneralPane
             fireTableDataChanged();
         }
 
+        @Override
         public int getColumnCount()
         {
             return columnNames.length;
         }
 
+        @Override
         public String getColumnName( int col )
         {
             return columnNames[ col ];
         }
 
+        @Override
         public int getRowCount()
         {
             return rows.size();

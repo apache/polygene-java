@@ -16,6 +16,14 @@
 */
 package org.qi4j.envisage.detail;
 
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.lang.annotation.Annotation;
+import java.util.ResourceBundle;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MouseInputAdapter;
 import org.qi4j.api.composite.DependencyDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
@@ -25,15 +33,6 @@ import org.qi4j.tools.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.tools.model.descriptor.InjectedFieldDetailDescriptor;
 import org.qi4j.tools.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ObjectDetailDescriptor;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.MouseInputAdapter;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.lang.annotation.Annotation;
-import java.util.ResourceBundle;
 
 public class DependencyPane
     extends DetailPane
@@ -78,6 +77,7 @@ public class DependencyPane
 
         fieldList.addListSelectionListener( new ListSelectionListener()
         {
+            @Override
             public void valueChanged( ListSelectionEvent evt )
             {
                 fieldListValueChanged( evt );
@@ -89,6 +89,7 @@ public class DependencyPane
 
         MouseInputAdapter mouseInputListener = new MouseInputAdapter()
         {
+            @Override
             public void mouseMoved( MouseEvent evt )
             {
                 int i = injectedServiceList.locationToIndex( evt.getPoint() );
@@ -102,11 +103,13 @@ public class DependencyPane
                 }
             }
 
+            @Override
             public void mouseExited( MouseEvent evt )
             {
                 setCursor( defaultCursor );
             }
 
+            @Override
             public void mouseClicked( MouseEvent evt )
             {
                 /*if( evt.getClickCount() < 2 )
@@ -154,6 +157,7 @@ public class DependencyPane
         injectedServiceListModel.clear();
     }
 
+    @Override
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
@@ -432,6 +436,7 @@ public class DependencyPane
     class InjectedServiceListCellRenderer
         extends DefaultListCellRenderer
     {
+        @Override
         public Component getListCellRendererComponent( JList list,
                                                        Object value,
                                                        int index,

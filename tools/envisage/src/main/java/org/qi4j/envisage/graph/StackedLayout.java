@@ -16,14 +16,13 @@
 */
 package org.qi4j.envisage.graph;
 
+import java.awt.*;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
 import prefuse.Display;
 import prefuse.action.layout.graph.TreeLayout;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
-
-import java.awt.*;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
 
 public class StackedLayout
     extends TreeLayout
@@ -37,6 +36,7 @@ public class StackedLayout
         super( group );
     }
 
+    @Override
     public void run( double frac )
     {
         // setup

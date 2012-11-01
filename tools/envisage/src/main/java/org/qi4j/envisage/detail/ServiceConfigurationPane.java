@@ -16,19 +16,17 @@
 */
 package org.qi4j.envisage.detail;
 
-import org.qi4j.api.composite.ModelDescriptor;
-import org.qi4j.api.object.ObjectDescriptor;
-import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.tools.model.descriptor.*;
-import org.qi4j.tools.model.util.DescriptorUtilities;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ResourceBundle;
+import javax.swing.*;
+import org.qi4j.api.composite.ModelDescriptor;
+import org.qi4j.envisage.event.LinkEvent;
+import org.qi4j.tools.model.descriptor.*;
+import org.qi4j.tools.model.util.DescriptorUtilities;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -61,6 +59,7 @@ public class ServiceConfigurationPane
 
         linkButton.addActionListener( new ActionListener()
         {
+            @Override
             public void actionPerformed( ActionEvent evt )
             {
                 linkActivated();
@@ -69,16 +68,19 @@ public class ServiceConfigurationPane
 
         nameLabel.addMouseListener( new MouseAdapter()
         {
+            @Override
             public void mouseClicked( MouseEvent evt )
             {
                 linkActivated();
             }
 
+            @Override
             public void mouseEntered( MouseEvent evt )
             {
                 setCursor( linkCursor );
             }
 
+            @Override
             public void mouseExited( MouseEvent evt )
             {
                 setCursor( defaultCursor );
@@ -105,6 +107,7 @@ public class ServiceConfigurationPane
         configDescriptor = null;
     }
 
+    @Override
     public void setDescriptor( Object objectDesciptor )
     {
         clear();

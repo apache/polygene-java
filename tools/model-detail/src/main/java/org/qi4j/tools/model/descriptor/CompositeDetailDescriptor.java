@@ -16,12 +16,11 @@
 */
 package org.qi4j.tools.model.descriptor;
 
-import org.qi4j.api.composite.CompositeDescriptor;
-import org.qi4j.api.composite.MethodDescriptor;
-
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
+import org.qi4j.api.composite.CompositeDescriptor;
+import org.qi4j.api.composite.MethodDescriptor;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 

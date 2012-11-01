@@ -16,24 +16,23 @@
 */
 package org.qi4j.envisage;
 
-import org.qi4j.api.structure.ApplicationDescriptor;
-import org.qi4j.envisage.detail.DetailModelPane;
-import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.envisage.event.LinkListener;
-import org.qi4j.envisage.graph.GraphPane;
-import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
-import org.qi4j.envisage.print.PDFWriter;
-import org.qi4j.envisage.tree.TreeModelPane;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.envisage.detail.DetailModelPane;
+import org.qi4j.envisage.event.LinkEvent;
+import org.qi4j.envisage.event.LinkListener;
+import org.qi4j.envisage.graph.GraphPane;
+import org.qi4j.envisage.print.PDFWriter;
+import org.qi4j.envisage.tree.TreeModelPane;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
 
 /**
  * Envisage Main Frame
@@ -69,6 +68,7 @@ public class EnvisageFrame
 
         treeModelPane.addTreeSelectionListener( new TreeSelectionListener()
         {
+            @Override
             public void valueChanged( TreeSelectionEvent evt )
             {
                 applicationModelPaneValueChanged();
@@ -77,6 +77,7 @@ public class EnvisageFrame
 
         graphPane.addLinkListener( new LinkListener()
         {
+            @Override
             public void activated( LinkEvent evt )
             {
                 graphItemLinkActivated( evt );
@@ -85,6 +86,7 @@ public class EnvisageFrame
 
         detailModelPane.addLinkListener( new LinkListener()
         {
+            @Override
             public void activated( LinkEvent evt )
             {
                 detailModelPaneLinkActivated( evt );
@@ -131,6 +133,7 @@ public class EnvisageFrame
     {
         ActionListener menuActionListener = new ActionListener()
         {
+            @Override
             public void actionPerformed( ActionEvent evt )
             {
                 if( evt.getActionCommand().equals( "export" ) )
@@ -197,6 +200,7 @@ public class EnvisageFrame
     {
         SwingUtilities.invokeLater( new Runnable()
         {
+            @Override
             public void run()
             {
                 PDFWriter pdf = new PDFWriter();

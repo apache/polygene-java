@@ -16,11 +16,10 @@
 */
 package org.qi4j.tools.model.descriptor;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.api.service.ServiceDescriptor;
-
 import java.util.LinkedList;
 import java.util.List;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.api.service.ServiceDescriptor;
 
 public final class ServiceDetailDescriptor
     extends CompositeDetailDescriptor<ServiceDescriptor>

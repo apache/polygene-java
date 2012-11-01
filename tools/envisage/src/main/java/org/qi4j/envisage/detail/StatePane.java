@@ -16,21 +16,6 @@
 */
 package org.qi4j.envisage.detail;
 
-import org.qi4j.api.association.Association;
-import org.qi4j.api.association.ManyAssociation;
-import org.qi4j.api.association.GenericAssociationInfo;
-import org.qi4j.api.property.GenericPropertyInfo;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.util.Classes;
-import org.qi4j.tools.model.descriptor.*;
-import org.qi4j.tools.model.util.DescriptorUtilities;
-import org.qi4j.envisage.util.TableRow;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -38,6 +23,20 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumnModel;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.GenericAssociationInfo;
+import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Classes;
+import org.qi4j.envisage.util.TableRow;
+import org.qi4j.tools.model.descriptor.*;
+import org.qi4j.tools.model.util.DescriptorUtilities;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -80,6 +79,7 @@ public class StatePane
 
         methodList.addListSelectionListener( new ListSelectionListener()
         {
+            @Override
             public void valueChanged( ListSelectionEvent evt )
             {
                 methodListValueChanged( evt );
@@ -87,6 +87,7 @@ public class StatePane
         } );
     }
 
+    @Override
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
@@ -108,7 +109,6 @@ public class StatePane
         else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
             // Object does not have state
-            return;
         }
     }
 
@@ -237,6 +237,7 @@ public class StatePane
             fireTableDataChanged();
         }
 
+        @Override
         public Object getValueAt( int rowIndex, int columnIndex )
         {
             TableRow row = this.rows.get( rowIndex );
@@ -249,16 +250,19 @@ public class StatePane
             fireTableDataChanged();
         }
 
+        @Override
         public int getColumnCount()
         {
             return columnNames.length;
         }
 
+        @Override
         public String getColumnName( int col )
         {
             return columnNames[ col ];
         }
 
+        @Override
         public int getRowCount()
         {
             return rows.size();
@@ -284,6 +288,7 @@ public class StatePane
             }
         }
 
+        @Override
         public Component getListCellRendererComponent( JList list,
                                                        Object value,
                                                        int index,

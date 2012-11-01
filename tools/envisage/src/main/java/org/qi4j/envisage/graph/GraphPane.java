@@ -16,18 +16,17 @@
 */
 package org.qi4j.envisage.graph;
 
-import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.envisage.event.LinkListener;
-import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
-import prefuse.data.Graph;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.*;
+import org.qi4j.envisage.event.LinkEvent;
+import org.qi4j.envisage.event.LinkListener;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
+import prefuse.data.Graph;
 
 /**
  * Just a simple wrapper for ApplicationModel Graph Display
@@ -69,6 +68,7 @@ public class GraphPane
 
         treeDisplay.addLinkListener( new LinkListener()
         {
+            @Override
             public void activated( LinkEvent evt )
             {
                 graphItemLinkActivated( evt );
@@ -77,6 +77,7 @@ public class GraphPane
 
         stackedDisplay.addLinkListener( new LinkListener()
         {
+            @Override
             public void activated( LinkEvent evt )
             {
                 graphItemLinkActivated( evt );
@@ -85,6 +86,7 @@ public class GraphPane
 
         this.addComponentListener( new ComponentAdapter()
         {
+            @Override
             public void componentResized( ComponentEvent evt )
             {
                 Dimension size = GraphPane.this.getSize();

@@ -16,23 +16,22 @@
 */
 package org.qi4j.envisage.detail;
 
-import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.tools.model.util.DescriptorUtilities;
-import org.qi4j.envisage.util.TableRow;
-
-import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
+import org.qi4j.envisage.event.LinkEvent;
+import org.qi4j.envisage.util.TableRow;
+import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.tools.model.util.DescriptorUtilities;
 
 /**
  * API would be defined as "All service interfaces which are visible for layer
@@ -73,6 +72,7 @@ public class APIPane
 
         MouseInputAdapter mouseInputListener = new MouseInputAdapter()
         {
+            @Override
             public void mouseMoved( MouseEvent evt )
             {
                 // Column 1 is the Service Column
@@ -90,6 +90,7 @@ public class APIPane
                 }
             }
 
+            @Override
             public void mouseClicked( MouseEvent evt )
             {
                 int col = apiTable.columnAtPoint( evt.getPoint() );
@@ -114,6 +115,7 @@ public class APIPane
         apiTable.addMouseListener( mouseInputListener );
     }
 
+    @Override
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
@@ -221,6 +223,7 @@ public class APIPane
             fireTableRowsInserted( i1, i1 + i2 );
         }
 
+        @Override
         public Object getValueAt( int rowIndex, int columnIndex )
         {
             TableRow row = rows.get( rowIndex );
@@ -233,16 +236,19 @@ public class APIPane
             fireTableDataChanged();
         }
 
+        @Override
         public int getColumnCount()
         {
             return columnNames.length;
         }
 
+        @Override
         public String getColumnName( int col )
         {
             return columnNames[ col ];
         }
 
+        @Override
         public int getRowCount()
         {
             return rows.size();

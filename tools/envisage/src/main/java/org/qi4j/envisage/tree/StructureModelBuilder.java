@@ -16,14 +16,13 @@
 */
 package org.qi4j.envisage.tree;
 
-import org.qi4j.tools.model.descriptor.*;
-import org.qi4j.tools.model.util.DescriptorNameComparator;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import org.qi4j.tools.model.descriptor.*;
+import org.qi4j.tools.model.util.DescriptorNameComparator;
 
 /**
  * Helper class to build tree model for Qi4J model as Structure Tree

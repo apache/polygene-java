@@ -16,10 +16,9 @@
 */
 package org.qi4j.tools.model.descriptor;
 
-import org.qi4j.api.concern.ConcernDescriptor;
-
 import java.util.LinkedList;
 import java.util.List;
+import org.qi4j.api.concern.ConcernDescriptor;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
@@ -70,6 +69,7 @@ public final class MethodConcernDetailDescriptor
      *
      * @since 0.5
      */
+    @Override
     public final Iterable<ConstructorDetailDescriptor> constructors()
     {
         return constructors;
@@ -80,6 +80,7 @@ public final class MethodConcernDetailDescriptor
      *
      * @since 0.5
      */
+    @Override
     public final Iterable<InjectedMethodDetailDescriptor> injectedMethods()
     {
         return injectedMethods;
@@ -90,6 +91,7 @@ public final class MethodConcernDetailDescriptor
      *
      * @since 0.5
      */
+    @Override
     public final Iterable<InjectedFieldDetailDescriptor> injectedFields()
     {
         return injectedFields;
