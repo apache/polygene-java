@@ -30,10 +30,12 @@ import org.qi4j.api.service.ServiceReference;
 @Activators( MemoryRepositoryService.Activator.class )
 public interface MemoryRepositoryService extends Repository, ServiceComposite
 {
-    
+
+    @Override
     void initialize()
             throws RepositoryException;
 
+    @Override
     void shutDown()
             throws RepositoryException;
 
@@ -67,45 +69,53 @@ public interface MemoryRepositoryService extends Repository, ServiceComposite
             repo = new SailRepository( new MemoryStore() );
         }
 
+        @Override
         public void initialize()
             throws RepositoryException
         {
             repo.initialize();
         }
 
+        @Override
         public void shutDown()
             throws RepositoryException
         {
             repo.shutDown();
         }
 
+        @Override
         public void setDataDir( File dataDir )
         {
             repo.setDataDir( dataDir );
         }
 
+        @Override
         public File getDataDir()
         {
             return repo.getDataDir();
         }
 
+        @Override
         public boolean isWritable()
             throws RepositoryException
         {
             return repo.isWritable();
         }
 
+        @Override
         public RepositoryConnection getConnection()
             throws RepositoryException
         {
             return repo.getConnection();
         }
 
+        @Override
         public ValueFactory getValueFactory()
         {
             return repo.getValueFactory();
         }
 
+        @Override
         public void discardEntireRepository()
             throws RepositoryException
         {

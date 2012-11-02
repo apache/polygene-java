@@ -13,41 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.circuitbreaker.service;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 
-import java.lang.reflect.Method;
-
 /**
  * This concern will update the circuit breaker on method invocation success
  * and thrown exceptions.
  */
-@AppliesTo(BreaksCircuitOnThrowable.class)
+@AppliesTo( BreaksCircuitOnThrowable.class )
 public class BreakCircuitConcern
-   extends GenericConcern
+        extends GenericConcern
 {
-   @This ServiceCircuitBreaker serviceCircuitBreaker;
 
-   public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
-   {
-      CircuitBreaker circuitBreaker = serviceCircuitBreaker.getCircuitBreaker();
-      try
-      {
-         if (!circuitBreaker.isOn())
-            throw circuitBreaker.getLastThrowable();
+    @This
+    ServiceCircuitBreaker serviceCircuitBreaker;
 
-         Object result = next.invoke( proxy, method, args );
-         circuitBreaker.success();
-         return result;
-      } catch (Throwable throwable)
-      {
-         circuitBreaker.throwable( throwable );
-         throw throwable;
-      }
-   }
+    @Override
+    public Object invoke( Object proxy, Method method, Object[] args )
+            throws Throwable
+    {
+        CircuitBreaker circuitBreaker = serviceCircuitBreaker.getCircuitBreaker();
+        try
+        {
+            if( !circuitBreaker.isOn() )
+            {
+                throw circuitBreaker.getLastThrowable();
+            }
+
+            Object result = next.invoke( proxy, method, args );
+            circuitBreaker.success();
+            return result;
+            
+        } catch( Throwable throwable )
+        {
+            circuitBreaker.throwable( throwable );
+            throw throwable;
+        }
+    }
+
 }

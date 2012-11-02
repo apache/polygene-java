@@ -43,6 +43,7 @@ public interface EntityToValue
         @Structure
         private Module module;
 
+        @Override
         public <T> T convert( final Class<T> valueType, Object entity )
         {
             ValueDescriptor valueDescriptor = module.valueDescriptor( valueType.getName() );

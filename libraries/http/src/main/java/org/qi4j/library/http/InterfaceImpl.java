@@ -28,16 +28,19 @@ class InterfaceImpl
         this.protocol = protocol;
     }
 
+    @Override
     public String hostName()
     {
         return host;
     }
 
+    @Override
     public int port()
     {
         return port;
     }
 
+    @Override
     public Protocol protocol()
     {
         return protocol;

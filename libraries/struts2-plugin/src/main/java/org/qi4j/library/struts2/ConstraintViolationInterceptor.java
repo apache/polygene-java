@@ -7,16 +7,13 @@ import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.opensymphony.xwork2.interceptor.PreResultListener;
 import com.opensymphony.xwork2.util.ValueStack;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.library.struts2.util.ClassNameMapper;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import static java.util.Collections.emptyMap;
 import static org.qi4j.library.struts2.util.ClassNameFilters.removeSuffixes;
@@ -80,6 +77,7 @@ public class ConstraintViolationInterceptor
     {
         invocation.addPreResultListener( new PreResultListener()
         {
+            @Override
             public void beforeResult( ActionInvocation invocation, String resultCode )
             {
                 invocation.getStack().setExprOverrides( propertyOverrides );

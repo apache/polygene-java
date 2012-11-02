@@ -16,6 +16,10 @@
 
 package org.qi4j.library.eventsourcing.application.replay;
 
+import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.qi4j.api.Qi4j;
@@ -29,11 +33,6 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * ApplicationEvent player
@@ -57,6 +56,7 @@ public interface ApplicationEventPlayerService
 
         SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE MMM dd HH:mm:ss zzz yyyy" );
 
+        @Override
         public void playEvent( ApplicationEvent applicationEvent, Object object )
                 throws ApplicationEventReplayException
         {

@@ -25,6 +25,7 @@ public class InteractionConstraintsConcern
     @Service
     private Module module;
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
@@ -44,6 +45,7 @@ public class InteractionConstraintsConcern
     public static class HasInteractionConstraints
         implements AppliesToFilter
     {
+        @Override
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
         {
             for( Annotation annotation : method.getAnnotations() )

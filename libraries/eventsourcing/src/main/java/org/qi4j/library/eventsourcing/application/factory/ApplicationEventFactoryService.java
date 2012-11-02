@@ -16,6 +16,7 @@
 
 package org.qi4j.library.eventsourcing.application.factory;
 
+import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -34,8 +35,6 @@ import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
 import org.qi4j.library.eventsourcing.domain.factory.UnitOfWorkNotificationConcern;
 import org.qi4j.library.eventsourcing.domain.spi.CurrentUser;
-
-import java.util.Date;
 
 /**
  * DomainEventValue factory
@@ -67,6 +66,7 @@ public interface ApplicationEventFactoryService
             version = application.version();
         }
 
+        @Override
         public ApplicationEvent createEvent( String name, Object[] args )
         {
             ValueBuilder<ApplicationEvent> builder = vbf.newValueBuilder( ApplicationEvent.class );

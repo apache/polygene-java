@@ -23,50 +23,62 @@ import java.io.Serializable;
 public class CategoryLogMixin
     implements CategoryLog
 {
+    @Override
     public void info( String category, String message )
     {
     }
 
+    @Override
     public void info( String category, String message, Serializable param1 )
     {
     }
 
+    @Override
     public void info( String category, String message, Serializable param1, Serializable param2 )
     {
     }
 
+    @Override
     public void info( String category, String message, Serializable... params )
     {
     }
 
+    @Override
     public void warning( String category, String message )
     {
     }
 
+    @Override
     public void warning( String category, String message, Serializable param1 )
     {
     }
 
+    @Override
     public void warning( String category, String message, Serializable param1, Serializable param2 )
     {
     }
 
+    @Override
     public void warning( String category, String message, Serializable... params )
     {
     }
 
+    @Override
     public void error( String category, String message )
     {
     }
 
+    @Override
     public void error( String category, String message, Serializable param1 )
     {
     }
 
+    @Override
     public void error( String category, String message, Serializable param1, Serializable param2 )
     {
     }
 
+    @Override
     public void error( String category, String message, Serializable... params )
     {
     }

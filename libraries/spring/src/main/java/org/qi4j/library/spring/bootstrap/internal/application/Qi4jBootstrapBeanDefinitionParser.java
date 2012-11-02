@@ -39,6 +39,7 @@ public final class Qi4jBootstrapBeanDefinitionParser
 
     private static final String CLASS = "class";
 
+    @Override
     public final BeanDefinition parse( Element anElement, ParserContext aParserContext )
     {
         Qi4jApplicationBootstrap bootstrap = createQi4jApplicationBootstrap( anElement, aParserContext );

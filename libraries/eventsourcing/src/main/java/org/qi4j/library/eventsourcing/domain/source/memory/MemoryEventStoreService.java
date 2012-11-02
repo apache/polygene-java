@@ -92,11 +92,11 @@ public interface MemoryEventStoreService
             };
         }
 
+        @Override
         public long count()
         {
             return currentCount;
         }
-
 
         @Override
         protected Output<UnitOfWorkDomainEventsValue, IOException> storeEvents0()

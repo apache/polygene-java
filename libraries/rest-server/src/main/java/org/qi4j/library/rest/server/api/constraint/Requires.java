@@ -44,6 +44,7 @@ public @interface Requires
     class RequiresRoleConstraint
         implements Constraint<Requires, ObjectSelection>
     {
+        @Override
         public boolean isValid( Requires requires, ObjectSelection objectSelection )
         {
             for( Class<?> roleClass : requires.value() )

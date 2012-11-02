@@ -27,7 +27,6 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 
 /**
@@ -314,6 +313,7 @@ public interface AlarmPoint
         @This
         private AlarmHistory history;
 
+        @Override
         public void setAttribute( String name, String value )
         {
             Map<String, String> properties = state.attributes().get();
@@ -328,11 +328,13 @@ public interface AlarmPoint
             state.attributes().set( properties );
         }
 
+        @Override
         public String attribute( String name )
         {
             return state.attributes().get().get( name );
         }
 
+        @Override
         public List<String> attributeNames()
         {
             ArrayList<String> result = new ArrayList<String>();
@@ -360,12 +362,14 @@ public interface AlarmPoint
             }
         }
 
+        @Override
         public String toString()
         {
             return "AlarmPoint[" + name() + " : " + state.currentStatus().get().name(null)
                    + "  : " + descriptionInDefaultLocale() + "]";
         }
 
+        @Override
         public void trigger( String trigger )
         {
             AlarmEvent event;
@@ -382,26 +386,31 @@ public interface AlarmPoint
             fireAlarm( event );
         }
 
+        @Override
         public void activate()
         {
             trigger( AlarmPoint.TRIGGER_ACTIVATE );
         }
 
+        @Override
         public void deactivate()
         {
             trigger( AlarmPoint.TRIGGER_DEACTIVATE );
         }
 
+        @Override
         public void acknowledge()
         {
             trigger( AlarmPoint.TRIGGER_ACKNOWLEDGE );
         }
 
+        @Override
         public AlarmHistory history()
         {
             return history;
         }
 
+        @Override
         public AlarmStatus currentStatus()
         {
             return state.currentStatus().get();
@@ -411,6 +420,7 @@ public interface AlarmPoint
          * Returns the Name of the AlarmPoint.
          * This normally returns the human readable technical name of the AlarmPoint.
          */
+        @Override
         public String name()
         {
             return state.systemName().get();
@@ -421,6 +431,7 @@ public interface AlarmPoint
          * This normally returns a full Description of the AlarmPoint in the
          * default Locale.
          */
+        @Override
         public String descriptionInDefaultLocale()
         {
             return description( null );
@@ -432,6 +443,7 @@ public interface AlarmPoint
          * Locale. If Locale is <code><b>null</b></code>, then the
          * default Locale is used.
          */
+        @Override
         public String description( Locale locale )
         {
             if( locale == null )
@@ -442,6 +454,7 @@ public interface AlarmPoint
             return rb.getString( name() );
         }
 
+        @Override
         public void updateCondition( boolean condition )
         {
             String trig = model.computeTrigger( state.currentStatus().get(), condition );
@@ -451,6 +464,7 @@ public interface AlarmPoint
             }
         }
 
+        @Override
         public boolean currentCondition()
         {
             return model.computeCondition( state.currentStatus().get() );

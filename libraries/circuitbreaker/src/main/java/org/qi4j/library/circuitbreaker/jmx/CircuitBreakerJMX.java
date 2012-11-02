@@ -16,17 +16,16 @@
 
 package org.qi4j.library.circuitbreaker.jmx;
 
-import org.qi4j.library.circuitbreaker.CircuitBreaker;
-
-import javax.management.MBeanNotificationInfo;
-import javax.management.Notification;
-import javax.management.NotificationBroadcasterSupport;
-import javax.management.ObjectName;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.text.DateFormat;
 import java.util.Date;
+import javax.management.MBeanNotificationInfo;
+import javax.management.Notification;
+import javax.management.NotificationBroadcasterSupport;
+import javax.management.ObjectName;
+import org.qi4j.library.circuitbreaker.CircuitBreaker;
 
 /**
  * MBean for circuit breakers. Exposes CB properties and also the property changes as notifications.
@@ -55,21 +54,25 @@ public class CircuitBreakerJMX
       });
    }
 
+   @Override
    public String getStatus()
    {
       return circuitBreaker.getStatus().name();
    }
 
+   @Override
    public int getThreshold()
    {
       return circuitBreaker.getThreshold();
    }
 
+   @Override
    public double getServiceLevel()
    {
       return circuitBreaker.getServiceLevel();
    }
 
+   @Override
    public String getLastErrorMessage()
    {
       return circuitBreaker.getLastThrowable() == null ? "" : errorMessage(circuitBreaker.getLastThrowable());
@@ -88,18 +91,21 @@ public class CircuitBreakerJMX
          return message;
    }
 
+   @Override
    public String getTrippedOn()
    {
       Date trippedOn = circuitBreaker.getTrippedOn();
       return trippedOn == null ? "" : DateFormat.getDateTimeInstance().format(trippedOn);
    }
 
+   @Override
    public String getEnableOn()
    {
       Date trippedOn = circuitBreaker.getEnableOn();
       return trippedOn == null ? "" : DateFormat.getDateTimeInstance().format(trippedOn);
    }
 
+   @Override
    public String turnOn()
    {
       try
@@ -112,6 +118,7 @@ public class CircuitBreakerJMX
       }
    }
 
+   @Override
    public void trip()
    {
       circuitBreaker.trip();

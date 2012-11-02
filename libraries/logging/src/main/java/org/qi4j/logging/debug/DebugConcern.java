@@ -13,10 +13,11 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.debug;
 
+import java.io.Serializable;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
@@ -24,8 +25,6 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.logging.debug.service.DebuggingService;
-
-import java.io.Serializable;
 
 public class DebugConcern
     implements Debug
@@ -39,6 +38,7 @@ public class DebugConcern
         System.out.println( "DebugConcern created." );
     }
 
+    @Override
     public Integer debugLevel()
     {
         if( loggingService != null )
@@ -48,6 +48,7 @@ public class DebugConcern
         return OFF;
     }
 
+    @Override
     public void debug( int priority, String message )
     {
         System.out.println( "L:" + composite );
@@ -62,6 +63,7 @@ public class DebugConcern
         }
     }
 
+    @Override
     public void debug( int priority, String message, Serializable param1 )
     {
         if( loggingService == null )
@@ -74,6 +76,7 @@ public class DebugConcern
         }
     }
 
+    @Override
     public void debug( int priority, String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
@@ -86,6 +89,7 @@ public class DebugConcern
         }
     }
 
+    @Override
     public void debug( int priority, String message, Serializable... params )
     {
         if( loggingService == null )

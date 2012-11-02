@@ -52,6 +52,7 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
     @Service
     private Configuration cfg;
 
+    @Override
     public boolean writeResponse( final Object result, final Response response )
         throws ResourceException
     {

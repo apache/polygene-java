@@ -14,11 +14,10 @@
 
 package org.qi4j.library.jmx;
 
+import javax.management.MBeanServer;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-
-import javax.management.MBeanServer;
 
 /**
  * Register JMX helpers in a module.
@@ -26,6 +25,7 @@ import javax.management.MBeanServer;
 public class JMXAssembler
     implements Assembler
 {
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

@@ -37,13 +37,15 @@ import org.qi4j.api.service.ServiceReference;
 @Activators( RdbmsRepositoryService.Activator.class )
 public interface RdbmsRepositoryService extends Repository, ServiceComposite
 {
-    
+
+    @Override
     public void initialize()
             throws RepositoryException;
-    
+
+    @Override
     public void shutDown()
             throws RepositoryException;
-    
+
     public static class Activator
             extends ActivatorAdapter<ServiceReference<RdbmsRepositoryService>>
     {
@@ -63,7 +65,7 @@ public interface RdbmsRepositoryService extends Repository, ServiceComposite
         }
 
     }
-    
+
     public static abstract class RdbmsRepositoryMixin
         implements RdbmsRepositoryService
     {
@@ -72,16 +74,19 @@ public interface RdbmsRepositoryService extends Repository, ServiceComposite
 
         private SailRepository repo;
 
+        @Override
         public void setDataDir( File file )
         {
             repo.setDataDir( file );
         }
 
+        @Override
         public File getDataDir()
         {
             return repo.getDataDir();
         }
 
+        @Override
         public void initialize()
             throws RepositoryException
         {
@@ -94,24 +99,28 @@ public interface RdbmsRepositoryService extends Repository, ServiceComposite
             repo.initialize();
         }
 
+        @Override
         public void shutDown()
             throws RepositoryException
         {
             repo.shutDown();
         }
 
+        @Override
         public boolean isWritable()
             throws RepositoryException
         {
             return repo.isWritable();
         }
 
+        @Override
         public RepositoryConnection getConnection()
             throws RepositoryException
         {
             return repo.getConnection();
         }
 
+        @Override
         public ValueFactory getValueFactory()
         {
             return repo.getValueFactory();

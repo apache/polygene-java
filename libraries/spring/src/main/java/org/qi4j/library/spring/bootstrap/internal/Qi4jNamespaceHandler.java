@@ -22,6 +22,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 public final class Qi4jNamespaceHandler extends NamespaceHandlerSupport
 {
+    @Override
     public final void init()
     {
         registerBeanDefinitionParser( "bootstrap", new Qi4jBootstrapBeanDefinitionParser() );

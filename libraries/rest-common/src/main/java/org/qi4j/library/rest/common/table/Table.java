@@ -17,13 +17,12 @@
 
 package org.qi4j.library.rest.common.table;
 
+import java.util.List;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.injection.scope.State;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.List;
 
 /**
  * A table of rows. RowValue needs to be subtyped in order to add columns.
@@ -53,6 +52,7 @@ public interface Table
       @State
       Property<List<Column>> cols;
 
+      @Override
       public Cell cell(Row row, String columnName)
       {
          for (int i = 0; i < cols.get().size(); i++)

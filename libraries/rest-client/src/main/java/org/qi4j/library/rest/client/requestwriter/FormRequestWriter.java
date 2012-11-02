@@ -30,6 +30,7 @@ import org.restlet.resource.ResourceException;
 public class FormRequestWriter
    implements RequestWriter
 {
+    @Override
    public boolean writeRequest(Object requestObject, Request request) throws ResourceException
    {
       if (requestObject instanceof Form)

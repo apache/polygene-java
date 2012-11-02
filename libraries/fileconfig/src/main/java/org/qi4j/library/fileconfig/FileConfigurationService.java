@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Structure;
@@ -19,7 +18,6 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +87,7 @@ public interface FileConfigurationService
         @Structure
         Application app;
 
+        @Override
         public void resolveFileConfiguration()
         {
             OS os = detectOS();
@@ -179,6 +178,7 @@ public interface FileConfigurationService
             }
         }
 
+        @Override
         public void eventuallyCleanupTestData()
         {
             if ( app.mode().equals( Application.Mode.test ) ) {
@@ -191,36 +191,43 @@ public interface FileConfigurationService
             }
         }
 
+        @Override
         public OS os()
         {
             return data.os().get();
         }
 
+        @Override
         public File user()
         {
             return data.user().get();
         }
 
+        @Override
         public File configurationDirectory()
         {
             return data.configuration().get();
         }
 
+        @Override
         public File dataDirectory()
         {
             return data.data().get();
         }
 
+        @Override
         public File temporaryDirectory()
         {
             return data.temporary().get();
         }
 
+        @Override
         public File cacheDirectory()
         {
             return data.cache().get();
         }
 
+        @Override
         public File logDirectory()
         {
             return data.log().get();

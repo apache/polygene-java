@@ -16,10 +16,9 @@
 
 package org.qi4j.library.eventsourcing.application.factory;
 
-import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
 
 /**
  * List of events for the current UnitOfWork. This will be updated by the DomainEventFactory.

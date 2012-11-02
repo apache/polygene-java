@@ -35,6 +35,7 @@ public class UuidServiceAssembler
         return this;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

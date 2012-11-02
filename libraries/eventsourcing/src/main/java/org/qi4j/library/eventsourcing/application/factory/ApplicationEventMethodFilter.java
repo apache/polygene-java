@@ -16,10 +16,9 @@
 
 package org.qi4j.library.eventsourcing.application.factory;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
-
-import java.lang.reflect.Method;
 
 /**
  * Filter for Event methods. Event methods
@@ -28,6 +27,7 @@ import java.lang.reflect.Method;
 public class ApplicationEventMethodFilter
         implements AppliesToFilter
 {
+    @Override
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
         return method.getParameterTypes().length > 0 && method.getParameterTypes()[0].equals( ApplicationEvent.class );

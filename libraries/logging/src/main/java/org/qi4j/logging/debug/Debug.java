@@ -13,15 +13,14 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.debug;
 
+import java.io.Serializable;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.mixin.NoopMixin;
-
-import java.io.Serializable;
 
 @Concerns( DebugConcern.class )
 @Mixins( NoopMixin.class )

@@ -13,17 +13,16 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.library.rdf.model;
 
+import java.io.PrintWriter;
 import org.openrdf.model.Graph;
 import org.openrdf.model.impl.GraphImpl;
 import org.qi4j.api.structure.Application;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.library.rdf.serializer.SerializerContext;
-
-import java.io.PrintWriter;
 
 public class ApplicationSerializer
 {

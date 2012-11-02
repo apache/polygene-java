@@ -17,23 +17,7 @@
  */
 package org.qi4j.library.alarm;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
 
 public interface AlarmSystemService extends AlarmSystem, ServiceComposite
 {

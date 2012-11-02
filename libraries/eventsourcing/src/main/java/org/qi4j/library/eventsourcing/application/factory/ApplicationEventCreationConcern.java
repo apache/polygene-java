@@ -16,12 +16,11 @@
 
 package org.qi4j.library.eventsourcing.application.factory;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
-
-import java.lang.reflect.Method;
 
 /**
  * Generate application event for event method
@@ -33,6 +32,7 @@ public class ApplicationEventCreationConcern
     @Service
     ApplicationEventFactory eventFactory;
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         if (args[0] == null)

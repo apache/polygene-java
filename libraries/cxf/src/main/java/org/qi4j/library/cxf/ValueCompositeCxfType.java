@@ -18,6 +18,10 @@
 
 package org.qi4j.library.cxf;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+import javax.xml.namespace.QName;
 import org.apache.cxf.aegis.Context;
 import org.apache.cxf.aegis.DatabindingException;
 import org.apache.cxf.aegis.type.AegisType;
@@ -47,11 +51,6 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.*;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-
-import javax.xml.namespace.QName;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
 import org.qi4j.spi.Qi4jSPI;
 
 import static org.qi4j.functional.Iterables.first;

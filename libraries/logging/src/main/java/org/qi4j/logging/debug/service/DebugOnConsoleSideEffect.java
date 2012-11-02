@@ -13,22 +13,21 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.debug.service;
-
-import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.injection.scope.Invocation;
-import org.qi4j.api.sideeffect.SideEffectOf;
-import org.qi4j.logging.debug.Debug;
-import org.qi4j.logging.log.service.LoggingService;
 
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.injection.scope.Invocation;
+import org.qi4j.api.sideeffect.SideEffectOf;
+import org.qi4j.logging.debug.Debug;
+import org.qi4j.logging.log.service.LoggingService;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -48,11 +47,13 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
         bundle = ResourceBundle.getBundle( thisMethod.getDeclaringClass().getName() );
     }
 
+    @Override
     public int debugLevel()
     {
         return Debug.OFF;
     }
 
+    @Override
     public void debug( Composite composite, String message )
     {
         String localized = bundle.getString( message );
@@ -64,6 +65,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
         return first(Qi4j.DESCRIPTOR_FUNCTION.map( composite ).types()).getName();
     }
 
+    @Override
     public void debug( Composite composite, String message, Serializable param1 )
     {
         String localized = bundle.getString( message );
@@ -75,6 +77,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
         }
     }
 
+    @Override
     public void debug( Composite composite, String message, Serializable param1, Serializable param2 )
     {
         String localized = bundle.getString( message );
@@ -86,6 +89,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
         }
     }
 
+    @Override
     public void debug( Composite composite, String message, Serializable... params )
     {
         String localized = bundle.getString( message );

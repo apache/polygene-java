@@ -13,13 +13,12 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.log;
 
-import org.qi4j.api.concern.Concerns;
-
 import java.io.Serializable;
+import org.qi4j.api.concern.Concerns;
 
 @Concerns( { SimpleLogConcern.class } )
 public interface SimpleLog

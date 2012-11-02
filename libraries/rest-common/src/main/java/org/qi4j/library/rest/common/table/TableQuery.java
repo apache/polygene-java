@@ -17,12 +17,6 @@
 
 package org.qi4j.library.rest.common.table;
 
-import org.qi4j.api.Qi4j;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Property;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueComposite;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +24,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueComposite;
 
 /**
  * Query value for Google Data queries.
@@ -67,46 +66,55 @@ public interface TableQuery
 
       private Map<String, String> parts;
 
+      @Override
       public String select()
       {
          return getParts().get("select");
       }
 
+      @Override
       public String where()
       {
          return getParts().get("where");
       }
 
+      @Override
       public String groupBy()
       {
          return getParts().get("group by");
       }
 
+      @Override
       public String pivot()
       {
          return getParts().get("pivot");
       }
 
+      @Override
       public String orderBy()
       {
          return getParts().get("order by");
       }
 
+      @Override
       public String limit()
       {
          return getParts().get("limit");
       }
 
+      @Override
       public String offset()
       {
          return getParts().get("offset");
       }
 
+      @Override
       public String label()
       {
          return getParts().get("label");
       }
 
+      @Override
       public String options()
       {
          return getParts().get("options");
@@ -145,6 +153,7 @@ public interface TableQuery
          return parts;
       }
 
+      @Override
       public Table applyTo(Table table)
       {
          ValueBuilder<Table> tableBuilder = Qi4j.INSTANCE_FUNCTION.map( table ).module().newValueBuilderWithPrototype( table );
@@ -188,6 +197,7 @@ public interface TableQuery
                final int idx = sortIndex;
                Comparator<Row> comparator = new Comparator<Row>()
                {
+                  @Override
                   public int compare(Row o1, Row o2)
                   {
                      Object o = o1.c().get().get(idx).v().get();

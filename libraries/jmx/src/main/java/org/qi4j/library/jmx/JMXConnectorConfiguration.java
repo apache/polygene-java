@@ -26,9 +26,6 @@ import org.qi4j.api.property.Property;
 public interface JMXConnectorConfiguration
         extends ConfigurationComposite, Enabled
 {
-    @UseDefaults
-    Property<Boolean> enabled();
-
     // Set this to 1099 as default in assembly
     @UseDefaults
     Property<Integer> port();

@@ -174,6 +174,7 @@ public interface DataSourceConfigurationManagerService
                 this.propertyNames = propertyNames;
             }
 
+            @Override
             public Object getAttribute( String name )
                     throws AttributeNotFoundException, MBeanException, ReflectionException
             {
@@ -191,6 +192,7 @@ public interface DataSourceConfigurationManagerService
                 }
             }
 
+            @Override
             public void setAttribute( Attribute attribute )
                     throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException
             {
@@ -211,6 +213,7 @@ public interface DataSourceConfigurationManagerService
                 }
             }
 
+            @Override
             public AttributeList getAttributes( String[] names )
             {
                 AttributeList list = new AttributeList();
@@ -230,6 +233,7 @@ public interface DataSourceConfigurationManagerService
                 return list;
             }
 
+            @Override
             public AttributeList setAttributes( AttributeList attributeList )
             {
                 AttributeList list = new AttributeList();
@@ -253,6 +257,7 @@ public interface DataSourceConfigurationManagerService
                 return list;
             }
 
+            @Override
             public MBeanInfo getMBeanInfo()
             {
                 return info;
@@ -272,6 +277,7 @@ public interface DataSourceConfigurationManagerService
                 this.service = service;
             }
 
+            @Override
             public Object invoke( String s, Object[] objects, String[] strings )
                     throws MBeanException, ReflectionException
             {

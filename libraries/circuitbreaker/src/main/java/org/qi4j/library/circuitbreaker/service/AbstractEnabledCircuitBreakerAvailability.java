@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.circuitbreaker.service;
 
 import org.qi4j.api.configuration.Configuration;
@@ -30,22 +29,27 @@ import org.qi4j.library.circuitbreaker.CircuitBreaker;
  * To use this, the service must implement ServiceCircuitBreaker, and its ConfigurationComposite
  * must extend Enabled.
  */
-@Mixins(AbstractEnabledCircuitBreakerAvailability.Mixin.class)
+@Mixins( AbstractEnabledCircuitBreakerAvailability.Mixin.class )
 public interface AbstractEnabledCircuitBreakerAvailability
-   extends Availability
+        extends Availability
 {
-   class Mixin
-      implements Availability
-   {
-      @This
-      Configuration<Enabled> config;
 
-      @This
-      ServiceCircuitBreaker circuitBreaker;
+    class Mixin
+            implements Availability
+    {
 
-      public boolean isAvailable()
-      {
-         return config.get().enabled().get() && circuitBreaker.getCircuitBreaker().getStatus() == CircuitBreaker.Status.on;
-      }
-   }
+        @This
+        Configuration<Enabled> config;
+
+        @This
+        ServiceCircuitBreaker circuitBreaker;
+
+        @Override
+        public boolean isAvailable()
+        {
+            return config.get().enabled().get() && circuitBreaker.getCircuitBreaker().getStatus() == CircuitBreaker.Status.on;
+        }
+
+    }
+
 }

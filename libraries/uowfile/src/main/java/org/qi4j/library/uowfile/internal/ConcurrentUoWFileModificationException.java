@@ -14,7 +14,6 @@
 package org.qi4j.library.uowfile.internal;
 
 import java.util.Collections;
-
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 

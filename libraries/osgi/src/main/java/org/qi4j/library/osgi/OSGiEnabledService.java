@@ -25,13 +25,13 @@ import static org.qi4j.functional.Iterables.toArray;
 @Activators( OSGiEnabledService.Activator.class )
 public interface OSGiEnabledService extends ServiceComposite
 {
-    
+
     void registerServices()
             throws Exception;
 
     void unregisterServices()
             throws Exception;
-    
+
     class Activator
             extends ActivatorAdapter<ServiceReference<OSGiEnabledService>>
     {
@@ -49,7 +49,7 @@ public interface OSGiEnabledService extends ServiceComposite
         {
             passivating.get().unregisterServices();
         }
-        
+
     }
 
 
@@ -64,6 +64,7 @@ public interface OSGiEnabledService extends ServiceComposite
 
         private ServiceRegistration registration;
 
+        @Override
         public void registerServices()
             throws Exception
         {
@@ -89,6 +90,7 @@ public interface OSGiEnabledService extends ServiceComposite
             return toArray( String.class, map( toClassName(), typesOf( classesSet ) ) );
         }
 
+        @Override
         public void unregisterServices()
             throws Exception
         {

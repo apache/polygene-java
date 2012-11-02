@@ -14,6 +14,10 @@
 
 package org.qi4j.library.rdf.entity;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -27,11 +31,6 @@ import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.library.rdf.Rdfs;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.qi4j.functional.Iterables.first;
 

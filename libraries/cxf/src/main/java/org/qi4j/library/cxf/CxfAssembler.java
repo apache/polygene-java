@@ -25,6 +25,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 public class CxfAssembler
     implements Assembler
 {
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

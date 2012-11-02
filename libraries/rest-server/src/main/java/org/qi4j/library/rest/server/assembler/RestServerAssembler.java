@@ -51,6 +51,7 @@ import static org.qi4j.functional.Specifications.not;
 public class RestServerAssembler
     implements Assembler
 {
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

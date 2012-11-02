@@ -13,10 +13,14 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.log.service;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityBuilder;
@@ -32,11 +36,6 @@ import org.qi4j.logging.log.records.CompositeLogRecord;
 import org.qi4j.logging.log.records.EntityLogRecord;
 import org.qi4j.logging.log.records.LogRecord;
 import org.qi4j.logging.log.records.ServiceLogRecord;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -105,6 +104,7 @@ public abstract class LoggingServiceMixin
         }
     }
 
+    @Override
     public void log( LogType type, Composite composite, String category, String message, Serializable... params )
     {
         UnitOfWork uow = uowf.newUnitOfWork();

@@ -43,6 +43,7 @@ public class CircuitBreakers
 
                   sender.sendTo( new Receiver<Item, ReceiverThrowableType>()
                   {
+                     @Override
                      public void receive( Item item ) throws ReceiverThrowableType
                      {
                         try
@@ -76,6 +77,7 @@ public class CircuitBreakers
    {
       return new Specification<Throwable>()
       {
+         @Override
          public boolean satisfiedBy( Throwable item )
          {
             Class<? extends Throwable> throwableClass = item.getClass();
@@ -93,6 +95,7 @@ public class CircuitBreakers
    {
       return new Specification<Throwable>()
       {
+         @Override
          public boolean satisfiedBy( Throwable item )
          {
             return specification.satisfiedBy( unwrap(item) );

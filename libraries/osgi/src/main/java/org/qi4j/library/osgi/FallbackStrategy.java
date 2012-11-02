@@ -8,9 +8,8 @@
 package org.qi4j.library.osgi;
 
 
-import org.osgi.framework.ServiceReference;
-
 import java.lang.reflect.Method;
+import org.osgi.framework.ServiceReference;
 
 /**
  * The fallback strategy is invoked when the OSGi service is not available and a method call is invoked.

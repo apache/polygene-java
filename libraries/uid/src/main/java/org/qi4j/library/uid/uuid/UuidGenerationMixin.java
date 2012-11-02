@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.library.uid.uuid;
 
@@ -30,6 +30,7 @@ public class UuidGenerationMixin
         uuid = UUID.randomUUID().toString() + "-";
     }
 
+    @Override
     public String generateUuid( int hashLength )
     {
         synchronized( this )

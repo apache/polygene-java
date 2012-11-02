@@ -32,6 +32,7 @@ public class DefaultResponseWriter
 {
     private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.APPLICATION_JSON );
 
+    @Override
     public boolean writeResponse( final Object result, final Response response )
         throws ResourceException
     {

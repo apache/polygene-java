@@ -54,6 +54,7 @@ public class SpringImporterAssembler
         this.defaultVisibility = defaultVisibility;
     }
 
+    @Override
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         // Register all Spring beans as services

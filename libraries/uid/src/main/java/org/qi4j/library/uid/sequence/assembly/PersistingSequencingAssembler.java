@@ -36,6 +36,7 @@ public class PersistingSequencingAssembler
         return this;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

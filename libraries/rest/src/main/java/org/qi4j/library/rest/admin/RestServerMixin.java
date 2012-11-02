@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.library.rest.admin;
 
@@ -30,6 +30,7 @@ public abstract class RestServerMixin
 
     private Component component;
 
+    @Override
     public void startServer()
         throws Exception
     {
@@ -40,6 +41,7 @@ public abstract class RestServerMixin
         component.start();
     }
 
+    @Override
     public void stopServer()
         throws Exception
     {

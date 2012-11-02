@@ -14,7 +14,6 @@
 package org.qi4j.library.uowfile.singular;
 
 import java.io.File;
-
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.injection.scope.This;

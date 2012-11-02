@@ -105,6 +105,7 @@ public class SchedulerAssembler
         return this;
     }
 
+    @Override
     public void assemble( ModuleAssembly assembly )
         throws AssemblyException
     {

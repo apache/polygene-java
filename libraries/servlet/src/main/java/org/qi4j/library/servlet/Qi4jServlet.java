@@ -13,11 +13,10 @@
  */
 package org.qi4j.library.servlet;
 
-import org.qi4j.api.structure.Application;
-import org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
+import org.qi4j.api.structure.Application;
+import org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap;
 
 /**
  * Base HttpServlet providing easy access to the {@link org.qi4j.api.structure.Application} from the

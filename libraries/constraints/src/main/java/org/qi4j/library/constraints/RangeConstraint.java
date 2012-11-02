@@ -9,6 +9,7 @@ import org.qi4j.library.constraints.annotation.Range;
 public class RangeConstraint
     implements Constraint<Range, Number>
 {
+    @Override
     public boolean isValid( Range range, Number argument )
     {
         return argument.doubleValue() <= range.max() && argument.doubleValue() >= range.min();

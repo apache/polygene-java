@@ -83,7 +83,7 @@ public interface ConfigurationManagerService
 
     void unexportConfigurableServices()
             throws Exception;
-    
+
     class Activator
             extends ActivatorAdapter<ServiceReference<ConfigurationManagerService>>
     {
@@ -103,7 +103,7 @@ public interface ConfigurationManagerService
         }
 
     }
-    
+
     abstract class Mixin
         implements ConfigurationManagerService
     {
@@ -124,6 +124,7 @@ public interface ConfigurationManagerService
 
         private List<ObjectName> configurationNames = new ArrayList<ObjectName>();
 
+        @Override
         public void exportConfigurableServices()
             throws NotCompliantMBeanException, MBeanRegistrationException, InstanceAlreadyExistsException, MalformedObjectNameException
         {
@@ -219,6 +220,7 @@ public interface ConfigurationManagerService
             }
         }
 
+        @Override
         public void unexportConfigurableServices()
             throws Exception
         {
@@ -242,6 +244,7 @@ public interface ConfigurationManagerService
                 this.propertyNames = propertyNames;
             }
 
+            @Override
             public Object getAttribute( String name )
                 throws AttributeNotFoundException, MBeanException, ReflectionException
             {
@@ -269,6 +272,7 @@ public interface ConfigurationManagerService
                 }
             }
 
+            @Override
             public void setAttribute( Attribute attribute )
                 throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException
             {
@@ -305,6 +309,7 @@ public interface ConfigurationManagerService
                 }
             }
 
+            @Override
             public AttributeList getAttributes( String[] names )
             {
                 AttributeList list = new AttributeList();
@@ -332,6 +337,7 @@ public interface ConfigurationManagerService
                 return list;
             }
 
+            @Override
             public AttributeList setAttributes( AttributeList attributeList )
             {
                 AttributeList list = new AttributeList();
@@ -365,6 +371,7 @@ public interface ConfigurationManagerService
                 return list;
             }
 
+            @Override
             public MBeanInfo getMBeanInfo()
             {
                 return info;
@@ -386,6 +393,7 @@ public interface ConfigurationManagerService
                 this.serviceRef = serviceReference;
             }
 
+            @Override
             public Object invoke( String s, Object[] objects, String[] strings )
                 throws MBeanException, ReflectionException
             {

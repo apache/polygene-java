@@ -13,14 +13,13 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.debug.records;
 
-import org.qi4j.api.property.Property;
-
 import java.io.Serializable;
 import java.util.List;
+import org.qi4j.api.property.Property;
 
 public interface DebugRecord
 {

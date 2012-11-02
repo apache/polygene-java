@@ -66,6 +66,7 @@ public interface TimelineRecord
         implements TimelineRecord
     {
 
+        @Override
         public int compareTo( TimelineRecord o )
         {
             return timestamp().get().compareTo( o.timestamp().get() );

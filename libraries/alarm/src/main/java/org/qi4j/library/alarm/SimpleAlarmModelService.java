@@ -88,6 +88,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
          *
          * @return The system name of this AlarmPoint Model.
          */
+        @Override
         public String modelName()
         {
             return "org.qi4j.library.alarm.model.simple";
@@ -100,6 +101,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
          *
          * @return the description of the ModelProvider.
          */
+        @Override
         public String modelDescription()
         {
             return modelDescription( null );
@@ -115,6 +117,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
          *
          * @return the description of th
          */
+        @Override
         public String modelDescription( Locale locale )
         {
             ResourceBundle rb = getResourceBundle( locale );
@@ -155,6 +158,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
         /**
          * Returns all the supported AlarmPoint triggers.
          */
+        @Override
         public List<String> alarmTriggers()
         {
             return ALARM_TRIGGERS;

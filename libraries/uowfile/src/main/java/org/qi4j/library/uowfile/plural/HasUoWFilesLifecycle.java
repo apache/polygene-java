@@ -15,9 +15,7 @@ package org.qi4j.library.uowfile.plural;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
-
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.injection.scope.This;

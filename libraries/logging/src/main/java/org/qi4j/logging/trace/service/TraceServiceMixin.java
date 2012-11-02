@@ -13,11 +13,14 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 package org.qi4j.logging.trace.service;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
@@ -35,10 +38,6 @@ import org.qi4j.logging.trace.records.EntityTraceRecordEntity;
 import org.qi4j.logging.trace.records.ServiceTraceRecordEntity;
 import org.qi4j.logging.trace.records.TraceRecord;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.qi4j.functional.Iterables.first;
 
 public class TraceServiceMixin
@@ -49,6 +48,7 @@ public class TraceServiceMixin
     private int counter;
     private Integer traceLevel;
 
+    @Override
     public int traceLevel()
     {
         if( counter++ % 100 == 0 )
@@ -59,6 +59,7 @@ public class TraceServiceMixin
         return traceLevel;
     }
 
+    @Override
     public void traceSuccess( Class compositeType, Composite object, Method method, Object[] args, Object result, long entryTime, long durationNano )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
@@ -77,6 +78,7 @@ public class TraceServiceMixin
         }
     }
 
+    @Override
     public void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t, long entryTime, long durationNano )
     {
         UnitOfWork uow = uowf.newUnitOfWork();

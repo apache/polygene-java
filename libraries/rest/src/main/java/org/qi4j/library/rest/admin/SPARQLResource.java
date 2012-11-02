@@ -15,6 +15,13 @@
 package org.qi4j.library.rest.admin;
 
 import info.aduna.xml.XMLWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import org.openrdf.http.protocol.Protocol;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
@@ -37,14 +44,6 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
 
 import static org.openrdf.http.protocol.Protocol.*;
 
@@ -118,6 +117,7 @@ public class SPARQLResource
                 {
                     return new OutputRepresentation( MediaType.TEXT_XML )
                     {
+                        @Override
                         public void write( OutputStream outputStream )
                             throws IOException
                         {
@@ -140,7 +140,7 @@ public class SPARQLResource
                             }
                             catch( Exception e )
                             {
-                                throw (IOException) new IOException().initCause( e );
+                                throw new IOException( e );
                             }
                             finally
                             {
@@ -160,6 +160,7 @@ public class SPARQLResource
                 {
                     return new OutputRepresentation( MediaType.APPLICATION_XML )
                     {
+                        @Override
                         public void write( OutputStream outputStream )
                             throws IOException
                         {
@@ -170,7 +171,7 @@ public class SPARQLResource
                             }
                             catch( Exception e )
                             {
-                                throw (IOException) new IOException().initCause( e );
+                                throw new IOException( e );
                             }
                             finally
                             {
@@ -190,6 +191,7 @@ public class SPARQLResource
                 {
                     return new OutputRepresentation( RestApplication.APPLICATION_SPARQL_JSON )
                     {
+                        @Override
                         public void write( OutputStream outputStream )
                             throws IOException
                         {
@@ -200,7 +202,7 @@ public class SPARQLResource
                             }
                             catch( Exception e )
                             {
-                                throw (IOException) new IOException().initCause( e );
+                                throw new IOException( e );
                             }
                             finally
                             {

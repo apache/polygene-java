@@ -18,6 +18,12 @@
  */
 package org.qi4j.lang.scala;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
@@ -29,13 +35,6 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.qi4j.api.util.Classes.interfacesOf;
 

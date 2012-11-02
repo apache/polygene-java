@@ -15,13 +15,16 @@ public class Qi4jPackageProvider implements PackageProvider {
         this.actionConfigBuilder = actionConfigBuilder;
     }
 
+    @Override
     public void init(Configuration configuration) throws ConfigurationException {
     }
 
+    @Override
     public void loadPackages() throws ConfigurationException {
         actionConfigBuilder.buildActionConfigs();
     }
 
+    @Override
     public boolean needsReload() {
         return false;
     }

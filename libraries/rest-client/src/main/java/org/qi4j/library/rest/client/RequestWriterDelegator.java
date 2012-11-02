@@ -17,6 +17,9 @@
 
 package org.qi4j.library.rest.client;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.mixin.InitializationException;
@@ -30,10 +33,6 @@ import org.restlet.resource.ResourceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 /**
  * Delegates to a list of potential writers. Register writers on startup.
  */
@@ -45,6 +44,7 @@ public class RequestWriterDelegator
    @Structure
    private Module module;
 
+    @Override
    public void initialize() throws InitializationException
    {
       Logger logger = LoggerFactory.getLogger( getClass() );
@@ -72,6 +72,7 @@ public class RequestWriterDelegator
       requestWriters.add( writer );
    }
 
+    @Override
    public boolean writeRequest(Object requestObject, Request request) throws ResourceException
    {
       if (requestObject == null)

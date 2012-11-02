@@ -15,15 +15,13 @@ package org.qi4j.library.http;
 
 import java.security.Provider;
 import java.security.Security;
-
-import org.qi4j.api.common.InvalidApplicationException;
-
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ssl.SslConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.qi4j.api.common.InvalidApplicationException;
 
 final class JettyConfigurationHelper
 {

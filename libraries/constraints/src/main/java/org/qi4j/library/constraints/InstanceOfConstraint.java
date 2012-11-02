@@ -23,6 +23,7 @@ import org.qi4j.library.constraints.annotation.InstanceOf;
 public class InstanceOfConstraint
     implements Constraint<InstanceOf, Object>
 {
+    @Override
     public boolean isValid( InstanceOf annotation, Object parameter ) throws NullPointerException
     {
         if( parameter != null )

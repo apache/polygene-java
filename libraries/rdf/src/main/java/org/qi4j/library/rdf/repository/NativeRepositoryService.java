@@ -36,12 +36,14 @@ import org.qi4j.library.fileconfig.FileConfiguration;
 @Activators( NativeRepositoryService.Activator.class )
 public interface NativeRepositoryService extends Repository, ServiceComposite, Availability
 {
+    @Override
     void initialize()
             throws RepositoryException;
 
+    @Override
     void shutDown()
             throws RepositoryException;
-    
+
     public static class Activator
             extends ActivatorAdapter<ServiceReference<NativeRepositoryService>>
     {
@@ -82,16 +84,19 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
          repo = new SailRepository(new NativeStore());
       }
 
+      @Override
       public void setDataDir(File dataDir)
       {
          repo.setDataDir(dataDir);
       }
 
+      @Override
       public File getDataDir()
       {
          return repo.getDataDir();
       }
 
+      @Override
       public void initialize()
               throws RepositoryException
       {
@@ -118,18 +123,21 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
          initializeRepository(new File(dataDir));
       }
 
+      @Override
       public void shutDown()
               throws RepositoryException
       {
           repo.shutDown();
       }
 
+      @Override
       public boolean isWritable()
               throws RepositoryException
       {
          return repo.isWritable();
       }
 
+      @Override
       public RepositoryConnection getConnection()
               throws RepositoryException
       {
@@ -140,11 +148,13 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
          return repo.getConnection();
       }
 
+      @Override
       public ValueFactory getValueFactory()
       {
          return repo.getValueFactory();
       }
 
+      @Override
       public void discardEntireRepository()
               throws RepositoryException
       {

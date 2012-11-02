@@ -47,6 +47,7 @@ public class DefaultRequestReader
     @Structure
     Module module;
 
+    @Override
     public Object[] readRequest( Request request, Method method )
         throws ResourceException
     {

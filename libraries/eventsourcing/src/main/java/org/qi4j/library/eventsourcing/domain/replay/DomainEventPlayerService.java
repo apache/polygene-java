@@ -17,6 +17,10 @@
 
 package org.qi4j.library.eventsourcing.domain.replay;
 
+import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.qi4j.api.entity.EntityComposite;
@@ -35,11 +39,6 @@ import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * DomainEventValue player
@@ -64,6 +63,7 @@ public interface DomainEventPlayerService
 
         SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE MMM dd HH:mm:ss zzz yyyy" );
 
+        @Override
         public void playTransaction( UnitOfWorkDomainEventsValue unitOfWorkDomainValue )
                 throws EventReplayException
         {
@@ -107,6 +107,7 @@ public interface DomainEventPlayerService
             }
         }
 
+        @Override
         public void playEvent( DomainEventValue domainEventValue, Object object )
                 throws EventReplayException
         {

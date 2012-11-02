@@ -13,14 +13,13 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.view;
 
+import javax.swing.*;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.logging.log.service.LoggingService;
-
-import javax.swing.*;
 
 public class SwingViewer extends JFrame
 {

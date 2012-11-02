@@ -13,14 +13,13 @@
  */
 package org.qi4j.library.http;
 
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.util.security.Constraint;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.library.http.ConstraintInfo.HttpMethod;
-
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.util.security.Constraint;
 
 @Mixins( ConstraintService.Mixin.class )
 public interface ConstraintService
@@ -36,6 +35,7 @@ public interface ConstraintService
         @Service
         private ServiceReference<ConstraintService> myRef;
 
+        @Override
         public ConstraintMapping buildConstraintMapping()
         {
             ConstraintMapping csMapping = null;

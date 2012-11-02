@@ -17,11 +17,10 @@
 
 package org.qi4j.library.rest.common.link;
 
+import java.util.List;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.List;
 
 /**
  * A list of links

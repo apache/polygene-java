@@ -156,6 +156,7 @@ public class ContextResource
     }
 
     // Uniform implementation
+    @Override
     public final void handle( Request request, Response response )
     {
         ObjectSelection objectSelection = current();

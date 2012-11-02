@@ -51,6 +51,7 @@ public class Role<T>
         return obj != null && obj instanceof Role && self.equals( ( (Role) obj ).self );
     }
 
+    @Override
     public int compareTo( Role<T> role )
     {
         return ( (Comparable<T>) self ).compareTo( role.self );

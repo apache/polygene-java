@@ -32,6 +32,7 @@ public final class Qi4jServiceBeanDefinitionParser
 {
     private static final String SERVICE_ID = "id";
 
+    @Override
     public final BeanDefinition parse( Element anElement, ParserContext aParserContext )
     {
         String serviceId = anElement.getAttribute( SERVICE_ID );

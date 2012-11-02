@@ -9,6 +9,7 @@ import org.qi4j.library.constraints.annotation.MinLength;
 public class MinLengthConstraint
     implements Constraint<MinLength, String>
 {
+    @Override
     public boolean isValid( MinLength annotation, String parameter ) throws NullPointerException
     {
         if( parameter != null )

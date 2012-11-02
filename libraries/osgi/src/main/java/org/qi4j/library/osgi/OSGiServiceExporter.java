@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Properties;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.qi4j.api.activation.ActivatorAdapter;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
@@ -11,8 +13,6 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.HasMetaInfo;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Iterables;
-import org.qi4j.api.activation.ActivatorAdapter;
-import org.qi4j.api.activation.Activators;
 
 import static org.qi4j.api.util.Classes.interfacesOf;
 
@@ -20,13 +20,13 @@ import static org.qi4j.api.util.Classes.interfacesOf;
 @Activators( OSGiServiceExporter.Activator.class )
 public interface OSGiServiceExporter extends ServiceComposite
 {
-    
+
     void registerServices()
             throws Exception;
 
     void unregisterServices()
             throws Exception;
-    
+
     class Activator
             extends ActivatorAdapter<ServiceReference<OSGiServiceExporter>>
     {
@@ -44,7 +44,7 @@ public interface OSGiServiceExporter extends ServiceComposite
         {
             passivating.get().unregisterServices();
         }
-        
+
     }
 
     public static abstract class OSGiServiceExporterMixin
@@ -55,6 +55,7 @@ public interface OSGiServiceExporter extends ServiceComposite
         private Iterable<ServiceReference<ServiceComposite>> services;
         private ArrayList<ServiceRegistration> registrations = new ArrayList<ServiceRegistration>();
 
+        @Override
         public void registerServices()
             throws Exception
         {
@@ -83,6 +84,7 @@ public interface OSGiServiceExporter extends ServiceComposite
             }
         }
 
+        @Override
         public void unregisterServices()
             throws Exception
         {

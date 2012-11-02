@@ -16,10 +16,8 @@ package org.qi4j.library.uowfile.internal;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +113,7 @@ public class UoWFile
     {
         return file.length() + file.lastModified();
     }
-    
+
     private void copy( File source, File dest )
     {
         try {

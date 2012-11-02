@@ -24,7 +24,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.structure.Module;
 import org.qi4j.library.rest.client.ClientCache;
-import org.qi4j.library.rest.client.spi.NullResponseHandler;
 import org.qi4j.library.rest.client.RequestWriterDelegator;
 import org.qi4j.library.rest.client.ResponseReaderDelegator;
 import org.qi4j.library.rest.client.spi.RequestWriter;

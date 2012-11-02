@@ -17,11 +17,10 @@
 
 package org.qi4j.library.rest.common.table;
 
+import java.util.List;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.List;
 
 /**
  * JAVADOC

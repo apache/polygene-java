@@ -17,16 +17,15 @@
 
 package org.qi4j.library.rest.common.table;
 
-import org.qi4j.api.util.Dates;
-import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
-
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.qi4j.api.util.Dates;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.functional.Function;
 
 import static java.util.Collections.reverseOrder;
@@ -190,6 +189,7 @@ public class TableBuilder
             final int idx = sortIndex;
             Comparator<Row> comparator = new Comparator<Row>()
             {
+               @Override
                public int compare(Row o1, Row o2)
                {
                   Object o = o1.c().get().get(idx).v().get();
@@ -220,7 +220,7 @@ public class TableBuilder
 
       return this;
    }
-   
+
 //   public TableBuilder orderBy()
 //   {
 //      if (tableQuery.orderBy() != null)

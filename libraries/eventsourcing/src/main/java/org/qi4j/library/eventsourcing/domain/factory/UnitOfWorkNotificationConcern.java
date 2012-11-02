@@ -17,6 +17,7 @@
 
 package org.qi4j.library.eventsourcing.domain.factory;
 
+import java.io.IOException;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityComposite;
@@ -39,8 +40,6 @@ import org.qi4j.library.eventsourcing.domain.source.UnitOfWorkEventsVisitor;
 import org.qi4j.library.eventsourcing.domain.spi.CurrentUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Notify event listeners when a complete UoW of domain events is available.
@@ -79,6 +78,7 @@ public class UnitOfWorkNotificationConcern
         eventOutput = eventStore.storeEvents();
     }
 
+    @Override
     public DomainEventValue createEvent( EntityComposite entity, String name, Object[] args )
     {
         final UnitOfWork unitOfWork = uowf.currentUnitOfWork();
@@ -95,11 +95,14 @@ public class UnitOfWorkNotificationConcern
             unitOfWork.addUnitOfWorkCallback( new UnitOfWorkCallback()
             {
                 String user;
+
+                @Override
                 public void beforeCompletion() throws UnitOfWorkCompletionException
                 {
                     user = currentUser.getCurrentUser();
                 }
 
+                @Override
                 public void afterCompletion( UnitOfWorkStatus status )
                 {
                     if (status.equals( UnitOfWorkStatus.COMPLETED ))

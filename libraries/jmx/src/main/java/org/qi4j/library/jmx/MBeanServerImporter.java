@@ -14,11 +14,10 @@
 
 package org.qi4j.library.jmx;
 
+import java.lang.management.ManagementFactory;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
-
-import java.lang.management.ManagementFactory;
 
 /**
  * Importer for the platform MBeanServer of the JVM.
@@ -26,12 +25,14 @@ import java.lang.management.ManagementFactory;
 public class MBeanServerImporter
     implements ServiceImporter
 {
+    @Override
     public Object importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
         return ManagementFactory.getPlatformMBeanServer();
     }
 
+    @Override
     public boolean isAvailable( Object instance )
     {
         return true;

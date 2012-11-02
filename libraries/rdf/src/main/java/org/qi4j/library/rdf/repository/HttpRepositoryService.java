@@ -30,9 +30,11 @@ import org.qi4j.api.service.ServiceReference;
 public interface HttpRepositoryService
     extends Repository, ServiceComposite
 {
+    @Override
     void initialize()
             throws RepositoryException;
-    
+
+    @Override
     void shutDown()
             throws RepositoryException;
 

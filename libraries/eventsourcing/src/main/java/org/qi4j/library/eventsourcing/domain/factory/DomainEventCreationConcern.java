@@ -17,6 +17,7 @@
 
 package org.qi4j.library.eventsourcing.domain.factory;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.entity.EntityComposite;
@@ -25,8 +26,6 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.eventsourcing.domain.api.DomainEvent;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.DomainEvents;
-
-import java.lang.reflect.Method;
 
 /**
  * Generate event for event method
@@ -41,6 +40,7 @@ public class DomainEventCreationConcern
     @Service
     private DomainEventFactory domainEventFactory;
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         if (DomainEvents.currentEvent() == null)

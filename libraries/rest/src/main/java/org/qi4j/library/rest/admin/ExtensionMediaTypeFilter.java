@@ -14,6 +14,8 @@
 
 package org.qi4j.library.rest.admin;
 
+import java.util.Collections;
+import java.util.List;
 import org.restlet.Context;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -23,9 +25,6 @@ import org.restlet.data.Metadata;
 import org.restlet.data.Preference;
 import org.restlet.routing.Filter;
 import org.restlet.service.MetadataService;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Check the extension used and set the corresponding media type

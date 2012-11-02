@@ -17,6 +17,8 @@
 
 package org.qi4j.library.rest.client.responsereader;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,15 +26,12 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Dates;
 import org.qi4j.library.rest.client.spi.ResponseReader;
-import org.qi4j.library.rest.common.table.TableBuilder;
 import org.qi4j.library.rest.common.table.Table;
+import org.qi4j.library.rest.common.table.TableBuilder;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 /**
  * JAVADOC
@@ -43,6 +42,7 @@ public class TableResponseReader
    @Structure
    Module module;
 
+    @Override
    public Object readResponse( Response response, Class<?> resultType ) throws ResourceException
    {
       if (response.getEntity().getMediaType().equals( MediaType.APPLICATION_JSON) && Table.class.isAssignableFrom( resultType ))

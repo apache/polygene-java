@@ -128,6 +128,7 @@ public abstract class AbstractEventStoreMixin
                 // Notify listeners
                 transactionNotifier.submit( new Runnable()
                 {
+                    @Override
                     public void run()
                     {
                         synchronized(listeners)
@@ -150,11 +151,13 @@ public abstract class AbstractEventStoreMixin
     }
 
     // EventStream implementation
+    @Override
     public void registerListener( UnitOfWorkEventsListener subscriber )
     {
         listeners.add( subscriber );
     }
 
+    @Override
     public void unregisterListener( UnitOfWorkEventsListener subscriber )
     {
         listeners.remove( subscriber );

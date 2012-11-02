@@ -161,6 +161,7 @@ public interface AlarmSystem
         /**
          * Returns all the AlarmModels that has been installed.
          */
+        @Override
         public List<AlarmModelDescriptor> alarmModels()
         {
             List<AlarmModelDescriptor> descriptors = new ArrayList<AlarmModelDescriptor>();
@@ -174,6 +175,7 @@ public interface AlarmSystem
         /**
          * Returns the default AlarmModel.
          */
+        @Override
         public AlarmModel defaultAlarmModel()
         {
             AlarmModelDescriptor defaultDefault = null;
@@ -205,6 +207,7 @@ public interface AlarmSystem
          * @param name The system name of the AlarmPoint.
          * @param category The AlarmPoint Category the created alarm should belong to.
          */
+        @Override
         public AlarmPoint createAlarm( String name, AlarmCategory category )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
@@ -229,6 +232,7 @@ public interface AlarmSystem
          * Register AlarmListener to recieve <code>AlarmEvents</code> from all
          * <code>Alarms</code> managed by this <code>AlarmSystem</code>.
          */
+        @Override
         public void addAlarmListener( AlarmListener listener )
         {
             alarmListeners.add( listener );
@@ -237,6 +241,7 @@ public interface AlarmSystem
         /**
          * Remove the <code>AlarmListener</code> from the <code>AlarmSystem</code>.
          */
+        @Override
         public void removeAlarmListener( AlarmListener listener )
         {
             alarmListeners.remove( listener );
@@ -245,6 +250,7 @@ public interface AlarmSystem
         /**
          * Returns a list of all Alarms registered to the service.
          */
+        @Override
         public Query<AlarmPoint> alarmList()
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
@@ -252,6 +258,7 @@ public interface AlarmSystem
             return uow.newQuery( builder );
         }
 
+        @Override
         public List<AlarmListener> alarmListeners()
         {
             synchronized( alarmListeners )

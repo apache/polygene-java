@@ -9,6 +9,7 @@ import org.qi4j.library.constraints.annotation.OneOf;
 public class OneOfConstraint
     implements Constraint<OneOf, String>
 {
+    @Override
     public boolean isValid( OneOf oneOf, String value )
     {
         for( int i = 0; i < oneOf.value().length; i++ )

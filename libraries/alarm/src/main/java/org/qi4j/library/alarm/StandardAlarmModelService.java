@@ -97,6 +97,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
          * This normally returns the human readable technical name of
          * the AlarmModel.
          */
+        @Override
         public String modelName()
         {
             return "org.qi4j.library.alarm.model.standard";
@@ -109,6 +110,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
          *
          * @return the description of the ModelProvider.
          */
+        @Override
         public String modelDescription()
         {
             return modelDescription( null );
@@ -120,6 +122,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
          * Locale. If Locale is <code><b>null</b></code>, then the
          * default Locale is used.
          */
+        @Override
         public String modelDescription( Locale locale )
         {
             ResourceBundle rb = getResourceBundle( locale );
@@ -159,6 +162,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
         /**
          * Returns all the supported AlarmPoint triggers.
          */
+        @Override
         public List<String> alarmTriggers()
         {
             return TRIGGER_LIST;
@@ -170,6 +174,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
             return STATUS_LIST;
         }
 
+        @Override
         public String computeTrigger( AlarmStatus status, boolean condition )
         {
             if( condition )
@@ -191,6 +196,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
             return null;
         }
 
+        @Override
         public boolean computeCondition( AlarmStatus status )
         {
             return ( status.name( null ).equals( AlarmPoint.STATUS_ACTIVATED ) ) ||

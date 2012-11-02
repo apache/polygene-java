@@ -35,6 +35,7 @@ import org.qi4j.library.rest.client.responsereader.TableResponseReader;
 public class ClientAssembler
    implements Assembler
 {
+    @Override
    public void assemble( ModuleAssembly module ) throws AssemblyException
    {
       module.objects( ContextResourceClientFactory.class, ContextResourceClient.class ).visibleIn( Visibility.application );

@@ -1,14 +1,13 @@
 package org.qi4j.library.locking;
 
-import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.concern.ConcernOf;
-import org.qi4j.api.injection.scope.This;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.injection.scope.This;
 
 /**
  * Applies write-lock to Composite
@@ -22,6 +21,7 @@ public class WriteLockConcern
     @This
     ReadWriteLock lock;
 
+    @Override
     public Object invoke( Object o, Method method, Object[] objects )
         throws Throwable
     {

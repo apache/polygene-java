@@ -13,20 +13,18 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.log;
 
+import java.io.Serializable;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.logging.log.service.LoggingService;
-
-import java.io.Serializable;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -45,6 +43,7 @@ public final class SimpleLogConcern
         category = type.getName();
     }
 
+    @Override
     public void info( String message )
     {
         if( loggingService == null )
@@ -54,6 +53,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message );
     }
 
+    @Override
     public void info( String message, Serializable param1 )
     {
         if( loggingService == null )
@@ -63,6 +63,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, param1 );
     }
 
+    @Override
     public void info( String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
@@ -72,6 +73,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, param1, param2 );
     }
 
+    @Override
     public void info( String message, Serializable... params )
     {
         if( loggingService == null )
@@ -81,6 +83,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, params );
     }
 
+    @Override
     public void warning( String message )
     {
         if( loggingService == null )
@@ -90,6 +93,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message );
     }
 
+    @Override
     public void warning( String message, Serializable param1 )
     {
         if( loggingService == null )
@@ -99,6 +103,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, param1 );
     }
 
+    @Override
     public void warning( String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
@@ -108,6 +113,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, param1, param2 );
     }
 
+    @Override
     public void warning( String message, Serializable... params )
     {
         if( loggingService == null )
@@ -117,6 +123,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, params );
     }
 
+    @Override
     public void error( String message )
     {
         if( loggingService == null )
@@ -126,6 +133,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message );
     }
 
+    @Override
     public void error( String message, Serializable param1 )
     {
         if( loggingService == null )
@@ -135,6 +143,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, param1 );
     }
 
+    @Override
     public void error( String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
@@ -144,6 +153,7 @@ public final class SimpleLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, param1, param2 );
     }
 
+    @Override
     public void error( String message, Serializable... params )
     {
         if( loggingService == null )

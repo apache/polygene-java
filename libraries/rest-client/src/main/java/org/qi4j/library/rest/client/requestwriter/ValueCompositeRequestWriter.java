@@ -46,6 +46,7 @@ public class ValueCompositeRequestWriter
    @Structure
    private Qi4jSPI spi;
 
+    @Override
    public boolean writeRequest(Object requestObject, Request request) throws ResourceException
    {
       if (requestObject instanceof ValueComposite)

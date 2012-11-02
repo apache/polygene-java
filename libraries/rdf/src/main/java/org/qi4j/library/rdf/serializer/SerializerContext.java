@@ -13,15 +13,14 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.library.rdf.serializer;
 
+import java.lang.reflect.Method;
 import org.openrdf.model.*;
 import org.qi4j.api.util.Classes;
 import org.qi4j.library.rdf.Rdfs;
-
-import java.lang.reflect.Method;
 
 public final class SerializerContext
 {

@@ -14,11 +14,10 @@
 
 package org.qi4j.library.eventsourcing.domain.factory;
 
+import java.security.Principal;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.library.eventsourcing.domain.spi.CurrentUser;
-
-import java.security.Principal;
 
 /**
  * CurrentUser implementation that gets a Principal object from the meta-info of the current UnitOfWork. Default to "unknown".
@@ -29,6 +28,7 @@ public class CurrentUserUoWPrincipal
     @Structure
     private UnitOfWorkFactory uowf;
 
+    @Override
     public String getCurrentUser()
     {
         try

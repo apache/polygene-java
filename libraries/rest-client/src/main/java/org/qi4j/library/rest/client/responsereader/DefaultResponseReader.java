@@ -17,6 +17,7 @@
 
 package org.qi4j.library.rest.client.responsereader;
 
+import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONTokener;
 import org.qi4j.library.rest.client.spi.ResponseReader;
@@ -24,14 +25,13 @@ import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ResourceException;
 
-import java.io.IOException;
-
 /**
  * ResponseReader for simple types from JSON
  */
 public class DefaultResponseReader
    implements ResponseReader
 {
+    @Override
    public Object readResponse(Response response, Class<?> resultType) throws ResourceException
    {
       if (MediaType.APPLICATION_JSON.equals(response.getEntity().getMediaType()))

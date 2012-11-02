@@ -223,6 +223,7 @@ public interface ExtendedAlarmModelService
          *
          * @return The AlarmPoint triggers that this AlarmModel supports.
          */
+        @Override
         public List<String> alarmTriggers()
         {
             return TRIGGER_LIST;
@@ -234,6 +235,7 @@ public interface ExtendedAlarmModelService
             return STATUS_LIST;  //To change body of implemented methods use File | Settings | File Templates.
         }
 
+        @Override
         public String computeTrigger( AlarmStatus status, boolean condition )
         {
             if( condition )
@@ -256,6 +258,7 @@ public interface ExtendedAlarmModelService
             return null;
         }
 
+        @Override
         public boolean computeCondition( AlarmStatus status )
         {
             return ( status.name(null).equals( AlarmPoint.STATUS_ACTIVATED ) ) ||

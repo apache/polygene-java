@@ -45,6 +45,7 @@ public final class Qi4jApplicationFactoryBean
         this.applicationBootstrap = applicationBootstrap;
     }
 
+    @Override
     public final Application getObject() throws Exception
     {
         if ( this.application == null )
@@ -54,21 +55,25 @@ public final class Qi4jApplicationFactoryBean
         return this.application;
     }
 
+    @Override
     public final Class<Application> getObjectType()
     {
         return Application.class;
     }
 
+    @Override
     public final boolean isSingleton()
     {
         return true;
     }
 
+    @Override
     public final void destroy() throws Exception
     {
         this.getObject().passivate();
     }
 
+    @Override
     public final void afterPropertiesSet() throws Exception
     {
         this.getObject().activate();
@@ -82,6 +87,7 @@ public final class Qi4jApplicationFactoryBean
             return energy4Java.newApplication( new ApplicationAssembler()
             {
 
+                @Override
                 public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                         throws AssemblyException
                 {
@@ -97,6 +103,7 @@ public final class Qi4jApplicationFactoryBean
 
     }
 
+    @Override
     public void setApplicationContext( final ApplicationContext applicationContext ) throws BeansException
     {
         if ( this.applicationBootstrap instanceof ApplicationContextAware )

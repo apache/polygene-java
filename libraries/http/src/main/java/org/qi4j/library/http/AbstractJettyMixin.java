@@ -81,6 +81,7 @@ public abstract class AbstractJettyMixin
 
     protected abstract Protocol servedProtocol();
 
+    @Override
     public final void startJetty()
             throws Exception
     {
@@ -114,6 +115,7 @@ public abstract class AbstractJettyMixin
         server.start();
     }
 
+    @Override
     public final void stopJetty()
             throws Exception
     {
@@ -124,6 +126,7 @@ public abstract class AbstractJettyMixin
         server = null;
     }
 
+    @Override
     public final Interface[] interfacesServed()
     {
         Connector[] connectors = server.getConnectors();

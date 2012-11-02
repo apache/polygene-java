@@ -16,15 +16,14 @@
 
 package org.qi4j.library.eventsourcing.domain.source.helper;
 
+import java.lang.reflect.Method;
+import java.util.Date;
 import org.qi4j.api.util.Methods;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
-
-import java.lang.reflect.Method;
-import java.util.Date;
 
 import static org.qi4j.functional.Iterables.map;
 
@@ -55,6 +54,7 @@ public class Events
     {
         return new Specification<UnitOfWorkDomainEventsValue>()
         {
+            @Override
             public boolean satisfiedBy( UnitOfWorkDomainEventsValue eventValue )
             {
                 return eventValue.timestamp().get() > afterDate.getTime();
@@ -66,6 +66,7 @@ public class Events
     {
         return new Specification<UnitOfWorkDomainEventsValue>()
         {
+            @Override
             public boolean satisfiedBy( UnitOfWorkDomainEventsValue eventValue )
             {
                 return eventValue.timestamp().get() < afterDate.getTime();
@@ -77,6 +78,7 @@ public class Events
     {
         return new Specification<UnitOfWorkDomainEventsValue>()
         {
+            @Override
             public boolean satisfiedBy( UnitOfWorkDomainEventsValue eventValue )
             {
                 for (String name : names)
@@ -93,6 +95,7 @@ public class Events
     {
         return new Specification<UnitOfWorkDomainEventsValue>()
         {
+            @Override
             public boolean satisfiedBy( UnitOfWorkDomainEventsValue eventValue )
             {
                 for (String user : by)
@@ -109,6 +112,7 @@ public class Events
     {
         return new Specification<DomainEventValue>()
         {
+            @Override
             public boolean satisfiedBy( DomainEventValue eventValue )
             {
                 for (String name : names)
@@ -125,6 +129,7 @@ public class Events
     {
         return new Specification<DomainEventValue>()
         {
+            @Override
             public boolean satisfiedBy( DomainEventValue eventValue )
             {
                 for (String name : names)
@@ -141,6 +146,7 @@ public class Events
     {
         return Events.withNames( map( new Function<Method, String>()
         {
+            @Override
             public String map( Method method )
             {
                 return method.getName();
@@ -152,6 +158,7 @@ public class Events
     {
         return new Specification<DomainEventValue>()
         {
+            @Override
             public boolean satisfiedBy( DomainEventValue eventValue )
             {
                 for (String entity : entities)
@@ -168,6 +175,7 @@ public class Events
     {
         return new Specification<DomainEventValue>()
         {
+            @Override
             public boolean satisfiedBy( DomainEventValue eventValue )
             {
                 for (String entityType : entityTypes)
@@ -184,6 +192,7 @@ public class Events
     {
         return new Specification<DomainEventValue>()
         {
+            @Override
             public boolean satisfiedBy( DomainEventValue eventValue )
             {
                 return EventParameters.getParameter( eventValue, name ).equals( value );

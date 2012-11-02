@@ -17,10 +17,9 @@
 
 package org.qi4j.library.eventsourcing.domain.source;
 
+import java.io.IOException;
 import org.qi4j.io.Input;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
-
-import java.io.IOException;
 
 /**
  * An EventSource is a source of events. Events are grouped in the UnitOfWork in which they were created.

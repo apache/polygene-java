@@ -21,16 +21,19 @@ public abstract class ProvidesEntityOfMixin<T>
     private String id;
     private T entity;
 
+    @Override
     public String getId()
     {
         return id;
     }
 
+    @Override
     public void setId( String id )
     {
         this.id = id;
     }
 
+    @Override
     public T getEntity()
     {
         return entity;

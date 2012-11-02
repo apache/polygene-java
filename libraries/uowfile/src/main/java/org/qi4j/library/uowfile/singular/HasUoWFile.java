@@ -14,7 +14,6 @@
 package org.qi4j.library.uowfile.singular;
 
 import java.io.File;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;

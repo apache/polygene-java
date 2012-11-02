@@ -13,10 +13,9 @@
  */
 package org.qi4j.library.servlet;
 
+import javax.servlet.ServletContext;
 import org.qi4j.api.structure.Application;
 import org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap;
-
-import javax.servlet.ServletContext;
 
 public final class Qi4jServletSupport
 {

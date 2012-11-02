@@ -47,6 +47,7 @@ public interface DomainEventFactoryService
         @Structure
         private ValueBuilderFactory vbf;
 
+        @Override
         public DomainEventValue createEvent( EntityComposite entity, String name, Object[] args )
         {
             ValueBuilder<DomainEventValue> builder = vbf.newValueBuilder( DomainEventValue.class );

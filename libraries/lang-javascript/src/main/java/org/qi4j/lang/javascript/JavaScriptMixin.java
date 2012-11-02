@@ -1,16 +1,22 @@
 /*
  * Copyright 2007 Rickard Öberg
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, software 
- * distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions and 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
 */
 package org.qi4j.lang.javascript;
 
+import java.io.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 import org.mozilla.javascript.*;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
@@ -20,13 +26,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.library.scripting.ScriptException;
 import org.qi4j.library.scripting.ScriptReloadable;
-
-import java.io.*;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.StringTokenizer;
 
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions
@@ -66,6 +65,7 @@ public class JavaScriptMixin
 
     }
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         Context cx = Context.enter();
@@ -97,6 +97,7 @@ public class JavaScriptMixin
         }
     }
 
+    @Override
     public void reloadScripts()
     {
         cachedScripts.clear();

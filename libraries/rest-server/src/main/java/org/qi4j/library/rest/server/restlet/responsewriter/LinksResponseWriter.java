@@ -49,6 +49,7 @@ public class LinksResponseWriter
     @Service
     Configuration cfg;
 
+    @Override
     public boolean writeResponse( final Object result, final Response response )
         throws ResourceException
     {

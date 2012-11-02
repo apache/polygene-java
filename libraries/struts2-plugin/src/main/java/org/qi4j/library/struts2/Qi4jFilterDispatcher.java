@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.inject.ContainerBuilder;
 import com.opensymphony.xwork2.inject.Context;
 import com.opensymphony.xwork2.inject.Factory;
 import com.opensymphony.xwork2.util.location.LocatableProperties;
+import javax.servlet.FilterConfig;
 import org.apache.struts2.config.BeanSelectionProvider;
 import org.apache.struts2.dispatcher.Dispatcher;
 import org.apache.struts2.dispatcher.FilterDispatcher;
@@ -15,8 +16,6 @@ import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
-import javax.servlet.FilterConfig;
 
 import static org.qi4j.library.struts2.Constants.SERVLET_ATTRIBUTE;
 
@@ -55,6 +54,7 @@ public class Qi4jFilterDispatcher
             module = aModule;
         }
 
+        @Override
         public void register( ContainerBuilder builder, LocatableProperties props )
             throws ConfigurationException
         {
@@ -65,16 +65,19 @@ public class Qi4jFilterDispatcher
             registered = true;
         }
 
+        @Override
         public boolean needsReload()
         {
             return !registered;
         }
 
+        @Override
         public void init( Configuration configuration )
             throws ConfigurationException
         {
         }
 
+        @Override
         public void destroy()
         {
         }
@@ -83,6 +86,7 @@ public class Qi4jFilterDispatcher
         {
             builder.factory( type, new Factory<T>()
             {
+                @Override
                 public T create( Context context )
                 {
                     return value;

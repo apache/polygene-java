@@ -13,10 +13,11 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.log;
 
+import java.io.Serializable;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
@@ -25,8 +26,6 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.logging.log.service.LoggingService;
-
-import java.io.Serializable;
 
 public final class CategoryLogConcern
     implements CategoryLog
@@ -39,6 +38,7 @@ public final class CategoryLogConcern
     {
     }
 
+    @Override
     public void info( String category, String message )
     {
         if( loggingService == null )
@@ -48,6 +48,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message );
     }
 
+    @Override
     public void info( String category, String message, Serializable param1 )
     {
         if( loggingService == null )
@@ -57,6 +58,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, param1 );
     }
 
+    @Override
     public void info( String category, String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
@@ -66,6 +68,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, param1, param2 );
     }
 
+    @Override
     public void info( String category, String message, Serializable... params )
     {
         if( loggingService == null )
@@ -75,6 +78,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.INFO, api.dereference( composite ), category, message, params );
     }
 
+    @Override
     public void warning( String category, String message )
     {
         if( loggingService == null )
@@ -84,6 +88,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.WARNING, api.dereference( composite ), category, message );
     }
 
+    @Override
     public void warning( String category, String message, Serializable param1 )
     {
         if( loggingService == null )
@@ -93,6 +98,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.WARNING, api.dereference( composite ), category, message, param1 );
     }
 
+    @Override
     public void warning( String category, String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
@@ -102,6 +108,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.WARNING, api.dereference( composite ), category, message, param1, param2 );
     }
 
+    @Override
     public void warning( String category, String message, Serializable... params )
     {
         if( loggingService == null )
@@ -111,6 +118,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.WARNING, api.dereference( composite ), category, message, params );
     }
 
+    @Override
     public void error( String category, String message )
     {
         if( loggingService == null )
@@ -120,6 +128,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.ERROR, api.dereference( composite ), category, message );
     }
 
+    @Override
     public void error( String category, String message, Serializable param1 )
     {
         if( loggingService == null )
@@ -129,6 +138,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.ERROR, api.dereference( composite ), category, message, param1 );
     }
 
+    @Override
     public void error( String category, String message, Serializable param1, Serializable param2 )
     {
         if( loggingService == null )
@@ -138,6 +148,7 @@ public final class CategoryLogConcern
         loggingService.log( LogType.ERROR, api.dereference( composite ), category, message, param1, param2 );
     }
 
+    @Override
     public void error( String category, String message, Serializable... params )
     {
         if( loggingService == null )

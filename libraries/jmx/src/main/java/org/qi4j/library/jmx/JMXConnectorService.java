@@ -73,7 +73,7 @@ public interface JMXConnectorService
         }
 
     }
-    
+
     abstract class JmxConnectorMixin
             implements JMXConnectorService
     {
@@ -88,6 +88,7 @@ public interface JMXConnectorService
         Registry registry;
         JMXConnectorServer connector;
 
+        @Override
         public void startJMXConnector() throws Exception
         {
             if (config.get().enabled().get())
@@ -119,6 +120,7 @@ public interface JMXConnectorService
             }
         }
 
+        @Override
         public void stopJMXConnector() throws Exception
         {
             // Stop connector
@@ -139,6 +141,7 @@ public interface JMXConnectorService
         class ConfigurationJmxAuthenticator implements JMXAuthenticator
         {
 
+            @Override
             public Subject authenticate( Object credentials )
             {
 

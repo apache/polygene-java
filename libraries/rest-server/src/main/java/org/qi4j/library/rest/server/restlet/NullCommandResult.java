@@ -25,6 +25,7 @@ import org.qi4j.library.rest.server.spi.CommandResult;
 public class NullCommandResult
     implements CommandResult
 {
+    @Override
     public Object getResult()
     {
         return null;

@@ -17,10 +17,9 @@
 
 package org.qi4j.library.eventsourcing.domain.factory;
 
-import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 
 /**
  * List of eventValues for the current UnitOfWork. This will be updated by the DomainEventFactory.

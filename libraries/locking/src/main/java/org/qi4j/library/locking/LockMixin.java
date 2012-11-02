@@ -27,11 +27,13 @@ public class LockMixin
 {
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
+    @Override
     public Lock readLock()
     {
         return lock.readLock();
     }
 
+    @Override
     public Lock writeLock()
     {
         return lock.writeLock();

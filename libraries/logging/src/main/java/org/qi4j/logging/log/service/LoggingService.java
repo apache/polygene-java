@@ -13,14 +13,13 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.log.service;
 
+import java.io.Serializable;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.logging.log.LogType;
-
-import java.io.Serializable;
 
 public interface LoggingService
 {

@@ -16,7 +16,6 @@ package org.qi4j.library.uowfile.plural;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;

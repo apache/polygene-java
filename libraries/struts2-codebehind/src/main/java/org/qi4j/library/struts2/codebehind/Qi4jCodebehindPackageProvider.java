@@ -11,14 +11,13 @@ import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.ClassLoaderUtil;
 import com.opensymphony.xwork2.util.logging.Logger;
 import com.opensymphony.xwork2.util.logging.LoggerFactory;
-import org.apache.struts2.config.*;
-import org.qi4j.library.struts2.ActionConfiguration;
-
-import javax.servlet.ServletContext;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import javax.servlet.ServletContext;
+import org.apache.struts2.config.*;
+import org.qi4j.library.struts2.ActionConfiguration;
 
 /**
  * This is inspired by the ClasspathPackageProvider from the struts2-codebehind-plugin.  Most of the code
@@ -127,6 +126,7 @@ public class Qi4jCodebehindPackageProvider
     public static class ClasspathPageLocator
         implements PageLocator
     {
+        @Override
         public URL locate( String path )
         {
             return ClassLoaderUtil.getResource( path, getClass() );
@@ -206,12 +206,14 @@ public class Qi4jCodebehindPackageProvider
         this.pageLocator = locator;
     }
 
+    @Override
     public void init( Configuration configuration )
         throws ConfigurationException
     {
         this.configuration = configuration;
     }
 
+    @Override
     public boolean needsReload()
     {
         return !initialized;
@@ -222,6 +224,7 @@ public class Qi4jCodebehindPackageProvider
      *
      * @throws ConfigurationException
      */
+    @Override
     public void loadPackages()
         throws ConfigurationException
     {
@@ -611,6 +614,7 @@ public class Qi4jCodebehindPackageProvider
             this.context = context;
         }
 
+        @Override
         public URL locate( String path )
         {
             URL url = null;
@@ -712,7 +716,7 @@ public class Qi4jCodebehindPackageProvider
         }
     }
 
-    public final static boolean isNotEmpty( String text )
+    public static boolean isNotEmpty( String text )
     {
         return ( text != null ) && !"".equals( text );
     }

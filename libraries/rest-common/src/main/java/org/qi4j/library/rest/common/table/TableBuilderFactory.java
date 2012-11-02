@@ -17,10 +17,9 @@
 
 package org.qi4j.library.rest.common.table;
 
-import org.qi4j.api.value.ValueBuilderFactory;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.functional.Function;
 
 /**

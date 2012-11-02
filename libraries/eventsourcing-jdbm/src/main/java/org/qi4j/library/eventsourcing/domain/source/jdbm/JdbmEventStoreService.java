@@ -63,7 +63,7 @@ import org.qi4j.library.fileconfig.FileConfiguration;
 public interface JdbmEventStoreService
     extends EventSource, EventStore, EventStream, EventManagement, EventStoreActivation, ServiceComposite
 {
-    
+
     class JdbmEventStoreMixin
         extends AbstractEventStoreMixin
         implements EventManagement, EventSource
@@ -101,6 +101,7 @@ public interface JdbmEventStoreService
             recordManager.close();
         }
 
+        @Override
         public Output<String, IOException> restore()
         {
             // Commit every 1000 events, convert from string to value, and then store. Put a lock around the whole thing
@@ -140,6 +141,7 @@ public interface JdbmEventStoreService
         }
 
         // EventStore implementation
+        @Override
         public Input<UnitOfWorkDomainEventsValue, IOException> events( final long offset, long limit )
         {
             return new Input<UnitOfWorkDomainEventsValue, IOException>()
@@ -185,6 +187,7 @@ public interface JdbmEventStoreService
             };
         }
 
+        @Override
         public long count()
         {
             return currentCount;

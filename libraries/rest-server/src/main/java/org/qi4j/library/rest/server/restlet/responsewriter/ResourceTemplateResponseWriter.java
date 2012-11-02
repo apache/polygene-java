@@ -52,6 +52,7 @@ public class ResourceTemplateResponseWriter extends AbstractResponseWriter
 
     Set<String> skip = new HashSet<String>();
 
+    @Override
     public boolean writeResponse( final Object result, final Response response )
         throws ResourceException
     {

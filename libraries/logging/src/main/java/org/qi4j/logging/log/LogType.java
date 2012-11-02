@@ -13,13 +13,9 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.log;
-
-import org.qi4j.api.property.Immutable;
-import org.qi4j.api.property.Property;
-import org.qi4j.library.constraints.annotation.OneOf;
 
 public enum LogType
 {

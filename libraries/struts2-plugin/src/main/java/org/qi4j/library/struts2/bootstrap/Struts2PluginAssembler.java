@@ -34,6 +34,7 @@ public class Struts2PluginAssembler
         this.actionConfiguration = actionConfiguration;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

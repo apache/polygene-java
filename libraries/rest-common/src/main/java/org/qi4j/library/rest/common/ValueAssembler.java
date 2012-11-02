@@ -33,6 +33,7 @@ import static org.qi4j.functional.Iterables.*;
 public class ValueAssembler
     implements Assembler
 {
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

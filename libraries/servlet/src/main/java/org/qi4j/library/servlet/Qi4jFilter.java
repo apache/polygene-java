@@ -13,13 +13,12 @@
  */
 package org.qi4j.library.servlet;
 
-import org.qi4j.api.structure.Application;
-import org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import org.qi4j.api.structure.Application;
+import org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap;
 
 /**
  * Base Filter providing easy access to the {@link Application} from the {@link ServletContext}.
@@ -31,6 +30,7 @@ public abstract class Qi4jFilter
 
     private Application application;
 
+    @Override
     public void init( FilterConfig filterConfig )
             throws ServletException
     {

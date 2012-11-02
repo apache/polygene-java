@@ -18,10 +18,9 @@
 
 package org.qi4j.library.alarm;
 
-import org.qi4j.api.common.Optional;
-
 import java.util.List;
 import java.util.Locale;
+import org.qi4j.api.common.Optional;
 
 /**
  * Definition of the behaviour of the alarm model.

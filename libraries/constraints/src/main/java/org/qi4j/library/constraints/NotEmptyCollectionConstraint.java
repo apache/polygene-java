@@ -18,10 +18,9 @@
  */
 package org.qi4j.library.constraints;
 
+import java.util.Collection;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.NotEmpty;
-
-import java.util.Collection;
 
 /**
  * Constraints that a string is non empty.
@@ -31,6 +30,7 @@ public class NotEmptyCollectionConstraint
     implements Constraint<NotEmpty, Collection>
 {
 
+    @Override
     public boolean isValid( NotEmpty annotation, Collection value )
     {
         return value.size() > 0;

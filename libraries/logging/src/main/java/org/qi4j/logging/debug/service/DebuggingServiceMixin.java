@@ -13,11 +13,15 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 package org.qi4j.logging.debug.service;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.configuration.Configuration;
@@ -35,11 +39,6 @@ import org.qi4j.logging.debug.records.DebugRecord;
 import org.qi4j.logging.debug.records.EntityDebugRecordEntity;
 import org.qi4j.logging.debug.records.ServiceDebugRecordEntity;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.qi4j.functional.Iterables.first;
 
 public class DebuggingServiceMixin
@@ -48,11 +47,13 @@ public class DebuggingServiceMixin
     @Structure private UnitOfWorkFactory uowf;
     @This private Configuration<DebugServiceConfiguration> configuration;
 
+    @Override
     public int debugLevel()
     {
         return configuration.get().debugLevel().get();
     }
 
+    @Override
     public void debug( Composite composite, String message )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
@@ -72,6 +73,7 @@ public class DebuggingServiceMixin
         }
     }
 
+    @Override
     public void debug( Composite composite, String message, Serializable param1 )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
@@ -92,6 +94,7 @@ public class DebuggingServiceMixin
         }
     }
 
+    @Override
     public void debug( Composite composite, String message, Serializable param1, Serializable param2 )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
@@ -113,6 +116,7 @@ public class DebuggingServiceMixin
         }
     }
 
+    @Override
     public void debug( Composite composite, String message, Serializable... params )
     {
         UnitOfWork uow = uowf.newUnitOfWork();

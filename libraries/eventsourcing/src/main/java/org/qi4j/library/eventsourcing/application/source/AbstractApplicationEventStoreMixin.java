@@ -70,6 +70,7 @@ public abstract class AbstractApplicationEventStoreMixin
 
     private long lastTimestamp = 0;
 
+    @Override
     public void activateApplicationEventStore()
             throws Exception
     {
@@ -81,6 +82,7 @@ public abstract class AbstractApplicationEventStoreMixin
         transactionNotifier = Executors.newSingleThreadExecutor();
     }
 
+    @Override
     public void passivateApplicationEventStore()
             throws Exception
     {
@@ -89,6 +91,7 @@ public abstract class AbstractApplicationEventStoreMixin
     }
 
     // This is how transactions are put into the store
+    @Override
     public TransactionApplicationEvents storeEvents( Iterable<ApplicationEvent> events ) throws IOException
     {
         // Create new TransactionApplicationEvents
@@ -111,6 +114,7 @@ public abstract class AbstractApplicationEventStoreMixin
         // Notify listeners
         transactionNotifier.submit( new Runnable()
         {
+            @Override
             public void run()
             {
                 synchronized (listeners)
@@ -136,12 +140,14 @@ public abstract class AbstractApplicationEventStoreMixin
     // EventStream implementation
 
 
+    @Override
     public void registerListener( Output<TransactionApplicationEvents, ? extends Throwable> listener )
     {
         listeners.add( listener );
     }
 
 
+    @Override
     public void unregisterListener( Output<TransactionApplicationEvents, ? extends Throwable> listener )
     {
         listeners.remove( listener );

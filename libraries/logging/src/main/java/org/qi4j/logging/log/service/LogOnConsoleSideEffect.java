@@ -13,20 +13,19 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.log.service;
-
-import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.injection.scope.Invocation;
-import org.qi4j.api.sideeffect.SideEffectOf;
-import org.qi4j.logging.log.LogType;
 
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.injection.scope.Invocation;
+import org.qi4j.api.sideeffect.SideEffectOf;
+import org.qi4j.logging.log.LogType;
 
 import static org.qi4j.functional.Iterables.first;
 

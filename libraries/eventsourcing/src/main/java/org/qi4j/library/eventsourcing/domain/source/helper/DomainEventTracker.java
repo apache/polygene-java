@@ -80,6 +80,7 @@ public class DomainEventTracker
         }
     }
 
+    @Override
     public synchronized void run()
     {
         // TODO This should optionally use a CircuitBreaker
@@ -101,6 +102,7 @@ public class DomainEventTracker
         }
     }
 
+    @Override
     public void notifyTransactions( Iterable<UnitOfWorkDomainEventsValue> transactions )
     {
         run();

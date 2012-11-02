@@ -16,10 +16,9 @@
 
 package org.qi4j.library.eventsourcing.application.source;
 
+import java.io.IOException;
 import org.qi4j.io.Input;
 import org.qi4j.library.eventsourcing.application.api.TransactionApplicationEvents;
-
-import java.io.IOException;
 
 /**
  * An ApplicationEventSource is a source of application events that can be pulled in chunks. Events are grouped in the transactions in which they were created.

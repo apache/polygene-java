@@ -45,6 +45,7 @@ public class TransactionNotificationConcern
 
     Logger logger = LoggerFactory.getLogger( DomainEventFactory.class );
 
+    @Override
     public ApplicationEvent createEvent( String name, Object[] args )
     {
         final UnitOfWork unitOfWork = uowf.currentUnitOfWork();
@@ -60,11 +61,13 @@ public class TransactionNotificationConcern
 
             unitOfWork.addUnitOfWorkCallback( new UnitOfWorkCallback()
             {
+                @Override
                 public void beforeCompletion()
                     throws UnitOfWorkCompletionException
                 {
                 }
 
+                @Override
                 public void afterCompletion( UnitOfWorkStatus status )
                 {
                     if( status.equals( UnitOfWorkStatus.COMPLETED ) )

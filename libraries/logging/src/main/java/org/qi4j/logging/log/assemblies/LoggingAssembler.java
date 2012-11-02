@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 
 package org.qi4j.logging.log.assemblies;
@@ -26,6 +26,7 @@ import org.qi4j.logging.log.service.LoggingServiceComposite;
 public class LoggingAssembler
     implements Assembler
 {
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

@@ -33,11 +33,13 @@ public class UnitOfWorkFilter
 {
     @Structure private UnitOfWorkFactory uowf;
 
+    @Override
     public void init( FilterConfig filterConfig )
         throws ServletException
     {
     }
 
+    @Override
     public void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
         throws IOException, ServletException
     {
@@ -58,6 +60,7 @@ public class UnitOfWorkFilter
 
     }
 
+    @Override
     public void destroy()
     {
     }

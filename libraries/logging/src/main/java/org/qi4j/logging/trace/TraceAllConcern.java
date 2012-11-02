@@ -13,15 +13,14 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.trace;
 
+import java.lang.reflect.InvocationHandler;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.This;
-
-import java.lang.reflect.InvocationHandler;
 
 /**
  * The TraceAllConcern will call the traceEntry(), traceExit() and traceException() methods in the
@@ -47,6 +46,7 @@ public final class TraceAllConcern extends AbstractTraceConcern
         super( composite );
     }
 
+    @Override
     protected boolean doTrace()
     {
         return true;

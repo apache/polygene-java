@@ -13,18 +13,18 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.trace;
 
+import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.composite.Composite;
-
-import java.lang.reflect.Method;
 
 public class ExcludeCompositeFilter
     implements AppliesToFilter
 {
+    @Override
     public boolean appliesTo( Method method, Class mixin, Class compositeType, Class modifierClass )
     {
         return method.getDeclaringClass() != Composite.class;

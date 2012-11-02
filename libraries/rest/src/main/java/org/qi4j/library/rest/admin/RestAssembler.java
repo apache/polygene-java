@@ -33,6 +33,7 @@ public class RestAssembler
         this.visibility = visibility;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

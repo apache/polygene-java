@@ -12,12 +12,14 @@ public abstract class ProvidesViewOfMixin<T>
     @This
     private ProvidesViewOf<T> action;
 
+    @Override
     public String execute()
     {
         loadEntity();
         return SUCCESS;
     }
 
+    @Override
     protected Class<T> typeToLoad()
     {
         return (Class<T>) findTypeVariables( action.getClass(), ProvidesViewOf.class )[ 0 ];

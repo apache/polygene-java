@@ -16,11 +16,10 @@
  */
 package org.qi4j.library.circuitbreaker;
 
-import org.qi4j.functional.Specification;
-import org.qi4j.functional.Specifications;
-
 import java.beans.*;
 import java.util.Date;
+import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 
 import static org.qi4j.functional.Specifications.not;
 

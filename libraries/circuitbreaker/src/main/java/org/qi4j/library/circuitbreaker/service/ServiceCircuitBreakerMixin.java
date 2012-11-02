@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.circuitbreaker.service;
 
 import org.qi4j.api.injection.scope.Uses;
@@ -27,20 +26,25 @@ import org.qi4j.library.circuitbreaker.CircuitBreaker;
  * for the service.
  */
 public class ServiceCircuitBreakerMixin
-   implements ServiceCircuitBreaker, Initializable
+        implements ServiceCircuitBreaker, Initializable
 {
-   @Uses
-   ServiceDescriptor descriptor;
 
-   CircuitBreaker circuitBreaker;
+    @Uses
+    ServiceDescriptor descriptor;
 
-   public void initialize() throws InitializationException
-   {
-      circuitBreaker = descriptor.metaInfo( CircuitBreaker.class );
-   }
+    CircuitBreaker circuitBreaker;
 
-   public CircuitBreaker getCircuitBreaker()
-   {
-      return circuitBreaker;
-   }
+    @Override
+    public void initialize()
+            throws InitializationException
+    {
+        circuitBreaker = descriptor.metaInfo( CircuitBreaker.class );
+    }
+
+    @Override
+    public CircuitBreaker getCircuitBreaker()
+    {
+        return circuitBreaker;
+    }
+
 }

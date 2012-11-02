@@ -9,6 +9,7 @@ import org.qi4j.library.constraints.annotation.MaxLength;
 public class MaxLengthConstraint
     implements Constraint<MaxLength, String>
 {
+    @Override
     public boolean isValid( MaxLength annotation, String argument )
     {
         if( argument != null )

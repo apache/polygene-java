@@ -14,9 +14,8 @@
 
 package org.qi4j.library.eventsourcing.domain.source;
 
-import org.qi4j.io.Output;
-
 import java.io.IOException;
+import org.qi4j.io.Output;
 
 /**
  * Management interface for EventStores.

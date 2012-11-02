@@ -16,6 +16,10 @@
 
 package org.qi4j.library.eventsourcing.application.source.helper;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.qi4j.api.util.Methods;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
@@ -27,11 +31,6 @@ import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
 import org.qi4j.library.eventsourcing.application.api.TransactionApplicationEvents;
 import org.qi4j.library.eventsourcing.application.replay.ApplicationEventPlayer;
 import org.qi4j.library.eventsourcing.application.replay.ApplicationEventReplayException;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Helper methods for working with Iterables of DomainEvents and UnitOfWorkDomainEventsValue.
@@ -73,6 +72,7 @@ public class ApplicationEvents
     {
         return new Specification<ApplicationEvent>()
         {
+            @Override
             public boolean satisfiedBy( ApplicationEvent event )
             {
                 for (String name : names)
@@ -89,6 +89,7 @@ public class ApplicationEvents
     {
         return new Specification<ApplicationEvent>()
         {
+            @Override
             public boolean satisfiedBy( ApplicationEvent event )
             {
                 for (String name : names)
@@ -105,6 +106,7 @@ public class ApplicationEvents
     {
         return ApplicationEvents.withNames( Iterables.map( new Function<Method, String>()
         {
+            @Override
             public String map( Method method )
             {
                 return method.getName();
@@ -116,6 +118,7 @@ public class ApplicationEvents
     {
         return new Specification<ApplicationEvent>()
         {
+            @Override
             public boolean satisfiedBy( ApplicationEvent event )
             {
                 return event.on().get().after( afterDate );
@@ -127,6 +130,7 @@ public class ApplicationEvents
     {
         return new Specification<ApplicationEvent>()
         {
+            @Override
             public boolean satisfiedBy( ApplicationEvent event )
             {
                 return event.on().get().before( beforeDate );
@@ -138,6 +142,7 @@ public class ApplicationEvents
     {
         return new Specification<ApplicationEvent>()
         {
+            @Override
             public boolean satisfiedBy( ApplicationEvent event )
             {
                 for (String name : names)
@@ -154,6 +159,7 @@ public class ApplicationEvents
     {
         return new Specification<ApplicationEvent>()
         {
+            @Override
             public boolean satisfiedBy( ApplicationEvent event )
             {
                 return ApplicationEventParameters.getParameter( event, name ).equals( value );
@@ -172,6 +178,7 @@ public class ApplicationEvents
            {
                 sender.sendTo( new Receiver<TransactionApplicationEvents, ApplicationEventReplayException>()
                 {
+                    @Override
                     public void receive( TransactionApplicationEvents item ) throws ApplicationEventReplayException
                     {
                         for (ApplicationEvent applicationEvent : events( item ))

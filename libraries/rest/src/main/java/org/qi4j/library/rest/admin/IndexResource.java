@@ -14,6 +14,8 @@
 
 package org.qi4j.library.rest.admin;
 
+import java.io.*;
+import java.util.Arrays;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.index.rdf.indexing.RdfExporter;
 import org.restlet.data.MediaType;
@@ -22,9 +24,6 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
-
-import java.io.*;
-import java.util.Arrays;
 
 /**
  * Show RDF index
@@ -73,6 +72,7 @@ public class IndexResource
             super( mediaType );
         }
 
+        @Override
         public void write( OutputStream outputStream )
             throws IOException
         {
@@ -100,6 +100,7 @@ public class IndexResource
             super( MediaType.APPLICATION_RDF_XML );
         }
 
+        @Override
         public void write( OutputStream outputStream )
             throws IOException
         {

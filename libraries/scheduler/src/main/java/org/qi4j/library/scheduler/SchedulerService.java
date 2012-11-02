@@ -57,6 +57,7 @@ public interface SchedulerService extends Scheduler, SchedulerActivation, Config
             namePrefix = me.identity().get() + "-P" + poolNumber.getAndIncrement() + "W";
         }
 
+        @Override
         public Thread newThread( Runnable runnable )
         {
             Thread thread = new Thread( group, runnable, namePrefix + threadNumber.getAndIncrement(), 0 );

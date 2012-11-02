@@ -13,6 +13,12 @@
  */
 package org.qi4j.library.rest.admin;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
@@ -35,13 +41,6 @@ import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Listing of all Entities.
@@ -132,6 +131,7 @@ public class EntitiesResource extends ServerResource
 
             WriterRepresentation representation = new WriterRepresentation( MediaType.APPLICATION_RDF_XML )
             {
+                @Override
                 public void write( Writer writer )
                     throws IOException
                 {
@@ -168,6 +168,7 @@ public class EntitiesResource extends ServerResource
             final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.<String, Object>emptyMap() );
             Representation representation = new WriterRepresentation( MediaType.TEXT_HTML )
             {
+                @Override
                 public void write( Writer buf )
                     throws IOException
                 {
@@ -229,7 +230,7 @@ public class EntitiesResource extends ServerResource
              * InputStream in = entity.getStream(); ObjectInputStream oin = new ObjectInputStream( in ); String identity
              * = oin.readUTF(); Usecase usecase = (Usecase) oin.readUnshared(); MetaInfo unitofwork = (MetaInfo)
              * oin.readUnshared(); Iterable<UnitOfWorkEvent> events = (Iterable<UnitOfWorkEvent>) oin.readUnshared();
-             * 
+             *
              * // Store state try { entityStore.apply( identity, events, usecase, unitofwork ).commit(); } catch(
              * ConcurrentEntityStateModificationException e ) { throw new ResourceException(
              * Status.CLIENT_ERROR_CONFLICT ); }

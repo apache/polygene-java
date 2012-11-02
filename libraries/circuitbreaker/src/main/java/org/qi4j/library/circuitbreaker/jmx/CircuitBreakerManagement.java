@@ -97,6 +97,7 @@ public interface CircuitBreakerManagement
         @Service
         Iterable<ServiceReference<ServiceCircuitBreaker>> circuitBreakers;
 
+        @Override
         public void registerCircuitBreakers()
                 throws JMException
         {
@@ -106,6 +107,7 @@ public interface CircuitBreakerManagement
             }
         }
 
+        @Override
         public void unregisterCircuitBreakers()
                 throws JMException
         {
@@ -147,6 +149,7 @@ public interface CircuitBreakerManagement
             circuitBreaker.addPropertyChangeListener( new PropertyChangeListener()
             {
 
+                @Override
                 public void propertyChange( PropertyChangeEvent evt )
                 {
                     if ( "status".equals( evt.getPropertyName() ) )

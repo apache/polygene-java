@@ -17,6 +17,7 @@
 
 package org.qi4j.library.rest.client.responsereader;
 
+import java.util.Iterator;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.injection.scope.Structure;
@@ -28,8 +29,6 @@ import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.resource.ResourceException;
 
-import java.util.Iterator;
-
 /**
  * JAVADOC
  */
@@ -39,6 +38,7 @@ public class JSONResponseReader
    @Structure
    Module module;
 
+    @Override
    public Object readResponse( Response response, Class<?> resultType )
    {
       if (response.getEntity().getMediaType().equals( MediaType.APPLICATION_JSON))

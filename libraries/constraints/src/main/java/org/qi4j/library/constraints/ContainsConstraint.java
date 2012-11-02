@@ -9,6 +9,7 @@ import org.qi4j.library.constraints.annotation.Contains;
 public class ContainsConstraint
     implements Constraint<Contains, String>
 {
+    @Override
     public boolean isValid( Contains annotation, String argument )
     {
         return argument.contains( annotation.value() );

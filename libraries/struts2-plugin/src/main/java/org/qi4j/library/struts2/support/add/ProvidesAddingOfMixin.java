@@ -23,17 +23,20 @@ public abstract class ProvidesAddingOfMixin<T>
 
     private EntityBuilder<T> builder;
 
+    @Override
     public T getState()
     {
         return builder.instance();
     }
 
+    @Override
     public void prepare()
         throws Exception
     {
         prepareEntityBuilder();
     }
 
+    @Override
     public String input()
     {
         return INPUT;

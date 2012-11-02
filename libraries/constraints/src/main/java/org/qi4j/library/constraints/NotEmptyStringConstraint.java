@@ -29,6 +29,7 @@ public class NotEmptyStringConstraint
     implements Constraint<NotEmpty, String>
 {
 
+    @Override
     public boolean isValid( NotEmpty annotation, String value )
     {
         return value.trim().length() > 0;

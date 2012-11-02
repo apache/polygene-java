@@ -53,11 +53,13 @@ public class InteractionConstraintsService
     private Map<Method, InteractionConstraintsBinding> methodsConstraints = new ConcurrentHashMap<Method, InteractionConstraintsBinding>();
     private Map<Class, InteractionConstraintsBinding> classConstraints = new ConcurrentHashMap<Class, InteractionConstraintsBinding>();
 
+    @Override
     public boolean isValid( Method method, ObjectSelection objectSelection, Module module )
     {
         return getConstraints( method, module ).isValid( objectSelection );
     }
 
+    @Override
     public boolean isValid( Class resourceClass, ObjectSelection objectSelection, Module module )
     {
         return getConstraints( resourceClass, module ).isValid( objectSelection );
@@ -274,6 +276,7 @@ public class InteractionConstraintsService
             this.annotation = annotation;
         }
 
+        @Override
         public boolean isValid( ObjectSelection objectSelection )
         {
             try
@@ -306,6 +309,7 @@ public class InteractionConstraintsService
             this.roleClass = roleClass;
         }
 
+        @Override
         public boolean isValid( ObjectSelection objectSelection )
         {
             try
@@ -338,6 +342,7 @@ public class InteractionConstraintsService
             this.annotation = annotation;
         }
 
+        @Override
         public boolean isValid( ObjectSelection objectSelection )
         {
             try

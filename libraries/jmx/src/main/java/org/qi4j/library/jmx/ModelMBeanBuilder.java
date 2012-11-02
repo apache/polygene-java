@@ -14,13 +14,13 @@
 
 package org.qi4j.library.jmx;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.management.Descriptor;
 import javax.management.MBeanException;
 import javax.management.MBeanParameterInfo;
 import javax.management.ObjectName;
 import javax.management.modelmbean.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Helper builder for ModelMBeans

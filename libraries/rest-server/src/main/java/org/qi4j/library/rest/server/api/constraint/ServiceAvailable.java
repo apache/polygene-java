@@ -40,6 +40,7 @@ public @interface ServiceAvailable
         @Structure
         Module module;
 
+        @Override
         public boolean isValid( ServiceAvailable serviceAvailable, ObjectSelection objectSelection )
         {
             ServiceReference ref = module.findService( serviceAvailable.value() );

@@ -55,6 +55,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
     @Service
     private EntityToValue entityToValue;
 
+    @Override
     public final void passivateDataSourceService()
             throws Exception
     {
@@ -66,6 +67,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
         circuitBreakers.clear();
     }
 
+    @Override
     public final synchronized DataSource importService( final ImportedServiceDescriptor importedServiceDescriptor )
             throws ServiceImporterException
     {
@@ -166,6 +168,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
         return config;
     }
 
+    @Override
     public final boolean isAvailable( DataSource instance )
     {
         if ( pools.containsValue( instance ) ) {

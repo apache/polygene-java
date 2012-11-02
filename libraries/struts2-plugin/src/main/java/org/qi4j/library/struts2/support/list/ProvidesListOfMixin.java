@@ -26,6 +26,7 @@ public abstract class ProvidesListOfMixin<T>
 
     private Iterable<T> results;
 
+    @Override
     public Iterable<T> list()
     {
         return results;
@@ -39,6 +40,7 @@ public abstract class ProvidesListOfMixin<T>
      * do validation, but for now we'll just use the prepare() method.  We can change it easily enough later if this
      * becomes an issue for some reason.
      */
+    @Override
     public void prepare()
         throws Exception
     {

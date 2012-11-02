@@ -49,7 +49,7 @@ public class SchedulerMixin
     private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
     private static final int DEFAULT_WORKERS_COUNT = Runtime.getRuntime().availableProcessors() + 1;
     private static final int DEFAULT_WORKQUEUE_SIZE = 10;
-    
+
     @Service
     private ScheduleFactory scheduleFactory;
 
@@ -316,7 +316,8 @@ public class SchedulerMixin
             this.module = module;
         }
 
-        // WARN Watch this code, see if we can do better, maybe leverage @UnitOfWorkRetry when it will be done
+        // WARN Watch this code, see if we can do better, maybe leverage @UnitOfWorkRetry
+        @Override
         public void run()
         {
             System.out.println( "Running Schedule" );

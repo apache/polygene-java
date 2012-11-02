@@ -14,7 +14,6 @@
 package org.qi4j.library.http;
 
 import java.security.SecureRandom;
-
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
@@ -23,7 +22,7 @@ import org.qi4j.library.constraints.annotation.OneOf;
 
 /**
  * Configuration for {@link SecureJettyMixin}.
- * 
+ *
  * Only the three keystore related properties are mandatory, all the other ones have sensible defaults.
  */
 // START SNIPPET: configssl
@@ -50,9 +49,9 @@ public interface SecureJettyConfiguration
 
     /**
      * Alias of the {@link SecureJettyService} certificate.
-     * 
+     *
      * If not set, the first certificate found in the keystore is used.
-     * 
+     *
      * @return Alias of the {@link SecureJettyService} certificate.
      */
     @Optional
@@ -79,10 +78,10 @@ public interface SecureJettyConfiguration
 
     /**
      * If the {@link SecureJettyService} wants client authentication.
-     * 
+     *
      * Defaults to false. If set to true, the {@link SecureJettyService} will expose the fact that it can handle client
      * certificate based authentication.
-     * 
+     *
      * @return If the {@link SecureJettyService} wants client authentication.
      */
     @UseDefaults
@@ -90,9 +89,9 @@ public interface SecureJettyConfiguration
 
     /**
      * If the {@link SecureJettyService} needs client authentication.
-     * 
+     *
      * Defaults to false. If set to true, only mutually authentified connections will be accepted.
-     * 
+     *
      * @return If the {@link SecureJettyService} needs client authentication.
      */
     @UseDefaults
@@ -100,9 +99,9 @@ public interface SecureJettyConfiguration
 
     /**
      * The algorithm used by {@link SecureRandom} for SSL operations.
-     * 
+     *
      * Default JVM algorithm is used if omitted.
-     * 
+     *
      * @return The algorithm used by {@link SecureRandom} for SSL operations.
      */
     @Optional
@@ -122,9 +121,9 @@ public interface SecureJettyConfiguration
 
     /**
      * If SSL Session caching is enabled.
-     * 
+     *
      * SSL Session caching is enabled by default.
-     * 
+     *
      * @return If SSL Session caching is enabled.
      */
     @Optional
@@ -132,9 +131,9 @@ public interface SecureJettyConfiguration
 
     /**
      * If SSL/TLS renegotiation is allowed.
-     * 
+     *
      * Defaults to false. Setting this to true can open vulnerabilities, be sure of what you are doing.
-     * 
+     *
      * @return If SSL/TLS renegotiation is allowed.
      */
     @UseDefaults
@@ -142,9 +141,9 @@ public interface SecureJettyConfiguration
 
     /**
      * Maximum number of intermediate certificates in the PKIX path.
-     * 
+     *
      * Set to -1 for unlimited. Defaulted to -1.
-     * 
+     *
      * @return Maximum number of intermediate certificates in the PKIX path
      */
     @Optional
@@ -153,7 +152,7 @@ public interface SecureJettyConfiguration
 
     /**
      * If the {@link SecureJettyService} certificate MUST be PKIX validated.
-     * 
+     *
      * <p/><b>IMPORTANT:</b>
      * <ul>
      *   <li>Server certificate validation do not use the configured truststore but the one of the JVM.</li>
@@ -161,7 +160,7 @@ public interface SecureJettyConfiguration
      * </ul>
      * <p/>
      * Defaults to false.
-     * 
+     *
      * @return If the {@link SecureJettyService} certificate MUST be PKIX validated.
      */
     @UseDefaults
@@ -169,7 +168,7 @@ public interface SecureJettyConfiguration
 
     /**
      * If client certificates PKIX validation MUST use either CRL or OCSP.
-     * 
+     *
      * <p/><b>IMPORTANT:</b>
      * <ul>
      *   <li>Peer certificates validation use the configured truststore if present, the one of the JVM if not.</li>
@@ -177,7 +176,7 @@ public interface SecureJettyConfiguration
      * </ul>
      * <p/>
      * Defaults to false.
-     * 
+     *
      * @return If client certificates PKIX validation MUST use either CRL or OCSP.
      */
     @UseDefaults

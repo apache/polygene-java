@@ -13,6 +13,9 @@
  */
 package org.qi4j.library.servlet.lifecycle;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.structure.Application;
@@ -23,10 +26,6 @@ import org.qi4j.library.servlet.Qi4jServlet;
 import org.qi4j.library.servlet.Qi4jServletSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 
 /**
  * Abstract ServletContextListener implementing ApplicationAssembler.
@@ -43,16 +42,16 @@ import javax.servlet.ServletContextListener;
  *  application = ( Application ) servletContext.getAttribute( Qi4jServletSupport.APP_IN_CTX );
  *
  *  // Or, shorter:
- * 
+ *
  *  application = Qi4jServletSupport.application( servletContext );
  *
  * </pre>
  *
  * Rembember that the servlet specification states:
- * 
+ *
  * In cases where the container is distributed over many virtual machines, a Web application will have an instance of
  * the ServletContext for each JVM.
- * 
+ *
  * Context attributes are local to the JVM in which they were created. This prevents ServletContext attributes from
  * being a shared memory store in a distributed container. When information needs to be shared between servlets running
  * in a distributed environment, the information should be placed into a session, stored in a database, or set in an
@@ -70,6 +69,7 @@ public abstract class AbstractQi4jServletBootstrap
     protected ApplicationDescriptor applicationModel;
     protected Application application;
 
+    @Override
     public final void contextInitialized( ServletContextEvent sce )
     {
         try {
@@ -93,7 +93,9 @@ public abstract class AbstractQi4jServletBootstrap
         } catch ( Exception ex ) {
             if ( application != null ) {
                 try {
+                    beforeApplicationPassivation( application );
                     application.passivate();
+                    afterApplicationPassivation( application );
                 } catch ( Exception ex1 ) {
                     LOGGER.warn( "Application not null and could not passivate it.", ex1 );
                 }
@@ -110,15 +112,26 @@ public abstract class AbstractQi4jServletBootstrap
     {
     }
 
+    @Override
     public final void contextDestroyed( ServletContextEvent sce )
     {
         try {
             if ( application != null ) {
+                beforeApplicationPassivation( application );
                 application.passivate();
+                afterApplicationPassivation( application );
             }
         } catch ( Exception ex ) {
             LOGGER.warn( "Unable to passivate Qi4j Application.", ex );
         }
+    }
+
+    protected void beforeApplicationPassivation( Application app )
+    {
+    }
+
+    protected void afterApplicationPassivation( Application app )
+    {
     }
 
 }

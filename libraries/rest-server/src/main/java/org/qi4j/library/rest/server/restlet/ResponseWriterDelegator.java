@@ -81,6 +81,7 @@ public class ResponseWriterDelegator
         responseWriters.add( writer );
     }
 
+    @Override
     public boolean writeResponse( Object result, Response response )
     {
         for( ResponseWriter responseWriter : responseWriters )

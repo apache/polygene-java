@@ -13,16 +13,15 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.trace;
 
+import java.io.PrintStream;
+import java.lang.reflect.Method;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.logging.trace.service.TraceService;
-
-import java.io.PrintStream;
-import java.lang.reflect.Method;
 
 /**
  * The ConsoleViewSideEffect is just a temporary solution for logging output, until a more
@@ -33,6 +32,7 @@ public abstract class TraceOnConsoleSideEffect extends SideEffectOf<TraceService
 {
     private static PrintStream OUT = System.err;
 
+    @Override
     public void traceSuccess( Class compositeType, Composite object, Method method, Object[] args, Object result, long entryTime, long durationNano )
     {
         StringBuffer buf = new StringBuffer();
@@ -43,6 +43,7 @@ public abstract class TraceOnConsoleSideEffect extends SideEffectOf<TraceService
         OUT.println( result );
     }
 
+    @Override
     public void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t, long entryTime, long durationNano )
     {
         StringBuffer buf = new StringBuffer();

@@ -14,10 +14,9 @@
 
 package org.qi4j.library.eventsourcing.domain.factory;
 
-import org.qi4j.library.eventsourcing.domain.spi.CurrentUser;
-
-import javax.security.auth.Subject;
 import java.security.AccessController;
+import javax.security.auth.Subject;
+import org.qi4j.library.eventsourcing.domain.spi.CurrentUser;
 
 /**
  * Uses thread-associated Subject to get the current user name. Default to "unknown".
@@ -25,6 +24,7 @@ import java.security.AccessController;
 public class CurrentUserSubject
     implements CurrentUser
 {
+    @Override
     public String getCurrentUser()
     {
         try

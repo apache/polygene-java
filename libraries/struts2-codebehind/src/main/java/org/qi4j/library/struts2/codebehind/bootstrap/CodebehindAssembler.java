@@ -9,6 +9,7 @@ public class CodebehindAssembler
     implements Assembler
 {
 
+    @Override
     public void assemble( ModuleAssembly aModule )
         throws AssemblyException
     {

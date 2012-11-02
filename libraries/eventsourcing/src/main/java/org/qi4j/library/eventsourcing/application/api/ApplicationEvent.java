@@ -16,11 +16,10 @@
 
 package org.qi4j.library.eventsourcing.application.api;
 
+import java.util.Date;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.Date;
 
 /**
  * Representation of an application-event. An application event is triggered by calling a method

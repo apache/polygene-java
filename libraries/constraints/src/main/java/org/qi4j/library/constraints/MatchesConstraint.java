@@ -1,9 +1,8 @@
 package org.qi4j.library.constraints;
 
+import java.util.regex.Pattern;
 import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.Matches;
-
-import java.util.regex.Pattern;
 
 /**
  * JAVADOC
@@ -11,6 +10,7 @@ import java.util.regex.Pattern;
 public class MatchesConstraint
     implements Constraint<Matches, String>
 {
+    @Override
     public boolean isValid( Matches annotation, String argument )
     {
         if( argument != null )

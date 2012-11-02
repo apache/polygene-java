@@ -15,7 +15,6 @@
 package org.qi4j.library.http;
 
 import org.eclipse.jetty.server.Server;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.importer.InstanceImporter;
 import org.qi4j.bootstrap.Assembler;
@@ -77,6 +76,7 @@ public class JettyServiceAssembler
         return this;
     }
 
+    @Override
     public final void assemble( ModuleAssembly module )
             throws AssemblyException
     {

@@ -17,6 +17,11 @@
 
 package org.qi4j.library.eventsourcing.domain.rest.server;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.functional.Iterables;
@@ -34,12 +39,6 @@ import org.restlet.ext.atom.*;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.ResourceException;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import static org.qi4j.functional.Iterables.iterable;
 
@@ -204,6 +203,7 @@ public class DomainEventSourceResource
         {
             WriterRepresentation representation = new WriterRepresentation( MediaType.APPLICATION_ATOM )
             {
+                @Override
                 public void write( final Writer writer ) throws IOException
                 {
                     feed.write( writer );

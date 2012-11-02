@@ -13,13 +13,12 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging.trace;
 
-import org.qi4j.api.injection.InjectionScope;
-
 import java.lang.annotation.*;
+import org.qi4j.api.injection.InjectionScope;
 
 /**
  * The Trace annotation is to indicate which methods should be traced when tracing is enabled.

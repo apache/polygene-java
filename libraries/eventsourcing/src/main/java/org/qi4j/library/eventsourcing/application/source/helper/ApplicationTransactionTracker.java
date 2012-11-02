@@ -125,6 +125,7 @@ public class ApplicationTransactionTracker<ReceiverThrowableType extends Throwab
                        {
                             sender.sendTo( new Receiver<TransactionApplicationEvents, ReceiverThrowableType>()
                             {
+                                @Override
                                 public void receive( TransactionApplicationEvents item ) throws ReceiverThrowableType
                                 {
                                     receiver.receive( item );

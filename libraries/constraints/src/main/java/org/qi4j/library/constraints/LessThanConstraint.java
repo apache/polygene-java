@@ -9,6 +9,7 @@ import org.qi4j.library.constraints.annotation.LessThan;
 public class LessThanConstraint
     implements Constraint<LessThan, Number>
 {
+    @Override
     public boolean isValid( LessThan annotation, Number argument )
     {
         return argument.doubleValue() < annotation.value();

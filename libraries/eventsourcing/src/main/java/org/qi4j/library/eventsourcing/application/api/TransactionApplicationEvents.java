@@ -16,11 +16,10 @@
 
 package org.qi4j.library.eventsourcing.application.api;
 
+import java.util.List;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
-
-import java.util.List;
 
 /**
  * List of events for a single transaction. Events must always be consumed

@@ -32,6 +32,7 @@ public class JSONResponseWriter extends AbstractResponseWriter
 {
     private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML, MediaType.APPLICATION_JSON );
 
+    @Override
     public boolean writeResponse( final Object result, final Response response )
         throws ResourceException
     {

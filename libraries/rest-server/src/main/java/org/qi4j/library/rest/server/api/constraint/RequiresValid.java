@@ -36,6 +36,7 @@ public @interface RequiresValid
     class RequiresValidConstraint
         implements Constraint<RequiresValid, InteractionValidation>
     {
+        @Override
         public boolean isValid( RequiresValid requiresValid, InteractionValidation validation )
         {
             return validation.isValid( requiresValid.value() );

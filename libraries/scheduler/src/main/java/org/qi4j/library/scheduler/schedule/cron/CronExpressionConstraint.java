@@ -16,7 +16,6 @@ package org.qi4j.library.scheduler.schedule.cron;
 
 import org.codeartisans.sked.crontab.schedule.CronSchedule;
 import org.qi4j.api.constraint.Constraint;
-import org.qi4j.library.scheduler.schedule.cron.CronExpression;
 
 public class CronExpressionConstraint
         implements Constraint<CronExpression, String>
@@ -24,6 +23,7 @@ public class CronExpressionConstraint
 
     private static final long serialVersionUID = 1L;
 
+    @Override
     public boolean isValid( CronExpression annotation, String cronExpression )
     {
         return CronSchedule.isExpressionValid( cronExpression );

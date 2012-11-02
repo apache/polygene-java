@@ -35,6 +35,7 @@ public class TransientSequencingAssembler
         return this;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

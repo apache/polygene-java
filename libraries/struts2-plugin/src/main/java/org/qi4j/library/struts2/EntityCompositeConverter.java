@@ -1,12 +1,11 @@
 package org.qi4j.library.struts2;
 
 import com.opensymphony.xwork2.inject.Inject;
+import java.util.Map;
 import org.apache.struts2.util.StrutsTypeConverter;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-
-import java.util.Map;
 
 /**
  * <p>Converts Strings to entities and entities to strings.</p>

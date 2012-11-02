@@ -13,10 +13,15 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.library.rest.admin;
 
+import java.io.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openrdf.model.Statement;
@@ -48,12 +53,6 @@ import org.restlet.data.*;
 import org.restlet.representation.*;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
-
-import java.io.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
 
 public class EntityResource
         extends ServerResource
@@ -191,6 +190,7 @@ public class EntityResource
     {
         return new WriterRepresentation( MediaType.TEXT_HTML )
         {
+            @Override
             public void write( Writer writer ) throws IOException
             {
                 PrintWriter out = new PrintWriter( writer );
@@ -289,6 +289,7 @@ public class EntityResource
     {
         Representation representation = new WriterRepresentation( MediaType.APPLICATION_RDF_XML )
         {
+            @Override
             public void write( Writer writer ) throws IOException
             {
                 try
@@ -298,7 +299,7 @@ public class EntityResource
                 }
                 catch (RDFHandlerException e)
                 {
-                    throw (IOException) new IOException().initCause( e );
+                    throw new IOException( e );
                 }
 
                 writer.close();
@@ -364,7 +365,7 @@ public class EntityResource
             }
 
             str.append( '}' );
-            
+
             // Parse JSON into properties
             JSONObject properties = new JSONObject(str.toString());
 

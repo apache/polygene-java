@@ -30,6 +30,7 @@ public final class LinksUtil
    {
       return new Specification<Link>()
       {
+         @Override
          public boolean satisfiedBy(Link link )
          {
             return link.id().get().equals(id);
@@ -41,6 +42,7 @@ public final class LinksUtil
    {
       return new Specification<Link>()
       {
+         @Override
          public boolean satisfiedBy(Link link )
          {
             return link.text().get().equals(text);
@@ -52,6 +54,7 @@ public final class LinksUtil
    {
       return new Specification<Link>()
       {
+         @Override
          public boolean satisfiedBy(Link link )
          {
             return link.rel().get().equals(rel);
@@ -63,6 +66,7 @@ public final class LinksUtil
    {
       return new Specification<Link>()
       {
+         @Override
          public boolean satisfiedBy(Link link )
          {
              String classes = link.classes().get();
@@ -85,6 +89,7 @@ public final class LinksUtil
    {
       return new Function<Link, String>()
       {
+         @Override
          public String map(Link link )
          {
             return link.rel().get();

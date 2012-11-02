@@ -1,11 +1,10 @@
 package org.qi4j.library.jmx;
 
-import org.slf4j.LoggerFactory;
-
-import javax.management.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.management.*;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO
@@ -153,6 +152,7 @@ public class MBeanTracker
     private class RegistrationListener
        implements NotificationListener
     {
+       @Override
        public void handleNotification(Notification notification, Object o)
        {
           if (notification instanceof MBeanServerNotification )

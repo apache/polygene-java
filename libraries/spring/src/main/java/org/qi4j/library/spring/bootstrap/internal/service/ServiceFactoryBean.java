@@ -44,17 +44,20 @@ public final class ServiceFactoryBean
         }
     }
 
+    @Override
     public final Object getObject()
         throws Exception
     {
         return serviceReference.get();
     }
 
+    @Override
     public final Class getObjectType()
     {
         return first( serviceReference.types() );
     }
 
+    @Override
     public final boolean isSingleton()
     {
         return false;

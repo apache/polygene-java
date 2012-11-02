@@ -72,6 +72,7 @@ public interface JaxWsService extends ServiceComposite
         @Uses
         ServiceDescriptor descriptor;
 
+        @Override
         public void initializeJaxWsFactory()
         {
             final JaxWsServerFactoryInfo info = descriptor.metaInfo( JaxWsServerFactoryInfo.class );

@@ -1,12 +1,11 @@
 package org.qi4j.library.cache;
 
-import org.qi4j.api.common.AppliesTo;
-import org.qi4j.api.concern.ConcernOf;
-import org.qi4j.api.injection.scope.This;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.injection.scope.This;
 
 /**
  * Return value of @Cached calls on exceptions.
@@ -19,6 +18,7 @@ public class ReturnCachedValueOnExceptionConcern extends ConcernOf<InvocationHan
 {
     @This private InvocationCache cache;
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
     {
         try

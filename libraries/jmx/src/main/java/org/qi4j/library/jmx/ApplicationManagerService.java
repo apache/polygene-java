@@ -67,7 +67,7 @@ import static org.qi4j.functional.Iterables.first;
 public interface ApplicationManagerService
     extends ServiceComposite
 {
-    
+
     void exportApplicationStructure()
             throws Exception;
 
@@ -91,9 +91,9 @@ public interface ApplicationManagerService
         {
             passivating.get().unexportApplicationStructure();
         }
-        
+
     }
-    
+
     static abstract class Mixin
         implements ApplicationManagerService
     {
@@ -105,6 +105,7 @@ public interface ApplicationManagerService
 
         private List<ObjectName> mbeans = new ArrayList<ObjectName>();
 
+        @Override
         public void exportApplicationStructure()
             throws Exception
         {
@@ -222,6 +223,7 @@ public interface ApplicationManagerService
             } );
         }
 
+        @Override
         public void unexportApplicationStructure()
             throws Exception
         {
