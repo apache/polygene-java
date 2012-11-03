@@ -36,8 +36,8 @@ import org.qi4j.api.value.ValueDescriptor;
 public interface Module
     extends ActivationEventListenerRegistration,
             MetaInfoHolder,
-            TransientBuilderFactory,
             ObjectFactory,
+            TransientBuilderFactory,
             ValueBuilderFactory,
             UnitOfWorkFactory,
             QueryBuilderFactory,

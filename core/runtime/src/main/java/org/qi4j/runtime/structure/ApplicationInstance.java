@@ -33,37 +33,36 @@ import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 public class ApplicationInstance
     implements Application
 {
-    private final org.qi4j.runtime.structure.ApplicationModel applicationModel;
+
+    // Constructor parameters
+    private final ApplicationModel applicationModel;
     private final Qi4jRuntime runtime;
     private final MetaInfo instanceMetaInfo;
-    private final List<LayerInstance> layerInstances = new ArrayList<LayerInstance>();
-    private final ActivationDelegate activation = new ActivationDelegate( this );
-    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
+    // Eager instance objects
+    private final ActivationDelegate activation;
+    private final ActivationEventListenerSupport activationEventSupport;
+    private final List<LayerInstance> layerInstances;
 
     public ApplicationInstance( ApplicationModel model, Qi4jRuntime runtime, MetaInfo instanceMetaInfo )
     {
+        // Constructor parameters
         this.applicationModel = model;
         this.runtime = runtime;
         this.instanceMetaInfo = instanceMetaInfo;
-    }
 
-    void addLayer( LayerInstance layer )
-    {
-        layer.registerActivationEventListener( activationEventSupport );
-        layerInstances.add( layer );
+        // Eager instance objects
+        activation = new ActivationDelegate( this );
+        activationEventSupport = new ActivationEventListenerSupport();
+        layerInstances = new ArrayList<LayerInstance>();
     }
 
     @Override
-    public ApplicationDescriptor descriptor()
+    public String toString()
     {
-        return applicationModel;
+        return name();
     }
 
-    public Qi4jRuntime runtime()
-    {
-        return runtime;
-    }
-
+    // Implementation of Application
     @Override
     public String name()
     {
@@ -80,17 +79,6 @@ public class ApplicationInstance
     public Mode mode()
     {
         return applicationModel.mode();
-    }
-
-    @Override
-    public <T> T metaInfo( Class<T> infoType )
-    {
-        return instanceMetaInfo.get( infoType );
-    }
-
-    public List<LayerInstance> layers()
-    {
-        return layerInstances;
     }
 
     @Override
@@ -122,6 +110,20 @@ public class ApplicationInstance
     }
 
     @Override
+    public ApplicationDescriptor descriptor()
+    {
+        return applicationModel;
+    }
+
+    // Implementation of MetaInfoHolder
+    @Override
+    public <T> T metaInfo( Class<T> infoType )
+    {
+        return instanceMetaInfo.get( infoType );
+    }
+
+    // Implementation of Activation
+    @Override
     public void activate()
         throws Exception
     {
@@ -140,12 +142,6 @@ public class ApplicationInstance
     }
 
     @Override
-    public String toString()
-    {
-        return name();
-    }
-
-    @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
         activationEventSupport.registerActivationEventListener( listener );
@@ -156,4 +152,17 @@ public class ApplicationInstance
     {
         activationEventSupport.deregisterActivationEventListener( listener );
     }
+
+    // Other methods
+    /* package */ void addLayer( LayerInstance layer )
+    {
+        layer.registerActivationEventListener( activationEventSupport );
+        layerInstances.add( layer );
+    }
+
+    public Qi4jRuntime runtime()
+    {
+        return runtime;
+    }
+
 }

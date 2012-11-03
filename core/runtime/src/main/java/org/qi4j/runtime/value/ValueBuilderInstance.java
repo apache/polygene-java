@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.value;
 
 import org.qi4j.api.association.AssociationStateHolder;
@@ -30,13 +29,14 @@ import static org.qi4j.functional.Iterables.first;
 public final class ValueBuilderInstance<T>
     implements ValueBuilder<T>
 {
+
     private final ModuleInstance currentModule;
     private ValueInstance prototypeInstance;
 
-    public ValueBuilderInstance(ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, ValueStateModel.StateResolver stateResolver)
+    public ValueBuilderInstance( ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, ValueStateModel.StateResolver stateResolver )
     {
         ValueStateInstance state = new ValueStateInstance( compositeModelModule, currentModule, stateResolver );
-        prototypeInstance = compositeModelModule.model().newValueInstance(compositeModelModule.module(), state);
+        prototypeInstance = compositeModelModule.model().newValueInstance( compositeModelModule.module(), state );
         prototypeInstance.prepareToBuild();
         this.currentModule = currentModule;
     }
@@ -56,7 +56,7 @@ public final class ValueBuilderInstance<T>
     @Override
     public <K> K prototypeFor( Class<K> mixinType )
     {
-        return prototypeInstance.newProxy(mixinType);
+        return prototypeInstance.newProxy( mixinType );
     }
 
     @Override
@@ -65,12 +65,13 @@ public final class ValueBuilderInstance<T>
     {
         Class<Composite> valueType = (Class<Composite>) first( prototypeInstance.types() );
 
-        ModelModule<ValueModel> valueModel = currentModule.findValueModels(valueType);
+        ModelModule<ValueModel> valueModel = currentModule.typeLookup().findValueModels( valueType );
 
         if( valueModel == null )
         {
             throw new NoSuchValueException( valueType.getName(), currentModule.name() );
         }
-        return new ValueBuilderWithPrototype<T>( valueModel, currentModule, prototype()).newInstance();
+        return new ValueBuilderWithPrototype<T>( valueModel, currentModule, prototype() ).newInstance();
     }
+
 }
