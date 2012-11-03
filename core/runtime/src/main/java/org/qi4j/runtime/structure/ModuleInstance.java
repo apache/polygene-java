@@ -147,7 +147,7 @@ public class ModuleInstance
         activation = new ActivationDelegate( this );
         activationEventSupport = new ActivationEventListenerSupport();
         typeLookup = new TypeLookup( this );
-        queryBuilderFactory = new QueryBuilderFactoryImpl( typeLookup );
+        queryBuilderFactory = new QueryBuilderFactoryImpl( this );
         classLoader = new ModuleClassLoader( this, Thread.currentThread().getContextClassLoader() );
         entityFunction = new EntityFunction( this );
 
@@ -181,8 +181,12 @@ public class ModuleInstance
         try
         {
             Class<?> type = classLoader().loadClass( name );
-            Iterable<ModelModule<EntityModel>> allEntityModels = typeLookup.findEntityModels( type );
-            return first( map( ModelModule.<EntityModel>modelFunction(), allEntityModels ) );
+            ModelModule<EntityModel> entityModel = typeLookup.lookupEntityModel( type );
+            if( entityModel == null )
+            {
+                return null;
+            }
+            return entityModel.model();
         }
         catch( ClassNotFoundException e )
         {
@@ -196,7 +200,12 @@ public class ModuleInstance
         try
         {
             Class<?> type = classLoader().loadClass( typeName );
-            return typeLookup.findObjectModels( type ).model();
+            ModelModule<ObjectModel> objectModel = typeLookup.lookupObjectModel( type );
+            if( objectModel == null )
+            {
+                return null;
+            }
+            return objectModel.model();
         }
         catch( ClassNotFoundException e )
         {
@@ -210,7 +219,12 @@ public class ModuleInstance
         try
         {
             Class<?> type = classLoader().loadClass( name );
-            return typeLookup.findTransientModels( type ).model();
+            ModelModule<TransientModel> transientModel = typeLookup.lookupTransientModel( type );
+            if( transientModel == null )
+            {
+                return null;
+            }
+            return transientModel.model();
         }
         catch( ClassNotFoundException e )
         {
@@ -224,7 +238,7 @@ public class ModuleInstance
         try
         {
             Class<?> type = classLoader().loadClass( name );
-            ModelModule<ValueModel> valueModel = typeLookup.findValueModels( type );
+            ModelModule<ValueModel> valueModel = typeLookup.lookupValueModel( type );
             if( valueModel == null )
             {
                 return null;
@@ -250,7 +264,7 @@ public class ModuleInstance
         throws NoSuchObjectException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ObjectModel> modelModule = typeLookup.findObjectModels( mixinType );
+        ModelModule<ObjectModel> modelModule = typeLookup.lookupObjectModel( mixinType );
 
         if( modelModule == null )
         {
@@ -266,7 +280,7 @@ public class ModuleInstance
         throws ConstructionException
     {
         NullArgumentException.validateNotNull( "instance", instance );
-        ModelModule<ObjectModel> modelModule = typeLookup.findObjectModels( instance.getClass() );
+        ModelModule<ObjectModel> modelModule = typeLookup.lookupObjectModel( instance.getClass() );
 
         if( modelModule == null )
         {
@@ -283,7 +297,7 @@ public class ModuleInstance
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
 
-        ModelModule<TransientModel> modelModule = typeLookup.findTransientModels( mixinType );
+        ModelModule<TransientModel> modelModule = typeLookup.lookupTransientModel( mixinType );
 
         if( modelModule == null )
         {
@@ -323,7 +337,7 @@ public class ModuleInstance
         throws NoSuchValueException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ValueModel> compositeModelModule = typeLookup.findValueModels( mixinType );
+        ModelModule<ValueModel> compositeModelModule = typeLookup.lookupValueModel( mixinType );
 
         if( compositeModelModule == null )
         {
@@ -344,7 +358,7 @@ public class ModuleInstance
         NullArgumentException.validateNotNull( "associationFunction", associationFunction );
         NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
 
-        ModelModule<ValueModel> compositeModelModule = typeLookup.findValueModels( mixinType );
+        ModelModule<ValueModel> compositeModelModule = typeLookup.lookupValueModel( mixinType );
 
         if( compositeModelModule == null )
         {
@@ -431,7 +445,7 @@ public class ModuleInstance
         ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) prototype );
         Class<Composite> valueType = (Class<Composite>) first( valueInstance.types() );
 
-        ModelModule<ValueModel> modelModule = typeLookup.findValueModels( valueType );
+        ModelModule<ValueModel> modelModule = typeLookup.lookupValueModel( valueType );
 
         if( modelModule == null )
         {
@@ -445,7 +459,7 @@ public class ModuleInstance
         throws NoSuchValueException, ConstructionException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ValueModel> modelModule = typeLookup.findValueModels( mixinType );
+        ModelModule<ValueModel> modelModule = typeLookup.lookupValueModel( mixinType );
 
         if( modelModule == null )
         {
@@ -530,25 +544,25 @@ public class ModuleInstance
     @Override
     public <T> ServiceReference<T> findService( Class<T> serviceType )
     {
-        return typeLookup.findService( (Type) serviceType );
+        return typeLookup.lookupServiceReference( (Type) serviceType );
     }
 
     @Override
     public <T> ServiceReference<T> findService( Type serviceType )
     {
-        return typeLookup.findService( serviceType );
+        return typeLookup.lookupServiceReference( serviceType );
     }
 
     @Override
     public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
     {
-        return typeLookup.findServices( (Type) serviceType );
+        return typeLookup.lookupServiceReferences( (Type) serviceType );
     }
 
     @Override
-    public <T> Iterable<ServiceReference<T>> findServices( final Type serviceType )
+    public <T> Iterable<ServiceReference<T>> findServices( Type serviceType )
     {
-        return typeLookup.findServices( serviceType );
+        return typeLookup.lookupServiceReferences( serviceType );
     }
 
     // Implementation of Activation
