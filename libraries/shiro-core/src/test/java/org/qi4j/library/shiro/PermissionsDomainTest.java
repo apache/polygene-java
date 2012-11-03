@@ -73,6 +73,7 @@ public class PermissionsDomainTest
         @Service
         private PasswordService passwordService;
 
+        @Override
         public User createNewUser( String username, String password )
         {
             EntityBuilder<User> userBuilder = module.currentUnitOfWork().newEntityBuilder( User.class );

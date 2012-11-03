@@ -69,6 +69,7 @@ public class PasswordDomainTest
         @Service
         private PasswordService passwordService;
 
+        @Override
         public User createNewUser( String username, String password )
         {
             EntityBuilder<User> userBuilder = module.currentUnitOfWork().newEntityBuilder( User.class );
@@ -129,6 +130,8 @@ public class PasswordDomainTest
         assertNotNull( "Unable to authenticate against PasswordRealmService", currentUser.getPrincipal() );
 
         assertFalse( currentUser.hasRole( "role-one" ) );
+
+        uow.discard();
     }
 
 }

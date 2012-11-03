@@ -25,11 +25,13 @@ public interface RoleFactory
         @Structure
         private Module module;
 
+        @Override
         public Role create( String name, String... permissions )
         {
             return create( name, Arrays.asList( permissions ) );
         }
 
+        @Override
         public Role create( String name, Iterable<String> permissions )
         {
             UnitOfWork uow = module.currentUnitOfWork();

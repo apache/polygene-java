@@ -44,6 +44,7 @@ public interface RoleAssignee
         @This
         private RoleAssignee roleAssignee;
 
+        @Override
         public Set<String> roleNames()
         {
             Set<String> roleNames = new HashSet<String>();
@@ -53,6 +54,7 @@ public interface RoleAssignee
             return Collections.unmodifiableSet( roleNames );
         }
 
+        @Override
         public Set<String> permissionStrings()
         {
             Set<String> permissionStrings = new HashSet<String>();

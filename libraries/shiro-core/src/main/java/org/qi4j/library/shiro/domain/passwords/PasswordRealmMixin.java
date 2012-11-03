@@ -68,6 +68,7 @@ public class PasswordRealmMixin
         setCredentialsMatcher( matcher );
     }
 
+    @Override
     public void activateService()
             throws Exception
     {
@@ -86,17 +87,20 @@ public class PasswordRealmMixin
         }
     }
 
+    @Override
     public void passivateService()
             throws Exception
     {
     }
 
+    @Override
     public String encryptPassword( Object plaintextPassword )
             throws IllegalArgumentException
     {
         return passwordService.encryptPassword( plaintextPassword );
     }
 
+    @Override
     public boolean passwordsMatch( Object submittedPlaintext, String encrypted )
     {
         return passwordService.passwordsMatch( submittedPlaintext, encrypted );

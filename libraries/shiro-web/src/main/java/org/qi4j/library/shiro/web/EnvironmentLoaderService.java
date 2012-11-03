@@ -77,6 +77,7 @@ public interface EnvironmentLoaderService
 
         }
 
+        @Override
         public void contextDestroyed( ServletContextEvent sce )
         {
             destroyEnvironment( sce.getServletContext() );

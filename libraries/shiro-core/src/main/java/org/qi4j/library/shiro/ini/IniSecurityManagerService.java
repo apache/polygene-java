@@ -56,6 +56,7 @@ public interface IniSecurityManagerService
 
         private SecurityManager securityManager;
 
+        @Override
         public void activateService()
                 throws Exception
         {
@@ -85,6 +86,7 @@ public interface IniSecurityManagerService
             ThreadContext.bind( securityManager );
         }
 
+        @Override
         public void passivateService()
                 throws Exception
         {
@@ -92,6 +94,7 @@ public interface IniSecurityManagerService
             ThreadContext.unbindSecurityManager();
         }
 
+        @Override
         public SecurityManager getSecurityManager()
         {
             return securityManager;

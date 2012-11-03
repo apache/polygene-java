@@ -63,6 +63,7 @@ public class SecurityConcern
     @Invocation
     private RequiresUser requiresUser;
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
             throws Throwable
     {

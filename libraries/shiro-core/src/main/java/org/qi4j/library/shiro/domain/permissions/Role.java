@@ -46,6 +46,7 @@ public interface Role
         @This
         private Role role;
 
+        @Override
         public RoleAssignment assignTo( RoleAssignee assignee )
         {
             UnitOfWork uow = module.currentUnitOfWork();
