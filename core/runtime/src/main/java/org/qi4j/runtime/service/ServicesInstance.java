@@ -82,14 +82,16 @@ public class ServicesInstance
     @Override
     public String toString()
     {
-        String str = "Services{";
+        StringBuilder sb = new StringBuilder( "Services{" );
         String sep = " ";
         for( ServiceReference serviceReference : serviceReferences )
         {
-            str += sep + serviceReference.identity() + "(active=" + serviceReference.isActive() + ')';
+            sb.append( sep ).
+                append( serviceReference.identity() ).
+                append( "(active=" ).append( serviceReference.isActive() ).append( ")" );
             sep = ", ";
         }
-        return str += " }";
+        return sb.append( " }" ).toString();
     }
 
     @Override

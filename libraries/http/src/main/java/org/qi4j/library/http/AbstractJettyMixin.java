@@ -159,8 +159,9 @@ public abstract class AbstractJettyMixin
         for ( ServiceReference<ServletContextListener> contextListener : contextListeners ) {
             ContextListenerInfo contextListenerInfo = contextListener.metaInfo( ContextListenerInfo.class );
             Map<String, String> initParams = contextListenerInfo.initParams();
-            for ( String key : initParams.keySet() ) {
-                root.setInitParameter( key, initParams.get( key ) );
+            for( Map.Entry<String, String> entry : initParams.entrySet() )
+            {
+                root.setInitParameter( entry.getKey(), entry.getValue() );
             }
             root.addEventListener( contextListener.get() );
         }

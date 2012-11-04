@@ -10,6 +10,7 @@ import org.qi4j.functional.Specifications;
 public class AndSpecification
     extends BinarySpecification
 {
+
     public AndSpecification( Iterable<Specification<Composite>> operands )
     {
         super( operands );
@@ -24,15 +25,14 @@ public class AndSpecification
     @Override
     public String toString()
     {
-        String str = "(";
+        StringBuilder sb = new StringBuilder( "(" );
         String and = "";
         for( Specification<Composite> operand : operands )
         {
-            str += and + operand;
+            sb.append( and ).append( operand );
             and = " and ";
         }
-        str += ")";
-
-        return str;
+        return sb.append( ")" ).toString();
     }
+
 }

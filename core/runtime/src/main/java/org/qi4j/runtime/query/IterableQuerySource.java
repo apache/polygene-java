@@ -161,7 +161,7 @@ public class IterableQuerySource
         return "IterableQuerySource{" + iterable + '}';
     }
 
-    private class OrderByComparator<T extends Composite>
+    private static class OrderByComparator<T extends Composite>
         implements Comparator<T>
     {
 

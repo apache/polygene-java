@@ -342,52 +342,59 @@ public final class Classes
 
     public static String getSimpleGenericName( Type type )
     {
+        StringBuilder sb = new StringBuilder();
+        getSimpleGenericName( sb, type );
+        return sb.toString();
+    }
+
+    private static void getSimpleGenericName( StringBuilder sb, Type type )
+    {
         if( type instanceof Class )
         {
-            return ( (Class) type ).getSimpleName();
+            sb.append( ( (Class) type ).getSimpleName() );
         }
         else if( type instanceof ParameterizedType )
         {
             ParameterizedType pt = (ParameterizedType) type;
-            String str = getSimpleGenericName( pt.getRawType() );
-            str += "<";
-            String args = "";
+            getSimpleGenericName( sb, pt.getRawType() );
+            sb.append( "<" );
+            boolean atLeastOne = false;
             for( Type typeArgument : pt.getActualTypeArguments() )
             {
-                if( args.length() != 0 )
+                if( atLeastOne )
                 {
-                    args += ", ";
+                    sb.append( ", " );
                 }
-                args += getSimpleGenericName( typeArgument );
+                getSimpleGenericName( sb, typeArgument );
+                atLeastOne = true;
             }
-            str += args;
-            str += ">";
-            return str;
+            sb.append( ">" );
         }
         else if( type instanceof GenericArrayType )
         {
             GenericArrayType gat = (GenericArrayType) type;
-            return getSimpleGenericName( gat.getGenericComponentType() ) + "[]";
+            getSimpleGenericName( sb, gat.getGenericComponentType() );
+            sb.append( "[]" );
         }
         else if( type instanceof TypeVariable )
         {
             TypeVariable tv = (TypeVariable) type;
-            return tv.getName();
+            sb.append( tv.getName() );
         }
         else if( type instanceof WildcardType )
         {
             WildcardType wt = (WildcardType) type;
-            String args = "";
+            sb.append( "? extends " );
+            boolean atLeastOne = false;
             for( Type typeArgument : wt.getUpperBounds() )
             {
-                if( args.length() != 0 )
+                if( atLeastOne )
                 {
-                    args += ", ";
+                    sb.append( ", " );
                 }
-                args += getSimpleGenericName( typeArgument );
+                getSimpleGenericName( sb, typeArgument );
+                atLeastOne = true;
             }
-
-            return "? extends " + args;
         }
         else
         {

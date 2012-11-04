@@ -592,16 +592,16 @@ public class PreferencesEntityStoreMixin
                 for( Map.Entry<QualifiedName, List<EntityReference>> manyAssociations : state.manyAssociations()
                     .entrySet() )
                 {
-                    String manyAssocs = "";
+                    StringBuilder manyAssocs = new StringBuilder();
                     for( EntityReference entityReference : manyAssociations.getValue() )
                     {
                         if( manyAssocs.length() > 0 )
                         {
-                            manyAssocs += "\n";
+                            manyAssocs.append( "\n" );
                         }
-                        manyAssocs += entityReference.identity();
+                        manyAssocs.append( entityReference.identity() );
                     }
-                    manyAssocsPrefs.put( manyAssociations.getKey().name(), manyAssocs );
+                    manyAssocsPrefs.put( manyAssociations.getKey().name(), manyAssocs.toString() );
                 }
             }
         }

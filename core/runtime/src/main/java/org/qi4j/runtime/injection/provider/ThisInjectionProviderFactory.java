@@ -66,7 +66,7 @@ public final class ThisInjectionProviderFactory
         }
     }
 
-    private class ThisInjectionProvider
+    private static class ThisInjectionProvider
         implements InjectionProvider
     {
         Constructor proxyConstructor;

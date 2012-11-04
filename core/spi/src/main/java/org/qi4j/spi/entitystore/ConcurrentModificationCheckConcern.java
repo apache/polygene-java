@@ -51,7 +51,7 @@ public abstract class ConcurrentModificationCheckConcern
         return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), module, currentTime );
     }
 
-    private class ConcurrentCheckingEntityStoreUnitOfWork
+    private static class ConcurrentCheckingEntityStoreUnitOfWork
         implements EntityStoreUnitOfWork
     {
         private final EntityStoreUnitOfWork uow;

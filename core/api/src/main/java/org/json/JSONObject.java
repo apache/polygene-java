@@ -1208,7 +1208,7 @@ public final class JSONObject
     public JSONObject put( String key, int value )
         throws JSONException
     {
-        put( key, new Integer( value ) );
+        put( key, Integer.valueOf( value ) );
         return this;
     }
 
@@ -1225,7 +1225,7 @@ public final class JSONObject
     public JSONObject put( String key, long value )
         throws JSONException
     {
-        put( key, new Long( value ) );
+        put( key, Long.valueOf( value ) );
         return this;
     }
 
@@ -1473,8 +1473,7 @@ public final class JSONObject
                 {
                     try
                     {
-                        return new Integer( Integer.parseInt( s.substring( 2 ),
-                                                              16 ) );
+                        return Integer.valueOf( Integer.parseInt( s.substring( 2 ), 16 ) );
                     }
                     catch( Exception e )
                     {

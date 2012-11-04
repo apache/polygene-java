@@ -175,13 +175,12 @@ public class JRubyMixin
         InputStream in = scriptUrl.openStream();
         BufferedReader scriptReader = new BufferedReader( new InputStreamReader( in ) );
         String line;
-        String script = "";
+        StringBuilder sb = new StringBuilder();
         while( ( line = scriptReader.readLine() ) != null )
         {
-            script += line + "\n";
+            sb.append( line ).append( "\n" );
         }
-
-        return script;
+        return sb.toString();
     }
 
     protected static URL getFunctionResoure( Method method )

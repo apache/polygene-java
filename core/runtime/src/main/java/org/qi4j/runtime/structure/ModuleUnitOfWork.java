@@ -324,7 +324,7 @@ public class ModuleUnitOfWork
         uow.addEntity( instance );
     }
 
-    private class UoWQuerySource implements QuerySource
+    private static class UoWQuerySource implements QuerySource
     {
         private ModuleUnitOfWork moduleUnitOfWork;
 

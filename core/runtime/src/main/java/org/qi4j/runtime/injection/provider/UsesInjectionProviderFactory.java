@@ -29,7 +29,7 @@ public final class UsesInjectionProviderFactory
         return new UsesInjectionProvider( dependencyModel );
     }
 
-    private class UsesInjectionProvider
+    private static class UsesInjectionProvider
         implements InjectionProvider
     {
         private final DependencyModel dependency;

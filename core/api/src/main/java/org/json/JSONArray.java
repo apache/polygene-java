@@ -149,7 +149,7 @@ public final class JSONArray
             case ')':
                 if( q != c )
                 {
-                    throw x.syntaxError( "Expected a '" + new Character( q ) + "'" );
+                    throw x.syntaxError( "Expected a '" + Character.valueOf( q ) + "'" );
                 }
                 return;
             default:
@@ -766,7 +766,7 @@ public final class JSONArray
      */
     public JSONArray put( int value )
     {
-        put( new Integer( value ) );
+        put( Integer.valueOf( value ) );
         return this;
     }
 
@@ -779,7 +779,7 @@ public final class JSONArray
      */
     public JSONArray put( long value )
     {
-        put( new Long( value ) );
+        put( Long.valueOf( value ) );
         return this;
     }
 
@@ -885,7 +885,7 @@ public final class JSONArray
     public JSONArray put( int index, int value )
         throws JSONException
     {
-        put( index, new Integer( value ) );
+        put( index, Integer.valueOf( value ) );
         return this;
     }
 
@@ -904,7 +904,7 @@ public final class JSONArray
     public JSONArray put( int index, long value )
         throws JSONException
     {
-        put( index, new Long( value ) );
+        put( index, Long.valueOf( value ) );
         return this;
     }
 

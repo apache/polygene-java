@@ -146,7 +146,7 @@ public class ValueTypeFactory
         return valueType;
     }
 
-    private class ValueFinder
+    private static class ValueFinder
         extends HierarchicalVisitorAdapter<Object, Object, RuntimeException>
     {
         private Class type;

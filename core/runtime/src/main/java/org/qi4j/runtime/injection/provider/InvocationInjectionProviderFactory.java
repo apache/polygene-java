@@ -39,7 +39,7 @@ public final class InvocationInjectionProviderFactory
         }
     }
 
-    private class InvocationDependencyResolution
+    private static class InvocationDependencyResolution
         implements InjectionProvider
     {
         private final Resolution resolution;

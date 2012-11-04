@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.util;
 
 import java.lang.reflect.Method;
@@ -37,6 +37,7 @@ import static org.qi4j.functional.Iterables.count;
  */
 public class ClassesTest
 {
+
     @Test
     public void givenClassWithInterfacesWhenInterfacesOfThenGetCorrectSet()
     {
@@ -81,7 +82,7 @@ public class ClassesTest
         throws NoSuchMethodException
     {
         Type returnType = Generics.class.getMethod( "wildcard" ).getGenericReturnType();
-        Type wildcardType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
+        Type wildcardType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0];
         assertThat( "Return type is A", Classes.RAW_CLASS.map( wildcardType ), equalTo( (Class) A.class ) );
     }
 
@@ -97,6 +98,61 @@ public class ClassesTest
         }
     }
 
+    @Test
+    public void givenGenericTypeWhenGetSimpleGenericNameThenCorrectStringIsReturned()
+        throws NoSuchMethodException
+    {
+        assertThat( "Simple Generic Name is 'A'",
+                    Classes.getSimpleGenericName( A.class ),
+                    equalTo( "A" ) );
+        assertThat( "Simple Generic Name is 'B'",
+                    Classes.getSimpleGenericName( B.class ),
+                    equalTo( "B" ) );
+        assertThat( "Simple Generic Name is 'C'",
+                    Classes.getSimpleGenericName( C.class ),
+                    equalTo( "C" ) );
+
+        assertThat( "Simple Generic Name is 'Generics'",
+                    Classes.getSimpleGenericName( Generics.class ),
+                    equalTo( "Generics" ) );
+        assertThat( "Simple Generic Name is 'Iterable<? extends A>'",
+                    Classes.getSimpleGenericName( Generics.class.getMethod( "wildcard" ).getGenericReturnType() ),
+                    equalTo( "Iterable<? extends A>" ) );
+
+        assertThat( "Simple Generic Name is 'Type1'",
+                    Classes.getSimpleGenericName( Type1.class ),
+                    equalTo( "Type1" ) );
+        assertThat( "Simple Generic Name is 'TYPE'",
+                    Classes.getSimpleGenericName( Type1.class.getMethod( "type" ).getGenericReturnType() ),
+                    equalTo( "TYPE" ) );
+        assertThat( "Simple Generic Name is 'TYPE1'",
+                    Classes.getSimpleGenericName( Type1.class.getMethod( "type1" ).getGenericReturnType() ),
+                    equalTo( "TYPE1" ) );
+        assertThat( "Simple Generic Name is 'TYPE2'",
+                    Classes.getSimpleGenericName( Type1.class.getMethod( "type2" ).getGenericReturnType() ),
+                    equalTo( "TYPE2" ) );
+
+        assertThat( "Simple Generic Name is 'Type2'",
+                    Classes.getSimpleGenericName( Type2.class ),
+                    equalTo( "Type2" ) );
+        assertThat( "Simple Generic Name is 'TYPE'",
+                    Classes.getSimpleGenericName( Type2.class.getMethod( "type" ).getGenericReturnType() ),
+                    equalTo( "TYPE" ) );
+        assertThat( "Simple Generic Name is 'TYPE1'",
+                    Classes.getSimpleGenericName( Type2.class.getMethod( "type1" ).getGenericReturnType() ),
+                    equalTo( "TYPE1" ) );
+        assertThat( "Simple Generic Name is 'TYPE2'",
+                    Classes.getSimpleGenericName( Type2.class.getMethod( "type2" ).getGenericReturnType() ),
+                    equalTo( "TYPE2" ) );
+
+        assertThat( "Simple Generic Name is 'Type3'",
+                    Classes.getSimpleGenericName( Type3.class ),
+                    equalTo( "Type3" ) );
+        assertThat( "Simple Generic Name is 'TYPE'",
+                    Classes.getSimpleGenericName( Type3.class.getMethod( "type" ).getGenericReturnType() ),
+                    equalTo( "TYPE" ) );
+    }
+
     interface A
     {
     }
@@ -104,7 +160,9 @@ public class ClassesTest
     interface B
         extends A
     {
+
         public void doStuff();
+
     }
 
     interface C
@@ -114,25 +172,31 @@ public class ClassesTest
 
     interface Generics
     {
+
         Iterable<? extends A> wildcard();
+
     }
 
     interface Type1
         extends Type2<String, Long>
     {
-
     }
 
     interface Type2<TYPE1, TYPE2>
         extends Type3<TYPE1>
     {
+
         TYPE1 type1();
 
         TYPE2 type2();
+
     }
 
     interface Type3<TYPE>
     {
+
         TYPE type();
+
     }
+
 }

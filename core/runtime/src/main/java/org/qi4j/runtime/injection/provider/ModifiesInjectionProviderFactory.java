@@ -39,7 +39,7 @@ public final class ModifiesInjectionProviderFactory
         }
     }
 
-    private class ModifiedInjectionProvider
+    private static class ModifiedInjectionProvider
         implements InjectionProvider
     {
         @Override
