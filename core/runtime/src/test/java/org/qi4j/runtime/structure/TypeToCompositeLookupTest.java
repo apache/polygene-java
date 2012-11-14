@@ -312,10 +312,10 @@ public class TypeToCompositeLookupTest
 
         uow = module.newUnitOfWork();
 
-        uow.get( SomeOtherFoo.class, someOtherFooIdentity );
-        uow.get( BasicFoo.class, basicFooIdentity );
-        uow.get( Foo.class, someOtherFooIdentity );
-        uow.get( Foo.class, basicFooIdentity );
+        assertEquals( CATHEDRAL, uow.get( SomeOtherFoo.class, someOtherFooIdentity ).bar() );
+        assertEquals( BAZAR, uow.get( BasicFoo.class, basicFooIdentity ).bar() );
+        assertEquals( CATHEDRAL, uow.get( Foo.class, someOtherFooIdentity ).bar() );
+        assertEquals( BAZAR, uow.get( Foo.class, basicFooIdentity ).bar() );
 
         uow.discard();
     }

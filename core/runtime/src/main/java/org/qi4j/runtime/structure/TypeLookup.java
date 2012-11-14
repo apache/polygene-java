@@ -212,7 +212,7 @@ public class TypeLookup
         if( models == null )
         {
             // Ambiguously and lasily resolve EntityModels
-            models = flatten(
+            Iterable<ModelModule<EntityModel>> matchingEntityModels = flatten(
                 ambiguousTypeCheck( type,
                                     findModels( new ExactTypeLookupSpecification( type ),
                                                 moduleInstance.visibleEntities( Visibility.module ),
@@ -225,6 +225,10 @@ public class TypeLookup
                             moduleInstance.layerInstance().visibleEntities( Visibility.application ),
                             moduleInstance.layerInstance().usedLayersInstance().visibleEntities() ) );
 
+            // Don't return the same EntityModel multiple times
+            matchingEntityModels = unique( matchingEntityModels );
+
+            models = toList( matchingEntityModels );
             allEntityModels.put( type, models );
         }
         return models;
@@ -253,8 +257,8 @@ public class TypeLookup
 
     /* package */ <T> Iterable<ServiceReference<T>> lookupServiceReferences( final Type serviceType )
     {
-        Iterable<ServiceReference> iterable = servicesReferences.get( serviceType );
-        if( iterable == null )
+        Iterable<ServiceReference> serviceRefs = servicesReferences.get( serviceType );
+        if( serviceRefs == null )
         {
             // Lazily resolve ServicesReferences
             Iterable<ServiceReference> matchingServices = flatten(
@@ -272,11 +276,11 @@ public class TypeLookup
             // Don't return the same ServiceReference multiple times
             matchingServices = unique( matchingServices );
 
-            iterable = toList( matchingServices );
-            servicesReferences.put( serviceType, iterable );
+            serviceRefs = toList( matchingServices );
+            servicesReferences.put( serviceType, serviceRefs );
         }
 
-        return cast( iterable );
+        return cast( serviceRefs );
     }
 
     private static <T extends ModelDescriptor> Iterable<ModelModule<T>> findModels( Specification<Iterable<Class<?>>> specification,
