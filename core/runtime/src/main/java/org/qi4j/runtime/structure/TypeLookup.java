@@ -44,6 +44,9 @@ import static org.qi4j.api.util.Classes.RAW_CLASS;
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.functional.Iterables.*;
 
+/**
+ * Central place for Composite Type lookups.
+ */
 public class TypeLookup
 {
 
@@ -58,6 +61,11 @@ public class TypeLookup
     private final Map<Type, ServiceReference> serviceReferences;
     private final Map<Type, Iterable<ServiceReference>> servicesReferences;
 
+    /**
+     * Create a new TypeLookup bound to the given ModuleInstance.
+     *
+     * @param moduleInstance ModuleInstance bound to this TypeLookup
+     */
     /* package */ TypeLookup( ModuleInstance moduleInstance )
     {
         // Constructor parameters
@@ -73,6 +81,20 @@ public class TypeLookup
         servicesReferences = new ConcurrentHashMap<Type, Iterable<ServiceReference>>();
     }
 
+    /**
+     * Lookup first Object Model matching the given Type.
+     *
+     * <p>First, if Object Models exactly match the given type, the closest one (Visibility then Assembly order) is returned.
+     * Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
+     *
+     * <p>Second, if Object Models match a type assignable to the given type, the closest one (Visibility then Assembly order) is returned.
+     * Multiple <b>assignable</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
+     *
+     * <p>Type lookup is done lazily and cached.</p>
+     *
+     * @param type  Looked up Type
+     * @return      First matching Object Model
+     */
     /* package */ ModelModule<ObjectModel> lookupObjectModel( final Class type )
     {
         ModelModule<ObjectModel> model = objectModels.get( type );
@@ -105,6 +127,20 @@ public class TypeLookup
         return model;
     }
 
+    /**
+     * Lookup first Transient Model matching the given Type.
+     *
+     * <p>First, if Transient Models exactly match the given type, the closest one (Visibility then Assembly order) is returned.
+     * Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
+     *
+     * <p>Second, if Transient Models match a type assignable to the given type, the closest one (Visibility then Assembly order) is returned.
+     * Multiple <b>assignable</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
+     *
+     * <p>Type lookup is done lazily and cached.</p>
+     *
+     * @param type  Looked up Type
+     * @return      First matching Transient Model
+     */
     /* package */ ModelModule<TransientModel> lookupTransientModel( final Class type )
     {
         ModelModule<TransientModel> model = transientModels.get( type );
@@ -136,6 +172,20 @@ public class TypeLookup
         return model;
     }
 
+    /**
+     * Lookup first Value Model matching the given Type.
+     *
+     * <p>First, if Value Models exactly match the given type, the closest one (Visibility then Assembly order) is returned.
+     * Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
+     *
+     * <p>Second, if Value Models match a type assignable to the given type, the closest one (Visibility then Assembly order) is returned.
+     * Multiple <b>assignable</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
+     *
+     * <p>Type lookup is done lazily and cached.</p>
+     *
+     * @param type  Looked up Type
+     * @return      First matching Value Model
+     */
     public ModelModule<ValueModel> lookupValueModel( final Class type )
     {
         ModelModule<ValueModel> model = valueModels.get( type );
@@ -169,7 +219,21 @@ public class TypeLookup
     }
 
     /**
-     * Unambiguously resolve EntityModels. Should be used for creational use cases only.
+     * Lookup first Entity Model matching the given Type.
+     *
+     * <p>First, if Entity Models exactly match the given type, the closest one (Visibility then Assembly order) is returned.
+     * Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
+     *
+     * <p>Second, if Entity Models match a type assignable to the given type, the closest one (Visibility then Assembly order) is returned.
+     * Multiple <b>assignable</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
+     *
+     * <p>Type lookup is done lazily and cached.</p>
+     *
+     * <p><b>Should be used for creational use cases only.</b> For non-creational use cases see
+     * {@link #lookupEntityModels(java.lang.Class)}.</p>
+     *
+     * @param type  Looked up Type
+     * @return      First matching Entity Model
      */
     /* package */ ModelModule<EntityModel> lookupEntityModel( final Class type )
     {
@@ -204,7 +268,25 @@ public class TypeLookup
     }
 
     /**
-     * Ambiguously resolve EntityModels. Should be used for non-creational use cases only.
+     * Lookup all Entity Models matching the given Type.
+     *
+     * <p>Returned Iterable contains, in order, Entity Models that: </p>
+     *
+     * <ul>
+     *  <li>exactly match the given type, in Visibility then Assembly order ;</li>
+     *  <li>match a type assignable to the given type, in Visibility then Assembly order.</li>
+     * </ul>
+     *
+     * <p>Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
+     * <p>Multiple <b>assignable</b> matches are <b>allowed</b> to enable polymorphic fetches and queries.</p>
+     *
+     * <p>Type lookup is done lazily and cached.</p>
+     *
+     * <p><b>Should be used for non-creational use cases only.</b> For creational use cases see
+     * {@link #lookupEntityModel(java.lang.Class)}.</p>
+     *
+     * @param type  Looked up Type
+     * @return      All matching Entity Models
      */
     /* package */ Iterable<ModelModule<EntityModel>> lookupEntityModels( final Class type )
     {
@@ -234,6 +316,17 @@ public class TypeLookup
         return models;
     }
 
+    /**
+     * Lookup first ServiceReference matching the given Type.
+     *
+     * <p>Type lookup is done lazily and cached.</p>
+     *
+     * <p>See {@link #lookupServiceReferences(java.lang.reflect.Type)}.</p>
+     *
+     * @param <T>           Service Type
+     * @param serviceType   Looked up Type
+     * @return              First matching ServiceReference
+     */
     /* package */ <T> ServiceReference<T> lookupServiceReference( Type serviceType )
     {
         ServiceReference serviceReference = serviceReferences.get( serviceType );
@@ -255,6 +348,25 @@ public class TypeLookup
         return serviceReference;
     }
 
+    /**
+     * Lookup all ServiceReferences matching the given Type.
+     *
+     * <p>Returned Iterable contains, in order, ServiceReferences that: </p>
+     *
+     * <ul>
+     *  <li>exactly match the given type, in Visibility then Assembly order ;</li>
+     *  <li>match a type assignable to the given type, in Visibility then Assembly order.</li>
+     * </ul>
+     *
+     * <p>Multiple <b>exact</b> matches with the same Visibility are <b>allowed</b> to enable polymorphic lookup/injection.</p>
+     * <p>Multiple <b>assignable</b> matches with the same Visibility are <b>allowed</b> for the very same reason.</p>
+     *
+     * <p>Type lookup is done lazily and cached.</p>
+     *
+     * @param <T>           Service Type
+     * @param serviceType   Looked up Type
+     * @return              All matching ServiceReferences
+     */
     /* package */ <T> Iterable<ServiceReference<T>> lookupServiceReferences( final Type serviceType )
     {
         Iterable<ServiceReference> serviceRefs = servicesReferences.get( serviceType );
