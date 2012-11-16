@@ -367,6 +367,32 @@ public class Outputs
     // START SNIPPET: method
 
     /**
+     * Write objects to System.err.println.
+     */
+    public static Output<Object, RuntimeException> systemErr()
+    // END SNIPPET: method
+    {
+        return new Output<Object, RuntimeException>()
+        {
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends Object, SenderThrowableType> sender )
+                throws RuntimeException, SenderThrowableType
+            {
+                sender.sendTo( new Receiver<Object, RuntimeException>()
+                {
+                    @Override
+                    public void receive( Object item )
+                    {
+                        System.err.println( item );
+                    }
+                } );
+            }
+        };
+    }
+
+    // START SNIPPET: method
+
+    /**
      * Add items to a collection
      */
     public static <T> Output<T, RuntimeException> collection( final Collection<T> collection )
