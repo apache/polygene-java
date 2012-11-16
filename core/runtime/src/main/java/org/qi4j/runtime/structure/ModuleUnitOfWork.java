@@ -156,9 +156,7 @@ public class ModuleUnitOfWork
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
         throws EntityTypeNotFoundException
     {
-        Iterable<ModelModule<EntityModel>> models = moduleInstance.typeLookup().findEntityModels( type );
-
-        ModelModule<EntityModel> model = Iterables.first( models );
+        ModelModule<EntityModel> model = moduleInstance.typeLookup().lookupEntityModel( type );
 
         if( model == null )
         {
@@ -190,7 +188,7 @@ public class ModuleUnitOfWork
     public <T> T get( Class<T> type, String identity )
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
-        Iterable<ModelModule<EntityModel>> models = moduleInstance.typeLookup().findEntityModels( type );
+        Iterable<ModelModule<EntityModel>> models = moduleInstance.typeLookup().lookupEntityModels( type );
 
         if( !models.iterator().hasNext() )
         {

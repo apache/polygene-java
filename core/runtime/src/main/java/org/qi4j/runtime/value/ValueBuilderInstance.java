@@ -65,7 +65,7 @@ public final class ValueBuilderInstance<T>
     {
         Class<Composite> valueType = (Class<Composite>) first( prototypeInstance.types() );
 
-        ModelModule<ValueModel> valueModel = currentModule.typeLookup().findValueModels( valueType );
+        ModelModule<ValueModel> valueModel = currentModule.typeLookup().lookupValueModel( valueType );
 
         if( valueModel == null )
         {
