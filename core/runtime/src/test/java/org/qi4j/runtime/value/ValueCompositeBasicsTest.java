@@ -23,7 +23,6 @@ public class ValueCompositeBasicsTest
     }
 
     @Test
-    //@Ignore("Wait for QI-361")
     public void testEqualsForValueComposite()
     {
         ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );

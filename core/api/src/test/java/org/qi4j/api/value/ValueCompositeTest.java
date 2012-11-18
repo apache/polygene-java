@@ -45,6 +45,7 @@ public class ValueCompositeTest
     extends AbstractQi4jTest
 {
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
@@ -82,9 +83,6 @@ public class ValueCompositeTest
         SomeValue prototype = builder.prototype();
         prototype.other().set( "test" );
         SomeValue instance = builder.newInstance();
-        builder = module.newValueBuilder( SomeValue.class );
-        prototype = builder.prototype();
-        prototype.other().set( "test" );
         SomeValue other = builder.newInstance();
         Assert.assertFalse( "Instances should not be the same.", instance == other );
         Assert.assertEquals( "Equal values.", instance, other );
@@ -97,10 +95,6 @@ public class ValueCompositeTest
         SomeValue prototype = builder.prototype();
         prototype.other().set( "test" );
         SomeValue instance = builder.newInstance();
-
-        builder = module.newValueBuilder( SomeValue.class );
-        prototype = builder.prototype();
-        prototype.other().set( "test" );
         SomeValue other = builder.newInstance();
         Assert.assertFalse( "Instances should not be the same.", instance == other );
         Assert.assertEquals( "Equal values.", instance.hashCode(), other.hashCode() );
