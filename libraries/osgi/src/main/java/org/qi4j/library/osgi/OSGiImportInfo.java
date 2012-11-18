@@ -2,6 +2,9 @@ package org.qi4j.library.osgi;
 
 import org.osgi.framework.BundleContext;
 
+/**
+ * MetaInfo to define imported OSGi services.
+ */
 public class OSGiImportInfo
 {
     private final BundleContext context;

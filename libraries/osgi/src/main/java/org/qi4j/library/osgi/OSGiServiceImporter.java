@@ -11,6 +11,9 @@ import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceUnavailableException;
 
+/**
+ * Import OSGi services in a Qi4j Module.
+ */
 public class OSGiServiceImporter
     implements ServiceImporter
 {
@@ -33,9 +36,11 @@ public class OSGiServiceImporter
         return handler.isAvailable();
     }
 
-    public static class ServiceTrackerHandler extends ServiceTracker
+    public static class ServiceTrackerHandler
+        extends ServiceTracker
         implements InvocationHandler
     {
+
         private volatile Object service;
         private Class typeToImport;
 
@@ -92,5 +97,7 @@ public class OSGiServiceImporter
         {
             return service != null;
         }
+
     }
+
 }

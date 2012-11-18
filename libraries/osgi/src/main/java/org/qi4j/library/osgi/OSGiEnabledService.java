@@ -21,6 +21,9 @@ import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.functional.Iterables.map;
 import static org.qi4j.functional.Iterables.toArray;
 
+/**
+ * Service Fragment providing OSGi support.
+ */
 @Mixins( OSGiEnabledService.OSGiEnabledServiceMixin.class )
 @Activators( OSGiEnabledService.Activator.class )
 public interface OSGiEnabledService extends ServiceComposite

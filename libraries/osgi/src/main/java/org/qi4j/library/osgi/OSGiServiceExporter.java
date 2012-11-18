@@ -16,31 +16,35 @@ import org.qi4j.functional.Iterables;
 
 import static org.qi4j.api.util.Classes.interfacesOf;
 
+/**
+ * Export Qi4j services to an OSGi Bundle.
+ */
 @Mixins( OSGiServiceExporter.OSGiServiceExporterMixin.class )
 @Activators( OSGiServiceExporter.Activator.class )
-public interface OSGiServiceExporter extends ServiceComposite
+public interface OSGiServiceExporter
+    extends ServiceComposite
 {
 
     void registerServices()
-            throws Exception;
+        throws Exception;
 
     void unregisterServices()
-            throws Exception;
+        throws Exception;
 
     class Activator
-            extends ActivatorAdapter<ServiceReference<OSGiServiceExporter>>
+        extends ActivatorAdapter<ServiceReference<OSGiServiceExporter>>
     {
 
         @Override
         public void afterActivation( ServiceReference<OSGiServiceExporter> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().registerServices();
         }
 
         @Override
         public void beforePassivation( ServiceReference<OSGiServiceExporter> passivating )
-                throws Exception
+            throws Exception
         {
             passivating.get().unregisterServices();
         }
@@ -50,6 +54,7 @@ public interface OSGiServiceExporter extends ServiceComposite
     public static abstract class OSGiServiceExporterMixin
         implements OSGiServiceExporter
     {
+
         @Service
         @HasMetaInfo( BundleContext.class )
         private Iterable<ServiceReference<ServiceComposite>> services;
@@ -64,8 +69,8 @@ public interface OSGiServiceExporter extends ServiceComposite
                 Class<? extends BundleContext> type = BundleContext.class;
                 BundleContext context = ref.metaInfo( type );
                 ServiceComposite service = ref.get();
-                Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, interfacesOf( service.getClass() ));
-                String[] interfaceNames = new String[(int) Iterables.count( interfaces )];
+                Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, interfacesOf( service.getClass() ) );
+                String[] interfaceNames = new String[ (int) Iterables.count( interfaces ) ];
                 Properties properties = ref.metaInfo( Properties.class );
                 if( properties == null )
                 {
@@ -77,7 +82,7 @@ public interface OSGiServiceExporter extends ServiceComposite
                 int i = 0;
                 for( Class cls : interfaces )
                 {
-                    interfaceNames[ i++ ] = cls.getName();
+                    interfaceNames[ i++] = cls.getName();
                 }
                 registrations.add( context.registerService( interfaceNames, service, properties ) );
 
@@ -93,5 +98,7 @@ public interface OSGiServiceExporter extends ServiceComposite
                 reg.unregister();
             }
         }
+
     }
+
 }
