@@ -34,6 +34,9 @@ buildscript {
   }
 }
 
+
+// External tools BEGIN ---------------------------------------------------
+
 // Sonar default configuration, should be removed once using Gradle 1.3
 // See https://github.com/gradle/gradle/pull/107
 sonar {
@@ -55,8 +58,11 @@ idea.project.ipr {
   }
 }
 
+// External tools END -----------------------------------------------------
+
 
 allprojects {
+
   apply plugin: 'eclipse'
   apply plugin: 'idea'
   apply plugin: 'signing'
@@ -80,7 +86,8 @@ allprojects {
     mavenRepo name: 'maven2-repository.dev.java.net', url: "http://download.java.net/maven/2"
   }
 
-  // Artifact upload global configuration -----------------------------
+  // Artifact upload global configuration BEGIN -----------------------------
+
   def uploadSnapshots = version.contains("SNAPSHOT")
   def uploadReleases = ! uploadSnapshots
   // By default RELEASES are signed, SNAPSHOTS are not
@@ -112,6 +119,8 @@ allprojects {
   def uploadUsername = rootProject.hasProperty('uploadUsername') ? rootProject.uploadUsername : null
   def uploadPassword = rootProject.hasProperty('uploadPassword') ? rootProject.uploadPassword : null
 
+  // Artifact upload global configuration END -------------------------------
+
 
   configurations {
     archives
@@ -129,6 +138,15 @@ allprojects {
     deployerJars( uploadWagon )
   }
 
+  test.onlyIf { !project.hasProperty( 'skipTests' ) }
+  test {
+      testLogging {
+          info {
+              exceptionFormat "full"
+          }
+      }
+  }
+
   sourceSets {
     docs {
       resources {
@@ -137,16 +155,16 @@ allprojects {
     }
   }
 
-  test.onlyIf { !project.hasProperty( 'skipTests' ) }
-
   project.ext {
     javaDir = new File( "$projectDir/src/main/java" )
     scalaDir = new File( "$projectDir/src/main/scala" )
-    documenationDir = new File( "$projectDir/src/docs" )
-    testDir = new File( "$projectDir/src/tests/java" )
+    documentationDir = new File( "$projectDir/src/docs" )
+    testJavaDir = new File( "$projectDir/src/tests/java" )
+    testScalaDir = new File( "$projectDir/src/tests/scala" )
   }
 
-  if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() || ext.testDir.isDirectory() )
+  if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() ||
+      ext.testJavaDir.isDirectory() || ext.testScalaDir.isDirectory() )
   {
     apply plugin: 'osgi'
     apply plugin: VersionClass
@@ -220,12 +238,12 @@ allprojects {
       maxHeapSize = "1024m"
       systemProperties = testProperties
       ignoreFailures = true
-      testReport = false
+      testReport = true
       testResultsDir = file( "$rootProject.testResultsDir" )
       afterSuite { descriptor, result ->
         if( result.resultType == TestResult.ResultType.FAILURE )
         {
-          rootProject.ext.testFailures = project
+          rootProject.ext.testFailures << project
         }
       }
     }
@@ -238,7 +256,7 @@ allprojects {
     // won't try to search remote repositories and so won't resolve remote download URLs.
     // The only ways to provide a list of download urls would be to provide a Qi4j repository that proxy other ones
     // so that we have all needed artifacts in a center place, OR, to go down and instrument IVY directly but I'm not
-    // even sure it would allows us to gather resoled download URLs.
+    // even sure it would allows us to gather resolved download URLs.
     test << {
       def mavenDep = "<dependencies>\n\n"
       def depList = ""
@@ -310,14 +328,15 @@ allprojects {
       module.dependencies*.exported = true
     }
   }
-}
+} // allproject END -------------------------------------------------------
 
 gradle.taskGraph.whenReady {taskGraph ->
   taskGraph.allTasks.last().doLast {
     if( rootProject.ext.testFailures )
     {
       println "\nTest failures in:"
-      rootProject.ext.testFailures.each { project -> println "  " + project.name }
+      rootProject.ext.testFailures.unique().each { project -> println "  " + project.name }
+      println ""
       throw new RuntimeException( "There was TEST FAILURES!! See list above." )
     }
   }
@@ -328,17 +347,18 @@ test {
   testReport = true
 }
 
+// Build the whole SDK public Javadoc
 task javadocs( type: Javadoc ) {
 
   options.docFilesSubDirs = true
   options.encoding = "UTF-8"
+  options.overview = "${rootProject.projectDir}/buildSrc/src/javadoc/overview.html"
   title = "${rootProject.title} ${version}"
   def apiSources = releaseApprovedProjects.findAll( { project ->
-
-    ( project.name.startsWith( 'org.qi4j.core' ) &&
-      !project.name.startsWith( 'org.qi4j.core.runtime' ) ) ||
+    ( project.name.startsWith( 'org.qi4j.core' ) && !project.name.startsWith( 'org.qi4j.core.runtime' ) ) ||
     project.name.startsWith( 'org.qi4j.library' ) ||
-    project.name.startsWith( 'org.qi4j.extension' )
+    project.name.startsWith( 'org.qi4j.extension' ) ||
+    project.name.startsWith( 'org.qi4j.tool' )
   } )
   source apiSources.collect { project ->
     project.sourceSets.main.allJava
@@ -354,6 +374,7 @@ task javadocs( type: Javadoc ) {
                          "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
                          "Libraries": [ "org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.lang.*" ],
                          "Extensions": [ "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
+                         "Tools": [ "org.qi4j.tools.*", "org.qi4j.envisage", "org.qi4j.envisage.*", "org.qi4j.library.swing.entityviewer" ],
                          "Test Support": [ "org.qi4j.test", "org.qi4j.test.*" ]
                  ] )
 
