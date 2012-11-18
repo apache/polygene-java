@@ -1,12 +1,16 @@
 package org.qi4j.library.conversion.values;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 import org.junit.Test;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.association.Association;
-import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
@@ -19,20 +23,19 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
 import static org.junit.Assert.assertEquals;
 
-public class EntityToValueTest extends AbstractQi4jTest
+public class EntityToValueTest
+    extends AbstractQi4jTest
 {
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        // START SNIPPET: assembly
         module.services( EntityToValueService.class );
+        // END SNIPPET: assembly
         module.services( MemoryEntityStoreService.class );
         module.entities( PersonEntity.class );
         module.values( PersonValue.class );
@@ -48,15 +51,16 @@ public class EntityToValueTest extends AbstractQi4jTest
         UnitOfWork uow = module.newUnitOfWork();
         try
         {
-            PersonEntity niclas = setupPersonEntities( uow );
+            PersonEntity entity = setupPersonEntities( uow );
 
-            ServiceReference<EntityToValueService> reference = module.findService( EntityToValueService.class );
-            EntityToValueService service = reference.get();
-            PersonValue niclasValue = service.convert( PersonValue.class, niclas );
-            assertEquals( "Niclas", niclasValue.firstName().get() );
-            assertEquals( "Hedhman", niclasValue.lastName().get() );
-            assertEquals( "id:Lis", niclasValue.spouse().get() );
-            assertEquals( "id:Eric", niclasValue.children().get().get( 0 ) );
+            // START SNIPPET: conversion
+            EntityToValueService conversion = module.findService( EntityToValueService.class ).get();
+            PersonValue value = conversion.convert( PersonValue.class, entity );
+            // END SNIPPET: conversion
+            assertEquals( "Niclas", value.firstName().get() );
+            assertEquals( "Hedhman", value.lastName().get() );
+            assertEquals( "id:Lis", value.spouse().get() );
+            assertEquals( "id:Eric", value.children().get().get( 0 ) );
             uow.complete();
         }
         finally
@@ -115,7 +119,7 @@ public class EntityToValueTest extends AbstractQi4jTest
         }
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test( expected = ConstraintViolationException.class )
     public void givenQualifiedValueNotFromSameInterfaceWhenConvertingEntityExpectNonOptionalException()
         throws UnitOfWorkCompletionException
     {
@@ -142,9 +146,9 @@ public class EntityToValueTest extends AbstractQi4jTest
         PersonEntity lis = createLis( uow );
         PersonEntity eric = createEric( uow );
         niclas.spouse().set( lis );
-        niclas.children().add(eric);
+        niclas.children().add( eric );
         lis.spouse().set( niclas );
-        lis.children().add(eric);
+        lis.children().add( eric );
         assertEquals( "Niclas", niclas.firstName() );
         assertEquals( "Hedhman", niclas.lastName() );
         assertEquals( "Lis", lis.firstName() );
@@ -196,27 +200,39 @@ public class EntityToValueTest extends AbstractQi4jTest
         return calendar.getTime();
     }
 
+    // START SNIPPET: state
     public interface PersonState
     {
+
         Property<String> firstName();
 
         Property<String> lastName();
 
         Property<Date> dateOfBirth();
-    }
 
-    public interface PersonValue extends PersonState, ValueComposite
+    }
+    // END SNIPPET: state
+
+    // START SNIPPET: value
+    public interface PersonValue
+        extends PersonState, ValueComposite
     {
+
         @Optional
         Property<String> spouse();
 
         @Optional
         Property<List<String>> children();
-    }
 
+    }
+    // END SNIPPET: value
+
+    // START SNIPPET: entity
     @Mixins( PersonMixin.class )
-    public interface PersonEntity extends EntityComposite
+    public interface PersonEntity
+        extends EntityComposite
     {
+
         String firstName();
 
         String lastName();
@@ -227,35 +243,49 @@ public class EntityToValueTest extends AbstractQi4jTest
         Association<PersonEntity> spouse();
 
         ManyAssociation<PersonEntity> children();
-    }
 
+    }
+    // END SNIPPET: entity
+
+    // START SNIPPET: entity
     public static abstract class PersonMixin
         implements PersonEntity
     {
+
         @This
         private PersonState state;
+        // END SNIPPET: entity
 
+        @Override
         public String firstName()
         {
             return state.firstName().get();
         }
 
+        @Override
         public String lastName()
         {
             return state.lastName().get();
         }
 
+        @Override
         public Integer age()
         {
             long now = System.currentTimeMillis();
             long birthdate = state.dateOfBirth().get().getTime();
             return (int) ( ( now - birthdate ) / 1000 / 3600 / 24 / 365.25 );
         }
-    }
 
+        // START SNIPPET: entity
+    }
+    // END SNIPPET: entity
+
+    // START SNIPPET: unqualified
     @Unqualified
-    public interface PersonValue2 extends ValueComposite
+    public interface PersonValue2
+        extends ValueComposite
     {
+
         Property<String> firstName();
 
         Property<String> lastName();
@@ -267,12 +297,15 @@ public class EntityToValueTest extends AbstractQi4jTest
 
         @Optional
         Property<List<String>> children();
+
     }
+    // END SNIPPET: unqualified
 
-
-    @Unqualified(true)
-    public interface PersonValue3 extends ValueComposite
+    @Unqualified( true )
+    public interface PersonValue3
+        extends ValueComposite
     {
+
         Property<String> firstName();
 
         Property<String> lastName();
@@ -284,11 +317,14 @@ public class EntityToValueTest extends AbstractQi4jTest
 
         @Optional
         Property<List<String>> children();
+
     }
 
-    @Unqualified(false)
-    public interface PersonValue4 extends ValueComposite
+    @Unqualified( false )
+    public interface PersonValue4
+        extends ValueComposite
     {
+
         Property<String> firstName();
 
         Property<String> lastName();
@@ -300,5 +336,7 @@ public class EntityToValueTest extends AbstractQi4jTest
 
         @Optional
         Property<List<String>> children();
+
     }
+
 }
