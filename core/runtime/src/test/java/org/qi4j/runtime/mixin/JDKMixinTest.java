@@ -1,11 +1,16 @@
 package org.qi4j.runtime.mixin;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
@@ -24,6 +29,7 @@ public class JDKMixinTest
     extends AbstractQi4jTest
 {
 
+    @Concerns( JDKMixinConcern.class )
     public interface JSONSerializableMap
         extends Map<String, String>
     {
@@ -62,10 +68,32 @@ public class JDKMixinTest
 
     }
 
+    public static class JDKMixinConcern
+        extends GenericConcern
+    {
+
+        @Override
+        public Object invoke( Object proxy, Method method, Object[] args )
+            throws Throwable
+        {
+            System.out.println( ">>>> Call to JDKMixinConcern." + method.getName() );
+            CONCERN_RECORDS.add( method.getName() );
+            return next.invoke( proxy, method, args );
+        }
+
+    }
+
     private static final String EXTENDS_IDENTITY = ExtendsJDKMixin.class.getName();
     private static final String COMPOSE_IDENTITY = ComposeWithJDKMixin.class.getName();
     private static final Specification<ServiceReference> EXTENDS_IDENTITY_SPEC = new ServiceIdentitySpec( EXTENDS_IDENTITY );
     private static final Specification<ServiceReference> COMPOSE_IDENTITY_SPEC = new ServiceIdentitySpec( COMPOSE_IDENTITY );
+    private static final List<String> CONCERN_RECORDS = new ArrayList<String>();
+
+    @Before
+    public void beforeEachTest()
+    {
+        CONCERN_RECORDS.clear();
+    }
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -99,6 +127,8 @@ public class JDKMixinTest
 
         assertThat( json.length(), equalTo( 1 ) );
         assertThat( json.optString( "foo" ), equalTo( "bar" ) );
+
+        assertThat( CONCERN_RECORDS.size(), equalTo( 4 ) );
     }
 
     @Test
@@ -117,6 +147,8 @@ public class JDKMixinTest
 
         assertThat( json.length(), equalTo( 1 ) );
         assertThat( json.optString( "foo" ), equalTo( "bar" ) );
+
+        assertThat( CONCERN_RECORDS.size(), equalTo( 4 ) );
     }
 
     private static class ServiceIdentitySpec
