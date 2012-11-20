@@ -104,6 +104,10 @@ include::sideeffect.txt[]
 
 include::module.txt[]
 
+:leveloffset: {level3}
+
+include::type-lookup.txt[]
+
 :leveloffset: {level2}
 
 include::metrics.txt[]
