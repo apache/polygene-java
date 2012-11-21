@@ -27,14 +27,11 @@ by Bertrand Meyer - 1988
 +
 "_The comprehensive reference on all aspects of object technology, from design principles to O-O techniques, Design by
 Contract, O-O analysis, concurrency, persistence, abstract data types and many more. Written by a pioneer in the field,
-contains an in-depth analysis of both methodological and technical issues. Comes with a CD-ROM containing: the
-complete hyperlinked text, for easy reference; software to read the text on major industry platforms; supplementary
-material (reusable components, mathematical complements); and a complete graphical O-O development environment
-supporting the concepts of the book._"
+contains an in-depth analysis of both methodological and technical issues._"
 +
 http://se.ethz.ch/~meyer/publications/index_kind.html#POOSC2
 +
-- *Object-Oriented Programming: An Objective Sense of Style *
+- *Object-Oriented Programming: An Objective Sense of Style*
 +
 by K.  Lieberherr,  I.  IIolland,  A.  Riel - 1988
 +
