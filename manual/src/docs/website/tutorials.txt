@@ -91,3 +91,7 @@ include::../tutorials/howto-contextual-fragments.txt[]
 include::../tutorials/howto-use-io.txt[]
 
 :leveloffset: 2
+
+include::related.txt[]
+
+:leveloffset: 2
