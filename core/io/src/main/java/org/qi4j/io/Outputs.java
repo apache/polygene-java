@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
@@ -116,6 +117,74 @@ public class Outputs
                     throw (SenderThrowableType) senderThrowableType;
                 }
             }
+        };
+    }
+
+    // START SNIPPET: method
+
+    /**
+     * Write lines to a Writer. Separate each line with a newline ("\n" character).
+     *
+     * @param writer the Writer to write the text to
+     * @return an Output for storing text in a Writer
+     */
+    public static Output<String, IOException> text( final Writer writer )
+    // END SNIPPET: method
+    {
+        return new Output<String, IOException>()
+        {
+
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
+                throws IOException, SenderThrowableType
+            {
+                sender.sendTo( new Receiver<String, IOException>()
+                {
+
+                    @Override
+                    public void receive( String item )
+                        throws IOException
+                    {
+                        writer.append( item ).append( "\n" );
+                    }
+
+                } );
+            }
+
+        };
+    }
+
+    // START SNIPPET: method
+
+    /**
+     * Write lines to a StringBuilder. Separate each line with a newline ("\n" character).
+     *
+     * @param builder the StringBuilder to append the text to
+     * @return an Output for storing text in a StringBuilder
+     */
+    public static Output<String, IOException> text( final StringBuilder builder )
+    // END SNIPPET: method
+    {
+        return new Output<String, IOException>()
+        {
+
+            @Override
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
+                throws IOException, SenderThrowableType
+            {
+                sender.sendTo( new Receiver<String, IOException>()
+                {
+
+                    @Override
+                    public void receive( String item )
+                        throws IOException
+                    {
+                        builder.append( item ).append( "\n" );
+                    }
+
+                } );
+            }
+
         };
     }
 
