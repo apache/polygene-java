@@ -1,5 +1,24 @@
+/*
+ * Copyright 2010 Niclas Hedhman.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.qi4j.cache.ehcache;
 
+import java.util.Collection;
+import java.util.Random;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.constraint.ConstraintViolation;
@@ -14,9 +33,6 @@ import org.qi4j.spi.cache.CachePool;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.util.Collection;
-import java.util.Random;
-
 import static org.junit.Assert.*;
 
 public class EhCacheTest extends AbstractQi4jTest
@@ -24,6 +40,7 @@ public class EhCacheTest extends AbstractQi4jTest
     private CachePool caching;
     private Cache<String> cache;
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
@@ -75,7 +92,7 @@ public class EhCacheTest extends AbstractQi4jTest
     public void givenLoooongCacheNameWhenFetchingCacheExpectOk()
     {
         Random random = new Random();
-        StringBuffer longName = new StringBuffer();
+        StringBuilder longName = new StringBuilder();
         for( int i = 0; i < 10000; i++ )
         {
             longName.append( (char) ( random.nextInt( 26 ) + 65 ) );
