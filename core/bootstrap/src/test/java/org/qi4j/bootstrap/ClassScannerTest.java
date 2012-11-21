@@ -39,6 +39,6 @@ public class ClassScannerTest
     @Test
     public void testClassScannerJar()
     {
-        Assert.assertEquals( 136, Iterables.count( getClasses( Test.class ) ) );
+        Assert.assertEquals( 138, Iterables.count( getClasses( Test.class ) ) );
     }
 }

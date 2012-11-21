@@ -14,7 +14,6 @@
 
 package org.qi4j.runtime.service;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
@@ -32,7 +31,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -102,7 +101,7 @@ public class AvailableServiceTest
 
         TestObject object = assembler.module().newObject( TestObject.class );
 
-        assertThat( "service is unavailable", object.getService(), CoreMatchers.<Object>nullValue() );
+        assertThat( "service is unavailable", object.getService(), nullValue() );
 
         ServiceReference<TestServiceComposite2> serviceRef = assembler.module()
             .findService( TestServiceComposite2.class );
@@ -110,7 +109,7 @@ public class AvailableServiceTest
         serviceRef.get().save();
 
         object = assembler.module().newObject( TestObject.class );
-        assertThat( "service is available", object.getService(), CoreMatchers.<Object>notNullValue() );
+        assertThat( "service is available", object.getService(), notNullValue() );
     }
 
     // This service has to be asked for availability

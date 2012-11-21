@@ -64,7 +64,7 @@ def wsdl4jVersion = '1.6.2'
 def yammerMetricsVersion = '2.1.5'
 
 def antVersion = '1.8.4'
-def junitVersion = '4.10'
+def junitVersion = '4.11'
 def testNgVersion = '6.8'
 def jmockVersion = '2.5.1'
 def mockitoVersion = '1.9.5'

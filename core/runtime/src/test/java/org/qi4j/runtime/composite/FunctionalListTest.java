@@ -12,7 +12,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Function;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 public class FunctionalListTest extends AbstractQi4jTest
@@ -44,12 +44,11 @@ public class FunctionalListTest extends AbstractQi4jTest
             }
         } );
 
-        List<String> expected = new ArrayList<String>();
-        expected.add( "5" );
-        expected.add( "15" );
-        expected.add( "45" );
-        expected.add( "85" );
-        assertThat( strings, equalTo( expected ) );
+        String[] expected = new String[]
+        {
+            "5", "15", "45", "85"
+        };
+        assertThat( strings, hasItems( expected ) );
     }
 
     @Mixins( FListMixin.class )
