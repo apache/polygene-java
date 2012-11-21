@@ -13,20 +13,6 @@ Remember that you are not limited to constraints presents in this library, you
 are encouraged to write your own constraints. See <<howto-create-constraint>>
 or take a look at this library source code to learn how to write your own.
 
-Here are the provided constraints:
-
-- @Contains( ... )
-- @Email
-- @GreaterThan( ... )
-- @InstanceOf( ... )
-- @LessThan( ... )
-- @Matches( ... )
-- @MaxLength( ... )
-- @MinLength( ... )
-- @NotEmpty
-- @OneOf( ... )
-- @Range( ... )
-
 You can use theses constraints on Properties or on method arguments.
 Here are some examples:
 
