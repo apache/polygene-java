@@ -21,8 +21,10 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import groovy.lang.GroovyShell;
+import groovy.lang.MissingPropertyException;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -32,6 +34,8 @@ import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.io.Inputs;
+import org.qi4j.io.Outputs;
 
 /**
  * Generic mixin that implements interfaces by delegating to Groovy functions
@@ -48,17 +52,21 @@ import org.qi4j.api.injection.scope.This;
 public class GroovyMixin
     implements InvocationHandler
 {
-    private @This Composite me;
+
+    private @This
+    Composite me;
     private final Map<Class, GroovyObject> groovyObjects;
 
     public static class AppliesTo
         implements AppliesToFilter
     {
+
         @Override
         public boolean appliesTo( Method method, Class compositeType, Class mixin, Class modelClass )
         {
             return getFunctionResource( method ) != null;
         }
+
     }
 
     public GroovyMixin()
@@ -68,7 +76,8 @@ public class GroovyMixin
     }
 
     @Override
-    public Object invoke( Object proxy, Method method, Object[] args ) throws Throwable
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
     {
         final FunctionResource groovySource = getFunctionResource( method );
         if( groovySource != null )
@@ -82,7 +91,8 @@ public class GroovyMixin
         throw new RuntimeException( "Internal error: Mixin invoked even if it does not apply" );
     }
 
-    private Object invokeAsObject( Method method, Object[] args, URL groovySource ) throws Throwable
+    private Object invokeAsObject( Method method, Object[] args, URL groovySource )
+        throws Throwable
     {
         try
         {
@@ -95,8 +105,10 @@ public class GroovyMixin
                 try
                 {
                     is = groovySource.openStream();
+                    StringBuilder sourceBuilder = new StringBuilder();
+                    Inputs.text( groovySource ).transferTo( Outputs.text( sourceBuilder ) );
                     GroovyClassLoader groovyClassLoader = new GroovyClassLoader( declaringClass.getClassLoader() );
-                    groovyClass = groovyClassLoader.parseClass( is );
+                    groovyClass = groovyClassLoader.parseClass( sourceBuilder.toString() );
                 }
                 finally
                 {
@@ -106,8 +118,10 @@ public class GroovyMixin
                     }
                 }
                 groovyObject = (GroovyObject) groovyClass.newInstance();
-                // TODO check if there is such a property
-                groovyObject.setProperty( "This", me );
+                if( hasProperty( groovyObject, "This" ) )
+                {
+                    groovyObject.setProperty( "This", me );
+                }
                 groovyObjects.put( declaringClass, groovyObject );
             }
             return groovyObject.invokeMethod( method.getName(), args );
@@ -119,19 +133,33 @@ public class GroovyMixin
         }
     }
 
-    private Object invokeAsScript( Method method, Object[] args, URL groovySource ) throws Throwable
+    private boolean hasProperty( GroovyObject groovyObject, String propertyName )
+    {
+        try
+        {
+            groovyObject.getProperty( propertyName );
+            return true;
+        }
+        catch( MissingPropertyException ex )
+        {
+            return false;
+        }
+    }
+
+    private Object invokeAsScript( Method method, Object[] args, URL groovySource )
+        throws Throwable
     {
         try
         {
             Binding binding = new Binding();
             binding.setVariable( "This", me );
-            // TODO bind arguments to an "args" variable?
+            binding.setVariable( "args", args );
             GroovyShell shell = new GroovyShell( binding );
             InputStream is = null;
             try
             {
                 is = groovySource.openStream();
-                return shell.evaluate( is );
+                return shell.evaluate( new InputStreamReader( is ) );
             }
             finally
             {
@@ -169,6 +197,7 @@ public class GroovyMixin
 
     private static class FunctionResource
     {
+
         URL url;
         boolean script;
 
@@ -177,6 +206,7 @@ public class GroovyMixin
             this.script = script;
             this.url = url;
         }
+
     }
 
 }
