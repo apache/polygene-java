@@ -287,6 +287,12 @@ http://www.springsource.org/[springsource.org]
 +
 http://code.google.com/p/google-guice/[code.google.com/p/google-guice]
 +
+- *Java Enterprise Edition (EJBs, CDI)*
++
+"_Java EE provides component development, web services, management, and communications APIs._"
++
+http://docs.oracle.com/javaee/[docs.oracle.com/javaee]
++
 - *Chaplin ACT*
 +
 "_Chaplin ACT is a Java class transformer which modifies classes in such a way that their instances can form composites
@@ -294,11 +300,12 @@ at runtime._"
 +
 http://www.iquality.org/chaplin/[iquality.org/chaplin]
 +
-- *Java Enterprise Edition (EJBs, CDI)*
+- *JavATE*
 +
-"_Java EE provides component development, web services, management, and communications APIs._"
+"_JavATE, the Java Domain Driven Design Framework, is a set of open source Java libraries that enables application
+development using a domain driven approach. _"
 +
-http://docs.oracle.com/javaee/[docs.oracle.com/javaee]
+http://www.javate.amattioli.it/
 +
 - *Bastion Framework*
 +
