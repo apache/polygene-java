@@ -74,7 +74,7 @@ public interface Query<T>
      * Get the first Entity that matches the criteria. This
      * executes the Query.
      *
-     * @return the first found Entity
+     * @return the first found Entity or null if none were found
      *
      * @throws QueryExecutionException if the query fails
      */
