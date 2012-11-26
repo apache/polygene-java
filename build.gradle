@@ -248,39 +248,6 @@ allprojects {
       }
     }
 
-    // TODO: Is there some better way to do this??
-    // I could not find any way to get handles on DependencyArtifacts
-    // See: http://www.gradle.org/docs/current/javadoc/org/gradle/api/artifacts/DependencyArtifact.html
-    // It's easy to get handles on artifact files but not on their download url ...
-    // I think it's simply not possible as when artifacts are available locally the underlying IVY resolver
-    // won't try to search remote repositories and so won't resolve remote download URLs.
-    // The only ways to provide a list of download urls would be to provide a Qi4j repository that proxy other ones
-    // so that we have all needed artifacts in a center place, OR, to go down and instrument IVY directly but I'm not
-    // even sure it would allows us to gather resolved download URLs.
-    test << {
-      def mavenDep = "<dependencies>\n\n"
-      def depList = ""
-      configurations.runtime.allDependencies.each { dep ->
-        if( !dep.group.startsWith("org.qi4j") ) {
-          depList = depList + "http://central.maven.org/maven2/" + dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar\n"
-          mavenDep = mavenDep + "<dependency>\n"
-          mavenDep = mavenDep + "  <groupId>$dep.group</groupId>\n"
-          mavenDep = mavenDep + "  <artifactId>$dep.group</artifactId>\n"
-          mavenDep = mavenDep + "  <version>$dep.group</version>\n"
-          mavenDep = mavenDep + "</dependency>\n\n"
-        }
-      }
-      mavenDep = mavenDep + "</dependencies>\n"
-
-      def downloadsFile = new File( buildDir.toString(), "download.deps" )
-      downloadsFile.text = depList
-
-      def mavenDepDir = new File( buildDir.toString(), "maven" );
-      mavenDepDir.mkdirs()
-      def mavenDepFile = new File( mavenDepDir, "dependencies.xml" )
-      mavenDepFile.text = mavenDep
-    }
-
 //    // Create checkstyle report
 //    task checkstyleReport( type: Xslt, dependsOn: check ) {
 //      source project.checkstyle.reportsDir
@@ -290,6 +257,12 @@ allprojects {
 //      stylesheetFile = file( "$rootProject.projectDir/etc/checkstyle-noframes.xsl" )
 //    }
 //
+
+    // Dependency Report generate only the runtime configuration
+    // The report is packaged in the SDK distributions
+    dependencyReport {
+        configurations = [ project.configurations.runtime ]
+    }
 
     task minBuild {
       dependsOn classes
@@ -379,7 +352,46 @@ task javadocs( type: Javadoc ) {
                  ] )
 
 }
-task buildAll( dependsOn: [ javadocs, test, jar, subprojects*.assemble, ':org.qi4j.manual:manuals' ] ) {}
+
+// Build All
+task buildAll( dependsOn: [
+    javadocs, 
+    test, 
+    jar, 
+    subprojects*.dependencyReport, 
+    subprojects*.assemble, 
+    ':org.qi4j.manual:manuals'
+] ) { }
+// Prepare runtime dependencies download facility (metalink)
+buildAll.doLast {
+    def runtimeDepsMetalink = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">\n"
+    runtimeDepsMetalink = runtimeDepsMetalink + " <identity>qi4j-sdk-runtime-deps</identity>\n"
+    runtimeDepsMetalink = runtimeDepsMetalink + " <version>${version}</version>\n"
+    def handledGavPaths = []
+    releaseApprovedProjects.each { p ->
+      def m2roots = []
+      p.repositories.each { repo ->
+        def resolver = repo.createResolver()
+        if( !resolver.m2compatible ) {
+          throw new GradleException( "Cannot build SDK dependencies metalink because a repository is not m2compatible: ${resolver.root}" )
+        }
+        m2roots << resolver.root
+      }
+      p.configurations.runtime.allDependencies.each { dep ->
+        def gavpath = dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar"
+        if( !dep.group.startsWith("org.qi4j") && !handledGavPaths.contains( gavpath ) ) {
+          runtimeDepsMetalink = runtimeDepsMetalink + "  <file name=\"${dep.group}-${dep.name}-${dep.version}.jar\">\n"
+          m2roots.each { m2root ->
+            runtimeDepsMetalink = runtimeDepsMetalink + "    <url>" + m2root + dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar" + "</url>\n"
+          }
+          runtimeDepsMetalink = runtimeDepsMetalink + "  </file>\n\n"
+          handledGavPaths << gavpath
+        }
+      }
+    }
+    runtimeDepsMetalink = runtimeDepsMetalink + "</metalink>\n"
+    new File( buildDir.toString(), "reports/qi4j-sdk-runtime-deps.metalink" ).text = runtimeDepsMetalink
+}
 
 def srcDistImage = copySpec {
   from '.'
@@ -408,11 +420,16 @@ def docsImage = copySpec {
   into( "docs" )
 }
 
-def downloadListImage = copySpec {
+def runtimeDependenciesListImage = copySpec {
   releaseApprovedProjects.collect { p ->
-    from "$p.buildDir/download.deps"
-    into( "libs/dependencies/" )
-    rename 'download.deps', p.name + '.deps'
+    into( "libs/" ) {
+      from "$p.buildDir/reports/project/dependencies.txt"
+      rename 'dependencies.txt', p.name + '-' + p.version + '-runtime-deps.txt'
+    }
+  }
+  into( "libs/" ) {
+    from "build/reports/qi4j-sdk-runtime-deps.metalink"
+    rename 'qi4j-sdk-runtime-deps.metalink', 'qi4j-sdk-' + version + '-runtime-deps.metalink'
   }
 }
 
@@ -447,7 +464,7 @@ def binDistImage = copySpec {
   into "qi4j-sdk-$version"
   with docsImage
   with reportsDistImage
-  with downloadListImage
+  with runtimeDependenciesListImage
   with libsImage
   with samplesImage
   with tutorialsImage
