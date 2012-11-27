@@ -276,7 +276,7 @@ public class MapEntityStoreMixin
         return uuid + Integer.toHexString( count++ );
     }
 
-    protected void writeEntityState( DefaultEntityState state, Writer writer, String identity, long lastModified )
+    protected void writeEntityState( DefaultEntityState state, Writer writer, String version, long lastModified )
         throws EntityStoreException
     {
         try
@@ -286,7 +286,7 @@ public class MapEntityStoreMixin
                 key( "identity" ).value( state.identity().identity() ).
                 key( "application_version" ).value( application.version() ).
                 key( "type" ).value( first( state.entityDescriptor().types() ).getName() ).
-                key( "version" ).value( identity ).
+                key( "version" ).value( version ).
                 key( "modified" ).value( lastModified ).
                 key( "properties" ).object();
             EntityDescriptor entityType = state.entityDescriptor();
