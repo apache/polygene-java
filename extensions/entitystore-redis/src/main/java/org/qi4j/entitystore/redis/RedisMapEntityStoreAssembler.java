@@ -23,14 +23,15 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
+/**
+ * Redis EntityStore assembly.
+ */
 public class RedisMapEntityStoreAssembler
-        implements Assembler
+    implements Assembler
 {
 
     private Visibility visibility = Visibility.application;
-
     private ModuleAssembly configModule;
-
     private Visibility configVisibility = Visibility.layer;
 
     public RedisMapEntityStoreAssembler withVisibility( Visibility visibility )
@@ -53,9 +54,10 @@ public class RedisMapEntityStoreAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        if ( configModule == null ) {
+        if( configModule == null )
+        {
             configModule = module;
         }
         onAssemble( module, visibility, configModule, configVisibility );

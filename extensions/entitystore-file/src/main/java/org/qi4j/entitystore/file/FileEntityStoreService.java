@@ -26,17 +26,18 @@ import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreActivation;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
  * EntityStore service backed by a source control friendly file system format.
+ * <p>Based on @{link JSONMapEntityStoreMixin}</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { MapEntityStoreMixin.class, FileEntityStoreMixin.class } )
+@Mixins( { JSONMapEntityStoreMixin.class, FileEntityStoreMixin.class } )
 public interface FileEntityStoreService
-        extends MapEntityStoreActivation,
+        extends JSONMapEntityStoreActivation,
                 FileEntityStoreActivation,
                 EntityStore,
                 EntityStateVersions,

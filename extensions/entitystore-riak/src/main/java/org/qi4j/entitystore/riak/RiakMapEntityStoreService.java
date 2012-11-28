@@ -28,21 +28,26 @@ import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
+import org.qi4j.spi.entitystore.helpers.MapEntityStoreActivation;
 
+/**
+ * Riak EntityStore service.
+ * <p>Can be used with Riak implementations of MapEntityStore.</p>
+ * <p>Based on @{link JSONMapEntityStoreMixin}</p>
+ */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { MapEntityStoreMixin.class } )
+@Mixins( { JSONMapEntityStoreMixin.class } )
 public interface RiakMapEntityStoreService
-        extends EntityStore,
-                EntityStateVersions,
-                ServiceComposite,
-                ServiceActivation,
-                LockingAbstractComposite,
-                Configuration
+    extends EntityStore,
+            EntityStateVersions,
+            ServiceComposite,
+            MapEntityStoreActivation,
+            JSONMapEntityStoreActivation,
+            ServiceActivation,
+            LockingAbstractComposite,
+            Configuration,
+            RiakAccessors
 {
-
-    IRiakClient riakClient();
-
-    String bucket();
-
 }

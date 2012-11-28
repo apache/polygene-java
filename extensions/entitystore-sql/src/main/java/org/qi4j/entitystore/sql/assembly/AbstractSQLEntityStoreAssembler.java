@@ -30,6 +30,9 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
+/**
+ * Base SQL EntityStore assembly.
+ */
 abstract class AbstractSQLEntityStoreAssembler<T extends AbstractSQLEntityStoreAssembler>
         implements Assembler
 {

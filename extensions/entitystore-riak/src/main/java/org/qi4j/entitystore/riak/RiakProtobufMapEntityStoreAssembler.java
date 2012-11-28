@@ -23,14 +23,15 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
+/**
+ * Riak Protobuf EntityStore assembly.
+ */
 public class RiakProtobufMapEntityStoreAssembler
-        implements Assembler
+    implements Assembler
 {
 
     private Visibility visibility = Visibility.application;
-
     private ModuleAssembly configModule;
-
     private Visibility configVisibility = Visibility.layer;
 
     public RiakProtobufMapEntityStoreAssembler withVisibility( Visibility visibility )
@@ -53,21 +54,22 @@ public class RiakProtobufMapEntityStoreAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        if ( configModule == null ) {
+        if( configModule == null )
+        {
             configModule = module;
         }
 
         module.services( UuidIdentityGeneratorService.class ).
-                visibleIn( visibility );
+            visibleIn( visibility );
 
         module.services( RiakMapEntityStoreService.class ).
-                withMixins( RiakProtobufMapEntityStoreMixin.class ).
-                visibleIn( visibility );
+            withMixins( RiakProtobufMapEntityStoreMixin.class ).
+            visibleIn( visibility );
 
         configModule.entities( RiakProtobufEntityStoreConfiguration.class ).
-                visibleIn( configVisibility );
+            visibleIn( configVisibility );
     }
 
 }

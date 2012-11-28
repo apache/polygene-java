@@ -20,6 +20,9 @@ import org.sql.generation.api.vendor.DerbyVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
+/**
+ * Derby EntityStore assembly.
+ */
 public class DerbySQLEntityStoreAssembler
         extends AbstractSQLEntityStoreAssembler<DerbySQLEntityStoreAssembler>
 {

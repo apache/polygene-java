@@ -23,14 +23,15 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
+/**
+ * Riak Http EntityStore assembly.
+ */
 public class RiakHttpMapEntityStoreAssembler
-        implements Assembler
+    implements Assembler
 {
 
     private Visibility visibility = Visibility.application;
-
     private ModuleAssembly configModule;
-
     private Visibility configVisibility = Visibility.layer;
 
     public RiakHttpMapEntityStoreAssembler withVisibility( Visibility visibility )
@@ -52,21 +53,22 @@ public class RiakHttpMapEntityStoreAssembler
     }
 
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        if ( configModule == null ) {
+        if( configModule == null )
+        {
             configModule = module;
         }
 
         module.services( UuidIdentityGeneratorService.class ).
-                visibleIn( visibility );
+            visibleIn( visibility );
 
         module.services( RiakMapEntityStoreService.class ).
-                withMixins( RiakHttpMapEntityStoreMixin.class ).
-                visibleIn( visibility );
+            withMixins( RiakHttpMapEntityStoreMixin.class ).
+            visibleIn( visibility );
 
         configModule.entities( RiakHttpEntityStoreConfiguration.class ).
-                visibleIn( configVisibility );
+            visibleIn( configVisibility );
     }
 
 }

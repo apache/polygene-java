@@ -19,6 +19,9 @@ import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 import org.sql.generation.api.vendor.SQLiteVendor;
 
+/**
+ * SQLite EntityStore assembly.
+ */
 public class SQLiteEntityStoreAssembler
         extends AbstractSQLEntityStoreAssembler<SQLiteEntityStoreAssembler>
 {

@@ -81,11 +81,13 @@ import org.slf4j.LoggerFactory;
 import static org.qi4j.functional.Iterables.first;
 
 /**
- * Most of this code is copy-paste from {@link org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin}. TODO refactor stuff that has to do with general
- * things than actual MapEntityStore from {@link org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin} so that this class could extend some
- * "AbstractJSONEntityStoreMixin".
- *
+ * SQL EntityStore core Mixin.
  */
+// TODO Rewrite reusing JSONMapEntityStoreMixin
+// Old notes:
+//      Most of this code is copy-paste from {@link org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin}.
+//      Refactor stuff that has to do with general things than actual MapEntityStore from MapEntityStoreMixin
+//      so that this class could extend some "AbstractJSONEntityStoreMixin".
 public class SQLEntityStoreMixin
     implements EntityStore, EntityStoreSPI, StateStore, ServiceActivation
 {

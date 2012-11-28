@@ -24,16 +24,16 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
 import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
 import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreActivation;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
- * In-memory EntityStore service. Useful for testing
- * and non-persistent entities.
+ * In-memory EntityStore service.
+ * <p>Useful for testing and non-persistent entities.</p>
+ * <p>Based on @{link JSONMapEntityStoreMixin}</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { JSONMapEntityStoreMixin.class, MemoryMapEntityStoreMixin.class } )
 public interface MemoryEntityStoreService
-    extends EntityStore, EntityStateVersions, BackupRestore, StateStore, ServiceComposite, MapEntityStoreActivation, JSONMapEntityStoreActivation
+    extends EntityStore, EntityStateVersions, BackupRestore, StateStore, ServiceComposite, JSONMapEntityStoreActivation
 {
 }

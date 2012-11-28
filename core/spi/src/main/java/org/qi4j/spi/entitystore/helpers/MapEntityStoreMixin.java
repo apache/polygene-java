@@ -32,6 +32,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.api.util.Classes;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
@@ -47,12 +48,15 @@ import org.qi4j.spi.entitystore.StateCommitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.*;
 
 /**
- * Implementation of EntityStore that works with an implementation of MapEntityStore. Implement
- * MapEntityStore and add as mixin to the service using this mixin.
- * See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
+ * Implementation of EntityStore that works with an implementation of MapEntityStore.
+ *
+ * <p>Implement @{link MapEntityStore} and add as mixin to the service using this mixin.</p>
+ * <p>See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.</p>
+ * <p>EntityStores based on this mixin gets support for the <b>Migration</b> extension.</p>
+ * <p>MapEntityStore implementations will get their values as JSON.</p>
  */
 public class MapEntityStoreMixin
     implements EntityStore, EntityStoreSPI, StateStore, MapEntityStoreActivation
@@ -286,6 +290,7 @@ public class MapEntityStoreMixin
                 key( "identity" ).value( state.identity().identity() ).
                 key( "application_version" ).value( application.version() ).
                 key( "type" ).value( first( state.entityDescriptor().types() ).getName() ).
+                key( "types" ).value( toList( map( Classes.toClassName(), state.entityDescriptor().mixinTypes() ) ) ).
                 key( "version" ).value( version ).
                 key( "modified" ).value( lastModified ).
                 key( "properties" ).object();

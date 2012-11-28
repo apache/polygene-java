@@ -20,6 +20,9 @@ import org.sql.generation.api.vendor.MySQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
+/**
+ * MySQL EntityStore assembly.
+ */
 public class MySQLEntityStoreAssembler
         extends AbstractSQLEntityStoreAssembler<MySQLEntityStoreAssembler>
 {

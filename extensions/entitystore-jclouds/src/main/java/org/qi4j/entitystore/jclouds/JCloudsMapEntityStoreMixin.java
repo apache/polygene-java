@@ -51,7 +51,6 @@ import org.qi4j.io.Sender;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,24 +58,16 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.contains;
 
 /**
- * JClouds Map EntityStore Mixin.
- *
- * TODO Expose Location in configuration
- *
- * To be done once JClouds 1.5 has stabilized their Location API.
- *
- * /**
- * * A list of ISO-3166 country codes.
- * * It defines where your entities are allowed to be stored.
- * *
- *
- * &#64;UseDefaults Property<List<String>> geopoliticalBoundaries(); ???
- *
- * SEE  http://www.jclouds.org/documentation/reference/location-metadata-design
+ * JClouds implementation of MapEntityStore.
  */
-public abstract class JCloudsMapEntityStoreMixin
-    extends MapEntityStoreMixin
-    implements ServiceActivation, JCloudsMapEntityStoreService, MapEntityStore
+// TODO Expose Location in configuration
+//      To be done once JClouds 1.5 has stabilized their Location API.
+//      A list of ISO-3166 country codes.
+//      It defines where your entities are allowed to be stored.
+//      @UseDefaults Property<List<String>> geopoliticalBoundaries(); ???
+//      SEE  http://www.jclouds.org/documentation/reference/location-metadata-design
+public class JCloudsMapEntityStoreMixin
+    implements ServiceActivation, MapEntityStore
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.jclouds" );

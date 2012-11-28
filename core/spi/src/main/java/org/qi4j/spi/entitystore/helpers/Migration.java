@@ -18,7 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * JAVADOC
+ * State Migration SPI.
  */
 public interface Migration
 {

@@ -22,6 +22,9 @@ import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
 
+/**
+ * SQL EntityStore service.
+ */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { SQLEntityStoreMixin.class } )
 public interface SQLEntityStoreService

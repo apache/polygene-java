@@ -24,27 +24,24 @@ import java.util.List;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 
-public abstract class RiakProtobufMapEntityStoreMixin
-        extends AbstractRiakMapEntityStore
-        implements RiakMapEntityStoreService
+/**
+ * Riak Protobuf implementation of MapEntityStore.
+ */
+public class RiakProtobufMapEntityStoreMixin
+    extends AbstractRiakMapEntityStore
 {
 
     private static final int DEFAULT_CONNECTION_TIMEOUT = 1000;
-
     private static final int DEFAULT_IDLE_CONNECTION_TTL = 1000;
-
     private static final int DEFAULT_SOCKET_BUFFER_SIZE_KB = 16;
-
     private static final String DEFAULT_HOST = "127.0.0.1";
-
     private static final int DEFAULT_PORT = 8087;
-
     @This
     private Configuration<RiakProtobufEntityStoreConfiguration> configuration;
 
     @Override
     public void activateService()
-            throws Exception
+        throws Exception
     {
         configuration.refresh();
         RiakProtobufEntityStoreConfiguration config = configuration.get();
@@ -56,30 +53,34 @@ public abstract class RiakProtobufMapEntityStoreMixin
         int initialPoolSize = config.initialPoolSize().get();
         int socketBufferSize = config.socketBufferSizeKb().get() == null ? DEFAULT_SOCKET_BUFFER_SIZE_KB : config.socketBufferSizeKb().get();
         List<String> hosts = config.hosts().get();
-        if ( hosts.isEmpty() ) {
+        if( hosts.isEmpty() )
+        {
             hosts.add( DEFAULT_HOST );
         }
         bucketKey = config.bucket().get() == null ? DEFAULT_BUCKET_KEY : config.bucket().get();
 
         PBClusterConfig pbClusterConfig = new PBClusterConfig( maxConnections );
-        for ( String host : hosts ) {
+        for( String host : hosts )
+        {
             String[] splitted = host.split( ":" );
             int port = DEFAULT_PORT;
-            if ( splitted.length > 1 ) {
+            if( splitted.length > 1 )
+            {
                 host = splitted[0];
                 port = Integer.valueOf( splitted[1] );
             }
             PBClientConfig clientConfig = new PBClientConfig.Builder().withConnectionTimeoutMillis( connectionTimeout ).
-                    withIdleConnectionTTLMillis( idleConnectionTTL ).
-                    withPoolSize( maxPoolSize ).
-                    withInitialPoolSize( initialPoolSize ).
-                    withSocketBufferSizeKb( socketBufferSize ).
-                    withHost( host ).withPort( port ).build();
+                withIdleConnectionTTLMillis( idleConnectionTTL ).
+                withPoolSize( maxPoolSize ).
+                withInitialPoolSize( initialPoolSize ).
+                withSocketBufferSizeKb( socketBufferSize ).
+                withHost( host ).withPort( port ).build();
             pbClusterConfig.addClient( clientConfig );
         }
         riakClient = RiakFactory.newClient( pbClusterConfig );
 
-        if ( !riakClient.listBuckets().contains( bucketKey ) ) {
+        if( !riakClient.listBuckets().contains( bucketKey ) )
+        {
             riakClient.createBucket( bucketKey ).execute();
         }
     }

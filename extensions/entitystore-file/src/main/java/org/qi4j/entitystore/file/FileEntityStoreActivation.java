@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2012 Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,9 @@ import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.service.ServiceReference;
 
+/**
+ * Activation for FileEntityStoreMixin.
+ */
 @Activators( FileEntityStoreActivation.Activator.class )
 public interface FileEntityStoreActivation
 {

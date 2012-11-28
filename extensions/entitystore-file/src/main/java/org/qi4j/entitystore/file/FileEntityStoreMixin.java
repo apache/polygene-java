@@ -48,6 +48,9 @@ import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 
+/**
+ * FileEntityStore implementation of MapEntityStore.
+ */
 public class FileEntityStoreMixin
     implements FileEntityStoreActivation, MapEntityStore, BackupRestore
 {

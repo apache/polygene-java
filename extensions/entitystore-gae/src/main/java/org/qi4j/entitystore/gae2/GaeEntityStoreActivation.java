@@ -17,6 +17,9 @@ import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.service.ServiceReference;
 
+/**
+ * Activation for GaeEntityStoreMixin.
+ */
 @Activators( GaeEntityStoreActivation.Activator.class )
 public interface GaeEntityStoreActivation
 {

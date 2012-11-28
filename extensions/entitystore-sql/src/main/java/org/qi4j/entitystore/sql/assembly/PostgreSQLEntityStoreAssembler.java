@@ -21,6 +21,9 @@ import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
+/**
+ * PostgreSQL EntityStore assembly.
+ */
 public class PostgreSQLEntityStoreAssembler
         extends AbstractSQLEntityStoreAssembler<PostgreSQLEntityStoreAssembler>
 {

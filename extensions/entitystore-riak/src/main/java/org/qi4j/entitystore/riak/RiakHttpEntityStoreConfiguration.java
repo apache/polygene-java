@@ -23,6 +23,9 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
+/**
+ * Configuration for RiakHttpEntityStoreService.
+ */
 // START SNIPPET: config
 public interface RiakHttpEntityStoreConfiguration
         extends ConfigurationComposite

@@ -24,19 +24,20 @@ import java.util.List;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 
-public abstract class RiakHttpMapEntityStoreMixin
-        extends AbstractRiakMapEntityStore
-        implements RiakMapEntityStoreService
+/**
+ * Riak Http implementation of MapEntityStore.
+ */
+public class RiakHttpMapEntityStoreMixin
+    extends AbstractRiakMapEntityStore
 {
 
     private static final String DEFAULT_URL = "http://127.0.0.1:8098/riak";
-
     @This
     private Configuration<RiakHttpEntityStoreConfiguration> configuration;
 
     @Override
     public void activateService()
-            throws Exception
+        throws Exception
     {
         configuration.refresh();
         RiakHttpEntityStoreConfiguration config = configuration.get();
@@ -44,19 +45,22 @@ public abstract class RiakHttpMapEntityStoreMixin
         int maxConnections = config.maxConnections().get() == null ? DEFAULT_MAX_CONNECTIONS : config.maxConnections().get();
         int timeoutMillis = config.timeout().get();
         List<String> urls = config.urls().get();
-        if ( urls.isEmpty() ) {
+        if( urls.isEmpty() )
+        {
             urls.add( DEFAULT_URL );
         }
         bucketKey = config.bucket().get() == null ? DEFAULT_BUCKET_KEY : config.bucket().get();
 
         HTTPClusterConfig httpClusterConfig = new HTTPClusterConfig( maxConnections );
-        for ( String url : urls ) {
+        for( String url : urls )
+        {
             HTTPClientConfig clientConfig = new HTTPClientConfig.Builder().withTimeout( timeoutMillis ).withUrl( url ).build();
             httpClusterConfig.addClient( clientConfig );
         }
         riakClient = RiakFactory.newClient( httpClusterConfig );
 
-        if ( !riakClient.listBuckets().contains( bucketKey ) ) {
+        if( !riakClient.listBuckets().contains( bucketKey ) )
+        {
             riakClient.createBucket( bucketKey ).execute();
         }
     }

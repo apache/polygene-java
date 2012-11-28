@@ -18,8 +18,6 @@
  */
 package org.qi4j.entitystore.hazelcast;
 
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.mixin.Mixins;
@@ -30,19 +28,23 @@ import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 
+/**
+ * Hazelcast EntityStore service.
+ * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
+ */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { MapEntityStoreMixin.class, HazelcastEntityStoreMixin.class } )
+@Mixins( { JSONMapEntityStoreMixin.class, HazelcastEntityStoreMixin.class } )
 public interface HazelcastEntityStoreService
     extends ServiceActivation,
+            JSONMapEntityStoreActivation,
             EntityStore,
             EntityStateVersions,
             ServiceComposite,
             LockingAbstractComposite,
-            Configuration
+            Configuration,
+            HazelcastAccessors
 {
-    HazelcastInstance hazelcastInstanceUsed();
-
-    IMap hazelcastMapUsed();
 }

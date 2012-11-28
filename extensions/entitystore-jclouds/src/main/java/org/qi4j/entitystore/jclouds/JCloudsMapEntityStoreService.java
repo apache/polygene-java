@@ -23,15 +23,22 @@ import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 
+/**
+ * JClouds EntityStore service.
+ * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
+ */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin.class, JCloudsMapEntityStoreMixin.class } )
+@Mixins( { JSONMapEntityStoreMixin.class, JCloudsMapEntityStoreMixin.class } )
 public interface JCloudsMapEntityStoreService
-        extends ServiceActivation,
-                EntityStore,
-                EntityStateVersions,
-                ServiceComposite,
-                LockingAbstractComposite,
-                Configuration
+    extends ServiceActivation,
+            JSONMapEntityStoreActivation,
+            EntityStore,
+            EntityStateVersions,
+            ServiceComposite,
+            LockingAbstractComposite,
+            Configuration
 {
 }

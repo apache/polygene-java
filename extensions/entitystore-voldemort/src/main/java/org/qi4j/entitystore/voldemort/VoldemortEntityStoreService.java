@@ -26,7 +26,8 @@ import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
@@ -34,13 +35,14 @@ import org.qi4j.spi.entitystore.helpers.StateStore;
  */
 
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { MapEntityStoreMixin.class, VoldemortEntityStoreMixin.class } )
+@Mixins( { JSONMapEntityStoreMixin.class, VoldemortEntityStoreMixin.class } )
 public interface VoldemortEntityStoreService
     extends EntityStore,
             EntityStateVersions,
             StateStore,
             ServiceComposite,
             ServiceActivation,
+            JSONMapEntityStoreActivation,
             LockingAbstractComposite,
             Configuration
 

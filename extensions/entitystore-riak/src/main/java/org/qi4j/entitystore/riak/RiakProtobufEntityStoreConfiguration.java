@@ -23,9 +23,12 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
+/**
+ * Configuration for RiakProtobufEntityStore service.
+ */
 // START SNIPPET: config
 public interface RiakProtobufEntityStoreConfiguration
-        extends ConfigurationComposite
+    extends ConfigurationComposite
 {
 
     /**

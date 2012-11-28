@@ -17,8 +17,6 @@
  */
 package org.qi4j.entitystore.mongodb;
 
-import com.mongodb.DB;
-import com.mongodb.Mongo;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.mixin.Mixins;
@@ -29,23 +27,23 @@ import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 
+/**
+ * MongoDB EntityStore service.
+ * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
+ */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { MapEntityStoreMixin.class, MongoMapEntityStoreMixin.class } )
+@Mixins( { JSONMapEntityStoreMixin.class, MongoMapEntityStoreMixin.class } )
 public interface MongoMapEntityStoreService
-        extends EntityStore,
-                EntityStateVersions,
-                ServiceComposite,
-                ServiceActivation,
-                LockingAbstractComposite,
-                Configuration
+    extends EntityStore,
+            EntityStateVersions,
+            ServiceComposite,
+            ServiceActivation,
+            JSONMapEntityStoreActivation,
+            LockingAbstractComposite,
+            Configuration,
+            MongoAccessors
 {
-
-    Mongo mongoInstanceUsed();
-
-    DB dbInstanceUsed();
-
-    String collectionUsed();
-
 }

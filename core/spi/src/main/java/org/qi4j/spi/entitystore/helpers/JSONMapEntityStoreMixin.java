@@ -26,6 +26,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.api.util.Classes;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
@@ -44,12 +45,15 @@ import org.qi4j.spi.entitystore.StateCommitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.*;
 
 /**
- * Implementation of EntityStore that works with an implementation of MapEntityStore. Implement
- * MapEntityStore and add as mixin to the service using this mixin.
- * See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.
+ * Implementation of EntityStore that works with an implementation of MapEntityStore.
+ *
+ * <p>Implement @{link MapEntityStore} and add as mixin to the service using this mixin.</p>
+ * <p>See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.</p>
+ * <p>EntityStores based on this mixin gets support for the <b>Migration</b> and <b>Cache</b> extensions.</p>
+ * <p>MapEntityStore implementations will get their values as JSON.</p>
  */
 public class JSONMapEntityStoreMixin
     implements EntityStore, EntityStoreSPI, StateStore, JSONMapEntityStoreActivation
@@ -133,6 +137,7 @@ public class JSONMapEntityStoreMixin
             state.put( JSONEntityState.JSON_KEY_IDENTITY, identity.identity() );
             state.put( JSONEntityState.JSON_KEY_APPLICATION_VERSION, application.version() );
             state.put( JSONEntityState.JSON_KEY_TYPE, first( entityDescriptor.types() ).getName() );
+            state.put( "types", toList( map( Classes.toClassName(), entityDescriptor.mixinTypes() ) ) );
             state.put( JSONEntityState.JSON_KEY_VERSION, unitOfWork.identity() );
             state.put( JSONEntityState.JSON_KEY_MODIFIED, unitOfWork.currentTime() );
             state.put( JSONEntityState.JSON_KEY_PROPERTIES, new JSONObject() );

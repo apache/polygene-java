@@ -30,19 +30,19 @@ import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
  * EntityStore service backed by JDBM store.
+ * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
  */
-@Concerns({StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class, ReadLockConcern.class, WriteLockConcern.class})
-@Mixins({JSONMapEntityStoreMixin.class, JdbmEntityStoreMixin.class})
+@Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class, ReadLockConcern.class, WriteLockConcern.class } )
+@Mixins( { JSONMapEntityStoreMixin.class, JdbmEntityStoreMixin.class } )
 public interface JdbmEntityStoreService
-        extends
-        JdbmEntityStoreActivation,
-        JSONMapEntityStoreActivation,
-        EntityStore,
-        EntityStateVersions,
-        StateStore,
-        BackupRestore,
-        ServiceComposite,
-        LockingAbstractComposite,
-        Configuration<JdbmConfiguration>
+    extends JdbmEntityStoreActivation,
+            JSONMapEntityStoreActivation,
+            EntityStore,
+            EntityStateVersions,
+            StateStore,
+            BackupRestore,
+            ServiceComposite,
+            LockingAbstractComposite,
+            Configuration<JdbmConfiguration>
 {
 }

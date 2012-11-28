@@ -18,23 +18,14 @@
  */
 package org.qi4j.entitystore.hazelcast;
 
-import org.qi4j.api.common.UseDefaults;
-import org.qi4j.api.configuration.ConfigurationComposite;
-import org.qi4j.api.property.Property;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IMap;
 
-/**
- * Configuration of HazelcastEntityStoreService.
- */
-// START SNIPPET: config
-public interface HazelcastConfiguration
-        extends ConfigurationComposite
+public interface HazelcastAccessors
 {
 
-    @UseDefaults
-    Property<String> configXmlLocation();
+    HazelcastInstance hazelcastInstanceUsed();
 
-    @UseDefaults
-    Property<String> mapName();
+    IMap hazelcastMapUsed();
 
 }
-// END SNIPPET: config

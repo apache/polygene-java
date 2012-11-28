@@ -25,16 +25,19 @@ import org.qi4j.spi.entitystore.ConcurrentModificationCheckConcern;
 import org.qi4j.spi.entitystore.EntityStateVersions;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
+import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
  * EntityStore service backed by Google AppEngine's low-level store.
+ * <p>Based on @{@link JSONMapEntityStoreMixin}.</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { MapEntityStoreMixin.class, GaeEntityStoreMixin.class } )
+@Mixins( { JSONMapEntityStoreMixin.class, GaeEntityStoreMixin.class } )
 public interface GaeEntityStoreService
     extends GaeEntityStoreActivation,
+            JSONMapEntityStoreActivation,
             EntityStore,
             EntityStateVersions,
             StateStore,

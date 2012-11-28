@@ -35,29 +35,27 @@ import org.qi4j.io.Sender;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
 
-public abstract class RedisMapEntityStoreMixin
-        extends MapEntityStoreMixin
-        implements ServiceActivation, RedisMapEntityStoreService, MapEntityStore
+/**
+ * Redis implementation of MapEntityStore.
+ */
+public class RedisMapEntityStoreMixin
+    implements ServiceActivation, RedisAccessors, MapEntityStore
 {
 
     private static final String DEFAULT_HOST = "127.0.0.1";
-
     private static final String NIL = "nil";
-
     @This
     private Configuration<RedisEntityStoreConfiguration> configuration;
-
     private JedisPool pool;
 
     @Override
     public void activateService()
-            throws Exception
+        throws Exception
     {
         configuration.refresh();
         RedisEntityStoreConfiguration config = configuration.get();
@@ -73,7 +71,7 @@ public abstract class RedisMapEntityStoreMixin
 
     @Override
     public void passivateService()
-            throws Exception
+        throws Exception
     {
         pool.destroy();
         pool = null;
@@ -87,40 +85,45 @@ public abstract class RedisMapEntityStoreMixin
 
     @Override
     public Reader get( EntityReference entityReference )
-            throws EntityStoreException
+        throws EntityStoreException
     {
         Jedis jedis = pool.getResource();
-        try {
+        try
+        {
             String jsonState = jedis.get( entityReference.identity() );
-            if ( notFound( jsonState ) ) {
+            if( notFound( jsonState ) )
+            {
                 throw new EntityNotFoundException( entityReference );
             }
             return new StringReader( jsonState );
-        } finally {
+        }
+        finally
+        {
             pool.returnResource( jedis );
         }
     }
 
     @Override
     public void applyChanges( MapChanges changes )
-            throws IOException
+        throws IOException
     {
         final Jedis jedis = pool.getResource();
-        try {
+        try
+        {
 
             changes.visitMap( new MapChanger()
             {
 
                 @Override
                 public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
-                        throws IOException
+                    throws IOException
                 {
                     return new StringWriter( 1000 )
                     {
 
                         @Override
                         public void close()
-                                throws IOException
+                            throws IOException
                         {
                             super.close();
                             jedis.set( ref.identity(), toString() );
@@ -131,14 +134,14 @@ public abstract class RedisMapEntityStoreMixin
 
                 @Override
                 public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
-                        throws IOException
+                    throws IOException
                 {
                     return new StringWriter( 1000 )
                     {
 
                         @Override
                         public void close()
-                                throws IOException
+                            throws IOException
                         {
                             super.close();
                             jedis.set( ref.identity(), toString() );
@@ -149,10 +152,11 @@ public abstract class RedisMapEntityStoreMixin
 
                 @Override
                 public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
-                        throws EntityNotFoundException
+                    throws EntityNotFoundException
                 {
                     String jsonState = jedis.get( ref.identity() );
-                    if ( notFound( jsonState ) ) {
+                    if( notFound( jsonState ) )
+                    {
                         throw new EntityNotFoundException( ref );
                     }
                     jedis.del( ref.identity() );
@@ -160,7 +164,9 @@ public abstract class RedisMapEntityStoreMixin
 
             } );
 
-        } finally {
+        }
+        finally
+        {
             pool.returnResource( jedis );
         }
     }
@@ -173,25 +179,29 @@ public abstract class RedisMapEntityStoreMixin
 
             @Override
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                    throws IOException, ReceiverThrowableType
+                throws IOException, ReceiverThrowableType
             {
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
 
                     @Override
                     public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
+                        throws ReceiverThrowableType, IOException
                     {
                         Jedis jedis = pool.getResource();
-                        try {
+                        try
+                        {
 
                             Set<String> keys = jedis.keys( "*" );
-                            for ( String key : keys ) {
+                            for( String key : keys )
+                            {
                                 String jsonState = jedis.get( key );
                                 receiver.receive( new StringReader( jsonState ) );
                             }
 
-                        } finally {
+                        }
+                        finally
+                        {
                             pool.returnResource( jedis );
                         }
                     }

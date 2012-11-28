@@ -18,7 +18,7 @@ import java.io.IOException;
 import org.json.JSONObject;
 
 /**
- * JAVADOC
+ * StateStore SPI.
  */
 public interface StateStore
 {

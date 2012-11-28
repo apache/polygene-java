@@ -42,13 +42,12 @@ import org.qi4j.io.Sender;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 
 /**
- *
+ * Hazelcast implementation of MapEntityStore.
  */
-public abstract class HazelcastEntityStoreMixin extends MapEntityStoreMixin
-    implements ServiceActivation, HazelcastEntityStoreService, MapEntityStore
+public class HazelcastEntityStoreMixin
+    implements ServiceActivation, HazelcastAccessors, MapEntityStore
 {
 
     private static final String DEFAULT_MAPNAME = "qi4j:entitystore:data";

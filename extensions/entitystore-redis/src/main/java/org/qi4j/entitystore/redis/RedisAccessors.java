@@ -1,6 +1,5 @@
 /*
- * Copyright 2009 Paul Merlin.
- * Copyright 2011 Niclas Hedhman.
+ * Copyright 2012 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -16,25 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.entitystore.hazelcast;
+package org.qi4j.entitystore.redis;
 
-import org.qi4j.api.common.UseDefaults;
-import org.qi4j.api.configuration.ConfigurationComposite;
-import org.qi4j.api.property.Property;
+import redis.clients.jedis.JedisPool;
 
-/**
- * Configuration of HazelcastEntityStoreService.
- */
-// START SNIPPET: config
-public interface HazelcastConfiguration
-        extends ConfigurationComposite
+public interface RedisAccessors
 {
 
-    @UseDefaults
-    Property<String> configXmlLocation();
-
-    @UseDefaults
-    Property<String> mapName();
+    JedisPool jedisPool();
 
 }
-// END SNIPPET: config

@@ -56,7 +56,7 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 
 /**
- * JDBM implementation of SerializationStore
+ * JDBM implementation of MapEntityStore.
  */
 public class JdbmEntityStoreMixin
     implements JdbmEntityStoreActivation, MapEntityStore, BackupRestore

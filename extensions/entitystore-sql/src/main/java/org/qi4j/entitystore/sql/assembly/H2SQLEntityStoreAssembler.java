@@ -19,6 +19,9 @@ import org.sql.generation.api.vendor.H2Vendor;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
+/**
+ * H2 EntityStore assembly.
+ */
 public class H2SQLEntityStoreAssembler
         extends AbstractSQLEntityStoreAssembler<H2SQLEntityStoreAssembler>
 {

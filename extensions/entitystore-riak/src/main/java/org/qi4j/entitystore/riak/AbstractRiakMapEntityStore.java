@@ -37,28 +37,26 @@ import org.qi4j.io.Sender;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
-import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Base Riak implementation of MapEntityStore.
+ */
 /* package */ abstract class AbstractRiakMapEntityStore
-        extends MapEntityStoreMixin
-        implements ServiceActivation, MapEntityStore, RiakMapEntityStoreService
+    implements ServiceActivation, MapEntityStore, RiakAccessors
 {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.riak" );
-
     protected static final int DEFAULT_MAX_CONNECTIONS = 50;
 
     /* package */ static final String DEFAULT_BUCKET_KEY = "qi4j:entities";
-
     protected IRiakClient riakClient;
-
     protected String bucketKey;
 
     @Override
     public void passivateService()
-            throws Exception
+        throws Exception
     {
         riakClient.shutdown();
         riakClient = null;
@@ -79,28 +77,33 @@ import org.slf4j.LoggerFactory;
 
     @Override
     public Reader get( EntityReference entityReference )
-            throws EntityStoreException
+        throws EntityStoreException
     {
-        try {
+        try
+        {
 
             Bucket bucket = riakClient.fetchBucket( bucketKey ).execute();
             IRiakObject entity = bucket.fetch( entityReference.identity() ).execute();
-            if ( entity == null ) {
+            if( entity == null )
+            {
                 throw new EntityNotFoundException( entityReference );
             }
             String jsonState = entity.getValueAsString();
             return new StringReader( jsonState );
 
-        } catch ( RiakRetryFailedException ex ) {
+        }
+        catch( RiakRetryFailedException ex )
+        {
             throw new EntityStoreException( "Unable to get Entity " + entityReference.identity(), ex );
         }
     }
 
     @Override
     public void applyChanges( MapChanges changes )
-            throws IOException
+        throws IOException
     {
-        try {
+        try
+        {
             final Bucket bucket = riakClient.fetchBucket( bucketKey ).execute();
 
             changes.visitMap( new MapChanger()
@@ -108,19 +111,22 @@ import org.slf4j.LoggerFactory;
 
                 @Override
                 public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
-                        throws IOException
+                    throws IOException
                 {
                     return new StringWriter( 1000 )
                     {
 
                         @Override
                         public void close()
-                                throws IOException
+                            throws IOException
                         {
-                            try {
+                            try
+                            {
                                 super.close();
                                 bucket.store( ref.identity(), toString() ).execute();
-                            } catch ( RiakException ex ) {
+                            }
+                            catch( RiakException ex )
+                            {
                                 throw new EntityStoreException( "Unable to apply entity change: newEntity", ex );
                             }
                         }
@@ -130,23 +136,27 @@ import org.slf4j.LoggerFactory;
 
                 @Override
                 public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
-                        throws IOException
+                    throws IOException
                 {
                     return new StringWriter( 1000 )
                     {
 
                         @Override
                         public void close()
-                                throws IOException
+                            throws IOException
                         {
-                            try {
+                            try
+                            {
                                 super.close();
                                 IRiakObject entity = bucket.fetch( ref.identity() ).execute();
-                                if ( entity == null ) {
+                                if( entity == null )
+                                {
                                     throw new EntityNotFoundException( ref );
                                 }
                                 bucket.store( ref.identity(), toString() ).execute();
-                            } catch ( RiakException ex ) {
+                            }
+                            catch( RiakException ex )
+                            {
                                 throw new EntityStoreException( "Unable to apply entity change: updateEntity", ex );
                             }
                         }
@@ -156,22 +166,28 @@ import org.slf4j.LoggerFactory;
 
                 @Override
                 public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
-                        throws EntityNotFoundException
+                    throws EntityNotFoundException
                 {
-                    try {
+                    try
+                    {
                         IRiakObject entity = bucket.fetch( ref.identity() ).execute();
-                        if ( entity == null ) {
+                        if( entity == null )
+                        {
                             throw new EntityNotFoundException( ref );
                         }
                         bucket.delete( ref.identity() ).execute();
-                    } catch ( RiakException ex ) {
+                    }
+                    catch( RiakException ex )
+                    {
                         throw new EntityStoreException( "Unable to apply entity change: removeEntity", ex );
                     }
                 }
 
             } );
 
-        } catch ( RiakRetryFailedException ex ) {
+        }
+        catch( RiakRetryFailedException ex )
+        {
             throw new EntityStoreException( "Unable to apply entity changes.", ex );
         }
     }
@@ -184,22 +200,26 @@ import org.slf4j.LoggerFactory;
 
             @Override
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
-                    throws IOException, ReceiverThrowableType
+                throws IOException, ReceiverThrowableType
             {
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
 
                     @Override
                     public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
+                        throws ReceiverThrowableType, IOException
                     {
-                        try {
+                        try
+                        {
                             final Bucket bucket = riakClient.fetchBucket( bucketKey ).execute();
-                            for ( String key : bucket.keys() ) {
+                            for( String key : bucket.keys() )
+                            {
                                 String jsonState = bucket.fetch( key ).execute().getValueAsString();
                                 receiver.receive( new StringReader( jsonState ) );
                             }
-                        } catch ( RiakException ex ) {
+                        }
+                        catch( RiakException ex )
+                        {
                             throw new EntityStoreException( "Unable to apply entity changes.", ex );
                         }
                     }
