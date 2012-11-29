@@ -29,7 +29,7 @@ import org.qi4j.spi.entitystore.helpers.StateStore;
 /**
  * In-memory EntityStore service.
  * <p>Useful for testing and non-persistent entities.</p>
- * <p>Based on @{link JSONMapEntityStoreMixin}</p>
+ * <p>Based on {@link JSONMapEntityStoreMixin}</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { JSONMapEntityStoreMixin.class, MemoryMapEntityStoreMixin.class } )

@@ -50,7 +50,7 @@ import static org.qi4j.functional.Iterables.*;
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
  *
- * <p>Implement @{link MapEntityStore} and add as mixin to the service using this mixin.</p>
+ * <p>Implement {@link MapEntityStore} and add as mixin to the service using this mixin.</p>
  * <p>See {@link org.qi4j.entitystore.memory.MemoryMapEntityStoreMixin} for reference.</p>
  * <p>EntityStores based on this mixin gets support for the <b>Migration</b> and <b>Cache</b> extensions.</p>
  * <p>MapEntityStore implementations will get their values as JSON.</p>

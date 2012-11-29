@@ -32,7 +32,7 @@ import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
  * EntityStore service backed by a source control friendly file system format.
- * <p>Based on @{link JSONMapEntityStoreMixin}</p>
+ * <p>Based on {@link JSONMapEntityStoreMixin}</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { JSONMapEntityStoreMixin.class, FileEntityStoreMixin.class } )

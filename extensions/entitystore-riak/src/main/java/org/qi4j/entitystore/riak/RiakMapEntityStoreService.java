@@ -17,7 +17,6 @@
  */
 package org.qi4j.entitystore.riak;
 
-import com.basho.riak.client.IRiakClient;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.mixin.Mixins;
@@ -35,7 +34,7 @@ import org.qi4j.spi.entitystore.helpers.MapEntityStoreActivation;
 /**
  * Riak EntityStore service.
  * <p>Can be used with Riak implementations of MapEntityStore.</p>
- * <p>Based on @{link JSONMapEntityStoreMixin}</p>
+ * <p>Based on {@link JSONMapEntityStoreMixin}</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
 @Mixins( { JSONMapEntityStoreMixin.class } )
