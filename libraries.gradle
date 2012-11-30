@@ -31,6 +31,8 @@ def jgoodiesLooksVersion = '2.5.2'
 def jodaTimeVersion = '2.1'
 def jrubyVersion = '1.7.0'
 def jtaVersion = '1.1'
+def leveldbVersion = '0.4'
+def leveldbJniVersion = '1.4.1'
 def liquibaseVersion = '2.0.5'
 def log4jVersion = '1.2.17'
 def logbackVersion = '1.0.7'
@@ -202,6 +204,9 @@ rootProject.ext {
           jdbm: "org.fusesource.jdbm:jdbm:$jdbmVersion",
           jedis: "redis.clients:jedis:$jedisVersion",
           jgoodies_looks: "com.jgoodies:jgoodies-looks:$jgoodiesLooksVersion",
+          leveldb_api: "org.iq80.leveldb:leveldb-api:$leveldbVersion",
+          leveldb_java: "org.iq80.leveldb:leveldb:$leveldbVersion",
+          leveldb_jni_all: "org.fusesource.leveldbjni:leveldbjni-all:$leveldbJniVersion",
           appengine: "com.google.appengine:appengine-api:$gaeVersion",
           mongodb: "org.mongodb:mongo-java-driver:$mongodbVersion",
           riak: "com.basho.riak:riak-client:$riakVersion",

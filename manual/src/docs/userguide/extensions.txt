@@ -48,6 +48,10 @@ include::../../../../extensions/entitystore-jdbm/src/docs/es-jdbm.txt[]
 
 :leveloffset: 2
 
+include::../../../../extensions/entitystore-leveldb/src/docs/es-leveldb.txt[]
+
+:leveloffset: 2
+
 include::../../../../extensions/entitystore-mongodb/src/docs/es-mongodb.txt[]
 
 :leveloffset: 2

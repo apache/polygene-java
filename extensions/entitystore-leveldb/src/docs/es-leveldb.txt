@@ -1,0 +1,45 @@
+[[extension-es-leveldb,LevelDB EntityStore]]
+= LevelDB EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-leveldb/dev-status.xml
+--------------
+
+EntityStore service backed by a https://code.google.com/p/leveldb/[LevelDB] embedded database.
+
+LevelDB is a fast key-value storage library written at Google that provides an ordered mapping from string keys to
+string values.
+
+NOTE: the `entitystore-leveldb` module do not depends on LevelDB implementations. You have to add the dependency to the
+implementation of your choice:
+http://search.maven.org/#search%7Cga%7C1%7Cleveldbjni[JNI] or
+http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.iq80.leveldb%22%20AND%20a%3A%22leveldb%22[Pure Java].
+
+By default use the native implementation through JNI bindings and fallback to the pure Java implementation if not
+available on the current platform. Used implementation can be forced in the configuration.
+
+The LevelDB EntityStore relies on the <<library-fileconfig>> to decide where it stores its database.
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/entitystore-leveldb/src/test/java/org/qi4j/entitystore/leveldb/JavaLevelDBEntityStoreTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Here are the configuration properties for the LevelDB EntityStore:
+
+[snippet,java]
+----
+source=extensions/entitystore-leveldb/src/main/java/org/qi4j/entitystore/leveldb/LevelDBEntityStoreConfiguration.java
+tag=config
+----
+
+All configuration properties are defaulted to the implementation defaults meaning that you can use LevelDB EntityStore
+service without configuration.
