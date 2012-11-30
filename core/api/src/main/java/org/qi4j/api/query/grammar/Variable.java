@@ -1,7 +1,7 @@
 package org.qi4j.api.query.grammar;
 
 /**
- * TODO
+ * Query Variable name.
  */
 public class Variable
 {

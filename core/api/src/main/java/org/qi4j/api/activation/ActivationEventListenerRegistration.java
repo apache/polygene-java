@@ -12,12 +12,14 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.event;
+package org.qi4j.api.activation;
 
 /**
- * Listener for ActivationEvent events
+ * Use this to register listeners for ActivationEvents. This is implemented by Application, Layer, Module, for example.
  */
-public interface ActivationEventListener
+public interface ActivationEventListenerRegistration
 {
-    void onEvent( ActivationEvent event );
+    void registerActivationEventListener( ActivationEventListener listener );
+
+    void deregisterActivationEventListener( ActivationEventListener listener );
 }

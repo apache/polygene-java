@@ -38,8 +38,9 @@ public interface Identity
     @Immutable
     Property<String> identity();
 
-    // Default implementation
-
+    /**
+     * Default Identity implementation.
+     */
     public class IdentityMixin
         implements Identity
     {

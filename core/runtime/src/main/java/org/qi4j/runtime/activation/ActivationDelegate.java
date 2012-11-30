@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.qi4j.api.activation.Activation;
+import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.PassivationException;
-import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.service.ServiceReference;
 
 /**

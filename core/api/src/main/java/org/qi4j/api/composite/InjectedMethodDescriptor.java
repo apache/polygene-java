@@ -17,7 +17,7 @@ package org.qi4j.api.composite;
 import java.lang.reflect.Method;
 
 /**
- * JAVADOC
+ * Composite injected method descriptor.
  */
 public interface InjectedMethodDescriptor
 {

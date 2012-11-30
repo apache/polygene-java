@@ -5,7 +5,7 @@ import org.qi4j.api.property.Property;
 import org.qi4j.functional.Function;
 
 /**
- * TODO
+ * Property Reference.
  */
 public interface PropertyReference
 {

@@ -16,6 +16,9 @@
 
 package org.qi4j.api.metrics;
 
+/**
+ * Metrics Health Check.
+ */
 public interface MetricsHealthCheck extends Metric
 {
     Result check()

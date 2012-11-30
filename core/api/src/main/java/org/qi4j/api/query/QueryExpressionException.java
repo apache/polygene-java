@@ -18,6 +18,9 @@
 
 package org.qi4j.api.query;
 
+/**
+ * Throw this exception if a QueryExpression is invalid.
+ */
 public class QueryExpressionException
     extends QueryException
 {

@@ -5,6 +5,9 @@ import java.lang.reflect.Type;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.NullArgumentException;
 
+/**
+ * Represents a Type name.
+ */
 public final class TypeName
     implements Serializable, Comparable<TypeName>
 {

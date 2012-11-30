@@ -17,6 +17,9 @@
  */
 package org.qi4j.api.composite;
 
+/**
+ * This exception is thrown if a ValueComposite is invalid.
+ */
 public class InvalidValueCompositeException
     extends RuntimeException
 {

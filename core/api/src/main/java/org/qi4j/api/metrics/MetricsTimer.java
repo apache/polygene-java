@@ -16,6 +16,9 @@
 
 package org.qi4j.api.metrics;
 
+/**
+ * Timer Metrics.
+ */
 public interface MetricsTimer extends Metric
 {
     Context start();

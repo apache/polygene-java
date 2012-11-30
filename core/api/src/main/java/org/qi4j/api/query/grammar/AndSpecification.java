@@ -5,7 +5,7 @@ import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 
 /**
- * TODO
+ * AND Specification.
  */
 public class AndSpecification
     extends BinarySpecification

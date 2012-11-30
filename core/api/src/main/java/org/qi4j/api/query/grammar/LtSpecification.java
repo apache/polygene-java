@@ -1,7 +1,7 @@
 package org.qi4j.api.query.grammar;
 
 /**
- * TODO
+ * Lesser than Specification.
  */
 public class LtSpecification<T>
     extends ComparisonSpecification<T>

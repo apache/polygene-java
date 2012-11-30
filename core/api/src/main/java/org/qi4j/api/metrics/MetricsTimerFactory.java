@@ -18,6 +18,9 @@ package org.qi4j.api.metrics;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Create MetricsTimer instances.
+ */
 public interface MetricsTimerFactory extends MetricsFactory
 {
     /**

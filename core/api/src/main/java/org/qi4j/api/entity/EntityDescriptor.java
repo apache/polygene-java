@@ -19,7 +19,7 @@ import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.StatefulCompositeDescriptor;
 
 /**
- * JAVADOC
+ * Entity Descriptor.
  */
 public interface EntityDescriptor
     extends CompositeDescriptor, StatefulCompositeDescriptor

@@ -17,7 +17,7 @@ package org.qi4j.api.object;
 import org.qi4j.api.composite.ModelDescriptor;
 
 /**
- * JAVADOC
+ * Object Descriptor.
  */
 public interface ObjectDescriptor
     extends ModelDescriptor

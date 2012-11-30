@@ -17,7 +17,7 @@ import org.qi4j.functional.Function;
 import static org.qi4j.api.util.Classes.typeOf;
 
 /**
- * TODO
+ * Function to get Entity Associations
  */
 public class AssociationFunction<T>
     implements Function<Composite, Association<T>>

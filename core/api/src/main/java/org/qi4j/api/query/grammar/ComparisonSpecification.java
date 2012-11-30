@@ -4,7 +4,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO
+ * Base comparison Specification.
  */
 public abstract class ComparisonSpecification<T>
     extends ExpressionSpecification

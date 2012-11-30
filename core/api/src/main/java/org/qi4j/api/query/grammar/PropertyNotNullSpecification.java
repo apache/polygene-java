@@ -4,7 +4,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO
+ * Property not null Specification.
  */
 public class PropertyNotNullSpecification<T>
     extends ExpressionSpecification

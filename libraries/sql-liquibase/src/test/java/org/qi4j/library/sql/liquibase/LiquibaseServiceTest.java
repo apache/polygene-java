@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationEvent;
+import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
@@ -90,6 +90,7 @@ public class LiquibaseServiceTest
                 application.registerActivationEventListener( new ActivationEventListener()
                 {
 
+                    @Override
                     public void onEvent( ActivationEvent event )
                     {
                         System.out.println( event );

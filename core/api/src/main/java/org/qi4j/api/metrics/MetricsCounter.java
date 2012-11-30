@@ -16,6 +16,9 @@
 
 package org.qi4j.api.metrics;
 
+/**
+ * Metrics Counter.
+ */
 public interface MetricsCounter extends Metric
 {
     void increment();

@@ -1,7 +1,7 @@
 package org.qi4j.api.query.grammar;
 
 /**
- * TODO
+ * Greater than Specification.
  */
 public class GtSpecification<T>
     extends ComparisonSpecification<T>

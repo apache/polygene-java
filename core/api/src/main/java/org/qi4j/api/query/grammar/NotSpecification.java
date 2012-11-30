@@ -5,7 +5,7 @@ import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 
 /**
- * TODO
+ * NOT Specification.
  */
 public class NotSpecification implements Specification<Composite>
 {

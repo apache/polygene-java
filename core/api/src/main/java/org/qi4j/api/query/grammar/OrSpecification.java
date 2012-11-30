@@ -5,7 +5,7 @@ import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 
 /**
- * TODO
+ * OR Specification.
  */
 public class OrSpecification
     extends BinarySpecification

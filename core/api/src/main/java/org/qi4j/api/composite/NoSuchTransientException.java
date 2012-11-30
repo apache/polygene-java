@@ -16,6 +16,9 @@
 
 package org.qi4j.api.composite;
 
+/**
+ * This exception is thrown if client code tries to create a non-existing TransientComposite type.
+ */
 public class NoSuchTransientException extends NoSuchCompositeException
 {
     public NoSuchTransientException( String typeName, String moduleName )

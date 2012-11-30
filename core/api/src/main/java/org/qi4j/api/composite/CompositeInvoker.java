@@ -11,17 +11,20 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.composite;
 
 import java.lang.reflect.Method;
 
 /**
+ * Composite method invoker.
+ *
  * All composites must implement this interface. Methods that are invoked
  * may reside either in the public Composite interface or in any internal mixins.
  */
 public interface CompositeInvoker
 {
+
     Object invokeComposite( Method method, Object[] args )
         throws Throwable;
+
 }

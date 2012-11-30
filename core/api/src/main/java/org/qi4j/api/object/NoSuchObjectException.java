@@ -15,6 +15,9 @@ package org.qi4j.api.object;
 
 import org.qi4j.api.common.InvalidApplicationException;
 
+/**
+ * This exception is thrown if no visible Object of the requested type can be found.
+ */
 public class NoSuchObjectException
     extends InvalidApplicationException
 {

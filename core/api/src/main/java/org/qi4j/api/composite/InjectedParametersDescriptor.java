@@ -15,7 +15,7 @@
 package org.qi4j.api.composite;
 
 /**
- * JAVADOC
+ * Composite constructors and method injected parameters descriptor.
  */
 public interface InjectedParametersDescriptor
 {

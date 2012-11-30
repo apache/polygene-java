@@ -17,7 +17,7 @@ package org.qi4j.api.service;
 import org.qi4j.api.common.InvalidApplicationException;
 
 /**
- * JAVADOC
+ * Thrown when a duplicate service identity is detected.
  */
 public class DuplicateServiceIdentityException
     extends InvalidApplicationException

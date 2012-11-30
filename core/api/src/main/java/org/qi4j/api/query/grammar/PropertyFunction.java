@@ -18,7 +18,7 @@ import org.qi4j.functional.Function;
 import static org.qi4j.api.util.Classes.typeOf;
 
 /**
- * TODO
+ * Function to get Entity Properties.
  */
 public class PropertyFunction<T>
     implements Function<Composite, Property<T>>

@@ -1,22 +1,22 @@
 package org.qi4j.api.query.grammar;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 
-import static org.qi4j.functional.Iterables.iterable;
+import static org.qi4j.functional.Iterables.*;
 
 /**
- * TODO
+ * Base expression Specification.
  */
 public abstract class ExpressionSpecification
     implements Specification<Composite>
 {
+
     public AndSpecification and( Specification<Composite> specification )
     {
         if( this instanceof AndSpecification )
         {
-            return new AndSpecification( Iterables.append( specification, ( (AndSpecification) this ).getOperands() ) );
+            return new AndSpecification( append( specification, ( (AndSpecification) this ).getOperands() ) );
         }
         else
         {
@@ -28,11 +28,12 @@ public abstract class ExpressionSpecification
     {
         if( this instanceof OrSpecification )
         {
-            return new OrSpecification( Iterables.append( specification, ( (OrSpecification) this ).getOperands() ) );
+            return new OrSpecification( append( specification, ( (OrSpecification) this ).getOperands() ) );
         }
         else
         {
             return new OrSpecification( iterable( this, specification ) );
         }
     }
+
 }

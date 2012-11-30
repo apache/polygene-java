@@ -43,7 +43,6 @@ public interface Qi4j
      * before handing it out for others to use.
      *
      * @param composite instance reference injected in Modified using @This
-     *
      * @return the dereferenced Composite
      */
     <T> T dereference( T composite );
@@ -53,28 +52,79 @@ public interface Qi4j
      *
      * @param compositeOrUow The Composite (Service, Value, Entity or Transient) or UnitOfWork to lookup the Module it
      *                       belongs to.
-     *
      * @return The Module instance where the Composite or UnitOfWork belongs to.
      */
     Module getModule( Object compositeOrUow );
 
+    /**
+     * Returns the ModelDescriptor of the Composite.
+     *
+     * @param compositeOrServiceReference The Composite (Service, Value, Entity or Transient) for which to lookup the
+     *                                    ModelDescriptor
+     * @return The ModelDescriptor of the Composite
+     */
     ModelDescriptor getModelDescriptor( Object compositeOrServiceReference );
 
+    /**
+     * Returns the CompositeDescriptor of the Composite.
+     *
+     * @param compositeOrServiceReference The Composite (Service, Value, Entity or Transient) for which to lookup the
+     *                                    CompositeDescriptor
+     * @return The CompositeDescriptor of the Composite
+     */
     CompositeDescriptor getCompositeDescriptor( Object compositeOrServiceReference );
 
+    /**
+     * Returns the TransientDescriptor of the TransientComposite.
+     *
+     * @param transsient The TransientComposite for which to lookup the TransientDescriptor
+     * @return The TransientDescriptor of the TransientComposite
+     */
     TransientDescriptor getTransientDescriptor( Object transsient );
 
+    /**
+     * Returns the EntityDescriptor of the EntityComposite.
+     *
+     * @param entity The EntityComposite for which to lookup the EntityDescriptor
+     * @return The EntityDescriptor of the EntityComposite
+     */
     EntityDescriptor getEntityDescriptor( Object entity );
 
+    /**
+     * Returns the ValueDescriptor of the ValueComposite.
+     *
+     * @param value The ValueComposite for which to lookup the ValueDescriptor
+     * @return The ValueDescriptor of the ValueComposite
+     */
     ValueDescriptor getValueDescriptor( Object value );
 
+    /**
+     * Returns the ServiceDescriptor of the ServiceComposite.
+     *
+     * @param service The ServiceComposite for which to lookup the ServiceDescriptor
+     * @return The ServiceDescriptor of the ServiceComposite
+     */
     ServiceDescriptor getServiceDescriptor( Object service );
 
-    // State
+    /**
+     * Returns the PropertyDescriptor of the Property.
+     *
+     * @param property The Property for which to lookup the PropertyDescriptor
+     * @return The PropertyDescriptor of the Property
+     */
     PropertyDescriptor getPropertyDescriptor( Property property );
 
+    /**
+     * Returns the AssociationDescriptor of the Association.
+     *
+     * @param association The Association for which to lookup the AssociationDescriptor
+     * @return The AssociationDescriptor of the Association
+     */
     AssociationDescriptor getAssociationDescriptor( AbstractAssociation association );
 
+    /**
+     * Function that returns the CompositeDescriptor of a Composite.
+     */
     Function<Composite, CompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, CompositeDescriptor>()
     {
         @Override
@@ -102,6 +152,9 @@ public interface Qi4j
         }
     };
 
+    /**
+     * Function that returns the CompositeInstance of a Composite.
+     */
     Function<Composite, CompositeInstance> INSTANCE_FUNCTION = new Function<Composite, CompositeInstance>()
     {
         @Override

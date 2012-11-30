@@ -4,7 +4,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 
 /**
- * TODO
+ * Regular expression match Specification.
  */
 public class MatchesSpecification
     extends ExpressionSpecification

@@ -5,7 +5,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.functional.Iterables;
 
 /**
- * TODO
+ * Contains All Specification.
  */
 public class ContainsAllSpecification<T>
     extends ExpressionSpecification

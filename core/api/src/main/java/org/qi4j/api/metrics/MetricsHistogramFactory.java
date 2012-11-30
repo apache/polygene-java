@@ -16,6 +16,9 @@
 
 package org.qi4j.api.metrics;
 
+/**
+ * Create MetricsHistogram instances.
+ */
 public interface MetricsHistogramFactory extends MetricsFactory
 {
     /**

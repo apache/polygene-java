@@ -21,7 +21,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.HasTypes;
 
 /**
- * JAVADOC
+ * Composite Instance.
  */
 public interface CompositeInstance
     extends InvocationHandler, CompositeInvoker, HasTypes, MetaInfoHolder

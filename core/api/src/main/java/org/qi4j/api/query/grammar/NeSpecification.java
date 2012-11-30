@@ -1,7 +1,7 @@
 package org.qi4j.api.query.grammar;
 
 /**
- * TODO
+ * Not equals Specification.
  */
 public class NeSpecification<T>
     extends ComparisonSpecification<T>

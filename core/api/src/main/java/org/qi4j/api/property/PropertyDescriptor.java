@@ -22,7 +22,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 
 /**
- * JAVADOC
+ * Property Descriptor.
  */
 public interface PropertyDescriptor extends MetaInfoHolder
 {

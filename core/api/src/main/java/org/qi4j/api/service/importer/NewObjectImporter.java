@@ -22,7 +22,7 @@ import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.functional.Iterables;
 
 /**
- * JAVADOC
+ * Import Services using a new registered Object instance.
  */
 public final class NewObjectImporter<T>
     implements ServiceImporter<T>

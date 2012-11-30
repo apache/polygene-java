@@ -1,7 +1,7 @@
 package org.qi4j.api.composite;
 
 /**
- * TODO
+ * Stateful Composite Descriptor.
  */
 public interface StatefulCompositeDescriptor
 {

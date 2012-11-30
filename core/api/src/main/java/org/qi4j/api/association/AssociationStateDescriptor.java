@@ -20,6 +20,9 @@ package org.qi4j.api.association;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.StateDescriptor;
 
+/**
+ * Associations State Descriptor.
+ */
 public interface AssociationStateDescriptor
     extends StateDescriptor
 {

@@ -10,7 +10,7 @@ import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.functional.Function;
 
 /**
- * TODO
+ * Function to get Entity ManyAssociations.
  */
 public class ManyAssociationFunction<T>
     implements Function<Composite, ManyAssociation<T>>

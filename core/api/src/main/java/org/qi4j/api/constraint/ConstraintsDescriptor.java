@@ -15,7 +15,7 @@
 package org.qi4j.api.constraint;
 
 /**
- * JAVADOC
+ * Constraints Descriptor.
  */
 public interface ConstraintsDescriptor
 {

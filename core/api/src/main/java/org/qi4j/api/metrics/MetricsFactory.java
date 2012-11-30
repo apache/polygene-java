@@ -16,6 +16,9 @@
 
 package org.qi4j.api.metrics;
 
+/**
+ * Metrics Factory.
+ */
 public interface MetricsFactory
 {
     Iterable<Metric> registered();

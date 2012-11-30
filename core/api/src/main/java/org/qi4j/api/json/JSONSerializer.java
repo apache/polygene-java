@@ -41,7 +41,7 @@ import org.qi4j.functional.Functions;
 import static org.qi4j.functional.Iterables.first;
 
 /**
- * TODO
+ * Base json.org JSON Serializer.
  */
 public abstract class JSONSerializer
 {

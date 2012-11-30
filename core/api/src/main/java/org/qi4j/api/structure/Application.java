@@ -16,7 +16,7 @@
 package org.qi4j.api.structure;
 
 import org.qi4j.api.activation.Activation;
-import org.qi4j.api.event.ActivationEventListenerRegistration;
+import org.qi4j.api.activation.ActivationEventListenerRegistration;
 
 /**
  * The Application represents a whole Qi4j application.

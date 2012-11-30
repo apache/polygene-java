@@ -37,6 +37,9 @@ public final class AssociationMixin
         return associations.associationFor( method );
     }
 
+    /**
+     * Associations generic mixin AppliesToFilter.
+     */
     public static class AssociationFilter
         implements AppliesToFilter
     {

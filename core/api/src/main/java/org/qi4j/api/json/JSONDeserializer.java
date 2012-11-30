@@ -43,7 +43,7 @@ import org.qi4j.functional.Iterables;
 import static org.qi4j.functional.Iterables.first;
 
 /**
- * TODO
+ * Deserialize values to JSON using json.org
  */
 public class JSONDeserializer
 {

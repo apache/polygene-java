@@ -6,7 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * TODO
+ * JSON Object Serializer.
  */
 public class JSONObjectSerializer
     extends JSONSerializer

@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 
 /**
- * When a constraint violation has occurred (i.e. Constraint.isValid has returned false) it
+ * When a constraint violation has occurred (ie Constraint.isValid has returned false) it
  * is put in a collection of all violations that have occurred for this value check.
  */
 public final class ConstraintViolation

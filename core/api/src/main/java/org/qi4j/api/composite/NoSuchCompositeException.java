@@ -16,7 +16,7 @@ package org.qi4j.api.composite;
 import org.qi4j.api.common.InvalidApplicationException;
 
 /**
- * This exception is thrown if client code tries to create a non-existing Composite type
+ * This exception is thrown if client code tries to create a non-existing Composite type.
  */
 public class NoSuchCompositeException
     extends InvalidApplicationException

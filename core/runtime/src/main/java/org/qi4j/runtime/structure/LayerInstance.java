@@ -16,9 +16,9 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.activation.ActivationEvent;
+import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.functional.Function;

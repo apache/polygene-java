@@ -17,6 +17,9 @@
  */
 package org.qi4j.api.service;
 
+/**
+ * Thrown when no available service is found.
+ */
 public class ServiceUnavailableException
     extends RuntimeException
 {

@@ -4,7 +4,7 @@ import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.composite.Composite;
 
 /**
- * TODO
+ * ManyAssociation Contains Specification.
  */
 public class ManyAssociationContainsSpecification<T>
     extends ExpressionSpecification

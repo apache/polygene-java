@@ -15,7 +15,7 @@
 package org.qi4j.api.composite;
 
 /**
- * JAVADOC
+ * Composite Descriptor.
  */
 public interface CompositeDescriptor
     extends ModelDescriptor

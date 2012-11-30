@@ -15,7 +15,7 @@
 package org.qi4j.api.concern;
 
 /**
- * JAVADOC
+ * Concern descriptor.
  */
 public interface ConcernDescriptor
 {

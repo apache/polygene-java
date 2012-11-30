@@ -18,6 +18,9 @@ package org.qi4j.api.service;
 
 import org.qi4j.api.composite.NoSuchCompositeException;
 
+/**
+ * Thrown when no visible service of the requested type is found.
+ */
 public class NoSuchServiceException extends NoSuchCompositeException
 {
     public NoSuchServiceException( String typeName, String moduleName )

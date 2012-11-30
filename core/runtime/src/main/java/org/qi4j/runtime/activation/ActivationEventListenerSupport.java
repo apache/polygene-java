@@ -16,9 +16,9 @@ package org.qi4j.runtime.activation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
-import org.qi4j.api.event.ActivationEventListenerRegistration;
+import org.qi4j.api.activation.ActivationEvent;
+import org.qi4j.api.activation.ActivationEventListener;
+import org.qi4j.api.activation.ActivationEventListenerRegistration;
 
 /**
  * Internal helper for managing registrations and firing events

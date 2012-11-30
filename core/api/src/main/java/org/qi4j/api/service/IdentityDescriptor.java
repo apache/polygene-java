@@ -1,7 +1,7 @@
 package org.qi4j.api.service;
 
 /**
- * TODO
+ * Identity Descriptor.
  */
 public interface IdentityDescriptor
 {

@@ -3,7 +3,7 @@ package org.qi4j.api.entity;
 import org.qi4j.api.structure.Module;
 
 /**
- * TODO
+ * EntityBuilderTemplate.
  */
 public abstract class EntityBuilderTemplate<T>
 {

@@ -13,13 +13,15 @@
  * limitations under the License.
  *
  */
-package org.qi4j.api.event;
+package org.qi4j.api.activation;
 
+import org.qi4j.api.activation.ActivationEvent;
+import org.qi4j.api.activation.ActivationEventListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.junit.Test;
-import org.qi4j.api.event.ActivationEvent.EventType;
+import org.qi4j.api.activation.ActivationEvent.EventType;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Application;
@@ -29,16 +31,16 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
 import static junit.framework.Assert.*;
-import static org.qi4j.api.event.ActivationEvent.EventType.*;
+import static org.qi4j.api.activation.ActivationEvent.EventType.*;
 
 public class ActivationEventsTest
 {
-    
+
     public static interface TestService
     {
         void test();
     }
-    
+
     public static class TestServiceInstance
             implements TestService
     {
@@ -46,21 +48,21 @@ public class ActivationEventsTest
         public void test()
         {
         }
-        
+
     }
-    
+
     @Mixins( TestServiceInstance.class )
     public static interface TestServiceComposite
         extends TestService, ServiceComposite
     {
     }
-    
+
     @Test
     public void testSingleModuleSingleService()
         throws Exception
     {
         final List<ActivationEvent> events = new ArrayList<ActivationEvent>();
-        
+
         new SingletonAssembler()
         {
             @Override
@@ -75,8 +77,8 @@ public class ActivationEventsTest
             {
                 application.registerActivationEventListener( new EventsRecorder( events ) );
             }
-            
-            
+
+
         }.application().passivate();
 
         Iterator<ActivationEvent> it = events.iterator();
@@ -90,7 +92,7 @@ public class ActivationEventsTest
         assertEvent( it.next(), ACTIVATED, "Module" );
         assertEvent( it.next(), ACTIVATED, "Layer" );
         assertEvent( it.next(), ACTIVATED, "Application" );
-        
+
         // Passivation
         assertEvent( it.next(), PASSIVATING, "Application" );
         assertEvent( it.next(), PASSIVATING, "Layer" );
@@ -100,16 +102,16 @@ public class ActivationEventsTest
         assertEvent( it.next(), PASSIVATED, "Module" );
         assertEvent( it.next(), PASSIVATED, "Layer" );
         assertEvent( it.next(), PASSIVATED, "Application" );
-        
+
         assertFalse( it.hasNext() );
     }
-    
+
     @Test
     public void testSingleModuleSingleImportedService()
             throws Exception
     {
         final List<ActivationEvent> events = new ArrayList<ActivationEvent>();
-        
+
         new SingletonAssembler()
         {
             @Override
@@ -126,10 +128,10 @@ public class ActivationEventsTest
             {
                 application.registerActivationEventListener( new EventsRecorder( events ) );
             }
-            
-            
+
+
         }.application().passivate();
-        
+
         Iterator<ActivationEvent> it = events.iterator();
 
         // Activation
@@ -141,7 +143,7 @@ public class ActivationEventsTest
         assertEvent( it.next(), ACTIVATED, "Module" );
         assertEvent( it.next(), ACTIVATED, "Layer" );
         assertEvent( it.next(), ACTIVATED, "Application" );
-        
+
         // Passivation
         assertEvent( it.next(), PASSIVATING, "Application" );
         assertEvent( it.next(), PASSIVATING, "Layer" );
@@ -151,16 +153,16 @@ public class ActivationEventsTest
         assertEvent( it.next(), PASSIVATED, "Module" );
         assertEvent( it.next(), PASSIVATED, "Layer" );
         assertEvent( it.next(), PASSIVATED, "Application" );
-        
+
         assertFalse( it.hasNext() );
     }
-    
+
     @Test
     public void testSingleModuleSingleLazyService()
             throws Exception
     {
         final List<ActivationEvent> events = new ArrayList<ActivationEvent>();
-        
+
         SingletonAssembler assembler = new SingletonAssembler()
         {
 
@@ -191,7 +193,7 @@ public class ActivationEventsTest
         assertEvent( it.next(), ACTIVATED, "Module" );
         assertEvent( it.next(), ACTIVATED, "Layer" );
         assertEvent( it.next(), ACTIVATED, "Application" );
-        
+
         // Passivation
         assertEvent( it.next(), PASSIVATING, "Application" );
         assertEvent( it.next(), PASSIVATING, "Layer" );
@@ -200,15 +202,15 @@ public class ActivationEventsTest
         assertEvent( it.next(), PASSIVATED, "Module" );
         assertEvent( it.next(), PASSIVATED, "Layer" );
         assertEvent( it.next(), PASSIVATED, "Application" );
-        
+
         assertFalse( it.hasNext() );
-        
+
         events.clear();
         application.activate();
         Module module = assembler.module();
         module.findService( TestService.class ).get().test();
         application.passivate();
-        
+
         for( ActivationEvent event : events ) {
             System.out.println( event );
         }
@@ -226,7 +228,7 @@ public class ActivationEventsTest
         // Lazy Service Activation
         assertEvent( it.next(), ACTIVATING, "TestService" );
         assertEvent( it.next(), ACTIVATED, "TestService" );
-        
+
         // Passivation
         assertEvent( it.next(), PASSIVATING, "Application" );
         assertEvent( it.next(), PASSIVATING, "Layer" );
@@ -236,7 +238,7 @@ public class ActivationEventsTest
         assertEvent( it.next(), PASSIVATED, "Module" );
         assertEvent( it.next(), PASSIVATED, "Layer" );
         assertEvent( it.next(), PASSIVATED, "Application" );
-        
+
         assertFalse( it.hasNext() );
     }
 

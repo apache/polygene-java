@@ -17,6 +17,9 @@
  */
 package org.qi4j.api.json;
 
+/**
+ * Base64Encoder.
+ */
 public final class Base64Encoder
 {
 

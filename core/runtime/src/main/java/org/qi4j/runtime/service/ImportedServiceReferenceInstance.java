@@ -15,8 +15,8 @@
 package org.qi4j.runtime.service;
 
 import org.qi4j.api.activation.Activation;
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
+import org.qi4j.api.activation.ActivationEvent;
+import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceUnavailableException;

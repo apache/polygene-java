@@ -15,7 +15,7 @@
 package org.qi4j.api.composite;
 
 /**
- * JAVADOC
+ * TransientComposite Descriptor.
  */
 public interface TransientDescriptor
     extends CompositeDescriptor, StatefulCompositeDescriptor

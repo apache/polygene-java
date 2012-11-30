@@ -20,7 +20,7 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.structure.MetaInfoHolder;
 
 /**
- * JAVADOC
+ * Association Descriptor.
  */
 public interface AssociationDescriptor extends MetaInfoHolder
 {

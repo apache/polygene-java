@@ -16,10 +16,10 @@ package org.qi4j.runtime.service;
 
 import java.lang.reflect.Method;
 import org.qi4j.api.activation.Activation;
+import org.qi4j.api.activation.ActivationEvent;
+import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.event.ActivationEvent;
-import org.qi4j.api.event.ActivationEventListener;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceImporterException;

@@ -5,7 +5,7 @@ import org.qi4j.api.structure.MetaInfoHolder;
 import org.qi4j.api.type.HasTypes;
 
 /**
- * TODO
+ * Composite ModelDescriptor.
  */
 public interface ModelDescriptor extends HasTypes, MetaInfoHolder
 {

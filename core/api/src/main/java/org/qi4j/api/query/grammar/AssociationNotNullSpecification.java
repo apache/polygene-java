@@ -4,7 +4,7 @@ import org.qi4j.api.association.Association;
 import org.qi4j.api.composite.Composite;
 
 /**
- * TODO
+ * Association not null Specification.
  */
 public class AssociationNotNullSpecification<T>
     extends ExpressionSpecification

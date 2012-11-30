@@ -19,6 +19,9 @@ package org.qi4j.api.composite;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+/**
+ * Composite dependency descriptor.
+ */
 public interface DependencyDescriptor
 {
     Annotation injectionAnnotation();

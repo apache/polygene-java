@@ -15,7 +15,7 @@
 package org.qi4j.api.mixin;
 
 /**
- * JAVADOC
+ * Mixin Descriptor.
  */
 public interface MixinDescriptor
 {

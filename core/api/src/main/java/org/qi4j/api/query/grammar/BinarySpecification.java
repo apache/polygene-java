@@ -4,7 +4,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.functional.Specification;
 
 /**
- * TODO
+ * Base binary Specification, used for AND and OR Specifications..
  */
 public abstract class BinarySpecification
     extends ExpressionSpecification

@@ -16,7 +16,7 @@ package org.qi4j.api.composite;
 import java.lang.reflect.Field;
 
 /**
- * JAVADOC
+ * Composite injected field descriptor.
  */
 public interface InjectedFieldDescriptor
 {

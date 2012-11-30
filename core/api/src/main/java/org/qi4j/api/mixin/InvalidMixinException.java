@@ -20,6 +20,9 @@ package org.qi4j.api.mixin;
 
 import java.lang.reflect.Method;
 
+/**
+ * This exception is thrown if a Mixin is invalid (missing method implementation).
+ */
 public class InvalidMixinException
     extends RuntimeException
 {

@@ -37,6 +37,9 @@ public final class PropertyMixin
         return state.propertyFor( method );
     }
 
+    /**
+     * Filter Property methods to apply generic Property Mixin.
+     */
     public static class PropertyFilter
         implements AppliesToFilter
     {

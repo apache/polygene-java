@@ -18,7 +18,7 @@ import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.property.PropertyDescriptor;
 
 /**
- * JAVADOC
+ * Composite State Descriptor.
  */
 public interface StateDescriptor
 {

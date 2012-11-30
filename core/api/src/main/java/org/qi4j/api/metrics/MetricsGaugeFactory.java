@@ -16,6 +16,9 @@
 
 package org.qi4j.api.metrics;
 
+/**
+ * Register MetricsGauge with the underlying Metrics system.
+ */
 public interface MetricsGaugeFactory extends MetricsFactory
 {
     /**

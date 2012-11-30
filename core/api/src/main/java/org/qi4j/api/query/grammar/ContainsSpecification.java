@@ -4,7 +4,7 @@ import java.util.Collection;
 import org.qi4j.api.composite.Composite;
 
 /**
- * TODO
+ * Contains Specification.
  */
 public class ContainsSpecification<T>
     extends ExpressionSpecification

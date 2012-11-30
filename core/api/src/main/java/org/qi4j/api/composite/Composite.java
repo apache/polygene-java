@@ -18,6 +18,8 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.PropertyMixin;
 
 /**
+ * Base Composite interface.
+ * 
  * All Composite objects must implement this interface. Let the
  * Composite interface extend this one. An implementation will be provided
  * by the framework.

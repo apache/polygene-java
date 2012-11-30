@@ -16,6 +16,9 @@
 
 package org.qi4j.api.metrics;
 
+/**
+ * Create MetricsCounter instances.
+ */
 public interface MetricsCounterFactory extends MetricsFactory
 {
     /**

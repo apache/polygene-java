@@ -14,7 +14,7 @@
 
 package org.qi4j.api.service;
 
-import org.qi4j.api.event.ActivationEventListenerRegistration;
+import org.qi4j.api.activation.ActivationEventListenerRegistration;
 import org.qi4j.api.structure.MetaInfoHolder;
 import org.qi4j.api.type.HasTypes;
 

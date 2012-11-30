@@ -32,6 +32,9 @@ import java.lang.annotation.Target;
 public @interface Activators
 {
 
+    /**
+     * @return Activator implementation classes.
+     */
     Class<? extends Activator<?>>[] value();
 
 }
