@@ -1,9 +1,15 @@
 package org.qi4j.bootstrap;
 
+/**
+ * Qi4j runtime factory.
+ */
 public interface RuntimeFactory
 {
     Qi4jRuntime createRuntime();
 
+    /**
+     * Standalone application Qi4j runtime factory.
+     */
     public final class StandaloneApplicationRuntimeFactory
         implements RuntimeFactory
     {

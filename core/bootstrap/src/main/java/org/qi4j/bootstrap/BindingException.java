@@ -15,7 +15,7 @@
 package org.qi4j.bootstrap;
 
 /**
- * JAVADOC
+ * Thrown by the Qi4j runtime if a dependency can not be bound.
  */
 public class BindingException
     extends Exception

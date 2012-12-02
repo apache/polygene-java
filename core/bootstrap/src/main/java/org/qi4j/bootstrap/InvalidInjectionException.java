@@ -1,7 +1,7 @@
 package org.qi4j.bootstrap;
 
 /**
- * JAVADOC
+ * Thrown by the Qi4j runtime if a dependency injection declaration is invalid.
  */
 public class InvalidInjectionException
     extends Exception

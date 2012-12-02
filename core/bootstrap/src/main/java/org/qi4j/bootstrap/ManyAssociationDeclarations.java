@@ -18,7 +18,7 @@ import java.lang.reflect.AccessibleObject;
 import org.qi4j.api.common.MetaInfo;
 
 /**
- * JAVADOC
+ * This provides declared {@see org.qi4j.api.association.ManyAssociation} information that the runtime can use.
  */
 public interface ManyAssociationDeclarations
 {
