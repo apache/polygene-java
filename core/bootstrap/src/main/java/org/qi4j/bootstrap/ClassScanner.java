@@ -169,7 +169,7 @@ public class ClassScanner
      *
      * @param regex
      *
-     * @return
+     * @return regex class name specification
      */
     public static Specification<Class<?>> matches( String regex )
     {

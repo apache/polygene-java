@@ -15,7 +15,7 @@
 package org.qi4j.api.structure;
 
 /**
- * JAVADOC
+ * Module Descriptor.
  */
 public interface ModuleDescriptor
 {

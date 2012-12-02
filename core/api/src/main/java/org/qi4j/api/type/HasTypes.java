@@ -1,7 +1,7 @@
 package org.qi4j.api.type;
 
 /**
- * TODO
+ * Has types.
  */
 public interface HasTypes
 {

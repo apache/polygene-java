@@ -8,7 +8,7 @@ import org.qi4j.functional.Specification;
 import static org.qi4j.functional.Iterables.iterable;
 
 /**
- * TODO
+ * Useful methods for handling Methods.
  */
 public class Methods
 {

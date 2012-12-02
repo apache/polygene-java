@@ -33,6 +33,10 @@ import org.qi4j.functional.Specification;
 @Qualifier( Active.ActiveQualifier.class )
 public @interface Active
 {
+    /**
+     * Active Annotation Qualifier.
+     * See {@see Active}.
+     */
     public final class ActiveQualifier
         implements AnnotationQualifier<Active>
     {

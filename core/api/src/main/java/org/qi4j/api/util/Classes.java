@@ -46,7 +46,7 @@ import static org.qi4j.functional.Iterables.matchesAny;
 import static org.qi4j.functional.Iterables.prepend;
 
 /**
- * Class-related utility methods
+ * Useful methods for handling Classes.
  */
 public final class Classes
 {

@@ -369,7 +369,7 @@ public final class QueryExpressions
         return new OrderBy( property( property ), order );
     }
 
-    public static class TemplateHandler<T>
+    private static class TemplateHandler<T>
         implements InvocationHandler
     {
         private PropertyFunction<?> CompositeProperty;

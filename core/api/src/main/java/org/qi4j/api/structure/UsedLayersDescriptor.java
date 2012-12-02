@@ -15,7 +15,7 @@
 package org.qi4j.api.structure;
 
 /**
- * JAVADOC
+ * Used Layers Descriptor.
  */
 public interface UsedLayersDescriptor
 {

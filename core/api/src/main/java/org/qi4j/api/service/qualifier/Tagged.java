@@ -38,6 +38,10 @@ public @interface Tagged
 {
     public abstract String[] value();
 
+    /**
+     * Tagged Annotation Qualifier.
+     * See {@see Tagged}.
+     */
     public final class TaggedQualifier
         implements AnnotationQualifier<Tagged>
     {

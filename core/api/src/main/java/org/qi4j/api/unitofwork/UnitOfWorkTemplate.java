@@ -4,7 +4,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 
 /**
- * TODO
+ * UnitOfWork Template.
  */
 public abstract class UnitOfWorkTemplate<RESULT, ThrowableType extends Throwable>
 {

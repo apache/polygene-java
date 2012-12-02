@@ -24,6 +24,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+/**
+ * Useful methods for handling Dates.
+ */
 public final class Dates
 {
     // Formatters are not thread-safe. Create one per thread

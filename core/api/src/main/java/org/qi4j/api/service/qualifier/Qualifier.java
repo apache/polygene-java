@@ -18,7 +18,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * JAVADOC
+ * Annotation used to declare Qualifiers annotations.
  */
 @Retention( RetentionPolicy.RUNTIME )
 public @interface Qualifier

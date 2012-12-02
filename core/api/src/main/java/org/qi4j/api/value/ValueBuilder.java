@@ -18,7 +18,7 @@ import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.ConstructionException;
 
 /**
- * JAVADOC
+ * Builder for Values.
  */
 public interface ValueBuilder<T>
 {

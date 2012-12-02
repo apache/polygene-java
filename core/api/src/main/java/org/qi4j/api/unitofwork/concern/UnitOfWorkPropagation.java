@@ -57,6 +57,9 @@ public @interface UnitOfWorkPropagation
 
     String usecase() default "";
 
+    /**
+     * Propagation behaviors.
+     */
     enum Propagation
     {
         /**

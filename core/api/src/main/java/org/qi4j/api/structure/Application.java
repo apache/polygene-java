@@ -24,13 +24,28 @@ import org.qi4j.api.activation.ActivationEventListenerRegistration;
 public interface Application
     extends ActivationEventListenerRegistration, Activation, MetaInfoHolder
 {
+    /**
+     * Application modes.
+     */
     public enum Mode
     {
-        // Application modes
-        test,           // Should be used for unit test runs. Created files etc. should be cleaned up between runs
-        development,    // Should be used during development. Typically create in-memory databases etc.
-        staging,        // Should be used in QA environments, and other production-like settings where different set of external resources are utilized.
-        production      // Should be used in production. All databases are persistent on disk etc.
+        /**
+         * Should be used for unit test runs. Created files etc. should be cleaned up between runs.
+         */
+        test,
+        /**
+         * Should be used during development. Typically create in-memory databases etc.
+         */
+        development,
+        /**
+         * Should be used in QA environments, and other production-like settings where different set of external
+         * resources are utilized.
+         */
+        staging,
+        /**
+         * Should be used in production. All databases are persistent on disk etc.
+         */
+        production
     }
 
     String name();

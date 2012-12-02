@@ -54,8 +54,6 @@ public class JSONDeserializer
      * by clients to figure out whether to add "" around a string to be deserialized.
      *
      * @param valueType
-     *
-     * @return
      */
     public static boolean isString( ValueType valueType )
     {

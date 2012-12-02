@@ -3,7 +3,7 @@ package org.qi4j.api.value;
 import org.qi4j.api.structure.Module;
 
 /**
- * TODO
+ * Builder template for Values.
  */
 public abstract class ValueBuilderTemplate<T>
 {

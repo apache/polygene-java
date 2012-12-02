@@ -18,7 +18,7 @@ import org.qi4j.api.Qi4j;
 import org.qi4j.functional.VisitableHierarchy;
 
 /**
- * JAVADOC
+ * Application Descriptor.
  */
 public interface ApplicationDescriptor
     extends VisitableHierarchy<Object, Object>

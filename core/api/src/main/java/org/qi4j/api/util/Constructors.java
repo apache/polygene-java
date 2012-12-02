@@ -7,7 +7,7 @@ import org.qi4j.functional.Function;
 import static org.qi4j.functional.Iterables.iterable;
 
 /**
- * TODO
+ * Useful methods for handling Constructors.
  */
 public final class Constructors
 {

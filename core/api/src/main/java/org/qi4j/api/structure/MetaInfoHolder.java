@@ -16,6 +16,9 @@
 
 package org.qi4j.api.structure;
 
+/**
+ * MetaInfo holder.
+ */
 public interface MetaInfoHolder
 {
 

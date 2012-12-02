@@ -15,6 +15,9 @@ package org.qi4j.api.value;
 
 import org.qi4j.api.composite.NoSuchCompositeException;
 
+/**
+ * Thrown when no visible value of the requested type is found.
+ */
 public class NoSuchValueException
     extends NoSuchCompositeException
 {

@@ -37,6 +37,10 @@ public @interface IdentifiedBy
 {
     public abstract String value();
 
+    /**
+     * IdentifiedBy Annotation Qualifier.
+     * See {@see IdentifiedBy}.
+     */
     public final class IdentifiedByQualifier
         implements AnnotationQualifier<IdentifiedBy>
     {

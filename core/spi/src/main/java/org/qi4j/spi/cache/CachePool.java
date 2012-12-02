@@ -20,8 +20,8 @@ public interface CachePool
 {
 
     /**
-     * Fethces a cache from the pool.
-     * If the cache does not exist alread, then a new Cache should be created and returned. For each fetchCache()
+     * Fetches a cache from the pool.
+     * If the cache does not exist already, then a new Cache should be created and returned. For each fetchCache()
      * call, a reference count on the Cache must be increased.
      *
      * @param cacheId   The identity of the cache. If the same id is given as a previous fetch, the same cache will be
@@ -29,7 +29,7 @@ public interface CachePool
      * @param valueType
      * @param <T>
      *
-     * @return
+     * @return The cache fetched from the pool.
      */
     <T> Cache<T> fetchCache( String cacheId, Class<T> valueType );
 

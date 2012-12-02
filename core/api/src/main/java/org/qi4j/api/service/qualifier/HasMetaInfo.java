@@ -55,6 +55,10 @@ public @interface HasMetaInfo
      */
     boolean anded() default false;
 
+    /**
+     * HasMetaInfo Annotation Qualifier.
+     * See {@see HasMetaInfo}.
+     */
     public static class HasMetaInfoQualifier
         implements AnnotationQualifier<HasMetaInfo>
     {

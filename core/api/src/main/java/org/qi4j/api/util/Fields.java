@@ -9,7 +9,7 @@ import org.qi4j.functional.Iterables;
 import static org.qi4j.functional.Iterables.iterable;
 
 /**
- * TODO
+ * Useful methods for handling Fields.
  */
 public final class Fields
 {

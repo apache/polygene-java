@@ -33,6 +33,10 @@ import org.qi4j.functional.Specification;
 @Qualifier( Available.AvailableQualifier.class )
 public @interface Available
 {
+    /**
+     * Available Annotation Qualifier.
+     * See {@see Available}.
+     */
     public final class AvailableQualifier
         implements AnnotationQualifier<Available>
     {
