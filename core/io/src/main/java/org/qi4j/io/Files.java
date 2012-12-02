@@ -3,6 +3,9 @@ package org.qi4j.io;
 import java.io.File;
 import java.util.Random;
 
+/**
+ * Utility class for files.
+ */
 public class Files
 {
     private static Random random = new Random();
