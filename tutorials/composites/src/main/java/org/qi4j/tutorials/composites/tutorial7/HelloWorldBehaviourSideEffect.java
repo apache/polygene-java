@@ -11,6 +11,7 @@ public class HelloWorldBehaviourSideEffect
     extends SideEffectOf<HelloWorldBehaviour>
     implements HelloWorldBehaviour
 {
+    @Override
     public String say()
     {
         System.out.println( result.say() );

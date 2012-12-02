@@ -20,6 +20,7 @@ public class HelloWorldTest
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
+            @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {

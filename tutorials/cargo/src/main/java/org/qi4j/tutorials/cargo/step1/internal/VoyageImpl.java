@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.tutorials.cargo.step1.internal;
 
@@ -33,11 +33,13 @@ public class VoyageImpl
         bookedCargo = new HashMap<Integer, Cargo>();
     }
 
+    @Override
     public double getCapacity()
     {
         return capacity;
     }
 
+    @Override
     public double getBookedCargoSize()
     {
         double bookedCargoSize = 0;

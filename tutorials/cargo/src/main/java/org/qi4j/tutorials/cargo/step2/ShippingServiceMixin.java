@@ -20,6 +20,7 @@ package org.qi4j.tutorials.cargo.step2;
 public class ShippingServiceMixin
     implements ShippingService
 {
+    @Override
     public int makeBooking( Cargo cargo, Voyage voyage )
     {
         voyage.bookedCargoSize().set( voyage.bookedCargoSize().get() + cargo.size().get() );

@@ -50,16 +50,19 @@ public class TrailableMixin<M>
 {
     private @This HasAuditTrail hasTrail;
 
+    @Override
     public void itemAdded( M item )
     {
         addAction( item, Action.Type.added );
     }
 
+    @Override
     public void itemRemoved( M item )
     {
         addAction( item, Action.Type.removed );
     }
 
+    @Override
     public void completed( M item )
     {
         addAction( item, Action.Type.completed );
@@ -94,18 +97,21 @@ public abstract class OrderAuditTrailConcern
 {
     @This Trailable<LineItem> trail;
 
+    @Override
     public void addLineItem( LineItem item )
     {
         next.addLineItem( item );
         trail.itemAdded( item );
     }
 
+    @Override
     public void removeLineItem( LineItem item )
     {
         next.removeLineItem( item );
         trail.itemRemoved( item );
     }
 
+    @Override
     public void completed()
     {
         next.completed();
@@ -131,6 +137,7 @@ public class AuditTrailConcern
 {
     @This Trailable trail;
 
+    @Override
     public void invoke( Object proxy, Method m, Object[] args )
        throws Exception
     {
@@ -168,8 +175,9 @@ Finally, we need to declare the Concern in the OrderEntity;
 })
 @Mixins( TrailableMixin.class )
 public interface OrderEntity
-    extends Order, HasSequenceNumber, HasCustomer,
-            HasLineItems, Confirmable, EntityComposite
+    extends Order, Confirmable,
+            HasSequenceNumber, HasCustomer, HasLineItems,
+            EntityComposite
 {
 }
 -----------
@@ -238,8 +246,7 @@ Another example,
 
 [source,java]
 -----------
-QueryBuilder<Order> builder =
-    qbf.newQueryBuilder( Order.class );
+QueryBuilder<Order> builder = qbf.newQueryBuilder( Order.class );
 
 Calendar cal = Calendar.getInstance();
 cal.setTime( new Date() );
@@ -262,8 +269,7 @@ that has made an Order in the last 30 days;
 
 [source,java]
 -----------
-QueryBuilder<HasCustomer> builder =
-    qbf.newQueryBuilder( HasCustomer.class );
+QueryBuilder<HasCustomer> builder = qbf.newQueryBuilder( HasCustomer.class );
 
 Calendar cal = Calendar.getInstance();
 cal.setTime( new Date() );

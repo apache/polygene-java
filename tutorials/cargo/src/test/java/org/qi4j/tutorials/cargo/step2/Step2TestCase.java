@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.tutorials.cargo.step2;
 
@@ -85,6 +85,7 @@ public class Step2TestCase
         assertEquals( -1, code );
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

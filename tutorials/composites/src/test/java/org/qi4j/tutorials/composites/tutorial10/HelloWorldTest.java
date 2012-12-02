@@ -21,6 +21,7 @@ public class HelloWorldTest
     {
         assembly = new SingletonAssembler()
         {
+            @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {

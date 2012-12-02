@@ -42,6 +42,7 @@ public interface Hello
         @This
         private State state;
 
+        @Override
         public String say()
         {
             return state.phrase().get() + " " + state.name().get();

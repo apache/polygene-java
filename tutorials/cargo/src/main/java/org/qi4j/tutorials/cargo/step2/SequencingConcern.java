@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.tutorials.cargo.step2;
 
@@ -28,6 +28,7 @@ public class SequencingConcern
     @This
     private HasSequence generator;
 
+    @Override
     public int makeBooking( Cargo cargo, Voyage voyage )
     {
         int ok = next.makeBooking( cargo, voyage );

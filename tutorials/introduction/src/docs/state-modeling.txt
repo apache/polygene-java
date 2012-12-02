@@ -155,6 +155,7 @@ public class ListablePersonMixin
 {
    @This PersonState person;
 
+   @Override
    public String listName()
    {
       String fullName = person.name().get().givenName().get();

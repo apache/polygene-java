@@ -50,6 +50,7 @@ public class SequencingConcernTest
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
+            @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
@@ -85,6 +86,7 @@ public class SequencingConcernTest
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
+            @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {

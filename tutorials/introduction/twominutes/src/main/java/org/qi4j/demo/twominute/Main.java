@@ -1,6 +1,5 @@
 package org.qi4j.demo.twominute;
 
-import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -12,6 +11,7 @@ public class Main
     {
         SingletonAssembler assembler = new SingletonAssembler() // <1>
         {
+            @Override
             public void assemble( ModuleAssembly assembly )
                 throws AssemblyException
             {

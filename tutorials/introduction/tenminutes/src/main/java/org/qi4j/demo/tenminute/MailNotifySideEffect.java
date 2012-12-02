@@ -34,6 +34,7 @@ public abstract class MailNotifySideEffect extends SideEffectOf<Confirmable>
     @This
     private HasCustomer hasCustomer;
 
+    @Override
     public void confirm()
     {
         StringBuilder builder = new StringBuilder();

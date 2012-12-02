@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.tutorials.cargo.step1.internal;
 
@@ -24,6 +24,7 @@ public class SimpleSequenceImpl
 {
     private int sequence = 1;
 
+    @Override
     public int next()
     {
         return sequence++;

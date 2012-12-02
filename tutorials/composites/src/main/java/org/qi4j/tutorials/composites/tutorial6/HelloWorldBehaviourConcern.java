@@ -12,6 +12,7 @@ public class HelloWorldBehaviourConcern
     extends ConcernOf<HelloWorldBehaviour>
     implements HelloWorldBehaviour
 {
+    @Override
     public String say()
     {
         return "Simon says:" + next.say();

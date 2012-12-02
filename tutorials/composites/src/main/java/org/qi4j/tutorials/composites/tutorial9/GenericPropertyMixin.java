@@ -33,6 +33,7 @@ public class GenericPropertyMixin
     @State
     private StateHolder state;
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
@@ -42,6 +43,7 @@ public class GenericPropertyMixin
     public static class PropertyFilter
         implements AppliesToFilter
     {
+        @Override
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
         {
             return Property.class.isAssignableFrom( method.getReturnType() );

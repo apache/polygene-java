@@ -16,6 +16,7 @@ public class HelloWorldBehaviourMixin
     @This
     HelloWorldState state;
 
+    @Override
     public String say()
     {
         return state.phrase().get() + " " + state.name().get();

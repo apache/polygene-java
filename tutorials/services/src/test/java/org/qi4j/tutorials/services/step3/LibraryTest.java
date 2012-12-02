@@ -33,6 +33,7 @@ public class LibraryTest
         consumer.run();
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

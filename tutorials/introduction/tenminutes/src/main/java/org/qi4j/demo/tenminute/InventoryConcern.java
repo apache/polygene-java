@@ -27,6 +27,7 @@ public class InventoryConcern extends ConcernOf<Order>
     @Service
     private InventoryService inventory;
 
+    @Override
     public void addLineItem( LineItem item )
     {
         String productCode = item.productCode().get();
@@ -35,6 +36,7 @@ public class InventoryConcern extends ConcernOf<Order>
         next.addLineItem( item );
     }
 
+    @Override
     public void removeLineItem( LineItem item )
     {
         String productCode = item.productCode().get();

@@ -1,5 +1,8 @@
 package org.qi4j.tutorials.services.step6;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.injection.scope.Structure;
@@ -7,10 +10,6 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.StringTokenizer;
 
 public class LibraryService
     implements Library
@@ -45,6 +44,7 @@ public class LibraryService
         }
     }
 
+    @Override
     public Book borrowBook( String author, String title )
     {
         String key = constructKey( author, title );
@@ -64,6 +64,7 @@ public class LibraryService
         return book;
     }
 
+    @Override
     public void returnBook( Book book )
     {
         System.out.println( "Book returned: " + book.title().get() + " by " + book.author().get() );

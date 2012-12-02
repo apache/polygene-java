@@ -10,21 +10,25 @@ public class HelloWorldStateMixin
     String phrase;
     String name;
 
+    @Override
     public String getPhrase()
     {
         return phrase;
     }
 
+    @Override
     public void setPhrase( String phrase )
     {
         this.phrase = phrase;
     }
 
+    @Override
     public String getName()
     {
         return name;
     }
 
+    @Override
     public void setName( String name )
     {
         this.name = name;

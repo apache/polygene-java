@@ -17,11 +17,13 @@ public class HelloWorldStateMixin
     @State
     private Property<String> name;
 
+    @Override
     public Property<String> phrase()
     {
         return phrase;
     }
 
+    @Override
     public Property<String> name()
     {
         return name;

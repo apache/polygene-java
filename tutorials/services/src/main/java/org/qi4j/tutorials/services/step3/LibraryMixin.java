@@ -36,6 +36,7 @@ public class LibraryMixin
         books = new HashMap<String, ArrayList<Book>>();
     }
 
+    @Override
     public void createInitialData()
     {
         createBook( "Eric Evans", "Domain Driven Design", 2 );
@@ -43,6 +44,7 @@ public class LibraryMixin
         createBook( "Kent Beck", "Extreme Programming Explained", 5 );
     }
 
+    @Override
     public Book borrowBook( String author, String title )
     {
         String key = constructKey( author, title );
@@ -62,6 +64,7 @@ public class LibraryMixin
         return book;
     }
 
+    @Override
     public void returnBook( Book book )
     {
         System.out.println( "Book returned: " + book.title().get() + " by " + book.author().get() );

@@ -20,6 +20,7 @@ public class HelloWorldBehaviourMixin
     @This
     HelloWorldState state;
 
+    @Override
     public String say()
     {
         return state.getPhrase() + " " + state.getName();

@@ -25,8 +25,9 @@ import org.qi4j.api.sideeffect.SideEffects;
 // START SNIPPET: mainClass
 @Concerns( { PurchaseLimitConcern.class, InventoryConcern.class } )
 public interface OrderEntity
-    extends Order, HasSequenceNumber, HasCustomer,
-            HasLineItems, Confirmable, EntityComposite
+    extends Order, Confirmable,
+            HasSequenceNumber, HasCustomer, HasLineItems,
+            EntityComposite
 {
 // END SNIPPET: sideEffect
 }
