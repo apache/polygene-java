@@ -113,6 +113,9 @@ public class Specifications
         };
     }
 
+    /**
+     * AND Specification.
+     */
     public static class AndSpecification<T>
         implements Specification<T>
     {
@@ -150,6 +153,9 @@ public class Specifications
         }
     }
 
+    /**
+     * OR Specification.
+     */
     public static class OrSpecification<T>
         implements Specification<T>
     {

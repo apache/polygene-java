@@ -16,6 +16,9 @@
 
 package org.qi4j.functional;
 
+/**
+ * Visitor to visit hierarchies.
+ */
 public interface HierarchicalVisitor<NODE, LEAF, ThrowableType extends Throwable> extends Visitor<LEAF, ThrowableType>
 {
     /**
