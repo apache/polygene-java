@@ -26,10 +26,21 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.functional.Specification;
 
 /**
- * JAVADOC Add JavaDoc
+ * Entity Finder.
  */
 public interface EntityFinder
 {
+    /**
+     * Find entities matching the query criterion.
+     *
+     * @param resultType        Type that the entities must have.
+     * @param whereClause       Where clause specification.
+     * @param orderBySegments   Ordering
+     * @param firstResult       Index of the first returned entity.
+     * @param maxResults        Maximum returned entities.
+     * @param variables         Query variables
+     * @return Single entity matching the query criterion.
+     */
     Iterable<EntityReference> findEntities( Class<?> resultType,
                                             @Optional Specification<Composite> whereClause,
                                             @Optional OrderBy[] orderBySegments,
@@ -39,12 +50,28 @@ public interface EntityFinder
     )
         throws EntityFinderException;
 
+    /**
+     * Find a single entity matching the query criterion.
+     *
+     * @param resultType    Type that the entity must have.
+     * @param whereClause   Where clause specification.
+     * @param variables     Query variables
+     * @return Single entity matching the query criterion.
+     */
     EntityReference findEntity( Class<?> resultType,
                                 @Optional Specification<Composite> whereClause,
                                 Map<String, Object> variables
     )
         throws EntityFinderException;
 
+    /**
+     * Count entities matching the query criterion.
+     *
+     * @param resultType    Type that the entities must have.
+     * @param whereClause   Where clause specification.
+     * @param variables     Query variables
+     * @return Count entities matching the query criterion.
+     */
     long countEntities( Class<?> resultType,
                         @Optional Specification<Composite> whereClause,
                         Map<String, Object> variables

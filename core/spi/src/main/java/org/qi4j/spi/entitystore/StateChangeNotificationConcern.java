@@ -19,7 +19,7 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.spi.entity.EntityState;
 
 /**
- * JAVADOC
+ * State change notification Concern.
  */
 public abstract class StateChangeNotificationConcern
     extends ConcernOf<EntityStoreSPI>

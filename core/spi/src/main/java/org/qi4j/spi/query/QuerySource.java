@@ -7,7 +7,7 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.functional.Specification;
 
 /**
- * TODO
+ * Query Source, used in QueryBuilder SPI.
  */
 public interface QuerySource
 {

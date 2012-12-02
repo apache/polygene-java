@@ -19,7 +19,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 
 /**
- * JAVADOC
+ * UUID based Identity generator Service.
  */
 @Mixins( UuidIdentityGeneratorMixin.class )
 public interface UuidIdentityGeneratorService

@@ -26,6 +26,9 @@ import org.qi4j.api.metrics.MetricsNotSupportedException;
 import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.api.metrics.MetricsTimerFactory;
 
+/**
+ * Adapter to ease MetricsProvider implementation.
+ */
 public class MetricsProviderAdapter
     implements MetricsProvider
 {

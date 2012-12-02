@@ -18,6 +18,9 @@ package org.qi4j.spi.entitystore;
 
 import org.qi4j.api.entity.EntityReference;
 
+/**
+ * This exception is thrown when an Entity could not be found.
+ */
 public class EntityNotFoundException
     extends EntityStoreException
 {

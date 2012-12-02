@@ -27,6 +27,9 @@ public interface MapEntityStoreActivation
     void activateMapEntityStore()
         throws Exception;
 
+    /**
+     * MapEntityStoreMixin Activator.
+     */
     class Activator
         extends ActivatorAdapter<ServiceReference<MapEntityStoreActivation>>
     {

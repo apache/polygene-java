@@ -19,6 +19,9 @@ package org.qi4j.spi.uuid;
 import java.util.UUID;
 import org.qi4j.api.entity.IdentityGenerator;
 
+/**
+ * UUID based Identity generator mixin.
+ */
 public class UuidIdentityGeneratorMixin
     implements IdentityGenerator
 {

@@ -32,6 +32,9 @@ import org.qi4j.api.metrics.MetricsTimer;
 import org.qi4j.api.metrics.MetricsTimerFactory;
 import org.qi4j.functional.Iterables;
 
+/**
+ * Factory for Metrics null objects.
+ */
 public final class NullMetricsFactory
 {
     static class NullCounterFactory implements MetricsCounterFactory

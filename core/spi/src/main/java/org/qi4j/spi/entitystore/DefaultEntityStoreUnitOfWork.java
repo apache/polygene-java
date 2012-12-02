@@ -22,7 +22,7 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
 
 /**
- * JAVADOC
+ * Default EntityStore UnitOfWork.
  */
 public final class DefaultEntityStoreUnitOfWork
     implements EntityStoreUnitOfWork

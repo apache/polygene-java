@@ -1,5 +1,8 @@
 package org.qi4j.spi.cache;
 
+/**
+ * Cache null object.
+ */
 public final class NullCache<T>
     implements Cache<T>
 {

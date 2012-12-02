@@ -17,6 +17,9 @@ public interface JSONMapEntityStoreActivation
     void tearDownJSONMapES()
         throws Exception;
 
+    /**
+     * JSONMapEntityStoreMixin Activator.
+     */
     public class Activator
         extends ActivatorAdapter<ServiceReference<JSONMapEntityStoreActivation>>
     {

@@ -27,7 +27,7 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 
 /**
- * JAVADOC
+ * Entity versions state.
  */
 @Mixins( EntityStateVersions.EntityStateVersionsMixin.class )
 public interface EntityStateVersions
@@ -39,6 +39,9 @@ public interface EntityStateVersions
     void checkForConcurrentModification( Iterable<EntityState> loaded, Module module, long currentTime )
         throws ConcurrentEntityStateModificationException;
 
+    /**
+     * Entity versions state mixin.
+     */
     class EntityStateVersionsMixin
         implements EntityStateVersions
     {

@@ -19,7 +19,7 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityState;
 
 /**
- * JAVADOC
+ * EntityStore SPI.
  */
 public interface EntityStoreSPI
 {
