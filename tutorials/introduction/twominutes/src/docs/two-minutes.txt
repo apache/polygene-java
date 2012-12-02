@@ -1,6 +1,7 @@
 [[two-minutes-intro,Qi4j in 2 minutes]]
 = Qi4j in 2 minutes =
-To show that Qi4j is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the classic HelloWorld, as small as it can get and still be Composite Oriented Programming and not only standard OOP.
+To show that Qi4j is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the
+classic HelloWorld, as small as it can get and still be Composite Oriented Programming and not only standard OOP.
 
 Ready, Set, Go!
 

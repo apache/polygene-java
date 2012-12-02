@@ -2,7 +2,7 @@
 = Qi4j in 10 minutes =
 
     * Qi4j does not introduce any new programming language, no additional compilers needed and all your existing tools
-      work just like before. It is pure Java 5.
+      work just like before. It is pure Java.
     * Qi4j works with Composites.
     * The equivalent of an Object instance in OOP, is a Composite instance in Qi4j.
     * Composites are constructed from Fragments.
@@ -26,20 +26,18 @@ source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/I
 tag=allClass
 -----------
 
-// The InventoryConcern is implemented as an abstract class, since we are not interested in the many other methods in the
-// Order interface.
-
 Extending the ConcernOf is a convenience mechanism, instead of an explicit @ConcernFor annotation on a private field,
-which can be used in rare occasions when you are not able to extend. This base class defines the next field, which is
+which can be used in rare occasions when you are not able to extend. This base class defines the `next` field, which is
 set up by the Qi4j runtime and points to the next fragment in the call stack.
+
 We can also see that the InventoryService is provided to the concern, which is done with dependency injection. Qi4j
 also supports dependency injection via constructors and methods.
 
-The above example is not that good, since it is obviously doing persistence, and we have no code handling this. But Qi4j
-supports persistence directly in its Core, and it is taken care of by Qi4j, since it is declared as an EntityComposite.
-
-Nothing else is needed, provided that the Qi4j Runtime has been setup with one or more persisted entity stores. But
+The above example is obviously doing persistence, and we have no code handling this. But Qi4j supports persistence
+directly in its Core, and it is taken care of by Qi4j, since it is declared as an EntityComposite.
+Nothing else is needed, provided that the Qi4j Runtime has been setup with one or more persisted EntityStores. But
 we have a naming convention that EntityComposites have "Entity" as the suffix in its name.
+
 There are other built-in Composite subtypes as well, such as ValueComposite and ServiceComposite. This distinction helps
 both to communicate intent as well as having more precisely defined functionality.
 
@@ -61,11 +59,13 @@ tag=allClass
 -----------
 The MailService is dependency injected, as we have seen before.
 
-@This is telling Qi4j that the SideEffect needs a reference to the Composite instance that it belongs to. By asking for
-both the HasCustomer and the HasLineItems types, we get type-safety and don't need to bother with casts. In fact, Qi4j
-will ensure that you can't even cast the hasCustomer instance to the HasLineItems type. By not referencing the
-aggregated interface OrderEntity, we reduce the coupling of this SideEffect and it can be used in any other Composite
-where the HasCustomer and HasLineItems combination is used, for instance in an InvoiceEntity.
+@This is telling Qi4j that the SideEffect needs a reference to the Composite instance that it belongs to.
+
+By asking for both the HasCustomer and the HasLineItems types, we get type-safety and don't need to bother with casts.
+In fact, Qi4j will ensure that you can't even cast the `hasCustomer` instance to the HasLineItems type.
+
+By not referencing the aggregated interface OrderEntity, we reduce the coupling of this SideEffect and it can be used
+in any other Composite where the HasCustomer and HasLineItems combination is used, for instance in an InvoiceEntity.
 
 So, build the report, send it via the MailService.
 
