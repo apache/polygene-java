@@ -1,7 +1,7 @@
 [[two-hours-intro,Qi4j in 2 hours]]
 = Qi4j in 2 hours =
 
-CAUTION: This tutorial is a work in progress.
+NOTE: This tutorial is not written yet. Learn how to contribute in <<community-docs>>.
 
 This introduction assumes that the "Qi4j in 10 minutes" and "Qi4j in 30 minutes" introductions has been read and
 understood.

@@ -1,5 +1,9 @@
 [[thirty-minutes-intro,Qi4j in 30 minutes]]
 = Qi4j in 30 minutes =
+
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the Qi4j SDK sources. You should
+start your favorite editor and find the code related to this tutorial, run it and play with it.
+
 This introduction will deepen your understanding of Qi4j, as we touches on a couple of the common features of Qi4j. It
 is expected that you have gone through and understood the "Qi4j in 10 minutes" introduction.
 
