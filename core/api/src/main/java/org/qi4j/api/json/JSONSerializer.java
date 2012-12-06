@@ -137,6 +137,12 @@ public abstract class JSONSerializer
         this.includeTypeInformation = includeTypeInformation;
     }
 
+    public void serialize( Object value )
+        throws JSONException
+    {
+        serialize( (ValueComposite) value );
+    }
+
     public void serialize( ValueComposite value )
         throws JSONException
     {
