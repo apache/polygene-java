@@ -1,6 +1,9 @@
 [[tut-composites,Transient Composites Tutorial]]
 = Transient Composites Tutorial =
 
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the Qi4j SDK sources. You should
+start your favorite editor and find the code related to this tutorial, run it and play with it.
+
 Throughout this set of tutorials it will be shown how to create and work with Composites, which
 is the basic element in Qi4j. We will refactor one HelloWorld class to take advantage of the various
 features in Qi4j. These refactorings will make it easier to reuse parts of the class,
@@ -21,7 +24,7 @@ so that you don't have to write everything yourself.
 Each tutorial step in this series starts with the result from the previous tutorial, so you can
 always look at the next tutorial step for guidance on what to do.
 
-At the bottom of each tutorial step, the is Solutions section, which list the files you should have come to if you 
+At the bottom of each tutorial step, the is Solutions section, which list the files you should have come to if you
 have followed the instructions.
 
 :leveloffset: 3

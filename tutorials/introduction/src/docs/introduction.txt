@@ -3,15 +3,11 @@
 
 == Overview ==
 
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the Qi4j SDK sources. You should
+start your favorite editor and find the code related to this tutorial, run it and play with it.
+
 In this section you will find a comprehensive set of tutorials about Composite
 Oriented Programming using Qi4j.
-
-Theses tutorials are based on actual code found in the Qi4j SDK sources. You
-should start your favorite editor and find the code related to the tutorial you
-choosed to follow, run it and play with it.
-
-The code of theses tutorials is available in the +tutorials/+ directory of the
-Qi4j SDK source.
 
 [[tutorials-intro,Introduction to Qi4j]]
 === Introduction to Qi4j ===
