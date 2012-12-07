@@ -5,11 +5,14 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.Matches;
 
 /**
- * JAVADOC
+ * Implement @Matches constraint.
  */
 public class MatchesConstraint
     implements Constraint<Matches, String>
 {
+
+    private static final long serialVersionUID = 1L;
+
     @Override
     public boolean isValid( Matches annotation, String argument )
     {
@@ -21,4 +24,5 @@ public class MatchesConstraint
 
         return false;
     }
+
 }

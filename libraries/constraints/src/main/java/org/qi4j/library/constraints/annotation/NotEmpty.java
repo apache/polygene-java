@@ -28,8 +28,7 @@ import org.qi4j.library.constraints.NotEmptyCollectionConstraint;
 import org.qi4j.library.constraints.NotEmptyStringConstraint;
 
 /**
- * Marks a property as being a string, non null, non empty.
- *
+ * Marks a property as being a string or collection, non null, not empty.
  */
 @ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )

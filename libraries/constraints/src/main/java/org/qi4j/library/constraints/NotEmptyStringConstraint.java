@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Richard Wallace
+ * Copyright 2008 Richard Wallace.
  * Copyright 2008 Alin Dreghiciu.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -22,12 +22,13 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.NotEmpty;
 
 /**
- * Constraints that a string is non empty.
- *
+ * Implement @NotEmpty constraint for String.
  */
 public class NotEmptyStringConstraint
     implements Constraint<NotEmpty, String>
 {
+
+    private static final long serialVersionUID = 1L;
 
     @Override
     public boolean isValid( NotEmpty annotation, String value )

@@ -4,14 +4,18 @@ import org.qi4j.api.constraint.Constraint;
 import org.qi4j.library.constraints.annotation.Contains;
 
 /**
- * JAVADOC
+ * Implement @Contains constraint for String.
  */
 public class ContainsConstraint
     implements Constraint<Contains, String>
 {
+
+    private static final long serialVersionUID = 1L;
+
     @Override
     public boolean isValid( Contains annotation, String argument )
     {
         return argument.contains( annotation.value() );
     }
+
 }

@@ -6,6 +6,9 @@ import org.qi4j.api.constraint.ConstraintDeclaration;
 import org.qi4j.api.constraint.Constraints;
 import org.qi4j.library.constraints.LessThanConstraint;
 
+/**
+ * Marks a property as being a number, non null, less than the specified value.
+ */
 @ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )
 @Constraints( LessThanConstraint.class )

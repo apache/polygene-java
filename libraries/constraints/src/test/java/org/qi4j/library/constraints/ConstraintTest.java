@@ -9,9 +9,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 package org.qi4j.library.constraints;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import org.junit.Test;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -19,15 +22,15 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-
 import static org.junit.Assert.fail;
 
-public class ConstraintTest extends AbstractQi4jTest
+public class ConstraintTest
+    extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+
+    @Override
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         module.transients( TestCaseComposite.class );
     }
@@ -63,6 +66,34 @@ public class ConstraintTest extends AbstractQi4jTest
         TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().email().set( "rickard@gmail.com" );
+    }
+
+    @Test( expected = ConstraintViolationException.class )
+    public void testURLFail()
+    {
+        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        cb.prototype().url().set( "this is no url" );
+    }
+
+    @Test
+    public void testURLOk()
+    {
+        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        cb.prototype().url().set( "http://qi4j.org/path?query=string#fragment" );
+    }
+
+    @Test( expected = ConstraintViolationException.class )
+    public void testURIFail()
+    {
+        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        cb.prototype().uri().set( "" );
+    }
+
+    @Test
+    public void testURIOk()
+    {
+        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        cb.prototype().uri().set( "http://qi4j.org/path?query=string#fragment" );
     }
 
     @Test( expected = ConstraintViolationException.class )

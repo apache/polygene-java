@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2011, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,29 @@
  */
 package org.qi4j.library.constraints;
 
+import java.net.MalformedURLException;
 import org.qi4j.api.constraint.Constraint;
-import org.qi4j.library.constraints.annotation.InstanceOf;
+import org.qi4j.library.constraints.annotation.URL;
 
-/**
- * Implement @InstanceOf constraint.
- */
-public class InstanceOfConstraint
-    implements Constraint<InstanceOf, Object>
+public class URLConstraint
+    implements Constraint<URL, String>
 {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    public boolean isValid( InstanceOf annotation, Object parameter )
-        throws NullPointerException
+    @SuppressWarnings( "ResultOfObjectAllocationIgnored" )
+    public boolean isValid( URL annotation, String value )
     {
-        if( parameter != null )
+        try
         {
-            for( Class aClass : annotation.value() )
-            {
-                if( !aClass.isInstance( parameter ) )
-                {
-                    return false;
-                }
-            }
+            new java.net.URL( value );
+            return true;
         }
-        return true;
+        catch( MalformedURLException ignored )
+        {
+            return false;
+        }
     }
 
 }

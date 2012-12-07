@@ -6,6 +6,9 @@ import org.qi4j.api.constraint.ConstraintDeclaration;
 import org.qi4j.api.constraint.Constraints;
 import org.qi4j.library.constraints.MatchesConstraint;
 
+/**
+ * Marks a property as being a string, non null, matching the specified regular expression.
+ */
 @ConstraintDeclaration
 @Retention( RetentionPolicy.RUNTIME )
 @Constraints( MatchesConstraint.class )
