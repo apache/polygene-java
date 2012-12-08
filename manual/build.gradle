@@ -28,8 +28,20 @@ task website( type: org.qi4j.gradle.plugin.Documentation ) {
   docType = 'article'
 }
 
-task manuals() {
+task archiveWebsite(type: Copy) {
   dependsOn website
+  from('build/docs/website/')
+  into("$rootProject.projectDir/../qi4j.github.com/releases/$version")
+}
+
+task copyWebsite(type: Copy) {
+  dependsOn archiveWebsite
+  from("$rootProject.projectDir/../qi4j.github.com/releases/$version/")
+  into("$rootProject.projectDir/../qi4j.github.com/")
+}
+
+task manuals() {
+  dependsOn copyWebsite
 //  dependsOn userguide
 //  dependsOn referenceManual
 //  dependsOn recipes
