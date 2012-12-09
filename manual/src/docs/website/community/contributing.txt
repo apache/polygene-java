@@ -1,6 +1,6 @@
 [[community-contributing,Contributing]]
-Contributing to Qi4j
-=====================
+= Contributing to Qi4j =
+
 
 The Qi4j community is an open source community centered around software and components for Composite Oriented
 Programming on Java/Scala, and related design methodologies that are enhanced by using Qi4j, like Domain Driven
@@ -12,4 +12,12 @@ contribution and adheres to the community's Code of Conduct.
 Note that you can contribute to Qi4j also by contributing documentation or giving feedback on the current documentation.
 Basically, at all the places where you can get help, there's also room for contributions.
 
+[[google-groups,Forum]]
+== Google Groups forum qi4j-dev ==
+
+
+To discuss with the Qi4j community, it is easiest to do so at the Google Groups qi4j-dev forum. This forum is open
+to everyone and regular open source forum etiquette applies. Failure to be respectful may cause the poster to be
+expelled. The forum is a light and friendly one, where we are all friends working on a marvelous way of writing Java
+code.
 
