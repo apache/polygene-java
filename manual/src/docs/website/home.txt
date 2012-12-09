@@ -3,7 +3,7 @@
 
 NOTE: Qi4j™ SDK 2.0 is under development. Six alphas versions later we are aiming at the first release candidate. If you
 want to use 2.0 you can download builds from Qi4j™ <<continuous-integration,continuous integration>> or
-<<build-system,build>> the Qi4j™ SDK from <<codebase,source>>. Join the <<help,Mailing List>> to discuss and get
+<<build-system,build>> the Qi4j™ SDK from <<codebase,source>>. Join the <<google-groups>> to discuss and get
 help, or help others on http://stackoverflow.com/questions/tagged/qi4j[Stackoverflow].
 
 == What is Qi4j™? ==

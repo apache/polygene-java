@@ -12,11 +12,11 @@ The coding standards can be found in https://scm.ops4j.org/repos/ops4j/projects/
 
 == Design and Implementation work ==
 
-We want all discussions around the design and implementation to happen on the development mailing list,
-qi4j-dev@lists.ops4j.org. But we also recognize that instant messaging, voice and face-2-face are important tools to
+We want all discussions around the design and implementation to happen on the Google Group qi4j-dev.
+But we also recognize that instant messaging, voice and face-2-face are important tools to
 increase productivity. The participants are expected to convey in a comprehensible format (not just a copy/paste of
 the IM log) any new development, ideas and progress that occur during those sessions. The decisions for any multiple
-choices should be made on the mailing list only.
+choices should be made on the qi4j-dev forum at Google Groups only.
 
 == Committers ==
 
@@ -39,13 +39,13 @@ Incompatibility is not a reason within the 0.x series and not a reason between m
 
 There are cases when we need to revert commits made by people. Common sense should rule, but the above cases of
 incompatibility and legal reasons are two obvious examples. Sabotage, misunderstandings and mistakes are others.
-When such cause arises, the issue should be brought to the mailing list, explained why the commit should be reverted,
-and if noone objects within 48 hours, the commit can be reverted. If the concern results in a debate, then the issue is
-resolved in a simple majority vote among the committers.
+When such cause arises, the issue should be brought to the qi4j-dev forum at Google Groups, explained why the commit
+should be reverted, and if noone objects within 48 hours, the commit can be reverted. If the concern results in a
+debate, then the issue is resolved in a simple majority vote among the committers.
 
 == Infrastructure issues ==
 
-Any infrastructure requests or problems, should be directed to mailto:qi4j-dev@lists.ops4j.org.
+Any infrastructure requests or problems, should be directed to qi4j-dev forum at Google Groups.
 
 == Trademarks, Patents and Licenses ==
 

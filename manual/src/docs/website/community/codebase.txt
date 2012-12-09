@@ -81,7 +81,7 @@ something that we encourage.
 
 == How to Join? ==
 
-To become a Community Developer, just subscribe to the qi4j-dev@lists.ops4j.org mailing list and request it together
+To become a Community Developer, just subscribe to the qi4j-dev at Google Group and request it together
 with your GitHub user id. For Community Developer, the bar is really, really low and nothing more than a desire to help
 is required.
 
@@ -104,18 +104,18 @@ cd qi4j-sdk
 
 Qi4j generally uses a Commit-Then-Review policy on most changes. This allows a reasonable high velocity of development.
 
-Commits are emailed to qi4j-notify@lists.ops4j.org, and active contributors should subscribe to this list. Send a mail
-to qi4j-notify-subscribe@lists.ops4j.org to start subscription.
+Commits are visible at GitHub and active contributors should review all incoming commits to ensure quality of
+contributions and avoidance of mistakes.
 
-For any given commit, any member of the community may raise concern(s) on the qi4j-dev@lists.ops4j.org mailing list. We
+For any given commit, any member of the community may raise concern(s) on the qi4j-dev forum at Google Groups. We
 encourage as many people as possible to review the changes that are occurring. "With enough eyeballs every bug is
 shallow." wrote Eric S. Raymond in "The Cathedral and The Bazaar" about open source.
 
 Special rules applies to changes in the Core Test suite. Adding new tests are CTR, but modifying existing tests, either
-to accommodate for code changes in Core or to tighten the constraints of them, MUST be discussed on the qi4j-dev@
-mailing list, prior to committing them to the 'develop' branch. We recommend that a different branch is used for these
-changes, unless simply codesnippets are pasted to mail. This exists to ensure that we have a stable evolution of Qi4j
-Runtime, and no surprises will occur in existing applications with new versions.
+to accommodate for code changes in Core or to tighten the constraints of them, MUST be discussed on the qi4j-dev forum
+at Google Groups, prior to committing them to the 'develop' branch. We recommend that a different branch is used for
+these changes, unless simply codesnippets are pasted to mail. This exists to ensure that we have a stable evolution of
+Qi4j Runtime, and no surprises will occur in existing applications with new versions.
 
 == Git Development Model ==
 

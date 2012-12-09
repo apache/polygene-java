@@ -1,7 +1,7 @@
 [[participate,Participation Section]]
 = Participate =
 Qi4j is a community based on open development principles. That means we do the work in open, discussions happen on
-mailing lists and everyone is free to participate.
+qi4j-dev forum at Google Groups and everyone is free to participate.
 
 == Principles of Participation ==
 
@@ -30,11 +30,12 @@ people who are showing dedication to the project.
 
 == Community ==
 
-All remaining areas are open to anyone who ask (politely). Send GitHub ID to qi4j-dev@lists.ops4j.org together with an
-introduction of yourself.
+All remaining areas are open to anyone who ask (politely). Send GitHub ID to qi4j-dev forum at Google Groups together
+with an introduction of yourself.
 
 == Additionally ==
 
 GitHub's community features should not be understated. You are encouraged to clone our repostories, work on your own
-features and do pull requests for Core and Platform teams to pick up. It is wise to send a mail to qi4j-dev@ before
-issuing a pull request along with an explanation of what the patch is for and the rationale behind it.
+features and do pull requests for Core and Platform teams to pick up. It is wise to send a message to
+qi4j-dev forum at Google Groups before issuing a pull request along with an explanation of what the patch is for and
+the rationale behind it.

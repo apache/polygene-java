@@ -22,7 +22,7 @@ source=core/runtime/dev-status.xml
 --------------
 
 First of all, your code should never, ever, have a dependency on Core Runtime. If you think you need this, you should
-probably contact _Qi4j Dev_ mailing list and see if your usecase can either be solved in a existing way or perhaps
+probably contact qi4j-dev forum at Google Groups and see if your usecase can either be solved in a existing way or perhaps
 that a new Core SPI Extension is needed.
 
 Let's repeat that; *Never, never, ever depend on Core Runtime*. Make sure that the compile dependency does NOT include
