@@ -13,10 +13,10 @@ Note that you can contribute to Qi4j also by contributing documentation or givin
 Basically, at all the places where you can get help, there's also room for contributions.
 
 [[google-groups,Forum]]
-== Google Groups forum qi4j-dev ==
+== Google Groups qi4j-dev forum ==
 
-
-To discuss with the Qi4j community, it is easiest to do so at the Google Groups qi4j-dev forum. This forum is open
+To discuss with the Qi4j community, it is easiest to do so at the Google Groups
+https://groups.google.com/forum/?fromgroups#!forum/qi4j-dev[qi4j-dev forum]. This forum is open
 to everyone and regular open source forum etiquette applies. Failure to be respectful may cause the poster to be
 expelled. The forum is a light and friendly one, where we are all friends working on a marvelous way of writing Java
 code.

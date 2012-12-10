@@ -12,4 +12,5 @@ http://stackoverflow.com/questions/tagged/qi4j[StackOverflow].
 
 == Discussion ==
 
-To discuss with the Qi4j community, it is easiest to do so at the Google Groups qi4j-dev forum.
+To discuss with the Qi4j community, it is easiest to do so at the Google Groups
+https://groups.google.com/forum/?fromgroups#!forum/qi4j-dev[qi4j-dev forum].

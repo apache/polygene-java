@@ -62,12 +62,12 @@ After that you can declare dependencies on Qi4j artifacts:
     <dependency>
         <groupId>org.qi4j.core</groupId>
         <artifactId>org.qi4j.core.bootstrap</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>{revnumber}</version>
     </dependency>
     <dependency>
         <groupId>org.qi4j.core</groupId>
         <artifactId>org.qi4j.core.runtime</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>{revnumber}</version>
         <scope>runtime</scope>
     </dependency>
     <!-- ... -->
@@ -99,8 +99,8 @@ After that you can declare dependencies on Qi4j artifacts:
 // ...
 dependencies {
     // ...
-    compile "org.qi4j.core:org.qi4j.core.bootstrap:2.0-SNAPSHOT"
-    runtime "org.qi4j.core:org.qi4j.core.runtime:2.0-SNAPSHOT"
+    compile "org.qi4j.core:org.qi4j.core.bootstrap:{revnumber}"
+    runtime "org.qi4j.core:org.qi4j.core.runtime:{revnumber}"
     // ...
 }
 // ...
@@ -124,8 +124,8 @@ After that you can declare dependencies on Qi4j artifacts:
 [source,ruby]
 ----
 # ...
-compile.with 'org.qi4j.core:org.qi4j.core.bootstrap:2.0-SNAPSHOT'
-package(:war).with :libs => 'org.qi4j.core:org.qi4j.core.runtime:2.0-SNAPSHOT'
+compile.with 'org.qi4j.core:org.qi4j.core.bootstrap:{revnumber}'
+package(:war).with :libs => 'org.qi4j.core:org.qi4j.core.runtime:{revnumber}'
 # ...
 ----
 
@@ -148,10 +148,10 @@ After that you can declare dependencies on Qi4j artifacts:
 ----
 // ...
 libraryDependencies += \
-    "org.qi4j.core" % "org.qi4j.core.bootstrap" % "2.0-SNAPSHOT" \
+    "org.qi4j.core" % "org.qi4j.core.bootstrap" % "{revnumber}" \
     withSources() withJavadoc()
 libraryDependencies += \
-    "org.qi4j.core" % "org.qi4j.core.runtime" % "2.0-SNAPSHOT" % "runtime" \
+    "org.qi4j.core" % "org.qi4j.core.runtime" % "{revnumber}" % "runtime" \
     withSources() withJavadoc()
 // ...
 ----
@@ -187,9 +187,9 @@ After that you can declare dependencies on Qi4j artifacts:
     <dependencies>
         <!-- ... -->
         <dependency org="org.qi4j.core" name="org.qi4j.core.bootstrap"
-                    rev="2.0-SNAPSHOT"  conf="default" />
+                    rev="{revnumber}"  conf="default" />
         <dependency org="org.qi4j.core" name="org.qi4j.core.runtime"
-                    rev="2.0-SNAPSHOT"  conf="runtime" />
+                    rev="{revnumber}"  conf="runtime" />
         <!-- ... -->
     </dependencies>
     <!-- ... -->

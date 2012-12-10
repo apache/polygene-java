@@ -75,10 +75,12 @@ $( document ).ready( function($){
         }
 
         // Add Nabble forum
-        $section.append('<iframe id="qi4j-dev-iframe" class="qi4j-iframe"\
-                src="http://qi4j-dev.23929.n6.nabble.com/"\
-                frameborder="0" scrolling="no" allowtransparency="true">\
-        </iframe>');
+        if( false ) { // DEACTIVATED
+            $section.append('<iframe id="qi4j-dev-iframe" class="qi4j-iframe"\
+                    src="http://qi4j-dev.23929.n6.nabble.com/"\
+                    frameborder="0" scrolling="no" allowtransparency="true">\
+            </iframe>');
+        }
 
     }
 
