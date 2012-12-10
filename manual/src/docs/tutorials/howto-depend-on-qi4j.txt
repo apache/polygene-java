@@ -7,7 +7,7 @@ NOTE: Some of Qi4j <<libraries>> and <<extensions>> depend on artifacts that are
 add other repositories to your build scripts accordingly.
 
 Release artifacts are deployed to
-http://repository.ops4j.org/maven2/[http://repository.ops4j.org/maven2/].
+https://repository-qi4j.forge.cloudbees.com/release/[https://repository-qi4j.forge.cloudbees.com/release/].
 
 Snapshot artifacts are deployed to
 https://repository-qi4j.forge.cloudbees.com/snapshot/[https://repository-qi4j.forge.cloudbees.com/snapshot/].
@@ -34,18 +34,14 @@ First you need to register the Qi4j repositories:
 <repositories>
     <!-- ... -->
     <repository>
-        <id>qi4j-snapshots</id>
-        <url>https://repository-qi4j.forge.cloudbees.com/snapshot/</url>
-        <releases>
-            <enabled>false</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
+        <id>qi4j-releases</id>
+        <url>https://repository-qi4j.forge.cloudbees.com/release/</url>
     </repository>
     <repository>
-        <id>qi4j-releases</id>
-        <url>http://repository.ops4j.org/maven2/</url>
+        <id>qi4j-snapshots</id>
+        <url>https://repository-qi4j.forge.cloudbees.com/snapshot/</url>
+        <releases><enabled>false</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
     </repository>
     <!-- ... -->
 </repositories>
@@ -62,12 +58,12 @@ After that you can declare dependencies on Qi4j artifacts:
     <dependency>
         <groupId>org.qi4j.core</groupId>
         <artifactId>org.qi4j.core.bootstrap</artifactId>
-        <version>{revnumber}</version>
+        <version>QI4J_VERSION</version>
     </dependency>
     <dependency>
         <groupId>org.qi4j.core</groupId>
         <artifactId>org.qi4j.core.runtime</artifactId>
-        <version>{revnumber}</version>
+        <version>QI4J_VERSION</version>
         <scope>runtime</scope>
     </dependency>
     <!-- ... -->
@@ -75,6 +71,7 @@ After that you can declare dependencies on Qi4j artifacts:
 <!-- ... -->
 ----
 
+Where QI4J_VERSION is the Qi4j version you want to use.
 
 == Using Gradle ==
 
@@ -85,7 +82,7 @@ First you need to register the Qi4j repositories:
 // ...
 repositories {
     // ...
-    mavenRepo name: 'qi4j-releases', url: "http://repository.ops4j.org/maven2/"
+    mavenRepo name: 'qi4j-releases', url: "https://repository-qi4j.forge.cloudbees.com/release/"
     mavenRepo name: 'qi4j-snapshots', url: "https://repository-qi4j.forge.cloudbees.com/snapshot/"
     // ...
 }
@@ -99,13 +96,14 @@ After that you can declare dependencies on Qi4j artifacts:
 // ...
 dependencies {
     // ...
-    compile "org.qi4j.core:org.qi4j.core.bootstrap:{revnumber}"
-    runtime "org.qi4j.core:org.qi4j.core.runtime:{revnumber}"
+    compile "org.qi4j.core:org.qi4j.core.bootstrap:QI4J_VERSION"
+    runtime "org.qi4j.core:org.qi4j.core.runtime:QI4J_VERSION"
     // ...
 }
 // ...
 ----
 
+Where QI4J_VERSION is the Qi4j version you want to use.
 
 == Using Buildr ==
 
@@ -114,7 +112,7 @@ First you need to register the Qi4j repositories:
 [source,ruby]
 ----
 # ...
-repositories.remote << 'http://repository.ops4j.org/maven2/'
+repositories.remote << 'https://repository-qi4j.forge.cloudbees.com/release/'
 repositories.remote << 'https://repository-qi4j.forge.cloudbees.com/snapshot/'
 # ...
 ----
@@ -124,11 +122,12 @@ After that you can declare dependencies on Qi4j artifacts:
 [source,ruby]
 ----
 # ...
-compile.with 'org.qi4j.core:org.qi4j.core.bootstrap:{revnumber}'
-package(:war).with :libs => 'org.qi4j.core:org.qi4j.core.runtime:{revnumber}'
+compile.with 'org.qi4j.core:org.qi4j.core.bootstrap:QI4J_VERSION'
+package(:war).with :libs => 'org.qi4j.core:org.qi4j.core.runtime:QI4J_VERSION'
 # ...
 ----
 
+Where QI4J_VERSION is the Qi4j version you want to use.
 
 == Using SBT ==
 
@@ -137,7 +136,7 @@ First you need to register the Qi4j repositories:
 [source,scala]
 ----
 // ...
-resolvers += "qi4j-releases" at "http://repository.ops4j.org/maven2/"
+resolvers += "qi4j-releases" at "https://repository-qi4j.forge.cloudbees.com/release/"
 resolvers += "qi4j-snapshots" at "https://repository-qi4j.forge.cloudbees.com/snapshot/"
 // ...
 ----
@@ -148,14 +147,15 @@ After that you can declare dependencies on Qi4j artifacts:
 ----
 // ...
 libraryDependencies += \
-    "org.qi4j.core" % "org.qi4j.core.bootstrap" % "{revnumber}" \
+    "org.qi4j.core" % "org.qi4j.core.bootstrap" % "QI4J_VERSION" \
     withSources() withJavadoc()
 libraryDependencies += \
-    "org.qi4j.core" % "org.qi4j.core.runtime" % "{revnumber}" % "runtime" \
+    "org.qi4j.core" % "org.qi4j.core.runtime" % "QI4J_VERSION" % "runtime" \
     withSources() withJavadoc()
 // ...
 ----
 
+Where QI4J_VERSION is the Qi4j version you want to use.
 
 == Using Ivy ==
 
@@ -169,7 +169,7 @@ First you need to register the Qi4j repositories in a `ivysettings.xml` file:
         <chain name="chain">
             <!-- ... -->
             <ibiblio name="qi4j-releases"  m2compatible="true"
-                     root="http://repository.ops4j.org/maven2/"/>
+                     root="https://repository-qi4j.forge.cloudbees.com/release/"/>
             <ibiblio name="qi4j-snapshots" m2compatible="true"
                      root="https://repository-qi4j.forge.cloudbees.com/snapshot/"/>
             <!-- ... -->
@@ -187,12 +187,14 @@ After that you can declare dependencies on Qi4j artifacts:
     <dependencies>
         <!-- ... -->
         <dependency org="org.qi4j.core" name="org.qi4j.core.bootstrap"
-                    rev="{revnumber}"  conf="default" />
+                    rev="QI4J_VERSION"  conf="default" />
         <dependency org="org.qi4j.core" name="org.qi4j.core.runtime"
-                    rev="{revnumber}"  conf="runtime" />
+                    rev="QI4J_VERSION"  conf="runtime" />
         <!-- ... -->
     </dependencies>
     <!-- ... -->
 </ivy-module>
 ----
+
+Where QI4J_VERSION is the Qi4j version you want to use.
 
