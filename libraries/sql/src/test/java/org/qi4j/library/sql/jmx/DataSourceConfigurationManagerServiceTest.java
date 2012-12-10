@@ -36,7 +36,7 @@ import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceJMXAssembler;
 import org.qi4j.library.sql.c3p0.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.datasource.DataSources;
-import org.qi4j.library.sql.datasource.Databases;
+import org.qi4j.library.sql.common.Databases;
 import org.qi4j.library.sql.liquibase.LiquibaseConfiguration;
 import org.qi4j.library.sql.liquibase.LiquibaseService;
 

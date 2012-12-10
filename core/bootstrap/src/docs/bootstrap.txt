@@ -1,5 +1,6 @@
 //////////////////////
  * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,22 +41,79 @@ You can also;
     * Define default values for properties.
     * Add additional interfaces to composites dynamically.
     * Add concerns, mixins, constraints and side effects dynamically.
-    * Set _meta information_ on composite types.
+    * Set _meta information_ on defined types.
     * Import external services to be available as Qi4j services.
     * Tag services with markers
-    *
 
-== Defining Services ==
-TODO
 
-== Defining Values ==
-TODO
+
+== Defining Objects ==
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=objects
+--------------
+
 
 == Defining Transients ==
-TODO
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=transients
+--------------
+
+
+== Defining Values ==
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=values
+--------------
+
 
 == Defining Entities ==
-TODO
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=entities
+--------------
+
+
+== Defining Services ==
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=services
+--------------
+
+=== Tagging Services ===
+
+=== Importing external Services ===
+
+
+== Defining default values for Properties ==
+
+
+== Adding additional interfaces to composites ==
+
+
+== Adding concerns, mixins, constraints and side effects ==
+
+
+== Setting meta information on assembled types ==
+
+
+== Facilities ==
+
+=== Assembly Specifications ===
+
+=== Class Scanner ===
+
 
 == Using Assemblers ==
 Many <<libraries,libraries>> and <<extensions,extensions>> provides a cookie-cutter _Assembler_, to simplify the set up

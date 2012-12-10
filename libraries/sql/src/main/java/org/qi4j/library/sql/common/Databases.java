@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.qi4j.library.sql.datasource;
+package org.qi4j.library.sql.common;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,7 +24,6 @@ import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
-import org.qi4j.library.sql.common.SQLUtil;
 
 /**
  * Utility methods for performing SQL calls wrapping a given DataSource.

@@ -267,11 +267,11 @@ public final class UnitOfWorkInstance
         // Copy list so that it cannot be modified during completion
         List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>( callbacks );
 
-        // Check callbacks
-        notifyBeforeCompletion( currentCallbacks );
-
         // Commit state to EntityStores
         List<StateCommitter> committers = applyChanges();
+
+        // Check callbacks
+        notifyBeforeCompletion( currentCallbacks );
 
         // Commit all changes
         for( StateCommitter committer : committers )
