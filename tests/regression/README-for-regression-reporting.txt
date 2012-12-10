@@ -10,7 +10,7 @@ Regression Test reporting follows the following steps;
 
 4. Commit and push this to the 'origin develop' branch.
 
-5. Ping the community on qi4j-dev@lists.ops4j.org
+5. Ping the community on the qi4j-dev forum at Google Groups.
 
 
 Once the reported problem has been solved, the test will be moved to the sub-project's unit test area.

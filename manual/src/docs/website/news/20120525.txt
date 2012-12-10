@@ -37,5 +37,5 @@ says Paul Merlin, another Core Team member who placed the final touches on the d
 
 == Enjoy the new website ==
 
-Any feedback is welcome, either on GitHub or qi4j-dev@lists.ops4j.org mailing list.
+Any feedback is welcome, either on GitHub or qi4j-dev forum at Google Groups.
 

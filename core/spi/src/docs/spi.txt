@@ -33,7 +33,7 @@ There are currently 4 Core SPI extensions;
 
 Qi4j Runtime Extensions implementations may depend on Qi4j Libraries, but Libraries are NOT ALLOWED to depend on
 Extensions. Applications code is NOT ALLOWED to depend on extensions. And application code SHOULD NOT depend on the
-Core Extension SPI. If you think that is needed, please contact _Qi4j Dev_ mailing list, to see if your usecase can
+Core Extension SPI. If you think that is needed, please contact qi4j-dev forum at Google Groups, to see if your usecase can
 be solved in a support manner, or that we need to extend the Core API to support it.
 
 
