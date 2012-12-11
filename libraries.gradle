@@ -14,7 +14,7 @@ def dnsJavaVersion = '2.1.1'
 def ehcacheVersion = '2.6.2'
 def elasticsearchVersion = '0.19.11' // 0.20.0.RC1 exists
 def freemarkerVersion = '2.3.19'
-def gaeVersion = '1.3.3.1'
+def gaeVersion = '1.7.3'
 def groovyVersion = '2.0.5'
 def guavaVersion = '13.0.1'
 def h2Version = '1.3.168'
@@ -51,7 +51,7 @@ def scalaVersion = '2.9.2'
 ext.servletVersion = '3.0.1'
 def shiroVersion = '1.2.1'
 def skedVersion = '1.2'
-def sleepycatVersion = '4.0.103'
+def sleepycatVersion = '4.0.103' // REPO 4.0.92
 def slf4jVersion = '1.7.2'
 def solrVersion = "1.4.1" // 4.0.0 - Fails to compile!
 def springVersion = '3.1.2.RELEASE'
@@ -207,7 +207,7 @@ rootProject.ext {
           leveldb_api: "org.iq80.leveldb:leveldb-api:$leveldbVersion",
           leveldb_java: "org.iq80.leveldb:leveldb:$leveldbVersion",
           leveldb_jni_all: "org.fusesource.leveldbjni:leveldbjni-all:$leveldbJniVersion",
-          appengine: "com.google.appengine:appengine-api:$gaeVersion",
+          appengine: "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
           mongodb: "org.mongodb:mongo-java-driver:$mongodbVersion",
           riak: "com.basho.riak:riak-client:$riakVersion",
           neo4j: [ "org.neo4j:neo4j:$neoVersion",

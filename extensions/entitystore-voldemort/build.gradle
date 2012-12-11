@@ -8,26 +8,24 @@ repositories {
 }
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.locking"))
-  compile(libraries.slf4j_api)
-  compile(libraries.voldemort )
-  compile(libraries.guava )
-  testRuntime(libraries.sleepycat )
-  testRuntime(libraries.log4j )
-  testRuntime( libraries.jdom )
-  testRuntime(libraries.velocity )
-  testRuntime(libraries.commons_codec )
-  testRuntime(libraries.commons_dbcp )
-  testRuntime(libraries.commons_io )
-  testRuntime(libraries.commons_lang )
-  testCompile(libraries.junit)
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+
+  compile project(":org.qi4j.core:org.qi4j.core.spi")
+  compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
+  compile project(":org.qi4j.libraries:org.qi4j.library.locking")
+  compile libraries.voldemort
+  compile libraries.guava
+
+  testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
+
+  testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
+  testRuntime libraries.logback
+  testRuntime libraries.sleepycat
+  testRuntime libraries.log4j
+  testRuntime libraries.jdom
+  testRuntime libraries.velocity
+  testRuntime libraries.commons_codec
+  testRuntime libraries.commons_dbcp
+  testRuntime libraries.commons_io
+  testRuntime libraries.commons_lang
 }
 

@@ -80,7 +80,6 @@ allprojects {
 
   repositories {
     mavenCentral()
-    mavenRepo name: 'ops4j-repo', url: "http://repository.ops4j.org/maven2/"
     mavenRepo name: 'aduna-repo', url: "http://repo.aduna-software.org/maven2/releases/"
     mavenRepo name: 'restlet-repo', url: 'http://maven.restlet.org'
     mavenRepo name: 'maven2-repository.dev.java.net', url: "http://download.java.net/maven/2"
