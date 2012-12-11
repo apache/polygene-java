@@ -12,7 +12,7 @@ def cxfVersion = '2.5.6' // 2.7.0 - Unable to resolve dependencies!
 def derbyVersion = '10.9.1.0'
 def dnsJavaVersion = '2.1.1'
 def ehcacheVersion = '2.6.2'
-def elasticsearchVersion = '0.19.11' // 0.20.0.RC1 exists
+def elasticsearchVersion = '0.20.1'
 def freemarkerVersion = '2.3.19'
 def gaeVersion = '1.7.3'
 def groovyVersion = '2.0.5'
@@ -51,14 +51,14 @@ def scalaVersion = '2.9.2'
 ext.servletVersion = '3.0.1'
 def shiroVersion = '1.2.1'
 def skedVersion = '1.2'
-def sleepycatVersion = '4.0.103' // REPO 4.0.92
+def sleepycatVersion = '4.0.103' // Taken from Oracle maven repository, 4.0.92 available in central
 def slf4jVersion = '1.7.2'
 def solrVersion = "1.4.1" // 4.0.0 - Fails to compile!
 def springVersion = '3.1.2.RELEASE'
 def sqliteVersion = '3.7.2'
 def strutsVersion = '2.3.7'
 def velocityVersion = '1.7'
-def voldemortVersion = '0.81' // 0.96 - Not in any repository?
+def voldemortVersion = '0.81' // Taken from Clojars maven repository, 0.96 not in any repository?
 def wicketVersion = '1.5.8' // 6.3.0 - Samples fails to compile!
 def wicketStatelessVersion = '1.5.0'
 def woodstoxVersion = '4.1.4'
@@ -192,10 +192,7 @@ rootProject.ext {
           // Library & Extension dependencies
           jodatime: "joda-time:joda-time:$jodaTimeVersion",
           ehcache: "net.sf.ehcache:ehcache-core:$ehcacheVersion",
-          elasticsearch: [
-            "org.elasticsearch:elasticsearch:$elasticsearchVersion",
-            "org.xerial.snappy:snappy-java:1.0.4.1"
-          ],
+          elasticsearch: "org.elasticsearch:elasticsearch:$elasticsearchVersion",
           h2: "com.h2database:h2:$h2Version",
           hazelcast: "com.hazelcast:hazelcast:$hazelcastVersion",
           jclouds_core: "org.jclouds:jclouds-core:$jcloudsVersion",

@@ -209,12 +209,12 @@ public interface ElasticSearchFinder
 
             } else if ( spec instanceof ContainsAllSpecification ) {
 
-                ContainsAllSpecification contAllSpec = ( ContainsAllSpecification ) spec;
+                ContainsAllSpecification<?> contAllSpec = ( ContainsAllSpecification ) spec;
                 processContainsAllSpecification( filterBuilder, contAllSpec, variables );
 
             } else if ( spec instanceof ContainsSpecification ) {
 
-                ContainsSpecification contSpec = ( ContainsSpecification ) spec;
+                ContainsSpecification<?> contSpec = ( ContainsSpecification ) spec;
                 processContainsSpecification( filterBuilder, contSpec, variables );
 
             } else if ( spec instanceof MatchesSpecification ) {
@@ -224,27 +224,27 @@ public interface ElasticSearchFinder
 
             } else if ( spec instanceof PropertyNotNullSpecification ) {
 
-                PropertyNotNullSpecification propNotNullSpec = ( PropertyNotNullSpecification ) spec;
+                PropertyNotNullSpecification<?> propNotNullSpec = ( PropertyNotNullSpecification ) spec;
                 processPropertyNotNullSpecification( filterBuilder, propNotNullSpec );
 
             } else if ( spec instanceof PropertyNullSpecification ) {
 
-                PropertyNullSpecification propNullSpec = ( PropertyNullSpecification ) spec;
+                PropertyNullSpecification<?> propNullSpec = ( PropertyNullSpecification ) spec;
                 processPropertyNullSpecification( filterBuilder, propNullSpec );
 
             } else if ( spec instanceof AssociationNotNullSpecification ) {
 
-                AssociationNotNullSpecification assNotNullSpec = ( AssociationNotNullSpecification ) spec;
+                AssociationNotNullSpecification<?> assNotNullSpec = ( AssociationNotNullSpecification ) spec;
                 processAssociationNotNullSpecification( filterBuilder, assNotNullSpec );
 
             } else if ( spec instanceof AssociationNullSpecification ) {
 
-                AssociationNullSpecification assNullSpec = ( AssociationNullSpecification ) spec;
+                AssociationNullSpecification<?> assNullSpec = ( AssociationNullSpecification ) spec;
                 processAssociationNullSpecification( filterBuilder, assNullSpec );
 
             } else if ( spec instanceof ManyAssociationContainsSpecification ) {
 
-                ManyAssociationContainsSpecification manyAssContSpec = ( ManyAssociationContainsSpecification ) spec;
+                ManyAssociationContainsSpecification<?> manyAssContSpec = ( ManyAssociationContainsSpecification ) spec;
                 processManyAssociationContainsSpecification( filterBuilder, manyAssContSpec, variables );
 
             } else {
@@ -328,7 +328,7 @@ public interface ElasticSearchFinder
         }
 
         private void processEqualitySpecification( FilterBuilder filterBuilder,
-                                                   ComparisonSpecification spec,
+                                                   ComparisonSpecification<?> spec,
                                                    Map<String, Object> variables )
                 throws EntityFinderException
         {
@@ -360,7 +360,7 @@ public interface ElasticSearchFinder
         }
 
         private void processComparisonSpecification( FilterBuilder filterBuilder,
-                                                     ComparisonSpecification spec,
+                                                     ComparisonSpecification<?> spec,
                                                      Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ComparisonSpecification {}", spec );
@@ -392,7 +392,7 @@ public interface ElasticSearchFinder
         }
 
         private void processContainsAllSpecification( FilterBuilder filterBuilder,
-                                                      ContainsAllSpecification spec,
+                                                      ContainsAllSpecification<?> spec,
                                                       Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ContainsAllSpecification {}", spec );
@@ -417,7 +417,7 @@ public interface ElasticSearchFinder
         }
 
         private void processContainsSpecification( FilterBuilder filterBuilder,
-                                                   ContainsSpecification spec,
+                                                   ContainsSpecification<?> spec,
                                                    Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ContainsSpecification {}", spec );
@@ -450,35 +450,35 @@ public interface ElasticSearchFinder
         }
 
         private void processPropertyNotNullSpecification( FilterBuilder filterBuilder,
-                                                          PropertyNotNullSpecification spec )
+                                                          PropertyNotNullSpecification<?> spec )
         {
             LOGGER.trace( "Processing PropertyNotNullSpecification {}", spec );
             addFilter( existsFilter( spec.getProperty().toString() ), filterBuilder );
         }
 
         private void processPropertyNullSpecification( FilterBuilder filterBuilder,
-                                                       PropertyNullSpecification spec )
+                                                       PropertyNullSpecification<?> spec )
         {
             LOGGER.trace( "Processing PropertyNullSpecification {}", spec );
             addFilter( missingFilter( spec.getProperty().toString() ), filterBuilder );
         }
 
         private void processAssociationNotNullSpecification( FilterBuilder filterBuilder,
-                                                             AssociationNotNullSpecification spec )
+                                                             AssociationNotNullSpecification<?> spec )
         {
             LOGGER.trace( "Processing AssociationNotNullSpecification {}", spec );
             addFilter( existsFilter( spec.getAssociation().toString() + ".identity" ), filterBuilder );
         }
 
         private void processAssociationNullSpecification( FilterBuilder filterBuilder,
-                                                          AssociationNullSpecification spec )
+                                                          AssociationNullSpecification<?> spec )
         {
             LOGGER.trace( "Processing AssociationNullSpecification {}", spec );
             addFilter( missingFilter( spec.getAssociation().toString() + ".identity" ), filterBuilder );
         }
 
         private void processManyAssociationContainsSpecification( FilterBuilder filterBuilder,
-                                                                  ManyAssociationContainsSpecification spec,
+                                                                  ManyAssociationContainsSpecification<?> spec,
                                                                   Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ManyAssociationContainsSpecification {}", spec );
