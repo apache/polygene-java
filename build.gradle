@@ -34,33 +34,6 @@ buildscript {
   }
 }
 
-
-// External tools BEGIN ---------------------------------------------------
-
-// Sonar default configuration, should be removed once using Gradle 1.3
-// See https://github.com/gradle/gradle/pull/107
-sonar {
-    server {
-        url = "http://localhost:9000/"
-    }
-    database {
-        url = "jdbc:h2:tcp://localhost:9092/sonar"
-        driverClassName = "org.h2.Driver"
-        username = "sonar"
-        password = "sonar"
-    }
-}
-
-// IDEA plugin configuration
-idea.project.ipr {
-  withXml { provider ->
-    provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
-  }
-}
-
-// External tools END -----------------------------------------------------
-
-
 allprojects {
 
   apply plugin: 'eclipse'
@@ -70,7 +43,6 @@ allprojects {
 //  apply plugin: 'checkstyle'
   apply plugin: 'project-report'
   apply plugin: 'maven'
-
 
   defaultTasks 'classes', 'test'
 
@@ -300,7 +272,7 @@ allprojects {
       module.dependencies*.exported = true
     }
   }
-} // allproject END -------------------------------------------------------
+} // allprojects END -------------------------------------------------------
 
 gradle.taskGraph.whenReady {taskGraph ->
   taskGraph.allTasks.last().doLast {
@@ -400,7 +372,7 @@ def srcDistImage = copySpec {
   exclude '**/*.iml'      // IDEA files
   exclude 'org.qi4j.ipr'  // IDEA files
   exclude 'org.qi4j.iws'  // IDEA files
-  exclude '**/out/*'       // build output
+  exclude '**/out/*'      // build output
   exclude '**/.git/'      // git directories
   exclude '**/.git*'      // git files
   exclude '**/.gradle/'   // gradle management files
@@ -516,7 +488,6 @@ task release {
   dependsOn allprojects*.uploadArchives, dist
 }
 
-//
 // This is a task that generates the gradlew scripts, allowing users to run gradle without having gradle installed
 // on their system.
 // This task should be run by "build master" and the resulting ouput committed to source control.  Its outputs include:
@@ -526,3 +497,54 @@ task release {
 task wrapper( type: Wrapper ) {
   gradleVersion = '1.3'
 }
+
+
+// External tools BEGIN ---------------------------------------------------
+
+// Sonar configuration - Used at nemo.sonarsource.org
+// Using system properties for easy configuration from outside the build
+sonar {
+    server {
+        url = System.getProperty("sonar.host.url") ?: "http://localhost:9000/"
+    }
+    database {
+        url = System.getProperty("sonar.jdbc.url") ?: "jdbc:h2:tcp://localhost:9092/sonar"
+        driverClassName = System.getProperty("sonar.jdbc.driver") ?: "org.h2.Driver"
+        username = System.getProperty("sonar.jdbc.username") ?: "sonar"
+        password = System.getProperty("sonar.jdbc.password") ?: "sonar"
+    }
+}
+
+// Sonar configuration for subprojects, mainly for code coverage
+subprojects { subproject ->
+    // See http://www.gradle.org/docs/current/userguide/dependency_management.html#sub:configurations
+    // and http://www.gradle.org/docs/current/dsl/org.gradle.api.artifacts.ConfigurationContainer.html
+    configurations {
+        jacoco //Configuration Group used by Sonar to provide Code Coverage using JaCoCo
+        sonar {
+          project {
+              dynamicAnalysis  = "reuseReports"
+              withProjectProperties { props ->
+                  props["sonar.core.codeCoveragePlugin"] = "jacoco"
+                  props["sonar.jacoco.reportPath"]       = "${buildDir}/jacoco.exec"
+              }
+          }
+        }
+    }
+    dependencies {
+        jacoco group: "org.jacoco", name: "org.jacoco.agent", version: "0.5.10.201208310627", classifier: "runtime"
+    }
+    test {
+        jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${subproject.buildDir}/jacoco.exec,includes=org.qi4j.*"
+    }
+}
+
+// IDEA plugin configuration
+idea.project.ipr {
+  withXml { provider ->
+    provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+  }
+}
+
+// External tools END -----------------------------------------------------
+
