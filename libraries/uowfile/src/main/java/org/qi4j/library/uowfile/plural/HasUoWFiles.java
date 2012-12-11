@@ -49,7 +49,7 @@ public interface HasUoWFiles<T extends Enum<T>>
         @Service
         private UoWFileFactory uowFileFactory;
         @This
-        private UoWFilesLocator locator;
+        private UoWFilesLocator<R> locator;
 
         @Override
         public File attachedFile( R key )
@@ -73,7 +73,7 @@ public interface HasUoWFiles<T extends Enum<T>>
         public Iterable<File> managedFiles()
         {
             List<File> managedFiles = new ArrayList<File>();
-            for ( File eachAttachedFile : ( Iterable<File> ) locator.locateAttachedFiles() ) {
+            for ( File eachAttachedFile : locator.locateAttachedFiles() ) {
                 managedFiles.add( uowFileFactory.createCurrentUoWFile( eachAttachedFile ).asFile() );
             }
             return managedFiles;
