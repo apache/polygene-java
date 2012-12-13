@@ -1,10 +1,17 @@
-//////////////////////
-This file is simply a placeholder.
-
-The Apache Web Server is configured to rewrite the URL from javadocs.html to javadoc/index.html
-
-//////////////////////
-
 [[javadocs, JavaDocs]]
 = Javadoc =
+
+=== JavaDocs ===
+
+Javadocs for all post-2.0 releases is available online. Pre-2.0, it is available in the SDK download tarball.
+
+
+=== Alias Versions ===
+
+   * link:../latest/javadocs/index.htm[Latest Release = Master Branch] ()
+   * link:../develop/javadocs/index.htm[Develop Branch]
+
+=== Releases ===
+
+   * link:../2.0/javadocs/index.htm[Release 2.0]
 
