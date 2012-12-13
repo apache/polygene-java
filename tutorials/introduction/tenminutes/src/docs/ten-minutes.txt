@@ -1,8 +1,8 @@
 [[ten-minutes-intro,Qi4j in 10 minutes]]
 = Qi4j in 10 minutes =
 
-TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the Qi4j SDK sources. You should
-start your favorite editor and find the code related to this tutorial, run it and play with it.
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the <<download,Qi4j SDK sources>>.
+You should start your favorite editor and find the code related to this tutorial, run it and play with it.
 
     * Qi4j does not introduce any new programming language, no additional compilers needed and all your existing tools
       work just like before. It is pure Java.

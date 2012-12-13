@@ -1,15 +1,15 @@
 [[howto-depend-on-qi4j,Depend on Qi4j in your build]]
 = Depend on Qi4j in your build =
 
-Qi4j SDK Distribution is downloadable from the <<home>> or from the <<continuous-integration>>.
-
 NOTE: Some of Qi4j <<libraries>> and <<extensions>> depend on artifacts that are not deployed in central, you'll need to
 add other repositories to your build scripts accordingly.
 
 Release artifacts are deployed to
+
 https://repository-qi4j.forge.cloudbees.com/release/[https://repository-qi4j.forge.cloudbees.com/release/].
 
 Snapshot artifacts are deployed to
+
 https://repository-qi4j.forge.cloudbees.com/snapshot/[https://repository-qi4j.forge.cloudbees.com/snapshot/].
 
 As they are not deployed to central you need to add the repositories to your build scripts.
@@ -17,8 +17,7 @@ As they are not deployed to central you need to add the repositories to your bui
 
 == Manually ==
 
-If you don't rely on your build scripts dependency resolution mechanism you should download the SDK distribution from
-the <<home>> or from the <<continuous-integration>>.
+If you don't rely on your build scripts dependency resolution mechanism you should <<download>> the SDK distribution.
 
 If you're in manual dependency management you should be able to find out which JAR files you'll need to add to your
 projects.
@@ -71,7 +70,7 @@ After that you can declare dependencies on Qi4j artifacts:
 <!-- ... -->
 ----
 
-Where QI4J_VERSION is the Qi4j version you want to use.
+Where `QI4J_VERSION` is the Qi4j version you want to use.
 
 == Using Gradle ==
 
@@ -103,7 +102,7 @@ dependencies {
 // ...
 ----
 
-Where QI4J_VERSION is the Qi4j version you want to use.
+Where `QI4J_VERSION` is the Qi4j version you want to use.
 
 == Using Buildr ==
 
@@ -127,7 +126,7 @@ package(:war).with :libs => 'org.qi4j.core:org.qi4j.core.runtime:QI4J_VERSION'
 # ...
 ----
 
-Where QI4J_VERSION is the Qi4j version you want to use.
+Where `QI4J_VERSION` is the Qi4j version you want to use.
 
 == Using SBT ==
 
@@ -155,7 +154,7 @@ libraryDependencies += \
 // ...
 ----
 
-Where QI4J_VERSION is the Qi4j version you want to use.
+Where `QI4J_VERSION` is the Qi4j version you want to use.
 
 == Using Ivy ==
 
@@ -196,5 +195,5 @@ After that you can declare dependencies on Qi4j artifacts:
 </ivy-module>
 ----
 
-Where QI4J_VERSION is the Qi4j version you want to use.
+Where `QI4J_VERSION` is the Qi4j version you want to use.
 

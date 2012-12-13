@@ -21,7 +21,7 @@
 source=core/api/dev-status.xml
 --------------
 
-The Qi4j Core API is the primary interface for client application code during the main exectution phase, i.e. after the
+The Qi4j Core API is the primary interface for client application code during the main execution phase, i.e. after the
 application has been activated.
 
 :leveloffset: {level3}
@@ -108,6 +108,6 @@ include::module.txt[]
 
 include::type-lookup.txt[]
 
-:leveloffset: {level2}
+:leveloffset: {level3}
 
 include::metrics.txt[]

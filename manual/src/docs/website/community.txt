@@ -9,6 +9,10 @@ include::community/intro.txt[]
 
 :leveloffset: 2
 
+include::community/download.txt[]
+
+:leveloffset: 2
+
 include::community/help.txt[]
 
 :leveloffset: 2

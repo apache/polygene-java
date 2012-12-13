@@ -1,6 +1,9 @@
 package org.qi4j.bootstrap;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.service.importer.InstanceImporter;
+import org.qi4j.api.service.importer.NewObjectImporter;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Module;
@@ -103,6 +106,69 @@ public class DocumentationSupport
         }
         // END SNIPPET: services
 
+    }
+
+    public static class taggedServices
+        implements Assembler
+    {
+
+        public static interface MyService {}
+
+        // START SNIPPET: tagged-services
+        @Override
+        public void assemble( ModuleAssembly module )
+            throws AssemblyException
+        {
+            module.services( MyService.class ).taggedWith( "foo", "bar" );
+        }
+        // END SNIPPET: tagged-services
+    }
+
+    public static class importedServices
+        implements Assembler
+    {
+
+        public static class MyService {}
+
+        // START SNIPPET: imported-services
+        @Override
+        public void assemble( ModuleAssembly module )
+            throws AssemblyException
+        {
+            module.importedServices( MyService.class ).
+                importedBy( InstanceImporter.class ).
+                setMetaInfo( new MyService() );
+
+            // OR
+
+            module.objects( MyService.class );
+            module.importedServices( MyService.class ).
+                importedBy( NewObjectImporter.class );
+        }
+        // END SNIPPET: imported-services
+    }
+
+    public static class defaultPropertyValues
+        implements Assembler
+    {
+
+        public interface MyValue { Property<String> foo(); }
+        public interface MyEntity { Property<String> cathedral(); }
+
+        // START SNIPPET: properties-defaults
+        @Override
+        public void assemble( ModuleAssembly module )
+            throws AssemblyException
+        {
+            module.values( MyValue.class );
+            MyValue myValueDefaults = module.forMixin( MyValue.class ).declareDefaults();
+            myValueDefaults.foo().set( "bar" );
+
+            module.entities( MyEntity.class );
+            MyEntity myEntityDefaults = module.forMixin( MyEntity.class ).declareDefaults();
+            myEntityDefaults.cathedral().set( "bazar" );
+        }
+        // END SNIPPET: properties-defaults
     }
 
     public static class singleton

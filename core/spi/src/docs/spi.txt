@@ -22,26 +22,34 @@ source=core/spi/dev-status.xml
 --------------
 
 The Qi4j Core Runtime has a number of extension points, which we call the _Qi4j Core Extension SPI_. These are defined
-interfaces used *only* by the Core Runtime and *never* directly by application code.
+interfaces used *only* by the Core Runtime and *never* directly by application code. <<extensions>> are assembled in
+applications during the bootstrap phase.
 
 There are currently 4 Core SPI extensions;
 
     * EntityStore SPI
-    * Indexing/Query SPI
     * Cache SPI
+    * Indexing/Query SPI
     * Metrics SPI
 
 Qi4j Runtime Extensions implementations may depend on Qi4j Libraries, but Libraries are NOT ALLOWED to depend on
 Extensions. Applications code is NOT ALLOWED to depend on extensions. And application code SHOULD NOT depend on the
-Core Extension SPI. If you think that is needed, please contact qi4j-dev forum at Google Groups, to see if your usecase can
-be solved in a support manner, or that we need to extend the Core API to support it.
+Core Extension SPI. If you think that is needed, please contact qi4j-dev forum at Google Groups, to see if your usecase
+can be solved in a support manner, or that we need to extend the Core API to support it.
 
+:leveloffset: {level3}
 
 include::entitystore.txt[]
 
+:leveloffset: {level3}
+
 include::cache.txt[]
 
+:leveloffset: {level3}
+
 include::indexing.txt[]
+
+:leveloffset: {level3}
 
 include::metrics.txt[]
 

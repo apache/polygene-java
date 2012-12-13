@@ -3,8 +3,8 @@
 
 == Overview ==
 
-TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the Qi4j SDK sources. You should
-start your favorite editor and find the code related to this tutorial, run it and play with it.
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the <<download,Qi4j SDK sources>>.
+You should start your favorite editor and find the code related to this tutorial, run it and play with it.
 
 In this section you will find a comprehensive set of tutorials about Composite
 Oriented Programming using Qi4j.
@@ -50,8 +50,6 @@ At the bottom of each tutorial step, the is Solutions section, which list the fi
 have followed the instructions.
 
 === Services Composites Tutorial ===
-
-CAUTION: This tutorial is still work-in-progress!
 
 In this other set of tutorials it will be shown how to create and work with Service Composites, which are composites
 that extends from the ServiceComposite class. We will refactor one a very simple Library where you can borrow and

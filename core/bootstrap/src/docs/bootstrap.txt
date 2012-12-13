@@ -93,11 +93,27 @@ tag=services
 
 === Tagging Services ===
 
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=tagged-services
+--------------
+
 === Importing external Services ===
 
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=imported-services
+--------------
 
 == Defining default values for Properties ==
 
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=properties-defaults
+--------------
 
 == Adding additional interfaces to composites ==
 
