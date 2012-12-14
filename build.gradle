@@ -380,7 +380,7 @@ task javadocs( type: Javadoc ) {
 }
 
 task archiveJavadocs(type: Copy ) {
-//  dependsOn javadocs
+  dependsOn javadocs
 
   if( rootProject.version == '0' )
   {
