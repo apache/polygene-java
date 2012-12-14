@@ -9,6 +9,10 @@ include::news/news.txt[]
 
 :leveloffset: 1
 
+include::downloads/downloads.txt[]
+
+:leveloffset: 1
+
 include::tutorials.txt[]
 
 :leveloffset: 1

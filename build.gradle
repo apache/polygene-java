@@ -272,7 +272,7 @@ allprojects {
 
   // Upload Archives - Artifact Deployment
   uploadArchives.doFirst {
-    if( version == 0 )
+    if( version == "0" )
     {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
@@ -353,15 +353,31 @@ task javadocs( type: Javadoc ) {
 
 }
 
+task archiveJavadocs(type: Copy ) {
+//  dependsOn javadocs
+
+  if( rootProject.version == '0' )
+  {
+    into( "$rootProject.projectDir/../qi4j.github.com/develop/javadocs/" )
+  }
+  else
+  {
+    into( "$rootProject.projectDir/../qi4j.github.com/$version/javadocs/" )
+  }
+  from( 'build/docs/javadoc/' )
+}
+
+
 // Build All
 task buildAll( dependsOn: [
-    javadocs, 
+    archiveJavadocs,
     test, 
     jar, 
     subprojects*.dependencyReport, 
     subprojects*.assemble, 
     ':org.qi4j.manual:website'
 ] ) { }
+
 // Prepare runtime dependencies download facility (metalink)
 buildAll.doLast {
     def runtimeDepsMetalink = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">\n"
@@ -514,7 +530,7 @@ task release {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
   }
-  dependsOn allprojects*.uploadArchives, dist
+  dependsOn archiveJavadocs, ':org.qi4j.manual:copyWebsite', allprojects*.uploadArchives, dist
 }
 
 //

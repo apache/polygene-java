@@ -29,8 +29,8 @@ task website( type: org.qi4j.gradle.plugin.Documentation ) {
 }
 
 task archiveWebsite( type: Copy ) {
-  dependsOn website
-  if( rootProject.version == 0 )
+//  dependsOn website
+  if( rootProject.version == '0' )
   {
     into( "$rootProject.projectDir/../qi4j.github.com/develop" )
   }
