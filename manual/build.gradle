@@ -1,10 +1,10 @@
 description = "Qi4j Manuals and Website."
 
 dependencies {
-    compile(project(":org.qi4j.core:org.qi4j.core.api"))
-    compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
-    compile(project(":org.qi4j.libraries:org.qi4j.library.logging"))
-    compile(libraries.slf4j_api)
+  compile( project( ":org.qi4j.core:org.qi4j.core.api" ) )
+  compile( project( ":org.qi4j.libraries:org.qi4j.library.constraints" ) )
+  compile( project( ":org.qi4j.libraries:org.qi4j.library.logging" ) )
+  compile( libraries.slf4j_api )
 }
 
 //task userguide( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
@@ -28,16 +28,27 @@ task website( type: org.qi4j.gradle.plugin.Documentation ) {
   docType = 'article'
 }
 
-task archiveWebsite(type: Copy) {
-  dependsOn website
-  from('build/docs/website/')
-  into("$rootProject.projectDir/../qi4j.github.com/releases/$version")
+task archiveWebsite( type: Copy ) {
+//  dependsOn website
+  if( rootProject.version == '0' )
+  {
+    into( "$rootProject.projectDir/../qi4j.github.com/develop" )
+  }
+  else
+  {
+    into( "$rootProject.projectDir/../qi4j.github.com/$version" )
+  }
+  from( 'build/docs/website/' )
 }
 
-task copyWebsite(type: Copy) {
+task copyWebsite( type: Copy ) {
   dependsOn archiveWebsite
-  from("$rootProject.projectDir/../qi4j.github.com/releases/$version/")
-  into("$rootProject.projectDir/../qi4j.github.com/")
+  if( rootProject.version == 0 )
+  {
+    throw new GradleException( "'version' must be given as a system property to perform website update." )
+  }
+  from( "$rootProject.projectDir/../qi4j.github.com/$version/" )
+  into( "$rootProject.projectDir/../qi4j.github.com/latest/" )
 }
 
 task manuals() {

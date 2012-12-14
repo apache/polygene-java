@@ -12,7 +12,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Function;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.Assert.assertThat;
 
 public class FunctionalListTest extends AbstractQi4jTest

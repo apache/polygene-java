@@ -71,6 +71,7 @@ allprojects {
   apply plugin: 'project-report'
   apply plugin: 'maven'
 
+
   defaultTasks 'classes', 'test'
 
   group = name.substring( 0, name.lastIndexOf( '.' ) )
@@ -79,6 +80,7 @@ allprojects {
 
   repositories {
     mavenCentral()
+    mavenRepo name: 'ops4j-repo', url: "http://repository.ops4j.org/maven2/"
     mavenRepo name: 'aduna-repo', url: "http://repo.aduna-software.org/maven2/releases/"
     mavenRepo name: 'restlet-repo', url: 'http://maven.restlet.org'
     mavenRepo name: 'maven2-repository.dev.java.net', url: "http://download.java.net/maven/2"
@@ -91,27 +93,27 @@ allprojects {
   // By default RELEASES are signed, SNAPSHOTS are not
   // Signing can be turned on or off by setting the uploadSigned property
   def uploadSigned = rootProject.hasProperty('uploadSigned') \
-                        ? rootProject.uploadSigned \
-                        : uploadReleases ? true : false
+                        ? rootProject.uploadSigned : uploadReleases \
+                        ? true : false
   // By default RELEASES must satisfy ReleaseSpecification, SNAPSHOT don't
   // ReleaseSpecification usage can be turned on or off by setting the uploadReleaseSpec property
   def uploadReleaseSpec = rootProject.hasProperty('uploadReleaseSpec') \
-                             ? rootProject.uploadReleaseSpec \
-                             : uploadReleases ? true : false
-  // By default RELEASES and SNAPSHOTS are uploaded using WEBDAV
+                             ? rootProject.uploadReleaseSpec : uploadReleases \
+                             ? true : false
+  // By default RELEASES are uploaded using SSH, SNAPSHOTS using WEBDAV
   // Used Wagon can be overriden by setting the uploadWagon property
-  // def wagonSSH = "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
+  def wagonSSH = "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
   def wagonWEBDAV = "org.apache.maven.wagon:wagon-webdav:1.0-beta-2"
   def uploadWagon = rootProject.hasProperty('uploadWagon') \
-                        ? rootProject.uploadWagon \
-                        : wagonWEBDAV
-  // By default RELEASES and SNAPSHOTS are uploaded to Cloudbees
+                        ? rootProject.uploadWagon : uploadReleases \
+                        ? wagonSSH : wagonWEBDAV
+  // By default RELEASES are uploaded to OPS4J, SNAPSHOTS to Cloudbees
   // Target repository can be overriden by setting the uploadRepository property
-  def releasesRepository = "dav:https://repository-qi4j.forge.cloudbees.com/release/"
+  def releasesRepository = "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/"
   def snapshotsRepository = "dav:https://repository-qi4j.forge.cloudbees.com/snapshot/"
   def uploadRepository = rootProject.hasProperty('uploadRepository') \
-                            ? rootProject.uploadRepository \
-                            : uploadReleases ? releasesRepository : snapshotsRepository
+                            ? rootProject.uploadRepository : uploadReleases \
+                            ? releasesRepository : snapshotsRepository
   // No username/password is provided by default
   // If needed set them using the uploadUsername and uploadPassword properties
   def uploadUsername = rootProject.hasProperty('uploadUsername') ? rootProject.uploadUsername : null
@@ -296,7 +298,7 @@ allprojects {
 
   // Upload Archives - Artifact Deployment
   uploadArchives.doFirst {
-    if( version == 0 )
+    if( version == "0" )
     {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
@@ -325,7 +327,7 @@ allprojects {
       module.dependencies*.exported = true
     }
   }
-} // allprojects END -------------------------------------------------------
+} // allproject END -------------------------------------------------------
 
 gradle.taskGraph.whenReady {taskGraph ->
   taskGraph.allTasks.last().doLast {
@@ -377,15 +379,31 @@ task javadocs( type: Javadoc ) {
 
 }
 
+task archiveJavadocs(type: Copy ) {
+//  dependsOn javadocs
+
+  if( rootProject.version == '0' )
+  {
+    into( "$rootProject.projectDir/../qi4j.github.com/develop/javadocs/" )
+  }
+  else
+  {
+    into( "$rootProject.projectDir/../qi4j.github.com/$version/javadocs/" )
+  }
+  from( 'build/docs/javadoc/' )
+}
+
+
 // Build All
 task buildAll( dependsOn: [
-    javadocs,
+    archiveJavadocs,
     test,
     jar,
     subprojects*.dependencyReport,
     subprojects*.assemble,
-    ':org.qi4j.manual:manuals'
+    ':org.qi4j.manual:website'
 ] ) { }
+
 // Prepare runtime dependencies download facility (metalink)
 buildAll.doLast {
     def runtimeDepsMetalink = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">\n"
@@ -425,7 +443,7 @@ def srcDistImage = copySpec {
   exclude '**/*.iml'      // IDEA files
   exclude 'org.qi4j.ipr'  // IDEA files
   exclude 'org.qi4j.iws'  // IDEA files
-  exclude '**/out/*'      // build output
+  exclude '**/out/*'       // build output
   exclude '**/.git/'      // git directories
   exclude '**/.git*'      // git files
   exclude '**/.gradle/'   // gradle management files
@@ -538,9 +556,10 @@ task release {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
   }
-  dependsOn allprojects*.uploadArchives, dist
+  dependsOn archiveJavadocs, ':org.qi4j.manual:copyWebsite', allprojects*.uploadArchives, dist
 }
 
+//
 // This is a task that generates the gradlew scripts, allowing users to run gradle without having gradle installed
 // on their system.
 // This task should be run by "build master" and the resulting ouput committed to source control.  Its outputs include:

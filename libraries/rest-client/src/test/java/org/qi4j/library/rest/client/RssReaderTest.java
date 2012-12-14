@@ -56,7 +56,7 @@ public class RssReaderTest
     public void testReadRssFeed()
     {
         Client client = new Client( Protocol.HTTP );
-        Reference ref = new Reference( "http://rickardoberg.wordpress.com/feed/" );
+        Reference ref = new Reference( "https://github.com/Qi4j/qi4j-sdk/commits/develop.atom" );
         ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client );
 
         contextResourceClientFactory.registerResponseReader( new ResponseReader()
