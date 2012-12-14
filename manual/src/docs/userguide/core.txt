@@ -6,12 +6,12 @@
 
 The Qi4j Core is composed of several artifacts described in this section.
 
+The following figure show the Core artifacts alongside <<libraries,libraries>> and <<extensions,extensions>>, and, in green,
+typical applications artifacts. This is not a full code dependency graph but should give you a good overview of how the
+pieces fit together. Find out more about each of the Qi4j Core artifacts below.
+
 .Qi4j Core Overview
 image::core-overview.png[]
-
-This figure show the Core artifacts alongside <<libraries,libraries>> and <<extensions,extensions>>, and, in green,
-typical applications artifacts. This is not a full code dependency graph but should give you a good overview of how the
-pieces fit together.
 
 //*<<core-api,Core API>>*
 === Core API ===
