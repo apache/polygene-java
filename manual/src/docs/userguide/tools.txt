@@ -18,3 +18,5 @@ include::../../../../tools/envisage/src/docs/envisage.txt[]
 :leveloffset: 2
 
 include::../../../../tools/entity-viewer/src/docs/entity-viewer.txt[]
+
+:leveloffset: 2

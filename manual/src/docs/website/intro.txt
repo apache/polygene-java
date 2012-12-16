@@ -1,0 +1,35 @@
+:leveloffset: 1
+
+[[intro,Introduction Section]]
+= Introduction =
+
+:leveloffset: 2
+
+include::../../../../tutorials/introduction/src/docs/highlights.txt[]
+
+:leveloffset: 2
+
+include::../../../../tutorials/introduction/src/docs/background.txt[]
+
+:leveloffset: 2
+
+include::../../../../tutorials/introduction/src/docs/what-is-composite-oriented-programming.txt[]
+
+:leveloffset: 2
+
+include::../../../../tutorials/introduction/src/docs/qi4j-cop.txt[]
+
+:leveloffset: 2
+
+include::../../../../tutorials/introduction/src/docs/whats-an-object.txt[]
+
+:leveloffset: 2
+
+include::../../../../tutorials/introduction/src/docs/state-modeling.txt[]
+
+:leveloffset: 2
+
+include::related.txt[]
+
+:leveloffset: 2
+

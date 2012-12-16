@@ -1,13 +1,14 @@
 
 
 /**
- * Qi4j WebSite Progressive Enhancement
+ * Qi4j WebSite Progressive Enhancement.
  */
 $( document ).ready( function($){
 
     /**
      * Glossary.
      */
+    // Add Alphabetical scroll?
     function glossary( $section ) {
 
         // Better style
@@ -24,7 +25,9 @@ $( document ).ready( function($){
                 var dt = target.parent();
                 var dd = dt.next();
                 // Scroll
-                $.scrollTo( dt, 200, { 'offset': -96 });
+                $.scrollTo( dt, 200, {
+                    'offset': -96
+                });
                 // Highlight
                 dd.fadeOut(50).fadeIn(200);
             }
@@ -33,8 +36,6 @@ $( document ).ready( function($){
             highlight( window.location.hash );
         });
         highlight( window.location.hash );
-
-        // Alphabetical scroll?
     }
 
     /**
@@ -231,16 +232,23 @@ $( document ).ready( function($){
             'url': 'http://qi4j.org/latest',
             'relpath': '../latest'
         },
+        'latest':
+        {
+            'url': 'http://qi4j.org/1.4',
+            'relpath': '../1.4'
+        },
         '<=1.4.x':
         {
             'url': 'http://qi4j.org/1.4',
             'relpath': '../1.4'
         }
     };
-    var selected = "develop";
+    var selected = "latest";
     // --
     var switcher_html ='<p style="margin-top:2em; text-align: center"><select style="font-size: 0.5em">';
-    var ifselect = function( candidate ) { return candidate == selected ? "selected=\"selected\"" : ""; }
+    var ifselect = function( candidate ) {
+        return candidate == selected ? "selected=\"selected\"" : "";
+    }
     for( var version in versions )
     {
         switcher_html += '<option value="' + version + '" ' + ifselect( version ) + '>' + version + '</option>';
@@ -256,6 +264,22 @@ $( document ).ready( function($){
         else
         { // Loaded from elsewhere
             window.location = versions[ $( this ).val() ].url;
+        }
+    } );
+
+    // Add separator space between tutorials series
+    $( "div.sub-nav div.toc dt" ).each( function( idx, dt ) {
+        var $dt = $( dt );
+        var item = $dt.find( "span.section:first-child" ).text().trim();
+        switch( item )
+        {
+            case "Qi4j in 2 minutes":
+                $dt.attr( "style", "margin-top: 24px" );
+                break;
+            case "Qi4j in 2 hours":
+            case "Leverage Properties":
+                $dt.attr( "style", "margin-bottom: 24px" );
+                break;
         }
     } );
 

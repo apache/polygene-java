@@ -1,3 +1,4 @@
+:leveloffset: 1
 
 [[core,Core]]
 = Core =
@@ -75,27 +76,28 @@ applications during the bootstrap phase.
 //____
 
 
-:leveloffset: {level2}
+:leveloffset: 2
 
 include::../../../../core/api/src/docs/api.txt[]
 
-:leveloffset: {level2}
+:leveloffset: 2
 
 include::../../../../core/bootstrap/src/docs/bootstrap.txt[]
 
-:leveloffset: {level2}
+:leveloffset: 2
 
 include::../../../../core/testsupport/src/docs/testsupport.txt[]
 
-:leveloffset: {level2}
+:leveloffset: 2
 
 include::../../../../core/functional/src/docs/functional.txt[]
 
-:leveloffset: {level2}
+:leveloffset: 2
 
 include::../../../../core/io/src/docs/io.txt[]
 
-:leveloffset: {level2}
+:leveloffset: 2
 
 include::../../../../core/spi/src/docs/spi.txt[]
 
+:leveloffset: 2

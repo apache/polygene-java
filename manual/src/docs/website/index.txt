@@ -13,6 +13,10 @@ include::downloads/downloads.txt[]
 
 :leveloffset: 1
 
+include::intro.txt[]
+
+:leveloffset: 1
+
 include::tutorials.txt[]
 
 :leveloffset: 1
