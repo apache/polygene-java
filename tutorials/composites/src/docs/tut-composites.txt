@@ -1,7 +1,7 @@
 [[tut-composites,Transient Composites Tutorial]]
 = Transient Composites Tutorial =
 
-TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the <<download,Qi4j SDK sources>>.
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the <<downloads,Qi4j SDK sources>>.
 You should start your favorite editor and find the code related to this tutorial, run it and play with it.
 
 Throughout this set of tutorials it will be shown how to create and work with Composites, which

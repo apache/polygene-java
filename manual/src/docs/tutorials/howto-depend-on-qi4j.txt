@@ -1,14 +1,14 @@
 [[howto-depend-on-qi4j,Depend on Qi4j in your build]]
 = Depend on Qi4j in your build =
 
-NOTE: Some of Qi4j <<libraries>> and <<extensions>> depend on artifacts that are not deployed in central, you'll need to
+NOTE: Some of the <<libraries>> and <<extensions>> depend on artifacts that are not deployed in central, you'll need to
 add other repositories to your build scripts accordingly.
 
-Release artifacts are deployed to
+Release artifacts, including sources and javadoc, are deployed to
 
 https://repository-qi4j.forge.cloudbees.com/release/[https://repository-qi4j.forge.cloudbees.com/release/].
 
-Snapshot artifacts are deployed to
+Snapshot artifacts, including sources and javadoc, are built against the `develop` branch and deployed weekly to
 
 https://repository-qi4j.forge.cloudbees.com/snapshot/[https://repository-qi4j.forge.cloudbees.com/snapshot/].
 
@@ -17,11 +17,8 @@ As they are not deployed to central you need to add the repositories to your bui
 
 == Manually ==
 
-If you don't rely on your build scripts dependency resolution mechanism you should <<download>> the SDK distribution.
-
-If you're in manual dependency management you should be able to find out which JAR files you'll need to add to your
-projects.
-
+If you don't rely on your build scripts dependency resolution mechanism you should <<downloads,download>> the SDK
+distribution.
 
 == Using Maven ==
 

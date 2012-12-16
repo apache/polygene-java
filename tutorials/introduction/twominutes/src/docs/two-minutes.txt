@@ -1,7 +1,7 @@
 [[two-minutes-intro,Qi4j in 2 minutes]]
 = Qi4j in 2 minutes =
 
-TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the <<download,Qi4j SDK sources>>.
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the <<downloads,Qi4j SDK sources>>.
 You should start your favorite editor and find the code related to this tutorial, run it and play with it.
 
 To show that Qi4j is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the

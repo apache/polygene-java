@@ -3,7 +3,7 @@
 
 == Overview ==
 
-TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the <<download,Qi4j SDK sources>>.
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the <<downloads,Qi4j SDK sources>>.
 You should start your favorite editor and find the code related to this tutorial, run it and play with it.
 
 In this section you will find a comprehensive set of tutorials about Composite
