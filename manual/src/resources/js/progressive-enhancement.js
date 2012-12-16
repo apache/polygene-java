@@ -33,6 +33,8 @@ $( document ).ready( function($){
             highlight( window.location.hash );
         });
         highlight( window.location.hash );
+
+        // Alphabetical scroll?
     }
 
     /**
@@ -222,25 +224,40 @@ $( document ).ready( function($){
     $("a.ulink[href^='https:']").attr('target','_blank');
 
     // Add links to different versions
-    if( false ) { // DEACTIVATED
-        $("div.logo").append('\
-            <p style="margin-top:2em; text-align: center"> \
-                <select style="font-size: 0.5em">\
-                    <option value="2.0-SNAPSHOT" selected="selected">2.0-SNAPSHOT</option>\
-                    <option value="1.4">1.4</option>\
-                </select>\
-            </p>');
-        $("div.logo select").change(function() {
-            switch( $(this).val() ) {
-                case "2.0-SNAPSHOT":
-                    window.location = "http://qi4j.org/";
-                    break;
-                case "1.4":
-                    window.location = "http://qi4j.org/releases/1.4/";
-                    break;
-            }
-        });
+    var versions =
+    {
+        'develop':
+        {
+            'url': 'http://qi4j.org/latest',
+            'relpath': '../latest'
+        },
+        '<=1.4.x':
+        {
+            'url': 'http://qi4j.org/1.4',
+            'relpath': '../1.4'
+        }
+    };
+    var selected = "develop";
+    // --
+    var switcher_html ='<p style="margin-top:2em; text-align: center"><select style="font-size: 0.5em">';
+    var ifselect = function( candidate ) { return candidate == selected ? "selected=\"selected\"" : ""; }
+    for( var version in versions )
+    {
+        switcher_html += '<option value="' + version + '" ' + ifselect( version ) + '>' + version + '</option>';
     }
+    switcher_html += '</select></p>' ;
+    $( "div.logo" ).append( switcher_html );
+    $( "div.logo select" ).change( function()
+    {
+        if( window.location.hostname == "qi4j.org" || window.location.hostname == "www.qi4j.org" )
+        { // Loaded from qi4j.org
+            window.location = versions[ $( this ).val() ].relpath;
+        }
+        else
+        { // Loaded from elsewhere
+            window.location = versions[ $( this ).val() ].url;
+        }
+    } );
 
     // Section specific enhancements
     var $section = $( 'body > div.section' );
