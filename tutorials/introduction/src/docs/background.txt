@@ -1,27 +1,23 @@
 [[introduction-background,Background]]
-Background
-==========
+= Background =
 Qi4j is the first Composite Oriented Programming implementation leveraging the Java 5 platform, so that everything you
 know from Java 5 still applies. You can mix Qi4j with your ordinary Java code as much as you want. All your existing
 Java tools works just like before, and Qi4j does not introduce any new programming language, no special development
 tools needed and no XML is required.
 
-Purpose
--------
+== Purpose ==
 Qi4j addresses the programming problems from the top-down, starting with the Domain Model and Business Rules needs,
 and let those requirements flow downwards in the software stack and dictate the requirements for underlying layers
 such as persistence, messaging, querying and more. This means that the business value developer is left to
 concentrate on the domain models and the actual application bringing the value, instead of creating massive amounts
 of glue code to tie underlying technologies together.
 
-Problem Descriptions
---------------------
+== Problem Descriptions ==
 Qi4j didn't appear out of the blue, when the founders of the project had nothing better to do. It is the result of
 observation of problems in real applications, and the experience from previous attempts to address or correct these
 problems, that has led to the Qi4j vision.
 
-Object Oriented Programming (OOP)
----------------------------------
+== Object Oriented Programming (OOP) ==
 How can OOP be a problem? We and others have observed that there is a fundamental flaw in the OOP model. In fact, we
 would like to even state that OOP as it is commonly practiced today is not object oriented at all. The object is not
 the primary citizen, instead the class is the primary artifact. In most mainstream OOP languages, Objects are derived
@@ -31,13 +27,11 @@ class names in application contexts, JSP uses class names to declare beans and s
 
 This in turn leads to that there is no good OOP solution for the problem we describe below.
 
-Behavior depends on Context
----------------------------
+== Behavior depends on Context ==
 Once you start thinking of "Behavior depends on Context", you have a hard time understanding how people for the last 20
 years or so of Object Oriented Programming (OOP) has ignored this fact.
 
-Who am I?
-~~~~~~~~~
+=== Who am I? ===
 When I sitting in front of the computer, I am a software developer, but if I go out in the jungle, I am suddenly
 hunter-gatherer and prey. A large set of me is the same, but my interaction with the surroundings, i.e. the context, is
 very different. I need different interfaces, so to speak, in these two different contexts.
@@ -47,8 +41,7 @@ stored in the database it is of a different class, than when it is transported t
 displayed in the GUI. We see the effect of this problem in many of the design patterns and so called "best practices"
 in Java EE development. Facades, delegation, data transport objects and many more.
 
-Coupling
---------
+== Coupling ==
 The OOP proponents once proclaimed that classes can be re-used, since the code is encapsulated with the class, so the
 class is an independent unit which lends itself well to re-use. In reality, however, we have found that classes becomes
 tightly coupled with many other classes in their neighborhood, leading to impossibilities of single class re-use. Many
@@ -61,8 +54,7 @@ Essentially, it boils down to "scope". Classes are too large, their scope is too
 unit within the class, there will be additional coupling to other classes. And this often progresses to the full
 boundary of the entire domain the class remains in.
 
-Application layer impedance mismatch
-------------------------------------
+== Application layer impedance mismatch ==
 Almost all technologies used in modern software development, starts by looking at an infrastructural problem and try to
 solve that the best way. This is often done in a vacuum and layers on top will be struggling to map or translate the
 solution into the higher abstraction, and the higher up we get, the harder it becomes to ignore the assumptions,
@@ -75,8 +67,7 @@ perceived - and deal with it in a specifiable and useful manner. This leads to o
 the system is built from the top layer down, where each layer beneath knows exactly what is expected from it, and only
 needs to handle those use-cases.
 
-Abstracting away meaning.
--------------------------
+== Abstracting away meaning. ==
 To paraphrase a famous proverb about a hammer: "If all you have are objects, everything looks like a dependency."
 We think that increasing abstraction often also increases complexity, and that the abstraction benefits are somewhat
 linear whereas the complexity negatives are exponential. So, our conclusion is that by making no distinction between
@@ -86,8 +77,7 @@ possible abstractions. But that is not the situation for the user. The abstracti
 the rubber hits the road, e.g. ORM mapping must be declared explicitly by the programmer, often using separate tools
 and languages.
 
-Solution
---------
+== Solution ==
 We think the solution was expressed more than 2500 years ago, first by Indian scholars and slightly later by Leucippus
 and Democritus. We are of course talking about atoms, and by using really small building blocks, we can express
 arbitrarily complex structures.
@@ -95,8 +85,7 @@ By reducing the classes into what we in Composite Oriented Programming call Frag
 graph substantially. Re-use of Fragments becomes a reality, and by combination of Fragments, we compose larger
 structures, the Composites.
 
-Composition
------------
+== Composition ==
 Composite Oriented Programming also view the object, we call it the Composite instance, as the first class citizen. The
 Composite instance can be cast to any context, meaning a different behavior can be applied to the Composite instance,
 without affecting its underlying state. And back. This in turn means that we can for instance create a
@@ -105,8 +94,7 @@ modifications to the underlying state, possibly using extra interfaces and metho
 environment, and then transport the modified object back to the server, cast it back to the
 ServerContextualInvoiceEntity, and then persist the changes.
 
-Domain Driven Design focus
---------------------------
+== Domain Driven Design focus ==
 Composite Oriented Programming is heavily influenced by the book "Domain Driven Design" by Eric Evans. And we are
 trying to use his analysis of the problem to provide the mechanisms needed to get the job done quicker and more
 reliably. Mr Evans talks about Applications, Layers, Modules, Specifications, SideEffects and so forth, and all of
