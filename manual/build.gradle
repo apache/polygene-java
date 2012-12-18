@@ -30,7 +30,7 @@ task website( type: org.qi4j.gradle.plugin.Documentation ) {
 
 task archiveWebsite( type: Copy ) {
   dependsOn website
-  if( rootProject.version == '0' )
+  if( rootProject.version == '0' || rootProject.version.contains( "SNAPSHOT" ) )
   {
     into( "$rootProject.projectDir/../qi4j.github.com/develop" )
   }
@@ -43,12 +43,11 @@ task archiveWebsite( type: Copy ) {
 
 task copyWebsite( type: Copy ) {
   dependsOn archiveWebsite
-  if( rootProject.version == 0 )
+  if( rootProject.version != '0' && !rootProject.version.contains( "SNAPSHOT" ) )
   {
-    throw new GradleException( "'version' must be given as a system property to perform website update." )
+    from( "$rootProject.projectDir/../qi4j.github.com/$version/" )
+    into( "$rootProject.projectDir/../qi4j.github.com/latest/" )
   }
-  from( "$rootProject.projectDir/../qi4j.github.com/$version/" )
-  into( "$rootProject.projectDir/../qi4j.github.com/latest/" )
 }
 
 task manuals() {
