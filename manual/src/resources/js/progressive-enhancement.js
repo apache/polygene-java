@@ -229,13 +229,13 @@ $( document ).ready( function($){
     {
         'develop':
         {
-            'url': 'http://qi4j.org/latest',
-            'relpath': '../latest'
+            'url': 'http://qi4j.org/develop',
+            'relpath': '../develop'
         },
         'latest':
         {
-            'url': 'http://qi4j.org/1.4',
-            'relpath': '../1.4'
+            'url': 'http://qi4j.org/latest',
+            'relpath': '../latest:'
         },
         '<=1.4.x':
         {
@@ -243,7 +243,17 @@ $( document ).ready( function($){
             'relpath': '../1.4'
         }
     };
+    function endsWith(str, suffix) {
+            return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    }
     var selected = "latest";
+    var stripedHref = window.location.href.substring( 0, window.location.href.lastIndexOf('/') );
+    if ( endsWith( stripedHref, 'develop' ) )
+        selected = "develop";
+    else if ( endsWith( stripedHref, 'latest' ) )
+        selected = "latest";
+    else if ( endsWith( stripedHref, '1.4' ) )
+        selected = "<=1.4.x";
     // --
     var switcher_html ='<p style="margin-top:2em; text-align: center"><select style="font-size: 0.5em">';
     var ifselect = function( candidate ) {

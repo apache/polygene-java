@@ -17,8 +17,8 @@ As they are not deployed to central you need to add the repositories to your bui
 
 == Manually ==
 
-If you don't rely on your build scripts dependency resolution mechanism you should <<downloads,download>> the SDK
-distribution.
+If you don't rely on your build scripts dependency resolution mechanism you should
+http://qi4j.org/downloads.html[download] the SDK distribution.
 
 == Using Maven ==
 

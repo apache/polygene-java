@@ -5,14 +5,6 @@ include::home.txt[]
 
 :leveloffset: 1
 
-include::news/news.txt[]
-
-:leveloffset: 1
-
-include::downloads/downloads.txt[]
-
-:leveloffset: 1
-
 include::intro.txt[]
 
 :leveloffset: 1
