@@ -3,8 +3,7 @@
 [[home,Qi4j Home Page]]
 = Qi4j =
 
-.Qi4j {revnumber}
-IMPORTANT: This is the documentation for Qi4j {revnumber}. Use the version switcher on the left to browse other
+IMPORTANT: This is the documentation for *Qi4j {revnumber}*. Use the version switcher on the left to browse other
 versions documentation.
 
 == What is Qi4j™? ==

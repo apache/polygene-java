@@ -18,8 +18,8 @@ Shiro website.
 
 Altough Apache Shiro can be used as-is with Qi4j Applications, this library provides integrations that can come in
 handy. If your use case do not fit any of theses integrations, look at their respective code. You should find out
-pretty easily how to compose the provided code to write your integration. Don't hesitate to
-<<community-contributing, contribute>> interesting integrations to this very library.
+pretty easily how to compose the provided code to write your integration. Don't hesitate to contribute interesting
+integrations to this very library.
 
 We invite you to read the comprehensive http://shiro.apache.org/documentation.html[Apache Shiro documentation], we will
 mostly discuss Qi4j related matters here.
@@ -217,7 +217,7 @@ libraries. There's support for text files, simple JDBC, LDAP, CAS SSO, OAuth, Op
 Take the PasswordRealmService as a start and extend/rewrite it to suit your needs.
 
 If you happen to come with a Qi4j integration that could be valuable in this very library, don't hesitate to
-<<community-contributing, contribute>>.
+contribute.
 
 
 == Logging ==

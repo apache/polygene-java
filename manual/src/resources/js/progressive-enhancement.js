@@ -220,6 +220,9 @@ $( document ).ready( function($){
 
     // Global enhancements
 
+    // Hide first tab (use the logo link instead)
+    $( "div.toc dl dt:first" ).hide();
+
     // Open external user links in a new window/tab
     $("a.ulink[href^='http:']").attr('target','_blank');
     $("a.ulink[href^='https:']").attr('target','_blank');
@@ -288,6 +291,7 @@ $( document ).ready( function($){
                 break;
             case "Qi4j in 2 hours":
             case "Leverage Properties":
+            case "Use I/O API":
                 $dt.attr( "style", "margin-bottom: 24px" );
                 break;
         }

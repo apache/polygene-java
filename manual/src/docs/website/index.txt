@@ -41,7 +41,3 @@ include::../userguide/glossary.txt[]
 
 :leveloffset: 1
 
-include::community.txt[]
-
-:leveloffset: 1
-

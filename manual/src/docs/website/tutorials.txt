@@ -48,6 +48,15 @@ typical application.
 - <<howto-configure-service>>
 - <<howto-use-io>>
 
+=== Qi4j Development ===
+
+This last set of tutorials you'll learn how to build the Qi4j SDK from sources including this very documentation website
+, the Qi4j manual, binaries and sources distributions.
+
+- <<build-system>>
+- <<community-docs>>
+
+
 :leveloffset: 2
 
 include::../../../../tutorials/introduction/twominutes/src/docs/two-minutes.txt[]
@@ -111,5 +120,13 @@ include::../tutorials/howto-configure-service.txt[]
 :leveloffset: 2
 
 include::../tutorials/howto-use-io.txt[]
+
+:leveloffset: 2
+
+include::../tutorials/howto-build-system.txt[]
+
+:leveloffset: 2
+
+include::../tutorials/howto-writing-docs.txt[]
 
 :leveloffset: 2
