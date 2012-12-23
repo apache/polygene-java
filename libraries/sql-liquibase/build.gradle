@@ -5,7 +5,9 @@ jar { manifest { name = "Qi4j Library - SQL Liquibase" }}
 dependencies {
   compile(project(":org.qi4j.libraries:org.qi4j.library.sql"))
   compile(libraries.liquibase)
+
   testCompile(project(":org.qi4j.libraries:org.qi4j.library.sql-c3p0"))
+  
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.derby)
   testRuntime(libraries.logback)

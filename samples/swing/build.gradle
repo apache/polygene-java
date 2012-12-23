@@ -3,6 +3,5 @@ description = "Sample of how to use the Struts2 integration."
 jar { manifest { name = "Qi4j Sample - Swing Bindings" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
 }

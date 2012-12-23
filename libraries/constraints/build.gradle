@@ -3,13 +3,10 @@ description = "Qi4j Constraint Library provides common set of constraints."
 jar { manifest { name = "Qi4j Library - Constraints"}}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(libraries.slf4j_api)
-  testCompile(libraries.junit)
+
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+  testRuntime(libraries.logback)
 }

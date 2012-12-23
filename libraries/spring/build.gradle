@@ -3,15 +3,12 @@ description = "Qi4j Spring Library allows for tight integration of Spring Framew
 jar { manifest { name = "Qi4j Library - Spring" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(libraries.slf4j_api)
   compile(libraries.spring_core)
-  testCompile(libraries.junit)
-  testCompile(libraries.spring_testsupport)
+
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(libraries.spring_testsupport)
+
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+  testRuntime(libraries.logback)
 }

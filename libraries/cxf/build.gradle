@@ -3,9 +3,7 @@ description = "Qi4j CXF Library integrates Apache CXF with Qi4j."
 jar { manifest { name = "Qi4j Library - CXF" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(libraries.slf4j_api)
   compile(libraries.cxf_api)
   compile(libraries.cxf_util)
   compile(libraries.cxf_rt_core)
@@ -16,14 +14,14 @@ dependencies {
   compile(libraries.wsdl4j)
   compile(libraries.woodstox)
 //  compile('org.apache.ws.commons.schema:XmlSchema:' + xmlSchemaVersion)
+
   runtime(libraries.cxf_rt_http)
   runtime(libraries.cxf_rt_http_jetty)
-  testCompile(libraries.http_client)
-  testCompile(libraries.junit)
-  testCompile(libraries.xmlunit)
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(libraries.http_client)
+  testCompile(libraries.xmlunit)
+
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
 }

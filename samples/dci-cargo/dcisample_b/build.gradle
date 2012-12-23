@@ -4,9 +4,7 @@ jar { manifest { name = "Qi4j Sample DCI Cargo - Sample B" }}
 
 dependencies {
 
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.conversion"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
@@ -19,8 +17,8 @@ dependencies {
 
   runtime(project(":org.qi4j.core:org.qi4j.core.runtime"))
 
-  testCompile(libraries.easymock)
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(libraries.easymock)
 
   testRuntime(libraries.logback)
 

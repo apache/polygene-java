@@ -5,11 +5,9 @@ jar { manifest { name = "Qi4j Library - UoWFile" }}
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
-  compile(libraries.slf4j_api)
-  testCompile(libraries.junit)
+
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+  testRuntime(libraries.logback)
 }

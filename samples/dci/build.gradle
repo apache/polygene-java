@@ -4,16 +4,12 @@ description = "Sample of how DCI (Data, Context & Interaction) pattern is implem
 jar { manifest { name = "Qi4j Sample - DCI" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
   compile(project(":org.qi4j.core:org.qi4j.core.runtime"))  /* TODO: Get rid of this dependency */
   compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
-  compile(libraries.slf4j_api)
-  testCompile(libraries.junit)
-  testCompile(libraries.easymock)
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(libraries.easymock)
+
+  testRuntime(libraries.logback)
 }

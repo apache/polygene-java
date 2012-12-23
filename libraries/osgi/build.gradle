@@ -6,13 +6,10 @@ dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(libraries.osgi_core)
   compile(libraries.osgi_compendium)
-  compile(libraries.slf4j_api)
-  testCompile(libraries.mockito)
-  testCompile(libraries.junit)
-  testCompile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(libraries.mockito)
+
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+  testRuntime(libraries.logback)
 }

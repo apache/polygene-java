@@ -3,7 +3,6 @@ description = "Qi4j Servlet Library provides integration of Qi4j into web applic
 jar { manifest { name = "Qi4j Library - Servlet" }}
 
 dependencies {
-  compile( project(":org.qi4j.core:org.qi4j.core.api") )
   compile( project(":org.qi4j.core:org.qi4j.core.bootstrap") )
   compile( libraries.servlet_api )
 

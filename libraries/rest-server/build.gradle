@@ -5,13 +5,13 @@ jar { manifest { name = "Qi4j Library - REST server" }}
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.rest-common"))
-  compile(libraries.slf4j_api)
   compile(libraries.servlet_api)
   compile(libraries.velocity)
   compile(libraries.restlet)
   compile(libraries.freemarker)
+
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testCompile(libraries.junit)
+
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.slf4j_simple)
+  testRuntime(libraries.logback)
 }
