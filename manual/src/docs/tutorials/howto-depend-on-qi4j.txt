@@ -62,6 +62,12 @@ After that you can declare dependencies on Qi4j artifacts:
         <version>QI4J_VERSION</version>
         <scope>runtime</scope>
     </dependency>
+    <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>org.qi4j.core.testsupport</artifactId>
+        <version>QI4J_VERSION</version>
+        <scope>test</scope>
+    </dependency>
     <!-- ... -->
 </dependencies>
 <!-- ... -->
@@ -94,6 +100,7 @@ dependencies {
     // ...
     compile "org.qi4j.core:org.qi4j.core.bootstrap:QI4J_VERSION"
     runtime "org.qi4j.core:org.qi4j.core.runtime:QI4J_VERSION"
+    test    "org.qi4j.core:org.qi4j.core.testsupport:QI4J_VERSION"
     // ...
 }
 // ...
@@ -120,6 +127,7 @@ After that you can declare dependencies on Qi4j artifacts:
 # ...
 compile.with 'org.qi4j.core:org.qi4j.core.bootstrap:QI4J_VERSION'
 package(:war).with :libs => 'org.qi4j.core:org.qi4j.core.runtime:QI4J_VERSION'
+test.with 'org.qi4j.core:org.qi4j.core.testsupport:QI4J_VERSION'
 # ...
 ----
 
@@ -147,6 +155,9 @@ libraryDependencies += \
     withSources() withJavadoc()
 libraryDependencies += \
     "org.qi4j.core" % "org.qi4j.core.runtime" % "QI4J_VERSION" % "runtime" \
+    withSources() withJavadoc()
+libraryDependencies += \
+    "org.qi4j.core" % "org.qi4j.core.testsupport" % "QI4J_VERSION" % "test" \
     withSources() withJavadoc()
 // ...
 ----
@@ -186,6 +197,8 @@ After that you can declare dependencies on Qi4j artifacts:
                     rev="QI4J_VERSION"  conf="default" />
         <dependency org="org.qi4j.core" name="org.qi4j.core.runtime"
                     rev="QI4J_VERSION"  conf="runtime" />
+        <dependency org="org.qi4j.core" name="org.qi4j.core.testsupport"
+                    rev="QI4J_VERSION"  conf="test" />
         <!-- ... -->
     </dependencies>
     <!-- ... -->

@@ -26,4 +26,4 @@ probably contact qi4j-dev forum at Google Groups and see if your usecase can eit
 that a new Core SPI Extension is needed.
 
 Let's repeat that; *Never, never, ever depend on Core Runtime*. Make sure that the compile dependency does NOT include
-the qi4j-core-runtime jar.
+the `org.qi4j.core.runtime` jar.

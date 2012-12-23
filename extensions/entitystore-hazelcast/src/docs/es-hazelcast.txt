@@ -30,4 +30,4 @@ tag=config
 
 +configXmlLocation+ represent the location of the Hazelcast XML based configuration.
 
-+mapName+ is the name of the used Hazelcast Map 
++mapName+ is the name of the used Hazelcast Map

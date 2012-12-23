@@ -75,6 +75,16 @@ applications during the bootstrap phase.
 <<core-spi,Learn more>>
 //____
 
+//*<<core-spi,Core Runtime>>*
+=== Core Runtime ===
+//____
+Your code should *never*, *ever*, have a dependency on Qi4j Core Runtime. If you think you need this, you should
+probably contact qi4j-dev forum at Google Groups and see if your usecase can either be solved in a existing way or
+perhaps that a new Core Extension SPI is needed.
+
+<<core-runtime,Learn more>>
+//____
+
 
 :leveloffset: 2
 
@@ -99,5 +109,9 @@ include::../../../../core/io/src/docs/io.txt[]
 :leveloffset: 2
 
 include::../../../../core/spi/src/docs/spi.txt[]
+
+:leveloffset: 2
+
+include::../../../../core/runtime/src/docs/runtime.txt[]
 
 :leveloffset: 2

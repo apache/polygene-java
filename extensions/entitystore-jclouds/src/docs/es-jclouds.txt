@@ -8,7 +8,7 @@ source=extensions/entitystore-jclouds/dev-status.xml
 
 EntityStore service backed by a http://www.jclouds.org/[JClouds] BlobStore.
 
-It means you get access to a growing list of providers available at the 
+It means you get access to a growing list of providers available at the
 http://www.jclouds.org/[JClouds] website that includes Amazon, VMWare, Azure,
 and Rackspace.
 
