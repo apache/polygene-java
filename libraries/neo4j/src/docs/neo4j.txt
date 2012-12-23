@@ -8,6 +8,8 @@ source=libraries/neo4j/dev-status.xml
 
 The Neo4J Library provides a Neo4J embedded database as a Qi4j Service.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Assembly ==
 
 Simply assemble the Service:

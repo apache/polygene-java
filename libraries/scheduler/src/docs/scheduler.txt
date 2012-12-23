@@ -10,6 +10,8 @@ The Scheduler library provides an easy way to schedule tasks using cron expressi
 
 An optional Timeline allows you to browse past and future task runs.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Logging ==
 
 The SLF4J Logger used by this library is named "org.qi4j.library.scheduler".

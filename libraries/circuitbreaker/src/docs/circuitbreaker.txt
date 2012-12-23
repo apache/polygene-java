@@ -41,6 +41,7 @@ delegates to a circuit breaker and the Enabled configuration flag, which
 is what we'd suspect will be used in most cases where external systems
 are invoked.
 
+include::../../build/docs/buildinfo/artifact.txt[]
 
 == Direct usage ==
 

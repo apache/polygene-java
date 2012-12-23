@@ -10,6 +10,8 @@ EntityStore service backed by a source control friendly file system format.
 
 Note that content should not be modified directly, and doing so may corrupt the data.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Assembly ==
 
 Assembly is done as follows:

@@ -17,6 +17,8 @@ For testing purpose theses providers are supported too:
 - Transient
 - Filesystem
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Assembly ==
 
 Assembly is done using the provided Assembler:

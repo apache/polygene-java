@@ -8,6 +8,8 @@ source=extensions/indexing-rdf/dev-status.xml
 
 Index/Query services backed by http://www.openrdf.org/[OpenRDF Sesame] framework for processing RDF data.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == In Memory ==
 
 Assembly is done using the provided Assembler:

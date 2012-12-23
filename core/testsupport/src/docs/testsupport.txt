@@ -26,6 +26,8 @@ others are mostly for EntityStore and Index/Query SPI implementations. There is 
 some of Qi4j's unique aspects to be mocked, but since Qi4j is so flexible at a fine-granular level, we have found that
 mocking is seldom, if ever, needed.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Your First Testcase ==
 In most cases, you will probably use the AbstractQi4jTest class to simplify starting a Qi4j test instance.
 

@@ -29,3 +29,8 @@ image:tools-envisage-type.png[width="800px"]
 image:tools-envisage-stacked.png[width="800px"]
 
 image:tools-envisage-stacked-collapsed.png[width="800px"]
+
+== Embedd in your Application ==
+
+include::../../build/docs/buildinfo/artifact.txt[]
+

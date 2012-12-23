@@ -36,6 +36,7 @@ systems.
 
 In Qi4j, we are building upon this powerful abstraction, from decades of field experience.
 
+include::../../build/docs/buildinfo/artifact.txt[]
 
 == Overview ==
 An _Alarm Point_ is of an _Alarm Class_ and of an _Alarm Category_. The _Alarm Class_ defines the *severity* of the

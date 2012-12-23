@@ -11,6 +11,7 @@ facilities. It aims at a very simple need and is provided as an example integrat
 
 If instead you want to run a servlet container inside a Qi4j Application, see <<library-http>>.
 
+include::../../build/docs/buildinfo/artifact.txt[]
 
 == Application Bootstrap ==
 

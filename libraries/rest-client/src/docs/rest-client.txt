@@ -10,6 +10,8 @@ Rickard sent a very interesting <<library-rest-client-primer>> to the mailing li
 point for the renovation of the ReST Client Library. You should read that to get the full background on the choices
 made in this library.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Usage ==
 This library leverages the http://restlet.org[Restlet library], so keep its documentation nearby as well.
 

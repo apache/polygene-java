@@ -20,6 +20,8 @@ read-only operations fast.
 The location of files is left to the developer using a private mixin.
 
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Logging ==
 
 The SLF4J Logger used by this library is named "org.qi4j.library.uowfile".

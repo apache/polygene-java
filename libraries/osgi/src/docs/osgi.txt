@@ -9,6 +9,7 @@ source=libraries/osgi/dev-status.xml
 OSGi Library allows you to import OSGi services as Qi4j Services and to export Qi4j Services as OSGi Services both
 leveraging the Qi4j Availability and OSGi FallbackStrategy mechanisms.
 
+include::../../build/docs/buildinfo/artifact.txt[]
 
 == Export Qi4j services to an OSGi Bundle ==
 

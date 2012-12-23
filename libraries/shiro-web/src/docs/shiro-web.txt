@@ -20,6 +20,8 @@ Shiro website.
 We invite you to read the comprehensive http://shiro.apache.org/documentation.html[Apache Shiro documentation], we will
 mostly discuss Qi4j related matters here.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Servlet Context ==
 
 In a servlet context, being through the <<library-servlet>>, the <<library-http>> or your custom Qi4j application

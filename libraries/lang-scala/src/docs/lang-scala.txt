@@ -6,3 +6,4 @@
 source=libraries/lang-scala/dev-status.xml
 --------------
 
+include::../../build/docs/buildinfo/artifact.txt[]

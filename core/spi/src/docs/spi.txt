@@ -25,6 +25,8 @@ The Qi4j Core Runtime has a number of extension points, which we call the _Qi4j 
 interfaces used *only* by the Core Runtime and *never* directly by application code. <<extensions>> are assembled in
 applications during the bootstrap phase.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 There are currently 4 Core SPI extensions;
 
     * EntityStore SPI

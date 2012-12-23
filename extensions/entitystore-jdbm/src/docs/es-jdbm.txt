@@ -8,6 +8,8 @@ source=extensions/entitystore-jdbm/dev-status.xml
 
 EntityStore service backed by an embedded http://code.google.com/p/jdbm2/[JDBM2] database.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Assembly ==
 
 Assembly is done using the provided Assembler:

@@ -10,6 +10,8 @@ EntityStore service backed by a http://basho.com/[Riak] bucket.
 
 The EntityStore comes in two flavours: HTTP or ProtocolBuffer based. See the Riak documentation.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Assembly ==
 
 Assembly is done using the provided Assemblers.

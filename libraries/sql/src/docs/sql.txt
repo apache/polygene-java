@@ -18,8 +18,7 @@ TIP: See the <<sample-sql-support>> that demonstrate combined use of <<library-s
 Moreover, supplementary libraries helps dealing with different connection pool implementations and schema migrations.
 None of theses libraries depends on an actual JDBC driver, you are free to use the one that suits your needs.
 
-
-
+include::../../build/docs/buildinfo/artifact.txt[]
 
 
 == DataSource and connection pools ==
@@ -46,6 +45,8 @@ Connection Pools support is provided by supplementary libraries.
 source=libraries/sql-bonecp/dev-status.xml
 --------------
 
+include::../../../sql-bonecp/build/docs/buildinfo/artifact.txt[]
+
 BoneCP support resides in the *sql-bonecp* module.
 
 [snippet,java]
@@ -58,10 +59,10 @@ tag=bonecp
 
 [devstatus]
 --------------
-source=libraries/sql-bonecp/dev-status.xml
+source=libraries/sql-c3p0/dev-status.xml
 --------------
 
-C3P0 support resides in the *sql-c3p0* module.
+include::../../../sql-c3p0/build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 ----
@@ -76,7 +77,7 @@ tag=c3p0
 source=libraries/sql-dbcp/dev-status.xml
 --------------
 
-Apache DBCP support resides in the *sql-dbcp* module.
+include::../../../sql-dbcp/build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 ----
@@ -202,7 +203,7 @@ Database schema migration can be delegated to http://www.liquibase.org/[Liquibas
 source=libraries/sql-liquibase/dev-status.xml
 --------------
 
-Liquibase support resides in the *sql-liquibase* module.
+include::../../../sql-liquibase/build/docs/buildinfo/artifact.txt[]
 
 *Assembly*
 

@@ -8,6 +8,7 @@ source=libraries/uid/dev-status.xml
 
 This library provides Services to easily generate unique identifiers and sequences of numbers.
 
+include::../../build/docs/buildinfo/artifact.txt[]
 
 == Unique Identifiers ==
 

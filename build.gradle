@@ -169,6 +169,7 @@ allprojects {
   {
     apply plugin: 'osgi'
     apply plugin: VersionClass
+    apply plugin: AsciidocBuildInfo
 
 //    if( name == "org.qi4j.core.runtime" )
 //    {

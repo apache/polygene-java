@@ -20,6 +20,9 @@ The Metrics library is available to application code to get production metrics f
 applications to easily mark critical section for metrics gathering, without handling the details with the Metrics
 Extension.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Usage ==
 There are currently the following possibilities available;
 
     * @TimingCapture

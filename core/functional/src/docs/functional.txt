@@ -26,6 +26,8 @@ The Qi4j Core Functional API is a generic package to work with Iterables in a "f
 This package is completely independent of everything else in Qi4j and may be used on its own in any kind of environment
 such as Spring or Java EE applications.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == First Example ==
 Let's say that you have an Iterable of Integers and you want to sum them all up. Most people would create a loop and
 sum it all up in something like this;

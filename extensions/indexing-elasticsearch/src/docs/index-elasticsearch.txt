@@ -21,6 +21,7 @@ Three modes of operation are supported:
 - on-filesystem ;
 - clustered.
 
+include::../../build/docs/buildinfo/artifact.txt[]
 
 == Embedded: in Memory or on FileSystem ==
 

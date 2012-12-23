@@ -45,6 +45,7 @@ You can also;
     * Import external services to be available as Qi4j services.
     * Tag services with markers
 
+include::../../build/docs/buildinfo/artifact.txt[]
 
 
 == Defining Objects ==

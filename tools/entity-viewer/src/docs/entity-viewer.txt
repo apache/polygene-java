@@ -20,3 +20,8 @@ example. See <<build-system>>.
 == Screenshot ==
 
 image:tools-entity-viewer.png[width="800px"]
+
+== Embedd in your Application ==
+
+include::../../build/docs/buildinfo/artifact.txt[]
+

@@ -7,6 +7,7 @@ dependencies {
   compile( libraries.slf4j_api )
 }
 
+
 //task userguide( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
 //  docName = 'userguide'
 //  docType = 'book'
@@ -22,8 +23,9 @@ dependencies {
 //  docType = 'book'
 //}
 
-task website( type: org.qi4j.gradle.plugin.Documentation ) {
 
+task website( type: org.qi4j.gradle.plugin.Documentation,
+              dependsOn: rootProject.allprojects.tasks.flatten().findAll { it.name == AsciidocBuildInfo.TASK_NAME } ) {
   docName = 'website'
   docType = 'article'
 }

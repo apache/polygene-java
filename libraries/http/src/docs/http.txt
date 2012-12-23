@@ -12,6 +12,8 @@ filters assembly as Services.
 It's an easy way to embedd a servlet container and reuse everything that can be run in it (JAX-*, Restlet, Wicket,
 Vaadin, GWT etc..). If instead you want to run a Qi4j Application in a servlet container, see <<library-servlet>>.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == Create an EventListenerService ==
 
 EventListeners in HttpService are assembled as Services, so one have to declare a ServiceComposite like this:

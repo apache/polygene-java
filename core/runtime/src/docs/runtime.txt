@@ -25,5 +25,7 @@ First of all, your code should never, ever, have a dependency on Core Runtime. I
 probably contact qi4j-dev forum at Google Groups and see if your usecase can either be solved in a existing way or perhaps
 that a new Core SPI Extension is needed.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 Let's repeat that; *Never, never, ever depend on Core Runtime*. Make sure that the compile dependency does NOT include
 the `org.qi4j.core.runtime` jar.

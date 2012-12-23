@@ -29,6 +29,8 @@ possibly with transformations and filtering along the way. It was identified tha
 in the stereotypical I/O handling codebases that people deal with all the time. The reasoning around this, can be found
 in the <<howto-use-io>>, and is recommended reading.
 
+include::../../build/docs/buildinfo/artifact.txt[]
+
 == The Problem ==
 Why does I/O operations in Java have to be so complicated, with nested try/catch/finally and loops? Don't you wish
 that the operations could be expressed in a more natural way, such as;

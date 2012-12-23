@@ -24,7 +24,7 @@ integrations to this very library.
 We invite you to read the comprehensive http://shiro.apache.org/documentation.html[Apache Shiro documentation], we will
 mostly discuss Qi4j related matters here.
 
-
+include::../../build/docs/buildinfo/artifact.txt[]
 
 == Basic usage ==
 

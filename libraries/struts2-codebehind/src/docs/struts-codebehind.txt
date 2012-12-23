@@ -9,3 +9,5 @@ source=libraries/struts2-codebehind/dev-status.xml
 Struts Code Behing Library
 
 NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]
