@@ -463,14 +463,31 @@ div.warning p, div.caution p
 /* END SIDE NOTES */
 
 
-div.table table, div.informaltable
+div.table, div.informaltable
 {
+    width: 100%;
+    clear: both;
+}
+div.table div.table-contents, div.informaltable div.table-contents
+{
+    background-color: rgba(11,117,188,0.1) !important;
+    border: 1px solid #0b75bc;
+    padding: 8px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+div.table table, div.informaltable table
+{
+    width: 100%;
+    border: none;
     border-collapse: collapse;
 }
 
 td, th
 {
-    padding: 3px 4px 1px 4px;
+    padding: 2px 4px;
 }
 
 div.table table, div.informaltable table,
@@ -481,7 +498,39 @@ div.table table tbody, div.informaltable table tbody,
 div.table table thead, div.informaltable table thead,
 div.table table tfoot, div.informaltable table tfoot
 {
-    border:none;
+    font-size: 15px;
+    text-align: center;
+}
+div.table table td,
+div.informaltable table td,
+div.table table th,
+div.informaltable table th
+{
+    border: 1px solid #3D8AC9;
+}
+div.table table tr:first-child th,
+div.informaltable table tr:first-child th
+{
+  border-top: 0;
+}
+div.table table tr:last-child td,
+div.informaltable table tr:last-child td
+{
+  border-bottom: 0;
+}
+div.table table tr td:first-child,
+div.informaltable table tr td:first-child,
+div.table table tr th:first-child,
+div.informaltable table tr th:first-child
+{
+  border-left: 0;
+}
+div.table table tr td:last-child,
+div.informaltable table tr td:last-child,
+div.table table tr th:last-child,
+div.informaltable table tr th:last-child
+{
+  border-right: 0;
 }
 
 div.queryresult table tbody td p code.literal
@@ -516,7 +565,10 @@ div.queryresult table tfoot th
     font-weight: normal;
 }
 
-div.table table th, div.informaltable table th,
+div.table table th, div.informaltable table th
+{
+    color: #3D8AC9;
+}
 div.table-contents td p span.strong strong
 {
     color: #333333;
