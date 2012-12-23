@@ -238,7 +238,7 @@ $( document ).ready( function($){
         'latest':
         {
             'url': 'http://qi4j.org/latest',
-            'relpath': '../latest:'
+            'relpath': '../latest'
         },
         '<=1.4.x':
         {

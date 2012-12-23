@@ -7,7 +7,7 @@
 
 === Alias Versions ===
 
-* link:../latest/javadocs/index.htm[Latest Release == Master Branch]
+* link:../latest/javadocs/index.html[Latest Release == Master Branch]
 * link:../develop/javadocs/index.html[Develop Branch]
 
 === Releases ===
