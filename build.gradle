@@ -433,6 +433,7 @@ buildAll.doLast {
       }
     }
     runtimeDepsMetalink = runtimeDepsMetalink + "</metalink>\n"
+    new File( buildDir.toString(), "reports" ).mkdirs()
     new File( buildDir.toString(), "reports/qi4j-sdk-runtime-deps.metalink" ).text = runtimeDepsMetalink
 }
 
@@ -552,7 +553,7 @@ task release {
   description = 'Builds, tests and uploads the release artifacts'
   group = 'release'
   doFirst {
-    if( System.properties[ 'version' ] == null )
+    if( System.properties[ 'version' ] == null || System.properties[ 'version' ].contains( 'SNAPSHOT' ) )
     {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
