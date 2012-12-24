@@ -102,18 +102,17 @@ allprojects {
                              ? true : false
   // By default RELEASES are uploaded using SSH, SNAPSHOTS using WEBDAV
   // Used Wagon can be overriden by setting the uploadWagon property
-  def wagonSSH = "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
+  // def wagonSSH = "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
   def wagonWEBDAV = "org.apache.maven.wagon:wagon-webdav:1.0-beta-2"
   def uploadWagon = rootProject.hasProperty('uploadWagon') \
-                        ? rootProject.uploadWagon : uploadReleases \
-                        ? wagonSSH : wagonWEBDAV
+                        ? rootProject.uploadWagon : wagonWEBDAV
   // By default RELEASES are uploaded to OPS4J, SNAPSHOTS to Cloudbees
   // Target repository can be overriden by setting the uploadRepository property
-  def releasesRepository = "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/"
+  def releasesRepository = "dav:https://repository-qi4j.forge.cloudbees.com/release/"
   def snapshotsRepository = "dav:https://repository-qi4j.forge.cloudbees.com/snapshot/"
   def uploadRepository = rootProject.hasProperty('uploadRepository') \
-                            ? rootProject.uploadRepository : uploadReleases \
-                            ? releasesRepository : snapshotsRepository
+                            ? rootProject.uploadRepository \
+                            : uploadReleases ? releasesRepository : snapshotsRepository
   // No username/password is provided by default
   // If needed set them using the uploadUsername and uploadPassword properties
   def uploadUsername = rootProject.hasProperty('uploadUsername') ? rootProject.uploadUsername : null
