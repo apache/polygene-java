@@ -1,9 +1,0 @@
-[submodule "core"]
-	path = core
-	url = git://github.com/Qi4j/qi4j-core.git
-[submodule "libraries"]
-	path = libraries
-	url = git://github.com/Qi4j/qi4j-libraries.git
-[submodule "extensions"]
-	path = extensions
-	url = git://github.com/Qi4j/qi4j-extensions.git
