@@ -1,0 +1,13 @@
+[[news-20081117,Qi4j at Øredev 2008]]
+= @ Øredev 2008 - Qi4j =
+
+Qi4j - code, examples and demo
+
+Qi4j is an application development framework that promises to make it easier to
+create applications using DDD. But how does it accomplish this, and to what
+extent? This session will take us through the creation of a simple application
+using Qi4j and discuss the different features that simplify the developers life
+and makes it easier to apply agile practices.
+
+Watch the whole session online
+http://archive.oredev.org/topmenu/video/java/rickardobergqi4j.4.5a2d30d411ee6ffd28880001122.html[here].

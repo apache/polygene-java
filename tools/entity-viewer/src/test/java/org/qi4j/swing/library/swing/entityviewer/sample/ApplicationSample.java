@@ -1,41 +1,54 @@
 /*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.qi4j.swing.library.swing.entityviewer.sample;
 
+import java.awt.GraphicsEnvironment;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.library.swing.entityviewer.EntityViewer;
-import org.qi4j.core.testsupport.AbstractQi4jTest;
+import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assume.*;
 
 public class ApplicationSample
     extends AbstractQi4jTest
 {
 
+    @BeforeClass
+    public static void assumeDisplay()
+    {
+        assumeFalse( GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() );
+        String display = System.getenv( "DISPLAY" );
+        assumeThat( display, is( notNullValue() ) );
+        assumeTrue( display.length() > 0 );
+    }
+
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
@@ -47,7 +60,7 @@ public class ApplicationSample
 
     public void createTestData()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             createCar( "Volvo", "S80", 2007 );
@@ -64,11 +77,6 @@ public class ApplicationSample
 
             uow.complete();
         }
-        catch( ConcurrentEntityModificationException e )
-        {
-            // Can not happen.
-            e.printStackTrace();
-        }
         catch( UnitOfWorkCompletionException e )
         {
             e.printStackTrace();
@@ -77,14 +85,10 @@ public class ApplicationSample
 
     public void testQuery()
     {
-        UnitOfWork uow = moduleInstance.unitOfWorkFactory().newUnitOfWork();
-        QueryBuilder qb = moduleInstance.queryBuilderFactory().newQueryBuilder( CarEntity.class );
-        //Object template  = QueryExpressions.templateFor( clazz );
-        Query query = qb.newQuery( uow );
-
-        for( Object qObj : query )
+        UnitOfWork uow = module.newUnitOfWork();
+        Query<Car> query = uow.newQuery( module.newQueryBuilder( Car.class ) );
+        for( Car car : query )
         {
-            Car car = (Car) qObj;
             System.out.println( car.model() + " | " + car.manufacturer() + " | " + car.year() );
         }
     }
@@ -92,7 +96,6 @@ public class ApplicationSample
     public static void main( String[] args )
         throws Exception
     {
-
         ApplicationSample sample = new ApplicationSample();
         sample.runSample();
     }
@@ -104,13 +107,14 @@ public class ApplicationSample
         setUp();
         createTestData();
         //testQuery();
-
-        new EntityViewer().show( qi4j, applicationModel, application );
+        // START SNIPPET: entity-viewer
+        new EntityViewer().show( qi4j.spi(), applicationModel, application );
+        // END SNIPPET: entity-viewer
     }
 
     private String createCar( String manufacturer, String model, int year )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
         Car prototype = builder.instanceFor( CarEntity.class );
         prototype.manufacturer().set( manufacturer );
@@ -122,7 +126,7 @@ public class ApplicationSample
 
     private String createAnimal( String name, String sound )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Animal> builder = uow.newEntityBuilder( Animal.class );
         Animal prototype = builder.instanceFor( AnimalEntity.class );
         prototype.name().set( name );
@@ -133,11 +137,13 @@ public class ApplicationSample
 
     public interface Car
     {
+
         Property<String> manufacturer();
 
         Property<String> model();
 
         Property<Integer> year();
+
     }
 
     public interface CarEntity
@@ -147,16 +153,16 @@ public class ApplicationSample
 
     public interface Animal
     {
+
         Property<String> name();
 
         Property<String> sound();
+
     }
 
     public interface AnimalEntity
         extends Animal, EntityComposite
     {
     }
+
 }
-
-
-

@@ -31,7 +31,7 @@ import org.qi4j.sample.rental.domain.Period;
 import org.qi4j.sample.rental.domain.RentalShop;
 import org.qi4j.sample.rental.domain.dev.InitialData;
 
-import static org.qi4j.api.common.Visibility.*;
+import static org.qi4j.api.common.Visibility.application;
 
 public class RentalModule
     implements Assembler

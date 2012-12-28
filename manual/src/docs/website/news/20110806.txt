@@ -1,0 +1,18 @@
+[[news-20110806,Qi4j SDK Release 1.4]]
+= Qi4j SDK Release 1.4 =
+
+Shanghai, 5 Aug 2011 - The Qi4j community today announced Release 1.4 of the innovative Java framework, Qi4j. This release is a consolidation release of the 1.x development branch, as development focus now is directed towards 2.0. The main new features in version 1.4 is Named Associations and inclusion of an industrial automation inspired alarm system.
+
+== Summary ==
+
+The Qi4j Release 1.4 is a consolidation release, to bring together un-released features in the 1.x development branch. This is the last feature release in 1.x, and only serious bugs will be fixed and released. The Qi4j community will now focus on version 2.0 of Qi4j, which will again sport many ground=breaking features.
+
+== Named Associations ==
+
+In 1.4 it is now possible to map associations by name, and not only as a list. The name is local to the association itself, and operates very much like a Map. The entities referenced are as usual loaded lazily upon get() method.
+
+== Alarm System ==
+
+Industrial automation systems have long had alarm systems as the main mechanism for reporting problems in a large system. This metaphor is actually very well suited in today's complex enterprise systems as well. Alarms are in Qi4j implemented as an entity with a small state machine, dictated by an Alarm Model. The Standard Alarm model has four states; Normal, Activated, Deactivate and Acknowledged. After an alarm is activated, an individual person has to acknowledge the alarm before its state return to normal.
+
+Further work will be done in this area for aggregation, notficiation, reporting and visualization.

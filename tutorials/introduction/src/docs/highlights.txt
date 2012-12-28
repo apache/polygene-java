@@ -1,0 +1,74 @@
+[[highlights,Highlights]]
+= Highligts =
+
+== Principles ==
+
+Composite Oriented Programming builds on some principles that are not addressed by Object Oriented Programming at all.
+
+* Behavior depends on Context
+* Decoupling is a virtue
+* Business Rules matters more.
+* Classes are dead, long live interfaces.
+
+=== Behavior Depends on Context ===
+
+Many objects has life cycles that are more extensive than the simple model that Object Oriented Programming model wants
+us to believe. A few simple examples;
+
+* An egg becomes a chicken which in turn becomes food.
+* I am a programmer at work, a father+husband at home, a victim in a traffic accident and hunter and pray in the jungle.
+
+But it is more to it than that. The composition of the object may change over time. My home now has a garage and my car
+have different kind of problems with their own state related to it.
+
+In the programming world, we are constantly faced with change of requirements. These changes are often not related to
+any real world changes, but people coming to new insights of the problem domain. OOP makes those changes a big deal,
+and often we have to tear up large chunks of the model and redo the work.
+
+But wait, there is more.
+
+Some objects traverses different scope boundaries to the extreme. For instance, a Person will have its attributes
+changing slightly over time, new abilities be learnt and so forth, that is mentioned above. But the Person will
+eventually die, but that doesn't mean that the Person object should be deleted from a system, since the "memory of"
+that Person may live on for a long time. In a OOP system, we would need to transfer some of the state from a
+LivingPerson class to a DeadPerson class. In Composite Oriented Programming, it is the same object with different
+behavior.
+
+We think that one of the the main flaws in OOP is that it is not object oriented at all, but in fact class oriented.
+Class is the first class citizen that objects are derived from. Not objects being the first-class citizen to which
+one or many classes are assigned.
+
+=== Decoupling is Virtue ===
+
+Decoupling is more important than developers in general think. If you could have every OOP class decoupled from all
+other classes, it is easy to re-use that class. But when that class references another class and the chain never ends,
+your chances of re-use diminishes quickly.
+
+Object Oriented Programming is suffering a lot from this, and many mechanisms have been introduced over time to counter
+this problem. But in reality, the best we can manage is subsystems of functionality, which client code can re-use. And
+these subsystems tend to be infrastructure related, since domain models are less prone to be similar enough from one
+project to the next, and since OOP in reality constrains the the re-use of individual domain classes, we need to re-do
+the domain model from scratch ever time.
+
+=== Business Rules matters more ===
+
+Smart developers often think that low-level, infrastructure and framework code is more important and more cool to work
+with, than the simple domain model. But in reality, it is the Domain Model that reflects the actual need  and pays the
+bills. Infrastructure is just a necessary evil to get things done.
+
+If most developers could focus on the Business Rules and Domain Model, and not having to worry about any infrastructure
+issues, such as persistence, transactions, security or the framework housing it all, the productivity would surge. Eric
+Evans has written an excellent book about Domain Driven Design, where he goes through the real process that makes the
+money for companies. However, it is very hard to follow that book, since one is constantly caught up in constraints
+irrelevant to the domain model, introduced by the underlying framework, from the so called smart developers.
+
+image:classes-are-dead.gif[]
+
+Qi4j™ is trying to address the flaws of OOP and introduce Composite Oriented Programming to the world, without
+introducing new programming languages, or awkward constructs. Heck, we don't even use any XML.
+
+Qi4j™ is not a framework. It is a new way to write code. Other people might create frameworks using Qi4j™, or create a
+framework optimized for Qi4j™, but here at Qi4j™ we concentrate to make Qi4j™ behave well in existing frameworks,
+application servers, platforms and environments.
+
+You are to embark on a new journey. Enjoy!

@@ -1,0 +1,65 @@
+[[tut-composites,Transient Composites Tutorial]]
+= Transient Composites Tutorial =
+
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
+http://qi4j.org/downloads.html[Qi4j SDK sources]. You should start your favorite editor and find the code related to
+this tutorial, run it and play with it.
+
+Throughout this set of tutorials it will be shown how to create and work with Composites, which
+is the basic element in Qi4j. We will refactor one HelloWorld class to take advantage of the various
+features in Qi4j. These refactorings will make it easier to reuse parts of the class,
+and introduce new features without having to change existing code. We will also look
+at some of the existing classes, or Fragments, available in Qi4j that you can reuse
+so that you don't have to write everything yourself.
+
+- <<tut-composites-step1>>
+- <<tut-composites-step2>>
+- <<tut-composites-step3>>
+- <<tut-composites-step4>>
+- <<tut-composites-step5>>
+- <<tut-composites-step6>>
+- <<tut-composites-step7>>
+- <<tut-composites-step8>>
+- <<tut-composites-step9>>
+
+Each tutorial step in this series starts with the result from the previous tutorial, so you can
+always look at the next tutorial step for guidance on what to do.
+
+At the bottom of each tutorial step, the is Solutions section, which list the files you should have come to if you
+have followed the instructions.
+
+:leveloffset: 3
+
+include::step1.txt[]
+
+:leveloffset: 3
+
+include::step2.txt[]
+
+:leveloffset: 3
+
+include::step3.txt[]
+
+:leveloffset: 3
+
+include::step4.txt[]
+
+:leveloffset: 3
+
+include::step5.txt[]
+
+:leveloffset: 3
+
+include::step6.txt[]
+
+:leveloffset: 3
+
+include::step7.txt[]
+
+:leveloffset: 3
+
+include::step8.txt[]
+
+:leveloffset: 3
+
+include::step9.txt[]

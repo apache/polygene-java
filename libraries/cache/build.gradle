@@ -1,0 +1,13 @@
+description = "Qi4j Cache Library provides caching framework for methods."
+
+jar { manifest { name = "Qi4j Library - Cache" }}
+
+dependencies {
+  compile( project(":org.qi4j.core:org.qi4j.core.api") )
+  compile( project(':org.qi4j.libraries:org.qi4j.library.jmx' ) )
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

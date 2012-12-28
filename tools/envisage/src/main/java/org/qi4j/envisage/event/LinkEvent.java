@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.event;
 
-import java.awt.Cursor;
+import java.awt.*;
 import java.util.EventObject;
 import javax.swing.text.html.HTMLEditorKit;
 

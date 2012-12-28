@@ -1,0 +1,97 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[library-alarm, Alarm Library]]
+= Alarms =
+
+[devstatus]
+--------------
+source=libraries/alarm/dev-status.xml
+--------------
+
+
+The process control and industrial automation industry has for decades been struggling with a large number of unreliable
+data points, such as sensors, fuses and potentially malfunctioning valves and actuators. This industry quickly developed
+the concept of *Alarm Point* as an abstraction for indication that something is not working correctly. These
+_Alarm Points_ could then be grouped and aggregated, along a well-defined set of rules, to provide human operators a
+clear view of what is going on in a plant.
+
+The enterprise software has always assumed a much more "reliable" environment where the computers either work or they
+don't. Very little thought has been spent on what happens when many independent systems interact and what the
+consequences are to other systems when one fails. The _Alarm Point_ concepts becomes a natural fit for the enterprise
+world of today, where _Alarm Points_ allows for fine-grained notification and view into the health of one or more
+systems.
+
+In Qi4j, we are building upon this powerful abstraction, from decades of field experience.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Overview ==
+An _Alarm Point_ is of an _Alarm Class_ and of an _Alarm Category_. The _Alarm Class_ defines the *severity* of the
+_Alarm Point_ and the _Alarm Category_ defines which *part* of the system it belongs to. _Alarm Category_ can be
+extended by the developer, and the package contains the _SimpleAlarmCategory_ as an example, where a Description
+property has been added.
+
+An _Alarm Point_ also has a _System Name_, which should be the subsystem or application name.
+
+_Alarm Points_ are *triggered* and an _Alarm Trigger_ may cause the _Alarm Status_ to change. IF, and only if, the
+_Alarm Status_ changes, and _Alarm Event_ is generated. The _Alarm Model_ used for an _Alarm Point_ defines which
+_Alarm Status_, _Alarm Trigger_ and _Alarm Event_ that are possible.
+
+_Alarm Points_ may also have user-defined properties. These are primarily used for reporting and auditing.
+
+
+== Alarm Point ==
+The _Alarm Point_ is the central API for applications. _Alarm Points_ are entities and normally dormant on in the
+Entity Store. The _Alarm Point_ is a small workflow state-machine, and the _Alarm Model_ associated with the _Alarm
+Point_ defines the workflow.
+
+== Alarm Event ==
+
+== Alarm Class ==
+
+== Alarm Category ==
+
+
+== Alarm Proxy ==
+Sometimes it is much more convenient to hold on to Alarm Points all the time, instead of reviving them from the Entity
+Store every time they are to be modified. Therefor, there is a convenience class available who does all the grunt work,
+called the _Alarm Proxy_. By creating an _Alarm Proxy_, all the UnitOfWork handling is done for you. You still need to
+provide an _Identity_ of the Alarm, which must survive restarts. The code could look something like this;
+
+[snippet,java]
+--------------
+source=libraries/alarm/src/test/java/org/qi4j/library/alarm/AlarmProxyTest.java
+tag=documentation
+--------------
+
+== Alarm Models ==
+The Qi4j Alarm library comes with 3 _Alarm Models_ which should be sufficient for most uses. These are based on decades
+of experience from the industrial automation industry and user feedback.
+
+== Simple Alarm Model ==
+The _Simple Alarm Model_ is the most basic one, with only two _Alarm Status_, *_Normal_* and *_Activated_*. The only
+_Alarm Triggers_ are _activate_ and _deactivate_, where _activate_ on a _Normal_ status will bring it to _Activated_
+status and an _Activated Alarm Event_ is generated.
+
+[width="80%",options="header"]
+|=======
+| *Old Status* | *Trigger* | *Event* | *New Status* |
+| Normal       | activate  | Activated
+|=======
+
+== Standard Alarm Model ==
+
+== Extended Alarm Model ==

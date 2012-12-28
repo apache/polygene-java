@@ -1,0 +1,14 @@
+description = "Detailled Model of a Qi4j Application Structure."
+
+jar { manifest { name = "Qi4j Model Detail" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}
+

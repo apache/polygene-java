@@ -1,0 +1,35 @@
+[[downloads,Downloads]]
+= Downloads =
+
+== Qi4j SDK ==
+We are working towards distributing a useful SDK for Qi4j development, usable without connectivity. This work has not
+been highest on the list and we are generally lagging in the release of the SDK in comparison to the artifact releases.
+We strive to change this in the future.
+
+=== Versioning ===
+Qi4j versioning tries to stick to;
+
+   * For changes in the 3rd version digit, for instance from 1.3.1 to 1.3.2, only bug fixes have occurred.
+   * For changes in the 2nd version digit, for instance from 1.3.1 to 1.4, more features have been added.
+   * For changes in the 1st version digit, for instance from 1.3.1 to 2.0, incompatibilities have been introduced.
+
+However, this will only be true for the Qi4j API, i.e. the classes found in org.qi4j.core.api JAR. For SPI and
+especially the runtime, we reserve the right of incompatible changes between releases in the second digit.
+
+Qi4j also has dependencies on other systems. We reserve the right that these dependencies may change between releases.
+For instance, a change between 1.1 and 1.2 was that CGLib was dropped and replaced by ASM as a new dependency.
+
+=== Releases ===
+Using Gradle, Maven, SBT, Ivy or any other build system that provide dependency management? Learn how to
+<<howto-depend-on-qi4j, depend on Qi4j in your build>>.
+
+The Qi4j SDK is split in two downloads: binaries and sources. Both downloads are available in the zip and tar.gz formats.
+The source code is also available on https://github.com/qi4j/qi4j-sdk[Github].
+
+include::1.4.1.txt[]
+include::1.4.txt[]
+include::1.3.txt[]
+include::1.2.txt[]
+include::1.1.txt[]
+include::1.0.txt[]
+

@@ -1,0 +1,29 @@
+[[news-20100617,Qi4j SDK 1.1 is out!]]
+= Qi4j SDK 1.1 is out! =
+
+Qi4j community hereby announces the availability of Release 1.1 of Qi4j Core,
+Qi4j Libraries and Qi4j Extensions.
+
+Qi4j version 1.1 is now available. It is mostly an bug fix update, some SPI
+changes and a contributed EntityStore for EC2/S3 using Infinispan. The author,
+Philippe Van Dyck, explains;
+
+- Infinispan memory cache eviction mechanism is based on a memory threshold (i.e. you specify 100MB of memory for the cache in the store config)
+- RHQ monitoring with Infinispan plugin
+- Entries are gzipped on S3
+- Wicket load balancing is done with infinispan (custom pagestore)
+- I use a directory structure for qi4j identities ("Entity1/key1") with a webdav interface to it, so one can mount Qi4j's store in Mac OSX Finder.
+- EC2 S3_PING is used in jgroups to join the cluster of qi4j stores
+- Each Qi4j UnitOfWork is transaction backed with rollback support
+- S3 (blobstore) access is using Infinispan synchronous and transacted mode
+- EC2 images only contain the wicket web interface with a jetty https connector / when added to amazon elastic load balancer, Infinispan connects to the cache cluster and wicket begins to server load balanced requests - yep, just like that
+
+Current performance, as reported by RHQ, from EC2 to S3, is around 60ms per
+read/write from S3 (rough average). Elastic load balancing load tests with
+loadStorm are not done yet. But I don't know any NOSQL alternative offering a
+*permanent transacted monitored compressed Finder-mounted clustered
+load-balanced store*.
+
+Development continues towards 1.2 release, which includes better OSGi support,
+dropping CGLib dependency due to classloading issues, Google AppEngine support
+and hopefully the DCI support as developed in the StreamFlow project.

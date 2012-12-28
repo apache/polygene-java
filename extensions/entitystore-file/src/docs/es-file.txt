@@ -1,0 +1,54 @@
+[[extension-es-file,File EntityStore]]
+= File EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-file/dev-status.xml
+--------------
+
+EntityStore service backed by a source control friendly file system format.
+
+Note that content should not be modified directly, and doing so may corrupt the data.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done as follows:
+
+[snippet,java]
+----
+source=extensions/entitystore-file/src/test/java/org/qi4j/entitystore/file/FileEntityStoreTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Here are the configuration properties for the File EntityStore:
+
+[snippet,java]
+----
+source=extensions/entitystore-file/src/main/java/org/qi4j/entitystore/file/FileEntityStoreConfiguration.java
+tag=config
+----
+
++directory+ is optional and represent the directory where the File EntityStore will keep its persisted state.
+
+It defaults to System.getProperty( "user.dir" ) + "/qi4j/filestore"
+If the given path is not absolute, then it's relative to the current working directory.
+If you use the <<library-fileconfig>> then this property value is ignored and FileConfig is prefered.
+
++slices+ defines how many slice directories the store should use.
+
+Many operating systems run into performance problems when the number of files in a directory grows. If
+you expect a large number of entities in the file entity store, it is wise to set the number of slices
+(default is 1) to an approximation of the square root of number of expected entities.
+
+For instance, if you estimate that you will have 1 million entities in the file entity store, you should
+set the slices to 1000.
+
+There is a limit of minimum 1 slice and maximum 10,000 slices, and if more slices than that is needed, you
+are probably pushing this entitystore beyond its capabilities.
+
+Note that the slices() can not be changed once it has been set, as it would cause the entity store not to
+find the entities anymore.

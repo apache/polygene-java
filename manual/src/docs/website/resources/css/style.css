@@ -1,0 +1,315 @@
+/*
+ * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *     You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+body
+{
+    background: url("bg.png");
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #343434;
+    line-height: 1.2em;
+}
+
+.section p
+{
+    /* margin-right: 85px; */
+}
+
+.literal, .literallayout, .screen
+{
+    background: #DEDEDE;
+}
+
+.literallayout
+{
+    padding: 7px;
+}
+
+a
+{
+    color: #00009A;
+}
+
+h2.title
+{
+    display: none;
+}
+
+.listitem
+{
+    padding:3px;
+}
+
+.logo
+{
+    position: fixed;
+    top: 45px;
+    left: 20px;
+    z-index: 18;
+}
+
+.top-nav
+{
+    position: fixed;
+    top: 7px;
+    width: 100%;
+    z-index: 20;
+}
+
+.top-nav .toc
+{
+    margin: 0;
+    margin-top: -7px;
+    padding: 0;
+    height: 40px;
+}
+
+.top-nav .toc dl
+{
+    margin: 0;
+    padding: 20px 0 5px 0;
+    text-align: center;
+    background-image: linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background-image: -o-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background: -moz-linear-gradient(top, #3d8ac9 0%, #ffffff 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background-image: -ms-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(49, 105, 165)), color-stop(0, rgb(255, 255, 255)));
+    border-bottom: 1px solid #3d8ac9;
+}
+
+.top-nav .toc dt
+{
+    display: inline;
+    font-size: 11pt;
+    display: inline;
+    margin-right: 1px;
+}
+
+/* selected */
+.top-nav .toc dt span span
+{
+    color: red;
+    border-right: 1px solid white;
+    margin-right: 1px;
+}
+
+.top-nav .toc .toc-spacer span span
+{
+    /*
+    border-top:0px;
+    border-left:0px;
+    border-right:0px;
+    border-bottom:1px solid #005500;
+    */
+    border: 0px;
+    padding-bottom: 7px;
+}
+
+/* unselected */
+.top-nav .toc dt a
+{
+    margin-right: 1px;
+    border-top: 1px solid #fff;
+    border-right: 1px solid #fff;
+    border-left: 1px solid #fff;
+    color: #3D8AC9;
+}
+
+/* hover */
+.top-nav .toc dt a,
+.top-nav .toc dt span span
+{
+    padding: 15px 15px 5px 15px;
+    text-decoration: none;
+    background-image: linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
+    background-image: -o-linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
+    background: -moz-linear-gradient(top, #bfbfbf 0%, #ffffff 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
+    background-image: -ms-linear-gradient(bottom, rgb(191, 191, 191) 100%, rgb(255, 255, 255) 0%);
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(191, 191, 191)), color-stop(0, rgb(255, 255, 255)));
+}
+
+.top-nav .toc dt a:hover /* ,.top-nav .toc dt span span*/
+{
+    background-image: linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background-image: -o-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background: -moz-linear-gradient(top, #3d8ac9 0%, #ffffff 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background-image: -ms-linear-gradient(bottom, rgb(49, 105, 165) 100%, rgb(255, 255, 255) 0%);
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(1, rgb(49, 105, 165)), color-stop(0, rgb(255, 255, 255)));
+}
+
+.sub-nav
+{
+}
+
+.sub-nav .toc
+{
+    position: absolute;
+    top: 65px;
+    left: 155px;
+}
+
+.sub-nav .toc dl
+{
+    font-family: sans-serif;
+    width: 200px;
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-bottom: 40px;
+}
+
+.sub-nav .toc dl dt
+{
+    font-size: 0.8em;
+}
+
+div.article
+{
+    padding: 2px;
+}
+
+div.article hr
+{
+    display: none;
+}
+
+body > div.article,
+body > div.section
+{
+    margin: 80px 20px 20px 360px;
+    min-height: 1280px;
+    max-width: 45em;
+}
+
+.sub-nav .toc dl a
+{
+    display: none;
+}
+
+.sub-nav .toc dt a,
+.sub-nav .toc dt span
+{
+    display: table;
+    margin: 0;
+    text-decoration: none;
+}
+.sub-nav .toc dt a:before,
+.sub-nav .toc dt span span:before
+{
+    content: "\00bb\00a0";
+}
+.sub-nav .toc dt span
+{
+    color: red;
+}
+
+.hlabeledlist tr > td:first-child
+{
+    width: 136px;
+}
+
+.footer
+{
+    clear: both;
+    text-align: center;
+    padding: 10px 0;
+    background: #343434;
+    color: #9a9a9a;
+    font-size: 80%;
+}
+
+div.informaltable
+{
+    width: 100%;
+}
+div.informaltable table,
+div.table table
+{
+    background: transparent;
+}
+div.informaltable table thead,
+div.table table thead
+{
+    border-bottom: 1px solid black;
+}
+
+#flash
+{
+    margin: 40px;
+    float: right;
+    width: 320px;
+    text-align: right;
+}
+
+.extra-content
+{
+    display: none;
+}
+
+#F
+{
+    position: relative;
+    left: 18px;
+    top: 3px;
+}
+
+#K
+{
+    position: relative;
+    left: 84px;
+    top: 3px;
+}
+
+#P
+{
+    position: relative;
+    left: -65px;
+    top: 3px;
+}
+
+#S
+{
+    position: relative;
+    left: 8px;
+    top: 3px;
+}
+
+#W
+{
+    position: relative;
+    left: -42px;
+    top: 6px;
+}
+
+#Z
+{
+    position: relative;
+    left: -26px;
+    top: 4px;
+}
+
+/*
+#J { position:relative; }
+#P { position:absolute; left:0px; }
+#F { position:absolute; left:23px; }
+#Z { position:absolute; left:60px; }
+#W { position:absolute; left:72px; }
+#S { position:absolute; left:103px; }
+#K { position:absolute; left:122px; top:2px; }
+*/

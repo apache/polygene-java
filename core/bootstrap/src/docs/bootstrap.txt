@@ -1,0 +1,227 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-bootstrap-assembly,Assembly]]
+= Core Bootstrap =
+
+[devstatus]
+--------------
+source=core/bootstrap/dev-status.xml
+--------------
+
+Qi4j has a distinct bootstrap phase, also known as the _Assembly_ of an application, where the applications structure
+is defined programmatically. Once all the layers, modules and all the composite types in each module have been defined
+the model is instantiated into an application. This enables the entire _structure_ system in Qi4j, where types "belongs"
+to a module and visibility rules define default behaviors, enforcement of architectural integrity and much more.
+
+The _assembly_ is preceeded by the creation of the _Qi4j Runtime_. The _assembly_ can be declared fully by defining
+all modules and layers, and how the layers are sitting on top of each other, OR one can utilize one of the two
+convenience assemblies, one for a _pancake_ pattern, where all layers are top on each other, or one with a single module
+in a single layer, useful for small applications, spikes and tests.
+
+During _assembly_, the application (JVM level) architecture and the application model is defined. You define which
+layers exist and how they relate to each other. For each layer, you define which modules it contains. And for each
+module, you define which composites are in it, and what are the visibility rules for each of these composites.
+
+You can also;
+
+    * Define default values for properties.
+    * Add additional interfaces to composites dynamically.
+    * Add concerns, mixins, constraints and side effects dynamically.
+    * Set _meta information_ on defined types.
+    * Import external services to be available as Qi4j services.
+    * Tag services with markers
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+
+== Defining Objects ==
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=objects
+--------------
+
+
+== Defining Transients ==
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=transients
+--------------
+
+
+== Defining Values ==
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=values
+--------------
+
+
+== Defining Entities ==
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=entities
+--------------
+
+
+== Defining Services ==
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=services
+--------------
+
+=== Tagging Services ===
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=tagged-services
+--------------
+
+=== Importing external Services ===
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=imported-services
+--------------
+
+== Defining default values for Properties ==
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=properties-defaults
+--------------
+
+== Adding additional interfaces to composites ==
+
+
+== Adding concerns, mixins, constraints and side effects ==
+
+
+== Setting meta information on assembled types ==
+
+
+== Facilities ==
+
+=== Assembly Specifications ===
+
+=== Class Scanner ===
+
+
+== Using Assemblers ==
+Many <<libraries,libraries>> and <<extensions,extensions>> provides a cookie-cutter _Assembler_, to simplify the set up
+of such component. Often these are suitable, but sometimes they won't fit the application in hand, in which case the
+source code at least provides information of what is needed for the component to be used.
+
+Assemblers are typically just instantiated and then call the assemble() method with the ModuleAssembly instance,
+such as;
+
+[snippet,java]
+--------------
+source=libraries/rest-server/src/test/java/org/qi4j/library/rest/server/DocumentationSupport.java
+tag=UsingAssembler
+--------------
+
+== Defining an Entity Store ==
+Defining an _Entity Store_ is in principle as simple as defining a ServiceComposite implementing the EntityStore
+interface. The problem is that most Entity Stores require <<core-api-service-configuration>>, and configuration requires an
+Entity Store. This chicken-and-egg problem is resolved by having an entity store available that does not require any
+<<core-api-service-configuration>>. Many _Assemblers_ for entity store implementations uses the MemoryEntityStore, and
+effectively leaves the configuration in the properties file where <<core-api-service-configuration>> bootstraps from. It is
+possible to chain this, so that for instance the Neo4J Entity Store uses the Preferences Entity Store for its
+configuration, and the Preferences Entity Store uses the Memory Entity Store (i.e. the properties file).
+
+The point is that the entity store used for the configuration of the primary entity store used in the application is
+that it must not be visible to the application itself. Sometimes it is easiest to put a Memory Entity Store in the
+same module, with Visibility set to _module_. Sometimes it makes sense to have an additional Configuration layer below
+the infrastructure layer, which has this setup.
+
+As mentioned above, most entity stores defines a reasonable default _Assembler_, possibly with some constructor
+arguments to define certain aspects. An example is the popular JdbmEntityStore, which _Assembler_ can be used like;
+
+[snippet,java]
+--------------
+source=extensions/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/DocumentationSupport.java
+tag=UsingAssembler
+--------------
+
+
+
+
+== Singleton Assembler ==
+Every Qi4j runtime instance consist of One Application, with one or more Layers and one or more Modules in each Layer.
+So the minimal application is still one layer with one module. This is not recommended other than for testing purposes
+and really trivial applications.
+
+Let's take a closer look at how it is put together.
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=singleton
+--------------
+
+Once the SingletonAssembler constructor returns, the Qi4j application is up and running.
+
+The SingletonAssembler also makes common system resources available from the bootstrap code, such as
+Module, UnitOfWorkFactory and others. This is possible since there is only one Module.
+
+
+
+== Pancake Assembly ==
+There is one case that stands out as a common case, and forms a reasonable middle-ground. It is where each layer sits
+exactly on top of each other layer, like pancakes. Each layer will only use the layer directly below and only that
+layer. For this case we have a convenience setup. You create an Assembler[][][], where the outer-most array is each
+layer, the middle array is the modules in each layer, and the last array is a set of assemblers needed to put the
+things togather.
+
+Let's look at an example;
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=pancake
+--------------
+
+
+
+== Full Assembly ==
+Full Assembly means that you have the opportunity to create any layer/module hierarchy that are within the rules of the
+Qi4j runtime. It requires more support in your code to be useful, and the example below is by no means a recommended way
+to organize large application assemblies.
+
+In principle, you first start the Qi4j runtime, call newApplication with an ApplicationAssembler instance and call
+activate() on the returned application. The ApplicationAssembler instance will be called with an
+ApplicationAssemblyFactory, which is used to create an ApplicationAssembly describing the application structure.
+
+[snippet,java]
+--------------
+source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+tag=full
+--------------
+
+

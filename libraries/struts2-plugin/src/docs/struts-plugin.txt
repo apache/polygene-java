@@ -1,0 +1,13 @@
+[[library-struts-plugin, Struts Plugin Library]]
+= Struts - Plugin =
+
+[devstatus]
+--------------
+source=libraries/struts2-plugin/dev-status.xml
+--------------
+
+Struts Plugin Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

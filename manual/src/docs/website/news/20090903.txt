@@ -1,0 +1,19 @@
+[[news-20090903,Qi4j Persistence at JavaZone 2009]]
+= @ JavaZone 2009 - Persistence =
+
+JavaZone 2009 is held as usual in Oslo, Norway, on the 9th and 10th of
+September 2009. It is set to be an exciting event, Scandinavias larges Java
+Developer's conference, but covers adjacent languages as well, such as Scala,
+Groovy and JRuby. Qi4j is represented with a presentation by Niclas Hedhman
+about "Qi4j Persistence" (10th Sept, 11:45). The short time available will only
+allow for the basics of Qi4j Persistence to be covered, but the audience is
+expected to get tantalized and curious about our great framework for rich
+domain model development.
+
+Many other great speakers, both local Norwegians as well as International ones,
+will be present and all is set for a great conference, again...
+
+Niclas will of course be available most of the conference time for face-to-face
+discussions, feedback and questions on Qi4j topics.
+
+See you in Oslo.

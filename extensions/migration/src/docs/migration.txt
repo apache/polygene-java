@@ -1,0 +1,17 @@
+[[extension-migration, Migration]]
+= Migration =
+
+[devstatus]
+--------------
+source=extensions/migration/dev-status.xml
+--------------
+
+Migration
+
+NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+// Here are some pointers to documentation material:
+// http://qi4j-dev.23929.n6.nabble.com/Versioning-and-data-migration-td5189.html
+// http://qi4j-dev.23929.n6.nabble.com/Migration-API-updated-tc90.html

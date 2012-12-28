@@ -18,7 +18,6 @@ package org.qi4j.ide.plugin.idea.mixins.inspections;
 
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.ProblemDescriptor;
-import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiAnnotationMemberValue;
@@ -26,6 +25,8 @@ import com.intellij.psi.PsiClass;
 import org.jetbrains.annotations.NotNull;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractFix;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractInspection;
+
+import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 import static org.qi4j.ide.plugin.idea.mixins.common.Qi4jMixinUtil.getMixinsAnnotation;
 

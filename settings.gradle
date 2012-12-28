@@ -1,9 +1,10 @@
-include "core:api",
+include "core:functional",
+        "core:io",
+        "core:api",
         "core:spi",
         "core:testsupport",
         "core:bootstrap",
         "core:runtime",
-        'libraries:auth',
         'libraries:alarm',
         'libraries:cache',
         'libraries:circuitbreaker',
@@ -15,87 +16,110 @@ include "core:api",
         'libraries:eventsourcing-rest',
         'libraries:fileconfig',
         'libraries:http',
+        'libraries:lang-beanshell',
+        'libraries:lang-groovy',
+        'libraries:lang-javascript',
+        'libraries:lang-jruby',
+        'libraries:lang-scala',
         'libraries:jmx',
         'libraries:locking',
         'libraries:logging',
+        'libraries:metrics',
+        'libraries:neo4j',
         'libraries:osgi',
         'libraries:rdf',
         'libraries:rest',
+        'libraries:rest-client',
+        'libraries:rest-common',
+        'libraries:rest-server',
         'libraries:scheduler',
-        'libraries:scripting:common',
-        'libraries:scripting:beanshell',
-        'libraries:scripting:groovy',
-        'libraries:scripting:javascript',
-        'libraries:scripting:jruby',
+        'libraries:scripting',
         'libraries:servlet',
         'libraries:shiro-core',
         'libraries:shiro-web',
         'libraries:spring',
         'libraries:sql',
+        'libraries:sql-bonecp',
+        'libraries:sql-c3p0',
+        'libraries:sql-dbcp',
+        'libraries:sql-liquibase',
         'libraries:struts2-plugin',
         'libraries:struts2-codebehind',
         'libraries:struts2-convention',
         'libraries:uid',
-        'libraries:vaadin',
+        'libraries:uowfile',
         'extensions:cache-ehcache',
         'extensions:entitystore-file',
         'extensions:entitystore-gae',
         'extensions:entitystore-hazelcast',
+        'extensions:entitystore-jclouds',
         'extensions:entitystore-jdbm',
+        'extensions:entitystore-leveldb',
+        'extensions:entitystore-mongodb',
         'extensions:entitystore-neo4j',
         'extensions:entitystore-preferences',
-        'extensions:entitystore-qrm',
+        'extensions:entitystore-redis',
+        'extensions:entitystore-riak',
         'extensions:entitystore-sql',
         'extensions:entitystore-voldemort',
+        'extensions:indexing-elasticsearch',
         'extensions:indexing-rdf',
         'extensions:indexing-solr',
         'extensions:indexing-sql',
+        'extensions:metrics-yammer',
         'extensions:migration',
         'extensions:reindexer',
+        'manual',
         'samples:dci',
-        'samples:dddsample',
-        'samples:dddsample2',
+        'samples:dci-cargo:dcisample_a',
+        'samples:dci-cargo:dcisample_b',
+        'samples:forum',
         'samples:rental',
+        'samples:sql-support',
         'samples:struts2Hello',
-//        'tools:codesnippet',   // TODO: JavaCC plugin found for Gradle requires Javacc to be installed on system. Need better solution.
-'tools:entity-viewer',
-'tools:envisage',
-'tutorials:cargo',
-'tutorials:composites',
-'tutorials:introduction:twominutes',
-//        'tutorials:introduction:tenminutes',
+        'samples:swing',
+        'tools:entity-viewer',
+        'tools:model-detail',
+        'tools:envisage',
+//        'tools:qidea',
+        'tutorials:cargo',
+        'tutorials:composites',
+        'tutorials:hello',
+        'tutorials:introduction',
+        'tutorials:introduction:twominutes',
+        'tutorials:introduction:tenminutes',
 //        'tutorials:introduction:thirtyminutes',
 //        'tutorials:introduction:twohours',
 'tutorials:services',
 'tests:complex:gae',
 'tests:regression',
 'tests:performance'
-rootProject.name="org.qi4j"
+rootProject.name = "org.qi4j"
 
-validateProject(rootProject,"")
+validateProject(rootProject, "")
 
-def validateProject(project,parentName)
+def validateProject(project, parentName)
 {
   assert project.projectDir.isDirectory()
   if( new File("$project.projectDir/src/main/java").exists() )
   {
     assert project.buildFile.isFile()
   }
-  if( parentName == 'org.qi4j.libraries')
+  if( parentName == 'org.qi4j.libraries' )
   {
     parentName = 'org.qi4j.library'
   }
-  if( parentName.endsWith('s'))
+  if( parentName.endsWith('s') )
   {
-    parentName = parentName.substring(0,parentName.length()-1)
+    parentName = parentName.substring(0, parentName.length() - 1)
   }
-  if( parentName.length() > 0)
+  if( parentName.length() > 0 )
   {
     project.name = parentName + "." + project.name
   }
   println "Project: " + project.name
   project.children.each { child ->
-    validateProject(child,project.name)
+    validateProject(child, project.name)
   }
 }
 

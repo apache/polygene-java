@@ -1,0 +1,16 @@
+[[news-20080808,Qi4j 0.3 Released]]
+= Qi4j 0.3 Released =
+
+The 3rd pre-final release from the Qi4j community marks a new relatively stable milestone on the continued path to a production ready system. The 0.3 release is the 3rd major re-write of the Qi4j Core Runtime, after many lessons learned from previous implementations.
+
+"The current Qi4j Core Runtime is soooo much lighter and easier to work with, both for the Core developers as well as extensions and advanced libraries developers.", says Rickard Öberg, the Qi4j project lead. "We now have most of the ingredients in place for developers who want to delve into DDD without having to do everything from scratch. Having a toolkit to work with that speaks the same language as themselves, all the way from layers down to individual parameter constraints, makes life so much easier, and minimizes the need for translation from idea to actual code."
+
+"We now feel confident that the Qi4j Core Runtime has a good design and is stable enough to not go through any more disruptive changes. This enables us to move away from a feature-boxed release cycle into a more agile time-boxed one. This will enable more people to participate and use the Qi4j platform.", says Niclas Hedhman. He continues; "Stefano Mazzocchi (Apache) once told me; Only projects with 'Bad Code, Great Vision will build strong communities'. And I think Qi4j is exactly at this point right now. The vision for a better future is extremely promising, and we have so many areas that we need help to implement. Combined with a no barrier to write and commit code/documentation for all parts except Qi4j Core, we have the setup for accelerated participation in the months to come."
+
+With this release the Qi4j community moves from a feature-boxed release cycle into a time-boxed one. First week every month, there will be a release containing the work from previous release. Issues will be worked on in a semi-prioritized order and the participating developers are urged to keep the codebase stable towards the release date.
+
+Rickard is keen to point out the Application Visualizer that has been started since the 0.2 release, "Another key tool which this release introduces is the beginning of the application visualizer, which automatically shows what your application look like. One of the main disadvantages of earlier frameworks is that the developers typically felt out of control and unable to see what was going on. When you have so many pieces working together it is important to get the big picture, and this is what we are now enabling."
+
+"Our immediate next steps involves a new remote Entity Store, getting the application visualization tool ready, changes to the Query API including named and native queries, and we are looking into introducing more explicit Composite archetypes, such as TransientComposite and ValueComposite", says Rickard and then goes back coding.
+
+The rest of us just can't wait to see what is coming up next.

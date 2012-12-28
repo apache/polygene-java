@@ -3,17 +3,12 @@ description = "Basic tutorial on how to covert a simple 'Hello World' applicatio
 jar { manifest { name = "Qi4j Tutorial - Composites" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.scripting:org.qi4j.library.scripting.jruby"))
-  compile(libraries.slf4j_api)
-  testCompile(libraries.junit)
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+  compile(project(":org.qi4j.libraries:org.qi4j.library.lang-jruby"))
+
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
 }

@@ -19,9 +19,10 @@
 package org.qi4j.sample.rental.domain;
 
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.property.Property;
 
 public interface CarCategory
     extends EntityComposite
 {
-    Name name();
+    Property<String> name();
 }

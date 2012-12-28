@@ -31,7 +31,7 @@ import org.qi4j.api.sideeffect.SideEffectOf;
 import org.qi4j.api.sideeffect.SideEffects;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.core.testsupport.AbstractQi4jTest;
+import org.qi4j.test.AbstractQi4jTest;
 
 
 public class ConcernsOnPropertyTest
@@ -47,7 +47,7 @@ public class ConcernsOnPropertyTest
     @Test
     public void whenConcernOnPropertyThenConcernIsInvoked()
     {
-        TransientBuilder<Car> builder = transientBuilderFactory.newTransientBuilder( Car.class );
+        TransientBuilder<Car> builder = module.newTransientBuilder( Car.class );
         Car prototype = builder.prototypeFor( Car.class );
         prototype.manufacturer().set( "Volvo" );
         Car car = builder.newInstance();

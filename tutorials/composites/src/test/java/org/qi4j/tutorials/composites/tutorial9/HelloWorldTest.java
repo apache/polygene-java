@@ -8,8 +8,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class HelloWorldTest
 {
@@ -21,13 +22,14 @@ public class HelloWorldTest
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
+            @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
                 module.transients( HelloWorldComposite.class );
             }
         };
-        TransientBuilderFactory builderFactory = assembly.transientBuilderFactory();
+        TransientBuilderFactory builderFactory = assembly.module();
         TransientBuilder<HelloWorldComposite> builder = builderFactory.newTransientBuilder( HelloWorldComposite.class );
         builder.prototype().name().set( "Hello" );
         builder.prototype().phrase().set( "World" );

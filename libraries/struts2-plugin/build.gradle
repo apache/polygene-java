@@ -1,0 +1,15 @@
+description = "Qi4j Struts Library allows integration of Qi4j into Struts2 applications."
+
+jar { manifest { name = "Qi4j Library - Struts2" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(libraries.struts_core)
+  compile(libraries.freemarker)
+  compile(libraries.servlet_api)
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

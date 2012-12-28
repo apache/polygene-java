@@ -16,23 +16,12 @@
 */
 package org.qi4j.envisage.detail;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.*;
 import java.util.ResourceBundle;
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import org.qi4j.envisage.event.LinkEvent;
 import org.qi4j.envisage.event.LinkListener;
-import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ImportedServiceDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ValueDetailDescriptor;
+import org.qi4j.tools.model.descriptor.*;
 
 public class DetailModelPane
     extends JPanel
@@ -97,6 +86,7 @@ public class DetailModelPane
     {
         SwingUtilities.invokeLater( new Runnable()
         {
+            @Override
             public void run()
             {
                 setDescriptorImpl( objectDescriptor );

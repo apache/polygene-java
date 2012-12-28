@@ -1,0 +1,26 @@
+:leveloffset: 1
+
+[[javadocs, JavaDocs]]
+= Javadoc =
+
+== JavaDocs ==
+
+=== Alias Versions ===
+
+* link:../latest/javadocs/index.html[Latest Release == Master Branch]
+* link:../develop/javadocs/index.html[Develop Branch]
+
+=== Releases ===
+
+* link:../1.4.1/javadocs/index.html[Release 1.4.1]
+* link:../1.4/javadocs/index.html[Release 1.4]
+* link:../1.3/javadocs/index.html[Release 1.3]
+* Release 1.2
+** link:../1.2/javadocs/api[Core API]
+** link:../1.2/javadocs/bootstrap[Core Bootstrap]
+** link:../1.2/javadocs/spi[Core SPI]
+* Release 1.0
+** link:../1.0/javadocs/api[Core API]
+** link:../1.0/javadocs/bootstrap[Core Bootstrap]
+** link:../1.0/javadocs/spi[Core SPI]
+

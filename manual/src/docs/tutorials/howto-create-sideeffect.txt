@@ -1,0 +1,123 @@
+[[howto-create-sideeffect,Create a SideEffect]]
+= Create a SideEffect =
+
+SideEffects are defined in <<def-sideeffect>>.
+
+== Typed SideEffect ==
+
+A typed SideEffect is a Java class that implements the MixinType it can be used on:
+
+[snippet,java]
+-----------
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/MailNotifySideEffect.java
+tag=allClass
+-----------
+
+The MailNotifySideEffect is implemented as an abstract class, since we are not interested in the many other methods in
+the Confirmable interface. Extending the SideEffectOf is a convenience mechanism, instead of an explicit @SideEffectFor
+annotation on a private field, which can be used in rare occasions when you are not able to extend. This base class
+defines the next field, which is set up by the Qi4j runtime and points to the next fragment in the call stack. We can
+also see that the MailService, HasLineItems and HasCustomer are provided to the side-effect, which is done with
+dependency injection. Qi4j also supports dependency injection via constructors and methods.
+
+It can be used as follows;
+
+[source,java]
+-----------
+@SideEffects( MailNotifySideEffect.class )
+public interface OrderEntity
+    extends Order, HasSequenceNumber, HasCustomer,
+            HasLineItems, Confirmable, EntityComposite
+{
+}
+-----------
+
+Methods of the SideEffect Fragment will be called after the Mixin invocation.
+
+== Generic SideEffect ==
+
+A generic SideEffect is a Java class that implements java.lang.reflect.InvocationHandler which allows it to be used on any
+arbitrary MixinType.
+
+[source,java]
+-----------
+public class MyGenericSideEffect extends GenericSideEffect
+{
+    public Object invoke(...)
+    {
+        // Do whatever you want
+        return next.invoke( ... );
+    }
+}
+-----------
+
+It can be used as follows;
+
+[source,java]
+-----------
+@Concerns( MyGenericSideEffect.class )
+public interface AnyMixinType
+{
+    :
+    :
+}
+-----------
+
+Methods of the SideEffect Fragment will be called before the Mixin invocation.
+
+
+=== AppliesTo ===
+
+For generic SideEffects that should only trigger on methods with specific annotations or fulfilling some expression, add
+@AppliesTo annotation to the SideEffect class which points to either triggering annotation(s), or to AppliesToFilter
+implementation(s).
+
+The SideEffect is invoked if one of the triggering annotations is found or one of the AppliesToFilter accepts the
+invocation. In other words the AppliesTo arguments are OR'ed.
+
+Here is how the declaration goes ;
+
+[source,java]
+-----------
+@AppliesTo( { MyAnnotation.class, MyAppliesToFilter.class } )
+public class MyGenericSideEffect extends GenericSideEffect
+{
+    public Object invoke(...)
+    {
+        // Do whatever you want
+        return next.invoke( ... );
+    }
+}
+-----------
+
+And how to use the annotation ;
+
+[source,java]
+-----------
+@Concerns( MyGenericSideEffect.class )
+public interface AnyMixinType
+{
+    @MyAnnotation
+    void doSomething();
+    void doSomethingElse();
+    :
+    :
+}
+-----------
+
+Here only the doSomething() method will see the SideEffect applied whereas the doSomethingElse() method won't.
+
+Finally here is how to implement an AppliesToFilter:
+
+[source,java]
+-------------
+public class MyAppliesToFilter implements AppliesToFilter
+{
+    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
+    {
+        boolean appliesTo; // Do whatever you want
+        return appliesTo;
+    }
+}
+-------------
+

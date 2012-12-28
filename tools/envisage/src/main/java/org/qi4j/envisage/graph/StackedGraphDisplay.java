@@ -16,18 +16,13 @@
 */
 package org.qi4j.envisage.graph;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
-import javax.swing.JViewport;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import org.qi4j.envisage.event.LinkEvent;
 import prefuse.Constants;
 import prefuse.Visualization;
@@ -158,6 +153,7 @@ public class StackedGraphDisplay
         setDamageRedraw( true );
     }
 
+    @Override
     public void run( Graph graph )
     {
         // add the GRAPH to the visualization
@@ -179,6 +175,7 @@ public class StackedGraphDisplay
         run();
     }
 
+    @Override
     public void run()
     {
         if( isInProgress() )
@@ -191,6 +188,7 @@ public class StackedGraphDisplay
         activity = m_vis.run( LAYOUT_ACTION );
     }
 
+    @Override
     public void setSelectedValue( Object object )
     {
         if( object == null )
@@ -289,6 +287,7 @@ public class StackedGraphDisplay
             super( group, VisualItem.STROKECOLOR );
         }
 
+        @Override
         public int getColor( VisualItem item )
         {
             if( !( item instanceof NodeItem ) )
@@ -327,6 +326,7 @@ public class StackedGraphDisplay
             super( group, VisualItem.FILLCOLOR );
         }
 
+        @Override
         public int getColor( VisualItem item )
         {
             if( item instanceof NodeItem )
@@ -349,12 +349,14 @@ public class StackedGraphDisplay
     public class HoverControl
         extends ControlAdapter
     {
+        @Override
         public void itemEntered( VisualItem item, MouseEvent evt )
         {
             item.setStrokeColor( OUTLINE_FOCUS_COLOR );
             item.getVisualization().repaint();
         }
 
+        @Override
         public void itemExited( VisualItem item, MouseEvent evt )
         {
             item.setStrokeColor( item.getEndStrokeColor() );
@@ -376,6 +378,7 @@ public class StackedGraphDisplay
             super( group );
         }
 
+        @Override
         public void run( double frac )
         {
             Iterator iter = m_vis.items( m_group );
@@ -404,6 +407,7 @@ public class StackedGraphDisplay
             m_manageBounds = false;
         }
 
+        @Override
         protected Shape getRawShape( VisualItem item )
         {
             m_bounds.setRect( item.getBounds() );
@@ -414,11 +418,13 @@ public class StackedGraphDisplay
     public class WheelMouseControl
         extends ControlAdapter
     {
+        @Override
         public void itemWheelMoved( VisualItem item, MouseWheelEvent evt )
         {
             zoom( evt.getWheelRotation() );
         }
 
+        @Override
         public void mouseWheelMoved( MouseWheelEvent evt )
         {
             zoom( evt.getWheelRotation() );
@@ -428,6 +434,7 @@ public class StackedGraphDisplay
         {
             SwingUtilities.invokeLater( new Runnable()
             {
+                @Override
                 public void run()
                 {
                     if( rotation == 0 )
@@ -450,6 +457,7 @@ public class StackedGraphDisplay
     public class ItemSelectionControl
         extends ControlAdapter
     {
+        @Override
         public final void itemClicked( VisualItem anItem, MouseEvent anEvent )
         {
             // update the display
@@ -469,6 +477,7 @@ public class StackedGraphDisplay
     public class AutoPanAction
         extends Action
     {
+        @Override
         public void run( double frac )
         {
             Rectangle2D displayBounds = new Rectangle2D.Double( 0, 0, getWidth(), getHeight() );
@@ -550,6 +559,7 @@ public class StackedGraphDisplay
             super( childrenAbove );
         }
 
+        @Override
         public int score( VisualItem item )
         {
             int score = super.score( item );

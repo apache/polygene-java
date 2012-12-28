@@ -1,0 +1,23 @@
+description = "Qi4j SQL Library provides SQL support."
+
+jar { manifest { name = "Qi4j Library - SQL" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.circuitbreaker"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.conversion"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.jmx"))
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testCompile(project(":org.qi4j.libraries:org.qi4j.library.sql-bonecp"))
+  testCompile(project(":org.qi4j.libraries:org.qi4j.library.sql-c3p0"))
+  testCompile(project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp"))
+  testCompile(project(":org.qi4j.libraries:org.qi4j.library.sql-liquibase"))
+  testCompile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-preferences"))
+  
+  testRuntime(libraries.derby)
+  testRuntime(libraries.mysql_connector)
+  testRuntime(libraries.postgres)
+  testRuntime(libraries.logback)
+}

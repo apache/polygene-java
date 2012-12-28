@@ -20,16 +20,17 @@ package org.qi4j.test.performance.entitystore.model;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.property.Property;
 
 public interface ComplexProduct
     extends EntityComposite
 {
     @UseDefaults
-    Name name();
+    Property<String> name();
 
     @Optional
-    Description description();
+    Property<String> description();
 
     @Optional
-    Price unitPrice();
+    Property<Money> unitPrice();
 }

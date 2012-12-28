@@ -1,0 +1,56 @@
+[[tut-composites-step3,Step 3 - Mixins]]
+= Step 3 - Mixins =
+
+Previous step was <<tut-composites-step2>>.
+
+In this step we refactor the Mixin from the previous steps into two, one which serves the behaviour interface and 
+one which serves the state interface. This makes it possible to reuse the interfaces independently and also makes it 
+easier to exchange one interface implementation with another. This also allows us to specify the new Mixins as default 
+implementations of the interfaces by adding @Mixins annotations on them.
+
+Steps for this tutorial:
+
+- Refactor the Mixin into one which implement the behaviour interface and one which implements the state interface. Use the @This injection annotation to allow the behaviour to access the state.
+- Add a @Mixins annotations on the behaviour and state interfaces which declare the Mixins as default implementations.
+- Remove the @Mixins annotation from the TransientComposite interface.
+
+== Solution ==
+
+Only *HelloWorld.java* remains unchanged.
+
+*HelloWorldComposite.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldComposite.java
+tag=solution
+----
+
+*HelloWorldBehaviour.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldBehaviour.java
+tag=solution
+----
+
+*HelloWorldBehaviourMixin.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldBehaviourMixin.java
+tag=solution
+----
+
+*HelloWorldState.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldState.java
+tag=solution
+----
+
+*HelloWorldStateMixin.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldStateMixin.java
+tag=solution
+----
+
+Next step is <<tut-composites-step4>>

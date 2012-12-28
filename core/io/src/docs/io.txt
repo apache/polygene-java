@@ -1,0 +1,227 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-io,I/O API]]
+= Core I/O API =
+
+[devstatus]
+--------------
+source=core/io/dev-status.xml
+--------------
+
+The Qi4j Core I/O API is completely generic and not tied to the Qi4j programming model as a whole. It can be used
+independently of Qi4j, together with the Qi4j Core Functional API, which the Core I/O API depends on.
+
+The Qi4j Core I/O API tries to address the problem around shuffling data around from various I/O inputs and outputs,
+possibly with transformations and filtering along the way. It was identified that there is a general mix-up of concerns
+in the stereotypical I/O handling codebases that people deal with all the time. The reasoning around this, can be found
+in the <<howto-use-io>>, and is recommended reading.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== The Problem ==
+Why does I/O operations in Java have to be so complicated, with nested try/catch/finally and loops? Don't you wish
+that the operations could be expressed in a more natural way, such as;
+
+[source,java]
+-------------
+File source = ...
+File destination = ...
+source.copyTo( destination );
+-------------
+
+It seems natural to do, yet it is not present for us. We need to involve FileInputStream/FileOutputStream, wrap them
+in Buffered versions of it, do out own looping, close the streams afterwards and what not. So, the java.io.File does
+not have this simple feature and in the Qi4j Core API, we need to work around this limitation. We also want to
+make the abstraction a little bit more encompassing than "just" files. So how does that look like then?
+
+== First Examples ==
+The most common inputs and outputs are collected in the org.qi4j.io.Inputs and org.qi4j.io.Outputs classes as static
+factory methods, but you can create your (more about that later).
+
+So, we want to read a text file and write the content into another text file, right? This is how it is done;
+
+[source,java]
+-------------
+File source = ...
+File destination = ...
+Inputs.text( source ).transferTo( Outputs.text(destination) );
+-------------
+
+Pretty much self-explanatory, wouldn't you say? But what happened to the handling of exceptions and closing of
+resources? It is all handled inside the Qi4j Core I/O API. There is nothing you can forget to do.
+
+Another simple example, where we want to count the number of lines in the text;
+
+[source,java]
+-------------
+File source = ...
+File destination = ...
+Counter<String> counter = new Counter<String>();
+Inputs.text( source ).transferTo( Transforms.map(counter, Outputs.text(destination) ));
+System.out.println( "Lines: " + counter.getCount() );
+-------------
+
+The Counter is a <<core-functional>> which gets injected into the transfer.
+
+== The 3 Parts ==
+Ok, so we have seen that the end result can become pretty compelling. How does it work?
+
+I/O is defined as a process of moving data from an Input, via one or more Transforms to an Output. The Input could
+be a File or a String, the transformation could be a filter, conversion or a function and finally the Output
+destination could be a File, String or an OutputStream. It is important to note that there is a strong separation of
+concern between them. Let's look at the on at a time.
+
+== org.qi4j.io.Input ==
+This interface simply has a transferTo() method, which takes an Output. The formal definition is;
+
+[snippet,java]
+--------------
+source=core/io/src/main/java/org/qi4j/io/Input.java
+tag=input
+--------------
+
+What on earth is all this genericized Exceptions? Well, it abstracts away the explicit Exception that implementations
+may throw (or not). So instead of demanding that all I/O must throw the java.io.IOException, as is the case in the
+JDK classes, it is up to the implementation to declare what it may throw. That is found in the SenderThrowable generic
+of the interface.
+
+But hold on a second. Why is an Input throwing a "sender" exception? Well, think again. The Input is feeding "something"
+with data. It takes it from some source and "sends it" to the downstream chain, eventually reaching an Output, which
+likewise is the ultimate "receiver".
+
+So, then, the method transferTo() contains the declaration of the downstream receiver's possible Exception
+(ReceiverThrowable) which the transferTo() method may also throw as the data may not be accepted and such exception
+will bubble up to the transferTo() method (the client's view of the transfer).
+
+== org.qi4j.io.Output ==
+The output interface is likewise fairly simple;
+
+[snippet,java]
+--------------
+source=core/io/src/main/java/org/qi4j/io/Output.java
+tag=output
+--------------
+
+It can simply receive data from a org.qi4j.io.Sender.
+
+Hey, hold on! Why is it not receiving from an Input? Because the Input is the client's entry point and of no use to
+the Output as such. Instead, the Output will tell the Sender (which is handed to from the Input or an transformation)
+to which Receiver the content should be sent to.
+
+Complicated? Perhaps not trivial to get your head around it at first, but the chain is;
+
+Input passes a Sender to the Output which tells the Sender which Receiver the data should be sent to.
+
+The reason for this is that we need to separate the concerns properly. Input is a starting point, but it emits something
+which is represented by the Sender. Likewise the destination is an Output, but it receives the data via its Receiver
+interface. For O/S resources, they are handled purely inside the Input and Output implementations, where are the
+Sender/Receiver are effectively dealing with the data itself.
+
+== org.qi4j.io.Transforms ==
+The 3 component in the Qi4j Core I/O API is the transformations that are possible. Interestingly enough, with the
+above separation of concerns, we don't need an InputOutput type that can both receive and send data. Instead, we
+simply need to prepare easy to use static factory methods, which are found in the org.qi4j.io.Transforms class. Again,
+it is fairly straight forward to create your own Transforms if you need something not provided here.
+
+The current transformations available are;
+
+   * filter - takes a Specification and only forwards data items conforming to the Specification.
+   * map - takes a org.qi4j.functional.Function to convert an item from one type to (potentially) another, and any
+     possible change along the way.
+   * filteredMap - is a combination of a filter and a map. If the Specification is satisfied, the map function is
+     applied, otherwise the item is passed through unaffected.
+   * lock - A wrapper which protects the Input or Output from simultaneous access. Not a transformation by itself,
+     but implemented in the same fashion.
+
+There are also a couple of handy map functions available, such as
+
+   * Log
+   * ProgressLog
+   * Counter
+   * ByteBuffer2String
+   * Object2String
+   * String2Bytes
+
+== Writing a Map Function? ==
+Let us take a closer look at the implementation of a map function, namely Counter mentioned above and also used in
+the section First Example above.
+
+The implementation is very straight forward.
+
+[snippet,java]
+--------------
+source=core/io/src/main/java/org/qi4j/io/Transforms.java
+tag=counter
+--------------
+
+On each call to the map() method, increment the counter field. The client can then retrieve that value after the
+transfer is complete, or in a separate thread to show progress.
+
+Speaking of "progress", so how is the ProgressLog implemented? Glad you asked;
+
+[snippet,java]
+--------------
+source=core/io/src/main/java/org/qi4j/io/Transforms.java
+tag=progress
+--------------
+
+It combines the Counter and the Log implementations, so that the count is forwarded to the Log at a given interval, such
+as every 1000 items. This may not be what you think a ProgressLog should look like, but it serves as a good example on
+how you can combine the general principles found in the Qi4j Core API package.
+
+== How to write a filter specification? ==
+The filter transform takes a specification implementation which has a very simple method, isSatisfiedBy() (read more
+about that in <<core-functional>>.
+
+[snippet,java]
+--------------
+source=core/functional/src/main/java/org/qi4j/functional/Specification.java
+tag=specification
+--------------
+
+The only thing that the implementation need to do is return *true* or *false* for whether the item passed in is within
+the limits of the Specification. Let's say that you have a IntegerRangeSpecification, which could then be implemented
+as
+
+[snippet,java]
+--------------
+source=core/functional/src/test/java/org/qi4j/functional/IntegerRangeSpecificationTest.java
+tag=specification
+--------------
+
+== Ready-to-use components ==
+Input and Output implementations at first glance look quite scary. Taking a closer look and it can be followed. But to
+simplify for users, the org.qi4j.io.Inputs and org.qi4h.io.Outputs contains static factory methods for many useful
+sources and destinations.
+
+== org.qi4j.io.Inputs ==
+The current set of ready-to-use Input implementations are;
+
+[snippet,java]
+--------------
+source=core/io/src/main/java/org/qi4j/io/Inputs.java
+tag=method
+--------------
+
+== org.qi4j.io.Outputs ==
+The current set of ready-to-use Input implementations are;
+
+[snippet,java]
+--------------
+source=core/io/src/main/java/org/qi4j/io/Outputs.java
+tag=method
+--------------
+

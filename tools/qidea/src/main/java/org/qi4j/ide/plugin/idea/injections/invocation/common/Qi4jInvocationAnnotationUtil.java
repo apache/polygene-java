@@ -16,23 +16,15 @@
 */
 package org.qi4j.ide.plugin.idea.injections.invocation.common;
 
-import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiClass;
-import static com.intellij.psi.PsiModifier.STATIC;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.PsiModifierListOwner;
-import com.intellij.psi.PsiTypeElement;
-import com.intellij.psi.PsiVariable;
+import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
+import static com.intellij.psi.PsiModifier.STATIC;
 import static org.qi4j.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
 import static org.qi4j.ide.plugin.idea.injections.invocation.common.Qi4jInvocationAnnotationConstants.QUALIFIED_NAME_INVOCATION_ANNOTATION;
-import static org.qi4j.ide.plugin.idea.injections.invocation.common.Qi4jInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult.invalidDeclaredOnStaticVariable;
-import static org.qi4j.ide.plugin.idea.injections.invocation.common.Qi4jInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult.invalidInvocationAnnotationNotDeclared;
-import static org.qi4j.ide.plugin.idea.injections.invocation.common.Qi4jInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult.invalidType;
-import static org.qi4j.ide.plugin.idea.injections.invocation.common.Qi4jInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult.invalidTypeIsInjectedViaStructureAnnotation;
-import static org.qi4j.ide.plugin.idea.injections.invocation.common.Qi4jInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult.valid;
+import static org.qi4j.ide.plugin.idea.injections.invocation.common.Qi4jInvocationAnnotationUtil.InvocationAnnotationDeclarationValidationResult.*;
 import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.isInjecteableByStructureAnnotation;
 
 /**

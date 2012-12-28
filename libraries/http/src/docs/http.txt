@@ -1,0 +1,118 @@
+[[library-http, HTTP Library]]
+= HTTP =
+
+[devstatus]
+--------------
+source=libraries/http/dev-status.xml
+--------------
+
+The HTTP library provides a Jetty based embedded HTTP service with support for easy event listeners, servlets and
+filters assembly as Services.
+
+It's an easy way to embedd a servlet container and reuse everything that can be run in it (JAX-*, Restlet, Wicket,
+Vaadin, GWT etc..). If instead you want to run a Qi4j Application in a servlet container, see <<library-servlet>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Create an EventListenerService ==
+
+EventListeners in HttpService are assembled as Services, so one have to declare a ServiceComposite like this:
+
+[snippet,java]
+----
+source=libraries/http/src/test/java/org/qi4j/library/http/FooServletContextListenerService.java
+tag=context-listener
+----
+
+== Create a ServletService ==
+
+Servlets in HttpService are assembled as Services, so one have to declare a ServiceComposite like this:
+
+[snippet,java]
+----
+source=libraries/http/src/test/java/org/qi4j/library/http/HelloWorldServletService.java
+tag=servletservice
+----
+
+== Create a FilterService ==
+
+It's the same for Filters. As an example here is the bundled UnitOfWorkFilterService declaration:
+
+[snippet,java]
+----
+source=libraries/http/src/main/java/org/qi4j/library/http/UnitOfWorkFilterService.java
+tag=filterservice
+----
+
+== Jetty Service ==
+
+=== Assembly ===
+
+The HTTP library provide a JettyServiceAssembler and a fluent API to easily assemble Servlets and Filters.
+
+[snippet,java]
+----
+source=libraries/http/src/test/java/org/qi4j/library/http/JettyServiceTest.java
+tag=assembly
+----
+
+This library can be used alonside the JMX library, described in <<library-jmx>>. If it is
+visible and that you enable Jetty statistics configuration property they will be
+automatically exposed through JMX.
+
+Here is a simple example from the unit tests showing what's necessary but inside a simple
+Module for the sake of clarity:
+
+[snippet,java]
+----
+source=libraries/http/src/test/java/org/qi4j/library/http/JettyJMXStatisticsTest.java
+tag=jmx
+----
+
+=== Configuration ===
+
+Underlying Jetty engine configuration is exposed as a Qi4j Service Configuration.
+The only one that is mandatory is the port.
+
+See org.qi4j.library.http.JettyConfiguration for a reference of all available
+configuration properties.
+
+== Secure Jetty Service ==
+
+The HTTP library provides a second HttpService that brings SSL support.
+
+=== Assembly ===
+
+Simply change from JettyServiceAssembler to SecureJettyServiceAssembler:
+
+[snippet,java]
+----
+source=libraries/http/src/test/java/org/qi4j/library/http/SecureJettyServiceTest.java
+tag=assemblyssl
+----
+
+=== Configuration ===
+
+You must at least configure a KeyStore using the three related properties. All the other
+ones have sensible defaults.
+
+If you want, or need, to do client certificate authentication you'll need to configure at
+least a "trust store", a KeyStore that contains your trusted trust anchors.
+
+Here is some code that set HTTP port a well as a KeyStore and a TrustStore as
+SecureJettyConfiguration default during assembly:
+
+[snippet,java]
+----
+source=libraries/http/src/test/java/org/qi4j/library/http/MutualSecureJettyServiceTest.java
+tag=config
+----
+
+See org.qi4j.library.http.SecureJettyConfiguration for a reference of all available
+configuration properties.
+
+
+== Logging ==
+
+The SLF4J logger used by this library is named "org.qi4j.library.http".
+

@@ -1,0 +1,37 @@
+[[extension-es-jdbm, JDBM EntityStore]]
+= JDBM EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-jdbm/dev-status.xml
+--------------
+
+EntityStore service backed by an embedded http://code.google.com/p/jdbm2/[JDBM2] database.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/DocumentationSupport.java
+tag=UsingAssembler
+----
+
+== Configuration ==
+
+Here are the configuration properties for the JDBM EntityStore:
+
+[snippet,java]
+----
+source=extensions/entitystore-jdbm/src/main/java/org/qi4j/entitystore/jdbm/JdbmConfiguration.java
+tag=config
+----
+
++file+ is optional and represent the file where the JDBM EntityStore will keep its persisted state.
+
+It defaults to System.getProperty( "user.dir" ) + "/qi4j/jdbmstore.data"
+If the given path is not absolute, then it's relative to the current working directory.
+If you use the <<library-fileconfig>> then this property value is ignored and FileConfig is prefered.

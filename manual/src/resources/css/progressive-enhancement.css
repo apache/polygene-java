@@ -1,0 +1,213 @@
+
+/**
+ * Continuous Integration - Jenkins Widget
+*/
+div.jenkins-widget {
+    position: relative;
+    font-family: helvetica,arial,sans-serif;
+}
+div.jenkins-widget * {
+    font-family: helvetica,arial,sans-serif;
+}
+ul.jenkins-jobs {
+    position: relative;
+    list-style-type: none;
+    list-style-position: inside;
+    font-family: helvetica,arial,sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    margin: 10px;
+    padding: 0;
+}
+li.jenkins-job {
+    position: relative;
+    border: 1px solid lightgray;
+    background: #FAFAFA;
+    border: 1px solid #DDD;
+    color:  #666;
+    border-radius: 3px;   
+    margin-bottom: 10px;
+    width: 640px;
+}
+li.jenkins-job div.title {
+    position: relative;
+    border-bottom: 1px solid  #DDD;
+    border-radius: 3px 3px 0 0;
+    background:  #FCFCFC;
+    background: -moz-linear-gradient( #FCFCFC, #EBEBEB);
+    background: -webkit-linear-gradient( #FCFCFC, #EBEBEB);
+}
+li.jenkins-job div.title p {
+    margin: 10px;
+}
+li.jenkins-job div.title img {
+    margin: 0 10px 0 5px;
+}
+li.jenkins-job div.health {
+    position: relative;
+    padding: 5px;
+    color: #666;
+    font-weight: 300;            
+}
+li.jenkins-job div.health p {
+    margin: 2px 0;
+}
+li.jenkins-job div.health div.health-item {
+    position: relative;
+}
+li.jenkins-job div.health div.health-item p {
+    margin: 0;
+    line-height: 1;
+}
+li.jenkins-job div.health div.health-item img {
+    vertical-align: middle;
+    padding-right: 10px;
+}
+li.jenkins-job div.links {
+    position: relative;
+    border-top: 1px solid #DDD;
+    background: white;
+    border-radius: 0 0 3px 3px;
+    padding: 10px;
+}
+li.jenkins-job div.links p {
+    margin: 0;
+    font-size: 11px;
+    color: #666;
+    line-height: 24px;
+    font-weight: 300;            
+}
+li.jenkins-job div.links > a {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    line-height: 24px;
+    font-size: 12px;
+    color: #666;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    padding: 0 10px;
+    border: 1px solid #DDD;
+    border-bottom-color: #BBB;
+    border-radius: 3px;
+    background: whiteSmoke;
+    background: -moz-linear-gradient(whiteSmoke,#E5E5E5);
+    background: -webkit-linear-gradient(whiteSmoke,#E5E5E5);
+    text-decoration: none;
+}
+
+/**
+ * Google Groups forum
+*/
+#qi4j-dev-iframe {
+    -moz-transform: scale(0.85, 0.85); 
+    -webkit-transform: scale(0.85, 0.85); 
+    -o-transform: scale(0.85, 0.85);
+    -ms-transform: scale(0.85, 0.85);
+    transform: scale(0.85, 0.85); 
+    -moz-transform-origin: top left;
+    -webkit-transform-origin: top left;
+    -o-transform-origin: top left;
+    -ms-transform-origin: top left;
+    transform-origin: top left;
+    width: 900px;
+    height: 2000px; 
+}
+
+/**
+ * Issue Tracker
+*/
+div.jira-versions-widget {
+    position: relative;
+    font-family: helvetica,arial,sans-serif;
+}
+div.jira-versions-widget * {
+    font-family: helvetica,arial,sans-serif;
+}
+ul.jira-versions {
+    position: relative;
+    list-style-type: none;
+    list-style-position: inside;
+    font-family: helvetica,arial,sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    margin: 10px;
+    padding: 0;
+}
+li.jira-version {
+    position: relative;
+    border: 1px solid lightgray;
+    background: #FAFAFA;
+    border: 1px solid #DDD;
+    color:  #666;
+    border-radius: 3px;   
+    margin-bottom: 10px;
+    width: 640px;
+}
+li.jira-version div.title {
+    position: relative;
+    border-bottom: 1px solid  #DDD;
+    border-radius: 3px 3px 0 0;
+    background:  #FCFCFC;
+    background: -moz-linear-gradient( #FCFCFC, #EBEBEB);
+    background: -webkit-linear-gradient( #FCFCFC, #EBEBEB);
+}
+li.jira-version div.title p {
+    margin: 10px;
+}
+li.jira-version div.title img {
+    margin: 0 10px 0 5px;
+}
+li.jira-version div.issues {
+    position: relative;
+    padding: 5px;
+    color: #666;
+    font-weight: 300;            
+}
+li.jira-version div.issues p {
+    margin: 2px 0;
+}
+li.jira-version div.issues div.issues-item {
+    position: relative;
+}
+li.jira-version div.issues div.issues-item p {
+    margin: 0;
+    line-height: 1;
+}
+li.jira-version div.issues div.issues-item img {
+    vertical-align: middle;
+    padding-right: 10px;
+}
+li.jira-version div.links {
+    position: relative;
+    border-top: 1px solid #DDD;
+    background: white;
+    border-radius: 0 0 3px 3px;
+    padding: 5px;
+    height: 20px;
+}
+li.jira-version div.links p {
+    margin: 0;
+    font-size: 11px;
+    color: #666;
+    line-height: 24px;
+    font-weight: 300;            
+}
+li.jira-version div.links > a {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    line-height: 18px;
+    font-size: 12px;
+    color: #666;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    padding: 0 10px;
+    border: 1px solid #DDD;
+    border-bottom-color: #BBB;
+    border-radius: 3px;
+    background: whiteSmoke;
+    background: -moz-linear-gradient(whiteSmoke,#E5E5E5);
+    background: -webkit-linear-gradient(whiteSmoke,#E5E5E5);
+    text-decoration: none;
+}

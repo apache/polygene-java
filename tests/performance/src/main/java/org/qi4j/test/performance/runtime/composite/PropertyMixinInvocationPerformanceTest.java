@@ -14,7 +14,6 @@
 
 package org.qi4j.test.performance.runtime.composite;
 
-import java.text.NumberFormat;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.TransientBuilder;
@@ -24,7 +23,9 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.core.testsupport.AbstractQi4jTest;
+import org.qi4j.test.AbstractQi4jTest;
+
+import java.text.NumberFormat;
 
 /**
  * PropertyMixin invocation performance test. Don't forget to add VM value "-server"
@@ -44,7 +45,7 @@ public class PropertyMixinInvocationPerformanceTest
     public void testNewInstance()
     {
         {
-            TransientBuilder<SimpleComposite> builder = transientBuilderFactory.newTransientBuilder( SimpleComposite.class );
+            TransientBuilder<SimpleComposite> builder = module.newTransientBuilder( SimpleComposite.class );
             SimpleComposite simple = builder.newInstance();
 
             int rounds = 1;
@@ -55,7 +56,7 @@ public class PropertyMixinInvocationPerformanceTest
         }
 
         {
-            TransientBuilder<SimpleComposite> builder = transientBuilderFactory.newTransientBuilder( SimpleComposite.class );
+            TransientBuilder<SimpleComposite> builder = module.newTransientBuilder( SimpleComposite.class );
             SimpleComposite simple = builder.newInstance();
 
             int rounds = 1;

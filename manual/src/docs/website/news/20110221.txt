@@ -1,0 +1,75 @@
+[[news-20110221,Qi4j moves to Gradle]]
+= Qi4j moves to Gradle =
+
+The Qi4j project has discontinued its use of Maven and introduced Gradle as its
+build system.
+
+After fighting the Maven build system for years, and constantly looking for
+alternatives, the Qi4j community has finally decided to grab the bull by its
+horn and throw it out of the arena. Maven imposes a very rigid model on how to
+define your project, but has a weak internal model on how a build is executed.
+We therefor often see conflicts between plugins, plugins make too much 
+assumptions and ignoring settings that are actually provided formally, and not
+to even mention the fundamentally flawed versioning system.
+
+After a few evaluations of alternatives (Gradle & Buildr were the strong
+contenders), we have finally settled for Gradle (http://www.gradle.org and
+http://gradle.codehaus.org). Contrary to Maven, Gradle provides a strong
+internal model for build systems, but a flexible way to establish that model.
+In essence, in Maven, the declaration is static and the execution is 
+ill-defined, and in Gradle the model is established programmatically and the
+execution is done off the model.
+
+This allows for a great deal more flexibility. Gradle also have nice
+integration with Ant and Ivy, so Gradle's dependency system is handled by Ivy
+(without Ivy's XML) and it is easy to use any build tool that provides an Ant
+task, again programmatically.
+
+The absence of XML is refreshing. So instead of;
+
+[source,xml]
+----
+<dependencies>
+  <dependency>
+    <groupId>org.qi4j.core.runtime</groupId>
+    <artifactId>qi4j-core-api</artifactId>
+    <version>1.3</version>
+  </dependency>
+  <dependency>
+    <groupId>org.qi4j.core.runtime</groupId>
+    <artifactId>qi4j-core-runtime</artifactId>
+    <version>1.3</version>
+    <scope>test</scope>
+  </dependency>
+</dependencies>
+----
+
+The declaration of a dependency is done programmatically in Groovy code, so it
+can even be conditional and so forth, but the normal way is;
+
+[source,groovy]
+----
+dependencies {
+    compile "org.qi4j.core:qi4j-core-api:1.2"
+    testRuntime "org.qi4j.core:qi4j-core-runtime:1.2"
+}
+----
+
+And YES, there is a difference between testCompile and testRuntime. 1 line
+instead of Maven's 5-6 lines per dependency. And in true Ivy fashion, one can
+create one's own scopes, although I doubt we need that in the near future.
+
+The dependency system is worth mentioning; Since Gradle understand multi module
+projects very well, again unlike Maven, it resolves the build order according
+to the tasks needed. This means that an upstream module's tests can depend on a
+downstream module's output. And even if the build is executed in the upstream
+module, the downstream module will be recompiled if any changes happened in it.
+You never need to worry about "Oh, I forgot to recompile X" again...
+
+Gradle does not need an installation. The Qi4j SDK project comes with a Gradle
+bootstrapper, so it will install itself. Very nice.
+
+Qi4j is still committed to produce Maven artifacts for publishing to Maven
+repositories, and the upcoming 1.3 release will be the first one using Gradle for this.
+
+We hope that this will make Qi4j development more enjoyable.

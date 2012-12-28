@@ -1,0 +1,20 @@
+[[news-20080915,Qi4j at JavaZone 2008 - COP/Qi4j]]
+= @ JavaZone 2008 - COP/Qi4j =
+
+In the current programming culture we have lost the OOP idea of objects
+containing both logic and state, the idea of reuse has largely failed due to
+impractical mechanisms, and combining pieces of code into larger structures
+using AOP has not quite delivered on its promises. Building large-scale
+software also gives us challenges with regard to complexity, enforcing
+architectural rules and codebase explosion. What if we could look at what we
+have and figure out a new way to address these problems, while promoting the
+idea from domain oriented modeling and retaining what works with what we have
+now? Composite Oriented Programing is a new way of dealing with these problems,
+and this presentation will show how the Qi4j implementation on the Java
+platform will enable you to get more done with less work, and in a way that
+allows you to avoid the mentioned problems. It will describe the COP
+terminology and show examples on how to use Qi4j to implement domain oriented
+models.
+
+See the whole presentation online
+http://javazone.no/incogito/session/Qi4j+-+a+new+approach+to+old+problems.html[here].

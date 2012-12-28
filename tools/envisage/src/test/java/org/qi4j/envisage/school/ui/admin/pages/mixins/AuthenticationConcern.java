@@ -18,9 +18,9 @@ package org.qi4j.envisage.school.ui.admin.pages.mixins;
 
 import org.qi4j.api.concern.ConcernOf;
 
-import static java.lang.System.*;
+import static java.lang.System.err;
 
-public final class AuthenticationConcern
+public class AuthenticationConcern
     extends ConcernOf<DetailPage>
     implements Page, DetailPage
 {

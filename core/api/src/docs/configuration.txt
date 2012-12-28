@@ -1,0 +1,65 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-service-configuration,Service Configuration]]
+= Service Configuration =
+Configuration in Qi4j is for Qi4j <<core-api-service>> only. The Configuration is stored in a visible Entity
+Store and is therefor runtime modifiable and not static in properties or XML files as in most other dependency
+injection frameworks.
+
+The Configuration system itself will handle all the details with interfacing with reading and writing the configuration.
+The normal UnitOfWork management is used, but handled internally by the configuration system.
+
+In Qi4j, Configuration are strongly typed and refactoring-friendly. Configuration is read from the entity store, but if
+it can not be found, then it will try to bootstrap it from a properties file, with the same name as the
+ServiceDescriptor.identifiedBy(), which is set during <<core-bootstrap-assembly>> and defaults to the fully qualified
+classname of the <<core-api-service>> type.
+
+== Defining a Configuration Type ==
+The Configuration type is simply listing the properties that are available. The standard rules on @UseDefaults and
+@Optional applies.
+Example;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/configuration/MailServiceConfiguration.java
+tag=configuration
+--------------
+
+== Using a Configuration Type ==
+It is important to remember that Configuration is not static values that are set prior to application start-up and
+therefor applications should not cache the values retrieved forever, but consciously know when the configuration should
+be re-read.
+
+Configuration is injected via the @This injection scope. One reasonable strategy is to read the configuration on service
+activation, so by deactivating/reactivating a service, the user have a well-defined behavior to know how configuration
+changes take effect. Example;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/configuration/MailService.java
+tag=read
+--------------
+
+== Modifying Configuration ==
+Configuration is modifiable, and after the modifications have been made, the save() method on the Configuration type
+must be called. Example;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/configuration/MailService.java
+tag=write
+--------------
+

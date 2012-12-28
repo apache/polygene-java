@@ -1,0 +1,43 @@
+<html>
+    <body>
+        <h2>Service Qualifiers.</h2>
+        <p>
+            The @Service injection is only able to specify the type of the service to be injected. If any other type of
+            qualification has to be done it has to be done manually but for common cases it's more convenient to use
+            annotations to do this filtering. This package contains annotations to perform this qualification.
+        </p>
+        <p>Example:</p>
+        <blockquote>
+            <pre>@Service @Tagged( "sometag" ) MyService service;</pre>
+        </blockquote>
+        <p>
+            This will only inject instances of MyService that have been tagged with "sometag". If none exist an
+            exception will occur at injection time since it is not optional.
+        </p>
+        <p>It also works with iterables:</p>
+        <blockquote>
+            <pre>@Service @Tagged( "sometag" ) Iterable&lt;MyService&gt; services;</pre>
+        </blockquote>
+        <p>
+            The qualification will be evaluated upon each call to iterator(), and since the qualifier has access to a
+            ServiceReference, which contains the isActive() method, it can even provide some dynamicity.
+        </p>
+        <blockquote>
+            <pre>@Service @Active Iterable&lt;SomeImportedService&gt; importedServices;</pre>
+        </blockquote>
+        <p>
+            Let's say these SomeImportedService are only sometimes available. Then whenever iterator() is called the
+            {@see org.qi4j.api.service.qualifier.Active} tag can kick in and filter out those whose
+            ServiceReference.isActive() returns false.
+        </p>
+        <p>Standard ones defined in the API are:</p>
+        <ul>
+            <li>{@see org.qi4j.api.service.qualifier.Active}</li>
+            <li>{@see org.qi4j.api.service.qualifier.Available}</li>
+            <li>{@see org.qi4j.api.service.qualifier.HasMetaInfo}</li>
+            <li>{@see org.qi4j.api.service.qualifier.IdentifiedBy}</li>
+            <li>{@see org.qi4j.api.service.qualifier.Tagged}</li>
+        </ul>
+        <p>See tests and API for more examples, and how to implement your own qualifiers.</p>
+    </body>
+</html>

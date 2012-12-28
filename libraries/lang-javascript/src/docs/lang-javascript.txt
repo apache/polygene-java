@@ -1,0 +1,13 @@
+[[library-script-javascript, Javascript Scripting Library]]
+= Javascript Scripting =
+
+[devstatus]
+--------------
+source=libraries/lang-javascript/dev-status.xml
+--------------
+
+Javascript Scripting Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

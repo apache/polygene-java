@@ -18,7 +18,7 @@
 package org.qi4j.test.performance.runtime.object;
 
 import org.junit.Test;
-import org.qi4j.api.object.ObjectBuilderFactory;
+import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -40,20 +40,20 @@ public class ObjectCreationPerformanceTest
                 module.objects( AnyObject.class );
             }
         };
-        ObjectBuilderFactory objectBuilderFactory = assembler.objectBuilderFactory();
+        ObjectFactory objectFactory = assembler.module();
         for( int i = 0; i < 10; i++ )
         {
-            testPerformance( objectBuilderFactory );
+            testPerformance( objectFactory );
         }
     }
 
-    private void testPerformance( ObjectBuilderFactory objectBuilderFactory )
+    private void testPerformance( ObjectFactory objectFactory )
     {
         long start = System.currentTimeMillis();
         int iter = 1000000;
         for( int i = 0; i < iter; i++ )
         {
-            objectBuilderFactory.newObject( AnyObject.class );
+            objectFactory.newObject( AnyObject.class );
         }
 
         long end = System.currentTimeMillis();

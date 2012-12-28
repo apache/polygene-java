@@ -1,0 +1,89 @@
+[[tut-composites-step7,Step 7 - Properties]]
+= Step 7 - Properties =
+
+Previous step was <<tut-composites-step6>>.
+
+One of the goals of Qi4j is to give you domain modeling tools that allow you to more concisely use domain concepts in 
+code. One of the things we do rather often is model Properties of objects as getters and setters. But this is a very 
+weak model, and does not give you any access to metadata about the property, and also makes common tasks like UI binding
+non-trivial. There is also a lot of repetition of code, which is unnecessary. Using JavaBeans conventions one typically 
+have to have code in five places for one property, whereas in Qi4j the same thing can be achieved with one line of code.
+
+But lets start out easy. To declare a property you have to make a method in a mixin type that returns a value of the 
+type Property, and which does not take any parameters. Here's a simple example:
+
+[source,java]
+----
+Property<String> name();
+----
+
+This declares a Property of type String with the name "name". The Property interface has methods "get" and "set" to 
+access and mutate the value, respectively.
+
+For now you will be responsible for implementing these methods, but later on these will be handled automatically, thus 
+reducing Properties to one-liners!
+
+In the Mixin implementation of the interface with the Property declaration you should have an injection of the Property, 
+which is created for you by Qi4j. The injection can be done in a field like this:
+
+[source,java]
+----
+@State Property<String> name;
+----
+
+The State dependency injection annotation means that Qi4j will inject the Property for you. The field has the name 
+"name", which matches the name in the interface, and therefore that Property is injected. You can then implement the 
+method trivially by just returning the "name" field.
+
+Properties can have Constraints just like method parameters. Simply set them on the Property method instead, and they 
+will be applied just as before when you call "set".
+
+Steps for this tutorial:
+
+- Remove JavaBeans properties from HelloWorldState.
+- Remove HelloWorld and add the HelloWorldState and HelloWorldBehavior to the HelloWorldComposite interface.
+- Remove the HelloWorldBehaviourSideEffect.
+- Update the behaviour mixin to use the state interface accordingly.
+- Add Property methods with the correct type and the @NotEmpty annotation.
+- Update the state mixin to inject and return the properties as described above.
+
+== Solution ==
+
+If you have successfully completed the task, you should end up with the following artifacts;
+
+Only +HelloWorldBehavior.java+ remains unchanged.
+
+Theses ones are deleted:
+
+- +HelloWorld.java+
+- +HelloWorldConcern.java+
+
+*HelloWorldBehaviourMixin.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial8/HelloWorldBehaviourMixin.java
+tag=solution
+----
+
+*HelloWorldComposite.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial8/HelloWorldComposite.java
+tag=solution
+----
+
+*HelloWorldState.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial8/HelloWorldState.java
+tag=solution
+----
+
+*HelloWorldStateMixin.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial8/HelloWorldStateMixin.java
+tag=solution
+----
+
+Next step is <<tut-composites-step8>>

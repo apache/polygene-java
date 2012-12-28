@@ -1,0 +1,38 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-entity,EntityComposite]]
+= EntityComposite =
+Entities are common in the object oriented programming world, but has never reached the stardom of Class and Object.
+Instead we have seen many attempts at creating Entities on top of Java, such as EJB (3 incompatible versions), Java
+Data Objects (JDO, 2 somewhat compatible versions), Java Persistence Architecture (JPA, 2 somewhat compatible versions),
+Hibernate (4+ somewhat incompatible versions) and many other less known. This seems to suggest that the topic of
+creating objects that survives over long periods of time is a difficult one.
+
+Eric Evans points out in his book that Entities is a very definite and distinct concept that needs to be handled
+explicitly. Composite Oriented Programming in general, and Qi4j in particular, takes this point very seriously and
+makes Entities a central part of the whole system. And likewise, we are convinced that it is not possible to develop
+domain-knowledge-rich applications without a conscious and well-defined strategy on Entities. So, instead of spending
+endless hours trying to get Hibernate mapping to do the right thing, we introduce a Composite meta type called
+EntityComposite, which all entities must derive from, and by doing so automatically become persistable, searchable,
+have a lifecycle and support nested undoable modifications.
+
+The characteristics of an EntityComposite compared to other Composite meta types are;
+
+    * It has an Identity.
+    * It has a LifeCycle.
+    * It is typically persisted.
+    * It can only be referenced by an Association or ManyAssociation.
+    * Its CRUD operations are bound by a UnitOfWork.

@@ -21,6 +21,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiAnnotation;
 import org.jetbrains.annotations.NotNull;
 import org.qi4j.ide.plugin.idea.common.inspections.AbstractFix;
+
 import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.createStructureAnnotation;
 
 /**

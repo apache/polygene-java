@@ -3,22 +3,16 @@ description = "Sample of how to use the Struts2 integration."
 jar { manifest { name = "Qi4j Sample - Struts2" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.struts2-plugin"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.struts2-codebehind"))
   compile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
-  compile("org.mortbay.jetty:jetty:$jettyVersion")
-  compile("org.mortbay.jetty:jetty-util:$jettyVersion")
-  compile("org.mortbay.jetty:jsp-2.1-jetty:$jettyVersion")
-  compile(libraries.slf4j_api)
-  testCompile(libraries.junit)
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+  compile(libraries.jetty_webapp)
+
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
+
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
 }

@@ -18,8 +18,6 @@ package org.qi4j.ide.plugin.idea.concerns.actions.create.inPackage;
 
 import com.intellij.ide.actions.CreateInPackageActionBase;
 import com.intellij.openapi.actionSystem.DataContext;
-import static com.intellij.openapi.actionSystem.DataKeys.PROJECT;
-import static com.intellij.openapi.actionSystem.DataKeys.PSI_ELEMENT;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.JavaDirectoryService;
@@ -27,9 +25,12 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
-import static com.intellij.util.Icons.CLASS_ICON;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
+
+import static com.intellij.openapi.actionSystem.DataKeys.PROJECT;
+import static com.intellij.openapi.actionSystem.DataKeys.PSI_ELEMENT;
+import static com.intellij.util.Icons.CLASS_ICON;
 import static org.qi4j.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
 import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 import static org.qi4j.ide.plugin.idea.concerns.common.Qi4jConcernConstants.TEMPLATE_GENERIC_CONCERN_OF;

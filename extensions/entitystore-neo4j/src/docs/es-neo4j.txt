@@ -1,0 +1,13 @@
+[[extension-es-neo4j, Neo4j EntityStore]]
+= Neo4j EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-neo4j/dev-status.xml
+--------------
+
+Neo4j EntityStore
+
+NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

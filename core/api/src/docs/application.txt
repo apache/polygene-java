@@ -1,0 +1,249 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-application,Application]]
+= Application =
+There is one and only one Application instance per Qi4j runtime instance. But there is nothing preventing code to
+create additional Qi4j Runtime instances inside the same JVM. However, these runtimes are isolated from each other.
+
+The main purpose of the Application structure artifact is to keep everything in the same box, and allowing us to
+navigate the Structure. So, from a client code perspective, the Application is of no use, other than being part of
+bring Qi4j to life. Qi4j doesn't start automatically and can be run in most environments, by requiring that the
+bootstrapping of Qi4j is done by client code. We call this the Bootstrap Phase. The code in the custom bootstrapper
+will need to access additional Jars from the regular domain code, and we strongly recommend that you make this
+separation in your project as well.
+
+== Assembly ==
+
+<<core-bootstrap-assembly>> is the part of the bootstrap phase where the application Structure is declared (programmatically). The
+Assembly will be consumed by the ApplicationBuilder, which produces an ApplicationInstance. This instance does not
+contain any custom objects, and is fully serializable. All the application structure has been built, all the layers
+and modules been wired up, and all the sub-composite structures are in place to quickly instantiate the various parts
+of the application.
+
+=== Initialization ===
+
+At this point, where an ApplicationInstance exists, it is possible to initialize the application components with
+instances created in, data computed in or received from, the controlling bootstrap code.
+
+=== Activation ===
+
+Once the initialization phase is complete, the bootstrap controller will call the ApplicationInstance.activate()
+method to start things up.
+
+=== Bootstrap Phase Summary ===
+
+Recap of sequence;
+
+    * Create, obtain or lookup Assemblers.
+    * Establish the application structures.
+    * Create a Qi4j Runtime instance.
+    * Create an ApplicationAssemblyFactory.
+    * Create an ApplicationFactory.
+    * Call ApplicationFactory.newApplication() to create an ApplicationContext.
+    * Call ApplicationContext.newApplicationInstance() to create an ApplicationInstance.
+    * Do the initialization of the application.
+    * Call activate() on the ApplicationInstance.
+
+== Singleton Assembler ==
+
+For really small applications, demos, testcases and so forth, it doesn't make sense to create a elaborate Application
+structure. For this purpose, there is a convenient short-cut to establish a single Layer, single Module application.
+The full code looks like this;
+[source,java]
+-------------
+SingletonAssembler qi4j = new SingletonAssembler()
+{
+    public void assemble( ModuleAssembly assembly )
+        throws AssemblyException
+    {
+        assembly.addComposite( MyStuffComposite.class );
+    }
+}
+-------------
+
+= Single Module Layering =
+
+Behind the scenes of the SingletonAssembler a little bit more elaborate bootstrap sequence is happening. The code below
+shows what is the actual required sequence to start up Qi4j.
+
+[source,java]
+-------------
+Qi4j is = new Energy4Java();
+ApplicationAssemblyFactory assemblyFactory = new ApplicationAssemblyFactory();
+ApplicationFactory factory = new ApplicationFactory( is, assemblyFactory );
+Assembler assembler = ...;
+ApplicationContext context = factory.newApplication( assembler );
+ApplicationInstance application = context.newInstance( appTitle );
+
+// initialize the Structure
+:
+
+// activate the application
+application.activate()
+-------------
+In the above example we are only creating an Application with a single Layer and a single Module in that Layer. This is
+derived from the fact that the factory.newApplication() method takes a single Assembler argument.
+
+The Assembler.assemble( ModuleAssembly assembly ) method is called when the Qi4j Runtime needs to populate the
+ModuleAssembly with its Composites, Objects, Services and other information.
+
+== "Pancake" Layering ==
+
+Another standard setup is applications consisting of a small number of Layers that are directly on top of each other
+(with out bypassing, forking and converging Layers), you can supply a Assembler[][][], with Layer in the first index,
+Module in the second index and any number of Assembler instances in the last index. This will look like;
+
+[source,java]
+-------------
+Assembler[][][] assemblers =
+{
+    { // web layer
+        { // Customer Module
+            customerListEditAssembler,
+            customerEditAssembler,
+            customerSearchAssembler
+        },
+        { // Accounts Module
+            accountsListEditAssembler,
+            accountsEditAssembler,
+            accountsSearchAssembler
+        }
+    },
+    { // domain layer
+        { // Customer Module
+            customerDomainAssembler,
+        },
+        { // Accounts Module
+            accountsDomainAssembler,
+        }
+    }
+};
+ApplicationContext context = factory.newApplication( assemblers );
+-------------
+
+The array initialization feature in Java is used to give us a semi-visual idea of the actual application structure. It
+has been commented to highlight this further. Also note that one can pass any number of Assembler instances to each
+Module. This is an important aspect of subsystem creation and re-use.
+
+== Full Layering ==
+
+Finally, we can assemble the Application by manually building up the Modules and Layers. This allow for a totally
+free structure, as long as the rules for no cyclic reference of the Layers are kept.
+
+[source,java]
+-------------
+public class Main
+{
+    private static Main instance;
+    private Energy4Java qi4j;
+
+    public static void Main( String[] args )
+    {
+        instance = new Main();
+        instance.setUp();
+        // assuming some code has a non-daemon thread.
+    }
+
+    private void setUp()
+    {
+        qi4j = new Energy4Java();
+
+        ApplicationAssemblyFactory assemblyFactory = new ApplicationAssemblyFactory();
+
+        ApplicationFactory factory = new ApplicationFactory( qi4j, assemblyFactory );
+
+        ApplicationAssembly app = createAssembly( assemblyFactory );
+
+        ApplicationContext context = factory.newApplication( assembly );
+
+        String applicationName = "Example Application";
+
+        ApplicationInstance instance = context.newApplicationInstance( applicationName );
+    }
+
+    private ApplicationAssembly createAssembly( ApplicationAssemblyFactory factory )
+    {
+        ApplicationAssembly app = factory.newApplicationAssembly();
+        LayerAssembly webLayer = createWebLayer( app );
+        LayerAssembly domainLayer = createDomainLayer( app );
+        LayerAssembly infraLayer = createInfrastructureLayer( app );
+        webLayer.uses( domainLayer );
+        webLayer.uses( infraLayer );  // Accesses the WebService
+        domainLayer.uses( infraLayer ); // For persistence
+        return app;
+    }
+
+    private LayerAssembly createWebLayer(
+        ApplicationAssembly application )
+    {
+        LayerAssembly layer = application.newLayerAssembly();
+        createCustomerWebModule( layer );
+        return layer;
+    }
+
+    private LayerAssembly createDomainLayer(
+        ApplicationAssembly application )
+    {
+        LayerAssembly layer = application.newLayerAssembly();
+        createCustomerDomainModule( layer );
+        // :
+        // :
+        return layer;
+    }
+
+    private LayerAssembly createInfrastructureLayer(
+        ApplicationAssembly application )
+    {
+        LayerAssembly layer = application.newLayerAssembly();
+        createWebServiceModule( layer );
+        createPersistenceModule( layer );
+        return layer;
+    }
+
+    private void createCustomerWebModule( LayerAssembly layer )
+    {
+        ModuleAssembly assembly = layer.newModuleAssembly();
+        assembly.addComposites( CustomerViewComposite.class );
+        assembly.addComposites( CustomerEditComposite.class );
+        assembly.addComposites( CustomerListViewComposite.class );
+        assembly.addComposites( CustomerSearchComposite.class );
+    }
+
+    private void createCustomerDomainModule( LayerAssembly layer )
+    {
+        ModuleAssembly assembly = layer.newModuleAssembly();
+        assembly.addEntities( CustomerEntity.class );
+        assembly.addEntities( CountryEntity.class );
+        assembly.addComposites( AddressComposite.class );
+    }
+
+    private void createWebServiceModule( LayerAssembly layer )
+    {
+        ModuleAssembly assembly = layer.newModuleAssembly();
+        // Someone has created an assembler for a Jetty Web Service.
+        JettyAssembler jetty = new JettyAssembler( 8080 );
+        assembly.addAssembler( neo );
+    }
+
+    private void createPersistenceModule( LayerAssembly layer )
+    {
+        ModuleAssembly assembly = layer.newModuleAssembly();
+        // Someone has created an assembler for the Neo EntityStore
+        NeoAssembler neo = new NeoAssembler( "./neostore" );
+        assembly.addAssembler( neo );
+    }
+}
+-------------

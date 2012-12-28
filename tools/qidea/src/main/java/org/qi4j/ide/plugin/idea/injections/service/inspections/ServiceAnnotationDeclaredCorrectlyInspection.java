@@ -19,18 +19,19 @@ package org.qi4j.ide.plugin.idea.injections.service.inspections;
 import com.intellij.codeInspection.InspectionManager;
 import com.intellij.codeInspection.LocalQuickFix;
 import com.intellij.codeInspection.ProblemDescriptor;
-import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiVariable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 import org.qi4j.ide.plugin.idea.injections.common.inspections.AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection;
+import org.qi4j.ide.plugin.idea.injections.structure.common.ReplaceWithStructureAnnotation;
+
+import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
+import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 import static org.qi4j.ide.plugin.idea.injections.service.common.Qi4jServiceAnnotationConstants.QUALIFIED_NAME_SERVICE_ANNOTATION;
 import static org.qi4j.ide.plugin.idea.injections.service.common.Qi4jServiceAnnotationUtil.ServiceAnnotationDeclarationValidationResult;
 import static org.qi4j.ide.plugin.idea.injections.service.common.Qi4jServiceAnnotationUtil.isValidServiceAnnotationDeclaration;
 import static org.qi4j.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.getStructureAnnotation;
-import org.qi4j.ide.plugin.idea.injections.structure.common.ReplaceWithStructureAnnotation;
 
 /**
  * {@code ServiceAnnotationDeclaredCorrectly} validates {@code @Service} injection annotation declaration.

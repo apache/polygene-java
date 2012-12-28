@@ -1,0 +1,31 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-fragment,Fragment]]
+= Fragment =
+Composites should be perceived as single units, although they consist of many Java classes and instances. Some of
+those Java instances are not even belonging to a particular instance in runtime, but such details can and should
+be ignored by the developer. Developers should think of the Composite as a single concept, and not be concerned
+about its internal structure.
+
+The Composite is composed by declaring the parts it forms in the Composite Type interface declaration. Technically
+speaking, Composite Type is the only Fragment that is required to exist. The other Fragments are optional.
+
+There are one very important thing to know about Fragments;
+
+*ONLY Mixins can maintain inter-method state.*
+
+That means that Concerns, Constraints and Side Effects can not assume that Java fields between method invocations
+are preserved. These Fragments must rely on either Mixins or external services for additional state.

@@ -16,30 +16,22 @@
 */
 package org.qi4j.ide.plugin.idea.concerns.common;
 
-import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiModifierList;
-import com.intellij.psi.PsiModifierListOwner;
+import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.intellij.psi.search.GlobalSearchScope;
-import static java.util.Collections.emptyList;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
+import static java.util.Collections.emptyList;
 import static org.qi4j.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAnnotationDefaultParameterValue;
 import static org.qi4j.ide.plugin.idea.common.psi.PsiAnnotationUtil.getClassReference;
 import static org.qi4j.ide.plugin.idea.common.psi.PsiClassUtil.getPSIClass;
 import static org.qi4j.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.qi4j.ide.plugin.idea.concerns.common.Qi4jConcernConstants.QUALIFIED_NAME_CONCERNS;
-import static org.qi4j.ide.plugin.idea.concerns.common.Qi4jConcernConstants.QUALIFIED_NAME_CONCERN_OF;
-import static org.qi4j.ide.plugin.idea.concerns.common.Qi4jConcernConstants.QUALIFIED_NAME_GENERIC_CONCERN;
+import static org.qi4j.ide.plugin.idea.concerns.common.Qi4jConcernConstants.*;
 
 /**
  * @author edward.yakop@gmail.com

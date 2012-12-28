@@ -1,0 +1,157 @@
+
+USE CASE        Build Delivery Snapshot [subfunction]
+===========================================================================
+Building of a delivery snapshot for a cargo is based on the handling
+history of a cargo, as well as its route specification and itinerary.
+
+A cargo is routed when an itinerary that satisfy the route specification has
+been assigned to the cargo (a route is chosen).
+
+A cargo has a handling history when one or more handling events have been registered for the cargo.
+
+Scope.......... Booking application ("system")
+Level.......... Subfunction
+Primary actor.. System as a "factory".
+Preconditions.. Route specification is known.
+Trigger........ System asks for a Delivery snapshot value object.
+
+A Delivery snapshot captures the relationships between
+Routing status, Transport status and Handling events:
+
+Routing status
+    Some action, leading to next routing status
+---------------------------------------------------------------------------
+NOT_ROUTED
+    Customer routes cargo (Itinerary gets assigned to cargo) ->
+ROUTED
+    Route specification changes so that Itinerary is no longer satisfying ->
+MISROUTED
+    Awaits re-routing or new handling event (??) -> ROUTED
+
+Furthermore a cargo can become "misdirected" if the last handling event says
+that the cargo is now in a location not expected by the itinerary. The customer
+then has to reroute the cargo.
+
+Transport status
+    Handling event type, leading to next transport status
+---------------------------------------------------------------------------
+NOT_RECEIVED (in first port)
+    RECEIVE
+IN_PORT (origin)
+    LOAD
+ONBOARD_CARRIER
+    UNLOAD
+IN_PORT (1 or more midpoints)
+    LOAD
+ONBOARD_CARRIER
+    UNLOAD (to destination)
+IN_PORT (destination)
+    CUSTOMS (cargo awaits customs clearance - doesn't affect locations)
+    CLAIM (customer claims cargo)
+CLAIMED (cargo is finally delivered)
+
+    [Unknown or empty handling event type received] leads to
+UNKNOWN handling status [not used in citerus version]
+
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. Factory initiates build of new delivery snapshot object with a time stamp.
+2. Factory sets routingStatus to ROUTED and calculates eta from itinerary.
+3. Factory sets lastHandlingEvent and lastKnownLocation from last handling event.
+4. Factory derives handling event type dependent data, namely:
+    - transportStatus
+    - isMisdirected
+    - nextExpectedHandlingEvent
+    - currentVoyage
+    - isUnloadedAtDestination
+5. Factory returns delivery snapshot object containing derived data.
+
+
+Deviations
+---------------------------------------------------------------------------
+2a. Route specification has same origin and destination location:
+    1. Failure.
+
+2b. Route specification has a deadline Today or in the past:
+    1. Failure.
+
+2c. Itinerary is unknown (cargo hasn't been routed yet):
+    1. Factory sets routingStatus = NOT_ROUTED and transportStatus = NOT_RECEIVED.
+    2. Factory sets nextExpectedHandlingEvent to RECEIVE in origin of route specification.
+    3. Go to step 5.
+
+2d. Route specification is not satisfied by itinerary:
+    1. Factory sets routingStatus = MISROUTED.
+
+3a. Cargo has no handling history yet:
+    1. Factory sets transportStatus to NOT_RECEIVED.
+        a. Cargo is correctly routed:
+            1. Factory sets nextExpectedHandlingEvent to RECEIVE in origin location of route specification.
+    2. Go to step 5.
+
+4a. Cargo was received in port:
+    1. Factory sets transportStatus to IN_PORT.
+        a. Cargo was received in wrong port:
+            1. Factory sets isMisdirected to true.
+            2. Factory sets eta to null.
+        b. Cargo is correctly routed:
+            1. Factory sets nextExpectedHandlingEvent to LOAD/voyage/location of first itinerary leg.
+
+4b. Cargo was loaded onto carrier:
+    1. Factory sets transportStatus = ONBOARD_CARRIER.
+        a. Cargo was rerouted:
+            1. Factory sets nextExpectedHandlingEvent to UNLOAD/voyage/location of first leg of new itinerary.
+        a. Cargo was loaded in unexpected port:
+            1. Factory sets isMisdirected to true.
+            2. Factory sets eta to null.
+            3. Factory sets currentVoyage to voyage of last handling event.
+        b. Cargo was correctly routed:
+            1. Factory sets nextExpectedHandlingEvent to UNLOAD location of current itinerary leg.
+            2. Factory sets currentVoyage to voyage of last handling event.
+        c. Cargo was loaded onto wrong carrier [not in original version]
+            1. Factory should set isMisdirected to true...
+            2. Factory sets eta to null.
+
+4c. Cargo was unloaded from carrier:
+    1. Factory sets transportStatus to IN_PORT.
+        a. Cargo is rerouted:
+            1. Factory sets nextExpectedHandlingEvent to LOAD/voyage/location of first leg of new itinerary.
+        a. Cargo was unloaded in unexpected port:
+            1. Factory sets isMisdirected to true.
+            2. Factory sets eta to null.
+        b. Cargo was unloaded at midpoint location:
+            1. Factory sets nextExpectedHandlingEvent to LOAD/voyage/location of following itinerary leg.
+        c. Cargo was unloaded at destination location:
+            1. Factory sets nextExpectedHandlingEvent to CLAIM at destination location.
+            2. Factory sets isUnloadedAtDestination to true.
+
+4d. Cargo was registered by customs authorities:
+    1. Factory sets transportStatus to IN_PORT.
+        a. Cargo is in destination port:
+            1. Factory sets isUnloadedAtDestination to true.
+
+4e. Cargo was claimed by customer:
+    1. Factory sets transportStatus = CLAIMED
+        a. Cargo is not in destination port:
+            1. Factory sets isMisdirected to true.
+            2. Factory sets eta to null.
+        b. Cargo is in destination port:
+            1. Factory sets isUnloadedAtDestination to true.
+
+4f. An unknown handling event was registered:
+    1. Factory sets transportStatus to UNKNOWN.
+
+---------------------------------------------------------------------------
+Success guarantees:
+    A Delivery object containing a complete transportation data snapshot for the cargo is returned.
+
+Minimal guarantees:
+    No guarantee that a Delivery object can be created from supplied data.
+
+Stakeholders/Interests:
+    System - can get a valid Delivery object.
+
+
+
+

@@ -1,0 +1,4 @@
+description = "An Introduction to Qi4j in its simplest form."
+
+jar { manifest { name = "Qi4j Tutorial - Introduction" }}
+

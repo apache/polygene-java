@@ -1,0 +1,35 @@
+[[extension-es-hazelcast, Hazelcast EntityStore]]
+= Hazelcast EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-hazelcast/dev-status.xml
+--------------
+
+EntityStore service backed by the http://www.hazelcast.com/[Hazelcast] in-memory data grid.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/entitystore-hazelcast/src/test/java/org/qi4j/entitystore/hazelcast/HazelcastEntityStoreTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Here are the configuration properties for the Hazelcast EntityStore:
+
+[snippet,java]
+----
+source=extensions/entitystore-hazelcast/src/main/java/org/qi4j/entitystore/hazelcast/HazelcastConfiguration.java
+tag=config
+----
+
++configXmlLocation+ represent the location of the Hazelcast XML based configuration.
+
++mapName+ is the name of the used Hazelcast Map

@@ -21,18 +21,17 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.test.mock.MockComposite;
 import org.qi4j.test.mock.MockPlayerMixin;
 
 import static org.easymock.EasyMock.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for SequencingConcern.
@@ -51,6 +50,7 @@ public class SequencingConcernTest
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
+            @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
@@ -62,15 +62,15 @@ public class SequencingConcernTest
         Voyage voyage = createMock( Voyage.class );
         HasSequence sequence = createMock( HasSequence.class );
         expect( shippingService.makeBooking( cargo, voyage ) ).andReturn( -1000 );
-        expect( voyage.bookedCargoSize() ).andReturn( new PropertyInstance<Double>( new GenericPropertyInfo( Voyage.class, "bookedCargoSize" ), 0.0, null ) )
+        expect( voyage.bookedCargoSize().get() ).andReturn( 0.0 )
             .atLeastOnce();
-        expect( cargo.size() ).andReturn( new PropertyInstance<Double>( new GenericPropertyInfo( Cargo.class, "size" ), 0.0, null ) )
+        expect( cargo.size().get() ).andReturn( 0.0 )
             .atLeastOnce();
-        expect( sequence.sequence() ).andReturn( new PropertyInstance<Integer>( new GenericPropertyInfo( HasSequence.class, "sequence" ), 0, null ) )
+        expect( sequence.sequence().get() ).andReturn( 0 )
             .atLeastOnce();
         replay( shippingService, cargo, voyage );
         ShippingServiceTestComposite underTest =
-            assembler.transientBuilderFactory().newTransient( ShippingServiceTestComposite.class );
+            assembler.module().newTransient( ShippingServiceTestComposite.class );
         underTest.useMock( shippingService ).forClass( ShippingService.class );
         assertThat( "Booking result", underTest.makeBooking( cargo, voyage ), is( equalTo( -1000 ) ) );
         verify( shippingService, cargo, voyage );
@@ -82,10 +82,11 @@ public class SequencingConcernTest
      */
     @Test
     @Ignore( "Expectations need to be figured out." )
-    public void succesfulBooking()
+    public void successfulBooking()
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
+            @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
@@ -102,7 +103,7 @@ public class SequencingConcernTest
         expect( sequence.get() ).andReturn( 1000 );
         replay( shippingService, cargo, voyage, generator, sequence );
         ShippingServiceTestComposite underTest =
-            assembler.transientBuilderFactory().newTransient( ShippingServiceTestComposite.class );
+            assembler.module().newTransient( ShippingServiceTestComposite.class );
         underTest.useMock( shippingService ).forClass( ShippingService.class );
         underTest.useMock( generator ).forClass( HasSequence.class );
         assertThat( "Booking result", underTest.makeBooking( cargo, voyage ), is( equalTo( 1000 ) ) );

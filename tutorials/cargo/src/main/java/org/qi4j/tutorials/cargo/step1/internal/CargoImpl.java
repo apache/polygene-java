@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.tutorials.cargo.step1.internal;
 
@@ -29,6 +29,7 @@ public class CargoImpl
         this.size = size;
     }
 
+    @Override
     public double getSize()
     {
         return size;

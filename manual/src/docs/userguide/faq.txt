@@ -1,0 +1,7 @@
+[[faq,FAQ]]
+= Frequently Asked Questions =
+
+Is it possible to use Scala with Qi4j?::
+        Short Answer: Yes. Scala traits can be used as Qi4j fragments, and Qi4j composites can be used in Scala.
+
+

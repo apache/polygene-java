@@ -1,0 +1,209 @@
+[[howto-depend-on-qi4j,Depend on Qi4j in your build]]
+= Depend on Qi4j in your build =
+
+NOTE: Some of the <<libraries>> and <<extensions>> depend on artifacts that are not deployed in central, you'll need to
+add other repositories to your build scripts accordingly.
+
+Release artifacts, including sources and javadoc, are deployed to
+
+https://repository-qi4j.forge.cloudbees.com/release/[https://repository-qi4j.forge.cloudbees.com/release/].
+
+Snapshot artifacts, including sources and javadoc, are built against the `develop` branch and deployed weekly to
+
+https://repository-qi4j.forge.cloudbees.com/snapshot/[https://repository-qi4j.forge.cloudbees.com/snapshot/].
+
+As they are not deployed to central you need to add the repositories to your build scripts.
+
+
+== Manually ==
+
+If you don't rely on your build scripts dependency resolution mechanism you should
+http://qi4j.org/downloads.html[download] the SDK distribution.
+
+== Using Maven ==
+
+First you need to register the Qi4j repositories:
+
+[source,xml]
+----
+<!-- ... -->
+<repositories>
+    <!-- ... -->
+    <repository>
+        <id>qi4j-releases</id>
+        <url>https://repository-qi4j.forge.cloudbees.com/release/</url>
+    </repository>
+    <repository>
+        <id>qi4j-snapshots</id>
+        <url>https://repository-qi4j.forge.cloudbees.com/snapshot/</url>
+        <releases><enabled>false</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+    <!-- ... -->
+</repositories>
+<!-- ... -->
+----
+
+After that you can declare dependencies on Qi4j artifacts:
+
+[source,xml]
+----
+<!-- ... -->
+<dependencies>
+    <!-- ... -->
+    <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>org.qi4j.core.bootstrap</artifactId>
+        <version>QI4J_VERSION</version>
+    </dependency>
+    <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>org.qi4j.core.runtime</artifactId>
+        <version>QI4J_VERSION</version>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>org.qi4j.core.testsupport</artifactId>
+        <version>QI4J_VERSION</version>
+        <scope>test</scope>
+    </dependency>
+    <!-- ... -->
+</dependencies>
+<!-- ... -->
+----
+
+Where `QI4J_VERSION` is the Qi4j version you want to use.
+
+== Using Gradle ==
+
+First you need to register the Qi4j repositories:
+
+[source,groovy]
+----
+// ...
+repositories {
+    // ...
+    mavenRepo name: 'qi4j-releases', url: "https://repository-qi4j.forge.cloudbees.com/release/"
+    mavenRepo name: 'qi4j-snapshots', url: "https://repository-qi4j.forge.cloudbees.com/snapshot/"
+    // ...
+}
+// ...
+----
+
+After that you can declare dependencies on Qi4j artifacts:
+
+[source,groovy]
+----
+// ...
+dependencies {
+    // ...
+    compile "org.qi4j.core:org.qi4j.core.bootstrap:QI4J_VERSION"
+    runtime "org.qi4j.core:org.qi4j.core.runtime:QI4J_VERSION"
+    test    "org.qi4j.core:org.qi4j.core.testsupport:QI4J_VERSION"
+    // ...
+}
+// ...
+----
+
+Where `QI4J_VERSION` is the Qi4j version you want to use.
+
+== Using Buildr ==
+
+First you need to register the Qi4j repositories:
+
+[source,ruby]
+----
+# ...
+repositories.remote << 'https://repository-qi4j.forge.cloudbees.com/release/'
+repositories.remote << 'https://repository-qi4j.forge.cloudbees.com/snapshot/'
+# ...
+----
+
+After that you can declare dependencies on Qi4j artifacts:
+
+[source,ruby]
+----
+# ...
+compile.with 'org.qi4j.core:org.qi4j.core.bootstrap:QI4J_VERSION'
+package(:war).with :libs => 'org.qi4j.core:org.qi4j.core.runtime:QI4J_VERSION'
+test.with 'org.qi4j.core:org.qi4j.core.testsupport:QI4J_VERSION'
+# ...
+----
+
+Where `QI4J_VERSION` is the Qi4j version you want to use.
+
+== Using SBT ==
+
+First you need to register the Qi4j repositories:
+
+[source,scala]
+----
+// ...
+resolvers += "qi4j-releases" at "https://repository-qi4j.forge.cloudbees.com/release/"
+resolvers += "qi4j-snapshots" at "https://repository-qi4j.forge.cloudbees.com/snapshot/"
+// ...
+----
+
+After that you can declare dependencies on Qi4j artifacts:
+
+[source,scala]
+----
+// ...
+libraryDependencies += \
+    "org.qi4j.core" % "org.qi4j.core.bootstrap" % "QI4J_VERSION" \
+    withSources() withJavadoc()
+libraryDependencies += \
+    "org.qi4j.core" % "org.qi4j.core.runtime" % "QI4J_VERSION" % "runtime" \
+    withSources() withJavadoc()
+libraryDependencies += \
+    "org.qi4j.core" % "org.qi4j.core.testsupport" % "QI4J_VERSION" % "test" \
+    withSources() withJavadoc()
+// ...
+----
+
+Where `QI4J_VERSION` is the Qi4j version you want to use.
+
+== Using Ivy ==
+
+First you need to register the Qi4j repositories in a `ivysettings.xml` file:
+
+[source,xml]
+----
+<ivysettings>
+    <settings defaultResolver="chain"/>
+    <resolvers>
+        <chain name="chain">
+            <!-- ... -->
+            <ibiblio name="qi4j-releases"  m2compatible="true"
+                     root="https://repository-qi4j.forge.cloudbees.com/release/"/>
+            <ibiblio name="qi4j-snapshots" m2compatible="true"
+                     root="https://repository-qi4j.forge.cloudbees.com/snapshot/"/>
+            <!-- ... -->
+        </chain>
+    </resolvers>
+</ivysettings>
+----
+
+After that you can declare dependencies on Qi4j artifacts:
+
+[source,xml]
+----
+<ivy-module>
+    <!-- ... -->
+    <dependencies>
+        <!-- ... -->
+        <dependency org="org.qi4j.core" name="org.qi4j.core.bootstrap"
+                    rev="QI4J_VERSION"  conf="default" />
+        <dependency org="org.qi4j.core" name="org.qi4j.core.runtime"
+                    rev="QI4J_VERSION"  conf="runtime" />
+        <dependency org="org.qi4j.core" name="org.qi4j.core.testsupport"
+                    rev="QI4J_VERSION"  conf="test" />
+        <!-- ... -->
+    </dependencies>
+    <!-- ... -->
+</ivy-module>
+----
+
+Where `QI4J_VERSION` is the Qi4j version you want to use.
+

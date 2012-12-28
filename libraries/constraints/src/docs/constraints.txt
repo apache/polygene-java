@@ -1,0 +1,28 @@
+[[library-constraints,Constraints Library]]
+= Constraints =
+
+[devstatus]
+--------------
+source=libraries/constraints/dev-status.xml
+--------------
+
+The Constraints library provide a bunch of often used Constraints based on the
+Qi4j Constraints api described in <<def-constraint>>.
+
+Remember that you are not limited to constraints presents in this library, you
+are encouraged to write your own constraints. See <<howto-create-constraint>>
+or take a look at this library source code to learn how to write your own.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Usage ==
+
+You can use theses constraints on Properties or on method arguments.
+Here are some examples:
+
+[snippet,java]
+----
+source=libraries/constraints/src/test/java/org/qi4j/library/constraints/TestCaseComposite.java
+tag=constraints
+----
+

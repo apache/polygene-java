@@ -1,0 +1,16 @@
+[[news-20100918,Qi4j at JavaZone 2010 - ReST/DCI]]
+= @ JavaZone 2010 - ReST/DCI =
+
+Qi4j at JavaZone 2010, Oslo, Norway. Rickard Öberg presented
+"Implementing a Rest API with DCI and Qi4j" at JavaZone on the 8 Sept 2010.
+
+Implementing a REST API today is important in many cases, both as an
+integration point to your application and as a way for clients to access the
+application. But there are few frameworks out there that help you fulfil all
+the constraints of REST, and therefore only makes your API a REST-wannabe. This
+session will look at how you can use Qi4j along with the DCI pattern to
+implement a truly RESTful API, that follows all the constraints. We will look
+at how DCI maps to the RESTful way of thinking about web API's, and how Qi4j
+can help with the actual implementation.
+
+http://streaming.java.no/tcs/#page:recordingList&pageNumber:1&id:DD3955BC-997B-40C1-A7DC-421DB8EE6512[Watch the video]

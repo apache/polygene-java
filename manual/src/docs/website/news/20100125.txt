@@ -1,0 +1,9 @@
+[[news-20100125,Rickard about Quicker Frameworks on the DDD website]]
+= Quicker Frameworks =
+
+Usually, a framework is created to make development faster by hiding the
+technical machinery underneath. Motivation behind Qi4j was very different. In
+this article written by Rickard Öberg for http://DomainDrivenDesign.org[DomainDrivenDesign.org],
+he talks about how this domain-centric application development framework makes it quicker.
+
+You can find the article on the DDD website http://domaindrivendesign.org/library/oberg_2009[here].

@@ -1,0 +1,21 @@
+
+[[news-20120502,Qi4j Future]]
+= Qi4j's Future =
+
+Lately, the activity in Qi4j community has been fading. Key members of the community have been caught up in many
+different activities outside this community, from changing jobs to have additional personal commitments piling up.
+
+Speculation has been circulating whether Qi4j will simply die.
+
+Today, some of the community leaders met and decided to step up and start forging this project forward. There are
+a few immediate points which will be addressed first;
+
+* New website. Sitevision is causing more problems than it solves for us.
+
+* Documentation. It has always been lacking, partly due to Sitevision's barrier to editing. With plain text documentation
+developers no longer have an excuse not to document the features in Qi4j.
+
+* Roadmap to 2.0. Establish the features we want to incorporate and have done before 2.0. Effectively ensuring that
+all compatibility breaking features are included.
+
+We hope that these future efforts will re-instill confidence in the viability of Qi4j in your projects.

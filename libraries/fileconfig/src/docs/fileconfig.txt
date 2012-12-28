@@ -1,0 +1,52 @@
+[[library-fileconfig,FileConfig Library]]
+= FileConfig =
+
+[devstatus]
+--------------
+source=libraries/fileconfig/dev-status.xml
+--------------
+
+The FileConfig library provide a service for accessing application-specific directories.
+
+A lot of the Qi4j Libraries and Extensions make use of this library to locate files.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Usage ==
+
+[snippet,java]
+----
+source=libraries/fileconfig/src/main/java/org/qi4j/library/fileconfig/FileConfiguration.java
+tag=fileconfig
+----
+
+To use it you simply need to declare the FileConfiguration Service in your application assembly:
+
+[snippet,java]
+----
+source=libraries/fileconfig/src/test/java/org/qi4j/library/fileconfig/FileConfigurationTest.java
+tag=simple
+----
+
+These will default to the platform settings, but can be overridden manually, either one-by-one or as a whole.
+
+You can override defaults by adding org.qi4j.library.fileconfig.FileConfiguration_OS.properties files to your
+classpath where OS is one of win, mac or unix.
+
+You can also override all properties definitions at assembly time by setting a FileConfigurationOverride object
+as meta info of this service:
+
+[snippet,java]
+----
+source=libraries/fileconfig/src/test/java/org/qi4j/library/fileconfig/FileConfigurationTest.java
+tag=override
+----
+
+
+And finally, to get the FileConfiguration Service in your application code, simply use the following:
+
+[source,java]
+----
+@Service FileConfiguration fileconfig;
+----
+

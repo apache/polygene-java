@@ -1,0 +1,41 @@
+[[library-shiro-web, Shiro Web Security Library]]
+= Shiro Web Security =
+
+[devstatus]
+--------------
+source=libraries/shiro-web/dev-status.xml
+--------------
+
+
+This library provides integration with the http://shiro.apache.org/[Apache Shiro] Java Security Framework.
+
+NOTE: This library only contains web related information. Most of the documentation can be found in the
+<<library-shiro>> that this very library leverages.
+
+``Apache Shiro is a powerful and easy-to-use Java security framework that performs authentication, authorization,
+cryptography, and session management. With Shiro’s easy-to-understand API, you can quickly and easily secure any
+application – from the smallest mobile applications to the largest web and enterprise applications.'' says the Apache
+Shiro website.
+
+We invite you to read the comprehensive http://shiro.apache.org/documentation.html[Apache Shiro documentation], we will
+mostly discuss Qi4j related matters here.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Servlet Context ==
+
+In a servlet context, being through the <<library-servlet>>, the <<library-http>> or your custom Qi4j application
+bootstrap, plain Shiro is usable. A WebEnvironment must be globally available and ShiroFilter must be registered.
+
+If you use a custom Qi4j application boostrap or the <<library-servlet>> you can directly use Shiro's provided
+EnvironmentLoaderListener and ShiroFilter.
+
+If you use the <<library-http>> you can either directly use Shiro classes or use the assembly API as follows:
+
+[snippet,java]
+----
+source=libraries/shiro-web/src/test/java/org/qi4j/library/shiro/web/WebHttpShiroTest.java
+tag=assembly
+----
+
+

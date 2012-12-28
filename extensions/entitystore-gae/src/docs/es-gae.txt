@@ -1,0 +1,13 @@
+[[extension-es-gae,AppEngine EntityStore]]
+= Google AppEngine EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-gae/dev-status.xml
+--------------
+
+AppEngine EntityStore
+
+NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

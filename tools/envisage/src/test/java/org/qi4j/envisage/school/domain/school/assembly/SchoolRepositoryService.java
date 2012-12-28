@@ -27,7 +27,8 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.envisage.school.domain.school.School;
 import org.qi4j.envisage.school.domain.school.SchoolRepository;
 
-import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 @Mixins( SchoolRepositoryService.SchoolRepositoryMixin.class )
 public interface SchoolRepositoryService
@@ -44,7 +45,7 @@ public interface SchoolRepositoryService
 
         public Query<School> findAll()
         {
-            return qbf.newQueryBuilder( School.class ).newQuery( uowf.currentUnitOfWork() );
+            return uowf.currentUnitOfWork().newQuery( qbf.newQueryBuilder( School.class ));
         }
 
         public School findSchoolByName( String schoolName )
@@ -52,7 +53,7 @@ public interface SchoolRepositoryService
             QueryBuilder<School> builder = qbf.newQueryBuilder( School.class );
             SchoolEntity.SchoolState template = templateFor( SchoolEntity.SchoolState.class );
             builder.where( eq( template.name(), schoolName ) );
-            Query<School> query = builder.newQuery( uowf.currentUnitOfWork() );
+            Query<School> query = uowf.currentUnitOfWork().newQuery( builder );
             return query.find();
         }
     }

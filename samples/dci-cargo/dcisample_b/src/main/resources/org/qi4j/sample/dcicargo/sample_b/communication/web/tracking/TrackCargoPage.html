@@ -1,0 +1,34 @@
+<html xmlns:wicket>
+<wicket:extend>
+    <div id="box">
+
+        <div class="headerMenu">Tracking</div>
+
+        <form wicket:id="form">
+            Tracking number
+            <input type="text" wicket:id="trackingId"/>
+            <input type="submit" value="Track" wicket:id="track"/>
+            &nbsp;&nbsp;&nbsp;&nbsp;Pre-selection: <select wicket:id="selectedTrackingIdSelector"></select>
+
+            <div wicket:id="feedback"></div>
+
+            <div wicket:id="status"></div>
+            <wicket:fragment wicket:id="statusFragment">
+                <br/>
+                <span wicket:id="transportStatus" style="font-weight:bold">[Text]</span>
+
+                <p wicket:id="eta">eta </p>
+
+                <p wicket:id="isMisdirected" class="notifyError"><img src="../../graphics/icon/error.png"/>&nbsp;
+                    Cargo is misdirected. </p>
+
+                <p wicket:id="isClaimed" class="notifySuccess"><img src="../../graphics/icon/tick.png"/>&nbsp;
+                    Cargo succesfully delivered. </p>
+
+                <div wicket:id="handlingHistoryPanel"></div>
+            </wicket:fragment>
+        </form>
+
+    </div>
+</wicket:extend>
+</html>

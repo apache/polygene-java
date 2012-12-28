@@ -1,0 +1,17 @@
+[[reference-documentation,Reference Manual]]
+= Qi4jv{revnumber} Reference Manual =
+
+:qi4j-version: {revnumber}
+:qi4j-buildnumber: {revnumber}
+:qi4j-git-tag: {gitversion}
+
+
+:leveloffset: 2
+
+include:../../../core/api/src/docs/reference/api.txt[]
+
+include:../../../core/spi/src/docs/reference/spi.txt[]
+
+include:../../../core/bootstrap/src/docs/reference/bootstrap.txt[]
+
+include:../../../core/testsupport/src/docs/reference/testsupport.txt[]

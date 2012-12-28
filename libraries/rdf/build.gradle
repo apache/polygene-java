@@ -1,0 +1,23 @@
+description = "Qi4j RDF Library provides commonalities of various RDF based services in Qi4j, such as RDF Indexing."
+
+jar { manifest { name = "Qi4j Library - RDF" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(project(':org.qi4j.libraries:org.qi4j.library.constraints'))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
+  compile(libraries.sesame)
+//  compile("org.openrdf.sesame:sesame-model:$rdfVersion")
+//  compile("org.openrdf.sesame:sesame-repository-dataset:$rdfVersion")
+//  compile("org.openrdf.sesame:sesame-repository-http:$rdfVersion")
+//  compile("org.openrdf.sesame:sesame-rio-n3:$rdfVersion")
+//  compile("org.openrdf.sesame:sesame-rio-rdfxml:$rdfVersion")
+//  compile("org.openrdf.sesame:sesame-sail-memory:$rdfVersion")
+//  compile("org.openrdf.sesame:sesame-sail-nativerdf:$rdfVersion")
+//  compile("org.openrdf.sesame:sesame-sail-rdbms:$rdfVersion")
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

@@ -1,0 +1,4 @@
+[[news-20080414,Qi4j 0.1 Released]]
+= Qi4j 0.1 Released =
+
+Freeze of Core API.

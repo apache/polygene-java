@@ -1,0 +1,51 @@
+[[extension-es-riak,Riak EntityStore]]
+= Riak EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-riak/dev-status.xml
+--------------
+
+EntityStore service backed by a http://basho.com/[Riak] bucket.
+
+The EntityStore comes in two flavours: HTTP or ProtocolBuffer based. See the Riak documentation.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assemblers.
+
+For HTTP based Riak client:
+
+[snippet,java]
+----
+source=extensions/entitystore-riak/src/test/java/org/qi4j/entitystore/riak/RiakHttpMapEntityStoreTest.java
+tag=assembly
+----
+
+For ProtocolBuffer based Riak client:
+
+[snippet,java]
+----
+source=extensions/entitystore-riak/src/test/java/org/qi4j/entitystore/riak/RiakProtobufMapEntityStoreTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Here are the configuration properties for the HTTP based Riak client:
+
+[snippet,java]
+----
+source=extensions/entitystore-riak/src/main/java/org/qi4j/entitystore/riak/RiakHttpEntityStoreConfiguration.java
+tag=config
+----
+
+Here are the configuration properties for the ProtocolBuffer based Riak client:
+
+[snippet,java]
+----
+source=extensions/entitystore-riak/src/main/java/org/qi4j/entitystore/riak/RiakProtobufEntityStoreConfiguration.java
+tag=config
+----

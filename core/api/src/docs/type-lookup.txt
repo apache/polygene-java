@@ -1,0 +1,62 @@
+[[core-api-type-lookup,Composite Types Lookup]]
+= Composite Types Lookup =
+
+Composite Types Lookup can occurs when you explicitely lookup for a Composite by Type
+(ex. ServiceFinder.findService(..) methods), when you ask for an injection or when you create a new composite instance.
+
+All theses type lookup start from a Module, are lazy, cached and obey the Qi4j Visibility rules. Type Lookup works
+equally accross Composite Types with some subtle differences when it comes to Services and Entities.
+
+
+== Object, Transient and Value Types Lookup ==
+
+When creating or injecting Objects, Transients or Values the Type Lookup does the following:
+
+First, if Object/Transient/Value Models exactly match the given type, the closest one (Visibility then Assembly order)
+is returned. Multiple *exact* matches with the same Visibility are *forbidden* and result in an
+AmbiguousTypeException.
+
+Second, if Object/Transient/Value Models match a type assignable to the given type, the closest one (Visibility then
+Assembly order) is returned. Multiple *assignable* matches with the same Visibility are *forbidden* and result in an
+AmbiguousTypeException.
+
+
+== Entity Types Lookup ==
+
+Entity Types Lookup is splitted in two use cases famillies: Creational usecases and Non-Creational usecases.
+
+*Creational Entity Types Lookup*
+
+This Type Lookup takes place when creating new Entity instances from a UnitOfWork and behave exactly like
+Object/Transient/Value Types Lookups.
+
+*Non-Creational Entity Types Lookup*
+
+This Type Lookup takes place when fetching Entities from an EntityStore or writing queries using the Query API. The Type
+Lookup is different here to allow polymorphic use of Entities and Queries.
+
+First difference is that this Type Lookup returns an ordered collection instead of a single match.
+
+Returned collection contains, in order, Entity Models that:
+
+- exactly match the given type, in Visibility then Assembly order ;
+- match a type assignable to the given type, in Visibility then Assembly order.
+
+Multiple *exact* matches with the same Visibility are *forbidden* and result in an AmbiguousTypeException.
+
+Multiple *assignable* matches are *allowed* to enable polymorphic fetches and queries.
+
+
+== Service Types Lookup ==
+
+Service Types Lookup works as follow:
+
+Returned collection contains, in order, ServiceReferences that:
+
+- exactly match the given type, in Visibility then Assembly order ;
+- match a type assignable to the given type, in Visibility then Assembly order.
+
+Multiple *exact* matches with the same Visibility are *allowed* to enable polymorphic lookup/injection.
+
+Multiple *assignable* matches with the same Visibility are *allowed* for the very same reason.
+

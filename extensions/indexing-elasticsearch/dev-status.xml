@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module xmlns="http://www.qi4j.org/schemas/2008/dev-status/1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.qi4j.org/schemas/2008/dev-status/1
+        http://www.qi4j.org/schemas/2008/dev-status/1/dev-status.xsd">
+    <status>
+        <!--none,early,beta,stable,mature-->
+        <codebase>beta</codebase>
+
+        <!-- none, brief, good, complete -->
+        <documentation>good</documentation>
+
+        <!-- none, some, good, complete -->
+        <unittests>good</unittests>
+    </status>
+    <licenses>
+        <license>ALv2</license>
+    </licenses>
+</module>

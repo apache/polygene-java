@@ -11,10 +11,6 @@
  */
 package org.qi4j.test.performance.runtime.composite;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.text.NumberFormat;
-
 import org.junit.Test;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientComposite;
@@ -23,7 +19,11 @@ import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.core.testsupport.AbstractQi4jTest;
+import org.qi4j.test.AbstractQi4jTest;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.text.NumberFormat;
 
 /**
  * Invocation performance test. Don't forget to add VM value "-server"
@@ -47,7 +47,7 @@ public class InvocationPerformanceTest
     public void testInvokeMixin()
     {
         // Create instance
-        TransientBuilder<SimpleComposite> builder = transientBuilderFactory.newTransientBuilder( SimpleComposite.class );
+        TransientBuilder<SimpleComposite> builder = module.newTransientBuilder( SimpleComposite.class );
         Simple simple = builder.newInstance();
 
         for (int i = 0; i < 60000; i++)
@@ -55,7 +55,7 @@ public class InvocationPerformanceTest
             simple.test();
         }
 
-        int rounds = 3;
+        int rounds = 10;
         for (int i = 0; i < rounds; i++)
         {
             System.gc();
@@ -67,7 +67,7 @@ public class InvocationPerformanceTest
     public void testInvokeMixinWithTypedConcern()
     {
         // Create instance
-        Simple simple = transientBuilderFactory.newTransient( SimpleWithTypedConcernComposite.class );
+        Simple simple = module.newTransient( SimpleWithTypedConcernComposite.class );
 
         for (int i = 0; i < 60000; i++)
         {
@@ -85,7 +85,7 @@ public class InvocationPerformanceTest
     public void testInvokeMixinWithGenericConcern()
     {
         // Create instance
-        Simple simple = transientBuilderFactory.newTransient( SimpleWithGenericConcernComposite.class );
+        Simple simple = module.newTransient( SimpleWithGenericConcernComposite.class );
 
         for (int i = 0; i < 60000; i++)
         {

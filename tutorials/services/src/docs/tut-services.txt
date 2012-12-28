@@ -1,0 +1,35 @@
+[[tut-services,Services Composites Tutorial]]
+= Services Composites Tutorial =
+
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
+http://qi4j.org/downloads.html[Qi4j SDK sources]. You should start your favorite editor and find the code related to
+this tutorial, run it and play with it.
+
+
+In this other set of tutorials it will be shown how to create and work with Service Composites, which are composites
+that extends from the ServiceComposite class. We will refactor one a very simple Library where you can borrow and
+return books to take advantage of the various features in Qi4j. These refactorings will benefit from automatic Service
+activation and Configuration Entities management.
+
+- <<tut-services-step1>>
+- <<tut-services-step2>>
+- <<tut-services-step3>>
+
+Each tutorial step in this series starts with the result from the previous tutorial, so you can
+always look at the next tutorial step for guidance on what to do.
+
+At the bottom of each tutorial step, the is Solutions section, which list the files you should have come to if you
+have followed the instructions.
+
+:leveloffset: 3
+
+include::step1.txt[]
+
+:leveloffset: 3
+
+include::step2.txt[]
+
+:leveloffset: 3
+
+include::step3.txt[]
+

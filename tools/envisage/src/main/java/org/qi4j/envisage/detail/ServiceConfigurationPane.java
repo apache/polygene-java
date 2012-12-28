@@ -16,28 +16,19 @@
 */
 package org.qi4j.envisage.detail;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ResourceBundle;
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
+import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ValueDetailDescriptor;
-import org.qi4j.envisage.model.util.DescriptorUtilities;
-import org.qi4j.spi.object.ObjectDescriptor;
+import org.qi4j.tools.model.descriptor.*;
+import org.qi4j.tools.model.util.DescriptorUtilities;
+
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * Implementation of Service Configuration Panel
@@ -68,6 +59,7 @@ public class ServiceConfigurationPane
 
         linkButton.addActionListener( new ActionListener()
         {
+            @Override
             public void actionPerformed( ActionEvent evt )
             {
                 linkActivated();
@@ -76,16 +68,19 @@ public class ServiceConfigurationPane
 
         nameLabel.addMouseListener( new MouseAdapter()
         {
+            @Override
             public void mouseClicked( MouseEvent evt )
             {
                 linkActivated();
             }
 
+            @Override
             public void mouseEntered( MouseEvent evt )
             {
                 setCursor( linkCursor );
             }
 
+            @Override
             public void mouseExited( MouseEvent evt )
             {
                 setCursor( defaultCursor );
@@ -112,6 +107,7 @@ public class ServiceConfigurationPane
         configDescriptor = null;
     }
 
+    @Override
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
@@ -127,7 +123,7 @@ public class ServiceConfigurationPane
             return;
         }
 
-        ObjectDescriptor spiDescriptor = null;
+        ModelDescriptor spiDescriptor = null;
         String typeString = null;
         if( configDescriptor instanceof ServiceDetailDescriptor )
         {
@@ -155,9 +151,10 @@ public class ServiceConfigurationPane
             typeString = "Transient";
         }
 
-        String simpleName = spiDescriptor.type().getSimpleName();
+        Class<?> type = first( spiDescriptor.types() );
+        String simpleName = type.getSimpleName();
         nameLabel.setText( "<html><a href='" + simpleName + "'>" + simpleName + "</a></html>" );
-        classLabel.setText( spiDescriptor.type().getName() );
+        classLabel.setText( type.getName() );
         typeLabel.setText( typeString );
         linkButton.setEnabled( true );
     }
@@ -174,7 +171,6 @@ public class ServiceConfigurationPane
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -270,9 +266,6 @@ public class ServiceConfigurationPane
         contentPane.add( spacer6, gbc );
     }
 
-    /**
-     * @noinspection ALL
-     */
     private void $$$loadLabelText$$$( JLabel component, String text )
     {
         StringBuffer result = new StringBuffer();
@@ -305,9 +298,6 @@ public class ServiceConfigurationPane
         }
     }
 
-    /**
-     * @noinspection ALL
-     */
     private void $$$loadButtonText$$$( AbstractButton component, String text )
     {
         StringBuffer result = new StringBuffer();
@@ -340,9 +330,6 @@ public class ServiceConfigurationPane
         }
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;

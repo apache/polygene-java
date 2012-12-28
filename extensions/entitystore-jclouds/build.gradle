@@ -1,0 +1,20 @@
+description = "Qi4j JClouds EntityStore Extension"
+
+jar { manifest { name = "Qi4j Extension - EntityStore - JClouds" }}
+
+dependencies {
+
+  compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
+  compile project( ":org.qi4j.libraries:org.qi4j.library.locking" )
+  compile libraries.guava
+  compile libraries.jclouds_core
+  compile libraries.jclouds_blobstore
+
+  testCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
+  testCompile libraries.jclouds_filesystem
+
+  testRuntime project( ":org.qi4j.core:org.qi4j.core.runtime" )
+  testRuntime libraries.logback
+
+}
+

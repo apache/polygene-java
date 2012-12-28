@@ -1,0 +1,57 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-spi,Extension SPI]]
+= Core Extension SPI =
+
+[devstatus]
+--------------
+source=core/spi/dev-status.xml
+--------------
+
+The Qi4j Core Runtime has a number of extension points, which we call the _Qi4j Core Extension SPI_. These are defined
+interfaces used *only* by the Core Runtime and *never* directly by application code. <<extensions>> are assembled in
+applications during the bootstrap phase.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+There are currently 4 Core SPI extensions;
+
+    * EntityStore SPI
+    * Cache SPI
+    * Indexing/Query SPI
+    * Metrics SPI
+
+Qi4j Runtime Extensions implementations may depend on Qi4j Libraries, but Libraries are NOT ALLOWED to depend on
+Extensions. Applications code is NOT ALLOWED to depend on extensions. And application code SHOULD NOT depend on the
+Core Extension SPI. If you think that is needed, please contact qi4j-dev forum at Google Groups, to see if your usecase
+can be solved in a support manner, or that we need to extend the Core API to support it.
+
+:leveloffset: {level3}
+
+include::entitystore.txt[]
+
+:leveloffset: {level3}
+
+include::cache.txt[]
+
+:leveloffset: {level3}
+
+include::indexing.txt[]
+
+:leveloffset: {level3}
+
+include::metrics.txt[]
+

@@ -1,0 +1,15 @@
+description = "Qi4j JavaScript Library allows for Mixins to be implemented in JavaScript instead of directly in compiled Java."
+
+jar { manifest { name = "Qi4j Library - Scripting - JavaScript" }}
+
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile( project( ':org.qi4j.libraries:org.qi4j.library.scripting' ))
+  compile(libraries.javascript)
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

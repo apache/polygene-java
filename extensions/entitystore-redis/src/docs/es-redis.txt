@@ -1,0 +1,32 @@
+[[extension-es-redis,Redis EntityStore]]
+= Redis EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-redis/dev-status.xml
+--------------
+
+EntityStore service backed by a http://redis.io/[Redis] database.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assembler.
+
+[snippet,java]
+----
+source=extensions/entitystore-redis/src/test/java/org/qi4j/entitystore/redis/RedisMapEntityStoreTest.java
+tag=assembly
+----
+
+
+== Configuration ==
+
+Here are the configuration properties for the Redis client:
+
+[snippet,java]
+----
+source=extensions/entitystore-redis/src/main/java/org/qi4j/entitystore/redis/RedisEntityStoreConfiguration.java
+tag=config
+----

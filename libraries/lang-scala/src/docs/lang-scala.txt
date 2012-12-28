@@ -1,0 +1,9 @@
+[[lang-scala, Scala Library]]
+= Scala Support =
+
+[devstatus]
+--------------
+source=libraries/lang-scala/dev-status.xml
+--------------
+
+include::../../build/docs/buildinfo/artifact.txt[]

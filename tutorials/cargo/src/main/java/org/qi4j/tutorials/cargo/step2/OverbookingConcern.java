@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.tutorials.cargo.step2;
 
@@ -23,6 +23,7 @@ public class OverbookingConcern
     extends ConcernOf<ShippingService>
     implements ShippingService
 {
+    @Override
     public int makeBooking( Cargo cargo, Voyage voyage )
     {
         double cargoSize = cargo.size().get();

@@ -1,0 +1,13 @@
+[[library-eventsourcing, Event Sourcing Library]]
+= Event Sourcing =
+
+[devstatus]
+--------------
+source=libraries/eventsourcing/dev-status.xml
+--------------
+
+Event Sourcing Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

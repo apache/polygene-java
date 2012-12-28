@@ -72,7 +72,7 @@ public interface MainPage
                 listItem.appendChild( dom.createTextNode( createPeriod( booking.period().get() ) ) );
                 nodes.add( listItem );
             }
-            Node[] bookingList = new Node[nodes.size()];
+            Node[] bookingList = new Node[ nodes.size() ];
             nodes.toArray( bookingList );
             return bookingList;
         }

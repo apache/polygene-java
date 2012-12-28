@@ -19,16 +19,8 @@ package org.qi4j.envisage.graph;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ImportedServiceDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ServiceDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ValueDetailDescriptor;
-import org.qi4j.envisage.model.util.DescriptorNameComparator;
+import org.qi4j.tools.model.descriptor.*;
+import org.qi4j.tools.model.util.DescriptorNameComparator;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
 import prefuse.data.Node;
@@ -173,7 +165,7 @@ public class GraphBuilder
                 parent = addChild( parent, name, name );
                 first = false;
             }
-            addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
+            addChild( parent, descriptor.descriptor().toString(), descriptor );
         }
     }
 
@@ -191,7 +183,7 @@ public class GraphBuilder
                 parent = addChild( parent, name, name );
                 first = false;
             }
-            addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
+            addChild( parent, descriptor.descriptor().primaryType().getSimpleName(), descriptor );
         }
     }
 
@@ -209,7 +201,7 @@ public class GraphBuilder
                 parent = addChild( parent, name, name );
                 first = false;
             }
-            addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
+            addChild( parent, descriptor.descriptor().toString(), descriptor );
         }
     }
 
@@ -227,7 +219,7 @@ public class GraphBuilder
                 parent = addChild( parent, name, name );
                 first = false;
             }
-            addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
+            addChild( parent, descriptor.descriptor().toString(), descriptor );
         }
     }
 
@@ -245,7 +237,7 @@ public class GraphBuilder
                 parent = addChild( parent, name, name );
                 first = false;
             }
-            addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
+            addChild( parent, descriptor.descriptor().toString(), descriptor );
         }
     }
 
@@ -263,7 +255,7 @@ public class GraphBuilder
                 parent = addChild( parent, name, name );
                 first = false;
             }
-            addChild( parent, descriptor.descriptor().type().getSimpleName(), descriptor );
+            addChild( parent, descriptor.descriptor().toString(), descriptor );
         }
     }
 }

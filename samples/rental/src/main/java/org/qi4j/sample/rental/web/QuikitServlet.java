@@ -44,6 +44,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
@@ -51,19 +52,20 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
+
+import static org.qi4j.functional.Iterables.first;
 
 public class QuikitServlet
     extends HttpServlet
 {
-    private ApplicationSPI application;
+    private Application application;
     private ServiceFinder finder;
     private UrlService urlService;
     private DocumentBuilderFactory documentFactory;
-    private QuikitResolver quickitResolver;
     private TreeMap<String, Page> mountPoints;
 
     @Override
@@ -73,13 +75,11 @@ public class QuikitServlet
         try
         {
             mountPoints = new TreeMap<String, Page>();
-            quickitResolver = new QuikitResolver();
             documentFactory = DocumentBuilderFactory.newInstance();
             documentFactory.setNamespaceAware( true );
-            SchemaFactory schemaFactory = SchemaFactory.newInstance( "http://www.w3.org/2001/XMLSchema" );
-            schemaFactory.setResourceResolver( quickitResolver );
             ClassLoader cl = getClass().getClassLoader();
-            Source[] schemaSources = new Source[2];
+            SchemaFactory schemaFactory = SchemaFactory.newInstance( "http://www.w3.org/2001/XMLSchema" );
+            Source[] schemaSources = new Source[ 2 ];
             schemaSources[ 0 ] = new StreamSource( cl.getResourceAsStream( "xhtml1-strict.xsd" ) );
             schemaSources[ 1 ] = new StreamSource( cl.getResourceAsStream( "xml.xsd" ) );
             Schema schema = schemaFactory.newSchema( schemaSources );
@@ -91,11 +91,11 @@ public class QuikitServlet
             application = qi4j.newApplication( assembler );
             application.activate();
             Module module = application.findModule( "WebLayer", "PagesModule" );
-            finder = module.serviceFinder();
+            finder = module;
 
-            if( application.mode() == ApplicationSPI.Mode.development )
+            if( application.mode() == Application.Mode.development )
             {
-                DataInitializer initializer = module.transientBuilderFactory().newTransient( DataInitializer.class );
+                DataInitializer initializer = module.newTransient( DataInitializer.class );
                 initializer.initialize();
             }
             Iterable<ServiceReference<Page>> iterable = finder.findServices( Page.class );
@@ -161,7 +161,7 @@ public class QuikitServlet
         String path = httpServletRequest.getPathInfo();
         if( urlService == null )
         {
-            urlService = (UrlService) finder.findService( UrlService.class ).get();
+            urlService = finder.findService( UrlService.class ).get();
             String uri = httpServletRequest.getRequestURI();
             String basePath = uri.substring( 0, uri.length() - path.length() );
             urlService.registerBaseUri( basePath );
@@ -194,10 +194,11 @@ public class QuikitServlet
     private void renderPage( Page page, String path, PrintWriter output, HttpServletRequest httpRequest )
         throws ParserConfigurationException, SAXException, IOException, RenderException, TransformerException
     {
-        Class<? extends Composite> pageClass = page.type();
+        Class<? extends Composite> pageClass = (Class<Composite>) first( Qi4j.DESCRIPTOR_FUNCTION.map( page ).types() );
+
         String pageName = pageClass.getSimpleName() + ".html";
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
-        documentBuilder.setEntityResolver( quickitResolver );
+        documentBuilder.setEntityResolver( createEntityResolver( documentBuilder ) );
         InputStream pageResource = pageClass.getResourceAsStream( pageName );
         Document dom = documentBuilder.parse( pageResource );
         try
@@ -214,6 +215,15 @@ public class QuikitServlet
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform( source, result );
         output.flush();
+    }
+
+    private EntityResolver createEntityResolver( DocumentBuilder builder )
+        throws SAXException
+    {
+        QuikitResolver quickitResolver = new QuikitResolver( builder );
+        SchemaFactory schemaFactory = SchemaFactory.newInstance( "http://www.w3.org/2001/XMLSchema" );
+        schemaFactory.setResourceResolver( quickitResolver );
+        return quickitResolver;
     }
 
     private void error( Document dom, Throwable exception )

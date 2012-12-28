@@ -1,102 +1,199 @@
+project.ext {
+  title = "Qi4j SDK"
+  description = "Qi4j™ is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
+  testFailures = [ ]
+  mainClassName = 'org.qi4j.container.Main'
+  groovycMain_mx = "512m"
+  groovycMain_permSize = "128m"
+  groovycMain_maxPermSize = "256m"
+}
 
-title = "Qi4j SDK"
-description = "Qi4j™ is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
 
 apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'signing'
+apply plugin: 'maven'
 apply from: 'maven-compat.gradle'
 apply plugin: 'project-report'
+apply plugin: 'sonar'
 apply from: 'libraries.gradle'
 
 targetCompatibility = "1.6"
 sourceCompatibility = "1.6"
 
-testFailures = []
-
-groovycMain_mx = "512m"
-groovycMain_permSize = "64m"
-groovycMain_maxPermSize = "128m"
-
 // Collect the modules that fulfills the Release Criteria.
-project.releaseSpec = new ModuleReleaseSpecification()
-def releaseApprovedProjects = allprojects.findAll({ project ->  rootProject.releaseSpec.satisfiedBy(project) })
+project.ext {
+  releaseSpec = new org.qi4j.gradle.plugin.ModuleReleaseSpecification()
+}
+
+def releaseApprovedProjects = allprojects.findAll( { project ->  rootProject.ext.releaseSpec.satisfiedBy( project ) } )
 
 buildscript {
   repositories {
     mavenCentral()
   }
-  dependencies {
-    classpath 'de.huxhorn.gradle:de.huxhorn.gradle.pgp-plugin:0.0.3'
-  }
 }
 
 
+// External tools BEGIN ---------------------------------------------------
+
+// Sonar configuration - Used at nemo.sonarsource.org
+// Using system properties for easy configuration from outside the build
+sonar {
+    server {
+        url = System.getProperty("sonar.host.url") ?: "http://localhost:9000/"
+    }
+    database {
+        url = System.getProperty("sonar.jdbc.url") ?: "jdbc:h2:tcp://localhost:9092/sonar"
+        driverClassName = System.getProperty("sonar.jdbc.driver") ?: "org.h2.Driver"
+        username = System.getProperty("sonar.jdbc.username") ?: "sonar"
+        password = System.getProperty("sonar.jdbc.password") ?: "sonar"
+    }
+}
+
+// IDEA plugin configuration
+idea.project.ipr {
+  withXml { provider ->
+    provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
+  }
+}
+
+// External tools END -----------------------------------------------------
+
+
 allprojects {
+
   apply plugin: 'eclipse'
   apply plugin: 'idea'
+  apply plugin: 'signing'
   apply plugin: 'java'
-  apply plugin: 'code-quality'
+//  apply plugin: 'checkstyle'
   apply plugin: 'project-report'
-  apply plugin: de.huxhorn.gradle.pgp.PgpPlugin
+  apply plugin: 'maven'
 
-  defaultTasks 'classes','test'
-  project.Xslt = Xslt.class
 
-  group = name.substring(0, name.lastIndexOf('.'))
+  defaultTasks 'classes', 'test'
+
+  group = name.substring( 0, name.lastIndexOf( '.' ) )
   version = System.properties.version ?: "0"
-  idea.javaVersion = '1.6'
-  [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+  [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
 
   repositories {
     mavenCentral()
-    mavenRepo name: 'ops4j-repo', urls: "http://repository.ops4j.org/maven2/"
+    mavenRepo name: 'ops4j-repo', url: "http://repository.ops4j.org/maven2/"
+    mavenRepo name: 'aduna-repo', url: "http://repo.aduna-software.org/maven2/releases/"
+    mavenRepo name: 'restlet-repo', url: 'http://maven.restlet.org'
+    mavenRepo name: 'maven2-repository.dev.java.net', url: "http://download.java.net/maven/2"
   }
 
+  // Artifact upload global configuration BEGIN -----------------------------
+
+  def uploadSnapshots = version.contains("SNAPSHOT")
+  def uploadReleases = ! uploadSnapshots
+  // By default RELEASES are signed, SNAPSHOTS are not
+  // Signing can be turned on or off by setting the uploadSigned property
+  def uploadSigned = rootProject.hasProperty('uploadSigned') \
+                        ? rootProject.uploadSigned : uploadReleases \
+                        ? true : false
+  // By default RELEASES must satisfy ReleaseSpecification, SNAPSHOT don't
+  // ReleaseSpecification usage can be turned on or off by setting the uploadReleaseSpec property
+  def uploadReleaseSpec = rootProject.hasProperty('uploadReleaseSpec') \
+                             ? rootProject.uploadReleaseSpec : uploadReleases \
+                             ? true : false
+  // By default RELEASES are uploaded using SSH, SNAPSHOTS using WEBDAV
+  // Used Wagon can be overriden by setting the uploadWagon property
+  // def wagonSSH = "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
+  def wagonWEBDAV = "org.apache.maven.wagon:wagon-webdav:1.0-beta-2"
+  def uploadWagon = rootProject.hasProperty('uploadWagon') \
+                        ? rootProject.uploadWagon : wagonWEBDAV
+  // By default RELEASES are uploaded to OPS4J, SNAPSHOTS to Cloudbees
+  // Target repository can be overriden by setting the uploadRepository property
+  def releasesRepository = "dav:https://repository-qi4j.forge.cloudbees.com/release/"
+  def snapshotsRepository = "dav:https://repository-qi4j.forge.cloudbees.com/snapshot/"
+  def uploadRepository = rootProject.hasProperty('uploadRepository') \
+                            ? rootProject.uploadRepository \
+                            : uploadReleases ? releasesRepository : snapshotsRepository
+  // No username/password is provided by default
+  // If needed set them using the uploadUsername and uploadPassword properties
+  def uploadUsername = rootProject.hasProperty('uploadUsername') ? rootProject.uploadUsername : null
+  def uploadPassword = rootProject.hasProperty('uploadPassword') ? rootProject.uploadPassword : null
+
+  // Artifact upload global configuration END -------------------------------
+
+
   configurations {
+    archives
     deployerJars
     provided
     compile.extendsFrom provided
+    runtime.extendsFrom compile
   }
 
   dependencies {
-    testCompile("org.apache.ant:ant:$antVersion")
-    testCompile("org.apache.ant:ant-junit:$antVersion")
-    testCompile('junit:junit:4.8.1')
-    testRuntime("asm:asm:$asmVersion", "asm:asm-util:$asmVersion", "asm:asm-commons:$asmVersion")
-    deployerJars "org.apache.maven.wagon:wagon-ssh:1.0-beta-2"
+    testCompile( libraries.ant )
+    testCompile( libraries.ant_junit )
+    testCompile( libraries.junit )
+    testRuntime( libraries.asm, libraries.asm_commons, libraries.asm_util )
+    deployerJars( uploadWagon )
   }
 
+  test.onlyIf { !project.hasProperty( 'skipTests' ) }
+  test {
+      testLogging {
+          info {
+              exceptionFormat "full"
+          }
+      }
+  }
 
-  javaDir = new File("$projectDir/src/main/java")
-  testDir = new File("$projectDir/src/test/java")
+  sourceSets {
+    docs {
+      resources {
+        srcDir 'src/docs'
+      }
+    }
+  }
 
-  if( javaDir.isDirectory() || testDir.isDirectory() )
+  project.ext {
+    javaDir = new File( "$projectDir/src/main/java" )
+    scalaDir = new File( "$projectDir/src/main/scala" )
+    documentationDir = new File( "$projectDir/src/docs" )
+    testJavaDir = new File( "$projectDir/src/tests/java" )
+    testScalaDir = new File( "$projectDir/src/tests/scala" )
+  }
+
+  // Actual code projects BEGIN -------------------------------------------
+  if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() ||
+      ext.testJavaDir.isDirectory() || ext.testScalaDir.isDirectory() )
   {
     apply plugin: 'osgi'
     apply plugin: VersionClass
+    apply plugin: AsciidocBuildInfo
 
-    if( name == "org.qi4j.core.runtime" )
-    {
-      checkstyleMain {
-        configFile = new File("$rootProject.projectDir.absolutePath/etc/qi4j-runtime-checkstyle.xml")
-        ignoreFailures = true
-      }
-    }
-    else
-    {
-      checkstyleMain {
-        configFile = new File("$rootProject.projectDir.absolutePath/etc/qi4j-api-checkstyle.xml")
-        ignoreFailures = true
-      }
-    }
-    checkstyleTest {
-      configFile = new File("$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml")
-      ignoreFailures = true
-    }
-
-    checkstyleVersion {
-      configFile = new File("$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml")
-      ignoreFailures = true
-    }
+//    if( name == "org.qi4j.core.runtime" )
+//    {
+//      checkstyleMain {
+//        configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-runtime-checkstyle.xml" )
+//        ignoreFailures = true
+//      }
+//    }
+//    else
+//    {
+//      checkstyleMain {
+//        configFile = new File( rootProject.projectDir.absolutePath.toString() + '/etc/qi4j-api-checkstyle.xml' )
+//        ignoreFailures = true
+//        reporting.baseDir = "$rootProject.reporting.baseDir/checkstyle"
+//      }
+//    }
+//    checkstyleTest {
+//      configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml" )
+//      ignoreFailures = true
+//    }
+//
+//    checkstyleVersion {
+//      configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml" )
+//      ignoreFailures = true
+//    }
 
     jar {
       manifest {
@@ -108,249 +205,359 @@ allprojects {
       }
     }
 
-    task sourceJar(type: Jar) {
+    signing {
+      required { uploadSigned }
+      sign configurations.archives
+    }
+
+    task sourceJar( type: Jar ) {
       classifier = "sources"
       from sourceSets.main.allSource
     }
 
-    task javadocJar(type: Jar) {
+    task testSourceJar( type: Jar ) {
+      classifier = "testsources"
+      from sourceSets.test.allSource
+    }
+
+    task javadocJar( type: Jar ) {
       classifier = "javadoc"
       from javadoc.destinationDir
       dependsOn javadoc
     }
 
     artifacts {
-      archives sourceJar, javadocJar
+      archives sourceJar, testSourceJar, javadocJar
     }
 
     def testProperties = [
             'proxySet': System.properties[ 'proxySet' ],
             'proxyHost': System.properties[ 'proxyHost' ],
-            'proxyPort': System.properties[ 'proxyPort' ]]
+            'proxyPort': System.properties[ 'proxyPort' ] ]
 
     test {
       maxHeapSize = "1024m"
       systemProperties = testProperties
       ignoreFailures = true
+      testReport = true
+      testResultsDir = file( "$rootProject.testResultsDir" )
       afterSuite { descriptor, result ->
         if( result.resultType == TestResult.ResultType.FAILURE )
         {
-          rootProject.testFailures = project
+          rootProject.ext.testFailures << project
         }
       }
     }
 
-    // Create checkstyle report
-    task checkstyleReport(type: Xslt, dependsOn: check) {
-      source project.checkstyleResultsDir
-      include '*.xml'
-      destDir = file("build/reports/checkstyle/")
-      extension = 'html'
-      stylesheetFile = file("$rootProject.projectDir/etc/checkstyle-noframes.xsl")
+//    // Create checkstyle report
+//    task checkstyleReport( type: Xslt, dependsOn: check ) {
+//      source project.checkstyle.reportsDir
+//      include '*.xml'
+//      destDir = file( "build/reports/checkstyle/" )
+//      extension = 'html'
+//      stylesheetFile = file( "$rootProject.projectDir/etc/checkstyle-noframes.xsl" )
+//    }
+//
+
+    // Dependency Report generate only the runtime configuration
+    // The report is packaged in the SDK distributions
+    dependencyReport {
+        configurations = [ project.configurations.runtime ]
     }
+
+    // Sonar configuration, mainly for code coverage BEGIN ----------------
+    // See http://www.gradle.org/docs/current/userguide/dependency_management.html#sub:configurations
+    // and http://www.gradle.org/docs/current/dsl/org.gradle.api.artifacts.ConfigurationContainer.html
+    configurations {
+        jacoco // Configuration Group used by Sonar to provide Code Coverage using JaCoCo
+        sonar {
+          project {
+              dynamicAnalysis  = "reuseReports"
+              withProjectProperties { props ->
+                  props["sonar.core.codeCoveragePlugin"] = "jacoco"
+                  props["sonar.jacoco.reportPath"]       = "${buildDir}/jacoco.exec"
+              }
+          }
+        }
+    }
+    dependencies {
+        jacoco group: "org.jacoco", name: "org.jacoco.agent", version: "0.5.10.201208310627", classifier: "runtime"
+    }
+    test {
+        jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.qi4j.*"
+    }
+    // Sonar configuration, mainly for code coverage END ------------------
 
     task minBuild {
       dependsOn classes
       dependsOn test
     }
-  }
 
+  }
+  // Actual code projects END ---------------------------------------------
+
+  // Upload Archives - Artifact Deployment
   uploadArchives.doFirst {
-    if( System.properties[ 'version' ] == null )
+    if( version == "0" )
     {
-      throw new GradleException("'version' must be given as a system property to perform a release.")
+      throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
   }
 
-  uploadArchives.onlyIf { releaseApprovedProjects.contains(project) || project == rootProject }
+  uploadArchives.onlyIf { ( !uploadReleaseSpec || ( releaseApprovedProjects.contains( project ) || project == rootProject ) ) && !project.hasProperty( 'skipUpload' ) }
   uploadArchives {
     dependsOn check
     repositories.mavenDeployer {
-      name = 'sshDeployer' // optional
+      if( uploadSigned )
+        beforeDeployment { MavenDeployment deployment -> signing.signPom( deployment ) }
       configuration = configurations.deployerJars
-      repository(url: "scp://repository.ops4j.org/home/www/repository.ops4j.org/maven2/")
+      repository(url: uploadRepository) {
+        if( uploadUsername )
+          authentication(userName: uploadUsername, password: uploadPassword)
+      }
+      snapshotRepository(url: uploadRepository) {
+        if( uploadUsername )
+          authentication(userName: uploadUsername, password: uploadPassword)
+      }
     }
   }
 
-  ideaModule {
-    whenConfigured { module ->
+  idea.module.iml {
+    whenMerged { module ->
       module.dependencies*.exported = true
     }
   }
-  dependsOnChildren()
-}
+} // allproject END -------------------------------------------------------
 
 gradle.taskGraph.whenReady {taskGraph ->
   taskGraph.allTasks.last().doLast {
-    if( rootProject.testFailures ) {
+    if( rootProject.ext.testFailures )
+    {
       println "\nTest failures in:"
-      rootProject.testFailures.each { project -> println "  " + project.name }
-      throw new RuntimeException( "There was TEST FAILURES!! See list above." ) }
-  }
-}
-
-test.doLast() {
-  ant {
-    taskdef(name: 'junitreport',
-            classname: 'org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator',
-            classpath: configurations.testRuntime.asPath)
-
-    // create Junit report
-    def junitReportDir = buildDirName + "/reports/junit"
-    mkdir(dir: junitReportDir)
-    mkdir(dir: buildDirName + "/test-results")
-    junitreport(todir: junitReportDir) {
-      report(format: 'frames', todir: junitReportDir)
-      allprojects.each { module ->
-        fileset(dir: "$module.buildDir/test-results") {
-          include(name: "TEST-*.xml")
-        }
-      }
+      rootProject.ext.testFailures.unique().each { project -> println "  " + project.name }
+      println ""
+      throw new RuntimeException( "There was TEST FAILURES!! See list above." )
     }
-
   }
 }
 
-task javadocs(type: Javadoc) {
+test {
+  dependsOn subprojects*.test
+  testReport = true
+}
+
+// Build the whole SDK public Javadoc
+task javadocs( type: Javadoc ) {
 
   options.docFilesSubDirs = true
+  options.encoding = "UTF-8"
+  options.overview = "${rootProject.projectDir}/buildSrc/src/javadoc/overview.html"
   title = "${rootProject.title} ${version}"
-  def apiSources = releaseApprovedProjects.findAll({ project ->
-    (project.name.startsWith('org.qi4j.core') &&
-     !project.name.startsWith('org.qi4j.core.runtime')) ||
-    project.name.startsWith('org.qi4j.library') ||
-    project.name.startsWith('org.qi4j.extension')
-  })
+  def apiSources = releaseApprovedProjects.findAll( { project ->
+    ( project.name.startsWith( 'org.qi4j.core' ) && !project.name.startsWith( 'org.qi4j.core.runtime' ) ) ||
+    project.name.startsWith( 'org.qi4j.library' ) ||
+    project.name.startsWith( 'org.qi4j.extension' ) ||
+    project.name.startsWith( 'org.qi4j.tool' )
+  } )
   source apiSources.collect { project ->
     project.sourceSets.main.allJava
   }
-  destinationDir = new File("$buildDir/javadocs")
+  destinationDir = new File( "" + buildDir + '/docs/javadoc' )
   // Might need a classpath
-  classpath = files(apiSources.collect { project ->
+  classpath = files( apiSources.collect { project ->
     project.sourceSets.main.compileClasspath
-  })
-  options.links("http://java.sun.com/j2se/1.6.0/docs/api")
-  options.group(["Core API": ["org.qi4j.api", "org.qi4j.api.*"],
-                "Core Bootstrap": ["org.qi4j.bootstrap"],
-                "Core SPI": ["org.qi4j.spi", "org.qi4j.spi.*"],
-                "Libraries": ["org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.scripting.*"],
-                "Extensions": ["org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*"],
-                "Test Support": ["org.qi4j.test", "org.qi4j.test.*"],
-
-                ])
+  } )
+  options.links( "http://java.sun.com/j2se/1.6.0/docs/api" )
+  options.group( [ "Core API": [ "org.qi4j.api", "org.qi4j.api.*", "org.qi4j.io", "org.qi4j.functional" ],
+                         "Core Bootstrap": [ "org.qi4j.bootstrap" ],
+                         "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
+                         "Libraries": [ "org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.lang.*" ],
+                         "Extensions": [ "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
+                         "Tools": [ "org.qi4j.tools.*", "org.qi4j.envisage", "org.qi4j.envisage.*", "org.qi4j.library.swing.entityviewer" ],
+                         "Test Support": [ "org.qi4j.test", "org.qi4j.test.*" ]
+                 ] )
 
 }
 
-task distLayout {
-  srcDistImage = copySpec {
-    from '.'
-    exclude '**/build/'     // build output
-    exclude '**/out/'       // build output
-    exclude '**/.git/'      // git directories
-    exclude '**/.git*'      // git files
-    exclude '**/.gradle/'   // gradle management files
-    into "qi4j-sdk-$version/src/"
+task archiveJavadocs(type: Copy ) {
+  dependsOn javadocs
+
+  if( rootProject.version == '0' )
+  {
+    into( "$rootProject.projectDir/../qi4j.github.com/develop/javadocs/" )
   }
+  else
+  {
+    into( "$rootProject.projectDir/../qi4j.github.com/$version/javadocs/" )
+  }
+  from( 'build/docs/javadoc/' )
+}
 
 
-  docsImage = copySpec {
-    into("docs")
-    from "$buildDir/docs"
-  }
-  reportsImage = copySpec {
-    into("docs/reports")
-    from "$buildDir/reports"
-  }
-  javadocsImage = copySpec {
-    into("javadocs")
-    from "$buildDir/javadocs"
-  }
-  libsImage = copySpec {
-    releaseApprovedProjects.collect { project ->
-      if( project.group == 'org.qi4j.core' )
-      {
-        from project.configurations.runtime
-        into("libs/core")
+// Build All
+task buildAll( dependsOn: [
+    archiveJavadocs,
+    test,
+    jar,
+    subprojects*.dependencyReport,
+    subprojects*.assemble,
+    ':org.qi4j.manual:website'
+] ) { }
+
+// Prepare runtime dependencies download facility (metalink)
+buildAll.doLast {
+    def runtimeDepsMetalink = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">\n"
+    runtimeDepsMetalink = runtimeDepsMetalink + " <identity>qi4j-sdk-runtime-deps</identity>\n"
+    runtimeDepsMetalink = runtimeDepsMetalink + " <version>${version}</version>\n"
+    def handledGavPaths = []
+    releaseApprovedProjects.each { p ->
+      def m2roots = []
+      p.repositories.each { repo ->
+        def resolver = repo.createResolver()
+        if( !resolver.m2compatible ) {
+          throw new GradleException( "Cannot build SDK dependencies metalink because a repository is not m2compatible: ${resolver.root}" )
+        }
+        m2roots << resolver.root
       }
-      else if( project.group == 'org.qi4j.library' )
-      {
-        from project.configurations.runtime
-        into("libs/libraries/$project.name")
-      }
-      else if( project.group == 'org.qi4j.extension' )
-      {
-        from project.configurations.runtime
-        into("libs/extensions/$project.name")
+      p.configurations.runtime.allDependencies.each { dep ->
+        def gavpath = dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar"
+        if( !dep.group.startsWith("org.qi4j") && !handledGavPaths.contains( gavpath ) ) {
+          runtimeDepsMetalink = runtimeDepsMetalink + "  <file name=\"${dep.group}-${dep.name}-${dep.version}.jar\">\n"
+          m2roots.each { m2root ->
+            runtimeDepsMetalink = runtimeDepsMetalink + "    <url>" + m2root + dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar" + "</url>\n"
+          }
+          runtimeDepsMetalink = runtimeDepsMetalink + "  </file>\n\n"
+          handledGavPaths << gavpath
+        }
       }
     }
+    runtimeDepsMetalink = runtimeDepsMetalink + "</metalink>\n"
+    new File( buildDir.toString(), "reports" ).mkdirs()
+    new File( buildDir.toString(), "reports/qi4j-sdk-runtime-deps.metalink" ).text = runtimeDepsMetalink
+}
+
+def srcDistImage = copySpec {
+  from '.'
+  exclude '**/build/'     // build output
+  exclude '**/bin/'       // helper scripts
+  exclude 'derby.log'     // Derby test garbage
+  exclude '**/*.iml'      // IDEA files
+  exclude 'org.qi4j.ipr'  // IDEA files
+  exclude 'org.qi4j.iws'  // IDEA files
+  exclude '**/out/*'       // build output
+  exclude '**/.git/'      // git directories
+  exclude '**/.git*'      // git files
+  exclude '**/.gradle/'   // gradle management files
+  into "qi4j-sdk-$version/src/"
+
+}
+
+def reportsDistImage = copySpec {
+  from "$buildDir/reports"
+  into( "docs/reports" )
+}
+
+def docsImage = copySpec {
+  from "build/docs"
+  from "manual/build/docs/website"
+  into( "docs" )
+}
+
+def runtimeDependenciesListImage = copySpec {
+  releaseApprovedProjects.collect { p ->
+    into( "libs/" ) {
+      from "$p.buildDir/reports/project/dependencies.txt"
+      rename 'dependencies.txt', p.name + '-' + p.version + '-runtime-deps.txt'
+    }
   }
-  samplesImage = copySpec {
-    into("samples")
-    from "$projectDir/samples"
-    exclude '**/build'
-    exclude '**/*.iml'
-  }
-  tutorialsImage = copySpec {
-    into("tutorials")
-    from "$projectDir/tutorials"
-  }
-  binDistImage = copySpec {
-    into "qi4j-sdk-$version"
-    with docsImage
-    with reportsImage
-    with javadocsImage
-    with libsImage
-    with samplesImage
-    with tutorialsImage
+  into( "libs/" ) {
+    from "build/reports/qi4j-sdk-runtime-deps.metalink"
+    rename 'qi4j-sdk-runtime-deps.metalink', 'qi4j-sdk-' + version + '-runtime-deps.metalink'
   }
 }
 
-task zipSources(type: Zip) {
+def libsImage = copySpec {
+  releaseApprovedProjects.collect { proj ->
+    into( "libs/" ) {
+      from proj.configurations.archives.artifacts.files
+      exclude '**-testsources.jar'
+      exclude '**-javadoc.jar'
+      exclude '**/*.asc'
+    }
+  }
+}
+
+def samplesImage = copySpec {
+  from( "$projectDir/samples" )
+  from( "$projectDir/samples/*/build/docs/javadoc" )
+  into( "samples" )
+  exclude '**/*.iml'
+  exclude '**/build/'     // build output
+}
+
+def tutorialsImage = copySpec {
+  from( "$projectDir/tutorials" )
+  exclude '**/build/'
+  into( "tutorials" )
+  from( "$projectDir/tutorials/*/build/docs/javadoc" )
+  exclude '**/*.iml'
+}
+
+def binDistImage = copySpec {
+  into "qi4j-sdk-$version"
+  with docsImage
+  with reportsDistImage
+  with runtimeDependenciesListImage
+  with libsImage
+  with samplesImage
+  with tutorialsImage
+}
+
+task zipSources( type: Zip, dependsOn: [ buildAll ] ) {
   baseName = 'qi4j-sdk'
-  with distLayout.srcDistImage
+  with srcDistImage
   classifier = 'src'
 }
 
-task tarSources(type: Tar) {
+task tarSources( type: Tar, dependsOn: [ buildAll ] ) {
   baseName = 'qi4j-sdk'
-  with distLayout.srcDistImage
+  with srcDistImage
   compression = Compression.GZIP
   classifier = 'src'
 }
 
-task zipBinaries(type: Zip, dependsOn: [javadocs, test, distLayout]) {
+task zipBinaries( type: Zip, dependsOn: [ buildAll ] ) {
   baseName = 'qi4j-sdk'
   classifier = 'bin'
-  with distLayout.binDistImage
+  with binDistImage
 }
 
-task tarBinaries(type: Tar, dependsOn: [javadocs, test, distLayout]) {
+task tarBinaries( type: Tar, dependsOn: [ buildAll ] ) {
   baseName = 'qi4j-sdk'
   classifier = 'bin'
   compression = Compression.GZIP
-  with distLayout.binDistImage
+  with binDistImage
 }
 
 artifacts {
   archives zipSources, tarSources, zipBinaries, tarBinaries
 }
 
+task dist( type: Copy, dependsOn: install ) {
+  with binDistImage
+  into "$buildDir/dist"
+}
 
 task release {
   description = 'Builds, tests and uploads the release artifacts'
   group = 'release'
   doFirst {
-    if( System.properties[ 'version' ] == null )
+    if( System.properties[ 'version' ] == null || System.properties[ 'version' ].contains( 'SNAPSHOT' ) )
     {
-      throw new GradleException("'version' must be given as a system property to perform a release.")
+      throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
   }
-  dependsOn allprojects*.uploadArchives
-  dependsOn allprojects*.javadoc
-  dependsOn tarBinaries
-  dependsOn zipBinaries
-  dependsOn tarSources
-  dependsOn zipSources
+  dependsOn archiveJavadocs, ':org.qi4j.manual:copyWebsite', allprojects*.uploadArchives, dist
 }
 
 //
@@ -360,8 +567,6 @@ task release {
 //  1) /gradlew which is the *NIX shell script for executing builds
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
-task wrapper(type: Wrapper) {
-  gradleVersion = '1.0-milestone-2'
-  jarPath = 'wrapper'
+task wrapper( type: Wrapper ) {
+  gradleVersion = '1.3'
 }
-

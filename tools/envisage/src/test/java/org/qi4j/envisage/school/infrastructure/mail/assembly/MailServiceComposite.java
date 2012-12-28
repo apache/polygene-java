@@ -16,13 +16,14 @@
 */
 package org.qi4j.envisage.school.infrastructure.mail.assembly;
 
-import java.util.Arrays;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.envisage.school.config.mail.MailConfiguration;
 import org.qi4j.envisage.school.infrastructure.mail.Mail;
 import org.qi4j.envisage.school.infrastructure.mail.MailService;
+
+import java.util.Arrays;
 
 public interface MailServiceComposite
     extends MailService, ServiceComposite

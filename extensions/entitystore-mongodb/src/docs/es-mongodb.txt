@@ -1,0 +1,32 @@
+[[extension-es-mongodb,MongoDB EntityStore]]
+= MongoDB EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-mongodb/dev-status.xml
+--------------
+
+EntityStore service backed by a http://www.mongodb.org/[MongoDB] collection in which Entity state is stored as native
+MongoDB BSON.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/entitystore-mongodb/src/test/java/org/qi4j/entitystore/mongodb/MongoMapEntityStoreTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Here are the configuration properties for the MongoDB EntityStore:
+
+[snippet,java]
+----
+source=extensions/entitystore-mongodb/src/main/java/org/qi4j/entitystore/mongodb/MongoEntityStoreConfiguration.java
+tag=config
+----

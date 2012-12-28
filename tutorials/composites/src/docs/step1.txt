@@ -1,0 +1,66 @@
+[[tut-composites-step1,Step 1 - Interface Refactoring]]
+= Step 1 - Interface Refactoring =
+
+== Initial Hello World ==
+
+This whole tutorial describes how to step-by-step modify a typical HelloWorld "application" into a full-fledged Qi4j 
+Composite Oriented application. Here is the initial code of HelloWorld.
+
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial1/HelloWorld.java
+tag=initial
+----
+
+== Interface refactoring ==
+
+In this step we start with a basic Java class, which when invoked will concatenate the two properties "phrase" 
+and "name". If invoked with the properties set to "Hello" and "World" respectively it will hence return "Hello World".
+
+Qi4j relies heavily on the use of interfaces. This makes it possible for an object to externally implement a number of 
+interfaces which internally is backed by a number of Mixins, some of which you may have written yourself, and some of 
+which may have been reused. This also makes it easy to introduce Modifiers (aka "interceptors", aka "advice"), which 
+are Fragments which execute before and/or after the method on the Mixin is invoked.
+
+The first task is therefore to refactor the code so that the method is implemented from an interface instead. We should 
+then also separate the state into one interface and the behaviour into another. This will make things easier for us 
+later when state and behaviour becomes implemented by separate Mixins.
+
+Steps for this tutorial:
+
+- Refactor the class into interface and implementation.
+- Refactor the interface so that it extends one interface called HelloWorldBehaviour with behaviour and one called HelloWorldState with state (get/set methods).
+
+== Solution ==
+
+If you have successfully completed the task, you should end up with the following artifacts;
+
+*HelloWorld.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorld.java
+tag=solution
+----
+
+*HelloWorldState.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldState.java
+tag=solution
+----
+
+*HelloWorldBehaviour.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldBehaviour.java
+tag=solution
+----
+
+*HelloWorldMixin.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldMixin.java
+tag=solution
+----
+
+Next step is <<tut-composites-step2>>

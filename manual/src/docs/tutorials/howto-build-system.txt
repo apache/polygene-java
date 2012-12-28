@@ -1,0 +1,95 @@
+[[build-system,Build System]]
+= Build System =
+Qi4j community migrated away from Maven after several years of frustration, especially around release management,
+versioning and cross-module dependency resolution issues, in Feb 2011. The tool of choice is now Gradle, and it
+doesn't require any installation, there are gradlew and gradlew.bat in the root folder of the Qi4j SDK that will
+bootstrap Gradle if not done so already.
+
+
+== Versions ==
+By default, the build system produces a "zero build". It means that there is no version assigned to the build, and
+a "0" is used in the produced artifacts. This is due to our disagreement (with Maven community) that the "next" version
+name/number is known prior to the release. This is in our opinion a delayed decision. To build a particular version,
+you specify a "version" property on the command-line, like
+
+[source,bash]
+-----------
+./gradlew -Dversion=2.0-FLAVOUR install
+-----------
+
+If a "version" property is not defined, the build system will refuse to make a release and upload.
+
+
+== Tasks ==
+Gradle is very flexible, and we have defined (or in the process of defining) the following tasks (same as Ant's targets).
+
+=== clean ===
+Clean up of all build output and restoring the code base to a fresh state.
+
+=== check ===
+This is the default build, which compiles the code and run the tests, but nothing else. A quick way to check that
+nothing broke.
+
+=== install ===
+Is roughly the same as Maven's install goal. It produces the test reports and javadocs and installs all the Jars into
+the local disk repository, for consumption by other applications.
+
+=== buildAll ===
+Produces all the archives, javadocs, manuals and website content. The output is generated to qi4j-sdk/build.
+
+=== release ===
+Uploads the release artifacts to the distribution servers and creates the release output into the
+qi4j-sdk/build/distributions directory.
+
+
+== Configuration ==
+
+Build System configuration is done through Gradle properties.
+
+This can be done in many ways, see
+http://gradle.org/docs/current/userguide/tutorial_this_and_that.html#sec:gradle_properties_and_system_properties[Gradle properties and system properties].
+
+=== Signing ===
+Artifact signing is done using PGP. You need to provide Gradle the following properties
+
+    signing.keyId=FB751943
+    signing.password=foobar
+    signing.secretKeyRingFile=/home/foo/.gnupg/secring.gpg
+
+=== Artifact Upload ===
+
+Artifact upload behavior depends on the version assigned to the build.
+
+By default RELEASES are signed, SNAPSHOTS are not.
+Signing can be turned on or off by setting the `uploadSigned` property to false.
+
+By default RELEASES must satisfy ReleaseSpecification, SNAPSHOT don't.
+ReleaseSpecification usage can be turned on or off by setting the `uploadReleaseSpec` property to false.
+
+By default RELEASES and SNAPHOTS are uploaded using WEBDAV.
+Used Wagon can be overriden by setting the `uploadWagon` property.
+
+By default RELEASES and SNAPSHOTS are uploaded to Cloudbees.
+Target repository can be overriden by setting the `uploadRepository` property.
+
+No username/password is provided by default.
+If needed set them using the `uploadUsername` and `uploadPassword` properties.
+
+For example here is how to deploy all artifacts as unsigned SNAPSHOTs to a given repository:
+
+[source,bash]
+-----------
+./gradlew uploadArchives -Dversion=2.0-SNAPSHOT -PuploadReleaseSpec=false \
+    -PuploadWagon=what:ever:wagon -PuploadRepository=http://what.ever.repository/url \
+    -PuploadUsername=foo -PuploadPassword=bar
+-----------
+
+And here is how to deploy a signed release to the local filesystem:
+
+[source,bash]
+-----------
+./gradlew uploadArchives -Dversion=2.0 -PuploadRepository=file:///path/to/local/repository
+-----------
+
+See the http://www.gradle.org/docs/current/userguide/maven_plugin.html#wagonLibs[Gradle documentation] about
+supported protocols.

@@ -1,0 +1,22 @@
+description = "SQL Support Sample."
+
+jar { manifest { name = "Qi4j Sample - SQL Support" }}
+
+dependencies {
+
+    compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
+    compile project( ":org.qi4j.libraries:org.qi4j.library.sql-dbcp" )
+    compile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-preferences" )
+    compile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-sql" )
+    compile project( ":org.qi4j.extensions:org.qi4j.extension.indexing-sql" )
+
+    runtime project(":org.qi4j.core:org.qi4j.core.runtime")
+    runtime libraries.postgres
+    runtime libraries.logback
+
+}
+
+task( runSample, dependsOn: 'classes', type: JavaExec ) {
+    main = 'org.qi4j.sample.sqlsupport.Main'
+    classpath = sourceSets.main.runtimeClasspath
+}

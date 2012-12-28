@@ -16,19 +16,14 @@
 */
 package org.qi4j.ide.plugin.idea.common.psi;
 
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiAnnotationParameterList;
-import com.intellij.psi.PsiArrayInitializerMemberValue;
-import com.intellij.psi.PsiClassObjectAccessExpression;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
-import com.intellij.psi.PsiNameValuePair;
-import com.intellij.psi.PsiTypeElement;
-import static java.util.Collections.emptyList;
-import java.util.LinkedList;
-import java.util.List;
+import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static java.util.Collections.emptyList;
 
 /**
  * @author edward.yakop@gmail.com

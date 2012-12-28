@@ -16,16 +16,20 @@
  */
 package org.qi4j.test.performance.entitystore.jdbm;
 
-import java.io.File;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.cache.ehcache.EhCacheConfiguration;
+import org.qi4j.cache.ehcache.EhCachePoolService;
+import org.qi4j.cache.ehcache.assembly.EhCacheAssembler;
 import org.qi4j.entitystore.jdbm.JdbmConfiguration;
 import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanceTest;
+
+import java.io.File;
 
 /**
  * Performance test for JdbmEntityStoreComposite
@@ -45,10 +49,13 @@ public class JdbmEntityStorePerformanceTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                new JdbmEntityStoreAssembler( Visibility.application ).assemble( module );
+                new JdbmEntityStoreAssembler( Visibility.module ).assemble( module );
                 ModuleAssembly configModule = module.layer().module( "Config" );
                 configModule.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
                 new EntityTestAssembler( Visibility.module ).assemble( configModule );
+
+                module.services( EhCachePoolService.class );
+                configModule.entities( EhCacheConfiguration.class ).visibleIn( Visibility.layer );
             }
         };
     }

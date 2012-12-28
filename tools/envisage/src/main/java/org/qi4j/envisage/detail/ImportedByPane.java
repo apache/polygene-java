@@ -16,16 +16,12 @@
 */
 package org.qi4j.envisage.detail;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.util.ResourceBundle;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
-import org.qi4j.envisage.model.descriptor.ImportedServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ImportedServiceDetailDescriptor;
 
 /**
  * Implementation of ImportedService imported by
@@ -44,6 +40,7 @@ public class ImportedByPane
         this.add( contentPane, BorderLayout.CENTER );
     }
 
+    @Override
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
@@ -79,7 +76,6 @@ public class ImportedByPane
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -142,9 +138,6 @@ public class ImportedByPane
         contentPane.add( spacer4, gbc );
     }
 
-    /**
-     * @noinspection ALL
-     */
     private void $$$loadLabelText$$$( JLabel component, String text )
     {
         StringBuffer result = new StringBuffer();
@@ -177,9 +170,6 @@ public class ImportedByPane
         }
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;

@@ -1,14 +1,16 @@
 package org.qi4j.tests.regression.qi328;
 
+import java.io.StringWriter;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.core.testsupport.AbstractQi4jTest;
+import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,14 +27,16 @@ public class Qi328TestCase extends AbstractQi4jTest
     public void givenValueCompositeWithInternalStateMixinWhenSerializingExpectInternalStateInOutput()
         throws Exception
     {
-        ValueBuilder<OuterValue> builder = valueBuilderFactory.newValueBuilder( OuterValue.class );
+        ValueBuilder<OuterValue> builder = module.newValueBuilder( OuterValue.class );
         OuterValue.State prototype = builder.prototypeFor( OuterValue.State.class );
         builder.prototype().firstName().set( "Niclas" );
         prototype.lastName().set(  "Hedhman" );
         OuterValue value = builder.newInstance();
         System.out.println("Niclas: " + value);
         value.printName();
-        assertEquals(  "{\"firstName\":\"Niclas\",\"lastName\":\"Hedhman\"}", value.toJSON() );
+        StringWriter sw = new StringWriter();
+        new JSONWriterSerializer( sw ).serialize( value );
+        assertEquals(  "{\"firstName\":\"Niclas\",\"lastName\":\"Hedhman\"}", sw.toString() );
     }
 
     @Mixins( OuterValue.Mixin.class )

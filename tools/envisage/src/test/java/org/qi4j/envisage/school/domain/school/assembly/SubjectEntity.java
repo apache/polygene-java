@@ -17,8 +17,8 @@
 */
 package org.qi4j.envisage.school.domain.school.assembly;
 
+import org.qi4j.api.association.Association;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.Association;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;

@@ -1,0 +1,12 @@
+description = "Qi4j Event Sourcing Library."
+
+jar { manifest { name = "Qi4j Library - Event Sourcing" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

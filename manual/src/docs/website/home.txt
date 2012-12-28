@@ -1,0 +1,28 @@
+:leveloffset: 1
+
+[[home,Qi4j Home Page]]
+= Qi4j =
+
+IMPORTANT: This is the documentation for *Qi4j {revnumber}*. Use the version switcher on the left to browse other
+versions documentation.
+
+== What is Qi4j™? ==
+The short answer is that Qi4j™ is a framework for domain centric application development, including evolved concepts
+from http://en.wikipedia.org/wiki/Aspect-oriented_programming[AOP],
+http://en.wikipedia.org/wiki/Dependency_injection[DI] and http://en.wikipedia.org/wiki/Domain-driven_design[DDD].
+
+Qi4j™ is an implementation of Composite Oriented Programming, using the standard Java 5 platform, without the use of
+any pre-processors or new language elements. Everything you know from Java 5 still applies and you can leverage both
+your experience and toolkits to become more productive with Composite Oriented Programming today.
+
+Moreover, Qi4j™ enables Composite Oriented Programming on the Java platform, including both Java and Scala as primary
+languages as well as many of the plethora of languages running on the JVM as bridged languages.
+
+image:intro-qi.png["Qi",align="center"]
+
+Qi4j™ is pronounced "chee for jay". This website is out of scope to explain the many
+facets and history of Qi, so we refer the interested to read the http://en.wikipedia.org/wiki/Qi[lengthy article] at
+Wikipedia. For us, Qi is the force/energy within the body, in this case the Java platform. Something that makes Java
+so much better, if it is found and channeled into a greater good.
+
+We strongly recommend the <<intro, introduction>> section.

@@ -1,0 +1,219 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-mixin,Mixin]]
+= Mixin =
+Mixins are the state-carrying part of a Composite instance. The other Fragments can not retain state between method
+invocations as they are shared across Composite instances.
+
+== Mixin Type ==
+The Mixin Type is the interface that declares the Mixin methods. Each Mixin implementation (the classes defined in
+the @Mixins annotation of a Composite declaration) implements one or more methods from one or more Mixin Types.
+
+Mixin Type can be very simple, like;
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/BankAccount.java
+tag=mixinType
+-----------
+
+Or contain hundreds of methods, subclassed from dozens of super interfaces.
+
+The Mixin Types of a Composite are ;
+
+    * all the aggregated interfaces of the Composite Type, minus Composite meta-type interfaces, and
+    * all private mixin referenced types.
+
+There is not a 1:1 correlation between Mixin Type and Mixin implementation. One can't even know if there are more or
+less of one over the other. That is because a Mixin implementation can implement less than one, one, or more than one
+Mixin Type.
+
+It is also entirely possible that multiple implementation methods exists for a Mixin Type method. The mixin method
+resolution algorithm will provide a deterministic behavior of which implementation of a method is chosen. The algorithm
+is as follows;
+
+For each declared method of all Mixin Types of a Composite;
+
+    * Iterate all Mixin types declared from left to right in the declaration,
+    * Iterate all Mixin types of super-interfaces from left to right in the 'extends' clause,
+    * Iterate all Mixin types within one interface before succeeding to the next interface,
+    * Iterate all super-interface Mixin types before proceeding to the super-interfaces of those,
+    * Iterate all Typed Mixin implementations of all super-interfaces, before repeating the algorithm for Generic Mixin
+      implementations,
+
+This means that one Mixin implementation can 'override' a single method that a larger mixin implementation implements
+together with many other methods. So, just because a mixin implements MixinTypeA.method1() and has an implementation
+of MixinTypeA.method2(), doesn't mean that method2() is mapped to that mixin. This is very important to remember. The
+Envisage tool is capable of visualizing how Mixin Type methods are mapped to implementations.
+
+== Public Mixins ==
+Mixins are the state holders of the composite instance. Public Mixins are the mixins that are exposed to the outside
+world via the CompositeType interface.
+
+*Each method in the CompositeType interface MUST be backed by a mixin class.*
+
+Mixins are declared as annotations on the composite interface.
+
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/Something.java
+tag=something
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/SomethingMixin.java
+tag=something
+-----------
+In the above sample, the SomethingMixin will be made part of the Something composite.
+
+If we have many interfaces defining many methods, that all must be backed by a mixin implementation, we simply list all
+the mixins required.
+
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/Car.java
+tag=mixin
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/Startable.java
+tag=mixin
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/Vehicle.java
+tag=mixin
+-----------
+
+In the example above, the VehicleMixin would need to deal with all methods defined in the Vehicle interface. That
+interface could be very large, and could be totally independent concerns. So, instead we should use abstract mixins,
+which are ordinary mixins but are lacking some methods. This is simply done by declaring the class abstract.
+
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/partial/Car.java
+tag=partial
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/partial/Vehicle.java
+tag=partial
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/partial/SpeedLocation.java
+tag=partial
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/partial/SpeedMixin.java
+tag=partial
+-----------
+
+Above the SpeedMixin only implements the accelerate() method, and Qi4j will only map that method to this mixin. The
+other method of the SpeedLocation interface is not satisfied as the example is written and will generate a runtime
+exception.
+
+== Private Mixins ==
+Public mixins expose their methods in the composite interface, and this is not always desirable. Qi4j supports
+_Private Mixins_, which are only visible within the composite itself. That means that other fragments in the composite
+can see/use it, but it is not visible to the clients of the composite.
+
+Private Mixins are handled automatically. When Qi4j detects a @This annotation referring to a type that is not defined
+in the Composite interface, then that is a Private Mixin. The Mixin implementation class, however, must exist in the
+list of Mixins in the @Mixins annotation. But often, the Private Mixin only list internal Property methods in the Mixin
+Type, which will be satisfied by the standard PropertyMixin and hence always available.
+
+This is particularly useful in Domain Driven Design, where you only want to expose domain methods, which are defined by
+the context where they are used. But the state of the Mixin should not be exposed out at all. For instance, if we have
+the Cargo interface like;
+
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/Cargo.java
+tag=private
+-----------
+
+
+The interface is defined by its context, and not really exposing the internal state. So in the implementation we
+probably do something like;
+
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/CargoMixin.java
+tag=private
+-----------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/CargoState.java
+tag=private
+-----------
+
+So, in this typical case, we don't need to declare the Mixin for the CargoState, as it only defines Property methods,
+which are handled by the standard PropertyMixin always present.
+
+== Typed Mixin vs Generic Mixin implementations ==
+Mixins, Concerns and SideEffects can either be "typed" or "generic". A Typed Mixin implementation implements one or
+more Mixin Type interfaces, and one or more of the methods of those interfaces. A Generic Mixin implementation
+implements java.lang.reflect.InvocationHandler, and can therefor be matched to any method of any interface.
+Typically, AppliesTo annotation is used to filter the methods that such Generic Mixin implementation is mapped against,
+and sometimes Generic Mixin implementations are "last resort".
+
+Experience shows that Generic Mixin implementations are rare, and should only be used in extreme cases. They are
+less frequent than Generic Concern or Generic SideEffect implementations, but inside the Qi4j API are a couple of
+Generic Mixin implementations that are always present to make the life of the developer easier, such as PropertyMixin,
+AssociationMixin, ManyAssociationMixin, NoopMixin. The first 3 are declared on the Composite and EntityComposite
+interfaces and automatically included if needed. They also serve as excellent example of what they can be used for.
+
+[source,java]
+-------------
+@AppliesTo( { PropertyMixin.PropertyFilter.class } )
+public final class PropertyMixin
+    implements InvocationHandler
+{
+    @State private StateHolder state;
+
+    public Object invoke( Object proxy, Method method, Object[] args )
+        throws Throwable
+    {
+        return state.getProperty( method );
+    }
+
+    public static class PropertyFilter
+        implements AppliesToFilter, Serializable
+    {
+        public boolean appliesTo( Method method, Class<?> mixin,
+                                  Class<?> compositeType,
+                                  Class<?> modifierClass )
+        {
+            return Property.class.isAssignableFrom( method.getReturnType() );
+        }
+    }
+}
+-------------
+
+Other examples that we have come across;
+
+    * Mapping from Property<type> to POJO style "properties".
+    * Remote Service delegation.
+    * Scripting delegation, where a script will implement the Mixin Type.
+
+which seems to indicate that Generic Mixin implementations are likely to be used in integration of other technologies.
+
+Typed Mixin implementations are much preferred in general business logic, as they will be first-class citizens of
+the IDE as well, for navigation, find usage, refactoring and many other common tasks. This is one of the main
+advantages of the Qi4j way of doing AOP compared to AspectJ et al, where "weaving" is something bolted onto an
+application's classes via regular expressions and known naming conventions, which can change in an instance by a
+developer being unaware of which PointCuts applies to his code.

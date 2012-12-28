@@ -1,26 +1,42 @@
 <body>
-<h1>Step 2 - Activatable</h1>
+    <h1>Step 2 - Hooking into the Service Activation</h1>
 
-<p>
-    Services can be "<i>activated</i>" and "<i>passivated</i>". Applicaitons can be notified of this occurring
-    by Qi4j runtime calling the two methods <code>activate</code> and <code>passivate</code> of the
-    <code>Activatable</code> interface implemented by any number of Mixin implementations. That means that unlike
-    other methods in a composite all mixins implementing the method will be called.
-</p>
+    <p>
+        Services can be "<i>activated</i>" and "<i>passivated</i>". Applications can be notified of this occurring
+        by Qi4j runtime by assembling them with an <code>Activator</code>. 
+    </p>
+    <p>
+        Activators methods are called around "<i>activation</i>" and "<i>passivation</i>": <code>beforeActivation</code>,
+        <code>afterActivation</code>, <code>beforeActivation</code>, <code>afterPassivation</code>. The
+        <code>ActivatorAdapter</code> class help you keeping your code short when you only need one or two hooks.
+    </p>
+    <p>
+        To showcase how this works, we refactor the code to create a number of copies of the books, to be lend out
+        upon call to the <code>borrowBook</code> method, which will return null if no copy is available. The book
+        copies are created in the <code>activate</code> method.
+    </p>
 
-<p>
-    To showcase how this works, we refactor the code to create a number of copies of the books, to be lend out
-    upon call to the <code>borrowBook</code> method, which will return null if no copy is available. The book
-    copies are created in the <code>activate</code> method.
-</p>
+    <p>Steps to do.</p>
+    <ol>
+        <li>
+            Add a <code>createInitialData</code> method to <code>Library</code>.
+        </li>
+        <li>
+            In the implementation, create a couple of books of each title and store each copy in a
+            <code>HashMap&lt;String,ArrayList&lt;Book&gt;&gt;</code>.
+        </li>
+        <li>
+            Write an <code>Activator&lt;ServiceReference&lt;Library&gt;&gt;</code> class extending
+            <code>ActivatorAdapter</code>.
+        </li>
+        <li>
+            Override the <code>afterActivation</code> method, use the <code>ServiceReference</code> to get a
+            handle on the <code>Library</code> and call its <code>createInitialData</code> method.
+        </li>
+        <li>
+            Add the <code>@Activators</code> annotation to the <code>LibraryService</code> declaring the new
+            <code>LibraryActivator</code>.
+        </li>
+    </ol>
 
-<p>
-    Steps to do.
-<ol>
-    <li>Make LibraryMixin implement the <code>org.qi4j.api.service.Activatable</code> interface.</li>
-    <li>In the <code>activate</code> method, create a couple of books of each title and store each copy in a
-        <code>HashMap&lt;String,ArrayList&lt;Book&gt;&gt;</code>.
-    </li>
-</ol>
-</p>
 </body>

@@ -1,0 +1,100 @@
+:leveloffset: 1
+
+[[news,Newsworthy]]
+=  News =
+
+== News & Events ==
+
+[options="header"]
+|=========================================================
+|Date |Announcement
+
+|2012-May-25 |<<news-20120525>>
+|2012-May-07 |<<news-20120502>>
+|2012-Feb-15 |<<news-20120215>>
+|2011-Aug-06 |<<news-20110806>>
+|2011-Apr-15 |<<news-20110415>>
+|2011-Feb-21 |<<news-20110221>>
+|2010-Oct-23 |<<news-20101023>>
+|2010-Sep-18 |<<news-20100918>>
+|2010-Aug-30 |<<news-20100830>>
+|2010-Jun-17 |<<news-20100617>>
+|2010-Jan-28 |<<news-20100128>>
+|2010-Jan-25 |<<news-20100125-2>>
+|2010-Jan-25 |<<news-20100125>>
+|2009-Sep-03 |<<news-20090903>>
+|2009-May-10 |<<news-20090510>>
+|2009-Apr-20 |<<news-20090420>>
+|2009-Feb-20 |<<news-20090220>>
+|2009-Feb-19 |<<news-20090219>>
+|2009-Jan-10 |<<news-20090110>>
+|2009-Jan-09 |<<news-20090109>>
+|2008-Nov-17 |<<news-20081117>>
+|2008-Sep-19 |<<news-20080919>>
+|2008-Sep-15 |<<news-20080915>>
+|2008-Aug-08 |<<news-20080808>>
+|2008-Jun-06 |<<news-20080606>>
+|2008-Apr-14 |<<news-20080414>>
+|2008-Jan-30 |<<news-20080130>>
+|2007-Nov-13 |<<news-20071113>>
+|=========================================================
+
+:leveloffset: 2
+
+include::20120525.txt[]
+
+include::20120502.txt[]
+
+include::20120215.txt[]
+
+include::20110806.txt[]
+
+include::20110415.txt[]
+
+include::20110221.txt[]
+
+include::20101023.txt[]
+
+include::20100918.txt[]
+
+include::20100830.txt[]
+
+include::20100617.txt[]
+
+include::20100128.txt[]
+
+include::20100125-2.txt[]
+
+include::20100125.txt[]
+
+include::20090903.txt[]
+
+include::20090510.txt[]
+
+include::20090420.txt[]
+
+include::20090220.txt[]
+
+include::20090219.txt[]
+
+include::20090110.txt[]
+
+include::20090109.txt[]
+
+include::20081117.txt[]
+
+include::20080919.txt[]
+
+include::20080915.txt[]
+
+include::20080808.txt[]
+
+include::20080606.txt[]
+
+include::20080414.txt[]
+
+include::20080130.txt[]
+
+include::20071113.txt[]
+
+:leveloffset: 2

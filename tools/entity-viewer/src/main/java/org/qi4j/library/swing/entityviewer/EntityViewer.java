@@ -16,19 +16,11 @@
 */
 package org.qi4j.library.swing.entityviewer;
 
-import org.qi4j.api.query.Query;
-import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
-import org.qi4j.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.spi.structure.ApplicationModelSPI;
-
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -41,11 +33,20 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
+import org.qi4j.tools.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
+
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * The Entity Viewer.
@@ -59,35 +60,45 @@ public class EntityViewer
     private PropertiesPanel propertiesPanel;
     private TreePanel treePanel;
 
-    private Energy4Java qi4j;
-    private ApplicationModelSPI model;
+    private Qi4jSPI qi4jspi;
+    private ApplicationDescriptor model;
     private Application application;
-    //private UnitOfWorkFactory uowf;
 
-    public void show( Energy4Java qi4j, ApplicationModelSPI model, Application application )
+    private JFrame frame;
+
+    public void show( Qi4jSPI qi4jspi, ApplicationDescriptor model, Application application )
     {
-        this.qi4j = qi4j;
+        this.qi4jspi = qi4jspi;
         this.model = model;
         this.application = application;
 
         initUI();
 
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         frame.setContentPane( mainPane );
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
         frame.setSize( 600, 600 );
         //frame.pack();
         frame.setVisible( true );
     }
 
+    public void stop()
+    {
+        if( frame != null & frame.isDisplayable() )
+        {
+            frame.dispose();
+            frame = null;
+        }
+    }
+
     private void initUI()
     {
         propertiesPanel = new PropertiesPanel();
-        propertiesPanel.initializeQi4J( qi4j );
+        propertiesPanel.initializeQi4J( qi4jspi );
         propertiesAreaPane.add( propertiesPanel, BorderLayout.CENTER );
 
         treePanel = new TreePanel();
-        treePanel.initializeQi4J( qi4j, model );
+        treePanel.initializeQi4J( qi4jspi, model );
         treePanel.reload();
         splitPane.setLeftComponent( treePanel );
 
@@ -98,6 +109,7 @@ public class EntityViewer
 
         entitiesCombo.addItemListener( new ItemListener()
         {
+            @Override
             public void itemStateChanged( ItemEvent evt )
             {
                 entitiesComboItemStateChanged( evt );
@@ -106,6 +118,7 @@ public class EntityViewer
 
         treePanel.getTreeComponent().addTreeSelectionListener( new TreeSelectionListener()
         {
+            @Override
             public void valueChanged( TreeSelectionEvent evt )
             {
                 treePanelValueChanged( evt );
@@ -147,10 +160,9 @@ public class EntityViewer
     @SuppressWarnings( "unchecked" )
     protected Query createQuery( Module module, Class clazz )
     {
-        UnitOfWork uow = module.unitOfWorkFactory().newUnitOfWork();
-        QueryBuilder qb = module.queryBuilderFactory().newQueryBuilder( clazz );
-        //Object template  = QueryExpressions.templateFor( clazz );
-        return qb.newQuery( uow );
+        UnitOfWork uow = module.newUnitOfWork();
+        QueryBuilder qb = module.newQueryBuilder( clazz );
+        return uow.newQuery( qb );
     }
 
     private Module findModule( EntityDetailDescriptor descriptor )
@@ -174,7 +186,7 @@ public class EntityViewer
         }
 
         EntityDetailDescriptor entityDescriptor = (EntityDetailDescriptor) entitiesCombo.getSelectedItem();
-        Class clazz = entityDescriptor.descriptor().type();
+        Class clazz = first( entityDescriptor.descriptor().types() );
 
         Module module = findModule( entityDescriptor );
         Query query = createQuery( module, clazz );
@@ -207,7 +219,7 @@ public class EntityViewer
         if( EntityDetailDescriptor.class.isAssignableFrom( clazz ) )
         {
             EntityDetailDescriptor entityDesc = (EntityDetailDescriptor) obj;
-            Class entityType = entityDesc.descriptor().type();
+            Class entityType = first( entityDesc.descriptor().types());
 
             // Update the selected item on the combo box, which in turn update the properties table
             ComboBoxModel comboModel = entitiesCombo.getModel();
@@ -215,7 +227,7 @@ public class EntityViewer
             for( int i = 0; i < comboModel.getSize(); i++ )
             {
                 EntityDetailDescriptor entityDesc1 = (EntityDetailDescriptor) comboModel.getElementAt( i );
-                Class entityType1 = entityDesc1.descriptor().type();
+                Class entityType1 = first( entityDesc1.descriptor().types());
 
                 if( entityType1.equals( entityType ) )
                 {
@@ -243,7 +255,6 @@ public class EntityViewer
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -282,9 +293,6 @@ public class EntityViewer
         panel1.add( spacer1, gbc );
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return mainPane;

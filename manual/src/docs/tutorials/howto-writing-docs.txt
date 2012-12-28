@@ -1,0 +1,319 @@
+[[community-docs,Writing Documentation]]
+= Writing Qi4j Documentation =
+
+The documents use the asciidoc format, see:
+
+* http://www.methods.co.nz/asciidoc/[Aciidoc Reference]
+* http://powerman.name/doc/asciidoc[AsciiDoc cheatsheet]
+
+The cheatsheet is really useful!
+
+[[community-docs-overall-flow,Documentation Flow]]
+== Overall Flow ==
+
+Each (sub)project has its own documentation, in 'src/docs/' and all the Asciidoc documents have the +.txt+ file extension.
+
+The documents can use code snippets which will extract code from the project. This is preferred way to include
+source code in the documentation, since any refactoring will be reflected in the documentation.
+
+The above files are all consumed by the build of the manual (by adding them as dependencies).
+To get content included in the manual, it has to be explicitly included by a document in the manual as well.
+
+The whole documentation set is generated from the _*manual*_ module in the +qi4j-sdk+, and we are currently only creating the website.
+The User Guide and Reference Manual are future projects.
+
+== Headings and document structure ==
+
+Each document starts over with headings from level zero (the document title).
+Each document should have an id.
+In some cases sections in the document need to have id's as well, this depends on where they fit in the overall structure.
+To be able to link to content, it has to have an id.
+Missing id's in mandatory places will produce warnings, or even fail (depending on severity), the build.
+
+This is how a document should start:
+
+[source]
+----
+[[unique-id-verbose-is-ok,Remember This Caption]]
+= The Document Title =
+----
+
+To push the headings down to the right level in the output, the +leveloffset+ 
+attribute is used when including the document inside of another document.
+
+Subsequent headings in a document should use the following syntax:
+
+[source]
+----
+== Subheading ==
+
+... content here ...
+
+=== Subsubheading ===
+
+content here ...
+
+----
+
+Asciidoc comes with one more syntax for headings, but in this project it's not used.
+
+== Writing ==
+
+Try to put one sentence on each line.
+Lines without empty lines between them still belongs to the same paragraph.
+This makes it easy to move content around, and also easy to spot (too) long sentences.
+
+== Gotchas ==
+
+* A chapter can't be empty. (the build will fail on the docbook xml validity check)
+* The document title should be "underlined" by the same
+  number of +=+ as there are characters in the title.
+* Always leave a blank line at the end of documents
+  (or the title of the next document might end up in the last
+  paragraph of the document)
+* As +{}+ are used for Asciidoc attributes, everything inside will be treated as an attribute.
+  What you have to do is to escape the opening brace: +\\{+.
+  If you don't, the braces and the text inside them will be removed without any warning being issued!
+
+== Links ==
+
+To link to other parts of the manual the id of the target is used.
+This is how such a reference looks:
+
+[source]
+----
+<<community-docs-overall-flow>>
+----
+
+Which will render like: <<community-docs-overall-flow>>
+
+[NOTE]
+Just write "see \<<target-id>>" and similar, that's enough in most cases.
+
+If you need to link to another document with your own link text, this is what to do:
+
+[source]
+----
+<<target-id, link text that fits in the context>>
+----
+
+NOTE: Having lots of linked text may work well in a web context but is a pain in print, and we aim for both!
+
+External links are added like this:
+
+[source]
+----
+http://www.qi4j.org/[Link text here]
+----
+
+Which renders like: http://www.qi4j.org/[Link text here]
+
+For short links it may be better not to add a link text, just do:
+
+[source]
+----
+http://www.qi4j.org/
+----
+
+Which renders like: http://www.qi4j.org/
+
+It's ok to have a dot right after the URL, it won't be part of the link.
+
+[source]
+----
+http://www.qi4j.org/.
+----
+
+Which renders like: http://www.qi4j.org/.
+
+== Text Formatting ==
+
+* *Bold* - just don't do it, the editor in charge is likely to remove it anyhow!
+* \_Italics_ is rendered as _Italics_
+* \+methodName()+ is rendered as +methodName()+ and is used for literals as well
+* \`command` is rendered as `command` (typically used for command-line)
+* \'my/path/' is rendered as 'my/path/' (used for file names and paths)
+
+== Admonitions ==
+
+These are very useful and should be used where appropriate.
+Choose from the following (write all caps and no, we can't easily add new ones):
+
+NOTE: Note.
+
+TIP: Tip.
+
+IMPORTANT: Important
+
+CAUTION: Caution
+
+WARNING: Warning
+
+Here's how it's done:
+
+[source]
+----
+NOTE: Note.
+----
+
+A multiline variation:
+
+[source]
+----
+[TIP]
+Tiptext.
+Line 2.
+----
+
+Which is rendered as:
+
+[TIP]
+Tiptext.
+Line 2.
+
+== Images ==
+
+IMPORTANT: _All images in the entire manual share the same namespace._
+
+=== Images Files ===
+
+To include an image file, make sure it resides in the 'images/' directory relative to the document you're including it from.
+Then go:
+
+[source]
+----
+image::logo-standard.png[]
+----
+
+Which is rendered as:
+
+image::logo-standard.png[]
+
+Please note that the 'images/' directory is added automatically and not part of the link.
+
+There are also global resources, residing in 'manual/src/resources', which will be copied to the root of the documentation.
+
+== Code Snippets ==
+
+=== Import from codebase ===
+Most source code that is included in the documentation should be extract via +SNIPPET+ markers and then included in document with;
+
+[source]
+----
+ [snippet,java]
+ -----------
+ source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+ tag=mainClass
+ -----------
+----
+
+The source file is relative to the +qi4j-sdk+ root, and the 'tag' is defined in the source file.
+The above could be bringing in content that looks like;
+
+[source]
+----
+package org.qi4j.demo.tenminute;
+
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.sideeffect.SideEffects;
+
+// START SNIPPET: sideEffect
+@SideEffects( MailNotifySideEffect.class )
+// START SNIPPET: mainClass
+@Concerns({PurchaseLimitConcern.class, InventoryConcern.class})
+public interface OrderEntity
+    extends Order, HasSequenceNumber, HasCustomer,
+            HasLineItems, Confirmable, EntityComposite
+{
+// END SNIPPET: sideEffect
+}
+// END SNIPPET: mainClass
+----
+
+which will be rendered as;
+
+[snippet,java]
+-----------
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+tag=mainClass
+-----------
+
+Note that
+1. The START and END doesn't need to be matching.
+1. The AsciiDoc plugin will remove the 'START SNIPPET' and 'END SNIPPET' lines.
+1. If you have more than one START/END section with the same tag, the plugin will insert a "[...snip...]" for the excluded lines.
+
+
+=== Explicitly defined in the document ===
+
+WARNING: Use this kind of code snippets as little as possible.
+  They are well known to get out of sync with reality after a while.
+
+This is how to do it:
+
+[source]
+----
+ [source,java]
+ ----
+ HashMap<String,String> result = new HashMap<String,String>();
+ for( String name : names )
+ {
+     if( !"".equals( name ) )
+         result.put( name, value );
+ }
+ ----
+----
+
+Which is rendered as:
+
+[source,java]
+----
+ HashMap<String,String> result = new HashMap<String,String>();
+ for( String name : names )
+ {
+     if( !"".equals( name ) )
+         result.put( name, value );
+ }
+----
+
+=== Source code Highlighting ===
+If there's no suitable syntax highlighter, just omit the language: +[source]+.
+
+Currently the following syntax highlighters are enabled:
+
+* Bash
+* Groovy
+* Java
+* JavaScript
+* Python
+* Ruby
+* Scala
+* XML
+
+For other highlighters we could add see http://alexgorbatchev.com/SyntaxHighlighter/manual/brushes/.
+
+
+== Attributes ==
+
+Common attributes you can use in documents:
+
+* \{qi4j-revnumber} - rendered as "{qi4j-revnumber}"
+* \{qi4j-importdir} - rendered as "{qi4j-importdir}"
+
+These can substitute part of URLs that point to for example APIdocs or source code.
+
+
+== Toolchain ==
+
+Useful links when configuring the docbook toolchain:
+
+* http://www.methods.co.nz/asciidoc
+* http://powerman.name/doc/asciidoc
+* alexgorbatchev.com/SyntaxHighlighter/manual/brushes/
+* http://www.docbook.org/tdg/en/html/docbook.html
+* http://www.sagehill.net/docbookxsl/index.html
+* http://docbook.sourceforge.net/release/xsl/1.76.1/doc/html/index.html
+* http://docbook.sourceforge.net/release/xsl/1.76.1/doc/fo/index.html
+
+

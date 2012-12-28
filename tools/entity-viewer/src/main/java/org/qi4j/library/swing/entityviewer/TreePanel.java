@@ -24,13 +24,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ApplicationDetailDescriptorBuilder;
-import org.qi4j.envisage.model.descriptor.EntityDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.LayerDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ModuleDetailDescriptor;
-import org.qi4j.spi.structure.ApplicationModelSPI;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.spi.Qi4jSPI;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptorBuilder;
+import org.qi4j.tools.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
 
 /**
  * Qi4J Application Tree Viewer as Swing Component.
@@ -39,8 +39,8 @@ public class TreePanel
     extends JPanel
 {
     protected JTree applicationTree;
-    protected Energy4Java qi4j;
-    private ApplicationModelSPI model;
+    protected Qi4jSPI qi4j;
+    private ApplicationDescriptor model;
 
     public TreePanel()
     {
@@ -54,7 +54,7 @@ public class TreePanel
         scrollPane.setViewportView( applicationTree );
     }
 
-    public void initializeQi4J( Energy4Java qi4j, ApplicationModelSPI model )
+    public void initializeQi4J( Qi4jSPI qi4j, ApplicationDescriptor model )
     {
         this.qi4j = qi4j;
         this.model = model;

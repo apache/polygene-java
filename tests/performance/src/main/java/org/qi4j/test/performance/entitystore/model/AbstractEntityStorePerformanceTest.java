@@ -1,30 +1,27 @@
 package org.qi4j.test.performance.entitystore.model;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.bootstrap.*;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.bootstrap.ApplicationAssemblerAdapter;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.spi.structure.ApplicationSPI;
 
 /**
  * Performance Test Suite for Entity Stores.
  */
 public abstract class AbstractEntityStorePerformanceTest
 {
-    private ApplicationSPI application;
+    private Application application;
     private UnitOfWorkFactory unitOfWorkFactory;
     private String storeName;
     private Assembler infrastructure;
@@ -318,12 +315,12 @@ public abstract class AbstractEntityStorePerformanceTest
                         UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
                         Random rnd = new Random();
                         report.start( "readEntityWithComplexType" );
+                        String id = rnd.nextInt( ITERATIONS ) + "";
                         for( int i = 0; i < ITERATIONS; i++ )
                         {
-                            String id = rnd.nextInt( ITERATIONS ) + "";
                             ComplexProduct product = uow.get( ComplexProduct.class, "product" + id );
 
-                            Name name = product.name();
+                            String name = product.name().get();
 
                             if( i % 100 == 0 )
                             {
@@ -390,16 +387,16 @@ public abstract class AbstractEntityStorePerformanceTest
         application.activate();
 
         Module moduleInstance = application.findModule( "Layer 1", "Module 1" );
-        unitOfWorkFactory = moduleInstance.unitOfWorkFactory();
+        unitOfWorkFactory = moduleInstance;
     }
 
     protected void cleanUp()
         throws Exception
     {
-        if( unitOfWorkFactory != null && unitOfWorkFactory.currentUnitOfWork() != null )
+        if( unitOfWorkFactory != null && unitOfWorkFactory.isUnitOfWorkActive())
         {
             UnitOfWork current;
-            while( ( current = unitOfWorkFactory.currentUnitOfWork() ) != null )
+            while( unitOfWorkFactory.isUnitOfWorkActive() && ( current = unitOfWorkFactory.currentUnitOfWork() ) != null )
             {
                 if( current.isOpen() )
                 {

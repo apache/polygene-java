@@ -1,0 +1,13 @@
+[[library-script-groovy, Groovy Scripting Library]]
+= Groovy Scripting =
+
+[devstatus]
+--------------
+source=libraries/lang-groovy/dev-status.xml
+--------------
+
+Groovy Scripting Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

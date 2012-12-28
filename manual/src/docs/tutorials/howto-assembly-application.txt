@@ -1,0 +1,155 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[howto-assemble-application,Assemble an Application]]
+= Assemble an Application =
+We receive a lot of questions about how applications should be assembled, and since we don't have any XML to "fill in"
+and everything is to be done programmatically, it escalates the need to provide more hands-on explanation of how this is
+done.
+
+== Basics ==
+
+First let's recap the structural requirements of Qi4j;
+
+    * There is one and only one Application instance per Qi4j Runtime.
+    * Every Application must contain one or more Layers.
+    * All Composites must be declared in one or more Modules.
+    * Each Module belong to a Layer.
+    * Layers are ordered in hierarchies, from simple to complex.
+    * Access to Composites are limited by visibility rules.
+
+Ok, that was quite a handful. Let's look at them one by one.
+
+== Application ==
+
+The first one means that for each Qi4j Runtime you start, there will be exactly one application. As far as we know, Qi4j
+is fully isolated, meaning there are no static members being populated and such.
+
+== Layers ==
+
+Layers are the super-structures of an application. We have been talking about them for decades, drawn them on paper and
+whiteboards (or even black boards for those old enough), and sometimes organized the codebases along such boundaries.
+But, there has been little effort to enforce the Layer mechanism in code, although it is an extremely powerful
+construct. First of all it implies directional dependency and a high degree of order, spagetti code is reduced if
+successfully implemented. For Qi4j, it means that we can restrict access to Composite and Object declarations, so that
+higher layers can not reach them incidentally. You can enforce architecture to a high degree. You can require all
+creation of composites to go through an exposed Factory, which doesn't require the Composite to be public. And so on.
+Layers have hierarchy, i.e. one layer is top of one or more layers, and is below one or more layers, except for the
+layers at the top and bottom. You could have disjoint layers, which can't access each other, meaning a couple of layers
+that are both the top and bottom.
+
+== Modules ==
+
+The Module concept has also been around forever. And in Qi4j we also makes the Modules explicit. Each Module belong to a
+Layer, and for each Module you declare the Composite and Object types for that Module, together with a Visibility rule,
+one of; application, layer, module.
+
+== Visibility ==
+
+The Visibility rules are perhaps the most powerful aspect of the above. Visibility is a mechanism that kicks in whenever
+a Composite type need to be looked up. It defines both the scoping rules of the client as well as the provider. A lookup
+is either a direct reference, such as
+
+[source,java]
+-----------
+EntityBuilderFactory factory = ...;
+PersonEntity p = factory.newEntity( PersonEntity.class );
+-----------
+
+or an indirect lookup, such as
+
+[source,java]
+-----------
+Person p = factory.newEntity( Person.class );
+-----------
+
+where it will first map the Person to a reachable PersonEntity.
+The algorithm is as follows;
+
+    * Look in the callers Module, if there is one and only one Composite type matching, use it. If there are two or more
+      Composite types matching, then throw an ambiguity exception. If there are zero, proceed to the next step.
+
+    * Look in all Modules in the callers Layer. If there is one and only one Composite type that matches and is either
+      Visibility.layer, then use it.  If there are two or more Composite types matching, then throw an ambiguity
+      exception. If there are zero, proceed to the next step.
+
+    * Look in all Layers that caller's Layer uses. If there is one and only one Composite type that matches and is
+      either Visibility.application, then use it.  If there are two or more Composite types matching, then throw an
+      ambiguity exception. If there are zero, proceed to the next step.
+
+    * Throw a CompositeNotFoundException.
+
+The underlying principle comes down to Rickard's "Speaker Analogy", you can hear him (and not the other speakers at the
+conference) because you are in the same room. I.e. if something is really close by, it is very likely that this is what
+we want to use, and then the search expands outwards.
+
+== Combining The Above ==
+
+Ok, that was a whole lot of theory and probably take you more than one read-through to fully get into your veins (slow
+acting addiction).
+How to structure your code is beyond the scope of this section. If you are an experienced designer, you will have done
+that before, and you may have started out with good intentions at times only to find yourself in a spaghetti swamp
+later, or perhaps in the also famous "Clear as Clay" or "Ball (bowl?) of Mud". Either way, you need to draw on your
+experience and come up with good structure that Qi4j lets you enforce.
+
+So, for the sake of education, we are going to look at an application that consists of many layers, each with a few
+modules. See picture below.
+
+Image of Example of Layers
+
+Figure 1. Example of Layers
+
+So, lets see how we code up this bit in the actual code first.
+
+[snippet,java]
+-----------
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Main.java
+tag=main
+-----------
+
+The above is the basic setup on how to structure a real-world applicaton, unless you intend to mess with the
+implementations of various Qi4j systems (yes there are hooks for that too), but that is definitely beyond the scope of
+this tutorial.
+
+Now, the createXyzLayer() methods were excluded to keep the sample crisp and easy to follow. Let's take a look at what
+it could be to create the Domain Layer.
+
+[snippet,java]
+-----------
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Main.java
+tag=domainLayer
+-----------
+
+We just call the layerAssembly() method, which will return either an existing Layer with that name or create a new one
+if one doesn't already exist, and then delegate to methods for creating the ModuleAssembly instances. In those method
+we need to declare which Composites, Entities, Services and Objects that is in each Module.
+
+[snippet,java]
+-----------
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Main.java
+tag=accountModule
+-----------
+
+We also need to handle the shutdown case, so in the main() method we have a installShutdownHook() method call. It is
+actually very, very simple;
+
+[snippet,java]
+-----------
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Main.java
+tag=shutdown
+-----------
+
+This concludes this tutorial. We have looked how to get the initial Qi4j runtime going, how to declare the assembly
+for application model creation and finally the activation of the model itself.

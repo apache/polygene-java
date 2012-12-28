@@ -1,0 +1,14 @@
+description = "Qi4j BeanShell Library allows for Mixins to be implemented in BeanShell (Java) scripts instead of directly in compiled Java."
+
+jar { manifest { name = "Qi4j Library - Scripting - BeanShell" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(libraries.scala)
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

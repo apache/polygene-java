@@ -1,0 +1,30 @@
+[[extension-index-solr,Solr Index/Query]]
+= Apache Solr Index/Query =
+
+[devstatus]
+--------------
+source=extensions/indexing-solr/dev-status.xml
+--------------
+
+Index/Query services backed by an embedded http://lucene.apache.org/solr/[Apache Solr Search].
+
+WARNING: Solr Index/Query service do not support the Qi4j Query API but only native Solr queries.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/indexing-solr/src/test/java/org/qi4j/index/solr/SolrQueryServiceTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Apache Solr Index/Query exclusively use the <<library-fileconfig>> to locate the directory where it persists its index.
+
+You must provide `solrconfig.xml` and `schema.xml` files either from the classpath or in the configuration directory of
+the <<library-fileconfig>>.

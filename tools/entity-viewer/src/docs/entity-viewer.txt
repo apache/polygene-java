@@ -1,0 +1,27 @@
+[[tools-entity-viewer,EntityViewer Tool]]
+= Entity Viewer =
+
+EntityViewer is a Swing based Entities browser. It allows you to browse
+Entities persisted in EntityStores.
+
+== Usage ==
+
+EntityViewer can easily be used as follows:
+
+[snippet,java]
+----
+source=tools/entity-viewer/src/test/java/org/qi4j/swing/library/swing/entityviewer/sample/ApplicationSample.java
+tag=entity-viewer
+----
+
+A gradle task runSample is defined in this module as a shortcut to run the
+example. See <<build-system>>.
+
+== Screenshot ==
+
+image:tools-entity-viewer.png[width="800px"]
+
+== Embedd in your Application ==
+
+include::../../build/docs/buildinfo/artifact.txt[]
+

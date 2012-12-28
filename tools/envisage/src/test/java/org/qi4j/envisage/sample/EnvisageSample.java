@@ -17,6 +17,8 @@
 
 package org.qi4j.envisage.sample;
 
+import java.awt.GraphicsEnvironment;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -28,8 +30,11 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.envisage.Envisage;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.qi4j.core.testsupport.AbstractQi4jTest;
+import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assume.*;
 
 public class EnvisageSample
     extends AbstractQi4jTest
@@ -40,6 +45,15 @@ public class EnvisageSample
     {
         EnvisageSample sample = new EnvisageSample();
         sample.runSample();
+    }
+
+    @BeforeClass
+    public static void assumeDisplay()
+    {
+        assumeFalse( GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() );
+        String display = System.getenv( "DISPLAY" );
+        assumeThat( display, is( notNullValue() ) );
+        assumeTrue( display.length() > 0 );
     }
 
     @Test
@@ -55,6 +69,7 @@ public class EnvisageSample
 //        Thread.sleep( 1113000 );
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
@@ -66,7 +81,7 @@ public class EnvisageSample
 
     public void createTestData()
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             createCar( "Volvo", "S80", 2007 );
@@ -96,7 +111,7 @@ public class EnvisageSample
 
     private String createCar( String manufacturer, String model, int year )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
         Car prototype = builder.instanceFor( CarEntity.class );
         prototype.manufacturer().set( manufacturer );
@@ -108,7 +123,7 @@ public class EnvisageSample
 
     private String createAnimal( String name, String sound )
     {
-        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Animal> builder = uow.newEntityBuilder( Animal.class );
         Animal prototype = builder.instanceFor( AnimalEntity.class );
         prototype.name().set( name );

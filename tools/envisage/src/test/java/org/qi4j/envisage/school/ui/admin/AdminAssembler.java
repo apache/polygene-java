@@ -23,7 +23,7 @@ import org.qi4j.envisage.school.ui.admin.pages.composites.ListSchoolsPageComposi
 import org.qi4j.envisage.school.ui.admin.pages.composites.ListUserPageComposite;
 import org.qi4j.envisage.school.ui.admin.pages.composites.UserDetailPageComposite;
 
-import static org.qi4j.api.common.Visibility.*;
+import static org.qi4j.api.common.Visibility.layer;
 
 public class AdminAssembler
     implements Assembler

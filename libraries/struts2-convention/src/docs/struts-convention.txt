@@ -1,0 +1,13 @@
+[[library-struts-convention, Struts Convention Library]]
+= Struts - Convention =
+
+[devstatus]
+--------------
+source=libraries/struts2-convention/dev-status.xml
+--------------
+
+Struts Convention Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

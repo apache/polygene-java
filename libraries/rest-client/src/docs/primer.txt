@@ -1,0 +1,118 @@
+[[library-rest-client-primer, HATEOAS Primer]]
+= ReST - HATEOAS Primer
+
+The Qi4j ReST Client implements HATEOAS (Hypermedia As The Engine Of Application State) to the full extent intended
+by Roy Fielding. The ReST Client Library enables the creation of HATEOAS applications that are NOT using the URL space,
+and it is NOT about doing RPC calls over HTTP using a common exchange format (like JSON).
+
+The <<library-rest-server>> is a corresponding library for creating usecase-driven ReST servers, and with that the
+corresponding client becomes very thin, as all business rules remain on the server where they belong.
+
+*The main point is to support exposing REST resources that focus on use cases and hypermedia.*
+
+On the client, we have been thinking a lot about what Roy wrote in his thesis, which boils down to "client makes GET
+request, based on relation of link invoked and response (headers+hypermedia) make a decision, and then follow links or
+invoke forms to perform state transitions".
+It's a state machine.
+This is different from your average REST client today in that this model explicitly says that you need to do a GET
+first (otherwise you have nothing to react to), that the "rel" of the link you followed is important (otherwise context
+is unknown), and that the client should not make assumptions about what comes back (otherwise you cannot deal with
+exceptions, on system and application level).
+
+The current REST client approach which is imperative:
+[source,java]
+--------------
+result = client.get(somelink)
+--------------
+does not allow for any of the above. Instead, the client code should first register handlers for what to do in various
+circumstances, and then simply perform one operation: "refresh". This will trigger the first GET to the bookmarked URL,
+and after that the handlers will do all the work, based on the result. A handler may continue the work by invoking new
+requests, or it may abort. "refresh" does not return any value, and usually does not throw any exceptions.
+
+Example:
+[source,java]
+--------------
+crc.onResource( new ResultHandler<Resource>()
+{
+   @Override
+   public void handleResult( Resource result, ContextResourceClient client )
+   {
+       // This may throw IAE if no link with relation
+       // "querywithoutvalue" is found in the Resource
+       client.query( "querywithoutvalue", null );
+   }
+} ).
+onQuery( "querywithoutvalue", TestResult.class, new ResultHandler<TestResult>()
+{
+   @Override
+   public void handleResult( TestResult result, ContextResourceClient client )
+   {
+       Assert.assertThat( result.xyz().get(), CoreMatchers.equalTo( "bar" ) );
+   }
+} );
+
+crc.refresh();
+--------------
+
+The client first builds up the set of handlers, and describe what they should react to. The client then invokes
+"refresh" which will trigger the first GET on the bookmark URL. This will return a representation of that context as a
+Resource, and the handler for that is invoked. This then invokes the link with relation "querywithoutvalue" with no
+input (no request parameters needed). The result of that is then handled by another handler, and the invocation of
+"refresh" then returns successfully. Note that the first handler may not directly handle the "result" of
+client.query("querywithoutvalue, null) as it cannot be assumed what happens next. All you know is that you are
+following a link.
+
+On crc (ContextResourceClient) it is also possible to registers handlers that are always applied, such as error
+handlers. Here is the setup of crc:
+
+[source,java]
+--------------
+// Create Restlet client and bookmark Reference
+Client client = new Client( Protocol.HTTP );
+Reference ref = new Reference( "http://localhost:8888/" );
+ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client, new NullResponseHandler() );
+contextResourceClientFactory.setAcceptedMediaTypes( MediaType.APPLICATION_JSON );
+
+// Handle logins
+contextResourceClientFactory.setErrorHandler( new ErrorHandler().onError( ErrorHandler.AUTHENTICATION_REQUIRED, new ResponseHandler()
+{
+   // Only try to login once
+   boolean tried = false;
+
+   @Override
+   public void handleResponse( Response response, ContextResourceClient client )
+   {
+           // If we have already tried to login, fail!
+           if (tried)
+               throw new ResourceException( response.getStatus() );
+
+           tried = true;
+           client.getContextResourceClientFactory().getInfo().setUser( new User("rickard", "secret") );
+
+           // Try again
+           client.refresh();
+   }
+} ).onError( ErrorHandler.RECOVERABLE_ERROR, new ResponseHandler()
+{
+   @Override
+   public void handleResponse( Response response, ContextResourceClient client )
+   {
+       // Try to restart this scenario
+       client.refresh();
+   }
+} ) );
+
+crc = contextResourceClientFactory.newClient( ref );
+--------------
+
+These general handlers cover what to do for login and error handling, for example.
+In the traditional REST client this is not as easy to do, as you are more or less assuming a "happy path" all the time.
+In the above scenario there could be any number of steps between doing "refresh" and getting to the meat of the use
+case, such as doing a signup for the website, login, redirects to other servers, error handling and retries, etc.
+It becomes possible to blend general application and error handling logic with use case specific handlers.
+
+That's basically it. This is where I want to go with support for REST, as a way to truly leverage the REST ideas and
+make it very easy to do REST applications *and* clients based on Qi4j, by keeping the application logic on the server.
+In the long run there would also be a JavaScript version of the client, with the same characteristics, so that you can
+easily build a jQuery UI for Qi4j REST apps.
+

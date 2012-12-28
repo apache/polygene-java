@@ -1,0 +1,50 @@
+
+USE CASE	    Ship Cargo [summary]
+===========================================================================
+A Cargo Owner asks a shipping company to ship a cargo.
+
+This is the overall view of our shipping domain.
+
+
+Primary actor.. Cargo Owner
+Scope.......... Shipping company
+Preconditions.. None
+Trigger........ Cargo Owner <books new cargo> shipment.
+
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. Cargo Owner <books new cargo> shipment
+2. Cargo Owner <routes cargo>
+3. Shipper receives cargo at origin location
+4. Shipper sends cargo
+5. Cargo Owner can <change destination of cargo>
+6. Cargo Owner can <re-route cargo>
+7. Cargo Owner can track cargo
+8. Shipper delivers cargo at destination
+9. Cargo Owner claims cargo
+
+
+Deviations
+---------------------------------------------------------------------------
+3-8a. Cargo is in an unexpected location (misdirected):
+    1. Shipper requests Cargo Owner to <re-route cargo>.
+
+5a. Cargo Owner changes destination:
+    1. Shipper requests Cargo Owner to <re-route cargo>.
+
+
+---------------------------------------------------------------------------
+Success guarantees:
+    Shipper delivers cargo according to route specification.
+
+Minimal guarantees:
+    None (?).
+
+Stakeholders/Interests:
+    Cargo Owner - wants cargo shipped safely, fast and cheap.
+
+    Shipper:
+    Handling dep - wants overbooking of vessels to maximize profit.
+    Sales dep - wants Cargo Owner satisfaction.
+    Financial dep - wants payment settlement with Cargo Owner.

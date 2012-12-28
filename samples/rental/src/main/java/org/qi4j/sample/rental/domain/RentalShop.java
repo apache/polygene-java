@@ -24,9 +24,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.association.ManyAssociation;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -41,7 +41,7 @@ public interface RentalShop
 {
     Customer createCustomer( String name, String address1, String address2, String zip, String city, String country );
 
-    Car findAvailableCarByModel( CarModel model );
+    Car findAvailableCarByModel( String model );
 
     Car findAvailableCarByCategory( CarCategory category );
 
@@ -49,7 +49,7 @@ public interface RentalShop
 
     List<Booking> findAllBookings();
 
-    Set<CarModel> findAllCarModels();
+    Set<String> findAllCarModels();
 
     Booking book( Customer customer, Car car, Period plannedPeriod );
 
@@ -110,11 +110,11 @@ public interface RentalShop
             return builder.newInstance();
         }
 
-        public Car findAvailableCarByModel( CarModel model )
+        public Car findAvailableCarByModel( String model )
         {
             for( Car car : state.carsAvailable().toList() )
             {
-                if( car.model().equals( model ) )
+                if( car.model().get().equals( model ) )
                 {
                     return car;
                 }
@@ -139,12 +139,12 @@ public interface RentalShop
             return state.carCategories().toList();
         }
 
-        public Set<CarModel> findAllCarModels()
+        public Set<String> findAllCarModels()
         {
-            HashSet<CarModel> result = new HashSet<CarModel>();
+            HashSet<String> result = new HashSet<String>();
             for( Car car : state.carsOwned().toList() )
             {
-                result.add( car.model() );
+                result.add( car.model().get() );
             }
             return result;
         }

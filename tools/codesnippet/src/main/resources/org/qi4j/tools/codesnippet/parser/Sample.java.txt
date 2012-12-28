@@ -1,6 +1,0 @@
-public class Sample
-{
-    // $<snippet name="first">
-    int /* $<b>$ */first/* $</b>$ */= 0;
-    // $</snippet>
-}

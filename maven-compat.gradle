@@ -1,241 +1,224 @@
+apply plugin: 'maven'
 
-allprojects {
-  apply plugin: 'maven'
+pom {
 
-  pom {
-
-    project {
+  project {
+    url 'http://www.qi4j.org'
+    organization {
+      name 'Qi4j Community'
       url 'http://www.qi4j.org'
-      organization {
-        name 'Qi4j Community'
-        url 'http://www.qi4j.org'
+    }
+    inceptionYear '2007'
+    issueManagement {
+      system 'jira'
+      url 'http://team.ops4j.org/browse/QI'
+    }
+    scm {
+      url "http://github.com/Qi4j/qi4j-sdk"
+      connection "scm:git:http://github.com/Qi4j/qi4j-sdk.git"
+      developerConnection "scm:git:git@github.com:Qi4j/qi4j-sdk.git"
+    }
+    licenses {
+      license {
+        name 'Apache License version 2.0'
+        url 'http://www.apache.org/licenses/LICENSE-2.0'
       }
-      inceptionYear '2007'
-      issueManagement {
-        system 'jira'
-        url 'http://issues.ops4j.org/browse/QI'
+    }
+    developers {
+      developer {
+        id 'niclas@hedhman.org'
+        name 'Niclas Hedhman'
+        email 'niclas@hedhman.org'
+        roles {
+          role 'Core Team'
+        }
+        organizationUrl 'http://www.qi4j.org'
+        timezone 'UTC+8'
       }
-      scm {
-        url "http://github.com/Qi4j/qi4j-sdk"
-        connection "scm:git:http://github.com/Qi4j/qi4j-sdk.git"
-        developerConnection "scm:git:git@github.com:Qi4j/qi4j-sdk.git"
+      developer {
+        id 'rickardoberg'
+        name 'Rickard \u00F6berg'
+        email 'rickard.oberg@jayway.se'
+        roles {
+          role 'Core Team'
+        }
+        url 'http://www.neotechnology.com'
+        organization 'Neo Technology AB'
+        organizationUrl 'http://www.neotechnology.com'
+        timezone 'UTC+8'
       }
-      licenses {
-        license {
-          name 'Apache License version 2.0'
-          url 'http://www.apache.org/licenses/LICENSE-2.0'
+      developer {
+        id 'edward.yakop@gmail.com'
+        name 'Edward Yakop'
+        email 'efy@codedragons.com'
+        roles {
+          role 'Core Team'
         }
+        organizationUrl 'http://www.qi4j.org'
+        timezone 'UTC+8'
       }
-      developers {
-        developer {
-          id 'niclas@hedhman.org'
-          name 'Niclas Hedhman'
-          email 'niclas@codedragons.com'
-          roles {
-            role 'Core Team'
-          }
-          url 'http://www.codedragons.com'
-          organization 'CodeDragons'
-          organizationUrl 'http://www.qi4j.org'
-          timezone 'UTC+8'
+      developer {
+        id 'adreghiciu@gmail.com'
+        name 'Alin Dreghiciu'
+        email 'adreghiciu@codedragons.com'
+        roles {
+          role 'Core Team'
         }
-        developer {
-          id 'rickardoberg'
-          name 'Rickard \u00F6berg'
-          email 'rickard.oberg@jayway.se'
-          roles {
-            role 'Core Team'
-          }
-          url 'http://www.jayway.se'
-          organization 'Jayway'
-          organizationUrl 'http://www.jayway.se'
-          timezone 'UTC+1'
+        organizationUrl 'http://www.qi4j.org'
+        timezone 'UTC+2'
+      }
+      developer {
+        id 'mesirii'
+        name 'Michael Hunger'
+        email 'qi4j@jexp.de'
+        roles {
+          role 'Core Team'
         }
-        developer {
-          id 'edward.yakop@gmail.com'
-          name 'Edward Yakop'
-          email 'efy@codedragons.com'
-          roles {
-            role 'Core Team'
-          }
-          url 'http://www.codedragons.com'
-          organization 'CodeDragons'
-          organizationUrl 'http://www.qi4j.org'
-          timezone 'UTC+8'
-        }
-        developer {
-          id 'adreghiciu@gmail.com'
-          name 'Alin Dreghiciu'
-          email 'adreghiciu@codedragons.com'
-          roles {
-            role 'Core Team'
-          }
-          url 'http://www.codedragons.com'
-          organization 'CodeDragons'
-          organizationUrl 'http://www.qi4j.org'
-          timezone 'UTC+2'
-        }
-        developer {
-          id 'mesirii'
-          name 'Michael Hunger'
-          email 'qi4j@jexp.de'
-          roles {
-            role 'Core Team'
-          }
-          timezone 'CET'
-        }
+        timezone 'CET'
+      }
 
-        developer {
-          id "muhdkamil"
-          name "Muhd Kamil bin Mohd Baki"
-          organization "CodeDragons"
-          email "kamil@codedragons.com"
-          roles {
-            role 'Platform Team'
-          }
-          timezone "UTC+8"
+      developer {
+        id "muhdkamil"
+        name "Muhd Kamil bin Mohd Baki"
+        roles {
+          role 'Platform Team'
         }
+        timezone "UTC+8"
+      }
 
-        developer {
-          id "ops4j@leangen.net"
-          name "David Leangen"
-          organization "Bioscene"
-          email "ops4j@leangen.net"
-          roles {
-            role 'Platform Team'
-          }
-          timezone "UTC+9"
+      developer {
+        id "ops4j@leangen.net"
+        name "David Leangen"
+        organization "Bioscene"
+        email "ops4j@leangen.net"
+        roles {
+          role 'Platform Team'
         }
+        timezone "UTC+9"
+      }
 
-        developer {
-          id "sonny.gill@jayway.net"
-          name "Sonny Gill"
-          organization "CodeDragons"
-          email "sonny.public@gmail.com"
-          roles {
-            role 'Community Team'
-          }
-          timezone "UTC+8"
+      developer {
+        id "sonny.gill@jayway.net"
+        name "Sonny Gill"
+        email "sonny.public@gmail.com"
+        roles {
+          role 'Community Team'
         }
+        timezone "UTC+8"
+      }
 
-        developer {
-          id "taowen"
-          name "Tao Wen"
-          organization ""
-          email "taowen@gmail.com"
-          roles {
-            role 'Community Team'
-          }
-          timezone "UTC+8"
+      developer {
+        id "taowen"
+        name "Tao Wen"
+        organization ""
+        email "taowen@gmail.com"
+        roles {
+          role 'Community Team'
         }
+        timezone "UTC+8"
+      }
 
-        developer {
-          id "thobe"
-          name "Tobias Ivarsson"
-          email "tobias@neotechnology.com"
-          url "http://www.neotechnology.com"
-          organization "NeoTechnology"
-          organizationUrl "http://www.neotechnology.com"
-          roles {
-            role "Platform Team"
-          }
-          timezone "CET"
+      developer {
+        id "thobe"
+        name "Tobias Ivarsson"
+        email "tobias@neotechnology.com"
+        url "http://www.neotechnology.com"
+        organization "NeoTechnology"
+        organizationUrl "http://www.neotechnology.com"
+        roles {
+          role "Platform Team"
         }
+        timezone "CET"
+      }
 
-        developer {
-          id "boon"
-          name "Lan Boon Ping"
-          organization "CodeDragons"
-          email "boonping81@gmail.com"
-          roles {
-            role 'Platform Team'
-          }
-          timezone "UTC+8"
+      developer {
+        id "boon"
+        name "Lan Boon Ping"
+        email "boonping81@gmail.com"
+        roles {
+          role 'Platform Team'
         }
+        timezone "UTC+8"
+      }
 
-        developer {
-          id "jan.kronquist@gmail.com"
-          name "Jan Kronquist"
-          email "jan.kronquist@gmail.com"
-          organization "Jayway"
-          roles {
-            role 'Platform Team'
-          }
-          timezone "CET"
+      developer {
+        id "jan.kronquist@gmail.com"
+        name "Jan Kronquist"
+        email "jan.kronquist@gmail.com"
+        organization "Jayway"
+        roles {
+          role 'Platform Team'
         }
+        timezone "CET"
+      }
 
-        developer {
-          id "nmwael"
-          name "Nino Saturnino Martinez Vazquez Wael"
-          roles {
-            role 'Platform Team'
-          }
-          timezone "CET"
+      developer {
+        id "nmwael"
+        name "Nino Saturnino Martinez Vazquez Wael"
+        roles {
+          role 'Platform Team'
         }
+        timezone "CET"
+      }
 
-        developer {
-          id "peter@neubauer.se"
-          name "Peter Neubauer"
-          organization "CodeDragons"
-          email "peter@neubauer.se"
-          roles {
-            role 'Platform Team'
-          }
-          timezone "CET"
+      developer {
+        id "peter@neubauer.se"
+        name "Peter Neubauer"
+        email "peter@neubauer.se"
+        roles {
+          role 'Platform Team'
         }
+        timezone "CET"
+      }
 
-        developer {
-          id "rwallace"
-          name "Richard Wallace"
-          organization ""
-          email "rwallace@thewallacepack.net"
-          roles {
-            role 'Platform Team'
-          }
-          timezone "UTC-7"
+      developer {
+        id "rwallace"
+        name "Richard Wallace"
+        email "rwallace@thewallacepack.net"
+        roles {
+          role 'Platform Team'
         }
+        timezone "UTC-7"
+      }
 
-        developer {
-          id "siannyhalim@gmail.com"
-          name "Sianny Halim"
-          organization "CodeDragons"
-          email "siannyhalim@gmail.com"
-          roles {
-            role 'Platform Team'
-          }
-          timezone "UTC+8"
+      developer {
+        id "siannyhalim@gmail.com"
+        name "Sianny Halim"
+        email "siannyhalim@gmail.com"
+        roles {
+          role 'Platform Team'
         }
+        timezone "UTC+8"
+      }
 
-        developer {
-          id "paul@nosphere.org"
-          name "Paul Merlin"
-          email "paul@nosphere.org"
-          roles {
-            role 'Platform Team'
-          }
-          timezone "CET"
+      developer {
+        id "paul@nosphere.org"
+        name "Paul Merlin"
+        email "paul@nosphere.org"
+        roles {
+          role 'Core Team'
         }
+        timezone "CET"
+      }
 
-        developer {
-          id "stas.dev+qi4j@gmail.com"
-          name "Stanislav Muhametsin"
-          email "stas.dev+qi4j@gmail.com"
-          roles {
-            role 'Platform Team'
-          }
-          timezone "UTC+2"
+      developer {
+        id "stas.dev+qi4j@gmail.com"
+        name "Stanislav Muhametsin"
+        email "stas.dev+qi4j@gmail.com"
+        roles {
+          role 'Platform Team'
         }
+        timezone "UTC+2"
+      }
 
-        developer {
-          id "tonny"
-          name "Tonny Kohar"
-          roles {
-            role "Community Team"
-          }
-          email "tonny.kohar@gmail.com"
-          timezone "UTC+7"
+      developer {
+        id "tonny"
+        name "Tonny Kohar"
+        roles {
+          role "Community Team"
         }
-
+        email "tonny.kohar@gmail.com"
+        timezone "UTC+7"
       }
     }
   }

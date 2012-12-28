@@ -1,0 +1,14 @@
+description = "Qi4j Neo4j Library provides a service wrapper for the Neo4j Graph Database"
+
+jar { manifest { name = "Qi4j Library - Neo4j" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
+  compile(libraries.neo4j)
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

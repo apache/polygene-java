@@ -1,0 +1,65 @@
+[[tut-composites-step9,Step 9 - Private and Abstract Mixins]]
+= Step 9 - Private and Abstract Mixins =
+
+Previous step was <<tut-composites-step8>>.
+
+Now we're going to turn around and see how we can reduce the code needed to implement the HelloWorld example. We will 
+also look at how to hide the Properties from the client code, since Properties are often considered to be implementation 
+details that should not be exposed to clients.
+
+The first thing we will do is remove the behaviour interface, and move the say() method to the TransientComposite type. 
+This forces the mixin to implement the TransientComposite type, which would normally mean that it would have to 
+implement all methods, including those found in the TransientComposite interface. However, since we are only really 
+interested in implementing the say() method we will mark this by declaring that the Mixin "implements" the 
+TransientComposite type, but is also "abstract". This, using pure Java semantics, makes it possible to avoid having to 
+implement all methods. Qi4j will during the initialization phase detect that the Mixin only handles the say() method, 
+and therefore only map it to that specific method. In order to instantiate the Mixin it will generate a subclass which 
+implements the remaining methods in the TransientComposite type, as no-ops. These will never be called however, and is 
+there purely for the purpose of being able to instantiate the Mixin. The Mixin is considered to be an Abstract Fragment.
+
+To hide the state from the client we need to use what is called Private Mixins. A Private Mixin is any mixin that is 
+referenced by another Mixin by using the @This injection, but which is not included in the TransientComposite type. As 
+long as there is a Mixin implementation declared for the interface specified by the @This injection it will work, since 
+Qi4j can know how to implement the interface. But since it is not extended by the TransientComposite type there is no 
+way for a user of the TransientComposite to access it. That Mixin becomes an implementation detail. This can be used 
+either for encapsulation purposes, or for referencing utility mixins that help the rest of the code implement some 
+interface, but which itself should not be exposed.
+
+Since the state is now hidden the initialization of the TransientComposite is a bit more tricky. Instead of just 
+instantiating it you have to create a TransientBuilder first, then set the state using .prototypeFor(), and then call 
+newInstance(). This ensures that the state can be set during construction, but not at any later point, other than 
+through publicly exposed methods.
+
+Steps for this tutorial:
+
+- Move the say() method into the TransientComposite interface.
+- Remove the behaviour interface.
+- Remove the HelloWorldBehaviourMixin, create a HelloWorldMixin and let the HelloWorldMixin implement the TransientComposite directly.
+- Mark the HelloWorldMixin as abstract and implement only the say() method.
+- Remove the HelloWorldState from the TransientComposite "extends" declaration.
+- Remove the GenericPropertyMixin. The Property methods will be implemented by the standard PropertyMixin declared in the TransientComposite interface instead.
+
+== Solution ==
+
+If you have successfully completed the task, you should end up with the following artifacts only;
+
+*HelloWorldComposite.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial10/HelloWorldComposite.java
+tag=solution
+----
+
+*HelloWorldMixin.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial10/HelloWorldMixin.java
+tag=solution
+----
+
+*HelloWorldState.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial10/HelloWorldState.java
+tag=solution
+----

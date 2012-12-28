@@ -17,11 +17,12 @@
 package org.qi4j.ide.plugin.idea.common.resource;
 
 import com.intellij.CommonBundle;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.PropertyKey;
+
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.ResourceBundle;
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.PropertyKey;
 
 /**
  * @author edward.yakop@gmail.com

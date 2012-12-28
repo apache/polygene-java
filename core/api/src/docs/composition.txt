@@ -1,0 +1,79 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-composition, Composition]]
+= Composition =
+Composition is at the heart of COP, and refers to two different levels of constructs;
+
+1. the ability to assemble (compose) objects from smaller pieces, called Fragments.
+2. the construction of applications by assembling Composites into Modules and Modules into Layers.
+
+In Qi4j, we use the term Assembly for the second case of composition. See separate chapter.
+
+Composition will allow library authors a new level of flexibility in how functionality is provided to client code. More
+on that later.
+
+== Fragments ==
+
+There are 4 types of Fragments in Qi4j;
+
+    * <<core-api-mixin>> - The state carrying part of a Composite.
+    * <<core-api-constraint>> - Rules for in and out arguments, typically used for validation.
+    * <<core-api-concern>> - Interceptor of method calls. General purpose use, often for cross-cutting behaviors.
+    * <<core-api-sideeffect>> - Executed after the method call has been completed, and unable to influence the
+    outcome of the method call.
+
+== Composites ==
+
+There are 4 Composite meta types. Each of these have very different characteristics and it is important to understand
+these, so the right meta type is used for the right purpose.
+
+    * Entity - Classic meaning. Has an Identity. Is persistable and can be referenced by the Identity. Can act as
+      Aggregate. Entity supports Lifecycle interface. Equals is defined by the Identity.
+    * Value - Values are persistable when used in a Property from an Entity. Values are immutable, and equals is
+      defined by the values of its fields.
+    * Service - Service is injectable to other composites and java objects. They are not persistable, but if
+      referenced from an Entity or Value, a new reference to the Service will be injected when the Entity/Value is
+      deserialized. Services are singletons. There are 'hosted' and 'imported' Services. The 'hosted' Service has
+      Configuration and its life cycle controlled by the Qi4j runtime, whereas the 'imported' Services are external
+      references.
+    * Transient - Short-lived composites that are not persistable. Equals/hashCode/toString are forwarded to the
+      Mixin Type declaring those methods explicitly.
+
+In versions of Qi4j prior to 2.0, composite types had to extend one of these 4 meta types, but in 2.0 and later, the
+meta type interface is added dynamically during <<core-bootstrap-assembly>>.
+We can therefor get rid of a lot of additional types, and use Qi4j-free interfaces directly;
+
+[source,java]
+-------------
+@Mixins({BalanceCheckMixin.class, .... } )
+public interface BankAccount
+{
+    Money checkBalance();
+    :
+    :
+}
+-------------
+
+and declare it with;
+
+[source,java]
+-------------
+public void assemble( ModuleAssembly module )
+{
+    module.entities( BankAccount.class );
+}
+-------------
+

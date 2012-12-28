@@ -1,0 +1,69 @@
+[[library-conversion, Conversion Library]]
+= Conversion =
+
+[devstatus]
+--------------
+source=libraries/conversion/dev-status.xml
+--------------
+
+The Conversion Library provides support for converting composite types.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Entities to Values ==
+
+To convert Entities to Values, use the EntityToValueService. It is easily assembled:
+
+[snippet,java]
+----
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
+tag=assembly
+----
+
+Let's say we have an interface defining state:
+
+[snippet,java]
+----
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
+tag=state
+----
+
+An EntityComposite using the state as a Private Mixin:
+
+[snippet,java]
+----
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
+tag=entity
+----
+
+And a ValueComposite extending this very same state;
+
+[snippet,java]
+----
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
+tag=value
+----
+
+Here is how to convert an EntityComposite to a ValueComposite:
+
+[snippet,java]
+----
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
+tag=conversion
+----
+
+Associations are converted to Identity strings.
+
+If your Entities and Values cannot use the same state type, you can annotate the Value that is the target of the
+conversion with the `@Unqualified` annotation. Then, the lookup of the Value Property will be performed using the
+*unqualified* name only, and not via the default of the full qualified name. In other words, this means that the
+Property may be declared in the different interfaces and still be matched.
+
+Here is an example:
+
+[snippet,java]
+----
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
+tag=unqualified
+----
+

@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.tutorials.cargo.step2;
 
@@ -21,9 +21,9 @@ import org.junit.Test;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.core.testsupport.AbstractQi4jTest;
+import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class Step2TestCase
     extends AbstractQi4jTest
@@ -36,13 +36,13 @@ public class Step2TestCase
         throws Exception
     {
         super.setUp();
-        TransientBuilder<VoyageComposite> voyageBuilder = transientBuilderFactory.newTransientBuilder( VoyageComposite.class );
+        TransientBuilder<VoyageComposite> voyageBuilder = module.newTransientBuilder( VoyageComposite.class );
         voyageBuilder.prototypeFor( Voyage.class ).bookedCargoSize().set( 0.0 );
         voyageBuilder.prototypeFor( Voyage.class ).capacity().set( 100.0 );
         voyage = voyageBuilder.newInstance();
 
         TransientBuilder<ShippingServiceComposite> shippingBuilder =
-            transientBuilderFactory.newTransientBuilder( ShippingServiceComposite.class );
+            module.newTransientBuilder( ShippingServiceComposite.class );
         shippingService = shippingBuilder.newInstance();
     }
 
@@ -85,6 +85,7 @@ public class Step2TestCase
         assertEquals( -1, code );
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
@@ -93,7 +94,7 @@ public class Step2TestCase
 
     private Cargo newCargo( double size )
     {
-        TransientBuilder<CargoComposite> builder = transientBuilderFactory.newTransientBuilder( CargoComposite.class );
+        TransientBuilder<CargoComposite> builder = module.newTransientBuilder( CargoComposite.class );
         builder.prototypeFor( Cargo.class ).size().set( size );
         return builder.newInstance();
     }

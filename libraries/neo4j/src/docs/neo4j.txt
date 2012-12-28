@@ -1,0 +1,31 @@
+[[library-neo4j, Neo4j Library]]
+= Neo4j =
+
+[devstatus]
+--------------
+source=libraries/neo4j/dev-status.xml
+--------------
+
+The Neo4J Library provides a Neo4J embedded database as a Qi4j Service.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Simply assemble the Service:
+
+[snippet,java]
+----
+source=libraries/neo4j/src/test/java/org/qi4j/library/neo4j/DocumentationSupport.java
+tag=assembly
+----
+
+== Usage ==
+
+The embedded Neo4J database files are stored in the `data` directory defined using the <<library-fileconfig>>.
+
+[snippet,java]
+----
+source=libraries/neo4j/src/test/java/org/qi4j/library/neo4j/DocumentationSupport.java
+tag=neo4j
+----

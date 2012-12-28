@@ -1,0 +1,51 @@
+
+USE CASE	    Book New Cargo [user-goal]
+===========================================================================
+Cargo Owner wants to book a cargo shipment from A to B with an arrival deadline.
+
+
+Primary actor.. Cargo Owner (or Booking Clerk on behalf of Cargo Owner)
+Scope.......... Booking System in shipping application
+Preconditions.. None
+Trigger........ Cargo Owner wants to book a new cargo shipment.
+
+
+Main Success Scenario
+---------------------------------------------------------------------------
+1. Cargo Owner provides origin/destination, arrival deadline and optionally a tracking id.
+2. Booking System creates route specification.
+3. Booking System derives initial delivery data.
+4. Booking System creates cargo.
+5. Booking System requests Cargo Owner to <route cargo>.
+
+
+Deviations
+---------------------------------------------------------------------------
+2a. Origin location equals destination location:
+    1. Exit.
+
+2b. Arrival deadline is in the past or Today:
+    1. Exit.
+
+4a. Supplied tracking id doesn't match pattern:
+    1. Exit.
+
+4b. Supplied tracking id is not unique:
+    1. Exit.
+
+
+---------------------------------------------------------------------------
+Success guarantees:
+    Booking is saved and awaits routing by Cargo Owner
+
+Minimal guarantees:
+    Data entered is logged.
+
+Stakeholders/Interests:
+    Cargo Owner - wants successful booking of shipment.
+
+    Shipper:
+    Handling dep - wants correct data and overbooking of vessels to maximize profit.
+    Sales dep - wants Cargo Owner satisfaction.
+    Financial dep - wants payment settlement with Cargo Owner.
+

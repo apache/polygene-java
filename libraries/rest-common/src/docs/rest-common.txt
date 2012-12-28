@@ -1,0 +1,13 @@
+[[library-rest-common, ReST Common Library]]
+= ReST Common =
+
+[devstatus]
+--------------
+source=libraries/rest-common/dev-status.xml
+--------------
+
+ReST Common Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

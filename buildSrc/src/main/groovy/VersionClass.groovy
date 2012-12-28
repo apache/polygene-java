@@ -83,7 +83,7 @@ public interface BuildVersion
     project.getTasks().getByName('compileJava').dependsOn('compileVersionJava')
     project.getTasks().getByName('compileVersionJava').dependsOn('makeVersionClass')
     project.getTasks().getByName('jar') {
-      from project.sourceSets.version.classes
+      from project.sourceSets.version.output
     }
   }
 }

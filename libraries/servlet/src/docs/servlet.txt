@@ -1,0 +1,50 @@
+[[library-servlet,Servlet Library]]
+= Servlet =
+
+[devstatus]
+--------------
+source=libraries/servlet/dev-status.xml
+--------------
+
+This library provide the necessary boilerplate code to bootstrap a Qi4j Application in a Servlet container plus some
+facilities. It aims at a very simple need and is provided as an example integration.
+
+If instead you want to run a servlet container inside a Qi4j Application, see <<library-http>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Application Bootstrap ==
+
+Extends `AbstractQi4jServletBootstrap` to easily bind a Qi4j `Application` activation/passivation to your webapp
+lifecycle.
+
+Use `Qi4jServletSupport#application(javax.servlet.ServletContext)` to get a handle on the `Application` from the
+`ServletContext`.
+
+Here is an example ServletContextListener:
+
+[snippet,java]
+----
+source=libraries/servlet/src/test/java/org/qi4j/library/servlet/ServletTest.java
+tag=bootstrap
+----
+
+
+== Facilities ==
+
+`Qi4jServlet` and `Qi4jFilter` respectively provide base class for easy access to the `Application` from the
+`ServletContext`.
+
+Here is a sample servlet that simply output the assembled Application name:
+
+[snippet,java]
+----
+source=libraries/servlet/src/test/java/org/qi4j/library/servlet/ServletTest.java
+tag=usage
+----
+
+
+== Logging ==
+
+The SLF4J logger used by this library is named "org.qi4j.library.servlet".
+

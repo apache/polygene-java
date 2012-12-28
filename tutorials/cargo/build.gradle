@@ -3,15 +3,10 @@ description = "Tutorial on how to convert existing application into a Qi4j one, 
 jar { manifest { name = "Qi4j Tutorial - Cargo" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(project(":org.qi4j.core:org.qi4j.core.runtime"))  // TODO: Get rid of this dependency
-  compile(libraries.slf4j_api)
-  testCompile(libraries.junit)
-  testCompile(libraries.easymock)
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
+
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
+  testCompile(libraries.easymock)
+  testRuntime(libraries.logback)
 }

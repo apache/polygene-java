@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008, Rickard Oberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.qi4j.api.property.StateHolder;
 /**
  * JAVADOC
  */
+// START SNIPPET: solution
 @AppliesTo( { GenericPropertyMixin.PropertyFilter.class } )
 public class GenericPropertyMixin
     implements InvocationHandler
@@ -32,18 +33,21 @@ public class GenericPropertyMixin
     @State
     private StateHolder state;
 
+    @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        return state.getProperty( method );
+        return state.propertyFor( method );
     }
 
     public static class PropertyFilter
         implements AppliesToFilter
     {
+        @Override
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
         {
             return Property.class.isAssignableFrom( method.getReturnType() );
         }
     }
 }
+// END SNIPPET: solution

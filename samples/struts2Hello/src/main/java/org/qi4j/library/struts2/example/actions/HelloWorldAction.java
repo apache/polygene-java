@@ -23,9 +23,10 @@ import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.Validation;
-import java.util.Date;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
+
+import java.util.Date;
 
 @Validation
 @Conversion

@@ -1,0 +1,41 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[library-metrics,Metrics Library]]
+= Metrics Library=
+
+The Metrics library is available to application code to get production metrics from their applications. It allows
+applications to easily mark critical section for metrics gathering, without handling the details with the Metrics
+Extension.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Usage ==
+There are currently the following possibilities available;
+
+    * @TimingCapture
+    * @Counting
+
+Before looking at the details of these, we need to point out that there are some pre-conditions for Metrics to be
+working. First of all, you need to install a Metrics Extensions, most likely the
+<<extension-metrics-yammer, Yammer Metrics Extension>>. See your chosen extension for details on how to do that.
+
+Once the Metrics extension is installed, you will also need a suitable backend to gather all the data out of a
+production plant and likewise a good front-end to view this. See your chosen Metrics Extension for this as well.
+
+== TimingCaptureAll ==
+There is a TimingCaptureAllConcern, which when added to a composite will install a _Timer_ for every method call
+in the composite.
+

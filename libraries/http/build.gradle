@@ -1,0 +1,26 @@
+description = "Qi4j Http Library provides embedded Jetty for Qi4j application use."
+
+jar { manifest { name = "Qi4j Library - Http" }}
+
+test {
+  systemProperties 'networkaddress.cache.ttl': '0'
+  systemProperties 'sun.net.spi.nameservice.provider.1': 'dns,LocalManagedDns'
+}
+
+dependencies {
+
+  compile( project( ":org.qi4j.core:org.qi4j.core.api" ) )
+  compile( project( ":org.qi4j.libraries:org.qi4j.library.constraints" ) )
+  compile( project( ":org.qi4j.libraries:org.qi4j.library.jmx" ) )
+  compile( libraries.bouncy_castle )
+  compile( libraries.jetty_webapp )
+  compile( libraries.jetty_jmx )
+
+  testCompile( project( ":org.qi4j.core:org.qi4j.core.testsupport" ) )
+  testCompile( libraries.http_client )
+  testCompile( libraries.dnsjava )
+
+  testRuntime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
+  testRuntime( libraries.logback )
+
+}

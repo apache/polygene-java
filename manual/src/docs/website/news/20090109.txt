@@ -1,0 +1,4 @@
+[[news-20090109, Qi4j 0.5 Released]]
+= Qi4j 0.5 Released =
+
+Stabilization of Core

@@ -1,0 +1,138 @@
+[[library-uowfile,UoWFile Library]]
+= UoWFile =
+
+[devstatus]
+--------------
+source=libraries/uowfile/dev-status.xml
+--------------
+
+The UoWFile Library provides an easy way to bind file operations to UnitOfWorks.
+
+In other words, using this library you can easily attach files to your
+Composites, mostly EntityComposites, so that if the UoW gets discarded, changes
+to files are discarded too. Concurrent modifications are properly handled.
+
+Note that it has a performance impact relative to the files size as it
+duplicates the file to keep a backup for eventual rollback. However, the API
+provides a way to get non-managed handles on the attached files to keep your
+read-only operations fast.
+
+The location of files is left to the developer using a private mixin.
+
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Logging ==
+
+The SLF4J Logger used by this library is named "org.qi4j.library.uowfile".
+
+
+== Add an attached file to an Entity ==
+
+Let's say you have the following Entity:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFileTest.java
+tag=entity
+----
+
+To add an attached file to it you first need to extends HasUoWFileLifecycle:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFileTest.java
+tag=uowfile
+----
+
+This provides you with the following contract:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/main/java/org/qi4j/library/uowfile/singular/HasUoWFile.java
+tag=contract
+----
+
+Next you need to write the UoWFileLocator mixin:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFileTest.java
+tag=locator
+----
+
+Assemble all this as follow:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFileTest.java
+tag=assembly
+----
+
+You can now use the following methods on your EntityComposite:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFileTest.java
+tag=api
+----
+
+
+== Going plural ==
+
+Now if you want to attach several files to one entity, this library provides a
+simple mechanism allowing you to use any enum as discriminator.
+
+Let's say you have the following Entity:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFilesTest.java
+tag=entity
+----
+
+It's the very same as the one used to start the singular file support described
+above.
+
+To add an attached file to it you first need to write an enum and extends
+HasUoWFilesLifecycle:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFilesTest.java
+tag=uowfile
+----
+
+This provides you with the following contract:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/main/java/org/qi4j/library/uowfile/plural/HasUoWFiles.java
+tag=contract
+----
+
+Next you need to write the UoWFileLocator mixin:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFilesTest.java
+tag=locator
+----
+
+Assemble all this as follow:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFilesTest.java
+tag=assembly
+----
+
+You can now use the following methods on your EntityComposite:
+
+[snippet,java]
+----
+source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFilesTest.java
+tag=api
+----
+
+

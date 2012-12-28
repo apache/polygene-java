@@ -16,20 +16,18 @@
 */
 package org.qi4j.library.swing.entityviewer;
 
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.query.Query;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.spi.Qi4jSPI;
-import org.qi4j.spi.entity.EntityDescriptor;
-import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.property.PropertyTypeDescriptor;
-
+import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import java.awt.BorderLayout;
+import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.query.Query;
+import org.qi4j.spi.Qi4jSPI;
 
 /**
  * Entity Properties Viewer as Swing Component.
@@ -38,7 +36,7 @@ public class PropertiesPanel
     extends JPanel
 {
     protected JTable propertiesTable;
-    protected Energy4Java qi4j;
+    protected Qi4jSPI qi4jspi;
 
     public PropertiesPanel()
     {
@@ -50,9 +48,9 @@ public class PropertiesPanel
         scrollPane.setViewportView( propertiesTable );
     }
 
-    public void initializeQi4J( Energy4Java qi4j )
+    public void initializeQi4J( Qi4jSPI qi4j )
     {
-        this.qi4j = qi4j;
+        this.qi4jspi = qi4j;
     }
 
     /**
@@ -77,27 +75,25 @@ public class PropertiesPanel
     {
         DefaultTableModel model = new DefaultTableModel();
 
-        Qi4jSPI spi = qi4j.spi();
-
         for( Object qObj : query )
         {
-            EntityState state = spi.getEntityState( (EntityComposite) qObj );
-            EntityDescriptor descriptor = spi.getEntityDescriptor( (EntityComposite) qObj );
+            AssociationStateHolder state = qi4jspi.getState( (EntityComposite) qObj );
+            EntityDescriptor descriptor = qi4jspi.getEntityDescriptor( (EntityComposite) qObj );
             // genereate column, first time only
             if( model.getColumnCount() < 1 )
             {
-                for( PropertyTypeDescriptor propertyDescriptor : descriptor.state()
-                    .<PropertyTypeDescriptor>properties() )
+                for( PropertyDescriptor persistentPropertyDescriptor : descriptor.state()
+                    .properties() )
                 {
-                    model.addColumn( propertyDescriptor.qualifiedName().name() );
+                    model.addColumn( persistentPropertyDescriptor.qualifiedName().name() );
                 }
             }
 
             Object[] rowData = new Object[model.getColumnCount()];
             int i = 0;
-            for( PropertyTypeDescriptor propertyDescriptor : descriptor.state().<PropertyTypeDescriptor>properties() )
+            for( PropertyDescriptor persistentPropertyDescriptor : descriptor.state().properties() )
             {
-                rowData[ i++ ] = state.getProperty( propertyDescriptor.propertyType().qualifiedName() );
+                rowData[ i++ ] = state.propertyFor( persistentPropertyDescriptor.accessor() );
             }
             model.addRow( rowData );
         }

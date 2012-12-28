@@ -1,0 +1,68 @@
+[[extension-index-rdf,RDF Index/Query]]
+= OpenRDF Index/Query =
+
+[devstatus]
+--------------
+source=extensions/indexing-rdf/dev-status.xml
+--------------
+
+Index/Query services backed by http://www.openrdf.org/[OpenRDF Sesame] framework for processing RDF data.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== In Memory ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/qi4j/index/rdf/DocumentationSupport.java
+tag=memory
+----
+
+No configuration needed.
+
+== On Filesystem ==
+
+=== Assembly ===
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/qi4j/index/rdf/DocumentationSupport.java
+tag=native
+----
+
+=== Configuration ===
+
+Here are the configuration properties for the Native RDF Index/Query:
+
+[snippet,java]
+----
+source=libraries/rdf/src/main/java/org/qi4j/library/rdf/repository/NativeConfiguration.java
+tag=config
+----
+
+
+== In a RDBMS ==
+
+=== Assembly ===
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/indexing-rdf/src/test/java/org/qi4j/index/rdf/DocumentationSupport.java
+tag=rdbms
+----
+
+=== Configuration ===
+
+Here are the configuration properties for the RDBMS based RDF Index/Query:
+
+[snippet,java]
+----
+source=libraries/rdf/src/main/java/org/qi4j/library/rdf/repository/RdbmsRepositoryConfiguration.java
+tag=config
+----

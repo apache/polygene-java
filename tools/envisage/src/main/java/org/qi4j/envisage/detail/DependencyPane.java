@@ -16,38 +16,23 @@
 */
 package org.qi4j.envisage.detail;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.lang.annotation.Annotation;
 import java.util.ResourceBundle;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MouseInputAdapter;
+import org.qi4j.api.composite.DependencyDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.util.Classes;
 import org.qi4j.envisage.event.LinkEvent;
-import org.qi4j.envisage.model.descriptor.CompositeDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.InjectedFieldDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.MixinDetailDescriptor;
-import org.qi4j.envisage.model.descriptor.ObjectDetailDescriptor;
-import org.qi4j.spi.composite.DependencyDescriptor;
+import org.qi4j.tools.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.tools.model.descriptor.InjectedFieldDetailDescriptor;
+import org.qi4j.tools.model.descriptor.MixinDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ObjectDetailDescriptor;
 
 public class DependencyPane
     extends DetailPane
@@ -92,6 +77,7 @@ public class DependencyPane
 
         fieldList.addListSelectionListener( new ListSelectionListener()
         {
+            @Override
             public void valueChanged( ListSelectionEvent evt )
             {
                 fieldListValueChanged( evt );
@@ -103,6 +89,7 @@ public class DependencyPane
 
         MouseInputAdapter mouseInputListener = new MouseInputAdapter()
         {
+            @Override
             public void mouseMoved( MouseEvent evt )
             {
                 int i = injectedServiceList.locationToIndex( evt.getPoint() );
@@ -116,11 +103,13 @@ public class DependencyPane
                 }
             }
 
+            @Override
             public void mouseExited( MouseEvent evt )
             {
                 setCursor( defaultCursor );
             }
 
+            @Override
             public void mouseClicked( MouseEvent evt )
             {
                 /*if( evt.getClickCount() < 2 )
@@ -168,6 +157,7 @@ public class DependencyPane
         injectedServiceListModel.clear();
     }
 
+    @Override
     public void setDescriptor( Object objectDesciptor )
     {
         clear();
@@ -259,7 +249,6 @@ public class DependencyPane
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$()
     {
@@ -407,9 +396,6 @@ public class DependencyPane
         detailPane.add( separator1, gbc );
     }
 
-    /**
-     * @noinspection ALL
-     */
     private void $$$loadLabelText$$$( JLabel component, String text )
     {
         StringBuffer result = new StringBuffer();
@@ -442,9 +428,6 @@ public class DependencyPane
         }
     }
 
-    /**
-     * @noinspection ALL
-     */
     public JComponent $$$getRootComponent$$$()
     {
         return contentPane;
@@ -453,6 +436,7 @@ public class DependencyPane
     class InjectedServiceListCellRenderer
         extends DefaultListCellRenderer
     {
+        @Override
         public Component getListCellRendererComponent( JList list,
                                                        Object value,
                                                        int index,

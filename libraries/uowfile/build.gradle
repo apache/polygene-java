@@ -1,0 +1,13 @@
+description = "Qi4j UoWFile Library provides file operations binding to UoWs."
+
+jar { manifest { name = "Qi4j Library - UoWFile" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

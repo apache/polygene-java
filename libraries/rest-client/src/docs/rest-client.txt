@@ -1,0 +1,99 @@
+[[library-rest-client, ReST Client Library]]
+= ReST Client =
+
+[devstatus]
+--------------
+source=libraries/rest-client/dev-status.xml
+--------------
+
+Rickard sent a very interesting <<library-rest-client-primer>> to the mailing list in October 2011, as the starting
+point for the renovation of the ReST Client Library. You should read that to get the full background on the choices
+made in this library.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Usage ==
+This library leverages the http://restlet.org[Restlet library], so keep its documentation nearby as well.
+
+This library expects the client code to build up handlers on how to react to resources and errors.
+It is a more declarative approach than a typical ReST client application, which often isn't HATEOAS at all, and
+http://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven[Roy Fielding is upset that ReST now means something else] than it was originally intended.
+We try to be true to Dr. Fielding's intentions.
+
+=== Establish Client ===
+
+The first thing that must be done is to create a ContextResourceClient.
+Let's walk through the different steps typically needed.
+
+[snippet,java]
+-------------
+source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+tag=client-create1
+-------------
+
+Above we create the Client instance and a ContextResourceClientFactory, which takes a client via @Uses annotation. We
+also set the accepted media type to JSON.
+
+We then create the global handler, which will be set to all ContextResourceClient instances that this factory creates.
+
+[snippet,java]
+-------------
+source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+tag=client-create2
+-------------
+
+Above, we try to handle that autheorization is required by setting user credentials and then try again. The client
+could do a pop-up box instead, have its own cached entries, contact a credentials server or many other things.
+
+We also added another handler that does a _refresh()_ on any recoverable error.
+
+Note that the ErrorHandler.AUTHENTICATION_REQUIRED and ErrorHandler.RECOVERABLE_ERROR are not enums or constants, but
+Specifications and it is possible to implement your own.
+
+We then simply proceed to create the _ContextResourceClient_, by giving the factory the bookmarkable reference of the
+ReST API.
+
+[snippet,java]
+-------------
+source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+tag=client-create3
+-------------
+
+=== Using ContextClientResource ===
+
+Once we have the ContextResourceClient, we can proceed with using it.
+The general approach is to register handlers for potential results when invoking the method on the ReST resource.
+
+
+
+
+=== Query without Value ===
+[snippet,java]
+-------------
+source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+tag=query-without-value
+-------------
+
+=== Query and Command ===
+[snippet,java]
+-------------
+source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+tag=query-and-command
+-------------
+
+=== Query List and Command ===
+[snippet,java]
+-------------
+source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+tag=query-list-and-command
+-------------
+
+=== Query List and Command Progressive ===
+[snippet,java]
+-------------
+source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+tag=query-list-and-command-progressive
+-------------
+
+include::primer.txt[]
+

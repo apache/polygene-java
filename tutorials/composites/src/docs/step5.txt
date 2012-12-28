@@ -1,0 +1,75 @@
+[[tut-composites-step5,Step 5 - Constraints]]
+= Step 5 - Constraints =
+
+Previous step was <<tut-composites-step4>>.
+
+In this step we will look at how to use Constraints. When we pass parameters to methods in regular Java code the only 
+restriction we can make is to denote a type. Any other constraints on the input value, such as whether the parameter is 
+optional, integer ranges, string regular expressions, and so on, cannot be expressed, and so we have to put this into 
+Javadoc, and then manually add these checks in the implementation class.
+
+In Qi4j there is the option to use Constraints, which are further restrictions on the parameters. This is implemented 
+by having an annotation that describes what the Constraint does, and then an implementation class that checks whether a 
+specific value fulfills the Constraint or not.
+
+There are a number of pre-written constraints in Qi4j which you can use. The null check of the original HelloWorld 
+version is already handled by default since Qi4j considers method parameters to be mandatory if not explicitly marked 
+with the @Optional annotation. So, instead of doing that check we will add other checks that are useful to make, such 
+as ensuring that the passed in string is not empty.
+
+The only thing you have to do is add the annotation @NotEmpty to the method parameters you want to constrain in this 
+way. The annotation has a default implementation declared in it by using the @Constraints annotation. You can either 
+just use this, which is the common case, or override it by declaring your own @Constraints annotation in the 
+TransientComposite type.
+
+You can add as many Constraint annotations you want to a parameter. All of them will be checked whenever a method is 
+called.
+
+Steps for this tutorial:
+
+- Add @NotEmpty to the state parameters.
+
+Note: The previous steps had a dependency to the <<core-api>> only. The constraints you've used in this step,
+introduce a new dependency to the <<library-constraints>>, where all the constraint related classes reside. So 
+update your classpath settings accordingly.
+
+== Solution ==
+
+If you have successfully completed the task, you should end up with the following artifacts;
+
+These ones remain unchanged:
+
+- +HelloWorld.java+
+- +HelloWorldComposite.java+
+- +HelloWorldStateMixin.java+
+
+
+*HelloWorldBehaviour.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial6/HelloWorldBehaviour.java
+tag=solution
+----
+
+*HelloWorldBehaviourMixin.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial6/HelloWorldBehaviourMixin.java
+tag=solution
+----
+
+*HelloWorldBehaviourConcern.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial6/HelloWorldBehaviourConcern.java
+tag=solution
+----
+
+*HelloWorldState.java*
+[snippet,java]
+----
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial6/HelloWorldState.java
+tag=solution
+----
+
+Next step is <<tut-composites-step6>>

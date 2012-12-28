@@ -1,0 +1,20 @@
+<html>
+    <body>
+        <h2>LevelDB EntityStore.</h2>
+        <blockquote>
+            LevelDB is a fast key-value storage library written at Google that provides an ordered mapping from string
+            keys to string values.
+        </blockquote>
+        <p>
+            By default use the native implementation through JNI bindings and fallback to the pure java implementation
+            if not available on the current platform. Used implementation can be forced using the
+            {@link LevelDBEntityStoreConfiguration#flavour()} property.
+        </p>
+        <p>See:</p>
+        <ul>
+            <li>LevelDB <a href="https://code.google.com/p/leveldb/">https://code.google.com/p/leveldb/</a></li>
+            <li>JNI bindings <a href="https://github.com/fusesource/leveldbjni">https://github.com/fusesource/leveldbjni</a></li>
+            <li>Pure Java implementation <a href="https://github.com/dain/leveldb">https://github.com/dain/leveldb</a></li>
+        </ul>
+    </body>
+</html>

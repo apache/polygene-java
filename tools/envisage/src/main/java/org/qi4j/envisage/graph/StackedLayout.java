@@ -16,8 +16,7 @@
 */
 package org.qi4j.envisage.graph;
 
-import java.awt.Dimension;
-import java.awt.FontMetrics;
+import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import prefuse.Display;
@@ -37,6 +36,7 @@ public class StackedLayout
         super( group );
     }
 
+    @Override
     public void run( double frac )
     {
         // setup

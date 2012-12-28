@@ -1,0 +1,103 @@
+[[news-20110415,Qi4j SDK Release 1.3]]
+= Qi4j SDK Release 1.3 =
+
+Kuala Lumpur, 15 April 2011 - The Qi4j community today announced Release 1.3 of the innovative Java framework, Qi4j. This release is significant for several customers, moving to deploy Qi4j in business critical 24/7 systems. "We now feel that the core features of Qi4j are as stable as software systems ever get. Qi4j is now being deployed at a major investment bank in the risk pricing domain.", said Niclas Hedhman, co-inventor of Qi4j together with Rickard Öberg, who added "Qi4j has really proved itself in StreamFlow, and I am convinced that many of our paradigms will stand the test of time."
+
+This release sports many new features, such as Solr Indexing, JMX integration, Circuit-breaker library, innovative API for dealing with I/O, functional paradigms and much more, but an important focus was to stabilize the many libraries and extensions.
+
+The main new features are listed below. The community now sets its eyes ahead towards the next release(s), which will include an industrial automation alarm system, JMX aggregation for the cloud, Entity Viewers via the Rest API and a whole lot more documentation and test coverage. We all look forward to this and many other things to come from Qi4j, the most exciting, technology challenging project in the Open Source Java world.
+
+== I/O API ==
+
+Rickard Öberg is once again inventing new ways to do common things. The I/O API correctly separates the concerns of reading, writing, exception handling, transformation and filtering. This resulted in a DSL like way of writing stream handling code. The I/O API is completely independent of everything in Qi4j and may be used separately. We may release it as a separate artifact in the future.
+
+== JMX Integration ==
+
+By addding a single line of code, you will get the application structure represented in your JMX "tree view". Starting with a "Qi4j" node, under which each Qi4j Application is listed, followed by Layers, Modules and the Composites. All Services' configuration instances are exposed and can be changed via JMX, as can services be stopped, started and restarted.
+
+== OSGi Integration ==
+
+All of Qi4j is now OSGi-compliant. That means that all jars are OSGi bundles, with imports and exports. On top of that, this release also contains the beginning of a OSGi-specific library, which allows Qi4j Services to be exported as OSGi services and vice versa. This library is still in beta.
+
+== Circuit Breaker ==
+
+The CircuitBreaker library allows external resources to be monitored for health and taken 'offline' when facing trouble. This is also signalled via JMX for human intervention.
+
+== Solr Indexing ==
+
+To allow free-text searches of content in entities, Qi4j now has integrated Solr via the Qi4j Indexing/Query extension mechanism. It is not possible to do generic queries via this extension, but it leveraging the Named Query feature. Free-text search enable your data in existing entitystores by using the Reindexer extension.
+
+== UnitOfWork Retry ==
+
+The UnitOfWorkConcern now handles an optional UnitOfWorkRetry annotation, allowing full re-runs of work. Literally a single annotation allows developers to add retry logic (or remove the complex retry logic already in place).
+
+== JSON format now handles Maps ==
+
+The JSON serializer/deserializer has been equipped to handle Maps, by named properties instead of a java serialized map as was preveiously the case. The new deserializer logic is still compatible with the old format.
+
+== Job Scheduler ==
+
+A new library, org.qi4j.library.scheduler, can now launch jobs according to CRON formatted schedules.
+
+== Specifications in Assembly ==
+
+The ModuleAssembly system has been revised heavily, to allow different parts of the application to apply assembly information to composites. This allows for near functional programming style of setting up composites.
+
+== Iterables Utility ==
+
+Qi4j is innovating again, with a utility to do functional programming style in Java for Iterables. In this first release, the utility only contains the most basic operations, but will be extended over time.
+
+== Release Notes - Qi4j - Version 1.3 ==
+
+*New Features*
+
+- [QI-277] - JMX services
+- [QI-281] - Solr query/indexing
+- [QI-284] - Circuit breaker library
+- [QI-285] - Active -> Available
+- [QI-288] - Add a concern for handling retry on ConcurentModification
+- [QI-289] - Create a library for a job scheduler
+- [QI-291] - New API for doing I/O
+- [QI-295] - Exporter of Qi4j Services to OSGi
+- [QI-296] - Importer of OSGi services into the Qi4j world.
+- [QI-300] - Add test helper for scenarios
+- [QI-309] - Concern to handle ConcurentEntityModificationException and retry the UnitOfWork
+- [QI-320] - Maps in JSON format
+- [QI-321] - Specification driven assembly
+- [QI-341] - Support JodaTime natively in the toJSON() system.
+
+*Improvements*
+
+- [QI-275] - Enhance the community documentation to spell out the 'trust issues' in Core.
+- [QI-297] - Capture NullPointerException slightly more gracefully in ValueBuilderFactory
+- [QI-299] - Replace ServiceQualifier method with Specification
+- [QI-302] - Capture which class is declared final
+- [QI-305] - ObjectDescriptor in ModuleSPI
+- [QI-312] - Patch for Gradle build system
+- [QI-313] - Upgrade Neo4j extension to ver 1.2 
+- [QI-317] - Obscure Exception can be improved.
+- [QI-326] - Cobertura reports in the build.
+- [QI-339] - Add support for variables in RDF named queries
+
+*Bug*
+
+- [QI-272] - Changing properties in Lifecycle sometimes doesn't work
+- [QI-292] - ServiceLoader mechanism for Qi4j Runtime implementation is really awkward.
+- [QI-294] - qi4j-libraries: rdf/src/main/java/org/qi4j/library/rdf/model/ApplicationVisitor.java is not compilable
+- [QI-303] - Incorrect generics type for imported services.
+- [QI-304] - Composite extends Serializable
+- [QI-306] - Exception thrown when @Using on complex generic types
+- [QI-308] - The @UnitOfWorkDiscardOn annotation does not have runtime Retention
+- [QI-331] - BuildVersion class is in wrong package.
+- [QI-332] - Generated POMs doesn't include the <repository> sections needed.
+- [QI-333] - Qi4j Runtime needs a way to bootstrap in OSGi
+- [QI-334] - Maven source jars are not generated and uploaded.
+- [QI-335] - Maven javadoc jars are not generated and uploaded
+- [QI-337] - Package org.qi4j.api.specification is imported more than once in Core Runtime OSGi bundle declaration.
+- [QI-340] - NPE in ModuleUnitOfWork which should be a informative Exception
+
+*Task*
+
+- [QI-314] - Creation of proper SDK
+- [QI-315] - Define binary tarball layout
+- [QI-316] - Define source tarball layout

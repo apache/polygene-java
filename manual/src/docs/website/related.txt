@@ -1,0 +1,330 @@
+[[related,Related publications and projects]]
+= Related publications & projects =
+
+Qi4j addresses a wide range of concepts, the related publications and projects you'll find in this section span accross
+all theses concepts. Please note that this is not an exhaustive list but only some pointers to help you understand which
+principles Qi4j is based on.
+
+
+== Publications ==
+
+// Here is a quick copy/paste snippet to add a publication
+//
+// - *TITLE*
+// +
+// by AUTHORS - DATE
+// +
+// "_SUMMARY_"
+// +
+// LINK
+// +
+
+In chronological order, related publications:
+
+- *Object-oriented Software Construction*
++
+by Bertrand Meyer - 1988
++
+"_The comprehensive reference on all aspects of object technology, from design principles to O-O techniques, Design by
+Contract, O-O analysis, concurrency, persistence, abstract data types and many more. Written by a pioneer in the field,
+contains an in-depth analysis of both methodological and technical issues._"
++
+http://se.ethz.ch/~meyer/publications/index_kind.html#POOSC2
++
+- *Object-Oriented Programming: An Objective Sense of Style*
++
+by K.  Lieberherr,  I.  IIolland,  A.  Riel - 1988
++
+"_The "Law of Demeter" (or LoD) as it is commonly called, is really more precisely the "Law of Demeter for
+Functions/Methods" (LoD-F). It is a design-style rule for object-oriented programs. Its essence is the "principle of
+least knowledge" regarding the object instances used within a method._"
++
+http://www.ccs.neu.edu/research/demeter/papers/law-of-demeter/oopsla88-law-of-demeter.pdf
++
+- *Designing Reusable Classes*
++
+by Ralph E. Johnson & Brian Foote - 1988
++
+"_Object-oriented programming is as much a different way of designing programs as it is a different way of designing
+programming languages. [...] In particular, since a major motivation for object-oriented programming is software reuse,
+this paper describes how classes are developed so that they will be reusable._"
++
+http://www.laputan.org/drc/drc.html
++
+- *The Open/Closed Principle*
++
+by Robert C. Martin - 1996
++
+"_As Ivar Jacobson said: “All systems change during their life cycles. This must be borne in mind when developing
+systems expected to last longer than the first version.” How can we create designs that are stable in the face of
+change and that will last longer than the ﬁrst version?_"
++
+http://www.objectmentor.com/resources/articles/ocp.pdf
++
+- *The Liskov Substitution Principle*
++
+by Robert C. Martin - 1996
++
+"_Substitutability is a principle in object-oriented programming. It states that, in a computer program, if S is a
+subtype of T, then objects of type T may be replaced with objects of type S (i.e., objects of type S may be substituted
+for objects of type T) without altering any of the desirable properties of that program (correctness, task performed,
+etc.).._"
++
+http://www.objectmentor.com/resources/articles/lsp.pdf
++
+- *The Dependency Inversion Principle*
++
+by Robert C. Martin - 1996
++
+"_In this column, we discuss the structural implications of the Open-Closed and the Liskov Substitution principles.
+The structure that results from rigorous use of these principles can be generalized into a principle all by itself.
+I call it “The Dependency Inversion Principle” (DIP)._"
++
+http://www.objectmentor.com/resources/articles/dip.pdf
++
+- *Aspect-Oriented Programming*
++
+by Kiczales, Gregor; John Lamping, Anurag Mendhekar, Chris Maeda, Cristina Lopes, Jean-Marc Loingtier, and John Irwin - 1997
++
+"_We have found many programming problems for which neither procedural nor object-oriented programming techniques are
+sufficient to clearly capture some of the important design decisions the program must implement. This forces the
+implementation of those design decisions to be scattered throughout the code, resulting in “tangled” code that is
+excessively difficult to develop and maintain. We present an analysis of why certain design decisions have been so
+difficult to clearly capture in actual code. We call the properties these decisions address aspects, and show that the
+reason they have been hard to capture is that they crosscut the system’s basic functionality. We present the basis for
+a new programming technique, called aspect-oriented programming, that makes it possible to clearly express programs
+involving such aspects, including appropriate isolation, composition and reuse of the aspect code. The discussion is
+rooted in systems we have built using aspect-oriented programming._"
++
+http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.115.8660
++
+- *Domain-Driven Design: Tackling Complexity in the Heart of Software*
++
+by Eric Evans - 2003
++
+"_This book provides a broad framework for making design decisions and a technical vocabulary for discussing domain
+design. It is a synthesis of widely accepted best practices along with the author's own insights and experiences.
+Projects facing complex domains can use this framework to approach domain-driven design systematically.
+Many people have employed domain-driven design in some form, but it will be made more effective with a systematic
+approach and a shared vocabulary._"
++
+http://domaindrivendesign.org/books/evans_2003
++
+- *Tell, Don't Ask*
++
+by Andy Hunt and the Pragmatic Programmers - 2003
++
+"_Procedural code gets information then makes decisions. Object-oriented code tells objects to do things. - Alec Sharp_"
++
+http://pragprog.com/articles/tell-dont-ask
++
+- *Inversion of Control Containers and the Dependency Injection pattern*
++
+by Martin Fowler - 2004
++
+"_In the Java community there's been a rush of lightweight containers that help to assemble components from different
+projects into a cohesive application. Underlying these containers is a common pattern to how they perform the wiring,
+a concept they refer under the very generic name of "Inversion of Control". In this article I dig into how this pattern
+works, under the more specific name of "Dependency Injection", and contrast it with the Service Locator alternative.
+The choice between them is less important than the principle of separating configuration from use._"
++
+http://martinfowler.com/articles/injection.html
++
+- *Inversion of Control*
++
+by Martin Fowler - 2005
++
+"_Inversion of Control is a key part of what makes a framework different to a library._"
++
+http://martinfowler.com/bliki/InversionOfControl.html
++
+- *Applying Domain-Driven Design and Patterns*
++
+by Jimmy Nilsson - 2006
++
+"_While Eric's book is the definitive treatment of DDD, this book by Jimmy Nilsson takes a fresh approach to this
+difficult topic. Pragmatic and full of examples, this book digs into the nitty-gritty of applying DDD._"
++
+http://domaindrivendesign.org/books/nilsson_2006
++
+- *Domain-Driven Design Quickly*
++
+by Abel Avram & Floyd Marinescu - 2007
++
+"_Domain-Driven Design Quickly, is a 104 page condensed explanation of the basic principles of DDD, drawing heavily on
+the content of Evans and Nilsson._"
++
+http://domaindrivendesign.org/books/avram_marinescu_2007
++
+- *Putting model to work*
++
+by Eric Evans - 2007
++
+"_This talk will outline some of the foundations of domain-driven design: How models are chosen and evaluated; How
+multiple models coexist; How the patterns help avoid the common pitfalls, such as overly interconnected models; How
+developers and domain experts together in a DDD team engage in deeper exploration of their problem domain and make that
+understanding tangible as a practical software design._"
++
+http://www.infoq.com/presentations/model-to-work-evans
++
+- *Strategic design*
++
+by Eric Evans - 2007
++
+"_This talk introduces two broad principles for strategic design. 'Context mapping' addresses the fact that different
+groups model differently. 'Core domain' distills a shared vision of the system's "core domain" and provides a systematic
+guide to when "good enough" is good enough versus when to push for excellence._"
++
+http://www.infoq.com/presentations/strategic-design-evans
++
+- *Clarified CQRS*
++
+by Udi Dahan - 2009
++
+"_After listening how the community has interpreted Command-Query Responsibility Segregation I think that the time has
+come for some clarification. Some have been tying it together to Event Sourcing. Most have been overlaying their
+previous layered architecture assumptions on it. Here I hope to identify CQRS itself, and describe in which places it
+can connect to other patterns._"
++
+http://www.udidahan.com/2009/12/09/clarified-cqrs/
++
+- *The DCI Architecture: A New Vision of Object-Oriented Programming*
++
+by Trygve Reenskaug and James O. Coplien - 2009
++
+"_Object-oriented programming was supposed to unify the perspectives of the programmer and the end user in computer
+code: a boon both to usability and program comprehension. While objects capture structure well, they fail to capture
+system action. DCI is a vision to capture the end user cognitive model of roles and interactions between them._"
++
+http://www.artima.com/articles/dci_vision.html[artima.com/articles/dci_vision.html]
++
+- *Command and Query Responsibility Segregation*
++
+by Greg Young - 2010
++
+"_Command and Query Responsibility Segregation uses the same definition of Commands and Queries that Meyer used and
+maintains the viewpoint that they should be pure. The fundamental difference is that in CQRS objects are split into two
+objects, one containing the Commands one containing the Queries._"
++
+http://cqrs.files.wordpress.com/2010/11/cqrs_documents.pdf
++
+- *Polyglot Persistence*
++
+by Martin Fowler - 2011
++
+"_If you're working in the enterprise application world, now is the time to start familiarizing yourself with
+alternative data storage options. This won't be a fast revolution, but I do believe the next decade will see the
+database thaw progress rapidly._"
++
+http://martinfowler.com/bliki/PolyglotPersistence.html
++
+- *CQRS*
++
+by Martin Fowler - 2011
++
+"_CQRS stands for Command Query Responsibility Segregation. It's a pattern that I first heard described by Greg Young.
+At its heart is a simple notion that you can use a different model to update information than the model you use to read
+information. This simple notion leads to some profound consequences for the design of information systems._"
++
+http://martinfowler.com/bliki/CQRS.html
++
+- *Domain Event*
++
+by Martin Fowler - WIP
++
+"_Captures the memory of something interesting which affects the domain._"
++
+http://martinfowler.com/eaaDev/DomainEvent.html
++
+- *Event Sourcing*
++
+by Martin Fowler - WIP
++
+"_Capture all changes to an application state as a sequence of events._"
++
+http://martinfowler.com/eaaDev/EventSourcing.html
++
+- *Event Collaboration*
++
+by Martin Fowler - WIP
++
+"_Multiple components work together by communicating with each other by sending events when their internal state
+changes._"
++
+http://martinfowler.com/eaaDev/EventCollaboration.html
+
+
+
+
+== Projects ==
+
+// Here is a quick copy/paste snippet to add a project
+//
+// - *TITLE*
+// +
+// "_SUMMARY_"
+// +
+// LINK
+// +
+
+_Pêle-mêle_, inspiring, inspired, alternatives or simply related:
+
+- *AspectJ*
++
+"_An aspect-oriented extension to the Java programming language._"
++
+http://www.eclipse.org/aspectj/[eclipse.org/aspectj]
++
+- *Spring Framework*
++
+"_The Spring Framework is an application framework and Inversion of Control container for the Java platform._"
++
+http://www.springsource.org/[springsource.org]
++
+- *Google Guice*
++
+"Guice alleviates the need for factories and the use of new in your Java code"
++
+http://code.google.com/p/google-guice/[code.google.com/p/google-guice]
++
+- *Java Enterprise Edition (EJBs, CDI)*
++
+"_Java EE provides component development, web services, management, and communications APIs._"
++
+http://docs.oracle.com/javaee/[docs.oracle.com/javaee]
++
+- *Chaplin ACT*
++
+"_Chaplin ACT is a Java class transformer which modifies classes in such a way that their instances can form composites
+at runtime._"
++
+http://www.iquality.org/chaplin/[iquality.org/chaplin]
++
+- *JavATE*
++
+"_JavATE, the Java Domain Driven Design Framework, is a set of open source Java libraries that enables application
+development using a domain driven approach._"
++
+http://www.javate.amattioli.it/
++
+- *Bastion Framework*
++
+"_Bastion is a Java framework for implementing Domain-Driven Designed (DDD) applications._"
++
+http://bastionframework.org/[bastionframework.org]
++
+- *Axon Framework*
++
+"_The axon framework is focussed on making life easier for developers that want to create a java application based on
+the CQRS principles._"
++
+http://www.axonframework.org/[axonframework.org]
++
+- *Jdon Framework*
++
+"_Jdon Framework is a DDD( Domain-Driven Design ) + DCI + Domain Events(Event Sourcing/CQRS) framework for java._"
++
+http://www.jdon.org/[jdon.org]
+
+
+

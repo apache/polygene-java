@@ -1,0 +1,15 @@
+[[news-20100125-2,Qi4j at Øredev 2009 : DCI in practice]]
+= @ Øredev 2009 - DCI =
+
+In this presentation that was recorded during Øredev 2009, Rickard Öberg
+presents how to use Qi4j to implement the DCI principles. DCI, or
+Data-Context-Interaction, is a new paradigm created by Trygve Reenskug,
+inventor of the MVC pattern.
+
+The presentation can be found
+http://www.oredev.org/prod/oredev/site.nsf/docsbycodename/session?opendocument&sid=88EF79931A074A1AC125759A003AB0ED&track=24116556E47101EAC12575A50049A141&day=5[here],
+and it was part of a DCI track with Trygve and Jim Coplien, who's presentations
+you can find
+http://www.oredev.org/prod/oredev/site.nsf/docsbycodename/session?opendocument&sid=B5D8BF332A282FEEC1257599003E5694&track=24116556E47101EAC12575A50049A141&day=5[here]
+and
+http://www.oredev.org/prod/oredev/site.nsf/docsbycodename/session?opendocument&sid=9986C37D739F8D39C12575940064F272&track=24116556E47101EAC12575A50049A141&day=5[here].

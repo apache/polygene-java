@@ -20,7 +20,7 @@ package org.qi4j.tutorials.services.step3;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.core.testsupport.AbstractQi4jTest;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class LibraryTest
     extends AbstractQi4jTest
@@ -29,10 +29,11 @@ public class LibraryTest
     public void testLibrary()
         throws Exception
     {
-        Consumer consumer = objectBuilderFactory.newObject( Consumer.class );
+        Consumer consumer = module.newObject( Consumer.class );
         consumer.run();
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {

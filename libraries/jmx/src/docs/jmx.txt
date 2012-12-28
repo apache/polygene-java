@@ -1,0 +1,26 @@
+[[library-jmx, JMX Library]]
+= JMX =
+
+[devstatus]
+--------------
+source=libraries/jmx/dev-status.xml
+--------------
+
+The JMX library provides a service that exposes a Qi4j app in
+JMX automatically, giving you an opportunity to inspect the app much as
+you would with the <<tools-envisage>> tool.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Usage ==
+
+[snippet,java]
+----
+source=libraries/jmx/src/test/java/org/qi4j/library/jmx/JMXTest.java
+tag=assembly
+----
+
+Note that you need to run it with -Dcom.sun.management.jmxremote so that the
+JVM starts the MBeanServer.
+
+image:library-jmx.png[]

@@ -27,6 +27,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 
 /**

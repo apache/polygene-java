@@ -1,0 +1,101 @@
+[[library-circuitbreaker,Circuit Breaker Library]]
+= Circuit Breaker =
+
+[devstatus]
+--------------
+source=libraries/circuitbreaker/dev-status.xml
+--------------
+
+The Circuit Breaker library provides a way to guard your application
+against faulty external systems (e.g. mail servers  being down, web
+services being down). It is used by many Qi4j Extensions and Libraries.
+
+There's a couple of differences between this implementation and others
+seen on the net, but we've also heavily borrowed from others. The
+first difference is that we've not focused on performance at all. For
+some reason other implementations make a point about doing "atomic
+changes" with various tricks, to ensure good performance. Since this is
+used to guard access to external systems, where latencies range in
+milliseconds and up, that seems completely useless, so we've just put
+"synchronized" on all methods, which should be safe. "It works" is
+better than "it's fast" for these types of things.
+
+Second, other implementations have had really crude logic for what types
+of exceptions cause the circuit to break. The most crude is "all", more
+advanced ones allow exceptions that be excepted to be registered, but in
+real cases this is not enough. Case in point is JDBC exceptions where
+you want to fail on "connect exception" but not necessarily "invalid SQL
+syntax". So instead we've leveraged `Specification` from <<core-functional,Core Functional API>> where
+you get to provide your own specification that can use any logic to
+determine whether a particular exception is ok or not.
+
+Third, there's a big focus on manageability through JMX. A
+circuitbreaker can be easily exposed in JMX as an MBean, where you can
+track service levels and see exception messages, and trip/enable circuit
+breakers.
+
+Fourth, if an external system is unavailable due to a circuitbreaker
+tripping it should be possible to expose this to other Qi4j services.
+There is a standard implementation of the Availability interface that
+delegates to a circuit breaker and the Enabled configuration flag, which
+is what we'd suspect will be used in most cases where external systems
+are invoked.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Direct usage ==
+
+The CircuitBreaker can be used directly, even without using anything else from the Qi4j SDK.
+
+Here is a code snippet that demonstrate how to create a CircuitBreaker and how it behave:
+
+[snippet,java]
+----
+source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/CircuitBreakerTest.java
+tag=direct
+----
+
+
+== Service Circuit Breaker  ==
+
+As a facility you can make your Services extends `AbstractBreakOnThrowable`, set them a `CircuitBreaker` as
+`MetaInfo` during assembly and annotate methods with `@BreaksCircuitOnThrowable`. Doing this will :
+
+- add a circuit breaker accessor to the Service (`CircuitBreaker getCircuitBreaker()`) ;
+- allow exposition of the circuit breaker in JMX ;
+- update the circuit breaker on annotated methods invocation success and thrown exceptions using the `BreakCircuitConcern`.
+
+Here is how to declare such a Service:
+
+[snippet,java]
+----
+source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/BreaksCircuitOnThrowableTest.java
+tag=service
+----
+
+Remember to annotate methods which when they throw throwables should cause circuit breakers to trip and go back on
+invocation success with the `@BreaksCircuitOnThrowable` annotation.
+
+
+=== Exposing Service Circuit Breakers in JMX ===
+
+To expose their circuit breaker in JMX, your Services using one must implement the `ServiceCircuitBreaker` interface.
+Note that if you already extends `AbstractBreakOnThrowable` you don't need to do anything else as it already extends
+`ServiceCircuitBreaker`.
+
+Here is how it goes:
+
+[snippet,java]
+----
+source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/jmx/CircuitBreakerManagementTest.java
+tag=jmx
+----
+
+
+== Interactive sample ==
+
+A gradle task runSample is defined in this library as a shortcut to run a
+simple interactive example. You'll need a MBean client to connect to the
+sample, VisualVM with its MBean plugin does the job. See <<build-system>>
+if you need some guidance.
+

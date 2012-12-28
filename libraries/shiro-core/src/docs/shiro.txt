@@ -1,0 +1,225 @@
+[[library-shiro, Shiro Security Library]]
+= Shiro Security =
+
+[devstatus]
+--------------
+source=libraries/shiro-core/dev-status.xml
+--------------
+
+This library provides integration with the http://shiro.apache.org/[Apache Shiro] Java Security Framework.
+
+NOTE: If you are working on a HTTP based application, see the <<library-shiro-web>> that leverages this very library
+and is directly usable with the <<library-http>>, the <<library-servlet>> or any other Servlet based stack.
+
+``Apache Shiro is a powerful and easy-to-use Java security framework that performs authentication, authorization,
+cryptography, and session management. With Shiro’s easy-to-understand API, you can quickly and easily secure any
+application – from the smallest mobile applications to the largest web and enterprise applications.'' says the Apache
+Shiro website.
+
+Altough Apache Shiro can be used as-is with Qi4j Applications, this library provides integrations that can come in
+handy. If your use case do not fit any of theses integrations, look at their respective code. You should find out
+pretty easily how to compose the provided code to write your integration. Don't hesitate to contribute interesting
+integrations to this very library.
+
+We invite you to read the comprehensive http://shiro.apache.org/documentation.html[Apache Shiro documentation], we will
+mostly discuss Qi4j related matters here.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Basic usage ==
+
+For standalone applications, you can use plain Shiro easily. The only thing to do is to register a configured
+SecurityManager when activating your Qi4j Application. It can be done outside the application, before its activation,
+"à là" by-hand ;
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/StandaloneShiroTest.java
+tag=before
+----
+
+note that this example code register the SecurityManager as a VM static singleton.
+
+However we recommend to use the provided IniSecurityManagerService that does exactly this when activated and unregister
+the SecurityManager when passivated:
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/StandaloneShiroTest.java
+tag=assembly
+----
+
+You can change the INI resource path through the ShiroIniConfiguration:
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/main/java/org/qi4j/library/shiro/ini/ShiroIniConfiguration.java
+tag=config
+----
+
+Remember that this setup use a ThreadLocal SecurityManager singleton. Among other things it means that, althoug the
+IniSecurityManagerService is activated on Application activation, if you need to use Shiro in other Services that are
+activated on Application activation you should tell Qi4j about this dependency by injecting the SecurityManagerService
+in the laters.
+
+Once started you must remember to register the SecurityManager in Shiro's ThreadContext ;
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/StandaloneShiroTest.java
+tag=thread-context
+----
+
+that's how Shiro works.
+
+
+== Security Concern ==
+
+This library provides the `SecurityConcern` that should be used alongside the provided method annotations that mimic
+Apache Shiro annotations:
+
+- The `@RequiresAuthentication` annotation requires the current Subject to have been authenticated during their current
+  session for the annotated class/instance/method to be accessed or invoked.
+- The `@RequiresGuest` annotation requires the current Subject to be a "guest", that is, they are not authenticated or
+  remembered from a previous session for the annotated class/instance/method to be accessed or invoked.
+- The `@RequiresPermissions` annotation requires the current Subject be permitted one or more permissions in order to
+  execute the annotated method.
+- The `@RequiresRoles` annotation requires the current Subject to have all of the specified roles. If they do not have
+  the role(s), the method will not be executed and an AuthorizationException is thrown.
+- The `@RequiresUser` annotation requires the current Subject to be an application user for the annotated
+  class/instance/method to be accessed or invoked. An 'application user' is defined as a Subject that has a known
+  identity, either known due to being authenticated during the current session or remembered from 'RememberMe' services
+  from a previous session.
+
+
+
+== Realms Services ==
+
+All the above is sufficient as long as you use the ini file to store user credentials and permissions or a Realm that
+has no dependency on your application code and can be specified in the ini file to be instanciated by Shiro outside the
+Qi4j scope.
+
+One usecase where it's not sufficient comes quickly as you would like to provide user credentials and permissions
+from Entities stored in an EntityStore or perform any custom logic involving your Qi4j Application.
+
+Let's look at a complete example using a Realm Service that extends one of the Shiro provided Realm which use in-memory
+credientials and configuring it ;
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/RealmServiceTest.java
+tag=realm-service
+----
+
+We start by defining a Realm Service and its Mixin that's based on SimpleAccountRealm that we configure to handle hashed
+passwords. For the sake of the example it is shown how to hash a password using Shiro built in mecanisms. Then comes
+the Assembly where we simply reuse the Standalone Shiro Assembly and declare our Realm as a Service. It works the same
+way when using the <<library-shiro-web>>.
+
+Note that under the hood, assembled Realm Services are added to the ones configured in the INI file.
+
+
+
+== Security Domain ==
+
+Going further, if you want to persist credentials and permissions in an EntityStore, the Shiro Security Library
+provides skeletons to easily setup some usecases consisting of Shiro setup facilities and base state model for you to
+compose with.
+
+
+=== Passwords ===
+
+Password storage is not a simple subject. Shiro provide best practice mecanisms using salt and repeated-hashing out of
+the box. It is possible to setup your Realm so that hashed passwords are stored in a future proof manner, meaning that
+you can change the used algorithms while retaining compatibility with passwords already stored.
+
+Shiro use the
+http://shiro.apache.org/static/current/apidocs/org/apache/shiro/crypto/hash/format/Shiro1CryptFormat.html[Shiro1CryptFormat]
+which is a fully reversible http://packages.python.org/passlib/modular_crypt_format.html[Modular Crypt Format] (MCF).
+
+This library provides a `PasswordRealmService` to be used with a `PasswordSecurable`. Let's look at a complete
+example.
+
+First you need to define your User (or Account, or whatever fits your domain), for the sake of the example we define a
+UserFactory too. Note that the factory uses the PasswordService implemented by the PasswordRealm to hash the password:
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PasswordDomainTest.java
+tag=domain
+----
+
+Now comes the assembly that reuse what's described above and add both the password domain assembly plus your custom User
+entity and its factory:
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PasswordDomainTest.java
+tag=assembly
+----
+
+And finally here is how to create a new user and below how to perform a login:
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PasswordDomainTest.java
+tag=usage
+----
+
+In this setup, password hashing use the Shiro's default (Salted SHA-256 with 500.000 iterations). If you _need_ to
+change this you can do it using PasswordRealmConfiguration properties:
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/main/java/org/qi4j/library/shiro/domain/passwords/PasswordRealmConfiguration.java
+tag=config
+----
+
+
+=== Permissions & Roles ===
+
+In the same vein, this library provide a domain state skeleton with support in `PasswordRealmService`. It allows you to
+easily store roles, permissions and assignment to your accounts.
+
+Let's look at the previous example with permissions added.
+
+First you need to add the RoleAssignee type to your account:
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PermissionsDomainTest.java
+tag=domain
+----
+
+Assembly is straight forward:
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PermissionsDomainTest.java
+tag=assembly
+----
+
+And here is how to use all this:
+
+[snippet,java]
+----
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PermissionsDomainTest.java
+tag=usage
+----
+
+
+
+== Other authentication mecanisms ==
+
+For other authentication mecanisms you can leverage Shiro extensions available in the Shiro distribution or as external
+libraries. There's support for text files, simple JDBC, LDAP, CAS SSO, OAuth, OpenID, X.509 Certificates etc...
+
+Take the PasswordRealmService as a start and extend/rewrite it to suit your needs.
+
+If you happen to come with a Qi4j integration that could be valuable in this very library, don't hesitate to
+contribute.
+
+
+== Logging ==
+
+All code from this library use the `org.qi4j.library.shiro` logger.

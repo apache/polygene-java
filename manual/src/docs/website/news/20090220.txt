@@ -1,0 +1,6 @@
+[[news-20090220,Qi4j 0.6 Released]]
+= Qi4j 0.6 Released =
+
+Goal of Full Test Coverage in Core. 
+
+Break-up of project.

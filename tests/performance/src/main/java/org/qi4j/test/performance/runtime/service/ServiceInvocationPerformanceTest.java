@@ -14,9 +14,6 @@
 
 package org.qi4j.test.performance.runtime.service;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.text.NumberFormat;
 import junit.framework.TestCase;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
@@ -24,6 +21,10 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.text.NumberFormat;
 
 /**
  * JAVADOC
@@ -47,7 +48,7 @@ public class ServiceInvocationPerformanceTest
             }
         };
 
-        assembly.objectBuilderFactory().newObjectBuilder( ServiceInvocationPerformanceTest.class ).injectTo( this );
+        assembly.module().injectTo( this );
 
         // Warmup
         for( int i = 0; i < 60000; i++ )

@@ -1,0 +1,88 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-service,ServiceComposite]]
+= Service Composite =
+Any service added, via the ModuleAssembly.addServices(), ModuleAssembly.services() and ModuleAssembly.importServices()
+methods, will have the ServiceComposite meta type added to it. In Qi4j, when we speak of _Services_ we mean instances
+of _ServiceComposite_.
+
+Most programmers are familiar with the term "Service", and after the failure of Object Oriented Programming's promise
+to encapsulate all the behavior together with the object's state, programmers learned that the only way to deal with
+decoupling and re-use was to make the objects into data containers and deploy services that acted upon those data
+containers. Very much what functions did on structs back in the C and Pascal days.
+
+Qi4j will bring a lot of the behavior back to the Composite itself, but we still need Services for cross-composite
+functionality. The Qi4j Service model is fairly simple, yet powerful and flexible enough to accommodate most
+service-oriented patterns and ability to integrate well with external systems whether they are in-JVM or remote,
+such as Spring, OSGi, WS-*, Rest and others.
+
+The characteristics of a ServiceComposite compared to other Composite meta types are;
+
+    * It is one singleton per declaration in bootstrap.
+    * It has an identity defined in bootstrap.
+    * It has an Activation life cycle into which Activators hook.
+    * It has an optional Configuration.
+
+
+_Services_ in Qi4j are _singletons_, one instance per definition. That means that there may exist multiple instances
+of the same service type, but they can not be created on the fly in runtime, but has to be explicitly defined during
+<<core-bootstrap-assembly>>.
+
+By default, _Services_ are not instantiated until they are used. This means that the _ServiceComposite_ instance itself
+will not exist until someone calls a method. If a _Service_ needs to be instantiated when the _Module_ is activated, one
+need to declare/call the instantiateOnStartup() method on the _ServiceDescriptor_ during the bootstrap.
+
+== Service Configuration ==
+The configuration for a service is well supported in Qi4j. See the <<core-api-service-configuration>> chapter for details.
+
+== Service Activation ==
+Services are activated (injected and instantiated) either on application start-up, or upon first use. This is controlled
+by calling instantiateOnStartup(), this way;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+tag=instantiateOnStartup
+--------------
+
+If this method is not called during assembly, the activation will occur on first service usage.
+
+Passivation occurs when a <<core-api-module>> is deactivated, typically because the whole application is shutting down.
+Passivation occurs in the reverse order of the activation, to ensure that dependent services are still available for a
+passivating service.
+
+Activators assembled with the service will get their beforeActivation and afterActivation methods called around the
+ServiceComposite activation and their beforePassivation and afterPassivation around the ServiceComposite passivation.
+Member injection and constructor initialization occur during the activation. The ServiceComposite can be used from the
+afterActivation to the beforePassivation method.
+
+== Identity and Tags ==
+Services has an Identity, which drives the <<core-api-service-configuration>> system and can be used to lookup a particular service
+instance. Services can also be arbitrarily tagged, via the ServiceDescriptor. Example;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+tag=tag
+--------------
+
+Tags are useful inside the application code to locate a particular service instance, in case we have many. For instance;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+tag=UseTag
+--------------

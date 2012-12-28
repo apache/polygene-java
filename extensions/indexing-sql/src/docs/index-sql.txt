@@ -1,0 +1,78 @@
+[[extension-indexing-sql,SQL Index/Query]]
+= SQL Index/Query =
+
+[devstatus]
+--------------
+source=extensions/indexing-sql/dev-status.xml
+--------------
+
+This extension fully leverage the <<library-sql>> meaning that you must use it to assemble your DataSource and that you
+get <<library-circuitbreaker,Cricuit Breaker>> and <<library-jmx, JMX>> integration for free.
+
+TIP: See the <<sample-sql-support>> that demonstrate combined use of <<library-sql>>, <<extension-es-sql>> and
+<<extension-indexing-sql>>.
+
+The following SQL databases are supported:
+
+- http://www.postgresql.org/[PostgreSQL]
+
+Implementations per database Vendor share a generic codebase but can override about everything SQL. As a consequence
+they can have strong differences in terms of performance if they use vendor specific extensions.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Configuration ==
+
+SQL Index/Query Configuration is optional and provides only one configuration property: `schemaName` defaulted to
+'qi4j_es'. On SQL databases that don't support schemas this configuration property is simply ignored.
+
+The assembly snippets below show the DataSource assembly alongside the SQL Index/Query assembly. Remember to configure
+the DataSource properly, see <<library-sql>> and <<howto-configure-service>>.
+
+
+== PostgreSQL ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/indexing-sql/src/test/java/org/qi4j/index/sql/postgresql/SQLTestHelper.java
+tag=assembly
+----
+
+Sample DataSource configuration defaults:
+
+[source,java]
+----
+include::../test/resources/postgres-datasource.properties[]
+----
+
+IMPORTANT: The PostgreSQL ltree extension is needed on the used database, see below how to install it on your database.
+
+=== Installing ltree on PostgreSQL >= 9.1 ==
+
+It's bundled with PostgreSQL but you need to activate it on your database:
+
+[source,bash]
+----
+CREATE EXTENSION ltree;
+----
+
+=== Installing ltree on PostgreSQL <= 9.0 ===
+
+You need to install postgresql-contrib and import the module in your database.
+The following applies to Debian based distributions, adapt it to yours:
+
+1. Install the contrib package: sudo apt-get install postgresql-contrib
+2. Restart the database: sudo /etc/init.d/postgresql-8.4 restart
+3. Change to the database owner account (e.g., postgres).
+4. Change to the contrib modules' directory: /usr/share/postgresql/8.4/contrib/
+5. Load the SQL files using: psql -U user_name -d database_name -f module_name.sql
+
+For example to install the needed ltree module:
+
+[source,bash]
+----
+psql -U postgres -d database_name -f ltree.sql
+----
+

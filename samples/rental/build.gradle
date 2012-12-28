@@ -1,19 +1,21 @@
 description = "Sample of implementation of a Car Rental application."
 
+apply plugin: 'war'
+apply plugin: 'jetty'
+
+// To run in an embedded Jetty use:
+//      ../../gradlew jettyRun
+// And then go to:
+//      http://localhost:8080/org.qi4j.sample.rental/rental/main
+
 jar { manifest { name = "Qi4j Sample - Car Rental" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.auth"))
-  compile(libraries.slf4j_api)
-  compile "javax.servlet:servlet-api:2.5"
 
-  testCompile(libraries.junit)
-  testRuntime(libraries.asm)
-  testRuntime(libraries.asm_commons)
-  testRuntime(libraries.slf4j_simple)
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.spi"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
+
+  providedCompile libraries.servlet_api
+
+  runtime project( ":org.qi4j.core:org.qi4j.core.runtime" )
+
 }

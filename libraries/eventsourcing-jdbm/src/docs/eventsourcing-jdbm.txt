@@ -1,0 +1,13 @@
+[[library-eventsourcing-jdbm, Event Sourcing JDBM Library]]
+= Event Sourcing - JDBM =
+
+[devstatus]
+--------------
+source=libraries/eventsourcing-jdbm/dev-status.xml
+--------------
+
+Event Sourcing - JDBM Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

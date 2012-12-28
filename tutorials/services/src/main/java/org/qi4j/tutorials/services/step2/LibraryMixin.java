@@ -27,6 +27,7 @@ public class LibraryMixin
     @Structure
     ValueBuilderFactory factory;
 
+    @Override
     public Book borrowBook( String author, String title )
     {
         ValueBuilder<Book> builder = factory.newValueBuilder( Book.class );
@@ -38,6 +39,7 @@ public class LibraryMixin
         return book;
     }
 
+    @Override
     public void returnBook( Book book )
     {
         System.out.println( "Book returned: " + book.title().get() + " by " + book.author().get() );

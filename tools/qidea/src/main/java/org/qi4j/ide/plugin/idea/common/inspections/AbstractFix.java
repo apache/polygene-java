@@ -18,6 +18,7 @@ package org.qi4j.ide.plugin.idea.common.inspections;
 
 import com.intellij.codeInspection.LocalQuickFix;
 import org.jetbrains.annotations.NotNull;
+
 import static org.qi4j.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 
 /**

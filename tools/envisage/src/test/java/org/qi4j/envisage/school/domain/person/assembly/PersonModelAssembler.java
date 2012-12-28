@@ -22,7 +22,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.envisage.school.domain.person.initialdata.SamplePersonInitialData;
 
-import static org.qi4j.api.common.Visibility.*;
+import static org.qi4j.api.common.Visibility.application;
+import static org.qi4j.api.common.Visibility.layer;
 
 public final class PersonModelAssembler
     implements Assembler

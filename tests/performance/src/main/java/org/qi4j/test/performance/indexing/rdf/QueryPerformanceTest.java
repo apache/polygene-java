@@ -18,7 +18,6 @@
 
 package org.qi4j.test.performance.indexing.rdf;
 
-import java.io.File;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,28 +34,24 @@ import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.*;
 import org.qi4j.entitystore.jdbm.JdbmConfiguration;
 import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.index.rdf.indexing.RdfIndexingService;
-import org.qi4j.index.rdf.query.NamedSparqlDescriptor;
+import org.qi4j.index.rdf.query.SesameExpressions;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
-import org.qi4j.spi.query.NamedQueries;
-import org.qi4j.spi.structure.ApplicationSPI;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.qi4j.api.query.QueryExpressions.*;
+import java.io.File;
+
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 @SuppressWarnings( { "ResultOfMethodCallIgnored" } )
 public class QueryPerformanceTest
@@ -70,9 +65,8 @@ public class QueryPerformanceTest
     private static final String MODULE_DOMAIN = "MODULE_DOMAIN";
     private static final String MODULE_CONFIG = "MODULE_CONFIG";
 
-    private ApplicationSPI application;
-    private ServiceFinder serviceLocator;
-    private UnitOfWorkFactory unitOfWorkFactory;
+    private Application application;
+    private Module module;
     private static final String QUERY1 = "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n" +
                                          "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n" +
                                          "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
@@ -138,12 +132,10 @@ public class QueryPerformanceTest
         {
             Energy4Java qi4j = new Energy4Java();
             application = qi4j.newApplication( this );
-            Module module = application.findModule( LAYER_DOMAIN, MODULE_DOMAIN );
-            serviceLocator = module.serviceFinder();
-            unitOfWorkFactory = module.unitOfWorkFactory();
+            module = application.findModule( LAYER_DOMAIN, MODULE_DOMAIN );
             application.activate();
             ServiceReference<RdfIndexingService> indexer =
-                serviceLocator.findService( RdfIndexingService.class );
+                module.findService( RdfIndexingService.class );
 
             indexingDataDir = indexer.get().dataDir();
         }
@@ -223,22 +215,21 @@ public class QueryPerformanceTest
         throws Exception
     {
         LeadRepository leadRepo = populateEntityStore();
-        measureNamedQuery( leadRepo, "1" );
-        measureNamedQuery( leadRepo, "2" );
-        measureNamedQuery( leadRepo, "3" );
-        measureNamedQuery( leadRepo, "4" );
-        measureNamedQuery( leadRepo, "5" );
+        measureNamedQuery( leadRepo, QUERY1 );
+        measureNamedQuery( leadRepo, QUERY2 );
+        measureNamedQuery( leadRepo, QUERY3 );
+        measureNamedQuery( leadRepo, QUERY4 );
+        measureNamedQuery( leadRepo, QUERY5 );
     }
 
     private LeadRepository populateEntityStore()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = unitOfWorkFactory.newUnitOfWork();
-        ServiceReference<LeadRepository> leadRepoRef = serviceLocator.findService( LeadRepositoryService.class );
-        LeadRepository leadRepo = leadRepoRef.get();
+        UnitOfWork uow = module.newUnitOfWork();
+        LeadRepository leadRepo = module.findService( LeadRepositoryService.class ).get();
         if( leadRepo.findByName( "Lead99999" ) == null )
         {
-            ServiceReference<LeadEntityFactoryService> leadFactoryRef = serviceLocator.findService( LeadEntityFactoryService.class );
+            ServiceReference<LeadEntityFactoryService> leadFactoryRef = module.findService( LeadEntityFactoryService.class );
             LeadEntityFactory leadFactory = leadFactoryRef.get();
             long start, end;
             start = System.currentTimeMillis();
@@ -248,7 +239,7 @@ public class QueryPerformanceTest
                 {
                     System.out.print( "\r" + i );
                     uow.complete();
-                    uow = unitOfWorkFactory.newUnitOfWork();
+                    uow = module.newUnitOfWork();
                 }
                 leadFactory.create( "Lead" + i );
             }
@@ -266,7 +257,7 @@ public class QueryPerformanceTest
         UnitOfWork uow;
         long start;
         long end;
-        uow = unitOfWorkFactory.newUnitOfWork();
+        uow = module.newUnitOfWork();
         try
         {
             start = System.currentTimeMillis();
@@ -280,10 +271,9 @@ public class QueryPerformanceTest
             System.out.println( "Retrieval time of " + lead.name().get() + " by name: " + ( end - start ) );
             uow.complete();
         }
-        catch( Exception e )
+        finally
         {
             uow.discard();
-            throw e;
         }
     }
 
@@ -293,7 +283,7 @@ public class QueryPerformanceTest
         UnitOfWork uow;
         long start;
         long end;
-        uow = unitOfWorkFactory.newUnitOfWork();
+        uow = module.newUnitOfWork();
         try
         {
             start = System.currentTimeMillis();
@@ -307,10 +297,9 @@ public class QueryPerformanceTest
             System.out.println( "Retrieval time of " + lead.name().get() + " by name: " + ( end - start ) );
             uow.complete();
         }
-        catch( Exception e )
+        finally
         {
             uow.discard();
-            throw e;
         }
     }
 
@@ -335,14 +324,7 @@ public class QueryPerformanceTest
 
         // Indexing
 
-        NamedQueries namedQueries = new NamedQueries();
-        namedQueries.addQuery( new NamedSparqlDescriptor( "1", QUERY1 ) );
-        namedQueries.addQuery( new NamedSparqlDescriptor( "2", QUERY2 ) );
-        namedQueries.addQuery( new NamedSparqlDescriptor( "3", QUERY3 ) );
-        namedQueries.addQuery( new NamedSparqlDescriptor( "4", QUERY4 ) );
-        namedQueries.addQuery( new NamedSparqlDescriptor( "5", QUERY5 ) );
-
-        new RdfNativeSesameStoreAssembler( namedQueries ).assemble( module );
+        new RdfNativeSesameStoreAssembler( ).assemble( module );
 
         // Entity store
         new JdbmEntityStoreAssembler( Visibility.application ).assemble( module );
@@ -420,10 +402,10 @@ public class QueryPerformanceTest
         @Structure
         private QueryBuilderFactory qbf;
 
-        public Lead findByFixedQuery( String name )
+        public Lead findByFixedQuery( String queryString )
         {
             UnitOfWork uow = uowf.currentUnitOfWork();
-            Query<Lead> query = qbf.newNamedQuery( Lead.class, uow, name );
+            Query<Lead> query = uow.newQuery( qbf.newQueryBuilder( Lead.class ).where( SesameExpressions.sparql( queryString ) ));
             return query.find();
         }
 
@@ -433,7 +415,7 @@ public class QueryPerformanceTest
             QueryBuilder<Lead> builder = qbf.newQueryBuilder( Lead.class );
             Lead template = templateFor( Lead.class );
 
-            Query<Lead> query = builder.where( eq( template.name(), name ) ).newQuery( uow );
+            Query<Lead> query = uow.newQuery( builder.where( eq( template.name(), name ) ));
             return query.find();
         }
     }

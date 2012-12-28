@@ -1,0 +1,408 @@
+:leveloffset: 1
+
+[[glossary,Glossary Section]]
+= Glossary&nbsp; =
+
+== Glossary ==
+
+There are a lot of concepts in Qi4j which may have different meanings in other contexts. So in true DDD-style
+ubiquitous language, we are here listing the definitions of the terms and concepts that are being used.
+
+[glossary]
+[[def-abstract-mixin,Abstract Mixin]]Abstract Mixin::
++
+--
+An Abstract Mixin is an implementation of the <<def-mixin-type>> interface, but is an abstract class and has not
+implemented all the methods.
+
+The Qi4j runtime can use multiple <<def-mixin,Mixins>> for each <<def-mixin-type>> interface. It is also possible to let
+a <<def-generic-mixin>> handle the remaining missing methods.
+--
+
+
+[[def-abstract-modifier,Abstract Modifier]]Abstract Modifier::
++
+--
+Abstract Modifiers are <<def-modifier,Modifiers>> that do not implement all the methods of the <<def-mixin-type>>
+interface.
+
+This works essentially in the same manner as the <<def-abstract-mixin>>. And the methods that are not implemented
+will not be part of the <<def-invocation-stack>> of those methods.
+--
+
+
+[[def-application,Application]]Application::
++
+--
+Application is the top level concept handled by the Qi4j runtime instance. It holds the information about the
+<<def-layer,Layers>> in the application architecture. See <<def-structure>> for more information.
+
+There is one and only one Application instance per Qi4j Runtime instance.
+--
+
+
+[[def-application-mode,Application Mode]]Application Mode::
++
+--
+During the Bootstrap phase an <<def-application>> is given a Mode that can be 'test', 'development', 'staging' or
+'production'.
+
+See <<core-bootstrap-assembly>>.
+--
+
+
+[[def-association,Association]]Association::
++
+--
+An Association is a reference to an <<def-entitycomposite>>.
+
+References to <<def-entitycomposite,Entities>> must be maintained in <<def-association,Associations>>. It is illegal to
+define a <<def-property>> with an <<def-entitycomposite>> as its type.
+--
+
+
+[[def-composite,Composite]]Composite::
++
+--
+A Composite is an instance of a <<def-composite-type>>.
+
+However, we often speak of Composites when we actually mean CompositeType, similarly as we often speak of objects
+when we really are talking of classes in OOP.
+--
+
+
+[[def-composite-context,Composite Context]]Composite Context::
++
+--
+A Composite Context is a mechanism to separate the state of a <<def-transientcomposite>> across two or more threads.
+If a thread modifies a value, only that thread will see the changes, another thread will have its values protected
+by the thread boundaries. Use-cases for this include user credentials on which behalf the thread is executing.
+--
+
+
+[[def-composite-metatype,Composite Meta Type]]Composite Meta Type::
++
+--
+There are 5 Composite Meta Types defined in Qi4j, which each share the composition features but have distinct
+semantic differences.
+
+* <<def-entitycomposite>>
+* <<def-valuecomposite>>
+* <<def-servicecomposite>>
+* <<def-configurationcomposite>> (subtype of EntityComposite)
+* <<def-transientcomposite>>
+--
+
+
+[[def-composite-type,Composite Type]]Composite Type::
++
+--
+CompositeType is the Java interface that declares the composition, from which <<def-composite>> instances can be
+created.
+
+Composite Type interfaces must be a sub-type of one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in
+Qi4j otherwise it can not be instantiated.
+--
+
+
+[[def-concern,Concern]]Concern::
++
+--
+A concern is a stateless <<def-fragment>>, shared between invocations, that acts as an interceptor of the call to
+the <<def-mixin>>. The Concern is a Java class, that either implements the <<def-mixin-type>> it can be used on, or
+java.lang.reflect.InvocationHandler which allows it to be used on any arbitrary <<def-mixin-type>>.
+
+Concerns have many purposes, but they are not intended to produce side effects (see <<def-sideeffect>>). Use-cases
+involves;
+
+* Transaction handling.
+* Call Tracing.
+* User security.
+
+Concerns are established by the use of the @Concerns annotation on composites.
+
+Concern is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Qi4j.
+--
+
+
+[[def-configurationcomposite,Configuration Composite]]Configuration Composite::
++
+--
+Service Composites can have configuration associated to it and that is done via
+<<def-configurationcomposite,Configuration Composites>>, which are a subtype of <<def-entitycomposite>>, as they are
+stored permanently in configured Entity Stores. Configuration Composites are also initialized automatically from
+properties files first time. Note that on consequent start-ups the properties file is not read, as the configuration is
+read from the EntityStore.
+
+ConfigurationComposite is one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in Qi4j.
+
+See <<howto-configure-service>> to learn how to use Configuration Composites.
+--
+
+
+[[def-constraint,Constraint]]Constraint::
++
+--
+Constraints are a kind of validators, which are consulted prior to invoking the method call. Qi4j currently only
+supports ParameterConstraints on methods and value constraints on <<def-property,Properties>>, but future versions will
+include Constraint types for checking complete method calls and return values.
+
+See <<core-api-constraint>> for better understanding of its details.
+
+See <<library-constraints>> for ready to use Constraints.
+
+See <<howto-create-constraint>> to learn how to write your own Constraints.
+
+Constraint is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Qi4j.
+--
+
+
+[[def-entitycomposite,Entity Composite]]Entity Composite::
++
+--
+An Entity Composite, or just Entity for short, is a persisted composite with an <<def-identity>>. An entity only has
+scope within an <<def-unitofwork>> and is therefor inherently thread-safe.
+
+EntityComposite is one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in Qi4j.
+--
+
+
+[[def-fragment,Fragment]]Fragment::
++
+--
+A part of the implementation of a <<def-composite>>. There are 4 fragment types:
+
+* <<def-mixin>>
+* <<def-concern>>
+* <<def-constraint>>
+* <<def-sideeffect>>.
+--
+
+
+[[def-generic-fragment,Generic Fragment]]Generic Fragment::
++
+--
+Generic Fragments are <<def-fragment,Fragments>> that implements java.lang.reflect.InvocationHandler and potentially
+capable of being used for all <<def-mixin-type,MixinTypes>>. This is the direct opposite of the Typed Fragments, which
+implements the <<def-mixin-type>> interface.
+--
+
+
+[[def-generic-mixin,Generic Mixin]]Generic Mixin::
++
+--
+A Generic Mixin implements the java.lang.reflect.InvocationHandler. The invoke() method will be called for all
+<<def-mixin-type>> methods that the <<def-mixin>> has been matched with, through the matching rules.
+
+It is potentially possible that the Generic Mixin also implements the <<def-mixin-type>> interface. In that case, the
+concrete methods will be called, but if the <<def-mixin>> is also an abstract class, then the invoke() method will be
+called for the methods that has been match but are not present.
+--
+
+
+[[def-identity,Identity]]Identity::
++
+--
+TODO
+
+This term has no definition yet. Learn how to contribute in <<community-docs>>.
+--
+
+
+[[def-invocation-stack,Invocation Stack]]Invocation Stack::
++
+--
+For each method, Qi4J will create and re-use an Invocation Stack. It will be built with the sequence of
+<<def-modifier,Modifiers>> and an end-point that will link into the stateful <<def-mixin>>.
+
+It is important to recognize that, for memory footprint reasons, Invocation Stacks are shared across
+<<def-composite,Composites>> of the same <<def-composite-type>>. They are however thread-safe, in that Qi4j will never
+bind the same Invocation Stack to more than one <<def-composite>> instance during a method call, but that between method
+invocations the <<def-modifier,Modifiers>> in the Invocation Stack can not assume that it is bound to the same
+<<def-composite>> instance. Therefor, <<def-modifier,Modifiers>> are not expected to keep state between method
+invocations, and when it needs to do that, then it should reference a <<def-mixin>> via the @This annotation. Qi4j will
+during the binding of the Invocation Stack to the <<def-composite>>, also ensure that all referenced
+<<def-mixin,Mixins>> are correctly injected in the Invocation Stack.
+--
+
+
+[[def-layer,Layer]]Layer::
++
+--
+Qi4j promotes a Layered application design, where Layers can only access lower Layers and not higher Layers or Layers at
+the same level.
+--
+
+
+[[def-manyassociation,ManyAssociation]]ManyAssociation::
++
+--
+TODO
+
+This term has no definition yet. Learn how to contribute in <<community-docs>>.
+--
+
+
+[[def-metainfo,MetaInfo]]MetaInfo::
++
+--
+TODO
+
+This term has no definition yet. Learn how to contribute in <<community-docs>>.
+--
+
+
+[[def-mixin,Mixin]]Mixin::
++
+--
+The Mixin is the instance providing the stateful representation of the <<def-mixin-type>>. This can either be a class
+implementing the <<def-mixin-type>> or a java.lang.reflect.InvocationHandler that is generic to handle any or a subset
+of <<def-mixin-type>>.
+--
+
+
+[[def-mixin-type,MixinType]]MixinType::
++
+--
+The MixinType is the static type of a part of the <<def-composite>>. The MixinType is an interface that defines the methods
+to be exposed in the <<def-composite>>.
+--
+
+
+[[def-modifier,Modifier]]Modifier::
++
+--
+Modifiers are stateless interceptors of method calls, that forms an <<def-invocation-stack>>. The top of the
+<<def-invocation-stack>> is linked to the <<def-composite>> invocation handler and the bottom of the
+<<def-invocation-stack>> is linked to the <<def-mixin,Mixins>>. <<def-invocation-stack,Invocation Stacks>> are shared,
+so Modifiers must assume that the member fields will only be valid within a single method invocation.
+
+There are 3 kinds of Modifiers;
+
+* <<def-constraint>>
+* <<def-concern>>
+* <<def-sideeffect>>
+--
+
+
+[[def-module,Module]]Module::
++
+--
+Modules defines the scope of the <<def-composite,Composites>>. Modules are wired with Assemblies, and can expose
+<<def-composite,Composites>> as visible. Non-visible <<def-composite,Composites>> are not reachable from other Modules.
+--
+
+
+[[def-private-mixin,Private Mixin]]Private Mixin::
++
+--
+When a @This injection refers to a <<def-mixin-type>> which is not extended by the <<def-composite-type>> the former
+becomes a private <<def-mixin-type>>.
+--
+
+
+[[def-property,Property]]Property::
++
+--
+TODO
+
+This term has no definition yet. Learn how to contribute in <<community-docs>>.
+
+See the <<howto-leverage-properties>> how-to.
+--
+
+
+[[def-servicecomposite,Service composite]]Service Composite::
++
+--
+Service Composite is a subtype of <<def-composite>>, and has a range of features built into it.
+
+ServiceComposite is one of the 5 <<def-composite-metatype,Composite Meta Types>> defined in Qi4j.
+
+See the <<core-api-service,Service Composite chapter>>.
+--
+
+
+[[def-sideeffect,SideEffect]]SideEffect::
++
+--
+A side effect is a stateless <<def-fragment>>, shared between invocations, that acts as an interceptor of the call to
+the <<def-mixin>>. The SideEffect is a Java class, that either implements the <<def-mixin-type>> it can be used on, or
+java.lang.reflect.InvocationHandler which allows it to be used on any arbitrary <<def-mixin-type>>.
+
+SideEffects are executed after the completion of the method invocation and therefore cannot change parameters nor
+eventually returned object.
+
+SideEffects have many purposes. Use-cases
+involves;
+
+* Sending emails.
+* Call Tracing.
+* Domain side effects modeling.
+
+SideEffects are established by the use of the @SideEffects annotation on composites.
+
+SideEffect is one of the 3 kinds of <<def-modifier,Modifiers>> defined in Qi4j.
+--
+
+
+[[def-structure,Structure]]Structure::
++
+--
+Qi4j promotes a conventional view of application structure, that computer science has been using for decades.
+
+The definition is as follows;
+
+* One <<def-application>> per Qi4j runtime instance.
+* One or more <<def-layer,Layers>> per <<def-application>>.
+* Zero, one or more <<def-module,Modules>> per <<def-layer>>.
+* Zero, one or more Assemblies per <<def-module>>.
+
+The principle of this Structure is to assist the programmer to create well modularized applications, that are easily
+extended and maintained. Qi4j will restrict access between <<def-module,Modules>>, so that code can only reach
+<<def-composite,Composites>> and Objects in <<def-module,Modules>> (including itself) of the same or lower
+<<def-layer,Layers>>.
+
+Each <<def-layer>> has to be declared which lower <<def-layer,Layer(s)>> it uses, and it is not allowed that a lower
+<<def-layer>> uses a higher <<def-layer>>, i.e. cyclic references.
+--
+
+
+[[def-transientcomposite,TransientComposite]]TransientComposite::
++
+--
+TransientComposite is a <<def-composite-metatype>> for all other cases. The main characteristics are;
+
+* It can not be serialized nor persisted.
+* hashcode/equals are not treated specially and will be delegated to <<def-fragment,Fragment(s)>> implementing those methods.
+* It can not be used as a <<def-property>> type.
+--
+
+
+[[def-unitofwork,UnitOfWork]]UnitOfWork::
++
+--
+TODO
+
+This term has no definition yet. Learn how to contribute in <<community-docs>>.
+--
+
+
+[[def-valuecomposite,ValueComposite]]ValueComposite::
++
+--
+Usage of value objects is one of the most ignored and best return-on-investment the programmer can do. Values are
+immutable and can be compared by value instead of memory reference. Concurrency is suddenly not an issue, since either
+the value exists or it doesn't, no need for synchronization. Values are typically very easy to test and very robust to
+refactoring.
+
+Qi4j defines values as a primary meta type through the ValueComposite, as we think the benefits of values are great.
+The ValueComposite is very light-weight compared to the <<def-entitycomposite>>, and its value can still be persisted as
+part of an <<def-entitycomposite>> via a <<def-property>>.
+
+The characteristics of a ValueComposite compared to other <<def-composite-metatype,Composite Meta Types>> are;
+
+* It is Immutable.
+* Its equals/hashCode works on the values of the ValueComposite.
+* Can be used as <<def-property>> types, but will not be indexed and searchable.
+--

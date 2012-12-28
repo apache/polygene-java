@@ -16,20 +16,17 @@
 */
 package org.qi4j.ide.plugin.idea.appliesTo.common;
 
-import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiAnnotation;
-import com.intellij.psi.PsiAnnotationMemberValue;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiJavaCodeReferenceElement;
+import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
-import java.util.Collections;
-import static java.util.Collections.emptyList;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
+
+import static com.intellij.codeInsight.AnnotationUtil.findAnnotation;
+import static java.util.Collections.emptyList;
 import static org.qi4j.ide.plugin.idea.appliesTo.common.Qi4jAppliesToConstants.QUALIFIED_NAME_APPLIES_TO;
 import static org.qi4j.ide.plugin.idea.appliesTo.common.Qi4jAppliesToConstants.QUALIFIED_NAME_APPLIES_TO_FILTER;
 import static org.qi4j.ide.plugin.idea.common.psi.PsiAnnotationUtil.getAnnotationDefaultParameterValue;

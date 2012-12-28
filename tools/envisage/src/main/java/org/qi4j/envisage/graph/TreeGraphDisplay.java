@@ -16,7 +16,7 @@
 */
 package org.qi4j.envisage.graph;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -38,12 +38,7 @@ import prefuse.action.filter.FisheyeTreeFilter;
 import prefuse.action.layout.CollapsedSubtreeLayout;
 import prefuse.action.layout.graph.NodeLinkTreeLayout;
 import prefuse.activity.SlowInSlowOutPacer;
-import prefuse.controls.ControlAdapter;
-import prefuse.controls.FocusControl;
-import prefuse.controls.PanControl;
-import prefuse.controls.WheelZoomControl;
-import prefuse.controls.ZoomControl;
-import prefuse.controls.ZoomToFitControl;
+import prefuse.controls.*;
 import prefuse.data.Graph;
 import prefuse.data.expression.Predicate;
 import prefuse.data.expression.parser.ExpressionParser;
@@ -192,6 +187,7 @@ public class TreeGraphDisplay
         stl.setOrientation( orientation );
     }
 
+    @Override
     public void run( Graph graph )
     {
         m_vis.add( GRAPH, graph );
@@ -202,6 +198,7 @@ public class TreeGraphDisplay
         m_vis.setInteractive( GRAPH_EDGES, null, false );
     }
 
+    @Override
     public void run()
     {
         m_vis.run( FILTER_ACTION );
@@ -212,6 +209,7 @@ public class TreeGraphDisplay
      *
      * @param object the object to select eg: Descriptor
      */
+    @Override
     public void setSelectedValue( Object object )
     {
         if( object == null )
@@ -244,6 +242,7 @@ public class TreeGraphDisplay
     public class AutoZoomAction
         extends Action
     {
+        @Override
         public void run( double frac )
         {
             int duration = 20;
@@ -263,6 +262,7 @@ public class TreeGraphDisplay
         private Point2D m_cur = new Point2D.Double();
         private int m_bias = 150;
 
+        @Override
         public void run( double frac )
         {
             TupleSet ts = m_vis.getFocusGroup( Visualization.FOCUS_ITEMS );
@@ -315,6 +315,7 @@ public class TreeGraphDisplay
             super( group, VisualItem.FILLCOLOR );
         }
 
+        @Override
         public int getColor( VisualItem item )
         {
             if( m_vis.isInGroup( item, Visualization.SEARCH_ITEMS ) )
@@ -339,6 +340,7 @@ public class TreeGraphDisplay
     public class ItemSelectionControl
         extends ControlAdapter
     {
+        @Override
         public final void itemClicked( VisualItem anItem, MouseEvent anEvent )
         {
             if( !anItem.canGet( USER_OBJECT, Object.class ) )
@@ -359,6 +361,7 @@ public class TreeGraphDisplay
             super( group, distance );
         }
 
+        @Override
         public void run( double frac )
         {
             super.run( frac );

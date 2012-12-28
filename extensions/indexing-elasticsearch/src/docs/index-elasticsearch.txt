@@ -1,0 +1,98 @@
+[[extension-index-elasticsearch,ElasticSearch Index/Query]]
+= ElasticSearch Index/Query =
+
+
+[devstatus]
+--------------
+source=extensions/indexing-elasticsearch/dev-status.xml
+--------------
+
+
+Index/Query services backed by http://www.elasticsearch.org/[ElasticSearch] search engine built on top of
+http://lucene.apache.org/[Apache Lucene].
+
+WARNING: ElasticSearch does not support queries using regular expressions. It means that you can't use
+MatchesSpecification from the Query API. See the ElasticSearch issue
+https://github.com/elasticsearch/elasticsearch/issues/988[#988].
+
+Three modes of operation are supported:
+
+- in-memory ;
+- on-filesystem ;
+- clustered.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Embedded: in Memory or on FileSystem ==
+
+Both in-memory and on-filesystem assemblies share the same configuration properties, see below.
+
+=== In Memory Assembly ===
+
+In-memory ElasticSearch Index/Query service relies on the <<library-fileconfig>> to decide where it stores its
+transaction logs as there's no in-memory transaction log implementation in ElasticSearch.
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/indexing-elasticsearch/src/test/java/org/qi4j/index/elasticsearch/DocumentationSupport.java
+tag=memory
+----
+
+
+=== On FileSystem Assembly ===
+
+Filesystem based ElasticSearch Index/Query service relies on the <<library-fileconfig>> to decide where it stores its
+index data, transaction logs etc...
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/indexing-elasticsearch/src/test/java/org/qi4j/index/elasticsearch/DocumentationSupport.java
+tag=filesystem
+----
+
+=== Configuration ===
+
+IMPORTANT: By default queries can only traverse Aggregated Associations, if you want to be able to traverse all
+Associations set the `indexNonAggregatedAssociations` configuration property to `TRUE`.
+
+Here are the configuration properties for both the in-memory and on-filesystem ElasticSearch Index/Query services:
+
+[snippet,java]
+----
+source=extensions/indexing-elasticsearch/src/main/java/org/qi4j/index/elasticsearch/ElasticSearchConfiguration.java
+tag=config
+----
+
+All configuration properties are defaulted meaning that you can use ElasticSearch Index/Query service without
+configuration.
+
+== In an ElasticSearch cluster ==
+
+=== Assembly ===
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/indexing-elasticsearch/src/test/java/org/qi4j/index/elasticsearch/DocumentationSupport.java
+tag=cluster
+----
+
+
+=== Configuration ===
+
+Here are the configuration properties for the clustered ElasticSearch Index/Query service. Note that it inherits the
+properties defined in the in-memory or on-filesystem configuration, see above.
+
+[snippet,java]
+----
+source=extensions/indexing-elasticsearch/src/main/java/org/qi4j/index/elasticsearch/ElasticSearchClusterConfiguration.java
+tag=config
+----
+
+Again, all configuration properties are defaulted meaning that you can use ElasticSearch Index/Query service without
+configuration.

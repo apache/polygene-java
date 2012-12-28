@@ -1,0 +1,46 @@
+[[two-hours-intro,Qi4j in 2 hours]]
+= Qi4j in 2 hours =
+
+NOTE: This tutorial is not written yet. Learn how to contribute in <<community-docs>>.
+
+This introduction assumes that the "Qi4j in 10 minutes" and "Qi4j in 30 minutes" introductions has been read and
+understood.
+
+In this introduction we will touch on the core concepts of UnitOfWork, Application structure and Bootstrap API.
+
+- Persistence and UnitOfWork -
+
+We have previously seen that it is easy to declare that a Composite should be persisted, but not touched on how to
+interact with the underlying persistence system. This is done via EntitySessions.
+
+- Application Structure -
+
+    * There are one Application per Qi4j instance.
+
+    * An Application consists of one or more Layers.
+
+    * Each Layer consist of one or more Modules.
+
+    * Layers are organized in a top-down manner, lower Layers on top of higher Layers.
+
+    * One must declare which Composites that each Module is responsible for.
+
+    * A Composite can either be private or public in the Module.
+
+    * A private Composite can only be reached from within the same Module.
+
+    * A public Composite can be reached from other Modules in the same Layer.
+
+    * A public Composite can be declared to be public in the Layer.
+
+    * A Composite that is declared public in the Layer can be reached from the Layers directly on top (not transitive
+      to Layers higher up).
+
+    * The Application can also declare public Composites (later for SCA).
+
+For simpler Applications it is possible (quite easily) to create a single Layer with a single Module, but for more
+complex Applications we strongly recommend the partitioned approach.
+
+Bootstrap API
+
+-- to be continued

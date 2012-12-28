@@ -1,0 +1,78 @@
+:leveloffset: 1
+
+[[samples,Samples Section]]
+=  Samples =
+
+== Overview ==
+
+The Qi4j SDK comes with several sample applications. This is a very good place
+to look for code examples and recipes.
+
+The samples are available in the +samples/+ directory of the Qi4j SDK.
+
+[[sample-dci, DCI Sample]]
+== DCI Sample ==
+
+Sample of how DCI (Data, Context & Interaction) pattern is implemented using
+Qi4j core only.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/dci[Browse Source]
+
+[[sample-dci-cargo,DCI Cargo Sample]]
+== DCI Cargo Sample ==
+
+Sample of how DCI (Data, Context & Interaction) pattern is implemented with
+Qi4j, for Eric Evans DDD sample.
+
+This sample, contributed by Marc Grue, is described in details on his
+website: http://marcgrue.com/
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/dci-cargo[Browse Source]
+
+[[sample-forum,Forum Sample]]
+== Forum Sample ==
+
+Sample of how to build a web forum using <<library-rest-server>>,
+<<extension-es-neo4j>> and <<library-fileconfig>>.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/forum[Browse Source]
+
+[[sample-car-rental,Car Rental Sample]]
+== Car Rental Sample ==
+
+Sample of implementation of a Car Rental application implemented as a Servlet
+based Webapp packaged as a WAR.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/rental[Browse Source]
+
+[[sample-scala,Scala Sample]]
+== Scala Sample ==
+
+Sample of how to use Scala with Qi4j.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/scala[Browse Source]
+
+[[sample-sql-support,SQL Support Sample]]
+== SQL Support Sample ==
+
+NOTE: This sample use PostgreSQL and drop all of its data once run in order to be runnable multiple times.
+
+Sample of how to fully use Qi4j SQL support : <<library-sql>>, <<extension-es-sql>> and <<extension-indexing-sql>>.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/sql-support[Browse Source]
+
+A gradle task `runSample` is defined in this module as a shortcut to run the example. See <<build-system>>.
+
+[[sample-struts2,Struts2 Sample]]
+== Struts2 Sample ==
+
+Sample of how to use the Struts2 integration.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/struts2Hello[Browse Source]
+
+[[sample-swing,Swing Bindings Sample]]
+== Swing Bindings Sample ==
+
+Sample of how to write custom binders.
+
+https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/swing[Browse Source]

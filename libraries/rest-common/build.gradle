@@ -1,0 +1,20 @@
+description = "Qi4j REST Library provides various Restlet resources that can be used to expose Qi4j entities and indexes. Mostly for debugging."
+
+jar { manifest { name = "Qi4j Library - REST" }}
+
+dependencies {
+  compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
+//    compile(project(":org.qi4j.libraries:org.qi4j.library.rest-common"))
+  compile(project(':org.qi4j.extensions:org.qi4j.extension.indexing-rdf'))
+  compile(libraries.restlet)
+  compile(libraries.velocity)
+  compile(libraries.servlet_api)
+//  compile('org.openrdf.sesame:sesame-queryresultio-sparqlxml:' + rdfVersion)
+//  compile('org.openrdf.sesame:sesame-queryresultio-sparqljson:' + rdfVersion)
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(project(":org.qi4j.libraries:org.qi4j.library.http"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

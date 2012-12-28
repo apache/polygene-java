@@ -1,0 +1,13 @@
+[[library-struts-codebehind, Struts Code Behind Library]]
+= Struts - Code Behind =
+
+[devstatus]
+--------------
+source=libraries/struts2-codebehind/dev-status.xml
+--------------
+
+Struts Code Behing Library
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

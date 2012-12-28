@@ -1,0 +1,42 @@
+[[extension-es-leveldb,LevelDB EntityStore]]
+= LevelDB EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-leveldb/dev-status.xml
+--------------
+
+EntityStore service backed by a https://code.google.com/p/leveldb/[LevelDB] embedded database.
+
+LevelDB is a fast key-value storage library written at Google that provides an ordered mapping from string keys to
+string values.
+
+By default use the native implementation through JNI bindings and fallback to the pure Java implementation if not
+available on the current platform. Used implementation can be forced in the configuration.
+
+The LevelDB EntityStore relies on the <<library-fileconfig>> to decide where it stores its database.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/entitystore-leveldb/src/test/java/org/qi4j/entitystore/leveldb/JavaLevelDBEntityStoreTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Here are the configuration properties for the LevelDB EntityStore:
+
+[snippet,java]
+----
+source=extensions/entitystore-leveldb/src/main/java/org/qi4j/entitystore/leveldb/LevelDBEntityStoreConfiguration.java
+tag=config
+----
+
+All configuration properties are defaulted to the implementation defaults meaning that you can use LevelDB EntityStore
+service without configuration.

@@ -1,0 +1,48 @@
+[[two-minutes-intro,Qi4j in 2 minutes]]
+= Qi4j in 2 minutes =
+
+TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
+http://qi4j.org/downloads.html[Qi4j SDK sources]. You should start your favorite editor and find the code related to
+this tutorial, run it and play with it.
+
+To show that Qi4j is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the
+classic HelloWorld, as small as it can get and still be Composite Oriented Programming and not only standard OOP.
+
+Ready, Set, Go!
+
+Let's say we want to do the common HelloWorld example, but with a more domain-oriented setting.
+We have a Speaker interface that does the talking.
+But we also need an implementation for Speaker, which we declare here via the `@Mixins( SpeakerMixin.class )`.
+
+
+[snippet,java]
+-----------
+source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/Speaker.java
+tag=documentation
+-----------
+
+And of course, the simple implementation of the Speaker interface.
+In this case, return a String with the content "Hello, World!".
+
+[snippet,java]
+-----------
+source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/SpeakerMixin.java
+tag=documentation
+-----------
+
+So far so good. We now need to make this into something that can run. This can be done like this;
+
+[snippet,java]
+-----------
+source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/Main.java
+tag=documentation
+-----------
+
+. The SingletonAssembler is a convenience class that creates a Qi4j Runtime instance and an application with one layer
+  and one module in it.
+
+. We declare a TransientComposite of type `Speaker`.
+
+. We create the Composite instance from the Module.
+
+*Done!*

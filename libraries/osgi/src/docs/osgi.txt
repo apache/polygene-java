@@ -1,0 +1,31 @@
+[[library-osgi, OSGi Library]]
+= OSGi =
+
+[devstatus]
+--------------
+source=libraries/osgi/dev-status.xml
+--------------
+
+OSGi Library allows you to import OSGi services as Qi4j Services and to export Qi4j Services as OSGi Services both
+leveraging the Qi4j Availability and OSGi FallbackStrategy mechanisms.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Export Qi4j services to an OSGi Bundle ==
+
+[snippet,java]
+----
+source=libraries/osgi/src/test/java/org/qi4j/library/osgi/DocumentationSupport.java
+tag=export
+----
+
+
+== Import OSGi services in a Qi4j Module ==
+
+[snippet,java]
+----
+source=libraries/osgi/src/test/java/org/qi4j/library/osgi/DocumentationSupport.java
+tag=import
+----
+
+The fallback strategy is invoked when the OSGi service is not available and a method call is invoked.

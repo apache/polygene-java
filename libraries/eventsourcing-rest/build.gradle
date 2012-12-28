@@ -1,0 +1,14 @@
+description = "Qi4j Event Sourcing Library for Restful applications."
+
+jar { manifest { name = "Qi4j Library - Event Sourcing - Rest" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.eventsourcing"))
+  compile(libraries.restlet)
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

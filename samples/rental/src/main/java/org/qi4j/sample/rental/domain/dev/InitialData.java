@@ -63,10 +63,7 @@ public interface InitialData
             }
             finally
             {
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
+                uow.discard();
             }
         }
 

@@ -1,9 +1,9 @@
 package org.qi4j.library.struts2.example;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 public class JettyLauncher
 {
@@ -14,14 +14,10 @@ public class JettyLauncher
 
         SelectChannelConnector connector = new SelectChannelConnector();
         connector.setPort( 8080 );
-        server.setConnectors( new Connector[]{ connector } );
+        server.addConnector( connector );
 
-        WebAppContext web = new WebAppContext();
-
-        web.setContextPath( "/example" );
-
+        WebAppContext web = new WebAppContext( server, "struts2.example", "/example" );
         web.setWar( "libraries/struts2/example/src/main/webapp/" );
-        server.addHandler( web );
 
         try
         {

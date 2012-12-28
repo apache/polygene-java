@@ -1,0 +1,10 @@
+[[news-20090510,Qi4j at JFokus 2009 - COP/DDD]]
+= @ JFokus 2009 - COP/DDD =
+
+At JFokus earlier this year Rickard Öberg was interviewed by Dan Bergh Johnsson
+about Composite Oriented Programming and Qi4j.
+
+The interview covers some of the rationale behind Composite Oriented
+Programming and the Qi4j project, its focus on DDD and why Java was chosen as
+language for the implementation. You can see the interview online on
+http://www.youtube.com/watch?v=RcJqcJND42s[YouTube].

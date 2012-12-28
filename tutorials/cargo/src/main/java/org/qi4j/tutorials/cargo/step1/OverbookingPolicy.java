@@ -13,13 +13,14 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.tutorials.cargo.step1;
 
 public class OverbookingPolicy
     implements BookingPolicy
 {
+    @Override
     public boolean isAllowed( Cargo cargo, Voyage voyage )
     {
         return cargo.getSize() + voyage.getBookedCargoSize() <= voyage.getCapacity() * 1.1;

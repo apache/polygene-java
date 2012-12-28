@@ -1,0 +1,73 @@
+<html xmlns:wicket>
+<wicket:extend>
+
+    <div wicket:id="prevNext"></div>
+    <div class="headerMenu">
+        Details for cargo <span wicket:id="trackingId">[trackingId]</span>
+        <wicket:link>
+            <a href="CargoListPage.html">List of Cargos</a>
+            <a href="BookNewCargoPage.html">Book new cargo</a>
+        </wicket:link>
+    </div>
+
+    <table class="styleLeftColumn">
+        <tr>
+            <td>Origin</td>
+            <td wicket:id="origin"></td>
+        </tr>
+        <tr>
+            <td>Destination</td>
+            <td wicket:id="destination"></td>
+            <td wicket:id="changeDestination"></td>
+        </tr>
+        <tr>
+            <td>Arrival deadline</td>
+            <td wicket:id="deadline"></td>
+        </tr>
+        <tr>
+            <td>Routing status</td>
+            <td wicket:id="routingStatus"></td>
+            <td wicket:id="routingAction"></td>
+        </tr>
+        <wicket:container wicket:id="delivery"></wicket:container>
+        <wicket:fragment wicket:id="deliveryFragment">
+            <tr>
+                <td>Transport status</td>
+                <td wicket:id="transportStatus"></td>
+            </tr>
+            <tr>
+                <td valign="top">Delivery status</td>
+                <td wicket:id="deliveryStatus"></td>
+            </tr>
+        </wicket:fragment>
+    </table>
+
+    <wicket:container wicket:id="itinerary"></wicket:container>
+    <wicket:fragment wicket:id="itineraryFragment">
+        <h4>Itinerary</h4>
+        <table>
+            <thead>
+            <tr>
+                <td>Voyage</td>
+                <td colspan="2">Load</td>
+                <td colspan="2">Unload</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr wicket:id="legs">
+                <td wicket:id="voyage"></td>
+                <td wicket:id="loadLocation"></td>
+                <td wicket:id="loadTime"></td>
+                <td wicket:id="unloadLocation"></td>
+                <td wicket:id="unloadTime"></td>
+            </tr>
+            </tbody>
+        </table>
+    </wicket:fragment>
+
+    <div wicket:id="handlingHistoryPanel"></div>
+
+    <div wicket:id="nextHandlingEventPanel"></div>
+
+</wicket:extend>
+</html>

@@ -1,0 +1,229 @@
+[[library-sql,SQL Library]]
+= SQL =
+
+[devstatus]
+--------------
+source=libraries/sql/dev-status.xml
+--------------
+
+
+The SQL Library provides facilities for working with SQL databases.
+
+The center piece is the DataSource support that comes with
+<<library-circuitbreaker>> and <<library-jmx>> support. Facilities for doing SQL I/O with the <<core-io>> are provided.
+
+TIP: See the <<sample-sql-support>> that demonstrate combined use of <<library-sql>>, <<extension-es-sql>> and
+<<extension-indexing-sql>>.
+
+Moreover, supplementary libraries helps dealing with different connection pool implementations and schema migrations.
+None of theses libraries depends on an actual JDBC driver, you are free to use the one that suits your needs.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+
+== DataSource and connection pools ==
+
+DataSource support comes in four flavors:
+
+- using the http://jolbox.com/[BoneCP] connection pool
+- using the http://sourceforge.net/projects/c3p0/[C3P0] connection pool
+- using the http://commons.apache.org/dbcp/[Apache DBCP] connection pool
+- importing an existing DataSource provided at assembly time
+
+
+
+
+
+=== Connection Pools ===
+
+Connection Pools support is provided by supplementary libraries.
+
+*BoneCP*
+
+[devstatus]
+--------------
+source=libraries/sql-bonecp/dev-status.xml
+--------------
+
+include::../../../sql-bonecp/build/docs/buildinfo/artifact.txt[]
+
+BoneCP support resides in the *sql-bonecp* module.
+
+[snippet,java]
+----
+source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+tag=bonecp
+----
+
+*C3P0*
+
+[devstatus]
+--------------
+source=libraries/sql-c3p0/dev-status.xml
+--------------
+
+include::../../../sql-c3p0/build/docs/buildinfo/artifact.txt[]
+
+[snippet,java]
+----
+source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+tag=c3p0
+----
+
+*Apache DBCP*
+
+[devstatus]
+--------------
+source=libraries/sql-dbcp/dev-status.xml
+--------------
+
+include::../../../sql-dbcp/build/docs/buildinfo/artifact.txt[]
+
+[snippet,java]
+----
+source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+tag=dbcp
+----
+
+
+
+
+
+=== DataSource ===
+
+*Assembly*
+
+[snippet,java]
+----
+source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+tag=datasource
+----
+
+Assembled DataSources must be visible from the connection pool importer service.
+
+*Configuration*
+
+You need to provide a DataSource Configuration Entity per assembled DataSource.
+See <<howto-configure-service>>.
+
+[snippet,java]
+----
+source=libraries/sql/src/main/java/org/qi4j/library/sql/datasource/DataSourceConfigurationState.java
+tag=config
+----
+
+Sample DataSource configuration defaults:
+
+[source]
+----
+include::../test/resources/testds.properties[]
+----
+
+
+
+=== Importing an existing DataSource ===
+
+Importing an existing DataSource at assembly time is usefull when your Qi4j
+Application runs in an environment where DataSource are already provided.
+
+[snippet,java]
+----
+source=libraries/sql/src/test/java/org/qi4j/library/sql/datasource/ExternalDataSourceTest.java
+tag=assembly
+----
+
+This mechanism is provided as an integration convenience and using the embedded
+connection pools described above is recommended.
+
+
+
+
+
+== Circuit Breaker ==
+
+Assemblers for managed and external DataSource takes an optional
+CircuitBreaker and set it as <<def-metainfo>> of the DataSource.
+
+[snippet,java]
+----
+source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+tag=cb-assembly
+----
+
+Then, when you gets injected or lookup a DataSource it will be automatically wrapped
+by a CircuitBreaker proxy.
+
+[snippet,java]
+----
+source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+tag=cb-datasource
+----
+
+
+
+
+== I/O ==
+
+Here is a simple example:
+
+[snippet,java]
+----
+source=libraries/sql-liquibase/src/test/java/org/qi4j/library/sql/liquibase/LiquibaseServiceTest.java
+tag=io
+----
+
+
+
+== JMX ==
+
+Thanks to the <<library-jmx>> the Configuration of DataSources is exposed
+through JMX.
+
+[snippet,java]
+----
+source=libraries/sql/src/test/java/org/qi4j/library/sql/jmx/DataSourceConfigurationManagerServiceTest.java
+tag=jmx
+----
+
+Every DataSource visible from the DataSourceConfigurationManager Service
+will get its Configuration available using a JMX client.
+
+Note that the JMX support does not apply to existing DataSource imported as
+described above.
+
+
+
+
+== Schema migration ==
+
+Database schema migration can be delegated to http://www.liquibase.org/[Liquibase].
+
+[devstatus]
+--------------
+source=libraries/sql-liquibase/dev-status.xml
+--------------
+
+include::../../../sql-liquibase/build/docs/buildinfo/artifact.txt[]
+
+*Assembly*
+
+[snippet,java]
+----
+source=libraries/sql-liquibase/src/test/java/org/qi4j/library/sql/liquibase/LiquibaseServiceTest.java
+tag=assembly
+----
+
+The LiquibaseService is activated on Application startup and if enabled it
+applies the configured changelog.
+
+*Configuration*
+
+[snippet,java]
+----
+source=libraries/sql-liquibase/src/main/java/org/qi4j/library/sql/liquibase/LiquibaseConfiguration.java
+tag=config
+----
+
+For the Liquibase service to be enabled you must set it's Configuration
++enabled+ Property to TRUE. *contexts* and *changeLog* are optional.
+

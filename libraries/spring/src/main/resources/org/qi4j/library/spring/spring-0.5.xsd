@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.qi4j.org/schema/qi4j/spring"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            targetNamespace="http://www.qi4j.org/schema/qi4j/spring"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+  <xsd:import namespace="http://www.springframework.org/schema/beans"/>
+
+  <xsd:element name="bootstrap">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+Defines qi4j application bootstrap.
+			]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attributeGroup ref="bootstrapAttributes"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Qi4j application attributes -->
+  <xsd:attributeGroup name="bootstrapAttributes">
+    <xsd:attribute name="class" type="xsd:string" use="required">
+      <xsd:annotation>
+        <xsd:documentation source="java:java.lang.Class"><![CDATA[
+Full class name of bootstrap class.
+        ]]></xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:attributeGroup>
+
+  <xsd:element name="service">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+Defines qi4j service to be exposed as spring bean.
+			]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="beans:identifiedType"/>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>
