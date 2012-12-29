@@ -27,6 +27,7 @@ public final class Usecase
 {
     public static final Usecase DEFAULT = new Usecase( "Default", new MetaInfo() );
 
+    private static final long serialVersionUID = 1L;
     private final String name;
     private final MetaInfo metaInfo;
 

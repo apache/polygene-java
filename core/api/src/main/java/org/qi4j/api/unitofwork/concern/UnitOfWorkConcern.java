@@ -29,7 +29,7 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 
 /**
- * {@code UnitOfWorkConcern} manages the unit of work complete and discard policy.
+ * {@code UnitOfWorkConcern} manages the unit of work complete, discard and retry policy.
  *
  * @see UnitOfWorkPropagation
  * @see UnitOfWorkDiscardOn
