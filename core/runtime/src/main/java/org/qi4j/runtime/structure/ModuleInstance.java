@@ -307,8 +307,8 @@ public class ModuleInstance
         Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
         for( PropertyModel propertyModel : modelModule.model().state().properties() )
         {
-            Property property = new PropertyInstance<Object>( propertyModel.getBuilderInfo(),
-                                                              propertyModel.initialValue( modelModule.module() ) );
+            Property<?> property = new PropertyInstance<Object>( propertyModel.getBuilderInfo(),
+                                                                 propertyModel.initialValue( modelModule.module() ) );
             properties.put( propertyModel.accessor(), property );
         }
 
@@ -495,11 +495,7 @@ public class ModuleInstance
     @Override
     public UnitOfWork newUnitOfWork( Usecase usecase )
     {
-        if( usecase == null )
-        {
-            usecase = Usecase.DEFAULT;
-        }
-        return newUnitOfWork( usecase, System.currentTimeMillis() );
+        return newUnitOfWork( usecase == null ? Usecase.DEFAULT : usecase, System.currentTimeMillis() );
     }
 
     @Override
@@ -711,7 +707,7 @@ public class ModuleInstance
                     filter( new VisibilitySpecification( visibility ), values.models() ) );
     }
 
-    Iterable<ServiceReference> visibleServices( Visibility visibility )
+    Iterable<ServiceReference<?>> visibleServices( Visibility visibility )
     {
         return flatten( services.visibleServices( visibility ),
                         importedServices.visibleServices( visibility ) );
@@ -723,7 +719,7 @@ public class ModuleInstance
     {
 
         private final ModuleInstance moduleInstance;
-        private final Map<String, Class> classes = new ConcurrentHashMap<String, Class>();
+        private final Map<String, Class<?>> classes = new ConcurrentHashMap<String, Class<?>>();
 
         private ModuleClassLoader( ModuleInstance moduleInstance, ClassLoader classLoader )
         {
@@ -735,7 +731,7 @@ public class ModuleInstance
         protected Class<?> findClass( String name )
             throws ClassNotFoundException
         {
-            Class clazz = classes.get( name );
+            Class<?> clazz = classes.get( name );
             if( clazz == null )
             {
                 Specification<ModelDescriptor> modelTypeSpecification = modelTypeSpecification( name );
