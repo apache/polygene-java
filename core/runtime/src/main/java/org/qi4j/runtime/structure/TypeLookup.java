@@ -58,8 +58,8 @@ public class TypeLookup
     private final Map<Class, ModelModule<ValueModel>> valueModels;
     private final Map<Class, Iterable<ModelModule<EntityModel>>> allEntityModels;
     private final Map<Class, ModelModule<EntityModel>> unambiguousEntityModels;
-    private final Map<Type, ServiceReference> serviceReferences;
-    private final Map<Type, Iterable<ServiceReference>> servicesReferences;
+    private final Map<Type, ServiceReference<?>> serviceReferences;
+    private final Map<Type, Iterable<ServiceReference<?>>> servicesReferences;
 
     /**
      * Create a new TypeLookup bound to the given ModuleInstance.
@@ -77,8 +77,8 @@ public class TypeLookup
         valueModels = new ConcurrentHashMap<Class, ModelModule<ValueModel>>();
         allEntityModels = new ConcurrentHashMap<Class, Iterable<ModelModule<EntityModel>>>();
         unambiguousEntityModels = new ConcurrentHashMap<Class, ModelModule<EntityModel>>();
-        serviceReferences = new ConcurrentHashMap<Type, ServiceReference>();
-        servicesReferences = new ConcurrentHashMap<Type, Iterable<ServiceReference>>();
+        serviceReferences = new ConcurrentHashMap<Type, ServiceReference<?>>();
+        servicesReferences = new ConcurrentHashMap<Type, Iterable<ServiceReference<?>>>();
     }
 
     /**
@@ -327,9 +327,11 @@ public class TypeLookup
      * @param serviceType   Looked up Type
      * @return              First matching ServiceReference
      */
-    /* package */ <T> ServiceReference<T> lookupServiceReference( Type serviceType )
+    /* package */
+    @SuppressWarnings( "unchecked" )
+    <T> ServiceReference<T> lookupServiceReference( Type serviceType )
     {
-        ServiceReference serviceReference = serviceReferences.get( serviceType );
+        ServiceReference<?> serviceReference = serviceReferences.get( serviceType );
         if( serviceReference == null )
         {
             // Lazily resolve ServiceReference
@@ -345,7 +347,7 @@ public class TypeLookup
             throw new NoSuchServiceException( RAW_CLASS.map( serviceType ).getName(), moduleInstance.name() );
         }
 
-        return serviceReference;
+        return (ServiceReference<T>) serviceReference;
     }
 
     /**
@@ -369,11 +371,11 @@ public class TypeLookup
      */
     /* package */ <T> Iterable<ServiceReference<T>> lookupServiceReferences( final Type serviceType )
     {
-        Iterable<ServiceReference> serviceRefs = servicesReferences.get( serviceType );
+        Iterable<ServiceReference<?>> serviceRefs = servicesReferences.get( serviceType );
         if( serviceRefs == null )
         {
             // Lazily resolve ServicesReferences
-            Iterable<ServiceReference> matchingServices = flatten(
+            Iterable<ServiceReference<?>> matchingServices = flatten(
                 findServiceReferences( new ExactTypeLookupSpecification( serviceType ),
                                        moduleInstance.visibleServices( Visibility.module ),
                                        moduleInstance.layerInstance().visibleServices( Visibility.layer ),
@@ -403,11 +405,11 @@ public class TypeLookup
         return filter( spec, flattened );
     }
 
-    private static Iterable<ServiceReference> findServiceReferences( Specification<Iterable<Class<?>>> specification,
-                                                                     Iterable<ServiceReference>... references )
+    private static Iterable<ServiceReference<?>> findServiceReferences( Specification<Iterable<Class<?>>> specification,
+                                                                        Iterable<ServiceReference<?>>... references )
     {
-        Specification<ServiceReference> spec = Specifications.translate( new ServiceReferenceTypesFunction(), specification );
-        Iterable<ServiceReference> flattened = flattenIterables( iterable( references ) );
+        Specification<ServiceReference<?>> spec = Specifications.translate( new ServiceReferenceTypesFunction(), specification );
+        Iterable<ServiceReference<?>> flattened = flattenIterables( iterable( references ) );
         return filter( spec, flattened );
     }
 
@@ -472,11 +474,11 @@ public class TypeLookup
     }
 
     private static class ServiceReferenceTypesFunction
-        implements Function<ServiceReference, Iterable<Class<?>>>
+        implements Function<ServiceReference<?>, Iterable<Class<?>>>
     {
 
         @Override
-        public Iterable<Class<?>> map( ServiceReference serviceReference )
+        public Iterable<Class<?>> map( ServiceReference<?> serviceReference )
         {
             return serviceReference.types();
         }

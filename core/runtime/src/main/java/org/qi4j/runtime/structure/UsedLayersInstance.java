@@ -85,12 +85,12 @@ public final class UsedLayersInstance
         }, usedLayerInstances ) );
     }
 
-    /* package */ Iterable<ServiceReference> visibleServices()
+    /* package */ Iterable<ServiceReference<?>> visibleServices()
     {
-        return flattenIterables( map( new Function<LayerInstance, Iterable<ServiceReference>>()
+        return flattenIterables( map( new Function<LayerInstance, Iterable<ServiceReference<?>>>()
         {
             @Override
-            public Iterable<ServiceReference> map( LayerInstance layerInstance )
+            public Iterable<ServiceReference<?>> map( LayerInstance layerInstance )
             {
                 return layerInstance.visibleServices( Visibility.application );
             }

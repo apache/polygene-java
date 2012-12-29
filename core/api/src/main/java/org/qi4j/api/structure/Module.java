@@ -15,10 +15,10 @@
 
 package org.qi4j.api.structure;
 
+import org.qi4j.api.activation.ActivationEventListenerRegistration;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.activation.ActivationEventListenerRegistration;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.object.ObjectFactory;

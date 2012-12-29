@@ -192,13 +192,13 @@ public class LayerInstance
         }, moduleInstances ) );
     }
 
-    /* package */ Iterable<ServiceReference> visibleServices( final Visibility visibility )
+    /* package */ Iterable<ServiceReference<?>> visibleServices( final Visibility visibility )
     {
-        return flattenIterables( map( new Function<ModuleInstance, Iterable<ServiceReference>>()
+        return flattenIterables( map( new Function<ModuleInstance, Iterable<ServiceReference<?>>>()
         {
 
             @Override
-            public Iterable<ServiceReference> map( ModuleInstance moduleInstance )
+            public Iterable<ServiceReference<?>> map( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleServices( visibility );
             }
