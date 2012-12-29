@@ -53,11 +53,11 @@ public class TypeLookup
     // Constructor parameters
     private final ModuleInstance moduleInstance;
     // Eager instance objects
-    private final Map<Class, ModelModule<ObjectModel>> objectModels;
-    private final Map<Class, ModelModule<TransientModel>> transientModels;
-    private final Map<Class, ModelModule<ValueModel>> valueModels;
-    private final Map<Class, Iterable<ModelModule<EntityModel>>> allEntityModels;
-    private final Map<Class, ModelModule<EntityModel>> unambiguousEntityModels;
+    private final Map<Class<?>, ModelModule<ObjectModel>> objectModels;
+    private final Map<Class<?>, ModelModule<TransientModel>> transientModels;
+    private final Map<Class<?>, ModelModule<ValueModel>> valueModels;
+    private final Map<Class<?>, Iterable<ModelModule<EntityModel>>> allEntityModels;
+    private final Map<Class<?>, ModelModule<EntityModel>> unambiguousEntityModels;
     private final Map<Type, ServiceReference<?>> serviceReferences;
     private final Map<Type, Iterable<ServiceReference<?>>> servicesReferences;
 
@@ -72,11 +72,11 @@ public class TypeLookup
         this.moduleInstance = moduleInstance;
 
         // Eager instance objects
-        objectModels = new ConcurrentHashMap<Class, ModelModule<ObjectModel>>();
-        transientModels = new ConcurrentHashMap<Class, ModelModule<TransientModel>>();
-        valueModels = new ConcurrentHashMap<Class, ModelModule<ValueModel>>();
-        allEntityModels = new ConcurrentHashMap<Class, Iterable<ModelModule<EntityModel>>>();
-        unambiguousEntityModels = new ConcurrentHashMap<Class, ModelModule<EntityModel>>();
+        objectModels = new ConcurrentHashMap<Class<?>, ModelModule<ObjectModel>>();
+        transientModels = new ConcurrentHashMap<Class<?>, ModelModule<TransientModel>>();
+        valueModels = new ConcurrentHashMap<Class<?>, ModelModule<ValueModel>>();
+        allEntityModels = new ConcurrentHashMap<Class<?>, Iterable<ModelModule<EntityModel>>>();
+        unambiguousEntityModels = new ConcurrentHashMap<Class<?>, ModelModule<EntityModel>>();
         serviceReferences = new ConcurrentHashMap<Type, ServiceReference<?>>();
         servicesReferences = new ConcurrentHashMap<Type, Iterable<ServiceReference<?>>>();
     }
@@ -426,7 +426,7 @@ public class TypeLookup
             @Override
             public Iterator<ModelModule<T>> iterator()
             {
-                ModelModule current = null;
+                ModelModule<T> current = null;
                 List<ModelModule<T>> ambiguous = null;
                 List<ModelModule<T>> results = new ArrayList<ModelModule<T>>();
                 for( ModelModule<T> model : models )
@@ -534,7 +534,7 @@ public class TypeLookup
             }
         }
 
-        private boolean checkClassMatch( Iterable<Class<?>> candidates, Class lookedUpType )
+        private boolean checkClassMatch( Iterable<Class<?>> candidates, Class<?> lookedUpType )
         {
             for( Class<?> candidate : candidates )
             {
@@ -546,7 +546,7 @@ public class TypeLookup
             return false;
         }
 
-        protected abstract boolean checkClassMatch( Class<?> candidate, Class lookedUpType );
+        protected abstract boolean checkClassMatch( Class<?> candidate, Class<?> lookedUpType );
 
     }
 
@@ -560,7 +560,7 @@ public class TypeLookup
         }
 
         @Override
-        protected boolean checkClassMatch( Class<?> candidate, Class lookedUpType )
+        protected boolean checkClassMatch( Class<?> candidate, Class<?> lookedUpType )
         {
             return candidate.equals( lookedUpType );
         }
@@ -577,7 +577,7 @@ public class TypeLookup
         }
 
         @Override
-        protected boolean checkClassMatch( Class<?> candidate, Class lookedUpType )
+        protected boolean checkClassMatch( Class<?> candidate, Class<?> lookedUpType )
         {
             return !candidate.equals( lookedUpType ) && lookedUpType.isAssignableFrom( candidate );
         }
