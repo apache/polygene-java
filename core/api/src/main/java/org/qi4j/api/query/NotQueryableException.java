@@ -30,6 +30,7 @@ import org.qi4j.api.util.Classes;
 public class NotQueryableException
     extends QueryException
 {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor.

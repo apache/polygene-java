@@ -5,7 +5,7 @@ package org.qi4j.api.query.grammar;
  */
 public class Variable
 {
-    String name;
+    private String name;
 
     public Variable( String name )
     {

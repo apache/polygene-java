@@ -9,7 +9,7 @@ import org.qi4j.api.composite.Composite;
 public class AssociationNotNullSpecification<T>
     extends ExpressionSpecification
 {
-    AssociationFunction<T> association;
+    private AssociationFunction<T> association;
 
     public AssociationNotNullSpecification( AssociationFunction<T> association )
     {

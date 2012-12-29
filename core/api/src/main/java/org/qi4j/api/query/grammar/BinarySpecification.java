@@ -9,7 +9,7 @@ import org.qi4j.functional.Specification;
 public abstract class BinarySpecification
     extends ExpressionSpecification
 {
-    protected Iterable<Specification<Composite>> operands;
+    protected final Iterable<Specification<Composite>> operands;
 
     protected BinarySpecification( Iterable<Specification<Composite>> operands )
     {

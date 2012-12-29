@@ -9,7 +9,7 @@ import org.qi4j.api.property.Property;
 public class PropertyNotNullSpecification<T>
     extends ExpressionSpecification
 {
-    PropertyFunction<T> property;
+    private PropertyFunction<T> property;
 
     public PropertyNotNullSpecification( PropertyFunction<T> property )
     {

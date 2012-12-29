@@ -35,13 +35,13 @@ public abstract class ComparisonSpecification<T>
                 return false;
             }
 
-            T value = prop.get();
-            if( value == null )
+            T propValue = prop.get();
+            if( propValue == null )
             {
                 return false;
             }
 
-            return compare( value );
+            return compare( propValue );
         }
         catch( IllegalArgumentException e )
         {

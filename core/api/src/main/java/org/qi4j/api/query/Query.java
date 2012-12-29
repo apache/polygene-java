@@ -47,8 +47,23 @@ public interface Query<T>
      */
     Query<T> orderBy( OrderBy... segments );
 
+    /**
+     * Append an ordering rule to the existing segments.
+     *
+     * @param property the property to order by
+     * @param order the order to apply
+     *
+     * @return the Query
+     */
     Query<T> orderBy( final Property<?> property, final OrderBy.Order order );
 
+    /**
+     * Append an ascending ordering rule to the existing segments.
+     *
+     * @param property the property to order by
+     *
+     * @return the Query
+     */
     Query<T> orderBy( Property<?> property );
 
     /**
