@@ -66,7 +66,7 @@ public final class QualifiedIdentity
                                                            .types() ).getName() );
     }
 
-    public QualifiedIdentity( String identity, Class clazz )
+    public QualifiedIdentity( String identity, Class<?> clazz )
     {
         this.identity = identity;
         this.compositeType = clazz.getName();
@@ -105,6 +105,7 @@ public final class QualifiedIdentity
     }
 
     @Override
+    @SuppressWarnings( "AccessingNonPublicFieldOfAnotherObject" )
     public boolean equals( Object o )
     {
         if( this == o )
