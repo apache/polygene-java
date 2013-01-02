@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
-import org.json.JSONException;
-import org.json.JSONTokener;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
@@ -42,7 +40,6 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.IdentityGenerator;
-import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectDescriptor;
@@ -62,6 +59,8 @@ import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
 import org.qi4j.functional.Specification;
@@ -96,6 +95,7 @@ import org.qi4j.runtime.value.ValueStateModel;
 import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerialization;
 
 import static org.qi4j.api.util.Classes.*;
 import static org.qi4j.functional.Iterables.*;
@@ -126,6 +126,7 @@ public class ModuleInstance
     // Lazy assigned on accessors
     private EntityStore store;
     private IdentityGenerator generator;
+    private ValueSerialization valueSerialization;
     private MetricsProvider metrics;
 
     @SuppressWarnings( "LeakingThisInConstructor" )
@@ -397,7 +398,6 @@ public class ModuleInstance
         {
             return new ArrayList<EntityReference>();
         }
-
     }
 
     private static class FunctionStateResolver
@@ -434,7 +434,6 @@ public class ModuleInstance
         {
             return toList( manyAssociationFunction.map( associationDescriptor ) );
         }
-
     }
 
     @Override
@@ -469,13 +468,11 @@ public class ModuleInstance
 
         try
         {
-            return (T) new JSONDeserializer( modelModule.module() ).
-                deserialize( new JSONTokener( jsonValue ).nextValue(),
-                             modelModule.model().valueType() );
+            return valueSerialization().deserialize( modelModule.model().valueType(), jsonValue );
         }
-        catch( JSONException e )
+        catch( ValueSerializationException ex )
         {
-            throw new ConstructionException( "Could not create value from JSON", e );
+            throw new ConstructionException( "Could not create value from serialized state", ex );
         }
     }
 
@@ -630,7 +627,6 @@ public class ModuleInstance
         {
             return uowf.currentUnitOfWork().get( RAW_CLASS.map( type ), entityReference.identity() );
         }
-
     }
 
     public EntityStore entityStore()
@@ -661,6 +657,26 @@ public class ModuleInstance
             }
             return generator;
         }
+    }
+
+    public ValueSerialization valueSerialization()
+    {
+        synchronized( this )
+        {
+            if( valueSerialization == null )
+            {
+                try
+                {
+                    ServiceReference<ValueSerialization> service = findService( ValueSerialization.class );
+                    valueSerialization = service.get();
+                }
+                catch( NoSuchServiceException e )
+                {
+                    valueSerialization = new OrgJsonValueSerialization( this );
+                }
+            }
+        }
+        return valueSerialization;
     }
 
     /* package */ MetricsProvider metricsProvider()
@@ -818,7 +834,6 @@ public class ModuleInstance
 
             return clazz;
         }
-
     }
 
 }

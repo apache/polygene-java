@@ -372,7 +372,7 @@ task javadocs( type: Javadoc ) {
                          "Core Bootstrap": [ "org.qi4j.bootstrap" ],
                          "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
                          "Libraries": [ "org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.lang.*" ],
-                         "Extensions": [ "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
+                         "Extensions": [ "org.qi4j.valueserialization.*", "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
                          "Tools": [ "org.qi4j.tools.*", "org.qi4j.envisage", "org.qi4j.envisage.*", "org.qi4j.library.swing.entityviewer" ],
                          "Test Support": [ "org.qi4j.test", "org.qi4j.test.*" ]
                  ] )

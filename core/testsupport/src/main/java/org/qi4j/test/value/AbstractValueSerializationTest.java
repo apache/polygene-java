@@ -1,10 +1,13 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2012, Paul Merlin.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,23 +15,31 @@
  * limitations under the License.
  *
  */
+package org.qi4j.test.value;
 
-package org.qi4j.runtime.value;
-
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
@@ -39,13 +50,16 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 /**
- * Tests for ValueType serialization and deserialization.
+ * Assert that ValueSerialization behaviour on ValueComposites is correct.
  */
-public class ValueTypeSerializationTest
+public abstract class AbstractValueSerializationTest
     extends AbstractQi4jTest
 {
 
-    private static final Logger LOG = LoggerFactory.getLogger( ValueTypeSerializationTest.class );
+    @Rule
+    @SuppressWarnings( "PublicField" )
+    public TestName testName = new TestName();
+    private Logger log;
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -55,49 +69,49 @@ public class ValueTypeSerializationTest
                        SpecificCollection.class /*, SpecificValue.class, GenericValue.class */ );
     }
 
-    @Test
-    public void testTypeSerialization()
+    @Before
+    public void before()
     {
-        SomeValue some = buildSomeValue();
+        log = LoggerFactory.getLogger( testName.getMethodName() );
+        module.injectTo( this );
+    }
+    @Service
+    @SuppressWarnings( "ProtectedField" )
+    protected ValueSerialization valueSerialization;
 
-        // Serialize
-        String json = some.toString();
+    @Test
+    public void givenValueCompositeWhenSerializingAndDeserializingExpectEquals()
+        throws Exception
+    {
+        try
+        {
+            SomeValue some = buildSomeValue();
 
-        // Deserialize
-        SomeValue some2 = module.newValueFromJSON( SomeValue.class, json );
+            // Serialize
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            valueSerialization.serialize( some, output, true );
+            String stateString = output.toString( "UTF-8" );
 
-        // Test date formats
-        // ISO-6801 with timezone
-        int idx1 = json.indexOf( "date\":\"" ) + 7;
-        int idx2 = json.indexOf( '"', idx1 );
-        String jsonTZ = json.substring( 0, idx1 ) + "2009-08-12T14:54:27.895+0800" + json.substring( idx2 );
-        SomeValue someTZ = module.newValueFromJSON( SomeValue.class, jsonTZ );
+            log.info( "Complex ValueComposite state:\n\n{}\n", stateString );
 
-        // @ format
-        String jsonAt = json.substring( 0, idx1 ) + "@" + System.currentTimeMillis() + "@" + json.substring( idx2 );
-        SomeValue someAt = module.newValueFromJSON( SomeValue.class, jsonAt );
+            // Deserialize
+            // SomeValue some2 = module.newValueFromJSON( SomeValue.class, json );
+            SomeValue some2 = valueSerialization.<SomeValue>deserialize( module.valueDescriptor( SomeValue.class.getName() ).valueType(), stateString );
 
-        // Microsoft format
-        String jsonMS = json.substring( 0, idx1 ) + "/Date(" + System.currentTimeMillis() + ")/" + json.substring( idx2 );
-        SomeValue someMS = module.newValueFromJSON( SomeValue.class, jsonMS );
+            assertThat( "Same value toString", some.toString(), equalTo( some2.toString() ) );
+            assertThat( "Same value", some, equalTo( some2 ) );
+            assertThat( "Same JSON value toString", stateString, equalTo( some2.toString() ) );
+            assertThat( "Same JSON value", some.customFoo().get() instanceof CustomFooValue, is( true ) );
+            assertThat( "Same JSON value explicit", some.customFooValue().get() instanceof CustomFooValue, is( true ) );
 
-        // Log results
-        LOG.info( "Some value toString():\n\n{}\n", some.toString() );
-        LOG.info( "Some2 value toString():\n\n{}\n", some2.toString() );
-        LOG.info( "Some value with ISO-6801 Date with TZ toString():\n\n{}\n", someTZ.toString() );
-        LOG.info( "Some value with @ Date toString():\n\n{}\n", someAt.toString() );
-        LOG.info( "Some value with Microsoft Date toString():\n\n{}\n", someMS.toString() );
-
-        // Global assertions
-        assertThat( "Same value", some.toString(), equalTo( some2.toString() ) );
-        assertThat( "Same value", some, equalTo( some2 ) );
-        assertThat( "Same JSON value", json, equalTo( some2.toString() ) );
-        assertThat( "Same JSON value", some.customFoo().get() instanceof CustomFooValue, is( true ) );
-        assertThat( "Same JSON value", some.customFooValue().get() instanceof CustomFooValue, is( true ) );
-
-        // Other assertions
-        assertThat( "String Integer Map", some2.stringIntMap().get().get( "foo" ), equalTo( 42 ) );
-        assertThat( "String Value Map", some2.stringValueMap().get().get( "foo" ).internalVal(), equalTo( "Bar" ) );
+            assertThat( "String Integer Map", some2.stringIntMap().get().get( "foo" ), equalTo( 42 ) );
+            assertThat( "String Value Map", some2.stringValueMap().get().get( "foo" ).internalVal(), equalTo( "Bar" ) );
+        }
+        catch( Exception ex )
+        {
+            log.error( ex.getMessage(), ex );
+            throw ex;
+        }
     }
 
     /**
@@ -109,7 +123,7 @@ public class ValueTypeSerializationTest
         SomeValue proto = builder.prototype();
         proto.anotherList().get().add( module.newValue( AnotherValue.class ) );
 
-        ValueBuilder<SpecificCollection> specificColBuilder = module.newValueBuilder( SpecificCollection.class);
+        ValueBuilder<SpecificCollection> specificColBuilder = module.newValueBuilder( SpecificCollection.class );
         SpecificCollection specificColProto = specificColBuilder.prototype();
         List<String> genericList = new ArrayList<String>();
         genericList.add( "Some" );
@@ -117,21 +131,26 @@ public class ValueTypeSerializationTest
         specificColProto.genericList().set( genericList );
         proto.specificCollection().set( specificColBuilder.newInstance() );
 
-/*
-        ValueBuilder<SpecificValue> specificValue = module.newValueBuilder(SpecificValue.class);
-        specificValue.prototype().item().set("Foo");
-        proto.specificValue().set(specificValue.newInstance());
-*/
+        /*
+         ValueBuilder<SpecificValue> specificValue = module.newValueBuilder(SpecificValue.class);
+         specificValue.prototype().item().set("Foo");
+         proto.specificValue().set(specificValue.newInstance());
+         */
 
         ValueBuilder<AnotherValue> valueBuilder = module.newValueBuilder( AnotherValue.class );
         valueBuilder.prototype().val1().set( "Foo" );
         valueBuilder.prototypeFor( AnotherValueInternalState.class ).val2().set( "Bar" );
         AnotherValue anotherValue = valueBuilder.newInstance();
 
-        proto.string().set( "Foo\"Bar\"\nTest\f\t\b" );
+        // FIXME Some Control Chars are not supported in JSON nor in XML, what should we do about it?
+        // proto.string().set( "Foo\"Bar\"\nTest\f\t\b" );
+        proto.string().set( "Foo\"Bar\"\nTest\t" );
         proto.string2().set( "/Foo/bar" );
         proto.number().set( 42L );
         proto.date().set( new Date() );
+        proto.dateTime().set( new DateTime() );
+        proto.localDate().set( new LocalDate() );
+        proto.localDateTime().set( new LocalDateTime() );
         proto.entityReference().set( EntityReference.parseEntityReference( "12345" ) );
         proto.stringIntMap().get().put( "foo", 42 );
         proto.stringIntMap().get().put( "bar", 67 );
@@ -148,12 +167,14 @@ public class ValueTypeSerializationTest
 
     public enum TestEnum
     {
+
         somevalue, anothervalue
     }
 
     public interface SomeValue
         extends ValueComposite
     {
+
         Property<String> string();
 
         Property<String> string2();
@@ -169,6 +190,12 @@ public class ValueTypeSerializationTest
 
         Property<Date> date();
 
+        Property<DateTime> dateTime();
+
+        Property<LocalDate> localDate();
+
+        Property<LocalDateTime> localDateTime();
+
         Property<EntityReference> entityReference();
 
         @UseDefaults
@@ -183,8 +210,17 @@ public class ValueTypeSerializationTest
         @Optional
         Property<AnotherValue> another();
 
+        @Optional
+        Property<AnotherValue> anotherNull();
+
         @UseDefaults
         Property<List<AnotherValue>> anotherList();
+
+        @Optional
+        Property<List<AnotherValue>> anotherListNull();
+
+        @UseDefaults
+        Property<List<AnotherValue>> anotherListEmpty();
 
         @UseDefaults
         Property<TestEnum> testEnum();
@@ -201,29 +237,33 @@ public class ValueTypeSerializationTest
 
         Property<SpecificCollection> specificCollection();
 
-/* Too complicated to do generics here for now
-        Property<SpecificValue> specificValue();
-*/
+        /* Too complicated to do generics here for now
+         Property<SpecificValue> specificValue();
+         */
     }
 
     public interface SpecificCollection
         extends GenericCollection<String>
-    {}
+    {
+    }
 
     public interface GenericCollection<TYPE>
         extends ValueComposite
     {
+
         @UseDefaults
         Property<List<TYPE>> genericList();
     }
 
     public interface SpecificValue
         extends GenericValue<String>
-    {}
+    {
+    }
 
     public interface GenericValue<TYPE>
         extends ValueComposite
     {
+
         @Optional
         Property<TYPE> item();
     }
@@ -237,7 +277,6 @@ public class ValueTypeSerializationTest
         Property<String> val1();
 
         String internalVal();
-
     }
 
     public interface AnotherValueInternalState
@@ -245,7 +284,6 @@ public class ValueTypeSerializationTest
 
         @UseDefaults
         Property<String> val2();
-
     }
 
     public static abstract class AnotherValueMixin
@@ -260,11 +298,11 @@ public class ValueTypeSerializationTest
         {
             return internalState.val2().get();
         }
-
     }
 
     public interface Foo
     {
+
         @UseDefaults
         Property<String> bar();
     }
@@ -277,6 +315,7 @@ public class ValueTypeSerializationTest
     public interface CustomFooValue
         extends FooValue
     {
+
         @UseDefaults
         Property<String> custom();
     }
@@ -284,6 +323,7 @@ public class ValueTypeSerializationTest
     public static class SerializableObject
         implements Serializable
     {
+
         private static final long serialVersionUID = 1L;
         private String foo = "Foo";
         private int val = 35;
@@ -312,4 +352,5 @@ public class ValueTypeSerializationTest
             return result;
         }
     }
+
 }

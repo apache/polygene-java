@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.type;
 
 import java.util.Collections;
@@ -28,6 +27,7 @@ import static org.qi4j.functional.Iterables.first;
 public class ValueType
     implements HasTypes
 {
+
     protected final Iterable<Class<?>> types;
 
     public ValueType( Class<?> type )
@@ -35,6 +35,7 @@ public class ValueType
         this( Collections.singleton( type ) );
     }
 
+    @SuppressWarnings( "unchecked" )
     public ValueType( Iterable<? extends Class<?>> types )
     {
         this.types = (Iterable<Class<?>>) types;
@@ -54,14 +55,17 @@ public class ValueType
     @Override
     public String toString()
     {
-        String name = Iterables.toString( types, new Function<Class<?>, String>()
-        {
-            @Override
-            public String map( Class<?> item )
+        String name = Iterables.toString(
+            types,
+            new Function<Class<?>, String>()
             {
-                return item.getName();
-            }
-        }, "," );
+                @Override
+                public String map( Class<?> item )
+                {
+                    return item.getName();
+                }
+            },
+            "," );
         if( name.contains( "," ) )
         {
             name = "{" + name + "}";

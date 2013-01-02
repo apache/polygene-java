@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%-5level %logger{24} - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="stdout" />
+    </root>
+
+    <logger name="org.qi4j.spi.value" level="debug"/>
+    <logger name="org.qi4j.test.value" level="debug"/>
+    <logger name="org.qi4j.valueserializer" level="debug"/>
+    <logger name="org.qi4j.valueserialization" level="debug"/>
+
+</configuration>
