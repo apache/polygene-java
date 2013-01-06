@@ -7,19 +7,17 @@ terms.
 
 So in Qi4j, instead of writing;
 
-[source,java]
-----
-public interface Book
-{
-    String getTitle();
-    String getAuthor();
-}
-public interface MutableBook extends Book
-{
-    void setTitle( String title );
-    void setAuthor( String author );
-}
-----
+[snippet,java]
+-----------
+source=manual/src/main/java/org/niclas/hedhman/tutorials/properties/pojo/Book.java
+tag=book
+-----------
+
+[snippet,java]
+-----------
+source=manual/src/main/java/org/niclas/hedhman/tutorials/properties/pojo/MutableBook.java
+tag=book
+-----------
 
 where we need the MutableBook to be able to initialize it (known as Type 2 Dependency Injection) on creation. From our
 point of view, this has many flaws. If we refactor the "Title" property, our IDE need to understand the getters and
@@ -30,14 +28,12 @@ added, such as one can create a BookBean for some metadata, and then MBeans for 
 We think we have a much better solution, and are bold enough to abandon the getters/setters and POJOs. The above looks
 like this;
 
-[source,java]
-----
-public interface Book
-{
-    @Immutable Property<String> title();
-    @Immutable Property<String> author();
-}
-----
+[snippet,java]
+-----------
+source=manual/src/main/java/org/niclas/hedhman/tutorials/properties/Book.java
+tag=book
+-----------
+
 
 There is more to this than meets the eye.
 
@@ -45,16 +41,11 @@ There is more to this than meets the eye.
 - Property still have a set() method, which can be used during the initialization only.
 - Metadata about each Property can be declared as <<def-metainfo>>.
 
-[source,java]
-----
-TransientBuilder<Book> builder = module.newTransientBuilder( Book.class );
-Book prototype = builder.prototype();
-prototype.title().set( "The Death of POJOs" );
-prototype.author().set( "Niclas Hedhman" );
-Book book = builder.newInstance();
-String title = book.title().get();     // Retrieves the title.
-book.title().set( "Long Live POJOs" ); // throws a PropertyVetoException
-----
+[snippet,java]
+-----------
+source=manual/src/main/java/org/niclas/hedhman/tutorials/properties/BookFactory.java
+tag=create
+-----------
 
 == Persistence ==
 
@@ -73,23 +64,16 @@ Property per Module. A Property is identified by its method name and the interfa
 Let's say we want to create a generic Swing client that can show and navigate the domain model, without knowing the
 actual domain model. Such Swing client will utilize a SwingInfo property info if it is available.
 
-[source,java]
-----
-public interface SwingInfo
-{
-    Icon icon( Rectangle size );
-    String displayName( Locale locale );
-}
-----
+[snippet,java]
+-----------
+source=manual/src/main/java/org/niclas/hedhman/tutorials/properties/SwingInfo.java
+tag=info
+-----------
 
 Our generic Swing UI will be mainly reflective in nature, but when it gets hold of a Property, it can simply do;
 
-[source,java]
-----
-private void addProperty( JPanel panel, Property<?> property )
-{
-    SwingInfo info = property.metaInfo( SwingInfo.class );
-    panel.add( new Label( info.displayName( this.locale ) );
-    panel.add( info.icon( this.iconSize ) );
-}
-----
+[snippet,java]
+-----------
+source=manual/src/main/java/org/niclas/hedhman/tutorials/properties/SwingPanel.java
+tag=info-use
+-----------
