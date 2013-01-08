@@ -56,24 +56,17 @@ In versions of Qi4j prior to 2.0, composite types had to extend one of these 4 m
 meta type interface is added dynamically during <<core-bootstrap-assembly>>.
 We can therefor get rid of a lot of additional types, and use Qi4j-free interfaces directly;
 
-[source,java]
--------------
-@Mixins({BalanceCheckMixin.class, .... } )
-public interface BankAccount
-{
-    Money checkBalance();
-    :
-    :
-}
--------------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/docsupport/CompositionDocs.java
+tag=comp1
+-----------
 
 and declare it with;
 
-[source,java]
--------------
-public void assemble( ModuleAssembly module )
-{
-    module.entities( BankAccount.class );
-}
--------------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/docsupport/CompositionDocs.java
+tag=comp2
+-----------
 

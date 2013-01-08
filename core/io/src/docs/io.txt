@@ -43,7 +43,7 @@ source.copyTo( destination );
 -------------
 
 It seems natural to do, yet it is not present for us. We need to involve FileInputStream/FileOutputStream, wrap them
-in Buffered versions of it, do out own looping, close the streams afterwards and what not. So, the java.io.File does
+in Buffered versions of it, do our own looping, close the streams afterwards and what not. So, the java.io.File does
 not have this simple feature and in the Qi4j Core API, we need to work around this limitation. We also want to
 make the abstraction a little bit more encompassing than "just" files. So how does that look like then?
 
@@ -53,26 +53,22 @@ factory methods, but you can create your (more about that later).
 
 So, we want to read a text file and write the content into another text file, right? This is how it is done;
 
-[source,java]
--------------
-File source = ...
-File destination = ...
-Inputs.text( source ).transferTo( Outputs.text(destination) );
--------------
+[snippet,java]
+-----------
+source=core/io/src/test/java/org/qi4j/io/docsupport/IoDocs.java
+tag=io1
+-----------
 
 Pretty much self-explanatory, wouldn't you say? But what happened to the handling of exceptions and closing of
 resources? It is all handled inside the Qi4j Core I/O API. There is nothing you can forget to do.
 
 Another simple example, where we want to count the number of lines in the text;
 
-[source,java]
--------------
-File source = ...
-File destination = ...
-Counter<String> counter = new Counter<String>();
-Inputs.text( source ).transferTo( Transforms.map(counter, Outputs.text(destination) ));
-System.out.println( "Lines: " + counter.getCount() );
--------------
+[snippet,java]
+-----------
+source=core/io/src/test/java/org/qi4j/io/docsupport/IoDocs.java
+tag=io2
+-----------
 
 The Counter is a <<core-functional>> which gets injected into the transfer.
 

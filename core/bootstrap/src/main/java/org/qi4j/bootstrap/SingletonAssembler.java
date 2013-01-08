@@ -45,6 +45,7 @@ public abstract class SingletonAssembler
     public SingletonAssembler()
         throws IllegalStateException
     {
+// START SNIPPET: actual
         qi4j = new Energy4Java();
         try
         {
@@ -72,6 +73,7 @@ public abstract class SingletonAssembler
         {
             throw new IllegalStateException( "Could not activate application", e );
         }
+// START SNIPPET: actual
 
         moduleInstance = applicationInstance.findModule( "Layer 1", "Module 1" );
     }

@@ -32,25 +32,19 @@ include::../../build/docs/buildinfo/artifact.txt[]
 Let's say that you have an Iterable of Integers and you want to sum them all up. Most people would create a loop and
 sum it all up in something like this;
 
-[source,java]
--------------
-Iterable<Integer> data = ...;
-
-long sum = 0;
-for( Long point : data ) {
-    sum = sum + point;
-}
-System.out.println( "The sum is " + sum );
--------------
+[snippet,java]
+-----------
+source=core/functional/src/test/java/org/qi4j/functional/docsupport/FunctionalDocs.java
+tag=func1
+-----------
 
 With the Qi4j Core Functional API, you go about it in a different way. The code ends up looking like this;
 
-[source,java]
--------------
-Iterable<Number> data = ...;
-Long sum = forEach( data ).map( longSum() ).last();
-System.out.println( "The sum is " + sum );
--------------
+[snippet,java]
+-----------
+source=core/functional/src/test/java/org/qi4j/functional/docsupport/FunctionalDocs.java
+tag=func2
+-----------
 
 And this is just the tip of the iceberg.
 

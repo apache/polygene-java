@@ -23,6 +23,7 @@ import org.qi4j.api.injection.scope.State;
 /**
  * Generic mixin for properties.
  */
+// START SNIPPET: actual
 @AppliesTo( { PropertyMixin.PropertyFilter.class } )
 public final class PropertyMixin
     implements InvocationHandler
@@ -50,3 +51,4 @@ public final class PropertyMixin
         }
     }
 }
+// END SNIPPET: actual
