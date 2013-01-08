@@ -16,7 +16,7 @@ tag=book
 [snippet,java]
 -----------
 source=manual/src/main/java/org/niclas/hedhman/tutorials/properties/pojo/MutableBook.java
-tag=book
+tag=mutableBook
 -----------
 
 where we need the MutableBook to be able to initialize it (known as Type 2 Dependency Injection) on creation. From our
