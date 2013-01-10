@@ -62,17 +62,18 @@ The Visibility rules are perhaps the most powerful aspect of the above. Visibili
 a Composite type need to be looked up. It defines both the scoping rules of the client as well as the provider. A lookup
 is either a direct reference, such as
 
-[source,java]
+[snippet,java]
 -----------
-EntityBuilderFactory factory = ...;
-PersonEntity p = factory.newEntity( PersonEntity.class );
+source=manual/src/main/java/org/niclas/hedhman/tutorials/assembly/Docs.java
+tag=direct
 -----------
 
 or an indirect lookup, such as
 
-[source,java]
+[snippet,java]
 -----------
-Person p = factory.newEntity( Person.class );
+source=manual/src/main/java/org/niclas/hedhman/tutorials/assembly/Docs.java
+tag=indirect
 -----------
 
 where it will first map the Person to a reachable PersonEntity.
