@@ -4,6 +4,7 @@ jar { manifest { name = "Qi4j Tutorial - 30 minute Introduction" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.tutorials:org.qi4j.tutorial.introduction:org.qi4j.tutorial.introduction.tenminutes"))
 
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   

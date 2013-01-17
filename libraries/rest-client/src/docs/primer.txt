@@ -30,29 +30,11 @@ and after that the handlers will do all the work, based on the result. A handler
 requests, or it may abort. "refresh" does not return any value, and usually does not throw any exceptions.
 
 Example:
-[source,java]
---------------
-crc.onResource( new ResultHandler<Resource>()
-{
-   @Override
-   public void handleResult( Resource result, ContextResourceClient client )
-   {
-       // This may throw IAE if no link with relation
-       // "querywithoutvalue" is found in the Resource
-       client.query( "querywithoutvalue", null );
-   }
-} ).
-onQuery( "querywithoutvalue", TestResult.class, new ResultHandler<TestResult>()
-{
-   @Override
-   public void handleResult( TestResult result, ContextResourceClient client )
-   {
-       Assert.assertThat( result.xyz().get(), CoreMatchers.equalTo( "bar" ) );
-   }
-} );
-
-crc.refresh();
---------------
+[snippet,java]
+-----------
+source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/docsupport/RestPrimerDocs.java
+tag=1
+-----------
 
 The client first builds up the set of handlers, and describe what they should react to. The client then invokes
 "refresh" which will trigger the first GET on the bookmark URL. This will return a representation of that context as a
@@ -65,45 +47,11 @@ following a link.
 On crc (ContextResourceClient) it is also possible to registers handlers that are always applied, such as error
 handlers. Here is the setup of crc:
 
-[source,java]
---------------
-// Create Restlet client and bookmark Reference
-Client client = new Client( Protocol.HTTP );
-Reference ref = new Reference( "http://localhost:8888/" );
-ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client, new NullResponseHandler() );
-contextResourceClientFactory.setAcceptedMediaTypes( MediaType.APPLICATION_JSON );
-
-// Handle logins
-contextResourceClientFactory.setErrorHandler( new ErrorHandler().onError( ErrorHandler.AUTHENTICATION_REQUIRED, new ResponseHandler()
-{
-   // Only try to login once
-   boolean tried = false;
-
-   @Override
-   public void handleResponse( Response response, ContextResourceClient client )
-   {
-           // If we have already tried to login, fail!
-           if (tried)
-               throw new ResourceException( response.getStatus() );
-
-           tried = true;
-           client.getContextResourceClientFactory().getInfo().setUser( new User("rickard", "secret") );
-
-           // Try again
-           client.refresh();
-   }
-} ).onError( ErrorHandler.RECOVERABLE_ERROR, new ResponseHandler()
-{
-   @Override
-   public void handleResponse( Response response, ContextResourceClient client )
-   {
-       // Try to restart this scenario
-       client.refresh();
-   }
-} ) );
-
-crc = contextResourceClientFactory.newClient( ref );
---------------
+[snippet,java]
+-----------
+source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/docsupport/RestPrimerDocs.java
+tag=2
+-----------
 
 These general handlers cover what to do for login and error handling, for example.
 In the traditional REST client this is not as easy to do, as you are more or less assuming a "happy path" all the time.

@@ -16,6 +16,9 @@
 
 package org.qi4j.demo.tenminute;
 
+import org.qi4j.api.property.Property;
+
 public interface HasSequenceNumber
 {
+    Property<String> number();
 }
