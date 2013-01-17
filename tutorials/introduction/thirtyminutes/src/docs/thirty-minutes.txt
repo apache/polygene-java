@@ -113,21 +113,10 @@ generated. This example assumes that the Order type has a Property<Date> created
 Now, Orders has a relation to the CustomerComposite which is also an Entity. Let's create a query for all customers
 that has made an Order in the last 30 days;
 
-[source,java]
+[snippet,java]
 -----------
-QueryBuilder<HasCustomer> builder = qbf.newQueryBuilder( HasCustomer.class );
-
-Calendar cal = Calendar.getInstance();
-cal.setTime( new Date() );
-Date lastMonth = cal.roll( Calendar.MONTH, -1 );
-Order template1 = templateFor( Order.class );
-builder.where( gt( template1.createdDate(), lastMonth ) );
-Query<HasCustomer> query = builder.newQuery();
-
-for( HasCustomer hasCustomer : query )
-{
-    report.addCustomerToReport( hasCustomer.customer().get() );
-}
+source=tutorials/introduction/thirtyminutes/src/main/java/org/qi4j/demo/thirtyminutes/ThirtyMinutesDocs.java
+tag=8
 -----------
 
 This covers the most basic Query capabilities and how to use it. For Querying to work, an Indexing subsystem must be
