@@ -41,15 +41,15 @@ can be solved in a support manner, or that we need to extend the Core API to sup
 
 :leveloffset: {level3}
 
-include::entitystore.txt[]
+// include::entitystore.txt[]
 
 :leveloffset: {level3}
 
-include::cache.txt[]
+// include::cache.txt[]
 
 :leveloffset: {level3}
 
-include::indexing.txt[]
+// include::indexing.txt[]
 
 :leveloffset: {level3}
 
