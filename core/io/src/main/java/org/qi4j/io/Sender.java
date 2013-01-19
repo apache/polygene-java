@@ -17,8 +17,10 @@ package org.qi4j.io;
 /**
  * Sender of items for a particular transfer from an Input to an Output
  */
+// START SNIPPET: sender
 public interface Sender<T, SenderThrowableType extends Throwable>
 {
+// END SNIPPET: sender
     /**
      * The sender should send all items it holds to the receiver by invoking receiveItem for each item.
      *
@@ -30,6 +32,8 @@ public interface Sender<T, SenderThrowableType extends Throwable>
      * @throws ReceiverThrowableType
      * @throws SenderThrowableType
      */
+// START SNIPPET: sender
     <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super T, ReceiverThrowableType> receiver )
         throws ReceiverThrowableType, SenderThrowableType;
 }
+// END SNIPPET: sender

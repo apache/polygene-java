@@ -119,12 +119,10 @@ available as services.
 The entity factory is something you need to write yourself, but as with most things in Qi4j it will end up being a
 fairly small implementation. So how is that done?
 
-[source,java]
+[snippet,java]
 -----------
-public interface CarEntityFactory
-{
-    Car create( Manufacturer manufacturer, String model );
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactory.java
+tag=carFactory
 -----------
 
 That is just the domain interface. We now need to make the service interface, which Qi4j needs to identify services and

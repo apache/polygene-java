@@ -1,4 +1,4 @@
-package org.niclas.hedhman.tutorials.properties;
+package org.qi4j.manual.recipes.properties;
 
 import java.awt.Rectangle;
 import java.util.Locale;

@@ -64,7 +64,7 @@ is either a direct reference, such as
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/niclas/hedhman/tutorials/assembly/Docs.java
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Docs.java
 tag=direct
 -----------
 
@@ -72,7 +72,7 @@ or an indirect lookup, such as
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/niclas/hedhman/tutorials/assembly/Docs.java
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Docs.java
 tag=indirect
 -----------
 

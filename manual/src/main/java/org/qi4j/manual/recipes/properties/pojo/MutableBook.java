@@ -1,4 +1,4 @@
-package org.niclas.hedhman.tutorials.properties.pojo;
+package org.qi4j.manual.recipes.properties.pojo;
 
 
 // START SNIPPET: mutableBook

@@ -1,4 +1,4 @@
-package org.niclas.hedhman.tutorials.concern;
+package org.qi4j.manual.recipes.concern;
 
 import java.lang.reflect.Method;
 import org.qi4j.api.common.AppliesTo;

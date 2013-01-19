@@ -1,4 +1,4 @@
-package org.niclas.hedhman.travel;
+package org.qi4j.manual.travel;
 
 // START SNIPPET: service
 public interface TravelPlan

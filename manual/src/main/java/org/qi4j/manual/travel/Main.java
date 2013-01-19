@@ -1,4 +1,4 @@
-package org.niclas.hedhman.travel;
+package org.qi4j.manual.travel;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;

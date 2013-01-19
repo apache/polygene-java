@@ -96,7 +96,7 @@ tag=assembly
 
 Sample DataSource configuration defaults:
 
-[source],java
+[source,java]
 ----
 include::../test/resources/sqlite-datasource.properties[]
 ----

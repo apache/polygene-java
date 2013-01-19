@@ -1,4 +1,4 @@
-package org.niclas.hedhman.tutorials.properties;
+package org.qi4j.manual.recipes.properties;
 
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.injection.scope.Structure;

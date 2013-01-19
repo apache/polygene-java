@@ -1,4 +1,4 @@
-package org.niclas.hedhman.tutorials.assembly;
+package org.qi4j.manual.recipes.assemble;
 
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.structure.Module;

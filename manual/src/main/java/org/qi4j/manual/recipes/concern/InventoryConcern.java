@@ -1,4 +1,4 @@
-package org.niclas.hedhman.tutorials.concern;
+package org.qi4j.manual.recipes.concern;
 
 public class InventoryConcern
     implements Order

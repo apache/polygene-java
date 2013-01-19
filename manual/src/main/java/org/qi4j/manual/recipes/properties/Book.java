@@ -1,4 +1,4 @@
-package org.niclas.hedhman.tutorials.properties;
+package org.qi4j.manual.recipes.properties;
 
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;

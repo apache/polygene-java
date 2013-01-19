@@ -1,9 +1,8 @@
-package org.niclas.hedhman.tutorials.properties;
+package org.qi4j.manual.recipes.properties;
 
 import java.awt.Rectangle;
 import java.util.Locale;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.qi4j.api.Qi4j;

@@ -1,6 +1,6 @@
 // START SNIPPET: serviceComposite
 // The package is relevant to the Initial Values discussed later.
-package org.niclas.hedhman.travel;
+package org.qi4j.manual.travel;
 // END SNIPPET: serviceComposite
 
 import org.qi4j.api.mixin.Mixins;

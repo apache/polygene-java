@@ -80,13 +80,10 @@ easily used in many different situations. The result is as follows.
 
 To start with we have Input:
 
-[source,java]
+[snippet,java]
 --------------
-public interface Input<T, SenderThrowableType extends Throwable>
-{
-    <ReceiverThrowableType extends Throwable> void transferTo( Output<T,ReceiverThrowableType> output )
-        throws SenderThrowableType, ReceiverThrowableType;
-}
+source=core/io/src/main/java/org/qi4j/io/Input.java
+tag=input
 -------------
 
 Inputs, like Iterables, can be used over and over again to initiate transfers of data from one place to another, in
@@ -99,14 +96,11 @@ opened.
 
 On the receiving side we then have Output:
 
-[source,java]
+[snippet,java]
 --------------
-public interface Output<T, ReceiverThrowableType extends Throwable>
-{
-    <SenderThrowableType extends Throwable> void receiveFrom(Sender<T, SenderThrowableType> sender)
-            throws ReceiverThrowableType, SenderThrowableType;
-}
---------------
+source=core/io/src/main/java/org/qi4j/io/Output.java
+tag=output
+-------------
 
 When receiveFrom is invoked by an Input, as a result of invoking transferTo on the Input, the Output should open
 whatever resources it needs to write to, and then expect data to come from a Sender. Both the Input and Output must
@@ -115,26 +109,20 @@ not the case.
 
 Next we have Sender:
 
-[source,java]
+[snippet,java]
 --------------
-public interface Sender<T, SenderThrowableType extends Throwable>
-{
-    <ReceiverThrowableType extends Throwable> void sendTo(Receiver<T, ReceiverThrowableType> receiver)
-        throws ReceiverThrowableType, SenderThrowableType;
-}
---------------
+source=core/io/src/main/java/org/qi4j/io/Sender.java
+tag=sender
+-------------
 
 The Output invokes sendTo and passes in a Receiver that the Sender will use to send individual items. The sender at
 this point can start transferring data of type T to the receiver, one at a time. The Receiver looks like this:
 
-[source,java]
+[snippet,java]
 --------------
-public interface Receiver<T, ReceiverThrowableType extends Throwable>
-{
-    void receive(T item)
-        throws ReceiverThrowableType;
-}
---------------
+source=core/io/src/main/java/org/qi4j/io/Receiver.java
+tag=receiver
+-------------
 
 When the receiver gets the individual items from the sender it can either immediately write them to its underlying
 resource, or batch them up. Since the receiver will know when the transfer is done (sendTo returns) it can write the
@@ -150,11 +138,10 @@ inputs and outputs. Let's say, reading lines of text from a file, and writing li
 implementations I can then put in static methods so they are easy to use. In the end, to make a copy of a text file
 looks like this:
 
-[source,java]
+[snippet,java]
 --------------
-File source = ...
-File destination = ...
-Inputs.text( source ).transferTo( Outputs.text(destination) );
+source=manual/src/main/java/org/qi4j/manual/recipes/io/Docs.java
+tag=filter
 --------------
 
 One line of code that handles the reading, the writing, the cleaning up, buffering, and whatnot. Pretty nifty! The
