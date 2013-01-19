@@ -60,11 +60,18 @@ public final class Energy4Java
 
         if( assembly == null )
         {
-            throw new AssemblyException( "Application assembler did not retun any ApplicationAssembly" );
+            throw new AssemblyException( "Application assembler did not return any ApplicationAssembly" );
         }
 
-        ApplicationModelFactory modelFactory = runtime.applicationModelFactory();
-        return modelFactory.newApplicationModel( assembly );
+        try
+        {
+            ApplicationModelFactory modelFactory = runtime.applicationModelFactory();
+            return modelFactory.newApplicationModel( assembly );
+        }
+        catch( RuntimeException e )
+        {
+            throw new AssemblyException( "Unable to create Application Model.", e );
+        }
     }
 
     public Application newApplication( ApplicationAssembler assembler, Object... importedServiceInstances )

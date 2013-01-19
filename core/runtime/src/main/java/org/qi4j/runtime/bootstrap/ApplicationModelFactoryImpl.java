@@ -110,7 +110,7 @@ public final class ApplicationModelFactoryImpl
         }
         catch( BindingException e )
         {
-            throw new AssemblyException( e );
+            throw new AssemblyException( "Unable to bind: " + applicationModel, e );
         }
 
         return applicationModel;

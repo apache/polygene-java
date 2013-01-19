@@ -28,6 +28,8 @@ import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.DefaultValues;
 import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.InvalidPropertyTypeException;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueCompositeType;
@@ -80,6 +82,14 @@ public class PropertyModel
                           Object initialValue
     )
     {
+        if( accessor instanceof Method )
+        {
+            Method m = (Method) accessor;
+            if( !m.getReturnType().equals( Property.class ) )
+            {
+                throw new InvalidPropertyTypeException( accessor );
+            }
+        }
         this.immutable = immutable;
         this.metaInfo = metaInfo;
         type = GenericPropertyInfo.getPropertyType( accessor );

@@ -23,6 +23,7 @@ package org.qi4j.api.common;
  * <li>interface instead of a class.</li>
  * <li>useful constructor missing.</li>
  * <li>exception thrown in the constructor.</li>
+ * <li>Subclassing of org.qi4j.api.property.Property</li>
  * </ul>
  * <p>
  * See the nested exception for additional details.

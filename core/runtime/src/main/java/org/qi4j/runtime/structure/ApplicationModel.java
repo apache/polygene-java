@@ -154,4 +154,16 @@ public final class ApplicationModel
     {
         return ipf;
     }
+
+    @Override
+    public String toString()
+    {
+        final StringBuilder sb = new StringBuilder();
+        sb.append( "ApplicationModel" );
+        sb.append( "{name='" ).append( name ).append( '\'' );
+        sb.append( ", version='" ).append( version ).append( '\'' );
+        sb.append( ", mode=" ).append( mode );
+        sb.append( '}' );
+        return sb.toString();
+    }
 }
