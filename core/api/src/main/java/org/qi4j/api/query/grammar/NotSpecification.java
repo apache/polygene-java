@@ -16,7 +16,7 @@ public class NotSpecification implements Specification<Composite>
         this.operand = operand;
     }
 
-    public Specification<Composite> getOperand()
+    public Specification<Composite> operand()
     {
         return operand;
     }

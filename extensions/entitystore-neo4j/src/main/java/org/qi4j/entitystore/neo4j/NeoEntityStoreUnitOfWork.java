@@ -74,7 +74,7 @@ public class NeoEntityStoreUnitOfWork
     }
 
     @Override
-    public EntityState getEntityState( EntityReference anIdentity )
+    public EntityState entityStateOf( EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException
     {
         return new NeoEntityState( this, getEntityStateNode( anIdentity ),

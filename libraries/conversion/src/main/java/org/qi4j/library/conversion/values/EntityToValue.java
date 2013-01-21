@@ -54,8 +54,8 @@ public interface EntityToValue
             Unqualified unqualified = valueDescriptor.metaInfo( Unqualified.class );
 //            Iterable<? extends PropertyDescriptor> properties = valueDescriptor.state().properties();
             final EntityComposite composite = (EntityComposite) entity;
-            final EntityDescriptor entityDescriptor = spi.getEntityDescriptor( composite );
-            final AssociationStateHolder associationState = spi.getState( composite );
+            final EntityDescriptor entityDescriptor = spi.entityDescriptorFor( composite );
+            final AssociationStateHolder associationState = spi.stateOf( composite );
             ValueBuilder builder;
 
             if( unqualified == null || !unqualified.value() )
@@ -131,7 +131,7 @@ public interface EntityToValue
                         @Override
                         public EntityReference map( AssociationDescriptor associationDescriptor )
                         {
-                            return EntityReference.getEntityReference(
+                            return EntityReference.entityReferenceFor(
                                 associationState.associationFor( associationDescriptor.accessor() ).get() );
                         }
                     }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
@@ -142,7 +142,7 @@ public interface EntityToValue
                             List<EntityReference> refs = new ArrayList<EntityReference>();
                             for( Object entity : associationState.manyAssociationFor( associationDescriptor.accessor() ) )
                             {
-                                refs.add( EntityReference.getEntityReference( entity ) );
+                                refs.add( EntityReference.entityReferenceFor( entity ) );
                             }
                             return refs;
                         }
@@ -162,7 +162,7 @@ public interface EntityToValue
                             String propertyName = descriptor.qualifiedName().name();
                             try
                             {
-                                PropertyDescriptor propertyDescriptor = entityState.getPropertyByName( propertyName );
+                                PropertyDescriptor propertyDescriptor = entityState.findPropertyModelByName( propertyName );
                                 return associationState.propertyFor( propertyDescriptor.accessor() ).get();
                             }
                             catch( Exception e )
@@ -235,7 +235,7 @@ public interface EntityToValue
 
                             AccessibleObject associationMethod = associationDescriptor.accessor();
                             Association<Object> association = associationState.associationFor( associationMethod );
-                            return EntityReference.getEntityReference( association.get() );
+                            return EntityReference.entityReferenceFor( association.get() );
                         }
                     }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
                     {
@@ -258,7 +258,7 @@ public interface EntityToValue
                             AccessibleObject associationMethod = associationDescriptor.accessor();
                             for( Object entity : associationState.manyAssociationFor( associationMethod ) )
                             {
-                                refs.add( EntityReference.getEntityReference( entity ) );
+                                refs.add( EntityReference.entityReferenceFor( entity ) );
                             }
                             return refs;
                         }

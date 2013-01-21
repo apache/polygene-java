@@ -32,7 +32,7 @@ public class ServiceInstance
     extends TransientInstance
     implements Activation
 {
-    public static TransientInstance getCompositeInstance( ServiceComposite composite )
+    public static TransientInstance serviceInstanceOf( ServiceComposite composite )
     {
         return (TransientInstance) Proxy.getInvocationHandler( composite );
     }

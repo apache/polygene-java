@@ -92,7 +92,7 @@ public class PropertyModel
         }
         this.immutable = immutable;
         this.metaInfo = metaInfo;
-        type = GenericPropertyInfo.getPropertyType( accessor );
+        type = GenericPropertyInfo.propertyTypeOf( accessor );
         this.accessor = accessor;
         qualifiedName = QualifiedName.fromAccessor( accessor );
 
@@ -173,7 +173,7 @@ public class PropertyModel
             }
             else
             {
-                value = DefaultValues.getDefaultValue( type );
+                value = DefaultValues.getDefaultValueOf( type );
             }
         }
 

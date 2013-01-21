@@ -88,7 +88,7 @@ public interface DomainEventPlayerService
                     }
 
                     // check if the event has already occured
-                    EntityState state = spi.getEntityState( (EntityComposite) entity );
+                    EntityState state = spi.entityStateOf( (EntityComposite) entity );
                     if (state.lastModified() > unitOfWorkDomainValue.timestamp().get())
                     {
                         break; // don't rerun event in this unitOfWorkDomainValue

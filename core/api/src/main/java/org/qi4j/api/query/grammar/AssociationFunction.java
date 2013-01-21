@@ -41,24 +41,24 @@ public class AssociationFunction<T>
         {
             throw new QueryExpressionException( "Unsupported association type:" + returnType );
         }
-        Type associationTypeAsType = GenericAssociationInfo.getAssociationType( returnType );
+        Type associationTypeAsType = GenericAssociationInfo.toAssociationType( returnType );
         if( !( associationTypeAsType instanceof Class ) )
         {
             throw new QueryExpressionException( "Unsupported association type:" + associationTypeAsType );
         }
     }
 
-    public AssociationFunction<?> getTraversedAssociation()
+    public AssociationFunction<?> traversedAssociation()
     {
         return traversedAssociation;
     }
 
-    public ManyAssociationFunction<?> getTraversedManyAssociation()
+    public ManyAssociationFunction<?> traversedManyAssociation()
     {
         return traversedManyAssociation;
     }
 
-    public AccessibleObject getAccessor()
+    public AccessibleObject accessor()
     {
         return accessor;
     }

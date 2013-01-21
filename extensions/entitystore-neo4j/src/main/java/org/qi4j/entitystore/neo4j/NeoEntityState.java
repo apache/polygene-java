@@ -60,7 +60,7 @@ public class NeoEntityState
     }
 
     @Override
-    public ManyAssociationState getManyAssociation( QualifiedName stateName )
+    public ManyAssociationState manyAssociationValueOf( QualifiedName stateName )
     {
         RelationshipType manyAssociation = manyAssociation( stateName );
         Relationship rel = underlyingNode.getSingleRelationship( manyAssociation, Direction.OUTGOING );
@@ -75,7 +75,7 @@ public class NeoEntityState
     }
 
     @Override
-    public EntityReference getAssociation( QualifiedName stateName )
+    public EntityReference associationValueOf( QualifiedName stateName )
     {
         Relationship rel = underlyingNode.getSingleRelationship( association( stateName ), Direction.OUTGOING );
         if( rel != null )
@@ -87,7 +87,7 @@ public class NeoEntityState
     }
 
     @Override
-    public void setAssociation( QualifiedName stateName, EntityReference newEntity )
+    public void setAssociationValue( QualifiedName stateName, EntityReference newEntity )
     {
         RelationshipType association = association( stateName );
         Relationship rel = underlyingNode.getSingleRelationship( association, Direction.OUTGOING );
@@ -114,7 +114,7 @@ public class NeoEntityState
     }
 
     @Override
-    public Object getProperty( QualifiedName stateName )
+    public Object propertyValueOf( QualifiedName stateName )
     {
         try
         {
@@ -129,7 +129,7 @@ public class NeoEntityState
             }
             else
             {
-                PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
+                PropertyDescriptor persistentProperty = entityDescriptor().state().findPropertyModelByQualifiedName( stateName );
                 String json = "[" + prop + "]";
                 JSONTokener tokener = new JSONTokener( json );
                 JSONArray array = (JSONArray) tokener.nextValue();
@@ -152,7 +152,7 @@ public class NeoEntityState
     }
 
     @Override
-    public void setProperty( QualifiedName stateName, Object prop )
+    public void setPropertyValue( QualifiedName stateName, Object prop )
     {
         try
         {
@@ -164,7 +164,7 @@ public class NeoEntityState
                 }
                 else
                 {
-                    PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
+                    PropertyDescriptor persistentProperty = entityDescriptor().state().findPropertyModelByQualifiedName( stateName );
                     if( prop instanceof String && persistentProperty.valueType().mainType().equals( String.class ) )
                     {
                         underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
@@ -173,7 +173,7 @@ public class NeoEntityState
                     {
                         JSONObjectSerializer serializer = new JSONObjectSerializer(  );
                         serializer.serialize( prop, persistentProperty.valueType() );
-                        String jsonString = serializer.getRoot().toString();
+                        String jsonString = serializer.rootObject().toString();
                         underlyingNode.setProperty( "prop::" + stateName.toString(), jsonString );
                     }
                 }
@@ -310,7 +310,7 @@ public class NeoEntityState
         return "" + version;
     }
 
-    public EntityStoreUnitOfWork getUnitOfWork()
+    public EntityStoreUnitOfWork unitOfWork()
     {
         return uow;
     }

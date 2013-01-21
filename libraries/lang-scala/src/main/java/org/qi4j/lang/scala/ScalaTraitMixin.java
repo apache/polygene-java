@@ -51,7 +51,7 @@ public class ScalaTraitMixin
 
     public ScalaTraitMixin( @This Composite composite )
     {
-        compositeType = Qi4j.DESCRIPTOR_FUNCTION.map( composite).primaryType();
+        compositeType = Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite).primaryType();
     }
 
     @Override

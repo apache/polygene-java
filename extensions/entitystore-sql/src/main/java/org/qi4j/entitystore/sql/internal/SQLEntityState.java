@@ -87,21 +87,21 @@ public interface SQLEntityState
         }
 
         @Override
-        public EntityReference getAssociation( QualifiedName stateName )
+        public EntityReference associationValueOf( QualifiedName stateName )
         {
-            return state.getAssociation( stateName );
+            return state.associationValueOf( stateName );
         }
 
         @Override
-        public ManyAssociationState getManyAssociation( QualifiedName stateName )
+        public ManyAssociationState manyAssociationValueOf( QualifiedName stateName )
         {
-            return state.getManyAssociation( stateName );
+            return state.manyAssociationValueOf( stateName );
         }
 
         @Override
-        public Object getProperty( QualifiedName stateName )
+        public Object propertyValueOf( QualifiedName stateName )
         {
-            return state.getProperty( stateName );
+            return state.propertyValueOf( stateName );
         }
 
         @Override
@@ -129,15 +129,15 @@ public interface SQLEntityState
         }
 
         @Override
-        public void setAssociation( QualifiedName stateName, EntityReference newEntity )
+        public void setAssociationValue( QualifiedName stateName, EntityReference newEntity )
         {
-            state.setAssociation( stateName, newEntity );
+            state.setAssociationValue( stateName, newEntity );
         }
 
         @Override
-        public void setProperty( QualifiedName stateName, Object json )
+        public void setPropertyValue( QualifiedName stateName, Object json )
         {
-            state.setProperty( stateName, json );
+            state.setPropertyValue( stateName, json );
         }
 
         @Override

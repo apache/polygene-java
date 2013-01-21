@@ -110,7 +110,7 @@ public interface MigrationService
             // Get current version
             String fromVersion = state.optString( MapEntityStore.JSONKeys.application_version.name(), "0.0" );
 
-            Iterable<EntityMigrationRule> matchedRules = builder.getEntityRules().getRules( fromVersion, toVersion );
+            Iterable<EntityMigrationRule> matchedRules = builder.entityMigrationRules().rulesBetweenVersions( fromVersion, toVersion );
 
             boolean changed = false;
             if( matchedRules != null )
@@ -150,7 +150,7 @@ public interface MigrationService
             // Run general rules if version has changed
             if( !app.version().equals( lastVersion ) )
             {
-                Iterable<MigrationRule> rules = builder.getRules().getRules( lastVersion, version );
+                Iterable<MigrationRule> rules = builder.migrationRules().rulesBetweenVersions( lastVersion, version );
                 List<MigrationRule> executedRules = new ArrayList<MigrationRule>();
                 try
                 {

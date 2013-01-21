@@ -29,7 +29,7 @@ public class InvocationCacheMixin
     }
 
     @Override
-    public Object getCachedValue( String name )
+    public Object cachedValue( String name )
     {
         return cachedValues.get( name );
     }
@@ -47,7 +47,7 @@ public class InvocationCacheMixin
     }
 
     @Override
-    public int getCacheSize()
+    public int currentCacheSize()
     {
         return cachedValues.size();
     }

@@ -89,7 +89,7 @@ public interface Page
         private void execute( QuikitContext context, Element element, Element parent )
             throws RenderException
         {
-            Class<? extends Composite> compositeType = (Class<Composite>) first( Qi4j.DESCRIPTOR_FUNCTION
+            Class<? extends Composite> compositeType = (Class<Composite>) first( Qi4j.FUNCTION_DESCRIPTOR_FOR
                                                                                      .map( context.page() )
                                                                                      .types() );
             try

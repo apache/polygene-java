@@ -122,8 +122,8 @@ public final class EntityModel extends CompositeModel
             EntityState entityState = store.newEntityState( identity, this );
 
             // Set identity property
-            PropertyDescriptor persistentPropertyDescriptor = state().getProperty( IDENTITY_METHOD );
-            entityState.setProperty( persistentPropertyDescriptor.qualifiedName(), identity.identity() );
+            PropertyDescriptor persistentPropertyDescriptor = state().propertyModelFor( IDENTITY_METHOD );
+            entityState.setPropertyValue( persistentPropertyDescriptor.qualifiedName(), identity.identity() );
 
             return entityState;
         }
@@ -143,7 +143,7 @@ public final class EntityModel extends CompositeModel
             // Set new properties to default value
             for( PropertyModel propertyDescriptor : state().properties() )
             {
-                entityState.setProperty( propertyDescriptor.qualifiedName(), propertyDescriptor.initialValue( module ) );
+                entityState.setPropertyValue( propertyDescriptor.qualifiedName(), propertyDescriptor.initialValue( module ) );
             }
         }
 
@@ -151,7 +151,7 @@ public final class EntityModel extends CompositeModel
             // Set new manyAssociations to null
             for( AssociationDescriptor associationDescriptor : state().associations() )
             {
-                entityState.setAssociation( associationDescriptor.qualifiedName(), null );
+                entityState.setAssociationValue( associationDescriptor.qualifiedName(), null );
             }
         }
 
@@ -159,7 +159,7 @@ public final class EntityModel extends CompositeModel
             // Set new many-manyAssociations to empty
             for( AssociationDescriptor associationDescriptor : state().manyAssociations() )
             {
-                entityState.getManyAssociation( associationDescriptor.qualifiedName() );
+                entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() );
             }
         }
     }

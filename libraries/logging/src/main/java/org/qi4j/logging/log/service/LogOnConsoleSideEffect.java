@@ -54,7 +54,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
 
     private String getCompositeName( Composite composite )
     {
-        return first( Qi4j.DESCRIPTOR_FUNCTION.map( composite ).types()).getName();
+        return first( Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
     }
 
     public void log( LogType type, Composite composite, String category, String message, Object param1 )

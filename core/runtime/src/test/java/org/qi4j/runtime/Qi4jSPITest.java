@@ -61,9 +61,9 @@ public class Qi4jSPITest
 
             testEntity = builder.newInstance();
 
-            AssociationStateHolder state = spi.getState( testEntity );
+            AssociationStateHolder state = spi.stateOf( testEntity );
 
-            validateState( state, spi.getEntityDescriptor( testEntity ) );
+            validateState( state, spi.entityDescriptorFor( testEntity ) );
 
             unitOfWork.complete();
         }
@@ -76,7 +76,7 @@ public class Qi4jSPITest
         try
         {
             testEntity = uow.get( testEntity );
-            validateState( spi.getState( testEntity ), spi.getEntityDescriptor( testEntity ) );
+            validateState( spi.stateOf( testEntity ), spi.entityDescriptorFor( testEntity ) );
             uow.complete();
         }
         finally

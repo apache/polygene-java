@@ -21,12 +21,12 @@ public class ContainsAllSpecification<T>
         this.valueCollection = valueCollection;
     }
 
-    public PropertyFunction<? extends Collection<T>> getCollectionProperty()
+    public PropertyFunction<? extends Collection<T>> collectionProperty()
     {
         return collectionProperty;
     }
 
-    public Iterable<T> getValueCollection()
+    public Iterable<T> containedValues()
     {
         return valueCollection;
     }

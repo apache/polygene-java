@@ -41,12 +41,12 @@ public final class MapType
         this.valueType = valueType;
     }
 
-    public ValueType getKeyType()
+    public ValueType keyType()
     {
         return keyType;
     }
 
-    public ValueType getValueType()
+    public ValueType valueType()
     {
         return valueType;
     }

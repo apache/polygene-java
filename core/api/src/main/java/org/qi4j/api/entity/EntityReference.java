@@ -37,7 +37,7 @@ public final class EntityReference
         return new EntityReference( id );
     }
 
-    public static EntityReference getEntityReference( Object o )
+    public static EntityReference entityReferenceFor( Object o )
     {
         return new EntityReference( (EntityComposite) o );
     }

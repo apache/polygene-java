@@ -54,7 +54,7 @@ public interface EntityStoreUnitOfWork
      * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException if requested entity does not exist
      */
-    EntityState getEntityState( EntityReference anIdentity )
+    EntityState entityStateOf( EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException;
 
     StateCommitter applyChanges()

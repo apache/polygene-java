@@ -92,7 +92,7 @@ public class CircuitBreakerManagementTest
         }
 
         @Override
-        public CircuitBreaker getCircuitBreaker()
+        public CircuitBreaker circuitBreaker()
         {
             return cb;
         }

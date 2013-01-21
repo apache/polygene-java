@@ -170,7 +170,7 @@ public interface ElasticSearchIndexer
                 // Properties
                 for ( PropertyDescriptor persistentProperty : entityType.state().properties() ) {
                     if ( persistentProperty.queryable() ) {
-                        Object value = state.getProperty( persistentProperty.qualifiedName() );
+                        Object value = state.propertyValueOf( persistentProperty.qualifiedName() );
                         json.key( persistentProperty.qualifiedName().name() );
                         serializer.serialize( value, persistentProperty.valueType() );
                     }
@@ -179,7 +179,7 @@ public interface ElasticSearchIndexer
                 // Associations
                 for ( AssociationDescriptor assocDesc : entityType.state().associations() ) {
                     if ( assocDesc.queryable() ) {
-                        EntityReference associated = state.getAssociation( assocDesc.qualifiedName() );
+                        EntityReference associated = state.associationValueOf( assocDesc.qualifiedName() );
                         json.key( assocDesc.qualifiedName().name() );
                         if ( associated == null ) {
                             json.value( null );
@@ -188,7 +188,8 @@ public interface ElasticSearchIndexer
                                 if ( newStates.containsKey( associated.identity() ) ) {
                                     json.json( toJSON( newStates.get( associated.identity() ), newStates, uow ) );
                                 } else {
-                                    EntityState assocState = uow.getEntityState( EntityReference.parseEntityReference( associated.identity() ) );
+                                    EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( associated
+                                                                                                                          .identity() ) );
                                     json.json( toJSON( assocState, newStates, uow ) );
                                 }
                             } else {
@@ -202,13 +203,14 @@ public interface ElasticSearchIndexer
                 for ( AssociationDescriptor manyAssocDesc : entityType.state().manyAssociations() ) {
                     if ( manyAssocDesc.queryable() ) {
                         JSONWriter assocs = json.key( manyAssocDesc.qualifiedName().name() ).array();
-                        ManyAssociationState associateds = state.getManyAssociation( manyAssocDesc.qualifiedName() );
+                        ManyAssociationState associateds = state.manyAssociationValueOf( manyAssocDesc.qualifiedName() );
                         for ( EntityReference associated : associateds ) {
                             if ( manyAssocDesc.isAggregated() || support.indexNonAggregatedAssociations() ) {
                                 if ( newStates.containsKey( associated.identity() ) ) {
                                     assocs.json( toJSON( newStates.get( associated.identity() ), newStates, uow ) );
                                 } else {
-                                    EntityState assocState = uow.getEntityState( EntityReference.parseEntityReference( associated.identity() ) );
+                                    EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( associated
+                                                                                                                          .identity() ) );
                                     assocs.json( toJSON( assocState, newStates, uow ) );
                                 }
                             } else {

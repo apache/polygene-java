@@ -19,11 +19,11 @@ public interface InvocationCache
 {
     Object setCachedValue( String name, Object aResult );
 
-    Object getCachedValue( String name );
+    Object cachedValue( String name );
 
     Object removeCachedValue( String name );
 
     void clearCachedValues();
 
-    int getCacheSize();
+    int currentCacheSize();
 }

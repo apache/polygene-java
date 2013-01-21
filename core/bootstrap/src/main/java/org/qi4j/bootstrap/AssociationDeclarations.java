@@ -22,5 +22,5 @@ import org.qi4j.api.common.MetaInfo;
  */
 public interface AssociationDeclarations
 {
-    MetaInfo getMetaInfo( AccessibleObject accessor );
+    MetaInfo metaInfoFor( AccessibleObject accessor );
 }

@@ -111,7 +111,7 @@ public class MapEntityStoreMixin
     }
 
     @Override
-    public synchronized EntityState getEntityState( EntityStoreUnitOfWork unitofwork, EntityReference identity )
+    public synchronized EntityState entityStateOf( EntityStoreUnitOfWork unitofwork, EntityReference identity )
     {
         DefaultEntityStoreUnitOfWork unitOfWork = (DefaultEntityStoreUnitOfWork) unitofwork;
         Reader in = mapEntityStore.get( identity );
@@ -465,7 +465,7 @@ public class MapEntityStoreMixin
     }
 
     @Override
-    public JSONObject getState( String id )
+    public JSONObject jsonStateOf( String id )
         throws IOException
     {
         Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) );

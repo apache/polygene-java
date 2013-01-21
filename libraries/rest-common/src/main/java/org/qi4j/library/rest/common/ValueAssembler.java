@@ -37,7 +37,7 @@ public class ValueAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        for( Class<?> aClass : filter( isAssignableFrom( ValueComposite.class ), getClasses( Resource.class ) ))
+        for( Class<?> aClass : filter( isAssignableFrom( ValueComposite.class ), findClasses( Resource.class ) ))
         {
             module.values( aClass ).visibleIn( Visibility.application );
         }

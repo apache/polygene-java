@@ -156,7 +156,8 @@ public interface TableQuery
       @Override
       public Table applyTo(Table table)
       {
-         ValueBuilder<Table> tableBuilder = Qi4j.INSTANCE_FUNCTION.map( table ).module().newValueBuilderWithPrototype( table );
+         ValueBuilder<Table> tableBuilder = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
+             .map( table ).module().newValueBuilderWithPrototype( table );
 
 /* TODO Finish label setting
          if (label() != null)

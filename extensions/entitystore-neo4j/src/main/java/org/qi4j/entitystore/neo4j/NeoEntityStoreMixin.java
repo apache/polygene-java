@@ -121,16 +121,16 @@ public class NeoEntityStoreMixin
       {
          if (firstState instanceof NeoEntityState)
          {
-            return ((NeoEntityState) firstState).getUnitOfWork().applyChanges();
+            return ((NeoEntityState) firstState).unitOfWork().applyChanges();
          }
       }
       return null;
    }
 
     @Override
-   public EntityState getEntityState(EntityStoreUnitOfWork unitOfWork, EntityReference identity)
+   public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
    {
-      return unitOfWork.getEntityState(identity);
+      return unitOfWork.entityStateOf( identity );
    }
 
     @Override

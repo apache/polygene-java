@@ -55,7 +55,7 @@ public class InputOutputTest
     public void testCopyFileNoAPI()
         throws IOException
     {
-        File source = getSourceFile();
+        File source = sourceFile();
         File destination = File.createTempFile( "test", ".txt" );
         destination.deleteOnExit();
 
@@ -101,7 +101,7 @@ public class InputOutputTest
     public void testCopyFile()
         throws IOException
     {
-        File source = getSourceFile();
+        File source = sourceFile();
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
 
@@ -126,7 +126,7 @@ public class InputOutputTest
     public void testCopyFileStreams()
         throws IOException
     {
-        File source = getSourceFile();
+        File source = sourceFile();
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
 
@@ -140,7 +140,7 @@ public class InputOutputTest
     public void testLog()
         throws IOException
     {
-        File source = getSourceFile();
+        File source = sourceFile();
 
         text( source ).transferTo(
             Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}" ),
@@ -167,7 +167,7 @@ public class InputOutputTest
     {
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
-        File sourceFile = getSourceFile();
+        File sourceFile = sourceFile();
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
         text( sourceFile ).transferTo(
             Transforms.map(
@@ -184,7 +184,7 @@ public class InputOutputTest
         );
 
         Assert.assertThat( tempFile.length(), CoreMatchers.equalTo( sourceFile.length() ) );
-        Assert.assertThat( stringCounter.getCount(), CoreMatchers.equalTo( 4L ) );
+        Assert.assertThat( stringCounter.count(), CoreMatchers.equalTo( 4L ) );
     }
 
     @Test
@@ -193,7 +193,7 @@ public class InputOutputTest
     {
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
-        File sourceFile = getSourceFile();
+        File sourceFile = sourceFile();
         Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
         Input<String, IOException> text1 = text( sourceFile );
         Input<String, IOException> text2 = text( sourceFile );
@@ -213,7 +213,7 @@ public class InputOutputTest
         );
 
         Assert.assertThat( tempFile.length(), CoreMatchers.equalTo( sourceFile.length() * 2 ) );
-        Assert.assertThat( stringCounter.getCount(), CoreMatchers.equalTo( 8L ) );
+        Assert.assertThat( stringCounter.count(), CoreMatchers.equalTo( 8L ) );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -229,7 +229,7 @@ public class InputOutputTest
         throws IOException
     {
 
-        text( getSourceFile() ).
+        text( sourceFile() ).
             transferTo( writerOutput( new Writer()
             {
                 @Override
@@ -367,7 +367,7 @@ public class InputOutputTest
         };
     }
 
-    private File getSourceFile()
+    private File sourceFile()
     {
         String path = getClass().getResource( "/iotest.txt" ).getFile();
         return new File( path.replaceAll( "%20", " " ) );

@@ -132,10 +132,10 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         @Override
-        public EntityState getEntityState( EntityReference anIdentity )
+        public EntityState entityStateOf( EntityReference anIdentity )
             throws EntityStoreException, EntityNotFoundException
         {
-            EntityState entityState = uow.getEntityState( anIdentity );
+            EntityState entityState = uow.entityStateOf( anIdentity );
             versions.rememberVersion( entityState.identity(), entityState.version() );
             loaded.add( entityState );
             return entityState;

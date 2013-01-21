@@ -71,7 +71,7 @@ public class GaeEntityStoreUnitOfWork
     }
 
     @Override
-    public EntityState getEntityState( EntityReference reference )
+    public EntityState entityStateOf( EntityReference reference )
         throws EntityStoreException, EntityNotFoundException
     {
         Key key = KeyFactory.createKey( "qi4j-entity", reference.identity() );

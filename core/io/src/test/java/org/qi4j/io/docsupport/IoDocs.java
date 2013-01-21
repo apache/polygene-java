@@ -28,7 +28,7 @@ public class IoDocs
             File destination = new File( "destination.txt" );
             Counter<String> counter = new Counter<String>();
             Inputs.text( source ).transferTo( map(counter, Outputs.text(destination) ));
-            System.out.println( "Lines: " + counter.getCount() );
+            System.out.println( "Lines: " + counter.count() );
 // END SNIPPET: io2
         }
     }

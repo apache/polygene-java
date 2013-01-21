@@ -69,7 +69,7 @@ public final class EntityBuilderInstance<T>
         EntityReference reference = new EntityReference( identity );
         entityState = new BuilderEntityState( model.model(), reference );
         model.model().initState( model.module(), entityState );
-        entityState.setProperty( identityStateName, identity );
+        entityState.setPropertyValue( identityStateName, identity );
         prototypeInstance = model.model().newInstance( uow, model.module(), entityState );
     }
 
@@ -97,7 +97,7 @@ public final class EntityBuilderInstance<T>
         String identity;
 
         // Figure out whether to use given or generated identity
-        identity = (String) entityState.getProperty( identityStateName );
+        identity = (String) entityState.propertyValueOf( identityStateName );
         EntityState newEntityState = model.model()
             .newEntityState( store, EntityReference.parseEntityReference( identity ) );
 

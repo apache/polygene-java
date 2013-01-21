@@ -138,7 +138,7 @@ public interface ConfigurationManagerService
                 }
 
                 // Check if service has configuration
-                CompositeInstance compositeInstance = Qi4j.INSTANCE_FUNCTION.map( (Composite) service );
+                CompositeInstance compositeInstance = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (Composite) service );
                 try
                 {
                     Configuration config = compositeInstance.newProxy( Configuration.class );
@@ -151,8 +151,8 @@ public interface ConfigurationManagerService
 
                 String serviceClass = first(compositeInstance.types()).getName();
                 String name = configurableService.identity();
-                ServiceDescriptor serviceDescriptor = spi.getServiceDescriptor( configurableService );
-                Module module = spi.getModule( configurableService );
+                ServiceDescriptor serviceDescriptor = spi.serviceDescriptorFor( configurableService );
+                Module module = spi.moduleOf( configurableService );
                 Class<Object> configurationClass = serviceDescriptor.configurationType();
                 if( configurationClass != null )
                 {
@@ -252,7 +252,7 @@ public interface ConfigurationManagerService
                 try
                 {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
-                    AssociationStateHolder state = spi.getState( configuration );
+                    AssociationStateHolder state = spi.stateOf( configuration );
                     AccessibleObject accessor = propertyNames.get( name );
                     Property<Object> property = state.propertyFor( accessor );
                     Object object = property.get();
@@ -280,10 +280,10 @@ public interface ConfigurationManagerService
                 try
                 {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
-                    AssociationStateHolder state = spi.getState( (EntityComposite) configuration );
+                    AssociationStateHolder state = spi.stateOf( (EntityComposite) configuration );
                     AccessibleObject accessor = propertyNames.get( attribute.getName() );
                     Property<Object> property = state.propertyFor( accessor );
-                    PropertyDescriptor propertyDescriptor = spi.getPropertyDescriptor( property );
+                    PropertyDescriptor propertyDescriptor = spi.propertyDescriptorFor( property );
                     if( EnumType.isEnum( propertyDescriptor.type() ) )
                     {
                         property.set( Enum.valueOf( (Class<Enum>) propertyDescriptor.type(), attribute.getValue()
@@ -405,7 +405,7 @@ public interface ConfigurationManagerService
                         if( serviceRef.isActive() )
                         {
                             // Refresh configuration
-                            CompositeInstance compositeInstance = Qi4j.INSTANCE_FUNCTION
+                            CompositeInstance compositeInstance = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
                                 .map( (Composite) serviceRef.get() );
                             compositeInstance.newProxy( Configuration.class ).refresh();
 

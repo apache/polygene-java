@@ -44,7 +44,7 @@ public final class DefaultValues
         DEFAULT_VALUES.put( String.class, "" );
     }
 
-    public static Object getDefaultValue( Type type )
+    public static Object getDefaultValueOf( Type type )
     {
         Object value = DEFAULT_VALUES.get( type );
         if( value != null )

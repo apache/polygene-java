@@ -53,7 +53,7 @@ public class DataSources
                     throws Throwable
             {
                 if ( !circuitBreaker.isOn() ) {
-                    Throwable throwable = circuitBreaker.getLastThrowable();
+                    Throwable throwable = circuitBreaker.lastThrowable();
                     if ( throwable != null ) {
                         throw throwable;
                     } else {

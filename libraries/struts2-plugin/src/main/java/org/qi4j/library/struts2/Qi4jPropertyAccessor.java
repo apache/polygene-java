@@ -126,7 +126,7 @@ public class Qi4jPropertyAccessor
                 Property property = (Property) qi4jField;
 
                 OgnlContext ognlContext = (OgnlContext) aContext;
-                Class propertyType = (Class) api.getPropertyDescriptor( property ).type();
+                Class propertyType = (Class) api.propertyDescriptorFor( property ).type();
                 Object convertedValue = getConvertedType(
                     ognlContext, aTarget, null, fieldName, aPropertyValue, propertyType );
                 try
@@ -145,7 +145,7 @@ public class Qi4jPropertyAccessor
             {
                 Association association = (Association) qi4jField;
                 OgnlContext ognlContext = (OgnlContext) aContext;
-                Class associationType = (Class) api.getAssociationDescriptor( association).type();
+                Class associationType = (Class) api.associationDescriptorFor( association ).type();
                 Object convertedValue = getConvertedType(
                     ognlContext, aTarget, null, fieldName, aPropertyValue, associationType );
                 if( convertedValue == OgnlRuntime.NoConversionPossible )

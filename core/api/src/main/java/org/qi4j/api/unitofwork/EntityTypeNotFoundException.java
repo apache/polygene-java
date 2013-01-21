@@ -26,17 +26,12 @@ public class EntityTypeNotFoundException
 
     public EntityTypeNotFoundException( String entityType )
     {
+        super("Could not find an EntityComposite of type " + entityType);
         this.compositeType = entityType;
     }
 
     public String compositeType()
     {
         return compositeType;
-    }
-
-    @Override
-    public String getMessage()
-    {
-        return "Could not find an EntityComposite of type " + compositeType;
     }
 }

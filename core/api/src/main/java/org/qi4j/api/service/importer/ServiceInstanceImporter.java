@@ -46,16 +46,16 @@ public class ServiceInstanceImporter<T>
     {
         serviceId = importedServiceDescriptor.metaInfo( String.class );
 
-        return getServiceImporter().importService( importedServiceDescriptor );
+        return serviceImporter().importService( importedServiceDescriptor );
     }
 
     @Override
     public boolean isAvailable( T instance )
     {
-        return getServiceImporter().isAvailable( instance );
+        return serviceImporter().isAvailable( instance );
     }
 
-    private ServiceImporter<T> getServiceImporter()
+    private ServiceImporter<T> serviceImporter()
     {
         if( service == null )
         {

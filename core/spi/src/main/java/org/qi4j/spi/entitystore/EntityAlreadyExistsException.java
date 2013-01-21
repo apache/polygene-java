@@ -28,6 +28,7 @@ public class EntityAlreadyExistsException
 
     public EntityAlreadyExistsException( EntityReference identity )
     {
+        super("Entity " + identity + " already existed");
         this.identity = identity;
     }
 
@@ -36,9 +37,4 @@ public class EntityAlreadyExistsException
         return identity;
     }
 
-    @Override
-    public String getMessage()
-    {
-        return "Entity " + identity + " already existed";
-    }
 }

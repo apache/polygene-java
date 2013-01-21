@@ -51,7 +51,7 @@ public class ClassScanner
      *
      * @return iterable of all concrete classes in the same package as the seedclass, and also all classes in subpackages.
      */
-    public static Iterable<Class<?>> getClasses( final Class<?> seedClass )
+    public static Iterable<Class<?>> findClasses( final Class<?> seedClass )
     {
         CodeSource codeSource = seedClass.getProtectionDomain().getCodeSource();
         if( codeSource == null )
@@ -129,7 +129,7 @@ public class ClassScanner
         else
         {
             final File path = new File( file, seedClass.getPackage().getName().replace( '.', File.separatorChar ) );
-            Iterable<File> files = getFiles( path, new Specification<File>()
+            Iterable<File> files = findFiles( path, new Specification<File>()
             {
                 @Override
                 public boolean satisfiedBy( File file )
@@ -185,7 +185,7 @@ public class ClassScanner
         };
     }
 
-    private static Iterable<File> getFiles( File directory, final Specification<File> filter )
+    private static Iterable<File> findFiles( File directory, final Specification<File> filter )
     {
         return flatten( filter( filter, iterable( directory.listFiles() ) ),
                         flattenIterables( map( new Function<File, Iterable<File>>()
@@ -193,7 +193,7 @@ public class ClassScanner
                             @Override
                             public Iterable<File> map( File file )
                             {
-                                return getFiles( file, filter );
+                                return findFiles( file, filter );
                             }
                         }, filter( new Specification<File>()
                         {

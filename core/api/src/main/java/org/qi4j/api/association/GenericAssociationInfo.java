@@ -25,12 +25,12 @@ import static org.qi4j.api.util.Classes.typeOf;
 
 public final class GenericAssociationInfo
 {
-    public static Type getAssociationType( AccessibleObject accessor )
+    public static Type associationTypeOf( AccessibleObject accessor )
     {
-        return getAssociationType( typeOf( accessor ) );
+        return toAssociationType( typeOf( accessor ) );
     }
 
-    public static Type getAssociationType( Type methodReturnType )
+    public static Type toAssociationType( Type methodReturnType )
     {
         if( methodReturnType instanceof ParameterizedType )
         {
@@ -44,7 +44,7 @@ public final class GenericAssociationInfo
         Type[] interfaces = ( (Class<?>) methodReturnType ).getGenericInterfaces();
         for( Type anInterface : interfaces )
         {
-            Type associationType = getAssociationType( anInterface );
+            Type associationType = toAssociationType( anInterface );
             if( associationType != null )
             {
                 return associationType;

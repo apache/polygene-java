@@ -33,7 +33,7 @@ public class CollectingQualifiedIdentityResultCallback
         return true;
     }
 
-    public Collection<EntityReference> getEntities()
+    public Collection<EntityReference> entities()
     {
         return entities;
     }

@@ -89,7 +89,7 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
             @Override
             public Iterable<Class<? extends Activator<?>>> map( Type type )
             {
-                Activators activators = Annotations.getAnnotation( type, Activators.class );
+                Activators activators = Annotations.annotationOn( type, Activators.class );
                 if( activators == null )
                 {
                     return Iterables.empty();

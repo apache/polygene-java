@@ -36,7 +36,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class ValueInstance extends TransientInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static ValueInstance getValueInstance( ValueComposite composite )
+    public static ValueInstance valueInstanceOf( ValueComposite composite )
     {
         return (ValueInstance) Proxy.getInvocationHandler( composite );
     }

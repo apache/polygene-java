@@ -37,12 +37,12 @@ public class BreakCircuitConcern
     public Object invoke( Object proxy, Method method, Object[] args )
             throws Throwable
     {
-        CircuitBreaker circuitBreaker = serviceCircuitBreaker.getCircuitBreaker();
+        CircuitBreaker circuitBreaker = serviceCircuitBreaker.circuitBreaker();
         try
         {
             if( !circuitBreaker.isOn() )
             {
-                throw circuitBreaker.getLastThrowable();
+                throw circuitBreaker.lastThrowable();
             }
 
             Object result = next.invoke( proxy, method, args );

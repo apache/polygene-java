@@ -16,7 +16,7 @@ public class AssociationNotNullSpecification<T>
         this.association = association;
     }
 
-    public AssociationFunction<T> getAssociation()
+    public AssociationFunction<T> association()
     {
         return association;
     }

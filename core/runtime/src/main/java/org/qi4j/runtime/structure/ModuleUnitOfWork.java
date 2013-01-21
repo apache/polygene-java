@@ -203,7 +203,7 @@ public class ModuleUnitOfWork
         throws EntityTypeNotFoundException
     {
         EntityComposite entityComposite = (EntityComposite) entity;
-        EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
+        EntityInstance compositeInstance = EntityInstance.entityInstanceOf( entityComposite );
         ModelModule<EntityModel> model = new ModelModule<EntityModel>( compositeInstance.module(), compositeInstance.entityModel() );
         Class<T> type = (Class<T>) first( compositeInstance.types() );
         return uow.get( compositeInstance.identity(), this, Collections.singletonList( model ), type );
@@ -217,7 +217,7 @@ public class ModuleUnitOfWork
 
         EntityComposite entityComposite = (EntityComposite) entity;
 
-        EntityInstance compositeInstance = EntityInstance.getEntityInstance( entityComposite );
+        EntityInstance compositeInstance = EntityInstance.entityInstanceOf( entityComposite );
 
         if( compositeInstance.status() == EntityStatus.NEW )
         {

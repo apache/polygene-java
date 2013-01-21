@@ -48,7 +48,7 @@ public class PropertyFunction<T>
         {
             throw new QueryExpressionException( "Not a property type:" + returnType );
         }
-        Type propertyTypeAsType = GenericPropertyInfo.getPropertyType( returnType );
+        Type propertyTypeAsType = GenericPropertyInfo.toPropertyType( returnType );
         if( propertyTypeAsType instanceof ParameterizedType )
         {
             propertyTypeAsType = ( (ParameterizedType) propertyTypeAsType ).getRawType();
@@ -62,22 +62,22 @@ public class PropertyFunction<T>
         NotQueryableException.throwIfNotQueryable( type );
     }
 
-    public PropertyFunction<?> getTraversedProperty()
+    public PropertyFunction<?> traversedProperty()
     {
         return traversedProperty;
     }
 
-    public AssociationFunction<?> getTraversedAssociation()
+    public AssociationFunction<?> traversedAssociation()
     {
         return traversedAssociation;
     }
 
-    public ManyAssociationFunction<?> getTraversedManyAssociation()
+    public ManyAssociationFunction<?> traversedManyAssociation()
     {
         return traversedManyAssociation;
     }
 
-    public AccessibleObject getAccessor()
+    public AccessibleObject accessor()
     {
         return accessor;
     }

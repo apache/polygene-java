@@ -16,7 +16,7 @@ public abstract class ExpressionSpecification
     {
         if( this instanceof AndSpecification )
         {
-            return new AndSpecification( append( specification, ( (AndSpecification) this ).getOperands() ) );
+            return new AndSpecification( append( specification, ( (AndSpecification) this ).operands() ) );
         }
         else
         {
@@ -28,7 +28,7 @@ public abstract class ExpressionSpecification
     {
         if( this instanceof OrSpecification )
         {
-            return new OrSpecification( append( specification, ( (OrSpecification) this ).getOperands() ) );
+            return new OrSpecification( append( specification, ( (OrSpecification) this ).operands() ) );
         }
         else
         {

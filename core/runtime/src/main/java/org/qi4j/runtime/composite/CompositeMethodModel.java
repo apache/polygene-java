@@ -110,13 +110,13 @@ public final class CompositeMethodModel
         }
         finally
         {
-            instancePool.returnInstance( methodInstance );
+            instancePool.releaseInstance( methodInstance );
         }
     }
 
     private CompositeMethodInstance getInstance( ModuleInstance moduleInstance )
     {
-        CompositeMethodInstance methodInstance = instancePool.getInstance();
+        CompositeMethodInstance methodInstance = instancePool.obtainInstance();
         if( methodInstance == null )
         {
             methodInstance = newCompositeMethodInstance( moduleInstance );

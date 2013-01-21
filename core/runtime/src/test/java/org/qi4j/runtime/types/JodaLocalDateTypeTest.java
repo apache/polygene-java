@@ -26,7 +26,7 @@ public class JodaLocalDateTypeTest
     {
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( new LocalDate( "2020-03-04" ), underTest );
-        Object value = serializer.getRoot();
+        Object value = serializer.rootObject();
         assertEquals( "2020-03-04", value.toString() );
     }
 

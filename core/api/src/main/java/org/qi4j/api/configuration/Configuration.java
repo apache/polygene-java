@@ -174,7 +174,7 @@ public interface Configuration<T>
                 uow = module.newUnitOfWork( usecase );
                 try
                 {
-                    configuration = this.<T>getConfigurationInstance( me, uow );
+                    configuration = this.<T>findConfigurationInstanceFor( me, uow );
                 }
                 catch( InstantiationException e )
                 {
@@ -216,10 +216,10 @@ public interface Configuration<T>
             }
         }
 
-        public <T> T getConfigurationInstance( ServiceComposite serviceComposite, UnitOfWork uow )
+        public <T> T findConfigurationInstanceFor( ServiceComposite serviceComposite, UnitOfWork uow )
             throws InstantiationException
         {
-            ServiceDescriptor serviceModel = api.getServiceDescriptor( serviceComposite );
+            ServiceDescriptor serviceModel = api.serviceDescriptorFor( serviceComposite );
 
             String identity = serviceComposite.identity().get();
             T configuration;
@@ -247,7 +247,7 @@ public interface Configuration<T>
             throws InstantiationException
         {
             T configuration;
-            Module module = api.getModule( serviceComposite );
+            Module module = api.moduleOf( serviceComposite );
             Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
             UnitOfWork buildUow = module.newUnitOfWork( usecase );
 
@@ -255,7 +255,7 @@ public interface Configuration<T>
 
             // Check for defaults
             String s = identity + ".properties";
-            Class<?> type = first( api.getServiceDescriptor( serviceComposite ).types() );
+            Class<?> type = first( api.serviceDescriptorFor( serviceComposite ).types() );
             // Load defaults from classpath root if available
             if ( type.getResource( s ) == null && type.getResource( "/" + s ) != null )
             {
@@ -283,7 +283,7 @@ public interface Configuration<T>
                 buildUow.complete();
 
                 // Try again
-                return (T) getConfigurationInstance( serviceComposite, uow );
+                return (T) findConfigurationInstanceFor( serviceComposite, uow );
             }
             catch( Exception e1 )
             {

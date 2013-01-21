@@ -122,32 +122,32 @@ public abstract class AbstractSQLQuerying
 
         private TraversedAssoOrManyAssoRef( AssociationFunction<?> func )
         {
-            this( func.getTraversedAssociation(), func.getTraversedManyAssociation() );
+            this( func.traversedAssociation(), func.traversedManyAssociation() );
         }
 
         private TraversedAssoOrManyAssoRef( PropertyFunction<?> func )
         {
-            this( func.getTraversedAssociation(), func.getTraversedManyAssociation() );
+            this( func.traversedAssociation(), func.traversedManyAssociation() );
         }
 
         private TraversedAssoOrManyAssoRef( ManyAssociationFunction<?> func )
         {
-            this( func.getTraversedAssociation(), func.getTraversedManyAssociation() );
+            this( func.traversedAssociation(), func.traversedManyAssociation() );
         }
 
         private TraversedAssoOrManyAssoRef( AssociationNullSpecification<?> spec )
         {
-            this( spec.getAssociation(), null );
+            this( spec.association(), null );
         }
 
         private TraversedAssoOrManyAssoRef( AssociationNotNullSpecification<?> spec )
         {
-            this( spec.getAssociation(), null );
+            this( spec.association(), null );
         }
 
         private TraversedAssoOrManyAssoRef( ManyAssociationContainsSpecification<?> spec )
         {
-            this( null, spec.getManyAssociationFunction() );
+            this( null, spec.manyAssociation() );
         }
 
         private TraversedAssoOrManyAssoRef( AssociationFunction<?> traversedAsso,
@@ -166,8 +166,8 @@ public abstract class AbstractSQLQuerying
 
         private AccessibleObject getAccessor()
         {
-            return this._traversedAsso == null ? this._traversedManyAsso.getAccessor()
-                    : this._traversedAsso.getAccessor();
+            return this._traversedAsso == null ? this._traversedManyAsso.accessor()
+                    : this._traversedAsso.accessor();
         }
 
         @Override
@@ -363,7 +363,7 @@ public abstract class AbstractSQLQuerying
             {
                 QueryBuilder result = null;
                 AndSpecification conjunction = (AndSpecification) expression;
-                for( Specification<Composite> entitySpecification : conjunction.getOperands() )
+                for( Specification<Composite> entitySpecification : conjunction.operands() )
                 {
                     if( result == null )
                     {
@@ -396,7 +396,7 @@ public abstract class AbstractSQLQuerying
             {
                 QueryBuilder result = null;
                 OrSpecification conjunction = (OrSpecification) expression;
-                for( Specification<Composite> entitySpecification : conjunction.getOperands() )
+                for( Specification<Composite> entitySpecification : conjunction.operands() )
                 {
                     if( result == null )
                     {
@@ -428,7 +428,7 @@ public abstract class AbstractSQLQuerying
                     List<Integer> valueSQLTypes )
             {
                 return thisObject.processBooleanExpression(
-                    ( (NotSpecification) expression ).getOperand(), !negationActive, vendor,
+                    ( (NotSpecification) expression ).operand(), !negationActive, vendor,
                     entityTypeCondition, variables, values, valueSQLTypes );
             }
         } );
@@ -627,7 +627,7 @@ public abstract class AbstractSQLQuerying
                     .qNameInfos()
                     .get()
                     .get(
-                        QualifiedName.fromAccessor( this.propFunction.getAccessor() ) );
+                        QualifiedName.fromAccessor( this.propFunction.accessor() ) );
                 String colName = null;
                 if( info.getCollectionDepth() > 0 )
                 {
@@ -904,7 +904,7 @@ public abstract class AbstractSQLQuerying
     {
         return this.singleQuery( //
             predicate, //
-            predicate.getProperty(), //
+            predicate.property(), //
             null, //
             null, //
             negationActive, //
@@ -927,10 +927,10 @@ public abstract class AbstractSQLQuerying
                                 DBNames.QNAME_TABLE_VALUE_COLUMN_NAME ),
                             l.param() ) );
 
-                    Object value = predicate.getValue();
+                    Object value = predicate.value();
                     if( value instanceof Variable )
                     {
-                        value = variables.get( ( (Variable) value ).getName() );
+                        value = variables.get( ( (Variable) value ).variableName() );
                     }
                     values.add( translateJavaRegexpToPGSQLRegexp( value.toString() ) );
                     valueSQLTypes.add( Types.VARCHAR );
@@ -947,7 +947,7 @@ public abstract class AbstractSQLQuerying
     {
         return this.singleQuery( //
             predicate, //
-            predicate.getProperty(), //
+            predicate.property(), //
             null, //
             null, //
             negationActive, //
@@ -962,7 +962,7 @@ public abstract class AbstractSQLQuerying
                         JoinType joinStyle, Integer firstTableIndex, Integer lastTableIndex )
                 {
                     QualifiedName qName =
-                        QualifiedName.fromAccessor( predicate.getProperty().getAccessor() );
+                        QualifiedName.fromAccessor( predicate.property().accessor() );
                     String columnName = null;
                     if( qName.type().equals( Identity.class.getName() ) )
                     {
@@ -972,7 +972,7 @@ public abstract class AbstractSQLQuerying
                     {
                         columnName = DBNames.QNAME_TABLE_VALUE_COLUMN_NAME;
                     }
-                    Object value = predicate.getValue();
+                    Object value = predicate.value();
                     modifyFromClauseAndWhereClauseToGetValue( qName, value, predicate,
                         negationActive, lastTableIndex,
                         new ModifiableInt( lastTableIndex ), columnName,
@@ -1023,7 +1023,7 @@ public abstract class AbstractSQLQuerying
                                 DBNames.ENTITY_TABLE_IDENTITY_COLUMN_NAME ),
                             l.param() ) );
 
-                    Object value = predicate.getValue();
+                    Object value = predicate.value();
                     // TODO Is it really certain that this value is always instance of
                     // EntityComposite?
                     if( value instanceof EntityComposite )
@@ -1050,13 +1050,13 @@ public abstract class AbstractSQLQuerying
     {
         return this.singleQuery( //
             predicate, //
-            predicate.getProperty(), //
+            predicate.property(), //
             null, //
             null, //
             negationActive, //
             vendor, //
             entityTypeCondition, //
-            new PropertyNullWhereClauseProcessor( this._state, vendor, predicate.getProperty(),
+            new PropertyNullWhereClauseProcessor( this._state, vendor, predicate.property(),
                 negationActive ) //
             );
     }
@@ -1068,13 +1068,13 @@ public abstract class AbstractSQLQuerying
     {
         return this.singleQuery( //
             predicate, //
-            predicate.getProperty(), //
+            predicate.property(), //
             null, //
             null, //
             negationActive, //
             vendor, //
             entityTypeCondition, //
-            new PropertyNullWhereClauseProcessor( this._state, vendor, predicate.getProperty(),
+            new PropertyNullWhereClauseProcessor( this._state, vendor, predicate.property(),
                 !negationActive ) //
             );
     }
@@ -1125,7 +1125,7 @@ public abstract class AbstractSQLQuerying
         // no matter collection depth)
         QuerySpecification contains = this.constructQueryForPredicate( //
             predicate, //
-            predicate.getCollectionProperty(), //
+            predicate.collectionProperty(), //
             null, //
             null, //
             false, //
@@ -1147,7 +1147,7 @@ public abstract class AbstractSQLQuerying
                             DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME ), l
                             .s( DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}" ) ) );
 
-                    Object value = predicate.getValue();
+                    Object value = predicate.value();
                     if( value instanceof Collection<?> )
                     {
                         throw new IllegalArgumentException(
@@ -1155,7 +1155,7 @@ public abstract class AbstractSQLQuerying
                     }
                     BooleanBuilder condition = b.booleanBuilder();
                     modifyFromClauseAndWhereClauseToGetValue( QualifiedName.fromAccessor( predicate
-                        .getCollectionProperty().getAccessor() ), value, predicate,
+                        .collectionProperty().accessor() ), value, predicate,
                         false, lastTableIndex, new ModifiableInt( lastTableIndex ),
                         DBNames.QNAME_TABLE_VALUE_COLUMN_NAME,
                         DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME,
@@ -1205,7 +1205,7 @@ public abstract class AbstractSQLQuerying
 
         QuerySpecification contains = this.constructQueryForPredicate( //
             predicate, //
-            predicate.getCollectionProperty(), //
+            predicate.collectionProperty(), //
             null, //
             null, //
             false, //
@@ -1223,7 +1223,7 @@ public abstract class AbstractSQLQuerying
                     LiteralFactory l = vendor.getLiteralFactory();
                     ColumnsFactory c = vendor.getColumnsFactory();
 
-                    Iterable<?> collection = predicate.getValueCollection();
+                    Iterable<?> collection = predicate.containedValues();
                     List<QNameJoin> joins = new ArrayList<QNameJoin>();
                     for( Object value : collection )
                     {
@@ -1239,8 +1239,8 @@ public abstract class AbstractSQLQuerying
                                 DBNames.QNAME_TABLE_COLLECTION_PATH_COLUMN_NAME ), l
                                 .s( DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME + ".*{1,}" ) ) );
                         modifyFromClauseAndWhereClauseToGetValue(
-                            QualifiedName.fromAccessor( predicate.getCollectionProperty()
-                                .getAccessor() ), value, predicate, false, lastTableIndex,
+                            QualifiedName.fromAccessor( predicate.collectionProperty()
+                                .accessor() ), value, predicate, false, lastTableIndex,
                             new ModifiableInt( lastTableIndex ),
                             DBNames.QNAME_TABLE_VALUE_COLUMN_NAME,
                             DBNames.QNAME_TABLE_COLLECTION_PATH_TOP_LEVEL_NAME, vendor,
@@ -1439,8 +1439,8 @@ public abstract class AbstractSQLQuerying
             {
                 if( orderBy[idx] != null )
                 {
-                    PropertyFunction<?> ref = orderBy[idx].getPropertyFunction();
-                    QualifiedName qName = QualifiedName.fromAccessor( ref.getAccessor() );
+                    PropertyFunction<?> ref = orderBy[idx].property();
+                    QualifiedName qName = QualifiedName.fromAccessor( ref.accessor() );
                     QNameInfo info = this._state.qNameInfos().get().get( qName );
                     qNames[idx] = info;
                     if( info == null )
@@ -1451,7 +1451,7 @@ public abstract class AbstractSQLQuerying
                         this.traversePropertyPath( ref, 0, tableIndex + 1, vendor, builder
                             .getFrom()
                             .getTableReferences().iterator().next(), JoinType.LEFT_OUTER );
-                    Class<?> declaringType = ( (Member) ref.getAccessor() ).getDeclaringClass();
+                    Class<?> declaringType = ( (Member) ref.accessor() ).getDeclaringClass();
                     String colName = null;
                     Integer tableIdx = null;
                     if( Identity.class.equals( declaringType ) )
@@ -1487,12 +1487,12 @@ public abstract class AbstractSQLQuerying
 
         while( reference != null )
         {
-            qNameStack.add( QualifiedName.fromAccessor( reference.getAccessor() ) );
+            qNameStack.add( QualifiedName.fromAccessor( reference.accessor() ) );
             refStack.add( reference );
-            if( reference.getTraversedProperty() == null
+            if( reference.traversedProperty() == null
                     &&
-                    ( reference.getTraversedAssociation() != null || reference
-                        .getTraversedManyAssociation() != null ) )
+                    ( reference.traversedAssociation() != null || reference
+                        .traversedManyAssociation() != null ) )
             {
                 Integer lastAssoTableIndex =
                     this.traverseAssociationPath( new TraversedAssoOrManyAssoRef( reference ),
@@ -1504,7 +1504,7 @@ public abstract class AbstractSQLQuerying
                 }
             }
 
-            reference = reference.getTraversedProperty();
+            reference = reference.traversedProperty();
         }
 
         PropertyFunction<?> prevRef = null;
@@ -1678,7 +1678,7 @@ public abstract class AbstractSQLQuerying
     {
         if( value instanceof Variable )
         {
-            value = variables.get( ( (Variable) value ).getName() );
+            value = variables.get( ( (Variable) value ).variableName() );
         }
 
         final String schemaName = this._state.schemaName().get();
@@ -1768,7 +1768,8 @@ public abstract class AbstractSQLQuerying
         {
             // Visit all properties with recursion and make joins as necessary
             // @formatter:off
-            for ( Property<?> property : Qi4j.INSTANCE_FUNCTION.map( (ValueComposite) value ).state().properties())
+            for ( Property<?> property : Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
+                .map( (ValueComposite) value ).state().properties())
             {
                     Boolean qNameJoinDone = false;
                     Integer sourceIndex = maxTableIndex.getInt();
@@ -1778,7 +1779,7 @@ public abstract class AbstractSQLQuerying
                         if( join.getSourceQName().equals( qName ) )
                         {
                             sourceIndex = join.getSourceTableIndex();
-                            if( join.getTargetQName().equals( spi.getPropertyDescriptor( property).qualifiedName() ) )
+                            if( join.getTargetQName().equals( spi.propertyDescriptorFor( property ).qualifiedName() ) )
                             {
                                 // This join has already been done once
                                 qNameJoinDone = true;
@@ -1791,7 +1792,7 @@ public abstract class AbstractSQLQuerying
                     if( !qNameJoinDone )
                     {
                         // @formatter:off
-                        QNameInfo info = _state.qNameInfos().get().get( spi.getPropertyDescriptor( property).qualifiedName() );
+                        QNameInfo info = _state.qNameInfos().get().get( spi.propertyDescriptorFor( property ).qualifiedName() );
                         String prevTableName = TABLE_NAME_PREFIX + sourceIndex;
                         String nextTableName = TABLE_NAME_PREFIX + targetIndex;
                         fromClause.addQualifiedJoin(
@@ -1810,11 +1811,11 @@ public abstract class AbstractSQLQuerying
                             );
                         // @formatter:on
 
-                    qNameJoins.add( new QNameJoin( qName, spi.getPropertyDescriptor( property )
+                    qNameJoins.add( new QNameJoin( qName, spi.propertyDescriptorFor( property )
                         .qualifiedName(), sourceIndex, targetIndex ) );
                     maxTableIndex.setInt( maxTableIndex.getInt() + 1 );
                 }
-                modifyFromClauseAndWhereClauseToGetValue( spi.getPropertyDescriptor( property )
+                modifyFromClauseAndWhereClauseToGetValue( spi.propertyDescriptorFor( property )
                     .qualifiedName(), property.get(), predicate, negationActive,
                     targetIndex, maxTableIndex, columnName, collectionPath, vendor, whereClause,
                     afterWhere,

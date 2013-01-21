@@ -27,7 +27,7 @@ public class JodaLocalDateTimeTypeTest
     {
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( new LocalDateTime( "2020-03-04T13:23:00", DateTimeZone.UTC ), underTest );
-        Object value = serializer.getRoot();
+        Object value = serializer.rootObject();
         assertEquals( "2020-03-04T13:23:00.000", value.toString() );
     }
 

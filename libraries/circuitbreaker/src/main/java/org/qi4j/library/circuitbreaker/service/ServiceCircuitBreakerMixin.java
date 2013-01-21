@@ -42,7 +42,7 @@ public class ServiceCircuitBreakerMixin
     }
 
     @Override
-    public CircuitBreaker getCircuitBreaker()
+    public CircuitBreaker circuitBreaker()
     {
         return circuitBreaker;
     }

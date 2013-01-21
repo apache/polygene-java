@@ -34,7 +34,7 @@ public class ReturnCachedValueOnExceptionConcern extends ConcernOf<InvocationHan
             {
                 cacheName += Arrays.asList( args );
             }
-            Object result = cache.getCachedValue( cacheName );
+            Object result = cache.cachedValue( cacheName );
             if( result != null )
             {
                 if( result == Void.TYPE )

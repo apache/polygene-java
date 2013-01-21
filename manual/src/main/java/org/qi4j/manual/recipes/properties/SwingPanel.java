@@ -22,7 +22,7 @@ public class SwingPanel
 // START SNIPPET: info-use
     private void addProperty( JPanel panel, Property<?> property )
     {
-        SwingInfo info = api.getPropertyDescriptor( property ).metaInfo( SwingInfo.class );
+        SwingInfo info = api.propertyDescriptorFor( property ).metaInfo( SwingInfo.class );
         Icon icon = info.icon( SIZE_32_32 );
         panel.add(  new JLabel(info.displayName( this.locale ), icon, JLabel.CENTER) );
     }

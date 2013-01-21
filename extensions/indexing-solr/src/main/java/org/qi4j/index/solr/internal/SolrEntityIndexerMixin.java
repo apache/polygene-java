@@ -72,8 +72,8 @@ public abstract class SolrEntityIndexerMixin
     @Override
     public void inflateSolrSchema()
     {
-        server = solr.getSolrServer();
-        SolrCore solrCore = solr.getSolrCore();
+        server = solr.solrServer();
+        SolrCore solrCore = solr.solrCore();
         try
         {
             indexedFields = solrCore.getSchema().getFields();

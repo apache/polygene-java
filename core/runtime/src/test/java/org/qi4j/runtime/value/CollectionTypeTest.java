@@ -47,7 +47,7 @@ public class CollectionTypeTest
         Collection<Byte> value = byteCollection();
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( value, collectionType );
-        Object json = serializer.getRoot();
+        Object json = serializer.rootObject();
         assertEquals( byteJson(), json.toString() );
     }
 
@@ -61,7 +61,7 @@ public class CollectionTypeTest
         Collection<Short> value = shortCollection();
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( value, collectionType );
-        Object json = serializer.getRoot();
+        Object json = serializer.rootObject();
         assertEquals( shortJson(), json.toString() );
     }
 
@@ -75,7 +75,7 @@ public class CollectionTypeTest
         Collection<Integer> value = integerCollection();
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( value, collectionType );
-        Object json = serializer.getRoot();
+        Object json = serializer.rootObject();
         assertEquals( integerJson(), json.toString() );
     }
 
@@ -89,7 +89,7 @@ public class CollectionTypeTest
         Collection<Long> value = longCollection();
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( value, collectionType );
-        Object json = serializer.getRoot();
+        Object json = serializer.rootObject();
         assertEquals( longJson(), json.toString() );
     }
 
@@ -103,7 +103,7 @@ public class CollectionTypeTest
         Collection<Float> value = floatCollection();
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( value, collectionType );
-        Object json = serializer.getRoot();
+        Object json = serializer.rootObject();
         assertEquals( floatJson(), json.toString() );
     }
 
@@ -117,7 +117,7 @@ public class CollectionTypeTest
         Collection<Double> value = doubleCollection();
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( value, collectionType );
-        Object json = serializer.getRoot();
+        Object json = serializer.rootObject();
         assertEquals( doubleJson(), json.toString() );
     }
 
@@ -131,7 +131,7 @@ public class CollectionTypeTest
         Collection<BigInteger> value = bigIntegerCollection();
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( value, collectionType );
-        Object json = serializer.getRoot();
+        Object json = serializer.rootObject();
         assertEquals( bigIntegerJson(), json.toString() );
     }
 
@@ -145,7 +145,7 @@ public class CollectionTypeTest
         Collection<BigDecimal> value = bigDecimalCollection();
         JSONObjectSerializer serializer = new JSONObjectSerializer();
         serializer.serialize( value, collectionType );
-        Object json = serializer.getRoot();
+        Object json = serializer.rootObject();
         assertEquals( bigDecimalJson(), json.toString() );
     }
 

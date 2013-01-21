@@ -35,20 +35,20 @@ public class StateModel
         this.propertiesModel = propertiesModel;
     }
 
-    public PropertyModel getProperty( AccessibleObject accessor )
+    public PropertyModel propertyModelFor( AccessibleObject accessor )
     {
         return propertiesModel.getProperty( accessor );
     }
 
     @Override
-    public PropertyModel getPropertyByName( String name )
+    public PropertyModel findPropertyModelByName( String name )
         throws IllegalArgumentException
     {
         return propertiesModel.getPropertyByName( name );
     }
 
     @Override
-    public PropertyModel getPropertyByQualifiedName( QualifiedName name )
+    public PropertyModel findPropertyModelByQualifiedName( QualifiedName name )
         throws IllegalArgumentException
     {
         return propertiesModel.getPropertyByQualifiedName( name );

@@ -111,7 +111,7 @@ public class ReindexerMixin
               throws RuntimeException
       {
          count++;
-         item.setProperty(identityQN, item.identity().identity());
+         item.setPropertyValue( identityQN, item.identity().identity() );
          states.add(item);
 
          if (states.size() >= loadValue)

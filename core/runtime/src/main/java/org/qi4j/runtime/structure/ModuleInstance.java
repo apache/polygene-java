@@ -442,7 +442,7 @@ public class ModuleInstance
     {
         NullArgumentException.validateNotNull( "prototype", prototype );
 
-        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) prototype );
+        ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) prototype );
         Class<Composite> valueType = (Class<Composite>) first( valueInstance.types() );
 
         ModelModule<ValueModel> modelModule = typeLookup.lookupValueModel( valueType );
@@ -526,7 +526,7 @@ public class ModuleInstance
     @Override
     public UnitOfWork getUnitOfWork( EntityComposite entity )
     {
-        EntityInstance instance = EntityInstance.getEntityInstance( entity );
+        EntityInstance instance = EntityInstance.entityInstanceOf( entity );
         return instance.unitOfWork();
     }
 

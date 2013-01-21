@@ -34,7 +34,7 @@ public class EntityPropertyInstance<T>
      */
     public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState )
     {
-        super( aPropertyInfo, (T) entityState.getProperty( aPropertyInfo.qualifiedName() ) );
+        super( aPropertyInfo, (T) entityState.propertyValueOf( aPropertyInfo.qualifiedName() ) );
         this.entityState = entityState;
     }
 
@@ -47,6 +47,6 @@ public class EntityPropertyInstance<T>
     public void set( T aNewValue )
     {
         super.set( aNewValue );
-        entityState.setProperty( model.qualifiedName(), aNewValue );
+        entityState.setPropertyValue( model.qualifiedName(), aNewValue );
     }
 }

@@ -42,14 +42,14 @@ public class Namespaces
         addNamespace( "rdfs", "http://www.w3.org/2000/01/rdf-schema#" );
     }
 
-    public Iterable<? extends String> getNamespaces()
+    public Iterable<? extends String> namespaces()
     {
         return namespaces.keySet();
     }
 
     public String addNamespace( final String namespace )
     {
-        String prefix = getNamespacePrefix( namespace );
+        String prefix = namespacePrefix( namespace );
         if( prefix != null )
         {
             return prefix;
@@ -58,7 +58,7 @@ public class Namespaces
         return addNamespace( prefix, namespace );
     }
 
-    public String getNamespacePrefix( String namespace )
+    public String namespacePrefix( String namespace )
     {
         return namespaces.get( namespace );
     }
@@ -75,9 +75,9 @@ public class Namespaces
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        for( String namespace : getNamespaces() )
+        for( String namespace : namespaces() )
         {
-            sb.append( format( "%s:%s%n", getNamespacePrefix( namespace ), namespace ) );
+            sb.append( format( "%s:%s%n", namespacePrefix( namespace ), namespace ) );
         }
         return sb.toString();
     }

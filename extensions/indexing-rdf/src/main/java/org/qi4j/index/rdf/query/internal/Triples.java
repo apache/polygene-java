@@ -75,15 +75,15 @@ public class Triples
     public Triple addTriple( final PropertyFunction propertyFunction, boolean optional )
     {
         String subject = "?entity";
-        if( propertyFunction.getTraversedAssociation() != null )
+        if( propertyFunction.traversedAssociation() != null )
         {
-            subject = addTripleAssociation( propertyFunction.getTraversedAssociation(), false ).value;
+            subject = addTripleAssociation( propertyFunction.traversedAssociation(), false ).value;
         }
-        else if( propertyFunction.getTraversedProperty() != null )
+        else if( propertyFunction.traversedProperty() != null )
         {
-            subject = addTriple( propertyFunction.getTraversedProperty(), false ).value;
+            subject = addTriple( propertyFunction.traversedProperty(), false ).value;
         }
-        QualifiedName qualifiedName = QualifiedName.fromAccessor( propertyFunction.getAccessor() );
+        QualifiedName qualifiedName = QualifiedName.fromAccessor( propertyFunction.accessor() );
         String prefix = addNamespace( qualifiedName.toNamespace() );
         return addTriple( subject, prefix + ":" + qualifiedName.name(), optional );
     }
@@ -91,11 +91,11 @@ public class Triples
     public Triple addTripleAssociation( AssociationFunction associationReference, boolean optional )
     {
         String subject = "?entity";
-        if( associationReference.getTraversedAssociation() != null )
+        if( associationReference.traversedAssociation() != null )
         {
-            subject = addTripleAssociation( associationReference.getTraversedAssociation(), false ).value;
+            subject = addTripleAssociation( associationReference.traversedAssociation(), false ).value;
         }
-        QualifiedName qualifiedName = QualifiedName.fromAccessor( associationReference.getAccessor() );
+        QualifiedName qualifiedName = QualifiedName.fromAccessor( associationReference.accessor() );
         String prefix = addNamespace( qualifiedName.toNamespace() );
         return addTriple( subject, prefix + ":" + qualifiedName.name(), optional );
     }
@@ -104,13 +104,13 @@ public class Triples
                                              final boolean optional
     )
     {
-        AssociationFunction traversedAssociation = manyAssociationReference.getTraversedAssociation();
+        AssociationFunction traversedAssociation = manyAssociationReference.traversedAssociation();
         String subject = "?entity";
         if( traversedAssociation != null )
         {
             subject = addTripleAssociation( traversedAssociation, false ).value;
         }
-        QualifiedName qualifiedName = QualifiedName.fromAccessor( manyAssociationReference.getAccessor() );
+        QualifiedName qualifiedName = QualifiedName.fromAccessor( manyAssociationReference.accessor() );
         String predicatePrefix = addNamespace( qualifiedName.toNamespace() );
         String predicate = predicatePrefix + ":" + qualifiedName.name();
         Triple collectionTriple = addTriple( subject, predicate, optional );
@@ -250,17 +250,17 @@ public class Triples
             return format( "%s %s %s.", subject, predicate, value );
         }
 
-        public String getSubject()
+        public String subject()
         {
             return subject;
         }
 
-        public String getPredicate()
+        public String predicate()
         {
             return predicate;
         }
 
-        public String getValue()
+        public String value()
         {
             return value;
         }

@@ -5,7 +5,7 @@ package org.qi4j.runtime.composite;
  */
 public interface InstancePool<T>
 {
-    public T getInstance();
+    public T obtainInstance();
 
-    public void returnInstance( T instance );
+    public void releaseInstance( T instance );
 }

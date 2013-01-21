@@ -139,7 +139,7 @@ public class PreferencesEntityStoreMixin
         }
         else
         {
-            preferences = storeInfo.getRootNode();
+            preferences = storeInfo.rootNode();
         }
 
         return preferences;
@@ -185,7 +185,7 @@ public class PreferencesEntityStoreMixin
                             String[] identities = root.childrenNames();
                             for( String identity : identities )
                             {
-                                EntityState entityState = uow.getEntityState( EntityReference.parseEntityReference( identity ) );
+                                EntityState entityState = uow.entityStateOf( EntityReference.parseEntityReference( identity ) );
                                 receiver.receive( entityState );
                             }
                         }
@@ -209,7 +209,7 @@ public class PreferencesEntityStoreMixin
     }
 
     @Override
-    public EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
+    public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
     {
         try
         {
@@ -538,7 +538,7 @@ public class PreferencesEntityStoreMixin
                             // Store as string even though it's a number
                             JSONObjectSerializer serializer = new JSONObjectSerializer();
                             serializer.serialize( value, valueType );
-                            String jsonString = serializer.getRoot().toString();
+                            String jsonString = serializer.rootObject().toString();
                             jsonString = jsonString.substring( 1, jsonString.length() - 1 );
                             propsPrefs.put( persistentProperty.qualifiedName().name(), jsonString );
                         }
@@ -561,7 +561,7 @@ public class PreferencesEntityStoreMixin
                     {
                         JSONObjectSerializer serializer = new JSONObjectSerializer();
                         serializer.serialize( value, valueType );
-                        String jsonString = serializer.getRoot().toString();
+                        String jsonString = serializer.rootObject().toString();
 
                         propsPrefs.put( persistentProperty.qualifiedName().name(), jsonString );
                     }

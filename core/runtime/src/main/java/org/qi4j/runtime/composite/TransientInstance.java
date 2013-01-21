@@ -32,7 +32,7 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public class TransientInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static TransientInstance getCompositeInstance( Composite composite )
+    public static TransientInstance compositeInstanceOf( Composite composite )
     {
         InvocationHandler handler = Proxy.getInvocationHandler( composite );
         return (TransientInstance) handler;
@@ -119,7 +119,7 @@ public class TransientInstance
     public Object invoke( Object composite, Object[] params, CompositeMethodInstance methodInstance )
         throws Throwable
     {
-        Object mixin = methodInstance.getMixin( mixins );
+        Object mixin = methodInstance.getMixinFrom( mixins );
         return methodInstance.invoke( proxy, params, mixin );
     }
 
@@ -141,7 +141,7 @@ public class TransientInstance
         {
             return false;
         }
-        TransientInstance other = (TransientInstance) Qi4j.INSTANCE_FUNCTION.map( (Composite) o );
+        TransientInstance other = (TransientInstance) Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (Composite) o );
         if( other.mixins.length != mixins.length )
         {
             return false;

@@ -103,7 +103,7 @@ public interface CircuitBreakerManagement
         {
             for ( ServiceReference<ServiceCircuitBreaker> circuitBreaker : circuitBreakers )
             {
-                registerCircuitBreaker( circuitBreaker.get().getCircuitBreaker(), circuitBreaker.identity() );
+                registerCircuitBreaker( circuitBreaker.get().circuitBreaker(), circuitBreaker.identity() );
             }
         }
 

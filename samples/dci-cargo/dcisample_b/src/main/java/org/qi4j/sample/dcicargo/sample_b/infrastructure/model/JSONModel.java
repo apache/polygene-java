@@ -45,7 +45,7 @@ public class JSONModel<T, U extends ValueComposite>
         {
             throw new RuntimeException( "Cannot serialize ValueComposite: " + valueComposite );
         }
-        json = jsonSerializer.getRoot().toString();
+        json = jsonSerializer.rootObject().toString();
         this.valueCompositeClass = valueCompositeClass;
     }
 
@@ -58,7 +58,7 @@ public class JSONModel<T, U extends ValueComposite>
         }
 
         // Get ValueComposite interface
-        Class<U> valueCompositeClass = (Class<U>) qi4j.getValueDescriptor( value ).valueType().mainType();
+        Class<U> valueCompositeClass = (Class<U>) qi4j.valueDescriptorFor( value ).valueType().mainType();
 
         return new JSONModel<T, U>( value, valueCompositeClass );
     }

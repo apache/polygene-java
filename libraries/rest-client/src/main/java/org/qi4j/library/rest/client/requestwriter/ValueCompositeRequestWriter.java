@@ -55,8 +55,8 @@ public class ValueCompositeRequestWriter
          final ValueComposite valueObject = (ValueComposite) requestObject;
          if (request.getMethod().equals(Method.GET))
          {
-            StateHolder holder = spi.getState( valueObject );
-            final ValueDescriptor descriptor = spi.getValueDescriptor( valueObject );
+            StateHolder holder = spi.stateOf( valueObject );
+            final ValueDescriptor descriptor = spi.valueDescriptorFor( valueObject );
 
             final Reference ref = request.getResourceRef();
             ref.setQuery( null );
@@ -67,7 +67,7 @@ public class ValueCompositeRequestWriter
                  for( PropertyDescriptor propertyDescriptor : descriptor.state().properties() )
                  {
                      serializer.serialize(holder.propertyFor( propertyDescriptor.accessor() ), propertyDescriptor.valueType());
-                     ref.addQueryParameter( propertyDescriptor.qualifiedName().name(), serializer.getRoot().toString() );
+                     ref.addQueryParameter( propertyDescriptor.qualifiedName().name(), serializer.rootObject().toString() );
                  }
              }
              catch( JSONException e )

@@ -116,12 +116,12 @@ public class RdfQueryParserImpl2
     }
 
     @Override
-    public String getQuery( final Class<?> resultType,
-                            final Specification<Composite> specification,
-                            final OrderBy[] orderBySegments,
-                            final Integer firstResult,
-                            final Integer maxResults,
-                            final Map<String, Object> variables
+    public String constructQuery( final Class<?> resultType,
+                                  final Specification<Composite> specification,
+                                  final OrderBy[] orderBySegments,
+                                  final Integer firstResult,
+                                  final Integer maxResults,
+                                  final Map<String, Object> variables
     )
     {
         this.variables = variables;
@@ -130,7 +130,7 @@ public class RdfQueryParserImpl2
         {
             // Custom query
             StringBuilder queryBuilder = new StringBuilder();
-            String query = ( (QuerySpecification) specification ).getQuery();
+            String query = ( (QuerySpecification) specification ).query();
             queryBuilder.append( query );
 
             if( orderBySegments != null )
@@ -164,9 +164,9 @@ public class RdfQueryParserImpl2
 
         StringBuilder query = new StringBuilder();
 
-        for( String namespace : namespaces.getNamespaces() )
+        for( String namespace : namespaces.namespaces() )
         {
-            query.append( format( "PREFIX %s: <%s> %n", namespaces.getNamespacePrefix( namespace ), namespace ) );
+            query.append( format( "PREFIX %s: <%s> %n", namespaces.namespacePrefix( namespace ), namespace ) );
         }
         query.append( "SELECT DISTINCT ?identity\n" );
         if( triples.hasTriples() )
@@ -175,9 +175,9 @@ public class RdfQueryParserImpl2
             StringBuilder optional = new StringBuilder();
             for( Triples.Triple triple : triples )
             {
-                final String subject = triple.getSubject();
-                final String predicate = triple.getPredicate();
-                final String value = triple.getValue();
+                final String subject = triple.subject();
+                final String predicate = triple.predicate();
+                final String value = triple.value();
 
                 if( triple.isOptional() )
                 {
@@ -233,7 +233,7 @@ public class RdfQueryParserImpl2
 
             int start = builder.length();
             boolean first = true;
-            for( Specification<Composite> operand : conjunction.getOperands() )
+            for( Specification<Composite> operand : conjunction.operands() )
             {
                 int size = builder.length();
                 processFilter( operand, allowInline, builder );
@@ -262,7 +262,7 @@ public class RdfQueryParserImpl2
 
             int start = builder.length();
             boolean first = true;
-            for( Specification<Composite> operand : disjunction.getOperands() )
+            for( Specification<Composite> operand : disjunction.operands() )
             {
                 int size = builder.length();
                 processFilter( operand, false, builder );
@@ -288,7 +288,7 @@ public class RdfQueryParserImpl2
         else if( expression instanceof NotSpecification )
         {
             builder.insert( 0, "(!" );
-            processFilter( ( (NotSpecification) expression ).getOperand(), false, builder );
+            processFilter( ( (NotSpecification) expression ).operand(), false, builder );
             builder.append( ")" );
         }
         else if( expression instanceof ComparisonSpecification )
@@ -354,7 +354,7 @@ public class RdfQueryParserImpl2
 
         if( value instanceof ValueComposite )
         {
-            valueType = spi.getValueDescriptor( (ValueComposite) value ).valueType();
+            valueType = spi.valueDescriptorFor( (ValueComposite) value ).valueType();
         }
         else
         {
@@ -362,7 +362,7 @@ public class RdfQueryParserImpl2
         }
         serializer.serialize( value, valueType );
 
-        return escapeJSONString( serializer.getRoot().toString() );
+        return escapeJSONString( serializer.rootObject().toString() );
 /* TODO Fix this by creating external JSON-er
         ValueType type = ValueTypeFactory.instance().newValueType(
             value.getClass(),
@@ -468,10 +468,17 @@ public class RdfQueryParserImpl2
 
     private void processContainsAllPredicate( final ContainsAllSpecification predicate, StringBuilder builder )
     {
-        Iterable<?> values = predicate.getValueCollection();
-        String valueVariable = triples.addTriple( predicate.getCollectionProperty(), false ).getValue();
-        String[] strings = new String[ ( values instanceof Collection ? ( (Collection<?>) values ).size() : (int) Iterables
-            .count( values ) ) ];
+        Iterable<?> values = predicate.containedValues();
+        String valueVariable = triples.addTriple( predicate.collectionProperty(), false ).value();
+        String[] strings;
+        if( values instanceof Collection )
+        {
+            strings = new String[ ( (Collection<?>) values ).size() ];
+        }
+        else
+        {
+            strings = new String[ ( (int) Iterables.count( values ) ) ];
+        }
         Integer x = 0;
         for( Object item : (Collection<?>) values )
         {
@@ -484,7 +491,7 @@ public class RdfQueryParserImpl2
                 {
                     if( item instanceof ValueComposite )
                     {
-                        ValueDescriptor descriptor = spi.getValueDescriptor( (ValueComposite) item );
+                        ValueDescriptor descriptor = spi.valueDescriptorFor( (ValueComposite) item );
 
                         serializer.serialize( item, descriptor.valueType() );
                     }
@@ -498,11 +505,11 @@ public class RdfQueryParserImpl2
                 {
                     throw new UnsupportedOperationException( e );
                 }
-                Object value = serializer.getRoot();
+                Object value = serializer.rootObject();
 
                 if( value instanceof String )
                 {
-                    value = JSONObject.quote( serializer.getRoot().toString() );
+                    value = JSONObject.quote( serializer.rootObject().toString() );
                 }
 
                 jsonStr = escapeJSONString( value.toString() );
@@ -526,16 +533,16 @@ public class RdfQueryParserImpl2
 
     private void processContainsPredicate( final ContainsSpecification<?> predicate, StringBuilder builder )
     {
-        Object value = predicate.getValue();
+        Object value = predicate.value();
 
-        String valueVariable = triples.addTriple( predicate.getCollectionProperty(), false ).getValue();
+        String valueVariable = triples.addTriple( predicate.collectionProperty(), false ).value();
         try
         {
             builder.append( this.createRegexStringForContaining(
                 valueVariable,
                 this.createAndEscapeJSONString(
                     value,
-                    predicate.getCollectionProperty()
+                    predicate.collectionProperty()
                 )
             ) );
         }
@@ -547,8 +554,8 @@ public class RdfQueryParserImpl2
 
     private void processMatchesPredicate( final MatchesSpecification predicate, StringBuilder builder )
     {
-        String valueVariable = triples.addTriple( predicate.getProperty(), false ).getValue();
-        builder.append( format( "regex(%s,\"%s\")", valueVariable, predicate.getRegexp() ) );
+        String valueVariable = triples.addTriple( predicate.property(), false ).value();
+        builder.append( format( "regex(%s,\"%s\")", valueVariable, predicate.regexp() ) );
     }
 
     private void processComparisonPredicate( final Specification<Composite> predicate,
@@ -559,18 +566,18 @@ public class RdfQueryParserImpl2
         if( predicate instanceof ComparisonSpecification )
         {
             ComparisonSpecification<?> comparisonSpecification = (ComparisonSpecification<?>) predicate;
-            Triples.Triple triple = triples.addTriple( (PropertyFunction) comparisonSpecification.getProperty(), false );
+            Triples.Triple triple = triples.addTriple( (PropertyFunction) comparisonSpecification.property(), false );
 
             // Don't use FILTER for equals-comparison. Do direct match instead
             if( predicate instanceof EqSpecification && allowInline )
             {
-                triple.setValue( "\"" + toString( comparisonSpecification.getValue() ) + "\"" );
+                triple.setValue( "\"" + toString( comparisonSpecification.value() ) + "\"" );
             }
             else
             {
-                String valueVariable = triple.getValue();
+                String valueVariable = triple.value();
                 builder.append( String.format( "(%s %s \"%s\")", valueVariable, getOperator( comparisonSpecification.getClass() ), toString( comparisonSpecification
-                                                                                                                                                 .getValue() ) ) );
+                                                                                                                                                 .value() ) ) );
             }
         }
         else
@@ -582,25 +589,25 @@ public class RdfQueryParserImpl2
 
     private void processNullPredicate( final PropertyNullSpecification predicate, StringBuilder builder )
     {
-        final String value = triples.addTriple( predicate.getProperty(), true ).getValue();
+        final String value = triples.addTriple( predicate.property(), true ).value();
         builder.append( format( "(! bound(%s))", value ) );
     }
 
     private void processNotNullPredicate( final PropertyNotNullSpecification predicate, StringBuilder builder )
     {
-        final String value = triples.addTriple( predicate.getProperty(), true ).getValue();
+        final String value = triples.addTriple( predicate.property(), true ).value();
         builder.append( format( "(bound(%s))", value ) );
     }
 
     private void processNullPredicate( final AssociationNullSpecification predicate, StringBuilder builder )
     {
-        final String value = triples.addTripleAssociation( predicate.getAssociation(), true ).getValue();
+        final String value = triples.addTripleAssociation( predicate.association(), true ).value();
         builder.append( format( "(! bound(%s))", value ) );
     }
 
     private void processNotNullPredicate( final AssociationNotNullSpecification predicate, StringBuilder builder )
     {
-        final String value = triples.addTripleAssociation( predicate.getAssociation(), true ).getValue();
+        final String value = triples.addTripleAssociation( predicate.association(), true ).value();
         builder.append( format( "(bound(%s))", value ) );
     }
 
@@ -608,16 +615,16 @@ public class RdfQueryParserImpl2
                                                           boolean allowInline, StringBuilder builder
     )
     {
-        Triples.Triple triple = triples.addTripleManyAssociation( predicate.getManyAssociationFunction(), false );
+        Triples.Triple triple = triples.addTripleManyAssociation( predicate.manyAssociation(), false );
 
         if( allowInline )
         {
-            triple.setValue( "<" + toString( predicate.getValue() ) + ">" );
+            triple.setValue( "<" + toString( predicate.value() ) + ">" );
         }
         else
         {
-            String valueVariable = triple.getValue();
-            builder.append( String.format( "(%s %s <%s>)", valueVariable, "=", toString( predicate.getValue() ) ) );
+            String valueVariable = triple.value();
+            builder.append( String.format( "(%s %s <%s>)", valueVariable, "=", toString( predicate.value() ) ) );
         }
     }
 
@@ -636,7 +643,7 @@ public class RdfQueryParserImpl2
     {
         if( orderBySegment != null )
         {
-            final String valueVariable = triples.addTriple( orderBySegment.getPropertyFunction(), false ).getValue();
+            final String valueVariable = triples.addTriple( orderBySegment.property(), false ).value();
             if( orderBySegment.order() == OrderBy.Order.ASCENDING )
             {
                 builder.append( format( "ASC(%s)", valueVariable ) );
@@ -675,11 +682,11 @@ public class RdfQueryParserImpl2
         }
         else if( value instanceof Variable )
         {
-            Object realValue = variables.get( ( (Variable) value ).getName() );
+            Object realValue = variables.get( ( (Variable) value ).variableName() );
 
             if( realValue == null )
             {
-                throw new IllegalArgumentException( "Variable " + ( (Variable) value ).getName() + " not bound" );
+                throw new IllegalArgumentException( "Variable " + ( (Variable) value ).variableName() + " not bound" );
             }
 
             return toString( realValue );

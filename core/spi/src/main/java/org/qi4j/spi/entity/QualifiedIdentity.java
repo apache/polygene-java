@@ -46,7 +46,7 @@ public final class QualifiedIdentity
         return new QualifiedIdentity( id );
     }
 
-    public static QualifiedIdentity getQualifiedIdentity( Object o )
+    public static QualifiedIdentity qualifiedIdentityOf( Object o )
     {
         return new QualifiedIdentity( (EntityComposite) o );
     }
@@ -61,7 +61,7 @@ public final class QualifiedIdentity
 
     public QualifiedIdentity( EntityComposite entityComposite )
     {
-        this( entityComposite.identity().get(), first( Qi4j.DESCRIPTOR_FUNCTION
+        this( entityComposite.identity().get(), first( Qi4j.FUNCTION_DESCRIPTOR_FOR
                                                            .map( entityComposite )
                                                            .types() ).getName() );
     }

@@ -12,7 +12,7 @@ public class Variable
         this.name = name;
     }
 
-    public String getName()
+    public String variableName()
     {
         return name;
     }

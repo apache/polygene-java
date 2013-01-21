@@ -26,17 +26,12 @@ public class NoSuchEntityException
 
     public NoSuchEntityException( EntityReference identity )
     {
+        super("Could not find entity (" + identity + ")");
         this.identity = identity;
     }
 
     public EntityReference identity()
     {
         return identity;
-    }
-
-    @Override
-    public String getMessage()
-    {
-        return "Could not find entity (" + identity() + ")";
     }
 }

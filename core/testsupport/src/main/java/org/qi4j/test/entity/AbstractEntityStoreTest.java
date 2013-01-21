@@ -214,7 +214,7 @@ public abstract class AbstractEntityStoreTest
         {
             UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
-            version = spi.getEntityState( testEntity ).version();
+            version = spi.entityStateOf( testEntity ).version();
 
             unitOfWork.complete();
         }
@@ -222,7 +222,7 @@ public abstract class AbstractEntityStoreTest
         {
             UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
-            String newVersion = spi.getEntityState( testEntity ).version();
+            String newVersion = spi.entityStateOf( testEntity ).version();
             assertThat( "version has not changed", newVersion, equalTo( version ) );
 
             unitOfWork.complete();
@@ -248,7 +248,7 @@ public abstract class AbstractEntityStoreTest
             UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             testEntity.name().set( "Rickard" );
-            version = spi.getEntityState( testEntity ).version();
+            version = spi.entityStateOf( testEntity ).version();
 
             unitOfWork.complete();
         }
@@ -256,7 +256,7 @@ public abstract class AbstractEntityStoreTest
         {
             UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
-            String newVersion = spi.getEntityState( testEntity ).version();
+            String newVersion = spi.entityStateOf( testEntity ).version();
             assertThat( "version has changed", newVersion, not( equalTo( version ) ) );
 
             unitOfWork.complete();
@@ -282,7 +282,7 @@ public abstract class AbstractEntityStoreTest
             UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
             testEntity.manyAssociation().add( 0, testEntity );
-            version = spi.getEntityState( testEntity ).version();
+            version = spi.entityStateOf( testEntity ).version();
 
             unitOfWork.complete();
         }
@@ -290,7 +290,7 @@ public abstract class AbstractEntityStoreTest
         {
             UnitOfWork unitOfWork = module.newUnitOfWork();
             testEntity = unitOfWork.get( testEntity );
-            String newVersion = spi.getEntityState( testEntity ).version();
+            String newVersion = spi.entityStateOf( testEntity ).version();
             assertThat( "version has changed", newVersion, not( equalTo( version ) ) );
 
             unitOfWork.complete();
@@ -317,7 +317,7 @@ public abstract class AbstractEntityStoreTest
             // Start working with Entity in one UoW
             unitOfWork1 = module.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
-            version = spi.getEntityState( testEntity1 ).version();
+            version = spi.entityStateOf( testEntity1 ).version();
             if( version.equals( "" ) )
             {
                 unitOfWork1.discard();
@@ -331,7 +331,7 @@ public abstract class AbstractEntityStoreTest
             // Start working with same Entity in another UoW, and complete it
             UnitOfWork unitOfWork = module.newUnitOfWork();
             TestEntity testEntity2 = unitOfWork.get( testEntity );
-            assertThat( "version is correct", spi.getEntityState( testEntity1 ).version(), equalTo( version ) );
+            assertThat( "version is correct", spi.entityStateOf( testEntity1 ).version(), equalTo( version ) );
             testEntity2.name().set( "B" );
             unitOfWork.complete();
         }
@@ -354,7 +354,7 @@ public abstract class AbstractEntityStoreTest
             unitOfWork1 = module.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
             assertThat( "property name has not been set", testEntity1.name().get(), equalTo( "B" ) );
-            assertThat( "version is incorrect", spi.getEntityState( testEntity1 ).version(),
+            assertThat( "version is incorrect", spi.entityStateOf( testEntity1 ).version(),
                         not( equalTo( version ) ) );
             unitOfWork1.discard();
         }

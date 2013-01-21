@@ -25,11 +25,11 @@ import org.qi4j.functional.Specification;
 
 public interface RdfQueryParser
 {
-    String getQuery( Class<?> resultType,
-                     Specification<Composite> whereClause,
-                     OrderBy[] orderBySegments,
-                     Integer firstResult,
-                     Integer maxResults,
-                     Map<String, Object> variables
+    String constructQuery( Class<?> resultType,
+                           Specification<Composite> whereClause,
+                           OrderBy[] orderBySegments,
+                           Integer firstResult,
+                           Integer maxResults,
+                           Map<String, Object> variables
     );
 }

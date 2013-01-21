@@ -22,11 +22,11 @@ public class AnnotationsTest
     public void getAnnotationOrNull()
         throws NoSuchMethodException
     {
-        assertNotNull( "Mixins annotation found", Annotations.getAnnotation( AnnotatedClass.class, Mixins.class ) );
+        assertNotNull( "Mixins annotation found", Annotations.annotationOn( AnnotatedClass.class, Mixins.class ) );
 
-        assertNull( "No SideEffects annotation found", Annotations.getAnnotation( AnnotatedClass.class, SideEffects.class ) );
+        assertNull( "No SideEffects annotation found", Annotations.annotationOn( AnnotatedClass.class, SideEffects.class ) );
 
         final Type returnType = AnnotatedClass.class.getDeclaredMethod( "list" ).getGenericReturnType();
-        assertNull( "Null on no class type", Annotations.getAnnotation( returnType, Mixins.class ) );
+        assertNull( "Null on no class type", Annotations.annotationOn( returnType, Mixins.class ) );
     }
 }

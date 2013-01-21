@@ -79,12 +79,12 @@ public final class Annotations
         };
     }
 
-    public static <T extends Annotation> T getAnnotation( Type type, Class<T> annotationType )
+    public static <T extends Annotation> T annotationOn( Type type, Class<T> annotationType )
     {
         return annotationType.cast( Classes.RAW_CLASS.map( type ).getAnnotation( annotationType ) );
     }
 
-    public static Iterable<Annotation> getAccessorAndTypeAnnotations( AccessibleObject accessor )
+    public static Iterable<Annotation> findAccessorAndTypeAnnotationsIn( AccessibleObject accessor )
     {
         return flatten( iterable( accessor.getAnnotations() ),
                         flattenIterables( map( Annotations.ANNOTATIONS_OF, interfacesOf( typeOf( accessor ) ) ) ) );

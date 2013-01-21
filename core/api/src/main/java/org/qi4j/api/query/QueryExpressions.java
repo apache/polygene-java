@@ -193,7 +193,7 @@ public final class QueryExpressions
     @SuppressWarnings( "unchecked" )
     public static <T> PropertyFunction<T> property( Property<T> property )
     {
-        return ( ( PropertyReferenceHandler<T> ) Proxy.getInvocationHandler( property ) ).getProperty();
+        return ( ( PropertyReferenceHandler<T> ) Proxy.getInvocationHandler( property ) ).property();
     }
 
     /**
@@ -237,7 +237,7 @@ public final class QueryExpressions
     @SuppressWarnings( "unchecked" )
     public static <T> AssociationFunction<T> association( Association<T> association )
     {
-        return ( ( AssociationReferenceHandler<T> ) Proxy.getInvocationHandler( association ) ).getAssociation();
+        return ( ( AssociationReferenceHandler<T> ) Proxy.getInvocationHandler( association ) ).association();
     }
 
     /**
@@ -251,7 +251,7 @@ public final class QueryExpressions
     @SuppressWarnings( "unchecked" )
     public static <T> ManyAssociationFunction<T> manyAssociation( ManyAssociation<T> association )
     {
-        return ( ( ManyAssociationReferenceHandler<T> ) Proxy.getInvocationHandler( association ) ).getManyAssociation();
+        return ( ( ManyAssociationReferenceHandler<T> ) Proxy.getInvocationHandler( association ) ).manyAssociation();
     }
 
     // And/Or/Not ------------------------------------------------------------|
@@ -725,7 +725,7 @@ public final class QueryExpressions
             this.property = property;
         }
 
-        private PropertyFunction<T> getProperty()
+        private PropertyFunction<T> property()
         {
             return property;
         }
@@ -736,7 +736,7 @@ public final class QueryExpressions
         {
             if( method.equals( Property.class.getMethod( "get" ) ) )
             {
-                Type propertyType = GenericPropertyInfo.getPropertyType( property.getAccessor() );
+                Type propertyType = GenericPropertyInfo.propertyTypeOf( property.accessor() );
                 if( propertyType.getClass().equals( Class.class ) )
                 {
                     return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
@@ -759,7 +759,7 @@ public final class QueryExpressions
             this.association = association;
         }
 
-        private AssociationFunction<T> getAssociation()
+        private AssociationFunction<T> association()
         {
             return association;
         }
@@ -770,7 +770,7 @@ public final class QueryExpressions
         {
             if( method.equals( Association.class.getMethod( "get" ) ) )
             {
-                Type associationType = GenericAssociationInfo.getAssociationType( association.getAccessor() );
+                Type associationType = GenericAssociationInfo.associationTypeOf( association.accessor() );
                 if( associationType.getClass().equals( Class.class ) )
                 {
                     return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
@@ -793,7 +793,7 @@ public final class QueryExpressions
             this.manyAssociation = manyAssociation;
         }
 
-        public ManyAssociationFunction<T> getManyAssociation()
+        public ManyAssociationFunction<T> manyAssociation()
         {
             return manyAssociation;
         }
@@ -804,7 +804,7 @@ public final class QueryExpressions
         {
             if( method.equals( ManyAssociation.class.getMethod( "get", Integer.TYPE ) ) )
             {
-                Type manyAssociationType = GenericAssociationInfo.getAssociationType( manyAssociation.getAccessor() );
+                Type manyAssociationType = GenericAssociationInfo.associationTypeOf( manyAssociation.accessor() );
                 if( manyAssociationType.getClass().equals( Class.class ) )
                 {
                     return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),

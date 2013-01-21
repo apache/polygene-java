@@ -82,10 +82,10 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     @Override
-    public EntityState getEntityState( EntityReference anIdentity )
+    public EntityState entityStateOf( EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException
     {
-        EntityState entityState = entityStoreSPI.getEntityState( this, anIdentity );
+        EntityState entityState = entityStoreSPI.entityStateOf( this, anIdentity );
         states.add( entityState );
         return entityState;
     }

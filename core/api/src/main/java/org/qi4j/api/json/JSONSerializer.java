@@ -146,7 +146,7 @@ public abstract class JSONSerializer
     public void serialize( ValueComposite value )
         throws JSONException
     {
-        ValueDescriptor valueDescriptor = (ValueDescriptor) Qi4j.DESCRIPTOR_FUNCTION.map( value );
+        ValueDescriptor valueDescriptor = (ValueDescriptor) Qi4j.FUNCTION_DESCRIPTOR_FOR.map( value );
 
         ValueType valueType = valueDescriptor.valueType();
 
@@ -176,12 +176,12 @@ public abstract class JSONSerializer
             objectStart();
             ValueComposite valueComposite = (ValueComposite) value;
 
-            if( !first( valueCompositeType.types() ).equals( first( Qi4j.DESCRIPTOR_FUNCTION
+            if( !first( valueCompositeType.types() ).equals( first( Qi4j.FUNCTION_DESCRIPTOR_FOR
                                                                         .map( valueComposite )
                                                                         .types() ) ) )
             {
                 // Actual value is a subtype - use it instead
-                ValueDescriptor valueDescriptor = (ValueDescriptor) Qi4j.DESCRIPTOR_FUNCTION.map( valueComposite );
+                ValueDescriptor valueDescriptor = (ValueDescriptor) Qi4j.FUNCTION_DESCRIPTOR_FOR.map( valueComposite );
 
                 valueCompositeType = valueDescriptor.valueType();
 
@@ -191,7 +191,7 @@ public abstract class JSONSerializer
                 }
             }
 
-            AssociationStateHolder state = (AssociationStateHolder) Qi4j.INSTANCE_FUNCTION
+            AssociationStateHolder state = (AssociationStateHolder) Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
                 .map( valueComposite )
                 .state();
             for( PropertyDescriptor persistentProperty : valueCompositeType.properties() )
@@ -243,8 +243,8 @@ public abstract class JSONSerializer
             for( Map.Entry<Object, Object> entry : set )
             {
                 objectStart();
-                key( "key" ).serialize( entry.getKey(), mapType.getKeyType() );
-                key( "value" ).serialize( entry.getValue(), mapType.getValueType() );
+                key( "key" ).serialize( entry.getKey(), mapType.keyType() );
+                key( "value" ).serialize( entry.getValue(), mapType.valueType() );
                 objectEnd();
             }
 
@@ -270,7 +270,7 @@ public abstract class JSONSerializer
             if( value instanceof EntityComposite )
             {
                 // Store reference instead
-                value = EntityReference.getEntityReference( value );
+                value = EntityReference.entityReferenceFor( value );
             }
             else if( value instanceof ValueComposite )
             {
@@ -280,9 +280,9 @@ public abstract class JSONSerializer
                     JSONObjectSerializer JSONObjectSerializer = new JSONObjectSerializer();
                     JSONObjectSerializer.serialize( (ValueComposite) value );
 
-                    JSONObject object = (JSONObject) JSONObjectSerializer.getRoot();
+                    JSONObject object = (JSONObject) JSONObjectSerializer.rootObject();
 
-                    ValueDescriptor descriptor = (ValueDescriptor) Qi4j.DESCRIPTOR_FUNCTION.map( (Composite) value );
+                    ValueDescriptor descriptor = (ValueDescriptor) Qi4j.FUNCTION_DESCRIPTOR_FOR.map( (Composite) value );
 
                     if( includeTypeInformation )
                     {

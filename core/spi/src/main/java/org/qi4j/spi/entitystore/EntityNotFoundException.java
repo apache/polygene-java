@@ -28,17 +28,12 @@ public class EntityNotFoundException
 
     public EntityNotFoundException( EntityReference identity )
     {
+        super("Entity " + identity + " not found");
         this.identity = identity;
     }
 
     public EntityReference identity()
     {
         return identity;
-    }
-
-    @Override
-    public String getMessage()
-    {
-        return "Entity " + identity + " not found";
     }
 }

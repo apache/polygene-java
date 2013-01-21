@@ -35,7 +35,7 @@ public final class PreferencesEntityStoreInfo
     /**
      * @return root preference node to use.
      */
-    public Preferences getRootNode()
+    public Preferences rootNode()
     {
         return rootNode;
     }

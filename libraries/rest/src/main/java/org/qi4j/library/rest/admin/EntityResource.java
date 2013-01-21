@@ -108,7 +108,7 @@ public class EntityResource
         try
         {
             EntityReference identityRef = EntityReference.parseEntityReference( identity );
-            uow.getEntityState( identityRef ).remove();
+            uow.entityStateOf( identityRef ).remove();
             uow.applyChanges().commit();
             getResponse().setStatus( Status.SUCCESS_NO_CONTENT );
         }
@@ -167,7 +167,7 @@ public class EntityResource
         try
         {
             EntityReference entityReference = EntityReference.parseEntityReference( identity );
-            entityState = unitOfWork.getEntityState( entityReference );
+            entityState = unitOfWork.entityStateOf( entityReference );
         }
         catch (EntityNotFoundException e)
         {
@@ -204,7 +204,7 @@ public class EntityResource
 
                 for (PropertyDescriptor persistentProperty : descriptor.state().properties())
                 {
-                    Object value = entity.getProperty( persistentProperty.qualifiedName() );
+                    Object value = entity.propertyValueOf( persistentProperty.qualifiedName() );
                     try
                     {
                         out.println( "<tr><td>" +
@@ -227,7 +227,7 @@ public class EntityResource
                 out.println( "<fieldset><legend>Associations</legend>\n<table>" );
                 for (AssociationDescriptor associationType : descriptor.state().associations())
                 {
-                    Object value = entity.getAssociation( associationType.qualifiedName() );
+                    Object value = entity.associationValueOf( associationType.qualifiedName() );
                     if (value == null)
                     {
                         value = "";
@@ -247,7 +247,7 @@ public class EntityResource
                 out.println( "<fieldset><legend>Many manyAssociations</legend>\n<table>" );
                 for (AssociationDescriptor associationType : descriptor.state().manyAssociations())
                 {
-                    ManyAssociationState identities = entity.getManyAssociation( associationType.qualifiedName() );
+                    ManyAssociationState identities = entity.manyAssociationValueOf( associationType.qualifiedName() );
                     String value = "";
                     for (EntityReference identity : identities)
                     {
@@ -381,7 +381,7 @@ public class EntityResource
 
                     Object value = deserializer.deserialize( jsonValue, persistentProperty.valueType() );
 
-                    entity.setProperty( persistentProperty.qualifiedName(), value );
+                    entity.setPropertyValue( persistentProperty.qualifiedName(), value );
                 }
             }
 
@@ -390,16 +390,16 @@ public class EntityResource
                 String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
                 if (newStringAssociation == null || newStringAssociation.equals( "" ))
                 {
-                    entity.setAssociation( associationType.qualifiedName(), null );
+                    entity.setAssociationValue( associationType.qualifiedName(), null );
                 } else
                 {
-                    entity.setAssociation( associationType.qualifiedName(), EntityReference.parseEntityReference( newStringAssociation ) );
+                    entity.setAssociationValue( associationType.qualifiedName(), EntityReference.parseEntityReference( newStringAssociation ) );
                 }
             }
             for (AssociationDescriptor associationType : descriptor.state().manyAssociations())
             {
                 String newStringAssociation = form.getFirstValue( associationType.qualifiedName().toString() );
-                ManyAssociationState manyAssociation = entity.getManyAssociation( associationType.qualifiedName() );
+                ManyAssociationState manyAssociation = entity.manyAssociationValueOf( associationType.qualifiedName() );
                 if (newStringAssociation == null)
                 {
                     // Remove "left-overs"
@@ -428,7 +428,7 @@ public class EntityResource
 
                         try
                         {
-                            unitOfWork.getEntityState( reference );
+                            unitOfWork.entityStateOf( reference );
 
                             manyAssociation.remove( reference );
                             manyAssociation.add( index++, reference );

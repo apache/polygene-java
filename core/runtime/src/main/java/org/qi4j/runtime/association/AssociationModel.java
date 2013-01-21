@@ -75,7 +75,7 @@ public final class AssociationModel
 
     private void initialize()
     {
-        this.type = GenericAssociationInfo.getAssociationType( accessor );
+        this.type = GenericAssociationInfo.associationTypeOf( accessor );
         this.qualifiedName = QualifiedName.fromAccessor( accessor );
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;

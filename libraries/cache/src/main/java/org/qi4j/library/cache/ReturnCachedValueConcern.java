@@ -38,7 +38,7 @@ public class ReturnCachedValueConcern extends ConcernOf<InvocationHandler>
         {
             cacheName += Arrays.asList( args );
         }
-        Object result = cache.getCachedValue( cacheName );
+        Object result = cache.cachedValue( cacheName );
         if( result != null )
         {
             if( result == Void.TYPE )

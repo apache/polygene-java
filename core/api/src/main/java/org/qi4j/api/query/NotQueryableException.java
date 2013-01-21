@@ -57,7 +57,7 @@ public class NotQueryableException
             throw new NotQueryableException(
                 String.format(
                     "%1$s \"%2$s\" (%3$s) is not queryable as has been marked with @Queryable(false)",
-                    Classes.RAW_CLASS.map( GenericPropertyInfo.getPropertyType( accessor ) ).getSimpleName(),
+                    Classes.RAW_CLASS.map( GenericPropertyInfo.propertyTypeOf( accessor ) ).getSimpleName(),
                     ( (Member) accessor ).getName(),
                     ( (Member) accessor ).getDeclaringClass().getName()
                 )

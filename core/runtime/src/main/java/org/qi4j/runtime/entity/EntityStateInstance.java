@@ -63,7 +63,7 @@ public final class EntityStateInstance
 
         if( property == null )
         {
-            PropertyModel entityPropertyModel = stateModel.getProperty( accessor );
+            PropertyModel entityPropertyModel = stateModel.propertyModelFor( accessor );
             if( entityPropertyModel == null )
             {
                 throw new IllegalArgumentException( "No such property:" + accessor );
@@ -109,14 +109,14 @@ public final class EntityStateInstance
                 @Override
                 public EntityReference get()
                 {
-                    return entityState.getAssociation( associationModel.qualifiedName() );
+                    return entityState.associationValueOf( associationModel.qualifiedName() );
                 }
 
                 @Override
                 public void set( EntityReference newValue )
                     throws IllegalArgumentException, IllegalStateException
                 {
-                    entityState.setAssociation( associationModel.qualifiedName(), newValue );
+                    entityState.setAssociationValue( associationModel.qualifiedName(), newValue );
                 }
             } );
             state.put( accessor, association );
@@ -154,7 +154,7 @@ public final class EntityStateInstance
             }
 
             manyAssociation = new ManyAssociationInstance<T>( entityState instanceof BuilderEntityState ? associationModel
-                .getBuilderInfo() : associationModel, entityFunction, entityState.getManyAssociation( associationModel.qualifiedName() ) );
+                .getBuilderInfo() : associationModel, entityFunction, entityState.manyAssociationValueOf( associationModel.qualifiedName() ) );
             state.put( accessor, manyAssociation );
         }
 

@@ -324,13 +324,13 @@ public class JSONDeserializer
                 // New array-based handling
                 JSONArray array = (JSONArray) json;
 
-                Map<Object, Object> map = (Map<Object, Object>) DefaultValues.getDefaultValue( Map.class );
+                Map<Object, Object> map = (Map<Object, Object>) DefaultValues.getDefaultValueOf( Map.class );
 
                 for( int i = 0; i < array.length(); i++ )
                 {
                     JSONObject entry = array.getJSONObject( i );
-                    Object key = deserialize( entry.get( "key" ), mapType.getKeyType() );
-                    Object value = deserialize( entry.get( "value" ), mapType.getValueType() );
+                    Object key = deserialize( entry.get( "key" ), mapType.keyType() );
+                    Object value = deserialize( entry.get( "value" ), mapType.valueType() );
                     map.put( key, value );
                 }
 
@@ -393,7 +393,7 @@ public class JSONDeserializer
                     try
                     {
                         Class<?> type = first( persistentProperty.valueType().types() );
-                        Object defaultValue = DefaultValues.getDefaultValue( type );
+                        Object defaultValue = DefaultValues.getDefaultValueOf( type );
                         values.put( persistentProperty.qualifiedName(), defaultValue );
                     }
                     catch( RuntimeException e1 )

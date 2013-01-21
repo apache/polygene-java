@@ -29,7 +29,7 @@ public class ValueBuilderWithPrototype<T>
             // @TODO there is probably a more efficient way to do this
             JSONObjectSerializer serializer = new JSONObjectSerializer();
             serializer.serialize(prototype, valueModel.valueType());
-            Object object = serializer.getRoot();
+            Object object = serializer.rootObject();
 
             JSONDeserializer deserializer = new JSONDeserializer( currentModule );
             value = deserializer.deserialize(object, valueModel.valueType());
@@ -39,7 +39,7 @@ public class ValueBuilderWithPrototype<T>
             throw new IllegalStateException( "Could not JSON-copy Value", e );
         }
 
-        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) value );
+        ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) value );
         valueInstance.prepareToBuild();
         this.prototypeInstance = valueInstance;
     }

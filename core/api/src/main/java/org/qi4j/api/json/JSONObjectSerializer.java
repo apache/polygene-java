@@ -85,7 +85,7 @@ public class JSONObjectSerializer
         return this;
     }
 
-    public Object getRoot()
+    public Object rootObject()
     {
         return root;
     }

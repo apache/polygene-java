@@ -117,7 +117,7 @@ public final class JSONEntityState
     }
 
     @Override
-    public Object getProperty( QualifiedName stateName )
+    public Object propertyValueOf( QualifiedName stateName )
     {
         try
         {
@@ -129,7 +129,7 @@ public final class JSONEntityState
             else
             {
                 Module module = unitOfWork.module();
-                PropertyDescriptor descriptor = entityDescriptor.state().getPropertyByQualifiedName( stateName );
+                PropertyDescriptor descriptor = entityDescriptor.state().findPropertyModelByQualifiedName( stateName );
 
                 if( descriptor == null )
                 {
@@ -148,7 +148,7 @@ public final class JSONEntityState
     }
 
     @Override
-    public void setProperty( QualifiedName stateName, Object newValue )
+    public void setPropertyValue( QualifiedName stateName, Object newValue )
     {
         try
         {
@@ -160,11 +160,11 @@ public final class JSONEntityState
             else
             {
                 PropertyDescriptor persistentPropertyDescriptor = entityDescriptor.state()
-                    .getPropertyByQualifiedName( stateName );
+                    .findPropertyModelByQualifiedName( stateName );
 
                 JSONObjectSerializer serializer = new JSONObjectSerializer();
                 serializer.serialize( newValue, persistentPropertyDescriptor.valueType() );
-                jsonValue = serializer.getRoot();
+                jsonValue = serializer.rootObject();
             }
             cloneStateIfGlobalStateLoaded();
             state.getJSONObject( JSON_KEY_PROPERTIES ).put( stateName.name(), jsonValue );
@@ -188,7 +188,7 @@ public final class JSONEntityState
     }
 
     @Override
-    public EntityReference getAssociation( QualifiedName stateName )
+    public EntityReference associationValueOf( QualifiedName stateName )
     {
         try
         {
@@ -209,7 +209,7 @@ public final class JSONEntityState
     }
 
     @Override
-    public void setAssociation( QualifiedName stateName, EntityReference newEntity )
+    public void setAssociationValue( QualifiedName stateName, EntityReference newEntity )
     {
         try
         {
@@ -225,7 +225,7 @@ public final class JSONEntityState
     }
 
     @Override
-    public ManyAssociationState getManyAssociation( QualifiedName stateName )
+    public ManyAssociationState manyAssociationValueOf( QualifiedName stateName )
     {
         try
         {

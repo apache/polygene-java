@@ -87,31 +87,31 @@ public final class BuilderEntityState
     }
 
     @Override
-    public Object getProperty( QualifiedName stateName )
+    public Object propertyValueOf( QualifiedName stateName )
     {
         return properties.get( stateName );
     }
 
     @Override
-    public EntityReference getAssociation( QualifiedName stateName )
+    public EntityReference associationValueOf( QualifiedName stateName )
     {
         return associations.get( stateName );
     }
 
     @Override
-    public void setProperty( QualifiedName stateName, Object newValue )
+    public void setPropertyValue( QualifiedName stateName, Object newValue )
     {
         properties.put( stateName, newValue );
     }
 
     @Override
-    public void setAssociation( QualifiedName stateName, EntityReference newEntity )
+    public void setAssociationValue( QualifiedName stateName, EntityReference newEntity )
     {
         associations.put( stateName, newEntity );
     }
 
     @Override
-    public ManyAssociationState getManyAssociation( QualifiedName stateName )
+    public ManyAssociationState manyAssociationValueOf( QualifiedName stateName )
     {
         ManyAssociationState state = manyAssociations.get( stateName );
         if( state == null )
@@ -127,15 +127,15 @@ public final class BuilderEntityState
     {
         for( Map.Entry<QualifiedName, Object> stateNameStringEntry : properties.entrySet() )
         {
-            newEntityState.setProperty( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
+            newEntityState.setPropertyValue( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
         }
         for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : associations.entrySet() )
         {
-            newEntityState.setAssociation( stateNameEntityReferenceEntry.getKey(), stateNameEntityReferenceEntry.getValue() );
+            newEntityState.setAssociationValue( stateNameEntityReferenceEntry.getKey(), stateNameEntityReferenceEntry.getValue() );
         }
         for( Map.Entry<QualifiedName, ManyAssociationState> stateNameManyAssociationStateEntry : manyAssociations.entrySet() )
         {
-            ManyAssociationState manyAssoc = newEntityState.getManyAssociation( stateNameManyAssociationStateEntry.getKey() );
+            ManyAssociationState manyAssoc = newEntityState.manyAssociationValueOf( stateNameManyAssociationStateEntry.getKey() );
             int idx = 0;
             for( EntityReference entityReference : stateNameManyAssociationStateEntry.getValue() )
             {

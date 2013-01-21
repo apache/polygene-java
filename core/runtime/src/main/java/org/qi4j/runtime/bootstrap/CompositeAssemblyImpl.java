@@ -370,18 +370,18 @@ public abstract class CompositeAssemblyImpl
                                               Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
     )
     {
-        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
+        Iterable<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
-        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericPropertyInfo.getPropertyType( accessor ), ( (Member) accessor )
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericPropertyInfo.propertyTypeOf( accessor ), ( (Member) accessor )
             .getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
-        MetaInfo metaInfo = stateDeclarations.getMetaInfo( accessor );
-        Object initialValue = stateDeclarations.getInitialValue( accessor );
-        boolean useDefaults = metaInfo.get( UseDefaults.class ) != null || stateDeclarations.isUseDefaults( accessor );
+        MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
+        Object initialValue = stateDeclarations.initialValueOf( accessor );
+        boolean useDefaults = metaInfo.get( UseDefaults.class ) != null || stateDeclarations.useDefaults( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
         PropertyModel propertyModel = new PropertyModel( accessor, immutable, useDefaults, valueConstraintsInstance, metaInfo, initialValue );
         return propertyModel;
@@ -616,7 +616,7 @@ public abstract class CompositeAssemblyImpl
             @Override
             public Iterable<Class<? extends Constraint<?, ?>>> map( Type type )
             {
-                Constraints constraints = Annotations.getAnnotation( type, Constraints.class );
+                Constraints constraints = Annotations.annotationOn( type, Constraints.class );
                 if( constraints == null )
                 {
                     return Iterables.empty();
@@ -661,7 +661,7 @@ public abstract class CompositeAssemblyImpl
             @Override
             public Iterable<Class<?>> map( Type type )
             {
-                Concerns concerns = Annotations.getAnnotation( type, Concerns.class );
+                Concerns concerns = Annotations.annotationOn( type, Concerns.class );
                 if( concerns == null )
                 {
                     return Iterables.empty();
@@ -698,7 +698,7 @@ public abstract class CompositeAssemblyImpl
             @Override
             public Iterable<Class<?>> map( Type type )
             {
-                SideEffects sideEffects = Annotations.getAnnotation( type, SideEffects.class );
+                SideEffects sideEffects = Annotations.annotationOn( type, SideEffects.class );
                 if( sideEffects == null )
                 {
                     return Iterables.empty();
@@ -735,7 +735,7 @@ public abstract class CompositeAssemblyImpl
             @Override
             public Iterable<Class<?>> map( Type type )
             {
-                Mixins mixins = Annotations.getAnnotation( type, Mixins.class );
+                Mixins mixins = Annotations.annotationOn( type, Mixins.class );
                 if( mixins == null )
                 {
                     return Iterables.empty();

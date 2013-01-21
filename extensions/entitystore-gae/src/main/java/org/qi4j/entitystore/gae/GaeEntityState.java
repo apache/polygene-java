@@ -171,7 +171,7 @@ public class GaeEntityState
     }
 
     @Override
-    public Object getProperty( QualifiedName stateName )
+    public Object propertyValueOf( QualifiedName stateName )
     {
         String uri = stateName.toURI();
         Object value = entity.getProperty( uri );
@@ -206,7 +206,7 @@ public class GaeEntityState
     }
 
     @Override
-    public void setProperty( QualifiedName stateName, Object value )
+    public void setPropertyValue( QualifiedName stateName, Object value )
     {
         System.out.println( "setProperty( " + stateName + ", " + value + " )" );
         if( value != null && Proxy.isProxyClass( value.getClass() ) )
@@ -234,17 +234,17 @@ public class GaeEntityState
     }
 
     @Override
-    public EntityReference getAssociation( QualifiedName stateName )
+    public EntityReference associationValueOf( QualifiedName stateName )
     {
         String uri = stateName.toURI();
         String identity = (String) entity.getProperty( uri );
-        System.out.println( "getAssociation( " + stateName + " )  -->  " + uri + " = " + identity );
+        System.out.println( "association( " + stateName + " )  -->  " + uri + " = " + identity );
         EntityReference ref = new EntityReference( identity );
         return ref;
     }
 
     @Override
-    public void setAssociation( QualifiedName stateName, EntityReference newEntity )
+    public void setAssociationValue( QualifiedName stateName, EntityReference newEntity )
     {
         System.out.println( "setAssociation( " + stateName + ", " + newEntity + " )" );
         String uri = stateName.toURI();
@@ -257,7 +257,7 @@ public class GaeEntityState
     }
 
     @Override
-    public ManyAssociationState getManyAssociation( QualifiedName stateName )
+    public ManyAssociationState manyAssociationValueOf( QualifiedName stateName )
     {
         List<String> assocs = (List<String>) entity.getProperty( stateName.toURI() );
         ManyAssociationState state = new GaeManyAssociationState( this, assocs );

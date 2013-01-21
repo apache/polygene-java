@@ -65,7 +65,7 @@ public class OrderBy
      *
      * @return property; cannot be null
      */
-    public PropertyFunction<?> getPropertyFunction()
+    public PropertyFunction<?> property()
     {
         return propertyReference;
     }

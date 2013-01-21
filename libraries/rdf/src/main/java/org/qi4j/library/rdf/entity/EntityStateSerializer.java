@@ -126,7 +126,7 @@ public class EntityStateSerializer
             // Properties
             for( PropertyDescriptor persistentProperty : entityType.state().properties() )
             {
-                Object property = entityState.getProperty( persistentProperty.qualifiedName() );
+                Object property = entityState.propertyValueOf( persistentProperty.qualifiedName() );
                 if( property != null )
                 {
                     serializeProperty( persistentProperty, property, subject, graph, includeNonQueryable );
@@ -169,7 +169,7 @@ public class EntityStateSerializer
             JSONObjectSerializer serializer = new JSONObjectSerializer();
             serializer.setIncludeType( false );
             serializer.serialize( property, valueType );
-            String stringProperty = serializer.getRoot().toString();
+            String stringProperty = serializer.rootObject().toString();
 
             final Literal object = valueFactory.createLiteral( stringProperty );
             graph.add( subject, predicate, object );
@@ -191,7 +191,7 @@ public class EntityStateSerializer
 
         for( PropertyDescriptor persistentProperty : ( (ValueCompositeType) valueType ).properties() )
         {
-            Object propertyValue = Qi4j.INSTANCE_FUNCTION
+            Object propertyValue = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
                 .map( (Composite) value )
                 .state()
                 .propertyFor( persistentProperty.accessor() )
@@ -233,7 +233,7 @@ public class EntityStateSerializer
                 continue; // Skip non-queryable
             }
 
-            EntityReference associatedId = entityState.getAssociation( associationType.qualifiedName() );
+            EntityReference associatedId = entityState.associationValueOf( associationType.qualifiedName() );
             if( associatedId != null )
             {
                 URI assocURI = values.createURI( associationType.qualifiedName().toURI() );
@@ -264,7 +264,7 @@ public class EntityStateSerializer
             graph.add( entityUri, values.createURI( associationType.qualifiedName().toURI() ), collection );
             graph.add( collection, Rdfs.TYPE, Rdfs.SEQ );
 
-            ManyAssociationState associatedIds = entityState.getManyAssociation( associationType.qualifiedName() );
+            ManyAssociationState associatedIds = entityState.manyAssociationValueOf( associationType.qualifiedName() );
             for( EntityReference associatedId : associatedIds )
             {
                 URI assocEntityURI = values.createURI( associatedId.toURI() );

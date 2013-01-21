@@ -28,12 +28,12 @@ import static org.qi4j.api.util.Classes.typeOf;
  */
 public final class GenericPropertyInfo
 {
-    public static Type getPropertyType( AccessibleObject accessor )
+    public static Type propertyTypeOf( AccessibleObject accessor )
     {
-        return getPropertyType( typeOf( accessor ) );
+        return toPropertyType( typeOf( accessor ) );
     }
 
-    public static Type getPropertyType( Type methodReturnType )
+    public static Type toPropertyType( Type methodReturnType )
     {
         if( methodReturnType instanceof ParameterizedType )
         {
@@ -49,7 +49,7 @@ public final class GenericPropertyInfo
             Type[] interfaces = ( (Class<?>) methodReturnType ).getGenericInterfaces();
             for( Type anInterface : interfaces )
             {
-                Type propertyType = getPropertyType( anInterface );
+                Type propertyType = toPropertyType( anInterface );
                 if( propertyType != null )
                 {
                     return propertyType;

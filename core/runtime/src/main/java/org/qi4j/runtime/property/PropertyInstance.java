@@ -50,7 +50,7 @@ public class PropertyInstance<T>
         value = aValue;
     }
 
-    public PropertyInfo getPropertyInfo()
+    public PropertyInfo propertyInfo()
     {
         return model;
     }
@@ -164,7 +164,7 @@ public class PropertyInstance<T>
             Object value = get();
             if( value != null )
             {
-                ValueInstance.getValueInstance( (ValueComposite) value ).prepareToBuild();
+                ValueInstance.valueInstanceOf( (ValueComposite) value ).prepareToBuild();
             }
         }
         else if( propertyDescriptor.valueType() instanceof CollectionType )
@@ -189,7 +189,7 @@ public class PropertyInstance<T>
                     Collection coll = (Collection) value;
                     for( Object instance : coll )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareToBuild();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareToBuild();
                     }
                 }
 
@@ -206,18 +206,18 @@ public class PropertyInstance<T>
 
                 // Check if keys/values are Values
                 MapType mapType = (MapType) propertyDescriptor.valueType();
-                if( mapType.getKeyType() instanceof ValueCompositeType )
+                if( mapType.keyType() instanceof ValueCompositeType )
                 {
                     for( Object instance : map.keySet() )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareToBuild();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareToBuild();
                     }
                 }
-                if( mapType.getValueType() instanceof ValueCompositeType )
+                if( mapType.valueType() instanceof ValueCompositeType )
                 {
                     for( Object instance : map.values() )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareToBuild();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareToBuild();
                     }
                 }
 
@@ -234,7 +234,7 @@ public class PropertyInstance<T>
             Object value = get();
             if( value != null )
             {
-                ValueInstance.getValueInstance( (ValueComposite) value ).prepareBuilderState();
+                ValueInstance.valueInstanceOf( (ValueComposite) value ).prepareBuilderState();
             }
         }
         else if( propertyDescriptor.valueType() instanceof CollectionType )
@@ -266,7 +266,7 @@ public class PropertyInstance<T>
                     Collection coll = (Collection) value;
                     for( Object instance : coll )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareBuilderState();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareBuilderState();
                     }
                 }
             }
@@ -278,20 +278,20 @@ public class PropertyInstance<T>
             if( value != null )
             {
                 MapType mapType = (MapType) propertyDescriptor.valueType();
-                if( mapType.getKeyType() instanceof ValueCompositeType )
+                if( mapType.keyType() instanceof ValueCompositeType )
                 {
                     Map map = (Map) value;
                     for( Object instance : map.keySet() )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareBuilderState();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareBuilderState();
                     }
                 }
-                if( mapType.getValueType() instanceof ValueCompositeType )
+                if( mapType.valueType() instanceof ValueCompositeType )
                 {
                     Map map = (Map) value;
                     for( Object instance : map.values() )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareBuilderState();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareBuilderState();
                     }
                 }
                 if( propertyDescriptor.isImmutable() )

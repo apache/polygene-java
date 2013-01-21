@@ -18,7 +18,7 @@ public abstract class ComparisonSpecification<T>
         this.value = value;
     }
 
-    public PropertyFunction<T> getProperty()
+    public PropertyFunction<T> property()
     {
         return property;
     }
@@ -51,7 +51,7 @@ public abstract class ComparisonSpecification<T>
 
     protected abstract boolean compare( T value );
 
-    public T getValue()
+    public T value()
     {
         return value;
     }

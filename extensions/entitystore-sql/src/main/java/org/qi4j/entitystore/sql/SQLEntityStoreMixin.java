@@ -227,7 +227,7 @@ public class SQLEntityStoreMixin
     }
 
     @Override
-    public EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef )
+    public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef )
     {
         EntityValueResult valueResult = getValue( entityRef );
         return new DefaultSQLEntityState( readEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork,
@@ -466,7 +466,7 @@ public class SQLEntityStoreMixin
     }
 
     @Override
-    public JSONObject getState( String id )
+    public JSONObject jsonStateOf( String id )
         throws IOException
     {
         Reader reader = getValue( EntityReference.parseEntityReference( id ) ).getReader();

@@ -16,7 +16,7 @@ public abstract class BinarySpecification
         this.operands = operands;
     }
 
-    public Iterable<Specification<Composite>> getOperands()
+    public Iterable<Specification<Composite>> operands()
     {
         return operands;
     }

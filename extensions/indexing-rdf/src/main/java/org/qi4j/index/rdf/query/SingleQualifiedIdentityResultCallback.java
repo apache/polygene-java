@@ -31,7 +31,7 @@ public class SingleQualifiedIdentityResultCallback
         return false;
     }
 
-    public EntityReference getQualifiedIdentity()
+    public EntityReference qualifiedIdentity()
     {
         return entityReference;
     }

@@ -14,6 +14,7 @@
 
 package org.qi4j.api;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import org.qi4j.api.association.AbstractAssociation;
@@ -54,7 +55,7 @@ public interface Qi4j
      *                       belongs to.
      * @return The Module instance where the Composite or UnitOfWork belongs to.
      */
-    Module getModule( Object compositeOrUow );
+    Module moduleOf( Object compositeOrUow );
 
     /**
      * Returns the ModelDescriptor of the Composite.
@@ -63,7 +64,7 @@ public interface Qi4j
      *                                    ModelDescriptor
      * @return The ModelDescriptor of the Composite
      */
-    ModelDescriptor getModelDescriptor( Object compositeOrServiceReference );
+    ModelDescriptor modelDescriptorFor( Object compositeOrServiceReference );
 
     /**
      * Returns the CompositeDescriptor of the Composite.
@@ -72,7 +73,7 @@ public interface Qi4j
      *                                    CompositeDescriptor
      * @return The CompositeDescriptor of the Composite
      */
-    CompositeDescriptor getCompositeDescriptor( Object compositeOrServiceReference );
+    CompositeDescriptor compositeDescriptorFor( Object compositeOrServiceReference );
 
     /**
      * Returns the TransientDescriptor of the TransientComposite.
@@ -80,7 +81,7 @@ public interface Qi4j
      * @param transsient The TransientComposite for which to lookup the TransientDescriptor
      * @return The TransientDescriptor of the TransientComposite
      */
-    TransientDescriptor getTransientDescriptor( Object transsient );
+    TransientDescriptor transientDescriptorFor( Object transsient );
 
     /**
      * Returns the EntityDescriptor of the EntityComposite.
@@ -88,7 +89,7 @@ public interface Qi4j
      * @param entity The EntityComposite for which to lookup the EntityDescriptor
      * @return The EntityDescriptor of the EntityComposite
      */
-    EntityDescriptor getEntityDescriptor( Object entity );
+    EntityDescriptor entityDescriptorFor( Object entity );
 
     /**
      * Returns the ValueDescriptor of the ValueComposite.
@@ -96,7 +97,7 @@ public interface Qi4j
      * @param value The ValueComposite for which to lookup the ValueDescriptor
      * @return The ValueDescriptor of the ValueComposite
      */
-    ValueDescriptor getValueDescriptor( Object value );
+    ValueDescriptor valueDescriptorFor( Object value );
 
     /**
      * Returns the ServiceDescriptor of the ServiceComposite.
@@ -104,7 +105,7 @@ public interface Qi4j
      * @param service The ServiceComposite for which to lookup the ServiceDescriptor
      * @return The ServiceDescriptor of the ServiceComposite
      */
-    ServiceDescriptor getServiceDescriptor( Object service );
+    ServiceDescriptor serviceDescriptorFor( Object service );
 
     /**
      * Returns the PropertyDescriptor of the Property.
@@ -112,7 +113,7 @@ public interface Qi4j
      * @param property The Property for which to lookup the PropertyDescriptor
      * @return The PropertyDescriptor of the Property
      */
-    PropertyDescriptor getPropertyDescriptor( Property property );
+    PropertyDescriptor propertyDescriptorFor( Property property );
 
     /**
      * Returns the AssociationDescriptor of the Association.
@@ -120,12 +121,12 @@ public interface Qi4j
      * @param association The Association for which to lookup the AssociationDescriptor
      * @return The AssociationDescriptor of the Association
      */
-    AssociationDescriptor getAssociationDescriptor( AbstractAssociation association );
+    AssociationDescriptor associationDescriptorFor( AbstractAssociation association );
 
     /**
      * Function that returns the CompositeDescriptor of a Composite.
      */
-    Function<Composite, CompositeDescriptor> DESCRIPTOR_FUNCTION = new Function<Composite, CompositeDescriptor>()
+    Function<Composite, CompositeDescriptor> FUNCTION_DESCRIPTOR_FOR = new Function<Composite, CompositeDescriptor>()
     {
         @Override
         public CompositeDescriptor map( Composite composite )
@@ -135,19 +136,18 @@ public interface Qi4j
                 InvocationHandler invocationHandler = Proxy.getInvocationHandler( composite );
                 return ( (CompositeInstance) invocationHandler ).descriptor();
             }
-            else
+            try
             {
-                try
-                {
-                    CompositeInstance instance = (CompositeInstance) composite.getClass()
-                        .getField( "_instance" )
-                        .get( composite );
-                    return instance.descriptor();
-                }
-                catch( Exception e )
-                {
-                    throw (InvalidCompositeException) new InvalidCompositeException( "Could not get _instance field" ).initCause( e );
-                }
+                Class<? extends Composite> compositeClass = composite.getClass();
+                Field instanceField = compositeClass.getField( "_instance" );
+                Object instance = instanceField.get( composite );
+                return ((CompositeInstance) instance).descriptor();
+            }
+            catch( Exception e )
+            {
+                InvalidCompositeException exception = new InvalidCompositeException( "Could not get _instance field" );
+                exception.initCause( e );
+                throw exception;
             }
         }
     };
@@ -155,7 +155,7 @@ public interface Qi4j
     /**
      * Function that returns the CompositeInstance of a Composite.
      */
-    Function<Composite, CompositeInstance> INSTANCE_FUNCTION = new Function<Composite, CompositeInstance>()
+    Function<Composite, CompositeInstance> FUNCTION_COMPOSITE_INSTANCE_OF = new Function<Composite, CompositeInstance>()
     {
         @Override
         public CompositeInstance map( Composite composite )
@@ -164,19 +164,18 @@ public interface Qi4j
             {
                 return ( (CompositeInstance) Proxy.getInvocationHandler( composite ) );
             }
-            else
+            try
             {
-                try
-                {
-                    CompositeInstance instance = (CompositeInstance) composite.getClass()
-                        .getField( "_instance" )
-                        .get( composite );
-                    return instance;
-                }
-                catch( Exception e )
-                {
-                    throw (InvalidCompositeException) new InvalidCompositeException( "Could not get _instance field" ).initCause( e );
-                }
+                Class<? extends Composite> compositeClass = composite.getClass();
+                Field instanceField = compositeClass.getField( "_instance" );
+                Object instance = instanceField.get( composite );
+                return (CompositeInstance) instance;
+            }
+            catch( Exception e )
+            {
+                InvalidCompositeException exception = new InvalidCompositeException( "Could not get _instance field" );
+                exception.initCause( e );
+                throw exception;
             }
         }
     };

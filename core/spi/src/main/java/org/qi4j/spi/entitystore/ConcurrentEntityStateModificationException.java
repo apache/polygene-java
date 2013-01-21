@@ -30,17 +30,12 @@ public class ConcurrentEntityStateModificationException
 
     public ConcurrentEntityStateModificationException( Collection<EntityReference> modifiedEntities )
     {
+        super("Entities changed concurrently:" + modifiedEntities);
         this.modifiedEntities = modifiedEntities;
     }
 
     public Collection<EntityReference> modifiedEntities()
     {
         return modifiedEntities;
-    }
-
-    @Override
-    public String getMessage()
-    {
-        return "Entities changed concurrently:" + modifiedEntities;
     }
 }

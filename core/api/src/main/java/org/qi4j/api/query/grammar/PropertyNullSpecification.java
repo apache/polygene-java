@@ -16,7 +16,7 @@ public class PropertyNullSpecification<T>
         this.property = property;
     }
 
-    public PropertyFunction<T> getProperty()
+    public PropertyFunction<T> property()
     {
         return property;
     }
