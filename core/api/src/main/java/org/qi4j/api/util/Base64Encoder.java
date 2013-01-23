@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.api.json;
+package org.qi4j.api.util;
 
 /**
  * Base64Encoder.

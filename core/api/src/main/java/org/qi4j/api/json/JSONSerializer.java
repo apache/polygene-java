@@ -1,5 +1,6 @@
 package org.qi4j.api.json;
 
+import org.qi4j.api.util.Base64Encoder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
