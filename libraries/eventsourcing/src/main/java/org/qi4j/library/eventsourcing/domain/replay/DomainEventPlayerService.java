@@ -174,8 +174,7 @@ public interface DomainEventPlayerService
                 return dateFormat.parse( (String) value );
             } else if (ValueComposite.class.isAssignableFrom( parameterType ))
             {
-
-                return module.newValueFromJSON( parameterType, (String) value );
+                return module.newValueFromSerializedState( parameterType, (String) value );
             } else if (parameterType.isInterface())
             {
                 return uow.get( parameterType, (String) value );

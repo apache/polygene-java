@@ -148,7 +148,7 @@ public class DefaultRequestReader
                             throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "Bug in Tomcat encountered; notify developers!" );
                         }
 
-                        Object command = module.newValueFromJSON( commandType, json );
+                        Object command = module.newValueFromSerializedState( commandType, json );
                         args[ 0 ] = command;
                         return args;
                     }

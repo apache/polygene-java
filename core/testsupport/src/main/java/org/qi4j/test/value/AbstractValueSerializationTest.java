@@ -95,8 +95,8 @@ public abstract class AbstractValueSerializationTest
             log.info( "Complex ValueComposite state:\n\n{}\n", stateString );
 
             // Deserialize
-            // SomeValue some2 = module.newValueFromJSON( SomeValue.class, json );
-            SomeValue some2 = valueSerialization.<SomeValue>deserialize( module.valueDescriptor( SomeValue.class.getName() ).valueType(), stateString );
+            SomeValue some2 = module.newValueFromSerializedState( SomeValue.class, stateString );
+            // SomeValue some2 = valueSerialization.<SomeValue>deserialize( module.valueDescriptor( SomeValue.class.getName() ).valueType(), stateString );
 
             assertThat( "Same value toString", some.toString(), equalTo( some2.toString() ) );
             assertThat( "Same value", some, equalTo( some2 ) );

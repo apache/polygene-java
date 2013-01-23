@@ -455,7 +455,7 @@ public class ModuleInstance
     }
 
     @Override
-    public <T> T newValueFromJSON( Class<T> mixinType, String jsonValue )
+    public <T> T newValueFromSerializedState( Class<T> mixinType, String serializedState )
         throws NoSuchValueException, ConstructionException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
@@ -468,7 +468,7 @@ public class ModuleInstance
 
         try
         {
-            return valueSerialization().deserialize( modelModule.model().valueType(), jsonValue );
+            return valueSerialization().deserialize( modelModule.model().valueType(), serializedState );
         }
         catch( ValueSerializationException ex )
         {

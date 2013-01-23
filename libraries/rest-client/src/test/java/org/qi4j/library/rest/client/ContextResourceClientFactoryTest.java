@@ -542,12 +542,12 @@ public class ContextResourceClientFactoryTest
 
         public TestResult queryWithValue( TestQuery query )
         {
-            return module.newValueFromJSON( TestResult.class, "{'xyz':'"+query.abc().get()+"'}" );
+            return module.newValueFromSerializedState( TestResult.class, "{'xyz':'"+query.abc().get()+"'}" );
         }
 
         public TestResult queryWithoutValue()
         {
-            return module.newValueFromJSON( TestResult.class, "{'xyz':'bar'}" );
+            return module.newValueFromSerializedState( TestResult.class, "{'xyz':'bar'}" );
         }
 
         public String queryWithStringResult( TestQuery query )
@@ -615,7 +615,7 @@ public class ContextResourceClientFactoryTest
 
         public TestResult queryWithValue( TestQuery query )
         {
-            return module.newValueFromJSON( TestResult.class, "{'xyz':'bar'}" );
+            return module.newValueFromSerializedState( TestResult.class, "{'xyz':'bar'}" );
         }
 
         // Test interaction constraints
@@ -623,7 +623,7 @@ public class ContextResourceClientFactoryTest
         @Requires( File.class )
         public TestResult queryWithRoleRequirement( TestQuery query )
         {
-            return module.newValueFromJSON( TestResult.class, "{'xyz':'bar'}" );
+            return module.newValueFromSerializedState( TestResult.class, "{'xyz':'bar'}" );
         }
 
         @Requires( File.class )
@@ -670,7 +670,7 @@ public class ContextResourceClientFactoryTest
 
         public TestResult genericQuery( TestQuery query )
         {
-            return module.newValueFromJSON( TestResult.class, "{'xyz':'bar'}" );
+            return module.newValueFromSerializedState( TestResult.class, "{'xyz':'bar'}" );
         }
     }
 

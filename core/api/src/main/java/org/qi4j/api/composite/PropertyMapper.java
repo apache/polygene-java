@@ -457,7 +457,7 @@ public final class PropertyMapper
         @Override
         public Object map( Composite composite, Type type, String value )
         {
-            return Qi4j.INSTANCE_FUNCTION.map( composite ).module().newValueFromJSON( (Class<Object>) type, value );
+            return Qi4j.INSTANCE_FUNCTION.map( composite ).module().newValueFromSerializedState( (Class<Object>) type, value );
         }
     }
 

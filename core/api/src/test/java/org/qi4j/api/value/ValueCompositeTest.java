@@ -231,7 +231,7 @@ public class ValueCompositeTest
 
             unitOfWork = module.newUnitOfWork();
 
-            AssociationValue newAssociationValue = module.newValueFromJSON( AssociationValue.class, json );
+            AssociationValue newAssociationValue = module.newValueFromSerializedState( AssociationValue.class, json );
 
             Assert.assertEquals( associationValue.some().get(), newAssociationValue.some().get() );
         }

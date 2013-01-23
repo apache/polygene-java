@@ -67,7 +67,7 @@ public class JSONModel<T, U extends ValueComposite>
         if( valueComposite == null && json != null )
         {
             // De-serialize
-            valueComposite = (T) module.newValueFromJSON( valueCompositeClass, json ); // Unchecked cast
+            valueComposite = (T) module.newValueFromSerializedState( valueCompositeClass, json ); // Unchecked cast
         }
         return valueComposite;
     }

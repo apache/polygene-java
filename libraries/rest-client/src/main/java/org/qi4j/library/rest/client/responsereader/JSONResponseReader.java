@@ -46,7 +46,7 @@ public class JSONResponseReader
          if (ValueComposite.class.isAssignableFrom( resultType ))
          {
             String jsonValue = response.getEntityAsText();
-            return module.newValueFromJSON(resultType, jsonValue);
+            return module.newValueFromSerializedState(resultType, jsonValue);
          } else if (resultType.equals(Form.class))
          {
             try

@@ -412,12 +412,12 @@ public class ContinuousIntegrationTest
         public BuildResult buildStatus( BuildSpec build )
         {
             String buildNo = build.buildNo().get(); // or lookup by tag
-            return module.newValueFromJSON( BuildResult.class, "{ 'buildNo':'" + buildNo + "', 'testsPassed': 37, 'testsFailed': 1}" );
+            return module.newValueFromSerializedState( BuildResult.class, "{ 'buildNo':'" + buildNo + "', 'testsPassed': 37, 'testsFailed': 1}" );
         }
 
         public ServerStatus serverStatus()
         {
-            return module.newValueFromJSON( ServerStatus.class, "{'currentStatus':'Idle', 'availableAgents': 2  }" );
+            return module.newValueFromSerializedState( ServerStatus.class, "{'currentStatus':'Idle', 'availableAgents': 2  }" );
         }
 
         public void tagBuild( TagBuildCommand command )
