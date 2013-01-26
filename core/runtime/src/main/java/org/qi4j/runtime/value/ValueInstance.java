@@ -142,6 +142,6 @@ public final class ValueInstance
     @Override
     public String toString()
     {
-        return module().valueSerialization().serialize( this.<ValueComposite>proxy(), true );
+        return module().valueSerialization().serialize( this.<ValueComposite>proxy() );
     }
 }

@@ -17,9 +17,8 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.infrastructure.model;
 
-import org.json.JSONException;
-import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueSerializer;
 
 /**
  * JSONModel
@@ -36,16 +35,7 @@ public class JSONModel<T, U extends ValueComposite>
     @SuppressWarnings( "unchecked" )
     public JSONModel( T valueComposite, Class<U> valueCompositeClass )
     {
-        JSONObjectSerializer jsonSerializer = new JSONObjectSerializer();
-        try
-        {
-            jsonSerializer.serialize( (U) valueComposite );
-        }
-        catch( JSONException e )
-        {
-            throw new RuntimeException( "Cannot serialize ValueComposite: " + valueComposite );
-        }
-        json = jsonSerializer.getRoot().toString();
+        json = module.findService( ValueSerializer.class ).get().serialize( (U) valueComposite );;
         this.valueCompositeClass = valueCompositeClass;
     }
 

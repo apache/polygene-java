@@ -135,6 +135,7 @@ public class TestApplication
     @BeforeClass
     public static void setup() throws Exception
     {
+        try {
         System.out.println( "\n@@@@@@@@@@@  TEST SUITE  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" );
         app = new Energy4Java().newApplication( new TestAssembler() );
         app.activate();
@@ -154,6 +155,12 @@ public class TestApplication
 
         // Separate test suites in console output
         System.out.println();
+        }
+        catch( Exception ex )
+        {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     // Allow to test message output from exceptions after they have been thrown

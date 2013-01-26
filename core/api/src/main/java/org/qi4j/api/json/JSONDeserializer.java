@@ -407,10 +407,10 @@ public class JSONDeserializer
 
             for( AssociationDescriptor associationDescriptor : actualValueType.associations() )
             {
-                Object valueJson = jsonObject.optString( associationDescriptor.qualifiedName().name() );
-                if( valueJson != null )
+                String valueJson = jsonObject.optString( associationDescriptor.qualifiedName().name() );
+                if( valueJson != null && valueJson.length() > 0 )
                 {
-                    values.put( associationDescriptor.qualifiedName(), EntityReference.parseEntityReference( valueJson.toString() ) );
+                    values.put( associationDescriptor.qualifiedName(), EntityReference.parseEntityReference( valueJson ) );
                 }
             }
 

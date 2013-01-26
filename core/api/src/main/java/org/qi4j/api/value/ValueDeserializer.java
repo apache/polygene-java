@@ -23,11 +23,40 @@ import org.qi4j.functional.Function2;
  * Use a ValueDeserializer to create new values instances from serialized state.
  *
  * <p>
- *     Serialized state must be one of a ValueComposite, a Collection or a Map.
+ *     Serialized state must be one of:
+ * </p>
+ * <ul>
+ *     <li>a ValueComposite,</li>
+ *     <li>a Collection,</li>
+ *     <li>a Map,</li>
+ *     <li>a plain value.</li>
+ * </ul>
+ * <p>
+ *     Nested plain values, EntityReferences, Collections, Maps, ValueComposites are supported.
+ *     EntityReferences are deserialized as their identity string.
  * </p>
  * <p>
- *     Nested plain values, EntityReferences, Collections, Maps and ValueComposites are supported.
- *     EntityReferences are deserialized as EntityComposites.
+ *     Plain values can be one of:
+ * </p>
+ * <ul>
+ *     <li>String,</li>
+ *     <li>Boolean,</li>
+ *     <li>Integer,</li>
+ *     <li>Long,</li>
+ *     <li>Short,</li>
+ *     <li>Byte,</li>
+ *     <li>Float,</li>
+ *     <li>Double,</li>
+ *     <li>BigInteger,</li>
+ *     <li>BigDecimal,</li>
+ *     <li>Date,</li>
+ *     <li>DateTime (JodaTime),</li>
+ *     <li>LocalDateTime (JodaTime),</li>
+ *     <li>LocalDate (JodaTime).</li>
+ * </ul>
+ * <p>
+ *     Having type information in the serialized payload allows to keep actual ValueComposite types and by so
+ *     circumvent {@link AmbiguousTypeException} when deserializing.
  * </p>
  */
 public interface ValueDeserializer

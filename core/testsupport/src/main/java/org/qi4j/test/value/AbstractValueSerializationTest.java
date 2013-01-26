@@ -30,19 +30,25 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +58,7 @@ import static org.junit.Assert.*;
 /**
  * Assert that ValueSerialization behaviour on ValueComposites is correct.
  */
+// TODO Assert Association and ManyAssociation serialization behavior !
 public abstract class AbstractValueSerializationTest
     extends AbstractQi4jTest
 {
@@ -67,6 +74,8 @@ public abstract class AbstractValueSerializationTest
     {
         module.values( SomeValue.class, AnotherValue.class, FooValue.class, CustomFooValue.class,
                        SpecificCollection.class /*, SpecificValue.class, GenericValue.class */ );
+        new EntityTestAssembler().assemble( module );
+        module.entities( BarEntity.class );
     }
 
     @Before
@@ -83,6 +92,7 @@ public abstract class AbstractValueSerializationTest
     public void givenValueCompositeWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
+        UnitOfWork uow = module.newUnitOfWork();
         try
         {
             SomeValue some = buildSomeValue();
@@ -96,7 +106,6 @@ public abstract class AbstractValueSerializationTest
 
             // Deserialize
             SomeValue some2 = module.newValueFromSerializedState( SomeValue.class, stateString );
-            // SomeValue some2 = valueSerialization.<SomeValue>deserialize( module.valueDescriptor( SomeValue.class.getName() ).valueType(), stateString );
 
             assertThat( "Same value toString", some.toString(), equalTo( some2.toString() ) );
             assertThat( "Same value", some, equalTo( some2 ) );
@@ -106,11 +115,16 @@ public abstract class AbstractValueSerializationTest
 
             assertThat( "String Integer Map", some2.stringIntMap().get().get( "foo" ), equalTo( 42 ) );
             assertThat( "String Value Map", some2.stringValueMap().get().get( "foo" ).internalVal(), equalTo( "Bar" ) );
+            assertThat( "Nested Entities", some2.barAssociation().get().cathedral().get(), equalTo( "bazar in barAssociation" ) );
         }
         catch( Exception ex )
         {
             log.error( ex.getMessage(), ex );
             throw ex;
+        }
+        finally
+        {
+            uow.discard();
         }
     }
 
@@ -162,7 +176,22 @@ public abstract class AbstractValueSerializationTest
         proto.customFoo().set( module.newValue( CustomFooValue.class ) );
         proto.customFooValue().set( module.newValue( CustomFooValue.class ) );
 
+        // NestedEntities
+        proto.barAssociation().set( buildBarEntity( "bazar in barAssociation" ) );
+        proto.barEntityAssociation().set( buildBarEntity( "bazar in barEntityAssociation" ) );
+        proto.barManyAssociation().add( buildBarEntity( "bazar ONE in barManyAssociation" ) );
+        proto.barManyAssociation().add( buildBarEntity( "bazar TWO in barManyAssociation" ) );
+        proto.barEntityManyAssociation().add( buildBarEntity( "bazar ONE in barEntityManyAssociation" ) );
+        proto.barEntityManyAssociation().add( buildBarEntity( "bazar TWO in barEntityManyAssociation" ) );
+
         return builder.newInstance();
+    }
+
+    private BarEntity buildBarEntity( String cathedral )
+    {
+        EntityBuilder<BarEntity> barBuilder = module.currentUnitOfWork().newEntityBuilder( BarEntity.class );
+        barBuilder.instance().cathedral().set( cathedral );
+        return barBuilder.newInstance();
     }
 
     public enum TestEnum
@@ -240,6 +269,18 @@ public abstract class AbstractValueSerializationTest
         /* Too complicated to do generics here for now
          Property<SpecificValue> specificValue();
          */
+        @Optional
+        Association<Bar> barAssociationOptional();
+
+        Association<Bar> barAssociation();
+
+        Association<BarEntity> barEntityAssociation();
+
+        ManyAssociation<Bar> barManyAssociationEmpty();
+
+        ManyAssociation<Bar> barManyAssociation();
+
+        ManyAssociation<BarEntity> barEntityManyAssociation();
     }
 
     public interface SpecificCollection
@@ -318,6 +359,18 @@ public abstract class AbstractValueSerializationTest
 
         @UseDefaults
         Property<String> custom();
+    }
+
+    public interface Bar
+    {
+
+        @UseDefaults
+        Property<String> cathedral();
+    }
+
+    public interface BarEntity
+        extends Bar, EntityComposite
+    {
     }
 
     public static class SerializableObject

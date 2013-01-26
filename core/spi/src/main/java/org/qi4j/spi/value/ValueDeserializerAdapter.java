@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -59,9 +60,10 @@ import org.slf4j.LoggerFactory;
 import static org.qi4j.functional.Iterables.*;
 
 /**
+ * Adapter for pull-parsing and tree-parsing capable ValueDeserializers.
  *
- * @param <InputType> Implementor pull-parsing reader type
- * @param <InputNodeType> Implementor tree-parsing reader type
+ * @param <InputType> Implementor pull-parser type
+ * @param <InputNodeType> Implementor tree-parser node type
  */
 public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     implements ValueDeserializer
@@ -69,19 +71,6 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
 
     private static final Logger PULL_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#PullParsing" );
     private static final Logger TREE_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#TreeParsing" );
-
-    protected static <T> Function<Object, T> identityDeserializer()
-    {
-        return new Function<Object, T>()
-        {
-            @Override
-            @SuppressWarnings( "unchecked" )
-            public T map( Object serialized )
-            {
-                return (T) serialized;
-            }
-        };
-    }
     private final Map<Class<?>, Function<Object, Object>> deserializers = new HashMap<Class<?>, Function<Object, Object>>();
     private final Module module;
 
@@ -98,58 +87,79 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( String.class, new Function<Object, String>()
         {
             @Override
-            public String map( Object o )
+            public String map( Object input )
             {
-                return o.toString();
+                return input.toString();
             }
         } );
-        registerDeserializer( Boolean.class, ValueDeserializerAdapter.<Boolean>identityDeserializer() );
+        registerDeserializer( Boolean.class, new Function<Object, Boolean>()
+        {
+            @Override
+            public Boolean map( Object input )
+            {
+                return ( input instanceof String )
+                       ? Boolean.parseBoolean( (String) input )
+                       : ( (Boolean) input ).booleanValue();
+            }
+        } );
         registerDeserializer( Integer.class, new Function<Object, Integer>()
         {
             @Override
-            public Integer map( Object o )
+            public Integer map( Object input )
             {
-                return ( (Number) o ).intValue();
+                return ( input instanceof String )
+                       ? Integer.parseInt( (String) input )
+                       : ( (Number) input ).intValue();
             }
         } );
         registerDeserializer( Long.class, new Function<Object, Long>()
         {
             @Override
-            public Long map( Object o )
+            public Long map( Object input )
             {
-                return ( (Number) o ).longValue();
+                return ( input instanceof String )
+                       ? Long.parseLong( (String) input )
+                       : ( (Number) input ).longValue();
             }
         } );
         registerDeserializer( Short.class, new Function<Object, Short>()
         {
             @Override
-            public Short map( Object o )
+            public Short map( Object input )
             {
-                return ( (Number) o ).shortValue();
+                return ( input instanceof String )
+                       ? Short.parseShort( (String) input )
+                       : ( (Number) input ).shortValue();
             }
         } );
         registerDeserializer( Byte.class, new Function<Object, Byte>()
         {
             @Override
-            public Byte map( Object o )
+            public Byte map( Object input )
             {
-                return ( (Number) o ).byteValue();
+                return ( input instanceof String )
+                       ? Byte.parseByte( (String) input )
+                       : ( (Number) input ).byteValue();
             }
         } );
         registerDeserializer( Float.class, new Function<Object, Float>()
         {
             @Override
-            public Float map( Object o )
+            public Float map( Object input )
             {
-                return ( (Number) o ).floatValue();
+                return ( input instanceof String )
+                       ? Float.parseFloat( (String) input )
+                       : ( (Number) input ).floatValue();
             }
         } );
         registerDeserializer( Double.class, new Function<Object, Double>()
         {
             @Override
-            public Double map( Object o )
+            public Double map( Object input )
             {
-                return ( (Number) o ).doubleValue();
+                return ( input instanceof String )
+                       ? Double.parseDouble( (String) input )
+                       : ( (Number) input ).doubleValue();
             }
         } );
 
@@ -157,17 +167,17 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( BigDecimal.class, new Function<Object, BigDecimal>()
         {
             @Override
-            public BigDecimal map( Object json )
+            public BigDecimal map( Object input )
             {
-                return new BigDecimal( json.toString() );
+                return new BigDecimal( input.toString() );
             }
         } );
         registerDeserializer( BigInteger.class, new Function<Object, BigInteger>()
         {
             @Override
-            public BigInteger map( Object json )
+            public BigInteger map( Object input )
             {
-                return new BigInteger( json.toString() );
+                return new BigInteger( input.toString() );
             }
         } );
 
@@ -175,33 +185,33 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( Date.class, new Function<Object, Date>()
         {
             @Override
-            public Date map( Object json )
+            public Date map( Object input )
             {
-                return Dates.fromString( json.toString() );
+                return Dates.fromString( input.toString() );
             }
         } );
         registerDeserializer( DateTime.class, new Function<Object, DateTime>()
         {
             @Override
-            public DateTime map( Object json )
+            public DateTime map( Object input )
             {
-                return new DateTime( json, DateTimeZone.UTC );
+                return new DateTime( input, DateTimeZone.UTC );
             }
         } );
         registerDeserializer( LocalDateTime.class, new Function<Object, LocalDateTime>()
         {
             @Override
-            public LocalDateTime map( Object json )
+            public LocalDateTime map( Object input )
             {
-                return new LocalDateTime( json );
+                return new LocalDateTime( input );
             }
         } );
         registerDeserializer( LocalDate.class, new Function<Object, LocalDate>()
         {
             @Override
-            public LocalDate map( Object json )
+            public LocalDate map( Object input )
             {
-                return new LocalDate( json );
+                return new LocalDate( input );
             }
         } );
 
@@ -209,9 +219,9 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( EntityReference.class, new Function<Object, EntityReference>()
         {
             @Override
-            public EntityReference map( Object json )
+            public EntityReference map( Object input )
             {
-                return EntityReference.parseEntityReference( json.toString() );
+                return EntityReference.parseEntityReference( input.toString() );
             }
         } );
     }
@@ -235,13 +245,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     {
         try
         {
-            InputType adaptedInput = adaptInput( new ByteArrayInputStream( input.getBytes( "UTF-8" ) ) );
-
-            onDeserializationStart( type, adaptedInput );
-            T deserialized = doDeserialize( type, adaptedInput );
-            onDeserializationEnd( type, adaptedInput );
-
-            return deserialized;
+            return deserializeRoot( type, new ByteArrayInputStream( input.getBytes( "UTF-8" ) ) );
         }
         catch( ValueSerializationException ex )
         {
@@ -259,13 +263,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     {
         try
         {
-            InputType wrappedInput = adaptInput( input );
-
-            onDeserializationStart( type, wrappedInput );
-            T deserialized = doDeserialize( type, wrappedInput );
-            onDeserializationEnd( type, wrappedInput );
-
-            return deserialized;
+            return deserializeRoot( type, input );
         }
         catch( ValueSerializationException ex )
         {
@@ -275,6 +273,26 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         {
             throw new ValueSerializationException( "Could not deserialize value", ex );
         }
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private <T> T deserializeRoot( ValueType valueType, InputStream input )
+        throws Exception
+    {
+        final Class<?> type = first( valueType.types() );
+        if( deserializers.get( type ) != null )
+        {
+            // Plain ValueType
+            Scanner scanner = new Scanner( input, "UTF-8" ).useDelimiter( "\\A" );
+            String string = scanner.hasNext() ? scanner.next() : "";
+            return (T) deserializers.get( type ).map( string );
+        }
+        // Complex ValueType
+        InputType adaptedInput = adaptInput( input );
+        onDeserializationStart( valueType, adaptedInput );
+        T deserialized = doDeserialize( valueType, adaptedInput );
+        onDeserializationEnd( valueType, adaptedInput );
+        return deserialized;
     }
 
     @SuppressWarnings( "unchecked" )
@@ -344,12 +362,12 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         };
     }
 
-    private <T> Collection<T> deserializeCollection( CollectionType valueType, InputType input )
+    private <T> Collection<T> deserializeCollection( CollectionType collectionType, InputType input )
         throws Exception
     {
         Collection<T> collection;
-        Class<?> collectionType = first( valueType.types() );
-        if( Set.class.equals( collectionType ) )
+        Class<?> collectionMainType = first( collectionType.types() );
+        if( Set.class.equals( collectionMainType ) )
         {
             collection = new LinkedHashSet<T>();
         }
@@ -358,16 +376,16 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             collection = new ArrayList<T>();
         }
         return readArrayInCollection( input,
-                                      this.<T>buildDeserializeInputFunction( valueType.collectedType() ),
+                                      this.<T>buildDeserializeInputFunction( collectionType.collectedType() ),
                                       collection );
     }
 
-    private <K, V> Map<K, V> deserializeMap( MapType valueType, InputType input )
+    private <K, V> Map<K, V> deserializeMap( MapType mapType, InputType input )
         throws Exception
     {
         return readMapInMap( input,
-                             this.<K>buildDeserializeInputFunction( valueType.getKeyType() ),
-                             this.<V>buildDeserializeInputFunction( valueType.getValueType() ),
+                             this.<K>buildDeserializeInputFunction( mapType.getKeyType() ),
+                             this.<V>buildDeserializeInputFunction( mapType.getValueType() ),
                              new HashMap<K, V>() );
     }
 
@@ -375,28 +393,28 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception
     {
         PULL_PARSING_LOG.debug( "Switching to TREE PARSING @( {} )", input );
-        InputNodeType objectNode = readObjectTree( input );
+        InputNodeType inputNode = readObjectTree( input );
         TREE_PARSING_LOG.debug( "Switched to TREE PARSING @( {} )", input );
-        TREE_PARSING_LOG.trace( "ObjectNode is {}", objectNode );
-        if( objectNode == null )
+        TREE_PARSING_LOG.trace( "ObjectNode is {}", inputNode );
+        if( inputNode == null )
         {
             return null;
         }
-        return deserializeNodeValueComposite( valueType, objectNode );
+        return deserializeNodeValueComposite( valueType, inputNode );
     }
 
-    private <T> T deserializeNodeValueComposite( ValueType valueType, InputNodeType objectNode )
+    private <T> T deserializeNodeValueComposite( ValueType valueType, InputNodeType inputNode )
         throws Exception
     {
         ValueCompositeType valueCompositeType = (ValueCompositeType) valueType;
         Class<?> valueBuilderType = first( valueCompositeType.types() );
         String typeInfo = this.<String>getObjectFieldValue(
-            objectNode,
+            inputNode,
             "_type",
             this.<String>buildDeserializeInputNodeFunction( new ValueType( String.class ) ) );
         TREE_PARSING_LOG.trace(
             "In deserializeNodeValueComposite(), getObjectFieldValue( {} ) returned '{}'",
-            objectNode, typeInfo );
+            inputNode, typeInfo );
         if( typeInfo != null )
         {
             ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
@@ -413,28 +431,28 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                     valueType, valueCompositeType );
             }
         }
-        return deserializeValueComposite( valueCompositeType, valueBuilderType, objectNode );
+        return deserializeValueComposite( valueCompositeType, valueBuilderType, inputNode );
     }
 
-    private <T> T deserializeValueComposite( ValueCompositeType valueType, Class<?> valueBuilderType, InputNodeType objectNode )
+    private <T> T deserializeValueComposite( ValueCompositeType valueCompositeType, Class<?> valueBuilderType, InputNodeType inputNode )
         throws Exception
     {
-        final Map<String, Object> values = new HashMap<String, Object>();
+        final Map<String, Object> stateMap = new HashMap<String, Object>();
 
         // Properties
-        for( PropertyDescriptor property : valueType.properties() )
+        for( PropertyDescriptor property : valueCompositeType.properties() )
         {
-            String key = property.qualifiedName().name();
+            String propertyName = property.qualifiedName().name();
             Object value;
-            if( objectHasField( objectNode, key ) )
+            if( objectHasField( inputNode, propertyName ) )
             {
                 value = getObjectFieldValue(
-                    objectNode,
-                    key,
+                    inputNode,
+                    propertyName,
                     buildDeserializeInputNodeFunction( property.valueType() ) );
                 TREE_PARSING_LOG.debug(
                     "In deserializeValueComposite(), getObjectFieldValue( {} ) for key {} returned '{}' of class {}",
-                    objectNode, key, value, value == null ? "N/A" : value.getClass() );
+                    inputNode, propertyName, value, value == null ? "N/A" : value.getClass() );
                 if( property.isImmutable() )
                 {
                     if( value instanceof Set )
@@ -459,45 +477,47 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             }
             else
             {
-                // Serialized object do not contains the field, try to default it
+                // Serialized object does not contain the field, try to default it
                 value = property.initialValue( module );
                 TREE_PARSING_LOG.debug(
                     "Property {} was not defined in serialized object and has been defaulted to '{}'",
                     property.qualifiedName(), value );
             }
-            values.put( key, value );
+            stateMap.put( propertyName, value );
         }
 
         // Associations
-        for( AssociationDescriptor association : valueType.associations() )
+        for( AssociationDescriptor association : valueCompositeType.associations() )
         {
-            String key = association.qualifiedName().name();
-            if( objectHasField( objectNode, key ) )
+            String associationName = association.qualifiedName().name();
+            if( objectHasField( inputNode, associationName ) )
             {
                 Object value = getObjectFieldValue(
-                    objectNode,
-                    key,
+                    inputNode,
+                    associationName,
                     buildDeserializeInputNodeFunction( new ValueType( EntityReference.class ) ) );
-                values.put( key, value );
+                System.out.println( ">>>>> Deserialize EntityReference: '" + value + "'" );
+                stateMap.put( associationName, value );
             }
         }
 
         // ManyAssociations
-        for( AssociationDescriptor manyAssociation : valueType.manyAssociations() )
+        for( AssociationDescriptor manyAssociation : valueCompositeType.manyAssociations() )
         {
-            String key = manyAssociation.qualifiedName().name();
-            if( objectHasField( objectNode, key ) )
+            String manyAssociationName = manyAssociation.qualifiedName().name();
+            if( objectHasField( inputNode, manyAssociationName ) )
             {
                 Object value = getObjectFieldValue(
-                    objectNode,
-                    key,
+                    inputNode,
+                    manyAssociationName,
                     buildDeserializeInputNodeFunction( new CollectionType( Collection.class,
                                                                            new ValueType( EntityReference.class ) ) ) );
-                values.put( key, value );
+                System.out.println( ">>>>> Deserialize Iterable<EntityReference>: '" + value + "'" );
+                stateMap.put( manyAssociationName, value );
             }
         }
 
-        ValueBuilder<?> valueBuilder = buildNewValueBuilderWithState( valueBuilderType, values );
+        ValueBuilder<?> valueBuilder = buildNewValueBuilderWithState( valueBuilderType, stateMap );
         return (T) valueBuilder.newInstance(); // Unchecked cast because the builder could use a type != T
     }
 
@@ -578,32 +598,31 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         return (T) deserializeNodeGuessed( valueType, inputNode );
     }
 
-    private ValueBuilder<?> buildNewValueBuilderWithState( Class<?> type, final Map<String, Object> values )
+    private ValueBuilder<?> buildNewValueBuilderWithState( Class<?> type, final Map<String, Object> stateMap )
     {
         return module.newValueBuilderWithState(
             type,
             new Function<PropertyDescriptor, Object>()
             {
                 @Override
-                public Object map( PropertyDescriptor descriptor )
+                public Object map( PropertyDescriptor property )
                 {
-                    return values.get( descriptor.qualifiedName().name() );
+                    return stateMap.get( property.qualifiedName().name() );
                 }
             },
             new Function<AssociationDescriptor, EntityReference>()
             {
                 @Override
-                public EntityReference map(
-                    AssociationDescriptor associationDescriptor )
+                public EntityReference map( AssociationDescriptor association )
                 {
-                    Object ref = values.get( associationDescriptor.qualifiedName().name() );
-                    if( ref == null )
+                    Object entityRef = stateMap.get( association.qualifiedName().name() );
+                    if( entityRef == null )
                     {
                         return null;
                     }
                     else
                     {
-                        return (EntityReference) ref;
+                        return (EntityReference) entityRef;
                     }
                 }
             },
@@ -611,16 +630,16 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             {
                 @Override
                 @SuppressWarnings( "unchecked" )
-                public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+                public Iterable<EntityReference> map( AssociationDescriptor manyAssociation )
                 {
-                    Object ref = values.get( associationDescriptor.qualifiedName().name() );
-                    if( ref == null )
+                    Object entityRefs = stateMap.get( manyAssociation.qualifiedName().name() );
+                    if( entityRefs == null )
                     {
                         return empty();
                     }
                     else
                     {
-                        return (Iterable<EntityReference>) ref;
+                        return (Iterable<EntityReference>) entityRefs;
                     }
                 }
             } );
@@ -631,20 +650,20 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private <T> T deserializeGuessed( ValueType valueType, InputType input )
         throws Exception
     {
-        InputNodeType objectNode = readObjectTree( input );
-        if( objectNode == null )
+        InputNodeType inputNode = readObjectTree( input );
+        if( inputNode == null )
         {
             return null;
         }
-        return deserializeNodeGuessed( valueType, objectNode );
+        return deserializeNodeGuessed( valueType, inputNode );
     }
 
-    private <T> Collection<T> deserializeNodeCollection( CollectionType valueType, InputNodeType inputNode )
+    private <T> Collection<T> deserializeNodeCollection( CollectionType collectionType, InputNodeType inputNode )
         throws Exception
     {
         Collection<T> collection;
-        Class<?> collectionType = first( valueType.types() );
-        if( Set.class.equals( collectionType ) )
+        Class<?> collectionMainType = first( collectionType.types() );
+        if( Set.class.equals( collectionMainType ) )
         {
             collection = new LinkedHashSet<T>();
         }
@@ -653,18 +672,18 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             collection = new ArrayList<T>();
         }
         putArrayNodeInCollection( inputNode,
-                                  this.<T>buildDeserializeInputNodeFunction( valueType.collectedType() ),
+                                  this.<T>buildDeserializeInputNodeFunction( collectionType.collectedType() ),
                                   collection );
         return collection;
     }
 
-    private <K, V> Map<K, V> deserializeNodeMap( MapType valueType, InputNodeType inputNode )
+    private <K, V> Map<K, V> deserializeNodeMap( MapType mapType, InputNodeType inputNode )
         throws Exception
     {
         Map<K, V> map = new HashMap<K, V>();
         putArrayNodeInMap( inputNode,
-                           this.<K>buildDeserializeInputNodeFunction( valueType.getKeyType() ),
-                           this.<V>buildDeserializeInputNodeFunction( valueType.getValueType() ),
+                           this.<K>buildDeserializeInputNodeFunction( mapType.getKeyType() ),
+                           this.<V>buildDeserializeInputNodeFunction( mapType.getValueType() ),
                            map );
         return map;
     }
@@ -675,29 +694,43 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     {
         if( isObjectValue( inputNode ) )
         {
-            if( !objectHasField( inputNode, "_type" ) )
+            // Attempt ValueComposite deserialization
+            ValueCompositeType valueCompositeType;
+            if( objectHasField( inputNode, "_type" ) ) // with _type info
             {
-                throw new ValueSerializationException( "Don't know how to deserialize " + inputNode );
+                String typeInfo = this.<String>getObjectFieldValue(
+                    inputNode,
+                    "_type",
+                    this.<String>buildDeserializeInputNodeFunction( new ValueType( String.class ) ) );
+                TREE_PARSING_LOG.debug(
+                    "In deserializeNodeGuessed(), getObjectFieldValue( {} ) returned '{}'",
+                    inputNode, typeInfo );
+                ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
+                if( valueDescriptor == null )
+                {
+                    throw new ValueSerializationException( "Specified value type could not be resolved: " + typeInfo );
+                }
+                valueCompositeType = valueDescriptor.valueType();
+                TREE_PARSING_LOG.debug(
+                    "Overriding {} with {} as defined in _type field.",
+                    valueType, valueCompositeType );
             }
-            String typeInfo = this.<String>getObjectFieldValue(
-                inputNode,
-                "_type",
-                this.<String>buildDeserializeInputNodeFunction( new ValueType( String.class ) ) );
-            TREE_PARSING_LOG.debug(
-                "In deserializeNodeGuessed(), getObjectFieldValue( {} ) returned '{}'",
-                inputNode, typeInfo );
-            ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
-            if( valueDescriptor == null )
+            else // without _type info
             {
-                throw new ValueSerializationException( "Specified value type could not be resolved: " + typeInfo );
+                ValueDescriptor valueDescriptor = module.valueDescriptor( first( valueType.types() ).getName() );
+                if( valueDescriptor == null )
+                {
+                    throw new ValueSerializationException( "Don't know how to deserialize " + inputNode );
+                }
+                valueCompositeType = valueDescriptor.valueType();
+                TREE_PARSING_LOG.debug(
+                    "Overriding {} with {} as found in available ValueComposites.",
+                    valueType, valueCompositeType );
             }
-            ValueCompositeType valueCompositeType = valueDescriptor.valueType();
             Class<?> valueBuilderType = first( valueCompositeType.types() );
-            TREE_PARSING_LOG.debug(
-                "Overriding {} with {} as defined in _type field.",
-                valueType, valueCompositeType );
             return deserializeValueComposite( valueCompositeType, valueBuilderType, inputNode );
         }
+        // Last resort : base64 java deserialization
         return (T) deserializeBase64Serialized( inputNode );
     }
 
@@ -715,19 +748,23 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         }
         String base64 = value.toString();
         byte[] bytes = base64.getBytes( "UTF-8" );
-        bytes = Base64Encoder.decode( bytes );
-        ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
-        Object result = oin.readObject();
-        oin.close();
-        return (T) result;
+        try
+        {
+            bytes = Base64Encoder.decode( bytes );
+            ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
+            Object result = oin.readObject();
+            oin.close();
+            return (T) result;
+        }
+        catch( IllegalArgumentException ex )
+        {
+            throw new ValueSerializationException( "Unable to deserialize value, tried everything." );
+        }
     }
 
     //
-    // Deserialization - Pull parsing extension points
+    // Deserialization Extension Points
     //
-    protected abstract InputType adaptInput( InputStream input )
-        throws Exception;
-
     protected void onDeserializationStart( ValueType valueType, InputType input )
         throws Exception
     {
@@ -740,7 +777,19 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         // NOOP
     }
 
-    // TODO rename into readSimpleValue
+    //
+    // Pull Parsing Deserialization
+    //
+    /**
+     * This method is always called first, this is a chance to wrap the input type.
+     *
+     * @param input InputStream to adapt
+     * @return Adapted input
+     */
+    protected abstract InputType adaptInput( InputStream input )
+        throws Exception;
+
+    // TODO rename into readPlainValue
     protected abstract Object readValue( InputType input )
         throws Exception;
 
@@ -784,7 +833,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception;
 
     //
-    // Deserialization - Tree parsing extension points
+    // Tree Parsing Deserialization
     //
     protected abstract Object asSimpleValue( InputNodeType inputNode )
         throws Exception;

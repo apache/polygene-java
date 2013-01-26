@@ -60,6 +60,7 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.Schedule;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.VoyageNumber;
 import org.qi4j.sample.dcicargo.sample_a.infrastructure.conversion.EntityToDTOService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 import static org.qi4j.api.common.Visibility.application;
 import static org.qi4j.api.structure.Application.Mode.development;
@@ -69,7 +70,7 @@ import static org.qi4j.api.structure.Application.Mode.development;
  *
  * A Qi4j application structure is declared by an assembly that defines which layers and modules
  * the application has and how they are allowed to depend on each other. Each layer could have it's
- * own assembly file in larger applications (ead more at http://www.qi4j.org/qi4j/70.html).
+ * own assembly file in larger applications (read more at http://qi4j.org/latest/core-bootstrap-assembly.html).
  *
  * The Qi4j assembly doesn't follow a strict 1-1 correlation between the directory hierarchy and
  * the assembly structures. An example is the Entities:
@@ -84,7 +85,7 @@ import static org.qi4j.api.structure.Application.Mode.development;
  * layers above.
  *
  * So dependency structure layers (ie. as shown by Structure101) are not the same as Qi4j layers.
- * See more at http://www.qi4j.org/qi4j/70.html
+ * See more at http://qi4j.org/latest/core-bootstrap-assembly.html
  *
  * TRY THIS: Run VisualizeApplicationStructure to see a cool visualization of the assembly below!
  */
@@ -174,7 +175,8 @@ public class Assembler
 
         queryModule
             .addServices(
-                EntityToDTOService.class )
+                EntityToDTOService.class,
+                OrgJsonValueSerializationService.class )
             .visibleIn( application );
     }
 

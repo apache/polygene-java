@@ -16,17 +16,47 @@
 package org.qi4j.api.value;
 
 import java.io.OutputStream;
+import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.functional.Function;
 
 /**
  * Use a ValueSerializer to serialize values state.
  *
  * <p>
- *     Serialized object must be one of a ValueComposite, a Collection or a Map.
+ *     Serialized object must be one of:
+ * </p>
+ * <ul>
+ *     <li>a ValueComposite,</li>
+ *     <li>an Iterable,</li>
+ *     <li>a Map,</li>
+ *     <li>a plain value.</li>
+ * </ul>
+ * <p>
+ *     Nested plain values, EntityReferences, Iterables, Maps, ValueComposites and EntityComposites are supported.
+ *     EntityComposites and EntityReferences are serialized as their identity string.
  * </p>
  * <p>
- *     Nested plain values, EntityReferences, Collections, Maps, ValueComposites and Entities are supported.
- *     EntityComposites are serialized as EntityReferences.
+ *     Plain values can be one of:
+ * </p>
+ * <ul>
+ *     <li>String,</li>
+ *     <li>Boolean,</li>
+ *     <li>Integer,</li>
+ *     <li>Long,</li>
+ *     <li>Short,</li>
+ *     <li>Byte,</li>
+ *     <li>Float,</li>
+ *     <li>Double,</li>
+ *     <li>BigInteger,</li>
+ *     <li>BigDecimal,</li>
+ *     <li>Date,</li>
+ *     <li>DateTime (JodaTime),</li>
+ *     <li>LocalDateTime (JodaTime),</li>
+ *     <li>LocalDate (JodaTime).</li>
+ * </ul>
+ * <p>
+ *     Having type information in the serialized payload allows to keep actual ValueComposite types and by so
+ *     circumvent {@link AmbiguousTypeException} when deserializing.
  * </p>
  */
 public interface ValueSerializer
@@ -50,7 +80,7 @@ public interface ValueSerializer
     <T> Function<T, String> serialize( boolean includeTypeInfo );
 
     /**
-     * Serialize the state of a value without type information.
+     * Serialize the state of a value with type information.
      *
      * @param object an Object to serialize
      * @return the state
@@ -71,7 +101,7 @@ public interface ValueSerializer
         throws ValueSerializationException;
 
     /**
-     * Serialize the state of a value without type information.
+     * Serialize the state of a value with type information.
      *
      * @param object an Object to serialize
      * @param output that will be used as output

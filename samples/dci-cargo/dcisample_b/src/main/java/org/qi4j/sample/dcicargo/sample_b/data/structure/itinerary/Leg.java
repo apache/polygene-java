@@ -18,28 +18,29 @@
 package org.qi4j.sample.dcicargo.sample_b.data.structure.itinerary;
 
 import java.util.Date;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.location.Location;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
 
 /**
- * Leg
- *
  * A leg describes an expected segment of a route:
  * - loading onto a voyage at a load location
- * - unloading from the voyage at an unload location
+ * - unloading from the voyage at a unload location
+ *
+ * All properties are mandatory and immutable.
  */
 public interface Leg
     extends ValueComposite
 {
-    Property<Location> loadLocation();
+    Association<Location> loadLocation();
 
     Property<Date> loadTime();
 
-    Property<Voyage> voyage();
-
-    Property<Location> unloadLocation();
+    Association<Voyage> voyage();
 
     Property<Date> unloadTime();
+
+    Association<Location> unloadLocation();
 }

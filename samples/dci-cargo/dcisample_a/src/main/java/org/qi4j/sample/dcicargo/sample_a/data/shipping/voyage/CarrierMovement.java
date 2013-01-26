@@ -18,6 +18,7 @@
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage;
 
 import java.util.Date;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.location.Location;
@@ -30,9 +31,9 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.location.Location;
 public interface CarrierMovement
     extends ValueComposite
 {
-    Property<Location> departureLocation();
+    Association<Location> departureLocation();
 
-    Property<Location> arrivalLocation();
+    Association<Location> arrivalLocation();
 
     Property<Date> departureTime();
 

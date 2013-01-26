@@ -62,6 +62,7 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Schedule;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.VoyageNumber;
 import org.qi4j.sample.dcicargo.sample_b.infrastructure.conversion.EntityToDTOService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 import static org.qi4j.api.common.Visibility.application;
 import static org.qi4j.api.structure.Application.Mode.development;
@@ -176,7 +177,8 @@ public class Assembler
 
         queryModule
             .addServices(
-                EntityToDTOService.class )
+                EntityToDTOService.class,
+                OrgJsonValueSerializationService.class )
             .visibleIn( application );
     }
 

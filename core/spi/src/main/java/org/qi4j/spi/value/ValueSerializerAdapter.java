@@ -22,7 +22,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,8 +53,9 @@ import org.slf4j.LoggerFactory;
 import static org.qi4j.functional.Iterables.*;
 
 /**
+ * Adapter for pull-parsing capable ValueSerializers.
  *
- * @param <OutputType> Implementor output writer type
+ * @param <OutputType> Implementor output type
  */
 public abstract class ValueSerializerAdapter<OutputType>
     implements ValueSerializer
@@ -151,9 +151,9 @@ public abstract class ValueSerializerAdapter<OutputType>
         return new Function<T, String>()
         {
             @Override
-            public String map( T from )
+            public String map( T object )
             {
-                return serialize( from );
+                return serialize( object );
             }
         };
     }
@@ -164,9 +164,9 @@ public abstract class ValueSerializerAdapter<OutputType>
         return new Function<T, String>()
         {
             @Override
-            public String map( T from )
+            public String map( T object )
             {
-                return serialize( from, includeTypeInfo );
+                return serialize( object, includeTypeInfo );
             }
         };
     }
@@ -175,7 +175,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     public final String serialize( Object object )
         throws ValueSerializationException
     {
-        return serialize( object, false );
+        return serialize( object, true );
     }
 
     @Override
@@ -185,12 +185,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         try
         {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            OutputType wrappedOutput = adaptOutput( output );
-
-            onSerializationStart( object, wrappedOutput );
-            doSerialize( object, wrappedOutput, includeTypeInfo, true );
-            onSerializationEnd( object, wrappedOutput );
-
+            serializeRoot( object, output, includeTypeInfo );
             return output.toString( "UTF-8" );
         }
         catch( ValueSerializationException ex )
@@ -207,7 +202,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     public final void serialize( Object object, OutputStream output )
         throws ValueSerializationException
     {
-        serialize( object, output, false );
+        serialize( object, output, true );
     }
 
     @Override
@@ -216,11 +211,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     {
         try
         {
-            OutputType wrappedOutput = adaptOutput( output );
-
-            onSerializationStart( object, wrappedOutput );
-            doSerialize( object, wrappedOutput, includeTypeInfo, true );
-            onSerializationEnd( object, wrappedOutput );
+            serializeRoot( object, output, includeTypeInfo );
         }
         catch( ValueSerializationException ex )
         {
@@ -232,10 +223,28 @@ public abstract class ValueSerializerAdapter<OutputType>
         }
     }
 
+    private void serializeRoot( Object object, OutputStream output, boolean includeTypeInfo )
+        throws Exception
+    {
+        if( serializers.get( object.getClass() ) != null )
+        {
+            // Plain Value
+            Object serialized = serializers.get( object.getClass() ).map( object );
+            output.write( serialized.toString().getBytes( "UTF-8" ) );
+        }
+        else
+        {
+            // Complex Value
+            OutputType adaptedOutput = adaptOutput( output );
+            onSerializationStart( object, adaptedOutput );
+            doSerialize( object, adaptedOutput, includeTypeInfo, true );
+            onSerializationEnd( object, adaptedOutput );
+        }
+    }
+
     private void doSerialize( Object object, OutputType output, boolean includeTypeInfo, boolean rootPass )
         throws Exception
     {
-
         // Null
         if( object == null )
         {
@@ -260,11 +269,11 @@ public abstract class ValueSerializerAdapter<OutputType>
             LOG.debug( "EntityComposite assignable -> serializeEntityComposite( object )" );
             serializeEntityComposite( object, output );
         }
-        else // Collection
-        if( Collection.class.isAssignableFrom( object.getClass() ) )
+        else // Collection - Iterable
+        if( Iterable.class.isAssignableFrom( object.getClass() ) )
         {
-            LOG.debug( "Collection assignable -> serializeCollection( object )" );
-            serializeCollection( object, output, includeTypeInfo );
+            LOG.debug( "Iterable assignable -> serializeIterable( object )" );
+            serializeIterable( object, output, includeTypeInfo );
         }
         else // Array - QUID Remove this and use java serialization for arrays?
         if( object.getClass().isArray() )
@@ -322,14 +331,18 @@ public abstract class ValueSerializerAdapter<OutputType>
         {
             Association<?> association = state.associationFor( associationDescriptor.accessor() );
             Object instance = association.get();
-            if( instance != null )
+            onFieldStart( output, associationDescriptor.qualifiedName().name() );
+            onValueStart( output );
+            if( instance == null )
             {
-                onFieldStart( output, associationDescriptor.qualifiedName().name() );
-                onValueStart( output );
-                onValue( output, ( (Identity) instance ).identity().get() );
-                onValueEnd( output );
-                onFieldEnd( output );
+                onValue( output, null );
             }
+            else
+            {
+                onValue( output, ( (Identity) instance ).identity().get() );
+            }
+            onValueEnd( output );
+            onFieldEnd( output );
         }
         for( AssociationDescriptor associationDescriptor : descriptor.valueType().manyAssociations() )
         {
@@ -354,14 +367,15 @@ public abstract class ValueSerializerAdapter<OutputType>
     private void serializeEntityComposite( Object object, OutputType output )
         throws Exception
     {
+        System.out.println( ">>>>>> Serialize EntityReference '" + EntityReference.getEntityReference( object ) + "'" );
         onValue( output, EntityReference.getEntityReference( object ) );
     }
 
-    private void serializeCollection( Object object, OutputType output, boolean includeTypeInfo )
+    private void serializeIterable( Object object, OutputType output, boolean includeTypeInfo )
         throws Exception
     {
         @SuppressWarnings( "unchecked" )
-        Collection<Object> collection = (Collection<Object>) object;
+        Iterable<Object> collection = (Iterable<Object>) object;
         onArrayStart( output );
         for( Object item : collection )
         {
