@@ -16,6 +16,7 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.LayerDescriptor;
@@ -74,7 +75,7 @@ public final class LayerModel
     }
 
     public ActivatorsInstance<Layer> newActivatorsInstance()
-            throws Exception
+        throws ActivationException
     {
         return new ActivatorsInstance<Layer>( activatorsModel.newInstances() );
     }

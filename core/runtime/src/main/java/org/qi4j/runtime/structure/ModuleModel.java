@@ -15,6 +15,7 @@
 
 package org.qi4j.runtime.structure;
 
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.structure.ModuleDescriptor;
@@ -79,7 +80,8 @@ public class ModuleModel
         return metaInfo.get( infoType );
     }
 
-    public ActivatorsInstance<Module> newActivatorsInstance() throws Exception
+    public ActivatorsInstance<Module> newActivatorsInstance()
+        throws ActivationException
     {
         return new ActivatorsInstance<Module>( activatorsModel.newInstances() );
     }

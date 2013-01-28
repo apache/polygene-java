@@ -18,6 +18,8 @@ import java.util.List;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationEventListenerRegistration;
+import org.qi4j.api.activation.ActivationException;
+import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Iterables;
@@ -52,7 +54,7 @@ public class ServicesInstance
 
     @Override
     public void activate()
-        throws Exception
+        throws ActivationException
     {
         Iterable<Activation> activatees = Iterables.<Activation>cast( filter( instanceOf( Activation.class ), serviceReferences ) );
         activation.activate( ActivatorsInstance.EMPTY, activatees );
@@ -60,7 +62,7 @@ public class ServicesInstance
 
     @Override
     public void passivate()
-        throws Exception
+        throws PassivationException
     {
         activation.passivate();
     }

@@ -18,6 +18,7 @@ package org.qi4j.runtime.structure;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -44,6 +45,7 @@ public class ApplicationModeTest
 
     @Test
     public void testApplicationTestModeSet()
+        throws ActivationException, AssemblyException
     {
         Application.Mode mode = new SingletonAssembler()
         {
@@ -59,6 +61,7 @@ public class ApplicationModeTest
 
     @Test
     public void testApplicationStagingModeSet()
+        throws ActivationException, AssemblyException
     {
         Application.Mode mode = new SingletonAssembler()
         {
@@ -74,6 +77,7 @@ public class ApplicationModeTest
 
     @Test
     public void testApplicationDevelopmentModeSet()
+        throws ActivationException, AssemblyException
     {
         Application.Mode mode = new SingletonAssembler()
         {
@@ -89,6 +93,7 @@ public class ApplicationModeTest
 
     @Test
     public void testApplicationProductionModeSet()
+        throws ActivationException, AssemblyException
     {
         Application.Mode mode = new SingletonAssembler()
         {

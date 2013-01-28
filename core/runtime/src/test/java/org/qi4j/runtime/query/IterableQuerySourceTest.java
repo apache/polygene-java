@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
@@ -72,7 +73,7 @@ public class IterableQuerySourceTest
 
     @Before
     public void setUp()
-        throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException, ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

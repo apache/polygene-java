@@ -18,6 +18,8 @@ import java.lang.reflect.Method;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
+import org.qi4j.api.activation.ActivationException;
+import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.property.StateHolder;
@@ -99,7 +101,7 @@ public final class ServiceReferenceInstance<T>
 
     @Override
     public void activate()
-        throws Exception
+        throws ActivationException
     {
         if( serviceModel.isInstantiateOnStartup() )
         {
@@ -109,7 +111,7 @@ public final class ServiceReferenceInstance<T>
 
     @Override
     public void passivate()
-        throws Exception
+        throws PassivationException
     {
         if( instance != null )
         {

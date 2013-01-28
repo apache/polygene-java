@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -40,6 +41,7 @@ public class EventRouterTest
 
     @Before
     public void testData()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

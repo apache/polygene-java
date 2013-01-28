@@ -18,6 +18,7 @@
 package org.qi4j.test.performance.runtime.object;
 
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.object.ObjectFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -31,6 +32,7 @@ public class ObjectCreationPerformanceTest
      */
     @Test
     public void newInstanceForRegisteredObjectPerformance()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

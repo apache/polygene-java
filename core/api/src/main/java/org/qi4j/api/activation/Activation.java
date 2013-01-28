@@ -28,12 +28,12 @@ public interface Activation
      * Called on activation.
      */
     void activate()
-            throws Exception;
+            throws ActivationException;
 
     /**
      * Called on passivation.
      */
     void passivate()
-            throws Exception;
+            throws PassivationException;
 
 }

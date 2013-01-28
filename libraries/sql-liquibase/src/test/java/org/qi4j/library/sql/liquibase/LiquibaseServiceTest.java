@@ -23,6 +23,7 @@ import javax.sql.DataSource;
 import org.junit.Test;
 import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Application;
@@ -52,7 +53,8 @@ import static org.qi4j.io.Transforms.map;
 public class LiquibaseServiceTest
 {
     @Test
-    public void testLiquibase() throws SQLException, IOException
+    public void testLiquibase()
+        throws SQLException, IOException, ActivationException, AssemblyException
     {
         final SingletonAssembler assembler = new SingletonAssembler()
         {

@@ -29,6 +29,8 @@ import org.json.JSONTokener;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
+import org.qi4j.api.activation.ActivationException;
+import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
@@ -565,7 +567,7 @@ public class ModuleInstance
     // Implementation of Activation
     @Override
     public void activate()
-        throws Exception
+        throws ActivationException
     {
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         activation.activate( model.newActivatorsInstance(), iterable( services, importedServices ) );
@@ -574,7 +576,7 @@ public class ModuleInstance
 
     @Override
     public void passivate()
-        throws Exception
+        throws PassivationException
     {
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         activation.passivate();

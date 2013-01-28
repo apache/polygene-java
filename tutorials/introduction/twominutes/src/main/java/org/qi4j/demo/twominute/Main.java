@@ -8,6 +8,7 @@ import org.qi4j.bootstrap.SingletonAssembler;
 public class Main
 {
     public static void main( String[] args )
+        throws Exception
     {
         SingletonAssembler assembler = new SingletonAssembler() // <1>
         {

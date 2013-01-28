@@ -18,6 +18,7 @@ import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.service.importer.NewObjectImporter;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -93,7 +94,7 @@ public class MigrationTest
 
    @Test
    public void testMigration()
-           throws UnitOfWorkCompletionException, IOException
+       throws UnitOfWorkCompletionException, IOException, ActivationException, AssemblyException
    {
       // Set up version 1
       String id;

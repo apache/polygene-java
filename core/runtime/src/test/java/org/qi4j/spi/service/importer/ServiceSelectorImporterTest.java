@@ -15,6 +15,7 @@
 package org.qi4j.spi.service.importer;
 
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.mixin.Mixins;
@@ -35,6 +36,7 @@ public class ServiceSelectorImporterTest
 {
     @Test
     public void givenManyServicesWhenInjectServiceThenGetFirstOne()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -54,6 +56,7 @@ public class ServiceSelectorImporterTest
 
     @Test
     public void givenManyServicesAndFilterWhenInjectServiceThenGetSpecifiedOne()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -79,6 +82,7 @@ public class ServiceSelectorImporterTest
 
     @Test
     public void givenManyServicesAndSelectFirstWhenInjectServiceThenDontGetSelf()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

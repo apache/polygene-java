@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
@@ -86,6 +87,7 @@ public class ServiceInjectionTest
 
     @Test
     public void testInjectionServiceBetweenModules()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
@@ -112,6 +114,7 @@ public class ServiceInjectionTest
 
     @Test
     public void testInjectionServiceBetweenLayers()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembly = new SingletonAssembler()
         {
@@ -141,6 +144,7 @@ public class ServiceInjectionTest
 
     @Test( expected = ConstructionException.class )
     public void testMissingServiceDependency()
+        throws ActivationException, AssemblyException
     {
         // No service fulfils the dependency injection -> fail to create application
         new SingletonAssembler()

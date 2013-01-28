@@ -2,6 +2,7 @@ package org.qi4j.bootstrap;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.bootstrap.somepackage.Test2Value;
 import org.qi4j.functional.Iterables;
 
@@ -16,6 +17,7 @@ public class ClassScannerTest
 {
     @Test
     public void testClassScannerFiles()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler singleton = new SingletonAssembler()
         {

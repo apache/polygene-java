@@ -16,6 +16,7 @@ package org.qi4j.runtime.objects;
 
 import java.lang.reflect.Method;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.bootstrap.AssemblyException;
@@ -30,6 +31,7 @@ public class ObjectConcernTest
 
     @Test
     public void testConcernOnObject()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

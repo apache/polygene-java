@@ -16,6 +16,8 @@
 package org.qi4j.runtime.service;
 
 import org.qi4j.api.activation.Activation;
+import org.qi4j.api.activation.ActivationException;
+import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.service.ServiceImporter;
 
 /**
@@ -50,14 +52,14 @@ public final class ImportedServiceInstance<T>
 
     @Override
     public void activate()
-            throws Exception
+        throws ActivationException
     {
         // NOOP
     }
 
     @Override
     public void passivate()
-            throws Exception
+        throws PassivationException
     {
         // NOOP
     }

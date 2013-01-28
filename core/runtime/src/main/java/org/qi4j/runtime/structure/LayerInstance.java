@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
+import org.qi4j.api.activation.ActivationException;
+import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Layer;
@@ -86,7 +88,7 @@ public class LayerInstance
     // Implementation of Activation
     @Override
     public void activate()
-        throws Exception
+        throws ActivationException
     {
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         activation.activate( layerModel.newActivatorsInstance(), moduleInstances );
@@ -95,7 +97,7 @@ public class LayerInstance
 
     @Override
     public void passivate()
-        throws Exception
+        throws PassivationException
     {
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         activation.passivate();

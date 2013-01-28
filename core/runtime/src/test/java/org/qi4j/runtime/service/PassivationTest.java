@@ -118,36 +118,7 @@ public class PassivationTest
         }
     }
 
-    @Test
-    public void givenFailingPassivationWhenPassivatingExpectSingleExceptionToBubbleUp()
-        throws Exception
-    {
-        SingletonAssembler assembly = new SingletonAssembler()
-        {
-            public void assemble( ModuleAssembly module )
-                throws AssemblyException
-            {
-                module.addServices( DataAccessService.class ).withActivators( PassivationFailureActivator.class );
-            }
-        };
-
-        ServiceReference<DataAccess> service = assembly.module().findService( DataAccess.class );
-        assertTrue( "Service should not be Active before accessed", !service.isActive() );
-        assertTrue( service.get().data().activated );
-        assertTrue( "Service should be Active after access.", service.isActive() );
-
-        try
-        {
-            assembly.application().passivate();
-            fail( "Exception should have been thrown." );
-        }
-        catch( IllegalStateException e )
-        {
-            // Expected
-        }
-    }
-
-    @Test
+    @Test(expected = PassivationException.class)
     public void givenMultipleFailingPassivationWhenPassivatingExpectPassivationExceptionToBubbleUp()
         throws Exception
     {
@@ -168,18 +139,10 @@ public class PassivationTest
             assertTrue( service.get().data().activated );
             assertTrue( "Service should be Active after access.", service.isActive() );
         }
-        try
-        {
-            assembly.application().passivate();
-            fail( "Exception should have been thrown." );
-        }
-        catch( PassivationException e )
-        {
-            // Expected
-        }
+        assembly.application().passivate();
     }
 
-    @Mixins( DataAccessMixin.class )
+    @Mixins(DataAccessMixin.class)
     public interface DataAccessService
         extends DataAccess, ServiceComposite
     {
@@ -200,45 +163,43 @@ public class PassivationTest
             return data;
         }
     }
-    
+
     public static class PassivationSuccessActivator
-            extends ActivatorAdapter<ServiceReference<DataAccess>>
+        extends ActivatorAdapter<ServiceReference<DataAccess>>
     {
 
         @Override
         public void afterActivation( ServiceReference<DataAccess> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().data().activated = true;
         }
 
         @Override
         public void beforePassivation( ServiceReference<DataAccess> passivating )
-                throws Exception
+            throws Exception
         {
             passivating.get().data().activated = false;
         }
-
     }
 
     public static class PassivationFailureActivator
-            extends ActivatorAdapter<ServiceReference<DataAccess>>
+        extends ActivatorAdapter<ServiceReference<DataAccess>>
     {
 
         @Override
         public void afterActivation( ServiceReference<DataAccess> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().data().activated = true;
         }
 
         @Override
         public void beforePassivation( ServiceReference<DataAccess> passivating )
-                throws Exception
+            throws Exception
         {
             throw new IllegalStateException();
         }
-
     }
 
     public static class Data

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
@@ -84,7 +85,7 @@ public final class ApplicationModel
     }
 
     public ActivatorsInstance<Application> newActivatorsInstance()
-            throws Exception
+        throws ActivationException
     {
         return new ActivatorsInstance<Application>( activatorsModel.newInstances() );
     }

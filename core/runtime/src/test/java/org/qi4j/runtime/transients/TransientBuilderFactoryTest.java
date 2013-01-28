@@ -17,6 +17,7 @@ package org.qi4j.runtime.transients;
 import java.lang.reflect.Method;
 import org.hamcrest.core.IsEqual;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.composite.NoSuchTransientException;
 import org.qi4j.api.composite.TransientComposite;
@@ -103,6 +104,7 @@ public class TransientBuilderFactoryTest
      */
     @Test
     public void newBuilderForRegisteredComposite()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -120,6 +122,7 @@ public class TransientBuilderFactoryTest
      */
     @Test
     public void newInstanceForRegisteredComposite()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -134,6 +137,7 @@ public class TransientBuilderFactoryTest
 
     @Test( expected = ConstraintViolationException.class )
     public void testClassAsTransient()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

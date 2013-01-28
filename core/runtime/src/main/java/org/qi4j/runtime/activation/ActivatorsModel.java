@@ -15,6 +15,7 @@ package org.qi4j.runtime.activation;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.activation.Activator;
 
 public class ActivatorsModel<T>
@@ -28,11 +29,18 @@ public class ActivatorsModel<T>
     }
 
     public Iterable<Activator<T>> newInstances()
-            throws Exception
+        throws ActivationException
     {
         List<Activator<T>> activators = new ArrayList<Activator<T>>();
         for ( Class<? extends Activator<T>> activatorClass : activatorsClasses ) {
-            activators.add( activatorClass.newInstance() );
+            try
+            {
+                activators.add( activatorClass.newInstance() );
+            }
+            catch( Exception e )
+            {
+                throw new ActivationException( "Unable to instantiate " + activatorClass, e  );
+            }
         }
         return activators;
     }

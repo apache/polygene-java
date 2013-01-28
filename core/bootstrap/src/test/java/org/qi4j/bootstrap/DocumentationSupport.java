@@ -1,5 +1,6 @@
 package org.qi4j.bootstrap;
 
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.service.importer.InstanceImporter;
@@ -178,6 +179,7 @@ public class DocumentationSupport
         public interface Stuff { }
 
         void singleton()
+            throws ActivationException, AssemblyException
         {
             // START SNIPPET: singleton
             SingletonAssembler assembler = new SingletonAssembler()

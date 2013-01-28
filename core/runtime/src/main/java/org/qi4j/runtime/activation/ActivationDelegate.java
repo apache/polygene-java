@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEventListener;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.service.ServiceReference;
 
@@ -51,13 +52,13 @@ public final class ActivationDelegate
     }
 
     public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children )
-        throws Exception
+        throws ActivationException
     {
         activate( targetActivators, children, null );
     }
 
     public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children, Runnable callback )
-        throws Exception
+        throws ActivationException
     {
         if ( this.targetActivators != null ) {
             throw new IllegalStateException( "Activation.activate() called multiple times or without calling passivate() first!" );
@@ -90,28 +91,31 @@ public final class ActivationDelegate
             targetActivators.afterActivation( target );
             this.targetActivators = targetActivators;
         }
-        catch( Exception e )
-        {
-            // Passivate actives
-            passivate();
-            throw e;
-        }
         catch( Throwable e )
         {
             // Passivate actives
-            passivate();
-            throw new IllegalStateException( e );
+            try
+            {
+                passivate();
+            }
+            catch( PassivationException e1 )
+            {
+                throw new ActivationException( "Passivation Exception during cleanup of Activation:" + e1, e );
+            }
+            if( e instanceof ActivationException )
+                throw ((ActivationException)e);
+            throw new ActivationException( "Unable to Activate application.", e );
         }
     }
 
     public void passivate()
-        throws Exception
+        throws PassivationException
     {
         passivate( ( Runnable ) null );
     }
 
     public void passivate( Runnable callback  )
-        throws Exception
+        throws PassivationException
     {
         List<Exception> exceptions = new ArrayList<Exception>();
 
@@ -174,10 +178,6 @@ public final class ActivationDelegate
         if( exceptions.isEmpty() )
         {
             return;
-        }
-        if( exceptions.size() == 1 )
-        {
-            throw exceptions.get( 0 );
         }
         throw new PassivationException( exceptions );
     }

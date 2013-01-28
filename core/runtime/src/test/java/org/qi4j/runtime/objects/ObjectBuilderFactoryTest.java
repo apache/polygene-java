@@ -16,6 +16,7 @@ package org.qi4j.runtime.objects;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.NoSuchObjectException;
@@ -96,6 +97,7 @@ public class ObjectBuilderFactoryTest
      */
     @Test
     public void newInstanceForRegisteredObject()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -110,6 +112,7 @@ public class ObjectBuilderFactoryTest
 
     @Test
     public void givenManyConstructorsWhenInstantiateThenChooseCorrectConstructor()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -131,6 +134,7 @@ public class ObjectBuilderFactoryTest
 
     @Test
     public void givenClassWithInnerClassesWhenInstantiateThenInstantiateInnerClass()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

@@ -17,6 +17,8 @@ package org.qi4j.runtime.service;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
+import org.qi4j.api.activation.ActivationException;
+import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceUnavailableException;
@@ -80,7 +82,7 @@ public final class ImportedServiceReferenceInstance<T>
 
     @Override
     public void activate()
-        throws Exception
+        throws ActivationException
     {
         if( serviceModel.isImportOnStartup() )
         {
@@ -90,11 +92,12 @@ public final class ImportedServiceReferenceInstance<T>
 
     @Override
     public void passivate()
-            throws Exception
+        throws PassivationException
     {
         if( serviceInstance != null )
         {
-            try {
+            try
+            {
                 activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
                 activation.passivate( new Runnable()
                 {
@@ -104,10 +107,11 @@ public final class ImportedServiceReferenceInstance<T>
                     {
                         active = false;
                     }
-
                 } );
                 activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
-            } finally {
+            }
+            finally
+            {
                 serviceInstance = null;
                 active = false;
             }
@@ -130,7 +134,8 @@ public final class ImportedServiceReferenceInstance<T>
         }
         catch( ServiceImporterException ex )
         {
-            LoggerFactory.getLogger( getClass() ).warn( "Imported service throwed an exception on isAvailable(), will return false.", ex );
+            LoggerFactory.getLogger( getClass() )
+                .warn( "Imported service throwed an exception on isAvailable(), will return false.", ex );
             return false;
         }
     }
@@ -164,7 +169,6 @@ public final class ImportedServiceReferenceInstance<T>
                             {
                                 active = true;
                             }
-
                         } );
                         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
                     }
@@ -207,14 +211,15 @@ public final class ImportedServiceReferenceInstance<T>
     @Override
     public boolean equals( Object obj )
     {
-        if ( obj == null ) {
+        if( obj == null )
+        {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if( getClass() != obj.getClass() )
+        {
             return false;
         }
-        final ServiceReference other = ( ServiceReference ) obj;
+        final ServiceReference other = (ServiceReference) obj;
         return identity().equals( other.identity() );
     }
-
 }

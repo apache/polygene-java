@@ -2,6 +2,7 @@ package org.qi4j.api;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -25,7 +26,7 @@ public class OperatorsTest
 {
     @Test
     public void testOperators()
-        throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException, ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

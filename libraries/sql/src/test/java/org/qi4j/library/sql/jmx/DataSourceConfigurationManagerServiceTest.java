@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.service.ServiceReference;
@@ -47,6 +48,7 @@ public class DataSourceConfigurationManagerServiceTest
 {
 
     public static void main( String[] args )
+        throws ActivationException, AssemblyException
     {
 
         DataSourceConfigurationManagerServiceTest instance = new DataSourceConfigurationManagerServiceTest();
@@ -64,6 +66,7 @@ public class DataSourceConfigurationManagerServiceTest
 
     @Test
     public void testDataSources()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
