@@ -73,7 +73,9 @@ import static org.qi4j.functional.Iterables.first;
 /**
  * Implementation of EntityStore that is backed by the Preferences API.
  *
- * @see Preferences
+ * <p>@see Preferences</p>
+ * <p>ManyAssociation is stored as string, one identity string per line</p>
+ * <p>Nested ValuesComposites, Collections and Maps are stored using available ValueSerialization service.</p>
  */
 public class PreferencesEntityStoreMixin
     implements ServiceActivation, EntityStore, EntityStoreSPI
@@ -601,7 +603,10 @@ public class PreferencesEntityStoreMixin
                         }
                         manyAssocs.append( entityReference.identity() );
                     }
-                    manyAssocsPrefs.put( manyAssociations.getKey().name(), manyAssocs.toString() );
+                    if( manyAssocs.length() > 0 )
+                    {
+                        manyAssocsPrefs.put( manyAssociations.getKey().name(), manyAssocs.toString() );
+                    }
                 }
             }
         }
