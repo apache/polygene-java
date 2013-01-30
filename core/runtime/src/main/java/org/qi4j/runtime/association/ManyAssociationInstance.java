@@ -119,14 +119,19 @@ public class ManyAssociationInstance<T>
         {
             return false;
         }
-        if( !super.equals( o ) )
+        ManyAssociationInstance<?> that = (ManyAssociationInstance) o;
+        if( manyAssociationState.count() != that.manyAssociationState.count() )
         {
             return false;
         }
-
-        ManyAssociationInstance that = (ManyAssociationInstance) o;
-
-        return manyAssociationState.equals( that.manyAssociationState );
+        for( EntityReference ref : manyAssociationState )
+        {
+            if(!that.manyAssociationState.contains( ref ) )
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
