@@ -5,7 +5,6 @@ jar { manifest { name = "Qi4j Library - REST" }}
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
-//    compile(project(":org.qi4j.libraries:org.qi4j.library.rest-common"))
   compile(project(':org.qi4j.extensions:org.qi4j.extension.indexing-rdf'))
   compile(libraries.restlet)
   compile(libraries.sparql)
@@ -14,6 +13,7 @@ dependencies {
 
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testCompile(project(":org.qi4j.libraries:org.qi4j.library.http"))
+  testCompile libraries.http_client
 
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.logback)

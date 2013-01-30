@@ -17,6 +17,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class RestAssembler
     implements Assembler
@@ -43,5 +44,6 @@ public class RestAssembler
                         EntityResource.class,
                         IndexResource.class,
                         SPARQLResource.class );
+        module.services( OrgJsonValueSerializationService.class ).visibleIn( Visibility.module );
     }
 }

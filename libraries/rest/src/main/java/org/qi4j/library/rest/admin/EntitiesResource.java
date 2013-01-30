@@ -14,6 +14,7 @@
 package org.qi4j.library.rest.admin;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ import java.util.List;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.restlet.data.CharacterSet;
@@ -32,27 +33,27 @@ import org.restlet.ext.atom.Entry;
 import org.restlet.ext.atom.Feed;
 import org.restlet.ext.atom.Link;
 import org.restlet.ext.atom.Text;
-import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.EmptyRepresentation;
+import org.restlet.representation.OutputRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.Variant;
 import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Listing of all Entities.
  * <p/>
  * Mapped to /entity
  */
-public class EntitiesResource extends ServerResource
+public class EntitiesResource
+    extends ServerResource
 {
+
     @Service
     private EntityFinder entityFinder;
     @Service
-    private EntityStore entityStore;
+    private ValueSerialization valueSerialization;
 
     public EntitiesResource()
     {
@@ -61,7 +62,7 @@ public class EntitiesResource extends ServerResource
         // Define the supported variants.
         getVariants().addAll(
             Arrays.asList( new Variant( MediaType.TEXT_HTML ), new Variant( MediaType.APPLICATION_RDF_XML ),
-                new Variant( MediaType.APPLICATION_JAVA_OBJECT ), new Variant( MediaType.APPLICATION_ATOM ) ) );
+                           new Variant( MediaType.APPLICATION_JSON ), new Variant( MediaType.APPLICATION_ATOM ) ) );
 
         setNegotiated( true );
     }
@@ -70,10 +71,11 @@ public class EntitiesResource extends ServerResource
     protected Representation get( Variant variant )
         throws ResourceException
     {
+        System.out.println( "VARIANT: " + variant.getMediaType() );
         // Generate the right representation according to its media type.
-        if( MediaType.TEXT_XML.equals( variant.getMediaType() ) )
+        if( MediaType.APPLICATION_JSON.equals( variant.getMediaType() ) )
         {
-            return representXml();
+            return representJson();
         }
         else if( MediaType.APPLICATION_RDF_XML.equals( variant.getMediaType() ) )
         {
@@ -91,30 +93,21 @@ public class EntitiesResource extends ServerResource
         throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
     }
 
-    private Representation representXml()
+    private Representation representJson()
         throws ResourceException
     {
         try
         {
             final Iterable<EntityReference> query = entityFinder.findEntities( EntityComposite.class, null, null, null, null, Collections.<String, Object>emptyMap() );
-
-            DomRepresentation representation = new DomRepresentation( MediaType.TEXT_XML );
-            // Generate a DOM document representing the item.
-            Document d = representation.getDocument();
-
-            Element entitiesElement = d.createElement( "entities" );
-            d.appendChild( entitiesElement );
-            for( EntityReference entity : query )
+            return new OutputRepresentation( MediaType.APPLICATION_JSON )
             {
-                Element entityElement = d.createElement( "entity" );
-                entitiesElement.appendChild( entityElement );
-                entityElement.setAttribute( "href", getRequest().getResourceRef().getPath() + "/" + entity.identity() );
-                entityElement.appendChild( d.createTextNode( entity.identity() ) );
-            }
-            d.normalizeDocument();
-
-            // Returns the XML representation of this document.
-            return representation;
+                @Override
+                public void write( OutputStream outputStream )
+                    throws IOException
+                {
+                    valueSerialization.serialize( query, outputStream );
+                }
+            };
         }
         catch( Exception e )
         {
@@ -137,17 +130,16 @@ public class EntitiesResource extends ServerResource
                 {
                     PrintWriter out = new PrintWriter( writer );
                     out.println( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<rdf:RDF\n"
-                        + "\txmlns=\"urn:qi4j:\"\n" + "\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n"
-                        + "\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
-                        + "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" );
+                                 + "\txmlns=\"urn:qi4j:\"\n" + "\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n"
+                                 + "\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
+                                 + "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" );
                     for( EntityReference qualifiedIdentity : query )
                     {
                         out.println( "<qi4j:entity rdf:about=\"" + getRequest().getResourceRef().getPath() + "/"
-                            + qualifiedIdentity.identity() + ".rdf\"/>" );
+                                     + qualifiedIdentity.identity() + ".rdf\"/>" );
                     }
 
                     out.println( "</rdf:RDF>" );
-                    out.close();
                 }
             };
             representation.setCharacterSet( CharacterSet.UTF_8 );
@@ -178,8 +170,8 @@ public class EntitiesResource extends ServerResource
                     for( EntityReference entity : query )
                     {
                         out.println( "<li><a href=\""
-                            + getRequest().getResourceRef().clone().addSegment( entity.identity() + ".html" )
-                            + "\">" + entity.identity() + "</a></li>" );
+                                     + getRequest().getResourceRef().clone().addSegment( entity.identity() + ".html" )
+                                     + "\">" + entity.identity() + "</a></li>" );
                     }
                     out.println( "</ul></body></html>" );
                 }
