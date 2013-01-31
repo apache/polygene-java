@@ -17,6 +17,7 @@ package org.qi4j.api.value;
 
 import java.io.InputStream;
 import org.qi4j.api.type.ValueType;
+import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
 
 /**
@@ -63,7 +64,16 @@ public interface ValueDeserializer
 {
 
     /**
-     * Factory method for a deserialize function.
+     * Factory method for a typed deserialize function.
+     *
+     * @param valueType the value type
+     * @param <T> the parametrized function return type
+     * @return a deserialization function
+     */
+    <T> Function<String, T> deserialize( ValueType valueType );
+
+    /**
+     * Factory method for an untyped deserialize function.
      *
      * @param <T> the parametrized function return type
      * @return a deserialization function
@@ -74,23 +84,23 @@ public interface ValueDeserializer
      * Deserialize a value from a state.
      *
      * @param <T> the parametrized returned type
-     * @param type the value type
+     * @param valueType the value type
      * @param input the state
      * @return the value
      * @throws ValueSerializationException if the deserialization failed
      */
-    <T> T deserialize( ValueType type, String input )
+    <T> T deserialize( ValueType valueType, String input )
         throws ValueSerializationException;
 
     /**
-     * Deserialize a value from a JSON state.
+     * Deserialize a value from a state.
      *
      * @param <T> the parametrized returned type
-     * @param type the value type
+     * @param valueType the value type
      * @param input the state stream
      * @return the value
      * @throws ValueSerializationException if the deserialization failed
      */
-    <T> T deserialize( ValueType type, InputStream input )
+    <T> T deserialize( ValueType valueType, InputStream input )
         throws ValueSerializationException;
 }

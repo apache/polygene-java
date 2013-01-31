@@ -27,7 +27,7 @@ import org.qi4j.functional.Function2;
 
 /**
  * ValueSerialization producing and consuming JSON documents using org.json.
- * 
+ *
  * <p>
  *     This class is used internally by the Qi4j Runtime to provide default ValueSerialization when no
  *     ValueSerialization Service is available.
@@ -87,6 +87,12 @@ public class OrgJsonValueSerialization
         throws ValueSerializationException
     {
         serializer.serialize( object, output, includeTypeInfo );
+    }
+
+    @Override
+    public <T> Function<String, T> deserialize( ValueType valueType )
+    {
+        return deserializer.deserialize( valueType );
     }
 
     @Override

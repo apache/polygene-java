@@ -226,19 +226,22 @@ public abstract class ValueSerializerAdapter<OutputType>
     private void serializeRoot( Object object, OutputStream output, boolean includeTypeInfo )
         throws Exception
     {
-        if( serializers.get( object.getClass() ) != null )
+        if( object != null )
         {
-            // Plain Value
-            Object serialized = serializers.get( object.getClass() ).map( object );
-            output.write( serialized.toString().getBytes( "UTF-8" ) );
-        }
-        else
-        {
-            // Complex Value
-            OutputType adaptedOutput = adaptOutput( output );
-            onSerializationStart( object, adaptedOutput );
-            doSerialize( object, adaptedOutput, includeTypeInfo, true );
-            onSerializationEnd( object, adaptedOutput );
+            if( serializers.get( object.getClass() ) != null )
+            {
+                // Plain Value
+                Object serialized = serializers.get( object.getClass() ).map( object );
+                output.write( serialized.toString().getBytes( "UTF-8" ) );
+            }
+            else
+            {
+                // Complex Value
+                OutputType adaptedOutput = adaptOutput( output );
+                onSerializationStart( object, adaptedOutput );
+                doSerialize( object, adaptedOutput, includeTypeInfo, true );
+                onSerializationEnd( object, adaptedOutput );
+            }
         }
     }
 

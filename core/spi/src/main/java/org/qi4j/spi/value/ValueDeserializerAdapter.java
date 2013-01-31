@@ -227,6 +227,19 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     }
 
     @Override
+    public final <T> Function<String, T> deserialize( final ValueType valueType )
+    {
+        return new Function<String, T>()
+        {
+            @Override
+            public T map( String input )
+            {
+                return deserialize( valueType, input );
+            }
+        };
+    }
+
+    @Override
     public final <T> Function2<ValueType, String, T> deserialize()
     {
         return new Function2<ValueType, String, T>()
@@ -240,12 +253,12 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     }
 
     @Override
-    public final <T> T deserialize( ValueType type, String input )
+    public final <T> T deserialize( ValueType valueType, String input )
         throws ValueSerializationException
     {
         try
         {
-            return deserializeRoot( type, new ByteArrayInputStream( input.getBytes( "UTF-8" ) ) );
+            return deserializeRoot( valueType, new ByteArrayInputStream( input.getBytes( "UTF-8" ) ) );
         }
         catch( ValueSerializationException ex )
         {
@@ -258,12 +271,12 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     }
 
     @Override
-    public final <T> T deserialize( ValueType type, InputStream input )
+    public final <T> T deserialize( ValueType valueType, InputStream input )
         throws ValueSerializationException
     {
         try
         {
-            return deserializeRoot( type, input );
+            return deserializeRoot( valueType, input );
         }
         catch( ValueSerializationException ex )
         {
@@ -284,7 +297,15 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         {
             // Plain ValueType
             Scanner scanner = new Scanner( input, "UTF-8" ).useDelimiter( "\\A" );
-            String string = scanner.hasNext() ? scanner.next() : "";
+            if( !scanner.hasNext() )
+            {
+                if( String.class.equals( type ) )
+                {
+                    return (T) "";
+                }
+                return null;
+            }
+            String string = scanner.next();
             return (T) deserializers.get( type ).map( string );
         }
         // Complex ValueType

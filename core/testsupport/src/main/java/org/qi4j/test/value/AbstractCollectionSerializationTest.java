@@ -41,6 +41,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specifications;
+import org.qi4j.io.Inputs;
+import org.qi4j.io.Outputs;
+import org.qi4j.io.Transforms;
 import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.*;
@@ -68,6 +71,23 @@ public class AbstractCollectionSerializationTest
     @Service
     @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;
+
+    @Test
+    public void testIOString()
+        throws Exception
+    {
+        StringBuilder sb = new StringBuilder();
+        Inputs.iterable( byteCollection() ).transferTo(
+            Transforms.map( valueSerialization.serialize(),
+                            Outputs.text( sb ) ) );
+        String output = sb.toString();
+
+        List<Byte> list = new ArrayList<Byte>();
+        Inputs.text( output ).transferTo(
+            Transforms.map( valueSerialization.<Byte>deserialize( new ValueType( Byte.class ) ),
+                            Outputs.collection( list ) ) );
+        assertEquals( byteCollection(), list );
+    }
 
     @Test
     public void givenPrimitiveArrayWithIntsWhenSerializingAndDeserializingExpectEquals()
