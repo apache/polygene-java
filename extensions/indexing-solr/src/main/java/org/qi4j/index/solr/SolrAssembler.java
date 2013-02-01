@@ -15,6 +15,7 @@
 package org.qi4j.index.solr;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -36,7 +37,7 @@ public class SolrAssembler
             taggedWith( "solr", "search" ).
             identifiedBy( "solrquery" ).
             visibleIn( Visibility.application );
-      module.services( OrgJsonValueSerializationService.class );
+      module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
       module.objects( EntityStateSerializer.class );
    }
 }

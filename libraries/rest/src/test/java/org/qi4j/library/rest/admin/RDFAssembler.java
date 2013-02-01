@@ -15,6 +15,7 @@
 package org.qi4j.library.rest.admin;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -31,7 +32,7 @@ class RDFAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( OrgJsonValueSerializationService.class );
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.objects( EntityStateSerializer.class ).visibleIn( Visibility.application );
         module.objects( EntityTypeSerializer.class ).visibleIn( Visibility.application );
     }

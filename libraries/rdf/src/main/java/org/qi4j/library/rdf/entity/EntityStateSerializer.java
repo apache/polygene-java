@@ -33,10 +33,12 @@ import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.spi.entity.EntityState;
@@ -52,6 +54,7 @@ public class EntityStateSerializer
 
     private Map<String, URI> dataTypes = new HashMap<String, URI>();
     @Service
+    @Tagged( ValueSerialization.Formats.JSON )
     private ValueSerializer valueSerializer;
 
     public EntityStateSerializer()

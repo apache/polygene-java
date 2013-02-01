@@ -17,6 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.bootstrap.test;
 
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
@@ -190,7 +191,8 @@ public class TestAssembler
                 EntityTypeSerializer.class );
 
         indexingModule
-            .services( OrgJsonValueSerializationService.class );
+            .services( OrgJsonValueSerializationService.class )
+            .taggedWith( ValueSerialization.Formats.JSON );
 
         indexingModule
             .services(

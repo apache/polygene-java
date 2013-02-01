@@ -18,6 +18,7 @@
 package org.qi4j.index.rdf;
 
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Specification;
@@ -49,7 +50,7 @@ public class RdfNamedQueryTest extends AbstractNamedQueryTest
     {
         super.assemble( module );
         module.services( MemoryRepositoryService.class, RdfQueryParserFactory.class ).instantiateOnStartup();
-        module.services( OrgJsonValueSerializationService.class );
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
         module.services( RdfIndexingEngineService.class );
     }

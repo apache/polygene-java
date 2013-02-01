@@ -17,6 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.bootstrap.test;
 
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
@@ -52,6 +53,7 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.CarrierMovement;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.Schedule;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.VoyageNumber;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 import static org.qi4j.api.common.Visibility.application;
 import static org.qi4j.api.structure.Application.Mode.test;
@@ -182,6 +184,10 @@ public class TestAssembler
               .objects(
                     EntityStateSerializer.class,
                     EntityTypeSerializer.class );
+
+        indexingModule
+            .services( OrgJsonValueSerializationService.class )
+            .taggedWith( ValueSerialization.Formats.JSON );
 
         indexingModule
               .addServices(

@@ -18,6 +18,7 @@
 package org.qi4j.index.rdf;
 
 import org.junit.Ignore;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
@@ -37,7 +38,7 @@ public class RdfComplexQueryTest
     {
         super.assemble( module );
         module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
-        module.services( OrgJsonValueSerializationService.class );
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
         module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).instantiateOnStartup();
     }

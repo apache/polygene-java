@@ -27,6 +27,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
@@ -49,7 +50,8 @@ public class EntitySerializerTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class, OrgJsonValueSerializationService.class );
+        module.services( MemoryEntityStoreService.class );
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.entities( TestEntity.class );
         module.values( TestValue.class, Test2Value.class );
         module.objects( EntityStateSerializer.class, EntitySerializerTest.class );

@@ -18,9 +18,13 @@
 package org.qi4j.index.rdf.query;
 
 import org.openrdf.query.QueryLanguage;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.qualifier.Tagged;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.index.rdf.UnsupportedLanguageException;
 import org.qi4j.index.rdf.query.internal.RdfQueryParserImpl2;
 import org.qi4j.spi.Qi4jSPI;
@@ -36,13 +40,16 @@ public interface RdfQueryParserFactory
     {
         @Structure
         private Qi4jSPI spi;
+        @Service
+        @Tagged( ValueSerialization.Formats.JSON )
+        private ValueSerializer valueSerializer;
 
         @Override
         public RdfQueryParser newQueryParser( QueryLanguage language )
         {
             if( language.equals( QueryLanguage.SPARQL ) )
             {
-                return new RdfQueryParserImpl2(spi);
+                return new RdfQueryParserImpl2( spi, valueSerializer );
             }
             throw new UnsupportedLanguageException( language );
         }
