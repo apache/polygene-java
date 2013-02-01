@@ -228,11 +228,17 @@ public abstract class ValueSerializerAdapter<OutputType>
     {
         if( object != null )
         {
+            // System.out.println( ">>>>>>>>>>>> " + ( object == null ? "null" : object.getClass() ) );
             if( serializers.get( object.getClass() ) != null )
             {
                 // Plain Value
                 Object serialized = serializers.get( object.getClass() ).map( object );
                 output.write( serialized.toString().getBytes( "UTF-8" ) );
+            }
+            else if( object.getClass().isEnum() )
+            {
+                // Enum Value
+                output.write( object.toString().getBytes( "UTF-8" ) );
             }
             else
             {

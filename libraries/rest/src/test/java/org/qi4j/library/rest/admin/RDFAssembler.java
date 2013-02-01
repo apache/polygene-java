@@ -20,6 +20,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * JAVADOC
@@ -30,6 +31,7 @@ class RDFAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        module.services( OrgJsonValueSerializationService.class );
         module.objects( EntityStateSerializer.class ).visibleIn( Visibility.application );
         module.objects( EntityTypeSerializer.class ).visibleIn( Visibility.application );
     }

@@ -54,6 +54,7 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.CarrierMovement;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Schedule;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.VoyageNumber;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 import static org.qi4j.api.common.Visibility.application;
 import static org.qi4j.api.structure.Application.Mode.test;
@@ -112,8 +113,7 @@ public class TestAssembler
 
         // Load base data on startup
         bootstrapModule
-            .addServices(
-                BaseDataService.class )
+            .services( BaseDataService.class )
             .visibleIn( application )
             .instantiateOnStartup();
     }
@@ -147,7 +147,7 @@ public class TestAssembler
 
         ModuleAssembly contextServiceModule = contextLayer.module( "CONTEXT-Service" );
         contextServiceModule
-            .addServices(
+            .services(
                 ParseHandlingEventData.class,
                 RoutingService.class,
                 RouteSpecificationFactoryService.class )
@@ -190,7 +190,10 @@ public class TestAssembler
                 EntityTypeSerializer.class );
 
         indexingModule
-            .addServices(
+            .services( OrgJsonValueSerializationService.class );
+
+        indexingModule
+            .services(
                 MemoryRepositoryService.class,
                 RdfIndexingEngineService.class )
             .visibleIn( application )

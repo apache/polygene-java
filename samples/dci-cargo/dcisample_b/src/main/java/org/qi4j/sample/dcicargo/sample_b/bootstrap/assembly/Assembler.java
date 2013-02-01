@@ -254,6 +254,9 @@ public class Assembler
                 EntityTypeSerializer.class );
 
         indexingModule
+            .services( OrgJsonValueSerializationService.class );
+
+        indexingModule
             .services(
                 MemoryRepositoryService.class,
                 RdfIndexingEngineService.class )

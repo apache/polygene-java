@@ -11,14 +11,12 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.library.rdf.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONException;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
@@ -33,12 +31,13 @@ import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.json.JSONObjectSerializer;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -52,6 +51,8 @@ public class EntityStateSerializer
 {
 
     private Map<String, URI> dataTypes = new HashMap<String, URI>();
+    @Service
+    private ValueSerializer valueSerializer;
 
     public EntityStateSerializer()
     {
@@ -78,8 +79,7 @@ public class EntityStateSerializer
     }
 
     public Iterable<Statement> serialize( final EntityState entityState,
-                                          final boolean includeNonQueryable
-    )
+                                          final boolean includeNonQueryable )
     {
         Graph graph = new GraphImpl();
         serialize( entityState, includeNonQueryable, graph );
@@ -88,8 +88,7 @@ public class EntityStateSerializer
 
     public void serialize( final EntityState entityState,
                            final boolean includeNonQueryable,
-                           final Graph graph
-    )
+                           final Graph graph )
     {
         ValueFactory values = graph.getValueFactory();
         EntityReference identity = entityState.identity();
@@ -103,8 +102,7 @@ public class EntityStateSerializer
                              graph,
                              entityUri,
                              entityState.entityDescriptor(),
-                             includeNonQueryable
-        );
+                             includeNonQueryable );
 
         serializeAssociations( entityState, graph, entityUri, entityState.entityDescriptor()
             .state()
@@ -118,24 +116,16 @@ public class EntityStateSerializer
                                       final Graph graph,
                                       final Resource subject,
                                       final EntityDescriptor entityType,
-                                      final boolean includeNonQueryable
-    )
+                                      final boolean includeNonQueryable )
     {
-        try
+        // Properties
+        for( PropertyDescriptor persistentProperty : entityType.state().properties() )
         {
-            // Properties
-            for( PropertyDescriptor persistentProperty : entityType.state().properties() )
+            Object property = entityState.getProperty( persistentProperty.qualifiedName() );
+            if( property != null )
             {
-                Object property = entityState.getProperty( persistentProperty.qualifiedName() );
-                if( property != null )
-                {
-                    serializeProperty( persistentProperty, property, subject, graph, includeNonQueryable );
-                }
+                serializeProperty( persistentProperty, property, subject, graph, includeNonQueryable );
             }
-        }
-        catch( JSONException e )
-        {
-            throw new IllegalArgumentException( "Could not JSON serialize value", e );
         }
     }
 
@@ -143,9 +133,7 @@ public class EntityStateSerializer
                                     Object property,
                                     Resource subject,
                                     Graph graph,
-                                    boolean includeNonQueryable
-    )
-        throws JSONException
+                                    boolean includeNonQueryable )
     {
         if( !( includeNonQueryable || persistentProperty.queryable() ) )
         {
@@ -166,10 +154,7 @@ public class EntityStateSerializer
         }
         else
         {
-            JSONObjectSerializer serializer = new JSONObjectSerializer();
-            serializer.setIncludeType( false );
-            serializer.serialize( property, valueType );
-            String stringProperty = serializer.getRoot().toString();
+            String stringProperty = valueSerializer.serialize( property, false );
 
             final Literal object = valueFactory.createLiteral( stringProperty );
             graph.add( subject, predicate, object );
@@ -181,9 +166,7 @@ public class EntityStateSerializer
                                           ValueType valueType,
                                           Graph graph,
                                           String baseUri,
-                                          boolean includeNonQueryable
-    )
-        throws JSONException
+                                          boolean includeNonQueryable )
     {
         final ValueFactory valueFactory = graph.getValueFactory();
         BNode collection = valueFactory.createBNode();
@@ -220,8 +203,7 @@ public class EntityStateSerializer
     private void serializeAssociations( final EntityState entityState,
                                         final Graph graph, URI entityUri,
                                         final Iterable<? extends AssociationDescriptor> associations,
-                                        final boolean includeNonQueryable
-    )
+                                        final boolean includeNonQueryable )
     {
         ValueFactory values = graph.getValueFactory();
 
@@ -247,8 +229,7 @@ public class EntityStateSerializer
                                             final Graph graph,
                                             final URI entityUri,
                                             final Iterable<? extends AssociationDescriptor> associations,
-                                            final boolean includeNonQueryable
-    )
+                                            final boolean includeNonQueryable )
     {
         ValueFactory values = graph.getValueFactory();
 

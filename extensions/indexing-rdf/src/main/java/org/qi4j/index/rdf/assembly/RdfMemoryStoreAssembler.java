@@ -22,6 +22,7 @@ import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class RdfMemoryStoreAssembler
     implements Assembler
@@ -55,6 +56,7 @@ public class RdfMemoryStoreAssembler
             .visibleIn( indexingVisibility )
             .instantiateOnStartup();
         module.services( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
+        module.services( OrgJsonValueSerializationService.class );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
     }
 }

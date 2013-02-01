@@ -14,6 +14,7 @@
 
 package org.qi4j.library.rdf.entity;
 
+import java.io.PrintWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -35,8 +36,7 @@ import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.io.PrintWriter;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * JAVADOC
@@ -49,7 +49,7 @@ public class EntitySerializerTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class );
+        module.services( MemoryEntityStoreService.class, OrgJsonValueSerializationService.class );
         module.entities( TestEntity.class );
         module.values( TestValue.class, Test2Value.class );
         module.objects( EntityStateSerializer.class, EntitySerializerTest.class );

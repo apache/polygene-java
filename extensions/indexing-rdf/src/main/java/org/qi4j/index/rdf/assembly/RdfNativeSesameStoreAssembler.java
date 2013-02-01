@@ -22,6 +22,7 @@ import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.NativeRepositoryService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class RdfNativeSesameStoreAssembler
     implements Assembler
@@ -54,6 +55,7 @@ public class RdfNativeSesameStoreAssembler
             .visibleIn( indexingVisibility )
             .instantiateOnStartup();
         module.services( RdfQueryParserFactory.class ).visibleIn( indexingVisibility );
+        module.services( OrgJsonValueSerializationService.class );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
     }
 }

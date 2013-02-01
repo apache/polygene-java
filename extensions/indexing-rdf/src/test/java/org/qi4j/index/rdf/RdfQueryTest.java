@@ -30,6 +30,7 @@ import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.library.rdf.repository.NativeRepositoryService;
 import org.qi4j.test.indexing.AbstractQueryTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 //@Ignore("Getting failures when running under Gradle and new OpenRDF version." )
 public class RdfQueryTest extends AbstractQueryTest
@@ -43,6 +44,7 @@ public class RdfQueryTest extends AbstractQueryTest
         module.services( FileConfigurationService.class );
         module.services( NativeRepositoryService.class, RdfQueryParserFactory.class ).instantiateOnStartup();
         module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
+        module.services( OrgJsonValueSerializationService.class );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
 
         ModuleAssembly config = module.layer().module( "Config" );

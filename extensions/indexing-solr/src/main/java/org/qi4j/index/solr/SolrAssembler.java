@@ -19,6 +19,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * JAVADOC
@@ -35,7 +36,7 @@ public class SolrAssembler
             taggedWith( "solr", "search" ).
             identifiedBy( "solrquery" ).
             visibleIn( Visibility.application );
-
+      module.services( OrgJsonValueSerializationService.class );
       module.objects( EntityStateSerializer.class );
    }
 }
