@@ -21,6 +21,8 @@ import org.qi4j.entitystore.prefs.PreferencesEntityStoreService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 import java.util.prefs.Preferences;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * JAVADOC
@@ -39,5 +41,6 @@ public class PreferencesEntityStoreTest
         PreferencesEntityStoreInfo metaInfo = new PreferencesEntityStoreInfo( Preferences.userNodeForPackage( getClass() ) );
         Thread.currentThread().setContextClassLoader( cl );
         module.services( PreferencesEntityStoreService.class ).setMetaInfo( metaInfo ).instantiateOnStartup();
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 }
