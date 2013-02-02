@@ -1,16 +1,14 @@
 package org.qi4j.entitystore.neo4j;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import org.neo4j.graphdb.*;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.json.JSONDeserializer;
-import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -24,17 +22,19 @@ public class NeoEntityState
     static final String VERSION = "version";
     static final String MODIFIED = "modified";
 
-    private final Node underlyingNode;
     private final NeoEntityStoreUnitOfWork uow;
+    private final ValueSerialization valueSerialization;
+    private final Node underlyingNode;
 
     private EntityStatus status;
 
-    NeoEntityState( NeoEntityStoreUnitOfWork work, Node node,
+    NeoEntityState( ValueSerialization valueSerialization, NeoEntityStoreUnitOfWork work, Node node,
                     EntityStatus status
     )
     {
-        this.underlyingNode = node;
+        this.valueSerialization = valueSerialization;
         this.uow = work;
+        this.underlyingNode = node;
         this.status = status;
     }
 
@@ -130,22 +130,23 @@ public class NeoEntityState
             else
             {
                 PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
-                String json = "[" + prop + "]";
-                JSONTokener tokener = new JSONTokener( json );
-                JSONArray array = (JSONArray) tokener.nextValue();
-                Object jsonValue = array.get( 0 );
-                if( jsonValue == JSONObject.NULL )
-                {
-                    return null;
-                }
-                else
-                {
-                    JSONDeserializer deserializer = new JSONDeserializer( uow.getModule() );
-                    return deserializer.deserialize( jsonValue, persistentProperty.valueType() );
-                }
+                return valueSerialization.deserialize( persistentProperty.valueType(), prop.toString() );
+//                String json = "[" + prop + "]";
+//                JSONTokener tokener = new JSONTokener( json );
+//                JSONArray array = (JSONArray) tokener.nextValue();
+//                Object jsonValue = array.get( 0 );
+//                if( jsonValue == JSONObject.NULL )
+//                {
+//                    return null;
+//                }
+//                else
+//                {
+//                    JSONDeserializer deserializer = new JSONDeserializer( uow.getModule() );
+//                    return deserializer.deserialize( jsonValue, persistentProperty.valueType() );
+//                }
             }
         }
-        catch( JSONException e )
+        catch( ValueSerializationException e )
         {
             throw new EntityStoreException( e );
         }
@@ -171,9 +172,10 @@ public class NeoEntityState
                     }
                     else
                     {
-                        JSONObjectSerializer serializer = new JSONObjectSerializer(  );
-                        serializer.serialize( prop, persistentProperty.valueType() );
-                        String jsonString = serializer.getRoot().toString();
+//                        JSONObjectSerializer serializer = new JSONObjectSerializer(  );
+//                        serializer.serialize( prop, persistentProperty.valueType() );
+//                        String jsonString = serializer.getRoot().toString();
+                        String jsonString = valueSerialization.serialize( prop );
                         underlyingNode.setProperty( "prop::" + stateName.toString(), jsonString );
                     }
                 }
@@ -184,7 +186,7 @@ public class NeoEntityState
             }
             setUpdated();
         }
-        catch( JSONException e )
+        catch( ValueSerializationException e )
         {
             throw new EntityStoreException( e );
         }
@@ -192,7 +194,8 @@ public class NeoEntityState
 
     private boolean isPrimitiveType( Object prop )
     {
-        if( prop instanceof Number || prop instanceof Character || prop instanceof Boolean )
+        if( ( prop instanceof Number && !( prop instanceof BigInteger ) && !( prop instanceof BigDecimal ) )
+            || prop instanceof Character || prop instanceof Boolean )
         {
             return true;
         }
