@@ -20,9 +20,14 @@ package org.qi4j.library.rest.client.responsereader;
 import java.util.Iterator;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDeserializer;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.library.rest.client.spi.ResponseReader;
 import org.restlet.Response;
 import org.restlet.data.Form;
@@ -36,7 +41,11 @@ public class JSONResponseReader
    implements ResponseReader
 {
    @Structure
-   Module module;
+   private Module module;
+
+   @Service
+   @Tagged( ValueSerialization.Formats.JSON )
+   private ValueDeserializer valueDeserializer;
 
     @Override
    public Object readResponse( Response response, Class<?> resultType )
@@ -46,14 +55,16 @@ public class JSONResponseReader
          if (ValueComposite.class.isAssignableFrom( resultType ))
          {
             String jsonValue = response.getEntityAsText();
-            return module.newValueFromSerializedState(resultType, jsonValue);
-         } else if (resultType.equals(Form.class))
+            ValueCompositeType valueType = module.valueDescriptor( resultType.getName() ).valueType();
+            return valueDeserializer.deserialize( valueType, jsonValue );
+         }
+         else if (resultType.equals(Form.class))
          {
             try
             {
                String jsonValue = response.getEntityAsText();
                JSONObject jsonObject = new JSONObject(jsonValue);
-               Iterator keys = jsonObject.keys();
+               Iterator<?> keys = jsonObject.keys();
                Form form = new Form();
                while (keys.hasNext())
                {
