@@ -19,7 +19,6 @@ package org.qi4j.library.eventsourcing.domain.source.jdbm;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import jdbm.RecordManager;
@@ -32,14 +31,12 @@ import jdbm.helper.DefaultSerializer;
 import jdbm.helper.Tuple;
 import jdbm.helper.TupleBrowser;
 import jdbm.recman.CacheRecordManager;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.api.service.qualifier.Tagged;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.functional.Function;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
@@ -69,7 +66,11 @@ public interface JdbmEventStoreService
         implements EventManagement, EventSource
     {
         @Service
-        FileConfiguration fileConfig;
+        private FileConfiguration fileConfig;
+
+        @Service
+        @Tagged( ValueSerialization.Formats.JSON )
+        private ValueSerialization valueSerialization;
 
         private RecordManager recordManager;
         private BTree index;
@@ -124,15 +125,7 @@ public interface JdbmEventStoreService
                 @Override
                 public UnitOfWorkDomainEventsValue map( String item )
                 {
-                    try
-                    {
-                        JSONObject json = (JSONObject) new JSONTokener( item ).nextValue();
-                        return (UnitOfWorkDomainEventsValue) deserializer.deserialize( json, eventsType );
-                    }
-                    catch( JSONException e )
-                    {
-                        throw new IllegalArgumentException( e );
-                    }
+                    return valueSerialization.<UnitOfWorkDomainEventsValue>deserialize( eventsType, item );
                 }
             }, storeEvents0() ) );
 
@@ -210,20 +203,9 @@ public interface JdbmEventStoreService
                             public void receive( UnitOfWorkDomainEventsValue item )
                                 throws IOException
                             {
-                                StringWriter string = new StringWriter();
-                                try
-                                {
-                                    JSONWriterSerializer jsonWriterSerializer = new JSONWriterSerializer( string );
-                                    jsonWriterSerializer.serialize( item );
-
-                                    String jsonString = string.toString();
-                                    currentCount++;
-                                    index.insert( currentCount, jsonString.getBytes( "UTF-8" ), false );
-                                }
-                                catch( JSONException e )
-                                {
-                                    throw new IllegalStateException( "Could not JSON serialize value", e );
-                                }
+                                String jsonString = valueSerialization.serialize( item );
+                                currentCount++;
+                                index.insert( currentCount, jsonString.getBytes( "UTF-8" ), false );
                             }
                         } );
                         recordManager.commit();
@@ -265,13 +247,11 @@ public interface JdbmEventStoreService
         }
 
         private UnitOfWorkDomainEventsValue readTransactionEvents( Tuple tuple )
-            throws UnsupportedEncodingException, JSONException
+            throws UnsupportedEncodingException
         {
             byte[] eventData = (byte[]) tuple.getValue();
             String eventJson = new String( eventData, "UTF-8" );
-            JSONTokener tokener = new JSONTokener( eventJson );
-            JSONObject transaction = (JSONObject) tokener.nextValue();
-            return (UnitOfWorkDomainEventsValue) deserializer.deserialize( transaction, eventsType );
+            return valueSerialization.<UnitOfWorkDomainEventsValue>deserialize( eventsType, eventJson );
         }
     }
 }

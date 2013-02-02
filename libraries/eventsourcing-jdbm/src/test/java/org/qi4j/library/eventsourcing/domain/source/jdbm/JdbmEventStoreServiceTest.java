@@ -41,6 +41,8 @@ import org.qi4j.test.EntityTestAssembler;
 
 import java.io.IOException;
 import java.security.Principal;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * JAVADOC
@@ -56,6 +58,7 @@ public class JdbmEventStoreServiceTest
 
             module.values( DomainEventValue.class, UnitOfWorkDomainEventsValue.class );
             module.services( FileConfigurationService.class );
+            module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
             module.services( JdbmEventStoreService.class );
             module.services( DomainEventFactoryService.class );
             module.importedServices( CurrentUserUoWPrincipal.class ).importedBy( ImportedServiceDeclaration.NEW_OBJECT );
