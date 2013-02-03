@@ -257,54 +257,54 @@ public abstract class ValueSerializerAdapter<OutputType>
         // Null
         if( object == null )
         {
-            LOG.debug( "Null object -> onValue( null )" );
+            LOG.trace( "Null object -> onValue( null )" );
             onValue( output, null );
         }
         else // Registered serializer
         if( serializers.get( object.getClass() ) != null )
         {
-            LOG.debug( "Registered serializer matches -> onValue( serialized )" );
+            LOG.trace( "Registered serializer matches -> onValue( serialized )" );
             onValue( output, serializers.get( object.getClass() ).map( object ) );
         }
         else // ValueComposite
         if( ValueComposite.class.isAssignableFrom( object.getClass() ) )
         {
-            LOG.debug( "ValueComposite assignable -> serializeValueComposite( object )" );
+            LOG.trace( "ValueComposite assignable -> serializeValueComposite( object )" );
             serializeValueComposite( object, output, includeTypeInfo, rootPass );
         }
         else // EntityComposite
         if( EntityComposite.class.isAssignableFrom( object.getClass() ) )
         {
-            LOG.debug( "EntityComposite assignable -> serializeEntityComposite( object )" );
+            LOG.trace( "EntityComposite assignable -> serializeEntityComposite( object )" );
             serializeEntityComposite( object, output );
         }
         else // Collection - Iterable
         if( Iterable.class.isAssignableFrom( object.getClass() ) )
         {
-            LOG.debug( "Iterable assignable -> serializeIterable( object )" );
+            LOG.trace( "Iterable assignable -> serializeIterable( object )" );
             serializeIterable( object, output, includeTypeInfo );
         }
         else // Array - QUID Remove this and use java serialization for arrays?
         if( object.getClass().isArray() )
         {
-            LOG.debug( "Object isArray -> serializeArray( object )" );
+            LOG.trace( "Object isArray -> serializeArray( object )" );
             serializeArray( object, output, includeTypeInfo );
         }
         else // Map
         if( Map.class.isAssignableFrom( object.getClass() ) )
         {
-            LOG.debug( "Map assignable -> serializeMap( object )" );
+            LOG.trace( "Map assignable -> serializeMap( object )" );
             serializeMap( object, output, includeTypeInfo );
         }
         else // Enum
         if( object.getClass().isEnum() )
         {
-            LOG.debug( "Object is an enum -> onValue( object.toString() )" );
+            LOG.trace( "Object is an enum -> onValue( object.toString() )" );
             onValue( output, object.toString() );
         }
         else // Fallback to Base64 encoded Java Serialization
         {
-            LOG.debug( "Unknown object -> serializeFallback( object )" );
+            LOG.trace( "Unknown object -> serializeFallback( object )" );
             serializeFallback( object, output );
         }
     }

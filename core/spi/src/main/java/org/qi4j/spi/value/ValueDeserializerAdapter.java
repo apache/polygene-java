@@ -334,29 +334,29 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         else // Explicit ValueComposite
         if( ValueCompositeType.class.isAssignableFrom( valueType.getClass() ) )
         {
-            PULL_PARSING_LOG.debug( "ValueCompositeType assignable - deserializeValueComposite( {} )", input );
+            PULL_PARSING_LOG.trace( "ValueCompositeType assignable - deserializeValueComposite( {} )", input );
             return (T) deserializeValueComposite( valueType, input );
         }
         else // Explicit Collections
         if( CollectionType.class.isAssignableFrom( valueType.getClass() ) )
         {
-            PULL_PARSING_LOG.debug( "CollectionType assignable - deserializeCollection( {} )", input );
+            PULL_PARSING_LOG.trace( "CollectionType assignable - deserializeCollection( {} )", input );
             return (T) deserializeCollection( (CollectionType) valueType, input );
         }
         else // Explicit Map
         if( MapType.class.isAssignableFrom( valueType.getClass() ) )
         {
-            PULL_PARSING_LOG.debug( "MapType assignable - deserializeMap( {} )", input );
+            PULL_PARSING_LOG.trace( "MapType assignable - deserializeMap( {} )", input );
             return (T) deserializeMap( (MapType) valueType, input );
         }
         else // Enum
         if( EnumType.class.isAssignableFrom( valueType.getClass() ) || type.isEnum() )
         {
-            PULL_PARSING_LOG.debug( "EnumType assignable - readValue( {} )", input );
+            PULL_PARSING_LOG.trace( "EnumType assignable - readValue( {} )", input );
             return (T) Enum.valueOf( (Class) type, readValue( input ).toString() );
         }
         // Guessed Deserialization
-        PULL_PARSING_LOG.debug( "Unknown ValueType - deserializeGuessed( {} )", input );
+        PULL_PARSING_LOG.trace( "Unknown ValueType - deserializeGuessed( {} )", input );
         return (T) deserializeGuessed( valueType, input );
     }
 
@@ -413,9 +413,9 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private <T> T deserializeValueComposite( ValueType valueType, InputType input )
         throws Exception
     {
-        PULL_PARSING_LOG.debug( "Switching to TREE PARSING @( {} )", input );
+        PULL_PARSING_LOG.trace( "Switching to TREE PARSING @( {} )", input );
         InputNodeType inputNode = readObjectTree( input );
-        TREE_PARSING_LOG.debug( "Switched to TREE PARSING @( {} )", input );
+        TREE_PARSING_LOG.trace( "Switched to TREE PARSING @( {} )", input );
         TREE_PARSING_LOG.trace( "ObjectNode is {}", inputNode );
         if( inputNode == null )
         {
@@ -447,7 +447,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             valueBuilderType = Class.forName( typeInfo );
             if( !valueType.equals( valueCompositeType ) )
             {
-                TREE_PARSING_LOG.debug(
+                TREE_PARSING_LOG.trace(
                     "Overriding {} with {} as defined in _type field.",
                     valueType, valueCompositeType );
             }
@@ -471,7 +471,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                     inputNode,
                     propertyName,
                     buildDeserializeInputNodeFunction( property.valueType() ) );
-                TREE_PARSING_LOG.debug(
+                TREE_PARSING_LOG.trace(
                     "In deserializeValueComposite(), getObjectFieldValue( {} ) for key {} returned '{}' of class {}",
                     inputNode, propertyName, value, value == null ? "N/A" : value.getClass() );
                 if( property.isImmutable() )
@@ -489,7 +489,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                         value = Collections.unmodifiableMap( (Map<?, ?>) value );
                     }
                 }
-                TREE_PARSING_LOG.debug( "Property {}#{}( {} ) deserialized value is '{}' of class {}",
+                TREE_PARSING_LOG.trace( "Property {}#{}( {} ) deserialized value is '{}' of class {}",
                                         property.qualifiedName().type(),
                                         property.qualifiedName().name(),
                                         property.valueType(),
@@ -500,7 +500,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             {
                 // Serialized object does not contain the field, try to default it
                 value = property.initialValue( module );
-                TREE_PARSING_LOG.debug(
+                TREE_PARSING_LOG.trace(
                     "Property {} was not defined in serialized object and has been defaulted to '{}'",
                     property.qualifiedName(), value );
             }
@@ -723,7 +723,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                     inputNode,
                     "_type",
                     this.<String>buildDeserializeInputNodeFunction( new ValueType( String.class ) ) );
-                TREE_PARSING_LOG.debug(
+                TREE_PARSING_LOG.trace(
                     "In deserializeNodeGuessed(), getObjectFieldValue( {} ) returned '{}'",
                     inputNode, typeInfo );
                 ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
@@ -732,7 +732,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                     throw new ValueSerializationException( "Specified value type could not be resolved: " + typeInfo );
                 }
                 valueCompositeType = valueDescriptor.valueType();
-                TREE_PARSING_LOG.debug(
+                TREE_PARSING_LOG.trace(
                     "Overriding {} with {} as defined in _type field.",
                     valueType, valueCompositeType );
             }
@@ -744,7 +744,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                     throw new ValueSerializationException( "Don't know how to deserialize " + inputNode );
                 }
                 valueCompositeType = valueDescriptor.valueType();
-                TREE_PARSING_LOG.debug(
+                TREE_PARSING_LOG.trace(
                     "Overriding {} with {} as found in available ValueComposites.",
                     valueType, valueCompositeType );
             }
@@ -760,7 +760,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception
     {
         Object value = asSimpleValue( inputNode );
-        TREE_PARSING_LOG.debug(
+        TREE_PARSING_LOG.trace(
             "While Base64 deserialize attempt, asSimpleValue( {} ) returned '{}'",
             inputNode, value );
         if( value == null )

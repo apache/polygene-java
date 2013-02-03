@@ -1,12 +1,15 @@
 package org.qi4j.entitystore.neo4j;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.spi.entity.EntityState;
@@ -123,7 +126,7 @@ public class NeoEntityState
             {
                 return null;
             }
-            else if( isPrimitiveType( prop ) )
+            else if( ValueType.isPrimitiveValue( prop ) )
             {
                 return prop;
             }
@@ -131,19 +134,6 @@ public class NeoEntityState
             {
                 PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
                 return valueSerialization.deserialize( persistentProperty.valueType(), prop.toString() );
-//                String json = "[" + prop + "]";
-//                JSONTokener tokener = new JSONTokener( json );
-//                JSONArray array = (JSONArray) tokener.nextValue();
-//                Object jsonValue = array.get( 0 );
-//                if( jsonValue == JSONObject.NULL )
-//                {
-//                    return null;
-//                }
-//                else
-//                {
-//                    JSONDeserializer deserializer = new JSONDeserializer( uow.getModule() );
-//                    return deserializer.deserialize( jsonValue, persistentProperty.valueType() );
-//                }
             }
         }
         catch( ValueSerializationException e )
@@ -159,7 +149,7 @@ public class NeoEntityState
         {
             if( prop != null )
             {
-                if( isPrimitiveType( prop ) )
+                if( ValueType.isPrimitiveValue( prop ) )
                 {
                     underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
                 }
@@ -172,9 +162,6 @@ public class NeoEntityState
                     }
                     else
                     {
-//                        JSONObjectSerializer serializer = new JSONObjectSerializer(  );
-//                        serializer.serialize( prop, persistentProperty.valueType() );
-//                        String jsonString = serializer.getRoot().toString();
                         String jsonString = valueSerialization.serialize( prop );
                         underlyingNode.setProperty( "prop::" + stateName.toString(), jsonString );
                     }
@@ -190,37 +177,6 @@ public class NeoEntityState
         {
             throw new EntityStoreException( e );
         }
-    }
-
-    private boolean isPrimitiveType( Object prop )
-    {
-        if( ( prop instanceof Number && !( prop instanceof BigInteger ) && !( prop instanceof BigDecimal ) )
-            || prop instanceof Character || prop instanceof Boolean )
-        {
-            return true;
-        }
-        if( prop.getClass().isArray() )
-        {
-            return isPrimitiveArrayType( prop );
-        }
-        return false;
-    }
-
-    private boolean isPrimitiveArrayType( Object array )
-    {
-        if( array instanceof int[] || array instanceof Integer[] ||
-            array instanceof String[] || array instanceof boolean[] ||
-            array instanceof Boolean[] || array instanceof double[] ||
-            array instanceof Double[] || array instanceof float[] ||
-            array instanceof Float[] || array instanceof long[] ||
-            array instanceof Long[] || array instanceof byte[] ||
-            array instanceof Byte[] || array instanceof char[] ||
-            array instanceof Character[] || array instanceof short[] ||
-            array instanceof Short[] )
-        {
-            return true;
-        }
-        return false;
     }
 
     @Override
