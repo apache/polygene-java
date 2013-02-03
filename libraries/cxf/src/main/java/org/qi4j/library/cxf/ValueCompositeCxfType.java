@@ -179,7 +179,7 @@ public class ValueCompositeCxfType extends AegisType
         }
 
         AegisType type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( String.class ) );
-        for( Association association: state.associations() )
+        for( Association association: state.allAssociations() )
         {
             QName childName = new QName( "", spi.associationDescriptorFor( association ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );
@@ -191,7 +191,7 @@ public class ValueCompositeCxfType extends AegisType
             cwriter.close();
         }
 
-        for( ManyAssociation association: state.manyAssociations() )
+        for( ManyAssociation association: state.allManyAssociations() )
         {
             QName childName = new QName( "", spi.associationDescriptorFor( association ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );

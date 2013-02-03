@@ -126,7 +126,7 @@ public final class EntityStateInstance
     }
 
     @Override
-    public Iterable<Association<?>> associations()
+    public Iterable<Association<?>> allAssociations()
     {
         return Iterables.map( new Function<AssociationDescriptor, Association<?>>()
         {
@@ -162,7 +162,7 @@ public final class EntityStateInstance
     }
 
     @Override
-    public Iterable<ManyAssociation<?>> manyAssociations()
+    public Iterable<ManyAssociation<?>> allManyAssociations()
     {
         return Iterables.map( new Function<AssociationDescriptor, ManyAssociation<?>>()
         {

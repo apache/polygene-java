@@ -23,8 +23,7 @@ import org.qi4j.api.composite.StateDescriptor;
 /**
  * Associations State Descriptor.
  */
-public interface AssociationStateDescriptor
-    extends StateDescriptor
+public interface AssociationStateDescriptor extends StateDescriptor
 {
     AssociationDescriptor getAssociationByName( String name )
         throws IllegalArgumentException;
