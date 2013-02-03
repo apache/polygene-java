@@ -20,6 +20,9 @@ import java.lang.reflect.Method;
  *
  * All composites must implement this interface. Methods that are invoked
  * may reside either in the public Composite interface or in any internal mixins.
+ *
+ * <b><i>NOTE:</i></i></b>Client code should never use method in this class. We have not been able to hide this
+ * from client code, but IF we find a way to do, this interface may disappear.</b>
  */
 public interface CompositeInvoker
 {
