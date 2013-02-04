@@ -1,0 +1,47 @@
+//////////////////////
+ * Copyright (c) 2013, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-unitofwork,UnitOfWork]]
+= Unit Of Work =
+A UnitOfWork is a bounded group of operations performed, typically on entities, where these operations are not visible
+to other threads until the UnitOfWork is completed. It is also possible to discard these operations, as if they were
+never executed.
+
+NOTE: UnitOfWork has many similarities with the Transaction concept used with RDBMSes. But since Qi4j introduced several deviations to the common definitions of Transactions, we chose to use a different term.
+
+There are several key characteristics of UnitOfWork;
+
+    * They are limited to a single thread.
+    * They have an associated use-case.
+    * They can be paused and resumed.
+    * They have a notification mechanism (used to trigger Indexing for instance).
+    * They can be long-running, as they don't tie up underlying transactions or other expensive resources.
+
+At the moment, they are exclusively used to manipulate <<core-api-entity>> composites. All entity operations MUST be
+done via UnitOfWork, and in fact it is not possible to get this wrong.
+
+
+== UnitOfWork Propagation ==
+UnitOfWork is associated with a thread, and can only be transferred to another thread by a relatively complex operation
+of pausing a UnitOfWork in one thread, then hand over the UnitOfWork to the other thread and resume it there. Don't do it!
+
+UnitOfWork is available from the _<<core-api-module>>, and from the Module you request either a new UnitOfWork or asking
+for the _current_ one. _Current UnitOfWork_ means the UnitOfWork that was created earlier within the same thread. So,
+typically most entity manipulation code only request the current UnitOfWork and the management of creating, completing
+and aborting the UnitOfWork is handled by the transaction boundary, often in the so called application layer (see
+<<core-api-layer>>)
+
+Since it is very common to have all, or nearly all, methods in the _transaction boundary_ to handle the creation and
+completion, possibly with retry, in the same class, module or even layer, Qi4j provides

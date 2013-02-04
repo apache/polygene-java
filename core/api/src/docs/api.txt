@@ -100,18 +100,6 @@ include::decoratormixin.txt[]
 
 :leveloffset: {level3}
 
-// include::application.txt[]
-
-:leveloffset: {level3}
-
-// include::layer.txt[]
-
-:leveloffset: {level3}
-
-include::module.txt[]
-
-:leveloffset: {level3}
-
 include::type-lookup.txt[]
 
 :leveloffset: {level3}
