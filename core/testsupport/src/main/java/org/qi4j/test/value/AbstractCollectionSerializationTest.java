@@ -40,12 +40,14 @@ import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Iterables;
-import org.qi4j.io.Inputs;
-import org.qi4j.io.Outputs;
-import org.qi4j.io.Transforms;
 import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.*;
+import static org.qi4j.io.Inputs.iterable;
+import static org.qi4j.io.Inputs.text;
+import static org.qi4j.io.Outputs.collection;
+import static org.qi4j.io.Outputs.text;
+import static org.qi4j.io.Transforms.map;
 
 /**
  * Assert that ValueSerialization behaviour on Collections and Maps is correct.
@@ -76,15 +78,12 @@ public class AbstractCollectionSerializationTest
         throws Exception
     {
         StringBuilder sb = new StringBuilder();
-        Inputs.iterable( byteCollection() ).transferTo(
-            Transforms.map( valueSerialization.serialize(),
-                            Outputs.text( sb ) ) );
+        iterable( byteCollection() ).transferTo( map( valueSerialization.serialize(), text( sb ) ) );
         String output = sb.toString();
 
         List<Byte> list = new ArrayList<Byte>();
-        Inputs.text( output ).transferTo(
-            Transforms.map( valueSerialization.<Byte>deserialize( new ValueType( Byte.class ) ),
-                            Outputs.collection( list ) ) );
+        ValueType valueType = new ValueType( Byte.class );
+        text( output ).transferTo( map( valueSerialization.<Byte>deserialize( valueType ), collection( list ) ) );
         assertEquals( byteCollection(), list );
     }
 
@@ -97,23 +96,21 @@ public class AbstractCollectionSerializationTest
             23, 42, -23, -42
         };
         String output = valueSerialization.serialize( primitiveArray );
-        CollectionType collectionType = new CollectionType( List.class, new ValueType( Integer.class ) );
-        List<Integer> list = valueSerialization.deserialize( collectionType, output );
-        for( int idx = 0; idx < primitiveArray.length; idx++ )
-        {
-            int integ = primitiveArray[idx];
-            assertEquals( Integer.valueOf( integ ), list.get( idx ) );
-        }
+        int[] deserialized = valueSerialization.deserialize( new ValueType( int[].class ), output );
+        assertArrayEquals( primitiveArray, deserialized );
     }
 
     @Test
     public void givenArrayWithByteAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = valueSerialization.serialize( byteCollection().toArray() );
-        CollectionType collectionType = new CollectionType( List.class, new ValueType( Byte.class ) );
-        List<Byte> list = valueSerialization.deserialize( collectionType, output );
-        assertEquals( byteCollection(), list );
+        Byte[] array = new Byte[]
+        {
+            9, null, -12, -12, 127, -128, 73
+        };
+        String output = valueSerialization.serialize( array );
+        Byte[] deserialized = valueSerialization.deserialize( new ValueType( Byte[].class ), output );
+        assertArrayEquals( array, deserialized );
     }
 
     @Test

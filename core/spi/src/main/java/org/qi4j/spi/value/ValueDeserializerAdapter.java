@@ -430,6 +430,11 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             PULL_PARSING_LOG.trace( "EnumType assignable - readValue( {} )", input );
             return (T) Enum.valueOf( (Class) type, readValue( input ).toString() );
         }
+        else // Array
+        if( type.isArray() )
+        {
+            return (T) deserializeBase64Serialized( readValue( input ).toString() );
+        }
         // Guessed Deserialization
         PULL_PARSING_LOG.trace( "Unknown ValueType - deserializeGuessed( {} )", input );
         return (T) deserializeGuessed( valueType, input );
@@ -841,19 +846,19 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             return null;
         }
         String base64 = value.toString();
-        byte[] bytes = base64.getBytes( "UTF-8" );
-        try
-        {
-            bytes = Base64Encoder.decode( bytes );
-            ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
-            Object result = oin.readObject();
-            oin.close();
-            return (T) result;
-        }
-        catch( IllegalArgumentException ex )
-        {
-            throw new ValueSerializationException( "Unable to deserialize value, tried everything." );
-        }
+        return deserializeBase64Serialized( base64 );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private <T> T deserializeBase64Serialized( String inputString )
+        throws Exception
+    {
+        byte[] bytes = inputString.getBytes( "UTF-8" );
+        bytes = Base64Encoder.decode( bytes );
+        ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
+        Object result = oin.readObject();
+        oin.close();
+        return (T) result;
     }
 
     //

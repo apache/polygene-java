@@ -56,8 +56,8 @@ import org.qi4j.functional.Function2;
  *     <li>LocalDate (JodaTime).</li>
  * </ul>
  * <p>
- *     Values of unknown types and all arrays are considered as {@link Serializable} and by so are deserialized from
- *     base64 encoded bytes using pure Java serialization. If it happens that the input is invalid, a
+ *     Values of unknown types and all arrays are considered as {@link java.io.Serializable} and by so are deserialized
+ *     from base64 encoded bytes using pure Java serialization. If it happens that the input is invalid, a
  *     ValueSerializationException is thrown.
  * </p>
  * <p>

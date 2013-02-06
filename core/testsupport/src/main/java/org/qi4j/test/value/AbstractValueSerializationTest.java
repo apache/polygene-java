@@ -236,7 +236,6 @@ public abstract class AbstractValueSerializationTest
         @UseDefaults
         Property<Map<String, AnotherValue>> stringValueMap();
 
-        @Optional
         Property<AnotherValue> another();
 
         @Optional

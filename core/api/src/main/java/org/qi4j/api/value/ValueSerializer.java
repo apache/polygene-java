@@ -16,7 +16,6 @@
 package org.qi4j.api.value;
 
 import java.io.OutputStream;
-import java.io.Serializable;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.functional.Function;
 
@@ -56,8 +55,8 @@ import org.qi4j.functional.Function;
  *     <li>LocalDate (JodaTime).</li>
  * </ul>
  * <p>
- *     Values of unknown types and all arrays are considered as {@link Serializable} and by so are serialized to base64
- *     encoded bytes using pure Java serialization. If it happens that the value is not Serializable, a
+ *     Values of unknown types and all arrays are considered as {@link java.io.Serializable} and by so are serialized to
+ *     base64 encoded bytes using pure Java serialization. If it happens that the value is not Serializable, a
  *     ValueSerializationException is thrown.
  * </p>
  * <p>

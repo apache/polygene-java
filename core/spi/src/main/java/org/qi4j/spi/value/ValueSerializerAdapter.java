@@ -309,8 +309,8 @@ public abstract class ValueSerializerAdapter<OutputType>
         else // Array - QUID Remove this and use java serialization for arrays?
         if( object.getClass().isArray() )
         {
-            LOG.trace( "Object isArray -> serializeArray( object )" );
-            serializeArray( object, output, includeTypeInfo );
+            LOG.trace( "Object isArray -> serializeBase64Serializable( object )" );
+            serializeBase64Serializable( object, output );
         }
         else // Map
         if( Map.class.isAssignableFrom( object.getClass() ) )
@@ -326,8 +326,8 @@ public abstract class ValueSerializerAdapter<OutputType>
         }
         else // Fallback to Base64 encoded Java Serialization
         {
-            LOG.trace( "Unknown object -> serializeFallback( object )" );
-            serializeFallback( object, output );
+            LOG.trace( "Unknown object type -> serializeBase64Serializable( object )" );
+            serializeBase64Serializable( object, output );
         }
     }
 
@@ -398,7 +398,6 @@ public abstract class ValueSerializerAdapter<OutputType>
     private void serializeEntityComposite( Object object, OutputType output )
         throws Exception
     {
-        System.out.println( ">>>>>> Serialize EntityReference '" + EntityReference.getEntityReference( object ) + "'" );
         onValue( output, EntityReference.getEntityReference( object ) );
     }
 
@@ -415,120 +414,6 @@ public abstract class ValueSerializerAdapter<OutputType>
             onValueEnd( output );
         }
         onArrayEnd( output );
-    }
-
-    // Damn java primitive types! How the hell can we factor this code?
-    private void serializeArray( Object object, OutputType output, boolean includeTypeInfo )
-        throws Exception
-    {
-        if( object instanceof boolean[] )
-        {
-            boolean[] booleans = (boolean[]) object;
-            onArrayStart( output );
-            for( boolean item : booleans )
-            {
-                onValueStart( output );
-                doSerialize( item, output, includeTypeInfo, false );
-                onValueEnd( output );
-            }
-            onArrayEnd( output );
-        }
-        else if( object instanceof byte[] )
-        {
-            byte[] bytes = (byte[]) object;
-            onArrayStart( output );
-            for( byte item : bytes )
-            {
-                onValueStart( output );
-                doSerialize( item, output, includeTypeInfo, false );
-                onValueEnd( output );
-            }
-            onArrayEnd( output );
-        }
-        else if( object instanceof char[] )
-        {
-            char[] chars = (char[]) object;
-            onArrayStart( output );
-            for( char item : chars )
-            {
-                onValueStart( output );
-                doSerialize( item, output, includeTypeInfo, false );
-                onValueEnd( output );
-            }
-            onArrayEnd( output );
-        }
-        else if( object instanceof short[] )
-        {
-            short[] shorts = (short[]) object;
-            onArrayStart( output );
-            for( short item : shorts )
-            {
-                onValueStart( output );
-                doSerialize( item, output, includeTypeInfo, false );
-                onValueEnd( output );
-            }
-            onArrayEnd( output );
-        }
-        else if( object instanceof int[] )
-        {
-            int[] ints = (int[]) object;
-            onArrayStart( output );
-            for( int item : ints )
-            {
-                onValueStart( output );
-                doSerialize( item, output, includeTypeInfo, false );
-                onValueEnd( output );
-            }
-            onArrayEnd( output );
-        }
-        else if( object instanceof long[] )
-        {
-            long[] longs = (long[]) object;
-            onArrayStart( output );
-            for( long item : longs )
-            {
-                onValueStart( output );
-                doSerialize( item, output, includeTypeInfo, false );
-                onValueEnd( output );
-            }
-            onArrayEnd( output );
-        }
-        else if( object instanceof double[] )
-        {
-            double[] doubles = (double[]) object;
-            onArrayStart( output );
-            for( double item : doubles )
-            {
-                onValueStart( output );
-                doSerialize( item, output, includeTypeInfo, false );
-                onValueEnd( output );
-            }
-            onArrayEnd( output );
-        }
-        else if( object instanceof float[] )
-        {
-            float[] floats = (float[]) object;
-            onArrayStart( output );
-            for( float item : floats )
-            {
-                onValueStart( output );
-                doSerialize( item, output, includeTypeInfo, false );
-                onValueEnd( output );
-            }
-            onArrayEnd( output );
-        }
-        else
-        {
-            Object[] array = (Object[]) object;
-            onArrayStart( output );
-            for( Object item : array )
-            {
-                onValueStart( output );
-                doSerialize( item, output, includeTypeInfo, false );
-                onValueEnd( output );
-            }
-            onArrayEnd( output );
-        }
     }
 
     private void serializeMap( Object object, OutputType output, boolean includeTypeInfo )
@@ -558,7 +443,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         onArrayEnd( output );
     }
 
-    private void serializeFallback( Object object, OutputType output )
+    private void serializeBase64Serializable( Object object, OutputType output )
         throws Exception
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
