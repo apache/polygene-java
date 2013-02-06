@@ -61,7 +61,7 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected Object readValue( XMLEventReader input )
+    protected Object readPlainValue( XMLEventReader input )
         throws Exception
     {
         if( !input.hasNext() )

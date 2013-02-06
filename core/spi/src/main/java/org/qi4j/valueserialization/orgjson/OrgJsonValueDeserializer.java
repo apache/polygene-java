@@ -65,7 +65,7 @@ public class OrgJsonValueDeserializer
     }
 
     @Override
-    protected Object readValue( JSONTokener input )
+    protected Object readPlainValue( JSONTokener input )
         throws Exception
     {
         Object nextValue = input.nextValue();

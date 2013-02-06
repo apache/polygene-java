@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.valueserialization.jackson;
+package org.qi4j.valueserialization.orgjson;
 
-import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.value.AbstractValueSerializationTest;
+import org.qi4j.test.value.AbstractValueCompositeSerializationTest;
 
-//@Ignore
-public class JacksonValueSerializationTest
-    extends AbstractValueSerializationTest
+public class OrgJsonValueCompositeSerializationTest
+    extends AbstractValueCompositeSerializationTest
 {
 
     @Override
@@ -30,6 +28,6 @@ public class JacksonValueSerializationTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( JacksonValueSerializationService.class );
+        module.services( OrgJsonValueSerializationService.class );
     }
 }

@@ -59,7 +59,7 @@ import static org.junit.Assert.*;
  * Assert that ValueSerialization behaviour on ValueComposites is correct.
  */
 // TODO Assert Association and ManyAssociation serialization behavior !
-public abstract class AbstractValueSerializationTest
+public abstract class AbstractValueCompositeSerializationTest
     extends AbstractQi4jTest
 {
 

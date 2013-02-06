@@ -399,7 +399,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         // Registered deserializers
         if( deserializers.get( type ) != null )
         {
-            Object value = readValue( input );
+            Object value = readPlainValue( input );
             if( value == null )
             {
                 return null;
@@ -428,12 +428,12 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         if( EnumType.class.isAssignableFrom( valueType.getClass() ) || type.isEnum() )
         {
             PULL_PARSING_LOG.trace( "EnumType assignable - readValue( {} )", input );
-            return (T) Enum.valueOf( (Class) type, readValue( input ).toString() );
+            return (T) Enum.valueOf( (Class) type, readPlainValue( input ).toString() );
         }
         else // Array
         if( type.isArray() )
         {
-            return (T) deserializeBase64Serialized( readValue( input ).toString() );
+            return (T) deserializeBase64Serialized( readPlainValue( input ).toString() );
         }
         // Guessed Deserialization
         PULL_PARSING_LOG.trace( "Unknown ValueType - deserializeGuessed( {} )", input );
@@ -899,12 +899,11 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     protected abstract InputType adaptInput( InputStream input )
         throws Exception;
 
-    // TODO rename into readPlainValue
     /**
      * @return a Plain Value read from the input
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
-    protected abstract Object readValue( InputType input )
+    protected abstract Object readPlainValue( InputType input )
         throws Exception;
 
     /**

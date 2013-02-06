@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.valueserialization.orgjson;
+package org.qi4j.valueserialization.stax;
 
-import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.value.AbstractValueSerializationTest;
+import org.qi4j.test.value.AbstractValueCompositeSerializationTest;
 
-//@Ignore
-public class OrgJsonValueSerializationTest
-    extends AbstractValueSerializationTest
+public class StaxValueCompositeSerializationTest
+    extends AbstractValueCompositeSerializationTest
 {
 
     @Override
@@ -30,7 +28,6 @@ public class OrgJsonValueSerializationTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( OrgJsonValueSerializationService.class );
+        module.services( StaxValueSerializationService.class );
     }
-
 }

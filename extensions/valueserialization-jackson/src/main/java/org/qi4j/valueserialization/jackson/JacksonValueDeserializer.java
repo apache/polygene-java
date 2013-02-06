@@ -67,7 +67,7 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected Object readValue( JsonParser input )
+    protected Object readPlainValue( JsonParser input )
         throws Exception
     {
         JsonNode jsonNode = input.readValueAsTree();
