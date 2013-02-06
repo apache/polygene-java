@@ -21,9 +21,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -45,8 +44,7 @@ public class AlarmProxyTest extends AbstractQi4jTest
     {
         new AlarmSystemAssembler().assemble( module );
         // END SNIPPET: documentation
-        module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test

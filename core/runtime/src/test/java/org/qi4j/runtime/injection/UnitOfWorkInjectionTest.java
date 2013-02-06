@@ -27,8 +27,8 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
 
@@ -39,7 +39,7 @@ public class UnitOfWorkInjectionTest
         throws AssemblyException
     {
         module.entities( TrialEntity.class );
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test

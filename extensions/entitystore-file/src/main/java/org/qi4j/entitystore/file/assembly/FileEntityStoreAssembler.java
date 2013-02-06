@@ -18,11 +18,13 @@
 package org.qi4j.entitystore.file.assembly;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.file.FileEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class FileEntityStoreAssembler
     implements Assembler
@@ -40,5 +42,6 @@ public class FileEntityStoreAssembler
     {
         module.services( FileEntityStoreService.class ).visibleIn( visibility );
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 }

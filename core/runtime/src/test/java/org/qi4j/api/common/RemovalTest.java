@@ -26,9 +26,8 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 public class RemovalTest
     extends AbstractQi4jTest
@@ -37,10 +36,8 @@ public class RemovalTest
         throws AssemblyException
     {
         module.entities( TestEntity.class );
-
         module.entities( PidRegulator.class );
-        module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test

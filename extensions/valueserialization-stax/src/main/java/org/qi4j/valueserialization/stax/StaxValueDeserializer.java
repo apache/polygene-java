@@ -16,8 +16,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueDeserializer;
 import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.functional.Function;
 import org.qi4j.spi.value.ValueDeserializerAdapter;
@@ -36,9 +40,11 @@ public class StaxValueDeserializer
     private final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
-    public StaxValueDeserializer( @Structure Module module )
+    public StaxValueDeserializer( @Structure Application application,
+                                  @Structure Module module,
+                                  @Service ServiceReference<ValueDeserializer> serviceRef )
     {
-        super( module );
+        super( application, module, serviceRef );
         // Input Factory setup
         inputFactory.setProperty( "javax.xml.stream.isValidating", Boolean.FALSE );
         inputFactory.setProperty( "javax.xml.stream.isNamespaceAware", Boolean.FALSE );

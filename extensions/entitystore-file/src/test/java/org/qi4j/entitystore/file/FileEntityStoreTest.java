@@ -19,8 +19,9 @@ package org.qi4j.entitystore.file;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.file.assembly.FileEntityStoreAssembler;
 import org.qi4j.library.fileconfig.FileConfigurationService;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 public class FileEntityStoreTest
@@ -36,9 +37,9 @@ public class FileEntityStoreTest
         super.assemble( module );
         module.services( FileConfigurationService.class );
         ModuleAssembly config = module.layer().module( "config" );
-        config.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( config );
         // START SNIPPET: assembly
-        module.services( FileEntityStoreService.class );
+        new FileEntityStoreAssembler( Visibility.module ).assemble( module );
         config.entities( FileEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
     }
     // END SNIPPET: assembly

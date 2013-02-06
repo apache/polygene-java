@@ -126,4 +126,23 @@ public class ValueType
         }
         return false;
     }
+
+    public static boolean isPrimitiveValueType( ValueType valueType )
+    {
+        return isPrimitiveValueType( valueType.mainType() );
+    }
+
+    public static boolean isPrimitiveValueType( Class<?> type )
+    {
+        NullArgumentException.validateNotNull( "type", type );
+        if( String.class.isAssignableFrom( type ) )
+        {
+            return true;
+        }
+        if( type.isArray() )
+        {
+            return isPrimitiveValueType( type.getComponentType() );
+        }
+        return false;
+    }
 }

@@ -24,8 +24,12 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueDeserializer;
 import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.functional.Function;
 import org.qi4j.spi.value.ValueDeserializerAdapter;
@@ -37,9 +41,20 @@ public class OrgJsonValueDeserializer
     extends ValueDeserializerAdapter<JSONTokener, Object>
 {
 
-    public OrgJsonValueDeserializer( @Structure Module module )
+    public OrgJsonValueDeserializer(
+        @Structure Application application,
+        @Structure Module module,
+        @Service ServiceReference<ValueDeserializer> serviceRef )
     {
-        super( module );
+        super( application, module, serviceRef );
+    }
+
+    /* package */ OrgJsonValueDeserializer(
+        Application application,
+        Module module,
+        Function<Application, Module> valuesModuleFinder )
+    {
+        super( application, module, valuesModuleFinder );
     }
 
     @Override

@@ -19,6 +19,7 @@
 package org.qi4j.entitystore.voldemort.assembly;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -26,6 +27,7 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.voldemort.VoldemortConfiguration;
 import org.qi4j.entitystore.voldemort.VoldemortEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class VoldemortAssembler
     implements Assembler
@@ -43,6 +45,7 @@ public class VoldemortAssembler
     {
         module.services( VoldemortEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         // FIXME Remove from here and update documentation accordingly
         ModuleAssembly config = module.layer().module( "config" );
         config.entities( VoldemortConfiguration.class ).visibleIn( Visibility.layer );

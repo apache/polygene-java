@@ -26,8 +26,8 @@ import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -38,7 +38,7 @@ public class RemovalTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
         module.entities( Abc.class );
     }
 

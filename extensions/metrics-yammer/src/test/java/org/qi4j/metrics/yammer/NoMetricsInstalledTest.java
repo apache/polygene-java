@@ -28,8 +28,8 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 public class NoMetricsInstalledTest extends AbstractQi4jTest
 {
@@ -38,7 +38,7 @@ public class NoMetricsInstalledTest extends AbstractQi4jTest
         throws AssemblyException
     {
         module.entities( Person.class );
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test

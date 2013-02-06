@@ -48,12 +48,12 @@ import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.http.JettyConfiguration;
 import org.qi4j.library.http.JettyServiceAssembler;
 import org.qi4j.library.shiro.ini.ShiroIniConfiguration;
 import org.qi4j.library.shiro.web.assembly.HttpShiroAssembler;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.util.FreePortFinder;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -128,7 +128,7 @@ public class WebRealmServiceTest
     {
         try {
 
-            module.services( MemoryEntityStoreService.class );
+            new EntityTestAssembler().assemble( module );
             ModuleAssembly configModule = module;
             // START SNIPPET: assembly
             new JettyServiceAssembler().assemble( module );

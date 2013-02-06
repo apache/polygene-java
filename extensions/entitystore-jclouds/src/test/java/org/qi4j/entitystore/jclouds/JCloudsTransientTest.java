@@ -16,7 +16,7 @@ package org.qi4j.entitystore.jclouds;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 public class JCloudsTransientTest
@@ -29,7 +29,7 @@ public class JCloudsTransientTest
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        config.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( config );
         // START SNIPPET: assembly
         new JCloudsMapEntityStoreAssembler().withConfigIn( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly

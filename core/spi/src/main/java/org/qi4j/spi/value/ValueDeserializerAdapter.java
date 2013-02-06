@@ -38,8 +38,11 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.CollectionType;
 import org.qi4j.api.type.EnumType;
@@ -62,6 +65,21 @@ import static org.qi4j.functional.Iterables.*;
 /**
  * Adapter for pull-parsing and tree-parsing capable ValueDeserializers.
  *
+ * <p>
+ *     Among Plain values (see {@link ValueDeserializer}) some are considered primitives to underlying serialization
+ *     mechanisms and by so handed/come without conversion to/from implementations. Primitive values can be one of:
+ * </p>
+ * <ul>
+ *     <li>String,</li>
+ *     <li>Boolean,</li>
+ *     <li>Integer,</li>
+ *     <li>Long,</li>
+ *     <li>Short,</li>
+ *     <li>Byte,</li>
+ *     <li>Float,</li>
+ *     <li>Double</li>
+ * </ul>
+ *
  * @param <InputType> Implementor pull-parser type
  * @param <InputNodeType> Implementor tree-parser node type
  */
@@ -69,21 +87,46 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     implements ValueDeserializer
 {
 
+    private static final Logger LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class );
     private static final Logger PULL_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#PullParsing" );
     private static final Logger TREE_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#TreeParsing" );
     private final Map<Class<?>, Function<Object, Object>> deserializers = new HashMap<Class<?>, Function<Object, Object>>();
+    private final Application application;
     private final Module module;
+    private Function<Application, Module> valuesModuleFinder;
+    private Module valuesModule;
 
+    /**
+     * Register a Plain Value type deserialization Function.
+     *
+     * @param <T> Plain Value parametrized Type
+     * @param type Plain Value Type
+     * @param deserializer Deserialization Function
+     */
     @SuppressWarnings( "unchecked" )
     protected final <T> void registerDeserializer( Class<T> type, Function<Object, T> deserializer )
     {
         deserializers.put( type, (Function<Object, Object>) deserializer );
     }
 
-    public ValueDeserializerAdapter( @Structure Module module )
+    @SuppressWarnings( "unchecked" )
+    public ValueDeserializerAdapter( @Structure Application application,
+                                     @Structure Module module,
+                                     @Service ServiceReference<ValueDeserializer> serviceRef )
     {
+        this( application, module, serviceRef.metaInfo( Function.class ) );
+    }
+
+    protected ValueDeserializerAdapter( Application application,
+                                        Module module,
+                                        Function<Application, Module> valuesModuleFinder )
+    {
+
+        this.application = application;
         this.module = module;
-        // Primitive types
+        setValuesModuleFinder( valuesModuleFinder );
+
+        // Primitive Value types
         registerDeserializer( String.class, new Function<Object, String>()
         {
             @Override
@@ -224,6 +267,38 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 return EntityReference.parseEntityReference( input.toString() );
             }
         } );
+    }
+
+    private void setValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
+    {
+        if( valuesModuleFinder != null )
+        {
+            LOG.debug( "Will use the provided Function to find Module to build new ValueComposites instances: {}",
+                       valuesModuleFinder );
+        }
+        this.valuesModuleFinder = valuesModuleFinder;
+        this.valuesModule = null;
+    }
+
+    private Module valuesModule()
+    {
+        if( valuesModule == null )
+        {
+            if( valuesModuleFinder == null )
+            {
+                valuesModule = module;
+            }
+            else
+            {
+                valuesModule = valuesModuleFinder.map( application );
+                if( valuesModule == null )
+                {
+                    throw new ValueSerializationException( "Values Module provided by the finder Function was null." );
+                }
+                LOG.debug( "Will use a specific Module to build new ValueComposites instances: {}", valuesModule );
+            }
+        }
+        return valuesModule;
     }
 
     @Override
@@ -438,7 +513,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             inputNode, typeInfo );
         if( typeInfo != null )
         {
-            ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
+            ValueDescriptor valueDescriptor = valuesModule().valueDescriptor( typeInfo );
             if( valueDescriptor == null )
             {
                 throw new ValueSerializationException( "Specified value type could not be resolved: " + typeInfo );
@@ -447,7 +522,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             valueBuilderType = Class.forName( typeInfo );
             if( !valueType.equals( valueCompositeType ) )
             {
-                TREE_PARSING_LOG.trace(
+                TREE_PARSING_LOG.debug(
                     "Overriding {} with {} as defined in _type field.",
                     valueType, valueCompositeType );
             }
@@ -499,7 +574,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             else
             {
                 // Serialized object does not contain the field, try to default it
-                value = property.initialValue( module );
+                value = property.initialValue( valuesModule() );
                 TREE_PARSING_LOG.trace(
                     "Property {} was not defined in serialized object and has been defaulted to '{}'",
                     property.qualifiedName(), value );
@@ -517,7 +592,6 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                     inputNode,
                     associationName,
                     buildDeserializeInputNodeFunction( new ValueType( EntityReference.class ) ) );
-                System.out.println( ">>>>> Deserialize EntityReference: '" + value + "'" );
                 stateMap.put( associationName, value );
             }
         }
@@ -533,7 +607,6 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                     manyAssociationName,
                     buildDeserializeInputNodeFunction( new CollectionType( Collection.class,
                                                                            new ValueType( EntityReference.class ) ) ) );
-                System.out.println( ">>>>> Deserialize Iterable<EntityReference>: '" + value + "'" );
                 stateMap.put( manyAssociationName, value );
             }
         }
@@ -621,7 +694,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
 
     private ValueBuilder<?> buildNewValueBuilderWithState( Class<?> type, final Map<String, Object> stateMap )
     {
-        return module.newValueBuilderWithState(
+        return valuesModule().newValueBuilderWithState(
             type,
             new Function<PropertyDescriptor, Object>()
             {
@@ -726,25 +799,25 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 TREE_PARSING_LOG.trace(
                     "In deserializeNodeGuessed(), getObjectFieldValue( {} ) returned '{}'",
                     inputNode, typeInfo );
-                ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
+                ValueDescriptor valueDescriptor = valuesModule().valueDescriptor( typeInfo );
                 if( valueDescriptor == null )
                 {
                     throw new ValueSerializationException( "Specified value type could not be resolved: " + typeInfo );
                 }
                 valueCompositeType = valueDescriptor.valueType();
-                TREE_PARSING_LOG.trace(
+                TREE_PARSING_LOG.debug(
                     "Overriding {} with {} as defined in _type field.",
                     valueType, valueCompositeType );
             }
             else // without _type info
             {
-                ValueDescriptor valueDescriptor = module.valueDescriptor( first( valueType.types() ).getName() );
+                ValueDescriptor valueDescriptor = valuesModule().valueDescriptor( first( valueType.types() ).getName() );
                 if( valueDescriptor == null )
                 {
                     throw new ValueSerializationException( "Don't know how to deserialize " + inputNode );
                 }
                 valueCompositeType = valueDescriptor.valueType();
-                TREE_PARSING_LOG.trace(
+                TREE_PARSING_LOG.debug(
                     "Overriding {} with {} as found in available ValueComposites.",
                     valueType, valueCompositeType );
             }
@@ -786,12 +859,22 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     //
     // Deserialization Extension Points
     //
+    /**
+     * Called by the adapter on deserialization start, after {@link #adaptInput(java.io.InputStream)}.
+     *
+     * @throws Exception that will be wrapped in a {@link ValueSerializationException}
+     */
     protected void onDeserializationStart( ValueType valueType, InputType input )
         throws Exception
     {
         // NOOP
     }
 
+    /**
+     * Called by the adapter on deserialization end.
+     *
+     * @throws Exception that will be wrapped in a {@link ValueSerializationException}
+     */
     protected void onDeserializationEnd( ValueType valueType, InputType input )
         throws Exception
     {
@@ -806,16 +889,22 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      *
      * @param input InputStream to adapt
      * @return Adapted input
+     * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
     protected abstract InputType adaptInput( InputStream input )
         throws Exception;
 
     // TODO rename into readPlainValue
+    /**
+     * @return a Plain Value read from the input
+     * @throws Exception that will be wrapped in a {@link ValueSerializationException}
+     */
     protected abstract Object readValue( InputType input )
         throws Exception;
 
     /**
      * @return The filled collection or null if no array
+     * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
     protected abstract <T> Collection<T> readArrayInCollection( InputType input,
                                                                 Function<InputType, T> deserializer,
@@ -840,6 +929,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      * </p>
      *
      * @return The filled map or null if no array
+     * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
     protected abstract <K, V> Map<K, V> readMapInMap( InputType input,
                                                       Function<InputType, K> keyDeserializer,
@@ -849,6 +939,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
 
     /**
      * @return an InputNodeType or null if the value was null
+     * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
     protected abstract InputNodeType readObjectTree( InputType input )
         throws Exception;
@@ -867,6 +958,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
 
     /**
      * Return null if the field do not exists.
+     * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
     protected abstract <T> T getObjectFieldValue( InputNodeType inputNode,
                                                   String key,

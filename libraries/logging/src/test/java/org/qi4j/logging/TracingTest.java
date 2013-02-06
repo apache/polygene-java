@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.logging;
 
@@ -27,7 +27,6 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.logging.trace.Trace;
 import org.qi4j.logging.trace.TraceAllConcern;
@@ -41,6 +40,7 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 import java.util.Iterator;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.*;
 import static org.qi4j.api.query.QueryExpressions.orderBy;
@@ -55,7 +55,7 @@ public class TracingTest
         module.services( SomeService.class ).instantiateOnStartup();
         module.services( SomeService2.class ).instantiateOnStartup();
         new TracingAssembler().assemble( module );
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
         new RdfMemoryStoreAssembler().assemble( module );
         module.services( UuidIdentityGeneratorService.class );
         module.entities( CompositeTraceRecordEntity.class );

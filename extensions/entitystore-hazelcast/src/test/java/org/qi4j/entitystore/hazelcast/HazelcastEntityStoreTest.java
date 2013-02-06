@@ -27,6 +27,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.hazelcast.assembly.HazelcastEntityStoreAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 
 public class HazelcastEntityStoreTest
@@ -41,7 +42,7 @@ public class HazelcastEntityStoreTest
         // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly configModule = module.layer().module( "config" );
-        configModule.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( configModule );
 
         // START SNIPPET: assembly
         new HazelcastEntityStoreAssembler().withConfigIn( configModule, Visibility.layer ).assemble( module );

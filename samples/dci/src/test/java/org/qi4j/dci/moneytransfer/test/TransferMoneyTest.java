@@ -31,8 +31,7 @@ import org.qi4j.dci.moneytransfer.domain.entity.SavingsAccountEntity;
 import org.qi4j.dci.moneytransfer.rolemap.CheckingAccountRolemap;
 import org.qi4j.dci.moneytransfer.rolemap.CreditorRolemap;
 import org.qi4j.dci.moneytransfer.rolemap.SavingsAccountRolemap;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
 
@@ -61,9 +60,7 @@ public class TransferMoneyTest
                     SavingsAccountRolemap.class,
                     CreditorRolemap.class );
 
-                module.services(
-                    MemoryEntityStoreService.class,
-                    UuidIdentityGeneratorService.class );
+                new EntityTestAssembler().assemble( module );
             }
         };
 

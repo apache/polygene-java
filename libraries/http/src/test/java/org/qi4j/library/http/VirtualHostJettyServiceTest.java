@@ -21,8 +21,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.http.dns.LocalManagedDns;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
 import static org.qi4j.library.http.Servlets.addServlets;
@@ -38,7 +38,7 @@ public class VirtualHostJettyServiceTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
         new JettyServiceAssembler().assemble( module );
 
         SecureJettyConfiguration config = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();

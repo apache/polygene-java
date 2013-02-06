@@ -14,10 +14,12 @@
 package org.qi4j.entitystore.jclouds;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class JCloudsMapEntityStoreAssembler
         implements Assembler
@@ -59,6 +61,7 @@ public class JCloudsMapEntityStoreAssembler
             throws AssemblyException
     {
         module.services( UuidIdentityGeneratorService.class );
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.services( JCloudsMapEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
         if ( identity != null && identity.length() > 0 ) {
             module.services( JCloudsMapEntityStoreService.class ).identifiedBy( identity );

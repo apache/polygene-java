@@ -10,9 +10,8 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -62,8 +61,7 @@ public class EntityCompositeEqualityTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidIdentityGeneratorService.class, MemoryEntityStoreService.class )
-            .visibleIn( Visibility.layer );
+        new EntityTestAssembler( Visibility.layer ).assemble( module );
         module.objects( EntityCompositeEqualityTest.class );
         module.entities( MyComposite.class );
     }

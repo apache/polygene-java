@@ -21,19 +21,17 @@ import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 public class NeoEntityState
     implements EntityState
 {
+
     static final String ENTITY_ID = "entity_id";
     static final String VERSION = "version";
     static final String MODIFIED = "modified";
-
     private final NeoEntityStoreUnitOfWork uow;
     private final ValueSerialization valueSerialization;
     private final Node underlyingNode;
-
     private EntityStatus status;
 
     NeoEntityState( ValueSerialization valueSerialization, NeoEntityStoreUnitOfWork work, Node node,
-                    EntityStatus status
-    )
+                    EntityStatus status )
     {
         this.valueSerialization = valueSerialization;
         this.uow = work;
@@ -121,18 +119,18 @@ public class NeoEntityState
     {
         try
         {
+            PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
             Object prop = underlyingNode.getProperty( "prop::" + stateName.toString(), null );
             if( prop == null )
             {
                 return null;
             }
-            else if( ValueType.isPrimitiveValue( prop ) )
+            else if( ValueType.isPrimitiveValueType( persistentProperty.valueType() ) )
             {
                 return prop;
             }
             else
             {
-                PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
                 return valueSerialization.deserialize( persistentProperty.valueType(), prop.toString() );
             }
         }
@@ -149,22 +147,15 @@ public class NeoEntityState
         {
             if( prop != null )
             {
-                if( ValueType.isPrimitiveValue( prop ) )
+                PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
+                if( ValueType.isPrimitiveValueType( persistentProperty.valueType() ) )
                 {
                     underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
                 }
                 else
                 {
-                    PropertyDescriptor persistentProperty = entityDescriptor().state().getPropertyByQualifiedName( stateName );
-                    if( prop instanceof String && persistentProperty.valueType().mainType().equals( String.class ) )
-                    {
-                        underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
-                    }
-                    else
-                    {
-                        String jsonString = valueSerialization.serialize( prop );
-                        underlyingNode.setProperty( "prop::" + stateName.toString(), jsonString );
-                    }
+                    String jsonString = valueSerialization.serialize( prop );
+                    underlyingNode.setProperty( "prop::" + stateName.toString(), jsonString );
                 }
             }
             else

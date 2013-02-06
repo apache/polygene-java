@@ -55,6 +55,21 @@ import static org.qi4j.functional.Iterables.*;
 /**
  * Adapter for pull-parsing capable ValueSerializers.
  *
+ * <p>
+ *     Among Plain values (see {@link ValueSerializer}) some are considered primitives to underlying serialization
+ *     mechanisms and by so handed/come without conversion to/from implementations. Primitive values can be one of:
+ * </p>
+ * <ul>
+ *     <li>String,</li>
+ *     <li>Boolean,</li>
+ *     <li>Integer,</li>
+ *     <li>Long,</li>
+ *     <li>Short,</li>
+ *     <li>Byte,</li>
+ *     <li>Float,</li>
+ *     <li>Double</li>
+ * </ul>
+ *
  * @param <OutputType> Implementor output type
  */
 public abstract class ValueSerializerAdapter<OutputType>
@@ -64,6 +79,13 @@ public abstract class ValueSerializerAdapter<OutputType>
     private static final Logger LOG = LoggerFactory.getLogger( ValueSerializerAdapter.class );
     private final Map<Class<?>, Function<Object, Object>> serializers = new HashMap<Class<?>, Function<Object, Object>>();
 
+    /**
+     * Register a Plain Value type serialization Function.
+     *
+     * @param <T> Plain Value parametrized Type
+     * @param type Plain Value Type
+     * @param deserializer Serialization Function
+     */
     @SuppressWarnings( "unchecked" )
     protected final <T> void registerSerializer( Class<T> type, Function<T, Object> serializer )
     {
@@ -72,7 +94,7 @@ public abstract class ValueSerializerAdapter<OutputType>
 
     public ValueSerializerAdapter()
     {
-        // Primitive types
+        // Primitive Value types
         registerSerializer( String.class, Functions.<Object, String>identity() );
         registerSerializer( Boolean.class, Functions.<Object, Boolean>identity() );
         registerSerializer( Integer.class, Functions.<Object, Integer>identity() );
@@ -88,7 +110,7 @@ public abstract class ValueSerializerAdapter<OutputType>
             @Override
             public Object map( BigDecimal bigDecimal )
             {
-                return bigDecimal;
+                return bigDecimal.toString();
             }
         } );
         registerSerializer( BigInteger.class, new Function<BigInteger, Object>()
@@ -96,7 +118,7 @@ public abstract class ValueSerializerAdapter<OutputType>
             @Override
             public Object map( BigInteger bigInteger )
             {
-                return bigInteger;
+                return bigInteger.toString();
             }
         } );
 

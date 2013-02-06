@@ -28,7 +28,6 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.functional.Function;
 import org.qi4j.io.Outputs;
 import org.qi4j.io.Transforms;
@@ -41,6 +40,7 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
 import static org.qi4j.functional.Iterables.first;
@@ -52,7 +52,7 @@ public class DebuggingTest
         throws AssemblyException
     {
         module.services( DebuggingServiceComposite.class );
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
         module.services( SomeService.class ).withMixins( Debug.class ).withConcerns( DebugConcern.class );
         module.entities( DebugServiceConfiguration.class );
         module.entities( ServiceDebugRecordEntity.class );

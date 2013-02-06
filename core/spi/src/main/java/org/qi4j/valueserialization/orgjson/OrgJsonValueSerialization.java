@@ -17,7 +17,7 @@ package org.qi4j.valueserialization.orgjson;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.value.ValueSerialization;
@@ -43,10 +43,17 @@ public class OrgJsonValueSerialization
     private final OrgJsonValueSerializer serializer;
     private final OrgJsonValueDeserializer deserializer;
 
-    public OrgJsonValueSerialization( @Structure Module module )
+    public OrgJsonValueSerialization( Application application, Module module, final Module valuesModule )
     {
         this.serializer = new OrgJsonValueSerializer();
-        this.deserializer = new OrgJsonValueDeserializer( module );
+        this.deserializer = new OrgJsonValueDeserializer( application, module, new Function<Application, Module>()
+        {
+            @Override
+            public Module map( Application from )
+            {
+                return valuesModule;
+            }
+        } );
     }
 
     @Override

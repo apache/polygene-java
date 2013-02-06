@@ -1,4 +1,7 @@
-/*  Copyright 2007 Niclas Hedhman.
+/*
+ * Copyright 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright 2009, Rickard Öberg. All Rights Reserved.
+ * Copyright 2013, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +25,10 @@ import org.json.JSONObject;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.json.JSONDeserializer;
-import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueType;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -55,22 +58,26 @@ public final class JSONEntityState
         JSON_KEY_MODIFIED
     };
 
-    protected DefaultEntityStoreUnitOfWork unitOfWork;
-    protected EntityStatus status;
-    protected String version;
-
-    protected long lastModified;
+    private final DefaultEntityStoreUnitOfWork unitOfWork;
+    private final ValueSerialization valueSerialization;
+    private final String version;
     private final EntityReference identity;
     private final EntityDescriptor entityDescriptor;
-    protected JSONObject state;
 
-    public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+    private EntityStatus status;
+    private long lastModified;
+    private JSONObject state;
+
+    /* package */ JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+                                   ValueSerialization valueSerialization,
                             EntityReference identity,
                             EntityDescriptor entityDescriptor,
                             JSONObject initialState
     )
     {
-        this( unitOfWork, "",
+        this( unitOfWork,
+              valueSerialization,
+              "",
               unitOfWork.currentTime(),
               identity,
               EntityStatus.NEW,
@@ -78,7 +85,8 @@ public final class JSONEntityState
               initialState );
     }
 
-    public JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+    /* package */ JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+                                   ValueSerialization valueSerialization,
                             String version,
                             long lastModified,
                             EntityReference identity,
@@ -88,6 +96,7 @@ public final class JSONEntityState
     )
     {
         this.unitOfWork = unitOfWork;
+        this.valueSerialization = valueSerialization;
         this.version = version;
         this.lastModified = lastModified;
         this.identity = identity;
@@ -128,18 +137,17 @@ public final class JSONEntityState
             }
             else
             {
-                Module module = unitOfWork.module();
                 PropertyDescriptor descriptor = entityDescriptor.state().getPropertyByQualifiedName( stateName );
-
                 if( descriptor == null )
                 {
                     return null;
                 }
-
-                JSONDeserializer deserializer = new JSONDeserializer( module );
-
-                return deserializer.deserialize( json, descriptor.valueType() );
+                return valueSerialization.deserialize( descriptor.valueType(), json.toString() );
             }
+        }
+        catch( ValueSerializationException e )
+        {
+            throw new EntityStoreException( e );
         }
         catch( JSONException e )
         {
@@ -157,18 +165,33 @@ public final class JSONEntityState
             {
                 jsonValue = JSONObject.NULL;
             }
+            else if( ValueType.isPrimitiveValue( newValue ) )
+            {
+                jsonValue = newValue;
+            }
             else
             {
-                PropertyDescriptor persistentPropertyDescriptor = entityDescriptor.state()
-                    .getPropertyByQualifiedName( stateName );
-
-                JSONObjectSerializer serializer = new JSONObjectSerializer();
-                serializer.serialize( newValue, persistentPropertyDescriptor.valueType() );
-                jsonValue = serializer.getRoot();
+                String serialized = valueSerialization.serialize( newValue );
+                if( serialized.startsWith( "{" ) )
+                {
+                    jsonValue = new JSONObject( serialized );
+                }
+                else if( serialized.startsWith( "[" ) )
+                {
+                    jsonValue = new JSONArray( serialized );
+                }
+                else
+                {
+                    jsonValue = serialized;
+                }
             }
             cloneStateIfGlobalStateLoaded();
             state.getJSONObject( JSON_KEY_PROPERTIES ).put( stateName.name(), jsonValue );
             markUpdated();
+        }
+        catch( ValueSerializationException e )
+        {
+            throw new EntityStoreException( e );
         }
         catch( JSONException e )
         {

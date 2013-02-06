@@ -40,7 +40,6 @@ import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specifications;
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
 import org.qi4j.io.Transforms;
@@ -121,7 +120,7 @@ public class AbstractCollectionSerializationTest
     public void givenIterableTypeWithByteAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        String output = valueSerialization.serialize( Iterables.filter( Specifications.TRUE(), byteCollection() ) );
+        String output = valueSerialization.serialize( Iterables.iterable( byteCollection().toArray() ) );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( Byte.class ) );
         List<Byte> list = valueSerialization.deserialize( collectionType, output );
         assertEquals( byteCollection(), list );

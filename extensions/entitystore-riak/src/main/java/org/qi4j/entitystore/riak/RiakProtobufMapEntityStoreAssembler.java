@@ -18,10 +18,12 @@
 package org.qi4j.entitystore.riak;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * Riak Protobuf EntityStore assembly.
@@ -63,6 +65,9 @@ public class RiakProtobufMapEntityStoreAssembler
 
         module.services( UuidIdentityGeneratorService.class ).
             visibleIn( visibility );
+
+        module.services( OrgJsonValueSerializationService.class ).
+            taggedWith( ValueSerialization.Formats.JSON );
 
         module.services( RiakMapEntityStoreService.class ).
             withMixins( RiakProtobufMapEntityStoreMixin.class ).

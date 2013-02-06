@@ -16,18 +16,19 @@
  */
 package org.qi4j.entitystore.jdbm;
 
+import java.io.File;
 import org.junit.After;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
-
-import java.io.File;
 
 /**
  * JAVADOC
@@ -40,11 +41,11 @@ public class JdbmEntityStoreTest
    {
       super.assemble(module);
       module.services(FileConfigurationService.class).instantiateOnStartup();
-      module.services(JdbmEntityStoreService.class, UuidIdentityGeneratorService.class);
+      new JdbmEntityStoreAssembler( Visibility.module ).assemble( module );
 
       ModuleAssembly config = module.layer().module("config");
       config.entities(JdbmConfiguration.class).visibleIn(Visibility.layer);
-      config.services(MemoryEntityStoreService.class);
+      new EntityTestAssembler().assemble( config );
    }
 
    @Test
