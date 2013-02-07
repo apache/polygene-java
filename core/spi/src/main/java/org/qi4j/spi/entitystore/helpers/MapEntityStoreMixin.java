@@ -23,16 +23,17 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.json.JSONDeserializer;
-import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.util.Classes;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
@@ -69,6 +70,10 @@ public class MapEntityStoreMixin
 
     @Structure
     private Application application;
+
+    @Service
+    @Tagged( ValueSerialization.Formats.JSON )
+    private ValueSerialization valueSerialization;
 
     @Optional
     @Service
@@ -295,12 +300,30 @@ public class MapEntityStoreMixin
                 key( "modified" ).value( lastModified ).
                 key( "properties" ).object();
             EntityDescriptor entityType = state.entityDescriptor();
-            JSONWriterSerializer serializer = new JSONWriterSerializer( json );
             for( PropertyDescriptor persistentProperty : entityType.state().properties() )
             {
                 Object value = state.properties().get( persistentProperty.qualifiedName() );
                 json.key( persistentProperty.qualifiedName().name() );
-                serializer.serialize( value, persistentProperty.valueType() );
+                if( value == null || ValueType.isPrimitiveValue( value ) )
+                {
+                    json.value( value );
+                }
+                else
+                {
+                    String serialized = valueSerialization.serialize( value );
+                    if( serialized.startsWith( "{" ) )
+                    {
+                        json.value( new JSONObject( serialized ) );
+                    }
+                    else if( serialized.startsWith( "[" ) )
+                    {
+                        json.value( new JSONArray( serialized ) );
+                    }
+                    else
+                    {
+                        json.value( serialized );
+                    }
+                }
             }
 
             JSONWriter associations = properties.endObject().key( "associations" ).object();
@@ -337,7 +360,6 @@ public class MapEntityStoreMixin
         try
         {
             Module module = unitOfWork.module();
-            JSONDeserializer deserializer = new JSONDeserializer( module );
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
@@ -393,13 +415,13 @@ public class MapEntityStoreMixin
                     status = EntityStatus.UPDATED;
                     continue;
                 }
-                if( jsonValue == JSONObject.NULL )
+                if( JSONObject.NULL.equals( jsonValue ) )
                 {
                     properties.put( propertyDescriptor.qualifiedName(), null );
                 }
                 else
                 {
-                    Object value = deserializer.deserialize( jsonValue, propertyDescriptor.valueType() );
+                    Object value = valueSerialization.deserialize( propertyDescriptor.valueType(), jsonValue.toString() );
                     properties.put( propertyDescriptor.qualifiedName(), value );
                 }
             }

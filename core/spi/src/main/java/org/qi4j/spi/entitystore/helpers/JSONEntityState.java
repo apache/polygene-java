@@ -70,10 +70,9 @@ public final class JSONEntityState
 
     /* package */ JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
                                    ValueSerialization valueSerialization,
-                            EntityReference identity,
-                            EntityDescriptor entityDescriptor,
-                            JSONObject initialState
-    )
+                                   EntityReference identity,
+                                   EntityDescriptor entityDescriptor,
+                                   JSONObject initialState )
     {
         this( unitOfWork,
               valueSerialization,
@@ -87,12 +86,12 @@ public final class JSONEntityState
 
     /* package */ JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
                                    ValueSerialization valueSerialization,
-                            String version,
-                            long lastModified,
-                            EntityReference identity,
-                            EntityStatus status,
-                            EntityDescriptor entityDescriptor,
-                            JSONObject state
+                                   String version,
+                                   long lastModified,
+                                   EntityReference identity,
+                                   EntityStatus status,
+                                   EntityDescriptor entityDescriptor,
+                                   JSONObject state
     )
     {
         this.unitOfWork = unitOfWork;
@@ -131,7 +130,7 @@ public final class JSONEntityState
         try
         {
             Object json = state.getJSONObject( JSON_KEY_PROPERTIES ).opt( stateName.name() );
-            if( json == null || json == JSONObject.NULL )
+            if( JSONObject.NULL.equals( json ) )
             {
                 return null;
             }
@@ -161,11 +160,7 @@ public final class JSONEntityState
         try
         {
             Object jsonValue;
-            if( newValue == null )
-            {
-                jsonValue = JSONObject.NULL;
-            }
-            else if( ValueType.isPrimitiveValue( newValue ) )
+            if( newValue == null || ValueType.isPrimitiveValue( newValue ) )
             {
                 jsonValue = newValue;
             }
