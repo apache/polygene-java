@@ -77,6 +77,7 @@ public abstract class ValueSerializerAdapter<OutputType>
 {
 
     private static final Logger LOG = LoggerFactory.getLogger( ValueSerializerAdapter.class );
+    private static final String UTF_8 = "UTF-8";
     private final Map<Class<?>, Function<Object, Object>> serializers = new HashMap<Class<?>, Function<Object, Object>>();
 
     /**
@@ -208,7 +209,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             serializeRoot( object, output, includeTypeInfo );
-            return output.toString( "UTF-8" );
+            return output.toString( UTF_8 );
         }
         catch( ValueSerializationException ex )
         {
@@ -255,12 +256,17 @@ public abstract class ValueSerializerAdapter<OutputType>
             {
                 // Plain Value
                 Object serialized = serializers.get( object.getClass() ).map( object );
-                output.write( serialized.toString().getBytes( "UTF-8" ) );
+                output.write( serialized.toString().getBytes( UTF_8 ) );
             }
             else if( object.getClass().isEnum() )
             {
                 // Enum Value
-                output.write( object.toString().getBytes( "UTF-8" ) );
+                output.write( object.toString().getBytes( UTF_8 ) );
+            }
+            else if( object.getClass().isArray() )
+            {
+                // Array Value
+                output.write( serializeBase64Serializable( object ).getBytes( UTF_8 ) );
             }
             else
             {
@@ -446,13 +452,18 @@ public abstract class ValueSerializerAdapter<OutputType>
     private void serializeBase64Serializable( Object object, OutputType output )
         throws Exception
     {
+        onValue( output, serializeBase64Serializable( object ) );
+    }
+
+    private String serializeBase64Serializable( Object object )
+        throws Exception
+    {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream( bout );
         out.writeUnshared( object );
         out.close();
         byte[] bytes = Base64Encoder.encode( bout.toByteArray(), true );
-        String stringValue = new String( bytes, "UTF-8" );
-        onValue( output, stringValue );
+        return new String( bytes, UTF_8 );
     }
 
     protected abstract OutputType adaptOutput( OutputStream output )

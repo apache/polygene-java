@@ -90,6 +90,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private static final Logger LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class );
     private static final Logger PULL_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#PullParsing" );
     private static final Logger TREE_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#TreeParsing" );
+    private static final String UTF_8 = "UTF-8";
     private final Map<Class<?>, Function<Object, Object>> deserializers = new HashMap<Class<?>, Function<Object, Object>>();
     private final Application application;
     private final Module module;
@@ -333,7 +334,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     {
         try
         {
-            return deserializeRoot( valueType, new ByteArrayInputStream( input.getBytes( "UTF-8" ) ) );
+            return deserializeRoot( valueType, new ByteArrayInputStream( input.getBytes( UTF_8 ) ) );
         }
         catch( ValueSerializationException ex )
         {
@@ -368,27 +369,36 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception
     {
         final Class<?> type = first( valueType.types() );
+        // Plain ValueType
         if( deserializers.get( type ) != null )
         {
-            // Plain ValueType
-            Scanner scanner = new Scanner( input, "UTF-8" ).useDelimiter( "\\A" );
+            Scanner scanner = new Scanner( input, UTF_8 ).useDelimiter( "\\A" );
             if( !scanner.hasNext() )
             {
-                if( String.class.equals( type ) )
-                {
-                    return (T) "";
-                }
-                return null;
+                return String.class.equals( type ) ? (T) "" : null;
             }
             String string = scanner.next();
             return (T) deserializers.get( type ).map( string );
         }
-        // Complex ValueType
-        InputType adaptedInput = adaptInput( input );
-        onDeserializationStart( valueType, adaptedInput );
-        T deserialized = doDeserialize( valueType, adaptedInput );
-        onDeserializationEnd( valueType, adaptedInput );
-        return deserialized;
+        else // Array ValueType
+        if( type.isArray() )
+        {
+            Scanner scanner = new Scanner( input, UTF_8 ).useDelimiter( "\\A" );
+            if( !scanner.hasNext() )
+            {
+                return null;
+            }
+            String string = scanner.next();
+            return (T) deserializeBase64Serialized( string );
+        }
+        else // Complex ValueType
+        {
+            InputType adaptedInput = adaptInput( input );
+            onDeserializationStart( valueType, adaptedInput );
+            T deserialized = doDeserialize( valueType, adaptedInput );
+            onDeserializationEnd( valueType, adaptedInput );
+            return deserialized;
+        }
     }
 
     @SuppressWarnings( "unchecked" )
@@ -853,7 +863,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private <T> T deserializeBase64Serialized( String inputString )
         throws Exception
     {
-        byte[] bytes = inputString.getBytes( "UTF-8" );
+        byte[] bytes = inputString.getBytes( UTF_8 );
         bytes = Base64Encoder.decode( bytes );
         ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
         Object result = oin.readObject();
