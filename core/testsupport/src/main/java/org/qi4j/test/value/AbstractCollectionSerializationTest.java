@@ -82,8 +82,7 @@ public class AbstractCollectionSerializationTest
         String output = sb.toString();
 
         List<Byte> list = new ArrayList<Byte>();
-        ValueType valueType = new ValueType( Byte.class );
-        text( output ).transferTo( map( valueSerialization.<Byte>deserialize( valueType ), collection( list ) ) );
+        text( output ).transferTo( map( valueSerialization.deserialize( Byte.class ), collection( list ) ) );
         assertEquals( byteCollection(), list );
     }
 
@@ -96,7 +95,7 @@ public class AbstractCollectionSerializationTest
             23, 42, -23, -42
         };
         String output = valueSerialization.serialize( primitiveArray );
-        int[] deserialized = valueSerialization.deserialize( new ValueType( int[].class ), output );
+        int[] deserialized = valueSerialization.deserialize( int[].class, output );
         assertArrayEquals( primitiveArray, deserialized );
     }
 
@@ -109,7 +108,7 @@ public class AbstractCollectionSerializationTest
             9, null, -12, -12, 127, -128, 73
         };
         String output = valueSerialization.serialize( array );
-        Byte[] deserialized = valueSerialization.deserialize( new ValueType( Byte[].class ), output );
+        Byte[] deserialized = valueSerialization.deserialize( Byte[].class, output );
         assertArrayEquals( array, deserialized );
     }
 

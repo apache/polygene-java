@@ -71,6 +71,19 @@ public interface ValueDeserializer
     /**
      * Factory method for a typed deserialize function.
      *
+     * <p>The returned Function may throw {@link ValueSerializationException}.</p>
+     *
+     * @param type the value type
+     * @param <T> the parametrized function return type
+     * @return a deserialization function
+     */
+    <T> Function<String, T> deserialize( Class<T> type );
+
+    /**
+     * Factory method for a typed deserialize function.
+     *
+     * <p>The returned Function may throw {@link ValueSerializationException}.</p>
+     *
      * @param valueType the value type
      * @param <T> the parametrized function return type
      * @return a deserialization function
@@ -80,10 +93,24 @@ public interface ValueDeserializer
     /**
      * Factory method for an untyped deserialize function.
      *
+     * <p>The returned Function may throw {@link ValueSerializationException}.</p>
+     *
      * @param <T> the parametrized function return type
      * @return a deserialization function
      */
     <T> Function2<ValueType, String, T> deserialize();
+
+    /**
+     * Deserialize a value from a state.
+     *
+     * @param <T> the parametrized returned type
+     * @param type the value type
+     * @param input the state
+     * @return the value
+     * @throws ValueSerializationException if the deserialization failed
+     */
+    <T> T deserialize( Class<?> type, String input )
+        throws ValueSerializationException;
 
     /**
      * Deserialize a value from a state.
@@ -95,6 +122,18 @@ public interface ValueDeserializer
      * @throws ValueSerializationException if the deserialization failed
      */
     <T> T deserialize( ValueType valueType, String input )
+        throws ValueSerializationException;
+
+    /**
+     * Deserialize a value from a state.
+     *
+     * @param <T> the parametrized returned type
+     * @param type the value type
+     * @param input the state stream
+     * @return the value
+     * @throws ValueSerializationException if the deserialization failed
+     */
+    <T> T deserialize( Class<?> type, InputStream input )
         throws ValueSerializationException;
 
     /**

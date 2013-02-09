@@ -97,14 +97,14 @@ public abstract class AbstractValueCompositeSerializationTest
         {
             SomeValue some = buildSomeValue();
 
-            // Serialize
+            // Serialize using injected service
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             valueSerialization.serialize( some, output, true );
             String stateString = output.toString( "UTF-8" );
 
             log.info( "Complex ValueComposite state:\n\n{}\n", stateString );
 
-            // Deserialize
+            // Deserialize using Module API
             SomeValue some2 = module.newValueFromSerializedState( SomeValue.class, stateString );
 
             assertThat( "Same value toString", some.toString(), equalTo( some2.toString() ) );

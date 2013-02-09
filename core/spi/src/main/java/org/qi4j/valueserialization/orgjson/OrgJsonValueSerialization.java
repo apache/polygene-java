@@ -97,6 +97,12 @@ public class OrgJsonValueSerialization
     }
 
     @Override
+    public <T> Function<String, T> deserialize( Class<T> type )
+    {
+        return deserializer.deserialize( type );
+    }
+
+    @Override
     public <T> Function<String, T> deserialize( ValueType valueType )
     {
         return deserializer.deserialize( valueType );
@@ -109,10 +115,24 @@ public class OrgJsonValueSerialization
     }
 
     @Override
+    public <T> T deserialize( Class<?> type, String input )
+        throws ValueSerializationException
+    {
+        return deserializer.deserialize( type, input );
+    }
+
+    @Override
     public <T> T deserialize( ValueType type, String input )
         throws ValueSerializationException
     {
         return deserializer.deserialize( type, input );
+    }
+
+    @Override
+    public <T> T deserialize( Class<?> type, InputStream input )
+        throws ValueSerializationException
+    {
+        return deserializer.deserialize( new ValueType( type ), input );
     }
 
     @Override

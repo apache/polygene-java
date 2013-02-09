@@ -303,6 +303,22 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     }
 
     @Override
+    public <T> Function<String, T> deserialize( Class<T> type )
+    {
+        if( CollectionType.isCollection( type ) )
+        {
+            ValueType objectValueType = new ValueType( Object.class );
+            return deserialize( new CollectionType( type, objectValueType ) );
+        }
+        if( MapType.isMap( type ) )
+        {
+            ValueType objectValueType = new ValueType( Object.class );
+            return deserialize( new MapType( type, objectValueType, objectValueType ) );
+        }
+        return deserialize( new ValueType( type ) );
+    }
+
+    @Override
     public final <T> Function<String, T> deserialize( final ValueType valueType )
     {
         return new Function<String, T>()
@@ -329,6 +345,23 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     }
 
     @Override
+    public final <T> T deserialize( Class<?> type, String input )
+        throws ValueSerializationException
+    {
+        if( CollectionType.isCollection( type ) )
+        {
+            ValueType objectValueType = new ValueType( Object.class );
+            return deserialize( new CollectionType( type, objectValueType ), input );
+        }
+        if( MapType.isMap( type ) )
+        {
+            ValueType objectValueType = new ValueType( Object.class );
+            return deserialize( new MapType( type, objectValueType, objectValueType ), input );
+        }
+        return deserialize( new ValueType( type ), input );
+    }
+
+    @Override
     public final <T> T deserialize( ValueType valueType, String input )
         throws ValueSerializationException
     {
@@ -344,6 +377,23 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         {
             throw new ValueSerializationException( "Could not deserialize value", ex );
         }
+    }
+
+    @Override
+    public final <T> T deserialize( Class<?> type, InputStream input )
+        throws ValueSerializationException
+    {
+        if( CollectionType.isCollection( type ) )
+        {
+            ValueType objectValueType = new ValueType( Object.class );
+            return deserialize( new CollectionType( type, objectValueType ), input );
+        }
+        if( MapType.isMap( type ) )
+        {
+            ValueType objectValueType = new ValueType( Object.class );
+            return deserialize( new MapType( type, objectValueType, objectValueType ), input );
+        }
+        return deserialize( new ValueType( type ), input );
     }
 
     @Override

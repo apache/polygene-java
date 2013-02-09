@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.type.ValueType;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -64,7 +63,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( "" );
         assertThat( "Serialized", serialized, equalTo( "" ) );
 
-        String deserialized = valueSerialization.deserialize( new ValueType( String.class ), serialized );
+        String deserialized = valueSerialization.deserialize( String.class, serialized );
         assertThat( "Deserialized", deserialized, equalTo( "" ) );
     }
 
@@ -74,7 +73,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( "test" );
         assertThat( serialized, equalTo( "test" ) );
 
-        String deserialized = valueSerialization.deserialize( new ValueType( String.class ), serialized );
+        String deserialized = valueSerialization.deserialize( String.class, serialized );
         assertThat( deserialized, equalTo( "test" ) );
     }
 
@@ -84,7 +83,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( Boolean.TRUE );
         assertThat( serialized, equalTo( "true" ) );
 
-        Boolean deserialized = valueSerialization.deserialize( new ValueType( Boolean.class ), serialized );
+        Boolean deserialized = valueSerialization.deserialize( Boolean.class, serialized );
         assertThat( deserialized, equalTo( Boolean.TRUE ) );
     }
 
@@ -93,7 +92,7 @@ public class AbstractPlainValueSerializationTest
     {
         String serialized = valueSerialization.serialize( 42 );
         assertThat( serialized, equalTo( "42" ) );
-        Integer deserialized = valueSerialization.deserialize( new ValueType( Integer.class ), serialized );
+        Integer deserialized = valueSerialization.deserialize( Integer.class, serialized );
         assertThat( deserialized, equalTo( 42 ) );
     }
 
@@ -103,7 +102,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( 42L );
         assertThat( serialized, equalTo( "42" ) );
 
-        Long deserialized = valueSerialization.deserialize( new ValueType( Long.class ), serialized );
+        Long deserialized = valueSerialization.deserialize( Long.class, serialized );
         assertThat( deserialized, equalTo( 42L ) );
     }
 
@@ -113,7 +112,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( (short) 42 );
         assertThat( serialized, equalTo( "42" ) );
 
-        Short deserialized = valueSerialization.deserialize( new ValueType( Short.class ), serialized );
+        Short deserialized = valueSerialization.deserialize( Short.class, serialized );
         assertThat( deserialized, equalTo( (short) 42 ) );
     }
 
@@ -122,7 +121,7 @@ public class AbstractPlainValueSerializationTest
     {
         String serialized = valueSerialization.serialize( (byte) 42 );
         assertThat( serialized, equalTo( "42" ) );
-        Byte deserialized = valueSerialization.deserialize( new ValueType( Byte.class ), serialized );
+        Byte deserialized = valueSerialization.deserialize( Byte.class, serialized );
         assertThat( deserialized, equalTo( (byte) 42 ) );
     }
 
@@ -132,7 +131,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( 42F );
         assertThat( serialized, equalTo( "42.0" ) );
 
-        Float deserialized = valueSerialization.deserialize( new ValueType( Float.class ), serialized );
+        Float deserialized = valueSerialization.deserialize( Float.class, serialized );
         assertThat( deserialized, equalTo( 42F ) );
     }
 
@@ -142,7 +141,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( 42D );
         assertThat( serialized, equalTo( "42.0" ) );
 
-        Double deserialized = valueSerialization.deserialize( new ValueType( Double.class ), serialized );
+        Double deserialized = valueSerialization.deserialize( Double.class, serialized );
         assertThat( deserialized, equalTo( 42D ) );
     }
 
@@ -152,7 +151,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( new BigInteger( "42" ) );
         assertThat( serialized, equalTo( "42" ) );
 
-        BigInteger deserialized = valueSerialization.deserialize( new ValueType( BigInteger.class ), serialized );
+        BigInteger deserialized = valueSerialization.deserialize( BigInteger.class, serialized );
         assertThat( deserialized, equalTo( new BigInteger( "42" ) ) );
     }
 
@@ -162,7 +161,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( new BigDecimal( "42" ) );
         assertThat( serialized, equalTo( "42" ) );
 
-        BigDecimal deserialized = valueSerialization.deserialize( new ValueType( BigDecimal.class ), serialized );
+        BigDecimal deserialized = valueSerialization.deserialize( BigDecimal.class, serialized );
         assertThat( deserialized, equalTo( new BigDecimal( "42" ) ) );
     }
 
@@ -172,7 +171,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
         assertThat( serialized, equalTo( "2020-03-04T13:24:35.000Z" ) );
 
-        Date deserialized = valueSerialization.deserialize( new ValueType( Date.class ), serialized );
+        Date deserialized = valueSerialization.deserialize( Date.class, serialized );
         assertThat( deserialized, equalTo( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() ) );
     }
 
@@ -181,7 +180,7 @@ public class AbstractPlainValueSerializationTest
     {
         String serialized = valueSerialization.serialize( new DateTime( "2020-03-04T13:24:35", UTC ) );
         assertThat( serialized, equalTo( "2020-03-04T13:24:35.000Z" ) );
-        DateTime deserialized = valueSerialization.deserialize( new ValueType( DateTime.class ), serialized );
+        DateTime deserialized = valueSerialization.deserialize( DateTime.class, serialized );
         assertThat( deserialized, equalTo( new DateTime( "2020-03-04T13:24:35", UTC ) ) );
     }
 
@@ -191,7 +190,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( new LocalDateTime( "2020-03-04T13:23:00", UTC ) );
         assertThat( serialized, equalTo( "2020-03-04T13:23:00.000" ) );
 
-        LocalDateTime deserialized = valueSerialization.deserialize( new ValueType( LocalDateTime.class ), serialized );
+        LocalDateTime deserialized = valueSerialization.deserialize( LocalDateTime.class, serialized );
         assertThat( deserialized, equalTo( new LocalDateTime( "2020-03-04T13:23:00", UTC ) ) );
     }
 
@@ -201,7 +200,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( new LocalDate( "2020-03-04" ) );
         assertThat( serialized, equalTo( "2020-03-04" ) );
 
-        LocalDate deserialized = valueSerialization.deserialize( new ValueType( LocalDate.class ), serialized );
+        LocalDate deserialized = valueSerialization.deserialize( LocalDate.class, serialized );
         assertThat( deserialized, equalTo( new LocalDate( "2020-03-04" ) ) );
     }
 
@@ -211,7 +210,7 @@ public class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( EntityReference.parseEntityReference( "ABCD-1234" ) );
         assertThat( serialized, equalTo( "ABCD-1234" ) );
 
-        EntityReference deserialized = valueSerialization.deserialize( new ValueType( EntityReference.class ), serialized );
+        EntityReference deserialized = valueSerialization.deserialize( EntityReference.class, serialized );
         assertThat( deserialized, equalTo( EntityReference.parseEntityReference( "ABCD-1234" ) ) );
     }
 }
