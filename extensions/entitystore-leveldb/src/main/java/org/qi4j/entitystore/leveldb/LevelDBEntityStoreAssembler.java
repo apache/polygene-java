@@ -1,12 +1,10 @@
 package org.qi4j.entitystore.leveldb;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * LevelDB EntityStore assembly.
@@ -48,7 +46,6 @@ public class LevelDBEntityStoreAssembler
             configModule = module;
         }
         module.services( UuidIdentityGeneratorService.class );
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.services( LevelDBEntityStoreService.class ).visibleIn( visibility );
         configModule.entities( LevelDBEntityStoreConfiguration.class ).visibleIn( configVisibility );
         if( identity != null )
@@ -56,5 +53,4 @@ public class LevelDBEntityStoreAssembler
             module.services( LevelDBEntityStoreService.class ).identifiedBy( identity );
         }
     }
-
 }

@@ -18,12 +18,10 @@
 package org.qi4j.entitystore.redis;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * Redis EntityStore assembly.
@@ -69,8 +67,6 @@ public class RedisMapEntityStoreAssembler
     {
         module.services( RedisMapEntityStoreService.class ).visibleIn( visibility );
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         configModule.entities( RedisEntityStoreConfiguration.class ).visibleIn( configVisibility );
     }
-
 }

@@ -17,17 +17,18 @@ package org.qi4j.valueserialization.orgjson;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.value.AbstractCollectionSerializationTest;
+import org.qi4j.test.value.AbstractPlainValueSerializationTest;
 
-public class OrgJsonCollectionSerializationTest
-    extends AbstractCollectionSerializationTest
+public class OrgJsonPlainValueSerializationTest
+    extends AbstractPlainValueSerializationTest
 {
 
+    // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        super.assemble( module );
-        module.services( OrgJsonValueSerializationService.class );
+        new OrgJsonValueSerializationAssembler().assemble( module );
     }
+    // END SNIPPET: assembly
 }

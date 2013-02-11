@@ -18,6 +18,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class JCloudsTransientTest
         extends AbstractEntityStoreTest
@@ -30,6 +31,7 @@ public class JCloudsTransientTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
+        new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
         new JCloudsMapEntityStoreAssembler().withConfigIn( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly

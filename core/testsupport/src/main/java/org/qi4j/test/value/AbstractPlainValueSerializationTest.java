@@ -27,8 +27,6 @@ import org.junit.Test;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.value.ValueSerialization;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -38,15 +36,9 @@ import static org.junit.Assert.*;
 /**
  * Assert that ValueSerialization behaviour on plain values is correct.
  */
-public class AbstractPlainValueSerializationTest
+public abstract class AbstractPlainValueSerializationTest
     extends AbstractQi4jTest
 {
-
-    @Override
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
-    {
-    }
 
     @Before
     public void before()

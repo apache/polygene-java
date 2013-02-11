@@ -17,10 +17,10 @@ package org.qi4j.valueserialization.orgjson;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.value.AbstractValueCompositeSerializationTest;
+import org.qi4j.test.value.AbstractJsonDateFormatTest;
 
-public class OrgJsonValueCompositeSerializationTest
-    extends AbstractValueCompositeSerializationTest
+public class OrgJsonDateFormatTest
+    extends AbstractJsonDateFormatTest
 {
 
     @Override
@@ -28,6 +28,6 @@ public class OrgJsonValueCompositeSerializationTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( OrgJsonValueSerializationService.class );
+        new OrgJsonValueSerializationAssembler().assemble( module );
     }
 }

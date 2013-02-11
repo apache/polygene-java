@@ -27,9 +27,10 @@ import org.qi4j.functional.Function;
  * </p>
  * <ul>
  *     <li>a ValueComposite,</li>
+ *     <li>an EntityComposite or EntityReference,</li>
  *     <li>an Iterable,</li>
  *     <li>a Map,</li>
- *     <li>a plain value.</li>
+ *     <li>a Plain Value.</li>
  * </ul>
  * <p>
  *     Nested plain values, EntityReferences, Iterables, Maps, ValueComposites and EntityComposites are supported.
@@ -40,13 +41,13 @@ import org.qi4j.functional.Function;
  * </p>
  * <ul>
  *     <li>String,</li>
- *     <li>Boolean,</li>
- *     <li>Integer,</li>
- *     <li>Long,</li>
- *     <li>Short,</li>
- *     <li>Byte,</li>
- *     <li>Float,</li>
- *     <li>Double,</li>
+ *     <li>Boolean or boolean,</li>
+ *     <li>Integer or int,</li>
+ *     <li>Long or long,</li>
+ *     <li>Short or short,</li>
+ *     <li>Byte or byte,</li>
+ *     <li>Float or float,</li>
+ *     <li>Double or double,</li>
  *     <li>BigInteger,</li>
  *     <li>BigDecimal,</li>
  *     <li>Date,</li>

@@ -22,6 +22,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class JCloudsFilesystemTest
         extends AbstractEntityStoreTest
@@ -34,6 +35,7 @@ public class JCloudsFilesystemTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
+        new OrgJsonValueSerializationAssembler().assemble( module );
         new JCloudsMapEntityStoreAssembler().withConfigIn( config, Visibility.layer ).assemble( module );
         JCloudsMapEntityStoreConfiguration defaults = config.forMixin( JCloudsMapEntityStoreConfiguration.class ).declareDefaults();
         defaults.provider().set( "filesystem" );

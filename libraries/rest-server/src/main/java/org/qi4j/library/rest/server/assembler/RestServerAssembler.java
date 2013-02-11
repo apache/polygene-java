@@ -22,7 +22,6 @@ import java.util.Properties;
 import org.apache.velocity.app.VelocityEngine;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.importer.NewObjectImporter;
-import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ClassScanner;
@@ -36,7 +35,6 @@ import org.qi4j.library.rest.server.restlet.requestreader.DefaultRequestReader;
 import org.qi4j.library.rest.server.restlet.responsewriter.AbstractResponseWriter;
 import org.qi4j.library.rest.server.restlet.responsewriter.DefaultResponseWriter;
 import org.qi4j.library.rest.server.spi.ResponseWriter;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.restlet.service.MetadataService;
 
 import static org.qi4j.api.util.Classes.hasModifier;
@@ -109,7 +107,5 @@ public class RestServerAssembler
 
         // Standard request readers
         module.objects( DefaultRequestReader.class );
-
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 }

@@ -16,13 +16,13 @@ import org.qi4j.library.rest.client.api.ContextResourceClient;
 import org.qi4j.library.rest.client.api.ContextResourceClientFactory;
 import org.qi4j.library.rest.client.api.ErrorHandler;
 import org.qi4j.library.rest.client.api.HandlerCommand;
-import org.qi4j.library.rest.client.spi.NullResponseHandler;
 import org.qi4j.library.rest.client.spi.ResponseHandler;
 import org.qi4j.library.rest.client.spi.ResponseReader;
 import org.qi4j.library.rest.client.spi.ResultHandler;
 import org.qi4j.library.rest.common.ValueAssembler;
 import org.qi4j.library.rest.common.link.Link;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.Client;
 import org.restlet.Response;
 import org.restlet.data.Protocol;
@@ -48,6 +48,7 @@ public class RssReaderTest
         throws AssemblyException
     {
         // General setup of client
+        new OrgJsonValueSerializationAssembler().assemble( module );
         new ClientAssembler().assemble( module );
         new ValueAssembler().assemble( module );
     }

@@ -18,7 +18,6 @@
 package org.qi4j.library.rest.client;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -29,7 +28,6 @@ import org.qi4j.library.rest.client.requestwriter.ValueCompositeRequestWriter;
 import org.qi4j.library.rest.client.responsereader.DefaultResponseReader;
 import org.qi4j.library.rest.client.responsereader.JSONResponseReader;
 import org.qi4j.library.rest.client.responsereader.TableResponseReader;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * JAVADOC
@@ -50,7 +48,5 @@ public class ClientAssembler
       module.objects(RequestWriterDelegator.class,
             FormRequestWriter.class,
             ValueCompositeRequestWriter.class).visibleIn(Visibility.application);
-
-      module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
    }
 }

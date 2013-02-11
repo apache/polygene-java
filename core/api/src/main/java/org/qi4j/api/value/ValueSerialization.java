@@ -16,7 +16,9 @@
 package org.qi4j.api.value;
 
 /**
- * A ValueSerialization is both a {@link ValueSerializer} and a {@link ValueDeserializer}.
+ * ValueSerialization API.
+ *
+ * See {@link ValueSerializer} and {@link ValueDeserializer}.
  */
 public interface ValueSerialization
     extends ValueSerializer, ValueDeserializer
@@ -24,6 +26,11 @@ public interface ValueSerialization
 
     /**
      * Serialization format @Service tags.
+     *
+     * <p>
+     *     ValueSerialization implementations should be tagged with theses at assembly time so that consumers can
+     *     specify which format they need.
+     * </p>
      */
     interface Formats
     {

@@ -26,7 +26,7 @@ import org.qi4j.api.property.Property;
 
 // START SNIPPET: config
 public interface MongoEntityStoreConfiguration
-        extends ConfigurationComposite
+    extends ConfigurationComposite
 {
 
     @Optional

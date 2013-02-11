@@ -23,11 +23,12 @@ public class StaxPlainValueSerializationTest
     extends AbstractPlainValueSerializationTest
 {
 
+    // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        super.assemble( module );
-        module.services( StaxValueSerializationService.class );
+        new StaxValueSerializationAssembler().assemble( module );
     }
+    // END SNIPPET: assembly
 }

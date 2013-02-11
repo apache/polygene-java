@@ -28,6 +28,6 @@ public class JacksonValueCompositeSerializationTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( JacksonValueSerializationService.class );
+        new JacksonValueSerializationAssembler().assemble( module );
     }
 }

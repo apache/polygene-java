@@ -28,6 +28,6 @@ public class StaxCollectionSerializationTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( StaxValueSerializationService.class );
+        new StaxValueSerializationAssembler().assemble( module );
     }
 }

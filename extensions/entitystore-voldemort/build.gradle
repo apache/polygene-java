@@ -3,28 +3,30 @@ description = "Qi4j Voldemort EntityStore Extension"
 jar { manifest { name = "Qi4j Extension - EntityStore - Voldemort" }}
 
 repositories {
-  mavenRepo name: 'clojars-repo', url: 'http://clojars.org/repo'
-  mavenRepo name: 'oracle-repo', url: 'http://download.oracle.com/maven'
+    mavenRepo name: 'clojars-repo', url: 'http://clojars.org/repo'
+    mavenRepo name: 'oracle-repo', url: 'http://download.oracle.com/maven'
 }
 
 dependencies {
 
-  compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
-  compile project(":org.qi4j.libraries:org.qi4j.library.locking")
-  compile libraries.voldemort
-  compile libraries.guava
+    compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
+    compile project(":org.qi4j.libraries:org.qi4j.library.locking")
+    compile libraries.voldemort
+    compile libraries.guava
 
-  testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
+    testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
+    testCompile(project(":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson"))
 
-  testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
-  testRuntime libraries.logback
-  testRuntime libraries.sleepycat
-  testRuntime libraries.log4j
-  testRuntime libraries.jdom
-  testRuntime libraries.velocity
-  testRuntime libraries.commons_codec
-  testRuntime libraries.commons_dbcp
-  testRuntime libraries.commons_io
-  testRuntime libraries.commons_lang
+    testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
+    testRuntime libraries.logback
+    testRuntime libraries.sleepycat
+    testRuntime libraries.log4j
+    testRuntime libraries.jdom
+    testRuntime libraries.velocity
+    testRuntime libraries.commons_codec
+    testRuntime libraries.commons_dbcp
+    testRuntime libraries.commons_io
+    testRuntime libraries.commons_lang
+
 }
 

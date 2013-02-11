@@ -23,11 +23,12 @@ public class JacksonPlainValueSerializationTest
     extends AbstractPlainValueSerializationTest
 {
 
+    // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        super.assemble( module );
-        module.services( JacksonValueSerializationService.class );
+        new JacksonValueSerializationAssembler().assemble( module );
     }
+    // END SNIPPET: assembly
 }

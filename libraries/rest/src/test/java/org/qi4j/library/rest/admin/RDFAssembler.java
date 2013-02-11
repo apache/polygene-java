@@ -15,13 +15,12 @@
 package org.qi4j.library.rest.admin;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 /**
  * JAVADOC
@@ -32,7 +31,7 @@ class RDFAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
+        new OrgJsonValueSerializationAssembler().assemble( module );
         module.objects( EntityStateSerializer.class ).visibleIn( Visibility.application );
         module.objects( EntityTypeSerializer.class ).visibleIn( Visibility.application );
     }

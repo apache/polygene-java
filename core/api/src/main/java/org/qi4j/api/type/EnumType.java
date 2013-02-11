@@ -32,6 +32,11 @@ public final class EnumType
         return false;
     }
 
+    public static EnumType of( Class<?> type )
+    {
+        return new EnumType( type );
+    }
+
     public EnumType( Class<?> type )
     {
         super( type );

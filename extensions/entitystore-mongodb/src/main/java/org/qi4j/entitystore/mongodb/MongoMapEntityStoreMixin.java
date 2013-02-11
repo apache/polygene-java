@@ -224,14 +224,12 @@ public class MongoMapEntityStoreMixin
 
         changes.visitMap( new MapChanger()
         {
-
             @Override
             public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
                 throws IOException
             {
                 return new StringWriter( 1000 )
                 {
-
                     @Override
                     public void close()
                         throws IOException
@@ -256,7 +254,6 @@ public class MongoMapEntityStoreMixin
                         entity.put( STATE_COLUMN, bsonState );
                         entities.save( entity, writeConcern );
                     }
-
                 };
             }
 
@@ -266,7 +263,6 @@ public class MongoMapEntityStoreMixin
             {
                 return new StringWriter( 1000 )
                 {
-
                     @Override
                     public void close()
                         throws IOException
@@ -280,7 +276,6 @@ public class MongoMapEntityStoreMixin
                         entity.put( STATE_COLUMN, bsonState );
                         entities.update( byIdentity( ref ), entity, true, false, writeConcern );
                     }
-
                 };
             }
 
@@ -295,7 +290,6 @@ public class MongoMapEntityStoreMixin
                 }
                 entities.remove( entity, writeConcern );
             }
-
         } );
 
         db.requestDone();
@@ -306,14 +300,12 @@ public class MongoMapEntityStoreMixin
     {
         return new Input<Reader, IOException>()
         {
-
             @Override
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
                 throws IOException, ReceiverThrowableType
             {
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
-
                     @Override
                     public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, IOException
@@ -331,10 +323,8 @@ public class MongoMapEntityStoreMixin
 
                         db.requestDone();
                     }
-
                 } );
             }
-
         };
     }
 
@@ -342,5 +332,4 @@ public class MongoMapEntityStoreMixin
     {
         return new BasicDBObject( IDENTITY_COLUMN, entityReference.identity() );
     }
-
 }

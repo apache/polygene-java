@@ -30,49 +30,9 @@ public class ValueType
     implements HasTypes
 {
 
-    protected final Iterable<Class<?>> types;
-
-    public ValueType( Class<?> type )
+    public static ValueType of( Class<?> type )
     {
-        this( Collections.singleton( type ) );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    public ValueType( Iterable<? extends Class<?>> types )
-    {
-        this.types = (Iterable<Class<?>>) types;
-    }
-
-    public Class<?> mainType()
-    {
-        return first( types );
-    }
-
-    @Override
-    public Iterable<Class<?>> types()
-    {
-        return types;
-    }
-
-    @Override
-    public String toString()
-    {
-        String name = Iterables.toString(
-            types,
-            new Function<Class<?>, String>()
-            {
-                @Override
-                public String map( Class<?> item )
-                {
-                    return item.getName();
-                }
-            },
-            "," );
-        if( name.contains( "," ) )
-        {
-            name = "{" + name + "}";
-        }
-        return name;
+        return new ValueType( type );
     }
 
     /**
@@ -144,5 +104,49 @@ public class ValueType
             return isPrimitiveValueType( type.getComponentType() );
         }
         return false;
+    }
+    protected final Iterable<Class<?>> types;
+
+    public ValueType( Class<?> type )
+    {
+        this( Collections.singleton( type ) );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    public ValueType( Iterable<? extends Class<?>> types )
+    {
+        this.types = (Iterable<Class<?>>) types;
+    }
+
+    public Class<?> mainType()
+    {
+        return first( types );
+    }
+
+    @Override
+    public Iterable<Class<?>> types()
+    {
+        return types;
+    }
+
+    @Override
+    public String toString()
+    {
+        String name = Iterables.toString(
+            types,
+            new Function<Class<?>, String>()
+            {
+                @Override
+                public String map( Class<?> item )
+                {
+                    return item.getName();
+                }
+            },
+            "," );
+        if( name.contains( "," ) )
+        {
+            name = "{" + name + "}";
+        }
+        return name;
     }
 }

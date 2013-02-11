@@ -26,11 +26,12 @@ import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.performance.entitystore.model.AbstractEntityStorePerformanceTest;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class MemoryEntityStorePerformanceTest
     extends AbstractEntityStorePerformanceTest
 {
+
     public MemoryEntityStorePerformanceTest()
     {
         super( "MemoryEntityStore", createAssembler() );
@@ -46,7 +47,7 @@ public class MemoryEntityStorePerformanceTest
                 module.services( MemoryEntityStoreService.class );
 //                module.services( MemoryEntityStoreService2.class );
                 module.services( UuidIdentityGeneratorService.class );
-                module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
+                new OrgJsonValueSerializationAssembler().assemble( module );
             }
         };
     }
@@ -57,4 +58,5 @@ public class MemoryEntityStorePerformanceTest
         extends MemoryEntityStoreService
     {
     }
+
 }

@@ -23,15 +23,16 @@ import org.qi4j.entitystore.file.assembly.FileEntityStoreAssembler;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class FileEntityStoreTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
 
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
@@ -39,9 +40,9 @@ public class FileEntityStoreTest
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         // START SNIPPET: assembly
-        new FileEntityStoreAssembler( Visibility.module ).assemble( module );
+        new OrgJsonValueSerializationAssembler().assemble( module );
+        new FileEntityStoreAssembler().assemble( module );
         config.entities( FileEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
     }
     // END SNIPPET: assembly
-
 }

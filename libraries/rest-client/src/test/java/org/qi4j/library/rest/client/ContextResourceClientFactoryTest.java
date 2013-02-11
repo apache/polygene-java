@@ -2,9 +2,7 @@ package org.qi4j.library.rest.client;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
@@ -55,6 +53,7 @@ import org.qi4j.library.rest.server.assembler.RestServerAssembler;
 import org.qi4j.library.rest.server.restlet.NullCommandResult;
 import org.qi4j.library.rest.server.spi.CommandResult;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.Client;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -74,9 +73,6 @@ import org.restlet.service.MetadataService;
 import static org.qi4j.bootstrap.ImportedServiceDeclaration.*;
 import static org.qi4j.library.rest.client.api.HandlerCommand.*;
 
-/**
- * TODO
- */
 public class ContextResourceClientFactoryTest
     extends AbstractQi4jTest
 {
@@ -90,8 +86,8 @@ public class ContextResourceClientFactoryTest
         throws AssemblyException
     {
         // General setup of client and server
+        new OrgJsonValueSerializationAssembler().assemble( module );
         new ClientAssembler().assemble( module );
-
         new ValueAssembler().assemble( module );
         new RestServerAssembler().assemble( module );
 

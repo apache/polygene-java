@@ -24,60 +24,58 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.fileconfig.FileConfigurationService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
-/**
- * JAVADOC
- */
 public class JdbmEntityStoreTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
-   public void assemble(ModuleAssembly module)
-           throws AssemblyException
-   {
-      super.assemble(module);
-      module.services(FileConfigurationService.class).instantiateOnStartup();
-      new JdbmEntityStoreAssembler( Visibility.module ).assemble( module );
 
-      ModuleAssembly config = module.layer().module("config");
-      config.entities(JdbmConfiguration.class).visibleIn(Visibility.layer);
-      new EntityTestAssembler().assemble( config );
-   }
+    @Override
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
+    {
+        super.assemble( module );
+        module.services( FileConfigurationService.class ).instantiateOnStartup();
+        new JdbmEntityStoreAssembler( Visibility.module ).assemble( module );
 
-   @Test
-   @Override
-   public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
-           throws UnitOfWorkCompletionException
-   {
-      super.givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification();
-   }
+        ModuleAssembly config = module.layer().module( "config" );
+        config.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
+        new EntityTestAssembler().assemble( config );
+        new OrgJsonValueSerializationAssembler().assemble( module );
+    }
 
-   @Override
-   @After
-   public void tearDown()
-           throws Exception
-   {
-      super.tearDown();
-      File dbFile = new File("qi4j.data.db");
-      boolean success = true;
-      if (dbFile.exists())
-      {
-         success = dbFile.delete();
-      }
+    @Test
+    @Override
+    public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
+        throws UnitOfWorkCompletionException
+    {
+        super.givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification();
+    }
 
-      File logFile = new File("qi4j.data.lg");
-      if (logFile.exists())
+    @Override
+    @After
+    public void tearDown()
+        throws Exception
+    {
+        super.tearDown();
+        File dbFile = new File( "qi4j.data.db" );
+        boolean success = true;
+        if( dbFile.exists() )
+        {
+            success = dbFile.delete();
+        }
 
-      {
-         success = success & logFile.delete();
-      }
-      if (!success)
-      {
-         throw new Exception("Could not delete test data");
-      }
-   }
+        File logFile = new File( "qi4j.data.lg" );
+        if( logFile.exists() )
+        {
+            success = success & logFile.delete();
+        }
+        if( !success )
+        {
+            throw new Exception( "Could not delete test data" );
+        }
+    }
 }

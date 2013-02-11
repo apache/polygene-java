@@ -22,34 +22,24 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.mongodb.MongoEntityStoreConfiguration.WriteConcern;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class MongoMapEntityStoreAssembler
-        implements Assembler
+    implements Assembler
 {
 
     private Visibility visibility = Visibility.application;
-
     private ModuleAssembly configModule;
-
     private Visibility configVisibility = Visibility.layer;
-
     private String hostname = "127.0.0.1";
-
     private Integer port = 27017;
-
     private String database;
-
     private String collection;
-
     private WriteConcern writeConcern;
-
     private List<ServerAddress> serverAddresses;
 
     public MongoMapEntityStoreAssembler withVisibility( Visibility visibility )
@@ -76,11 +66,12 @@ public class MongoMapEntityStoreAssembler
      * Calling this method once disable the default behavior that use the MongoDB defaults: 127.0.0.1 27017
      */
     public MongoMapEntityStoreAssembler addHostnameAndPort( String hostname, Integer port )
-            throws UnknownHostException
+        throws UnknownHostException
     {
         this.hostname = null;
         this.port = null;
-        if ( serverAddresses == null ) {
+        if( serverAddresses == null )
+        {
             serverAddresses = new ArrayList<ServerAddress>();
         }
         serverAddresses.add( new ServerAddress( hostname, port ) );
@@ -107,9 +98,10 @@ public class MongoMapEntityStoreAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        if ( configModule == null ) {
+        if( configModule == null )
+        {
             configModule = module;
         }
         onAssemble( module, visibility, configModule, configVisibility );
@@ -119,28 +111,32 @@ public class MongoMapEntityStoreAssembler
     {
         module.services( MongoMapEntityStoreService.class ).visibleIn( visibility );
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
 
         configModule.entities( MongoEntityStoreConfiguration.class ).visibleIn( configVisibility );
         MongoEntityStoreConfiguration mongoConfig = configModule.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
-        if ( hostname != null ) {
+        if( hostname != null )
+        {
             mongoConfig.hostname().set( hostname );
         }
-        if ( port != null ) {
+        if( port != null )
+        {
             mongoConfig.port().set( port );
         }
-        if ( database != null ) {
+        if( database != null )
+        {
             mongoConfig.database().set( database );
         }
-        if ( collection != null ) {
+        if( collection != null )
+        {
             mongoConfig.collection().set( collection );
         }
-        if ( writeConcern != null ) {
+        if( writeConcern != null )
+        {
             mongoConfig.writeConcern().set( writeConcern );
         }
-        if ( serverAddresses != null ) {
+        if( serverAddresses != null )
+        {
             mongoConfig.nodes().set( serverAddresses );
         }
     }
-
 }

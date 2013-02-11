@@ -71,13 +71,13 @@ import static org.qi4j.functional.Iterables.*;
  * </p>
  * <ul>
  *     <li>String,</li>
- *     <li>Boolean,</li>
- *     <li>Integer,</li>
- *     <li>Long,</li>
- *     <li>Short,</li>
- *     <li>Byte,</li>
- *     <li>Float,</li>
- *     <li>Double</li>
+ *     <li>Boolean or boolean,</li>
+ *     <li>Integer or int,</li>
+ *     <li>Long or long,</li>
+ *     <li>Short or short,</li>
+ *     <li>Byte or byte,</li>
+ *     <li>Float or float,</li>
+ *     <li>Double or double.</li>
  * </ul>
  *
  * @param <InputType> Implementor pull-parser type

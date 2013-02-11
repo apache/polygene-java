@@ -11,6 +11,7 @@ dependencies {
 
   testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
   testCompile project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp")
+  testCompile(project(":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson"))
   testCompile libraries.derby // Needed at compile time for polite test shutdown
 
   testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")

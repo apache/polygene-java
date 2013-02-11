@@ -33,6 +33,11 @@ public final class MapType
         return Map.class.isAssignableFrom( cl );
     }
 
+    public static MapType of( Class<?> keyType, Class<?> valueType )
+    {
+        return new MapType( Map.class, ValueType.of( keyType ), ValueType.of( valueType ) );
+    }
+
     public MapType( Class<?> type, ValueType keyType, ValueType valueType )
     {
         super( type );

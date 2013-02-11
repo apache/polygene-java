@@ -32,6 +32,20 @@ public final class CollectionType
         return cl.equals( Collection.class ) || cl.equals( List.class ) || cl.equals( Set.class );
     }
 
+    public static CollectionType collectionOf( Class<?> collectedType )
+    {
+        return new CollectionType( Collection.class, ValueType.of( collectedType ) );
+    }
+
+    public static CollectionType listOf( Class<?> collectedType )
+    {
+        return new CollectionType( List.class, ValueType.of( collectedType ) );
+    }
+
+    public static CollectionType setOf( Class<?> collectedType )
+    {
+        return new CollectionType( Set.class, ValueType.of( collectedType ) );
+    }
     private ValueType collectedType;
 
     public CollectionType( Class<?> type, ValueType collectedType )

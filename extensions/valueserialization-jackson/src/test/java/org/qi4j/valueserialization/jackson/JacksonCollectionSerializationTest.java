@@ -15,12 +15,10 @@
  */
 package org.qi4j.valueserialization.jackson;
 
-import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.value.AbstractCollectionSerializationTest;
 
-//@Ignore( "WORKS OK" )
 public class JacksonCollectionSerializationTest
     extends AbstractCollectionSerializationTest
 {
@@ -30,6 +28,6 @@ public class JacksonCollectionSerializationTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( JacksonValueSerializationService.class );
+        new JacksonValueSerializationAssembler().assemble( module );
     }
 }

@@ -19,23 +19,19 @@
 package org.qi4j.entitystore.hazelcast.assembly;
 
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.hazelcast.HazelcastConfiguration;
 import org.qi4j.entitystore.hazelcast.HazelcastEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class HazelcastEntityStoreAssembler
-        implements Assembler
+    implements Assembler
 {
 
     private final Visibility visibility;
-
     private ModuleAssembly config;
-
     private Visibility configVisibility;
 
     public HazelcastEntityStoreAssembler()
@@ -57,14 +53,13 @@ public class HazelcastEntityStoreAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.services( HazelcastEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
-        if ( config != null ) {
+        if( config != null )
+        {
             config.entities( HazelcastConfiguration.class ).visibleIn( configVisibility );
         }
     }
-
 }
