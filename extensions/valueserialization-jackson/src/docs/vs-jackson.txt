@@ -1,0 +1,24 @@
+[[extension-vs-jackson, Jackson ValueSerialization]]
+= Jackson ValueSerialization =
+
+[devstatus]
+--------------
+source=extensions/valueserialization-jackson/dev-status.xml
+--------------
+
+ValueSerialization Service backed by http://wiki.fasterxml.com/JacksonHome[Jackson].
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done as follows:
+
+[snippet,java]
+----
+source=extensions/valueserialization-jackson/src/test/java/org/qi4j/valueserialization/jackson/JacksonPlainValueSerializationTest.java
+tag=assembly
+----
+
+See the ValueSerialization <<core-api-value,API>> and <<core-spi-valueserialization,SPI>> documentation for details and
+usage.

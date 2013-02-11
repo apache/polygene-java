@@ -14,7 +14,7 @@
 //////////////////////
 
 [[core-spi-metrics,Metrics SPI]]
-= Qi4j Metrics SPI =
+= Metrics SPI =
 It is very easy to create an extension for the Metrics SPI, simply by implementing the MetricsProvider. If only a
 subset of the factories/types are supported, there is a convenience adapter call MetricsProviderAdapter in the Metrics
 SPI package.
