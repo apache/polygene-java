@@ -1,4 +1,4 @@
-[[extension-es-memoryl, Memory EntityStore]]
+[[extension-es-memory, Memory EntityStore]]
 = Memory EntityStore =
 
 [devstatus]
