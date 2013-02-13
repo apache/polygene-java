@@ -1,3 +1,20 @@
+/*
+ * Copyright 2010 Niclas Hedhman.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.qi4j.library.conversion.values;
 
 import java.util.Calendar;
@@ -20,6 +37,7 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.functional.Function;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -132,6 +150,39 @@ public class EntityToValueTest
             EntityToValueService service = reference.get();
 
             PersonValue4 niclasValue = service.convert( PersonValue4.class, niclas );
+            uow.complete();
+        }
+        finally
+        {
+            uow.discard();
+        }
+    }
+
+    @Test
+    public void whenConvertingEntityToValueUsingPrototypeOpportunityExpectCorrectValues()
+        throws UnitOfWorkCompletionException
+    {
+        UnitOfWork uow = module.newUnitOfWork();
+        try
+        {
+            PersonEntity entity = setupPersonEntities( uow );
+
+            // START SNIPPET: prototypeOpportunity
+            EntityToValueService conversion = module.findService( EntityToValueService.class ).get();
+            PersonValue value = conversion.convert( PersonValue.class, entity, new Function<PersonValue, PersonValue>()
+            {
+                @Override
+                public PersonValue map( PersonValue prototype )
+                {
+                    prototype.firstName().set( "Prototype Opportunity" );
+                    return prototype;
+                }
+            } );
+            // END SNIPPET: prototypeOpportunity
+            assertEquals( "Prototype Opportunity", value.firstName().get() );
+            assertEquals( "Hedhman", value.lastName().get() );
+            assertEquals( "id:Lis", value.spouse().get() );
+            assertEquals( "id:Eric", value.children().get().get( 0 ) );
             uow.complete();
         }
         finally
