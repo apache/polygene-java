@@ -1,0 +1,13 @@
+jar { manifest { name = "Qi4j Extension - EntityStore - Memory" }}
+
+dependencies {
+
+    compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+
+    testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+    testCompile(project(":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson"))
+
+    testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+    testRuntime(libraries.logback)
+
+}
