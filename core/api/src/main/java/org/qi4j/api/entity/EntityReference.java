@@ -15,6 +15,7 @@
 package org.qi4j.api.entity;
 
 import java.io.Serializable;
+import org.qi4j.api.util.NullArgumentException;
 
 /**
  * An EntityReference is identity of a specific
@@ -53,6 +54,7 @@ public final class EntityReference
 
     public EntityReference( String identity )
     {
+        NullArgumentException.validateNotEmpty( "identity", identity );
         this.identity = identity;
     }
 
