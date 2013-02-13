@@ -15,13 +15,23 @@
  */
 package org.qi4j.valueserialization.stax;
 
+import org.junit.BeforeClass;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.value.AbstractValueCompositeSerializationTest;
 
+import static org.junit.Assume.assumeTrue;
+
 public class StaxValueCompositeSerializationTest
     extends AbstractValueCompositeSerializationTest
 {
+
+    @BeforeClass
+    public static void beforeClass_IBMJDK()
+    {
+        // Ignore this test on IBM JDK
+        assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
+    }
 
     @Override
     public void assemble( ModuleAssembly module )
