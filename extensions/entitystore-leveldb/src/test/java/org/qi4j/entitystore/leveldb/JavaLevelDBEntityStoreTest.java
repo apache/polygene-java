@@ -23,6 +23,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class JavaLevelDBEntityStoreTest
     extends AbstractEntityStoreTest
@@ -37,6 +38,8 @@ public class JavaLevelDBEntityStoreTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler( Visibility.module ).assemble( config );
+        new OrgJsonValueSerializationAssembler().assemble( module );
+
         module.services( FileConfigurationService.class );
 
         // START SNIPPET: assembly
@@ -50,5 +53,4 @@ public class JavaLevelDBEntityStoreTest
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
-
 }

@@ -43,15 +43,16 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.json.JSONDeserializer;
-import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceActivation;
+import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLService;
 import org.qi4j.entitystore.sql.internal.DatabaseSQLService.EntityValueResult;
 import org.qi4j.entitystore.sql.internal.SQLEntityState;
@@ -102,6 +103,10 @@ public class SQLEntityStoreMixin
 
     @Structure
     private Application application;
+
+    @Service
+    @Tagged( ValueSerialization.Formats.JSON )
+    private ValueSerialization valueSerialization;
 
     @Optional
     @Service
@@ -385,7 +390,6 @@ public class SQLEntityStoreMixin
 
             Map<QualifiedName, Object> properties = new HashMap<QualifiedName, Object>();
             JSONObject props = jsonObject.getJSONObject( "properties" );
-            JSONDeserializer deserializer = new JSONDeserializer( module );
             for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
             {
                 Object jsonValue;
@@ -401,13 +405,13 @@ public class SQLEntityStoreMixin
                     status = EntityStatus.UPDATED;
                     continue;
                 }
-                if( jsonValue == JSONObject.NULL )
+                if( JSONObject.NULL.equals( jsonValue ) )
                 {
                     properties.put( propertyDescriptor.qualifiedName(), null );
                 }
                 else
                 {
-                    Object value = deserializer.deserialize( jsonValue, propertyDescriptor.valueType() );
+                    Object value = valueSerialization.deserialize( propertyDescriptor.valueType(), jsonValue.toString() );
                     properties.put( propertyDescriptor.qualifiedName(), value );
                 }
             }
@@ -529,18 +533,29 @@ public class SQLEntityStoreMixin
                 key( "modified" ).value( state.lastModified() ).
                 key( "properties" ).object();
 
-            JSONWriterSerializer serializer = new JSONWriterSerializer( json );
             for( PropertyDescriptor persistentProperty : state.entityDescriptor().state().properties() )
             {
                 Object value = state.properties().get( persistentProperty.qualifiedName() );
                 json.key( persistentProperty.qualifiedName().name() );
-                if( value == null )
+                if( value == null || ValueType.isPrimitiveValue( value ) )
                 {
-                    json.value( null );
+                    json.value( value );
                 }
                 else
                 {
-                    serializer.serialize( value, persistentProperty.valueType() );
+                    String serialized = valueSerialization.serialize( value );
+                    if( serialized.startsWith( "{" ) )
+                    {
+                        json.value( new JSONObject( serialized ) );
+                    }
+                    else if( serialized.startsWith( "[" ) )
+                    {
+                        json.value( new JSONArray( serialized ) );
+                    }
+                    else
+                    {
+                        json.value( serialized );
+                    }
                 }
             }
 

@@ -13,21 +13,20 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.api.configuration;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 public class DeclareConfigurationDefaultsTest
         extends AbstractQi4jTest
@@ -69,7 +68,7 @@ public class DeclareConfigurationDefaultsTest
     {
         module.services( FooServiceComposite.class ).identifiedBy( "bazar" );
         module.entities( FooConfigurationComposite.class );
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
         FooConfigurationComposite config = module.forMixin( FooConfigurationComposite.class ).declareDefaults();
         config.foo().set( "bar" );
     }

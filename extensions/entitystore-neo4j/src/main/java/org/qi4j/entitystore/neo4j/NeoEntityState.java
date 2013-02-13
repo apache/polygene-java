@@ -1,16 +1,17 @@
 package org.qi4j.entitystore.neo4j;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.json.JSONDeserializer;
-import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.type.ValueType;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -20,21 +21,21 @@ import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 public class NeoEntityState
     implements EntityState
 {
+
     static final String ENTITY_ID = "entity_id";
     static final String VERSION = "version";
     static final String MODIFIED = "modified";
-
-    private final Node underlyingNode;
     private final NeoEntityStoreUnitOfWork uow;
-
+    private final ValueSerialization valueSerialization;
+    private final Node underlyingNode;
     private EntityStatus status;
 
-    NeoEntityState( NeoEntityStoreUnitOfWork work, Node node,
-                    EntityStatus status
-    )
+    NeoEntityState( ValueSerialization valueSerialization, NeoEntityStoreUnitOfWork work, Node node,
+                    EntityStatus status )
     {
-        this.underlyingNode = node;
+        this.valueSerialization = valueSerialization;
         this.uow = work;
+        this.underlyingNode = node;
         this.status = status;
     }
 
@@ -118,34 +119,22 @@ public class NeoEntityState
     {
         try
         {
+            PropertyDescriptor persistentProperty = entityDescriptor().state().findPropertyModelByQualifiedName( stateName );
             Object prop = underlyingNode.getProperty( "prop::" + stateName.toString(), null );
             if( prop == null )
             {
                 return null;
             }
-            else if( isPrimitiveType( prop ) )
+            else if( ValueType.isPrimitiveValueType( persistentProperty.valueType() ) )
             {
                 return prop;
             }
             else
             {
-                PropertyDescriptor persistentProperty = entityDescriptor().state().findPropertyModelByQualifiedName( stateName );
-                String json = "[" + prop + "]";
-                JSONTokener tokener = new JSONTokener( json );
-                JSONArray array = (JSONArray) tokener.nextValue();
-                Object jsonValue = array.get( 0 );
-                if( jsonValue == JSONObject.NULL )
-                {
-                    return null;
-                }
-                else
-                {
-                    JSONDeserializer deserializer = new JSONDeserializer( uow.getModule() );
-                    return deserializer.deserialize( jsonValue, persistentProperty.valueType() );
-                }
+                return valueSerialization.deserialize( persistentProperty.valueType(), prop.toString() );
             }
         }
-        catch( JSONException e )
+        catch( ValueSerializationException e )
         {
             throw new EntityStoreException( e );
         }
@@ -158,24 +147,15 @@ public class NeoEntityState
         {
             if( prop != null )
             {
-                if( isPrimitiveType( prop ) )
+                PropertyDescriptor persistentProperty = entityDescriptor().state().findPropertyModelByQualifiedName( stateName );
+                if( ValueType.isPrimitiveValueType( persistentProperty.valueType() ) )
                 {
                     underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
                 }
                 else
                 {
-                    PropertyDescriptor persistentProperty = entityDescriptor().state().findPropertyModelByQualifiedName( stateName );
-                    if( prop instanceof String && persistentProperty.valueType().mainType().equals( String.class ) )
-                    {
-                        underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
-                    }
-                    else
-                    {
-                        JSONObjectSerializer serializer = new JSONObjectSerializer(  );
-                        serializer.serialize( prop, persistentProperty.valueType() );
-                        String jsonString = serializer.rootObject().toString();
-                        underlyingNode.setProperty( "prop::" + stateName.toString(), jsonString );
-                    }
+                    String jsonString = valueSerialization.serialize( prop );
+                    underlyingNode.setProperty( "prop::" + stateName.toString(), jsonString );
                 }
             }
             else
@@ -184,40 +164,10 @@ public class NeoEntityState
             }
             setUpdated();
         }
-        catch( JSONException e )
+        catch( ValueSerializationException e )
         {
             throw new EntityStoreException( e );
         }
-    }
-
-    private boolean isPrimitiveType( Object prop )
-    {
-        if( prop instanceof Number || prop instanceof Character || prop instanceof Boolean )
-        {
-            return true;
-        }
-        if( prop.getClass().isArray() )
-        {
-            return isPrimitiveArrayType( prop );
-        }
-        return false;
-    }
-
-    private boolean isPrimitiveArrayType( Object array )
-    {
-        if( array instanceof int[] || array instanceof Integer[] ||
-            array instanceof String[] || array instanceof boolean[] ||
-            array instanceof Boolean[] || array instanceof double[] ||
-            array instanceof Double[] || array instanceof float[] ||
-            array instanceof Float[] || array instanceof long[] ||
-            array instanceof Long[] || array instanceof byte[] ||
-            array instanceof Byte[] || array instanceof char[] ||
-            array instanceof Character[] || array instanceof short[] ||
-            array instanceof Short[] )
-        {
-            return true;
-        }
-        return false;
     }
 
     @Override

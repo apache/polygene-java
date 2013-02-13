@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.type;
 
 import java.lang.reflect.Type;
@@ -22,18 +21,28 @@ import java.lang.reflect.Type;
 public final class EnumType
     extends ValueType
 {
+
     public static boolean isEnum( Type type )
     {
         if( type instanceof Class )
         {
-            Class typeClass = (Class) type;
+            Class<?> typeClass = (Class) type;
             return ( typeClass.isEnum() );
         }
         return false;
     }
 
+    public static EnumType of( Class<?> type )
+    {
+        return new EnumType( type );
+    }
+
     public EnumType( Class<?> type )
     {
         super( type );
+        if( !isEnum( type ) )
+        {
+            throw new IllegalArgumentException( type + " is not an Enum." );
+        }
     }
 }

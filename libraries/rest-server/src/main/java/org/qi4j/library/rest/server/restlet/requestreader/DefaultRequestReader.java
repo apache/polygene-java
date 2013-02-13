@@ -3,18 +3,21 @@ package org.qi4j.library.rest.server.restlet.requestreader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Date;
-import org.json.JSONException;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.Name;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
+import org.qi4j.api.value.ValueDeserializer;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.library.rest.server.spi.RequestReader;
@@ -45,7 +48,11 @@ public class DefaultRequestReader
     implements RequestReader
 {
     @Structure
-    Module module;
+    private Module module;
+
+    @Service
+    @Tagged( ValueSerialization.Formats.JSON )
+    private ValueDeserializer valueDeserializer;
 
     @Override
     public Object[] readRequest( Request request, Method method )
@@ -148,7 +155,7 @@ public class DefaultRequestReader
                             throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "Bug in Tomcat encountered; notify developers!" );
                         }
 
-                        Object command = module.newValueFromJSON( commandType, json );
+                        Object command = module.newValueFromSerializedState( commandType, json );
                         args[ 0 ] = command;
                         return args;
                     }
@@ -263,12 +270,9 @@ public class DefaultRequestReader
                                                                                                       {
                                                                                                           try
                                                                                                           {
-                                                                                                              JSONDeserializer jsonDeserializer = new JSONDeserializer( module );
-                                                                                                              return jsonDeserializer
-                                                                                                                  .deserialize( value, propertyDescriptor
-                                                                                                                      .valueType() );
+                                                                                                              return valueDeserializer.deserialize( propertyDescriptor.valueType(), value );
                                                                                                           }
-                                                                                                          catch( JSONException e )
+                                                                                                          catch( ValueSerializationException e )
                                                                                                           {
                                                                                                               throw new IllegalArgumentException( "Query parameter has invalid JSON format", e );
                                                                                                           }

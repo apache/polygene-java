@@ -1,9 +1,7 @@
 package org.qi4j.tests.regression.qi328;
 
-import java.io.StringWriter;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueBuilder;
@@ -34,9 +32,7 @@ public class Qi328TestCase extends AbstractQi4jTest
         OuterValue value = builder.newInstance();
         System.out.println("Niclas: " + value);
         value.printName();
-        StringWriter sw = new StringWriter();
-        new JSONWriterSerializer( sw ).serialize( value );
-        assertEquals(  "{\"firstName\":\"Niclas\",\"lastName\":\"Hedhman\"}", sw.toString() );
+        assertEquals(  "{\"firstName\":\"Niclas\",\"lastName\":\"Hedhman\"}", value.toString() );
     }
 
     @Mixins( OuterValue.Mixin.class )

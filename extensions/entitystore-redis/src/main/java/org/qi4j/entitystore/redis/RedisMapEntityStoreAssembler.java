@@ -69,5 +69,4 @@ public class RedisMapEntityStoreAssembler
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
         configModule.entities( RedisEntityStoreConfiguration.class ).visibleIn( configVisibility );
     }
-
 }

@@ -40,6 +40,7 @@ def mongodbVersion = '2.9.3'
 def mysqlVersion = '5.1.21'
 def neoVersion = '1.3' // 1.8 exists
 def neoIndexVersion = '1.3-1.3.M01' // Do not exist anymore!
+def orgJsonVersion = '20130213'
 def osgiVersion = '4.2.0' // 4.3.0 - Fails to compile!
 def pdfboxVersion = '1.7.1'
 def postgresqlVersion = '9.1-901-1.jdbc4'
@@ -100,6 +101,9 @@ rootProject.ext {
           jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
           jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
           jcl: 'commons-logging:commons-logging:99.0-does-not-exist',  // ensure it is never used.
+
+          // org.json
+          org_json: "org.codeartisans:org.json:$orgJsonVersion",
 
           // Restlet
           restlet: [

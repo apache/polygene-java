@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
@@ -33,19 +34,25 @@ import org.qi4j.spi.entitystore.StateCommitter;
 public class GaeEntityStoreUnitOfWork
     implements EntityStoreUnitOfWork
 {
-    private DatastoreService datastore;
-    private String identity;
-    private LinkedList<GaeEntityState> states;
-    private Module module;
-    private long currentTime;
+    private final DatastoreService datastore;
+    private final ValueSerialization valueSerialization;
+    private final String identity;
+    private final Module module;
+    private final long currentTime;
+    private final LinkedList<GaeEntityState> states;
 
-    public GaeEntityStoreUnitOfWork( DatastoreService datastore, String identity, Module module, long currentTime )
+    public GaeEntityStoreUnitOfWork( DatastoreService datastore,
+                                     ValueSerialization valueSerialization,
+                                     String identity,
+                                     Module module,
+                                     long currentTime )
     {
+        this.datastore = datastore;
+        this.valueSerialization = valueSerialization;
+        this.identity = identity;
         this.module = module;
         this.currentTime = currentTime;
         states = new LinkedList<GaeEntityState>();
-        this.datastore = datastore;
-        this.identity = identity;
     }
 
     @Override
@@ -65,7 +72,7 @@ public class GaeEntityStoreUnitOfWork
         throws EntityStoreException
     {
         Key key = KeyFactory.createKey( "qi4j-entity", anIdentity.identity() );
-        GaeEntityState state = new GaeEntityState( this, key, entityDescriptor, module );
+        GaeEntityState state = new GaeEntityState( this, valueSerialization, key, entityDescriptor, module );
         states.add( state );
         return state;
     }
@@ -78,7 +85,7 @@ public class GaeEntityStoreUnitOfWork
         try
         {
             Entity entity = datastore.get( key );
-            GaeEntityState state = new GaeEntityState( this, entity, module );
+            GaeEntityState state = new GaeEntityState( this, valueSerialization, entity, module );
             states.add( state );
             return state;
         }

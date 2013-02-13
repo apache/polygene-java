@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  *
- *     You may obtain a copy of the License at 
+ *     You may obtain a copy of the License at
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -28,8 +28,8 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 public class YammerTest extends AbstractQi4jTest
 {
@@ -38,10 +38,10 @@ public class YammerTest extends AbstractQi4jTest
         throws AssemblyException
     {
         module.entities( Person.class );
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
         new YammerMetricsAssembler().assemble( module );
     }
-    
+
     @Test
     public void givenMetricsEnabledQi4jWhenManyEntityChangesExpectCounterToBeOneOrZeroAndChangeRateHigh()
         throws UnitOfWorkCompletionException
@@ -92,6 +92,6 @@ public class YammerTest extends AbstractQi4jTest
     {
         @Optional
         Property<String> name();
-        
+
     }
 }

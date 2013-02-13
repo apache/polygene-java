@@ -27,8 +27,9 @@ applications during the bootstrap phase.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
-There are currently 4 Core SPI extensions;
+There are currently 5 Core SPI extensions;
 
+    * ValueSerialization SPI
     * EntityStore SPI
     * Cache SPI
     * Indexing/Query SPI
@@ -41,7 +42,11 @@ can be solved in a support manner, or that we need to extend the Core API to sup
 
 :leveloffset: {level3}
 
-// include::entitystore.txt[]
+include::valueserialization.txt[]
+
+:leveloffset: {level3}
+
+include::entitystore.txt[]
 
 :leveloffset: {level3}
 

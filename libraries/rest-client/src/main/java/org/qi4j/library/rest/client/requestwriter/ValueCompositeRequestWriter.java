@@ -19,14 +19,16 @@ package org.qi4j.library.rest.client.requestwriter;
 
 import java.io.IOException;
 import java.io.Writer;
-import org.json.JSONException;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.json.JSONObjectSerializer;
-import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializationException;
+import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.library.rest.client.spi.RequestWriter;
 import org.qi4j.spi.Qi4jSPI;
 import org.restlet.Request;
@@ -34,6 +36,7 @@ import org.restlet.data.CharacterSet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Reference;
+import org.restlet.engine.io.WriterOutputStream;
 import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.ResourceException;
 
@@ -45,6 +48,10 @@ public class ValueCompositeRequestWriter
 {
    @Structure
    private Qi4jSPI spi;
+
+   @Service
+   @Tagged( ValueSerialization.Formats.JSON )
+   private ValueSerializer valueSerializer;
 
     @Override
    public boolean writeRequest(Object requestObject, Request request) throws ResourceException
@@ -63,35 +70,35 @@ public class ValueCompositeRequestWriter
 
              try
              {
-                 JSONObjectSerializer serializer = new JSONObjectSerializer();
                  for( PropertyDescriptor propertyDescriptor : descriptor.state().properties() )
                  {
-                     serializer.serialize(holder.propertyFor( propertyDescriptor.accessor() ), propertyDescriptor.valueType());
-                     ref.addQueryParameter( propertyDescriptor.qualifiedName().name(), serializer.rootObject().toString() );
+                     Object value = holder.propertyFor( propertyDescriptor.accessor() ).get();
+                     String param;
+                     if( value == null )
+                     {
+                        param = null;
+                     }
+                     else
+                     {
+                        param = valueSerializer.serialize( value );
+                     }
+                     ref.addQueryParameter( propertyDescriptor.qualifiedName().name(), param );
                  }
              }
-             catch( JSONException e )
+             catch( ValueSerializationException e )
              {
                  throw new ResourceException( e );
              }
          } else
          {
-            request.setEntity(new WriterRepresentation( MediaType.APPLICATION_JSON)
+            request.setEntity(new WriterRepresentation( MediaType.APPLICATION_JSON )
             {
                 @Override
                 public void write( Writer writer )
                     throws IOException
                 {
-                    try
-                    {
-                        setCharacterSet( CharacterSet.UTF_8 );
-                        JSONWriterSerializer serializer = new JSONWriterSerializer( writer );
-                        serializer.serialize( valueObject );
-                    }
-                    catch( JSONException e )
-                    {
-                        throw new IOException( e );
-                    }
+                   setCharacterSet( CharacterSet.UTF_8 );
+                   valueSerializer.serialize( valueObject, new WriterOutputStream( writer ) );
                 }
             });
          }

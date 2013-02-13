@@ -1,0 +1,52 @@
+[[core-spi-valueserialization,ValueSerialization SPI]]
+= ValueSerialization SPI =
+
+Simply implement ValueSerialization to create an extension for the ValueSerialization SPI.
+The Core SPI module provides adapters to create pull-parsing capable ValueSerializers and pull-parsing and tree-parsing
+capable ValueDeserializers.
+
+The behaviour described here apply to all ValueSerialization services implemented using the Core SPI adapters. Note that
+nothing stops you from implementing an extension for the ValueSerialization SPI without relying on theses adapters.
+
+Theses adapters are tailored for serialization mechanisms that support the following two structures that can be nested:
+
+    * an collection of name/value pairs. In various languages, this is realized as an object, record, struct,
+      dictionary, hash table, keyed list, or associative array,
+    * an ordered list of values. In most languages, this is realized as an array, vector, list, or sequence ;
+
+in other words, a JSON-like structure.
+
+Special attention is taken when dealing with Maps. They are serialized as an ordered list of collections of
+name/value pairs to keep the Map order for least surprise. That way, even when the underlying serialization mechanism
+do not keep the collection of name/value pairs order we can rely on it being kept.
+
+Here is a sample Map with two entries in JSON notation to make things clear:
+
+[source,javascript]
+----
+[
+    { "key": "foo",       "value": "bar"   },
+    { "key": "cathedral", "value": "bazar" }
+]
+----
+
+Among Plain Values (see the <<core-api-value,ValueSerialization API>> section) some are considered primitives to
+underlying serialization mechanisms and by so handed/come without conversion to/from implementations.
+
+Primitive values can be one of:
+
+    * String,
+    * Boolean or boolean,
+    * Integer or int,
+    * Long or long,
+    * Short or short,
+    * Byte or byte,
+    * Float or float,
+    * Double or double.
+
+Serialization is always done in a streaming manner using a pull-parsing based approach.
+
+Deserialization is done in a streaming manner using a pull-parsing based approach except when encountering a
+ValueComposite. ValueComposite types are deserialized using a tree-parsing based approach.
+
+All this means that you can serialize and deserialize large collections of values without filling the heap.

@@ -18,6 +18,7 @@
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.delivery;
 
 import java.util.Date;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
@@ -34,12 +35,12 @@ public interface ExpectedHandlingEvent
 {
     Property<HandlingEventType> handlingEventType();
 
-    Property<Location> location();
+    Association<Location> location();
 
     // Added expected time for the event to happen (compared to the original DDD sample)
     @Optional
     Property<Date> time();
 
     @Optional
-    Property<Voyage> voyage();
+    Association<Voyage> voyage();
 }

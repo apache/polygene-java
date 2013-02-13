@@ -17,6 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.booking;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
@@ -42,11 +43,20 @@ public class BookNewCargoTest extends TestApplication
     @Test
     public void deviation_2a_OriginAndDestinationSame() throws Exception
     {
-        thrown.expect( CannotCreateRouteSpecificationException.class, "Origin location can't be same as destination location." );
-        new BookNewCargo( CARGOS, HONGKONG, HONGKONG, DAY24 ).getTrackingId();
+        try
+        {
+            thrown.expect( CannotCreateRouteSpecificationException.class, "Origin location can't be same as destination location." );
+            new BookNewCargo( CARGOS, HONGKONG, HONGKONG, DAY24 ).getTrackingId();
+        }
+        catch( Exception ex )
+        {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     @Test
+    //@Ignore
     public void deviation_2b_DeadlineInThePastNotAccepted() throws Exception
     {
         deviation_2a_OriginAndDestinationSame();
@@ -55,6 +65,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void deviation_2b_DeadlineTodayIsTooEarly() throws Exception
     {
         deviation_2b_DeadlineInThePastNotAccepted();
@@ -63,6 +74,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void deviation_2b_DeadlineTomorrowIsOkay() throws Exception
     {
         deviation_2b_DeadlineTodayIsTooEarly();
@@ -70,6 +82,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void step_2_CanCreateRouteSpecification() throws Exception
     {
         deviation_2b_DeadlineTomorrowIsOkay();
@@ -81,6 +94,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void step_3_CanDeriveInitialDeliveryData() throws Exception
     {
         step_2_CanCreateRouteSpecification();
@@ -93,6 +107,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void deviation_4a_TrackingIdTooShort() throws Exception
     {
         step_3_CanDeriveInitialDeliveryData();
@@ -101,6 +116,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void deviation_4a_TrackingIdNotTooShort() throws Exception
     {
         deviation_4a_TrackingIdTooShort();
@@ -110,6 +126,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void deviation_4a_TrackingIdTooLong() throws Exception
     {
         deviation_4a_TrackingIdNotTooShort();
@@ -118,6 +135,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void deviation_4a_TrackingIdNotTooLong() throws Exception
     {
         deviation_4a_TrackingIdTooLong();
@@ -127,6 +145,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void deviation_4a_TrackingIdWithWrongCharacter() throws Exception
     {
         deviation_4a_TrackingIdNotTooLong();
@@ -135,6 +154,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void deviation_4b_TrackingIdNotUnique() throws Exception
     {
         deviation_4a_TrackingIdWithWrongCharacter();
@@ -143,6 +163,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void step_4_CanAutoCreateTrackingIdFromEmptyString() throws Exception
     {
         deviation_4b_TrackingIdNotUnique();
@@ -150,6 +171,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void step_4_CanAutoCreateTrackingIdFromNull() throws Exception
     {
         step_4_CanAutoCreateTrackingIdFromEmptyString();
@@ -157,6 +179,7 @@ public class BookNewCargoTest extends TestApplication
     }
 
     @Test
+    //@Ignore
     public void success_BookNewCargo() throws Exception
     {
         step_4_CanAutoCreateTrackingIdFromNull();

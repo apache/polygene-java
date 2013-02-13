@@ -17,6 +17,11 @@
  */
 package org.qi4j.index.rdf.qi95;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
@@ -35,12 +40,7 @@ import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.EntityTestAssembler;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 import static org.junit.Assert.assertTrue;
 
@@ -305,6 +305,7 @@ public class Qi95IssueTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
+                new OrgJsonValueSerializationAssembler().assemble( module );
                 new JdbmEntityStoreAssembler( Visibility.application ).assemble( module );
             }
         };

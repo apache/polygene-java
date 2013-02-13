@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.rdf.query.RdfQueryParserFactory;
@@ -29,6 +30,7 @@ import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
@@ -88,8 +90,10 @@ public class Qi66IssueTest
     {
         module.entities( AccountComposite.class );
         new EntityTestAssembler().assemble( module );
-        module.services( RdfQueryService.class, RdfQueryParserFactory.class,
+        module.services( RdfQueryService.class,
+                         RdfQueryParserFactory.class,
                          MemoryRepositoryService.class );
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
     }
 }

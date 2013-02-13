@@ -18,6 +18,7 @@
 package org.qi4j.sample.dcicargo.sample_b.data.structure.delivery;
 
 import java.util.Date;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
@@ -43,11 +44,11 @@ public interface NextHandlingEvent
 {
     Property<HandlingEventType> handlingEventType();
 
-    Property<Location> location();
+    Association<Location> location();
 
     @Optional
     Property<Date> time();
 
     @Optional
-    Property<Voyage> voyage();
+    Association<Voyage> voyage();
 }

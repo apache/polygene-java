@@ -17,24 +17,30 @@
  */
 package org.qi4j.index.elasticsearch;
 
-import java.io.StringWriter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONWriter;
+import org.json.JSONObject;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueType;
 import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.api.util.Classes;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializer;
+import org.qi4j.functional.Iterables;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -51,21 +57,21 @@ import org.slf4j.LoggerFactory;
  */
 @Mixins( ElasticSearchIndexer.Mixin.class )
 public interface ElasticSearchIndexer
-        extends StateChangeListener
+    extends StateChangeListener
 {
 
     class Mixin
-            implements StateChangeListener
+        implements StateChangeListener
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchIndexer.class );
-
         @Structure
         private Module module;
-
         @Service
         private EntityStore entityStore;
-
+        @Service
+        @Tagged( ValueSerialization.Formats.JSON )
+        private ValueSerializer valueSerializer;
         @This
         private ElasticSearchSupport support;
 
@@ -79,8 +85,10 @@ public interface ElasticSearchIndexer
         {
             // All updated or new states
             Map<String, EntityState> newStates = new HashMap<String, EntityState>();
-            for ( EntityState eState : changedStates ) {
-                if ( eState.status() == EntityStatus.UPDATED || eState.status() == EntityStatus.NEW ) {
+            for( EntityState eState : changedStates )
+            {
+                if( eState.status() == EntityStatus.UPDATED || eState.status() == EntityStatus.NEW )
+                {
                     newStates.put( eState.identity().identity(), eState );
                 }
             }
@@ -89,14 +97,16 @@ public interface ElasticSearchIndexer
                                                                    module,
                                                                    System.currentTimeMillis() );
 
-
             // Bulk index request builder
             BulkRequestBuilder bulkBuilder = support.client().prepareBulk();
 
             // Handle changed entity states
-            for ( EntityState changedState : changedStates ) {
-                if ( changedState.entityDescriptor().queryable() ) {
-                    switch ( changedState.status() ) {
+            for( EntityState changedState : changedStates )
+            {
+                if( changedState.entityDescriptor().queryable() )
+                {
+                    switch( changedState.status() )
+                    {
                         case REMOVED:
                             LOGGER.trace( "Removing Entity State from Index: {}", changedState );
                             remove( bulkBuilder, changedState.identity().identity() );
@@ -104,11 +114,15 @@ public interface ElasticSearchIndexer
                         case UPDATED:
                             LOGGER.trace( "Updating Entity State in Index: {}", changedState );
                             remove( bulkBuilder, changedState.identity().identity() );
-                            index( bulkBuilder, changedState.identity().identity(), toJSON( changedState, newStates, uow ) );
+                            String updatedJson = toJSON( changedState, newStates, uow );
+                            LOGGER.trace( "Will index: {}", updatedJson );
+                            index( bulkBuilder, changedState.identity().identity(), updatedJson );
                             break;
                         case NEW:
                             LOGGER.trace( "Creating Entity State in Index: {}", changedState );
-                            index( bulkBuilder, changedState.identity().identity(), toJSON( changedState, newStates, uow ) );
+                            String newJson = toJSON( changedState, newStates, uow );
+                            LOGGER.trace( "Will index: {}", newJson );
+                            index( bulkBuilder, changedState.identity().identity(), newJson );
                             break;
                         case LOADED:
                         default:
@@ -120,13 +134,15 @@ public interface ElasticSearchIndexer
 
             uow.discard();
 
-            if ( bulkBuilder.numberOfActions() > 0 ) {
+            if( bulkBuilder.numberOfActions() > 0 )
+            {
 
                 // Execute bulk actions
                 BulkResponse bulkResponse = bulkBuilder.execute().actionGet();
 
                 // Handle errors
-                if ( bulkResponse.hasFailures() ) {
+                if( bulkResponse.hasFailures() )
+                {
                     throw new ElasticSearchIndexException( bulkResponse.buildFailureMessage() );
                 }
 
@@ -141,96 +157,142 @@ public interface ElasticSearchIndexer
         private void remove( BulkRequestBuilder bulkBuilder, String identity )
         {
             bulkBuilder.add( support.client().
-                    prepareDelete( support.index(), support.entitiesType(), identity ) );
+                prepareDelete( support.index(), support.entitiesType(), identity ) );
         }
 
         private void index( BulkRequestBuilder bulkBuilder, String identity, String json )
         {
-            LOGGER.trace( "Will index: {}", json );
             bulkBuilder.add( support.client().
-                    prepareIndex( support.index(), support.entitiesType(), identity ).
-                    setSource( json ) );
+                prepareIndex( support.index(), support.entitiesType(), identity ).
+                setSource( json ) );
         }
 
+        /**
+         * <pre>
+         * {
+         *  "_identity": "ENTITY-IDENTITY",
+         *  "_types": [ "All", "Entity", "types" ],
+         *  "property.name": property.value,
+         *  "association.name": "ASSOCIATED-IDENTITY",
+         *  "manyassociation.name": [ "ASSOCIATED", "IDENTITIES" ]
+         * }
+         * </pre>
+         */
         private String toJSON( EntityState state, Map<String, EntityState> newStates, EntityStoreUnitOfWork uow )
         {
-            try {
-                StringWriter writer = new StringWriter();
-                JSONWriter json = new JSONWriter( writer );
-                JSONWriter types = json.object().
-                        key( "_identity" ).value( state.identity().identity() ).
-                        key( "_types" ).array();
-                for ( Class<?> type : state.entityDescriptor().mixinTypes() ) {
-                    types.value( type.getName() );
-                }
-                types.endArray();
+            try
+            {
+                JSONObject json = new JSONObject();
+
+                json.put( "_identity", state.identity().identity() );
+                json.put( "_types", Iterables.toList( Iterables.map( Classes.toClassName(), state.entityDescriptor().mixinTypes() ) ) );
+
                 EntityDescriptor entityType = state.entityDescriptor();
-                JSONWriterSerializer serializer = new JSONWriterSerializer( json );
 
                 // Properties
-                for ( PropertyDescriptor persistentProperty : entityType.state().properties() ) {
-                    if ( persistentProperty.queryable() ) {
-                        Object value = state.propertyValueOf( persistentProperty.qualifiedName() );
-                        json.key( persistentProperty.qualifiedName().name() );
-                        serializer.serialize( value, persistentProperty.valueType() );
+                for( PropertyDescriptor propDesc : entityType.state().properties() )
+                {
+                    if( propDesc.queryable() )
+                    {
+                        String key = propDesc.qualifiedName().name();
+                        Object value = state.propertyValueOf( propDesc.qualifiedName() );
+                        if( value == null || ValueType.isPrimitiveValue( value ) )
+                        {
+                            json.put( key, value );
+                        }
+                        else
+                        {
+                            // TODO Theses tests are pretty fragile, find a better way to fix this, Jackson API should behave better
+                            String serialized = valueSerializer.serialize( value );
+                            if( serialized.startsWith( "{" ) )
+                            {
+                                json.put( key, new JSONObject( serialized ) );
+                            }
+                            else if( serialized.startsWith( "[" ) )
+                            {
+                                json.put( key, new JSONArray( serialized ) );
+                            }
+                            else
+                            {
+                                json.put( key, serialized );
+                            }
+                        }
                     }
                 }
 
                 // Associations
-                for ( AssociationDescriptor assocDesc : entityType.state().associations() ) {
-                    if ( assocDesc.queryable() ) {
+                for( AssociationDescriptor assocDesc : entityType.state().associations() )
+                {
+                    if( assocDesc.queryable() )
+                    {
+                        String key = assocDesc.qualifiedName().name();
                         EntityReference associated = state.associationValueOf( assocDesc.qualifiedName() );
-                        json.key( assocDesc.qualifiedName().name() );
-                        if ( associated == null ) {
-                            json.value( null );
-                        } else {
-                            if ( assocDesc.isAggregated() || support.indexNonAggregatedAssociations() ) {
-                                if ( newStates.containsKey( associated.identity() ) ) {
-                                    json.json( toJSON( newStates.get( associated.identity() ), newStates, uow ) );
-                                } else {
-                                    EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( associated
-                                                                                                                          .identity() ) );
-                                    json.json( toJSON( assocState, newStates, uow ) );
+                        Object value;
+                        if( associated == null )
+                        {
+                            value = null;
+                        }
+                        else
+                        {
+                            if( assocDesc.isAggregated() || support.indexNonAggregatedAssociations() )
+                            {
+                                if( newStates.containsKey( associated.identity() ) )
+                                {
+                                    value = new JSONObject( toJSON( newStates.get( associated.identity() ), newStates, uow ) );
                                 }
-                            } else {
-                                json.object().key( "identity" ).value( associated.identity() ).endObject();
+                                else
+                                {
+                                    EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( associated.identity() ) );
+                                    value = new JSONObject( toJSON( assocState, newStates, uow ) );
+                                }
+                            }
+                            else
+                            {
+                                value = new JSONObject( Collections.singletonMap( "identity", associated.identity() ) );
                             }
                         }
+                        json.put( key, value );
                     }
                 }
 
                 // ManyAssociations
-                for ( AssociationDescriptor manyAssocDesc : entityType.state().manyAssociations() ) {
-                    if ( manyAssocDesc.queryable() ) {
-                        JSONWriter assocs = json.key( manyAssocDesc.qualifiedName().name() ).array();
+                for( AssociationDescriptor manyAssocDesc : entityType.state().manyAssociations() )
+                {
+                    if( manyAssocDesc.queryable() )
+                    {
+                        String key = manyAssocDesc.qualifiedName().name();
+                        JSONArray array = new JSONArray();
                         ManyAssociationState associateds = state.manyAssociationValueOf( manyAssocDesc.qualifiedName() );
-                        for ( EntityReference associated : associateds ) {
-                            if ( manyAssocDesc.isAggregated() || support.indexNonAggregatedAssociations() ) {
-                                if ( newStates.containsKey( associated.identity() ) ) {
-                                    assocs.json( toJSON( newStates.get( associated.identity() ), newStates, uow ) );
-                                } else {
-                                    EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( associated
-                                                                                                                          .identity() ) );
-                                    assocs.json( toJSON( assocState, newStates, uow ) );
+                        for( EntityReference associated : associateds )
+                        {
+                            if( manyAssocDesc.isAggregated() || support.indexNonAggregatedAssociations() )
+                            {
+                                if( newStates.containsKey( associated.identity() ) )
+                                {
+                                    array.put( new JSONObject( toJSON( newStates.get( associated.identity() ), newStates, uow ) ) );
                                 }
-                            } else {
-                                assocs.object().key( "identity" ).value( associated.identity() ).endObject();
+                                else
+                                {
+                                    EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( associated.identity() ) );
+                                    array.put( new JSONObject( toJSON( assocState, newStates, uow ) ) );
+                                }
+                            }
+                            else
+                            {
+                                array.put( new JSONObject( Collections.singletonMap( "identity", associated.identity() ) ) );
                             }
                         }
-                        assocs.endArray();
+                        json.put( key, array );
                     }
                 }
-                json.endObject();
 
-                String result = writer.toString();
-                return result;
-
-            } catch ( JSONException e ) {
+                return json.toString();
+            }
+            catch( JSONException e )
+            {
                 throw new ElasticSearchIndexException( "Could not index EntityState", e );
             }
-
         }
-
     }
 
 }

@@ -26,9 +26,8 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 /**
  * Define a field to be a Property
@@ -39,7 +38,7 @@ public class StateFieldTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class );
+        new EntityTestAssembler().assemble( module );
         module.entities( PersonEntity.class );
     }
 

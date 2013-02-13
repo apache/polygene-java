@@ -23,24 +23,19 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.json.JSONDeserializer;
-import org.qi4j.api.json.JSONObjectSerializer;
-import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.CollectionType;
@@ -52,6 +47,8 @@ import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
@@ -88,6 +85,10 @@ public class PreferencesEntityStoreMixin
 
     @Structure
     private Application application;
+
+    @Service
+    @Tagged( ValueSerialization.Formats.JSON )
+    private ValueSerialization valueSerialization;
 
     private Preferences root;
     protected String uuid;
@@ -218,7 +219,6 @@ public class PreferencesEntityStoreMixin
             DefaultEntityStoreUnitOfWork desuw = (DefaultEntityStoreUnitOfWork) unitOfWork;
 
             Module module = desuw.module();
-            JSONDeserializer deserializer = new JSONDeserializer( module );
 
             if( !root.nodeExists( identity.identity() ) )
             {
@@ -307,19 +307,15 @@ public class PreferencesEntityStoreMixin
                     else
                     {
                         // Load as string even though it's a number
-                        String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), "null" );
-                        json = "[" + json + "]";
-                        JSONTokener tokener = new JSONTokener( json );
-                        JSONArray array = (JSONArray) tokener.nextValue();
-                        Object jsonValue = array.get( 0 );
+                        String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
                         Object value;
-                        if( jsonValue == JSONObject.NULL )
+                        if( json == null )
                         {
                             value = null;
                         }
                         else
                         {
-                            value = deserializer.deserialize( jsonValue, persistentPropertyDescriptor.valueType() );
+                            value = valueSerialization.deserialize( persistentPropertyDescriptor.valueType(), json );
                         }
                         properties.put( persistentPropertyDescriptor.qualifiedName(), value );
                     }
@@ -336,23 +332,21 @@ public class PreferencesEntityStoreMixin
                          propertyType instanceof CollectionType ||
                          propertyType instanceof EnumType )
                 {
-                    String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), "null" );
-                    JSONTokener tokener = new JSONTokener( json );
-                    Object composite = tokener.nextValue();
-                    if( composite.equals( JSONObject.NULL ) )
+                    String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
+                    Object value;
+                    if( json == null )
                     {
-                        properties.put( persistentPropertyDescriptor.qualifiedName(), null );
+                        value = null;
                     }
                     else
                     {
-                        Object value = deserializer.deserialize( composite, propertyType );
-                        properties.put( persistentPropertyDescriptor.qualifiedName(), value );
+                        value = valueSerialization.deserialize( persistentPropertyDescriptor.valueType(), json );
                     }
+                    properties.put( persistentPropertyDescriptor.qualifiedName(), value );
                 }
                 else
                 {
-                    String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(),
-                                                  null );
+                    String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
                     if( json == null )
                     {
                         if( persistentPropertyDescriptor.initialValue( module ) != null )
@@ -366,7 +360,7 @@ public class PreferencesEntityStoreMixin
                     }
                     else
                     {
-                        Object value = deserializer.deserialize( json, propertyType );
+                        Object value = valueSerialization.deserialize( propertyType, json );
                         properties.put( persistentPropertyDescriptor.qualifiedName(), value );
                     }
                 }
@@ -428,7 +422,7 @@ public class PreferencesEntityStoreMixin
                                            manyAssociations
             );
         }
-        catch( JSONException e )
+        catch( ValueSerializationException e )
         {
             throw new EntityStoreException( e );
         }
@@ -538,10 +532,7 @@ public class PreferencesEntityStoreMixin
                         else
                         {
                             // Store as string even though it's a number
-                            JSONObjectSerializer serializer = new JSONObjectSerializer();
-                            serializer.serialize( value, valueType );
-                            String jsonString = serializer.rootObject().toString();
-                            jsonString = jsonString.substring( 1, jsonString.length() - 1 );
+                            String jsonString = valueSerialization.serialize( value );
                             propsPrefs.put( persistentProperty.qualifiedName().name(), jsonString );
                         }
                     }
@@ -554,17 +545,12 @@ public class PreferencesEntityStoreMixin
                              valueType instanceof CollectionType ||
                              valueType instanceof EnumType )
                     {
-                        JSONWriterSerializer serializer = new JSONWriterSerializer();
-                        serializer.serialize( value, valueType );
-                        String jsonString = serializer.getJSON().toString();
+                        String jsonString = valueSerialization.serialize( value );
                         propsPrefs.put( persistentProperty.qualifiedName().name(), jsonString );
                     }
                     else
                     {
-                        JSONObjectSerializer serializer = new JSONObjectSerializer();
-                        serializer.serialize( value, valueType );
-                        String jsonString = serializer.rootObject().toString();
-
+                        String jsonString = valueSerialization.serialize( value );
                         propsPrefs.put( persistentProperty.qualifiedName().name(), jsonString );
                     }
                 }
@@ -610,7 +596,7 @@ public class PreferencesEntityStoreMixin
                 }
             }
         }
-        catch( JSONException e )
+        catch( ValueSerializationException e )
         {
             throw new EntityStoreException( "Could not store EntityState", e );
         }

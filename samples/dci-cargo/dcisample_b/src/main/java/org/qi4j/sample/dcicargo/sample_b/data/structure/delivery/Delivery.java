@@ -18,6 +18,7 @@
 package org.qi4j.sample.dcicargo.sample_b.data.structure.delivery;
 
 import java.util.Date;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
@@ -100,7 +101,7 @@ public interface Delivery
      * CLAIM
      */
     @Optional
-    Property<HandlingEvent> lastHandlingEvent();
+    Association<HandlingEvent> lastHandlingEvent();
 
     /*
      * NOT_RECEIVED

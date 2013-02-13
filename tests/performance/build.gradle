@@ -3,20 +3,17 @@ description = "Qi4j Performance Test Suite for Entity Stores."
 jar { manifest { name = "Qi4j Performance Test - EntityStores" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  compile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm"))
-  compile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-sql"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp"))
-  compile(project(":org.qi4j.extensions:org.qi4j.extension.cache-ehcache"))
-  compile(libraries.derby)
-  compile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
-  compile(libraries.slf4j_api)
 
-  runtime(project(":org.qi4j.core:org.qi4j.core.spi"))
-  runtime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  runtime(libraries.asm)
-  runtime(libraries.asm_commons)
-  runtime(libraries.slf4j_simple)
+    compile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
+    compile project( ":org.qi4j.libraries:org.qi4j.library.sql-dbcp" )
+    compile project( ':org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson' )
+    compile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm" )
+    compile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-sql" )
+    compile project( ":org.qi4j.extensions:org.qi4j.extension.cache-ehcache" )
+    compile project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" )
+    compile libraries.derby
+
+    runtime project(":org.qi4j.core:org.qi4j.core.runtime")
+    runtime libraries.logback
+
 }

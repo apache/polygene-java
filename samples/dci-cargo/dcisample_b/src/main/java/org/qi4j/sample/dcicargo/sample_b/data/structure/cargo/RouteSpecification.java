@@ -19,6 +19,7 @@ package org.qi4j.sample.dcicargo.sample_b.data.structure.cargo;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
@@ -53,9 +54,9 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.location.Location;
 public interface RouteSpecification
     extends ValueComposite
 {
-    Property<Location> origin();
+    Association<Location> origin();
 
-    Property<Location> destination();
+    Association<Location> destination();
 
     Property<Date> earliestDeparture();
 

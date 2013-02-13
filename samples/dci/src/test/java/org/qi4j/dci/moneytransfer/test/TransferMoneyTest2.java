@@ -30,8 +30,7 @@ import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
 import org.qi4j.dci.moneytransfer.domain.entity.CheckingAccountEntity;
 import org.qi4j.dci.moneytransfer.domain.entity.CreditorEntity;
 import org.qi4j.dci.moneytransfer.domain.entity.SavingsAccountEntity;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
 
@@ -60,9 +59,7 @@ public class TransferMoneyTest2
                     SavingsAccountEntity.class,
                     CreditorEntity.class );
 
-                module.services(
-                    MemoryEntityStoreService.class,
-                    UuidIdentityGeneratorService.class );
+                new EntityTestAssembler().assemble( module );
 
                 module.transients( TransferMoneyContext2.class );
                 module.objects( PayBillsContext2.class );

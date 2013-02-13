@@ -9,6 +9,7 @@ We try to keep the Qi4j Core Runtime as lean as possible, and a lot of the power
 Extension SPI, which defines clear ways to extend the platform. There are currently the following Extensions types,
 each with possibly more than one implementation;
 
+   * Value Serialization
    * Entity Stores
    * Index / Query Engines
    * Entity Caches
@@ -22,6 +23,18 @@ how good the codebase, documentation and unit tests are for each of the librarie
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.
 
+
+:leveloffset: 2
+
+include::../../../../extensions/valueserialization-orgjson/src/docs/vs-orgjson.txt[]
+
+:leveloffset: 2
+
+include::../../../../extensions/valueserialization-jackson/src/docs/vs-jackson.txt[]
+
+:leveloffset: 2
+
+include::../../../../extensions/valueserialization-stax/src/docs/vs-stax.txt[]
 
 :leveloffset: 2
 

@@ -18,11 +18,13 @@
 package org.qi4j.index.elasticsearch.assembly;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.internal.AbstractElasticSearchAssembler;
 import org.qi4j.index.elasticsearch.memory.ESMemoryIndexQueryService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class ESMemoryIndexQueryAssembler
         extends AbstractElasticSearchAssembler<ESMemoryIndexQueryAssembler>
@@ -38,6 +40,9 @@ public class ESMemoryIndexQueryAssembler
                 identifiedBy( identity ).
                 visibleIn( visibility ).
                 instantiateOnStartup();
+
+        module.services( OrgJsonValueSerializationService.class ).
+            taggedWith( ValueSerialization.Formats.JSON );
 
         configModule.entities( ElasticSearchConfiguration.class ).
                 visibleIn( configVisibility );

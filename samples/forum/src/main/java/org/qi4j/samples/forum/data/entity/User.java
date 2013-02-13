@@ -4,10 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.json.Base64Encoder;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.util.Base64Encoder;
 
 /**
  * TODO

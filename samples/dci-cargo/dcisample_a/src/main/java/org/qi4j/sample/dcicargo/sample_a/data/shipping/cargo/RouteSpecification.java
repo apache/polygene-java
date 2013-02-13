@@ -18,6 +18,7 @@
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo;
 
 import java.util.Date;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.itinerary.Itinerary;
@@ -46,9 +47,9 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.location.Location;
 @Mixins( RouteSpecification.Mixin.class )
 public interface RouteSpecification
 {
-    Property<Location> origin();
+    Association<Location> origin();
 
-    Property<Location> destination();
+    Association<Location> destination();
 
     Property<Date> arrivalDeadline();
 

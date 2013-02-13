@@ -33,6 +33,7 @@ import org.qi4j.library.rest.server.assembler.RestServerAssembler;
 import org.qi4j.library.rest.server.restlet.NullCommandResult;
 import org.qi4j.library.rest.server.spi.CommandResult;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.Client;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -68,8 +69,8 @@ public class ContinuousIntegrationTest
         throws AssemblyException
     {
         // General setup of client and server
+        new OrgJsonValueSerializationAssembler().assemble( module );
         new ClientAssembler().assemble( module );
-
         new ValueAssembler().assemble( module );
         new RestServerAssembler().assemble( module );
 
@@ -412,12 +413,12 @@ public class ContinuousIntegrationTest
         public BuildResult buildStatus( BuildSpec build )
         {
             String buildNo = build.buildNo().get(); // or lookup by tag
-            return module.newValueFromJSON( BuildResult.class, "{ 'buildNo':'" + buildNo + "', 'testsPassed': 37, 'testsFailed': 1}" );
+            return module.newValueFromSerializedState( BuildResult.class, "{ 'buildNo':'" + buildNo + "', 'testsPassed': 37, 'testsFailed': 1}" );
         }
 
         public ServerStatus serverStatus()
         {
-            return module.newValueFromJSON( ServerStatus.class, "{'currentStatus':'Idle', 'availableAgents': 2  }" );
+            return module.newValueFromSerializedState( ServerStatus.class, "{'currentStatus':'Idle', 'availableAgents': 2  }" );
         }
 
         public void tagBuild( TagBuildCommand command )

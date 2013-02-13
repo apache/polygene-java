@@ -17,6 +17,9 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.bootstrap.assembly;
 
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
@@ -24,6 +27,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.functional.Function;
 import org.qi4j.index.rdf.RdfIndexingEngineService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
@@ -62,6 +66,7 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Schedule;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.VoyageNumber;
 import org.qi4j.sample.dcicargo.sample_b.infrastructure.conversion.EntityToDTOService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 import static org.qi4j.api.common.Visibility.application;
 import static org.qi4j.api.structure.Application.Mode.development;
@@ -176,7 +181,8 @@ public class Assembler
 
         queryModule
             .addServices(
-                EntityToDTOService.class )
+                EntityToDTOService.class,
+                OrgJsonValueSerializationService.class )
             .visibleIn( application );
     }
 
@@ -245,11 +251,28 @@ public class Assembler
     private void assembleInfrastructureLayer( LayerAssembly infrastructureLayer )
         throws AssemblyException
     {
+        ModuleAssembly serializationModule = infrastructureLayer.module( "INFRASTRUCTURE-Serialization" );
+        serializationModule
+            .services( OrgJsonValueSerializationService.class )
+            .taggedWith( ValueSerialization.Formats.JSON )
+            .setMetaInfo( new Function<Application, Module>()
+        {
+            @Override
+            public Module map( Application application )
+            {
+                return application.findModule( "CONTEXT", "CONTEXT-RoleMap" );
+            }
+        } )
+        .visibleIn( application );
+
         ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" );
         indexingModule
             .objects(
                 EntityStateSerializer.class,
                 EntityTypeSerializer.class );
+
+        indexingModule
+            .services( OrgJsonValueSerializationService.class );
 
         indexingModule
             .services(

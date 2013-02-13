@@ -1,0 +1,24 @@
+[[extension-vs-stax, StAX ValueSerialization]]
+= StAX ValueSerialization =
+
+[devstatus]
+--------------
+source=extensions/valueserialization-stax/dev-status.xml
+--------------
+
+ValueSerialization Service backed by http://jcp.org/en/jsr/detail?id=173[StAX].
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done as follows:
+
+[snippet,java]
+----
+source=extensions/valueserialization-stax/src/test/java/org/qi4j/valueserialization/stax/StaxPlainValueSerializationTest.java
+tag=assembly
+----
+
+See the ValueSerialization <<core-api-value,API>> and <<core-spi-valueserialization,SPI>> documentation for details and
+usage.

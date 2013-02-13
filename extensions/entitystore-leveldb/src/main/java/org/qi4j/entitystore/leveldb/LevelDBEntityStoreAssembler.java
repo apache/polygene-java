@@ -53,5 +53,4 @@ public class LevelDBEntityStoreAssembler
             module.services( LevelDBEntityStoreService.class ).identifiedBy( identity );
         }
     }
-
 }

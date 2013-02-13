@@ -1,0 +1,15 @@
+description = "Qi4j org.json ValueSerialization Extension"
+
+jar { manifest { name = "Qi4j Extension - ValueSerialization - org.json" } }
+
+dependencies {
+
+    compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
+
+    testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
+
+    testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
+    testRuntime libraries.logback
+
+}
+

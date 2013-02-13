@@ -27,11 +27,10 @@ import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.cache.ehcache.assembly.EhCacheAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.cache.Cache;
 import org.qi4j.spi.cache.CachePool;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.*;
 
@@ -46,8 +45,7 @@ public class EhCacheTest extends AbstractQi4jTest
     {
         new EhCacheAssembler( Visibility.module ).assemble( module );
         ModuleAssembly confModule = module.layer().module( "confModule" );
-        confModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
-        confModule.services( UuidIdentityGeneratorService.class );
+        new EntityTestAssembler( Visibility.layer ).assemble( confModule );
     }
 
     @Override

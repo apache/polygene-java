@@ -18,12 +18,14 @@
 package org.qi4j.index.rdf;
 
 import org.junit.Ignore;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.test.indexing.AbstractComplexQueryTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 @Ignore( "RDF Index/Query do not support Complex Queries, ie. queries by 'example values'" )
 public class RdfComplexQueryTest
@@ -35,8 +37,9 @@ public class RdfComplexQueryTest
             throws AssemblyException
     {
         super.assemble( module );
-        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
         module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
+        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
         module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).instantiateOnStartup();
     }
 

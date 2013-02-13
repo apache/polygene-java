@@ -28,7 +28,6 @@ import org.qi4j.api.service.qualifier.IdentifiedBy;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.io.Outputs;
 import org.qi4j.io.Receiver;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
@@ -36,10 +35,11 @@ import org.qi4j.library.jmx.JMXAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceJMXAssembler;
 import org.qi4j.library.sql.c3p0.C3P0DataSourceServiceAssembler;
-import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.common.Databases;
+import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.liquibase.LiquibaseConfiguration;
 import org.qi4j.library.sql.liquibase.LiquibaseService;
+import org.qi4j.test.EntityTestAssembler;
 
 /**
  * Test of export of DataSources to JMX, and some other stuff
@@ -77,7 +77,7 @@ public class DataSourceConfigurationManagerServiceTest
                 new JMXAssembler().assemble( module );
 
                 // Create in-memory store for configurations
-                module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
+                new EntityTestAssembler( Visibility.layer ).assemble( module );
 
                 // Set up DataSource service that will manage the connection pools
                 new C3P0DataSourceServiceAssembler().identifiedBy( "datasource-service" ).visibleIn( Visibility.layer ).assemble( module );

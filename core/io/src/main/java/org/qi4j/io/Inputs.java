@@ -22,10 +22,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Scanner;
 import java.util.zip.GZIPInputStream;
 import org.qi4j.functional.Visitor;
 
@@ -34,6 +36,78 @@ import org.qi4j.functional.Visitor;
  */
 public class Inputs
 {
+    // START SNIPPET: method
+
+    /**
+     * Read lines from a String.
+     *
+     * @param source lines
+     *
+     * @return Input that provides lines from the string as strings
+     */
+    public static Input<String, RuntimeException> text( final String source )
+    // END SNIPPET: method
+    {
+        return new Input<String, RuntimeException>()
+        {
+            @Override
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super String, ReceiverThrowableType> output )
+                throws RuntimeException, ReceiverThrowableType
+            {
+
+                output.receiveFrom( new Sender<String, RuntimeException>()
+                {
+                    @Override
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, RuntimeException
+                    {
+                        Scanner scanner = new Scanner( source );
+                        while( scanner.hasNextLine() )
+                        {
+                            receiver.receive( scanner.nextLine() );
+                        }
+                    }
+                } );
+            }
+        };
+    }
+
+    // START SNIPPET: method
+
+    /**
+     * Read lines from a Reader.
+     *
+     * @param source lines
+     *
+     * @return Input that provides lines from the string as strings
+     */
+    public static Input<String, RuntimeException> text( final Reader source )
+    // END SNIPPET: method
+    {
+        return new Input<String, RuntimeException>()
+        {
+            @Override
+            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super String, ReceiverThrowableType> output )
+                throws RuntimeException, ReceiverThrowableType
+            {
+
+                output.receiveFrom( new Sender<String, RuntimeException>()
+                {
+                    @Override
+                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
+                        throws ReceiverThrowableType, RuntimeException
+                    {
+                        Scanner scanner = new Scanner( source );
+                        while( scanner.hasNextLine() )
+                        {
+                            receiver.receive( scanner.nextLine() );
+                        }
+                    }
+                } );
+            }
+        };
+    }
+
     // START SNIPPET: method
 
     /**

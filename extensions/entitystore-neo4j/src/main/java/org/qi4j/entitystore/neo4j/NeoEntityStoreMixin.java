@@ -16,8 +16,10 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceActivation;
+import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
@@ -33,6 +35,9 @@ public class NeoEntityStoreMixin
    @Optional
    @Service
    FileConfiguration fileConfiguration;
+   @Service
+   @Tagged( ValueSerialization.Formats.JSON )
+   private ValueSerialization valueSerialization;
 
    @This
    private Configuration<NeoConfiguration> config;
@@ -71,7 +76,7 @@ public class NeoEntityStoreMixin
     @Override
    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
    {
-      return new NeoEntityStoreUnitOfWork(neo, indexService, newUnitOfWorkId(), module, currentTime);
+      return new NeoEntityStoreUnitOfWork(neo, indexService, valueSerialization, newUnitOfWorkId(), module, currentTime);
    }
 
     @Override
@@ -87,7 +92,7 @@ public class NeoEntityStoreMixin
                @Override
                public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super EntityState, ReceiverThrowableType> receiver) throws ReceiverThrowableType, EntityStoreException
                {
-                  NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork(neo, indexService, newUnitOfWorkId(), module, System.currentTimeMillis());
+                  NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork(neo, indexService, valueSerialization, newUnitOfWorkId(), module, System.currentTimeMillis());
 
                   try
                   {
@@ -100,7 +105,7 @@ public class NeoEntityStoreMixin
                         for (Relationship entityRel : entityType.getRelationships(RelTypes.IS_OF_TYPE, Direction.INCOMING))
                         {
                            Node entityNode = entityRel.getStartNode();
-                           NeoEntityState entityState = new NeoEntityState(uow, entityNode, EntityStatus.LOADED);
+                           NeoEntityState entityState = new NeoEntityState( valueSerialization, uow, entityNode, EntityStatus.LOADED);
                            receiver.receive(entityState);
                         }
                      }

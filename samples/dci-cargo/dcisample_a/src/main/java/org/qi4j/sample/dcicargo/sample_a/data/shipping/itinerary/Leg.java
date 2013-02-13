@@ -18,6 +18,7 @@
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.itinerary;
 
 import java.util.Date;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.location.Location;
@@ -33,13 +34,13 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 public interface Leg
     extends ValueComposite
 {
-    Property<Location> loadLocation();
+    Association<Location> loadLocation();
 
     Property<Date> loadTime();
 
-    Property<Voyage> voyage();
+    Association<Voyage> voyage();
 
     Property<Date> unloadTime();
 
-    Property<Location> unloadLocation();
+    Association<Location> unloadLocation();
 }

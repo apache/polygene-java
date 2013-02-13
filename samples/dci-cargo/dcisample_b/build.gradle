@@ -8,6 +8,7 @@ dependencies {
   compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.conversion"))
   compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
+  compile project( ':org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson' )
   compile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
   compile(project(":org.qi4j.tools:org.qi4j.tool.envisage"))
   compile(libraries.jetty_webapp)

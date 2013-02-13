@@ -11,23 +11,21 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.entitystore;
 
+import java.util.prefs.Preferences;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.prefs.PreferencesEntityStoreInfo;
 import org.qi4j.entitystore.prefs.PreferencesEntityStoreService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
-import java.util.prefs.Preferences;
-
-/**
- * JAVADOC
- */
 public class PreferencesEntityStoreTest
     extends AbstractEntityStoreTest
 {
+
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
@@ -39,5 +37,6 @@ public class PreferencesEntityStoreTest
         PreferencesEntityStoreInfo metaInfo = new PreferencesEntityStoreInfo( Preferences.userNodeForPackage( getClass() ) );
         Thread.currentThread().setContextClassLoader( cl );
         module.services( PreferencesEntityStoreService.class ).setMetaInfo( metaInfo ).instantiateOnStartup();
+        new OrgJsonValueSerializationAssembler().assemble( module );
     }
 }

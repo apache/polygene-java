@@ -29,6 +29,7 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 public class PreferenceEntityStoreAssembler
     implements Assembler
 {
+
     private Visibility visibility;
 
     public PreferenceEntityStoreAssembler( Visibility visibility )

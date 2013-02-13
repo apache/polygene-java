@@ -11,13 +11,11 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.type;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 import org.qi4j.api.util.Classes;
-import org.qi4j.functional.Iterables;
 
 /**
  * Map type. This handles instances of Map
@@ -25,20 +23,30 @@ import org.qi4j.functional.Iterables;
 public final class MapType
     extends ValueType
 {
+
     private ValueType keyType;
     private ValueType valueType;
 
     public static boolean isMap( Type type )
     {
-        Class cl = Classes.RAW_CLASS.map( type );
+        Class<?> cl = Classes.RAW_CLASS.map( type );
         return Map.class.isAssignableFrom( cl );
+    }
+
+    public static MapType of( Class<?> keyType, Class<?> valueType )
+    {
+        return new MapType( Map.class, ValueType.of( keyType ), ValueType.of( valueType ) );
     }
 
     public MapType( Class<?> type, ValueType keyType, ValueType valueType )
     {
-        super( Iterables.iterable( type ) );
+        super( type );
         this.keyType = keyType;
         this.valueType = valueType;
+        if( !isMap( type ) )
+        {
+            throw new IllegalArgumentException( type + " is not a Map." );
+        }
     }
 
     public ValueType keyType()

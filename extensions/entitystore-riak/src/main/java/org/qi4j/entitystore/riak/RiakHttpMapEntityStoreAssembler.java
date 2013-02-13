@@ -70,5 +70,4 @@ public class RiakHttpMapEntityStoreAssembler
         configModule.entities( RiakHttpEntityStoreConfiguration.class ).
             visibleIn( configVisibility );
     }
-
 }

@@ -27,11 +27,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.query.grammar.AndSpecification;
 import org.qi4j.api.query.grammar.AssociationNotNullSpecification;
 import org.qi4j.api.query.grammar.AssociationNullSpecification;
@@ -54,9 +52,7 @@ import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
 import org.qi4j.api.query.grammar.PropertyNullSpecification;
 import org.qi4j.api.query.grammar.QuerySpecification;
 import org.qi4j.api.query.grammar.Variable;
-import org.qi4j.api.type.ValueType;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.rdf.query.RdfQueryParser;
@@ -86,9 +82,10 @@ public class RdfQueryParserImpl2
     private static final Set<Character> reservedChars;
     private static final Set<Character> reservedJsonChars;
 
-    private Namespaces namespaces = new Namespaces();
-    private Triples triples = new Triples( namespaces );
-    private Qi4jSPI spi;
+    private final Namespaces namespaces = new Namespaces();
+    private final Triples triples = new Triples( namespaces );
+    private final Qi4jSPI spi;
+    private final ValueSerializer valueSerializer;
     private Map<String, Object> variables;
 
     static
@@ -110,9 +107,10 @@ public class RdfQueryParserImpl2
         ) );
     }
 
-    public RdfQueryParserImpl2( Qi4jSPI spi )
+    public RdfQueryParserImpl2( Qi4jSPI spi, ValueSerializer valueSerializer )
     {
         this.spi = spi;
+        this.valueSerializer = valueSerializer;
     }
 
     @Override
@@ -346,91 +344,10 @@ public class RdfQueryParserImpl2
     }
 
     private String createAndEscapeJSONString( Object value, PropertyFunction<?> propertyRef )
-        throws JSONException
     {
-        JSONObjectSerializer serializer = new JSONObjectSerializer();
-
-        ValueType valueType;
-
-        if( value instanceof ValueComposite )
-        {
-            valueType = spi.valueDescriptorFor( (ValueComposite) value ).valueType();
-        }
-        else
-        {
-            valueType = new ValueType( value.getClass() );
-        }
-        serializer.serialize( value, valueType );
-
-        return escapeJSONString( serializer.rootObject().toString() );
-/* TODO Fix this by creating external JSON-er
-        ValueType type = ValueTypeFactory.instance().newValueType(
-            value.getClass(),
-            propertyRef.propertyType(),
-            propertyRef.propertyDeclaringType(),
-                resolution.layer(), resolution.module() );
-
-        JSONStringer json = new JSONStringer();
-        json.array();
-        this.createJSONString( value, type, json );
-        json.endArray();
-        String result = json.toString();
-        result = result.substring( 1, result.length() - 1 );
-
-        result = this.escapeJSONString( result );
-
-        return result;
-*/
+        return escapeJSONString( valueSerializer.serialize( value, false ) );
     }
 
-    /*
-    private void createJSONString( Object value, ValueType type, JSONStringer stringer )
-        throws JSONException
-    {
-        // TODO the sole purpose of this method is to get rid of "_type" information, which ValueType.toJSON
-        // produces for value composites
-        // So, change toJSON(...) to be configurable so that the caller can decide whether he wants type
-        // information into json string or not
-        if( type.isValue() || ( type instanceof SerializableType && value instanceof ValueComposite ) )
-        {
-            stringer.object();
-
-            // Rest is partial copypasta from ValueCompositeType.toJSON(Object, JSONStringer)
-
-            ValueComposite valueComposite = (ValueComposite) value;
-            StateHolder state = valueComposite.state();
-            final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-            state.visitProperties( new StateHolder.StateVisitor<RuntimeException>()
-            {
-                public void visitProperty( QualifiedName name, Object value )
-                {
-                    values.put( name, value );
-                }
-            } );
-
-            List<PropertyType> actualTypes = type.types();
-            for( PropertyType propertyType : actualTypes )
-            {
-                stringer.key( propertyType.qualifiedName().name() );
-
-                Object propertyValue = values.get( propertyType.qualifiedName() );
-                if( propertyValue == null )
-                {
-                    stringer.value( null );
-                }
-                else
-                {
-                    this.createJSONString( propertyValue, propertyType.type(), stringer );
-                }
-            }
-            stringer.endObject();
-        }
-        else
-        {
-            type.toJSON( value, stringer );
-        }
-    }
-*/
     private String createRegexStringForContaining( String valueVariable, String containedString )
     {
         // The matching value must start with [, then contain something (possibly nothing),
@@ -485,34 +402,12 @@ public class RdfQueryParserImpl2
             String jsonStr = "";
             if( item != null )
             {
-                JSONObjectSerializer serializer = new JSONObjectSerializer();
-                serializer.setIncludeType( false );
-                try
+                String serialized = valueSerializer.serialize( item, false );
+                if( item instanceof String )
                 {
-                    if( item instanceof ValueComposite )
-                    {
-                        ValueDescriptor descriptor = spi.valueDescriptorFor( (ValueComposite) item );
-
-                        serializer.serialize( item, descriptor.valueType() );
-                    }
-                    else
-                    {
-                        ValueType valueType = new ValueType( item.getClass() );
-                        serializer.serialize( item, valueType );
-                    }
+                    serialized = "\"" + StringEscapeUtils.escapeJava( serialized ) + "\"";
                 }
-                catch( JSONException e )
-                {
-                    throw new UnsupportedOperationException( e );
-                }
-                Object value = serializer.rootObject();
-
-                if( value instanceof String )
-                {
-                    value = JSONObject.quote( serializer.rootObject().toString() );
-                }
-
-                jsonStr = escapeJSONString( value.toString() );
+                jsonStr = escapeJSONString( serialized );
             }
             strings[ x ] = this.createRegexStringForContaining( valueVariable, jsonStr );
             x++;
@@ -534,22 +429,14 @@ public class RdfQueryParserImpl2
     private void processContainsPredicate( final ContainsSpecification<?> predicate, StringBuilder builder )
     {
         Object value = predicate.value();
-
         String valueVariable = triples.addTriple( predicate.collectionProperty(), false ).value();
-        try
-        {
-            builder.append( this.createRegexStringForContaining(
-                valueVariable,
-                this.createAndEscapeJSONString(
-                    value,
-                    predicate.collectionProperty()
-                )
-            ) );
-        }
-        catch( JSONException jsone )
-        {
-            throw new UnsupportedOperationException( "Error when JSONing value", jsone );
-        }
+        builder.append( this.createRegexStringForContaining(
+            valueVariable,
+            this.createAndEscapeJSONString(
+                value,
+                predicate.collectionProperty()
+            )
+        ) );
     }
 
     private void processMatchesPredicate( final MatchesSpecification predicate, StringBuilder builder )

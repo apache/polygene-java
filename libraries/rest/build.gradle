@@ -3,18 +3,21 @@ description = "Qi4j REST Library provides various Restlet resources that can be 
 jar { manifest { name = "Qi4j Library - REST" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.rdf"))
-//    compile(project(":org.qi4j.libraries:org.qi4j.library.rest-common"))
-  compile(project(':org.qi4j.extensions:org.qi4j.extension.indexing-rdf'))
-  compile(libraries.restlet)
-  compile(libraries.sparql)
-  compile(libraries.velocity)
-  compile(libraries.servlet_api)
 
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testCompile(project(":org.qi4j.libraries:org.qi4j.library.http"))
+    compile project( ":org.qi4j.core:org.qi4j.core.api" )
+    compile project( ":org.qi4j.libraries:org.qi4j.library.rdf" )
+    compile project( ':org.qi4j.extensions:org.qi4j.extension.indexing-rdf' )
+    compile libraries.restlet
+    compile libraries.sparql
+    compile libraries.velocity
+    compile libraries.servlet_api
 
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.logback)
+    testCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
+    testCompile project( ":org.qi4j.libraries:org.qi4j.library.http" )
+    testCompile project( ':org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson' )
+    testCompile libraries.http_client
+
+    testRuntime project( ":org.qi4j.core:org.qi4j.core.runtime" )
+    testRuntime libraries.logback
+
 }

@@ -22,11 +22,11 @@ import org.junit.BeforeClass;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.spi.query.EntityFinderException;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 
 import static org.junit.Assert.fail;
@@ -51,7 +51,7 @@ public class ElasticSearchFinderTest
 
         // Config module
         ModuleAssembly config = module.layer().module( "config" );
-        config.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( config );
 
         // Index/Query
         new ESFilesystemIndexQueryAssembler().withConfigModule( config ).withConfigVisibility( Visibility.layer ).assemble( module );

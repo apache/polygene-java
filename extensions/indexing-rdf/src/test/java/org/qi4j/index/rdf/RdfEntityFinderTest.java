@@ -17,12 +17,14 @@
  */
 package org.qi4j.index.rdf;
 
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.MemoryRepositoryService;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class RdfEntityFinderTest extends AbstractEntityFinderTest
 {
@@ -33,6 +35,7 @@ public class RdfEntityFinderTest extends AbstractEntityFinderTest
         super.assemble( module );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
         module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.services( MemoryRepositoryService.class ).identifiedBy( "rdf-indexing" ).instantiateOnStartup();
         // module.services( NativeRdfRepositoryService.class ).identifiedBy( "rdf-indexing" );
         // module.addComposites( NativeRdfConfiguration.class );

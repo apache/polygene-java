@@ -31,7 +31,6 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
@@ -63,7 +62,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         prefModule.forMixin( NativeConfiguration.class ).declareDefaults().tripleIndexes().set( "spoc,cspo" );
-        prefModule.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( prefModule );
 
         module.entities( ExampleEntity.class );
 

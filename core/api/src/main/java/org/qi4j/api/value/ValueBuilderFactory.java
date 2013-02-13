@@ -82,16 +82,16 @@ public interface ValueBuilderFactory
                                                   Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction );
 
     /**
-     * Instantiate a Value of the given type using the state given as JSON.
+     * Instantiate a Value of the given type using the serialized state given as String.
      *
      * @param valueType the Value type to instantiate
-     * @param jsonValue the state of the Value in JSON
+     * @param serializedState  the state of the Value
      *
      * @return a new Value instance
      *
      * @throws NoSuchValueException if no value extending the mixinType has been registered
      * @throws ConstructionException if the value could not be instantiated
      */
-    <T> T newValueFromJSON( Class<T> valueType, String jsonValue );
+    <T> T newValueFromSerializedState( Class<T> valueType, String serializedState );
 
 }
