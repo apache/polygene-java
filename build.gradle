@@ -240,7 +240,6 @@ allprojects {
       systemProperties = testProperties
       ignoreFailures = true
       testReport = true
-      testResultsDir = file( "$rootProject.testResultsDir" )
       afterSuite { descriptor, result ->
         if( result.resultType == TestResult.ResultType.FAILURE )
         {
@@ -341,9 +340,14 @@ gradle.taskGraph.whenReady {taskGraph ->
   }
 }
 
+task globalTestReport( type: TestReport ) {
+  destinationDir = file("$buildDir/reports/tests")
+  reportOn subprojects*.test
+}
+
 test {
-  dependsOn subprojects*.test
-  testReport = true
+  dependsOn subprojects*.test, globalTestReport
+  testReport = false
 }
 
 // Build the whole SDK public Javadoc
@@ -382,7 +386,7 @@ task javadocs( type: Javadoc ) {
 task archiveJavadocs(type: Copy ) {
   dependsOn javadocs
 
-  if( rootProject.version == '0' )
+  if( rootProject.version == '0' || rootProject.version.contains( "SNAPSHOT" ) )
   {
     into( "$rootProject.projectDir/../qi4j.github.com/develop/javadocs/" )
   }
@@ -568,5 +572,5 @@ task release {
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
 task wrapper( type: Wrapper ) {
-  gradleVersion = '1.3'
+  gradleVersion = '1.4'
 }
