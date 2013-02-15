@@ -14,88 +14,42 @@
 
 package org.qi4j.test;
 
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.util.ASMifierClassVisitor;
+import org.objectweb.asm.util.ASMifier;
+import org.objectweb.asm.util.TraceClassVisitor;
 import org.qi4j.api.composite.CompositeInvoker;
 import org.qi4j.runtime.composite.FragmentClassLoader;
+import org.qi4j.runtime.composite.QI256Test;
 
-import static org.objectweb.asm.Opcodes.AASTORE;
-import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
-import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static org.objectweb.asm.Opcodes.ACC_STATIC;
-import static org.objectweb.asm.Opcodes.ACC_SUPER;
-import static org.objectweb.asm.Opcodes.ACONST_NULL;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.ANEWARRAY;
-import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.ASTORE;
-import static org.objectweb.asm.Opcodes.ATHROW;
-import static org.objectweb.asm.Opcodes.BIPUSH;
-import static org.objectweb.asm.Opcodes.CHECKCAST;
-import static org.objectweb.asm.Opcodes.DLOAD;
-import static org.objectweb.asm.Opcodes.DUP;
-import static org.objectweb.asm.Opcodes.FLOAD;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.GETSTATIC;
-import static org.objectweb.asm.Opcodes.GOTO;
-import static org.objectweb.asm.Opcodes.ICONST_0;
-import static org.objectweb.asm.Opcodes.ICONST_1;
-import static org.objectweb.asm.Opcodes.ICONST_2;
-import static org.objectweb.asm.Opcodes.ICONST_3;
-import static org.objectweb.asm.Opcodes.ICONST_4;
-import static org.objectweb.asm.Opcodes.ICONST_5;
-import static org.objectweb.asm.Opcodes.ILOAD;
-import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.IRETURN;
-import static org.objectweb.asm.Opcodes.LLOAD;
-import static org.objectweb.asm.Opcodes.NEW;
-import static org.objectweb.asm.Opcodes.POP;
-import static org.objectweb.asm.Opcodes.PUTSTATIC;
-import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.V1_6;
+import static org.objectweb.asm.Opcodes.*;
 
-/**
- * JAVADOC
- */
 public class ASMTest
 {
     @Test
     public void generateASM()
         throws Exception
     {
-        ASMifierClassVisitor.main( new String[]{ SomeMixin_Stubx.class.getName() } );
+        ASMifier.main( new String[]{ SomeMixin_Stubx.class.getName() } );
     }
 
     @Test
-//    @Ignore
     public void createClass()
         throws Exception
     {
-/*
-        byte[] asm = generateClass();
-
-        byte[] cl = FragmentClassLoader.generateClass( QI256Test.TestTransient.TestTransientMixin.class.getName() + "_Stub", QI256Test.TestTransient.TestTransientMixin.class );
-
-        ClassReader cr = new ClassReader( cl );
-        cr.accept( new ASMifierClassVisitor( new PrintWriter( System.out, true ) ),
-                ASMifierClassVisitor.getDefaultAttributes(),
-                0 );
-*/
-
-        //       Assert.assertArrayEquals( asm, cl );
 
         FragmentClassLoader classLoader = new FragmentClassLoader( SomeMixin.class.getClassLoader() );
 
@@ -188,9 +142,23 @@ public class ASMTest
         System.out.println( instance.testConcern() );
     }
 
-    // This is the code generated from the manual stub
+    @Test
+    @Ignore( "This was dead commented code, ~70% of this source file ... What should we do about this!?!" )
+    public void fragmentClassLoaderGenerateClassTest()
+        throws Exception
+    {
+        byte[] asm = generateClass();
+        byte[] cl = FragmentClassLoader.generateClass(
+            QI256Test.TestTransient.TestTransientMixin.class.getName() + "_Stub",
+            QI256Test.TestTransient.TestTransientMixin.class );
 
-    public static byte[] generateClass()
+        new ClassReader( cl ).accept( new TraceClassVisitor( new PrintWriter( System.out, true ) ), 0 );
+
+        Assert.assertArrayEquals( asm, cl );
+    }
+
+    // This is the code generated from the manual stub
+    private static byte[] generateClass()
     {
         ClassWriter cw = new ClassWriter( 0 );
         FieldVisitor fv;
