@@ -22,7 +22,7 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
 
 /**
- * ValueComposite type
+ * ValueComposite ValueType.
  */
 public final class ValueCompositeType
     extends ValueType

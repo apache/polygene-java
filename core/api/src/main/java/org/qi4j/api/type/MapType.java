@@ -18,7 +18,8 @@ import java.util.Map;
 import org.qi4j.api.util.Classes;
 
 /**
- * Map type. This handles instances of Map
+ * Map ValueType.
+ * <p>This handles instances of Map.</p>
  */
 public final class MapType
     extends ValueType

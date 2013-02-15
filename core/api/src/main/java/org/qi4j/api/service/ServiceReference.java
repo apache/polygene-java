@@ -25,11 +25,23 @@ import org.qi4j.api.type.HasTypes;
 public interface ServiceReference<T>
     extends HasTypes, ActivationEventListenerRegistration, MetaInfoHolder
 {
+    /**
+     * @return the service's identity
+     */
     String identity();
 
+    /**
+     * @return the actual service
+     */
     T get();
 
+    /**
+     * @return TRUE if the service is active, otherwise return FALSE
+     */
     boolean isActive();
 
+    /**
+     * @return TRUE if the service is available, otherwise return FALSE
+     */
     boolean isAvailable();
 }

@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.api.association;
 
@@ -23,6 +23,9 @@ import java.lang.reflect.Type;
 
 import static org.qi4j.api.util.Classes.typeOf;
 
+/**
+ * Generic Association info.
+ */
 public final class GenericAssociationInfo
 {
     public static Type associationTypeOf( AccessibleObject accessor )

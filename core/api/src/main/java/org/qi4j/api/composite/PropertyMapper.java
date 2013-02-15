@@ -26,7 +26,7 @@ import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueComposite;
 
 /**
- * Transfer properties to Composite properties
+ * Transfer java.util.Properties to Composite properties
  */
 public final class PropertyMapper
 {

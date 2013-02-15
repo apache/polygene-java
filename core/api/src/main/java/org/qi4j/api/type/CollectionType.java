@@ -20,7 +20,8 @@ import java.util.Set;
 import org.qi4j.api.util.Classes;
 
 /**
- * Collection type. This handles Collection, List and Set types
+ * Collection ValueType.
+ * <p>This handles Collection, List and Set types.</p>
  */
 public final class CollectionType
     extends ValueType

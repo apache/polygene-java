@@ -16,7 +16,7 @@ package org.qi4j.api.type;
 import java.lang.reflect.Type;
 
 /**
- * Enumeration type
+ * Enum ValueType.
  */
 public final class EnumType
     extends ValueType

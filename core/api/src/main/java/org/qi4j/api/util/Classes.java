@@ -108,6 +108,9 @@ public final class Classes
         }
     };
 
+    /**
+     * Function that extract the raw class of a type.
+     */
     public static final Function<Type, Class<?>> RAW_CLASS = new Function<Type, Class<?>>()
     {
         @Override

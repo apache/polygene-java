@@ -23,8 +23,6 @@ import static org.qi4j.functional.Iterables.first;
 
 /**
  * Base class for types of values in ValueComposites and Properties.
- *
- * TODO I think the ValueType system requires some major re-thinking.
  */
 public class ValueType
     implements HasTypes
@@ -92,6 +90,9 @@ public class ValueType
         return isPrimitiveValueType( valueType.mainType() );
     }
 
+    /**
+     * @see ValueType#isPrimitiveValue(java.lang.Object) 
+     */
     public static boolean isPrimitiveValueType( Class<?> type )
     {
         NullArgumentException.validateNotNull( "type", type );

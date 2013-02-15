@@ -3,6 +3,9 @@ package org.qi4j.api.property;
 import java.lang.reflect.AccessibleObject;
 import org.qi4j.api.common.ConstructionException;
 
+/**
+ * Thrown when attempting to subclass Property.
+ */
 public class InvalidPropertyTypeException extends ConstructionException
 {
     public InvalidPropertyTypeException( AccessibleObject accessor )
