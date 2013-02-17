@@ -50,6 +50,16 @@ public abstract class AbstractPlainValueSerializationTest
     protected ValueSerialization valueSerialization;
 
     @Test
+    public void givenCharacterValueWhenSerializingAndDeserializingExpectEquals()
+    {
+        String serialized = valueSerialization.serialize( 'q' );
+        assertThat( "Serialized", serialized, equalTo( "q" ) );
+
+        Character deserialized = valueSerialization.deserialize( Character.class, serialized );
+        assertThat( "Deserialized", deserialized, equalTo( 'q' ) );
+    }
+
+    @Test
     public void givenEmptyStringValueWhenSerializingAndDeserializingExpectEquals()
     {
         String serialized = valueSerialization.serialize( "" );

@@ -133,6 +133,16 @@ public class AbstractCollectionSerializationTest
     }
 
     @Test
+    public void givenCollectionTypeWithCharacterAndNullElementWhenSerializingAndDeserializingExpectEquals()
+        throws Exception
+    {
+        String output = valueSerialization.serialize( characterCollection() );
+        CollectionType collectionType = new CollectionType( List.class, new ValueType( Character.class ) );
+        List<Character> list = valueSerialization.deserialize( collectionType, output );
+        assertEquals( characterCollection(), list );
+    }
+
+    @Test
     public void givenCollectionTypeWithShortAndNullElementWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
@@ -256,6 +266,17 @@ public class AbstractCollectionSerializationTest
         value.add( (byte) 127 );
         value.add( (byte) -128 );
         value.add( (byte) 73 );
+        return value;
+    }
+
+    private List<Character> characterCollection()
+    {
+        List<Character> value = new ArrayList<Character>();
+        value.add( 'Q' );
+        value.add( 'i' );
+        value.add( null );
+        value.add( '4' );
+        value.add( 'j' );
         return value;
     }
 

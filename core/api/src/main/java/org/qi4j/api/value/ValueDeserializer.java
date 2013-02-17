@@ -42,6 +42,7 @@ import org.qi4j.functional.Function2;
  * </p>
  * <ul>
  *     <li>String,</li>
+ *     <li>Character or char,</li>
  *     <li>Boolean or boolean,</li>
  *     <li>Integer or int,</li>
  *     <li>Long or long,</li>

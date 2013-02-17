@@ -61,6 +61,7 @@ import static org.qi4j.functional.Iterables.*;
  * </p>
  * <ul>
  *     <li>String,</li>
+ *     <li>Character or char,</li>
  *     <li>Boolean or boolean,</li>
  *     <li>Integer or int,</li>
  *     <li>Long or long,</li>
@@ -97,6 +98,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     {
         // Primitive Value types
         registerSerializer( String.class, Functions.<Object, String>identity() );
+        registerSerializer( Character.class, Functions.<Object, Character>identity() );
         registerSerializer( Boolean.class, Functions.<Object, Boolean>identity() );
         registerSerializer( Integer.class, Functions.<Object, Integer>identity() );
         registerSerializer( Long.class, Functions.<Object, Long>identity() );

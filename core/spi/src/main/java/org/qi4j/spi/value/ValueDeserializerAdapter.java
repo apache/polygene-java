@@ -71,6 +71,7 @@ import static org.qi4j.functional.Iterables.*;
  * </p>
  * <ul>
  *     <li>String,</li>
+ *     <li>Character or char,</li>
  *     <li>Boolean or boolean,</li>
  *     <li>Integer or int,</li>
  *     <li>Long or long,</li>
@@ -134,6 +135,14 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             public String map( Object input )
             {
                 return input.toString();
+            }
+        } );
+        registerDeserializer( Character.class, new Function<Object, Character>()
+        {
+            @Override
+            public Character map( Object input )
+            {
+                return input.toString().charAt( 0 );
             }
         } );
         registerDeserializer( Boolean.class, new Function<Object, Boolean>()

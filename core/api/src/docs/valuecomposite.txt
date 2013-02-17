@@ -51,6 +51,7 @@ EntityComposites and EntityReferences are serialized as their identity string.
 Plain Values can be one of :
 
     * String,
+    * Character or char,
     * Boolean or boolean,
     * Integer or int,
     * Long or long,
