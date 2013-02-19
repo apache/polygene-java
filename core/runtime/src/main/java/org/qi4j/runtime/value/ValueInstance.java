@@ -47,6 +47,16 @@ public final class ValueInstance
         super( compositeModel, moduleInstance, mixins, state );
     }
 
+    /**
+     * Perform equals with {@code o} argument.
+     * <p>
+     *     The definition of equals() for the Value is that if both the state and descriptor are equal,
+     *     then the values are equal.
+     * </p>
+     *
+     * @param o The other object to compare.
+     * @return Returns a {@code boolean} indicator whether this object is equals the other.
+     */
     @Override
     public boolean equals( Object o )
     {
@@ -62,6 +72,12 @@ public final class ValueInstance
         try
         {
             ValueInstance that = (ValueInstance) Proxy.getInvocationHandler( o );
+            // Descriptor equality
+            if( !descriptor().equals( that.descriptor() ) )
+            {
+                return false;
+            }
+            // State equality
             return state.equals( that.state );
         }
         catch( ClassCastException e )
@@ -132,10 +148,16 @@ public final class ValueInstance
         }
     }
 
+    /**
+     * Calculate hash code.
+     *
+     * @return the hashcode of this instance.
+     */
     @Override
     public int hashCode()
     {
-        return state.hashCode();
+        int hash = compositeModel.hashCode() * 23; // Descriptor
+        return hash + state.hashCode() * 5; // State
     }
 
     @Override

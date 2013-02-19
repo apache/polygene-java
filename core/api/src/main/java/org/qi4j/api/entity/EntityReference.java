@@ -112,9 +112,7 @@ public final class EntityReference
     @Override
     public int hashCode()
     {
-        int result;
-        result = identity.hashCode();
-        return result;
+        return identity.hashCode();
     }
 
     /**

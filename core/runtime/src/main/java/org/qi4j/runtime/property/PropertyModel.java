@@ -47,7 +47,9 @@ import static org.qi4j.functional.Iterables.empty;
 import static org.qi4j.functional.Iterables.first;
 
 /**
- * JAVADOC
+ * Model for a Property.
+ *
+ * <p>Equality is based on the Property accessor object (property type and name), not on the QualifiedName.</p>
  */
 public class PropertyModel
     implements PropertyDescriptor, PropertyInfo, Binder, Visitable<PropertyModel>

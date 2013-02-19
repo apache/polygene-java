@@ -28,8 +28,9 @@ of an EntityComposite via a Property.
 The characteristics of a ValueComposite compared to other Composite meta types are;
 
     * It is Immutable.
-    * Its equals/hashCode works on the values of the ValueComposite.
+    * Its equals/hashCode works on both the descriptor and the values of the ValueComposite.
     * Can be used as Property types.
+    * Can be serialized and deserialized.
 
 == Value Serialization ==
 Value objects can be serialized and deserialized using the ValueSerialization API which is a Service API implemented

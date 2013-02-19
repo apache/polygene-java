@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.functional.Function2;
@@ -120,13 +121,20 @@ public class ManyAssociationInstance<T>
             return false;
         }
         ManyAssociationInstance<?> that = (ManyAssociationInstance) o;
+        AssociationDescriptor thatDescriptor = (AssociationDescriptor) that.associationInfo();
+        // Descriptor equality
+        if( !associationInfo.equals( thatDescriptor ) )
+        {
+            return false;
+        }
+        // State equality
         if( manyAssociationState.count() != that.manyAssociationState.count() )
         {
             return false;
         }
         for( EntityReference ref : manyAssociationState )
         {
-            if(!that.manyAssociationState.contains( ref ) )
+            if( !that.manyAssociationState.contains( ref ) )
             {
                 return false;
             }
@@ -137,9 +145,12 @@ public class ManyAssociationInstance<T>
     @Override
     public int hashCode()
     {
-        int result = super.hashCode();
-        result = 31 * result + manyAssociationState.hashCode();
-        return result;
+        int hash = associationInfo.hashCode() * 31; // Descriptor
+        for( EntityReference ref : manyAssociationState )
+        {
+            hash += ref.hashCode() * 7; // State
+        }
+        return hash;
     }
 
     public ManyAssociationState getManyAssociationState()

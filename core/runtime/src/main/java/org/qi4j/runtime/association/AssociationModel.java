@@ -44,7 +44,9 @@ import static org.qi4j.functional.Iterables.empty;
 import static org.qi4j.functional.Iterables.first;
 
 /**
- * JAVADOC
+ * Model for an Association.
+ *
+ * <p>Equality is based on the Association accessor object (associated type and name), not on the QualifiedName.</p>
  */
 public final class AssociationModel
     implements AssociationDescriptor, AssociationInfo, Binder, Visitable<AssociationModel>

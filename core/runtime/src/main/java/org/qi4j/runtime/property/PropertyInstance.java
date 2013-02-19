@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.property.PropertyWrapper;
 import org.qi4j.api.type.CollectionType;
 import org.qi4j.api.type.MapType;
 import org.qi4j.api.type.ValueCompositeType;
@@ -55,6 +57,9 @@ public class PropertyInstance<T>
         return model;
     }
 
+    /**
+     * @param model The property model. This argument must not be {@code null}.
+     */
     public void setPropertyInfo( PropertyInfo model )
     {
         this.model = model;
@@ -91,12 +96,12 @@ public class PropertyInstance<T>
 
     /**
      * Perform equals with {@code o} argument.
-     * <p/>
-     * The definition of equals() for the property is that if the value and subclass are
-     * equal, then the properties are equal
+     * <p>
+     *     The definition of equals() for the Property is that if both the state and descriptor are equal,
+     *     then the properties are equal.
+     * </p>
      *
      * @param o The other object to compare.
-     *
      * @return Returns a {@code boolean} indicator whether this object is equals the other.
      */
     @Override
@@ -112,7 +117,18 @@ public class PropertyInstance<T>
         }
 
         Property<?> that = (Property<?>) o;
-
+        // Unwrap if needed
+        while( that instanceof PropertyWrapper )
+        {
+            that = ( (PropertyWrapper) that ).next();
+        }
+        PropertyDescriptor thatDescriptor = (PropertyDescriptor) ( (PropertyInstance) that ).propertyInfo();
+        // Descriptor equality
+        if( !model.equals( thatDescriptor ) )
+        {
+            return false;
+        }
+        // State equality
         T value = get();
         if( value == null )
         {
@@ -129,16 +145,11 @@ public class PropertyInstance<T>
     @Override
     public int hashCode()
     {
-        int hash = getClass().hashCode();
-        if( model != null )
-        {
-            hash = model.type().hashCode();
-        }
-        hash = hash * 19;
+        int hash = model.hashCode() * 19; // Descriptor
         T value = get();
         if( value != null )
         {
-            hash = hash + value.hashCode() * 13;
+            hash += value.hashCode() * 13; // State
         }
         return hash;
     }
