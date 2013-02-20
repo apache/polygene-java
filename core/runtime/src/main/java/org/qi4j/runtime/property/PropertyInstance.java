@@ -122,8 +122,8 @@ public class PropertyInstance<T>
         {
             that = ( (PropertyWrapper) that ).next();
         }
-        PropertyDescriptor thatDescriptor = (PropertyDescriptor) ( (PropertyInstance) that ).propertyInfo();
         // Descriptor equality
+        PropertyDescriptor thatDescriptor = (PropertyDescriptor) ( (PropertyInstance) that ).propertyInfo();
         if( !model.equals( thatDescriptor ) )
         {
             return false;
