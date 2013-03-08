@@ -28,7 +28,7 @@ import org.qi4j.api.injection.InjectionScope;
  * &#64;State Association<MyEntity> associationName;
  * &#64;State ManyAssociation<MyEntity> manyAssociationName;
  * &#64;State StateHolder state;
- * &#64;State EntityStateHolder entityState;
+ * &#64;State AssociationStateHolder associationState;
  * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
