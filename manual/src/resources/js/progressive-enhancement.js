@@ -48,55 +48,45 @@ $( document ).ready( function($){
     $("a.ulink[href^='https:']").attr('target','_blank');
 
     // Add links to different versions
-    var versions =
+    $.getJSON( "../versions.json", function( versions )
     {
-        'develop':
+        // alert( JSON.stringify( versions ) );
+        var currentPathFragment = window.location.href.substring( 0, window.location.href.lastIndexOf( '/' ) );
+        currentPathFragment = currentPathFragment.substring( currentPathFragment.lastIndexOf( '/' ) + 1 );
+        var currentVersion = Object.keys( versions ).filter( function( key ) { return versions[ key ] === currentPathFragment } )[ 0 ];
+        // alert( "Current version is " + currentVersion + "\nCurrent path fragment is: " + currentPathFragment );
+        if( currentVersion )
         {
-            'url': 'http://qi4j.org/develop',
-            'relpath': '../develop'
-        },
-        'latest':
-        {
-            'url': 'http://qi4j.org/latest',
-            'relpath': '../latest'
-        },
-        '<=1.4.x':
-        {
-            'url': 'http://qi4j.org/1.4',
-            'relpath': '../1.4'
-        }
-    };
-    function endsWith(str, suffix) {
-            return str.indexOf(suffix, str.length - suffix.length) !== -1;
-    }
-    var selected = "latest";
-    var stripedHref = window.location.href.substring( 0, window.location.href.lastIndexOf('/') );
-    if ( endsWith( stripedHref, 'develop' ) )
-        selected = "develop";
-    else if ( endsWith( stripedHref, 'latest' ) )
-        selected = "latest";
-    else if ( endsWith( stripedHref, '1.4' ) )
-        selected = "<=1.4.x";
-    // --
-    var switcher_html ='<p style="margin-top:2em; text-align: center"><select style="font-size: 0.5em">';
-    var ifselect = function( candidate ) {
-        return candidate == selected ? "selected=\"selected\"" : "";
-    }
-    for( var version in versions )
-    {
-        switcher_html += '<option value="' + version + '" ' + ifselect( version ) + '>' + version + '</option>';
-    }
-    switcher_html += '</select></p>' ;
-    $( "div.logo" ).append( switcher_html );
-    $( "div.logo select" ).change( function()
-    {
-        if( window.location.hostname == "qi4j.org" || window.location.hostname == "www.qi4j.org" )
-        { // Loaded from qi4j.org
-            window.location = versions[ $( this ).val() ].relpath;
+            var switcher_html ='<p style="margin-top:2em; text-align: center"><select style="font-size: 0.5em">';    
+            var ifselect = function( candidate )
+            {
+                return candidate == currentVersion ? "selected=\"selected\"" : "";
+            }
+            $.each( versions, function( displayName, pathFragment )
+            {
+                switcher_html += '<option value="' + displayName + '" ' + ifselect( displayName ) + '>' + displayName + '</option>';
+            } );
+            switcher_html += '</select></p>';
+            $( "div.logo" ).append( switcher_html );
+            var toURL = function( displayName )
+            {
+                if( window.location.hostname == "qi4j.org" || window.location.hostname == "www.qi4j.org" )
+                {
+                    return "../" + versions[ displayName ];
+                }
+                else
+                {
+                    return "http://qi4j.org/" + versions[ displayName ];
+                }
+            }
+            $( "div.logo select" ).change( function()
+            {
+                window.location = toURL( $( this ).val() );
+            } );
         }
         else
-        { // Loaded from elsewhere
-            window.location = versions[ $( this ).val() ].url;
+        {
+            console.log( "Documentation loaded locally? No version switcher" );
         }
     } );
 
@@ -119,13 +109,16 @@ $( document ).ready( function($){
 
     // Section specific enhancements
     var $section = $( 'body > div.section' );
-    var section_title = $section.attr( 'title' ).trim();
-    switch( section_title ) {
-        case "Glossary":
-            glossary( $section );
-            break;
-        default:
-            break;
+    if( $section.attr( 'title' ) )
+    {
+        var section_title = $section.attr( 'title' ).trim();
+        switch( section_title ) {
+            case "Glossary":
+                glossary( $section );
+                break;
+            default:
+                break;
+        }
     }
 
 } );
