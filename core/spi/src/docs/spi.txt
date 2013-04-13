@@ -29,11 +29,11 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 There are currently 5 Core SPI extensions;
 
-    * ValueSerialization SPI
-    * EntityStore SPI
-    * Cache SPI
-    * Indexing/Query SPI
-    * Metrics SPI
+    * <<core-spi-valueserialization>>
+    * <<core-spi-entitystore>>
+    * <<core-spi-cache>>
+    * <<core-spi-indexing>>
+    * <<core-spi-metrics>>
 
 Qi4j Runtime Extensions implementations may depend on Qi4j Libraries, but Libraries are NOT ALLOWED to depend on
 Extensions. Applications code is NOT ALLOWED to depend on extensions. And application code SHOULD NOT depend on the
@@ -50,11 +50,11 @@ include::entitystore.txt[]
 
 :leveloffset: {level3}
 
-// include::cache.txt[]
+include::cache.txt[]
 
 :leveloffset: {level3}
 
-// include::indexing.txt[]
+include::indexing.txt[]
 
 :leveloffset: {level3}
 

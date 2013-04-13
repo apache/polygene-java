@@ -21,6 +21,12 @@ since you can easily build GUI tools to allow editing of these in runtime. Howev
 the Configuration instance, Qi4j also does the initial bootstrapping of the Configuration entity for you. This HowTo is
 going to show how.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
+
+include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+
 == We need a Service ==
 
 To illustrate these features we create an TravelPlan service, which allows clients to find and make Reservations to

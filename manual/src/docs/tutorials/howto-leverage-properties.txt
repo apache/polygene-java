@@ -20,6 +20,12 @@ Qi4j does not follow the JavaBeans standard for property support. Instead, a muc
 advantages are enormous, and the only real downside is that people are already destroyed, thinking in so called POJO
 terms.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core API artifact:
+
+include::../../../../core/api/build/docs/buildinfo/artifact.txt[]
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+
 So in Qi4j, instead of writing;
 
 [snippet,java]
@@ -65,7 +71,7 @@ tag=create
 == Persistence ==
 
 The Property concept also allows a much better defined persistence model. In Qi4j, only Property and Association
-instances are persisted, and that makes the semantics around the persistence system very clear. 
+instances are persisted, and that makes the semantics around the persistence system very clear.
 
 Properties reference values only, and these values must be Serializable, which means that Properties can not contain
 Entities, since Entities are not Serializable. Associations are the opposite, as they must only reference Entities and

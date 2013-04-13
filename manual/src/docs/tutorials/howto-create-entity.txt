@@ -19,6 +19,15 @@ One of the most common tasks in Qi4j is the management of the life cycle of Enti
 delivering much higher performance than traditional Object-Relational Mapping technologies, we also expect that people
 use Entities more frequently in Qi4j applications, so it is a very important topic to cover.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
+
+include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
+
+Moreover, you'll need an EntityStore for persistence and an Indexing engine for querying. Choose among the available
+implementations listed in the <<extensions>> section.
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+
 == Basics First ==
 
 All Entity operations MUST be done within a UnitOfWork. UnitOfWorks can be nested and if underlying UnitOfWorks are not

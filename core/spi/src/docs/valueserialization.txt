@@ -1,6 +1,18 @@
 [[core-spi-valueserialization,ValueSerialization SPI]]
 = ValueSerialization SPI =
 
+== Overview ==
+
+The Qi4j Core Runtime use ValueSerialization to provide string representation of ValueComposites via their `toString()`
+method, and, their instanciation from the very same representation via the `newValueFromSerializedState(..)` method of
+the ValueBuilderFactory API.
+
+If no ValueSerialization service is visible, a default implementation supporting the JSON format used but note that it
+won't be available as a Service. So, in order to use the full ValueSerialization API a ValueSerialization service must
+be explicitely assembled in the Application. See the <<extensions>> documentation for details.
+
+== Implementation notes ==
+
 Simply implement ValueSerialization to create an extension for the ValueSerialization SPI.
 The Core SPI module provides adapters to create pull-parsing capable ValueSerializers and pull-parsing and tree-parsing
 capable ValueDeserializers.
@@ -10,7 +22,7 @@ nothing stops you from implementing an extension for the ValueSerialization SPI 
 
 Theses adapters are tailored for serialization mechanisms that support the following two structures that can be nested:
 
-    * an collection of name/value pairs. In various languages, this is realized as an object, record, struct,
+    * a collection of name/value pairs. In various languages, this is realized as an object, record, struct,
       dictionary, hash table, keyed list, or associative array,
     * an ordered list of values. In most languages, this is realized as an array, vector, list, or sequence ;
 

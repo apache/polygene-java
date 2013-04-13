@@ -58,7 +58,9 @@ import static org.junit.Assert.*;
 /**
  * Assert that ValueSerialization behaviour on ValueComposites is correct.
  */
-// TODO Assert Association and ManyAssociation serialization behavior !
+// TODO Assert Association and ManyAssociation serialization behaviour!
+// TODO Assert Arrays behaviour!
+// TODO Assert Generics behaviour!
 public abstract class AbstractValueCompositeSerializationTest
     extends AbstractQi4jTest
 {
@@ -185,6 +187,17 @@ public abstract class AbstractValueCompositeSerializationTest
         proto.customFoo().set( module.newValue( CustomFooValue.class ) );
         proto.customFooValue().set( module.newValue( CustomFooValue.class ) );
 
+        // Arrays
+        // TODO FIXME Disabled as ValueComposite equality fails here
+        //proto.primitiveByteArray().set( new byte[]
+        //    {
+        //        9, -12, 42, -12, 127, 23, -128, 73
+        //    } );
+        //proto.byteArray().set( new Byte[]
+        //    {
+        //        9, null, -12, 23, -12, 127, -128, 73
+        //    } );
+
         // NestedEntities
         proto.barAssociation().set( buildBarEntity( "bazar in barAssociation" ) );
         proto.barEntityAssociation().set( buildBarEntity( "bazar in barEntityAssociation" ) );
@@ -261,6 +274,17 @@ public abstract class AbstractValueCompositeSerializationTest
 
         @UseDefaults
         Property<TestEnum> testEnum();
+
+        // TODO FIXME Disabled as ValueComposite equality fails here
+        //Property<byte[]> primitiveByteArray();
+        //
+        //@Optional
+        //Property<byte[]> primitiveByteArrayNull();
+        //
+        //Property<Byte[]> byteArray();
+        //
+        //@Optional
+        //Property<Byte[]> byteArrayNull();
 
         Property<Object> serializable();
 

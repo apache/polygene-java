@@ -75,8 +75,15 @@ could do so by changing the 2 and 4 parts to read/write multiple lines at a time
 
 == The API ==
 
-Once this was identified it was mostly just a matter of putting interfaces on these pieces, and making sure they can be
-easily used in many different situations. The result is as follows.
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
+on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
+
+include::../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
+
+See the <<howto-depend-on-qi4j>> tutorial for details.
+
+Once theses parts were identified it was mostly just a matter of putting interfaces on these pieces, and making sure
+they can be easily used in many different situations. The result is as follows.
 
 To start with we have Input:
 

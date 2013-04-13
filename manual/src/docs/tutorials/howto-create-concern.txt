@@ -3,6 +3,12 @@
 
 Concerns are defined in <<def-concern>>.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
+
+include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+
 == Typed Concern ==
 
 A typed Concern is a Java class that implements the MixinType it can be used on:

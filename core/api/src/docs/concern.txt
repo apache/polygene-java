@@ -84,13 +84,13 @@ NOTE: Even if a method fulfills the requirement for the concern, if the concern 
 
 
 == Invocation Order ==
-The concerns are invoked AFTER all <<core-api-constraints>> have been checked. The concerns are executed before the
-<<core-api.sideeffects>> are executed in the return path.
+The concerns are invoked AFTER all <<core-api-constraint>> have been checked. The concerns are executed before the
+<<core-api-sideeffect>> are executed in the return path.
 
 The order of execution is defined by the declaration order, interface hierarchy, whether the concern is generic or typed
 and if they are declared in the interface or declared in the <<core-bootstrap-assembly>>.
 
-From the perspective of incoming call, i.e. after the <core-api-constraints>> have been checked, the following rules
+From the perspective of incoming call, i.e. after the <core-api-constraint>> have been checked, the following rules
 are in place;
 
     * Typed concerns are invoked AFTER Generic concerns.

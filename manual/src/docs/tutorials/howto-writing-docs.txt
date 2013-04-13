@@ -11,6 +11,8 @@ The cheatsheet is really useful!
 [[community-docs-overall-flow,Documentation Flow]]
 == Overall Flow ==
 
+TIP: To generate the website locally use `./gradlew -p manual website`. Output is in `~/manual/build/docs/website`.
+
 Each (sub)project has its own documentation, in 'src/docs/' and all the Asciidoc documents have the +.txt+ file extension.
 
 The documents can use code snippets which will extract code from the project. This is preferred way to include
@@ -38,7 +40,7 @@ This is how a document should start:
 = The Document Title =
 ----
 
-To push the headings down to the right level in the output, the +leveloffset+ 
+To push the headings down to the right level in the output, the +leveloffset+
 attribute is used when including the document inside of another document.
 
 Subsequent headings in a document should use the following syntax:

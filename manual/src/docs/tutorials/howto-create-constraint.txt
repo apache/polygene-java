@@ -3,6 +3,12 @@
 
 Constraints are defined in <<def-constraint>>.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
+
+include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+
 == Method Constraint ==
 
 Method Constraints are declared with annotations on the method argument. The annotation itself is custom, and it is possible to make your own.

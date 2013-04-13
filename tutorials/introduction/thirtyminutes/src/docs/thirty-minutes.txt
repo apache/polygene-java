@@ -9,6 +9,16 @@ this tutorial, run it and play with it.
 This introduction will deepen your understanding of Qi4j, as we touches on a couple of the common features of Qi4j. It
 is expected that you have gone through and understood the "Qi4j in 10 minutes" introduction.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
+on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
+
+include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
+
+Moreover, you'll need an EntityStore for persistence and an Indexing engine for querying. Choose among the available
+implementations listed in the <<extensions>> section.
+
+See the <<howto-depend-on-qi4j>> tutorial for details.
+
 We will go back to the OrderEntity example;
 [snippet,java]
 -----------

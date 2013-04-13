@@ -19,6 +19,12 @@ We receive a lot of questions about how applications should be assembled, and si
 and everything is to be done programmatically, it escalates the need to provide more hands-on explanation of how this is
 done.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
+
+include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+
 == Basics ==
 
 First let's recap the structural requirements of Qi4j;

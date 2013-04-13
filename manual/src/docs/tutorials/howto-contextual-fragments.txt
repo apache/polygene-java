@@ -23,7 +23,13 @@ Typical use-case is tracing and debugging. Other potential uses are additional s
 access to internal mixins not originally intended for, such as GUI frameworks doing reflection on certain composites.
 We strongly recommend against using this feature, as it is not needed as commonly as you may think.
 
-Note: Constraints are not supported to be contextual at the moment.
+NOTE: Constraints are not supported to be contextual at the moment.
+
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
+
+include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
 
 The mixins, sideeffects and concerns are added during the bootstrap phase. It is very straight-forward;
 

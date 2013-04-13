@@ -22,7 +22,9 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * Steps to export qi4j service:
+ * Run a Qi4j Application as a Spring Bean and export its Services to Spring.
+ * 
+ * Steps to export Qi4j service:
  * <ul>
  * <li>Create spring BeanFactory service of qi4j services to export.</li>
  * <li>Create a class that extends {@link Qi4jApplicationBootstrap}.</li>
