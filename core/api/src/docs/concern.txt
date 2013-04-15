@@ -1,5 +1,5 @@
 //////////////////////
- * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2007-2013, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,3 +24,79 @@ To create a concern, you need to create a class that,
 
     * implements the Mixin Type (Typed Concerns) or java.lang.reflect.InvocationHandler (Generic Concerns),
     * extend ConcernOf (Typed Concerns) or GenericConcern (Generic Concerns) [1]
+
+You are allowed to modify both the in-arguments as well as the returned value, including throw exceptions if that is
+suitable, perhaps for post condition checks.
+
+== Typed Concern ==
+As mentioned above, concerns that implements the _Mixin Type_ are called *Typed Mixins*. They are more common in the
+business domain, and can be used for many important things in the domain model, such as checking post conditions (i.e.
+ensure that the state in the entire composite is valid), coordinating services, handling events and much more.
+
+Typed Concerns doesn't have to implement all the methods in the Mixin Type. By making the class abstract and only
+implementing the methods of interest, Qi4j will subclass the concern (otherwise not valid for the JVM), but the generated
+methods will never be invoked.
+
+== Generic Concern ==
+In classic AOP, all advice are effectively _generic_. There is no type information in the advice implementation and the
+pointcut can be defined anywhere in the code, and the implementation uses proxy InvocationHandlers. Qi4j supports this
+construct as well, and we call it *Generic Concern*.
+
+Generic Concerns will be added to all methods that the AppliesToFilter evaluates to true. By default, that is all methods.
+
+AppliesToFilters is a mechanism to limit, or direct, which methods that the concern should be added to. You have full
+control over this selection process, via several mechanisms.
+
+    * @AppliesTo annotation can be put on the concern, with either;
+        * an interface for which the methods should be wrapped, or
+        * an AppliesToFilter implementation that is consulted during building the invocation stack, or
+        * an annotation type that must be given on the method.
+    * Concerns are added only to composites that declares the Concern, either in
+        * the Composite Type, or
+        * during assembly in the withConcerns() method.
+
+This means that we can make the following three samples of concerns. First the generic concern that is added to the methods
+of the JDBC Connection class;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/concern/DocumentationSupport.java
+tag=class
+--------------
+
+We can also use an AppliesToFilter to define which methods should be wrapped with the concern, like this;
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/concern/DocumentationSupport.java
+tag=filter
+--------------
+
+And finally an example of how to use annotations to mark indvidual methods for being wrapped by the concern.
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/concern/DocumentationSupport.java
+tag=annotation
+--------------
+
+NOTE: Even if a method fulfills the requirement for the concern, if the concern is not declared for the Composite then the concern will NOT be applied.
+
+
+
+
+== Invocation Order ==
+The concerns are invoked AFTER all <<core-api-constraint>> have been checked. The concerns are executed before the
+<<core-api-sideeffect>> are executed in the return path.
+
+The order of execution is defined by the declaration order, interface hierarchy, whether the concern is generic or typed
+and if they are declared in the interface or declared in the <<core-bootstrap-assembly>>.
+
+From the perspective of incoming call, i.e. after the <core-api-constraint>> have been checked, the following rules
+are in place;
+
+    * Typed concerns are invoked AFTER Generic concerns.
+    * Concern declared to the LEFT are executed BEFORE concerns to the RIGHT.
+    * Concerns in subclasses are executed BEFORE concerns in super-interfaces.
+    * Concerns in super-interfaces are executed breadth BEFORE depth.
+    * Concerns in different super-interfaces at the same "level" are executed with the concerns declared in super-interfaces left of other super-interfaces first. (TODO: Strange explanation)
+    * Concerns declared in interfaces are executed AFTER concerns declared in <<core-bootstrap-assembly>>.
+

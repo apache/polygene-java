@@ -15,7 +15,7 @@ public class PropertyWrapper
         this.next = next;
     }
 
-    public Property<Object> getNext()
+    public Property<Object> next()
     {
         return next;
     }

@@ -73,7 +73,7 @@ tag=assembly
 
 Sample DataSource configuration defaults:
 
-[source]
+[source,java]
 ----
 include::../test/resources/mysql-datasource.properties[]
 ----
@@ -96,7 +96,7 @@ tag=assembly
 
 Sample DataSource configuration defaults:
 
-[source]
+[source,java]
 ----
 include::../test/resources/sqlite-datasource.properties[]
 ----
@@ -116,7 +116,7 @@ tag=assembly
 
 Sample DataSource configuration defaults:
 
-[source]
+[source,java]
 ----
 include::../test/resources/h2-datasource.properties[]
 ----
@@ -137,7 +137,7 @@ tag=assembly
 
 Sample DataSource configuration defaults:
 
-[source]
+[source,java]
 ----
 include::../test/resources/derby-datasource.properties[]
 ----

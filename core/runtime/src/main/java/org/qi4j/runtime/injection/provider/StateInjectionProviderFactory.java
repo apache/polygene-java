@@ -62,7 +62,7 @@ public final class StateInjectionProviderFactory
                 name = annotation.value();
             }
 
-            PropertyDescriptor propertyDescriptor = descriptor.getPropertyByName( name );
+            PropertyDescriptor propertyDescriptor = descriptor.findPropertyModelByName( name );
 
             // Check if property exists
             if( propertyDescriptor == null )

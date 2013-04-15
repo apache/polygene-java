@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  *
- *     You may obtain a copy of the License at 
+ *     You may obtain a copy of the License at
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -35,8 +35,7 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.test.EntityTestAssembler;
 
 public class ObjectVisibilityTest
 {
@@ -672,8 +671,7 @@ public class ObjectVisibilityTest
             module.objects( BelowLayerVisible.class ).visibleIn( Visibility.layer );
             module.objects( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
-            module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
-            module.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
+            new EntityTestAssembler( Visibility.application ).assemble( module );
         }
     }
 
@@ -833,7 +831,7 @@ public class ObjectVisibilityTest
         }
     }
 
-    public static class ModuleApplicationVisible 
+    public static class ModuleApplicationVisible
     {
     }
 

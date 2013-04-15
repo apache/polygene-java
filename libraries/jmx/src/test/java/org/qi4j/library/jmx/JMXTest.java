@@ -14,6 +14,7 @@
 package org.qi4j.library.jmx;
 
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.common.UseDefaults;
@@ -38,7 +39,7 @@ public class JMXTest
 {
 
     public static void main( String[] args )
-            throws InterruptedException
+        throws InterruptedException, ActivationException, AssemblyException
     {
         /*
          Logger logger = Logger.getLogger( "" );

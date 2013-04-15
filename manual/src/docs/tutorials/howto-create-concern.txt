@@ -3,6 +3,12 @@
 
 Concerns are defined in <<def-concern>>.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
+
+include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+
 == Typed Concern ==
 
 A typed Concern is a Java class that implements the MixinType it can be used on:
@@ -22,16 +28,10 @@ injection via constructors and methods.
 
 It can be used as follows;
 
-[source,java]
+[snippet,java]
 -----------
-@Concerns( InventoryConcern.class )
-public interface Order
-{
-    void addLineItem( LineItem item );
-    void removeLineItem( LineItem item );
-    :
-    :
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/concern/Order.java
+tag=class
 -----------
 
 Methods of the Concern Fragment will be called before the Mixin invocation.
@@ -42,28 +42,18 @@ Methods of the Concern Fragment will be called before the Mixin invocation.
 A generic Concern is a Java class that implements java.lang.reflect.InvocationHandler which allows it to be used on any
 arbitrary MixinType.
 
-[source,java]
+[snippet,java]
 -----------
-public class MyGenericConcern extends GenericConcern
-{
-    public Object invoke(...)
-    {
-        // Do whatever you want
-        return next.invoke( ... );
-    }
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/concern/MyGenericConcern.java
+tag=class
 -----------
 
 It can be used as follows;
 
-[source,java]
+[snippet,java]
 -----------
-@Concerns( MyGenericConcern.class )
-public interface AnyMixinType
-{
-    :
-    :
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/concern/AnyMixinType.java
+tag=class
 -----------
 
 Methods of the Concern Fragment will be called before the Mixin invocation.
@@ -79,47 +69,26 @@ invocation. In other words the AppliesTo arguments are OR'ed.
 
 Here is how the declaration goes ;
 
-[source,java]
+[snippet,java]
 -----------
-@AppliesTo( { MyAnnotation.class, MyAppliesToFilter.class } )
-public class MyGenericConcern extends GenericConcern
-{
-    public Object invoke(...)
-    {
-        // Do whatever you want
-        return next.invoke( ... );
-    }
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/concern/MyGenericConcern.java
+tag=appliesTo
 -----------
 
 And how to use the annotation ;
 
-[source,java]
+[snippet,java]
 -----------
-@Concerns( MyGenericConcern.class )
-public interface AnyMixinType
-{
-    @MyAnnotation
-    void doSomething();
-    void doSomethingElse();
-    :
-    :
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/concern/AnyMixinType.java
+tag=annotationUse
 -----------
 
 Here only the doSomething() method will see the Concern applied whereas the doSomethingElse() method won't.
 
 Finally here is how to implement an AppliesToFilter:
 
-[source,java]
--------------
-public class MyAppliesToFilter implements AppliesToFilter
-{
-    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
-    {
-        boolean appliesTo; // Do whatever you want
-        return appliesTo;
-    }
-}
--------------
-
+[snippet,java]
+-----------
+source=manual/src/main/java/org/qi4j/manual/recipes/concern/MyAppliesToFilter.java
+tag=filter
+-----------

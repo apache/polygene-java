@@ -82,7 +82,7 @@ public class DecoratorMixin
         builder.append( "\ndelegate: " );
         builder.append( delegate );
         builder.append( "\ndelegateType: " );
-        builder.append( delegate.getClass().getName() );
+        builder.append( delegate == null ? "n/a" : delegate.getClass().getName() );
         builder.append( "\narguments: \n" );
         for( Object arg : args )
         {

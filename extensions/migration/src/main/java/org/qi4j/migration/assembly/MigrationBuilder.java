@@ -36,12 +36,12 @@ public class MigrationBuilder
         return new VersionMigrationBuilder( this, fromVersion, toVersion );
     }
 
-    public MigrationRules<EntityMigrationRule> getEntityRules()
+    public MigrationRules<EntityMigrationRule> entityMigrationRules()
     {
         return entityRules;
     }
 
-    public MigrationRules<MigrationRule> getRules()
+    public MigrationRules<MigrationRule> migrationRules()
     {
         return rules;
     }

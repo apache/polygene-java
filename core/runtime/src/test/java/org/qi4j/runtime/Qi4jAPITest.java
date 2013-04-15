@@ -48,15 +48,15 @@ public class Qi4jAPITest
         UnitOfWork unitOfWork = module.newUnitOfWork();
         TestEntity testEntity = unitOfWork.newEntity( TestEntity.class );
 
-        api.getModule( testEntity );
+        api.moduleOf( testEntity );
 
         unitOfWork.discard();
 
-        api.getModule( module.newValue( TestValue.class ) );
+        api.moduleOf( module.newValue( TestValue.class ) );
 
-        api.getModule( module.newTransient( TestTransient.class ) );
+        api.moduleOf( module.newTransient( TestTransient.class ) );
 
-        api.getModule( module.findService( TestService.class ).get() );
+        api.moduleOf( module.findService( TestService.class ).get() );
     }
 
     public interface TestTransient

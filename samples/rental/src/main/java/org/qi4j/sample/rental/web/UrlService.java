@@ -46,7 +46,7 @@ public interface UrlService
 
         public String createLink( Page page )
         {
-            String mountPoint = spi.getServiceDescriptor( page ).metaInfo( PageMetaInfo.class ).mountPoint();
+            String mountPoint = spi.serviceDescriptorFor( page ).metaInfo( PageMetaInfo.class ).mountPoint();
             return baseUri + mountPoint;
         }
     }

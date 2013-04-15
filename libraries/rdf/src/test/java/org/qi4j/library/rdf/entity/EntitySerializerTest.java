@@ -14,6 +14,7 @@
 
 package org.qi4j.library.rdf.entity;
 
+import java.io.PrintWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -35,8 +36,8 @@ import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.io.PrintWriter;
+import org.qi4j.test.EntityTestAssembler;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 /**
  * JAVADOC
@@ -49,7 +50,9 @@ public class EntitySerializerTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
+        new OrgJsonValueSerializationAssembler().assemble( module );
+
         module.entities( TestEntity.class );
         module.values( TestValue.class, Test2Value.class );
         module.objects( EntityStateSerializer.class, EntitySerializerTest.class );
@@ -69,7 +72,7 @@ public class EntitySerializerTest
     public void testEntitySerializer() throws RDFHandlerException
     {
         EntityReference entityReference = new EntityReference( "test2" );
-        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Test" ), module, System.currentTimeMillis() ).getEntityState( entityReference );
+        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Test" ), module, System.currentTimeMillis() ).entityStateOf( entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 

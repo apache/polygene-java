@@ -50,6 +50,10 @@ public final class Dates
         }
     };
 
+    /**
+     * @param stringDate a string representing a date as either ISO8601, @millis@ or /Date() formats
+     * @return a Date
+     */
     public static Date fromString( String stringDate )
     {
         try
@@ -84,6 +88,10 @@ public final class Dates
         }
     }
 
+    /**
+     * @param date a Date
+     * @return String representation in ISO8601 UTC
+     */
     public static String toUtcString( Date date )
     {
         return ISO8601_UTC.get().format( date );

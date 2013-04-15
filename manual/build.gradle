@@ -1,10 +1,11 @@
 description = "Qi4j Manuals and Website."
 
 dependencies {
-  compile( project( ":org.qi4j.core:org.qi4j.core.api" ) )
+  compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
   compile( project( ":org.qi4j.libraries:org.qi4j.library.constraints" ) )
   compile( project( ":org.qi4j.libraries:org.qi4j.library.logging" ) )
-  compile( libraries.slf4j_api )
+  runtime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
+  runtime( libraries.logback )
 }
 
 

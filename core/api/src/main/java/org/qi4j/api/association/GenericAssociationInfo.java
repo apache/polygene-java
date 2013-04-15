@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.api.association;
 
@@ -23,14 +23,17 @@ import java.lang.reflect.Type;
 
 import static org.qi4j.api.util.Classes.typeOf;
 
+/**
+ * Generic Association info.
+ */
 public final class GenericAssociationInfo
 {
-    public static Type getAssociationType( AccessibleObject accessor )
+    public static Type associationTypeOf( AccessibleObject accessor )
     {
-        return getAssociationType( typeOf( accessor ) );
+        return toAssociationType( typeOf( accessor ) );
     }
 
-    public static Type getAssociationType( Type methodReturnType )
+    public static Type toAssociationType( Type methodReturnType )
     {
         if( methodReturnType instanceof ParameterizedType )
         {
@@ -44,7 +47,7 @@ public final class GenericAssociationInfo
         Type[] interfaces = ( (Class<?>) methodReturnType ).getGenericInterfaces();
         for( Type anInterface : interfaces )
         {
-            Type associationType = getAssociationType( anInterface );
+            Type associationType = toAssociationType( anInterface );
             if( associationType != null )
             {
                 return associationType;

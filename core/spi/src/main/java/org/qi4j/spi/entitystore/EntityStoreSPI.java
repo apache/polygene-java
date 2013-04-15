@@ -27,7 +27,7 @@ public interface EntityStoreSPI
                                 EntityReference identity, EntityDescriptor entityDescriptor
     );
 
-    EntityState getEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference identity );
+    EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity );
 
     StateCommitter applyChanges( EntityStoreUnitOfWork unitOfWork, Iterable<EntityState> state
     );

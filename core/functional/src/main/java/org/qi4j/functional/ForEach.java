@@ -42,12 +42,12 @@ public final class ForEach<T>
 
     public <TO> ForEach<TO> flatten()
     {
-        Iterable<Iterable<TO>> original = getIterable();
+        Iterable<Iterable<TO>> original = iterable();
         Iterable<TO> iterable1 = Iterables.flattenIterables( original );
         return new ForEach<TO>( iterable1 );
     }
 
-    private <TO> Iterable<Iterable<TO>> getIterable()
+    private <TO> Iterable<Iterable<TO>> iterable()
     {
         return (Iterable<Iterable<TO>>) iterable;
     }

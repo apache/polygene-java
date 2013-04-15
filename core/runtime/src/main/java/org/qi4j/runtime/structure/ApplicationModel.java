@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.structure.Application;
@@ -84,7 +85,7 @@ public final class ApplicationModel
     }
 
     public ActivatorsInstance<Application> newActivatorsInstance()
-            throws Exception
+        throws ActivationException
     {
         return new ActivatorsInstance<Application>( activatorsModel.newInstances() );
     }
@@ -153,5 +154,17 @@ public final class ApplicationModel
     public InjectionProviderFactory injectionProviderFactory()
     {
         return ipf;
+    }
+
+    @Override
+    public String toString()
+    {
+        final StringBuilder sb = new StringBuilder();
+        sb.append( "ApplicationModel" );
+        sb.append( "{name='" ).append( name ).append( '\'' );
+        sb.append( ", version='" ).append( version ).append( '\'' );
+        sb.append( ", mode=" ).append( mode );
+        sb.append( '}' );
+        return sb.toString();
     }
 }

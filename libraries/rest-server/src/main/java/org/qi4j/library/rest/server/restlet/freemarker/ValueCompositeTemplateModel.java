@@ -28,7 +28,7 @@ public class ValueCompositeTemplateModel
     {
         this.composite = composite;
         this.wrapper = wrapper;
-        descriptor = (ValueDescriptor) Qi4j.DESCRIPTOR_FUNCTION.map( composite );
+        descriptor = (ValueDescriptor) Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite );
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ValueCompositeTemplateModel
                     throw new IllegalStateException( e );
                 }
             }
-        }, Qi4j.INSTANCE_FUNCTION.map( composite ).state().properties() ).iterator() );
+        }, Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).state().properties() ).iterator() );
     }
 
     @Override
@@ -79,10 +79,10 @@ public class ValueCompositeTemplateModel
     {
         try
         {
-            return wrapper.wrap( Qi4j.INSTANCE_FUNCTION
+            return wrapper.wrap( Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
                                      .map( composite )
                                      .state()
-                                     .propertyFor( descriptor.state().getPropertyByName( key ).accessor() )
+                                     .propertyFor( descriptor.state().findPropertyModelByName( key ).accessor() )
                                      .get() );
         }
         catch( IllegalArgumentException e )

@@ -61,26 +61,11 @@ several UnitOfWorks, the one around the Task#run() invocation will then be pause
 
 Here is a simple example:
 
-[source,java]
-----
-interface MyTaskEntity
-    extends Task, EntityComposite
-{
-    Property<String>; myTaskState();
-    Association<AnotherEntity> anotherEntity();
-}
-
-abstract class MyTaskMixin
-    implements Runnable
-{
-    @This MyTaskEntity me;
-
-    public void run()
-    {
-        me.myTaskState().set( me.anotherEntity().get().doSomeStuff( me.myTaskState().get() ) );
-    }
-}
-----
+[snippet,java]
+-----------
+source=libraries/scheduler/src/test/java/org/qi4j/library/scheduler/docsupport/SchedulerDocs.java
+tag=1
+-----------
 
 == Scheduling Tasks ==
 
@@ -98,16 +83,11 @@ expression.
 
 This is the easiest way to run a background Task once after a given initial delay in seconds.
 
-[source,java]
-----
-@Service Scheduler scheduler;
-
-public void method()
-{
-    MyTaskEntity myTask = ...;
-    Schedule schedule = scheduler.scheduleOnce( myTask, 10 ); // myTask will be run in 10 seconds from now
-}
-----
+[snippet,java]
+-----------
+source=libraries/scheduler/src/test/java/org/qi4j/library/scheduler/docsupport/SchedulerDocs.java
+tag=2
+-----------
 
 Note that there is no point in making such a Schedule durable because it won't be run repeatedly.
 
@@ -148,10 +128,11 @@ service allow to browse in past (recorded) and in anticipated (future) Task runs
 
 Use the following in your code to get a Timeline Service injected:
 
-[source,java]
-----
-@Service Timeline timeline;
-----
+[snippet,java]
+-----------
+source=libraries/scheduler/src/test/java/org/qi4j/library/scheduler/docsupport/SchedulerDocs.java
+tag=timeline
+-----------
 
 Here is the actual Timeline contract:
 

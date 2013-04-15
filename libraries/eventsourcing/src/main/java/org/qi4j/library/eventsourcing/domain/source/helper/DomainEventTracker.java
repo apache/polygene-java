@@ -93,7 +93,7 @@ public class DomainEventTracker
                 source.events( currentOffset, Long.MAX_VALUE ).transferTo( Transforms.map( counter, output ) );
 
                 // Save new offset, to be used in next round
-                configuration.get().lastOffset().set( currentOffset+counter.getCount() );
+                configuration.get().lastOffset().set( currentOffset+counter.count() );
                 configuration.save();
             } catch (Throwable throwable)
             {

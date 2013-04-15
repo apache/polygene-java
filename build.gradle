@@ -60,6 +60,16 @@ idea.project.ipr {
 
 // External tools END -----------------------------------------------------
 
+// Define repositories URLs here so we can reuse them in the build script
+// Needed as Gradle forbid access to declared repositories URLs by design
+// Releasable submodules should not declare repositories in their own build files
+def repos_urls = [
+  mavenCentral: "http://repo1.maven.org/maven2/",
+  ops4j: "http://repository.ops4j.org/maven2/",
+  aduna: "http://repo.aduna-software.org/maven2/releases/",
+  restlet: 'http://maven.restlet.org',
+  javanet: "http://download.java.net/maven/2",
+]
 
 allprojects {
 
@@ -80,10 +90,10 @@ allprojects {
 
   repositories {
     mavenCentral()
-    mavenRepo name: 'ops4j-repo', url: "http://repository.ops4j.org/maven2/"
-    mavenRepo name: 'aduna-repo', url: "http://repo.aduna-software.org/maven2/releases/"
-    mavenRepo name: 'restlet-repo', url: 'http://maven.restlet.org'
-    mavenRepo name: 'maven2-repository.dev.java.net', url: "http://download.java.net/maven/2"
+    mavenRepo name: 'ops4j-repo', url: repos_urls.ops4j
+    mavenRepo name: 'aduna-repo', url: repos_urls.aduna
+    mavenRepo name: 'restlet-repo', url: repos_urls.restlet
+    mavenRepo name: 'maven2-repository.dev.java.net', url: repos_urls.javanet
   }
 
   // Artifact upload global configuration BEGIN -----------------------------
@@ -240,7 +250,6 @@ allprojects {
       systemProperties = testProperties
       ignoreFailures = true
       testReport = true
-      testResultsDir = file( "$rootProject.testResultsDir" )
       afterSuite { descriptor, result ->
         if( result.resultType == TestResult.ResultType.FAILURE )
         {
@@ -341,9 +350,14 @@ gradle.taskGraph.whenReady {taskGraph ->
   }
 }
 
+task globalTestReport( type: TestReport ) {
+  destinationDir = file("$buildDir/reports/tests")
+  reportOn subprojects*.test
+}
+
 test {
-  dependsOn subprojects*.test
-  testReport = true
+  dependsOn subprojects*.test, globalTestReport
+  testReport = false
 }
 
 // Build the whole SDK public Javadoc
@@ -372,7 +386,7 @@ task javadocs( type: Javadoc ) {
                          "Core Bootstrap": [ "org.qi4j.bootstrap" ],
                          "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
                          "Libraries": [ "org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.lang.*" ],
-                         "Extensions": [ "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
+                         "Extensions": [ "org.qi4j.valueserialization.*", "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
                          "Tools": [ "org.qi4j.tools.*", "org.qi4j.envisage", "org.qi4j.envisage.*", "org.qi4j.library.swing.entityviewer" ],
                          "Test Support": [ "org.qi4j.test", "org.qi4j.test.*" ]
                  ] )
@@ -382,7 +396,7 @@ task javadocs( type: Javadoc ) {
 task archiveJavadocs(type: Copy ) {
   dependsOn javadocs
 
-  if( rootProject.version == '0' )
+  if( rootProject.version == '0' || rootProject.version.contains( "SNAPSHOT" ) )
   {
     into( "$rootProject.projectDir/../qi4j.github.com/develop/javadocs/" )
   }
@@ -411,20 +425,12 @@ buildAll.doLast {
     runtimeDepsMetalink = runtimeDepsMetalink + " <version>${version}</version>\n"
     def handledGavPaths = []
     releaseApprovedProjects.each { p ->
-      def m2roots = []
-      p.repositories.each { repo ->
-        def resolver = repo.createResolver()
-        if( !resolver.m2compatible ) {
-          throw new GradleException( "Cannot build SDK dependencies metalink because a repository is not m2compatible: ${resolver.root}" )
-        }
-        m2roots << resolver.root
-      }
       p.configurations.runtime.allDependencies.each { dep ->
         def gavpath = dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar"
         if( !dep.group.startsWith("org.qi4j") && !handledGavPaths.contains( gavpath ) ) {
           runtimeDepsMetalink = runtimeDepsMetalink + "  <file name=\"${dep.group}-${dep.name}-${dep.version}.jar\">\n"
-          m2roots.each { m2root ->
-            runtimeDepsMetalink = runtimeDepsMetalink + "    <url>" + m2root + dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar" + "</url>\n"
+          repos_urls.each { repo_url ->
+            runtimeDepsMetalink = runtimeDepsMetalink + "    <url>" + repo_url.value + dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar" + "</url>\n"
           }
           runtimeDepsMetalink = runtimeDepsMetalink + "  </file>\n\n"
           handledGavPaths << gavpath
@@ -568,5 +574,5 @@ task release {
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
 task wrapper( type: Wrapper ) {
-  gradleVersion = '1.3'
+  gradleVersion = '1.5'
 }

@@ -211,7 +211,7 @@ public class DependencyPane
         classNameLabel.setToolTipText( dependencyDescriptor.injectedClass().getName() );
         annotationLabel.setText( "@" + dependencyDescriptor.injectionAnnotation().annotationType().getSimpleName() );
         optionalLabel.setText( Boolean.toString( dependencyDescriptor.optional() ) );
-        injectionTypeLabel.setText( Classes.getSimpleGenericName( dependencyDescriptor.injectionType() ) );
+        injectionTypeLabel.setText( Classes.simpleGenericNameOf( dependencyDescriptor.injectionType() ) );
         injectionTypeLabel.setToolTipText( dependencyDescriptor.injectionType().toString() );
     }
 

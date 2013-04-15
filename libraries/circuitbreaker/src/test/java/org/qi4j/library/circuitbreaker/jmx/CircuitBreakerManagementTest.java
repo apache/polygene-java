@@ -17,6 +17,7 @@ package org.qi4j.library.circuitbreaker.jmx;
 
 import java.util.Random;
 import javax.management.MBeanServer;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -33,6 +34,7 @@ public class CircuitBreakerManagementTest
 {
 
     public static void main( String[] args )
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -92,7 +94,7 @@ public class CircuitBreakerManagementTest
         }
 
         @Override
-        public CircuitBreaker getCircuitBreaker()
+        public CircuitBreaker circuitBreaker()
         {
             return cb;
         }

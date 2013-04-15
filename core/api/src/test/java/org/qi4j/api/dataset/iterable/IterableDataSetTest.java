@@ -31,7 +31,7 @@ public class IterableDataSetTest
 
     private TestValue newTestValue( String name )
     {
-        return module.newValueFromJSON( TestValue.class, "{name:'" + name + "'}" );
+        return module.newValueFromSerializedState( TestValue.class, "{name:'" + name + "'}" );
     }
 
     interface TestValue

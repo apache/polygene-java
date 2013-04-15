@@ -41,7 +41,7 @@ public class EntityMigrationRule
         this.operationEntity = operationEntity;
     }
 
-    public String[] getEntityTypes()
+    public String[] entityTypes()
     {
         return entityTypes;
     }

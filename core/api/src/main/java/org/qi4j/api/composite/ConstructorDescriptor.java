@@ -21,5 +21,5 @@ import java.lang.reflect.Constructor;
  */
 public interface ConstructorDescriptor
 {
-    Constructor constructor();
+    Constructor<?> constructor();
 }

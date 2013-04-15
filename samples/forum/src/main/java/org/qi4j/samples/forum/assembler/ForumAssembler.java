@@ -71,7 +71,7 @@ public class ForumAssembler
         {
             ModuleAssembly forum = data.module( "Forum" );
             for( Class<?> dataClass : filter( hasModifier( Modifier.INTERFACE ), filter( isAssignableFrom( EntityComposite.class ), ClassScanner
-                .getClasses( User.class ) ) ) )
+                .findClasses( User.class ) ) ) )
             {
                 forum.entities( dataClass ).visibleIn( Visibility.application );
             }
@@ -80,7 +80,7 @@ public class ForumAssembler
         LayerAssembly context = assembly.layer( "Context" ).uses( data );
         {
             ModuleAssembly contexts = context.module( "Context" );
-            for( Class<?> contextClass : filter( not( hasModifier( Modifier.INTERFACE ) ), ClassScanner.getClasses( Context.class ) ) )
+            for( Class<?> contextClass : filter( not( hasModifier( Modifier.INTERFACE ) ), ClassScanner.findClasses( Context.class ) ) )
             {
                 if( contextClass.getName().contains( "$" ) )
                 {
@@ -92,7 +92,7 @@ public class ForumAssembler
                 }
             }
 
-            for( Class<?> valueClass : filter( isAssignableFrom( ValueComposite.class ), ClassScanner.getClasses( Context.class ) ) )
+            for( Class<?> valueClass : filter( isAssignableFrom( ValueComposite.class ), ClassScanner.findClasses( Context.class ) ) )
             {
                 contexts.values( valueClass ).visibleIn( Visibility.application );
             }
@@ -125,7 +125,7 @@ public class ForumAssembler
             }
 
             ModuleAssembly resources = rest.module( "Resources" );
-            for( Class<?> resourceClass : ClassScanner.getClasses( RootResource.class ) )
+            for( Class<?> resourceClass : ClassScanner.findClasses( RootResource.class ) )
             {
                 resources.objects( resourceClass ).visibleIn( Visibility.layer );
             }

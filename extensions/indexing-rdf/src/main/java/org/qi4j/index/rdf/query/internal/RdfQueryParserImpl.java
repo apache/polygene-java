@@ -57,7 +57,7 @@ public class RdfQueryParserImpl
         ) );
     }
 
-    public String getQuery( final Class<?> resultType,
+    public String query( final Class<?> resultType,
                             final BooleanExpression whereClause,
                             final OrderBy[] orderBySegments,
                             final Integer firstResult,
@@ -74,9 +74,9 @@ public class RdfQueryParserImpl
 
         StringBuilder query = new StringBuilder();
 
-        for( String namespace : namespaces.getNamespaces() )
+        for( String namespace : namespaces.namespaces() )
         {
-            query.append( format( "PREFIX %s: <%s> %n", namespaces.getNamespacePrefix( namespace ), namespace ) );
+            query.append( format( "PREFIX %s: <%s> %n", namespaces.namespacePrefix( namespace ), namespace ) );
         }
         query.append( "SELECT DISTINCT ?identity\n" );
         if( triples.hasTriples() )
@@ -85,9 +85,9 @@ public class RdfQueryParserImpl
             StringBuilder optional = new StringBuilder();
             for( Triples.Triple triple : triples )
             {
-                final String subject = triple.getSubject();
-                final String predicate = triple.getPredicate();
-                final String value = triple.getValue();
+                final String subject = triple.subject();
+                final String predicate = triple.predicate();
+                final String value = triple.value();
 
                 if( triple.isOptional() )
                 {
@@ -252,7 +252,7 @@ public class RdfQueryParserImpl
         ValueExpression<?> valueExpression = predicate.valueExpression();
         if( valueExpression instanceof SingleValueExpression<?> )
         {
-            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
+            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).value();
             final SingleValueExpression<?> singleValueExpression = (SingleValueExpression<?>) valueExpression;
             String[] strings = new String[( (Collection<?>) singleValueExpression.value() ).size()];
             Integer x = 0;
@@ -298,7 +298,7 @@ public class RdfQueryParserImpl
         ValueExpression<?> valueExpression = predicate.valueExpression();
         if( valueExpression instanceof SingleValueExpression<?> )
         {
-            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
+            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).value();
             SingleValueExpression<?> singleValueExpression = (SingleValueExpression<?>) valueExpression;
             try
             {
@@ -326,7 +326,7 @@ public class RdfQueryParserImpl
         ValueExpression valueExpression = predicate.valueExpression();
         if( valueExpression instanceof SingleValueExpression )
         {
-            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).getValue();
+            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).value();
             final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
             return format( "regex(%s,\"%s\")", valueVariable, singleValueExpression.value() );
         }
@@ -352,9 +352,9 @@ public class RdfQueryParserImpl
             }
             else
             {
-                String valueVariable = triple.getValue();
+                String valueVariable = triple.value();
                 final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-                return String.format( "(%s %s \"%s\")", valueVariable, getOperand( predicate.getClass() ), toString( singleValueExpression.value() ) );
+                return String.format( "(%s %s \"%s\")", valueVariable, operand( predicate.getClass() ), toString( singleValueExpression.value() ) );
             }
         }
         else
@@ -380,9 +380,9 @@ public class RdfQueryParserImpl
             }
             else
             {
-                String valueVariable = triple.getValue();
+                String valueVariable = triple.value();
                 final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-                return String.format( "(%s %s <%s>)", valueVariable, getOperand( predicate.getClass() ), toString( singleValueExpression.value() ) );
+                return String.format( "(%s %s <%s>)", valueVariable, operand( predicate.getClass() ), toString( singleValueExpression.value() ) );
             }
         }
         else
@@ -393,7 +393,7 @@ public class RdfQueryParserImpl
 
     private String processNullPredicate( final PropertyNullPredicate predicate )
     {
-        final String value = triples.addTriple( predicate.propertyReference(), true ).getValue();
+        final String value = triples.addTriple( predicate.propertyReference(), true ).value();
         if( predicate instanceof PropertyIsNullPredicate )
         {
             return format( "(! bound(%s))", value );
@@ -406,7 +406,7 @@ public class RdfQueryParserImpl
 
     private String processNullPredicate( final AssociationNullPredicate predicate )
     {
-        final String value = triples.addTriple( predicate.associationReference(), true ).getValue();
+        final String value = triples.addTriple( predicate.associationReference(), true ).value();
         if( predicate instanceof AssociationIsNullPredicate )
         {
             return format( "(! bound(%s))", value );
@@ -427,7 +427,7 @@ public class RdfQueryParserImpl
                 if( orderBySegment != null )
                 {
                     final String valueVariable = triples.addTriple( orderBySegment.getPropertyFunction(), false )
-                        .getValue();
+                        .value();
                     if( orderBySegment.order() == OrderBy.Order.ASCENDING )
                     {
                         orderBy.append( format( "ASC(%s)", valueVariable ) );
@@ -443,14 +443,14 @@ public class RdfQueryParserImpl
         return null;
     }
 
-    private String getOperand( final Class<? extends Predicate> predicateClass )
+    private String operand( final Class<? extends Predicate> predicateClass )
     {
         String operator = null;
         for( Map.Entry<Class<? extends Predicate>, String> entry : m_operators.entrySet() )
         {
             if( entry.getKey().isAssignableFrom( predicateClass ) )
             {
-                operator = entry.getValue();
+                operator = entry.value();
                 break;
             }
         }

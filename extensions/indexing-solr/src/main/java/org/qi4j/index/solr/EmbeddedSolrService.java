@@ -34,9 +34,9 @@ import org.qi4j.library.fileconfig.FileConfiguration;
 @Activators( EmbeddedSolrService.Activator.class )
 public interface EmbeddedSolrService extends ServiceComposite
 {
-   SolrServer getSolrServer();
+   SolrServer solrServer();
 
-   SolrCore getSolrCore();
+   SolrCore solrCore();
 
     void activateSolr()
             throws Exception;
@@ -114,13 +114,13 @@ public interface EmbeddedSolrService extends ServiceComposite
       }
 
        @Override
-      public SolrServer getSolrServer()
+      public SolrServer solrServer()
       {
          return server;
       }
 
        @Override
-      public SolrCore getSolrCore()
+      public SolrCore solrCore()
       {
          return core;
       }

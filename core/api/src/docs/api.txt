@@ -88,23 +88,15 @@ include::sideeffect.txt[]
 
 :leveloffset: {level3}
 
+include::decoratormixin.txt[]
+
+:leveloffset: {level3}
+
 // include::indexing.txt[]
 
 :leveloffset: {level3}
 
 // include::query.txt[]
-
-:leveloffset: {level3}
-
-// include::application.txt[]
-
-:leveloffset: {level3}
-
-// include::layer.txt[]
-
-:leveloffset: {level3}
-
-include::module.txt[]
 
 :leveloffset: {level3}
 

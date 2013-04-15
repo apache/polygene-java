@@ -124,7 +124,7 @@ public interface DataSourceConfigurationManagerService
         {
             for ( ServiceReference<DataSource> dataSource : dataSources ) {
                 String name = dataSource.identity();
-                Module module = ( Module ) spi.getModule( dataSource );
+                Module module = ( Module ) spi.moduleOf( dataSource );
                 EntityDescriptor descriptor = module.entityDescriptor( DataSourceConfiguration.class.getName() );
                 List<MBeanAttributeInfo> attributes = new ArrayList<MBeanAttributeInfo>();
                 Map<String, AccessibleObject> properties = new LinkedHashMap<String, AccessibleObject>();
@@ -181,7 +181,7 @@ public interface DataSourceConfigurationManagerService
                 UnitOfWork uow = module.newUnitOfWork();
                 try {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
-                    AssociationStateHolder state = spi.getState( configuration );
+                    AssociationStateHolder state = spi.stateOf( configuration );
                     AccessibleObject accessor = propertyNames.get( name );
                     Property<Object> property = state.propertyFor( accessor );
                     return property.get();
@@ -199,7 +199,7 @@ public interface DataSourceConfigurationManagerService
                 UnitOfWork uow = module.newUnitOfWork();
                 try {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
-                    AssociationStateHolder state = spi.getState( configuration );
+                    AssociationStateHolder state = spi.stateOf( configuration );
                     AccessibleObject accessor = propertyNames.get( attribute.getName() );
                     Property<Object> property = state.propertyFor( accessor );
                     property.set( attribute.getValue() );

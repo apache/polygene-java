@@ -26,7 +26,7 @@ import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueComposite;
 
 /**
- * Transfer properties to Composite properties
+ * Transfer java.util.Properties to Composite properties
  */
 public final class PropertyMapper
 {
@@ -75,7 +75,7 @@ public final class PropertyMapper
                 Method propertyMethod = composite.getClass().getInterfaces()[ 0 ].getMethod( methodName );
                 propertyMethod.setAccessible( true );
                 Object value = objectObjectEntry.getValue();
-                Type propertyType = GenericPropertyInfo.getPropertyType( propertyMethod );
+                Type propertyType = GenericPropertyInfo.propertyTypeOf( propertyMethod );
 
                 value = mapToType( composite, propertyType, value.toString() );
 
@@ -202,7 +202,7 @@ public final class PropertyMapper
      *
      * @return properties instance
      */
-    public static Properties getProperties( final Composite composite )
+    public static Properties toJavaProperties( final Composite composite )
     {
         return new Properties()
         {
@@ -457,7 +457,7 @@ public final class PropertyMapper
         @Override
         public Object map( Composite composite, Type type, String value )
         {
-            return Qi4j.INSTANCE_FUNCTION.map( composite ).module().newValueFromJSON( (Class<Object>) type, value );
+            return Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).module().newValueFromSerializedState( (Class<Object>) type, value );
         }
     }
 

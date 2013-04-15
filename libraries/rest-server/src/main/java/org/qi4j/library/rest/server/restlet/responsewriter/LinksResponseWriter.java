@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.library.rest.common.link.Link;
-import org.qi4j.library.rest.common.link.LinksUtil;
+import org.qi4j.library.rest.common.link.Links;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
@@ -70,13 +70,13 @@ public class LinksResponseWriter
                 return true;
             }
         }
-        else if( result instanceof LinksUtil )
+        else if( result instanceof Links )
         {
             MediaType type = getVariant( response.getRequest(), ENGLISH, supportedLinksMediaTypes ).getMediaType();
             Representation rep;
             if( MediaType.APPLICATION_JSON.equals( type ) )
             {
-                rep = createJsonRepresentation( (LinksUtil) result );
+                rep = createJsonRepresentation( (Links) result );
             }
             else if( MediaType.TEXT_HTML.equals( type ) )
             {
@@ -96,9 +96,9 @@ public class LinksResponseWriter
         return false;
     }
 
-    private StringRepresentation createJsonRepresentation( LinksUtil result )
+    private StringRepresentation createJsonRepresentation( Links result )
     {
-        return new StringRepresentation( ( (LinksUtil) result ).toString(), MediaType.APPLICATION_JSON );
+        return new StringRepresentation( result.toString(), MediaType.APPLICATION_JSON );
     }
 
     private Representation createTextHtmlRepresentation( final Object result, final Response response )

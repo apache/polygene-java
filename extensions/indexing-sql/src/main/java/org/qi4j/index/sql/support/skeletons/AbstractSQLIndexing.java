@@ -637,7 +637,7 @@ public abstract class AbstractSQLIndexing
                     propertyPK, //
                     entityPK, //
                     pDesc.qualifiedName(), //
-                    state.getProperty( pDesc.qualifiedName() ), //
+                    state.propertyValueOf( pDesc.qualifiedName() ), //
                     null //
                     );
             }
@@ -660,7 +660,7 @@ public abstract class AbstractSQLIndexing
             {
                 QualifiedName qName = aDesc.qualifiedName();
                 PreparedStatement ps = qNameInsertPSs.get( qName );
-                EntityReference ref = state.getAssociation( qName );
+                EntityReference ref = state.associationValueOf( qName );
                 if( ref != null )
                 {
 
@@ -685,7 +685,7 @@ public abstract class AbstractSQLIndexing
                 QualifiedName qName = mDesc.qualifiedName();
                 PreparedStatement ps = qNameInsertPSs.get( qName );
                 Integer index = 0;
-                for( EntityReference ref : state.getManyAssociation( qName ) )
+                for( EntityReference ref : state.manyAssociationValueOf( qName ) )
                 {
                     if( ref != null )
                     {
@@ -942,8 +942,8 @@ public abstract class AbstractSQLIndexing
         )
             throws SQLException
     {
-        ValueDescriptor vDesc = this._qi4SPI.getValueDescriptor( (ValueComposite) property );
-        StateHolder state = Qi4j.INSTANCE_FUNCTION.map( (ValueComposite) property ).state();
+        ValueDescriptor vDesc = this._qi4SPI.valueDescriptorFor( (ValueComposite) property );
+        StateHolder state = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) property ).state();
         Integer originalPropertyPK = propertyPK;
         ++propertyPK;
         for( PropertyDescriptor pDesc : vDesc.state().properties() )
@@ -1001,7 +1001,7 @@ public abstract class AbstractSQLIndexing
         }
         else
         {
-            ValueDescriptor vDesc = this._qi4SPI.getValueDescriptor( vc );
+            ValueDescriptor vDesc = this._qi4SPI.valueDescriptorFor( vc );
             Integer classID = this._state.usedClassesPKs().get().get( vDesc );
             ps.setInt( nextFreeIndex, classID );
         }

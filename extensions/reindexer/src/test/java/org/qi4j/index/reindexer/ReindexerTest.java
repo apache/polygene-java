@@ -32,13 +32,13 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.jdbm.JdbmConfiguration;
 import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 
 import java.io.File;
 import org.apache.tools.ant.util.FileUtils;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
 import static org.qi4j.api.query.QueryExpressions.eq;
@@ -64,7 +64,7 @@ public class ReindexerTest
 
         // Configuration
         ModuleAssembly config = module.layer().module( "config" );
-        config.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( config );
         config.entities( JdbmConfiguration.class, NativeConfiguration.class, ReindexerConfiguration.class ).visibleIn( Visibility.layer );
 
         // Test entity

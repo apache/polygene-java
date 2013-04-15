@@ -45,7 +45,7 @@ public final class CompositeMethodInstance
         return method;
     }
 
-    public Object getMixin( Object[] mixins )
+    public Object getMixinFrom( Object[] mixins )
     {
         return mixins[ methodIdx ];
     }

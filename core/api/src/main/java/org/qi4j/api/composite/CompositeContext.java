@@ -52,7 +52,7 @@ public class CompositeContext<T extends TransientComposite>
     {
         TransientComposite composite = get();
 
-        Iterable<Class<?>> types = Qi4j.INSTANCE_FUNCTION.map( composite ).types();
+        Iterable<Class<?>> types = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).types();
         return (T) Proxy.newProxyInstance(
             composite.getClass().getClassLoader(),
             toArray( Class.class, Iterables.<Class>cast( types ) ),

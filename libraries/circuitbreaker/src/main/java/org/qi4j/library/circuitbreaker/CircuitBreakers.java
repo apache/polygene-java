@@ -39,7 +39,7 @@ public class CircuitBreakers
                {
                   // Check breaker first
                   if (!breaker.isOn())
-                     throw (ReceiverThrowableType) breaker.getLastThrowable();
+                     throw (ReceiverThrowableType) breaker.lastThrowable();
 
                   sender.sendTo( new Receiver<Item, ReceiverThrowableType>()
                   {

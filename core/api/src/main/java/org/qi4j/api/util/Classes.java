@@ -108,6 +108,9 @@ public final class Classes
         }
     };
 
+    /**
+     * Function that extract the raw class of a type.
+     */
     public static final Function<Type, Class<?>> RAW_CLASS = new Function<Type, Class<?>>()
     {
         @Override
@@ -166,7 +169,7 @@ public final class Classes
             {
                 type = RAW_CLASS.map( type );
                 Class superclass = ( (Class) type ).getSuperclass();
-                return prepend( ( Class<?> ) type, map( superclass ) );
+                return prepend( (Class<?>) type, map( superclass ) );
             }
         }
     };
@@ -340,14 +343,14 @@ public final class Classes
         return newSet;
     }
 
-    public static String getSimpleGenericName( Type type )
+    public static String simpleGenericNameOf( Type type )
     {
         StringBuilder sb = new StringBuilder();
-        getSimpleGenericName( sb, type );
+        simpleGenericNameOf( sb, type );
         return sb.toString();
     }
 
-    private static void getSimpleGenericName( StringBuilder sb, Type type )
+    private static void simpleGenericNameOf( StringBuilder sb, Type type )
     {
         if( type instanceof Class )
         {
@@ -356,7 +359,7 @@ public final class Classes
         else if( type instanceof ParameterizedType )
         {
             ParameterizedType pt = (ParameterizedType) type;
-            getSimpleGenericName( sb, pt.getRawType() );
+            simpleGenericNameOf( sb, pt.getRawType() );
             sb.append( "<" );
             boolean atLeastOne = false;
             for( Type typeArgument : pt.getActualTypeArguments() )
@@ -365,7 +368,7 @@ public final class Classes
                 {
                     sb.append( ", " );
                 }
-                getSimpleGenericName( sb, typeArgument );
+                simpleGenericNameOf( sb, typeArgument );
                 atLeastOne = true;
             }
             sb.append( ">" );
@@ -373,7 +376,7 @@ public final class Classes
         else if( type instanceof GenericArrayType )
         {
             GenericArrayType gat = (GenericArrayType) type;
-            getSimpleGenericName( sb, gat.getGenericComponentType() );
+            simpleGenericNameOf( sb, gat.getGenericComponentType() );
             sb.append( "[]" );
         }
         else if( type instanceof TypeVariable )
@@ -392,7 +395,7 @@ public final class Classes
                 {
                     sb.append( ", " );
                 }
-                getSimpleGenericName( sb, typeArgument );
+                simpleGenericNameOf( sb, typeArgument );
                 atLeastOne = true;
             }
         }
@@ -402,9 +405,8 @@ public final class Classes
         }
     }
 
-    public static <AnnotationType extends Annotation> AnnotationType getAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type,
-                                                                                                           Class<AnnotationType> annotationClass
-    )
+    public static <AnnotationType extends Annotation>
+    AnnotationType findAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type, Class<AnnotationType> annotationClass )
     {
         AnnotationType result = null;
         for( Type clazz : Classes.TYPES_OF.map( type ) )

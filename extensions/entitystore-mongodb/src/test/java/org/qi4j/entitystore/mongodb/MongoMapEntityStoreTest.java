@@ -23,6 +23,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 /**
  * Test the MongoMapEntityStoreService.
@@ -34,19 +35,21 @@ import org.qi4j.test.entity.AbstractEntityStoreTest;
  */
 @Ignore( "This test is ignored because it needs a MongoDB instance" )
 public class MongoMapEntityStoreTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
 
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
 
         ModuleAssembly config = module.layer().module( "config" );
         config.services( MemoryEntityStoreService.class );
+
+        new OrgJsonValueSerializationAssembler().assemble( module );
 
         // START SNIPPET: assembly
         new MongoMapEntityStoreAssembler().withConfigModule( config ).assemble( module );
@@ -59,14 +62,12 @@ public class MongoMapEntityStoreTest
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
-
     private Mongo mongo;
-
     private String dbName;
 
     @Override
     public void setUp()
-            throws Exception
+        throws Exception
     {
         super.setUp();
         MongoMapEntityStoreService es = module.findService( MongoMapEntityStoreService.class ).get();
@@ -77,10 +78,9 @@ public class MongoMapEntityStoreTest
 
     @Override
     public void tearDown()
-            throws Exception
+        throws Exception
     {
         mongo.dropDatabase( dbName );
         super.tearDown();
     }
-
 }

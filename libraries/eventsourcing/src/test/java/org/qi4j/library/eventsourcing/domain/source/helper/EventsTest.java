@@ -2,6 +2,7 @@ package org.qi4j.library.eventsourcing.domain.source.helper;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -28,6 +29,7 @@ public class EventsTest
 
     @Before
     public void testData()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

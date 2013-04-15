@@ -20,10 +20,10 @@ package org.qi4j.api.activation;
 /**
  * Assemble Activators to hook Services Activation.
  *
+ * @param ActivateeType Type of the activatee.
+ *
  * @see ActivatorAdapter
  * @see ServiceActivation
- * 
- * @param ActivateeType Type of the activatee.
  */
 public interface Activator<ActivateeType>
 {
@@ -32,24 +32,23 @@ public interface Activator<ActivateeType>
      * Called before activatee activation.
      */
     void beforeActivation( ActivateeType activating )
-            throws Exception;
+        throws Exception;
 
     /**
      * Called after activatee activation.
      */
     void afterActivation( ActivateeType activated )
-            throws Exception;
+        throws Exception;
 
     /**
      * Called before activatee passivation.
      */
     void beforePassivation( ActivateeType passivating )
-            throws Exception;
+        throws Exception;
 
     /**
      * Called after activatee passivation.
      */
     void afterPassivation( ActivateeType passivated )
-            throws Exception;
-
+        throws Exception;
 }

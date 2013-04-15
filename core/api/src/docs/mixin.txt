@@ -177,32 +177,11 @@ Generic Mixin implementations that are always present to make the life of the de
 AssociationMixin, ManyAssociationMixin, NoopMixin. The first 3 are declared on the Composite and EntityComposite
 interfaces and automatically included if needed. They also serve as excellent example of what they can be used for.
 
-[source,java]
--------------
-@AppliesTo( { PropertyMixin.PropertyFilter.class } )
-public final class PropertyMixin
-    implements InvocationHandler
-{
-    @State private StateHolder state;
-
-    public Object invoke( Object proxy, Method method, Object[] args )
-        throws Throwable
-    {
-        return state.getProperty( method );
-    }
-
-    public static class PropertyFilter
-        implements AppliesToFilter, Serializable
-    {
-        public boolean appliesTo( Method method, Class<?> mixin,
-                                  Class<?> compositeType,
-                                  Class<?> modifierClass )
-        {
-            return Property.class.isAssignableFrom( method.getReturnType() );
-        }
-    }
-}
--------------
+[snippet,java]
+-----------
+source=core/api/src/main/java/org/qi4j/api/property/PropertyMixin.java
+tag=actual
+-----------
 
 Other examples that we have come across;
 

@@ -15,6 +15,7 @@
 package org.qi4j.runtime.service;
 
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.configuration.ConfigurationComposite;
@@ -41,6 +42,7 @@ public class AvailableServiceTest
 {
     @Test
     public void givenAvailableServiceWhenCheckServiceReferenceThenReturnTrue()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -59,6 +61,7 @@ public class AvailableServiceTest
 
     @Test
     public void givenEnablableServiceWhenCheckAvailableThenReturnEnabledStatus()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -85,6 +88,7 @@ public class AvailableServiceTest
 
     @Test
     public void givenEnablableServiceWhenInjectWithAvailableQualifierThenInjectCorrectly()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

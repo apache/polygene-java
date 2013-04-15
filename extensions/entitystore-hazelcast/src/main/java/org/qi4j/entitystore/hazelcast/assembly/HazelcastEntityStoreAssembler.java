@@ -27,13 +27,11 @@ import org.qi4j.entitystore.hazelcast.HazelcastEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class HazelcastEntityStoreAssembler
-        implements Assembler
+    implements Assembler
 {
 
     private final Visibility visibility;
-
     private ModuleAssembly config;
-
     private Visibility configVisibility;
 
     public HazelcastEntityStoreAssembler()
@@ -55,13 +53,13 @@ public class HazelcastEntityStoreAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.services( HazelcastEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-        if ( config != null ) {
+        if( config != null )
+        {
             config.entities( HazelcastConfiguration.class ).visibleIn( configVisibility );
         }
     }
-
 }

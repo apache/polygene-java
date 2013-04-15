@@ -28,12 +28,12 @@ import org.qi4j.spi.entity.EntityState;
 public interface Qi4jSPI
     extends Qi4j
 {
-    StateHolder getState( TransientComposite composite );
+    StateHolder stateOf( TransientComposite composite );
 
-    AssociationStateHolder getState( EntityComposite composite );
+    AssociationStateHolder stateOf( EntityComposite composite );
 
-    AssociationStateHolder getState( ValueComposite composite );
+    AssociationStateHolder stateOf( ValueComposite composite );
 
     // Entities
-    EntityState getEntityState( EntityComposite composite );
+    EntityState entityStateOf( EntityComposite composite );
 }

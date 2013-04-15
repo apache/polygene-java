@@ -17,6 +17,7 @@
 package org.qi4j.runtime.injection;
 
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -35,6 +36,7 @@ public class ConstructorInjectionOfThisTest
 
     @Test
     public void givenConcernWithThisInConstructorWhenCreatingModelExpectException()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler singletonAssembler = new SingletonAssembler()
         {
@@ -53,6 +55,7 @@ public class ConstructorInjectionOfThisTest
 
     @Test
     public void givenSideEffectWithThisInConstructorWhenCreatingModelExpectException()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler singletonAssembler = new SingletonAssembler()
         {

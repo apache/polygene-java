@@ -29,7 +29,7 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 
 /**
- * {@code UnitOfWorkConcern} manages the unit of work complete and discard policy.
+ * {@code UnitOfWorkConcern} manages the unit of work complete, discard and retry policy.
  *
  * @see UnitOfWorkPropagation
  * @see UnitOfWorkDiscardOn
@@ -70,7 +70,7 @@ public class UnitOfWorkConcern
             }
             else
             {
-                Usecase usecase = getUsecase();
+                Usecase usecase = usecase();
                 return invokeWithCommit( proxy, method, args, module.newUnitOfWork( usecase ) );
             }
         }
@@ -83,13 +83,13 @@ public class UnitOfWorkConcern
         }
         else if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRES_NEW )
         {
-            Usecase usecase = getUsecase();
+            Usecase usecase = usecase();
             return invokeWithCommit( proxy, method, args, module.newUnitOfWork( usecase ) );
         }
         return next.invoke( proxy, method, args );
     }
 
-    private Usecase getUsecase()
+    private Usecase usecase()
     {
         String usecaseName = propagation.usecase();
         Usecase usecase;
@@ -137,7 +137,7 @@ public class UnitOfWorkConcern
                     module.currentUnitOfWork().discard();
                     Thread.sleep( initialDelay + retry * delayFactor );
                     retry++;
-                    currentUnitOfWork = module.newUnitOfWork( getUsecase() );
+                    currentUnitOfWork = module.newUnitOfWork( usecase() );
                 }
             }
         }

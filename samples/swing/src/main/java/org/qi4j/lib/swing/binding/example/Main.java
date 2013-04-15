@@ -40,6 +40,7 @@ public class Main
     private static Module module;
 
     public static void main( String[] args )
+        throws Exception
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

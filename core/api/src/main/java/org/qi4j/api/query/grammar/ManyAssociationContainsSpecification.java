@@ -18,12 +18,12 @@ public class ManyAssociationContainsSpecification<T>
         this.value = value;
     }
 
-    public ManyAssociationFunction<T> getManyAssociationFunction()
+    public ManyAssociationFunction<T> manyAssociation()
     {
         return manyAssociationFunction;
     }
 
-    public T getValue()
+    public T value()
     {
         return value;
     }

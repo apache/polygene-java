@@ -2,10 +2,11 @@ package org.qi4j.bootstrap;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.bootstrap.somepackage.Test2Value;
 import org.qi4j.functional.Iterables;
 
-import static org.qi4j.bootstrap.ClassScanner.getClasses;
+import static org.qi4j.bootstrap.ClassScanner.findClasses;
 import static org.qi4j.bootstrap.ClassScanner.matches;
 import static org.qi4j.functional.Iterables.filter;
 
@@ -16,6 +17,7 @@ public class ClassScannerTest
 {
     @Test
     public void testClassScannerFiles()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler singleton = new SingletonAssembler()
         {
@@ -25,7 +27,7 @@ public class ClassScannerTest
             {
                 // Find all classes starting from TestValue, but include only the ones that are named *Value
 
-                for( Class aClass : filter( matches( ".*Value" ), getClasses( TestValue.class ) ) )
+                for( Class aClass : filter( matches( ".*Value" ), findClasses( TestValue.class ) ) )
                 {
                     module.values( aClass );
                 }
@@ -39,6 +41,6 @@ public class ClassScannerTest
     @Test
     public void testClassScannerJar()
     {
-        Assert.assertEquals( 138, Iterables.count( getClasses( Test.class ) ) );
+        Assert.assertEquals( 138, Iterables.count( findClasses( Test.class ) ) );
     }
 }

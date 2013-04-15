@@ -24,8 +24,8 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 public class EntityTypeTest
     extends AbstractQi4jTest
@@ -51,7 +51,7 @@ public class EntityTypeTest
         throws AssemblyException
     {
         module.entities( Rst.class );
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
     }
 
     public interface Abc

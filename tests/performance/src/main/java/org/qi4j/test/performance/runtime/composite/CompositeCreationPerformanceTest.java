@@ -18,6 +18,7 @@
 package org.qi4j.test.performance.runtime.composite;
 
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.composite.TransientComposite;
@@ -36,6 +37,7 @@ public class CompositeCreationPerformanceTest
      */
     @Test
     public void newInstanceForRegisteredCompositePerformance()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

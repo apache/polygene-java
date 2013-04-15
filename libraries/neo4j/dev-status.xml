@@ -8,7 +8,7 @@
         <codebase>beta</codebase>
 
         <!-- none, brief, good, complete -->
-        <documentation>good</documentation>
+        <documentation>none</documentation>
 
         <!-- none, some, good, complete -->
         <unittests>some</unittests>

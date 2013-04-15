@@ -68,13 +68,13 @@ public interface EntityState
 
     EntityDescriptor entityDescriptor();
 
-    Object getProperty( QualifiedName stateName );
+    Object propertyValueOf( QualifiedName stateName );
 
-    void setProperty( QualifiedName stateName, Object json );
+    void setPropertyValue( QualifiedName stateName, Object json );
 
-    EntityReference getAssociation( QualifiedName stateName );
+    EntityReference associationValueOf( QualifiedName stateName );
 
-    void setAssociation( QualifiedName stateName, EntityReference newEntity );
+    void setAssociationValue( QualifiedName stateName, EntityReference newEntity );
 
-    ManyAssociationState getManyAssociation( QualifiedName stateName );
+    ManyAssociationState manyAssociationValueOf( QualifiedName stateName );
 }

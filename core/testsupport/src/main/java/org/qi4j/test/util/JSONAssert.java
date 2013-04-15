@@ -19,40 +19,58 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 
+/**
+ * A set of assertion methods useful for tests using org.json.
+ */
 public class JSONAssert
-        extends Assert
+    extends Assert
 {
 
+    /**
+     * Assert that two JSONObjects are equals without enforcing field order.
+     */
     public static void jsonObjectsEquals( JSONObject o1, JSONObject o2 )
-            throws JSONException
+        throws JSONException
     {
-        if ( o1 != o2 ) {
-            if ( o1.length() != o2.length() ) {
+        if( o1 != o2 )
+        {
+            if( o1.length() != o2.length() )
+            {
                 fail( "JSONObjects length differ: " + o1.length() + " / " + o2.length() );
             }
+            @SuppressWarnings( "unchecked" )
             Iterator<String> o1Keys = o1.keys();
-            while ( o1Keys.hasNext() ) {
+            while( o1Keys.hasNext() )
+            {
                 String key = o1Keys.next();
                 Object o1Value = o1.get( key );
                 Object o2Value = o2.get( key );
-                if ( !jsonValueEquals( o1Value, o2Value ) ) {
+                if( !jsonValueEquals( o1Value, o2Value ) )
+                {
                     fail( "JSONObject '" + key + "' values differ: " + o1Value + " / " + o2Value );
                 }
             }
         }
     }
 
+    /**
+     * Assert that two JSONArrays are equals.
+     */
     public static void jsonArraysEquals( JSONArray a1, JSONArray a2 )
-            throws JSONException
+        throws JSONException
     {
-        if ( a1 != a2 ) {
-            if ( a1.length() != a2.length() ) {
+        if( a1 != a2 )
+        {
+            if( a1.length() != a2.length() )
+            {
                 fail( "JSONArrays length differ: " + a1.length() + " / " + a2.length() );
             }
-            for ( int idx = 0; idx < a1.length(); idx++ ) {
+            for( int idx = 0; idx < a1.length(); idx++ )
+            {
                 Object a1Value = a1.get( idx );
                 Object a2Value = a2.get( idx );
-                if ( !jsonValueEquals( a1Value, a2Value ) ) {
+                if( !jsonValueEquals( a1Value, a2Value ) )
+                {
                     fail( "JSONArray '" + idx + "' values differ: " + a1Value + " / " + a2Value );
                 }
             }
@@ -60,23 +78,30 @@ public class JSONAssert
     }
 
     private static boolean jsonValueEquals( Object o1Value, Object o2Value )
-            throws JSONException
+        throws JSONException
     {
-        if ( o1Value instanceof JSONObject ) {
+        if( o1Value instanceof JSONObject )
+        {
 
-            if ( !( o2Value instanceof JSONObject ) ) {
+            if( !( o2Value instanceof JSONObject ) )
+            {
                 return false;
             }
-            jsonObjectsEquals( ( JSONObject ) o1Value, ( JSONObject ) o2Value );
+            jsonObjectsEquals( (JSONObject) o1Value, (JSONObject) o2Value );
 
-        } else if ( o1Value instanceof JSONArray ) {
+        }
+        else if( o1Value instanceof JSONArray )
+        {
 
-            if ( !( o2Value instanceof JSONArray ) ) {
+            if( !( o2Value instanceof JSONArray ) )
+            {
                 return false;
             }
-            jsonArraysEquals( ( JSONArray ) o1Value, ( JSONArray ) o2Value );
+            jsonArraysEquals( (JSONArray) o1Value, (JSONArray) o2Value );
 
-        } else if ( !o1Value.equals( o2Value ) ) {
+        }
+        else if( !o1Value.equals( o2Value ) )
+        {
 
             return false;
 

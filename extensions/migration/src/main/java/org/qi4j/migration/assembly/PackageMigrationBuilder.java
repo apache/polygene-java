@@ -53,7 +53,7 @@ public class PackageMigrationBuilder
     {
         for( String entitySimpleName : entitySimpleNames )
         {
-            builder.getEntityRules().addRule( new EntityMigrationRule(
+            builder.entityMigrationRules().addRule( new EntityMigrationRule(
                 fromVersion,
                 toVersion,
                 new String[]{ fromName + "." + entitySimpleName },

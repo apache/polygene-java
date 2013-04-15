@@ -143,7 +143,7 @@ public final class UnitOfWorkInstance
                 EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModel.module() );
                 try
                 {
-                    entityState = storeUow.getEntityState( identity );
+                    entityState = storeUow.entityStateOf( identity );
                 }
                 catch( EntityNotFoundException e )
                 {

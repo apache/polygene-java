@@ -22,9 +22,9 @@ import org.qi4j.api.common.MetaInfo;
  */
 public interface StateDeclarations
 {
-    MetaInfo getMetaInfo( AccessibleObject accessor );
+    MetaInfo metaInfoFor( AccessibleObject accessor );
 
-    Object getInitialValue( AccessibleObject accessor );
+    Object initialValueOf( AccessibleObject accessor );
 
-    boolean isUseDefaults( AccessibleObject accessor );
+    boolean useDefaults( AccessibleObject accessor );
 }

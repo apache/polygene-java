@@ -28,6 +28,8 @@ import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.DefaultValues;
 import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.property.InvalidPropertyTypeException;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueCompositeType;
@@ -45,7 +47,9 @@ import static org.qi4j.functional.Iterables.empty;
 import static org.qi4j.functional.Iterables.first;
 
 /**
- * JAVADOC
+ * Model for a Property.
+ *
+ * <p>Equality is based on the Property accessor object (property type and name), not on the QualifiedName.</p>
  */
 public class PropertyModel
     implements PropertyDescriptor, PropertyInfo, Binder, Visitable<PropertyModel>
@@ -80,9 +84,17 @@ public class PropertyModel
                           Object initialValue
     )
     {
+        if( accessor instanceof Method )
+        {
+            Method m = (Method) accessor;
+            if( !m.getReturnType().equals( Property.class ) )
+            {
+                throw new InvalidPropertyTypeException( accessor );
+            }
+        }
         this.immutable = immutable;
         this.metaInfo = metaInfo;
-        type = GenericPropertyInfo.getPropertyType( accessor );
+        type = GenericPropertyInfo.propertyTypeOf( accessor );
         this.accessor = accessor;
         qualifiedName = QualifiedName.fromAccessor( accessor );
 
@@ -163,7 +175,7 @@ public class PropertyModel
             }
             else
             {
-                value = DefaultValues.getDefaultValue( type );
+                value = DefaultValues.getDefaultValueOf( type );
             }
         }
 

@@ -62,40 +62,26 @@ Recap of sequence;
 For really small applications, demos, testcases and so forth, it doesn't make sense to create a elaborate Application
 structure. For this purpose, there is a convenient short-cut to establish a single Layer, single Module application.
 The full code looks like this;
-[source,java]
--------------
-SingletonAssembler qi4j = new SingletonAssembler()
-{
-    public void assemble( ModuleAssembly assembly )
-        throws AssemblyException
-    {
-        assembly.addComposite( MyStuffComposite.class );
-    }
-}
--------------
+
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/docsupport/ApplicationDocs.java
+tag=application1
+-----------
 
 = Single Module Layering =
 
 Behind the scenes of the SingletonAssembler a little bit more elaborate bootstrap sequence is happening. The code below
 shows what is the actual required sequence to start up Qi4j.
 
-[source,java]
--------------
-Qi4j is = new Energy4Java();
-ApplicationAssemblyFactory assemblyFactory = new ApplicationAssemblyFactory();
-ApplicationFactory factory = new ApplicationFactory( is, assemblyFactory );
-Assembler assembler = ...;
-ApplicationContext context = factory.newApplication( assembler );
-ApplicationInstance application = context.newInstance( appTitle );
+[snippet,java]
+-----------
+source=core/bootstrap/src/main/java/org/qi4j/bootstrap/SingletonAssembler.java
+tag=actual
+-----------
 
-// initialize the Structure
-:
-
-// activate the application
-application.activate()
--------------
 In the above example we are only creating an Application with a single Layer and a single Module in that Layer. This is
-derived from the fact that the factory.newApplication() method takes a single Assembler argument.
+derived from the fact that the factory.newApplicationAssembly() method takes a single Assembler argument.
 
 The Assembler.assemble( ModuleAssembly assembly ) method is called when the Qi4j Runtime needs to populate the
 ModuleAssembly with its Composites, Objects, Services and other information.
@@ -106,33 +92,11 @@ Another standard setup is applications consisting of a small number of Layers th
 (with out bypassing, forking and converging Layers), you can supply a Assembler[][][], with Layer in the first index,
 Module in the second index and any number of Assembler instances in the last index. This will look like;
 
-[source,java]
--------------
-Assembler[][][] assemblers =
-{
-    { // web layer
-        { // Customer Module
-            customerListEditAssembler,
-            customerEditAssembler,
-            customerSearchAssembler
-        },
-        { // Accounts Module
-            accountsListEditAssembler,
-            accountsEditAssembler,
-            accountsSearchAssembler
-        }
-    },
-    { // domain layer
-        { // Customer Module
-            customerDomainAssembler,
-        },
-        { // Accounts Module
-            accountsDomainAssembler,
-        }
-    }
-};
-ApplicationContext context = factory.newApplication( assemblers );
--------------
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/docsupport/ApplicationDocs.java
+tag=application2
+-----------
 
 The array initialization feature in Java is used to give us a semi-visual idea of the actual application structure. It
 has been commented to highlight this further. Also note that one can pass any number of Assembler instances to each
@@ -143,107 +107,9 @@ Module. This is an important aspect of subsystem creation and re-use.
 Finally, we can assemble the Application by manually building up the Modules and Layers. This allow for a totally
 free structure, as long as the rules for no cyclic reference of the Layers are kept.
 
-[source,java]
--------------
-public class Main
-{
-    private static Main instance;
-    private Energy4Java qi4j;
+[snippet,java]
+-----------
+source=core/api/src/test/java/org/qi4j/api/docsupport/ApplicationDocs.java
+tag=application3
+-----------
 
-    public static void Main( String[] args )
-    {
-        instance = new Main();
-        instance.setUp();
-        // assuming some code has a non-daemon thread.
-    }
-
-    private void setUp()
-    {
-        qi4j = new Energy4Java();
-
-        ApplicationAssemblyFactory assemblyFactory = new ApplicationAssemblyFactory();
-
-        ApplicationFactory factory = new ApplicationFactory( qi4j, assemblyFactory );
-
-        ApplicationAssembly app = createAssembly( assemblyFactory );
-
-        ApplicationContext context = factory.newApplication( assembly );
-
-        String applicationName = "Example Application";
-
-        ApplicationInstance instance = context.newApplicationInstance( applicationName );
-    }
-
-    private ApplicationAssembly createAssembly( ApplicationAssemblyFactory factory )
-    {
-        ApplicationAssembly app = factory.newApplicationAssembly();
-        LayerAssembly webLayer = createWebLayer( app );
-        LayerAssembly domainLayer = createDomainLayer( app );
-        LayerAssembly infraLayer = createInfrastructureLayer( app );
-        webLayer.uses( domainLayer );
-        webLayer.uses( infraLayer );  // Accesses the WebService
-        domainLayer.uses( infraLayer ); // For persistence
-        return app;
-    }
-
-    private LayerAssembly createWebLayer(
-        ApplicationAssembly application )
-    {
-        LayerAssembly layer = application.newLayerAssembly();
-        createCustomerWebModule( layer );
-        return layer;
-    }
-
-    private LayerAssembly createDomainLayer(
-        ApplicationAssembly application )
-    {
-        LayerAssembly layer = application.newLayerAssembly();
-        createCustomerDomainModule( layer );
-        // :
-        // :
-        return layer;
-    }
-
-    private LayerAssembly createInfrastructureLayer(
-        ApplicationAssembly application )
-    {
-        LayerAssembly layer = application.newLayerAssembly();
-        createWebServiceModule( layer );
-        createPersistenceModule( layer );
-        return layer;
-    }
-
-    private void createCustomerWebModule( LayerAssembly layer )
-    {
-        ModuleAssembly assembly = layer.newModuleAssembly();
-        assembly.addComposites( CustomerViewComposite.class );
-        assembly.addComposites( CustomerEditComposite.class );
-        assembly.addComposites( CustomerListViewComposite.class );
-        assembly.addComposites( CustomerSearchComposite.class );
-    }
-
-    private void createCustomerDomainModule( LayerAssembly layer )
-    {
-        ModuleAssembly assembly = layer.newModuleAssembly();
-        assembly.addEntities( CustomerEntity.class );
-        assembly.addEntities( CountryEntity.class );
-        assembly.addComposites( AddressComposite.class );
-    }
-
-    private void createWebServiceModule( LayerAssembly layer )
-    {
-        ModuleAssembly assembly = layer.newModuleAssembly();
-        // Someone has created an assembler for a Jetty Web Service.
-        JettyAssembler jetty = new JettyAssembler( 8080 );
-        assembly.addAssembler( neo );
-    }
-
-    private void createPersistenceModule( LayerAssembly layer )
-    {
-        ModuleAssembly assembly = layer.newModuleAssembly();
-        // Someone has created an assembler for the Neo EntityStore
-        NeoAssembler neo = new NeoAssembler( "./neostore" );
-        assembly.addAssembler( neo );
-    }
-}
--------------

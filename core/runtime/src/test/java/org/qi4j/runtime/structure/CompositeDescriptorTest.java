@@ -37,7 +37,7 @@ public class CompositeDescriptorTest
     {
         // Test with Standard composite
         AddressComposite address = module.newTransient( AddressComposite.class );
-        TransientDescriptor addressDescriptor = spi.getTransientDescriptor( address );
+        TransientDescriptor addressDescriptor = spi.transientDescriptorFor( address );
 
         assertNotNull( addressDescriptor );
         assertEquals( AddressComposite.class, first( addressDescriptor.types() ) );

@@ -80,7 +80,7 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
                 }
                 catch( JSONException e )
                 {
-                    e.printStackTrace();
+                    throw new ResourceException(e);
                 }
                 StringRepresentation representation
                     = new StringRepresentation( json.toString(), MediaType.APPLICATION_JSON );

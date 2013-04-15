@@ -17,7 +17,7 @@ public class QuerySpecification
             return false;
         }
 
-        return ( (QuerySpecification) specification ).getLanguage().equals( language );
+        return ( (QuerySpecification) specification ).language().equals( language );
     }
 
     private String language;
@@ -29,12 +29,12 @@ public class QuerySpecification
         this.query = query;
     }
 
-    public String getLanguage()
+    public String language()
     {
         return language;
     }
 
-    public String getQuery()
+    public String query()
     {
         return query;
     }

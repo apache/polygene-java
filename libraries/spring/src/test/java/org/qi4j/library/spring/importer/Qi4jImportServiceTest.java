@@ -18,6 +18,7 @@ package org.qi4j.library.spring.importer;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ServiceFinder;
@@ -46,6 +47,7 @@ public final class Qi4jImportServiceTest
 
     @Test
     public final void givenImportedSpringServicesWhenServiceIsInjectedThenUseSpringService()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -66,6 +68,7 @@ public final class Qi4jImportServiceTest
 
     @Test
     public final void givenImportedSpringServicesWhenServicesAreInjectedThenCanIdentifyByName()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -87,6 +90,7 @@ public final class Qi4jImportServiceTest
 
     @Test
     public final void givenImportedSpringServicesWhenServicesAreFoundThenCanIdentifyByName()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

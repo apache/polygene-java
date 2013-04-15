@@ -103,53 +103,53 @@ public class ClassesTest
         throws NoSuchMethodException
     {
         assertThat( "Simple Generic Name is 'A'",
-                    Classes.getSimpleGenericName( A.class ),
+                    Classes.simpleGenericNameOf( A.class ),
                     equalTo( "A" ) );
         assertThat( "Simple Generic Name is 'B'",
-                    Classes.getSimpleGenericName( B.class ),
+                    Classes.simpleGenericNameOf( B.class ),
                     equalTo( "B" ) );
         assertThat( "Simple Generic Name is 'C'",
-                    Classes.getSimpleGenericName( C.class ),
+                    Classes.simpleGenericNameOf( C.class ),
                     equalTo( "C" ) );
 
         assertThat( "Simple Generic Name is 'Generics'",
-                    Classes.getSimpleGenericName( Generics.class ),
+                    Classes.simpleGenericNameOf( Generics.class ),
                     equalTo( "Generics" ) );
         assertThat( "Simple Generic Name is 'Iterable<? extends A>'",
-                    Classes.getSimpleGenericName( Generics.class.getMethod( "wildcard" ).getGenericReturnType() ),
+                    Classes.simpleGenericNameOf( Generics.class.getMethod( "wildcard" ).getGenericReturnType() ),
                     equalTo( "Iterable<? extends A>" ) );
 
         assertThat( "Simple Generic Name is 'Type1'",
-                    Classes.getSimpleGenericName( Type1.class ),
+                    Classes.simpleGenericNameOf( Type1.class ),
                     equalTo( "Type1" ) );
         assertThat( "Simple Generic Name is 'TYPE'",
-                    Classes.getSimpleGenericName( Type1.class.getMethod( "type" ).getGenericReturnType() ),
+                    Classes.simpleGenericNameOf( Type1.class.getMethod( "type" ).getGenericReturnType() ),
                     equalTo( "TYPE" ) );
         assertThat( "Simple Generic Name is 'TYPE1'",
-                    Classes.getSimpleGenericName( Type1.class.getMethod( "type1" ).getGenericReturnType() ),
+                    Classes.simpleGenericNameOf( Type1.class.getMethod( "type1" ).getGenericReturnType() ),
                     equalTo( "TYPE1" ) );
         assertThat( "Simple Generic Name is 'TYPE2'",
-                    Classes.getSimpleGenericName( Type1.class.getMethod( "type2" ).getGenericReturnType() ),
+                    Classes.simpleGenericNameOf( Type1.class.getMethod( "type2" ).getGenericReturnType() ),
                     equalTo( "TYPE2" ) );
 
         assertThat( "Simple Generic Name is 'Type2'",
-                    Classes.getSimpleGenericName( Type2.class ),
+                    Classes.simpleGenericNameOf( Type2.class ),
                     equalTo( "Type2" ) );
         assertThat( "Simple Generic Name is 'TYPE'",
-                    Classes.getSimpleGenericName( Type2.class.getMethod( "type" ).getGenericReturnType() ),
+                    Classes.simpleGenericNameOf( Type2.class.getMethod( "type" ).getGenericReturnType() ),
                     equalTo( "TYPE" ) );
         assertThat( "Simple Generic Name is 'TYPE1'",
-                    Classes.getSimpleGenericName( Type2.class.getMethod( "type1" ).getGenericReturnType() ),
+                    Classes.simpleGenericNameOf( Type2.class.getMethod( "type1" ).getGenericReturnType() ),
                     equalTo( "TYPE1" ) );
         assertThat( "Simple Generic Name is 'TYPE2'",
-                    Classes.getSimpleGenericName( Type2.class.getMethod( "type2" ).getGenericReturnType() ),
+                    Classes.simpleGenericNameOf( Type2.class.getMethod( "type2" ).getGenericReturnType() ),
                     equalTo( "TYPE2" ) );
 
         assertThat( "Simple Generic Name is 'Type3'",
-                    Classes.getSimpleGenericName( Type3.class ),
+                    Classes.simpleGenericNameOf( Type3.class ),
                     equalTo( "Type3" ) );
         assertThat( "Simple Generic Name is 'TYPE'",
-                    Classes.getSimpleGenericName( Type3.class.getMethod( "type" ).getGenericReturnType() ),
+                    Classes.simpleGenericNameOf( Type3.class.getMethod( "type" ).getGenericReturnType() ),
                     equalTo( "TYPE" ) );
     }
 

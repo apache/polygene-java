@@ -8,6 +8,7 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.*;
@@ -23,6 +24,7 @@ public class NeoEntityStoreUnitOfWork
 
     private final EmbeddedGraphDatabase neo;
     private final IndexService indexService;
+    private final ValueSerialization valueSerialization;
     private long currentTime;
     private final TransactionManager tm;
 
@@ -30,12 +32,13 @@ public class NeoEntityStoreUnitOfWork
     private final String identity;
     private final Module module;
 
-    NeoEntityStoreUnitOfWork( EmbeddedGraphDatabase neo, IndexService indexService,
+    NeoEntityStoreUnitOfWork( EmbeddedGraphDatabase neo, IndexService indexService, ValueSerialization valueSerialization,
                               String identity, Module module,
                               long currentTime )
     {
         this.neo = neo;
         this.indexService = indexService;
+        this.valueSerialization = valueSerialization;
         this.currentTime = currentTime;
         this.tm = this.neo.getConfig().getTxModule().getTxManager();
         this.transaction = beginTransaction();
@@ -74,10 +77,10 @@ public class NeoEntityStoreUnitOfWork
     }
 
     @Override
-    public EntityState getEntityState( EntityReference anIdentity )
+    public EntityState entityStateOf( EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException
     {
-        return new NeoEntityState( this, getEntityStateNode( anIdentity ),
+        return new NeoEntityState( valueSerialization, this, getEntityStateNode( anIdentity ),
                                    EntityStatus.LOADED );
     }
 
@@ -105,7 +108,7 @@ public class NeoEntityStoreUnitOfWork
         node.createRelationshipTo( typeNode, RelTypes.IS_OF_TYPE );
         node.setProperty( NeoEntityState.ENTITY_ID, anIdentity.identity() );
         indexService.index( node, ENTITY_STATE_ID, anIdentity.identity() );
-        return new NeoEntityState( this, node, EntityStatus.NEW );
+        return new NeoEntityState( valueSerialization, this, node, EntityStatus.NEW );
     }
 
     @Override

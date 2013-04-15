@@ -198,7 +198,7 @@ public class StatePane
                ann = "@"+ann.substring( ann.lastIndexOf('.' )+1);
                str.append( ann ).append( " " );
             }
-            str.append(Classes.getSimpleGenericName( descriptor.descriptor().method().getGenericReturnType()));
+            str.append(Classes.simpleGenericNameOf( descriptor.descriptor().method().getGenericReturnType() ));
 
             rows.add( new TableRow( 2, new Object[]{
                 "return", str.toString()
@@ -325,7 +325,7 @@ public class StatePane
 
             if( Property.class.isAssignableFrom( methodReturnType ) )
             {
-                Type t = GenericPropertyInfo.getPropertyType( method );
+                Type t = GenericPropertyInfo.propertyTypeOf( method );
                 if( t instanceof Class )
                 {
                     setText( method.getName() + ":" + ( (Class) t ).getSimpleName() );
@@ -333,7 +333,7 @@ public class StatePane
             }
             else if( Association.class.isAssignableFrom( methodReturnType ) )
             {
-                Type t = GenericAssociationInfo.getAssociationType( method );
+                Type t = GenericAssociationInfo.associationTypeOf( method );
                 if( t instanceof Class )
                 {
                     setText( method.getName() + "->" + ( (Class) t ).getSimpleName() );
@@ -341,7 +341,7 @@ public class StatePane
             }
             else if( ManyAssociation.class.isAssignableFrom( methodReturnType ) )
             {
-                Type t = GenericAssociationInfo.getAssociationType( method );
+                Type t = GenericAssociationInfo.associationTypeOf( method );
                 if( t instanceof Class )
                 {
                     setText( method.getName() + "=>" + ( (Class) t ).getSimpleName() );

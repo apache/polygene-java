@@ -20,16 +20,18 @@ package org.qi4j.index.rdf;
 
 import org.junit.After;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.library.rdf.repository.NativeRepositoryService;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractQueryTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 //@Ignore("Getting failures when running under Gradle and new OpenRDF version." )
 public class RdfQueryTest extends AbstractQueryTest
@@ -43,11 +45,12 @@ public class RdfQueryTest extends AbstractQueryTest
         module.services( FileConfigurationService.class );
         module.services( NativeRepositoryService.class, RdfQueryParserFactory.class ).instantiateOnStartup();
         module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
+        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
 
         ModuleAssembly config = module.layer().module( "Config" );
         config.entities( NativeConfiguration.class ).visibleIn( Visibility.layer );
-        config.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( config );
     }
 
     @Override

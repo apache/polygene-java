@@ -57,25 +57,25 @@ public class CircuitBreakerJMX
    @Override
    public String getStatus()
    {
-      return circuitBreaker.getStatus().name();
+      return circuitBreaker.status().name();
    }
 
    @Override
    public int getThreshold()
    {
-      return circuitBreaker.getThreshold();
+      return circuitBreaker.threshold();
    }
 
    @Override
    public double getServiceLevel()
    {
-      return circuitBreaker.getServiceLevel();
+      return circuitBreaker.serviceLevel();
    }
 
    @Override
    public String getLastErrorMessage()
    {
-      return circuitBreaker.getLastThrowable() == null ? "" : errorMessage(circuitBreaker.getLastThrowable());
+      return circuitBreaker.lastThrowable() == null ? "" : errorMessage(circuitBreaker.lastThrowable());
    }
 
    private String errorMessage(Throwable throwable)
@@ -94,14 +94,14 @@ public class CircuitBreakerJMX
    @Override
    public String getTrippedOn()
    {
-      Date trippedOn = circuitBreaker.getTrippedOn();
+      Date trippedOn = circuitBreaker.trippedOn();
       return trippedOn == null ? "" : DateFormat.getDateTimeInstance().format(trippedOn);
    }
 
    @Override
    public String getEnableOn()
    {
-      Date trippedOn = circuitBreaker.getEnableOn();
+      Date trippedOn = circuitBreaker.enabledOn();
       return trippedOn == null ? "" : DateFormat.getDateTimeInstance().format(trippedOn);
    }
 

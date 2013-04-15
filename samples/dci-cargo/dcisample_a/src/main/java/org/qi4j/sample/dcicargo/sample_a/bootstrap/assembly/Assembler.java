@@ -17,6 +17,9 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.bootstrap.assembly;
 
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
@@ -24,6 +27,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.functional.Function;
 import org.qi4j.index.rdf.RdfIndexingEngineService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
@@ -60,6 +64,7 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.Schedule;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.VoyageNumber;
 import org.qi4j.sample.dcicargo.sample_a.infrastructure.conversion.EntityToDTOService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 import static org.qi4j.api.common.Visibility.application;
 import static org.qi4j.api.structure.Application.Mode.development;
@@ -69,7 +74,7 @@ import static org.qi4j.api.structure.Application.Mode.development;
  *
  * A Qi4j application structure is declared by an assembly that defines which layers and modules
  * the application has and how they are allowed to depend on each other. Each layer could have it's
- * own assembly file in larger applications (ead more at http://www.qi4j.org/qi4j/70.html).
+ * own assembly file in larger applications (read more at http://qi4j.org/latest/core-bootstrap-assembly.html).
  *
  * The Qi4j assembly doesn't follow a strict 1-1 correlation between the directory hierarchy and
  * the assembly structures. An example is the Entities:
@@ -84,7 +89,7 @@ import static org.qi4j.api.structure.Application.Mode.development;
  * layers above.
  *
  * So dependency structure layers (ie. as shown by Structure101) are not the same as Qi4j layers.
- * See more at http://www.qi4j.org/qi4j/70.html
+ * See more at http://qi4j.org/latest/core-bootstrap-assembly.html
  *
  * TRY THIS: Run VisualizeApplicationStructure to see a cool visualization of the assembly below!
  */
@@ -174,7 +179,8 @@ public class Assembler
 
         queryModule
             .addServices(
-                EntityToDTOService.class )
+                EntityToDTOService.class,
+                OrgJsonValueSerializationService.class )
             .visibleIn( application );
     }
 
@@ -241,6 +247,20 @@ public class Assembler
     private void assembleInfrastructureLayer( LayerAssembly infrastructureLayer )
         throws AssemblyException
     {
+        ModuleAssembly serializationModule = infrastructureLayer.module( "INFRASTRUCTURE-Serialization" );
+        serializationModule
+            .services( OrgJsonValueSerializationService.class )
+            .taggedWith( ValueSerialization.Formats.JSON )
+            .setMetaInfo( new Function<Application, Module>()
+        {
+            @Override
+            public Module map( Application application )
+            {
+                return application.findModule( "CONTEXT", "CONTEXT-ContextSupport" );
+            }
+        } )
+        .visibleIn( application );
+
         ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" );
         indexingModule
             .objects(

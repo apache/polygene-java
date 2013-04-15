@@ -8,8 +8,8 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -24,7 +24,7 @@ public class ConfigurationTest extends AbstractQi4jTest
         module.services( MyService.class ).instantiateOnStartup();
         module.entities( MyConfig.class );
         module.values( PersonDetails.class, Address.class, City.class, Country.class );
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
     }
 
     @Test

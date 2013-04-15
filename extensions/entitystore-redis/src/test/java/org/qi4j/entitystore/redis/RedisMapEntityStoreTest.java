@@ -20,35 +20,36 @@ package org.qi4j.entitystore.redis;
 import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 @Ignore( "This test is ignored because it needs a Redis instance" )
 public class RedisMapEntityStoreTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
 
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        config.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( config );
+        new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
         new RedisMapEntityStoreAssembler().withConfigModule( config ).assemble( module );
     }
     // END SNIPPET: assembly
-
     private JedisPool jedisPool;
 
     @Override
     public void setUp()
-            throws Exception
+        throws Exception
     {
         super.setUp();
         RedisMapEntityStoreService es = module.findService( RedisMapEntityStoreService.class ).get();
@@ -58,15 +59,17 @@ public class RedisMapEntityStoreTest
 
     @Override
     public void tearDown()
-            throws Exception
+        throws Exception
     {
         Jedis jedis = jedisPool.getResource();
-        try {
+        try
+        {
             jedis.flushDB();
-        } finally {
+        }
+        finally
+        {
             jedisPool.returnResource( jedis );
         }
         super.tearDown();
     }
-
 }

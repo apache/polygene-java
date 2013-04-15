@@ -32,7 +32,7 @@ public class CacheInvocationResultSideEffect extends GenericSideEffect
         {
             cacheName += Arrays.asList( args );
         }
-        Object oldResult = cache.getCachedValue( cacheName );
+        Object oldResult = cache.cachedValue( cacheName );
         if( oldResult == null || !oldResult.equals( result ) )
         {
             cache.setCachedValue( cacheName, result );

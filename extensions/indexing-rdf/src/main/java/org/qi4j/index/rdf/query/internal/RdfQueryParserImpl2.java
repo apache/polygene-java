@@ -27,11 +27,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.json.JSONObjectSerializer;
 import org.qi4j.api.query.grammar.AndSpecification;
 import org.qi4j.api.query.grammar.AssociationNotNullSpecification;
 import org.qi4j.api.query.grammar.AssociationNullSpecification;
@@ -54,9 +52,7 @@ import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
 import org.qi4j.api.query.grammar.PropertyNullSpecification;
 import org.qi4j.api.query.grammar.QuerySpecification;
 import org.qi4j.api.query.grammar.Variable;
-import org.qi4j.api.type.ValueType;
-import org.qi4j.api.value.ValueComposite;
-import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.rdf.query.RdfQueryParser;
@@ -86,9 +82,10 @@ public class RdfQueryParserImpl2
     private static final Set<Character> reservedChars;
     private static final Set<Character> reservedJsonChars;
 
-    private Namespaces namespaces = new Namespaces();
-    private Triples triples = new Triples( namespaces );
-    private Qi4jSPI spi;
+    private final Namespaces namespaces = new Namespaces();
+    private final Triples triples = new Triples( namespaces );
+    private final Qi4jSPI spi;
+    private final ValueSerializer valueSerializer;
     private Map<String, Object> variables;
 
     static
@@ -110,18 +107,19 @@ public class RdfQueryParserImpl2
         ) );
     }
 
-    public RdfQueryParserImpl2( Qi4jSPI spi )
+    public RdfQueryParserImpl2( Qi4jSPI spi, ValueSerializer valueSerializer )
     {
         this.spi = spi;
+        this.valueSerializer = valueSerializer;
     }
 
     @Override
-    public String getQuery( final Class<?> resultType,
-                            final Specification<Composite> specification,
-                            final OrderBy[] orderBySegments,
-                            final Integer firstResult,
-                            final Integer maxResults,
-                            final Map<String, Object> variables
+    public String constructQuery( final Class<?> resultType,
+                                  final Specification<Composite> specification,
+                                  final OrderBy[] orderBySegments,
+                                  final Integer firstResult,
+                                  final Integer maxResults,
+                                  final Map<String, Object> variables
     )
     {
         this.variables = variables;
@@ -130,7 +128,7 @@ public class RdfQueryParserImpl2
         {
             // Custom query
             StringBuilder queryBuilder = new StringBuilder();
-            String query = ( (QuerySpecification) specification ).getQuery();
+            String query = ( (QuerySpecification) specification ).query();
             queryBuilder.append( query );
 
             if( orderBySegments != null )
@@ -164,9 +162,9 @@ public class RdfQueryParserImpl2
 
         StringBuilder query = new StringBuilder();
 
-        for( String namespace : namespaces.getNamespaces() )
+        for( String namespace : namespaces.namespaces() )
         {
-            query.append( format( "PREFIX %s: <%s> %n", namespaces.getNamespacePrefix( namespace ), namespace ) );
+            query.append( format( "PREFIX %s: <%s> %n", namespaces.namespacePrefix( namespace ), namespace ) );
         }
         query.append( "SELECT DISTINCT ?identity\n" );
         if( triples.hasTriples() )
@@ -175,9 +173,9 @@ public class RdfQueryParserImpl2
             StringBuilder optional = new StringBuilder();
             for( Triples.Triple triple : triples )
             {
-                final String subject = triple.getSubject();
-                final String predicate = triple.getPredicate();
-                final String value = triple.getValue();
+                final String subject = triple.subject();
+                final String predicate = triple.predicate();
+                final String value = triple.value();
 
                 if( triple.isOptional() )
                 {
@@ -233,7 +231,7 @@ public class RdfQueryParserImpl2
 
             int start = builder.length();
             boolean first = true;
-            for( Specification<Composite> operand : conjunction.getOperands() )
+            for( Specification<Composite> operand : conjunction.operands() )
             {
                 int size = builder.length();
                 processFilter( operand, allowInline, builder );
@@ -262,7 +260,7 @@ public class RdfQueryParserImpl2
 
             int start = builder.length();
             boolean first = true;
-            for( Specification<Composite> operand : disjunction.getOperands() )
+            for( Specification<Composite> operand : disjunction.operands() )
             {
                 int size = builder.length();
                 processFilter( operand, false, builder );
@@ -288,7 +286,7 @@ public class RdfQueryParserImpl2
         else if( expression instanceof NotSpecification )
         {
             builder.insert( 0, "(!" );
-            processFilter( ( (NotSpecification) expression ).getOperand(), false, builder );
+            processFilter( ( (NotSpecification) expression ).operand(), false, builder );
             builder.append( ")" );
         }
         else if( expression instanceof ComparisonSpecification )
@@ -346,91 +344,10 @@ public class RdfQueryParserImpl2
     }
 
     private String createAndEscapeJSONString( Object value, PropertyFunction<?> propertyRef )
-        throws JSONException
     {
-        JSONObjectSerializer serializer = new JSONObjectSerializer();
-
-        ValueType valueType;
-
-        if( value instanceof ValueComposite )
-        {
-            valueType = spi.getValueDescriptor( (ValueComposite) value ).valueType();
-        }
-        else
-        {
-            valueType = new ValueType( value.getClass() );
-        }
-        serializer.serialize( value, valueType );
-
-        return escapeJSONString( serializer.getRoot().toString() );
-/* TODO Fix this by creating external JSON-er
-        ValueType type = ValueTypeFactory.instance().newValueType(
-            value.getClass(),
-            propertyRef.propertyType(),
-            propertyRef.propertyDeclaringType(),
-                resolution.layer(), resolution.module() );
-
-        JSONStringer json = new JSONStringer();
-        json.array();
-        this.createJSONString( value, type, json );
-        json.endArray();
-        String result = json.toString();
-        result = result.substring( 1, result.length() - 1 );
-
-        result = this.escapeJSONString( result );
-
-        return result;
-*/
+        return escapeJSONString( valueSerializer.serialize( value, false ) );
     }
 
-    /*
-    private void createJSONString( Object value, ValueType type, JSONStringer stringer )
-        throws JSONException
-    {
-        // TODO the sole purpose of this method is to get rid of "_type" information, which ValueType.toJSON
-        // produces for value composites
-        // So, change toJSON(...) to be configurable so that the caller can decide whether he wants type
-        // information into json string or not
-        if( type.isValue() || ( type instanceof SerializableType && value instanceof ValueComposite ) )
-        {
-            stringer.object();
-
-            // Rest is partial copypasta from ValueCompositeType.toJSON(Object, JSONStringer)
-
-            ValueComposite valueComposite = (ValueComposite) value;
-            StateHolder state = valueComposite.state();
-            final Map<QualifiedName, Object> values = new HashMap<QualifiedName, Object>();
-            state.visitProperties( new StateHolder.StateVisitor<RuntimeException>()
-            {
-                public void visitProperty( QualifiedName name, Object value )
-                {
-                    values.put( name, value );
-                }
-            } );
-
-            List<PropertyType> actualTypes = type.types();
-            for( PropertyType propertyType : actualTypes )
-            {
-                stringer.key( propertyType.qualifiedName().name() );
-
-                Object propertyValue = values.get( propertyType.qualifiedName() );
-                if( propertyValue == null )
-                {
-                    stringer.value( null );
-                }
-                else
-                {
-                    this.createJSONString( propertyValue, propertyType.type(), stringer );
-                }
-            }
-            stringer.endObject();
-        }
-        else
-        {
-            type.toJSON( value, stringer );
-        }
-    }
-*/
     private String createRegexStringForContaining( String valueVariable, String containedString )
     {
         // The matching value must start with [, then contain something (possibly nothing),
@@ -468,44 +385,29 @@ public class RdfQueryParserImpl2
 
     private void processContainsAllPredicate( final ContainsAllSpecification predicate, StringBuilder builder )
     {
-        Iterable<?> values = predicate.getValueCollection();
-        String valueVariable = triples.addTriple( predicate.getCollectionProperty(), false ).getValue();
-        String[] strings = new String[ ( values instanceof Collection ? ( (Collection<?>) values ).size() : (int) Iterables
-            .count( values ) ) ];
+        Iterable<?> values = predicate.containedValues();
+        String valueVariable = triples.addTriple( predicate.collectionProperty(), false ).value();
+        String[] strings;
+        if( values instanceof Collection )
+        {
+            strings = new String[ ( (Collection<?>) values ).size() ];
+        }
+        else
+        {
+            strings = new String[ ( (int) Iterables.count( values ) ) ];
+        }
         Integer x = 0;
         for( Object item : (Collection<?>) values )
         {
             String jsonStr = "";
             if( item != null )
             {
-                JSONObjectSerializer serializer = new JSONObjectSerializer();
-                serializer.setIncludeType( false );
-                try
+                String serialized = valueSerializer.serialize( item, false );
+                if( item instanceof String )
                 {
-                    if( item instanceof ValueComposite )
-                    {
-                        ValueDescriptor descriptor = spi.getValueDescriptor( (ValueComposite) item );
-
-                        serializer.serialize( item, descriptor.valueType() );
-                    }
-                    else
-                    {
-                        ValueType valueType = new ValueType( item.getClass() );
-                        serializer.serialize( item, valueType );
-                    }
+                    serialized = "\"" + StringEscapeUtils.escapeJava( serialized ) + "\"";
                 }
-                catch( JSONException e )
-                {
-                    throw new UnsupportedOperationException( e );
-                }
-                Object value = serializer.getRoot();
-
-                if( value instanceof String )
-                {
-                    value = JSONObject.quote( serializer.getRoot().toString() );
-                }
-
-                jsonStr = escapeJSONString( value.toString() );
+                jsonStr = escapeJSONString( serialized );
             }
             strings[ x ] = this.createRegexStringForContaining( valueVariable, jsonStr );
             x++;
@@ -526,29 +428,21 @@ public class RdfQueryParserImpl2
 
     private void processContainsPredicate( final ContainsSpecification<?> predicate, StringBuilder builder )
     {
-        Object value = predicate.getValue();
-
-        String valueVariable = triples.addTriple( predicate.getCollectionProperty(), false ).getValue();
-        try
-        {
-            builder.append( this.createRegexStringForContaining(
-                valueVariable,
-                this.createAndEscapeJSONString(
-                    value,
-                    predicate.getCollectionProperty()
-                )
-            ) );
-        }
-        catch( JSONException jsone )
-        {
-            throw new UnsupportedOperationException( "Error when JSONing value", jsone );
-        }
+        Object value = predicate.value();
+        String valueVariable = triples.addTriple( predicate.collectionProperty(), false ).value();
+        builder.append( this.createRegexStringForContaining(
+            valueVariable,
+            this.createAndEscapeJSONString(
+                value,
+                predicate.collectionProperty()
+            )
+        ) );
     }
 
     private void processMatchesPredicate( final MatchesSpecification predicate, StringBuilder builder )
     {
-        String valueVariable = triples.addTriple( predicate.getProperty(), false ).getValue();
-        builder.append( format( "regex(%s,\"%s\")", valueVariable, predicate.getRegexp() ) );
+        String valueVariable = triples.addTriple( predicate.property(), false ).value();
+        builder.append( format( "regex(%s,\"%s\")", valueVariable, predicate.regexp() ) );
     }
 
     private void processComparisonPredicate( final Specification<Composite> predicate,
@@ -559,18 +453,18 @@ public class RdfQueryParserImpl2
         if( predicate instanceof ComparisonSpecification )
         {
             ComparisonSpecification<?> comparisonSpecification = (ComparisonSpecification<?>) predicate;
-            Triples.Triple triple = triples.addTriple( (PropertyFunction) comparisonSpecification.getProperty(), false );
+            Triples.Triple triple = triples.addTriple( (PropertyFunction) comparisonSpecification.property(), false );
 
             // Don't use FILTER for equals-comparison. Do direct match instead
             if( predicate instanceof EqSpecification && allowInline )
             {
-                triple.setValue( "\"" + toString( comparisonSpecification.getValue() ) + "\"" );
+                triple.setValue( "\"" + toString( comparisonSpecification.value() ) + "\"" );
             }
             else
             {
-                String valueVariable = triple.getValue();
+                String valueVariable = triple.value();
                 builder.append( String.format( "(%s %s \"%s\")", valueVariable, getOperator( comparisonSpecification.getClass() ), toString( comparisonSpecification
-                                                                                                                                                 .getValue() ) ) );
+                                                                                                                                                 .value() ) ) );
             }
         }
         else
@@ -582,25 +476,25 @@ public class RdfQueryParserImpl2
 
     private void processNullPredicate( final PropertyNullSpecification predicate, StringBuilder builder )
     {
-        final String value = triples.addTriple( predicate.getProperty(), true ).getValue();
+        final String value = triples.addTriple( predicate.property(), true ).value();
         builder.append( format( "(! bound(%s))", value ) );
     }
 
     private void processNotNullPredicate( final PropertyNotNullSpecification predicate, StringBuilder builder )
     {
-        final String value = triples.addTriple( predicate.getProperty(), true ).getValue();
+        final String value = triples.addTriple( predicate.property(), true ).value();
         builder.append( format( "(bound(%s))", value ) );
     }
 
     private void processNullPredicate( final AssociationNullSpecification predicate, StringBuilder builder )
     {
-        final String value = triples.addTripleAssociation( predicate.getAssociation(), true ).getValue();
+        final String value = triples.addTripleAssociation( predicate.association(), true ).value();
         builder.append( format( "(! bound(%s))", value ) );
     }
 
     private void processNotNullPredicate( final AssociationNotNullSpecification predicate, StringBuilder builder )
     {
-        final String value = triples.addTripleAssociation( predicate.getAssociation(), true ).getValue();
+        final String value = triples.addTripleAssociation( predicate.association(), true ).value();
         builder.append( format( "(bound(%s))", value ) );
     }
 
@@ -608,16 +502,16 @@ public class RdfQueryParserImpl2
                                                           boolean allowInline, StringBuilder builder
     )
     {
-        Triples.Triple triple = triples.addTripleManyAssociation( predicate.getManyAssociationFunction(), false );
+        Triples.Triple triple = triples.addTripleManyAssociation( predicate.manyAssociation(), false );
 
         if( allowInline )
         {
-            triple.setValue( "<" + toString( predicate.getValue() ) + ">" );
+            triple.setValue( "<" + toString( predicate.value() ) + ">" );
         }
         else
         {
-            String valueVariable = triple.getValue();
-            builder.append( String.format( "(%s %s <%s>)", valueVariable, "=", toString( predicate.getValue() ) ) );
+            String valueVariable = triple.value();
+            builder.append( String.format( "(%s %s <%s>)", valueVariable, "=", toString( predicate.value() ) ) );
         }
     }
 
@@ -636,7 +530,7 @@ public class RdfQueryParserImpl2
     {
         if( orderBySegment != null )
         {
-            final String valueVariable = triples.addTriple( orderBySegment.getPropertyFunction(), false ).getValue();
+            final String valueVariable = triples.addTriple( orderBySegment.property(), false ).value();
             if( orderBySegment.order() == OrderBy.Order.ASCENDING )
             {
                 builder.append( format( "ASC(%s)", valueVariable ) );
@@ -675,11 +569,11 @@ public class RdfQueryParserImpl2
         }
         else if( value instanceof Variable )
         {
-            Object realValue = variables.get( ( (Variable) value ).getName() );
+            Object realValue = variables.get( ( (Variable) value ).variableName() );
 
             if( realValue == null )
             {
-                throw new IllegalArgumentException( "Variable " + ( (Variable) value ).getName() + " not bound" );
+                throw new IllegalArgumentException( "Variable " + ( (Variable) value ).variableName() + " not bound" );
             }
 
             return toString( realValue );

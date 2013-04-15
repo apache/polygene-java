@@ -24,5 +24,8 @@ import org.qi4j.api.activation.ActivationEventListenerRegistration;
 public interface Layer
     extends ActivationEventListenerRegistration, Activation, MetaInfoHolder
 {
+    /**
+     * @return the Layer's name
+     */
     String name();
 }

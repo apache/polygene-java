@@ -16,6 +16,8 @@ package org.qi4j.runtime.association;
 
 import java.lang.reflect.Type;
 import org.qi4j.api.association.Association;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationWrapper;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.Property;
 import org.qi4j.functional.Function2;
@@ -79,14 +81,12 @@ public final class AssociationInstance<T>
     @Override
     public int hashCode()
     {
-        if( associationState.get() == null )
+        int hash = associationInfo.hashCode() * 61; // Descriptor
+        if( associationState.get() != null )
         {
-            return 0;
+            hash += associationState.get().hashCode() * 3; // State
         }
-        else
-        {
-            return associationState.get().hashCode();
-        }
+        return hash;
     }
 
     @Override
@@ -100,15 +100,26 @@ public final class AssociationInstance<T>
         {
             return false;
         }
-
-        AssociationInstance that = (AssociationInstance) o;
-
-        if( associationState.get() != null ? !associationState.get()
-            .equals( that.associationState.get() ) : that.associationState.get() != null )
+        Association<?> that = (Association) o;
+        // Unwrap if needed
+        while( that instanceof AssociationWrapper )
+        {
+            that = ( (AssociationWrapper) that ).next();
+        }
+        // Descriptor equality
+        AssociationInstance<?> thatInstance = (AssociationInstance) that;
+        AssociationDescriptor thatDescriptor = (AssociationDescriptor) thatInstance.associationInfo();
+        if( !associationInfo.equals( thatDescriptor ) )
         {
             return false;
         }
-
+        // State equality
+        if( associationState.get() != null
+            ? !associationState.get().equals( thatInstance.associationState.get() )
+            : thatInstance.associationState.get() != null )
+        {
+            return false;
+        }
         return true;
     }
 }

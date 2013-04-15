@@ -62,7 +62,7 @@ public class ResourceValidity
     {
         if( entity != null )
         {
-            EntityState state = spi.getEntityState( entity );
+            EntityState state = spi.entityStateOf( entity );
             Date lastModified = new Date( state.lastModified() );
             Tag tag = new Tag( state.identity().identity() + "/" + state.version() );
             response.getEntity().setModificationDate( lastModified );
@@ -77,7 +77,7 @@ public class ResourceValidity
         Date modificationDate = request.getConditions().getUnmodifiedSince();
         if( modificationDate != null )
         {
-            EntityState state = spi.getEntityState( entity );
+            EntityState state = spi.entityStateOf( entity );
             Date lastModified = new Date( ( state.lastModified() / 1000 ) * 1000 ); // Cut off milliseconds
             if( lastModified.after( modificationDate ) )
             {
@@ -89,7 +89,7 @@ public class ResourceValidity
         modificationDate = request.getConditions().getModifiedSince();
         if( modificationDate != null )
         {
-            EntityState state = spi.getEntityState( entity );
+            EntityState state = spi.entityStateOf( entity );
             Date lastModified = new Date( ( state.lastModified() / 1000 ) * 1000 ); // Cut off milliseconds
             if( !lastModified.after( modificationDate ) )
             {

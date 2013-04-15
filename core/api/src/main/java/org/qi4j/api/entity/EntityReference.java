@@ -15,52 +15,80 @@
 package org.qi4j.api.entity;
 
 import java.io.Serializable;
+import org.qi4j.api.util.NullArgumentException;
 
 /**
- * An EntityReference is identity of a specific
- * Entity instance. When stringified, the identity is used as-is. Example:
- * <pre>
- * 123456-abcde
- * </pre>
+ * An EntityReference is identity of a specific Entity instance.
+ * <p>When stringified, the identity is used as-is. Example:</p>
+ * <pre>123456-abcde</pre>
  */
 public final class EntityReference
     implements Serializable
 {
+    /**
+     * Parse an URI to an EntityReference.
+     * @param uri the URI to parse
+     * @return the EntityReference represented by the given URI
+     */
     public static EntityReference parseURI( String uri )
     {
         String identity = uri.substring( "urn:qi4j:entity:".length() );
         return new EntityReference( identity );
     }
 
-    public static EntityReference parseEntityReference( String id )
+    /**
+     * Parse an Entity identity to an EntityReference.
+     * @param identity the EntityReference identity
+     * @return the EntityReference represented by the given identity
+     */
+    public static EntityReference parseEntityReference( String identity )
     {
-        return new EntityReference( id );
+        return new EntityReference( identity );
     }
 
-    public static EntityReference getEntityReference( Object o )
+    /**
+     * @param object an EntityComposite
+     * @return the EntityReference for the given EntityComposite
+     */
+    public static EntityReference entityReferenceFor( Object object )
     {
-        return new EntityReference( (EntityComposite) o );
+        return new EntityReference( (EntityComposite) object );
     }
 
     private static final long serialVersionUID = 1L;
 
     private String identity;
 
+    /**
+     * @param entityComposite a non-null EntityComposite
+     * @throws NullPointerException if entityComposite is null
+     */
     public EntityReference( EntityComposite entityComposite )
     {
         this( entityComposite.identity().get() );
     }
 
+    /**
+     * @param identity reference identity
+     * @throws NullArgumentException if identity is null or empty
+     */
     public EntityReference( String identity )
     {
+        NullArgumentException.validateNotEmpty( "identity", identity );
         this.identity = identity;
     }
 
+    /**
+     * @return This EntityReference identity.
+     */
     public final String identity()
     {
         return identity;
     }
 
+    /**
+     * @return An URI representation of this EntityReference.
+     */
     public String toURI()
     {
         return "urn:qi4j:entity:" + identity;
@@ -84,11 +112,12 @@ public final class EntityReference
     @Override
     public int hashCode()
     {
-        int result;
-        result = identity.hashCode();
-        return result;
+        return identity.hashCode();
     }
 
+    /**
+     * @return This EntityReference identity.
+     */
     @Override
     public String toString()
     {

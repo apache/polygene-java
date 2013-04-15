@@ -24,10 +24,13 @@ import java.util.List;
 
 /**
  * Thrown when unable to passivate.
+ *
+ * Printed StackTrace contains all causes in order.
  */
 public class PassivationException
     extends Exception
 {
+    private static final long serialVersionUID = 1L;
     private Exception[] causes;
 
     public PassivationException( List<Exception> exceptions )
@@ -50,7 +53,8 @@ public class PassivationException
             super.printStackTrace( stream );
             for( Exception exc : causes )
             {
-                stream.print( "Cause " + counter++ + " : " );
+                counter++;
+                stream.print( "Cause " + counter + " : " );
                 exc.printStackTrace( stream );
             }
         }
@@ -65,7 +69,8 @@ public class PassivationException
             super.printStackTrace( writer );
             for( Exception exc : causes )
             {
-                writer.print( "Cause " + counter++ + " : " );
+                counter++;
+                writer.print( "Cause " + counter + " : " );
                 exc.printStackTrace( writer );
             }
         }

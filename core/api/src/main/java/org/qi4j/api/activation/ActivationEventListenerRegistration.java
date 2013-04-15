@@ -15,11 +15,19 @@
 package org.qi4j.api.activation;
 
 /**
- * Use this to register listeners for ActivationEvents. This is implemented by Application, Layer, Module, for example.
+ * Use this to register listeners for ActivationEvents.
+ *
+ * This is implemented by Application, Layer, Module, for example.
  */
 public interface ActivationEventListenerRegistration
 {
+    /**
+     * @param listener will be notified when Activation events occur
+     */
     void registerActivationEventListener( ActivationEventListener listener );
 
+    /**
+     * @param listener will not be notified when Activation events occur anymore
+     */
     void deregisterActivationEventListener( ActivationEventListener listener );
 }

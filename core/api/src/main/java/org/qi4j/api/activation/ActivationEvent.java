@@ -35,16 +35,25 @@ public final class ActivationEvent
         this.type = type;
     }
 
+    /**
+     * @return the source of the Activation event
+     */
     public Object source()
     {
         return source;
     }
 
+    /**
+     * @return the type of the Activation event
+     */
     public EventType type()
     {
         return type;
     }
 
+    /**
+     * @return an informative message describing the event
+     */
     public String message()
     {
         switch( type )
@@ -61,6 +70,9 @@ public final class ActivationEvent
         return "";
     }
 
+    /**
+     * @see #message()
+     */
     @Override
     public String toString()
     {

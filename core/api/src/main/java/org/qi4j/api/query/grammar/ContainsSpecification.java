@@ -18,12 +18,12 @@ public class ContainsSpecification<T>
         this.value = value;
     }
 
-    public PropertyFunction<? extends Collection<T>> getCollectionProperty()
+    public PropertyFunction<? extends Collection<T>> collectionProperty()
     {
         return collectionProperty;
     }
 
-    public T getValue()
+    public T value()
     {
         return value;
     }

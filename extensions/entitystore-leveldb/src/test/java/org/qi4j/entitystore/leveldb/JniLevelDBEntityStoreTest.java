@@ -23,6 +23,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class JniLevelDBEntityStoreTest
     extends AbstractEntityStoreTest
@@ -36,6 +37,7 @@ public class JniLevelDBEntityStoreTest
 
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler( Visibility.module ).assemble( config );
+        new OrgJsonValueSerializationAssembler().assemble( module );
 
         module.services( FileConfigurationService.class );
 
@@ -46,5 +48,4 @@ public class JniLevelDBEntityStoreTest
 
         config.forMixin( LevelDBEntityStoreConfiguration.class ).declareDefaults().flavour().set( "jni" );
     }
-
 }

@@ -59,11 +59,11 @@ public class SolrEntityQueryMixin
         {
             QuerySpecification expr = (QuerySpecification) whereClause;
 
-            SolrServer server = solr.getSolrServer();
+            SolrServer server = solr.solrServer();
 
             NamedList<Object> list = new NamedList<Object>();
 
-            list.add( "q", expr.getQuery() );
+            list.add( "q", expr.query() );
             list.add( "rows", maxResults != 0 ? maxResults : 10000 );
             list.add( "start", firstResult );
 
@@ -71,7 +71,7 @@ public class SolrEntityQueryMixin
             {
                 for( OrderBy orderBySegment : orderBySegments )
                 {
-                    String propName = ((Member)orderBySegment.getPropertyFunction().getAccessor()).getName() + "_for_sort";
+                    String propName = ((Member)orderBySegment.property().accessor()).getName() + "_for_sort";
                     String order = orderBySegment.order() == OrderBy.Order.ASCENDING ? "asc" : "desc";
                     list.add( "sort", propName + " " + order );
 
@@ -118,7 +118,7 @@ public class SolrEntityQueryMixin
     @Override
     public SolrDocumentList search( String queryString ) throws SolrServerException
     {
-        SolrServer server = solr.getSolrServer();
+        SolrServer server = solr.solrServer();
 
         NamedList<Object> list = new NamedList<Object>();
 

@@ -13,18 +13,21 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License. 
+ * limitations under the License.
  */
 package org.qi4j.library.rest.admin;
 
-import org.apache.commons.httpclient.HostConfiguration;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
@@ -44,21 +47,15 @@ import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
-@Ignore( "Need to rebuild tests after larger changes to implementation." )
 public class RestTest
     extends AbstractQi4jTest
 {
 
+    @Override
     protected ApplicationDescriptor newApplication()
         throws AssemblyException
     {
@@ -76,10 +73,11 @@ public class RestTest
         } );
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.objects( RestTester.class );
+        module.objects( RestTest.class, RestTester.class );
         module.entities( PersonEntity.class );
         module.services( RestServerComposite.class ).instantiateOnStartup();
         module.services( MemoryEntityStoreService.class ).identifiedBy( "store" );
@@ -117,12 +115,19 @@ public class RestTest
     }
 
     @Test
-    public void givenAnIdentityWhenExecutingGetCommandThenExpectTheCorrectXml()
+    public void givenAnIdentityWhenExecutingGetCommandThenExpectTheCorrectRdf()
         throws Exception
     {
         RestTester restTester = module.newObject( RestTester.class );
-        String xml = restTester.getEntity( "P1" );
-        assertEquals( "Incorrect XML produced", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><type>org.qi4j.rest.RestTest$PersonEntity</type><identity>P1</identity><properties><identity>P1</identity><firstname>Joe</firstname><lastname>Doe</lastname></properties><manyAssociations><mother href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</mother></manyAssociations></entity>", xml );
+        String rdf = restTester.getEntity( "P1" );
+        // System.out.println( rdf.replaceAll( "\n", "\\\\n" ).replaceAll( "\"", "\\\\\"" ) );
+        assertThat( "Incorrect RDF produced", rdf, anyOf(
+            // Open JDK 8 & Valid
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.qi4j.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:qi4j:type:\" rdf:about=\"urn:qi4j:entity:P1\">\n	<lastname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<firstname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<identity xmlns=\"urn:qi4j:type:org.qi4j.api.entity.Identity#\">P1</identity>\n	<mother xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:qi4j:entity:P2\"/>\n</org.qi4j.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            // Sun JDK 6 / Oracle JDK 7 & Valid
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.qi4j.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:qi4j:type:\" rdf:about=\"urn:qi4j:entity:P1\">\n	<firstname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<lastname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<identity xmlns=\"urn:qi4j:type:org.qi4j.api.entity.Identity#\">P1</identity>\n	<mother xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:qi4j:entity:P2\"/>\n</org.qi4j.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            // IBM JDK 6 & Valid
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.qi4j.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:qi4j:type:\" rdf:about=\"urn:qi4j:entity:P1\">\n	<identity xmlns=\"urn:qi4j:type:org.qi4j.api.entity.Identity#\">P1</identity>\n	<lastname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<firstname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<mother xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:qi4j:entity:P2\"/>\n</org.qi4j.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ) ) );
     }
 
     @Test
@@ -130,7 +135,11 @@ public class RestTest
         throws Throwable
     {
         RestTester restTester = module.newObject( RestTester.class );
-        restTester.putEntity( "P1", "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entity><identity>P1</identity><properties><identity>P1</identity><firstname>Jack</firstname><lastname>Doe</lastname></properties></entity>" );
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put( "identity", "P1" );
+        properties.put( "firstname", "Jack" );
+        properties.put( "lastname", "Doe" );
+        restTester.putEntity( "P1", properties );
         UnitOfWork work = module.newUnitOfWork();
         try
         {
@@ -173,70 +182,114 @@ public class RestTest
     }
 
     @Test
-    public void givenAnTypeWhenExecutingGetCommandThenExpectTheCorrectXml()
+    public void givenExistingEntitiesWhenExecutingGetCommandThenExpectTheCorrectRdf()
         throws Exception
     {
         final RestTester restTester = module.newObject( RestTester.class );
-        final String result = restTester.getEntities( PersonEntity.class );
+        final String result = restTester.getEntities();
         assertThat(
-            "Returned XML", result,
+            "Returned RDF", result,
             anyOf(
-                equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P1\">P1</entity><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</entity></entities>" ),
-                equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><entities><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P1\">P1</entity><entity href=\"/entity/org.qi4j.rest.RestTest$PersonEntity/P2\">P2</entity></entities>" ) )
-        );
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns=\"urn:qi4j:\"\n\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<qi4j:entity rdf:about=\"/entity/P2.rdf\"/>\n</rdf:RDF>\n" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\\\"no\\\"?>\n<rdf:RDF\n\txmlns=\"urn:qi4j:\"\n\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<qi4j:entity rdf:about=\"/entity/P2.rdf\"/>\n</rdf:RDF>\n" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns=\"urn:qi4j:\"\n\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<qi4j:entity rdf:about=\"/entity/P2.rdf\"/>\n<qi4j:entity rdf:about=\"/entity/P1.rdf\"/>\n</rdf:RDF>\n" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\\\"no\\\"?>\n<rdf:RDF\n\txmlns=\"urn:qi4j:\"\n\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<qi4j:entity rdf:about=\"/entity/P2.rdf\"/>\n<qi4j:entity rdf:about=\"/entity/P1.rdf\"/>\n</rdf:RDF>\n" ) ) );
     }
 
     public static class RestTester
     {
+
         @Service
-        RestServer server;
+        private RestServer server;
 
-        public String getEntity( String id )
-            throws IOException
-        {
-            URL url = new URL( "http://localhost:8182/entity/" + PersonEntity.class.getName() + "/" + id );
-            InputStream in = (InputStream) url.getContent();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            copyStream( in, baos );
-            in.close();
-            baos.close();
-            return baos.toString();
-        }
-
-        public void putEntity( String identity, String xml )
+        public String getEntity( String identity )
             throws IOException
         {
             HttpClient client = new HttpClient();
-            PutMethod method = new PutMethod();
-            HostConfiguration host = new HostConfiguration();
-            host.setHost( "localhost", 8182, "http" );
-            RequestEntity entity = new StringRequestEntity( xml, "text/xml", "UTF-8" );
-            method.setRequestEntity( entity );
-            method.setPath( "/entity/" + PersonEntity.class.getName() + "/" + identity );
-            client.executeMethod( host, method );
+            GetMethod method = new GetMethod( "http://localhost:8182/entity/" + identity + ".rdf" );
+            method.addRequestHeader( "Accept", "application/rdf+xml" );
+            try
+            {
+                int status = client.executeMethod( method );
+                if( status != 200 )
+                {
+                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method.getStatusText() + "'" );
+                }
+                InputStream input = method.getResponseBodyAsStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                copyStream( input, baos );
+                return baos.toString( "UTF-8" );
+            }
+            finally
+            {
+                method.releaseConnection();
+            }
+        }
+
+        public void putEntity( String identity, Map<String, String> params )
+            throws IOException
+        {
+            HttpClient client = new HttpClient();
+            PostMethod method = new PostMethod( "http://localhost:8182/entity/" + identity );
+            for( Map.Entry<String, String> entry : params.entrySet() )
+            {
+                method.addParameter( entry.getKey(), entry.getValue() );
+            }
+            try
+            {
+                int status = client.executeMethod( method );
+                if( status != 205 )
+                {
+                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method.getStatusText() + "'" );
+                }
+            }
+            finally
+            {
+                method.releaseConnection();
+            }
         }
 
         public void deleteEntity( String identity )
             throws IOException
         {
             HttpClient client = new HttpClient();
-            DeleteMethod method = new DeleteMethod();
-            HostConfiguration host = new HostConfiguration();
-            host.setHost( "localhost", 8182, "http" );
-            method.setPath( "/entity/" + PersonEntity.class.getName() + "/" + identity );
-            client.executeMethod( host, method );
+            DeleteMethod method = new DeleteMethod( "http://localhost:8182/entity/" + identity );
+            try
+            {
+                int status = client.executeMethod( method );
+                if( status != 204 )
+                {
+                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method.getStatusText() + "'" );
+                }
+            }
+            finally
+            {
+                method.releaseConnection();
+            }
         }
 
-        public String getEntities( Class type )
+        public String getEntities()
             throws IOException
         {
-            URL url = new URL( "http://localhost:8182/entity/" + type.getName() );
-            InputStream in = (InputStream) url.getContent();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            copyStream( in, baos );
-            in.close();
-            baos.close();
-            return baos.toString();
+            HttpClient client = new HttpClient();
+            GetMethod method = new GetMethod( "http://localhost:8182/entity.rdf" );
+            method.addRequestHeader( "Accept", "application/rdf+xml" );
+            try
+            {
+                int status = client.executeMethod( method );
+                if( status != 200 )
+                {
+                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method.getStatusText() + "'" );
+                }
+                InputStream input = method.getResponseBodyAsStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                copyStream( input, baos );
+                return baos.toString( "UTF-8" );
+            }
+            finally
+            {
+                method.releaseConnection();
+            }
         }
 
         private void copyStream( InputStream in, OutputStream baos )
@@ -258,6 +311,7 @@ public class RestTest
 
     public interface Person
     {
+
         Property<String> firstname();
 
         Property<String> lastname();
@@ -265,4 +319,5 @@ public class RestTest
         @Optional
         Association<Person> mother();
     }
+
 }

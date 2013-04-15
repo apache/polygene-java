@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.structure;
 
 /**
@@ -19,7 +18,14 @@ package org.qi4j.api.structure;
  */
 public interface LayerDescriptor
 {
+
+    /**
+     * @return the Layer's name
+     */
     String name();
 
+    /**
+     * @return Layers used by this Layer
+     */
     UsedLayersDescriptor usedLayers();
 }

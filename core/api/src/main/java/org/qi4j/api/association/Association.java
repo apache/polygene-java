@@ -17,8 +17,7 @@ package org.qi4j.api.association;
 /**
  * Association to a single EntityComposite.
  */
-public interface Association<T>
-    extends AbstractAssociation
+public interface Association<T> extends AbstractAssociation
 {
     /**
      * Get the associated entity.

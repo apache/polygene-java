@@ -29,17 +29,17 @@ public class ManyAssociationFunction<T>
         this.accessor = accessor;
     }
 
-    public AssociationFunction<?> getTraversedAssociation()
+    public AssociationFunction<?> traversedAssociation()
     {
         return traversedAssociation;
     }
 
-    public ManyAssociationFunction<?> getTraversedManyAssociation()
+    public ManyAssociationFunction<?> traversedManyAssociation()
     {
         return traversedManyAssociation;
     }
 
-    public AccessibleObject getAccessor()
+    public AccessibleObject accessor()
     {
         return accessor;
     }

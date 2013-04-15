@@ -18,6 +18,7 @@
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.delivery;
 
 import java.util.Date;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
@@ -110,13 +111,13 @@ public interface Delivery
     Property<ExpectedHandlingEvent> nextExpectedHandlingEvent();
 
     @Optional
-    Property<HandlingEvent> lastHandlingEvent();
+    Association<HandlingEvent> lastHandlingEvent();
 
     @Optional
-    Property<Location> lastKnownLocation();
+    Association<Location> lastKnownLocation();
 
     @Optional
-    Property<Voyage> currentVoyage();
+    Association<Voyage> currentVoyage();
 
     @Optional
     Property<Date> eta();

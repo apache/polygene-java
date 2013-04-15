@@ -40,7 +40,7 @@ public class VersionMigrationBuilder
 
     public VersionMigrationBuilder renameEntity( String fromName, String toName )
     {
-        builder.getEntityRules()
+        builder.entityMigrationRules()
             .addRule( new EntityMigrationRule( fromVersion, toVersion, new String[]{ fromName }, new RenameEntity( fromName, toName ) ) );
 
         return this;
@@ -53,7 +53,7 @@ public class VersionMigrationBuilder
 
     public VersionMigrationBuilder atStartup( MigrationOperation operation )
     {
-        builder.getRules().addRule( new MigrationRule( fromVersion, toVersion, operation ) );
+        builder.migrationRules().addRule( new MigrationRule( fromVersion, toVersion, operation ) );
 
         return this;
     }

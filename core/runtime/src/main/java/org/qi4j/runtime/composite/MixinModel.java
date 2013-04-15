@@ -42,14 +42,14 @@ import static org.qi4j.functional.Iterables.unique;
 public final class MixinModel
     implements MixinDescriptor, VisitableHierarchy<Object, Object>
 {
-    private final Class mixinClass;
-    private final Class instantiationClass;
+    private final Class<?> mixinClass;
+    private final Class<?> instantiationClass;
     private final ConstructorsModel constructorsModel;
     private final InjectedFieldsModel injectedFieldsModel;
     private final InjectedMethodsModel injectedMethodsModel;
     private final Iterable<Class<?>> thisMixinTypes;
 
-    public MixinModel( Class declaredMixinClass, Class instantiationClass )
+    public MixinModel( Class<?> declaredMixinClass, Class<?> instantiationClass )
     {
         injectedFieldsModel = new InjectedFieldsModel( declaredMixinClass );
         injectedMethodsModel = new InjectedMethodsModel( declaredMixinClass );
@@ -62,12 +62,12 @@ public final class MixinModel
     }
 
     @Override
-    public Class mixinClass()
+    public Class<?> mixinClass()
     {
         return mixinClass;
     }
 
-    public Class instantiationClass()
+    public Class<?> instantiationClass()
     {
         return instantiationClass;
     }

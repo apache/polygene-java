@@ -52,7 +52,6 @@ public final class TransientBuilderInstance<T>
     public TransientBuilder<T> use( Object... usedObjects )
     {
         uses = uses.use( usedObjects );
-
         return this;
     }
 

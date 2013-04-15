@@ -17,10 +17,10 @@ package org.qi4j.api.property;
 import java.math.BigDecimal;
 
 /**
- * Convenience class for mathematical operations on
- * numerical properties.
- * <p/>
- * add(object.number(), 5)
+ * Convenience class for mathematical operations on numerical properties.
+ * <pre>import static org.qi4j.api.property.Numbers.*;
+ * ...
+ * add( object.numberProperty(), 5 );</pre>
  */
 public final class Numbers
 {

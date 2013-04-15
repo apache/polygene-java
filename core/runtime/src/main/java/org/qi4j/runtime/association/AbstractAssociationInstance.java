@@ -27,7 +27,7 @@ public abstract class AbstractAssociationInstance<T>
         this.entityFunction = entityFunction;
     }
 
-    public AssociationInfo getAssociationInfo()
+    public AssociationInfo associationInfo()
     {
         return associationInfo;
     }

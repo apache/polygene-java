@@ -19,5 +19,5 @@ package org.qi4j.api.mixin;
  */
 public interface MixinDescriptor
 {
-    Class mixinClass();
+    Class<?> mixinClass();
 }

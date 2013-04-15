@@ -1,0 +1,4 @@
+[[core-spi-cache,Cache SPI]]
+= Cache SPI =
+
+NOTE: This SPI has no documentation yet. Learn how to contribute in <<community-docs>>.

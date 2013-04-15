@@ -16,6 +16,7 @@ package org.qi4j.runtime.composite;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.MethodDescriptor;
+import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
@@ -110,13 +112,13 @@ public final class CompositeMethodModel
         }
         finally
         {
-            instancePool.returnInstance( methodInstance );
+            instancePool.releaseInstance( methodInstance );
         }
     }
 
     private CompositeMethodInstance getInstance( ModuleInstance moduleInstance )
     {
-        CompositeMethodInstance methodInstance = instancePool.getInstance();
+        CompositeMethodInstance methodInstance = instancePool.obtainInstance();
         if( methodInstance == null )
         {
             methodInstance = newCompositeMethodInstance( moduleInstance );
@@ -290,6 +292,29 @@ public final class CompositeMethodModel
         public Annotation[] getDeclaredAnnotations()
         {
             return new Annotation[ 0 ];
+        }
+
+        // @Override (Since JDK 8)
+        @SuppressWarnings( "unchecked" )
+        public <T extends Annotation> T[] getAnnotations( Class<T> annotationClass )
+        {
+            NullArgumentException.validateNotNull( "annotationClass", annotationClass );
+            return (T[]) Array.newInstance( annotationClass, 0 );
+        }
+
+        // @Override (Since JDK 8)
+        public <T extends Annotation> T getDeclaredAnnotation( Class<T> annotationClass )
+        {
+            NullArgumentException.validateNotNull( "annotationClass", annotationClass );
+            return null;
+        }
+
+        // @Override (Since JDK 8)
+        @SuppressWarnings( "unchecked" )
+        public <T extends Annotation> T[] getDeclaredAnnotations( Class<T> annotationClass )
+        {
+            NullArgumentException.validateNotNull( "annotationClass", annotationClass );
+            return (T[]) Array.newInstance( annotationClass, 0 );
         }
     }
 }

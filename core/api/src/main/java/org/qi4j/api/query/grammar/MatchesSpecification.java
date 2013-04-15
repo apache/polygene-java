@@ -24,17 +24,17 @@ public class MatchesSpecification
         this.value = variable;
     }
 
-    public PropertyFunction<String> getProperty()
+    public PropertyFunction<String> property()
     {
         return property;
     }
 
-    public Object getValue()
+    public Object value()
     {
         return value;
     }
 
-    public String getRegexp()
+    public String regexp()
     {
         return ( String ) value;
     }

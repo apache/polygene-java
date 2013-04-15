@@ -30,7 +30,7 @@ public class UnsupportedLanguageException
         this.language = language;
     }
 
-    public QueryLanguage getLanguage()
+    public QueryLanguage language()
     {
         return language;
     }

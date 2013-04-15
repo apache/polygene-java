@@ -20,15 +20,12 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class JCloudsMapEntityStoreAssembler
-        implements Assembler
+    implements Assembler
 {
 
     private final Visibility visibility;
-
     private String identity;
-
     private ModuleAssembly config;
-
     private Visibility configVisibility;
 
     public JCloudsMapEntityStoreAssembler()
@@ -56,16 +53,17 @@ public class JCloudsMapEntityStoreAssembler
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.services( UuidIdentityGeneratorService.class );
         module.services( JCloudsMapEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
-        if ( identity != null && identity.length() > 0 ) {
+        if( identity != null && identity.length() > 0 )
+        {
             module.services( JCloudsMapEntityStoreService.class ).identifiedBy( identity );
         }
-        if ( config != null ) {
+        if( config != null )
+        {
             config.entities( JCloudsMapEntityStoreConfiguration.class ).visibleIn( configVisibility );
         }
     }
-
 }

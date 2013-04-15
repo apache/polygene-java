@@ -20,8 +20,7 @@ import java.util.Set;
 /**
  * Association to a collection of entities.
  */
-public interface ManyAssociation<T>
-    extends Iterable<T>, AbstractAssociation
+public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
 {
     int count();
 

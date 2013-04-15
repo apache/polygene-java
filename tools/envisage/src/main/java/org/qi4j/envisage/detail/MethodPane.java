@@ -186,7 +186,7 @@ public class MethodPane
 
             // mixin type
            rows.add( new TableRow( 2, new Object[]{
-                "return", Classes.getSimpleGenericName( method.getGenericReturnType() )
+                "return", Classes.simpleGenericNameOf( method.getGenericReturnType() )
             } ) );
 
            // method
@@ -206,7 +206,7 @@ public class MethodPane
                  parameters.append( ann ).append( " " );
               }
 
-              parameters.append( Classes.getSimpleGenericName( type ));
+              parameters.append( Classes.simpleGenericNameOf( type ));
            }
 
            rows.add( new TableRow( 2, new Object[]{ "parameters", parameters.toString() } ) );

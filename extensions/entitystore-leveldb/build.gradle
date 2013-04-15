@@ -13,6 +13,7 @@ dependencies {
     runtime libraries.leveldb_jni_all
 
     testCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
+    testCompile(project(":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson"))
 
     testRuntime project( ":org.qi4j.core:org.qi4j.core.runtime" )
     testRuntime libraries.logback

@@ -19,7 +19,7 @@ public class ManyAssociationWrapper
         this.next = next;
     }
 
-    public ManyAssociation<Object> getNext()
+    public ManyAssociation<Object> next()
     {
         return next;
     }

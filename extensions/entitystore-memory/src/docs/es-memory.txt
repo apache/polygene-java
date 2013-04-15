@@ -1,0 +1,23 @@
+[[extension-es-memory, Memory EntityStore]]
+= Memory EntityStore =
+
+[devstatus]
+--------------
+source=extensions/entitystore-memory/dev-status.xml
+--------------
+
+EntityStore service backed by an in-memory +Map+.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done as follows:
+
+[snippet,java]
+----
+source=extensions/entitystore-memory/src/test/java/org/qi4j/entitystore/memory/MemoryEntityStoreTest.java
+tag=assembly
+----
+
+This EntityStore has no configuration.

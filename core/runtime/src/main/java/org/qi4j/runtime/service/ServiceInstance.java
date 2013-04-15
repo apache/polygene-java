@@ -16,6 +16,8 @@ package org.qi4j.runtime.service;
 
 import java.lang.reflect.Proxy;
 import org.qi4j.api.activation.Activation;
+import org.qi4j.api.activation.ActivationException;
+import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.configuration.Enabled;
 import org.qi4j.api.service.Availability;
@@ -32,7 +34,7 @@ public class ServiceInstance
     extends TransientInstance
     implements Activation
 {
-    public static TransientInstance getCompositeInstance( ServiceComposite composite )
+    public static TransientInstance serviceInstanceOf( ServiceComposite composite )
     {
         return (TransientInstance) Proxy.getInvocationHandler( composite );
     }
@@ -56,14 +58,14 @@ public class ServiceInstance
 
     @Override
     public void activate()
-        throws Exception
+        throws ActivationException
     {
         // NOOP
     }
 
     @Override
     public void passivate()
-        throws Exception
+        throws PassivationException
     {
         // NOOP
     }

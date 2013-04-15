@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.property.PropertyWrapper;
 import org.qi4j.api.type.CollectionType;
 import org.qi4j.api.type.MapType;
 import org.qi4j.api.type.ValueCompositeType;
@@ -50,11 +52,14 @@ public class PropertyInstance<T>
         value = aValue;
     }
 
-    public PropertyInfo getPropertyInfo()
+    public PropertyInfo propertyInfo()
     {
         return model;
     }
 
+    /**
+     * @param model The property model. This argument must not be {@code null}.
+     */
     public void setPropertyInfo( PropertyInfo model )
     {
         this.model = model;
@@ -91,12 +96,12 @@ public class PropertyInstance<T>
 
     /**
      * Perform equals with {@code o} argument.
-     * <p/>
-     * The definition of equals() for the property is that if the value and subclass are
-     * equal, then the properties are equal
+     * <p>
+     *     The definition of equals() for the Property is that if both the state and descriptor are equal,
+     *     then the properties are equal.
+     * </p>
      *
      * @param o The other object to compare.
-     *
      * @return Returns a {@code boolean} indicator whether this object is equals the other.
      */
     @Override
@@ -112,7 +117,18 @@ public class PropertyInstance<T>
         }
 
         Property<?> that = (Property<?>) o;
-
+        // Unwrap if needed
+        while( that instanceof PropertyWrapper )
+        {
+            that = ( (PropertyWrapper) that ).next();
+        }
+        // Descriptor equality
+        PropertyDescriptor thatDescriptor = (PropertyDescriptor) ( (PropertyInstance) that ).propertyInfo();
+        if( !model.equals( thatDescriptor ) )
+        {
+            return false;
+        }
+        // State equality
         T value = get();
         if( value == null )
         {
@@ -129,16 +145,11 @@ public class PropertyInstance<T>
     @Override
     public int hashCode()
     {
-        int hash = getClass().hashCode();
-        if( model != null )
-        {
-            hash = model.type().hashCode();
-        }
-        hash = hash * 19;
+        int hash = model.hashCode() * 19; // Descriptor
         T value = get();
         if( value != null )
         {
-            hash = hash + value.hashCode() * 13;
+            hash += value.hashCode() * 13; // State
         }
         return hash;
     }
@@ -164,7 +175,7 @@ public class PropertyInstance<T>
             Object value = get();
             if( value != null )
             {
-                ValueInstance.getValueInstance( (ValueComposite) value ).prepareToBuild();
+                ValueInstance.valueInstanceOf( (ValueComposite) value ).prepareToBuild();
             }
         }
         else if( propertyDescriptor.valueType() instanceof CollectionType )
@@ -189,7 +200,7 @@ public class PropertyInstance<T>
                     Collection coll = (Collection) value;
                     for( Object instance : coll )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareToBuild();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareToBuild();
                     }
                 }
 
@@ -206,18 +217,18 @@ public class PropertyInstance<T>
 
                 // Check if keys/values are Values
                 MapType mapType = (MapType) propertyDescriptor.valueType();
-                if( mapType.getKeyType() instanceof ValueCompositeType )
+                if( mapType.keyType() instanceof ValueCompositeType )
                 {
                     for( Object instance : map.keySet() )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareToBuild();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareToBuild();
                     }
                 }
-                if( mapType.getValueType() instanceof ValueCompositeType )
+                if( mapType.valueType() instanceof ValueCompositeType )
                 {
                     for( Object instance : map.values() )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareToBuild();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareToBuild();
                     }
                 }
 
@@ -234,7 +245,7 @@ public class PropertyInstance<T>
             Object value = get();
             if( value != null )
             {
-                ValueInstance.getValueInstance( (ValueComposite) value ).prepareBuilderState();
+                ValueInstance.valueInstanceOf( (ValueComposite) value ).prepareBuilderState();
             }
         }
         else if( propertyDescriptor.valueType() instanceof CollectionType )
@@ -266,7 +277,7 @@ public class PropertyInstance<T>
                     Collection coll = (Collection) value;
                     for( Object instance : coll )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareBuilderState();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareBuilderState();
                     }
                 }
             }
@@ -278,20 +289,20 @@ public class PropertyInstance<T>
             if( value != null )
             {
                 MapType mapType = (MapType) propertyDescriptor.valueType();
-                if( mapType.getKeyType() instanceof ValueCompositeType )
+                if( mapType.keyType() instanceof ValueCompositeType )
                 {
                     Map map = (Map) value;
                     for( Object instance : map.keySet() )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareBuilderState();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareBuilderState();
                     }
                 }
-                if( mapType.getValueType() instanceof ValueCompositeType )
+                if( mapType.valueType() instanceof ValueCompositeType )
                 {
                     Map map = (Map) value;
                     for( Object instance : map.values() )
                     {
-                        ValueInstance.getValueInstance( (ValueComposite) instance ).prepareBuilderState();
+                        ValueInstance.valueInstanceOf( (ValueComposite) instance ).prepareBuilderState();
                     }
                 }
                 if( propertyDescriptor.isImmutable() )

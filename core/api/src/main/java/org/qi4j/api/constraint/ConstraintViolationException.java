@@ -58,7 +58,7 @@ public class ConstraintViolationException
                                          Collection<ConstraintViolation> constraintViolations
     )
     {
-        this( instance.toString(), Qi4j.DESCRIPTOR_FUNCTION.map( instance ).types(), method, constraintViolations );
+        this( instance.toString(), Qi4j.FUNCTION_DESCRIPTOR_FOR.map( instance ).types(), method, constraintViolations );
     }
 
     public ConstraintViolationException( String instanceToString,
@@ -146,7 +146,7 @@ public class ConstraintViolationException
      *
      * @return An array of localized messages of the violations incurred.
      */
-    public String[] getLocalizedMessages( ResourceBundle bundle )
+    public String[] localizedMessagesFrom( ResourceBundle bundle )
     {
         String pattern = "Constraint violation in {0}.{1} for method ''{3}'' with constraint \"{4}({6})\", for value ''{5}''";
 
@@ -219,7 +219,7 @@ public class ConstraintViolationException
 
     public String localizedMessage()
     {
-        String[] messages = getLocalizedMessages( null );
+        String[] messages = localizedMessagesFrom( null );
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for( String message : messages )

@@ -16,6 +16,7 @@ package org.qi4j.runtime.activation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.activation.Activator;
 import org.qi4j.api.activation.PassivationException;
 import org.qi4j.functional.Iterables;
@@ -40,10 +41,17 @@ public class ActivatorsInstance<ActivateeType>
 
     @Override
     public void beforeActivation( ActivateeType activating )
-            throws Exception
+            throws ActivationException
     {
         for( Activator<ActivateeType> activator : activators ) {
-            activator.beforeActivation( activating );
+            try
+            {
+                activator.beforeActivation( activating );
+            }
+            catch( Exception e )
+            {
+                throw new ActivationException( "Unable to activate: " + activator, e );
+            }
         }
     }
 

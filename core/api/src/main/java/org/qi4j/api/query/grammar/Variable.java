@@ -5,14 +5,14 @@ package org.qi4j.api.query.grammar;
  */
 public class Variable
 {
-    String name;
+    private String name;
 
     public Variable( String name )
     {
         this.name = name;
     }
 
-    public String getName()
+    public String variableName()
     {
         return name;
     }

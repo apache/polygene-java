@@ -25,6 +25,6 @@ import org.qi4j.library.circuitbreaker.CircuitBreaker;
 public interface ServiceCircuitBreaker
 {
 
-    CircuitBreaker getCircuitBreaker();
+    CircuitBreaker circuitBreaker();
 
 }

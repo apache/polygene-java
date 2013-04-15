@@ -15,6 +15,7 @@ package org.qi4j.runtime.structure;
 
 import java.util.Iterator;
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.mixin.Mixins;
@@ -85,6 +86,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void objects()
+        throws ActivationException, AssemblyException
     {
         Module module = new SingletonAssembler()
         {
@@ -105,6 +107,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void objectsAmbiguousDeclaration()
+        throws ActivationException, AssemblyException
     {
         Module module = new SingletonAssembler()
         {
@@ -133,6 +136,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void transients()
+        throws ActivationException, AssemblyException
     {
         Module module = new SingletonAssembler()
         {
@@ -153,6 +157,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void transientsAmbiguousDeclaration()
+        throws ActivationException, AssemblyException
     {
         Module module = new SingletonAssembler()
         {
@@ -181,6 +186,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void values()
+        throws ActivationException, AssemblyException
     {
         Module module = new SingletonAssembler()
         {
@@ -201,6 +207,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void valuesAmbiguousDeclaration()
+        throws ActivationException, AssemblyException
     {
         Module module = new SingletonAssembler()
         {
@@ -229,7 +236,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void entities()
-        throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException, ActivationException, AssemblyException
     {
         Module module = new SingletonAssembler()
         {
@@ -271,7 +278,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void entitiesAmbiguousDeclaration()
-        throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException, ActivationException, AssemblyException
     {
         Module module = new SingletonAssembler()
         {
@@ -322,6 +329,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void services()
+        throws ActivationException, AssemblyException
     {
         Module module = new SingletonAssembler()
         {
@@ -342,6 +350,7 @@ public class TypeToCompositeLookupTest
 
     @Test
     public void servicesPluralDeclaration()
+        throws ActivationException, AssemblyException
     {
         Module module = new SingletonAssembler()
         {

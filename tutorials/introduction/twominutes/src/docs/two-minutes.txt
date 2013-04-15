@@ -8,6 +8,13 @@ this tutorial, run it and play with it.
 To show that Qi4j is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the
 classic HelloWorld, as small as it can get and still be Composite Oriented Programming and not only standard OOP.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
+on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
+
+include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
+
+See the <<howto-depend-on-qi4j>> tutorial for details.
+
 Ready, Set, Go!
 
 Let's say we want to do the common HelloWorld example, but with a more domain-oriented setting.

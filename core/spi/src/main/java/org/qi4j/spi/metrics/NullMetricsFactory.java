@@ -37,7 +37,7 @@ import org.qi4j.functional.Iterables;
  */
 public final class NullMetricsFactory
 {
-    static class NullCounterFactory implements MetricsCounterFactory
+    public static class NullCounterFactory implements MetricsCounterFactory
     {
         @Override
         public MetricsCounter createCounter( Class<?> origin, String name )
@@ -52,7 +52,7 @@ public final class NullMetricsFactory
         }
     }
 
-    static class NullGaugeFactory implements MetricsGaugeFactory
+    public static class NullGaugeFactory implements MetricsGaugeFactory
     {
         @Override
         @SuppressWarnings( "unchecked" )
@@ -68,7 +68,7 @@ public final class NullMetricsFactory
         }
     }
 
-    static class NullHealthCheckFactory implements MetricsHealthCheckFactory
+    public static class NullHealthCheckFactory implements MetricsHealthCheckFactory
     {
         @Override
         public MetricsHealthCheck registerHealthCheck( Class<?> origin, String name, MetricsHealthCheck check )
@@ -83,7 +83,7 @@ public final class NullMetricsFactory
         }
     }
 
-    static class NullHistogramFactory implements MetricsHistogramFactory
+    public static class NullHistogramFactory implements MetricsHistogramFactory
     {
         @Override
         public MetricsHistogram createHistogram( Class<?> origin, String name )
@@ -98,7 +98,7 @@ public final class NullMetricsFactory
         }
     }
 
-    static class NullMeterFactory implements MetricsMeterFactory
+    public static class NullMeterFactory implements MetricsMeterFactory
     {
         @Override
         public MetricsMeter createMeter( Class<?> origin, String name, String eventType, TimeUnit rate )
@@ -114,7 +114,7 @@ public final class NullMetricsFactory
         }
     }
 
-    static class NullTimerFactory implements MetricsTimerFactory
+    public static class NullTimerFactory implements MetricsTimerFactory
     {
         @Override
         public MetricsTimer createTimer( Class<?> origin, String name, TimeUnit duration, TimeUnit rate )

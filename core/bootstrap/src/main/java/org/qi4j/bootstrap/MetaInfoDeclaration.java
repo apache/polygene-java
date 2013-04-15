@@ -49,12 +49,12 @@ public final class MetaInfoDeclaration
     }
 
     @Override
-    public MetaInfo getMetaInfo( AccessibleObject accessor )
+    public MetaInfo metaInfoFor( AccessibleObject accessor )
     {
         for( Map.Entry<Class<?>, InfoHolder<?>> entry : mixinPropertyDeclarations.entrySet() )
         {
             InfoHolder<?> holder = entry.getValue();
-            MetaInfo metaInfo = holder.getMetaInfo( accessor );
+            MetaInfo metaInfo = holder.metaInfoFor( accessor );
             if( metaInfo != null )
             {
                 Class<?> mixinType = entry.getKey();
@@ -72,11 +72,11 @@ public final class MetaInfoDeclaration
     }
 
     @Override
-    public Object getInitialValue( AccessibleObject accessor )
+    public Object initialValueOf( AccessibleObject accessor )
     {
         for( InfoHolder<?> propertyDeclarationHolder : mixinPropertyDeclarations.values() )
         {
-            final Object initialValue = propertyDeclarationHolder.getInitialValue( accessor );
+            final Object initialValue = propertyDeclarationHolder.initialValueOf( accessor );
             if( initialValue != null )
             {
                 return initialValue;
@@ -86,11 +86,11 @@ public final class MetaInfoDeclaration
     }
 
     @Override
-    public boolean isUseDefaults( AccessibleObject accessor )
+    public boolean useDefaults( AccessibleObject accessor )
     {
         for( InfoHolder<?> propertyDeclarationHolder : mixinPropertyDeclarations.values() )
         {
-            final boolean useDefaults = propertyDeclarationHolder.isUseDefaults( accessor );
+            final boolean useDefaults = propertyDeclarationHolder.useDefaults( accessor );
             if( useDefaults )
             {
                 return useDefaults;
@@ -163,7 +163,7 @@ public final class MetaInfoDeclaration
         }
 
         @Override
-        public MetaInfo getMetaInfo( AccessibleObject accessor )
+        public MetaInfo metaInfoFor( AccessibleObject accessor )
         {
             final MethodInfo methodInfo = matches( accessor );
             if( methodInfo == null )
@@ -174,7 +174,7 @@ public final class MetaInfoDeclaration
         }
 
         @Override
-        public Object getInitialValue( AccessibleObject accessor )
+        public Object initialValueOf( AccessibleObject accessor )
         {
             final MethodInfo methodInfo = matches( accessor );
             if( methodInfo == null )
@@ -185,7 +185,7 @@ public final class MetaInfoDeclaration
         }
 
         @Override
-        public boolean isUseDefaults( AccessibleObject accessor )
+        public boolean useDefaults( AccessibleObject accessor )
         {
             final MethodInfo methodInfo = matches( accessor );
             if( methodInfo == null )

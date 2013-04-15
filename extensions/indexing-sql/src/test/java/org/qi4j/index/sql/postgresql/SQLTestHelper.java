@@ -21,7 +21,6 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
 import org.qi4j.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.qi4j.index.sql.support.common.RebuildingStrategy;
@@ -29,7 +28,7 @@ import org.qi4j.index.sql.support.common.ReindexingStrategy;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.test.EntityTestAssembler;
 
 public class SQLTestHelper
 {
@@ -40,8 +39,7 @@ public class SQLTestHelper
         throws AssemblyException
     {
         // EntityStore
-        mainModule.services( MemoryEntityStoreService.class, UuidIdentityGeneratorService.class )
-            .visibleIn( Visibility.application );
+        new EntityTestAssembler( Visibility.application ).assemble( mainModule );
 
         doCommonAssembling( mainModule );
     }
@@ -50,7 +48,7 @@ public class SQLTestHelper
         throws AssemblyException
     {
         ModuleAssembly config = mainModule.layer().module( "config" );
-        config.services( MemoryEntityStoreService.class ).visibleIn( Visibility.module );
+        new EntityTestAssembler().assemble( config );
 
         // START SNIPPET: assembly
         // DataSourceService

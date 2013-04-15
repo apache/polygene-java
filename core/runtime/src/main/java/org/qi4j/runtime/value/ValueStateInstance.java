@@ -109,7 +109,7 @@ public final class ValueStateInstance
     }
 
     @Override
-    public Iterable<AssociationInstance<?>> associations()
+    public Iterable<AssociationInstance<?>> allAssociations()
     {
         return associations.values();
     }
@@ -128,7 +128,7 @@ public final class ValueStateInstance
     }
 
     @Override
-    public Iterable<ManyAssociationInstance<?>> manyAssociations()
+    public Iterable<ManyAssociationInstance<?>> allManyAssociations()
     {
         return manyAssociations.values();
     }

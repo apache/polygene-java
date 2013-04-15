@@ -15,6 +15,7 @@
 package org.qi4j.runtime.service;
 
 import org.junit.Test;
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
@@ -37,6 +38,7 @@ public class ServiceIdSelectorTest
 {
     @Test
     public void givenManyServicesWhenInjectServiceThenGetSelectedOne()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

@@ -19,5 +19,5 @@ package org.qi4j.api.sideeffect;
  */
 public interface SideEffectDescriptor
 {
-    Class modifierClass();
+    Class<?> modifierClass();
 }

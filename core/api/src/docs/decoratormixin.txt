@@ -1,0 +1,83 @@
+//////////////////////
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied.
+ * See the License for the specific language governing permissions
+ * and limitations under the License.
+//////////////////////
+
+[[core-api-decoratormixin,DecoratorMixin]]
+= DecoratorMixin =
+A little known feature is the DecoratorMixin, which allows any object to become a Mixin. This is useful when for instance
+the initialization of the object to act as a Mixin is complex, or maybe an instance is shared across many Composites.
+This functionality is only relevant in Transients, and therefor not available in other Composite meta types.
+
+This is done by declaring the DecoratorMixin on the interface, and add the object to be used via the use() method on
+the TransientBuilder.
+
+The DecoratorMixin will optimize the invocation for generic mixins, to avoid additional cost of reflection. But otherwise
+the DecoratorMixin is fairly simple
+
+== Example ==
+Let's say that we have a model, FooModel, whose implementation is simply a POJO. Several different views shares this
+the same model instance, so any changes to the model will notify the views.
+
+We start with the FooModel interface;
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/FooModel.java
+tag=plain
+--------------
+
+and its implementation is not really relevant for this discussion.
+
+Each of the views looks like this;
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/View1.java
+tag=decorator
+--------------
+
+Note that the mixin is expecting to have the FooModel as being part of the view. This also simplies the mixin, which
+can for instance add and remove listeners to model updates in lifecycle methods.
+
+But we need an implementation of the FooModel that uses the actual implementation of the FooModel. So we decorate the
+FooModel with the DecoratorMixin.
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/FooModel.java
+tag=decorator
+--------------
+
+The DecoratorMixin expects that the implementation is found among the "@Uses" objects, so to create a view we simply
+do;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/DecoratorMixinTest.java
+tag=create
+--------------
+
+And there is nothing special in the assembly of this simple example;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/DecoratorMixinTest.java
+tag=assembly
+--------------
+
+This can now be validated in a small test;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/DecoratorMixinTest.java
+tag=test
+--------------

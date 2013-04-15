@@ -32,9 +32,9 @@ import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.QuerySource;
 
 /**
- * Default implementation of {@link org.qi4j.api.query.Query}
+ * Default implementation of {@link org.qi4j.api.query.Query}.
  */
-class QueryImpl<T>
+/* package */ class QueryImpl<T>
     implements Query<T>
 {
     private static final long serialVersionUID = 1L;
@@ -42,28 +42,28 @@ class QueryImpl<T>
     /**
      * Type of queried entities.
      */
-    protected final Class<T> resultType;
+    private final Class<T> resultType;
     /**
      * Where clause.
      */
-    protected final Specification<Composite> whereClause;
+    private final Specification<Composite> whereClause;
     private QuerySource querySource;
     /**
      * Order by clause segments.
      */
-    protected Iterable<OrderBy> orderBySegments;
+    private Iterable<OrderBy> orderBySegments;
     /**
      * First result to be returned.
      */
-    protected Integer firstResult;
+    private Integer firstResult;
     /**
      * Maximum number of results to be returned.
      */
-    protected Integer maxResults;
+    private Integer maxResults;
     /**
      * Mapping between variable name and variable values.
      */
-    protected Map<String, Object> variables;
+    private Map<String, Object> variables;
 
     /**
      * Constructor.
@@ -71,7 +71,7 @@ class QueryImpl<T>
      * @param resultType  type of queried entities; cannot be null
      * @param whereClause where clause
      */
-    QueryImpl( final Class<T> resultType,
+    /* package */ QueryImpl( final Class<T> resultType,
                final Specification<Composite> whereClause,
                final QuerySource querySource
     )
@@ -91,6 +91,9 @@ class QueryImpl<T>
         return this;
     }
 
+    /**
+     * @see org.qi4j.api.query.Query#orderBy(org.qi4j.api.property.Property, org.qi4j.api.query.grammar.OrderBy.Order)
+     */
     @Override
     public Query<T> orderBy( Property<?> property, OrderBy.Order order )
     {
@@ -105,6 +108,9 @@ class QueryImpl<T>
         return this;
     }
 
+    /**
+     * @see org.qi4j.api.query.Query#orderBy(org.qi4j.api.property.Property)
+     */
     @Override
     public Query<T> orderBy( Property<?> property )
     {

@@ -283,7 +283,7 @@ public class Transforms
     {
         private volatile long count = 0;
 
-        public long getCount()
+        public long count()
         {
             return count;
         }

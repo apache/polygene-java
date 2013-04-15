@@ -65,10 +65,10 @@ public class ValueInstantiationTests
             // expected
         }
 
-        //module.newValueFromJSON();
+        //module.newValueFromSerializedState();
         try
         {
-            module.newValueFromJSON( null, "abc:123" );
+            module.newValueFromSerializedState( null, "abc:123" );
             ValueBuilder<My> builder = module.newValueBuilder( null );
             fail( "NullArgumentException was expected." );
         }

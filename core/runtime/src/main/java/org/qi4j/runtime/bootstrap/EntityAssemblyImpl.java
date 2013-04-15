@@ -149,18 +149,18 @@ public final class EntityAssemblyImpl
                                               Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
     )
     {
-        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
+        Iterable<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
-        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericPropertyInfo.getPropertyType( accessor ), ( (Member) accessor )
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericPropertyInfo.propertyTypeOf( accessor ), ( (Member) accessor )
             .getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
             valueConstraintsInstance = valueConstraintsModel.newInstance();
         }
-        MetaInfo metaInfo = stateDeclarations.getMetaInfo( accessor );
-        Object defaultValue = stateDeclarations.getInitialValue( accessor );
-        boolean useDefaults = metaInfo.get( UseDefaults.class ) != null || stateDeclarations.isUseDefaults( accessor );
+        MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
+        Object defaultValue = stateDeclarations.initialValueOf( accessor );
+        boolean useDefaults = metaInfo.get( UseDefaults.class ) != null || stateDeclarations.useDefaults( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
         PropertyModel propertyModel = new PropertyModel( accessor, immutable, useDefaults, valueConstraintsInstance, metaInfo, defaultValue );
         return propertyModel;
@@ -170,12 +170,12 @@ public final class EntityAssemblyImpl
                                                  Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
     )
     {
-        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
+        Iterable<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
 
         // Constraints for Association references
         ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
-            .getAssociationType( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+            .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
@@ -190,7 +190,7 @@ public final class EntityAssemblyImpl
             associationValueConstraintsInstance = valueConstraintsModel.newInstance();
         }
 
-        MetaInfo metaInfo = associationDeclarations.getMetaInfo( accessor );
+        MetaInfo metaInfo = associationDeclarations.metaInfoFor( accessor );
         AssociationModel associationModel = new AssociationModel( accessor, valueConstraintsInstance, associationValueConstraintsInstance, metaInfo );
         return associationModel;
     }
@@ -199,12 +199,12 @@ public final class EntityAssemblyImpl
                                                          Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
     )
     {
-        Iterable<Annotation> annotations = Annotations.getAccessorAndTypeAnnotations( accessor );
+        Iterable<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
 
         // Constraints for entities in ManyAssociation
         ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
-            .getAssociationType( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+            .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
@@ -218,7 +218,7 @@ public final class EntityAssemblyImpl
         {
             manyValueConstraintsInstance = valueConstraintsModel.newInstance();
         }
-        MetaInfo metaInfo = manyAssociationDeclarations.getMetaInfo( accessor );
+        MetaInfo metaInfo = manyAssociationDeclarations.metaInfoFor( accessor );
         ManyAssociationModel associationModel = new ManyAssociationModel( accessor, valueConstraintsInstance, manyValueConstraintsInstance, metaInfo );
         return associationModel;
     }

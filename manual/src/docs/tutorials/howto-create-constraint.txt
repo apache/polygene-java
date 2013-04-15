@@ -3,6 +3,12 @@
 
 Constraints are defined in <<def-constraint>>.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
+
+include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+
 == Method Constraint ==
 
 Method Constraints are declared with annotations on the method argument. The annotation itself is custom, and it is possible to make your own.
@@ -36,26 +42,14 @@ We also need to include the Constraint on the Composites we want to have them pr
 source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/DialerComposite.java
 tag=composite
 -----------
-[line-through]*Constraints doesn't throw any exceptions, as violation of constraints are domain specific. Instead, the Qi4j runtime will record all the violations in the InvocationContext, which is available to Concerns and Mixins. For instance;*
-[source,java]
+
+If a Constraint is violated, then a ConstraintViolationException is thrown. The Exception contains ALL violations found
+in the method invocation. Concerns can be used to catch and report these violations.
+
+[snippet,java]
 ----
-public class ParameterViolationConcern
-    implements InvocationHandler
-{
-    @Structure private InvocationContext invocation;
-    @ConcernFor private InvocationHandler next;
-    public Object invoke( Object proxy, Method method, Object[] args )
-        throws Exception
-    {
-        Collection<ConstraintViolation> violations =
-            invocation.getConstraintViolations();
-        if( violations.size() > 0 )
-        {
-            throw new MyConstraintVioaltionException( violations );
-        }
-        return next.invoke( proxy, method, args );
-    }
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/ParameterViolationConcern.java
+tag=report
 ----
 
 == Property Constraint ==
@@ -68,31 +62,14 @@ source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/HasPhoneNum
 tag=property
 -----------
 
-In this case, the Constraint associated with the phoneNumber() method, will be called before the set() method on that Property is called. And any ConstraintViolations will be available to Concerns declared for the Property itself. For instance;
+In this case, the Constraint associated with the phoneNumber() method, will be called before the set() method on that
+Property is called. If there is a constraint violation, the Exception thrown will be part of the caller, and not the
+composite containing the Property, so a reporting constraint on the containing Composite will not see it. If you want
+the containing Composite to handle the Constraint Violation, then you need to add a Concern on the Property itself,
+which can be done like this;
 
-[source,java]
-----
-public class ParameterViolationConcern
-    implements HasPhoneNumber
-{
-    @Structure private InvocationContext invocation;
-    @ConcernFor private HasPhoneNumber next;
-    @Concerns( CheckViolation.class )
-    public abstract Property<String> phoneNumber();
-    private abstract class CheckViolation
-        implements Property<String>
-    {
-        @ConcernFor Property<String> next;
-        public void set( String number )
-        {
-            Collection<ConstraintViolation> violations =
-                invocation.getConstraintViolations();
-            if( violations.size() > 0 )
-            {
-                throw new MyConstraintVioaltionException( violations );
-            }
-            return next.set( number );
-        }
-    }
-}
-----
+[snippet,java]
+-----------
+source=manual/src/main/java/org/qi4j/manual/recipes/createConstraint/PhoneNumberParameterViolationConcern.java
+tag=property
+-----------

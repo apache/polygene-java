@@ -96,7 +96,7 @@ public class RestServerAssembler
         module.objects( InteractionConstraintsService.class );
 
         // Standard response writers
-        Iterable<Class<?>> writers = ClassScanner.getClasses( DefaultResponseWriter.class );
+        Iterable<Class<?>> writers = ClassScanner.findClasses( DefaultResponseWriter.class );
         Specification<Class<?>> responseWriterClass = isAssignableFrom( ResponseWriter.class );
         Specification<Class<?>> isNotAnAbstract = not( hasModifier( Modifier.ABSTRACT ) );
         Iterable<Class<?>> candidates = filter( and( isNotAnAbstract, responseWriterClass ), writers );

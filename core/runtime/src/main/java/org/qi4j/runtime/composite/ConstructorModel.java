@@ -32,11 +32,11 @@ import org.qi4j.runtime.injection.InjectionContext;
 public final class ConstructorModel
     implements ConstructorDescriptor, VisitableHierarchy<Object, Object>
 {
-    private Constructor constructor;
+    private Constructor<?> constructor;
 
     private InjectedParametersModel parameters;
 
-    public ConstructorModel( Constructor constructor, InjectedParametersModel parameters )
+    public ConstructorModel( Constructor<?> constructor, InjectedParametersModel parameters )
     {
         this.constructor = constructor;
         this.parameters = parameters;
@@ -44,7 +44,7 @@ public final class ConstructorModel
     }
 
     @Override
-    public Constructor constructor()
+    public Constructor<?> constructor()
     {
         return constructor;
     }

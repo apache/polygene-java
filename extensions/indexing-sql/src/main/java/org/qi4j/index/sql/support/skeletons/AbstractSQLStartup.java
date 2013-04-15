@@ -852,7 +852,7 @@ public abstract class AbstractSQLStartup
                 {
                     String qName = rs.getString( 1 );
                     String tableName = rs.getString( 2 );
-                    this._state.qNameInfos().get().get( QualifiedName.fromQN( qName ) ).setTableName( tableName );
+                    this._state.qNameInfos().get().get( QualifiedName.fromFQN( qName ) ).setTableName( tableName );
                 }
             } finally
             {

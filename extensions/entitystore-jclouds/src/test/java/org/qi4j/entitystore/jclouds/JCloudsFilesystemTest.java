@@ -15,16 +15,14 @@ package org.qi4j.entitystore.jclouds;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import org.jclouds.filesystem.reference.FilesystemConstants;
 import org.junit.AfterClass;
-
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
-
-import org.jclouds.filesystem.reference.FilesystemConstants;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class JCloudsFilesystemTest
         extends AbstractEntityStoreTest
@@ -36,7 +34,8 @@ public class JCloudsFilesystemTest
     {
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        config.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( config );
+        new OrgJsonValueSerializationAssembler().assemble( module );
         new JCloudsMapEntityStoreAssembler().withConfigIn( config, Visibility.layer ).assemble( module );
         JCloudsMapEntityStoreConfiguration defaults = config.forMixin( JCloudsMapEntityStoreConfiguration.class ).declareDefaults();
         defaults.provider().set( "filesystem" );

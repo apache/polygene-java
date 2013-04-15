@@ -20,11 +20,11 @@ import org.junit.Test;
 
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import static org.qi4j.library.http.Servlets.addServlets;
 import static org.qi4j.library.http.Servlets.serve;
 
 import org.apache.http.client.methods.HttpGet;
+import org.qi4j.test.EntityTestAssembler;
 
 public class MutualSecureJettyServiceTest
         extends AbstractSecureJettyTest
@@ -33,7 +33,7 @@ public class MutualSecureJettyServiceTest
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
         new SecureJettyServiceAssembler().assemble( module );
         // START SNIPPET: config
         SecureJettyConfiguration config = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();

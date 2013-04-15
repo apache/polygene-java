@@ -23,13 +23,13 @@ import static org.qi4j.api.util.Classes.typeOf;
 public class PropertyFunction<T>
     implements Function<Composite, Property<T>>
 {
-    private PropertyFunction traversedProperty;
-    private AssociationFunction traversedAssociation;
+    private PropertyFunction<?> traversedProperty;
+    private AssociationFunction<?> traversedAssociation;
     private ManyAssociationFunction<?> traversedManyAssociation;
     private final AccessibleObject accessor;
 
-    public PropertyFunction( PropertyFunction traversedProperty,
-                             AssociationFunction traversedAssociation,
+    public PropertyFunction( PropertyFunction<?> traversedProperty,
+                             AssociationFunction<?> traversedAssociation,
                              ManyAssociationFunction<?> traversedManyAssociation,
                              AccessibleObject accessor
     )
@@ -48,7 +48,7 @@ public class PropertyFunction<T>
         {
             throw new QueryExpressionException( "Not a property type:" + returnType );
         }
-        Type propertyTypeAsType = GenericPropertyInfo.getPropertyType( returnType );
+        Type propertyTypeAsType = GenericPropertyInfo.toPropertyType( returnType );
         if( propertyTypeAsType instanceof ParameterizedType )
         {
             propertyTypeAsType = ( (ParameterizedType) propertyTypeAsType ).getRawType();
@@ -58,26 +58,26 @@ public class PropertyFunction<T>
         {
             throw new QueryExpressionException( "Unsupported property type:" + propertyTypeAsType );
         }
-        Class type = (Class<T>) propertyTypeAsType;
+        Class<T> type = (Class<T>) propertyTypeAsType;
         NotQueryableException.throwIfNotQueryable( type );
     }
 
-    public PropertyFunction getTraversedProperty()
+    public PropertyFunction<?> traversedProperty()
     {
         return traversedProperty;
     }
 
-    public AssociationFunction getTraversedAssociation()
+    public AssociationFunction<?> traversedAssociation()
     {
         return traversedAssociation;
     }
 
-    public ManyAssociationFunction getTraversedManyAssociation()
+    public ManyAssociationFunction<?> traversedManyAssociation()
     {
         return traversedManyAssociation;
     }
 
-    public AccessibleObject getAccessor()
+    public AccessibleObject accessor()
     {
         return accessor;
     }

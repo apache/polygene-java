@@ -48,7 +48,9 @@ import static org.qi4j.functional.Iterables.empty;
 import static org.qi4j.functional.Iterables.first;
 
 /**
- * JAVADOC
+ * Model for a ManyAssociation.
+ *
+ * <p>Equality is based on the ManyAssociation accessor object (associated type and name), not on the QualifiedName.</p>
  */
 public final class ManyAssociationModel
     implements AssociationDescriptor, AssociationInfo, Binder, Visitable<ManyAssociationModel>
@@ -79,7 +81,7 @@ public final class ManyAssociationModel
 
     private void initialize()
     {
-        this.type = GenericAssociationInfo.getAssociationType( accessor );
+        this.type = GenericAssociationInfo.associationTypeOf( accessor );
         this.qualifiedName = QualifiedName.fromAccessor( accessor );
         this.immutable = metaInfo.get( Immutable.class ) != null;
         this.aggregated = metaInfo.get( Aggregated.class ) != null;
@@ -144,7 +146,7 @@ public final class ManyAssociationModel
             {
                 return uow.get( Classes.RAW_CLASS.map( type ), entityReference.identity() );
             }
-        }, state.getManyAssociation( qualifiedName ) );
+        }, state.manyAssociationValueOf( qualifiedName ) );
     }
 
     @Override

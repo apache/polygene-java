@@ -3,6 +3,12 @@
 
 SideEffects are defined in <<def-sideeffect>>.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
+
+include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+
 == Typed SideEffect ==
 
 A typed SideEffect is a Java class that implements the MixinType it can be used on:
@@ -22,14 +28,10 @@ dependency injection. Qi4j also supports dependency injection via constructors a
 
 It can be used as follows;
 
-[source,java]
+[snippet,java]
 -----------
-@SideEffects( MailNotifySideEffect.class )
-public interface OrderEntity
-    extends Order, HasSequenceNumber, HasCustomer,
-            HasLineItems, Confirmable, EntityComposite
-{
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/OrderEntity.java
+tag=body
 -----------
 
 Methods of the SideEffect Fragment will be called after the Mixin invocation.
@@ -39,28 +41,18 @@ Methods of the SideEffect Fragment will be called after the Mixin invocation.
 A generic SideEffect is a Java class that implements java.lang.reflect.InvocationHandler which allows it to be used on any
 arbitrary MixinType.
 
-[source,java]
+[snippet,java]
 -----------
-public class MyGenericSideEffect extends GenericSideEffect
-{
-    public Object invoke(...)
-    {
-        // Do whatever you want
-        return next.invoke( ... );
-    }
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/MyGenericSideEffect.java
+tag=body
 -----------
 
 It can be used as follows;
 
-[source,java]
+[snippet,java]
 -----------
-@Concerns( MyGenericSideEffect.class )
-public interface AnyMixinType
-{
-    :
-    :
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/AnyMixinType.java
+tag=body
 -----------
 
 Methods of the SideEffect Fragment will be called before the Mixin invocation.
@@ -77,47 +69,27 @@ invocation. In other words the AppliesTo arguments are OR'ed.
 
 Here is how the declaration goes ;
 
-[source,java]
+[snippet,java]
 -----------
-@AppliesTo( { MyAnnotation.class, MyAppliesToFilter.class } )
-public class MyGenericSideEffect extends GenericSideEffect
-{
-    public Object invoke(...)
-    {
-        // Do whatever you want
-        return next.invoke( ... );
-    }
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/MyGenericSideEffect.java
+tag=appliesTo
 -----------
 
 And how to use the annotation ;
 
-[source,java]
+[snippet,java]
 -----------
-@Concerns( MyGenericSideEffect.class )
-public interface AnyMixinType
-{
-    @MyAnnotation
-    void doSomething();
-    void doSomethingElse();
-    :
-    :
-}
+source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/AnyMixinType.java
+tag=annotation
 -----------
 
 Here only the doSomething() method will see the SideEffect applied whereas the doSomethingElse() method won't.
 
 Finally here is how to implement an AppliesToFilter:
 
-[source,java]
--------------
-public class MyAppliesToFilter implements AppliesToFilter
-{
-    public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> modifierClass )
-    {
-        boolean appliesTo; // Do whatever you want
-        return appliesTo;
-    }
-}
--------------
+[snippet,java]
+-----------
+source=manual/src/main/java/org/qi4j/manual/recipes/sideeffects/MyAppliesToFilter.java
+tag=filter
+-----------
 

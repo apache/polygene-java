@@ -17,8 +17,10 @@ package org.qi4j.io;
 /**
  * Receiver of items during a specific transfer from an Input to an Output.
  */
+// START SNIPPET: receiver
 public interface Receiver<T, ReceiverThrowableType extends Throwable>
 {
+// END SNIPPET: receiver
     /**
      * Receive a single item of the given type. The receiver should process it
      * and optionally throw an exception if it fails.
@@ -27,6 +29,8 @@ public interface Receiver<T, ReceiverThrowableType extends Throwable>
      *
      * @throws ReceiverThrowableType
      */
+// START SNIPPET: receiver
     void receive( T item )
         throws ReceiverThrowableType;
 }
+// END SNIPPET: receiver

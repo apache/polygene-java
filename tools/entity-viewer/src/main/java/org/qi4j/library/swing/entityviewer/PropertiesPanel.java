@@ -77,8 +77,8 @@ public class PropertiesPanel
 
         for( Object qObj : query )
         {
-            AssociationStateHolder state = qi4jspi.getState( (EntityComposite) qObj );
-            EntityDescriptor descriptor = qi4jspi.getEntityDescriptor( (EntityComposite) qObj );
+            AssociationStateHolder state = qi4jspi.stateOf( (EntityComposite) qObj );
+            EntityDescriptor descriptor = qi4jspi.entityDescriptorFor( (EntityComposite) qObj );
             // genereate column, first time only
             if( model.getColumnCount() < 1 )
             {

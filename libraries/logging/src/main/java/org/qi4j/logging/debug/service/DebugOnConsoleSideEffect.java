@@ -62,7 +62,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
 
     private String getCompositeName( Composite composite )
     {
-        return first(Qi4j.DESCRIPTOR_FUNCTION.map( composite ).types()).getName();
+        return first(Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
     }
 
     @Override

@@ -15,7 +15,7 @@ public class AssociationWrapper
         this.next = next;
     }
 
-    public Association<Object> getNext()
+    public Association<Object> next()
     {
         return next;
     }

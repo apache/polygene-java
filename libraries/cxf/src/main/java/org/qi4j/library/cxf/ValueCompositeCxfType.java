@@ -87,7 +87,7 @@ public class ValueCompositeCxfType extends AegisType
             QName childName = childReader.getName();
             QualifiedName childQualifiedName = QualifiedName.fromClass( (Class) typeClass,
                                                                         childName.getLocalPart() );
-            PropertyDescriptor propertyDescriptor = stateDescriptor.getPropertyByQualifiedName(
+            PropertyDescriptor propertyDescriptor = stateDescriptor.findPropertyModelByQualifiedName(
                 childQualifiedName );
             Type propertyType = propertyDescriptor.type();
             AegisType type = getTypeMapping().getType( propertyType );
@@ -143,10 +143,10 @@ public class ValueCompositeCxfType extends AegisType
         throws DatabindingException
     {
         ValueComposite composite = (ValueComposite) object;
-        writer.writeXsiType( NamespaceUtil.convertJavaTypeToQName( first( Qi4j.DESCRIPTOR_FUNCTION
+        writer.writeXsiType( NamespaceUtil.convertJavaTypeToQName( first( Qi4j.FUNCTION_DESCRIPTOR_FOR
                                                                               .map( composite )
                                                                               .types() ) ) );
-        AssociationStateHolder state = spi.getState( composite );
+        AssociationStateHolder state = spi.stateOf( composite );
         for( Property<?> property : state.properties() )
         {
             Object value = property.get();
@@ -154,7 +154,8 @@ public class ValueCompositeCxfType extends AegisType
             if( value instanceof ValueComposite )
             {
                 ValueComposite compositeValue = (ValueComposite) value;
-                type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( first( Qi4j.DESCRIPTOR_FUNCTION.map( compositeValue ).types()) ) );
+                type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( first( Qi4j.FUNCTION_DESCRIPTOR_FOR
+                                                                                                  .map( compositeValue ).types()) ) );
             }
             else
             {
@@ -164,7 +165,7 @@ public class ValueCompositeCxfType extends AegisType
                 }
             }
 
-            QName childName = new QName( "", spi.getPropertyDescriptor( property ).qualifiedName().name() );
+            QName childName = new QName( "", spi.propertyDescriptorFor( property ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );
             if( type != null )
             {
@@ -178,9 +179,9 @@ public class ValueCompositeCxfType extends AegisType
         }
 
         AegisType type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( String.class ) );
-        for( Association association: state.associations() )
+        for( Association association: state.allAssociations() )
         {
-            QName childName = new QName( "", spi.getAssociationDescriptor( association ).qualifiedName().name() );
+            QName childName = new QName( "", spi.associationDescriptorFor( association ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );
 
             if (association.get() != null)
@@ -190,15 +191,15 @@ public class ValueCompositeCxfType extends AegisType
             cwriter.close();
         }
 
-        for( ManyAssociation association: state.manyAssociations() )
+        for( ManyAssociation association: state.allManyAssociations() )
         {
-            QName childName = new QName( "", spi.getAssociationDescriptor( association ).qualifiedName().name() );
+            QName childName = new QName( "", spi.associationDescriptorFor( association ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );
 
             String ids = null;
             for( Object entity : association )
             {
-                String id = EntityReference.getEntityReference( entity ).identity();
+                String id = EntityReference.entityReferenceFor( entity ).identity();
                 if (ids != null)
                     ids+=",";
                 ids+=ids;

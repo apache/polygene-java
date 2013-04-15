@@ -19,6 +19,12 @@ We receive a lot of questions about how applications should be assembled, and si
 and everything is to be done programmatically, it escalates the need to provide more hands-on explanation of how this is
 done.
 
+If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
+
+include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
+
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+
 == Basics ==
 
 First let's recap the structural requirements of Qi4j;
@@ -62,17 +68,18 @@ The Visibility rules are perhaps the most powerful aspect of the above. Visibili
 a Composite type need to be looked up. It defines both the scoping rules of the client as well as the provider. A lookup
 is either a direct reference, such as
 
-[source,java]
+[snippet,java]
 -----------
-EntityBuilderFactory factory = ...;
-PersonEntity p = factory.newEntity( PersonEntity.class );
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Docs.java
+tag=direct
 -----------
 
 or an indirect lookup, such as
 
-[source,java]
+[snippet,java]
 -----------
-Person p = factory.newEntity( Person.class );
+source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Docs.java
+tag=indirect
 -----------
 
 where it will first map the Person to a reachable PersonEntity.

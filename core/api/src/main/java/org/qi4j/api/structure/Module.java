@@ -12,13 +12,12 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.structure;
 
+import org.qi4j.api.activation.ActivationEventListenerRegistration;
 import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
-import org.qi4j.api.activation.ActivationEventListenerRegistration;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.object.ObjectFactory;
@@ -43,15 +42,38 @@ public interface Module
             QueryBuilderFactory,
             ServiceFinder
 {
+
+    /**
+     * @return the Module's name
+     */
     String name();
 
+    /**
+     * @return the Module's ClassLoader
+     */
     ClassLoader classLoader();
 
+    /**
+     * @param typeName name of a transient composite type
+     * @return the descriptor for a transient composite or null if the class could not be found or the transient composite is not visible
+     */
     TransientDescriptor transientDescriptor( String typeName );
 
+    /**
+     * @param typeName name of an entity composite type
+     * @return the descriptor for an entity composite or null if the class could not be found or the entity composite is not visible
+     */
     EntityDescriptor entityDescriptor( String typeName );
 
+    /**
+     * @param typeName name of an object type
+     * @return the descriptor for an object or null if the class could not be found or the object is not visible
+     */
     ObjectDescriptor objectDescriptor( String typeName );
 
+    /**
+     * @param typeName name of a value composite type
+     * @return the descriptor for a value composite or null if the class could not be found or the value composite is not visible
+     */
     ValueDescriptor valueDescriptor( String typeName );
 }

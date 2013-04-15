@@ -22,35 +22,35 @@ import com.basho.riak.client.bucket.Bucket;
 import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 @Ignore( "This test is ignored because it needs a Riak instance" )
 public class RiakHttpMapEntityStoreTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
 
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
-        config.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( config );
+        new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
         new RiakHttpMapEntityStoreAssembler().withConfigModule( config ).assemble( module );
     }
     // END SNIPPET: assembly
-
     private IRiakClient riakClient;
-
     private String bucketKey;
 
     @Override
     public void setUp()
-            throws Exception
+        throws Exception
     {
         super.setUp();
         RiakMapEntityStoreService es = module.findService( RiakMapEntityStoreService.class ).get();
@@ -60,14 +60,14 @@ public class RiakHttpMapEntityStoreTest
 
     @Override
     public void tearDown()
-            throws Exception
+        throws Exception
     {
         // Riak don't expose bucket deletion in its API so we empty the Qi4j Entities bucket.
         Bucket bucket = riakClient.fetchBucket( bucketKey ).execute();
-        for ( String key : bucket.keys() ) {
+        for( String key : bucket.keys() )
+        {
             bucket.delete( key ).execute();
         }
         super.tearDown();
     }
-
 }

@@ -27,7 +27,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.library.rdf.Qi4jEntityType;
 import org.qi4j.library.rdf.Rdfs;
@@ -36,6 +35,7 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.test.AbstractQi4jTest;
 
 import java.io.PrintWriter;
+import org.qi4j.test.EntityTestAssembler;
 
 
 /**
@@ -49,7 +49,7 @@ public class EntityTypeSerializerTest
 
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( module );
         module.entities( TestEntity.class );
         module.values( TestValue.class, Test2Value.class );
         module.objects( EntityTypeSerializer.class, EntityTypeSerializerTest.class );

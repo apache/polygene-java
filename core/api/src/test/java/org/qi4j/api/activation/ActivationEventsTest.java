@@ -15,8 +15,6 @@
  */
 package org.qi4j.api.activation;
 
-import org.qi4j.api.activation.ActivationEvent;
-import org.qi4j.api.activation.ActivationEventListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +28,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import static org.qi4j.api.activation.ActivationEvent.EventType.*;
 
 public class ActivationEventsTest
@@ -45,6 +43,7 @@ public class ActivationEventsTest
             implements TestService
     {
 
+        @Override
         public void test()
         {
         }
@@ -253,6 +252,7 @@ public class ActivationEventsTest
             this.events = events;
         }
 
+        @Override
         public void onEvent( ActivationEvent event )
         {
             events.add( event );

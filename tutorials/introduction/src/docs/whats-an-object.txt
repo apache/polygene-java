@@ -69,12 +69,10 @@ lot of rules regarding how it may be changed. In short, the state needs to be pr
 
 This leads us to this typical implementation of an Entity
 
-[source,java]
+[snippet,java]
 -----------
-@Mixins(SomeMixin.class)
-interface MyEntity
-   extends Some, Other, EntityComposite
-{}
+source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/WhatsAnObjectDocs.java
+tag=wo1
 -----------
 
 where Some and Other are role interfaces defined by one or more algorithms. SomeMixin is the implementation of the Some
@@ -83,12 +81,10 @@ interface. There is NO interface that is defined by the author of MyEntity. Algo
 The state needed for these mixins would then be put into separate interfaces, referred to by using the @This injection
 in the mixins.
 
-[source,java]
+[snippet,java]
 -----------
-interface SomeState
-{
-   Property<String> someProperty();
-}
+source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/WhatsAnObjectDocs.java
+tag=wo2
 -----------
 
 These interfaces will pretty much ONLY contain state declarations. There might be some methods in there, but I can't
@@ -97,23 +93,18 @@ see right now what they would be.
 In order to be able to get an overview of all the state being implemented by the Entity we introduce a "superstate"
 interface:
 
-[source,java]
+[snippet,java]
 -----------
-interface MyState
-   extends SomeState, OtherState, ...
-{}
+source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/WhatsAnObjectDocs.java
+tag=wo3
 -----------
 
 This lets us see the totality of all the state that the Entity has, and can be used in the builder phase:
 
-[source,java]
+[snippet,java]
 -----------
-EntityBuilder<MyEntity> builder = uow.newEntityBuilder(MyEntity.class);
-MyState state = builder.instanceFor(MyState.class);
-
-... init state ...
-
-MyEntity instance = builder.newInstance();
+source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/WhatsAnObjectDocs.java
+tag=wo4
 -----------
 
 This lets us divide our Entity into two parts: the internal state and the external roles of the domain that the object

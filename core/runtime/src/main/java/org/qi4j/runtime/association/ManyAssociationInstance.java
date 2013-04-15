@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.ManyAssociationWrapper;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.functional.Function2;
 import org.qi4j.runtime.composite.ConstraintsCheck;
@@ -119,22 +121,43 @@ public class ManyAssociationInstance<T>
         {
             return false;
         }
-        if( !super.equals( o ) )
+        ManyAssociation<?> that = (ManyAssociation) o;
+        // Unwrap if needed
+        while( that instanceof ManyAssociationWrapper )
+        {
+            that = ( (ManyAssociationWrapper) that ).next();
+        }
+        // Descriptor equality
+        ManyAssociationInstance<?> thatInstance = (ManyAssociationInstance) that;
+        AssociationDescriptor thatDescriptor = (AssociationDescriptor) thatInstance.associationInfo();
+        if( !associationInfo.equals( thatDescriptor ) )
         {
             return false;
         }
-
-        ManyAssociationInstance that = (ManyAssociationInstance) o;
-
-        return manyAssociationState.equals( that.manyAssociationState );
+        // State equality
+        if( manyAssociationState.count() != thatInstance.manyAssociationState.count() )
+        {
+            return false;
+        }
+        for( EntityReference ref : manyAssociationState )
+        {
+            if( !thatInstance.manyAssociationState.contains( ref ) )
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public int hashCode()
     {
-        int result = super.hashCode();
-        result = 31 * result + manyAssociationState.hashCode();
-        return result;
+        int hash = associationInfo.hashCode() * 31; // Descriptor
+        for( EntityReference ref : manyAssociationState )
+        {
+            hash += ref.hashCode() * 7; // State
+        }
+        return hash;
     }
 
     public ManyAssociationState getManyAssociationState()

@@ -37,15 +37,15 @@ import static org.qi4j.functional.Iterables.*;
 public abstract class AbstractModifierModel
     implements Dependencies, VisitableHierarchy<Object, Object>
 {
-    private final Class modifierClass;
+    private final Class<?> modifierClass;
 
     private ConstructorsModel constructorsModel;
     private InjectedFieldsModel injectedFieldsModel;
     private InjectedMethodsModel injectedMethodsModel;
 
-    private Class[] nextInterfaces;
+    private Class<?>[] nextInterfaces;
 
-    public AbstractModifierModel( Class declaredModifierClass, Class instantiationClass )
+    public AbstractModifierModel( Class<?> declaredModifierClass, Class<?> instantiationClass )
     {
         this.modifierClass = instantiationClass;
         constructorsModel = new ConstructorsModel( modifierClass );
@@ -55,7 +55,7 @@ public abstract class AbstractModifierModel
         nextInterfaces = toArray( componentType, unique( map( RAW_CLASS, interfacesOf( declaredModifierClass ) ) ));
     }
 
-    public Class modifierClass()
+    public Class<?> modifierClass()
     {
         return modifierClass;
     }

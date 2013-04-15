@@ -84,7 +84,7 @@ public interface EntityStateVersions
                 if( storeVersion == null )
                 {
                     EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( Usecase.DEFAULT, module, currentTime );
-                    EntityState state = unitOfWork.getEntityState( entityState.identity() );
+                    EntityState state = unitOfWork.entityStateOf( entityState.identity() );
                     storeVersion = state.version();
                     unitOfWork.discard();
                 }

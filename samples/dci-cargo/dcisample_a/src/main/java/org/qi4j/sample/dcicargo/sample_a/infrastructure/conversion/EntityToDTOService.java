@@ -78,8 +78,8 @@ public interface EntityToDTOService
             Unqualified unqualified = valueDescriptor.metaInfo( Unqualified.class );
             Iterable<? extends PropertyDescriptor> properties = valueDescriptor.state().properties();
             final EntityComposite composite = (EntityComposite) entity;
-            final EntityDescriptor entityDescriptor = spi.getEntityDescriptor( composite );
-            final AssociationStateHolder associationState = spi.getState( composite );
+            final EntityDescriptor entityDescriptor = spi.entityDescriptorFor( composite );
+            final AssociationStateHolder associationState = spi.stateOf( composite );
             ValueBuilder builder;
 
             if( unqualified == null || !unqualified.value() )
@@ -162,7 +162,7 @@ public interface EntityToDTOService
                                                             @Override
                                                             public EntityReference map( AssociationDescriptor associationDescriptor )
                                                             {
-                                                                return EntityReference.getEntityReference( associationState
+                                                                return EntityReference.entityReferenceFor( associationState
                                                                                                                .associationFor( associationDescriptor
                                                                                                                                     .accessor() )
                                                                                                                .get() );
@@ -176,7 +176,7 @@ public interface EntityToDTOService
                                                                 for( Object entity : associationState.manyAssociationFor( associationDescriptor
                                                                                                                               .accessor() ) )
                                                                 {
-                                                                    refs.add( EntityReference.getEntityReference( entity ) );
+                                                                    refs.add( EntityReference.entityReferenceFor( entity ) );
                                                                 }
                                                                 return refs;
                                                             }
@@ -194,8 +194,8 @@ public interface EntityToDTOService
                                                                 {
                                                                     PropertyDescriptor propertyDescriptor = entityDescriptor
                                                                         .state()
-                                                                        .getPropertyByName( descriptor.qualifiedName()
-                                                                                                .name() );
+                                                                        .findPropertyModelByName( descriptor.qualifiedName()
+                                                                                                      .name() );
                                                                     return associationState.propertyFor( propertyDescriptor
                                                                                                              .accessor() )
                                                                         .get();
@@ -305,7 +305,7 @@ public interface EntityToDTOService
                                                                     return null;
                                                                 }
 
-                                                                return EntityReference.getEntityReference( associationState
+                                                                return EntityReference.entityReferenceFor( associationState
                                                                                                                .associationFor( associationDescriptor
                                                                                                                                     .accessor() )
                                                                                                                .get() );
@@ -331,7 +331,7 @@ public interface EntityToDTOService
                                                                 for( Object entity : associationState.manyAssociationFor( associationDescriptor
                                                                                                                               .accessor() ) )
                                                                 {
-                                                                    refs.add( EntityReference.getEntityReference( entity ) );
+                                                                    refs.add( EntityReference.entityReferenceFor( entity ) );
                                                                 }
                                                                 return refs;
                                                             }

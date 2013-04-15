@@ -2,6 +2,7 @@
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
  * Copyright (c) 2007, Alin Dreghiciu. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +14,10 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.value;
 
-import java.io.StringWriter;
 import java.lang.reflect.Proxy;
-import org.json.JSONException;
 import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.api.json.JSONWriterSerializer;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.association.AssociationModel;
 import org.qi4j.runtime.association.ManyAssociationModel;
@@ -33,10 +30,11 @@ import org.qi4j.runtime.structure.ModuleInstance;
 /**
  * ValueComposite instance
  */
-public final class ValueInstance extends TransientInstance
+public final class ValueInstance
+    extends TransientInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static ValueInstance getValueInstance( ValueComposite composite )
+    public static ValueInstance valueInstanceOf( ValueComposite composite )
     {
         return (ValueInstance) Proxy.getInvocationHandler( composite );
     }
@@ -44,12 +42,21 @@ public final class ValueInstance extends TransientInstance
     public ValueInstance( ValueModel compositeModel,
                           ModuleInstance moduleInstance,
                           Object[] mixins,
-                          ValueStateInstance state
-    )
+                          ValueStateInstance state )
     {
         super( compositeModel, moduleInstance, mixins, state );
     }
 
+    /**
+     * Perform equals with {@code o} argument.
+     * <p>
+     *     The definition of equals() for the Value is that if both the state and descriptor are equal,
+     *     then the values are equal.
+     * </p>
+     *
+     * @param o The other object to compare.
+     * @return Returns a {@code boolean} indicator whether this object is equals the other.
+     */
     @Override
     public boolean equals( Object o )
     {
@@ -65,6 +72,12 @@ public final class ValueInstance extends TransientInstance
         try
         {
             ValueInstance that = (ValueInstance) Proxy.getInvocationHandler( o );
+            // Descriptor equality
+            if( !descriptor().equals( that.descriptor() ) )
+            {
+                return false;
+            }
+            // State equality
             return state.equals( that.state );
         }
         catch( ClassCastException e )
@@ -93,7 +106,7 @@ public final class ValueInstance extends TransientInstance
         for( PropertyModel propertyDescriptor : descriptor().state().properties() )
         {
             PropertyInstance<Object> propertyInstance =
-                (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
+                                     (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
 
             propertyInstance.prepareToBuild( propertyDescriptor );
         }
@@ -120,7 +133,7 @@ public final class ValueInstance extends TransientInstance
         for( PropertyModel propertyDescriptor : descriptor().state().properties() )
         {
             PropertyInstance<Object> propertyInstance =
-                (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
+                                     (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
             propertyInstance.prepareBuilderState( propertyDescriptor );
         }
 
@@ -135,24 +148,21 @@ public final class ValueInstance extends TransientInstance
         }
     }
 
+    /**
+     * Calculate hash code.
+     *
+     * @return the hashcode of this instance.
+     */
     @Override
     public int hashCode()
     {
-        return state.hashCode();
+        int hash = compositeModel.hashCode() * 23; // Descriptor
+        return hash + state.hashCode() * 5; // State
     }
 
     @Override
     public String toString()
     {
-        StringWriter string = new StringWriter();
-        try
-        {
-            new JSONWriterSerializer( string ).serialize( this.<ValueComposite>proxy() );
-        }
-        catch( JSONException e )
-        {
-            throw new IllegalStateException( "Could not JSON serialize value", e );
-        }
-        return string.toString();
+        return module().valueSerialization().serialize( this.<ValueComposite>proxy() );
     }
 }

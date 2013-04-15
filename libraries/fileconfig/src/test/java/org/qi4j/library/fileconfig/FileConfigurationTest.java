@@ -19,6 +19,7 @@ import java.io.IOException;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import org.qi4j.api.activation.ActivationException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -28,6 +29,7 @@ public class FileConfigurationTest
 
     @Test
     public void testFileConfiguration()
+        throws ActivationException, AssemblyException
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -50,7 +52,7 @@ public class FileConfigurationTest
 
     @Test
     public void testFileConfigurationOverride()
-            throws IOException
+        throws IOException, ActivationException, AssemblyException
     {
         File testFile = File.createTempFile( FileConfigurationTest.class.getName(), "" + System.currentTimeMillis() );
         final File confDir = testFile;

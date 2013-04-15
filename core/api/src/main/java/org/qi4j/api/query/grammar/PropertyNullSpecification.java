@@ -9,14 +9,14 @@ import org.qi4j.api.property.Property;
 public class PropertyNullSpecification<T>
     extends ExpressionSpecification
 {
-    PropertyFunction<T> property;
+    private PropertyFunction<T> property;
 
     public PropertyNullSpecification( PropertyFunction<T> property )
     {
         this.property = property;
     }
 
-    public PropertyFunction<T> getProperty()
+    public PropertyFunction<T> property()
     {
         return property;
     }

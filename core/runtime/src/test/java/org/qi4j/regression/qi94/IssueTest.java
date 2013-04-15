@@ -49,7 +49,7 @@ public class IssueTest
         {
             EntityBuilder<Item> builder = uow.newEntityBuilder( Item.class );
             assertEquals( ItemType.class, qi4j.api()
-                .getEntityDescriptor( builder.instance() )
+                .entityDescriptorFor( builder.instance() )
                 .state()
                 .getAssociationByName( "typeOfItem" )
                 .type() );

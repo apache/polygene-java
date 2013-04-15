@@ -22,10 +22,10 @@ import org.qi4j.api.property.PropertyDescriptor;
  */
 public interface StateDescriptor
 {
-    PropertyDescriptor getPropertyByName( String name )
+    PropertyDescriptor findPropertyModelByName( String name )
         throws IllegalArgumentException;
 
-    PropertyDescriptor getPropertyByQualifiedName( QualifiedName name )
+    PropertyDescriptor findPropertyModelByQualifiedName( QualifiedName name )
         throws IllegalArgumentException;
 
     Iterable<? extends PropertyDescriptor> properties();

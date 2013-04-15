@@ -71,5 +71,4 @@ public class RiakProtobufMapEntityStoreAssembler
         configModule.entities( RiakProtobufEntityStoreConfiguration.class ).
             visibleIn( configVisibility );
     }
-
 }

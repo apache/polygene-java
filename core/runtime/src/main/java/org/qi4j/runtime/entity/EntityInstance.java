@@ -46,7 +46,7 @@ import org.qi4j.spi.entity.EntityStatus;
 public final class EntityInstance
     implements CompositeInstance, MixinsInstance
 {
-    public static EntityInstance getEntityInstance( EntityComposite composite )
+    public static EntityInstance entityInstanceOf( EntityComposite composite )
     {
         return (EntityInstance) Proxy.getInvocationHandler( composite );
     }
@@ -172,7 +172,7 @@ public final class EntityInstance
             initState();
         }
 
-        Object mixin = methodInstance.getMixin( mixins );
+        Object mixin = methodInstance.getMixinFrom( mixins );
 
         if( mixin == null )
         {

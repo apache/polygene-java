@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
-import org.json.JSONException;
-import org.json.JSONTokener;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
+import org.qi4j.api.activation.ActivationException;
+import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Visibility;
@@ -42,7 +42,6 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.IdentityGenerator;
-import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.api.object.NoSuchObjectException;
 import org.qi4j.api.object.ObjectDescriptor;
@@ -62,6 +61,8 @@ import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
 import org.qi4j.functional.Specification;
@@ -96,6 +97,7 @@ import org.qi4j.runtime.value.ValueStateModel;
 import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerialization;
 
 import static org.qi4j.api.util.Classes.*;
 import static org.qi4j.functional.Iterables.*;
@@ -126,6 +128,7 @@ public class ModuleInstance
     // Lazy assigned on accessors
     private EntityStore store;
     private IdentityGenerator generator;
+    private ValueSerialization valueSerialization;
     private MetricsProvider metrics;
 
     @SuppressWarnings( "LeakingThisInConstructor" )
@@ -307,8 +310,8 @@ public class ModuleInstance
         Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
         for( PropertyModel propertyModel : modelModule.model().state().properties() )
         {
-            Property property = new PropertyInstance<Object>( propertyModel.getBuilderInfo(),
-                                                              propertyModel.initialValue( modelModule.module() ) );
+            Property<?> property = new PropertyInstance<Object>( propertyModel.getBuilderInfo(),
+                                                                 propertyModel.initialValue( modelModule.module() ) );
             properties.put( propertyModel.accessor(), property );
         }
 
@@ -397,7 +400,6 @@ public class ModuleInstance
         {
             return new ArrayList<EntityReference>();
         }
-
     }
 
     private static class FunctionStateResolver
@@ -434,7 +436,6 @@ public class ModuleInstance
         {
             return toList( manyAssociationFunction.map( associationDescriptor ) );
         }
-
     }
 
     @Override
@@ -442,7 +443,7 @@ public class ModuleInstance
     {
         NullArgumentException.validateNotNull( "prototype", prototype );
 
-        ValueInstance valueInstance = ValueInstance.getValueInstance( (ValueComposite) prototype );
+        ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) prototype );
         Class<Composite> valueType = (Class<Composite>) first( valueInstance.types() );
 
         ModelModule<ValueModel> modelModule = typeLookup.lookupValueModel( valueType );
@@ -456,7 +457,7 @@ public class ModuleInstance
     }
 
     @Override
-    public <T> T newValueFromJSON( Class<T> mixinType, String jsonValue )
+    public <T> T newValueFromSerializedState( Class<T> mixinType, String serializedState )
         throws NoSuchValueException, ConstructionException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
@@ -469,13 +470,11 @@ public class ModuleInstance
 
         try
         {
-            return (T) new JSONDeserializer( modelModule.module() ).
-                deserialize( new JSONTokener( jsonValue ).nextValue(),
-                             modelModule.model().valueType() );
+            return valueSerialization().deserialize( modelModule.model().valueType(), serializedState );
         }
-        catch( JSONException e )
+        catch( ValueSerializationException ex )
         {
-            throw new ConstructionException( "Could not create value from JSON", e );
+            throw new ConstructionException( "Could not create value from serialized state", ex );
         }
     }
 
@@ -495,11 +494,7 @@ public class ModuleInstance
     @Override
     public UnitOfWork newUnitOfWork( Usecase usecase )
     {
-        if( usecase == null )
-        {
-            usecase = Usecase.DEFAULT;
-        }
-        return newUnitOfWork( usecase, System.currentTimeMillis() );
+        return newUnitOfWork( usecase == null ? Usecase.DEFAULT : usecase, System.currentTimeMillis() );
     }
 
     @Override
@@ -530,7 +525,7 @@ public class ModuleInstance
     @Override
     public UnitOfWork getUnitOfWork( EntityComposite entity )
     {
-        EntityInstance instance = EntityInstance.getEntityInstance( entity );
+        EntityInstance instance = EntityInstance.entityInstanceOf( entity );
         return instance.unitOfWork();
     }
 
@@ -569,7 +564,7 @@ public class ModuleInstance
     // Implementation of Activation
     @Override
     public void activate()
-        throws Exception
+        throws ActivationException
     {
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         activation.activate( model.newActivatorsInstance(), iterable( services, importedServices ) );
@@ -578,7 +573,7 @@ public class ModuleInstance
 
     @Override
     public void passivate()
-        throws Exception
+        throws PassivationException
     {
         activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         activation.passivate();
@@ -634,7 +629,6 @@ public class ModuleInstance
         {
             return uowf.currentUnitOfWork().get( RAW_CLASS.map( type ), entityReference.identity() );
         }
-
     }
 
     public EntityStore entityStore()
@@ -665,6 +659,26 @@ public class ModuleInstance
             }
             return generator;
         }
+    }
+
+    public ValueSerialization valueSerialization()
+    {
+        synchronized( this )
+        {
+            if( valueSerialization == null )
+            {
+                try
+                {
+                    ServiceReference<ValueSerialization> service = findService( ValueSerialization.class );
+                    valueSerialization = service.get();
+                }
+                catch( NoSuchServiceException e )
+                {
+                    valueSerialization = new OrgJsonValueSerialization( layer.applicationInstance(), this, this );
+                }
+            }
+        }
+        return valueSerialization;
     }
 
     /* package */ MetricsProvider metricsProvider()
@@ -711,7 +725,7 @@ public class ModuleInstance
                     filter( new VisibilitySpecification( visibility ), values.models() ) );
     }
 
-    Iterable<ServiceReference> visibleServices( Visibility visibility )
+    Iterable<ServiceReference<?>> visibleServices( Visibility visibility )
     {
         return flatten( services.visibleServices( visibility ),
                         importedServices.visibleServices( visibility ) );
@@ -723,7 +737,7 @@ public class ModuleInstance
     {
 
         private final ModuleInstance moduleInstance;
-        private final Map<String, Class> classes = new ConcurrentHashMap<String, Class>();
+        private final Map<String, Class<?>> classes = new ConcurrentHashMap<String, Class<?>>();
 
         private ModuleClassLoader( ModuleInstance moduleInstance, ClassLoader classLoader )
         {
@@ -735,7 +749,7 @@ public class ModuleInstance
         protected Class<?> findClass( String name )
             throws ClassNotFoundException
         {
-            Class clazz = classes.get( name );
+            Class<?> clazz = classes.get( name );
             if( clazz == null )
             {
                 Specification<ModelDescriptor> modelTypeSpecification = modelTypeSpecification( name );
@@ -822,7 +836,6 @@ public class ModuleInstance
 
             return clazz;
         }
-
     }
 
 }

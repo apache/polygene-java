@@ -1,0 +1,16 @@
+description = "Qi4j StaX ValueSerialization Extension"
+
+jar { manifest { name = "Qi4j Extension - ValueSerialization - StaX" } }
+
+dependencies {
+
+    compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
+    compile libraries.commons_lang
+
+    testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
+
+    testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
+    testRuntime libraries.logback
+
+}
+

@@ -28,7 +28,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.json.JSONDeserializer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.io.Output;
@@ -59,8 +58,6 @@ public abstract class AbstractEventStoreMixin
     @Structure
     protected Module module;
 
-    protected JSONDeserializer deserializer;
-
     private ExecutorService transactionNotifier;
 
     final private List<UnitOfWorkEventsListener> listeners = synchronizedList( new ArrayList<UnitOfWorkEventsListener>() );
@@ -72,8 +69,6 @@ public abstract class AbstractEventStoreMixin
 
         domainEventType = module.valueDescriptor( DomainEventValue.class.getName() ).valueType();
         eventsType = module.valueDescriptor( UnitOfWorkDomainEventsValue.class.getName() ).valueType();
-
-        deserializer = new JSONDeserializer( module );
 
         transactionNotifier = Executors.newSingleThreadExecutor();
     }
