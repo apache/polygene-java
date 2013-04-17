@@ -27,10 +27,11 @@ import org.qi4j.library.uid.sequence.assembly.PersistingSequencingAssembler;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static junit.framework.Assert.assertEquals;
-
+import static org.junit.Assert.*;
+    
 public class PersistingSequencingTest extends AbstractQi4jTest
 {
+    @Override
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         new PersistingSequencingAssembler().assemble( module );

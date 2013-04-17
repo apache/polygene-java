@@ -296,7 +296,7 @@ public final class CompositeMethodModel
 
         // @Override (Since JDK 8)
         @SuppressWarnings( "unchecked" )
-        public <T extends Annotation> T[] getAnnotations( Class<T> annotationClass )
+        public <T extends Annotation> T[] getAnnotationsByType( Class<T> annotationClass )
         {
             NullArgumentException.validateNotNull( "annotationClass", annotationClass );
             return (T[]) Array.newInstance( annotationClass, 0 );
@@ -311,7 +311,7 @@ public final class CompositeMethodModel
 
         // @Override (Since JDK 8)
         @SuppressWarnings( "unchecked" )
-        public <T extends Annotation> T[] getDeclaredAnnotations( Class<T> annotationClass )
+        public <T extends Annotation> T[] getDeclaredAnnotationsByType( Class<T> annotationClass )
         {
             NullArgumentException.validateNotNull( "annotationClass", annotationClass );
             return (T[]) Array.newInstance( annotationClass, 0 );

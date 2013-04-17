@@ -49,7 +49,7 @@ import java.security.Principal;
 /**
  * Start simple web server that exposes the Restlet resource. Test through browser.
  */
-public class DomainEventSourceResourceTest
+public class DomainEventSourceResourceSample
 {
     public static void main( String[] args ) throws Exception
     {

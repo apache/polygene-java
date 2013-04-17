@@ -103,8 +103,8 @@ public class TraceServiceMixin
         {
             EntityComposite entity = (EntityComposite) object;
             String identity = entity.identity().get();
-            EntityComposite source = (EntityComposite) uow.get( first( Qi4j.FUNCTION_DESCRIPTOR_FOR
-                                                                           .map( entity ).types() ), identity);
+            EntityComposite source = (EntityComposite) uow.get( (Class<?>) first(
+                Qi4j.FUNCTION_DESCRIPTOR_FOR.map( entity ).types() ), identity );
             EntityBuilder<EntityTraceRecordEntity> builder = uow.newEntityBuilder( EntityTraceRecordEntity.class );
             EntityTraceRecordEntity state = builder.instance();
             setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
