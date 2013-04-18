@@ -124,6 +124,12 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
       }
 
       @Override
+      public boolean isInitialized()
+      {
+         return !isNotInitialized;
+      }
+
+      @Override
       public void shutDown()
               throws RepositoryException
       {

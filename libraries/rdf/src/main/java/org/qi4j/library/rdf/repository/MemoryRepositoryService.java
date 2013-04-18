@@ -28,40 +28,41 @@ import org.qi4j.api.service.ServiceReference;
 
 @Mixins( MemoryRepositoryService.MemoryRepositoryMixin.class )
 @Activators( MemoryRepositoryService.Activator.class )
-public interface MemoryRepositoryService extends Repository, ServiceComposite
+public interface MemoryRepositoryService
+    extends Repository, ServiceComposite
 {
 
     @Override
     void initialize()
-            throws RepositoryException;
+        throws RepositoryException;
 
     @Override
     void shutDown()
-            throws RepositoryException;
+        throws RepositoryException;
 
     public static class Activator
-            extends ActivatorAdapter<ServiceReference<MemoryRepositoryService>>
+        extends ActivatorAdapter<ServiceReference<MemoryRepositoryService>>
     {
 
         @Override
         public void afterActivation( ServiceReference<MemoryRepositoryService> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().initialize();
         }
 
         @Override
         public void beforePassivation( ServiceReference<MemoryRepositoryService> passivating )
-                throws Exception
+            throws Exception
         {
             passivating.get().shutDown();
         }
-
     }
 
     public static abstract class MemoryRepositoryMixin
         implements MemoryRepositoryService, ResetableRepository
     {
+
         SailRepository repo;
 
         public MemoryRepositoryMixin()
@@ -74,6 +75,12 @@ public interface MemoryRepositoryService extends Repository, ServiceComposite
             throws RepositoryException
         {
             repo.initialize();
+        }
+
+        @Override
+        public boolean isInitialized()
+        {
+            return repo.isInitialized();
         }
 
         @Override

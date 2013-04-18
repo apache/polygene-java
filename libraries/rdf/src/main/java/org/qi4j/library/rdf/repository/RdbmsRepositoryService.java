@@ -100,6 +100,12 @@ public interface RdbmsRepositoryService extends Repository, ServiceComposite
         }
 
         @Override
+        public boolean isInitialized()
+        {
+            return repo.isInitialized();
+        }
+        
+        @Override
         public void shutDown()
             throws RepositoryException
         {
