@@ -102,30 +102,37 @@ public abstract class ConcurrentModificationCheckConcern
         {
             lock.writeLock().lock();
 
-            versions.checkForConcurrentModification( loaded, module, currentTime );
-
-            final StateCommitter committer = uow.applyChanges();
-
-            return new StateCommitter()
+            try
             {
-                @Override
-                public void commit()
-                {
-                    committer.commit();
-                    versions.forgetVersions( loaded );
+               versions.checkForConcurrentModification( loaded, module, currentTime );
 
-                    lock.writeLock().unlock();
-                }
+               final StateCommitter committer = uow.applyChanges();
 
-                @Override
-                public void cancel()
-                {
-                    committer.cancel();
-                    versions.forgetVersions( loaded );
+               return new StateCommitter()
+               {
+                   @Override
+                   public void commit()
+                   {
+                       committer.commit();
+                       versions.forgetVersions( loaded );
 
-                    lock.writeLock().unlock();
-                }
-            };
+                       lock.writeLock().unlock();
+                   }
+
+                   @Override
+                   public void cancel()
+                   {
+                       committer.cancel();
+                       versions.forgetVersions( loaded );
+
+                       lock.writeLock().unlock();
+                   }
+               };
+            } catch( EntityStoreException e )
+            {
+               lock.writeLock().unlock();
+               throw e;
+            }
         }
 
         @Override
