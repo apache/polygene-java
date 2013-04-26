@@ -12,8 +12,6 @@ cool, new and challenging technology. We are especially interested in
 people willing to help improve the SDK, samples, tutorials, documentation
 and other supporting material.
 
-This initial SDK is very limited in terms of documentation.
-
 Please see http://www.qi4j.org for more information.
 
 
@@ -22,32 +20,18 @@ Licensing
 All Qi4j code is licensed under an Apache License.
 
 Third-Party Dependencies may be licensed under other terms. The only
-required dependencies are CGLib which is also under the Apache License.
+required dependencies are SLF4J (MIT Licence), ASM (BSD Licence) and
+Joda-Time (Apache Licence).
 
 
 Dependencies not included
 -------------------------
-To save download space, some optional dependencies are not included,
-which are only used under not too common circumstances, and if used
-it is likely that the user have already downloaded these separately.
-
-These are the Script language support in the 4 libraries
-
-  - qi4j-lib-groovy
-  - qi4j-lib-beanshell
-  - qi4j-lib-javascript
-  - qi4j-lib-jruby
-
-of their respective scripting languages
-
-  - org.codehaus.groovy:groovy-all
-  - org.beanshell:bsh-core
-  - rhino:rhino
-  - org.jruby:jruby
-
-Likewise, if you want to use the Spring Support Library or the Struts
-Support Library, these must be downloaded separately from SpringFramework
-and Apache Struts projects respectively.
+The binary distributions contains Qi4j artifacts only to keep the download
+size small. Each Qi4j artifact comes with a file prefixed ..-runtime-deps.txt
+that contains the list of its dependencies. Moreover, at the SDK root you'll
+find a Metalink file named qi4j-sdk-runtime-deps.metalink that you can use to
+download all needed dependencies jars. Metalink files can be downloaded using
+curl, aria2 and a lot of other download tools. Support in wget is coming.
 
 Finally, Qi4j TestSupport depends on JUnit 4.x and its dependencies, which
 is also not included in the SDK itself, as it is present among most Java

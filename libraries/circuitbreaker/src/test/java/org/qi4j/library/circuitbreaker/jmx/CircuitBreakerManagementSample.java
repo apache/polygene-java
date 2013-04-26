@@ -30,7 +30,7 @@ import org.qi4j.library.jmx.MBeanServerImporter;
  * Run this as a program and connect with VisualVM. That way you can monitor changes in attributes, notifications, and
  * execute operations on the CircuitBreaker through JMX.
  */
-public class CircuitBreakerManagementTest
+public class CircuitBreakerManagementSample
 {
 
     public static void main( String[] args )

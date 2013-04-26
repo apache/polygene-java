@@ -34,7 +34,7 @@ public final class NewObjectImporter<T>
     public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        return (T) obf.newObject( Iterables.first( serviceDescriptor.types() ) );
+        return obf.newObject( (Class<T>) Iterables.first( serviceDescriptor.types() ) );
     }
 
     @Override

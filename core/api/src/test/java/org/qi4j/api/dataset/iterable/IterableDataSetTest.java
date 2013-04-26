@@ -1,6 +1,7 @@
 package org.qi4j.api.dataset.iterable;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.qi4j.api.dataset.DataSet;
 import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
@@ -11,6 +12,7 @@ import org.qi4j.test.AbstractQi4jTest;
 /**
  * TODO
  */
+@Ignore( "Not implemented yet" )
 public class IterableDataSetTest
     extends AbstractQi4jTest
 {

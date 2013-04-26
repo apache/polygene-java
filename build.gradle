@@ -66,7 +66,6 @@ idea.project.ipr {
 def repos_urls = [
   mavenCentral: "http://repo1.maven.org/maven2/",
   ops4j: "http://repository.ops4j.org/maven2/",
-  aduna: "http://repo.aduna-software.org/maven2/releases/",
   restlet: 'http://maven.restlet.org',
   javanet: "http://download.java.net/maven/2",
 ]
@@ -91,7 +90,6 @@ allprojects {
   repositories {
     mavenCentral()
     mavenRepo name: 'ops4j-repo', url: repos_urls.ops4j
-    mavenRepo name: 'aduna-repo', url: repos_urls.aduna
     mavenRepo name: 'restlet-repo', url: repos_urls.restlet
     mavenRepo name: 'maven2-repository.dev.java.net', url: repos_urls.javanet
   }

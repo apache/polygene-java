@@ -26,10 +26,11 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.uid.sequence.assembly.TransientSequencingAssembler;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class TransientSequencingTest extends AbstractQi4jTest
 {
+    @Override
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         new TransientSequencingAssembler().assemble( module );
