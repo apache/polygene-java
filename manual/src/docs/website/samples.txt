@@ -45,12 +45,12 @@ based Webapp packaged as a WAR.
 
 https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/rental[Browse Source]
 
-[[sample-scala,Scala Sample]]
-== Scala Sample ==
-
-Sample of how to use Scala with Qi4j.
-
-https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/scala[Browse Source]
+// [[sample-scala,Scala Sample]]
+// == Scala Sample ==
+//
+// Sample of how to use Scala with Qi4j.
+//
+// https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/scala[Browse Source]
 
 [[sample-sql-support,SQL Support Sample]]
 == SQL Support Sample ==
