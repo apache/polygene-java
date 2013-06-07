@@ -85,7 +85,8 @@ public interface BaseDataService
             vbf = valueBuilderFactory;
 
             uow = uowf.newUnitOfWork( newUsecase( "Open uow for " ) );
-
+            try
+            {
             // UnLocode value objects
             AUMEL = unlocode( "AUMEL" ); // Melbourne
             CNHGH = unlocode( "CNHGH" ); // Hangzou
@@ -146,6 +147,12 @@ public interface BaseDataService
             HANDLING_EVENTS = uow.newEntity( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
 
             logger.debug( "BASIC DATA CREATED" );
+            uow.complete();
+            }
+            catch(Exception e) {
+            	uow.discard();
+            	logger.error("CANNOT CREATE BASIC DATA");
+            }
         }
 
         private Location location( UnLocode unlocode, String locationStr )
