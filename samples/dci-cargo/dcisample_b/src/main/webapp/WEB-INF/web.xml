@@ -12,7 +12,7 @@
         <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
         <init-param>
             <param-name>applicationClassName</param-name>
-            <param-value>com.marcgrue.dcisample_b.bootstrap.DCISampleApplication_b</param-value>
+            <param-value>org.qi4j.sample.dcicargo.sample_b.bootstrap.DCISampleApplication_b</param-value>
         </init-param>
     </filter>
 

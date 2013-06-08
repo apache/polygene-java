@@ -155,7 +155,8 @@ public class Assembler
 
         bootstrapModule
             .addServices(
-                BaseDataService.class );
+                BaseDataService.class )
+            .instantiateOnStartup();
 
         bootstrapModule
             .addServices(
