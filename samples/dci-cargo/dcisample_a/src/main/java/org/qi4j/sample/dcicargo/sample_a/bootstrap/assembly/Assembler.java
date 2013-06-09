@@ -154,7 +154,8 @@ public class Assembler
         // Load sample data on startup
         bootstrapModule
             .addServices(
-                BaseDataService.class );
+                BaseDataService.class )
+            .instantiateOnStartup();
         bootstrapModule
             .addServices(
                 SampleDataService.class )
