@@ -24,3 +24,8 @@ dependencies {
   testRuntime(libraries.logback)
 
 }
+
+task(runSample, dependsOn: 'testClasses', type: JavaExec) {
+    main = 'org.qi4j.sample.dcicargo.sample_a.bootstrap.Start8081'
+    classpath = sourceSets.test.runtimeClasspath
+}
