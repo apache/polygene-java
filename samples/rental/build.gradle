@@ -13,6 +13,7 @@ jar { manifest { name = "Qi4j Sample - Car Rental" }}
 dependencies {
 
   compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
+  compile project( ":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson" )
 
   providedCompile libraries.servlet_api
 

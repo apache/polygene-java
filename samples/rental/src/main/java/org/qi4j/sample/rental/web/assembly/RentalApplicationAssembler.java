@@ -35,6 +35,7 @@ public class RentalApplicationAssembler
         this.mode = mode;
     }
 
+    @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
         throws AssemblyException
     {
