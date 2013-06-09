@@ -3,6 +3,8 @@ package org.qi4j.samples.forum.assembler;
 import java.lang.reflect.Modifier;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.structure.Application;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.ApplicationAssembly;
@@ -14,6 +16,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.neo4j.NeoConfiguration;
 import org.qi4j.entitystore.neo4j.NeoEntityStoreService;
+import org.qi4j.functional.Function;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.rest.common.ValueAssembler;
 import org.qi4j.library.rest.server.assembler.RestServerAssembler;
@@ -30,6 +33,7 @@ import org.qi4j.samples.forum.rest.ForumRestlet;
 import org.qi4j.samples.forum.rest.resource.RootResource;
 import org.qi4j.samples.forum.service.BootstrapData;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.service.MetadataService;
 
 import static org.qi4j.api.util.Classes.hasModifier;
@@ -57,6 +61,7 @@ public class ForumAssembler
             configModule.entities( NeoConfiguration.class ).visibleIn( Visibility.application );
             configModule.services( MemoryEntityStoreService.class );
             configModule.services( UuidIdentityGeneratorService.class );
+            new OrgJsonValueSerializationAssembler().assemble( configModule );
         }
 
         LayerAssembly infrastructure = assembly.layer( "Infrastructure" ).uses( configuration );
@@ -65,6 +70,17 @@ public class ForumAssembler
             entityStore.services( FileConfigurationService.class );
             entityStore.services( NeoEntityStoreService.class ).visibleIn( Visibility.application );
             entityStore.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
+            new OrgJsonValueSerializationAssembler().
+                visibleIn( Visibility.application ).
+                withValuesModuleFinder( new Function<Application, Module>()
+            {
+                @Override
+                public Module map( Application app )
+                {
+                    return app.findModule( "REST", "Values" );
+                }
+            } ).
+                assemble( entityStore );
         }
 
         LayerAssembly data = assembly.layer( "Data" ).uses( infrastructure );
@@ -122,6 +138,7 @@ public class ForumAssembler
                 new RestServerAssembler().assemble( transformation );
                 transformation.objects( RequestReaderDelegator.class, ResponseWriterDelegator.class )
                     .visibleIn( Visibility.layer );
+                new OrgJsonValueSerializationAssembler().assemble( transformation );
             }
 
             ModuleAssembly resources = rest.module( "Resources" );

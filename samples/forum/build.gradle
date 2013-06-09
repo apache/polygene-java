@@ -8,6 +8,7 @@ dependencies {
   compile project( ":org.qi4j.libraries:org.qi4j.library.rest-server" )
   compile project( ":org.qi4j.libraries:org.qi4j.library.fileconfig" )
   compile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-neo4j" )
+  compile project( ":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson" )
   compile libraries.servlet_api
 
   testCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
