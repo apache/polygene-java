@@ -99,6 +99,7 @@ import static org.qi4j.api.structure.Application.Mode.development;
 public class Assembler
     implements ApplicationAssembler
 {
+    @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
         throws AssemblyException
     {
@@ -271,9 +272,6 @@ public class Assembler
             .objects(
                 EntityStateSerializer.class,
                 EntityTypeSerializer.class );
-
-        indexingModule
-            .services( OrgJsonValueSerializationService.class );
 
         indexingModule
             .services(

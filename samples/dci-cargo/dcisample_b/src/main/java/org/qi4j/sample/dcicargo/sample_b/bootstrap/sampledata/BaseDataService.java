@@ -29,6 +29,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
@@ -56,7 +57,8 @@ public interface BaseDataService
     extends ServiceComposite
 {
 
-    void createBaseData();
+    void createBaseData()
+        throws Exception;
 
     class Activator
             extends ActivatorAdapter<ServiceReference<BaseDataService>>
@@ -91,6 +93,7 @@ public interface BaseDataService
 
         @Override
         public void createBaseData()
+            throws Exception
         {
             logger.debug( "CREATING BASIC DATA..." );
 
@@ -144,7 +147,16 @@ public interface BaseDataService
             CARGOS = uow.newEntity( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
             HANDLING_EVENTS = uow.newEntity( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
 
-            logger.debug( "BASIC DATA CREATED" );
+            try {
+                uow.complete();
+                logger.debug( "BASIC DATA CREATED" );
+            }
+            catch( UnitOfWorkCompletionException ex)
+            {
+                uow.discard();
+                logger.error("UNABLE TO CREATE BASIC DATA");
+                throw ex;
+            }
         }
 
         protected static UnLocode unlocode( String unlocodeString )
