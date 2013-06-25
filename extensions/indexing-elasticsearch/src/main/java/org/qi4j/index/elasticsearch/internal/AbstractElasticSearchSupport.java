@@ -51,7 +51,7 @@ public abstract class AbstractElasticSearchSupport
         // Wait for yellow status: the primary shard is allocated but replicas are not
         client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 
-        if ( !client.admin().indices().prepareExists( index ).setIndices( index ).execute().actionGet().exists() ) {
+        if ( !client.admin().indices().prepareExists( index ).setIndices( index ).execute().actionGet().isExists() ) {
             // Create empty index
             LOGGER.info( "Will create '{}' index as it does not exists.", index );
             ImmutableSettings.Builder indexSettings = ImmutableSettings.settingsBuilder().loadFromSource( XContentFactory.jsonBuilder().

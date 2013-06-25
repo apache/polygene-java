@@ -146,7 +146,7 @@ public interface ElasticSearchIndexer
                     throw new ElasticSearchIndexException( bulkResponse.buildFailureMessage() );
                 }
 
-                LOGGER.debug( "Indexing changed Entity states took {}ms", bulkResponse.tookInMillis() );
+                LOGGER.debug( "Indexing changed Entity states took {}ms", bulkResponse.getTookInMillis() );
 
                 // Refresh index
                 support.client().admin().indices().prepareRefresh( support.index() ).execute().actionGet();
