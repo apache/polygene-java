@@ -130,8 +130,8 @@ public interface ElasticSearchFinder
             // Execute
             SearchResponse response = request.execute().actionGet();
 
-            if ( response.hits().totalHits() == 1 ) {
-                return EntityReference.parseEntityReference( response.hits().getAt( 0 ).id() );
+            if ( response.getHits().totalHits() == 1 ) {
+                return EntityReference.parseEntityReference( response.getHits().getAt( 0 ).id() );
             }
 
             return null;
@@ -157,7 +157,7 @@ public interface ElasticSearchFinder
             // Execute
             CountResponse count = request.execute().actionGet();
 
-            return count.count();
+            return count.getCount();
         }
 
         private static AndFilterBuilder baseFilters( Class<?> resultType )
