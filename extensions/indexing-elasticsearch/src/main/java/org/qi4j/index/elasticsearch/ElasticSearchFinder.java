@@ -17,7 +17,6 @@
  */
 package org.qi4j.index.elasticsearch;
 
-import java.util.Map;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -43,6 +42,8 @@ import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 import static org.elasticsearch.index.query.FilterBuilders.*;
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -445,8 +446,14 @@ public interface ElasticSearchFinder
             LOGGER.trace( "Processing MatchesSpecification {}", spec );
             // https://github.com/elasticsearch/elasticsearch/issues/988
             // http://elasticsearch-users.115913.n3.nabble.com/Regex-Query-td3301347.html
-            throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search: "
-                                                     + spec.getClass() + ": " + spec );
+           //  throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search: "
+           //                                          + spec.getClass() + ": " + spec );
+
+            String name = spec.property().toString();
+            String regexp = toString( spec.regexp(), variables );
+
+            addFilter( regexpFilter(name , regexp ), filterBuilder );
+
         }
 
         private void processPropertyNotNullSpecification( FilterBuilder filterBuilder,
