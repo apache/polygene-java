@@ -17,7 +17,6 @@
  */
 package org.qi4j.index.elasticsearch;
 
-import java.io.File;
 import org.junit.BeforeClass;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
@@ -25,11 +24,11 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
-import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 
-import static org.junit.Assert.fail;
+import java.io.File;
+
 import static org.junit.Assume.assumeTrue;
 
 public class ElasticSearchFinderTest
@@ -71,7 +70,8 @@ public class ElasticSearchFinderTest
         // IndexExporter not supported by ElasticSearch
     }
 
-    @Override
+    // @Override
+    /**
     public void script22()
             throws EntityFinderException
     {
@@ -81,5 +81,6 @@ public class ElasticSearchFinderTest
         } catch ( UnsupportedOperationException expected ) {
         }
     }
+     */
 
 }

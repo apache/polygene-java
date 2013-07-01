@@ -11,9 +11,6 @@ source=extensions/indexing-elasticsearch/dev-status.xml
 Index/Query services backed by http://www.elasticsearch.org/[ElasticSearch] search engine built on top of
 http://lucene.apache.org/[Apache Lucene].
 
-WARNING: ElasticSearch does not support queries using regular expressions. It means that you can't use
-MatchesSpecification from the Query API. See the ElasticSearch issue
-https://github.com/elasticsearch/elasticsearch/issues/988[#988].
 
 Three modes of operation are supported:
 
