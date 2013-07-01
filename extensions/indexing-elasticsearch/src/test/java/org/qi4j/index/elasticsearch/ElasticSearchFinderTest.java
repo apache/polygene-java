@@ -70,17 +70,6 @@ public class ElasticSearchFinderTest
         // IndexExporter not supported by ElasticSearch
     }
 
-    // @Override
-    /**
-    public void script22()
-            throws EntityFinderException
-    {
-        try {
-            super.script22();
-            fail( "Regex filter not implemented yet" );
-        } catch ( UnsupportedOperationException expected ) {
-        }
-    }
-     */
+
 
 }
