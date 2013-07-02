@@ -45,7 +45,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.elasticsearch.index.query.FilterBuilders.*;
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
+import static org.elasticsearch.index.query.QueryBuilders.wrapperQuery;
+
 
 @Mixins( ElasticSearchFinder.Mixin.class )
 public interface ElasticSearchFinder
@@ -443,10 +446,9 @@ public interface ElasticSearchFinder
                                                   Map<String, Object> variables )
         {
             LOGGER.trace( "Processing MatchesSpecification {}", spec );
-            // https://github.com/elasticsearch/elasticsearch/issues/988
-            // http://elasticsearch-users.115913.n3.nabble.com/Regex-Query-td3301347.html
-            throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search: "
-                                                     + spec.getClass() + ": " + spec );
+            String name = spec.property().toString();
+            String regexp = toString( spec.regexp(), variables );
+            addFilter( regexpFilter(name , regexp ), filterBuilder );
         }
 
         private void processPropertyNotNullSpecification( FilterBuilder filterBuilder,

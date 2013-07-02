@@ -26,62 +26,46 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
-import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractQueryTest;
 
-import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 
 public class ElasticSearchQueryTest
-        extends AbstractQueryTest
-{
+        extends AbstractQueryTest {
 
     @BeforeClass
-    public static void beforeClass_IBMJDK()
-    {
+    public static void beforeClass_IBMJDK() {
         // Ignore this test on IBM JDK
-        assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
+        assumeTrue(!(System.getProperty("java.vendor").contains("IBM")));
     }
 
     @Override
-    public void assemble( ModuleAssembly module )
-            throws AssemblyException
-    {
-        super.assemble( module );
+    public void assemble(ModuleAssembly module)
+            throws AssemblyException {
+        super.assemble(module);
 
         // Config module
-        ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        ModuleAssembly config = module.layer().module("config");
+        new EntityTestAssembler().assemble(config);
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().withConfigModule( config ).withConfigVisibility( Visibility.layer ).assemble( module );
-        ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
-        esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
+        new ESFilesystemIndexQueryAssembler().withConfigModule(config).withConfigVisibility(Visibility.layer).assemble(module);
+        ElasticSearchConfiguration esConfig = config.forMixin(ElasticSearchConfiguration.class).declareDefaults();
+        esConfig.indexNonAggregatedAssociations().set(Boolean.TRUE);
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().withData( new File( "build/qi4j-data" ) ).
-                withLog( new File( "build/qi4j-logs" ) ).withTemporary( new File( "build/qi4j-temp" ) );
-        module.services( FileConfigurationService.class ).
-                setMetaInfo( override );
+        FileConfigurationOverride override = new FileConfigurationOverride().withData(new File("build/qi4j-data")).
+                withLog(new File("build/qi4j-logs")).withTemporary(new File("build/qi4j-temp"));
+        module.services(FileConfigurationService.class).
+                setMetaInfo(override);
     }
 
     @Override
     public void showNetwork()
-            throws IOException
-    {
+            throws IOException {
         // IndexExporter not supported by ElasticSearch
     }
 
-    @Override
-    public void script22()
-            throws EntityFinderException
-    {
-        try {
-            super.script22();
-            fail( "Regex filter not implemented yet" );
-        } catch ( UnsupportedOperationException expected ) {
-        }
-    }
 
 }

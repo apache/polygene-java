@@ -31,43 +31,39 @@ import org.qi4j.test.indexing.AbstractComplexQueryTest;
 
 import static org.junit.Assume.assumeTrue;
 
-@Ignore( "ElasticSearch Index/Query do not support Complex Queries, ie. queries by 'example values'" )
+@Ignore("ElasticSearch Index/Query do not support Complex Queries, ie. queries by 'example values'")
 public class ElasticSearchComplexQueryTest
-        extends AbstractComplexQueryTest
-{
+        extends AbstractComplexQueryTest {
 
     @BeforeClass
-    public static void beforeClass_IBMJDK()
-    {
+    public static void beforeClass_IBMJDK() {
         // Ignore this test on IBM JDK
-        assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
+        assumeTrue(!(System.getProperty("java.vendor").contains("IBM")));
     }
 
     @Override
-    public void assemble( ModuleAssembly module )
-            throws AssemblyException
-    {
-        super.assemble( module );
+    public void assemble(ModuleAssembly module)
+            throws AssemblyException {
+        super.assemble(module);
 
         // Config module
-        ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        ModuleAssembly config = module.layer().module("config");
+        new EntityTestAssembler().assemble(config);
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().withConfigModule( config ).withConfigVisibility( Visibility.layer ).assemble( module );
-        ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
-        esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
+        new ESFilesystemIndexQueryAssembler().withConfigModule(config).withConfigVisibility(Visibility.layer).assemble(module);
+        ElasticSearchConfiguration esConfig = config.forMixin(ElasticSearchConfiguration.class).declareDefaults();
+        esConfig.indexNonAggregatedAssociations().set(Boolean.TRUE);
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().withData( new File( "build/qi4j-data" ) ).
-                withLog( new File( "build/qi4j-logs" ) ).withTemporary( new File( "build/qi4j-temp" ) );
-        module.services( FileConfigurationService.class ).
-                setMetaInfo( override );
+        FileConfigurationOverride override = new FileConfigurationOverride().withData(new File("build/qi4j-data")).
+                withLog(new File("build/qi4j-logs")).withTemporary(new File("build/qi4j-temp"));
+        module.services(FileConfigurationService.class).
+                setMetaInfo(override);
     }
 
     @Override
-    public void showNetwork()
-    {
+    public void showNetwork() {
         // IndexExporter not supported by ElasticSearch
     }
 
