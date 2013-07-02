@@ -11,6 +11,7 @@ source=extensions/indexing-elasticsearch/dev-status.xml
 Index/Query services backed by http://www.elasticsearch.org/[ElasticSearch] search engine built on top of
 http://lucene.apache.org/[Apache Lucene].
 
+WARNING: ElasticSearch Index/Query do not support ComplexQueries from the Query API, ie. queries by "example value".
 
 Three modes of operation are supported:
 

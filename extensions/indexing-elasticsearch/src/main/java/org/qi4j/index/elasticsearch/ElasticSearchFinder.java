@@ -258,7 +258,8 @@ public interface ElasticSearchFinder
 
             } else {
 
-                throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search: "
+                throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search "
+                                                         + "(New Query API support missing?): "
                                                          + spec.getClass() + ": " + spec );
 
             }
@@ -320,8 +321,8 @@ public interface ElasticSearchFinder
                 addFilter( orFilterBuilder, filterBuilder );
 
             } else {
-                throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search: "
-                                                         + spec.getClass() + ": " + spec );
+                throw new UnsupportedOperationException( "Binary Query specification is nor an AndSpecification "
+                                                         + "nor an OrSpecification, cannot continue." );
             }
         }
 
@@ -394,7 +395,8 @@ public interface ElasticSearchFinder
 
             } else {
 
-                throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search: "
+                throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search "
+                                                         + "(New Query API support missing?): "
                                                          + spec.getClass() + ": " + spec );
 
             }
