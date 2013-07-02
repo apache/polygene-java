@@ -17,16 +17,19 @@
  */
 package org.qi4j.index.elasticsearch;
 
-import java.io.*;
-import org.junit.*;
-import org.qi4j.api.common.*;
-import org.qi4j.bootstrap.*;
-import org.qi4j.index.elasticsearch.assembly.*;
-import org.qi4j.library.fileconfig.*;
-import org.qi4j.test.*;
-import org.qi4j.test.indexing.*;
+import java.io.File;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.qi4j.api.common.Visibility;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.qi4j.library.fileconfig.FileConfigurationOverride;
+import org.qi4j.library.fileconfig.FileConfigurationService;
+import org.qi4j.test.EntityTestAssembler;
+import org.qi4j.test.indexing.AbstractComplexQueryTest;
 
-import static org.junit.Assume.*;
+import static org.junit.Assume.assumeTrue;
 
 @Ignore("ElasticSearch Index/Query do not support Complex Queries, ie. queries by 'example values'")
 public class ElasticSearchComplexQueryTest
