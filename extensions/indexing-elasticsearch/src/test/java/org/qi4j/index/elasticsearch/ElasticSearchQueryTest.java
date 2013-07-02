@@ -17,58 +17,50 @@
  */
 package org.qi4j.index.elasticsearch;
 
-import org.junit.BeforeClass;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
-import org.qi4j.library.fileconfig.FileConfigurationOverride;
-import org.qi4j.library.fileconfig.FileConfigurationService;
-import org.qi4j.test.EntityTestAssembler;
-import org.qi4j.test.indexing.AbstractQueryTest;
+import java.io.*;
+import org.junit.*;
+import org.qi4j.api.common.*;
+import org.qi4j.bootstrap.*;
+import org.qi4j.index.elasticsearch.assembly.*;
+import org.qi4j.library.fileconfig.*;
+import org.qi4j.test.*;
+import org.qi4j.test.indexing.*;
 
-import java.io.File;
-import java.io.IOException;
-
-import static org.junit.Assume.assumeTrue;
+import static org.junit.Assume.*;
 
 public class ElasticSearchQueryTest
-        extends AbstractQueryTest
-{
+        extends AbstractQueryTest {
 
     @BeforeClass
-    public static void beforeClass_IBMJDK()
-    {
+    public static void beforeClass_IBMJDK() {
         // Ignore this test on IBM JDK
-        assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
+        assumeTrue(!(System.getProperty("java.vendor").contains("IBM")));
     }
 
     @Override
-    public void assemble( ModuleAssembly module )
-            throws AssemblyException
-    {
-        super.assemble( module );
+    public void assemble(ModuleAssembly module)
+            throws AssemblyException {
+        super.assemble(module);
 
         // Config module
-        ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        ModuleAssembly config = module.layer().module("config");
+        new EntityTestAssembler().assemble(config);
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().withConfigModule( config ).withConfigVisibility( Visibility.layer ).assemble( module );
-        ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
-        esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
+        new ESFilesystemIndexQueryAssembler().withConfigModule(config).withConfigVisibility(Visibility.layer).assemble(module);
+        ElasticSearchConfiguration esConfig = config.forMixin(ElasticSearchConfiguration.class).declareDefaults();
+        esConfig.indexNonAggregatedAssociations().set(Boolean.TRUE);
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().withData( new File( "build/qi4j-data" ) ).
-                withLog( new File( "build/qi4j-logs" ) ).withTemporary( new File( "build/qi4j-temp" ) );
-        module.services( FileConfigurationService.class ).
-                setMetaInfo( override );
+        FileConfigurationOverride override = new FileConfigurationOverride().withData(new File("build/qi4j-data")).
+                withLog(new File("build/qi4j-logs")).withTemporary(new File("build/qi4j-temp"));
+        module.services(FileConfigurationService.class).
+                setMetaInfo(override);
     }
 
     @Override
     public void showNetwork()
-            throws IOException
-    {
+            throws IOException {
         // IndexExporter not supported by ElasticSearch
     }
 
