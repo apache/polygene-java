@@ -30,11 +30,11 @@ import java.util.Set;
 import org.jclouds.ContextBuilder;
 import org.jclouds.apis.ApiMetadata;
 import org.jclouds.apis.Apis;
-import org.jclouds.blobstore.BlobMap;
 import org.jclouds.blobstore.BlobStore;
 import org.jclouds.blobstore.BlobStoreContext;
-import org.jclouds.blobstore.InputStreamMap;
 import org.jclouds.blobstore.domain.Blob;
+import org.jclouds.blobstore.domain.StorageMetadata;
+import org.jclouds.io.Payload;
 import org.jclouds.providers.ProviderMetadata;
 import org.jclouds.providers.Providers;
 import org.qi4j.api.configuration.Configuration;
@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.contains;
+import static org.qi4j.api.entity.EntityReference.parseEntityReference;
 
 /**
  * JClouds implementation of MapEntityStore.
@@ -154,13 +155,17 @@ public class JCloudsMapEntityStoreMixin
     public Reader get( EntityReference entityReference )
         throws EntityStoreException
     {
-        InputStreamMap isMap = storeContext.createInputStreamMap( container );
-        InputStream input = isMap.get( entityReference.identity() );
-
-        if( input == null )
+        Blob blob = storeContext.getBlobStore().getBlob( container, entityReference.identity() );
+        if( blob == null )
         {
             throw new EntityNotFoundException( entityReference );
         }
+        Payload payload = blob.getPayload();
+        if( payload == null )
+        {
+            throw new EntityNotFoundException( entityReference );
+        }
+        InputStream input = payload.getInput();
         try
         {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -187,7 +192,7 @@ public class JCloudsMapEntityStoreMixin
     public void applyChanges( MapChanges changes )
         throws IOException
     {
-        final BlobMap blobMap = storeContext.createBlobMap( container );
+        final BlobStore blobStore = storeContext.getBlobStore();
 
         changes.visitMap( new MapChanger()
         {
@@ -204,8 +209,8 @@ public class JCloudsMapEntityStoreMixin
                         throws IOException
                     {
                         super.close();
-                        Blob blob = blobMap.blobBuilder().payload( toString() ).build();
-                        blobMap.put( ref.identity(), blob );
+                        Blob blob = blobStore.blobBuilder( ref.identity() ).payload( toString() ).build();
+                        blobStore.putBlob( container, blob );
                     }
                 };
             }
@@ -214,7 +219,7 @@ public class JCloudsMapEntityStoreMixin
             public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
                 throws IOException
             {
-                if( !blobMap.containsKey( ref.identity() ) )
+                if( !blobStore.blobExists( container, ref.identity() ) )
                 {
                     throw new EntityNotFoundException( ref );
                 }
@@ -226,8 +231,8 @@ public class JCloudsMapEntityStoreMixin
                         throws IOException
                     {
                         super.close();
-                        Blob blob = blobMap.blobBuilder().payload( toString() ).build();
-                        blobMap.put( ref.identity(), blob );
+                        Blob blob = blobStore.blobBuilder( ref.identity() ).payload( toString() ).build();
+                        blobStore.putBlob( container, blob );
                     }
                 };
             }
@@ -236,11 +241,11 @@ public class JCloudsMapEntityStoreMixin
             public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
                 throws EntityNotFoundException
             {
-                if( !blobMap.containsKey( ref.identity() ) )
+                if( !blobStore.blobExists( container, ref.identity() ) )
                 {
                     throw new EntityNotFoundException( ref );
                 }
-                blobMap.remove( ref.identity() );
+                blobStore.removeBlob( container, ref.identity() );
             }
         } );
     }
@@ -262,18 +267,23 @@ public class JCloudsMapEntityStoreMixin
                     public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, IOException
                     {
-                        InputStreamMap isMap = storeContext.createInputStreamMap( container );
-                        for( InputStream eachInput : isMap.values() )
+                        for( StorageMetadata stored : storeContext.getBlobStore().list() )
                         {
+                            Payload payload = storeContext.getBlobStore().getBlob( container, stored.getName() ).getPayload();
+                            if( payload == null )
+                            {
+                                throw new EntityNotFoundException( parseEntityReference( stored.getName() ) );
+                            }
+                            InputStream input = payload.getInput();
                             try
                             {
-                                receiver.receive( new InputStreamReader( eachInput, "UTF-8" ) );
+                                receiver.receive( new InputStreamReader( input, "UTF-8" ) );
                             }
                             finally
                             {
                                 try
                                 {
-                                    eachInput.close();
+                                    input.close();
                                 }
                                 catch( IOException ignored )
                                 {
@@ -285,4 +295,5 @@ public class JCloudsMapEntityStoreMixin
             }
         };
     }
+
 }
