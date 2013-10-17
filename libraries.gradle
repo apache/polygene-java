@@ -4,75 +4,75 @@ def beanshellVersion = '2.0b4'
 def bonecpVersion = '0.7.1.RELEASE'
 def bouncyVersion = '1.46'
 def c3p0Version = '0.9.1.2'
-def commonsCodecVersion = '1.7'
+def commonsCodecVersion = '1.8'
 def commonsDbcpVersion = '1.4'
 def commonsIoVersion = '2.4'
 def commonsLangVersion = '2.6'
-def cxfVersion = '2.5.6' // 2.7.0 - Unable to resolve dependencies!
-def derbyVersion = '10.9.1.0'
+def cxfVersion = '2.5.6' // 2.7.7 - Unable to resolve dependencies!
+def derbyVersion = '10.10.1.1'
 def dnsJavaVersion = '2.1.1'
-def ehcacheVersion = '2.7.0'
-def elasticsearchVersion = '0.90.1'
-def freemarkerVersion = '2.3.19'
-def gaeVersion = '1.7.5'
-def groovyVersion = '2.1.3'
-def guavaVersion = '14.0.1'
-def h2Version = '1.3.171'
-def hazelcastVersion = '2.5'
-def httpClientVersion = '4.1.3' // 4.2.2 Fails to do HTTP basic auth in tests!
+def ehcacheVersion = '2.7.4'
+def elasticsearchVersion = '0.90.5'
+def freemarkerVersion = '2.3.20'
+def gaeVersion = '1.7.5' // 1.8.6
+def groovyVersion = '2.1.7'
+def guavaVersion = '15.0'
+def h2Version = '1.3.173'
+def hazelcastVersion = '3.1'
+def httpClientVersion = '4.1.3' // 4.2.2 Fails to do HTTP basic auth in tests! Refactor needed.
 def javascriptVersion = '1.7R4'
 def javasqlgeneratorVersion = '0.3.2'
 def jcloudsVersion = '1.6.0'
 def jdbmVersion = '2.0.1'
 def jdomVersion = '2.0.2'
-def jedisVersion = '2.1.0'
-ext.jettyVersion = '8.1.9.v20130131' // 9.0.1 exists
+def jedisVersion = '2.2.1'
+ext.jettyVersion = '8.1.13.v20130916' // 9.0.6.v20130930 - Fails to compile!
 def jgoodiesLooksVersion = '2.5.2'
-def jrubyVersion = '1.7.3'
 def jodaTimeVersion = '2.3'
+def jrubyVersion = '1.7.5'
 def jtaVersion = '1.1'
-def leveldbVersion = '0.5'
-def leveldbJniVersion = '1.6'
-def liquibaseVersion = '2.0.5'
+def leveldbVersion = '0.6'
+def leveldbJniVersion = '1.7'
+def liquibaseVersion = '3.0.6'
 def log4jVersion = '1.2.17'
-def logbackVersion = '1.0.11'
-def mongodbVersion = '2.11.1'
-def mysqlVersion = '5.1.24'
-def neoVersion = '1.3' // 1.8 exists
+def logbackVersion = '1.0.13'
+def mongodbVersion = '2.11.3'
+def mysqlVersion = '5.1.26'
+def neoVersion = '1.3' // 1.9.4 - Fails to compile!
 def neoIndexVersion = '1.3-1.3.M01' // Do not exist anymore!
 def orgJsonVersion = '20130213'
 def osgiVersion = '4.2.0' // 4.3.0 - Fails to compile!
-def pdfboxVersion = '1.8.1'
-def postgresqlVersion = '9.1-901-1.jdbc4'
+def pdfboxVersion = '1.8.2'
+def postgresqlVersion = '9.2-1003-jdbc4'
 def prefuseVersion = '0.21'
-def rdfVersion = '2.7.0'
 def restletVersion = '2.0.15' // HTTP(S) connectors in 2.1.x serie are buggy, see https://github.com/restlet/restlet-framework-java/issues/620
-def riakVersion = '1.1.0'
-def scalaVersion = '2.10.1'
+def rdfVersion = '2.7.7'
+def riakVersion = '1.4.2'
+def scalaVersion = '2.10.3'
 ext.servletVersion = '3.0.1'
-def shiroVersion = '1.2.1'
+def shiroVersion = '1.2.2'
 def skedVersion = '1.2'
 def sleepycatVersion = '4.0.103' // Taken from Oracle maven repository, 4.0.92 available in central
 def slf4jVersion = '1.7.5'
-def solrVersion = "1.4.1" // 4.0.0 - Fails to compile!
-def springVersion = '3.2.2.RELEASE'
+def solrVersion = "1.4.1" // 4.5.0 - Fails to compile!
+def springVersion = '3.2.4.RELEASE'
 def sqliteVersion = '3.7.2'
-def strutsVersion = '2.3.14'
+def strutsVersion = '2.3.15.3'
 def velocityVersion = '1.7'
 def voldemortVersion = '0.81' // Taken from Clojars maven repository, 0.96 not in any repository?
-def wicketVersion = '1.5.8' // 6.3.0 - Samples fails to compile!
+def wicketVersion = '1.5.8' // 6.11.0 - Samples fails to compile!
 def wicketStatelessVersion = '1.5.0'
 def woodstoxVersion = '4.2.0'
 def wsdl4jVersion = '1.6.3'
 def yammerMetricsVersion = '2.2.0'
 
-def antVersion = '1.9.0'
+def antVersion = '1.9.2'
 def junitVersion = '4.11'
-def testNgVersion = '6.8.1'
+def testNgVersion = '6.8.7'
 def jmockVersion = '2.6.0'
 def mockitoVersion = '1.9.5'
-def easyMockVersion = '3.1'
-def xmlunitVersion = '1.4'
+def easyMockVersion = '3.2'
+def xmlunitVersion = '1.5'
 
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
 // use.  In that respect it serves a role similar to <dependencyManagement> in Maven
@@ -258,7 +258,7 @@ rootProject.ext {
           derby: "org.apache.derby:derby:$derbyVersion",
           derbyclient: "org.apache.derby:derbyclient:$derbyVersion",
           derbynet: "org.apache.derby:derbynet:$derbyVersion",
-          postgres: "postgresql:postgresql:$postgresqlVersion",
+          postgres: "org.postgresql:postgresql:$postgresqlVersion",
           mysql_connector: "mysql:mysql-connector-java:$mysqlVersion",
           sqlite: "org.xerial:sqlite-jdbc:$sqliteVersion",
           junit: "junit:junit:$junitVersion",
