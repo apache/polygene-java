@@ -325,6 +325,12 @@ http://www.axonframework.org/[axonframework.org]
 "_Jdon Framework is a DDD( Domain-Driven Design ) + DCI + Domain Events(Event Sourcing/CQRS) framework for java._"
 +
 http://www.jdon.org/[jdon.org]
-
-
++
+- *The Fractal Project*
++
+"_Fractal is a modular, extensible and programming language agnostic component model that can be used to design,
+implement, deploy and reconfigure systems and applications, from operating systems to middleware platforms and to
+graphical user interfaces._"
++
+http://fractal.ow2.org/[fractal.ow2.org]
 

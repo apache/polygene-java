@@ -12,7 +12,7 @@ cool, new and challenging technology. We are especially interested in
 people willing to help improve the SDK, samples, tutorials, documentation
 and other supporting material.
 
-Please see http://www.qi4j.org for more information.
+Please see http://qi4j.org for more information.
 
 
 Licensing
@@ -37,8 +37,12 @@ Finally, Qi4j TestSupport depends on JUnit 4.x and its dependencies, which
 is also not included in the SDK itself, as it is present among most Java
 developers.
 
+If you prefer to use a dependency management system, go to:
+http://qi4j.org/latest/howto-depend-on-qi4j.html
+
 
 Thank you for trying out Qi4j and Composite Oriented Programming.
 
 
 -- Qi4j Core Dev Team
+
