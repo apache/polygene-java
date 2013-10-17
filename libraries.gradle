@@ -1,5 +1,5 @@
 // Versions of Dependencies;
-def asmVersion = '4.1'
+def asmVersion = '4.2'
 def beanshellVersion = '2.0b4'
 def bonecpVersion = '0.7.1.RELEASE'
 def bouncyVersion = '1.46'
