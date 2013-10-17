@@ -89,9 +89,9 @@ allprojects {
 
   repositories {
     mavenCentral()
-    mavenRepo name: 'ops4j-repo', url: repos_urls.ops4j
-    mavenRepo name: 'restlet-repo', url: repos_urls.restlet
-    mavenRepo name: 'maven2-repository.dev.java.net', url: repos_urls.javanet
+    maven { name 'ops4j-repo'; url repos_urls.ops4j }
+    maven { name 'restlet-repo'; url repos_urls.restlet }
+    maven { name 'maven2-repository.dev.java.net'; url repos_urls.javanet }
   }
 
   // Artifact upload global configuration BEGIN -----------------------------
@@ -247,7 +247,6 @@ allprojects {
       maxHeapSize = "1024m"
       systemProperties = testProperties
       ignoreFailures = true
-      testReport = true
       afterSuite { descriptor, result ->
         if( result.resultType == TestResult.ResultType.FAILURE )
         {
@@ -355,7 +354,6 @@ task globalTestReport( type: TestReport ) {
 
 test {
   dependsOn subprojects*.test, globalTestReport
-  testReport = false
 }
 
 // Build the whole SDK public Javadoc
@@ -572,5 +570,5 @@ task release {
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
 task wrapper( type: Wrapper ) {
-  gradleVersion = '1.5'
+  gradleVersion = '1.8'
 }
