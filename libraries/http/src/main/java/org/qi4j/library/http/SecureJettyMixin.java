@@ -20,11 +20,12 @@ import javax.servlet.ServletContextListener;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.SecurityHandler;
-import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ssl.SslConnector;
-import org.eclipse.jetty.server.ssl.SslSelectChannelConnector;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.Identity;
@@ -33,8 +34,10 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.library.http.Interface.Protocol;
 
+import static org.qi4j.library.http.JettyConfigurationHelper.configureSsl;
+
 public class SecureJettyMixin
-        extends AbstractJettyMixin
+    extends AbstractJettyMixin
 {
 
     @This
@@ -61,17 +64,29 @@ public class SecureJettyMixin
     }
 
     @Override
+    protected HttpConfiguration specializeHttp( HttpConfiguration httpConfig )
+    {
+        HttpConfiguration httpsConfig = new HttpConfiguration( httpConfig );
+        httpsConfig.addCustomizer( new SecureRequestCustomizer() );
+        return httpsConfig;
+    }
+
+    @Override
     protected SecurityHandler buildSecurityHandler()
     {
-        if ( constraintServices != null ) {
+        if( constraintServices != null )
+        {
             ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
-            for ( ConstraintService eachConstraintService : constraintServices ) {
+            for( ConstraintService eachConstraintService : constraintServices )
+            {
                 ConstraintMapping csMapping = eachConstraintService.buildConstraintMapping();
-                if ( csMapping != null ) {
+                if( csMapping != null )
+                {
                     securityHandler.addConstraintMapping( csMapping );
                 }
             }
-            if ( !securityHandler.getConstraintMappings().isEmpty() ) {
+            if( !securityHandler.getConstraintMappings().isEmpty() )
+            {
                 return securityHandler;
             }
         }
@@ -79,11 +94,11 @@ public class SecureJettyMixin
     }
 
     @Override
-    protected Connector buildConnector()
+    protected ServerConnector buildConnector( Server server, HttpConfiguration httpConfig )
     {
-        SslConnector connector = new SslSelectChannelConnector( new SslContextFactory() );
-        JettyConfigurationHelper.configureSslConnector( connector, configuration.get() );
-        return connector;
+        SslConnectionFactory sslConnFactory = new SslConnectionFactory();
+        configureSsl( sslConnFactory, configuration.get() );
+        return new ServerConnector( server, sslConnFactory, new HttpConnectionFactory( httpConfig ) );
     }
 
     @Override

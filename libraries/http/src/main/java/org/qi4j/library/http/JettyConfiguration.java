@@ -77,18 +77,6 @@ public interface JettyConfiguration
     Property<Integer> requestHeaderSize();
 
     /**
-     * Size of the content buffer for receiving requests in bytes.
-     * 
-     * These buffers are only used for active connections that have requests with bodies that will not fit within the
-     * header buffer.
-     * 
-     * @return The size of the content buffer for receiving requests in bytes.
-     */
-    @Optional
-    @GreaterThan( 0 )
-    Property<Integer> requestBufferSize();
-
-    /**
      * @return The size of the buffer to be used for response headers in bytes.
      */
     @Optional

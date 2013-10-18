@@ -15,7 +15,6 @@ package org.qi4j.library.http;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
 import javax.management.MBeanServer;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
@@ -23,22 +22,29 @@ import javax.servlet.ServletContextListener;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.NetworkConnector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ErrorHandler;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Iterables;
 import org.qi4j.library.http.Interface.Protocol;
 
-import static org.qi4j.library.http.JettyConfigurationHelper.*;
+import static org.qi4j.library.http.JettyConfigurationHelper.addContextListeners;
+import static org.qi4j.library.http.JettyConfigurationHelper.addFilters;
+import static org.qi4j.library.http.JettyConfigurationHelper.addServlets;
+import static org.qi4j.library.http.JettyConfigurationHelper.configureConnector;
+import static org.qi4j.library.http.JettyConfigurationHelper.configureContext;
+import static org.qi4j.library.http.JettyConfigurationHelper.configureHttp;
+import static org.qi4j.library.http.JettyConfigurationHelper.configureServer;
 
 public abstract class AbstractJettyMixin
-        implements HttpService, JettyActivation
+    implements HttpService, JettyActivation
 {
 
     private final String identity;
@@ -67,24 +73,29 @@ public abstract class AbstractJettyMixin
         this.mBeanServer = mBeanServer;
     }
 
-    protected abstract JettyConfiguration configuration();
-
-    protected Connector buildConnector()
-    {
-        return new SelectChannelConnector();
-    }
-
-    protected SecurityHandler buildSecurityHandler()
-    {
-        return null;
-    }
-
-    protected abstract Protocol servedProtocol();
-
     @Override
     public final void startJetty()
-            throws Exception
+        throws Exception
     {
+        // Configure Server
+        configureServer( server, configuration() );
+
+        // Set up HTTP
+        HttpConfiguration httpConfig = new HttpConfiguration();
+        configureHttp( httpConfig, configuration() );
+        httpConfig = specializeHttp( httpConfig );
+
+        // Set up connector
+        ServerConnector connector = buildConnector( server, httpConfig );
+        configureConnector( connector, configuration() );
+
+        // Bind Connector to Server
+        server.addConnector( connector );
+        if( mBeanServer != null )
+        {
+            server.addEventListener( new MBeanContainer( mBeanServer ) );
+        }
+
         // Prepare ServletContext
         ServletContextHandler root = new ServletContextHandler( server,
                                                                 "/",
@@ -100,98 +111,76 @@ public abstract class AbstractJettyMixin
         addServlets( root, servlets );
         addFilters( root, filters );
 
-        // Prepare Connector
-        Connector connector = buildConnector();
-        configureConnector( connector, configuration() );
-
-        // Prepare Server
-        configureServer( server, configuration() );
-        server.addConnector( connector );
-        if ( mBeanServer != null ) {
-            server.getContainer().addEventListener( new MBeanContainer( mBeanServer ) );
-        }
-
         // Start
         server.start();
     }
 
     @Override
     public final void stopJetty()
-            throws Exception
+        throws Exception
     {
         server.stop();
-        for ( Connector connector : server.getConnectors() ) {
-            connector.close();
+        for( Connector connector : server.getConnectors() )
+        {
+            connector.stop();
         }
         server = null;
     }
 
     @Override
+    @SuppressWarnings( "ValueOfIncrementOrDecrementUsed" )
     public final Interface[] interfacesServed()
     {
         Connector[] connectors = server.getConnectors();
         Interface[] result = new Interface[ connectors.length ];
         int index = 0;
-        for ( Connector connector : connectors ) {
-            String host = configuration().hostName().get();
-            if ( host == null ) {
-                host = connector.getHost();
-                if ( host == null ) // If serving all interfaces.
+        for( Connector connector : connectors )
+        {
+            if( connector instanceof NetworkConnector )
+            {
+                NetworkConnector netConnector = (NetworkConnector) connector;
+                String host = configuration().hostName().get();
+                if( host == null )
                 {
-                    try {
-                        host = InetAddress.getLocalHost().getHostAddress();
-                    } catch ( UnknownHostException e ) {
-                        InternalError error = new InternalError( "UnknownHost for local interface." );
-                        error.initCause( e );
-                        throw error;
+                    host = netConnector.getHost();
+                    if( host == null ) // If serving all interfaces.
+                    {
+                        try
+                        {
+                            host = InetAddress.getLocalHost().getHostAddress();
+                        }
+                        catch( UnknownHostException e )
+                        {
+                            InternalError error = new InternalError( "UnknownHost for local interface." );
+                            error.initCause( e );
+                            throw error;
+                        }
                     }
                 }
+                result[ index++] = new InterfaceImpl( host, netConnector.getPort(), servedProtocol() );
             }
-            result[ index++] = new InterfaceImpl( host, connector.getPort(), servedProtocol() );
-
         }
         return result;
     }
 
-    protected static void addContextListeners( ServletContextHandler root, Iterable<ServiceReference<ServletContextListener>> contextListeners )
+    protected abstract JettyConfiguration configuration();
+
+    @SuppressWarnings( "NoopMethodInAbstractClass" )
+    protected HttpConfiguration specializeHttp( HttpConfiguration httpConfig )
     {
-        // Iterate the available context listeners and add them to the server
-        for ( ServiceReference<ServletContextListener> contextListener : contextListeners ) {
-            ContextListenerInfo contextListenerInfo = contextListener.metaInfo( ContextListenerInfo.class );
-            Map<String, String> initParams = contextListenerInfo.initParams();
-            for( Map.Entry<String, String> entry : initParams.entrySet() )
-            {
-                root.setInitParameter( entry.getKey(), entry.getValue() );
-            }
-            root.addEventListener( contextListener.get() );
-        }
+        return httpConfig;
     }
 
-    protected static void addServlets( ServletContextHandler root, Iterable<ServiceReference<Servlet>> servlets )
+    protected ServerConnector buildConnector( Server server, HttpConfiguration httpConfig )
     {
-        // Iterate the available servlets and add it to the server
-        for ( ServiceReference<Servlet> servlet : servlets ) {
-            ServletInfo servletInfo = servlet.metaInfo( ServletInfo.class );
-            String servletPath = servletInfo.getPath();
-            Servlet servletInstance = servlet.get();
-            ServletHolder holder = new ServletHolder( servletInstance );
-            holder.setInitParameters( servletInfo.initParams() );
-            root.addServlet( holder, servletPath );
-        }
+        return new ServerConnector( server, new HttpConnectionFactory( httpConfig ) );
     }
 
-    protected static void addFilters( ServletContextHandler root, Iterable<ServiceReference<Filter>> filters )
+    protected SecurityHandler buildSecurityHandler()
     {
-        // Iterate the available filters and add them to the server
-        for ( ServiceReference<Filter> filter : filters ) {
-            FilterInfo filterInfo = filter.metaInfo( FilterInfo.class );
-            String filterPath = filterInfo.getPath();
-
-            Filter filterInstance = filter.get();
-            FilterHolder holder = new FilterHolder( filterInstance );
-            holder.setInitParameters( filterInfo.initParameters() );
-            root.addFilter( holder, filterPath, filterInfo.dispatchers() );
-        }
+        return null;
     }
+
+    protected abstract Protocol servedProtocol();
 
 }
