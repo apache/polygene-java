@@ -14,7 +14,7 @@ def dnsJavaVersion = '2.1.1'
 def ehcacheVersion = '2.7.4'
 def elasticsearchVersion = '0.90.5'
 def freemarkerVersion = '2.3.20'
-def gaeVersion = '1.7.5' // 1.8.6
+def gaeVersion = '1.8.6'
 def groovyVersion = '2.1.7'
 def guavaVersion = '15.0'
 def h2Version = '1.3.173'
@@ -45,21 +45,21 @@ def osgiVersion = '4.2.0' // 4.3.0 - Fails to compile!
 def pdfboxVersion = '1.8.2'
 def postgresqlVersion = '9.2-1003-jdbc4'
 def prefuseVersion = '0.21'
-def restletVersion = '2.0.15' // HTTP(S) connectors in 2.1.x serie are buggy, see https://github.com/restlet/restlet-framework-java/issues/620
+def restletVersion = '2.0.15' // 2.1.4 - Fails to compile!
 def rdfVersion = '2.7.7'
 def riakVersion = '1.4.2'
 def scalaVersion = '2.10.3'
 ext.servletVersion = '3.0.1'
 def shiroVersion = '1.2.2'
 def skedVersion = '1.2'
-def sleepycatVersion = '4.0.103' // Taken from Oracle maven repository, 4.0.92 available in central
+def sleepycatVersion = '5.0.73'
 def slf4jVersion = '1.7.5'
 def solrVersion = "1.4.1" // 4.5.0 - Fails to compile!
 def springVersion = '3.2.4.RELEASE'
 def sqliteVersion = '3.7.2'
 def strutsVersion = '2.3.15.3'
 def velocityVersion = '1.7'
-def voldemortVersion = '0.81' // Taken from Clojars maven repository, 0.96 not in any repository?
+def voldemortVersion = '1.3.0'
 def wicketVersion = '1.5.8' // 6.11.0 - Samples fails to compile!
 def wicketStatelessVersion = '1.5.0'
 def woodstoxVersion = '4.2.0'
@@ -218,7 +218,7 @@ rootProject.ext {
           jta: "javax.transaction:jta:$jtaVersion",
           javaSqlGenerator: "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
           javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
-          voldemort: "voldemort:voldemort:$voldemortVersion",
+          voldemort: "org.immunogenomics.gl.voldemort:voldemort:$voldemortVersion",
           guava: "com.google.guava:guava:$guavaVersion",
           sleepycat: "com.sleepycat:je:$sleepycatVersion",
           jdom: "org.jdom:jdom:$jdomVersion",
