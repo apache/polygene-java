@@ -26,7 +26,7 @@ import java.util.List;
  *
  * Printed StackTrace contains all causes in order.
  */
-public class PassivationException
+public final class PassivationException
     extends Exception
 {
 
@@ -35,7 +35,8 @@ public class PassivationException
 
     public PassivationException( List<Exception> exceptions )
     {
-        super( "Passivation Exception - [have " + exceptions.size() + " cause(s)]", exceptions.get( 0 ) );
+        super( "Passivation Exception - [have " + exceptions.size() + " cause(s)]",
+               exceptions.isEmpty() ? null : exceptions.get( 0 ) );
         causes = new Exception[ exceptions.size() ];
         exceptions.toArray( causes );
     }
@@ -54,9 +55,9 @@ public class PassivationException
             super.printStackTrace( stream );
             for( Exception exc : causes )
             {
-                counter++;
                 stream.print( "Cause " + counter + " : " );
                 exc.printStackTrace( stream );
+                counter++;
             }
         }
     }
@@ -70,9 +71,9 @@ public class PassivationException
             super.printStackTrace( writer );
             for( Exception exc : causes )
             {
-                counter++;
                 writer.print( "Cause " + counter + " : " );
                 exc.printStackTrace( writer );
+                counter++;
             }
         }
     }
