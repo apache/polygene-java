@@ -92,7 +92,7 @@ public abstract class EhCachePoolMixin
         configureEhCache( configuration );
         CacheConfiguration cc = createCacheConfiguration( "qi4j.ehcache.config.default" );
         configuration.setDefaultCacheConfiguration( cc );
-        cacheManager = new CacheManager( configuration );
+        cacheManager = CacheManager.newInstance( configuration );
     }
 
     @Override
