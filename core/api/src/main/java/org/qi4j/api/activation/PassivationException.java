@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.api.activation;
 
 import java.io.PrintStream;
@@ -30,11 +29,13 @@ import java.util.List;
 public class PassivationException
     extends Exception
 {
+
     private static final long serialVersionUID = 1L;
-    private Exception[] causes;
+    private final Exception[] causes;
 
     public PassivationException( List<Exception> exceptions )
     {
+        super( "Passivation Exception - [have " + exceptions.size() + " cause(s)]", exceptions.get( 0 ) );
         causes = new Exception[ exceptions.size() ];
         exceptions.toArray( causes );
     }
@@ -75,4 +76,5 @@ public class PassivationException
             }
         }
     }
+
 }
