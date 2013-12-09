@@ -1,7 +1,7 @@
 // Versions of Dependencies;
 def asmVersion = '4.2'
 def beanshellVersion = '2.0b4'
-def bonecpVersion = '0.7.1.RELEASE'
+def bonecpVersion = '0.8.0.RELEASE'
 def bouncyVersion = '1.46'
 def c3p0Version = '0.9.1.2'
 def commonsCodecVersion = '1.8'
@@ -12,38 +12,38 @@ def cxfVersion = '2.5.6' // 2.7.7 - Unable to resolve dependencies!
 def derbyVersion = '10.10.1.1'
 def dnsJavaVersion = '2.1.1'
 def ehcacheVersion = '2.7.4'
-def elasticsearchVersion = '0.90.5'
+def elasticsearchVersion = '0.90.7'
 def freemarkerVersion = '2.3.20'
 def gaeVersion = '1.8.6'
-def groovyVersion = '2.1.7'
+def groovyVersion = '2.2.1'
 def guavaVersion = '15.0'
-def h2Version = '1.3.173'
-def hazelcastVersion = '3.1'
-def httpClientVersion = '4.2.2'
+def h2Version = '1.3.174'
+def hazelcastVersion = '3.1.3'
+def httpClientVersion = '4.2.2' // 4.3.1 exists
 def javascriptVersion = '1.7R4'
 def javasqlgeneratorVersion = '0.3.2'
-def jcloudsVersion = '1.6.0'
-def jdbmVersion = '2.0.1'
+def jcloudsVersion = '1.6.3'
+def jdbmVersion = '2.4'
 def jdomVersion = '2.0.2'
 def jedisVersion = '2.2.1'
-ext.jettyVersion = '9.0.6.v20130930'
+ext.jettyVersion = '9.1.0.v20131115'
 def jgoodiesLooksVersion = '2.5.2'
 def jodaTimeVersion = '2.3'
-def jrubyVersion = '1.7.5'
+def jrubyVersion = '1.7.8'
 def jtaVersion = '1.1'
 def leveldbVersion = '0.6'
 def leveldbJniVersion = '1.7'
-def liquibaseVersion = '3.0.6'
+def liquibaseVersion = '3.0.7'
 def log4jVersion = '1.2.17'
 def logbackVersion = '1.0.13'
 def mongodbVersion = '2.11.3'
-def mysqlVersion = '5.1.26'
+def mysqlVersion = '5.1.27'
 def neoVersion = '1.3' // 1.9.4 - Fails to compile!
 def neoIndexVersion = '1.3-1.3.M01' // Do not exist anymore!
 def orgJsonVersion = '20130213'
 def osgiVersion = '4.2.0' // 4.3.0 - Fails to compile!
 def pdfboxVersion = '1.8.2'
-def postgresqlVersion = '9.2-1003-jdbc4'
+def postgresqlVersion = '9.3-1100-jdbc4'
 def prefuseVersion = '0.21'
 def restletVersion = '2.0.15' // 2.1.4 - Fails to compile!
 def rdfVersion = '2.7.7'
@@ -55,7 +55,7 @@ def skedVersion = '1.2'
 def sleepycatVersion = '5.0.73'
 def slf4jVersion = '1.7.5'
 def solrVersion = "1.4.1" // 4.5.0 - Fails to compile!
-def springVersion = '3.2.4.RELEASE'
+def springVersion = '3.2.5.RELEASE'
 def sqliteVersion = '3.7.2'
 def strutsVersion = '2.3.15.3'
 def velocityVersion = '1.7'
@@ -200,10 +200,10 @@ rootProject.ext {
           elasticsearch: "org.elasticsearch:elasticsearch:$elasticsearchVersion",
           h2: "com.h2database:h2:$h2Version",
           hazelcast: "com.hazelcast:hazelcast:$hazelcastVersion",
-          jclouds_core: "org.jclouds:jclouds-core:$jcloudsVersion",
-          jclouds_blobstore: "org.jclouds:jclouds-blobstore:$jcloudsVersion",
-          jclouds_filesystem: "org.jclouds.api:filesystem:$jcloudsVersion",
-          jdbm: "org.fusesource.jdbm:jdbm:$jdbmVersion",
+          jclouds_core: "org.apache.jclouds:jclouds-core:$jcloudsVersion",
+          jclouds_blobstore: "org.apache.jclouds:jclouds-blobstore:$jcloudsVersion",
+          jclouds_filesystem: "org.apache.jclouds.api:filesystem:$jcloudsVersion",
+          jdbm: "jdbm:jdbm:$jdbmVersion",
           jedis: "redis.clients:jedis:$jedisVersion",
           jgoodies_looks: "com.jgoodies:jgoodies-looks:$jgoodiesLooksVersion",
           leveldb_api: "org.iq80.leveldb:leveldb-api:$leveldbVersion",
