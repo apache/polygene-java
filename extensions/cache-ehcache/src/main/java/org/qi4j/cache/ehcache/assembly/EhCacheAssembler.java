@@ -27,11 +27,31 @@ import org.qi4j.cache.ehcache.EhCachePoolService;
 public class EhCacheAssembler
     implements Assembler
 {
-    private Visibility visibility;
+
+    private Visibility visibility = Visibility.module;
+    private Visibility configVisibility = Visibility.module;
+    private ModuleAssembly configModule = null;
+
+    public EhCacheAssembler()
+    {
+    }
 
     public EhCacheAssembler( Visibility visibility )
     {
         this.visibility = visibility;
+    }
+
+    public EhCacheAssembler visibleIn( Visibility visibility )
+    {
+        this.visibility = visibility;
+        return this;
+    }
+
+    public EhCacheAssembler withConfig( ModuleAssembly configModule, Visibility configVisibility )
+    {
+        this.configModule = configModule;
+        this.configVisibility = configVisibility;
+        return this;
     }
 
     @Override
@@ -39,6 +59,11 @@ public class EhCacheAssembler
         throws AssemblyException
     {
         module.services( EhCachePoolService.class ).visibleIn( visibility );
-        module.entities( EhCacheConfiguration.class );
+        if( configModule == null )
+        {
+            configModule = module;
+        }
+        configModule.entities( EhCacheConfiguration.class ).visibleIn( configVisibility );
     }
+
 }

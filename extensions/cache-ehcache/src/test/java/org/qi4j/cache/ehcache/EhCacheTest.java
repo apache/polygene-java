@@ -32,7 +32,9 @@ import org.qi4j.spi.cache.CachePool;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class EhCacheTest extends AbstractQi4jTest
 {
@@ -43,9 +45,10 @@ public class EhCacheTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        new EhCacheAssembler( Visibility.module ).assemble( module );
         ModuleAssembly confModule = module.layer().module( "confModule" );
         new EntityTestAssembler( Visibility.layer ).assemble( confModule );
+
+        new EhCacheAssembler( Visibility.module ).withConfig( confModule, Visibility.layer ).assemble( module );
     }
 
     @Override
