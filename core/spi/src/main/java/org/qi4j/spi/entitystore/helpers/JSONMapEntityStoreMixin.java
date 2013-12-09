@@ -119,7 +119,7 @@ public class JSONMapEntityStoreMixin
     {
         logger = LoggerFactory.getLogger( descriptor.identity() );
 
-        uuid = UUID.randomUUID().toString() + "-";
+        uuid = descriptor.identity() + "-" + UUID.randomUUID().toString();
         if( caching != null )
         {
             cache = caching.fetchCache( uuid, CacheState.class );
