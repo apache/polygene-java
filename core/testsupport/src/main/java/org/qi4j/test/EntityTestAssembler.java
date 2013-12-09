@@ -28,6 +28,7 @@ import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 public class EntityTestAssembler
     implements Assembler
 {
+
     Visibility visibility;
 
     public EntityTestAssembler( Visibility visibility )
@@ -45,7 +46,8 @@ public class EntityTestAssembler
         throws AssemblyException
     {
         module.services( MemoryEntityStoreService.class ).visibleIn( visibility );
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
+
 }
