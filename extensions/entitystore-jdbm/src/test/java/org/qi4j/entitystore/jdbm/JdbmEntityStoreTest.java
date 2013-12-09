@@ -16,14 +16,13 @@
  */
 package org.qi4j.entitystore.jdbm;
 
-import java.io.File;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.Before;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
+import org.qi4j.library.fileconfig.FileConfiguration;
+import org.qi4j.library.fileconfig.FileConfigurationDataWiper;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
@@ -33,49 +32,25 @@ public class JdbmEntityStoreTest
     extends AbstractEntityStoreTest
 {
 
+    @Before
+    public void testDataCleanup()
+    {
+        FileConfiguration fileConfig = module.findService( FileConfiguration.class ).get();
+        FileConfigurationDataWiper.registerApplicationPassivationDataWiper( fileConfig, application );
+    }
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( FileConfigurationService.class ).instantiateOnStartup();
-        new JdbmEntityStoreAssembler( Visibility.module ).assemble( module );
 
         ModuleAssembly config = module.layer().module( "config" );
-        config.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
-        new EntityTestAssembler().assemble( config );
+        config.services( FileConfigurationService.class ).visibleIn( Visibility.layer ).instantiateOnStartup();
+        new EntityTestAssembler( Visibility.module ).assemble( config );
+
         new OrgJsonValueSerializationAssembler().assemble( module );
+        new JdbmEntityStoreAssembler( Visibility.module ).withConfig( config, Visibility.layer ).assemble( module );
     }
 
-    @Test
-    @Override
-    public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
-        throws UnitOfWorkCompletionException
-    {
-        super.givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification();
-    }
-
-    @Override
-    @After
-    public void tearDown()
-        throws Exception
-    {
-        super.tearDown();
-        File dbFile = new File( "qi4j.data.db" );
-        boolean success = true;
-        if( dbFile.exists() )
-        {
-            success = dbFile.delete();
-        }
-
-        File logFile = new File( "qi4j.data.lg" );
-        if( logFile.exists() )
-        {
-            success = success & logFile.delete();
-        }
-        if( !success )
-        {
-            throw new Exception( "Could not delete test data" );
-        }
-    }
 }

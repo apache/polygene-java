@@ -21,6 +21,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.jdbm.JdbmConfiguration;
 import org.qi4j.entitystore.jdbm.JdbmEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
@@ -28,11 +29,24 @@ public class JdbmEntityStoreAssembler
     implements Assembler
 {
 
-    private Visibility visibility;
+    private Visibility visibility = Visibility.module;
+    private Visibility configVisibility = Visibility.module;
+    private ModuleAssembly configModule;
+
+    public JdbmEntityStoreAssembler()
+    {
+    }
 
     public JdbmEntityStoreAssembler( Visibility visibility )
     {
         this.visibility = visibility;
+    }
+
+    public JdbmEntityStoreAssembler withConfig( ModuleAssembly configModule, Visibility configVisibility )
+    {
+        this.configModule = configModule;
+        this.configVisibility = configVisibility;
+        return this;
     }
 
     @Override
@@ -41,5 +55,11 @@ public class JdbmEntityStoreAssembler
     {
         module.services( JdbmEntityStoreService.class ).visibleIn( visibility );
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        if( configModule == null )
+        {
+            configModule = module;
+        }
+        configModule.entities( JdbmConfiguration.class ).visibleIn( configVisibility );
     }
+
 }
