@@ -29,8 +29,6 @@ public interface FileConfigurationService
 
     void resolveFileConfiguration();
 
-    void eventuallyCleanupTestData();
-
     public static class Activator
             extends ActivatorAdapter<ServiceReference<FileConfigurationService>>
     {
@@ -40,13 +38,6 @@ public interface FileConfigurationService
                 throws Exception
         {
             activated.get().resolveFileConfiguration();
-        }
-
-        @Override
-        public void beforePassivation( ServiceReference<FileConfigurationService> passivating )
-                throws Exception
-        {
-            passivating.get().eventuallyCleanupTestData();
         }
 
     }
@@ -107,8 +98,6 @@ public interface FileConfigurationService
             data.log().set( new File( format( bundle.getString( "log" ), arguments ) ) );
 
             applyOverride();
-
-            eventuallyCleanupTestData();
             autoCreateDirectories();
         }
 
@@ -179,19 +168,6 @@ public interface FileConfigurationService
         }
 
         @Override
-        public void eventuallyCleanupTestData()
-        {
-            if ( app.mode().equals( Application.Mode.test ) ) {
-                // Delete test data
-                delete( configurationDirectory() );
-                delete( dataDirectory() );
-                delete( temporaryDirectory() );
-                delete( cacheDirectory() );
-                delete( logDirectory() );
-            }
-        }
-
-        @Override
         public OS os()
         {
             return data.os().get();
@@ -231,25 +207,6 @@ public interface FileConfigurationService
         public File logDirectory()
         {
             return data.log().get();
-        }
-
-        private boolean delete( File file )
-        {
-            if ( !file.exists() ) {
-                return true;
-            }
-
-            if ( file.isFile() ) {
-                return file.delete();
-            } else {
-                for ( File childFile : file.listFiles() ) {
-                    if ( !delete( childFile ) ) {
-                        return false;
-                    }
-                }
-
-                return file.delete();
-            }
         }
 
         private OS detectOS()
