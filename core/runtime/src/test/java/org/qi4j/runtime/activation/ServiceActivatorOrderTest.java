@@ -23,9 +23,12 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.runtime.activation.ActivatorOrderTestSupport.ActivationStepsRecorder;
+import org.qi4j.runtime.activation.ActivatorOrderTestSupport.ActivationStepsRecorderInstance;
+import org.qi4j.runtime.activation.ActivatorOrderTestSupport.Expected;
+import org.qi4j.runtime.activation.ActivatorOrderTestSupport.OrderTestActivator;
 
-import static org.junit.Assert.*;
-import static org.qi4j.runtime.activation.ActivatorOrderTestSupport.*;
+import static org.junit.Assert.assertEquals;
 
 public class ServiceActivatorOrderTest
 {
@@ -55,6 +58,7 @@ public class ServiceActivatorOrderTest
             implements FooBar
     {
 
+        @Override
         public String foo()
         {
             return "bar";
@@ -104,6 +108,7 @@ public class ServiceActivatorOrderTest
             implements Things
     {
 
+        @Override
         public String things()
         {
             return "things";
@@ -115,6 +120,7 @@ public class ServiceActivatorOrderTest
             implements Stuff
     {
 
+        @Override
         public String stuff()
         {
             return "stuff";
@@ -208,6 +214,7 @@ public class ServiceActivatorOrderTest
         new SingletonAssembler()
         {
 
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
@@ -230,6 +237,7 @@ public class ServiceActivatorOrderTest
         new SingletonAssembler()
         {
 
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
@@ -265,6 +273,7 @@ public class ServiceActivatorOrderTest
         new SingletonAssembler()
         {
 
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
@@ -309,6 +318,7 @@ public class ServiceActivatorOrderTest
         new SingletonAssembler()
         {
 
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {

@@ -22,9 +22,12 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
+import org.qi4j.runtime.activation.ActivatorOrderTestSupport.ActivationStepsRecorder;
+import org.qi4j.runtime.activation.ActivatorOrderTestSupport.ActivationStepsRecorderInstance;
+import org.qi4j.runtime.activation.ActivatorOrderTestSupport.Expected;
+import org.qi4j.runtime.activation.ActivatorOrderTestSupport.OrderTestActivator;
 
-import static org.junit.Assert.*;
-import static org.qi4j.runtime.activation.ActivatorOrderTestSupport.*;
+import static org.junit.Assert.assertEquals;
 
 public class StructureActivatorOrderTest
 {
@@ -119,6 +122,7 @@ public class StructureActivatorOrderTest
         new SingletonAssembler()
         {
 
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
@@ -140,6 +144,7 @@ public class StructureActivatorOrderTest
         new SingletonAssembler()
         {
 
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
@@ -161,6 +166,7 @@ public class StructureActivatorOrderTest
         new SingletonAssembler()
         {
 
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
@@ -182,6 +188,7 @@ public class StructureActivatorOrderTest
         new SingletonAssembler()
         {
 
+            @Override
             public void assemble( ModuleAssembly module )
                     throws AssemblyException
             {
