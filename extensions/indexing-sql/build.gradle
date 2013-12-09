@@ -8,7 +8,9 @@ dependencies {
   compile project(":org.qi4j.libraries:org.qi4j.library.sql")
   compile project(':org.qi4j.extensions:org.qi4j.extension.reindexer')
   compile libraries.javaSqlGenerator
-  compile libraries.javaSqlGeneratorImpl
+  compile( libraries.javaSqlGeneratorImpl ) { 
+      exclude group: 'junit'
+  }
 
   testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
   testCompile project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp")
