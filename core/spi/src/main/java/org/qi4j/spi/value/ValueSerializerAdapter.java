@@ -86,7 +86,7 @@ public abstract class ValueSerializerAdapter<OutputType>
      *
      * @param <T> Plain Value parametrized Type
      * @param type Plain Value Type
-     * @param deserializer Serialization Function
+     * @param serializer Serialization Function
      */
     @SuppressWarnings( "unchecked" )
     protected final <T> void registerSerializer( Class<T> type, Function<T, Object> serializer )

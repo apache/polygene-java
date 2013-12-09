@@ -936,6 +936,8 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     /**
      * Called by the adapter on deserialization start, after {@link #adaptInput(java.io.InputStream)}.
      *
+     * @param valueType ValueType
+     * @param input Input
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
     protected void onDeserializationStart( ValueType valueType, InputType input )
@@ -947,6 +949,8 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     /**
      * Called by the adapter on deserialization end.
      *
+     * @param valueType ValueType
+     * @param input Input
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
     protected void onDeserializationEnd( ValueType valueType, InputType input )
@@ -969,6 +973,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception;
 
     /**
+     * @param input Input
      * @return a Plain Value read from the input
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
@@ -976,6 +981,10 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception;
 
     /**
+     * @param <T> Parameterized collection type
+     * @param input Input
+     * @param deserializer Deserialization function
+     * @param collection Collection
      * @return The filled collection or null if no array
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
@@ -1001,6 +1010,12 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      *     non-predictible order of key/value inside an entry object.
      * </p>
      *
+     * @param <K> Parameterized map key type
+     * @param <V> Parameterized map value type
+     * @param input Input
+     * @param keyDeserializer Map key deserialization function
+     * @param valueDeserializer Map value deserialization function
+     * @param map Map
      * @return The filled map or null if no array
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
@@ -1011,6 +1026,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception;
 
     /**
+     * @param input Input
      * @return an InputNodeType or null if the value was null
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
@@ -1031,6 +1047,11 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
 
     /**
      * Return null if the field do not exists.
+     * @param <T> Parameterized object field value type
+     * @param inputNode Input Node
+     * @param key Object key
+     * @param valueDeserializer Deserialization function
+     * @return 
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
     protected abstract <T> T getObjectFieldValue( InputNodeType inputNode,
