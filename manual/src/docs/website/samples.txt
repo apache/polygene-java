@@ -61,6 +61,25 @@ Sample of how to fully use Qi4j SQL support : <<library-sql>>, <<extension-es-sq
 
 https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/sql-support[Browse Source]
 
+Here are the steps needed to setup the database using the `psql` utility command:
+
+[source,bash]
+----
+user@host $ psql postgres
+postgres=# CREATE USER jdbc_test_login WITH PASSWORD 'password';
+CREATE ROLE
+postgres=# CREATE DATABASE jdbc_test_db;
+CREATE DATABASE
+postgres=# GRANT ALL PRIVILEGES ON DATABASE jdbc_test_db TO jdbc_test_login;
+GRANT
+postgres=# \q
+user@host $  psql -d jdbc_test_db</strong>
+postgres=# CREATE EXTENSION ltree;
+CREATE EXTENSION
+postgres=# \q
+user@host $
+----
+
 A gradle task `runSample` is defined in this module as a shortcut to run the example. See <<build-system>>.
 
 [[sample-struts2,Struts2 Sample]]

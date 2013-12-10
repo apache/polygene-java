@@ -15,6 +15,7 @@
 package org.qi4j.sample.sqlsupport;
 
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
@@ -27,6 +28,7 @@ import org.qi4j.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.datasource.DataSources;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 /**
  * Assemble the Application.
@@ -49,7 +51,10 @@ public class AppAssembler
         LayerAssembly configLayer = appAss.layer( "config" );
         ModuleAssembly configModule = configLayer.module( "config" );
         {
-            configModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.module );
+            configModule.services( OrgJsonValueSerializationService.class ).
+                taggedWith( ValueSerialization.Formats.JSON );
+            configModule.services( MemoryEntityStoreService.class ).
+                visibleIn( Visibility.module );
             // Use a PreferenceEntityStore instead if you want the configuration to be persistent
             // new PreferenceEntityStoreAssembler( Visibility.module ).assemble( configModule );
         }
@@ -58,6 +63,9 @@ public class AppAssembler
         LayerAssembly infraLayer = appAss.layer( "infra" );
         ModuleAssembly persistenceModule = infraLayer.module( "persistence" );
         {
+            persistenceModule.services( OrgJsonValueSerializationService.class ).
+                taggedWith( ValueSerialization.Formats.JSON );
+
             // SQL DataSource Service
             String dataSourceServiceIdentity = "postgresql-datasource-service";
             new DBCPDataSourceServiceAssembler().
