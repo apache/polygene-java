@@ -19,7 +19,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,7 +52,7 @@ public class MixinsModel
     protected List<MixinModel> mixinModels = new ArrayList<MixinModel>();
 
     private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
-    private final Set<Class<?>> mixinTypes = new HashSet<Class<?>>();
+    private final Set<Class<?>> mixinTypes = new LinkedHashSet<Class<?>>();
 
     public Iterable<Class<?>> mixinTypes()
     {
