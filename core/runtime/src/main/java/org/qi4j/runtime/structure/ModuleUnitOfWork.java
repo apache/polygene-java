@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2013, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,20 +61,20 @@ import static org.qi4j.functional.Iterables.first;
 public class ModuleUnitOfWork
     implements UnitOfWork
 {
-    private static final QualifiedName IDENTITY_STATE_NAME;
-
-    static
-    {
-        try
-        {
-            IDENTITY_STATE_NAME = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
-        }
-        catch( NoSuchMethodException e )
-        {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
-        }
-    }
-
+//    private static final QualifiedName IDENTITY_STATE_NAME;
+//
+//    static
+//    {
+//        try
+//        {
+//            IDENTITY_STATE_NAME = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
+//        }
+//        catch( NoSuchMethodException e )
+//        {
+//            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
+//        }
+//    }
+//
     private UnitOfWorkInstance uow;
     private ModuleInstance moduleInstance;
 
@@ -230,7 +231,7 @@ public class ModuleUnitOfWork
         }
         else
         {
-            throw new NoSuchEntityException( compositeInstance.identity() );
+            throw new NoSuchEntityException( compositeInstance.identity(), compositeInstance.types() );
         }
     }
 

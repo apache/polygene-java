@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2013, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -222,7 +223,7 @@ public class PreferencesEntityStoreMixin
 
             if( !root.nodeExists( identity.identity() ) )
             {
-                throw new NoSuchEntityException( identity );
+                throw new NoSuchEntityException( identity, UnknownType.class );
             }
 
             Preferences entityPrefs = root.node( identity.identity() );
@@ -622,5 +623,9 @@ public class PreferencesEntityStoreMixin
             result = parser.parse( str );
         }
         return result;
+    }
+
+    private static class UnknownType
+    {
     }
 }

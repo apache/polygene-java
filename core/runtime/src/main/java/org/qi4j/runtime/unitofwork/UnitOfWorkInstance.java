@@ -1,4 +1,5 @@
-/*  Copyright 2007 Niclas Hedhman.
+/*
+ * Copyright (c) 2007-2013, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -161,7 +162,7 @@ public final class UnitOfWorkInstance
                 // Check if state was found
                 if( entityState == null )
                 {
-                    throw new NoSuchEntityException( identity );
+                    throw new NoSuchEntityException( identity, mixinType );
                 }
                 else
                 {
@@ -179,7 +180,7 @@ public final class UnitOfWorkInstance
             // Check if it has been removed
             if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new NoSuchEntityException( identity );
+                throw new NoSuchEntityException( identity, mixinType );
             }
         }
 
