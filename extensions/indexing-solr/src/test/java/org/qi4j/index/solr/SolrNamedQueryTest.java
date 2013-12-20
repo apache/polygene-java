@@ -17,32 +17,45 @@
  */
 package org.qi4j.index.solr;
 
+import java.io.File;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Specification;
+import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.indexing.AbstractNamedQueryTest;
+import org.qi4j.test.util.DelTreeAfter;
 
 @Ignore( "SOLR Index/Query is not working at all" )
 public class SolrNamedQueryTest
-        extends AbstractNamedQueryTest
+    extends AbstractNamedQueryTest
 {
+
+    private static final File DATA_DIR = new File( "build/tmp/solr-named-query-test" );
+    @Rule
+    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         super.assemble( module );
+        FileConfigurationOverride override = new FileConfigurationOverride().withData( new File( DATA_DIR, "qi4j-data" ) ).
+            withLog( new File( DATA_DIR, "qi4j-logs" ) ).withTemporary( new File( DATA_DIR, "qi4j-temp" ) );
+        module.services( FileConfigurationService.class ).
+            setMetaInfo( override );
         new SolrAssembler().assemble( module );
-        module.services( FileConfigurationService.class );
     }
 
     @Override
     protected String[] queryStrings()
     {
-        return new String[]{}; // TODO Write example Solr named queries
+        return new String[]
+        {
+        }; // TODO Write example Solr named queries
     }
 
     @Override

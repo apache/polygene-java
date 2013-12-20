@@ -1,5 +1,6 @@
 package org.qi4j.index.rdf;
 
+import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
@@ -22,14 +23,23 @@ import org.qi4j.test.EntityTestAssembler;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.junit.Rule;
+import org.qi4j.test.util.DelTreeAfter;
 
 public class ContainsTest extends AbstractQi4jTest
 {
+
+   private static final File DATA_DIR = new File( "build/tmp/contains-test" );
+   @Rule
+   public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+
+   @Override
    public void assemble(ModuleAssembly module) throws AssemblyException
    {
        module.services( FileConfigurationService.class );
       ModuleAssembly prefModule = module.layer().module( "PrefModule" );
       prefModule.entities( NativeConfiguration.class ).visibleIn(Visibility.application);
+      prefModule.forMixin( NativeConfiguration.class ).declareDefaults().dataDirectory().set( DATA_DIR.getAbsolutePath() );
       new EntityTestAssembler().assemble( prefModule );
 
       module.entities( ExampleEntity.class );

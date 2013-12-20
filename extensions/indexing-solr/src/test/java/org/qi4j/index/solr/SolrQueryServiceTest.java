@@ -11,9 +11,9 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.solr;
 
+import java.io.File;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -35,21 +35,30 @@ import org.qi4j.test.EntityTestAssembler;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Rule;
+import org.qi4j.library.fileconfig.FileConfigurationOverride;
+import org.qi4j.test.util.DelTreeAfter;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
-/**
- * JAVADOC
- */
 public class SolrQueryServiceTest
     extends AbstractQi4jTest
 {
+
+    private static final File DATA_DIR = new File( "build/tmp/solr-query-service-test" );
+    @Rule
+    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
+
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
         module.layer().application().setMode( Application.Mode.test );
 
-        module.services( FileConfigurationService.class ).instantiateOnStartup();
+        FileConfigurationOverride override = new FileConfigurationOverride().withData( new File( DATA_DIR, "qi4j-data" ) ).
+            withLog( new File( DATA_DIR, "qi4j-logs" ) ).withTemporary( new File( DATA_DIR, "qi4j-temp" ) );
+        module.services( FileConfigurationService.class ).
+            setMetaInfo( override );
 
         new EntityTestAssembler().assemble( module );
         // START SNIPPET: assembly
@@ -77,7 +86,7 @@ public class SolrQueryServiceTest
     {
         // Search for it
         UnitOfWork uow = module.newUnitOfWork();
-        Query<TestEntity> query = uow.newQuery( module.newQueryBuilder( TestEntity.class ).where( SolrExpressions.search( "hello" ) ));
+        Query<TestEntity> query = uow.newQuery( module.newQueryBuilder( TestEntity.class ).where( SolrExpressions.search( "hello" ) ) );
 
         TestEntity test = query.find();
         Assert.assertThat( test.name().get(), equalTo( "Hello World" ) );
@@ -106,7 +115,10 @@ public class SolrQueryServiceTest
     public interface TestEntity
         extends EntityComposite
     {
+
         @UseDefaults
         Property<String> name();
+
     }
+
 }

@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Random;
+import org.junit.Rule;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
@@ -40,12 +40,17 @@ import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.EntityTestAssembler;
+import org.qi4j.test.util.DelTreeAfter;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 import static org.junit.Assert.assertTrue;
 
 public class Qi95IssueTest
 {
+
+    private static final File DATA_DIR = new File( "build/tmp/qi95-issue-test" );
+    @Rule
+    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
 
     @Test
     public void canCreateAndQueryWithNativeRdfAndJdbm()
@@ -173,6 +178,7 @@ public class Qi95IssueTest
         Energy4Java qi4j = new Energy4Java();
         Application application = qi4j.newApplication( new ApplicationAssembler()
         {
+            @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                 throws AssemblyException
             {
@@ -209,6 +215,7 @@ public class Qi95IssueTest
 
     final ModuleAssemblyBuilder nativeRdf = new ModuleAssemblyBuilder()
     {
+        @Override
         public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
             throws AssemblyException
         {
@@ -218,6 +225,7 @@ public class Qi95IssueTest
 
     final ModuleAssemblyBuilder inMemoryStore = new ModuleAssemblyBuilder()
     {
+        @Override
         public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
             throws AssemblyException
         {
@@ -227,6 +235,7 @@ public class Qi95IssueTest
 
     final ModuleAssemblyBuilder inMemoryRdf = new ModuleAssemblyBuilder()
     {
+        @Override
         public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
             throws AssemblyException
         {
@@ -236,6 +245,7 @@ public class Qi95IssueTest
 
     final ModuleAssemblyBuilder jdbmStore = new ModuleAssemblyBuilder()
     {
+        @Override
         public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
             throws AssemblyException
         {
@@ -245,6 +255,7 @@ public class Qi95IssueTest
 
     final ModuleAssemblyBuilder configModule = new ModuleAssemblyBuilder()
     {
+        @Override
         public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
             throws AssemblyException
         {
@@ -254,19 +265,19 @@ public class Qi95IssueTest
 
     final LayerAssemblyBuilder domain = new LayerAssemblyBuilder()
     {
+        @Override
         public LayerAssembly buildLayerAssembly( ApplicationAssembly appAssembly )
             throws AssemblyException
         {
             LayerAssembly domainLayer = appAssembly.layer( "Domain" );
             addModule( domainLayer, "Domain", new Assembler()
             {
+                @Override
                 @SuppressWarnings( "unchecked" )
                 public void assemble( ModuleAssembly module )
                     throws AssemblyException
                 {
-                    module.entities(
-                        ItemTypeEntity.class
-                    );
+                    module.entities( ItemTypeEntity.class );
                 }
             } );
             return domainLayer;
@@ -277,6 +288,7 @@ public class Qi95IssueTest
     {
         return new Assembler()
         {
+            @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
@@ -301,6 +313,7 @@ public class Qi95IssueTest
     {
         return new Assembler()
         {
+            @Override
             @SuppressWarnings( "unchecked" )
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
@@ -321,19 +334,17 @@ public class Qi95IssueTest
 
     private File rdfDirectory()
     {
-        return createTempDirectory( "rdf-", "-index" );
+        return createTempDirectory( "rdf-index" );
     }
 
     private File jdbmDirectory()
     {
-        return createTempDirectory( "jdbm-", "-store" );
+        return createTempDirectory( "jdbm-store" );
     }
 
-    private File createTempDirectory( String prefix, String suffix )
+    private File createTempDirectory( String name )
     {
-        String tempDir = System.getProperty( "java.io.tmpdir" );
-        String dirName = prefix + Integer.toHexString( new Random().nextInt() & 0xffff ) + suffix;
-        File t = new File( tempDir, dirName );
+        File t = new File( DATA_DIR, name );
         t.mkdirs();
         return t;
     }

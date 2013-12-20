@@ -27,6 +27,7 @@ public class DocumentationSupport
             implements Assembler
     {
 
+        @Override
         public void assemble( ModuleAssembly module )
                 throws AssemblyException
         {
@@ -41,6 +42,7 @@ public class DocumentationSupport
             implements Assembler
     {
 
+        @Override
         public void assemble( ModuleAssembly module )
                 throws AssemblyException
         {
@@ -55,6 +57,7 @@ public class DocumentationSupport
             implements Assembler
     {
 
+        @Override
         public void assemble( ModuleAssembly module )
                 throws AssemblyException
         {

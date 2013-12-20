@@ -18,6 +18,7 @@ package org.qi4j.index.rdf;
  * JAVADOC
  */
 
+import java.io.File;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
@@ -43,10 +44,15 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.junit.Rule;
+import org.qi4j.test.util.DelTreeAfter;
 
 public class RDFPerformanceTest extends AbstractQi4jTest
 {
-    private static Logger _log = LoggerFactory.getLogger( RDFPerformanceTest.class );
+    private static final Logger LOG = LoggerFactory.getLogger( RDFPerformanceTest.class );
+    private static final File DATA_DIR = new File( "build/tmp/rdf-performance-test" );
+    @Rule
+    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
 
     public interface ExampleEntity extends EntityComposite
     {
@@ -56,12 +62,14 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         ManyAssociation<ExampleEntity> manyAssoc();
     }
 
+    @Override
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {
         module.services( FileConfigurationService.class );
         ModuleAssembly prefModule = module.layer().module( "PrefModule" );
         prefModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         prefModule.forMixin( NativeConfiguration.class ).declareDefaults().tripleIndexes().set( "spoc,cspo" );
+        prefModule.forMixin( NativeConfiguration.class ).declareDefaults().dataDirectory().set( DATA_DIR.getAbsolutePath() );
         new EntityTestAssembler().assemble( prefModule );
 
         module.entities( ExampleEntity.class );
@@ -124,7 +132,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
 
         if (found != howMany)
         {
-            _log.warn( "Found " + found + " entities instead of " + howMany + "." );
+            LOG.warn( "Found " + found + " entities instead of " + howMany + "." );
         }
 
         return list;
@@ -143,7 +151,7 @@ public class RDFPerformanceTest extends AbstractQi4jTest
 
         if (removed != howMany)
         {
-            _log.warn( "Removed " + removed + " entities instead of " + howMany + "." );
+            LOG.warn( "Removed " + removed + " entities instead of " + howMany + "." );
         }
     }
 
@@ -154,15 +162,14 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         UnitOfWork creatingUOW = this.module.newUnitOfWork();
         Long startingTime = System.currentTimeMillis();
         List<ExampleEntity> entities = this.doCreate( howMany );
-        _log.info( "Time to create " + howMany + " entities (ms): " + (System.currentTimeMillis() - startingTime) );
+        LOG.info( "Time to create " + howMany + " entities (ms): " + (System.currentTimeMillis() - startingTime) );
 
         startingTime = System.currentTimeMillis();
         creatingUOW.complete();
-        _log.info( "Time to complete creation uow (ms): " + (System.currentTimeMillis() - startingTime) );
+        LOG.info( "Time to complete creation uow (ms): " + (System.currentTimeMillis() - startingTime) );
 
 
-        List<ExampleEntity> entityList = null;
-        entityList = this.doList( howMany );
+        List<ExampleEntity> entityList = this.doList( howMany );
 
         startingTime = System.currentTimeMillis();
         UnitOfWork uow = this.module.newUnitOfWork();
@@ -174,22 +181,22 @@ public class RDFPerformanceTest extends AbstractQi4jTest
         }
 
         long endTest = System.currentTimeMillis();
-        _log.info( "Time to query " + howMany + " entities (ms): " + (endTest - startingTime) );
+        LOG.info( "Time to query " + howMany + " entities (ms): " + (endTest - startingTime) );
 
         UnitOfWork deletingUOW = this.module.newUnitOfWork();
         startingTime = System.currentTimeMillis();
         this.doRemoveAll( entityList );
 //      this.doRemove(200);
-        _log.info( "Time to delete " + howMany + " entities (ms): " + (System.currentTimeMillis() - startingTime) );
+        LOG.info( "Time to delete " + howMany + " entities (ms): " + (System.currentTimeMillis() - startingTime) );
 
         startingTime = System.currentTimeMillis();
         deletingUOW.complete();
 
         endTest = System.currentTimeMillis();
 
-        _log.info( "time to complete deletion uow (ms): " + (endTest - startingTime) );
+        LOG.info( "time to complete deletion uow (ms): " + (endTest - startingTime) );
 
-        _log.info( "time to complete test (ms): " + (endTest - startTest) );
+        LOG.info( "time to complete test (ms): " + (endTest - startTest) );
 
     }
 
