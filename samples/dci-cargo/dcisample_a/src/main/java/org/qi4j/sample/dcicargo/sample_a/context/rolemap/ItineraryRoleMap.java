@@ -28,9 +28,7 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.itinerary.Itinerary;
  */
 public interface ItineraryRoleMap
     extends ValueComposite,
-
             Itinerary,
-
             BuildDeliverySnapshot.ItineraryRole
 {
 }

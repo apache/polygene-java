@@ -25,7 +25,6 @@ import org.qi4j.sample.dcicargo.sample_a.data.entity.HandlingEventsEntity;
  */
 public interface HandlingEventsRoleMap
     extends HandlingEventsEntity,
-
             RegisterHandlingEvent.HandlingEventFactoryRole
 {
 }

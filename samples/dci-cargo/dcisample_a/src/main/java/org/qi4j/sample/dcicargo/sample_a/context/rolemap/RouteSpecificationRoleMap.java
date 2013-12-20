@@ -28,9 +28,7 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.RouteSpecification;
  */
 public interface RouteSpecificationRoleMap
     extends ValueComposite,
-
             RouteSpecification,
-
             BuildDeliverySnapshot.FactoryRole
 {
 }
