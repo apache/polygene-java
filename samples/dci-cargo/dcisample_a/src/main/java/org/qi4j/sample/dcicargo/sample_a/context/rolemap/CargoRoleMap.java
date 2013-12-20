@@ -25,7 +25,6 @@ import org.qi4j.sample.dcicargo.sample_a.data.entity.CargoEntity;
  */
 public interface CargoRoleMap
     extends CargoEntity,
-
             BookNewCargo.RoutingFacadeRole
 {
 }

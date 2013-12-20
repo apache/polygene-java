@@ -22,7 +22,7 @@ import org.qi4j.functional.Specification;
 /**
  * Filter services based on tags. Tags can be set using the ServiceTags meta-info, like so:
  * <pre><code>
- * module.addService(MyService.class).setMetaInfo(ServiceTags.tags("onetag","twotag"));
+ * module.addService(MyService.class).taggedWith(new ServiceTags("onetag","twotag"));
  * </code></pre>
  *
  * and then at an injection point you can do this:
@@ -46,7 +46,7 @@ public @interface Tagged
         implements AnnotationQualifier<Tagged>
     {
         @Override
-        public <T> Specification<ServiceReference<?>> qualifier( Tagged tagged )
+        public Specification<ServiceReference<?>> qualifier( Tagged tagged )
         {
             return ServiceQualifier.withTags( tagged.value() );
         }

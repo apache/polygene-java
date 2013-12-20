@@ -10,7 +10,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class Qi328TestCase extends AbstractQi4jTest
 {
@@ -32,7 +34,9 @@ public class Qi328TestCase extends AbstractQi4jTest
         OuterValue value = builder.newInstance();
         System.out.println("Niclas: " + value);
         value.printName();
-        assertEquals(  "{\"firstName\":\"Niclas\",\"lastName\":\"Hedhman\"}", value.toString() );
+        String result = value.toString();
+        assertThat( result, containsString("\"firstName\":\"Niclas\"") );
+        assertThat( result, containsString("\"lastName\":\"Hedhman\"") );
     }
 
     @Mixins( OuterValue.Mixin.class )

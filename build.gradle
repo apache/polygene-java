@@ -3,8 +3,8 @@ project.ext {
   description = "Qi4j™ is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
   testFailures = [ ]
   mainClassName = 'org.qi4j.container.Main'
-  groovycMain_mx = "512m"
-  groovycMain_permSize = "128m"
+  groovycMain_mx = "700m"
+  groovycMain_permSize = "256m"
   groovycMain_maxPermSize = "256m"
 }
 
@@ -18,8 +18,8 @@ apply plugin: 'project-report'
 apply plugin: 'sonar'
 apply from: 'libraries.gradle'
 
-targetCompatibility = "1.6"
-sourceCompatibility = "1.6"
+targetCompatibility = "1.7"
+sourceCompatibility = "1.7"
 
 // Collect the modules that fulfills the Release Criteria.
 project.ext {

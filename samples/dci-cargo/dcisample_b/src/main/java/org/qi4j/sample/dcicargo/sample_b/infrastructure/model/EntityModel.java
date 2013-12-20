@@ -1,5 +1,6 @@
 /*
  * Copyright 2011 Marc Grue.
+ * Copyright (c) 2013, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -74,7 +75,7 @@ public class EntityModel<T extends DTO, U extends EntityComposite>
         U entity = module.currentUnitOfWork().get( entityClass, identity );
         if( entity == null )
         {
-            throw new NoSuchEntityException( EntityReference.parseEntityReference( identity ) );
+            throw new NoSuchEntityException( EntityReference.parseEntityReference( identity ), entityClass );
         }
         return entity;
     }

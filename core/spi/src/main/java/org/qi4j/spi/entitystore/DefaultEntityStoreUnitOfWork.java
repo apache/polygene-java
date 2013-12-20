@@ -14,7 +14,7 @@
 
 package org.qi4j.spi.entitystore;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.structure.Module;
@@ -30,7 +30,7 @@ public final class DefaultEntityStoreUnitOfWork
     private EntityStoreSPI entityStoreSPI;
     private String identity;
     private Module module;
-    private LinkedList<EntityState> states = new LinkedList<EntityState>();
+    private HashMap<EntityReference, EntityState> states = new HashMap<>();
     private Usecase usecase;
     private long currentTime;
 
@@ -76,17 +76,28 @@ public final class DefaultEntityStoreUnitOfWork
     public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor descriptor )
         throws EntityStoreException
     {
+        EntityState entityState = states.get( anIdentity );
+        if( entityState != null )
+        {
+            throw new EntityAlreadyExistsException( anIdentity );
+        }
         EntityState state = entityStoreSPI.newEntityState( this, anIdentity, descriptor );
-        states.add( state );
+        states.put( anIdentity, state );
         return state;
     }
 
     @Override
     public EntityState entityStateOf( EntityReference anIdentity )
-        throws EntityStoreException, EntityNotFoundException
+        throws EntityNotFoundException
     {
-        EntityState entityState = entityStoreSPI.entityStateOf( this, anIdentity );
-        states.add( entityState );
+
+        EntityState entityState = states.get( anIdentity );
+        if( entityState != null )
+        {
+            return entityState;
+        }
+        entityState = entityStoreSPI.entityStateOf( this, anIdentity );
+        states.put( anIdentity, entityState );
         return entityState;
     }
 
@@ -94,7 +105,7 @@ public final class DefaultEntityStoreUnitOfWork
     public StateCommitter applyChanges()
         throws EntityStoreException
     {
-        return entityStoreSPI.applyChanges( this, states );
+        return entityStoreSPI.applyChanges( this, states.values() );
     }
 
     @Override

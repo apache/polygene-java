@@ -79,7 +79,7 @@ public abstract class ValueSerializerAdapter<OutputType>
 
     private static final Logger LOG = LoggerFactory.getLogger( ValueSerializerAdapter.class );
     private static final String UTF_8 = "UTF-8";
-    private final Map<Class<?>, Function<Object, Object>> serializers = new HashMap<Class<?>, Function<Object, Object>>();
+    private final Map<Class<?>, Function<Object, Object>> serializers = new HashMap<>();
 
     /**
      * Register a Plain Value type serialization Function.

@@ -26,7 +26,6 @@ import org.qi4j.sample.dcicargo.sample_a.data.entity.HandlingEventEntity;
  */
 public interface HandlingEventRoleMap
     extends HandlingEventEntity,
-
             BuildDeliverySnapshot.HandlingEventRole,
             InspectCargo.CargoInspectorRole
 {
