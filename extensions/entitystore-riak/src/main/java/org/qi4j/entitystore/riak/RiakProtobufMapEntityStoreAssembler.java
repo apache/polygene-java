@@ -56,11 +56,6 @@ public class RiakProtobufMapEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        if( configModule == null )
-        {
-            configModule = module;
-        }
-
         module.services( UuidIdentityGeneratorService.class ).
             visibleIn( visibility );
 
@@ -68,7 +63,11 @@ public class RiakProtobufMapEntityStoreAssembler
             withMixins( RiakProtobufMapEntityStoreMixin.class ).
             visibleIn( visibility );
 
-        configModule.entities( RiakProtobufEntityStoreConfiguration.class ).
-            visibleIn( configVisibility );
+        if( configModule != null )
+        {
+            configModule.entities( RiakProtobufEntityStoreConfiguration.class ).
+                visibleIn( configVisibility );
+        }
     }
+
 }

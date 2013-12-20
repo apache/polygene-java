@@ -41,16 +41,15 @@ public class LevelDBEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        if( configModule == null )
-        {
-            configModule = module;
-        }
         module.services( UuidIdentityGeneratorService.class );
         module.services( LevelDBEntityStoreService.class ).visibleIn( visibility );
-        configModule.entities( LevelDBEntityStoreConfiguration.class ).visibleIn( configVisibility );
         if( identity != null )
         {
             module.services( LevelDBEntityStoreService.class ).identifiedBy( identity );
+        }
+        if( configModule != null )
+        {
+            configModule.entities( LevelDBEntityStoreConfiguration.class ).visibleIn( configVisibility );
         }
     }
 }

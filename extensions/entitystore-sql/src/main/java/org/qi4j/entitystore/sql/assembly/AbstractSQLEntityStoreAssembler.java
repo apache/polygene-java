@@ -85,10 +85,6 @@ abstract class AbstractSQLEntityStoreAssembler<T extends AbstractSQLEntityStoreA
     public final void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        if( configModule == null )
-        {
-            configModule = module;
-        }
         try
         {
             SQLVendor sqlVendor = this.getSQLVendor();
@@ -113,7 +109,11 @@ abstract class AbstractSQLEntityStoreAssembler<T extends AbstractSQLEntityStoreA
         module.services( SQLEntityStoreService.class,
                          UuidIdentityGeneratorService.class ).
             visibleIn( visibility );
-        configModule.entities( SQLConfiguration.class ).
-            visibleIn( configVisibility );
+        if( configModule != null )
+        {
+            configModule.entities( SQLConfiguration.class ).
+                visibleIn( configVisibility );
+        }
     }
+
 }

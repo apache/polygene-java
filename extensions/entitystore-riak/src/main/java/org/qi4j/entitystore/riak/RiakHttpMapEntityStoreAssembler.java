@@ -52,14 +52,10 @@ public class RiakHttpMapEntityStoreAssembler
         return this;
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        if( configModule == null )
-        {
-            configModule = module;
-        }
-
         module.services( UuidIdentityGeneratorService.class ).
             visibleIn( visibility );
 
@@ -67,7 +63,11 @@ public class RiakHttpMapEntityStoreAssembler
             withMixins( RiakHttpMapEntityStoreMixin.class ).
             visibleIn( visibility );
 
-        configModule.entities( RiakHttpEntityStoreConfiguration.class ).
-            visibleIn( configVisibility );
+        if( configModule != null )
+        {
+            configModule.entities( RiakHttpEntityStoreConfiguration.class ).
+                visibleIn( configVisibility );
+        }
     }
+
 }

@@ -59,11 +59,10 @@ public class EhCacheAssembler
         throws AssemblyException
     {
         module.services( EhCachePoolService.class ).visibleIn( visibility );
-        if( configModule == null )
+        if( configModule != null )
         {
-            configModule = module;
+            configModule.entities( EhCacheConfiguration.class ).visibleIn( configVisibility );
         }
-        configModule.entities( EhCacheConfiguration.class ).visibleIn( configVisibility );
     }
 
 }

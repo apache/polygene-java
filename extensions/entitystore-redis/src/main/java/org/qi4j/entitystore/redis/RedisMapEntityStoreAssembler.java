@@ -56,17 +56,12 @@ public class RedisMapEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        if( configModule == null )
-        {
-            configModule = module;
-        }
-        onAssemble( module, visibility, configModule, configVisibility );
-    }
-
-    private void onAssemble( ModuleAssembly module, Visibility visibility, ModuleAssembly configModule, Visibility configVisibility )
-    {
         module.services( RedisMapEntityStoreService.class ).visibleIn( visibility );
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-        configModule.entities( RedisEntityStoreConfiguration.class ).visibleIn( configVisibility );
+        if( configModule != null )
+        {
+            configModule.entities( RedisEntityStoreConfiguration.class ).visibleIn( configVisibility );
+        }
     }
+
 }

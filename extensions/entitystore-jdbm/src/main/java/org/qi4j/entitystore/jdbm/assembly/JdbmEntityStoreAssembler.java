@@ -55,11 +55,10 @@ public class JdbmEntityStoreAssembler
     {
         module.services( JdbmEntityStoreService.class ).visibleIn( visibility );
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-        if( configModule == null )
+        if( configModule != null )
         {
-            configModule = module;
+            configModule.entities( JdbmConfiguration.class ).visibleIn( configVisibility );
         }
-        configModule.entities( JdbmConfiguration.class ).visibleIn( configVisibility );
     }
 
 }

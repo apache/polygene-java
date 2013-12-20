@@ -66,8 +66,12 @@ public class MongoMapEntityStoreAssembler
      * Calling this method once disable the default behavior that use the MongoDB defaults: 127.0.0.1 27017
      */
     public MongoMapEntityStoreAssembler addHostnameAndPort( String hostname, Integer port )
-        throws UnknownHostException
+        throws UnknownHostException, AssemblyException
     {
+        if( configModule == null )
+        {
+            throw new AssemblyException( "Cannot set assembly time configuration without a config module" );
+        }
         this.hostname = null;
         this.port = null;
         if( serverAddresses == null )
@@ -79,19 +83,34 @@ public class MongoMapEntityStoreAssembler
     }
 
     public MongoMapEntityStoreAssembler withDatabase( String database )
+        throws AssemblyException
     {
+        if( configModule == null )
+        {
+            throw new AssemblyException( "Cannot set assembly time configuration without a config module" );
+        }
         this.database = database;
         return this;
     }
 
     public MongoMapEntityStoreAssembler withCollection( String collection )
+        throws AssemblyException
     {
+        if( configModule == null )
+        {
+            throw new AssemblyException( "Cannot set assembly time configuration without a config module" );
+        }
         this.collection = collection;
         return this;
     }
 
     public MongoMapEntityStoreAssembler withWriteConcern( WriteConcern writeConcern )
+        throws AssemblyException
     {
+        if( configModule == null )
+        {
+            throw new AssemblyException( "Cannot set assembly time configuration without a config module" );
+        }
         this.writeConcern = writeConcern;
         return this;
     }
@@ -100,43 +119,37 @@ public class MongoMapEntityStoreAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        if( configModule == null )
-        {
-            configModule = module;
-        }
-        onAssemble( module, visibility, configModule, configVisibility );
-    }
-
-    private void onAssemble( ModuleAssembly module, Visibility visibility, ModuleAssembly configModule, Visibility configVisibility )
-    {
         module.services( MongoMapEntityStoreService.class ).visibleIn( visibility );
         module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-
-        configModule.entities( MongoEntityStoreConfiguration.class ).visibleIn( configVisibility );
-        MongoEntityStoreConfiguration mongoConfig = configModule.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
-        if( hostname != null )
+        if( configModule != null )
         {
-            mongoConfig.hostname().set( hostname );
-        }
-        if( port != null )
-        {
-            mongoConfig.port().set( port );
-        }
-        if( database != null )
-        {
-            mongoConfig.database().set( database );
-        }
-        if( collection != null )
-        {
-            mongoConfig.collection().set( collection );
-        }
-        if( writeConcern != null )
-        {
-            mongoConfig.writeConcern().set( writeConcern );
-        }
-        if( serverAddresses != null )
-        {
-            mongoConfig.nodes().set( serverAddresses );
+            configModule.entities( MongoEntityStoreConfiguration.class ).visibleIn( configVisibility );
+            MongoEntityStoreConfiguration mongoConfig = configModule.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
+            if( hostname != null )
+            {
+                mongoConfig.hostname().set( hostname );
+            }
+            if( port != null )
+            {
+                mongoConfig.port().set( port );
+            }
+            if( database != null )
+            {
+                mongoConfig.database().set( database );
+            }
+            if( collection != null )
+            {
+                mongoConfig.collection().set( collection );
+            }
+            if( writeConcern != null )
+            {
+                mongoConfig.writeConcern().set( writeConcern );
+            }
+            if( serverAddresses != null )
+            {
+                mongoConfig.nodes().set( serverAddresses );
+            }
         }
     }
+
 }

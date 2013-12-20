@@ -65,9 +65,6 @@ public abstract class AbstractElasticSearchAssembler<AssemblerType extends Abstr
         if ( identity == null ) {
             identity = "es-indexing";
         }
-        if ( configModule == null ) {
-            configModule = module;
-        }
         doAssemble( identity, module, visibility, configModule, configVisibility );
     }
 

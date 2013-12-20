@@ -27,25 +27,28 @@ import org.qi4j.index.elasticsearch.internal.AbstractElasticSearchAssembler;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class ESFilesystemIndexQueryAssembler
-        extends AbstractElasticSearchAssembler<ESFilesystemIndexQueryAssembler>
+    extends AbstractElasticSearchAssembler<ESFilesystemIndexQueryAssembler>
 {
 
     @Override
     protected void doAssemble( String identity,
                                ModuleAssembly module, Visibility visibility,
                                ModuleAssembly configModule, Visibility configVisibility )
-            throws AssemblyException
+        throws AssemblyException
     {
         module.services( ESFilesystemIndexQueryService.class ).
-                identifiedBy( identity ).
-                visibleIn( visibility ).
-                instantiateOnStartup();
+            identifiedBy( identity ).
+            visibleIn( visibility ).
+            instantiateOnStartup();
 
         module.services( OrgJsonValueSerializationService.class ).
             taggedWith( ValueSerialization.Formats.JSON );
 
-        configModule.entities( ElasticSearchConfiguration.class ).
+        if( configModule != null )
+        {
+            configModule.entities( ElasticSearchConfiguration.class ).
                 visibleIn( configVisibility );
+        }
     }
 
 }
