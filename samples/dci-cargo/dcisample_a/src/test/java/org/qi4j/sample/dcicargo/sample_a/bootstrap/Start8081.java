@@ -19,7 +19,7 @@ package org.qi4j.sample.dcicargo.sample_a.bootstrap;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.bio.SocketConnector;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
@@ -37,8 +37,8 @@ public class Start8081
     public void start() throws Exception
     {
         jetty = new Server();
-        SocketConnector connector = new SocketConnector();
-        connector.setMaxIdleTime( 1000 * 60 * 60 );
+        ServerConnector connector = new ServerConnector(jetty );
+        connector.setIdleTimeout( 1000 * 60 * 60 );
         connector.setSoLingerTime( -1 );
         connector.setPort( 8081 );
         jetty.setConnectors( new Connector[]{connector} );
