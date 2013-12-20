@@ -46,7 +46,7 @@ public @interface Tagged
         implements AnnotationQualifier<Tagged>
     {
         @Override
-        public <T> Specification<ServiceReference<?>> qualifier( Tagged tagged )
+        public Specification<ServiceReference<?>> qualifier( Tagged tagged )
         {
             return ServiceQualifier.withTags( tagged.value() );
         }
