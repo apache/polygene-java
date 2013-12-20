@@ -203,7 +203,7 @@ rootProject.ext {
           jclouds_core: "org.apache.jclouds:jclouds-core:$jcloudsVersion",
           jclouds_blobstore: "org.apache.jclouds:jclouds-blobstore:$jcloudsVersion",
           jclouds_filesystem: "org.apache.jclouds.api:filesystem:$jcloudsVersion",
-          jdbm: "org.fusesource.jdbm:jdbm:$jdbmVersion",
+          jdbm: "jdbm:jdbm:$jdbmVersion",
           jedis: "redis.clients:jedis:$jedisVersion",
           jgoodies_looks: "com.jgoodies:jgoodies-looks:$jgoodiesLooksVersion",
           leveldb_api: "org.iq80.leveldb:leveldb-api:$leveldbVersion",
