@@ -19,6 +19,7 @@ package org.qi4j.index.elasticsearch;
 
 import java.io.File;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -27,11 +28,16 @@ import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
+import org.qi4j.test.util.DelTreeAfter;
 
 import static org.junit.Assume.assumeTrue;
 
 public class ElasticSearchFinderTest
         extends AbstractEntityFinderTest {
+
+    private static final File DATA_DIR = new File( "build/tmp/es-finder-test" );
+    @Rule
+    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
 
     @BeforeClass
     public static void beforeClass_IBMJDK() {
@@ -54,8 +60,8 @@ public class ElasticSearchFinderTest
         esConfig.indexNonAggregatedAssociations().set(Boolean.TRUE);
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().withData(new File("build/qi4j-data")).
-                withLog(new File("build/qi4j-logs")).withTemporary(new File("build/qi4j-temp"));
+        FileConfigurationOverride override = new FileConfigurationOverride().withData(new File(DATA_DIR,"qi4j-data")).
+                withLog(new File(DATA_DIR,"qi4j-logs")).withTemporary(new File(DATA_DIR,"qi4j-temp"));
         module.services(FileConfigurationService.class).
                 setMetaInfo(override);
     }

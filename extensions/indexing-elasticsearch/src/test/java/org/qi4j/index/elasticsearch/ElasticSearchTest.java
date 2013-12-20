@@ -29,6 +29,7 @@ import org.qi4j.bootstrap.*;
 import org.qi4j.index.elasticsearch.assembly.*;
 import org.qi4j.library.fileconfig.*;
 import org.qi4j.test.*;
+import org.qi4j.test.util.DelTreeAfter;
 
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
@@ -36,6 +37,10 @@ import static org.qi4j.api.query.QueryExpressions.*;
 
 public class ElasticSearchTest
         extends AbstractQi4jTest {
+
+    private static final File DATA_DIR = new File( "build/tmp/es-test" );
+    @Rule
+    public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
 
     @BeforeClass
     public static void beforeClass_IBMJDK() {
@@ -112,8 +117,8 @@ public class ElasticSearchTest
         esConfig.indexNonAggregatedAssociations().set(Boolean.TRUE);
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().withData(new File("build/qi4j-data")).
-                withLog(new File("build/qi4j-logs")).withTemporary(new File("build/qi4j-temp"));
+        FileConfigurationOverride override = new FileConfigurationOverride().withData(new File(DATA_DIR,"qi4j-data")).
+                withLog(new File(DATA_DIR,"qi4j-logs")).withTemporary(new File(DATA_DIR,"qi4j-temp"));
         module.services(FileConfigurationService.class).
                 setMetaInfo(override);
 
