@@ -64,7 +64,7 @@ public final class UnitOfWorkInstance
         @Override
         protected Stack<UnitOfWorkInstance> initialValue()
         {
-            return new Stack<UnitOfWorkInstance>();
+            return new Stack<>();
         }
     };
     private MetricsTimer.Context metricsTimer;
@@ -96,8 +96,8 @@ public final class UnitOfWorkInstance
     {
         this.currentTime = currentTime;
         this.open = true;
-        instanceCache = new HashMap<EntityReference, EntityInstance>();
-        storeUnitOfWork = new HashMap<EntityStore, EntityStoreUnitOfWork>();
+        instanceCache = new HashMap<>();
+        storeUnitOfWork = new HashMap<>();
         getCurrent().push( this );
         paused = false;
         this.usecase = usecase;
@@ -226,7 +226,7 @@ public final class UnitOfWorkInstance
                         {
                             if( prunedInstances == null )
                             {
-                                prunedInstances = new ArrayList<EntityReference>();
+                                prunedInstances = new ArrayList<>();
                             }
                             prunedInstances.add( entityInstance.identity() );
                         }
@@ -266,7 +266,7 @@ public final class UnitOfWorkInstance
         checkOpen();
 
         // Copy list so that it cannot be modified during completion
-        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>( callbacks );
+        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<>( callbacks );
 
         // Commit state to EntityStores
         List<StateCommitter> committers = applyChanges();
@@ -297,7 +297,7 @@ public final class UnitOfWorkInstance
         close();
 
         // Copy list so that it cannot be modified during completion
-        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<UnitOfWorkCallback>( callbacks );
+        List<UnitOfWorkCallback> currentCallbacks = callbacks == null ? null : new ArrayList<>( callbacks );
 
         // Call callbacks
         notifyAfterCompletion( currentCallbacks, DISCARDED );
@@ -331,7 +331,7 @@ public final class UnitOfWorkInstance
     {
         if( callbacks == null )
         {
-            callbacks = new ArrayList<UnitOfWorkCallback>();
+            callbacks = new ArrayList<>();
         }
 
         callbacks.add( callback );
@@ -353,7 +353,7 @@ public final class UnitOfWorkInstance
     private List<StateCommitter> applyChanges()
         throws UnitOfWorkCompletionException
     {
-        List<StateCommitter> committers = new ArrayList<StateCommitter>();
+        List<StateCommitter> committers = new ArrayList<>();
         for( EntityStoreUnitOfWork entityStoreUnitOfWork : storeUnitOfWork.values() )
         {
             try
@@ -374,7 +374,7 @@ public final class UnitOfWorkInstance
                     // If we cancelled due to concurrent modification, then create the proper exception for it!
                     ConcurrentEntityStateModificationException mee = (ConcurrentEntityStateModificationException) e;
                     Collection<EntityReference> modifiedEntityIdentities = mee.modifiedEntities();
-                    Collection<EntityComposite> modifiedEntities = new ArrayList<EntityComposite>();
+                    Collection<EntityComposite> modifiedEntities = new ArrayList<>();
                     for( EntityReference modifiedEntityIdentity : modifiedEntityIdentities )
                     {
                         Collection<EntityInstance> instances = instanceCache.values();
