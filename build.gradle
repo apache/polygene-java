@@ -249,6 +249,7 @@ allprojects {
       maxHeapSize = "1024m"
       systemProperties = testProperties
       ignoreFailures = true
+      testReport = true
       afterSuite { descriptor, result ->
         if( result.resultType == TestResult.ResultType.FAILURE )
         {
@@ -356,6 +357,7 @@ task globalTestReport( type: TestReport ) {
 
 test {
   dependsOn subprojects*.test, globalTestReport
+  testReport = false
 }
 
 // Build the whole SDK public Javadoc

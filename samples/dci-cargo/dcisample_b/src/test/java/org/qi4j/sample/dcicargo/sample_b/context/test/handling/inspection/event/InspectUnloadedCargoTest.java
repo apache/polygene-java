@@ -18,21 +18,26 @@
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
 import java.util.Date;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.event.InspectUnloadedCargo;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.CargoMisdirectedException;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.CargoMisroutedException;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.CargoNotRoutedException;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.InspectionFailedException;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.itinerary.Leg;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
@@ -43,10 +48,16 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
  */
 public class InspectUnloadedCargoTest extends TestApplication
 {
-    @BeforeClass
-    public static void setup() throws Exception
+    private HandlingEventAggregateRoot HANDLING_EVENTS;
+
+    @Before
+    public void prepareTest()
+        throws Exception
     {
-        TestApplication.setup();
+        super.prepareTest();
+        UnitOfWork uow = module.currentUnitOfWork();
+        HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
+        CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
@@ -56,7 +67,8 @@ public class InspectUnloadedCargoTest extends TestApplication
     }
 
     @Test
-    public void precondition_CannotInspectUnloadInDestinationHere() throws Exception
+    public void precondition_CannotInspectUnloadInDestinationHere()
+        throws Exception
     {
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, UNLOAD, STOCKHOLM, V205 );
         try
@@ -64,14 +76,15 @@ public class InspectUnloadedCargoTest extends TestApplication
             new InspectUnloadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (InspectionFailedException e)
+        catch( InspectionFailedException e )
         {
             assertMessage( e, "INTERNAL ERROR: Can only inspect unloaded cargo that hasn't arrived at destination" );
         }
     }
 
     @Test
-    public void deviation_2a_NotRouted() throws Exception
+    public void deviation_2a_NotRouted()
+        throws Exception
     {
         // Cargo not routed
         cargo.itinerary().set( null );
@@ -84,7 +97,7 @@ public class InspectUnloadedCargoTest extends TestApplication
             new InspectUnloadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoNotRoutedException e)
+        catch( CargoNotRoutedException e )
         {
             assertMessage( e, "NOT ROUTED while being handled!" );
 
@@ -97,7 +110,8 @@ public class InspectUnloadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_Misrouted_UnloadLocationOfWrongItinerary_Origin() throws Exception
+    public void deviation_2b_Misrouted_UnloadLocationOfWrongItinerary_Origin()
+        throws Exception
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
@@ -110,7 +124,7 @@ public class InspectUnloadedCargoTest extends TestApplication
             new InspectUnloadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoMisroutedException e)
+        catch( CargoMisroutedException e )
         {
             assertMessage( e, "MISROUTED! Route specification is not satisfied with itinerary" );
 
@@ -123,7 +137,8 @@ public class InspectUnloadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_Misrouted_UnloadLocationOfWrongItinerary_OtherItineraryLocation() throws Exception
+    public void deviation_2b_Misrouted_UnloadLocationOfWrongItinerary_OtherItineraryLocation()
+        throws Exception
     {
         cargo.itinerary().set( wrongItinerary );
         cargo.delivery().set( delivery( TODAY, ONBOARD_CARRIER, MISROUTED, leg1 ) );
@@ -134,7 +149,8 @@ public class InspectUnloadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_Misrouted_UnloadLocationOfWrongItinerary_UnplannedLocation() throws Exception
+    public void deviation_2b_Misrouted_UnloadLocationOfWrongItinerary_UnplannedLocation()
+        throws Exception
     {
         cargo.itinerary().set( wrongItinerary );
         cargo.delivery().set( delivery( TODAY, ONBOARD_CARRIER, MISROUTED, leg1 ) );
@@ -144,9 +160,9 @@ public class InspectUnloadedCargoTest extends TestApplication
         new InspectUnloadedCargo( cargo, handlingEvent ).inspect();
     }
 
-
     @Test
-    public void step_2_Routed_UnloadedInPlannedLocation() throws Exception
+    public void step_2_Routed_UnloadedInPlannedLocation()
+        throws Exception
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
@@ -158,12 +174,13 @@ public class InspectUnloadedCargoTest extends TestApplication
         // Itinerary progresses to next leg
         assertDelivery( UNLOAD, CHICAGO, DAY5, V201,
                         IN_PORT, notArrived,
-                        ROUTED, directed, itinerary.eta(),leg2,
+                        ROUTED, directed, itinerary.eta(), leg2,
                         LOAD, CHICAGO, DAY5, V201 );
     }
 
     @Test
-    public void deviation_3x_InternalError_InvalidItineraryProgressIndex() throws Exception
+    public void deviation_3x_InternalError_InvalidItineraryProgressIndex()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY5, DAY5, trackingId, UNLOAD, CHICAGO, V201 );
@@ -177,7 +194,7 @@ public class InspectUnloadedCargoTest extends TestApplication
             new InspectUnloadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (InspectionFailedException e)
+        catch( InspectionFailedException e )
         {
             assertMessage( e, "INTERNAL ERROR: Itinerary progress index '7' is invalid!" );
             assertDelivery( UNLOAD, CHICAGO, DAY5, V201,
@@ -188,7 +205,8 @@ public class InspectUnloadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3a_ReRouted_UnloadInNewOrigin() throws Exception
+    public void deviation_3a_ReRouted_UnloadInNewOrigin()
+        throws Exception
     {
         // Re-route with new satisfying itinerary
         cargo.itinerary().set( itinerary );
@@ -205,12 +223,13 @@ public class InspectUnloadedCargoTest extends TestApplication
         // Itinerary progress starts over from leg 1 again
         assertDelivery( UNLOAD, HONGKONG, DAY1, V204,
                         IN_PORT, notArrived,
-                        ROUTED, directed, itinerary.eta(),leg1,
+                        ROUTED, directed, itinerary.eta(), leg1,
                         LOAD, HONGKONG, DAY1, V201 );
     }
 
     @Test
-    public void deviation_3b_Misdirected_UnexpectedUnloadLocation_Origin() throws Exception
+    public void deviation_3b_Misdirected_UnexpectedUnloadLocation_Origin()
+        throws Exception
     {
         // Going fine so far
         cargo.itinerary().set( itinerary );
@@ -226,12 +245,13 @@ public class InspectUnloadedCargoTest extends TestApplication
         // Itinerary progress starts over from leg 1 again
         assertDelivery( UNLOAD, HONGKONG, DAY6, V201,
                         IN_PORT, notArrived,
-                        ROUTED, directed, itinerary.eta(),leg1,
+                        ROUTED, directed, itinerary.eta(), leg1,
                         LOAD, HONGKONG, DAY1, V201 );
     }
 
     @Test
-    public void deviation_3b_Misdirected_UnexpectedUnloadLocation_PreviousInItinerary() throws Exception
+    public void deviation_3b_Misdirected_UnexpectedUnloadLocation_PreviousInItinerary()
+        throws Exception
     {
         // Move the cargo ahead on the route. Third leg of itinerary expects unload in Dallas.
         cargo.itinerary().set( itinerary );
@@ -244,7 +264,7 @@ public class InspectUnloadedCargoTest extends TestApplication
             new InspectUnloadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoMisdirectedException e)
+        catch( CargoMisdirectedException e )
         {
             assertMessage( e, "MISDIRECTED! Itinerary expected unload in USDAL" );
             assertDelivery( UNLOAD, NEWYORK, DAY7, V201,      // Itinerary expected: UNLOAD, DALLAS, DAY8, V202
@@ -255,7 +275,8 @@ public class InspectUnloadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3b_Misdirected_UnexpectedUnloadLocation_NextInItinerary() throws Exception
+    public void deviation_3b_Misdirected_UnexpectedUnloadLocation_NextInItinerary()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, ONBOARD_CARRIER, ROUTED, leg3 ) );
@@ -267,7 +288,8 @@ public class InspectUnloadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3b_Misdirected_UnexpectedUnloadLocation_Unplanned() throws Exception
+    public void deviation_3b_Misdirected_UnexpectedUnloadLocation_Unplanned()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, ONBOARD_CARRIER, ROUTED, leg3 ) );
@@ -279,7 +301,8 @@ public class InspectUnloadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3c_ExpectedUnloadLocation_UnexpectedUnloadVoyage() throws Exception
+    public void deviation_3c_ExpectedUnloadLocation_UnexpectedUnloadVoyage()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, ONBOARD_CARRIER, ROUTED, leg3 ) );
@@ -291,12 +314,13 @@ public class InspectUnloadedCargoTest extends TestApplication
         // Itinerary should have progressed to leg 4
         assertDelivery( UNLOAD, DALLAS, DAY10, V205,      // Itinerary expected: UNLOAD, DALLAS, DAY8, V202
                         IN_PORT, notArrived,
-                        ROUTED, directed, itinerary.eta(),leg4,
+                        ROUTED, directed, itinerary.eta(), leg4,
                         LOAD, DALLAS, DAY10, V202 ); // leg 4 load location
     }
 
     @Test
-    public void success_Unload() throws Exception
+    public void success_Unload()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, ONBOARD_CARRIER, ROUTED, leg4 ) );
@@ -313,7 +337,7 @@ public class InspectUnloadedCargoTest extends TestApplication
 
         assertDelivery( UNLOAD, ROTTERDAM, DAY17, V202,
                         IN_PORT, notArrived,
-                        ROUTED, directed, itinerary.eta(),leg5,
+                        ROUTED, directed, itinerary.eta(), leg5,
                         LOAD, ROTTERDAM, DAY20, V203 ); // leg 5 load location
     }
 }

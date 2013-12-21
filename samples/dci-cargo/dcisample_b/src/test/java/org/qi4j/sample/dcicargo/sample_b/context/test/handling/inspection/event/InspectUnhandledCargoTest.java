@@ -18,14 +18,19 @@
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
 import java.util.Date;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.event.InspectUnhandledCargo;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.InspectionFailedException;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
 
 import static org.junit.Assert.fail;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.RECEIVE;
@@ -35,10 +40,16 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
  */
 public class InspectUnhandledCargoTest extends TestApplication
 {
-    @BeforeClass
-    public static void setup() throws Exception
+    private HandlingEventAggregateRoot HANDLING_EVENTS;
+
+    @Before
+    public void prepareTest()
+        throws Exception
     {
-        TestApplication.setup();
+        super.prepareTest();
+        UnitOfWork uow = module.currentUnitOfWork();
+        HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
+        CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
@@ -47,10 +58,9 @@ public class InspectUnhandledCargoTest extends TestApplication
         trackingId = cargo.trackingId().get();
     }
 
-
-
     @Test
-    public void precondition_CannotInspectUnloadInDestinationHere() throws Exception
+    public void precondition_CannotInspectUnloadInDestinationHere()
+        throws Exception
     {
         // Can't inspect handled cargo here...
         cargo.itinerary().set( itinerary );
@@ -62,14 +72,15 @@ public class InspectUnhandledCargoTest extends TestApplication
             new InspectUnhandledCargo( cargo ).inspect();
             fail();
         }
-        catch (InspectionFailedException e)
+        catch( InspectionFailedException e )
         {
             assertMessage( e, "INTERNAL ERROR: Can only inspect unhandled cargo" );
         }
     }
 
     @Test
-    public void deviation_2a_NotRouted() throws Exception
+    public void deviation_2a_NotRouted()
+        throws Exception
     {
         // Cargo not routed
         cargo.itinerary().set( null );
@@ -84,7 +95,8 @@ public class InspectUnhandledCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_Misrouted() throws Exception
+    public void deviation_2b_Misrouted()
+        throws Exception
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
@@ -95,11 +107,12 @@ public class InspectUnhandledCargoTest extends TestApplication
         assertDelivery( null, null, null, null,
                         NOT_RECEIVED, notArrived,
                         MISROUTED, directed, unknownETA, unknownLeg,
-                        RECEIVE, HONGKONG, noSpecificDate, noVoyage  );
+                        RECEIVE, HONGKONG, noSpecificDate, noVoyage );
     }
 
     @Test
-    public void step_2_Routed() throws Exception
+    public void step_2_Routed()
+        throws Exception
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
@@ -110,6 +123,6 @@ public class InspectUnhandledCargoTest extends TestApplication
         assertDelivery( null, null, null, null,
                         NOT_RECEIVED, notArrived,
                         ROUTED, directed, itinerary.eta(), leg1,
-                        RECEIVE, HONGKONG, noSpecificDate, noVoyage  );
+                        RECEIVE, HONGKONG, noSpecificDate, noVoyage );
     }
 }

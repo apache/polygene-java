@@ -17,7 +17,7 @@ package org.qi4j.index.sql.postgresql;
 
 import java.sql.Connection;
 import javax.sql.DataSource;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;

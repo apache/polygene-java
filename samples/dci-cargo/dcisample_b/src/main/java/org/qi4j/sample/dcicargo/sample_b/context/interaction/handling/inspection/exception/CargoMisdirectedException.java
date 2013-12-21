@@ -31,18 +31,20 @@ public class CargoMisdirectedException extends InspectionException
 
     public CargoMisdirectedException( HandlingEvent handlingEvent, String msg )
     {
-        super( handlingEvent, msg );
+        super( createMessage(msg, handlingEvent, null) );
     }
 
     public CargoMisdirectedException( HandlingEvent handlingEvent, Itinerary itinerary, String msg )
     {
-        super( handlingEvent, msg );
+        super( msg );
         this.itinerary = itinerary;
     }
 
-    @Override
-    public String getMessage()
+    private static String createMessage( String msg, HandlingEvent handlingEvent, Itinerary itinerary )
     {
+        String id = handlingEvent.trackingId().get().id().get();
+        String city = handlingEvent.location().get().name().get();
+
         String itineraryString = "";
         if( itinerary != null )
         {

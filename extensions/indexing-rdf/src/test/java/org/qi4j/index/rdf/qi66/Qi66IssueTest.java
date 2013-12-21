@@ -32,8 +32,8 @@ import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 /**
  * Test for Qi-66

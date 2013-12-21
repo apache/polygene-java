@@ -20,7 +20,6 @@ package org.qi4j.library.alarm;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import junit.framework.Assert;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.mixin.Mixins;
@@ -223,10 +222,10 @@ public class SimpleAlarmModelTest
         AlarmEvent event = underTest.history().lastEvent();
 
         AlarmStatus oldstate = event.oldStatus().get();
-        Assert.assertEquals( AlarmPoint.STATUS_NORMAL, oldstate.name(null) );
+        assertEquals( AlarmPoint.STATUS_NORMAL, oldstate.name(null) );
 
         AlarmStatus newstate = event.newStatus().get();
-        Assert.assertEquals( AlarmPoint.STATUS_ACTIVATED, newstate.name(null) );
+        assertEquals( AlarmPoint.STATUS_ACTIVATED, newstate.name(null) );
 
         AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
         assertEquals( underTest, eventalarm );
@@ -245,7 +244,7 @@ public class SimpleAlarmModelTest
         assertEquals( AlarmPoint.STATUS_ACTIVATED, oldstate.name(null) );
 
         AlarmStatus newstate = event.newStatus().get();
-        Assert.assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name(null) );
+        assertEquals( AlarmPoint.STATUS_NORMAL, newstate.name(null) );
 
         AlarmPoint eventalarm = getAlarm( event.alarmIdentity().get() );
         assertEquals( underTest, eventalarm );

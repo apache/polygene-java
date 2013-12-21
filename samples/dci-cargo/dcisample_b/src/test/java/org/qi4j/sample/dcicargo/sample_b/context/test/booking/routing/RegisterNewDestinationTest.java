@@ -17,17 +17,28 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.booking.routing;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.booking.exception.ChangeDestinationException;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.booking.routing.RegisterNewDestination;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.CargoMisroutedException;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
 
 import static org.junit.Assert.fail;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.*;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.CLAIMED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.CUSTOMS;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.RECEIVE;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.UNLOAD;
 
 /**
  * {@link RegisterNewDestination} tests
@@ -36,10 +47,16 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
  */
 public class RegisterNewDestinationTest extends TestApplication
 {
-    @BeforeClass
-    public static void setup() throws Exception
+    private HandlingEventAggregateRoot HANDLING_EVENTS;
+
+    @Before
+    public void prepareTest()
+        throws Exception
     {
-        TestApplication.setup();
+        super.prepareTest();
+        UnitOfWork uow = module.currentUnitOfWork();
+        HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
+        CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, TODAY, deadline = DAY24 );
@@ -50,7 +67,8 @@ public class RegisterNewDestinationTest extends TestApplication
     }
 
     @Test
-    public void precondition_x1_CannotChangeDestinationOfClaimedCargo() throws Exception
+    public void precondition_x1_CannotChangeDestinationOfClaimedCargo()
+        throws Exception
     {
         cargo.delivery().set( delivery( DAY1, CLAIMED, ROUTED, leg1 ) );
         thrown.expect( ChangeDestinationException.class, "Can't change destination of claimed cargo" );
@@ -58,7 +76,8 @@ public class RegisterNewDestinationTest extends TestApplication
     }
 
     @Test
-    public void deviation_1a_UnrecognizedLocation() throws Exception
+    public void deviation_1a_UnrecognizedLocation()
+        throws Exception
     {
         precondition_x1_CannotChangeDestinationOfClaimedCargo();
 
@@ -68,7 +87,8 @@ public class RegisterNewDestinationTest extends TestApplication
     }
 
     @Test
-    public void deviation_1b_NewDestinationSameAsOldDestination() throws Exception
+    public void deviation_1b_NewDestinationSameAsOldDestination()
+        throws Exception
     {
         deviation_1a_UnrecognizedLocation();
 
@@ -78,7 +98,8 @@ public class RegisterNewDestinationTest extends TestApplication
     }
 
     @Test
-    public void step_2_NotRouted() throws Exception
+    public void step_2_NotRouted()
+        throws Exception
     {
         deviation_1b_NewDestinationSameAsOldDestination();
 
@@ -101,7 +122,8 @@ public class RegisterNewDestinationTest extends TestApplication
     }
 
     @Test
-    public void step_2_NotReceived() throws Exception
+    public void step_2_NotReceived()
+        throws Exception
     {
         step_2_NotRouted();
 
@@ -135,7 +157,8 @@ public class RegisterNewDestinationTest extends TestApplication
     }
 
     @Test
-    public void step_2_Received() throws Exception
+    public void step_2_Received()
+        throws Exception
     {
         step_2_NotReceived();
 
@@ -170,7 +193,8 @@ public class RegisterNewDestinationTest extends TestApplication
     }
 
     @Test
-    public void deviation_2a_OnBoardCarrier() throws Exception
+    public void deviation_2a_OnBoardCarrier()
+        throws Exception
     {
         step_2_Received();
 
@@ -191,7 +215,7 @@ public class RegisterNewDestinationTest extends TestApplication
             new RegisterNewDestination( cargo ).to( "CNSHA" );
             fail();
         }
-        catch (CargoMisroutedException e)
+        catch( CargoMisroutedException e )
         {
             assertMessage( e, "MISROUTED! Route specification is not satisfied with itinerary" );
             assertRouteSpec( CHICAGO,   // Arrival location of current carrier movement
@@ -211,7 +235,8 @@ public class RegisterNewDestinationTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_InPort_Unloaded() throws Exception
+    public void deviation_2b_InPort_Unloaded()
+        throws Exception
     {
         deviation_2a_OnBoardCarrier();
 
@@ -232,7 +257,7 @@ public class RegisterNewDestinationTest extends TestApplication
             new RegisterNewDestination( cargo ).to( "CNSHA" );
             fail();
         }
-        catch (CargoMisroutedException e)
+        catch( CargoMisroutedException e )
         {
             assertMessage( e, "MISROUTED! Route specification is not satisfied with itinerary" );
             assertRouteSpec( CHICAGO,   // Current location
@@ -252,7 +277,8 @@ public class RegisterNewDestinationTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_InPort_InCustoms() throws Exception
+    public void deviation_2b_InPort_InCustoms()
+        throws Exception
     {
         deviation_2b_InPort_Unloaded();
 
@@ -285,5 +311,4 @@ public class RegisterNewDestinationTest extends TestApplication
                         MISROUTED, directed, unknownETA, unknownLeg,
                         unknownNextHandlingEvent );
     }
-
 }

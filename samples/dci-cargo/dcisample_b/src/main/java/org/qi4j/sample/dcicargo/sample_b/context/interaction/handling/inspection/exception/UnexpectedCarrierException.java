@@ -23,12 +23,14 @@ public class UnexpectedCarrierException extends InspectionException
 {
     public UnexpectedCarrierException( HandlingEvent handlingEvent )
     {
-        super( handlingEvent );
+        super( createMessage(handlingEvent) );
     }
 
-    @Override
-    public String getMessage()
+    private static String createMessage( HandlingEvent handlingEvent )
     {
+        String voyage = handlingEvent.voyage().get().voyageNumber().get().number().get();
+        String city = handlingEvent.location().get().name().get();
+        String location = handlingEvent.location().get().getString();
         return "\nCarrier of voyage " + voyage + " didn't expect a load in " + location;
     }
 }

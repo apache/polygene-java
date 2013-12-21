@@ -28,24 +28,23 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.itinerary.Itinerary;
  */
 public class CargoMisroutedException extends InspectionException
 {
-    private RouteSpecification routeSpecification;
-    private Itinerary itinerary;
-
     public CargoMisroutedException( HandlingEvent handlingEvent,
                                     RouteSpecification routeSpecification,
                                     Itinerary itinerary
     )
     {
-        super( handlingEvent );
-        this.routeSpecification = routeSpecification;
-        this.itinerary = itinerary;
+        super( createMessage( handlingEvent, routeSpecification, itinerary ) );
     }
 
-    @Override
-    public String getMessage()
+    private static String createMessage( HandlingEvent handlingEvent,
+                                         RouteSpecification routeSpecification,
+                                         Itinerary itinerary )
     {
+        String id = handlingEvent.trackingId().get().id().get();
+        String city = handlingEvent.location().get().name().get();
         return "\nCargo is MISROUTED! Route specification is not satisfied with itinerary:\n"
                + routeSpecification.print() + itinerary.print()
-               + "MOCKUP REQUEST TO CARGO OWNER: Please re-route misrouted cargo '" + id + "' (now in " + city + ").";
+               + "MOCKUP REQUEST TO CARGO OWNER: Please re-route misrouted cargo '" + id + "' (now in " + city + ")."
+            ;
     }
 }

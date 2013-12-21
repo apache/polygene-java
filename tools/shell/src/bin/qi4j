@@ -1,0 +1,4 @@
+#!/bin/sh
+
+java -jar org.qi4j.tools.shell-@@version@@.jar "$@"
+

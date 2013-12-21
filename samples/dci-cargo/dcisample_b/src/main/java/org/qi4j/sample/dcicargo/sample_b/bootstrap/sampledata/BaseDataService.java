@@ -26,23 +26,23 @@ import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.sample.dcicargo.pathfinder.api.GraphTraversalService;
 import org.qi4j.sample.dcicargo.pathfinder.api.TransitEdge;
 import org.qi4j.sample.dcicargo.pathfinder.api.TransitPath;
 import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
 import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
-import org.qi4j.sample.dcicargo.sample_b.data.entity.LocationEntity;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.location.Location;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.location.UnLocode;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.CarrierMovement;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Schedule;
+import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
+import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.VoyageNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +51,8 @@ import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
 /**
  * Create basic sample data on startup of application.
  */
-@Mixins( BaseDataService.Mixin.class )
-@Activators( BaseDataService.Activator.class )
+@Mixins(BaseDataService.Mixin.class)
+@Activators(BaseDataService.Activator.class)
 public interface BaseDataService
     extends ServiceComposite
 {
@@ -61,35 +61,30 @@ public interface BaseDataService
         throws Exception;
 
     class Activator
-            extends ActivatorAdapter<ServiceReference<BaseDataService>>
+        extends ActivatorAdapter<ServiceReference<BaseDataService>>
     {
 
         @Override
         public void afterActivation( ServiceReference<BaseDataService> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().createBaseData();
         }
-
     }
 
     public abstract class Mixin
         extends BaseData
         implements BaseDataService
     {
-        @Structure
-        ValueBuilderFactory valueBuilderFactory;
-
-        @Structure
-        UnitOfWorkFactory uowf;
-
         @Service
         GraphTraversalService graphTraversalService;
 
-        @Structure
-        QueryBuilderFactory qbf;
-
         private static final Logger logger = LoggerFactory.getLogger( BaseDataService.class );
+
+        protected Mixin( @Structure Module module )
+        {
+            super( module );
+        }
 
         @Override
         public void createBaseData()
@@ -97,10 +92,7 @@ public interface BaseDataService
         {
             logger.debug( "CREATING BASIC DATA..." );
 
-            // Resources for the BaseData class
-            vbf = valueBuilderFactory;
-
-            uow = uowf.newUnitOfWork( newUsecase( "Create base data" ) );
+            UnitOfWork uow = module.newUnitOfWork( newUsecase( "Create base data" ) );
 
             // Create locations
             location( unlocode( "AUMEL" ), "Melbourne" );
@@ -124,7 +116,7 @@ public interface BaseDataService
                 for( TransitPath voyagePath : graphTraversalService.getVoyages() )
                 {
                     String voyageNumber = null;
-                    List<CarrierMovement> carrierMovements = new ArrayList<CarrierMovement>();
+                    List<CarrierMovement> carrierMovements = new ArrayList<>();
                     for( TransitEdge voyageEdge : voyagePath.getTransitEdges() )
                     {
                         voyageNumber = voyageEdge.getVoyageNumber();
@@ -133,7 +125,7 @@ public interface BaseDataService
                         carrierMovements.add( carrierMovement( from, to, voyageEdge.getFromDate(), voyageEdge.getToDate() ) );
                     }
 
-                    ValueBuilder<Schedule> schedule = vbf.newValueBuilder( Schedule.class );
+                    ValueBuilder<Schedule> schedule = module.newValueBuilder( Schedule.class );
                     schedule.prototype().carrierMovements().set( carrierMovements );
                     voyage( voyageNumber, schedule.newInstance() );
                 }
@@ -144,36 +136,51 @@ public interface BaseDataService
             }
 
             // Cargo and HandlingEvent aggregate roots
-            CARGOS = uow.newEntity( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
-            HANDLING_EVENTS = uow.newEntity( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
+            uow.newEntity( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
+            uow.newEntity( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
 
-            try {
+            try
+            {
                 uow.complete();
                 logger.debug( "BASIC DATA CREATED" );
             }
-            catch( UnitOfWorkCompletionException ex)
+            catch( UnitOfWorkCompletionException ex )
             {
                 uow.discard();
-                logger.error("UNABLE TO CREATE BASIC DATA");
+                logger.error( "UNABLE TO CREATE BASIC DATA" );
                 throw ex;
             }
         }
 
-        protected static UnLocode unlocode( String unlocodeString )
+        protected UnLocode unlocode( String unlocodeString )
         {
-            ValueBuilder<UnLocode> unlocode = vbf.newValueBuilder( UnLocode.class );
+            ValueBuilder<UnLocode> unlocode = module.newValueBuilder( UnLocode.class );
             unlocode.prototype().code().set( unlocodeString );
             return unlocode.newInstance();
         }
 
-        protected static Location location( UnLocode unlocode, String locationStr )
+        protected Location location( UnLocode unlocode, String locationStr )
         {
-            EntityBuilder<LocationEntity> location = uow.newEntityBuilder( LocationEntity.class, unlocode.code()
-                .get() );
+            UnitOfWork uow = module.currentUnitOfWork();
+            EntityBuilder<Location> location = uow.newEntityBuilder( Location.class, unlocode.code().get() );
             location.instance().unLocode().set( unlocode );
             location.instance().name().set( locationStr );
             return location.newInstance();
         }
 
+        protected Voyage voyage( String voyageNumberStr, Schedule schedule )
+        {
+            UnitOfWork uow = module.currentUnitOfWork();
+            EntityBuilder<Voyage> voyage = uow.newEntityBuilder( Voyage.class, voyageNumberStr );
+
+            // VoyageNumber
+            ValueBuilder<VoyageNumber> voyageNumber = module.newValueBuilder( VoyageNumber.class );
+            voyageNumber.prototype().number().set( voyageNumberStr );
+            voyage.instance().voyageNumber().set( voyageNumber.newInstance() );
+
+            // Schedule
+            voyage.instance().schedule().set( schedule );
+            return voyage.newInstance();
+        }
     }
 }

@@ -17,24 +17,34 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.booking.specification;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.booking.specification.DeriveUpdatedRouteSpecification;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
 
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.*;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.RECEIVE;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.UNLOAD;
 
-/**
-// * {@link com.marcgrue.dcisample_b.context.interaction.booking.routing.RegisterNewDestination} tests
- */
 public class DeriveUpdatedRouteSpecTest extends TestApplication
 {
-    @BeforeClass
-    public static void setup() throws Exception
+    private HandlingEventAggregateRoot HANDLING_EVENTS;
+
+    @Before
+    public void prepareTest()
+        throws Exception
     {
-        TestApplication.setup();
+        super.prepareTest();
+        UnitOfWork uow = module.currentUnitOfWork();
+        HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
+        CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, TODAY, deadline = DAY24 );
@@ -44,9 +54,9 @@ public class DeriveUpdatedRouteSpecTest extends TestApplication
         trackingId = cargo.trackingId().get();
     }
 
-
     @Test
-    public void deviation_1a_Destination_changed() throws Exception
+    public void deviation_1a_Destination_changed()
+        throws Exception
     {
         cargo.routeSpecification().set( routeSpec );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, HONGKONG, noVoyage );
@@ -66,7 +76,8 @@ public class DeriveUpdatedRouteSpecTest extends TestApplication
     }
 
     @Test
-    public void step_1_Destination_unchanged() throws Exception
+    public void step_1_Destination_unchanged()
+        throws Exception
     {
         cargo.routeSpecification().set( routeSpec );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, HONGKONG, noVoyage );
@@ -85,9 +96,9 @@ public class DeriveUpdatedRouteSpecTest extends TestApplication
                          DAY24 );   // Unchanged
     }
 
-
     @Test
-    public void deviation_2a_NotReceived() throws Exception
+    public void deviation_2a_NotReceived()
+        throws Exception
     {
         cargo.routeSpecification().set( routeSpec );
         cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, ROUTED, unknownLeg ) );
@@ -104,7 +115,8 @@ public class DeriveUpdatedRouteSpecTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_OnBoardCarrier() throws Exception
+    public void deviation_2b_OnBoardCarrier()
+        throws Exception
     {
         cargo.routeSpecification().set( routeSpec );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, LOAD, HONGKONG, V201 );
@@ -124,7 +136,8 @@ public class DeriveUpdatedRouteSpecTest extends TestApplication
     }
 
     @Test
-    public void step_3_InPort() throws Exception
+    public void step_3_InPort()
+        throws Exception
     {
         cargo.routeSpecification().set( routeSpec );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY5, DAY5, trackingId, UNLOAD, CHICAGO, V201 );

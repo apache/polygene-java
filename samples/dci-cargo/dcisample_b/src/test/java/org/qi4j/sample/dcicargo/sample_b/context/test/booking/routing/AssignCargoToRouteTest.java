@@ -18,32 +18,46 @@
 package org.qi4j.sample.dcicargo.sample_b.context.test.booking.routing;
 
 import java.util.Date;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.booking.exception.RoutingException;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.booking.exception.UnsatisfyingRouteException;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.booking.routing.AssignCargoToRoute;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.itinerary.Itinerary;
 
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.*;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.CLAIMED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.CUSTOMS;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.RECEIVE;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.UNLOAD;
 
 /**
  * {@link AssignCargoToRoute} tests
  *
- * FIXME: Every test method call the one above to allow ordered execution, ie. tests are not indepedants !
+ * FIXME: Every test method call the one above to allow ordered execution, ie. tests are not independent!
  */
 public class AssignCargoToRouteTest extends TestApplication
 {
     static Itinerary itinerary2;
+    private HandlingEventAggregateRoot HANDLING_EVENTS;
 
-    @BeforeClass
-    public static void setup() throws Exception
+    @Before
+    public void prepareTest()
+        throws Exception
     {
-        TestApplication.setup();
+        super.prepareTest();
+        UnitOfWork uow = module.currentUnitOfWork();
+        HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
+        CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
@@ -54,7 +68,8 @@ public class AssignCargoToRouteTest extends TestApplication
     }
 
     @Test
-    public void precondition_x1_CannotReRouteClaimedCargo() throws Exception
+    public void precondition_x1_CannotReRouteClaimedCargo()
+        throws Exception
     {
         cargo.delivery().set( delivery( TODAY, CLAIMED, ROUTED, unknownLeg ) );
         thrown.expect( RoutingException.class, "Can't re-route claimed cargo" );
@@ -62,7 +77,8 @@ public class AssignCargoToRouteTest extends TestApplication
     }
 
     @Test
-    public void deviation_1a_UnsatisfyingItinerary() throws Exception
+    public void deviation_1a_UnsatisfyingItinerary()
+        throws Exception
     {
         precondition_x1_CannotReRouteClaimedCargo();
 
@@ -72,7 +88,8 @@ public class AssignCargoToRouteTest extends TestApplication
     }
 
     @Test
-    public void deviation_3a_Routing_UnhandledCargo() throws Exception
+    public void deviation_3a_Routing_UnhandledCargo()
+        throws Exception
     {
         deviation_1a_UnsatisfyingItinerary();
 
@@ -85,7 +102,8 @@ public class AssignCargoToRouteTest extends TestApplication
     }
 
     @Test
-    public void deviation_3b_ReRouting_OnBoard() throws Exception
+    public void deviation_3b_ReRouting_OnBoard()
+        throws Exception
     {
         deviation_3a_Routing_UnhandledCargo();
 
@@ -109,7 +127,8 @@ public class AssignCargoToRouteTest extends TestApplication
     }
 
     @Test
-    public void deviation_3c_ReRouting_InPort_Received() throws Exception
+    public void deviation_3c_ReRouting_InPort_Received()
+        throws Exception
     {
         deviation_3b_ReRouting_OnBoard();
 
@@ -118,7 +137,7 @@ public class AssignCargoToRouteTest extends TestApplication
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, HONGKONG, noVoyage );
         cargo.delivery().set( delivery( handlingEvent, IN_PORT, notArrived,
                                         ROUTED, directed, unknownETA, unknownLeg,
-                                        nextHandlingEvent( LOAD, HONGKONG, DAY1, V201 )  ) );
+                                        nextHandlingEvent( LOAD, HONGKONG, DAY1, V201 ) ) );
 
         // New itinerary going from current port
         itinerary2 = itinerary( leg( V202, HONGKONG, STOCKHOLM, DAY3, DAY17 ) );
@@ -132,7 +151,8 @@ public class AssignCargoToRouteTest extends TestApplication
     }
 
     @Test
-    public void deviation_3c_ReRouting_InPort_Unloaded() throws Exception
+    public void deviation_3c_ReRouting_InPort_Unloaded()
+        throws Exception
     {
         deviation_3c_ReRouting_InPort_Received();
 
@@ -141,7 +161,7 @@ public class AssignCargoToRouteTest extends TestApplication
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY5, DAY5, trackingId, UNLOAD, CHICAGO, V201 );
         cargo.delivery().set( delivery( handlingEvent, IN_PORT, notArrived,
                                         ROUTED, directed, unknownETA, leg2,
-                                        nextHandlingEvent( UNLOAD, NEWYORK, DAY6, V201 )  ) );
+                                        nextHandlingEvent( UNLOAD, NEWYORK, DAY6, V201 ) ) );
 
         // Re-route cargo unloaded in port
         itinerary2 = itinerary( leg( V202, CHICAGO, STOCKHOLM, DAY6, DAY19 ) );
@@ -153,7 +173,8 @@ public class AssignCargoToRouteTest extends TestApplication
     }
 
     @Test
-    public void deviation_3c_ReRouting_InPort_InCustoms() throws Exception
+    public void deviation_3c_ReRouting_InPort_InCustoms()
+        throws Exception
     {
         deviation_3c_ReRouting_InPort_Unloaded();
 

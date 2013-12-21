@@ -20,7 +20,7 @@ package org.qi4j.library.alarm;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.mixin.Mixins;

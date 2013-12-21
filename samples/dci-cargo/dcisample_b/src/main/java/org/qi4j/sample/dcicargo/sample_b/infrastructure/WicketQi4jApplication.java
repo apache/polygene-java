@@ -23,18 +23,13 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.qi4j.api.Qi4j;
-import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.bootstrap.ApplicationAssembler;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.sample.dcicargo.sample_b.infrastructure.conversion.EntityToDTOService;
@@ -59,16 +54,7 @@ public class WicketQi4jApplication
     protected Module qi4jModule;
 
     @Structure
-    protected UnitOfWorkFactory uowf;
-
-    @Structure
-    protected ValueBuilderFactory vbf;
-
-    @Structure
-    protected QueryBuilderFactory qbf;
-
-    @Structure
-    protected TransientBuilderFactory tbf;
+    protected Module module;
 
     @Structure
     protected Qi4j qi4j;
@@ -89,10 +75,11 @@ public class WicketQi4jApplication
      *
      * If you like, you can also override this method in the custom application class and simply
      * return an instance of YourAssembler:
-     *
-     * @Override protected ApplicationAssembler getAssembler() {
-     * return new YourAssemblerInAnyPath();
+     * <code><pre>
+     * &#64;Override protected ApplicationAssembler getAssembler() {
+     *     return new YourAssemblerInAnyPath();
      * }
+     * </pre></code>
      */
     protected ApplicationAssembler getAssembler()
         throws Exception
@@ -131,10 +118,10 @@ public class WicketQi4jApplication
         startQi4j();
         handleUnitOfWork();
 
-        Context.prepareContextBaseClass( uowf, vbf );
-        BaseWebPage.prepareBaseWebPageClass( tbf );
+        Context.prepareContextBaseClass( module );
+        BaseWebPage.prepareBaseWebPageClass( module );
         ReadOnlyModel.prepareModelBaseClass( qi4jModule, qi4j, valueConverter );
-        Queries.prepareQueriesBaseClass( uowf, qbf );
+        Queries.prepareQueriesBaseClass( module, module );
 
         wicketInit();
     }
@@ -176,14 +163,14 @@ public class WicketQi4jApplication
                 logger.debug( requestCycle.getRequest().toString() );
                 logger.debug( requestCycle.getRequest().getRequestParameters().toString() );
 
-                UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "REQUEST" ) );
+                UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "REQUEST" ) );
                 logger.debug( "  ### NEW " + uow + "   ### MODULE: " + qi4jModule );
             }
 
             @Override
             public void onEndRequest( final RequestCycle requestCycle )
             {
-                UnitOfWork uow = uowf.currentUnitOfWork();
+                UnitOfWork uow = module.currentUnitOfWork();
                 if( uow != null )
                 {
                     try
@@ -201,12 +188,6 @@ public class WicketQi4jApplication
                             logger.debug( "  ### DISCARD " + uow + "   ### MODULE: " + qi4jModule );
                             uow.discard();
                         }
-                    }
-                    catch( ConcurrentEntityModificationException e )
-                    {
-                        logger.error( "  ### DISCARD " + uow + "   ### MODULE: " + qi4jModule );
-                        uow.discard();
-                        e.printStackTrace();
                     }
                     catch( UnitOfWorkCompletionException e )
                     {

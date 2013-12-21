@@ -19,18 +19,23 @@ package org.qi4j.sample.dcicargo.sample_b.bootstrap.test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.qi4j.api.composite.TransientBuilderFactory;
+import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.sampledata.BaseData;
 import org.qi4j.sample.dcicargo.sample_b.data.factory.RouteSpecificationFactoryService;
@@ -45,7 +50,9 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventTy
 import org.qi4j.sample.dcicargo.sample_b.data.structure.itinerary.Itinerary;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.location.Location;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.tracking.TrackingId;
+import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Schedule;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
+import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.VoyageNumber;
 import org.qi4j.sample.dcicargo.sample_b.infrastructure.dci.Context;
 import org.qi4j.sample.dcicargo.sample_b.infrastructure.testing.ExpectedException;
 import org.slf4j.Logger;
@@ -65,10 +72,6 @@ public class TestApplication
     protected Logger logger = LoggerFactory.getLogger( getClass() );
 
     protected static Application app;
-    protected static Module module;
-    protected static UnitOfWorkFactory uowf;
-    protected static TransientBuilderFactory tbf;
-    protected static QueryBuilderFactory qbf;
 
     protected static RouteSpecificationFactoryService routeSpecFactory;
 
@@ -120,47 +123,45 @@ public class TestApplication
     final protected static Integer unknownLeg = 0;
     final protected static NextHandlingEvent unknownNextHandlingEvent = null;
 
-    protected static Date deadline;
-    protected static Date arrival;
-    protected static RouteSpecification routeSpec;
-    protected static RouteSpecification newRouteSpec;
-    protected static Delivery delivery;
-    protected static Cargo cargo;
-    protected static TrackingId trackingId;
-    protected static String trackingIdString;
-    protected static Itinerary itinerary;
-    protected static Itinerary wrongItinerary;
-    protected static HandlingEvent handlingEvent;
+    protected Date deadline;
+    protected Date arrival;
+    protected RouteSpecification routeSpec;
+    protected RouteSpecification newRouteSpec;
+    protected Delivery delivery;
+    protected Cargo cargo;
+    protected TrackingId trackingId;
+    protected String trackingIdString;
+    protected Itinerary itinerary;
+    protected Itinerary wrongItinerary;
+    protected HandlingEvent handlingEvent;
+    protected Location MELBOURNE;
+    protected Location HANGZHOU;
+    protected Location HONGKONG;
+    protected Location SHANGHAI;
+    protected Location HAMBURG;
+    protected Location STOCKHOLM;
+    protected Location DALLAS;
+    protected Location NEWYORK;
+    protected Location MOGADISHU;
+    protected Location ROTTERDAM;
+    protected Location HELSINKI;
+    protected Location GOTHENBURG;
+    protected Location TOKYO;
+    protected Location CHICAGO;
+
+    protected TestApplication()
+    {
+        super( findHostingModule() );
+    }
 
     @BeforeClass
     public static void setup() throws Exception
     {
-        try {
         System.out.println( "\n@@@@@@@@@@@  TEST SUITE  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" );
         app = new Energy4Java().newApplication( new TestAssembler() );
         app.activate();
+        Context.prepareContextBaseClass( findHostingModule() );
 
-        module = app.findModule( "BOOTSTRAP", "BOOTSTRAP-Bootstrap" );
-        uowf = module;
-        tbf = module;
-        qbf = module;
-
-        ServiceReference<RouteSpecificationFactoryService> routeSpecFactoryServiceRef =
-              module.findService( RouteSpecificationFactoryService.class );
-        routeSpecFactory = routeSpecFactoryServiceRef.get();
-
-        Context.prepareContextBaseClass( uowf, vbf );
-
-        populateTestData();
-
-        // Separate test suites in console output
-        System.out.println();
-        }
-        catch( Exception ex )
-        {
-            ex.printStackTrace();
-            throw ex;
-        }
     }
 
     // Allow to test message output from exceptions after they have been thrown
@@ -172,31 +173,35 @@ public class TestApplication
     public TestName name = new TestName();
 
     @Before
-    public void printCurrentTestMethodName()
+    public void prepareTest()
+        throws Exception
     {
         logger.info( name.getMethodName() );
+        Usecase usecase = UsecaseBuilder.newUsecase( "Usecase:" + name );
+        UnitOfWork uow = module.newUnitOfWork(usecase);
+        populateTestData();
+
+        ServiceReference<RouteSpecificationFactoryService> routeSpecFactoryServiceRef =
+            module.findService( RouteSpecificationFactoryService.class );
+        routeSpecFactory = routeSpecFactoryServiceRef.get();
+
+        // Separate test suites in console output
+        System.out.println();
     }
 
-    public void assertMessage( Exception e, String msg )
+    @After
+    public void concludeTests()
     {
-        String message = "\nEXPECTED: " + msg + "\nGOT: " + e.getMessage();
-        assertTrue( message, e.getMessage().contains( msg ) );
-    }
-
-
-    @AfterClass
-    public static void tearDown() throws Exception
-    {
+        UnitOfWork uow = module.currentUnitOfWork();
         if (uow != null)
         {
             uow.discard();
-            uow = null;
         }
-        if( uowf != null && uowf.isUnitOfWorkActive() )
+        if( module.isUnitOfWorkActive() )
         {
-            while( uowf.isUnitOfWorkActive() )
+            while( module.isUnitOfWorkActive() )
             {
-                UnitOfWork uow = uowf.currentUnitOfWork();
+                uow = module.currentUnitOfWork();
                 if( uow.isOpen() )
                 {
                     System.err.println( "UnitOfWork not cleaned up:" + uow.usecase().name() );
@@ -209,14 +214,25 @@ public class TestApplication
             }
             new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();
         }
+    }
 
+    @AfterClass
+    public static void terminateApplication() throws Exception
+    {
         if( app != null )
         {
             app.passivate();
         }
     }
 
-    private static void populateTestData() throws Exception
+    public void assertMessage( Exception e, String msg )
+    {
+        String message = "\nEXPECTED: " + msg + "\nGOT: " + e.getMessage();
+        assertTrue( message, e.getMessage().contains( msg ) );
+    }
+
+
+    private void populateTestData() throws Exception
     {
         // UnLocode value objects
         AUMEL = unlocode( "AUMEL" ); // Melbourne
@@ -233,6 +249,8 @@ public class TestApplication
         USCHI = unlocode( "USCHI" ); // Chicago
         USDAL = unlocode( "USDAL" ); // Dallas
         USNYC = unlocode( "USNYC" ); // New York
+
+        UnitOfWork uow = module.currentUnitOfWork();
 
         // Get locations created in BaseDataService on startup
         MELBOURNE = uow.get( Location.class, "AUMEL" );
@@ -296,7 +314,6 @@ public class TestApplication
               leg( V204, NEWYORK, MELBOURNE, DAY13, DAY19 )
         );
     }
-
 
     public void assertDelivery( HandlingEventType handlingEventType,
                                 Location location,
@@ -382,6 +399,7 @@ public class TestApplication
         }
     }
 
+
     public void assertDelivery( HandlingEventType handlingEventType,
                                 Location location,
                                 Date completion,
@@ -411,5 +429,25 @@ public class TestApplication
         assertThat( newRouteSpec.destination().get(), is( equalTo( destination ) ) );
         assertThat( newRouteSpec.earliestDeparture().get(), is( equalTo( earliestDeparture ) ) );
         assertThat( newRouteSpec.arrivalDeadline().get(), is( equalTo( deadline ) ) );
+    }
+
+    protected Voyage voyage( String voyageNumberStr, Schedule schedule )
+    {
+        UnitOfWork uow = module.currentUnitOfWork();
+        EntityBuilder<Voyage> voyage = uow.newEntityBuilder( Voyage.class, voyageNumberStr );
+
+        // VoyageNumber
+        ValueBuilder<VoyageNumber> voyageNumber = module.newValueBuilder( VoyageNumber.class );
+        voyageNumber.prototype().number().set( voyageNumberStr );
+        voyage.instance().voyageNumber().set( voyageNumber.newInstance() );
+
+        // Schedule
+        voyage.instance().schedule().set( schedule );
+        return voyage.newInstance();
+    }
+
+    private static Module findHostingModule()
+    {
+        return app.findModule( "BOOTSTRAP", "BOOTSTRAP-Bootstrap" );
     }
 }

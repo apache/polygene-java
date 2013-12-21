@@ -24,9 +24,7 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;
  * Cargo aggregate root?
  */
 public interface CargosEntity
-    extends EntityComposite,
-
-            Cargos
+    extends EntityComposite, Cargos
 {
     public static final String CARGOS_ID = "Cargos_id";
 }

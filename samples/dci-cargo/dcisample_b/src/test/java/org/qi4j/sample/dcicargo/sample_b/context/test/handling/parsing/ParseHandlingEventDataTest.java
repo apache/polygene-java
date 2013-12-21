@@ -19,13 +19,15 @@ package org.qi4j.sample.dcicargo.sample_b.context.test.handling.parsing;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.parsing.ParseHandlingEventData;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.parsing.exception.InvalidHandlingEventDataException;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
 
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
@@ -38,10 +40,14 @@ public class ParseHandlingEventDataTest extends TestApplication
     static ParseHandlingEventData handlingEventParser;
     static String completionTime;
 
-    @BeforeClass
-    public static void setup() throws Exception
+    @Before
+    public void prepareTest()
+        throws Exception
     {
+        super.prepareTest();
         TestApplication.setup();
+        UnitOfWork uow = module.currentUnitOfWork();
+        CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
@@ -50,26 +56,27 @@ public class ParseHandlingEventDataTest extends TestApplication
         trackingId = cargo.trackingId().get();
         trackingIdString = trackingId.id().get();
         cargo.itinerary().set( itinerary );
-        completionTime = new SimpleDateFormat( "yyyy-MM-dd HH:mm" ).format( new Date( ) ) ;
+        completionTime = new SimpleDateFormat( "yyyy-MM-dd HH:mm" ).format( new Date() );
 
         // Start ParseHandlingEventData service
         ServiceReference<ParseHandlingEventData> ParseHandlingEventDataRef =
-              module.findService( ParseHandlingEventData.class );
+            module.findService( ParseHandlingEventData.class );
         handlingEventParser = ParseHandlingEventDataRef.get();
     }
-
 
     // Null
 
     @Test
-    public void deviation_2a_Null_CompletionTimeString() throws Exception
+    public void deviation_2a_Null_CompletionTimeString()
+        throws Exception
     {
         thrown.expect( ConstraintViolationException.class, "constraint \"not optional(param1)\", for value 'null'" );
         handlingEventParser.parse( null, trackingIdString, "RECEIVE", "CNHKG", null );
     }
 
     @Test
-    public void deviation_2a_Null_TrackingIdString() throws Exception
+    public void deviation_2a_Null_TrackingIdString()
+        throws Exception
     {
         thrown.expect( ConstraintViolationException.class, "constraint \"not optional(param2)\", for value 'null'" );
         handlingEventParser.parse( completionTime, null, "RECEIVE", "CNHKG", null );
@@ -78,34 +85,36 @@ public class ParseHandlingEventDataTest extends TestApplication
     // etc...
 
     @Test
-    public void step_2_Null_VoyageNumberString() throws Exception
+    public void step_2_Null_VoyageNumberString()
+        throws Exception
     {
         // No voyage number string is ok
         handlingEventParser.parse( completionTime, trackingIdString, "RECEIVE", "CNHKG", null );
     }
 
-
     // Empty
 
     @Test
-    public void deviation_2a_Empty_CompletionTimeString() throws Exception
+    public void deviation_2a_Empty_CompletionTimeString()
+        throws Exception
     {
         thrown.expect( ConstraintViolationException.class, "NotEmpty()(param1)\", for value ' '" );
         handlingEventParser.parse( " ", trackingIdString, "RECEIVE", "CNHKG", null );
     }
 
     @Test
-    public void step_2_Empty_VoyageNumberString() throws Exception
+    public void step_2_Empty_VoyageNumberString()
+        throws Exception
     {
         // Empty voyage number string is ok
         handlingEventParser.parse( completionTime, trackingIdString, "RECEIVE", "CNHKG", " " );
     }
 
-
     // Basic type conversion
 
     @Test
-    public void deviation_3a_TypeConversion_CompletionTimeString() throws Exception
+    public void deviation_3a_TypeConversion_CompletionTimeString()
+        throws Exception
     {
         thrown.expect( InvalidHandlingEventDataException.class,
                        "Invalid date format: '5/27/2011' must be on ISO 8601 format yyyy-MM-dd HH:mm" );
@@ -113,17 +122,18 @@ public class ParseHandlingEventDataTest extends TestApplication
     }
 
     @Test
-    public void deviation_3a_TypeConversion_HandlingEventTypeString() throws Exception
+    public void deviation_3a_TypeConversion_HandlingEventTypeString()
+        throws Exception
     {
         thrown.expect( InvalidHandlingEventDataException.class, "No enum const" );
         handlingEventParser.parse( completionTime, trackingIdString, "HAND_OVER", "CNHKG", null );
     }
 
-
     // Successful parsing
 
     @Test
-    public void success_Parsing() throws Exception
+    public void success_Parsing()
+        throws Exception
     {
         handlingEventParser.parse( completionTime, trackingIdString, "RECEIVE", "CNHKG", null );
     }

@@ -18,14 +18,19 @@
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
 import java.util.Date;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.event.InspectArrivedCargo;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.CargoArrivedException;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
 
 import static org.junit.Assert.fail;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.CLAIM;
@@ -36,10 +41,16 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
  */
 public class InspectArrivedCargoTest extends TestApplication
 {
-    @BeforeClass
-    public static void setup() throws Exception
+    private HandlingEventAggregateRoot HANDLING_EVENTS;
+
+    @Before
+    public void prepareTest()
+        throws Exception
     {
-        TestApplication.setup();
+        super.prepareTest();
+        UnitOfWork uow = module.currentUnitOfWork();
+        HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
+        CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
@@ -49,7 +60,8 @@ public class InspectArrivedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2a_NotRouted_MissingItinerary_UnloadedInFinalDestination() throws Exception
+    public void deviation_2a_NotRouted_MissingItinerary_UnloadedInFinalDestination()
+        throws Exception
     {
         // Cargo not routed
         cargo.itinerary().set( null );
@@ -62,7 +74,7 @@ public class InspectArrivedCargoTest extends TestApplication
             new InspectArrivedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoArrivedException e)
+        catch( CargoArrivedException e )
         {
             assertMessage( e, "Cargo 'Arrived_CARGO' has arrived in destination Stockholm (SESTO)" );
 
@@ -70,12 +82,13 @@ public class InspectArrivedCargoTest extends TestApplication
             assertDelivery( UNLOAD, STOCKHOLM, DAY23, V203,
                             IN_PORT, arrived,
                             NOT_ROUTED, directed, unknownETA, unknownLeg,
-                            CLAIM, STOCKHOLM, DAY23, noVoyage  );
+                            CLAIM, STOCKHOLM, DAY23, noVoyage );
         }
     }
 
     @Test
-    public void deviation_2b_Misrouted_WrongItineraryWithoutCurrentUnloadLocation_UnloadedInFinalDestination() throws Exception
+    public void deviation_2b_Misrouted_WrongItineraryWithoutCurrentUnloadLocation_UnloadedInFinalDestination()
+        throws Exception
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
@@ -88,7 +101,7 @@ public class InspectArrivedCargoTest extends TestApplication
             new InspectArrivedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoArrivedException e)
+        catch( CargoArrivedException e )
         {
             assertMessage( e, "Cargo 'Arrived_CARGO' has arrived in destination Stockholm (SESTO)" );
             assertDelivery( UNLOAD, STOCKHOLM, DAY23, V203,
@@ -99,7 +112,8 @@ public class InspectArrivedCargoTest extends TestApplication
     }
 
     @Test
-    public void success_UnloadInDestination() throws Exception
+    public void success_UnloadInDestination()
+        throws Exception
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
@@ -112,12 +126,12 @@ public class InspectArrivedCargoTest extends TestApplication
             new InspectArrivedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoArrivedException e)
+        catch( CargoArrivedException e )
         {
             assertMessage( e, "Cargo 'Arrived_CARGO' has arrived in destination Stockholm (SESTO)" );
             assertDelivery( UNLOAD, STOCKHOLM, DAY23, V203,
                             IN_PORT, arrived,
-                            ROUTED, directed, itinerary.eta(),leg5,
+                            ROUTED, directed, itinerary.eta(), leg5,
                             CLAIM, STOCKHOLM, DAY23, noVoyage );
         }
     }

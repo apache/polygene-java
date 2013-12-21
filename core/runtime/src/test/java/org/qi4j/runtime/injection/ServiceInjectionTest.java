@@ -38,7 +38,7 @@ import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.functional.Specification;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.qi4j.api.common.Visibility.application;
 import static org.qi4j.api.common.Visibility.layer;
 

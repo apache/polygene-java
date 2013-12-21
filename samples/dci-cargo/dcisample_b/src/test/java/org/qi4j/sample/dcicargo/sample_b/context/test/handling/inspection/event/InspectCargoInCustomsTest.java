@@ -18,14 +18,19 @@
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
 import java.util.Date;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.event.InspectCargoInCustoms;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.InspectionFailedException;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
 
 import static org.junit.Assert.fail;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.CUSTOMS;
@@ -35,10 +40,16 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
  */
 public class InspectCargoInCustomsTest extends TestApplication
 {
-    @BeforeClass
-    public static void setup() throws Exception
+    private HandlingEventAggregateRoot HANDLING_EVENTS;
+
+    @Before
+    public void prepareTest()
+        throws Exception
     {
-        TestApplication.setup();
+        super.prepareTest();
+        UnitOfWork uow = module.currentUnitOfWork();
+        HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
+        CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
@@ -48,7 +59,8 @@ public class InspectCargoInCustomsTest extends TestApplication
     }
 
     @Test
-    public void precondition_CustomsHandlingNotOnBoardCarrier() throws Exception
+    public void precondition_CustomsHandlingNotOnBoardCarrier()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
 
@@ -62,14 +74,15 @@ public class InspectCargoInCustomsTest extends TestApplication
             new InspectCargoInCustoms( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (InspectionFailedException e)
+        catch( InspectionFailedException e )
         {
             assertMessage( e, "INTERNAL ERROR: Cannot handle cargo in customs on board a carrier." );
         }
     }
 
     @Test
-    public void deviation_2a_NotRouted_CustomsLocation_FinalDestination() throws Exception
+    public void deviation_2a_NotRouted_CustomsLocation_FinalDestination()
+        throws Exception
     {
         // Cargo not routed
         cargo.itinerary().set( null );
@@ -86,7 +99,8 @@ public class InspectCargoInCustomsTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_Misrouted_CustomsLocation_DestinationOfWrongItinerary() throws Exception
+    public void deviation_2b_Misrouted_CustomsLocation_DestinationOfWrongItinerary()
+        throws Exception
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
@@ -103,7 +117,8 @@ public class InspectCargoInCustomsTest extends TestApplication
     }
 
     @Test
-    public void step_2_Routed_CustomsLocation_FinalDestination() throws Exception
+    public void step_2_Routed_CustomsLocation_FinalDestination()
+        throws Exception
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );

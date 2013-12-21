@@ -1,0 +1,12 @@
+apply plugin: 'application'
+
+description = "Command line tools for building Qi4j applications."
+mainClassName = "org.qi4j.tools.shell.Main"
+
+jar { manifest { name = "Qi4j Command Line" } }
+
+dependencies {
+  compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
+
+  testRuntime( libraries.logback )
+}

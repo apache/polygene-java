@@ -23,15 +23,16 @@ public class CargoArrivedException extends InspectionException
 {
     public CargoArrivedException( HandlingEvent handlingEvent )
     {
-        super( handlingEvent );
+        super( createMessage( handlingEvent) );
     }
 
-    @Override
-    public String getMessage()
+    public static String createMessage(HandlingEvent handlingEvent )
     {
-        msg = "Cargo '" + id + "' has arrived in destination " + location + ".";
+        String id = handlingEvent.trackingId().get().id().get();
+        String city = handlingEvent.location().get().name().get();
+        String location = handlingEvent.location().get().getString();
+        String msg = "Cargo '" + id + "' has arrived in destination " + location + ".";
         msg += "\nMOCKUP REQUEST TO CARGO OWNER: Please claim cargo '" + id + "' in " + city + ".";
-
         return msg;
     }
 }

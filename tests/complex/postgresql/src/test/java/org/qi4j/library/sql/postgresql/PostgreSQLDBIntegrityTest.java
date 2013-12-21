@@ -38,7 +38,7 @@ import org.qi4j.test.AbstractQi4jTest;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * 

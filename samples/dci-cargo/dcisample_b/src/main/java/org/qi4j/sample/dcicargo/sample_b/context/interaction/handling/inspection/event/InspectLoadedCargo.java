@@ -53,7 +53,9 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
 /**
  * Inspect Loaded Cargo (subfunction use case)
  *
- * This is one the variations of the {@link com.marcgrue.dcisample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus} use case.
+ * This is one the variations of the
+ * {@link org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus} use
+ * case.
  *
  * When the cargo is loaded onto some unexpected carrier we need to find out where that carrier
  * is going so that we can make a new route specification starting from that location. The Cargo Owner

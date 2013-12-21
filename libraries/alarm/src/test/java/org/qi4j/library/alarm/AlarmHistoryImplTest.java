@@ -18,7 +18,6 @@
 
 package org.qi4j.library.alarm;
 
-import junit.framework.Assert;
 import org.junit.Test;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
@@ -106,8 +105,8 @@ public class AlarmHistoryImplTest
         AlarmEvent event1 = hist.firstEvent();
         AlarmEvent event2 = hist.lastEvent();
         assertFalse( event1.equals( event2 ) );
-        Assert.assertEquals( AlarmPoint.STATUS_ACTIVATED, event1.newStatus().get().name(null) );
-        Assert.assertEquals( AlarmPoint.STATUS_NORMAL, event2.newStatus().get().name(null) );
+        assertEquals( AlarmPoint.STATUS_ACTIVATED, event1.newStatus().get().name(null) );
+        assertEquals( AlarmPoint.STATUS_NORMAL, event2.newStatus().get().name(null) );
     }
 
     @Test

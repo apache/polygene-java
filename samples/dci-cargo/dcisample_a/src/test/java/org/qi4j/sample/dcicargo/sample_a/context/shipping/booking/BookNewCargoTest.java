@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_a.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_a.context.support.FoundNoRoutesException;
-import org.qi4j.sample.dcicargo.sample_a.data.entity.CargoEntity;
 import org.qi4j.sample.dcicargo.sample_a.data.entity.CargosEntity;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;

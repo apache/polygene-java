@@ -23,12 +23,13 @@ public class CargoNotRoutedException extends InspectionException
 {
     public CargoNotRoutedException( HandlingEvent handlingEvent )
     {
-        super( handlingEvent );
+        super( createMessage(handlingEvent) );
     }
 
-    @Override
-    public String getMessage()
+    private static String createMessage( HandlingEvent handlingEvent )
     {
+        String id = handlingEvent.trackingId().get().id().get();
+        String city = handlingEvent.location().get().name().get();
         return "\nCargo is NOT ROUTED while being handled!" + handlingEvent.print()
                + "MOCKUP REQUEST TO CARGO OWNER: Please re-route cargo '" + id + "' (now in " + city + ").";
     }

@@ -17,32 +17,45 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.event.InspectReceivedCargo;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.CargoMisdirectedException;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.InspectionFailedException;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.NextHandlingEvent;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.RECEIVE;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.UNLOAD;
 
 /**
  * {@link InspectReceivedCargo} tests
  */
 public class InspectReceivedCargoTest extends TestApplication
 {
-    @BeforeClass
-    public static void setup() throws Exception
+    private HandlingEventAggregateRoot HANDLING_EVENTS;
+
+    @Before
+    public void prepareTest()
+        throws Exception
     {
-        TestApplication.setup();
+        super.prepareTest();
+        UnitOfWork uow = module.currentUnitOfWork();
+        HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
+        CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, TODAY, deadline = DAY24 );
@@ -52,7 +65,8 @@ public class InspectReceivedCargoTest extends TestApplication
     }
 
     @Test
-    public void precondition_1_NotHandledBefore() throws Exception
+    public void precondition_1_NotHandledBefore()
+        throws Exception
     {
         // Handle
         cargo.itinerary().set( itinerary );
@@ -74,7 +88,8 @@ public class InspectReceivedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2a_NotRouted_MissingItinerary() throws Exception
+    public void deviation_2a_NotRouted_MissingItinerary()
+        throws Exception
     {
         // Cargo not routed
         cargo.itinerary().set( null );
@@ -92,7 +107,8 @@ public class InspectReceivedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_Misrouted_ReceiveLocation_CargoOrigin() throws Exception
+    public void deviation_2b_Misrouted_ReceiveLocation_CargoOrigin()
+        throws Exception
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
@@ -115,7 +131,8 @@ public class InspectReceivedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_Misrouted_ReceiveLocationOfWrongItinerary_Midpoint() throws Exception
+    public void deviation_2b_Misrouted_ReceiveLocationOfWrongItinerary_Midpoint()
+        throws Exception
     {
         cargo.itinerary().set( wrongItinerary );
         cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, MISROUTED, leg1 ) );
@@ -132,7 +149,8 @@ public class InspectReceivedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_Misrouted_ReceiveLocationOfWrongItinerary_Destination() throws Exception
+    public void deviation_2b_Misrouted_ReceiveLocationOfWrongItinerary_Destination()
+        throws Exception
     {
         cargo.itinerary().set( wrongItinerary );
         cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, MISROUTED, unknownLeg ) );
@@ -155,7 +173,8 @@ public class InspectReceivedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_Misrouted_ReceiveLocationOfWrongItinerary_UnplannedLocation() throws Exception
+    public void deviation_2b_Misrouted_ReceiveLocationOfWrongItinerary_UnplannedLocation()
+        throws Exception
     {
         cargo.itinerary().set( wrongItinerary );
         cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, MISROUTED, unknownLeg ) );
@@ -172,7 +191,8 @@ public class InspectReceivedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3a_Misdirected_ReceiveLocationOfCorrectItinerary_Midpoint() throws Exception
+    public void deviation_3a_Misdirected_ReceiveLocationOfCorrectItinerary_Midpoint()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, ROUTED, leg1 ) );
@@ -189,7 +209,7 @@ public class InspectReceivedCargoTest extends TestApplication
             new InspectReceivedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoMisdirectedException e)
+        catch( CargoMisdirectedException e )
         {
             assertMessage( e, "MISDIRECTED! Itinerary expected receipt in Hongkong (CNHKG)" );
 
@@ -202,7 +222,8 @@ public class InspectReceivedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3a_Misdirected_ReceiveLocationOfCorrectItinerary_Destination() throws Exception
+    public void deviation_3a_Misdirected_ReceiveLocationOfCorrectItinerary_Destination()
+        throws Exception
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
@@ -216,7 +237,7 @@ public class InspectReceivedCargoTest extends TestApplication
             new InspectReceivedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoMisdirectedException e)
+        catch( CargoMisdirectedException e )
         {
             assertMessage( e, "MISDIRECTED! Itinerary expected receipt in Hongkong (CNHKG)" );
             assertDelivery( RECEIVE, STOCKHOLM, DAY1, noVoyage,
@@ -227,7 +248,8 @@ public class InspectReceivedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3a_Misdirected_UnexpectedReceiveLocation() throws Exception
+    public void deviation_3a_Misdirected_UnexpectedReceiveLocation()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, ROUTED, leg1 ) );
@@ -238,7 +260,8 @@ public class InspectReceivedCargoTest extends TestApplication
     }
 
     @Test
-    public void successful_Receipt() throws Exception
+    public void successful_Receipt()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, ROUTED, leg1 ) );

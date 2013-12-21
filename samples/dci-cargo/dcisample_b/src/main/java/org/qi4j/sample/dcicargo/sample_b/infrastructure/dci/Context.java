@@ -19,6 +19,7 @@ package org.qi4j.sample.dcicargo.sample_b.infrastructure.dci;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
@@ -42,20 +43,23 @@ public abstract class Context
      *
      * All entities should be created through aggregate r
      */
-    private static UnitOfWorkFactory uowf;
-    private static ValueBuilderFactory vbf;
+    private static Module module;
+
+    protected Context()
+    {
+    }
 
     /*
-    * Role assignment + Context "injection"
-    *
-    * Cast a Data object to a Role, set the Context object in the Role and return the RolePlayer.
-    *
-    * Requirements:
-    * 1) SomeRole interface declares a 'void setContext(YourContext context);' method
-    * 2) SomeRole.Mixin class extends RoleMixin<YourContext>
-    *
-    * The RolePlayer can then use the context pointer to lookup other Roles in the current Context.
-    */
+        * Role assignment + Context "injection"
+        *
+        * Cast a Data object to a Role, set the Context object in the Role and return the RolePlayer.
+        *
+        * Requirements:
+        * 1) SomeRole interface declares a 'void setContext(YourContext context);' method
+        * 2) SomeRole.Mixin class extends RoleMixin<YourContext>
+        *
+        * The RolePlayer can then use the context pointer to lookup other Roles in the current Context.
+        */
     protected <T> T rolePlayer( Class<T> roleClass, Object dataObject )
     {
         if( dataObject == null )
@@ -120,25 +124,22 @@ public abstract class Context
 
     protected <T, U> T rolePlayer( Class<T> roleClass, Class<U> dataClass, String entityId )
     {
-        U dataObject = uowf.currentUnitOfWork().get( dataClass, entityId );
+        U dataObject = module.currentUnitOfWork().get( dataClass, entityId );
         return rolePlayer( roleClass, dataObject );
     }
 
     protected static <T> T loadEntity( Class<T> entityRoleClass, String entityId )
     {
-        return uowf.currentUnitOfWork().get( entityRoleClass, entityId );
+        return module.currentUnitOfWork().get( entityRoleClass, entityId );
     }
 
     protected static <T extends ValueComposite> ValueBuilder<T> valueBuilder( Class<T> valueClass )
     {
-        return vbf.newValueBuilder( valueClass );
+        return module.newValueBuilder( valueClass );
     }
 
-    public static void prepareContextBaseClass( UnitOfWorkFactory unitOfWorkFactory,
-                                                ValueBuilderFactory valueBuilderFactory
-    )
+    public static void prepareContextBaseClass( Module module )
     {
-        uowf = unitOfWorkFactory;
-        vbf = valueBuilderFactory;
+        Context.module = module;
     }
 }

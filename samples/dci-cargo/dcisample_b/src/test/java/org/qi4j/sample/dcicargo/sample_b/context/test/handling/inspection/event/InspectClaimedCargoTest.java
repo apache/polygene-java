@@ -18,12 +18,17 @@
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
 import java.util.Date;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.event.InspectClaimedCargo;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
 
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.CLAIMED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.CLAIM;
@@ -33,10 +38,16 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
  */
 public class InspectClaimedCargoTest extends TestApplication
 {
-    @BeforeClass
-    public static void setup() throws Exception
+    private HandlingEventAggregateRoot HANDLING_EVENTS;
+
+    @Before
+    public void prepareTest()
+        throws Exception
     {
-        TestApplication.setup();
+        super.prepareTest();
+        UnitOfWork uow = module.currentUnitOfWork();
+        HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
+        CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
@@ -46,7 +57,8 @@ public class InspectClaimedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2a_NotRouted_ClaimInFinalDestination() throws Exception
+    public void deviation_2a_NotRouted_ClaimInFinalDestination()
+        throws Exception
     {
         // Cargo not routed
         cargo.itinerary().set( null );
@@ -54,7 +66,6 @@ public class InspectClaimedCargoTest extends TestApplication
 
         // Claim in final destination (without itinerary!)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, CLAIM, STOCKHOLM, noVoyage );
-
 
         new InspectClaimedCargo( cargo, handlingEvent ).inspect();
 
@@ -65,7 +76,8 @@ public class InspectClaimedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2b_Misrouted_ClaimInDestinationOfWrongItinerary() throws Exception
+    public void deviation_2b_Misrouted_ClaimInDestinationOfWrongItinerary()
+        throws Exception
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
@@ -82,7 +94,8 @@ public class InspectClaimedCargoTest extends TestApplication
     }
 
     @Test
-    public void step_2_Routed_ClaimInMidpointLocation() throws Exception
+    public void step_2_Routed_ClaimInMidpointLocation()
+        throws Exception
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
@@ -100,7 +113,8 @@ public class InspectClaimedCargoTest extends TestApplication
     }
 
     @Test
-    public void step_2_Routed_ClaimInFinalDestination() throws Exception
+    public void step_2_Routed_ClaimInFinalDestination()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg5 ) );

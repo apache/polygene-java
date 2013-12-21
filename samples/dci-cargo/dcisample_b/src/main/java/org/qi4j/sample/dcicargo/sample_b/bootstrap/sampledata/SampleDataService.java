@@ -27,21 +27,18 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
-import org.qi4j.api.composite.TransientBuilderFactory;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.booking.BookNewCargo;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.booking.routing.AssignCargoToRoute;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.ProcessHandlingEvent;
@@ -62,7 +59,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.CLAIM;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.CUSTOMS;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.RECEIVE;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.UNLOAD;
 import static org.qi4j.sample.dcicargo.sample_b.infrastructure.dci.Context.prepareContextBaseClass;
 
 /**
@@ -70,46 +71,36 @@ import static org.qi4j.sample.dcicargo.sample_b.infrastructure.dci.Context.prepa
  *
  * Add more cases if needed in the loop below.
  */
-@Mixins( SampleDataService.Mixin.class )
-@Activators( SampleDataService.Activator.class )
+@Mixins(SampleDataService.Mixin.class)
+@Activators(SampleDataService.Activator.class)
 public interface SampleDataService
     extends ServiceComposite
 {
     void insertSampleData()
-            throws Exception;
+        throws Exception;
 
     class Activator
-            extends ActivatorAdapter<ServiceReference<SampleDataService>>
+        extends ActivatorAdapter<ServiceReference<SampleDataService>>
     {
 
         @Override
         public void afterActivation( ServiceReference<SampleDataService> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().insertSampleData();
         }
-
     }
 
     public abstract class Mixin
         implements SampleDataService
     {
         @Structure
-        QueryBuilderFactory qbf;
-
-        @Structure
-        ValueBuilderFactory vbf;
-
-        @Structure
-        TransientBuilderFactory tbf;
-
-        @Structure
-        UnitOfWorkFactory uowf;
+        Module module;
 
         @Service
         RoutingService routingService;
 
-        @Service // We depend on BaseData to be inserted
+        @Service
         BaseDataService baseDataService;
 
         @Service
@@ -121,7 +112,7 @@ public interface SampleDataService
         public void insertSampleData()
             throws Exception
         {
-            prepareContextBaseClass( uowf, vbf );
+            prepareContextBaseClass( module );
 
             logger.info( "######  CREATING SAMPLE DATA...  ##########################################" );
 
@@ -129,11 +120,11 @@ public interface SampleDataService
             populateRandomCargos( 12 );
 
             // Handle cargos
-            UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "Create sample data" ) );
+            UnitOfWork uow = module.newUnitOfWork( newUsecase( "Create sample data" ) );
             try
             {
                 int i = 11; // starting at 11 for sortable tracking id prefix in lists
-                QueryBuilder<Cargo> qb = qbf.newQueryBuilder( Cargo.class );
+                QueryBuilder<Cargo> qb = module.newQueryBuilder( Cargo.class );
                 for( Cargo cargo : uow.newQuery( qb ) )
 
                 {
@@ -166,7 +157,7 @@ public interface SampleDataService
                         Location origin = routeSpec.origin().get();
                         Location dest = routeSpec.destination().get();
                         Location badDest = null;
-                        Query<Location> locations = uow.newQuery( qbf.newQueryBuilder( Location.class ) );
+                        Query<Location> locations = uow.newQuery( module.newQueryBuilder( Location.class ) );
                         for( Location loc : locations )
                         {
                             if( !origin.equals( loc ) && !dest.equals( loc ) )
@@ -202,8 +193,8 @@ public interface SampleDataService
                         voyageNumber = nextEvent.voyage().get().voyageNumber().get().number().get();
 
                         // Find earliest wrong carrier movement (voyage) with same departure location
-                        final Query<Voyage> voyages = uowf.currentUnitOfWork()
-                            .newQuery( qbf.newQueryBuilder( Voyage.class ) );
+                        final Query<Voyage> voyages = module.currentUnitOfWork()
+                            .newQuery( module.newQueryBuilder( Voyage.class ) );
                         int depth = 0;
                         do
                         {
@@ -313,6 +304,7 @@ public interface SampleDataService
                     {
                         do
                         {
+                            //noinspection ConstantConditions
                             voyageNumber = nextEvent.voyage().get().voyageNumber().get().number().get();
                             registerEvent( time, time, trackingId, type, port, voyageNumber );
 
@@ -349,15 +341,15 @@ public interface SampleDataService
         private void populateRandomCargos( int numberOfCargos )
         {
             Usecase usecase = UsecaseBuilder.newUsecase( "Populate Random Cargos" );
-            UnitOfWork uow = uowf.newUnitOfWork( usecase );
+            UnitOfWork uow = module.newUnitOfWork( usecase );
 
             CargoAggregateRoot cargos = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
-            Query<Location> allLocations = uow.newQuery( qbf.newQueryBuilder( Location.class ) );
+            Query<Location> allLocations = uow.newQuery( module.newQueryBuilder( Location.class ) );
             int locationSize = (int) allLocations.count();
 
             // Make array for selection of location with random index
-            final List<Location> locationList = new ArrayList<Location>();
+            final List<Location> locationList = new ArrayList<>();
             for( Location location : allLocations )
             {
                 locationList.add( location );
@@ -410,7 +402,7 @@ public interface SampleDataService
         )
             throws Exception
         {
-            ValueBuilder<ParsedHandlingEventData> event = vbf.newValueBuilder( ParsedHandlingEventData.class );
+            ValueBuilder<ParsedHandlingEventData> event = module.newValueBuilder( ParsedHandlingEventData.class );
             event.prototype().registrationTime().set( registrationTime );
             event.prototype().completionTime().set( completionTime );
             event.prototype().trackingIdString().set( trackingIdString );
@@ -418,7 +410,7 @@ public interface SampleDataService
             event.prototype().unLocodeString().set( unLocodeString );
             event.prototype().voyageNumberString().set( voyageNumberString );
 
-            tbf.newTransient( ProcessHandlingEvent.class ).register( event.newInstance() );
+            module.newTransient( ProcessHandlingEvent.class ).register( event.newInstance() );
         }
     }
 }

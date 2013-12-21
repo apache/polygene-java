@@ -26,16 +26,17 @@ public class CargoHijackedException extends InspectionException
 {
     public CargoHijackedException( HandlingEvent handlingEvent )
     {
-        super( handlingEvent );
+        super( createMessage( handlingEvent ) );
     }
 
-    @Override
-    public String getMessage()
+    public static String createMessage( HandlingEvent handlingEvent )
     {
-        msg = "Cargo '" + id + "' was hijacked.";
-        msg += "\nMOCKUP MESSAGE TO CARGO OWNER: We're sorry to inform you that your cargo '" + id
-               + "' was hijacked. Please contact your insurance company.";
-
-        return msg;
+        String id = handlingEvent.trackingId().get().id().get();
+        StringBuilder msg = new StringBuilder().append( "Cargo '" ).append( id ).append( "' was hijacked." );
+        msg.append( msg );
+        msg.append( "\nMOCKUP MESSAGE TO CARGO OWNER: We're sorry to inform you that your cargo '" );
+        msg.append( id );
+        msg.append( "' was hijacked. Please contact your insurance company." );
+        return msg.toString();
     }
 }

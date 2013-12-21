@@ -21,13 +21,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
-import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
-import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.Delivery;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.NextHandlingEvent;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus;
@@ -41,81 +37,43 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.location.UnLocode;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.CarrierMovement;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Schedule;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
-import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.VoyageNumber;
 
 /**
  * Test base class with shared data and factory methods.
  */
 public abstract class BaseData
 {
-    protected static ValueBuilderFactory vbf;
-    protected static UnitOfWork uow;
+    protected UnLocode AUMEL;
+    protected UnLocode CNHGH;
+    protected UnLocode CNHKG;
+    protected UnLocode CNSHA;
+    protected UnLocode DEHAM;
+    protected UnLocode FIHEL;
+    protected UnLocode JNTKO;
+    protected UnLocode NLRTM;
+    protected UnLocode SEGOT;
+    protected UnLocode SESTO;
+    protected UnLocode SOMGQ;
+    protected UnLocode USCHI;
+    protected UnLocode USDAL;
+    protected UnLocode USNYC;
+    protected final Module module;
 
-    protected static UnLocode AUMEL;
-    protected static UnLocode CNHGH;
-    protected static UnLocode CNHKG;
-    protected static UnLocode CNSHA;
-    protected static UnLocode DEHAM;
-    protected static UnLocode FIHEL;
-    protected static UnLocode JNTKO;
-    protected static UnLocode NLRTM;
-    protected static UnLocode SEGOT;
-    protected static UnLocode SESTO;
-    protected static UnLocode SOMGQ;
-    protected static UnLocode USCHI;
-    protected static UnLocode USDAL;
-    protected static UnLocode USNYC;
-
-    protected static Location MELBOURNE;
-    protected static Location HANGZHOU;
-    protected static Location HONGKONG;
-    protected static Location SHANGHAI;
-    protected static Location HAMBURG;
-    protected static Location HELSINKI;
-    protected static Location TOKYO;
-    protected static Location ROTTERDAM;
-    protected static Location GOTHENBURG;
-    protected static Location STOCKHOLM;
-    protected static Location MOGADISHU;
-    protected static Location DALLAS;
-    protected static Location CHICAGO;
-    protected static Location NEWYORK;
-
-    protected static CargoAggregateRoot CARGOS;
-    protected static HandlingEventAggregateRoot HANDLING_EVENTS;
-
-    protected static UnLocode unlocode( String unlocodeString )
+    protected BaseData( Module module )
     {
-        ValueBuilder<UnLocode> unlocode = vbf.newValueBuilder( UnLocode.class );
+        this.module = module;
+    }
+
+    protected UnLocode unlocode( String unlocodeString )
+    {
+        ValueBuilder<UnLocode> unlocode = module.newValueBuilder( UnLocode.class );
         unlocode.prototype().code().set( unlocodeString );
         return unlocode.newInstance();
     }
 
-    protected static Location location( UnLocode unlocode, String locationStr )
+    protected CarrierMovement carrierMovement( Location depLoc, Location arrLoc, Date depTime, Date arrTime )
     {
-        EntityBuilder<Location> location = uow.newEntityBuilder( Location.class, unlocode.code().get() );
-        location.instance().unLocode().set( unlocode );
-        location.instance().name().set( locationStr );
-        return location.newInstance();
-    }
-
-    protected static Voyage voyage( String voyageNumberStr, Schedule schedule )
-    {
-        EntityBuilder<Voyage> voyage = uow.newEntityBuilder( Voyage.class, voyageNumberStr );
-
-        // VoyageNumber
-        ValueBuilder<VoyageNumber> voyageNumber = vbf.newValueBuilder( VoyageNumber.class );
-        voyageNumber.prototype().number().set( voyageNumberStr );
-        voyage.instance().voyageNumber().set( voyageNumber.newInstance() );
-
-        // Schedule
-        voyage.instance().schedule().set( schedule );
-        return voyage.newInstance();
-    }
-
-    protected static CarrierMovement carrierMovement( Location depLoc, Location arrLoc, Date depTime, Date arrTime )
-    {
-        ValueBuilder<CarrierMovement> carrierMovement = vbf.newValueBuilder( CarrierMovement.class );
+        ValueBuilder<CarrierMovement> carrierMovement = module.newValueBuilder( CarrierMovement.class );
         carrierMovement.prototype().departureLocation().set( depLoc );
         carrierMovement.prototype().arrivalLocation().set( arrLoc );
         carrierMovement.prototype().departureTime().set( depTime );
@@ -123,18 +81,18 @@ public abstract class BaseData
         return carrierMovement.newInstance();
     }
 
-    protected static Schedule schedule( CarrierMovement... carrierMovements )
+    protected Schedule schedule( CarrierMovement... carrierMovements )
     {
-        ValueBuilder<Schedule> schedule = vbf.newValueBuilder( Schedule.class );
-        List<CarrierMovement> cm = new ArrayList<CarrierMovement>();
+        ValueBuilder<Schedule> schedule = module.newValueBuilder( Schedule.class );
+        List<CarrierMovement> cm = new ArrayList<>();
         cm.addAll( Arrays.asList( carrierMovements ) );
         schedule.prototype().carrierMovements().set( cm );
         return schedule.newInstance();
     }
 
-    protected static Leg leg( Voyage voyage, Location load, Location unload, Date loadTime, Date unloadTime )
+    protected Leg leg( Voyage voyage, Location load, Location unload, Date loadTime, Date unloadTime )
     {
-        ValueBuilder<Leg> leg = vbf.newValueBuilder( Leg.class );
+        ValueBuilder<Leg> leg = module.newValueBuilder( Leg.class );
         leg.prototype().voyage().set( voyage );
         leg.prototype().loadLocation().set( load );
         leg.prototype().unloadLocation().set( unload );
@@ -143,16 +101,16 @@ public abstract class BaseData
         return leg.newInstance();
     }
 
-    protected static Itinerary itinerary( Leg... legArray )
+    protected Itinerary itinerary( Leg... legArray )
     {
-        ValueBuilder<Itinerary> itinerary = vbf.newValueBuilder( Itinerary.class );
-        List<Leg> legs = new ArrayList<Leg>();
+        ValueBuilder<Itinerary> itinerary = module.newValueBuilder( Itinerary.class );
+        List<Leg> legs = new ArrayList<>();
         legs.addAll( Arrays.asList( legArray ) );
         itinerary.prototype().legs().set( legs );
         return itinerary.newInstance();
     }
 
-    protected static Delivery delivery(
+    protected Delivery delivery(
         HandlingEvent lastHandlingEvent,
         TransportStatus transportStatus,
         Boolean isUnloadedAtDestination,
@@ -163,7 +121,7 @@ public abstract class BaseData
         NextHandlingEvent nextHandlingEvent
     )
     {
-        ValueBuilder<Delivery> delivery = vbf.newValueBuilder( Delivery.class );
+        ValueBuilder<Delivery> delivery = module.newValueBuilder( Delivery.class );
         delivery.prototype().timestamp().set( new Date() );
         delivery.prototype().lastHandlingEvent().set( lastHandlingEvent );
         delivery.prototype().transportStatus().set( transportStatus );
@@ -177,13 +135,13 @@ public abstract class BaseData
     }
 
     // Delivery with only mandatory values
-    protected static Delivery delivery( Date date,
-                                        TransportStatus transportStatus,
-                                        RoutingStatus routingStatus,
-                                        Integer itineraryProgressIndex
+    protected Delivery delivery( Date date,
+                                 TransportStatus transportStatus,
+                                 RoutingStatus routingStatus,
+                                 Integer itineraryProgressIndex
     )
     {
-        ValueBuilder<Delivery> delivery = vbf.newValueBuilder( Delivery.class );
+        ValueBuilder<Delivery> delivery = module.newValueBuilder( Delivery.class );
         delivery.prototype().timestamp().set( date );
         delivery.prototype().transportStatus().set( transportStatus );
         delivery.prototype().routingStatus().set( routingStatus );
@@ -191,13 +149,13 @@ public abstract class BaseData
         return delivery.newInstance();
     }
 
-    protected static NextHandlingEvent nextHandlingEvent( HandlingEventType handlingEventType,
-                                                          Location location,
-                                                          Date time,
-                                                          Voyage voyage
+    protected NextHandlingEvent nextHandlingEvent( HandlingEventType handlingEventType,
+                                                   Location location,
+                                                   Date time,
+                                                   Voyage voyage
     )
     {
-        ValueBuilder<NextHandlingEvent> nextHandlingEvent = vbf.newValueBuilder( NextHandlingEvent.class );
+        ValueBuilder<NextHandlingEvent> nextHandlingEvent = module.newValueBuilder( NextHandlingEvent.class );
         nextHandlingEvent.prototype().handlingEventType().set( handlingEventType );
         nextHandlingEvent.prototype().location().set( location );
         nextHandlingEvent.prototype().time().set( time );
@@ -205,16 +163,16 @@ public abstract class BaseData
         return nextHandlingEvent.newInstance();
     }
 
-    protected static ParsedHandlingEventData parsedHandlingEventData( Date registrationTime,
-                                                                      Date completionTime,
-                                                                      String trackingIdString,
-                                                                      HandlingEventType handlingEventType,
-                                                                      String unLocodeString,
-                                                                      String voyageNumberString
+    protected ParsedHandlingEventData parsedHandlingEventData( Date registrationTime,
+                                                               Date completionTime,
+                                                               String trackingIdString,
+                                                               HandlingEventType handlingEventType,
+                                                               String unLocodeString,
+                                                               String voyageNumberString
     )
         throws Exception
     {
-        ValueBuilder<ParsedHandlingEventData> attempt = vbf.newValueBuilder( ParsedHandlingEventData.class );
+        ValueBuilder<ParsedHandlingEventData> attempt = module.newValueBuilder( ParsedHandlingEventData.class );
         attempt.prototype().registrationTime().set( registrationTime );
         attempt.prototype().completionTime().set( completionTime );
         attempt.prototype().trackingIdString().set( trackingIdString );

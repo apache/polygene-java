@@ -24,7 +24,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.rdf.qi64.AbstractIssueTest;
 import org.qi4j.index.rdf.qi64.AccountComposite;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 public class IssueTest
     extends AbstractIssueTest

@@ -18,8 +18,9 @@
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
 import java.util.Date;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_b.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.event.InspectLoadedCargo;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.CargoHijackedException;
@@ -28,6 +29,10 @@ import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.CargoNotRoutedException;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.InspectionFailedException;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.exception.UnexpectedCarrierException;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.CargoAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.aggregateroot.HandlingEventAggregateRoot;
+import org.qi4j.sample.dcicargo.sample_b.data.structure.cargo.RouteSpecification;
+import org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.Delivery;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.itinerary.Leg;
 
@@ -35,7 +40,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.MISROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.NOT_ROUTED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.IN_PORT;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
@@ -48,21 +55,28 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
  */
 public class InspectLoadedCargoTest extends TestApplication
 {
-    @BeforeClass
-    public static void setup() throws Exception
-    {
-        TestApplication.setup();
+    private HandlingEventAggregateRoot HANDLING_EVENTS;
+    private CargoAggregateRoot CARGOS;
 
+    @Before
+    public void prepareTest()
+        throws Exception
+    {
+        super.prepareTest();
+        UnitOfWork uow = module.currentUnitOfWork();
+        CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
+        HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
-        delivery = delivery( TODAY, IN_PORT, ROUTED, leg1 );
+        RouteSpecification routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, TODAY, deadline = DAY24 );
+        Delivery delivery = delivery( TODAY, IN_PORT, ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Loaded_CARGO" );
         trackingId = cargo.trackingId().get();
-        delivery = cargo.delivery().get();
+//        delivery = cargo.delivery().get();
     }
 
     @Test
-    public void deviation_2a_WrongCarrierSchedule() throws Exception
+    public void deviation_2a_WrongCarrierSchedule()
+        throws Exception
     {
         cargo.itinerary().set( itinerary );
         cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg1 ) );
@@ -74,7 +88,7 @@ public class InspectLoadedCargoTest extends TestApplication
             new InspectLoadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (UnexpectedCarrierException e)
+        catch( UnexpectedCarrierException e )
         {
             assertMessage( e, "Carrier of voyage V202 didn't expect a load in Hongkong (CNHKG)" );
             assertDelivery( LOAD, HONGKONG, DAY1, V202,
@@ -85,7 +99,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2a_CarrierOnTime_ArrivalDate_Planned() throws Exception
+    public void deviation_2a_CarrierOnTime_ArrivalDate_Planned()
+        throws Exception
     {
         deviation_2a_WrongCarrierSchedule();
 
@@ -102,7 +117,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_2a_CarrierDelayed_ArrivalDate_Estimated() throws Exception
+    public void deviation_2a_CarrierDelayed_ArrivalDate_Estimated()
+        throws Exception
     {
         deviation_2a_CarrierOnTime_ArrivalDate_Planned();
 
@@ -119,7 +135,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3a_NotRouted_MissingItinerary() throws Exception
+    public void deviation_3a_NotRouted_MissingItinerary()
+        throws Exception
     {
         deviation_2a_CarrierDelayed_ArrivalDate_Estimated();
 
@@ -134,7 +151,7 @@ public class InspectLoadedCargoTest extends TestApplication
             new InspectLoadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoNotRoutedException e)
+        catch( CargoNotRoutedException e )
         {
             assertMessage( e, "NOT ROUTED while being handled!" );
             assertDelivery( LOAD, HONGKONG, DAY1, V201,
@@ -145,7 +162,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Origin() throws Exception
+    public void deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Origin()
+        throws Exception
     {
         deviation_3a_NotRouted_MissingItinerary();
 
@@ -161,7 +179,7 @@ public class InspectLoadedCargoTest extends TestApplication
             new InspectLoadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoMisroutedException e)
+        catch( CargoMisroutedException e )
         {
             assertMessage( e, "MISROUTED! Route specification is not satisfied with itinerary" );
             assertDelivery( LOAD, HONGKONG, DAY1, V201,
@@ -172,7 +190,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Midpoint() throws Exception
+    public void deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Midpoint()
+        throws Exception
     {
         deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Origin();
 
@@ -185,7 +204,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_3b_Misrouted_LoadLocationOfWrongItinerary_UnplannedLocation() throws Exception
+    public void deviation_3b_Misrouted_LoadLocationOfWrongItinerary_UnplannedLocation()
+        throws Exception
     {
         deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Midpoint();
 
@@ -198,7 +218,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void step_3_Routed() throws Exception
+    public void step_3_Routed()
+        throws Exception
     {
         deviation_3b_Misrouted_LoadLocationOfWrongItinerary_UnplannedLocation();
 
@@ -216,7 +237,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_4x_InternalError_InvalidItineraryProgressIndex() throws Exception
+    public void deviation_4x_InternalError_InvalidItineraryProgressIndex()
+        throws Exception
     {
         step_3_Routed();
 
@@ -231,7 +253,7 @@ public class InspectLoadedCargoTest extends TestApplication
             new InspectLoadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (InspectionFailedException e)
+        catch( InspectionFailedException e )
         {
             assertMessage( e, "INTERNAL ERROR: Itinerary progress index '7' is invalid!" );
             assertDelivery( LOAD, HONGKONG, DAY1, V201,
@@ -241,7 +263,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_4a_Misdirected_UnexpectedLoadLocation() throws Exception
+    public void deviation_4a_Misdirected_UnexpectedLoadLocation()
+        throws Exception
     {
         deviation_4x_InternalError_InvalidItineraryProgressIndex();
 
@@ -256,7 +279,7 @@ public class InspectLoadedCargoTest extends TestApplication
             new InspectLoadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoMisdirectedException e)
+        catch( CargoMisdirectedException e )
         {
             assertMessage( e, "MISDIRECTED! Itinerary expected load in New York (USNYC)" );
             assertDelivery( LOAD, ROTTERDAM, DAY5, V202,    // Itinerary expected: LOAD, NEWYORK, DAY7, V202
@@ -267,7 +290,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_4b_Misdirected_UnexpectedLoadVoyage_PreviousInItinerary() throws Exception
+    public void deviation_4b_Misdirected_UnexpectedLoadVoyage_PreviousInItinerary()
+        throws Exception
     {
         deviation_4a_Misdirected_UnexpectedLoadLocation();
 
@@ -281,7 +305,7 @@ public class InspectLoadedCargoTest extends TestApplication
             new InspectLoadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoMisdirectedException e)
+        catch( CargoMisdirectedException e )
         {
             assertMessage( e, "MISDIRECTED! Itinerary expected load onto voyage V202" );
             assertDelivery( LOAD, NEWYORK, DAY7, V201,          // Itinerary expected: LOAD, NEWYORK, DAY7, V202
@@ -292,7 +316,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_4b_Misdirected_UnexpectedLoadVoyage_NextInItinerary() throws Exception
+    public void deviation_4b_Misdirected_UnexpectedLoadVoyage_NextInItinerary()
+        throws Exception
     {
         deviation_4b_Misdirected_UnexpectedLoadVoyage_PreviousInItinerary();
 
@@ -306,7 +331,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_4b_Misdirected_UnexpectedLoadVoyage_VoyageNotInItinerary() throws Exception
+    public void deviation_4b_Misdirected_UnexpectedLoadVoyage_VoyageNotInItinerary()
+        throws Exception
     {
         deviation_4b_Misdirected_UnexpectedLoadVoyage_NextInItinerary();
 
@@ -320,7 +346,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_4c_Misdirected_UnexpectedLoadVoyage_Unplanned_ButGoingToWantedLocation() throws Exception
+    public void deviation_4c_Misdirected_UnexpectedLoadVoyage_Unplanned_ButGoingToWantedLocation()
+        throws Exception
     {
         deviation_4b_Misdirected_UnexpectedLoadVoyage_VoyageNotInItinerary();
 
@@ -334,7 +361,7 @@ public class InspectLoadedCargoTest extends TestApplication
             new InspectLoadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoMisdirectedException e)
+        catch( CargoMisdirectedException e )
         {
             assertMessage( e, "MISDIRECTED! Cargo is heading to expected arrival location USDAL but on unexpected voyage V205" );
             assertDelivery( LOAD, NEWYORK, DAY9, V205,          // Itinerary expected: LOAD, NEWYORK, DAY7, V202
@@ -345,7 +372,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void deviation_4d_Misdirected_ExpectedLoadVoyage_UnexpectedNewVoyageSchedule() throws Exception
+    public void deviation_4d_Misdirected_ExpectedLoadVoyage_UnexpectedNewVoyageSchedule()
+        throws Exception
     {
         deviation_4c_Misdirected_UnexpectedLoadVoyage_Unplanned_ButGoingToWantedLocation();
 
@@ -354,10 +382,10 @@ public class InspectLoadedCargoTest extends TestApplication
 
         // Unexpected voyage schedule change
         V202 = voyage( "V202", schedule(
-              carrierMovement( CHICAGO, NEWYORK, DAY3, DAY5 ),
-              carrierMovement( NEWYORK, HAMBURG, DAY7, DAY15 ),
-              carrierMovement( HAMBURG, ROTTERDAM, DAY16, DAY17 ),
-              carrierMovement( ROTTERDAM, GOTHENBURG, DAY17, DAY19 )
+            carrierMovement( CHICAGO, NEWYORK, DAY3, DAY5 ),
+            carrierMovement( NEWYORK, HAMBURG, DAY7, DAY15 ),
+            carrierMovement( HAMBURG, ROTTERDAM, DAY16, DAY17 ),
+            carrierMovement( ROTTERDAM, GOTHENBURG, DAY17, DAY19 )
         ) );
 
         // Expected load onto voyage - but carrier has changed arrival location!
@@ -367,7 +395,7 @@ public class InspectLoadedCargoTest extends TestApplication
             new InspectLoadedCargo( cargo, handlingEvent ).inspect();
             fail();
         }
-        catch (CargoMisdirectedException e)
+        catch( CargoMisdirectedException e )
         {
             assertMessage( e, "MISDIRECTED! Itinerary expects voyage V202 to arrive in USDAL but carrier is now going to DEHAM" );
             assertDelivery( LOAD, NEWYORK, DAY7, V202,          // Itinerary expected: LOAD, NEWYORK, DAY7, V202
@@ -378,7 +406,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void success_Load() throws Exception
+    public void success_Load()
+        throws Exception
     {
         deviation_4d_Misdirected_ExpectedLoadVoyage_UnexpectedNewVoyageSchedule();
 
@@ -387,10 +416,10 @@ public class InspectLoadedCargoTest extends TestApplication
 
         // Restore expected voyage schedule change
         V202 = voyage( "V202", schedule(
-              carrierMovement( CHICAGO, NEWYORK, DAY3, DAY5 ),
-              carrierMovement( NEWYORK, DALLAS, DAY7, DAY8 ),
-              carrierMovement( DALLAS, ROTTERDAM, DAY10, DAY17 ),
-              carrierMovement( ROTTERDAM, GOTHENBURG, DAY17, DAY19 )
+            carrierMovement( CHICAGO, NEWYORK, DAY3, DAY5 ),
+            carrierMovement( NEWYORK, DALLAS, DAY7, DAY8 ),
+            carrierMovement( DALLAS, ROTTERDAM, DAY10, DAY17 ),
+            carrierMovement( ROTTERDAM, GOTHENBURG, DAY17, DAY19 )
         ) );
 
         // Expected load (leg 3)
@@ -409,7 +438,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void riskZoneDestination() throws Exception
+    public void riskZoneDestination()
+        throws Exception
     {
         success_Load();
 
@@ -419,8 +449,8 @@ public class InspectLoadedCargoTest extends TestApplication
         cargo = CARGOS.createCargo( routeSpec, delivery, "Naive" );
         trackingId = cargo.trackingId().get();
         itinerary = itinerary(
-              leg( V205, HANGZHOU, MOGADISHU, DAY1, DAY2 ),
-              leg( V205, MOGADISHU, ROTTERDAM, DAY2, DAY4 )
+            leg( V205, HANGZHOU, MOGADISHU, DAY1, DAY2 ),
+            leg( V205, MOGADISHU, ROTTERDAM, DAY2, DAY4 )
         );
         cargo.itinerary().set( itinerary );
 
@@ -437,7 +467,7 @@ public class InspectLoadedCargoTest extends TestApplication
         {
             new InspectLoadedCargo( cargo, handlingEvent ).inspect();
         }
-        catch (CargoHijackedException e)
+        catch( CargoHijackedException e )
         {
             assertMessage( e, "Cargo 'Naive' was hijacked." );
             assertDelivery( LOAD, HANGZHOU, DAY1, V205,
@@ -448,7 +478,8 @@ public class InspectLoadedCargoTest extends TestApplication
     }
 
     @Test
-    public void riskZoneDeparture() throws Exception
+    public void riskZoneDeparture()
+        throws Exception
     {
         riskZoneDestination();
 
@@ -470,7 +501,7 @@ public class InspectLoadedCargoTest extends TestApplication
         {
             new InspectLoadedCargo( cargo, handlingEvent ).inspect();
         }
-        catch (CargoHijackedException e)
+        catch( CargoHijackedException e )
         {
             assertMessage( e, "Cargo 'Hopeful' was hijacked." );
             assertDelivery( LOAD, MOGADISHU, DAY2, V205,
