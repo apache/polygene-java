@@ -17,15 +17,24 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.context.shipping.booking;
 
+import java.util.Date;
+import java.util.List;
+import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_a.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_a.context.support.FoundNoRoutesException;
 import org.qi4j.sample.dcicargo.sample_a.data.entity.CargoEntity;
+import org.qi4j.sample.dcicargo.sample_a.data.entity.CargosEntity;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
+import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;
+import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
+import org.qi4j.sample.dcicargo.sample_a.data.shipping.delivery.Delivery;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.delivery.RoutingStatus;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.delivery.TransportStatus;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.itinerary.Itinerary;
+import org.qi4j.sample.dcicargo.sample_a.data.shipping.location.Location;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -43,38 +52,67 @@ public class BookNewCargoTest
       extends TestApplication
 {
 
-    @Test( expected = Exception.class )
+    private static final Date TODAY = new Date();
+
+    @Before
+    public void prepareTest()
+        throws Exception
+    {
+        super.prepareTest();
+
+    }
+
+    @Test( expected = RouteException.class )
     public void deviation2a_OriginAndDestinationSame() throws Exception
     {
+        UnitOfWork uow = module.currentUnitOfWork();
+        Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
+        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
         new BookNewCargo( CARGOS, HONGKONG, HONGKONG, day( 17 ) ).book();
     }
 
-    @Test( expected = Exception.class )
+    @Test( expected = RouteException.class )
     public void deviation_2b_1_DeadlineInThePastNotAccepted() throws Exception
     {
+        UnitOfWork uow = module.currentUnitOfWork();
+        Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
+        Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
+        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( -1 ) ).book();
     }
 
-    @Test( expected = Exception.class )
+    @Test( expected = RouteException.class )
     public void deviation_2b_2_DeadlineTodayIsTooEarly() throws Exception
     {
+        UnitOfWork uow = module.currentUnitOfWork();
+        Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
+        Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
+        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 0 ) ).book();
     }
 
     @Test
     public void deviation_2b_3_DeadlineTomorrowIsOkay() throws Exception
     {
+        UnitOfWork uow = module.currentUnitOfWork();
+        Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
+        Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
+        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
         new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 1 ) ).book();
     }
 
     @Test
     public void step_2_CreateNewCargo() throws Exception
     {
+        UnitOfWork uow = module.currentUnitOfWork();
+        Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
+        Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
+        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
         // Create cargo with valid input from customer
-        trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 17 ) ).book();
+        TrackingId trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 17 ) ).book();
 
         // Retrieve created cargo from store
-        cargo = uow.get( CargoEntity.class, trackingId.id().get() );
+        Cargo cargo = uow.get( Cargo.class, trackingId.id().get() );
 
         // Test cargo data
         assertThat( cargo.trackingId().get(), is( equalTo( trackingId ) ) );
@@ -83,12 +121,12 @@ public class BookNewCargoTest
         // Test route specification
         assertThat( cargo.routeSpecification().get().destination().get(), is( equalTo( STOCKHOLM ) ) );
         // day(17) here is calculated a few milliseconds after initial day(17), so it will be later...
-        assertTrue( cargo.routeSpecification().get().arrivalDeadline().get().before( day( 17 ) ) );
+        assertThat( cargo.routeSpecification().get().arrivalDeadline().get(),  equalTo( day( 17 )  ));
 
         // (Itinerary is not assigned yet)
 
         // Test derived delivery snapshot
-        delivery = cargo.delivery().get();
+        Delivery delivery = cargo.delivery().get();
         assertThat( delivery.timestamp().get().after( TODAY ), is( equalTo( true ) ) ); // TODAY is set first
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.NOT_ROUTED ) ) );
         assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.NOT_RECEIVED ) ) );
@@ -106,8 +144,12 @@ public class BookNewCargoTest
     @Test( expected = FoundNoRoutesException.class )
     public void deviation_3a_NoRoutesCanBeThatFast() throws Exception
     {
-        trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 1 ) ).book();
-        cargo = uow.get( Cargo.class, trackingId.id().get() );
+        UnitOfWork uow = module.currentUnitOfWork();
+        Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
+        Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
+        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+        TrackingId trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 1 ) ).book();
+        Cargo cargo = uow.get( Cargo.class, trackingId.id().get() );
 
         // No routes will be found
         new BookNewCargo( cargo ).routeCandidates();
@@ -116,12 +158,17 @@ public class BookNewCargoTest
     @Test
     public void step_3_CalculatePossibleRoutes() throws Exception
     {
+        UnitOfWork uow = module.currentUnitOfWork();
+        Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
+        Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
+        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
+
         // Create valid cargo
-        trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, deadline = day( 30 ) ).book();
-        cargo = uow.get( Cargo.class, trackingId.id().get() );
+        TrackingId trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 30 ) ).book();
+        Cargo cargo = uow.get( Cargo.class, trackingId.id().get() );
 
         // Step 3 - Find possible routes
-        routeCandidates = new BookNewCargo( cargo ).routeCandidates();
+        List<Itinerary> routeCandidates = new BookNewCargo( cargo ).routeCandidates();
 
         // Check possible routes
         for (Itinerary itinerary : routeCandidates)
@@ -141,15 +188,21 @@ public class BookNewCargoTest
     @Test
     public void step_5_AssignCargoToRoute() throws Exception
     {
-        // Create valid cargo
-        trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, deadline = day( 30 ) ).book();
-        cargo = uow.get( Cargo.class, trackingId.id().get() );
+        UnitOfWork uow = module.currentUnitOfWork();
+        Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
+        Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
+        Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
 
-        routeCandidates = new BookNewCargo( cargo ).routeCandidates();
+        // Create valid cargo
+        Date deadline = day( 30 );
+        TrackingId trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, deadline ).book();
+        Cargo cargo = uow.get( Cargo.class, trackingId.id().get() );
+
+        List<Itinerary> routeCandidates = new BookNewCargo( cargo ).routeCandidates();
 
         // Get first route found
         // Would normally be found with an Itinerary id from customer selection
-        itinerary = routeCandidates.get( 0 );
+        Itinerary itinerary = routeCandidates.get( 0 );
 
         // Use case step 5 - System assigns cargo to route
         new BookNewCargo( cargo, itinerary ).assignCargoToRoute();
@@ -159,7 +212,7 @@ public class BookNewCargoTest
         // BuildDeliverySnapshot will check if itinerary is valid. No need to check it here.
 
         // Check values set in new delivery snapshot
-        delivery = cargo.delivery().get();
+        Delivery delivery = cargo.delivery().get();
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
 
         // ETA (= Unload time of last Leg) is before Deadline (set in previous test)

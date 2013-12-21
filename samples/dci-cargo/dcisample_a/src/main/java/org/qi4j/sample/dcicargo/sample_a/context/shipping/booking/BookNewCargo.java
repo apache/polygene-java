@@ -231,18 +231,18 @@ public class BookNewCargo extends Context
     {
         if( origin == destination )
         {
-            throw new RuntimeException( "Origin location can't be same as destination location." );
+            throw new RouteException( "Origin location can't be same as destination location." );
         }
 
         if( deadline == null )
         {
-            throw new RuntimeException( "Arrival deadline cannot be null." );
+            throw new RouteException( "Arrival deadline cannot be null." );
         }
 
         Date endOfToday = new DateMidnight().plusDays( 1 ).toDate();
         if( deadline.before( endOfToday ) )
         {
-            throw new RuntimeException( "Arrival deadline is in the past or Today." +
+            throw new RouteException( "Arrival deadline is in the past or Today." +
                                         "\nDeadline           " + deadline +
                                         "\nToday (midnight)   " + endOfToday );
         }

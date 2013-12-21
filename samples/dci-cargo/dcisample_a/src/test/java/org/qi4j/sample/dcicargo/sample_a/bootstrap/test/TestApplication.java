@@ -17,14 +17,18 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.bootstrap.test;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
+import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.sample.dcicargo.sample_a.bootstrap.sampledata.BaseData;
 import org.qi4j.sample.dcicargo.sample_a.infrastructure.dci.Context;
@@ -34,14 +38,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Base class for testing Context Interactions
  */
-public class TestApplication
-      extends BaseData
+public class TestApplication extends BaseData
 {
     // Logger for sub classes
     protected Logger logger = LoggerFactory.getLogger( getClass() );
 
     protected static Application app;
-    protected static UnitOfWorkFactory uowf;
 
     @BeforeClass
     public static void setup() throws Exception
@@ -50,37 +52,40 @@ public class TestApplication
         app = new Energy4Java().newApplication( new TestAssembler() );
         app.activate();
 
-        uowf = app.findModule( "BOOTSTRAP", "BOOTSTRAP-Bootstrap" );
-
-        Context.prepareContextBaseClass( uowf );
-
         // Separate test suites in console output
         System.out.println();
+    }
+
+    public TestApplication()
+    {
+        super(app.findModule( "BOOTSTRAP", "BOOTSTRAP-Bootstrap" ));
+        Context.prepareContextBaseClass( module );
     }
 
     // Printing current test method name to console
     @Rule
     public TestName name = new TestName();
+
     @Before
-    public void printCurrentTestMethodName()
+    public void prepareTest()
+        throws Exception
     {
         logger.info( name.getMethodName() );
+        Usecase usecase = UsecaseBuilder.newUsecase( "Usecase: " + name );
+        module.newUnitOfWork(usecase);
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception
+    @After
+    public void concludeTest()
     {
-        if (uow != null)
-        {
+        UnitOfWork uow = module.currentUnitOfWork();
+        if( uow != null && uow.isOpen() )
             uow.discard();
-            uow = null;
-        }
-
-        if( uowf != null && uowf.isUnitOfWorkActive() )
+        if( module != null && module.isUnitOfWorkActive() )
         {
-            while( uowf.isUnitOfWorkActive() )
+            while( module.isUnitOfWorkActive() )
             {
-                UnitOfWork uow = uowf.currentUnitOfWork();
+                uow = module.currentUnitOfWork();
                 if( uow.isOpen() )
                 {
                     System.err.println( "UnitOfWork not cleaned up:" + uow.usecase().name() );
@@ -94,6 +99,12 @@ public class TestApplication
             new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();
         }
 
+    }
+
+    @AfterClass
+    public static void terminateApplication()
+        throws PassivationException
+    {
         if( app != null )
         {
             app.passivate();

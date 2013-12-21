@@ -20,12 +20,19 @@ package org.qi4j.sample.dcicargo.sample_a.context.shipping.handling;
 import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.sample.dcicargo.sample_a.bootstrap.test.TestApplication;
 import org.qi4j.sample.dcicargo.sample_a.context.shipping.booking.BookNewCargo;
+import org.qi4j.sample.dcicargo.sample_a.data.entity.CargosEntity;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
+import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.Cargos;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
+import org.qi4j.sample.dcicargo.sample_a.data.shipping.delivery.Delivery;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.delivery.RoutingStatus;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.delivery.TransportStatus;
+import org.qi4j.sample.dcicargo.sample_a.data.shipping.itinerary.Itinerary;
+import org.qi4j.sample.dcicargo.sample_a.data.shipping.location.Location;
+import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -40,18 +47,39 @@ import static org.qi4j.sample.dcicargo.sample_a.data.shipping.handling.HandlingE
 public class RegisterHandlingEventTest
       extends TestApplication
 {
-    static Date time;
-    static String trackId;
+    Date time;
+    String trackId;
     String msg;
+    private Date arrival;
+    private Cargo cargo;
+    private TrackingId trackingId;
+    private Cargos CARGOS;
+    private Location HONGKONG;
+    private Location STOCKHOLM;
+    private Location NEWYORK;
+    private Location DALLAS;
+    private Voyage V100S;
+    private Voyage V200T;
+    private Voyage V300A;
 
     @Before
     public void beforeEachTest() throws Exception {
+        UnitOfWork uow = module.currentUnitOfWork();
+        CARGOS = uow.get(Cargos.class,  CargosEntity.CARGOS_ID );
+        HONGKONG = uow.get( Location.class, CNHKG.code().get() );
+        STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
+        NEWYORK = uow.get( Location.class, USNYC.code().get() );
+        DALLAS = uow.get( Location.class, USDAL.code().get() );
+        V100S = uow.get( Voyage.class, "V100S" );
+        V200T = uow.get( Voyage.class, "V200T" );
+        V300A = uow.get( Voyage.class, "V300A" );
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 17 ) ).createCargo( "ABC" );
         cargo = uow.get( Cargo.class, trackingId.id().get() );
-        itinerary = itinerary(
+        Itinerary itinerary = itinerary(
               leg( V100S, HONGKONG, NEWYORK, day( 1 ), day( 8 ) ),
               leg( V200T, NEWYORK, DALLAS, day( 9 ), day( 12 ) ),
-              leg( V300A, DALLAS, STOCKHOLM, day( 13 ), arrival = day( 16 ) )
+              leg( V300A, DALLAS, STOCKHOLM, day( 13 ),
+                   arrival = day( 16 ) )
         );
         new BookNewCargo( cargo, itinerary ).assignCargoToRoute();
         time = day( 1 );
@@ -182,7 +210,7 @@ public class RegisterHandlingEventTest
     {
         new RegisterHandlingEvent( time, time, trackId, "LOAD", "CNHKG", "V100S" ).register();
 
-        delivery = cargo.delivery().get();
+        Delivery delivery = cargo.delivery().get();
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
         assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.ONBOARD_CARRIER ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( UNLOAD ) ) );

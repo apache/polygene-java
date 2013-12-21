@@ -76,13 +76,13 @@ public class BuildDeliverySnapshot extends Context
         // Deviation 2a
         if( routeSpecification.origin().get() == routeSpecification.destination().get() )
         {
-            throw new RuntimeException( "Route specification is invalid. Origin equals destination." );
+            throw new RouteException( "Route specification is invalid. Origin equals destination." );
         }
 
         // Deviation 2b
         if( routeSpecification.arrivalDeadline().get().before( new Date() ) )
         {
-            throw new RuntimeException( "Arrival deadline is in the past or Today." +
+            throw new RouteException( "Arrival deadline is in the past or Today." +
                                         "\nDeadline " + routeSpecification.arrivalDeadline().get() +
                                         "\nToday    " + new Date() );
         }
