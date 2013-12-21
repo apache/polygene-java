@@ -96,9 +96,9 @@ abstract class FragmentInvocationHandler
         Throwable nested = throwable.getCause();
         if( nested != null )
         {
+            //noinspection ThrowableResultOfMethodCallIgnored
             cleanStackTrace( nested, proxy, method );
         }
-
         return throwable;
     }
 
@@ -115,7 +115,8 @@ abstract class FragmentInvocationHandler
 
     private boolean isJdkInternals( String className )
     {
-        return className.startsWith( "java.lang.reflect" ) ||
-               className.startsWith( "sun.reflect" );
+        return className.startsWith( "java.lang.reflect" )
+               || className.startsWith( "com.sun.proxy" )
+               || className.startsWith( "sun.reflect" );
     }
 }

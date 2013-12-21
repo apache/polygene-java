@@ -180,7 +180,7 @@ public class FragmentClassLoader
         {
             Method[] methods = baseClass.getMethods();
             int idx = 0;
-            List<Label> exceptionLabels = new ArrayList<Label>();
+            List<Label> exceptionLabels = new ArrayList<>();
             for( Method method : methods )
             {
                 if( isOverridden(method, baseClass) )
@@ -191,7 +191,7 @@ public class FragmentClassLoader
 
                     String[] exceptions = null;
                     {
-                        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, exceptions );
+                        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, null );
                         if( isInternalQi4jMethod( method, baseClass ) )
                         {
                             // generate a NoOp method...
@@ -437,6 +437,8 @@ public class FragmentClassLoader
 
         if( isInterfaceMethod( method, baseClass ) )
         {
+            // if() used for clarity.
+            //noinspection RedundantIfStatement
             if( isInternalQi4jMethod( method, baseClass ) )
             {
                 return false; // Skip methods in Qi4j-internal interfaces
@@ -458,7 +460,7 @@ public class FragmentClassLoader
                || isDeclaredIn( method, Lifecycle.class, baseClass );
     }
 
-    private static boolean isDeclaredIn( Method method, Class clazz, Class baseClass )
+    private static boolean isDeclaredIn( Method method, Class<?> clazz, Class<?> baseClass )
     {
         if( !clazz.isAssignableFrom( baseClass ) )
         {
@@ -496,9 +498,9 @@ public class FragmentClassLoader
         throw new NoSuchMethodException( method.getName() );
     }
 
-    private static boolean isInterfaceMethod( Method method, Class baseClass )
+    private static boolean isInterfaceMethod( Method method, Class<?> baseClass )
     {
-        for( Class aClass : Iterables.filter( Methods.HAS_METHODS, Iterables.map( Classes.RAW_CLASS, interfacesOf( baseClass ) ) ) )
+        for( Class<?> aClass : Iterables.filter( Methods.HAS_METHODS, Iterables.map( Classes.RAW_CLASS, interfacesOf( baseClass ) ) ) )
         {
             try
             {

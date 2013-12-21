@@ -16,14 +16,19 @@ package org.qi4j.test.composite;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import org.junit.Test;
-import org.qi4j.api.composite.TransientComposite;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test if the stacktrace is cleaned up properly.
@@ -52,43 +57,71 @@ public class CleanStackTraceTest
         {
             return;
         }
-
         TestComposite composite = module.newTransient( TestComposite.class );
-
         try
         {
             composite.doStuff();
         }
         catch( RuntimeException e )
         {
-            StringWriter actualTrace = new StringWriter();
-            e.printStackTrace( new PrintWriter( actualTrace ) );
-
             String separator = System.getProperty( "line.separator" );
-            String correctTrace = "java.lang.RuntimeException" + separator +
-                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:91)" + separator +
-                                  "\tat org.qi4j.test.composite.CleanStackTraceTest$TestComposite.doStuff(Unknown Source)" + separator +
-                                  "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:60)";
-            String actual = actualTrace.toString();
-            actual = actual.substring( 0, correctTrace.length() );
-            assertEquals( correctTrace, actual );
+            String correctTrace1 = "java.lang.RuntimeException: level 2" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:111)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:124)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:63)";
+            assertEquality( e, correctTrace1 );
+            String correctTrace2 = "java.lang.RuntimeException: level 1" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:107)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:124)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:63)";
+            assertThat( e.getCause(), notNullValue() );
+            assertEquality( e.getCause(), correctTrace2 );
         }
     }
 
-    @Mixins( DoStuffMixin.class )
+    private void assertEquality( Throwable e, String correctTrace )
+    {
+        StringWriter actualTrace = new StringWriter();
+        e.printStackTrace( new PrintWriter( actualTrace ) );
+
+        String actual = actualTrace.toString();
+        actual = actual.substring( 0, correctTrace.length() );
+        assertEquals( correctTrace, actual );
+    }
+
+    @Concerns( NillyWilly.class )
+    @Mixins(DoStuffMixin.class)
     public interface TestComposite
-        extends TransientComposite
     {
         void doStuff();
     }
 
-    public abstract static class DoStuffMixin
+    public static class DoStuffMixin
         implements TestComposite
     {
 
         public void doStuff()
         {
-            throw new RuntimeException();
+            try
+            {
+                throw new RuntimeException( "level 1" );
+            }
+            catch( RuntimeException e )
+            {
+                throw new RuntimeException( "level 2", e );
+            }
+        }
+    }
+
+    static class NillyWilly extends GenericConcern
+        implements InvocationHandler
+    {
+
+        @Override
+        public Object invoke( Object proxy, Method method, Object[] args )
+            throws Throwable
+        {
+            return next.invoke( proxy, method, args );
         }
     }
 }
