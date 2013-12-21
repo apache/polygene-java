@@ -33,13 +33,13 @@ public class PassivationExceptionTest
     public void testEmpty()
     {
         PassivationException empty = new PassivationException( Collections.<Exception>emptyList() );
-        assertThat( empty.getMessage(), containsString( "0" ) );
+        assertThat( empty.getMessage(), containsString( "has 0 cause" ) );
     }
 
     @Test
     public void testSingle()
     {
-        PassivationException single = new PassivationException( Collections.singletonList( new Exception() ) );
+        PassivationException single = new PassivationException( Collections.singletonList( new Exception( "single" ) ) );
         assertThat( single.getMessage(), containsString( "1" ) );
 
         StringWriter writer = new StringWriter();
@@ -47,13 +47,16 @@ public class PassivationExceptionTest
         writer.flush();
         String stack = writer.toString();
 
-        assertThat( stack, containsString( "Cause 1 : java.lang.Exception" ) );
+        assertThat( single.getMessage(), containsString( "has 1 cause" ) );
+        assertThat( stack, containsString( "Suppressed: java.lang.Exception: single" ) );
     }
 
     @Test
     public void testMultiple()
     {
-        PassivationException multi = new PassivationException( Arrays.asList( new Exception(), new Exception(), new Exception() ) );
+        PassivationException multi = new PassivationException( Arrays.asList( new Exception( "one" ),
+                                                                              new Exception( "two" ),
+                                                                              new Exception( "three" ) ) );
         assertThat( multi.getMessage(), containsString( "3" ) );
 
         StringWriter writer = new StringWriter();
@@ -61,9 +64,11 @@ public class PassivationExceptionTest
         writer.flush();
         String stack = writer.toString();
 
-        assertThat( stack, containsString( "Cause 1 : java.lang.Exception" ) );
-        assertThat( stack, containsString( "Cause 2 : java.lang.Exception" ) );
-        assertThat( stack, containsString( "Cause 3 : java.lang.Exception" ) );
+        assertThat( multi.getMessage(), containsString( "has 3 cause(s)" ) );
+
+        assertThat( stack, containsString( "Suppressed: java.lang.Exception: one" ) );
+        assertThat( stack, containsString( "Suppressed: java.lang.Exception: two" ) );
+        assertThat( stack, containsString( "Suppressed: java.lang.Exception: three" ) );
     }
 
 }

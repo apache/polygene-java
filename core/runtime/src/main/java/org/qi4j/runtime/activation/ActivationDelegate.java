@@ -91,7 +91,7 @@ public final class ActivationDelegate
             targetActivators.afterActivation( target );
             this.targetActivators = targetActivators;
         }
-        catch( Throwable e )
+        catch( Exception e )
         {
             // Passivate actives
             try
@@ -103,7 +103,9 @@ public final class ActivationDelegate
                 throw new ActivationException( "Passivation Exception during cleanup of Activation:" + e1, e );
             }
             if( e instanceof ActivationException )
+            {
                 throw ((ActivationException)e);
+            }
             throw new ActivationException( "Unable to Activate application.", e );
         }
     }
@@ -130,7 +132,7 @@ public final class ActivationDelegate
             {
                 if( ex instanceof PassivationException )
                 {
-                    exceptions.addAll( Arrays.asList( ( ( PassivationException ) ex ).causes() ) );
+                    exceptions.addAll( Arrays.asList( ( ( PassivationException ) ex ).causes()) );
                 }
                 else
                 {
@@ -164,7 +166,7 @@ public final class ActivationDelegate
             {
                 if( ex instanceof PassivationException )
                 {
-                    exceptions.addAll( Arrays.asList( ( ( PassivationException ) ex ).causes() ) );
+                    exceptions.addAll( Arrays.asList( ( ( PassivationException ) ex ).causes()) );
                 }
                 else
                 {
@@ -193,7 +195,7 @@ public final class ActivationDelegate
         {
             if( ex instanceof PassivationException )
             {
-                exceptions.addAll( Arrays.asList( ( ( PassivationException ) ex ).causes() ) );
+                exceptions.addAll( Arrays.asList( ( ( PassivationException ) ex ).causes()) );
             }
             else
             {

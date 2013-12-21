@@ -24,9 +24,9 @@ public final class ActivationEvent
         ACTIVATING, ACTIVATED, PASSIVATING, PASSIVATED
     }
 
-    private long timestamp;
-    private Object source;
-    private EventType type;
+    private final long timestamp;
+    private final Object source;
+    private final EventType type;
 
     public ActivationEvent( Object source, EventType type )
     {

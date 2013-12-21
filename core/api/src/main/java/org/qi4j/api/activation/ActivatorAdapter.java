@@ -20,7 +20,7 @@ package org.qi4j.api.activation;
 /**
  * Adapter for Activator.
  *
- * @param ActivateeType Type of the activatee.
+ * @param <ActivateeType> Type of the activatee.
  */
 public class ActivatorAdapter<ActivateeType>
     implements Activator<ActivateeType>

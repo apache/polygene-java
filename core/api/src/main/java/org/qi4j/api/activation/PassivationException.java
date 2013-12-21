@@ -1,5 +1,6 @@
 /*
  * Copyright 2009 Niclas Hedhman.
+ * Copyright 2013 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -17,14 +18,12 @@
  */
 package org.qi4j.api.activation;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.List;
 
 /**
  * Thrown when unable to passivate.
  *
- * Printed StackTrace contains all causes in order.
+ * Printed StackTrace contains all causes in order as suppressed exceptions.
  */
 public final class PassivationException
     extends Exception
@@ -35,8 +34,12 @@ public final class PassivationException
 
     public PassivationException( List<Exception> exceptions )
     {
-        super( "Passivation Exception - [have " + exceptions.size() + " cause(s)]",
+        super( "Passivation Exception - [has " + exceptions.size() + " cause(s)]",
                exceptions.isEmpty() ? null : exceptions.get( 0 ) );
+        for( Throwable cause : exceptions )
+        {
+            addSuppressed( cause );
+        }
         causes = new Exception[ exceptions.size() ];
         exceptions.toArray( causes );
     }
@@ -44,38 +47,6 @@ public final class PassivationException
     public Exception[] causes()
     {
         return causes;
-    }
-
-    @Override
-    public void printStackTrace( PrintStream stream )
-    {
-        synchronized( stream )
-        {
-            int counter = 1;
-            super.printStackTrace( stream );
-            for( Exception exc : causes )
-            {
-                stream.print( "Cause " + counter + " : " );
-                exc.printStackTrace( stream );
-                counter++;
-            }
-        }
-    }
-
-    @Override
-    public void printStackTrace( PrintWriter writer )
-    {
-        synchronized( writer )
-        {
-            int counter = 1;
-            super.printStackTrace( writer );
-            for( Exception exc : causes )
-            {
-                writer.print( "Cause " + counter + " : " );
-                exc.printStackTrace( writer );
-                counter++;
-            }
-        }
     }
 
 }
