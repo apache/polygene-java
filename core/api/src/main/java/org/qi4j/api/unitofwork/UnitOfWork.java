@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2013, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,29 +35,47 @@ import org.qi4j.api.usecase.Usecase;
  * Another difference is that if a call to complete() fails, and the cause is validation errors in the
  * Entities of the UoW, then these can be corrected and the UoW retried. By contrast, when a Transaction
  * commit fails, then the whole transaction has to be done from the beginning again.
+ * </p>
  * <p>
  * A UoW can be associated with a Usecase. A Usecase describes the metainformation about the process
  * to be performed by the UoW.
  * </p>
+ * <p>
  * If a code block that uses a UoW throws an exception you need to ensure that this is handled properly,
  * and that the UoW is closed before returning. Because discard() is a no-op if the UoW is closed, we therefore
  * recommend the following template to be used:
+ * </p>
  * <pre>
- *     UnitOfWork uow = uowf.newUnitOfWork();
+ *     UnitOfWork uow = module.newUnitOfWork();
  *     try
  *     {
  *         ...
  *         uow.complete();
- *     } finally
+ *     }
+ *     finally
  *     {
  *         uow.discard();
  *     }
  * </pre>
+ * <p>
  * This ensures that in the happy case the UoW is completed, and if any exception is thrown the UoW is discarded. After
  * the UoW has completed the discard() method doesn't do anything, and so has no effect. You can choose to either add
  * catch blocks for any exceptions, including exceptions from complete(), or skip them.
+ * </p>
+ * <p>
+ * Since 2.1 you can leverage Java 7 Automatic Resource Management (ie. Try With Resources) and use the following
+ * template instead:
+ * </p>
+ * <pre>
+ *     try( UnitOfWork uow = module.newUnitOfWork() )
+ *     {
+ *         ...
+ *         uow.complete();
+ *     }
+ * </pre>
+ * <p>It has the very same effect than the template above but is shorter.</p>
  */
-public interface UnitOfWork extends MetaInfoHolder
+public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
 {
 
     /**
@@ -205,12 +224,22 @@ public interface UnitOfWork extends MetaInfoHolder
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;
 
     /**
-     * Discard thie UnitOfWork. Use this if a failure occurs that you cannot handle,
+     * Discard this UnitOfWork. Use this if a failure occurs that you cannot handle,
      * or if the usecase was of a read-only character. This is a no-op of the UnitOfWork
      * is already closed.
      */
     void discard();
 
+    /**
+     * Discard this UnitOfWork. Use this if a failure occurs that you cannot handle,
+     * or if the usecase was of a read-only character. This is a no-op of the UnitOfWork
+     * is already closed. This simply call the {@link #discard()} method and is an
+     * implementation of the {@link AutoCloseable} interface providing Try With Resources
+     * support for UnitOfWork.
+     */
+    @Override
+    public void close();
+    
     /**
      * Check if the UnitOfWork is open. It is closed after either complete() or discard()
      * methods have been called successfully.

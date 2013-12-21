@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2013, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,18 +13,15 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.structure;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.query.Query;
@@ -75,8 +73,8 @@ public class ModuleUnitOfWork
 //        }
 //    }
 //
-    private UnitOfWorkInstance uow;
-    private ModuleInstance moduleInstance;
+    private final UnitOfWorkInstance uow;
+    private final ModuleInstance moduleInstance;
 
     ModuleUnitOfWork( ModuleInstance moduleInstance, UnitOfWorkInstance uow )
     {
@@ -178,10 +176,10 @@ public class ModuleUnitOfWork
         }
         EntityBuilder<T> builder;
 
-        builder = new EntityBuilderInstance<T>( model,
-                                                this,
-                                                uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
-                                                identity );
+        builder = new EntityBuilderInstance<>( model,
+                                               this,
+                                               uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
+                                               identity );
         return builder;
     }
 
@@ -205,7 +203,7 @@ public class ModuleUnitOfWork
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.entityInstanceOf( entityComposite );
-        ModelModule<EntityModel> model = new ModelModule<EntityModel>( compositeInstance.module(), compositeInstance.entityModel() );
+        ModelModule<EntityModel> model = new ModelModule<>( compositeInstance.module(), compositeInstance.entityModel() );
         Class<T> type = (Class<T>) first( compositeInstance.types() );
         return uow.get( compositeInstance.identity(), this, Collections.singletonList( model ), type );
     }
@@ -248,6 +246,12 @@ public class ModuleUnitOfWork
         uow.discard();
     }
 
+    @Override
+    public void close()
+    {
+        discard();
+    }
+    
     @Override
     public boolean isOpen()
     {
@@ -298,12 +302,7 @@ public class ModuleUnitOfWork
 
         ModuleUnitOfWork that = (ModuleUnitOfWork) o;
 
-        if( !uow.equals( that.uow ) )
-        {
-            return false;
-        }
-
-        return true;
+        return uow.equals( that.uow );
     }
 
     @Override
@@ -325,7 +324,7 @@ public class ModuleUnitOfWork
 
     private static class UoWQuerySource implements QuerySource
     {
-        private ModuleUnitOfWork moduleUnitOfWork;
+        private final ModuleUnitOfWork moduleUnitOfWork;
 
         public UoWQuerySource( ModuleUnitOfWork moduleUnitOfWork )
         {
