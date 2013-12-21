@@ -30,12 +30,9 @@ import org.qi4j.index.sql.assembly.PostgreSQLIndexQueryAssembler;
 import org.qi4j.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.qi4j.library.sql.common.SQLConfiguration;
 import org.qi4j.library.sql.common.SQLUtil;
-import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.tools.model.writer.ApplicationDetailASCIIWriter;
 
 import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
-import static org.qi4j.tools.model.descriptor.ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor;
 
 /**
  * SQL Support Sample Main Class.
