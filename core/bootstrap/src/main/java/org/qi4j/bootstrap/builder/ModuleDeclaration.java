@@ -17,13 +17,13 @@ public class ModuleDeclaration
         this.moduleName = moduleName;
     }
 
-    ModuleDeclaration withAssembler( Assembler assembler )
+    public ModuleDeclaration withAssembler( Assembler assembler )
     {
         assemblers.add( assembler );
         return this;
     }
 
-    ModuleDeclaration witHAssembler( Class<? extends Assembler> assemblerClass )
+    ModuleDeclaration withAssembler( Class<? extends Assembler> assemblerClass )
         throws AssemblyException
     {
         Assembler assembler = createAssemblerInstance( assemblerClass );
@@ -31,11 +31,11 @@ public class ModuleDeclaration
         return this;
     }
 
-    public ModuleDeclaration witHAssembler( String classname )
+    public ModuleDeclaration withAssembler( String classname )
         throws AssemblyException
     {
         Class<? extends Assembler> clazz = loadClass( classname );
-        return witHAssembler( clazz );
+        return withAssembler( clazz );
     }
 
     ModuleAssembly createModule( LayerAssembly layer )

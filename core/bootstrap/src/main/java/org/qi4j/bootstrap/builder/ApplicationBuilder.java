@@ -19,7 +19,7 @@ import org.qi4j.bootstrap.LayerAssembly;
 public class ApplicationBuilder
 {
     private final String applicationName;
-    private HashMap<String, LayerDeclaration> layers = new HashMap<>();
+    private final Map<String, LayerDeclaration> layers = new HashMap<>();
 
     public ApplicationBuilder( String applicationName )
     {
@@ -121,7 +121,7 @@ public class ApplicationBuilder
                         {
                             for( int m = 0; m < assemblers.length(); m++ )
                             {
-                                moduleDeclaration.witHAssembler( assemblers.getString( m ) );
+                                moduleDeclaration.withAssembler( assemblers.getString( m ) );
                             }
                         }
                     }
