@@ -62,7 +62,7 @@ public class LayerInstance
         // Eager instance objects
         activation = new ActivationDelegate( this );
         activationEventSupport = new ActivationEventListenerSupport();
-        moduleInstances = new ArrayList<ModuleInstance>();
+        moduleInstances = new ArrayList<>();
     }
 
     @Override

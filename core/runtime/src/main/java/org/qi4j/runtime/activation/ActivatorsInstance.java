@@ -68,7 +68,7 @@ public class ActivatorsInstance<ActivateeType>
     public void beforePassivation( ActivateeType passivating )
             throws Exception
     {
-        List<Exception> exceptions = new ArrayList<Exception>();
+        List<Exception> exceptions = new ArrayList<>();
         for( Activator<ActivateeType> activator : Iterables.reverse( activators ) ) {
             try
             {
@@ -93,7 +93,7 @@ public class ActivatorsInstance<ActivateeType>
     public void afterPassivation( ActivateeType passivated )
             throws Exception
     {
-        List<Exception> exceptions = new ArrayList<Exception>();
+        List<Exception> exceptions = new ArrayList<>();
         for( Activator<ActivateeType> activator : Iterables.reverse( activators ) ) {
             try
             {

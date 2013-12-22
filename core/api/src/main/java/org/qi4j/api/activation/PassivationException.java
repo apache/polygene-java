@@ -18,6 +18,8 @@
  */
 package org.qi4j.api.activation;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,21 +32,26 @@ public final class PassivationException
 {
 
     private static final long serialVersionUID = 1L;
-    private final Exception[] causes;
+    private final List<Exception> causes;
 
-    public PassivationException( List<Exception> exceptions )
+    /**
+     * Create new PassivationException.
+     * @param exceptions All exceptions encountered during passivation, in order
+     */
+    public PassivationException( Collection<Exception> exceptions )
     {
-        super( "Passivation Exception - [has " + exceptions.size() + " cause(s)]",
-               exceptions.isEmpty() ? null : exceptions.get( 0 ) );
+        super( "Passivation Exception - [has " + exceptions.size() + " cause(s)]" );
         for( Throwable cause : exceptions )
         {
             addSuppressed( cause );
         }
-        causes = new Exception[ exceptions.size() ];
-        exceptions.toArray( causes );
+        this.causes = new ArrayList<>( exceptions );
     }
 
-    public Exception[] causes()
+    /**
+     * @return All exceptions encountered during passivation, in order
+     */
+    public List<Exception> causes()
     {
         return causes;
     }

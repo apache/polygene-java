@@ -14,11 +14,10 @@
  */
 package org.qi4j.runtime.activation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationException;
@@ -32,7 +31,7 @@ public final class ActivationDelegate
 {
     private final Object target;
     private ActivatorsInstance targetActivators = null;
-    private final LinkedList<Activation> activeChildren = new LinkedList<Activation>();
+    private final LinkedList<Activation> activeChildren = new LinkedList<>();
 
     public ActivationDelegate( Object target )
     {
@@ -40,7 +39,7 @@ public final class ActivationDelegate
     }
 
     public void activate( ActivatorsInstance targetActivators, Activation child )
-            throws Exception
+        throws Exception
     {
         activate( targetActivators, Collections.singleton( child ), null );
     }
@@ -51,30 +50,31 @@ public final class ActivationDelegate
         activate( targetActivators, Collections.singleton( child ), callback );
     }
 
-    public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children )
+    public void activate( ActivatorsInstance targetActivators, Iterable<? extends Activation> children )
         throws ActivationException
     {
         activate( targetActivators, children, null );
     }
 
-    public void activate( ActivatorsInstance targetActivators,  Iterable<? extends Activation> children, Runnable callback )
+    public void activate( ActivatorsInstance targetActivators, Iterable<? extends Activation> children, Runnable callback )
         throws ActivationException
     {
-        if ( this.targetActivators != null ) {
+        if( this.targetActivators != null )
+        {
             throw new IllegalStateException( "Activation.activate() called multiple times or without calling passivate() first!" );
         }
 
         // Before Activation
         targetActivators.beforeActivation( target instanceof ServiceReference
-                                            ? new PassiveServiceReference( ( ServiceReference ) target )
-                                            : target );
+                                           ? new PassiveServiceReference( (ServiceReference) target )
+                                           : target );
 
         try
         {
             // Activation
             for( Activation child : children )
             {
-                if( ! activeChildren.contains( child ) )
+                if( !activeChildren.contains( child ) )
                 {
                     child.activate();
                 }
@@ -104,7 +104,7 @@ public final class ActivationDelegate
             }
             if( e instanceof ActivationException )
             {
-                throw ((ActivationException)e);
+                throw ( (ActivationException) e );
             }
             throw new ActivationException( "Unable to Activate application.", e );
         }
@@ -113,31 +113,28 @@ public final class ActivationDelegate
     public void passivate()
         throws PassivationException
     {
-        passivate( ( Runnable ) null );
+        passivate( (Runnable) null );
     }
 
-    public void passivate( Runnable callback  )
+    public void passivate( Runnable callback )
         throws PassivationException
     {
-        List<Exception> exceptions = new ArrayList<Exception>();
+        Set<Exception> exceptions = new LinkedHashSet<>();
 
         // Before Passivation
-        if ( targetActivators != null )
+        if( targetActivators != null )
         {
             try
             {
                 targetActivators.beforePassivation( target );
             }
+            catch( PassivationException ex )
+            {
+                exceptions.addAll( ex.causes() );
+            }
             catch( Exception ex )
             {
-                if( ex instanceof PassivationException )
-                {
-                    exceptions.addAll( Arrays.asList( ( ( PassivationException ) ex ).causes()) );
-                }
-                else
-                {
-                    exceptions.add( ex );
-                }
+                exceptions.add( ex );
             }
         }
 
@@ -154,24 +151,21 @@ public final class ActivationDelegate
         }
 
         // After Passivation
-        if ( targetActivators != null )
+        if( targetActivators != null )
         {
             try
             {
                 targetActivators.afterPassivation( target instanceof ServiceReference
-                                                ? new PassiveServiceReference( ( ServiceReference ) target )
-                                                : target );
+                                                   ? new PassiveServiceReference( (ServiceReference) target )
+                                                   : target );
+            }
+            catch( PassivationException ex )
+            {
+                exceptions.addAll( ex.causes() );
             }
             catch( Exception ex )
             {
-                if( ex instanceof PassivationException )
-                {
-                    exceptions.addAll( Arrays.asList( ( ( PassivationException ) ex ).causes()) );
-                }
-                else
-                {
-                    exceptions.add( ex );
-                }
+                exceptions.add( ex );
             }
         }
         targetActivators = null;
@@ -184,28 +178,26 @@ public final class ActivationDelegate
         throw new PassivationException( exceptions );
     }
 
-    private void passivateOneChild( List<Exception> exceptions )
+    @SuppressWarnings( "TooBroadCatch" )
+    private void passivateOneChild( Set<Exception> exceptions )
     {
         Activation activeChild = activeChildren.removeFirst();
         try
         {
             activeChild.passivate();
         }
+        catch( PassivationException ex )
+        {
+            exceptions.addAll( ex.causes() );
+        }
         catch( Exception ex )
         {
-            if( ex instanceof PassivationException )
-            {
-                exceptions.addAll( Arrays.asList( ( ( PassivationException ) ex ).causes()) );
-            }
-            else
-            {
-                exceptions.add( ex );
-            }
+            exceptions.add( ex );
         }
     }
 
     private static class PassiveServiceReference
-            implements ServiceReference
+        implements ServiceReference
     {
 
         private final ServiceReference reference;
@@ -225,7 +217,7 @@ public final class ActivationDelegate
         public Object get()
         {
             throw new IllegalStateException( "Service is passive, either activating and"
-                    + " cannot be used yet or passivating and cannot be used anymore." );
+                                             + " cannot be used yet or passivating and cannot be used anymore." );
         }
 
         @Override
@@ -273,15 +265,18 @@ public final class ActivationDelegate
         @Override
         public boolean equals( Object obj )
         {
-            if ( obj == null ) {
+            if( obj == null )
+            {
                 return false;
             }
-            if ( getClass() != obj.getClass() ) {
+            if( getClass() != obj.getClass() )
+            {
                 return false;
             }
-            final ServiceReference other = ( ServiceReference ) obj;
+            final ServiceReference other = (ServiceReference) obj;
             return identity().equals( other.identity() );
         }
 
     }
+
 }

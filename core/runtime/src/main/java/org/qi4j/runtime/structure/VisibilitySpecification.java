@@ -14,7 +14,7 @@ public class VisibilitySpecification
     public static final Specification<ModelDescriptor> LAYER = new VisibilitySpecification( Visibility.layer );
     public static final Specification<ModelDescriptor> APPLICATION = new VisibilitySpecification( Visibility.application );
 
-    private Visibility visibility;
+    private final Visibility visibility;
 
     public VisibilitySpecification( Visibility visibility )
     {

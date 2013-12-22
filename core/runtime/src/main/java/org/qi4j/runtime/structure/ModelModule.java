@@ -15,7 +15,7 @@ public class ModelModule<T extends ModelDescriptor>
             @Override
             public ModelModule<T> map( T model )
             {
-                return new ModelModule<T>( module, model );
+                return new ModelModule<>( module, model );
             }
         };
     }
@@ -32,8 +32,8 @@ public class ModelModule<T extends ModelDescriptor>
         };
     }
 
-    private ModuleInstance module;
-    private T model;
+    private final ModuleInstance module;
+    private final T model;
 
     public ModelModule( ModuleInstance module, T model )
     {
@@ -69,12 +69,8 @@ public class ModelModule<T extends ModelDescriptor>
         {
             return false;
         }
-        if( module != null ? !module.equals( that.module ) : that.module != null )
-        {
-            return false;
-        }
 
-        return true;
+        return !( module != null ? !module.equals( that.module ) : that.module != null );
     }
 
     @Override

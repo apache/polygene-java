@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2012, Paul Merlin.
+ * Copyright (c) 2008, Niclas Hedhman.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class ApplicationInstance
         // Eager instance objects
         activation = new ActivationDelegate( this );
         activationEventSupport = new ActivationEventListenerSupport();
-        layerInstances = new ArrayList<LayerInstance>();
+        layerInstances = new ArrayList<>();
     }
 
     @Override

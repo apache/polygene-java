@@ -31,7 +31,7 @@ public class ActivatorsModel<T>
     public Iterable<Activator<T>> newInstances()
         throws ActivationException
     {
-        List<Activator<T>> activators = new ArrayList<Activator<T>>();
+        List<Activator<T>> activators = new ArrayList<>();
         for ( Class<? extends Activator<T>> activatorClass : activatorsClasses ) {
             try
             {

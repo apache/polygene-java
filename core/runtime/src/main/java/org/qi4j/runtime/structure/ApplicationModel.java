@@ -40,8 +40,8 @@ public final class ApplicationModel
 {
     private final String name;
     private final String version;
-    private Application.Mode mode;
-    private MetaInfo metaInfo;
+    private final Application.Mode mode;
+    private final MetaInfo metaInfo;
     private final ActivatorsModel<Application> activatorsModel;
     private final List<LayerModel> layers;
     private final InjectionProviderFactory ipf;
@@ -87,7 +87,7 @@ public final class ApplicationModel
     public ActivatorsInstance<Application> newActivatorsInstance()
         throws ActivationException
     {
-        return new ActivatorsInstance<Application>( activatorsModel.newInstances() );
+        return new ActivatorsInstance<>( activatorsModel.newInstances() );
     }
 
     // SPI
@@ -121,11 +121,11 @@ public final class ApplicationModel
         ApplicationInstance applicationInstance = new ApplicationInstance( this, (Qi4jRuntime) runtime, instanceMetaInfo );
 
         // Create layer instances
-        Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<LayerModel, LayerInstance>();
-        Map<LayerModel, List<LayerInstance>> usedLayers = new HashMap<LayerModel, List<LayerInstance>>();
+        Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<>();
+        Map<LayerModel, List<LayerInstance>> usedLayers = new HashMap<>();
         for( LayerModel layer : layers )
         {
-            List<LayerInstance> usedLayerInstances = new ArrayList<LayerInstance>();
+            List<LayerInstance> usedLayerInstances = new ArrayList<>();
             usedLayers.put( layer, usedLayerInstances );
             UsedLayersInstance usedLayersInstance = layer.usedLayers().newInstance( usedLayerInstances );
             LayerInstance layerInstance = layer.newInstance( applicationInstance, usedLayersInstance );

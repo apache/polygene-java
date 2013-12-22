@@ -23,28 +23,27 @@ import java.util.Arrays;
 import java.util.Collections;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
 public class PassivationExceptionTest
 {
 
     @Test
-    public void testEmpty()
+    public void testEmptyPassivationException()
     {
         PassivationException empty = new PassivationException( Collections.<Exception>emptyList() );
         assertThat( empty.getMessage(), containsString( "has 0 cause" ) );
     }
 
     @Test
-    public void testSingle()
+    public void testSinglePassivationException()
     {
         PassivationException single = new PassivationException( Collections.singletonList( new Exception( "single" ) ) );
         assertThat( single.getMessage(), containsString( "1" ) );
 
         StringWriter writer = new StringWriter();
         single.printStackTrace( new PrintWriter( writer ) );
-        writer.flush();
         String stack = writer.toString();
 
         assertThat( single.getMessage(), containsString( "has 1 cause" ) );
@@ -52,7 +51,7 @@ public class PassivationExceptionTest
     }
 
     @Test
-    public void testMultiple()
+    public void testMultiplePassivationException()
     {
         PassivationException multi = new PassivationException( Arrays.asList( new Exception( "one" ),
                                                                               new Exception( "two" ),
@@ -61,11 +60,9 @@ public class PassivationExceptionTest
 
         StringWriter writer = new StringWriter();
         multi.printStackTrace( new PrintWriter( writer ) );
-        writer.flush();
         String stack = writer.toString();
 
         assertThat( multi.getMessage(), containsString( "has 3 cause(s)" ) );
-
         assertThat( stack, containsString( "Suppressed: java.lang.Exception: one" ) );
         assertThat( stack, containsString( "Suppressed: java.lang.Exception: two" ) );
         assertThat( stack, containsString( "Suppressed: java.lang.Exception: three" ) );

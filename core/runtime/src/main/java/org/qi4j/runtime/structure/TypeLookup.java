@@ -72,13 +72,13 @@ public class TypeLookup
         this.moduleInstance = moduleInstance;
 
         // Eager instance objects
-        objectModels = new ConcurrentHashMap<Class<?>, ModelModule<ObjectModel>>();
-        transientModels = new ConcurrentHashMap<Class<?>, ModelModule<TransientModel>>();
-        valueModels = new ConcurrentHashMap<Class<?>, ModelModule<ValueModel>>();
-        allEntityModels = new ConcurrentHashMap<Class<?>, Iterable<ModelModule<EntityModel>>>();
-        unambiguousEntityModels = new ConcurrentHashMap<Class<?>, ModelModule<EntityModel>>();
-        serviceReferences = new ConcurrentHashMap<Type, ServiceReference<?>>();
-        servicesReferences = new ConcurrentHashMap<Type, Iterable<ServiceReference<?>>>();
+        objectModels = new ConcurrentHashMap<>();
+        transientModels = new ConcurrentHashMap<>();
+        valueModels = new ConcurrentHashMap<>();
+        allEntityModels = new ConcurrentHashMap<>();
+        unambiguousEntityModels = new ConcurrentHashMap<>();
+        serviceReferences = new ConcurrentHashMap<>();
+        servicesReferences = new ConcurrentHashMap<>();
     }
 
     /**
@@ -428,7 +428,7 @@ public class TypeLookup
             {
                 ModelModule<T> current = null;
                 List<ModelModule<T>> ambiguous = null;
-                List<ModelModule<T>> results = new ArrayList<ModelModule<T>>();
+                List<ModelModule<T>> results = new ArrayList<>();
                 for( ModelModule<T> model : models )
                 {
                     if( current != null && !model.equals( current ) )
@@ -437,7 +437,7 @@ public class TypeLookup
                         {
                             if( ambiguous == null )
                             {
-                                ambiguous = new ArrayList<ModelModule<T>>();
+                                ambiguous = new ArrayList<>();
                             }
                             ambiguous.add( model );
                         }

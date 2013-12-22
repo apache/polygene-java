@@ -33,7 +33,7 @@ public final class LayerModel
 {
     // Model
     private final String name;
-    private MetaInfo metaInfo;
+    private final MetaInfo metaInfo;
     private final UsedLayersModel usedLayersModel;
     private final ActivatorsModel<Layer> activatorsModel;
     private final List<ModuleModel> modules;
@@ -77,7 +77,7 @@ public final class LayerModel
     public ActivatorsInstance<Layer> newActivatorsInstance()
         throws ActivationException
     {
-        return new ActivatorsInstance<Layer>( activatorsModel.newInstances() );
+        return new ActivatorsInstance<>( activatorsModel.newInstances() );
     }
 
     @Override

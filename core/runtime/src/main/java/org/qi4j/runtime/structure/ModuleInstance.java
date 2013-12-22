@@ -307,17 +307,17 @@ public class ModuleInstance
             throw new NoSuchTransientException( mixinType.getName(), name() );
         }
 
-        Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
+        Map<AccessibleObject, Property<?>> properties = new HashMap<>();
         for( PropertyModel propertyModel : modelModule.model().state().properties() )
         {
-            Property<?> property = new PropertyInstance<Object>( propertyModel.getBuilderInfo(),
+            Property<?> property = new PropertyInstance<>( propertyModel.getBuilderInfo(),
                                                                  propertyModel.initialValue( modelModule.module() ) );
             properties.put( propertyModel.accessor(), property );
         }
 
         TransientStateInstance state = new TransientStateInstance( properties );
 
-        return new TransientBuilderInstance<T>( modelModule, state, UsesInstance.EMPTY_USES );
+        return new TransientBuilderInstance<>( modelModule, state, UsesInstance.EMPTY_USES );
     }
 
     @Override
@@ -348,7 +348,7 @@ public class ModuleInstance
         }
 
         ValueStateModel.StateResolver stateResolver = new InitialStateResolver( compositeModelModule.module() );
-        return new ValueBuilderInstance<T>( compositeModelModule, this, stateResolver );
+        return new ValueBuilderInstance<>( compositeModelModule, this, stateResolver );
     }
 
     @Override
@@ -369,7 +369,7 @@ public class ModuleInstance
         }
 
         ValueStateModel.StateResolver stateResolver = new FunctionStateResolver( propertyFunction, associationFunction, manyAssociationFunction );
-        return new ValueBuilderWithState<T>( compositeModelModule, this, stateResolver );
+        return new ValueBuilderWithState<>( compositeModelModule, this, stateResolver );
     }
 
     private static class InitialStateResolver
@@ -398,7 +398,7 @@ public class ModuleInstance
         @Override
         public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
         {
-            return new ArrayList<EntityReference>();
+            return new ArrayList<>();
         }
     }
 
@@ -453,7 +453,7 @@ public class ModuleInstance
             throw new NoSuchValueException( valueType.getName(), name() );
         }
 
-        return new ValueBuilderWithPrototype<T>( modelModule, this, prototype );
+        return new ValueBuilderWithPrototype<>( modelModule, this, prototype );
     }
 
     @Override
@@ -737,7 +737,7 @@ public class ModuleInstance
     {
 
         private final ModuleInstance moduleInstance;
-        private final Map<String, Class<?>> classes = new ConcurrentHashMap<String, Class<?>>();
+        private final Map<String, Class<?>> classes = new ConcurrentHashMap<>();
 
         private ModuleClassLoader( ModuleInstance moduleInstance, ClassLoader classLoader )
         {

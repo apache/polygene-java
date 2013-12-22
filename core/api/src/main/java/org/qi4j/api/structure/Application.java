@@ -12,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.structure;
 
 import org.qi4j.api.activation.Activation;
@@ -48,6 +47,9 @@ public interface Application
         production
     }
 
+    /**
+     * @return Application name
+     */
     String name();
 
     /**
@@ -58,13 +60,34 @@ public interface Application
      */
     String version();
 
+    /**
+     * @return Application Mode
+     */
     Mode mode();
 
+    /**
+     * Find a Layer.
+     *
+     * @param layerName Layer name
+     * @return Found Layer, never returns null
+     * @throws IllegalArgumentException if there's no such Layer
+     */
     Layer findLayer( String layerName )
         throws IllegalArgumentException;
 
+    /**
+     * Find a Module.
+     *
+     * @param layerName Layer name
+     * @param moduleName Module name
+     * @return Found Module, never returns null
+     * @throws IllegalArgumentException if there's no such Module
+     */
     Module findModule( String layerName, String moduleName )
         throws IllegalArgumentException;
 
+    /**
+     * @return Application Descriptor
+     */
     ApplicationDescriptor descriptor();
 }

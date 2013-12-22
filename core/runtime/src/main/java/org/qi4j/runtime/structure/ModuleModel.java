@@ -45,7 +45,7 @@ public class ModuleModel
     private final ImportedServicesModel importedServicesModel;
 
     private final String name;
-    private MetaInfo metaInfo;
+    private final MetaInfo metaInfo;
 
     public ModuleModel( String name,
                         MetaInfo metaInfo,
@@ -83,7 +83,7 @@ public class ModuleModel
     public ActivatorsInstance<Module> newActivatorsInstance()
         throws ActivationException
     {
-        return new ActivatorsInstance<Module>( activatorsModel.newInstances() );
+        return new ActivatorsInstance<>( activatorsModel.newInstances() );
     }
 
     @Override
