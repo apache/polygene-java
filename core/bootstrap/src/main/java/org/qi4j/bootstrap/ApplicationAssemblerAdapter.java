@@ -22,7 +22,7 @@ package org.qi4j.bootstrap;
 public class ApplicationAssemblerAdapter
     implements ApplicationAssembler
 {
-    private Assembler[][][] assemblers;
+    private final Assembler[][][] assemblers;
 
     protected ApplicationAssemblerAdapter( Assembler assembler )
     {

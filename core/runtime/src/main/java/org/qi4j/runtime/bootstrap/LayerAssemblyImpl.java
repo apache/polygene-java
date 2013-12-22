@@ -54,21 +54,21 @@ import org.qi4j.functional.Specification;
 public final class LayerAssemblyImpl
     implements LayerAssembly
 {
-    private ApplicationAssembly applicationAssembly;
-    private HashMap<String, ModuleAssemblyImpl> moduleAssemblies;
-    private Set<LayerAssembly> uses;
+    private final ApplicationAssembly applicationAssembly;
+    private final HashMap<String, ModuleAssemblyImpl> moduleAssemblies;
+    private final Set<LayerAssembly> uses;
 
     private String name;
-    private MetaInfo metaInfo = new MetaInfo();
-    private List<Class<? extends Activator<Layer>>> activators = new ArrayList<Class<? extends Activator<Layer>>>();
+    private final MetaInfo metaInfo = new MetaInfo();
+    private final List<Class<? extends Activator<Layer>>> activators = new ArrayList<>();
 
     public LayerAssemblyImpl( ApplicationAssembly applicationAssembly, String name )
     {
         this.applicationAssembly = applicationAssembly;
         this.name = name;
 
-        moduleAssemblies = new LinkedHashMap<String, ModuleAssemblyImpl>();
-        uses = new LinkedHashSet<LayerAssembly>();
+        moduleAssemblies = new LinkedHashMap<>();
+        uses = new LinkedHashSet<>();
     }
 
     @Override
@@ -136,7 +136,7 @@ public final class LayerAssemblyImpl
     @Override
     public EntityDeclaration entities( Specification<? super EntityAssembly> specification )
     {
-        final List<EntityDeclaration> declarations = new ArrayList<EntityDeclaration>();
+        final List<EntityDeclaration> declarations = new ArrayList<>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
@@ -210,7 +210,7 @@ public final class LayerAssemblyImpl
     @Override
     public ServiceDeclaration services( Specification<? super ServiceAssembly> specification )
     {
-        final List<ServiceDeclaration> declarations = new ArrayList<ServiceDeclaration>();
+        final List<ServiceDeclaration> declarations = new ArrayList<>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
@@ -325,7 +325,7 @@ public final class LayerAssemblyImpl
     @Override
     public TransientDeclaration transients( Specification<? super TransientAssembly> specification )
     {
-        final List<TransientDeclaration> declarations = new ArrayList<TransientDeclaration>();
+        final List<TransientDeclaration> declarations = new ArrayList<>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
@@ -399,7 +399,7 @@ public final class LayerAssemblyImpl
     @Override
     public ValueDeclaration values( Specification<? super ValueAssembly> specification )
     {
-        final List<ValueDeclaration> declarations = new ArrayList<ValueDeclaration>();
+        final List<ValueDeclaration> declarations = new ArrayList<>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
@@ -472,7 +472,7 @@ public final class LayerAssemblyImpl
     @Override
     public ObjectDeclaration objects( Specification<? super ObjectAssembly> specification )
     {
-        final List<ObjectDeclaration> declarations = new ArrayList<ObjectDeclaration>();
+        final List<ObjectDeclaration> declarations = new ArrayList<>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {
@@ -506,7 +506,7 @@ public final class LayerAssemblyImpl
     @Override
     public ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification )
     {
-        final List<ImportedServiceDeclaration> declarations = new ArrayList<ImportedServiceDeclaration>();
+        final List<ImportedServiceDeclaration> declarations = new ArrayList<>();
 
         for( ModuleAssemblyImpl moduleAssembly : moduleAssemblies.values() )
         {

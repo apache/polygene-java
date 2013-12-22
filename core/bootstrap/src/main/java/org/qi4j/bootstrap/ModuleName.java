@@ -20,7 +20,7 @@ package org.qi4j.bootstrap;
 public final class ModuleName
     implements Assembler
 {
-    private String name;
+    private final String name;
 
     public ModuleName( String name )
     {

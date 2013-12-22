@@ -25,7 +25,7 @@ import static java.util.Arrays.asList;
 public final class ValueDeclarationImpl
     implements ValueDeclaration
 {
-    private Iterable<ValueAssemblyImpl> assemblies;
+    private final Iterable<ValueAssemblyImpl> assemblies;
 
     public ValueDeclarationImpl( Iterable<ValueAssemblyImpl> assemblies )
     {

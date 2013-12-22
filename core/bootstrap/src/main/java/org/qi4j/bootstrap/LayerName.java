@@ -20,7 +20,7 @@ package org.qi4j.bootstrap;
 public final class LayerName
     implements Assembler
 {
-    private String name;
+    private final String name;
 
     public LayerName( String name )
     {

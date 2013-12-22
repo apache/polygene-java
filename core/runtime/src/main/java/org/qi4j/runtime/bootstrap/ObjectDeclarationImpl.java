@@ -23,7 +23,7 @@ import org.qi4j.bootstrap.ObjectDeclaration;
 public final class ObjectDeclarationImpl
     implements ObjectDeclaration
 {
-    private Iterable<ObjectAssemblyImpl> assemblies;
+    private final Iterable<ObjectAssemblyImpl> assemblies;
 
     public ObjectDeclarationImpl( Iterable<ObjectAssemblyImpl> assemblies )
     {

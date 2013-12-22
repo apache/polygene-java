@@ -25,7 +25,7 @@ import static java.util.Arrays.asList;
 public final class EntityDeclarationImpl
     implements EntityDeclaration
 {
-    private Iterable<EntityAssemblyImpl> entities;
+    private final Iterable<EntityAssemblyImpl> entities;
 
     public EntityDeclarationImpl( Iterable<EntityAssemblyImpl> entities )
     {

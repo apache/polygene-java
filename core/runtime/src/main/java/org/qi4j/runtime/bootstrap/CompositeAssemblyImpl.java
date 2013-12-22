@@ -77,10 +77,10 @@ import static org.qi4j.functional.Specifications.*;
 public abstract class CompositeAssemblyImpl
     implements HasTypes
 {
-    protected List<Class<?>> concerns = new ArrayList<Class<?>>();
-    protected List<Class<?>> sideEffects = new ArrayList<Class<?>>();
-    protected List<Class<?>> mixins = new ArrayList<Class<?>>();
-    protected List<Class<?>> types = new ArrayList<Class<?>>();
+    protected List<Class<?>> concerns = new ArrayList<>();
+    protected List<Class<?>> sideEffects = new ArrayList<>();
+    protected List<Class<?>> mixins = new ArrayList<>();
+    protected List<Class<?>> types = new ArrayList<>();
     protected MetaInfo metaInfo = new MetaInfo();
     protected Visibility visibility = Visibility.module;
 
@@ -92,7 +92,7 @@ public abstract class CompositeAssemblyImpl
     private AssemblyHelper helper;
     protected StateDeclarations stateDeclarations;
 
-    protected Set<String> registeredStateNames = new HashSet<String>();
+    protected Set<String> registeredStateNames = new HashSet<>();
 
     public CompositeAssemblyImpl( Class<?> mainType )
     {
@@ -161,7 +161,7 @@ public abstract class CompositeAssemblyImpl
                                        Iterable<Class<?>> mixinClasses
     )
     {
-        Set<Class<?>> thisDependencies = new HashSet<Class<?>>();
+        Set<Class<?>> thisDependencies = new HashSet<>();
         for( Class<?> mixinType : types )
         {
             for( Method method : mixinType.getMethods() )
@@ -412,7 +412,7 @@ public abstract class CompositeAssemblyImpl
 
             if( parameterConstraintModels.isEmpty() )
             {
-                parameterConstraintModels = new ArrayList<ValueConstraintsModel>();
+                parameterConstraintModels = new ArrayList<>();
             }
             parameterConstraintModels.add( parameterConstraintsModel );
         }
@@ -438,7 +438,7 @@ public abstract class CompositeAssemblyImpl
     {
         valueType = wrapperClass( valueType );
 
-        List<AbstractConstraintModel> constraintModels = new ArrayList<AbstractConstraintModel>();
+        List<AbstractConstraintModel> constraintModels = new ArrayList<>();
         nextConstraint:
         for( Annotation constraintAnnotation : filter( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ), constraintAnnotations ) )
         {
@@ -497,7 +497,7 @@ public abstract class CompositeAssemblyImpl
                                        Iterable<Class<?>> concernClasses
     )
     {
-        List<ConcernModel> concernsFor = new ArrayList<ConcernModel>();
+        List<ConcernModel> concernsFor = new ArrayList<>();
         for( Class<?> concern : concernClasses )
         {
             if( helper.appliesTo( concern, method, types, mixinClass ) )
@@ -556,7 +556,7 @@ public abstract class CompositeAssemblyImpl
                                              Iterable<Class<?>> sideEffectClasses
     )
     {
-        List<SideEffectModel> sideEffectsFor = new ArrayList<SideEffectModel>();
+        List<SideEffectModel> sideEffectsFor = new ArrayList<>();
         for( Class<?> sideEffect : sideEffectClasses )
         {
             if( helper.appliesTo( sideEffect, method, types, mixinClass ) )
@@ -603,7 +603,7 @@ public abstract class CompositeAssemblyImpl
     private Iterable<Class<? extends Constraint<?, ?>>> constraintDeclarations( Iterable<? extends Class<?>> typess )
     {
         // Find constraint declarations
-        List<Type> allTypes = new ArrayList<Type>();
+        List<Type> allTypes = new ArrayList<>();
         for( Class<?> type : typess )
         {
             Iterable<Type> types = typesOf( type );
@@ -640,7 +640,7 @@ public abstract class CompositeAssemblyImpl
     private Iterable<Class<?>> concernDeclarations( Iterable<? extends Class<?>> typess )
     {
         // Find concern declarations
-        ArrayList<Type> allTypes = new ArrayList<Type>();
+        ArrayList<Type> allTypes = new ArrayList<>();
         for( Class<?> type : typess )
         {
             Iterable<Type> types;
@@ -685,7 +685,7 @@ public abstract class CompositeAssemblyImpl
     protected Iterable<Class<?>> sideEffectDeclarations( Iterable<? extends Class<?>> typess )
     {
         // Find side-effect declarations
-        ArrayList<Type> allTypes = new ArrayList<Type>();
+        ArrayList<Type> allTypes = new ArrayList<>();
         for( Class<?> type : typess )
         {
             Iterable<Type> types = typesOf( type );
@@ -722,7 +722,7 @@ public abstract class CompositeAssemblyImpl
     protected Iterable<Class<?>> mixinDeclarations( Iterable<? extends Class<?>> typess )
     {
         // Find mixin declarations
-        ArrayList<Type> allTypes = new ArrayList<Type>();
+        ArrayList<Type> allTypes = new ArrayList<>();
         for( Class<?> type : typess )
         {
             Iterable<Type> types = typesOf( type );

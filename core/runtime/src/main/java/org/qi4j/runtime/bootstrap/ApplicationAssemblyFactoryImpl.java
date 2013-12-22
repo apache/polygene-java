@@ -50,10 +50,10 @@ public final class ApplicationAssemblyFactoryImpl
             {
                 // Create Module
                 ModuleAssembly moduleAssembly = layerAssembly.module( "Module " + ( module + 1 ) );
-                for( int assembly = 0; assembly < assemblers[ layer ][ module ].length; assembly++ )
+                for( Assembler assembler : assemblers[ layer ][ module ] )
                 {
                     // Register Assembler
-                    assemblers[ layer ][ module ][ assembly ].assemble( moduleAssembly );
+                    assembler.assemble( moduleAssembly );
                 }
             }
             if( below != null )

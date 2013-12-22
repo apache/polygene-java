@@ -31,7 +31,7 @@ import org.qi4j.api.property.Property;
 public final class MetaInfoDeclaration
     implements StateDeclarations, AssociationDeclarations, ManyAssociationDeclarations
 {
-    Map<Class<?>, InfoHolder<?>> mixinPropertyDeclarations = new HashMap<Class<?>, InfoHolder<?>>();
+    Map<Class<?>, InfoHolder<?>> mixinPropertyDeclarations = new HashMap<>();
 
     public MetaInfoDeclaration()
     {
@@ -42,7 +42,7 @@ public final class MetaInfoDeclaration
         InfoHolder<T> propertyDeclarationHolder = (InfoHolder<T>) mixinPropertyDeclarations.get( mixinType );
         if( propertyDeclarationHolder == null )
         {
-            propertyDeclarationHolder = new InfoHolder<T>( mixinType );
+            propertyDeclarationHolder = new InfoHolder<>( mixinType );
             mixinPropertyDeclarations.put( mixinType, propertyDeclarationHolder );
         }
         return propertyDeclarationHolder;
@@ -115,7 +115,7 @@ public final class MetaInfoDeclaration
         }
 
         private final Class<T> mixinType;
-        private final Map<AccessibleObject, MethodInfo> methodInfos = new HashMap<AccessibleObject, MethodInfo>();
+        private final Map<AccessibleObject, MethodInfo> methodInfos = new HashMap<>();
         // temporary holder
         private MetaInfo metaInfo = null;
 

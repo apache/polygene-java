@@ -31,7 +31,7 @@ import org.qi4j.bootstrap.ImportedServiceDeclaration;
 public final class ImportedServiceDeclarationImpl
     implements ImportedServiceDeclaration
 {
-    private Iterable<ImportedServiceAssemblyImpl> assemblies;
+    private final Iterable<ImportedServiceAssemblyImpl> assemblies;
 
     public ImportedServiceDeclarationImpl( Iterable<ImportedServiceAssemblyImpl> assemblies )
     {
@@ -86,7 +86,7 @@ public final class ImportedServiceDeclarationImpl
             ServiceTags previousTags = serviceAssembly.metaInfo.get( ServiceTags.class );
             if( previousTags != null )
             {
-                List<String> tagList = new ArrayList<String>();
+                List<String> tagList = new ArrayList<>();
                 Collections.addAll( tagList, previousTags.tags() );
                 Collections.addAll( tagList, tags );
                 serviceAssembly.metaInfo.set( new ServiceTags( tagList.toArray( new String[ tagList.size() ] ) ) );

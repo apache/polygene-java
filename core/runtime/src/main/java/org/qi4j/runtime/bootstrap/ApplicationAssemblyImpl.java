@@ -36,12 +36,12 @@ import org.qi4j.bootstrap.LayerAssembly;
 public final class ApplicationAssemblyImpl
     implements ApplicationAssembly
 {
-    private Map<String, LayerAssemblyImpl> layerAssemblies = new LinkedHashMap<String, LayerAssemblyImpl>();
+    private final Map<String, LayerAssemblyImpl> layerAssemblies = new LinkedHashMap<>();
     private String name = "Application";
     private String version = "1.0"; // Default version
     private Application.Mode mode;
-    private MetaInfo metaInfo = new MetaInfo();
-    private List<Class<? extends Activator<Application>>> activators = new ArrayList<Class<? extends Activator<Application>>>();
+    private final MetaInfo metaInfo = new MetaInfo();
+    private final List<Class<? extends Activator<Application>>> activators = new ArrayList<>();
 
     public ApplicationAssemblyImpl()
     {

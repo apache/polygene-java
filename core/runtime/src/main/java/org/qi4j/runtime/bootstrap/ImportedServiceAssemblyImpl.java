@@ -36,14 +36,14 @@ import org.qi4j.runtime.service.ImportedServiceModel;
 public final class ImportedServiceAssemblyImpl
     implements ImportedServiceAssembly
 {
-    private Class<?> serviceType;
-    private ModuleAssemblyImpl moduleAssembly;
+    private final Class<?> serviceType;
+    private final ModuleAssemblyImpl moduleAssembly;
     Class<? extends ServiceImporter> serviceProvider = InstanceImporter.class;
     String identity;
     boolean importOnStartup = false;
     MetaInfo metaInfo = new MetaInfo();
     Visibility visibility = Visibility.module;
-    List<Class<? extends Activator<?>>> activators = new ArrayList<Class<? extends Activator<?>>>();
+    List<Class<? extends Activator<?>>> activators = new ArrayList<>();
 
     public ImportedServiceAssemblyImpl( Class<?> serviceType, ModuleAssemblyImpl moduleAssembly )
     {

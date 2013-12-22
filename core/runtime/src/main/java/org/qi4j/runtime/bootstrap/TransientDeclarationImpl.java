@@ -25,7 +25,7 @@ import static java.util.Arrays.asList;
 public final class TransientDeclarationImpl
     implements TransientDeclaration
 {
-    private Iterable<TransientAssemblyImpl> assemblies;
+    private final Iterable<TransientAssemblyImpl> assemblies;
 
     public TransientDeclarationImpl( Iterable<TransientAssemblyImpl> assemblies )
     {

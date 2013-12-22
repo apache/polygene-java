@@ -37,10 +37,10 @@ import org.qi4j.runtime.composite.SideEffectModel;
  */
 public class AssemblyHelper
 {
-    Map<Class, Class> instantiationClasses = new HashMap<Class, Class>();
-    Map<Class, ConstraintDeclaration> constraintDeclarations = new HashMap<Class, ConstraintDeclaration>();
-    Map<ClassLoader, FragmentClassLoader> modifierClassLoaders = new HashMap<ClassLoader, FragmentClassLoader>();
-    Map<Class<?>, AppliesToFilter> appliesToInstances = new HashMap<Class<?>, AppliesToFilter>();
+    Map<Class, Class> instantiationClasses = new HashMap<>();
+    Map<Class, ConstraintDeclaration> constraintDeclarations = new HashMap<>();
+    Map<ClassLoader, FragmentClassLoader> modifierClassLoaders = new HashMap<>();
+    Map<Class<?>, AppliesToFilter> appliesToInstances = new HashMap<>();
 
     public MixinModel getMixinModel( Class mixinClass )
     {
@@ -72,11 +72,7 @@ public class AssemblyHelper
                     instantiationClass = fragmentLoader.loadFragmentClass( fragmentClass );
                     instantiationClasses.put( fragmentClass, instantiationClass );
                 }
-                catch( ClassNotFoundException e )
-                {
-                    throw new ConstructionException( "Could not generate mixin subclass " + fragmentClass.getName(), e );
-                }
-                catch( VerifyError e )
+                catch( ClassNotFoundException | VerifyError e )
                 {
                     throw new ConstructionException( "Could not generate mixin subclass " + fragmentClass.getName(), e );
                 }

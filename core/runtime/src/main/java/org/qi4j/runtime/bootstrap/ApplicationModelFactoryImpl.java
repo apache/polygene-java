@@ -53,32 +53,32 @@ public final class ApplicationModelFactoryImpl
         AssemblyHelper helper = new AssemblyHelper();
 
         ApplicationAssemblyImpl applicationAssembly = (ApplicationAssemblyImpl) assembly;
-        ActivatorsModel<Application> applicationActivators = new ActivatorsModel<Application>( applicationAssembly.activators() );
-        List<LayerModel> layerModels = new ArrayList<LayerModel>();
+        ActivatorsModel<Application> applicationActivators = new ActivatorsModel<>( applicationAssembly.activators() );
+        List<LayerModel> layerModels = new ArrayList<>();
         final ApplicationModel applicationModel = new ApplicationModel( applicationAssembly.name(),
                                                                         applicationAssembly.version(),
                                                                         applicationAssembly.mode(),
                                                                         applicationAssembly.metaInfo(),
                                                                         applicationActivators,
                                                                         layerModels );
-        Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<LayerAssembly, LayerModel>();
-        Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<LayerAssembly, List<LayerModel>>();
+        Map<LayerAssembly, LayerModel> mapAssemblyModel = new HashMap<>();
+        Map<LayerAssembly, List<LayerModel>> mapUsedLayers = new HashMap<>();
 
         // Build all layers
-        List<LayerAssemblyImpl> layerAssemblies = new ArrayList<LayerAssemblyImpl>( applicationAssembly.layerAssemblies() );
+        List<LayerAssemblyImpl> layerAssemblies = new ArrayList<>( applicationAssembly.layerAssemblies() );
         for( LayerAssemblyImpl layerAssembly : layerAssemblies )
         {
-            List<LayerModel> usedLayers = new ArrayList<LayerModel>();
+            List<LayerModel> usedLayers = new ArrayList<>();
             mapUsedLayers.put( layerAssembly, usedLayers );
 
             UsedLayersModel usedLayersModel = new UsedLayersModel( usedLayers );
-            List<ModuleModel> moduleModels = new ArrayList<ModuleModel>();
+            List<ModuleModel> moduleModels = new ArrayList<>();
             String name = layerAssembly.name();
             if( name == null )
             {
                 throw new AssemblyException( "Layer must have name set" );
             }
-            ActivatorsModel<Layer> layerActivators = new ActivatorsModel<Layer>( layerAssembly.activators() );
+            ActivatorsModel<Layer> layerActivators = new ActivatorsModel<>( layerAssembly.activators() );
             LayerModel layerModel = new LayerModel( name, layerAssembly.metaInfo(), usedLayersModel, layerActivators, moduleModels );
 
             for( ModuleAssemblyImpl moduleAssembly : layerAssembly.moduleAssemblies() )

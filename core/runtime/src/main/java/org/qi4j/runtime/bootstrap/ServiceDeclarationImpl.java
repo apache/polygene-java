@@ -30,7 +30,7 @@ import static java.util.Arrays.asList;
 public final class ServiceDeclarationImpl
     implements ServiceDeclaration
 {
-    private Iterable<ServiceAssemblyImpl> serviceAssemblies;
+    private final Iterable<ServiceAssemblyImpl> serviceAssemblies;
 
     public ServiceDeclarationImpl( Iterable<ServiceAssemblyImpl> serviceAssemblies )
     {
@@ -65,7 +65,7 @@ public final class ServiceDeclarationImpl
             ServiceTags previousTags = serviceAssembly.metaInfo.get( ServiceTags.class );
             if( previousTags != null )
             {
-                List<String> tagList = new ArrayList<String>();
+                List<String> tagList = new ArrayList<>();
                 tagList.addAll( asList( previousTags.tags() ) );
                 tagList.addAll( asList( tags ) );
                 serviceAssembly.metaInfo.set( new ServiceTags( tagList.toArray( new String[ tagList.size() ] ) ) );

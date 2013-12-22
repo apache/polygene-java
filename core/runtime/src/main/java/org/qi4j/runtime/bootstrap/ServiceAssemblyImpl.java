@@ -38,7 +38,7 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
 {
     String identity;
     boolean instantiateOnStartup = false;
-    List<Class<? extends Activator<?>>> activators = new ArrayList<Class<? extends Activator<?>>>();
+    List<Class<? extends Activator<?>>> activators = new ArrayList<>();
 
     public ServiceAssemblyImpl( Class<?> serviceType )
     {
@@ -77,7 +77,7 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
     protected Iterable<Class<? extends Activator<?>>> activatorsDeclarations( Iterable<? extends Class<?>> typess )
     {
         // Find activator declarations
-        ArrayList<Type> allTypes = new ArrayList<Type>();
+        ArrayList<Type> allTypes = new ArrayList<>();
         for( Class<?> type : typess )
         {
             Iterable<Type> types = Classes.typesOf( type );

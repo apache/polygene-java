@@ -80,17 +80,17 @@ import static org.qi4j.functional.Iterables.iterable;
 public final class ModuleAssemblyImpl
     implements ModuleAssembly
 {
-    private LayerAssembly layerAssembly;
+    private final LayerAssembly layerAssembly;
     private String name;
-    private MetaInfo metaInfo = new MetaInfo();
-    private List<Class<? extends Activator<Module>>> activators = new ArrayList<Class<? extends Activator<Module>>>();
+    private final MetaInfo metaInfo = new MetaInfo();
+    private final List<Class<? extends Activator<Module>>> activators = new ArrayList<>();
 
-    private final List<ServiceAssemblyImpl> serviceAssemblies = new ArrayList<ServiceAssemblyImpl>();
-    private final Map<Class<?>, ImportedServiceAssemblyImpl> importedServiceAssemblies = new LinkedHashMap<Class<?>, ImportedServiceAssemblyImpl>();
-    private final Map<Class<? extends EntityComposite>, EntityAssemblyImpl> entityAssemblies = new LinkedHashMap<Class<? extends EntityComposite>, EntityAssemblyImpl>();
-    private final Map<Class<? extends ValueComposite>, ValueAssemblyImpl> valueAssemblies = new LinkedHashMap<Class<? extends ValueComposite>, ValueAssemblyImpl>();
-    private final Map<Class<? extends TransientComposite>, TransientAssemblyImpl> transientAssemblies = new LinkedHashMap<Class<? extends TransientComposite>, TransientAssemblyImpl>();
-    private final Map<Class<?>, ObjectAssemblyImpl> objectAssemblies = new LinkedHashMap<Class<?>, ObjectAssemblyImpl>();
+    private final List<ServiceAssemblyImpl> serviceAssemblies = new ArrayList<>();
+    private final Map<Class<?>, ImportedServiceAssemblyImpl> importedServiceAssemblies = new LinkedHashMap<>();
+    private final Map<Class<? extends EntityComposite>, EntityAssemblyImpl> entityAssemblies = new LinkedHashMap<>();
+    private final Map<Class<? extends ValueComposite>, ValueAssemblyImpl> valueAssemblies = new LinkedHashMap<>();
+    private final Map<Class<? extends TransientComposite>, TransientAssemblyImpl> transientAssemblies = new LinkedHashMap<>();
+    private final Map<Class<?>, ObjectAssemblyImpl> objectAssemblies = new LinkedHashMap<>();
 
     private final MetaInfoDeclaration metaInfoDeclaration = new MetaInfoDeclaration();
 
@@ -135,7 +135,7 @@ public final class ModuleAssemblyImpl
     @Override
     public ValueDeclaration values( Class<?>... valueTypes )
     {
-        List<ValueAssemblyImpl> assemblies = new ArrayList<ValueAssemblyImpl>();
+        List<ValueAssemblyImpl> assemblies = new ArrayList<>();
 
         for( Class valueType : valueTypes )
         {
@@ -157,7 +157,7 @@ public final class ModuleAssemblyImpl
     @Override
     public ValueDeclaration values( Specification<? super ValueAssembly> specification )
     {
-        List<ValueAssemblyImpl> assemblies = new ArrayList<ValueAssemblyImpl>();
+        List<ValueAssemblyImpl> assemblies = new ArrayList<>();
         for( ValueAssemblyImpl transientAssembly : valueAssemblies.values() )
         {
             if( specification.satisfiedBy( transientAssembly ) )
@@ -172,7 +172,7 @@ public final class ModuleAssemblyImpl
     @Override
     public TransientDeclaration transients( Class<?>... transientTypes )
     {
-        List<TransientAssemblyImpl> assemblies = new ArrayList<TransientAssemblyImpl>();
+        List<TransientAssemblyImpl> assemblies = new ArrayList<>();
 
         for( Class valueType : transientTypes )
         {
@@ -194,7 +194,7 @@ public final class ModuleAssemblyImpl
     @Override
     public TransientDeclaration transients( Specification<? super TransientAssembly> specification )
     {
-        List<TransientAssemblyImpl> assemblies = new ArrayList<TransientAssemblyImpl>();
+        List<TransientAssemblyImpl> assemblies = new ArrayList<>();
         for( TransientAssemblyImpl transientAssembly : transientAssemblies.values() )
         {
             if( specification.satisfiedBy( transientAssembly ) )
@@ -209,7 +209,7 @@ public final class ModuleAssemblyImpl
     @Override
     public EntityDeclaration entities( Class<?>... entityTypes )
     {
-        List<EntityAssemblyImpl> assemblies = new ArrayList<EntityAssemblyImpl>();
+        List<EntityAssemblyImpl> assemblies = new ArrayList<>();
 
         for( Class entityType : entityTypes )
         {
@@ -231,7 +231,7 @@ public final class ModuleAssemblyImpl
     @Override
     public EntityDeclaration entities( Specification<? super EntityAssembly> specification )
     {
-        List<EntityAssemblyImpl> assemblies = new ArrayList<EntityAssemblyImpl>();
+        List<EntityAssemblyImpl> assemblies = new ArrayList<>();
         for( EntityAssemblyImpl entityAssembly : entityAssemblies.values() )
         {
             if( specification.satisfiedBy( entityAssembly ) )
@@ -247,7 +247,7 @@ public final class ModuleAssemblyImpl
     public ObjectDeclaration objects( Class<?>... objectTypes )
         throws AssemblyException
     {
-        List<ObjectAssemblyImpl> assemblies = new ArrayList<ObjectAssemblyImpl>();
+        List<ObjectAssemblyImpl> assemblies = new ArrayList<>();
 
         for( Class<?> objectType : objectTypes )
         {
@@ -273,7 +273,7 @@ public final class ModuleAssemblyImpl
     @Override
     public ObjectDeclaration objects( Specification<? super ObjectAssembly> specification )
     {
-        List<ObjectAssemblyImpl> assemblies = new ArrayList<ObjectAssemblyImpl>();
+        List<ObjectAssemblyImpl> assemblies = new ArrayList<>();
         for( ObjectAssemblyImpl objectAssembly : objectAssemblies.values() )
         {
             if( specification.satisfiedBy( objectAssembly ) )
@@ -288,7 +288,7 @@ public final class ModuleAssemblyImpl
     @Override
     public ServiceDeclaration addServices( Class<?>... serviceTypes )
     {
-        List<ServiceAssemblyImpl> assemblies = new ArrayList<ServiceAssemblyImpl>();
+        List<ServiceAssemblyImpl> assemblies = new ArrayList<>();
 
         for( Class<?> serviceType : serviceTypes )
         {
@@ -303,7 +303,7 @@ public final class ModuleAssemblyImpl
     @Override
     public ServiceDeclaration services( Class<?>... serviceTypes )
     {
-        List<ServiceAssemblyImpl> assemblies = new ArrayList<ServiceAssemblyImpl>();
+        List<ServiceAssemblyImpl> assemblies = new ArrayList<>();
 
         for( Class<?> serviceType : serviceTypes )
         {
@@ -325,7 +325,7 @@ public final class ModuleAssemblyImpl
     @Override
     public ServiceDeclaration services( Specification<? super ServiceAssembly> specification )
     {
-        List<ServiceAssemblyImpl> assemblies = new ArrayList<ServiceAssemblyImpl>();
+        List<ServiceAssemblyImpl> assemblies = new ArrayList<>();
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
             if( specification.satisfiedBy( serviceAssembly ) )
@@ -340,7 +340,7 @@ public final class ModuleAssemblyImpl
     @Override
     public ImportedServiceDeclaration importedServices( Class<?>... serviceTypes )
     {
-        List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<ImportedServiceAssemblyImpl>();
+        List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<>();
 
         for( Class<?> serviceType : serviceTypes )
         {
@@ -362,7 +362,7 @@ public final class ModuleAssemblyImpl
     @Override
     public ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification )
     {
-        List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<ImportedServiceAssemblyImpl>();
+        List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<>();
         for( ImportedServiceAssemblyImpl objectAssembly : importedServiceAssemblies.values() )
         {
             if( specification.satisfiedBy( objectAssembly ) )
@@ -420,11 +420,11 @@ public final class ModuleAssemblyImpl
     ModuleModel assembleModule( AssemblyHelper helper )
         throws AssemblyException
     {
-        List<TransientModel> transientModels = new ArrayList<TransientModel>();
-        List<ObjectModel> objectModels = new ArrayList<ObjectModel>();
-        List<ValueModel> valueModels = new ArrayList<ValueModel>();
-        List<ServiceModel> serviceModels = new ArrayList<ServiceModel>();
-        List<ImportedServiceModel> importedServiceModels = new ArrayList<ImportedServiceModel>();
+        List<TransientModel> transientModels = new ArrayList<>();
+        List<ObjectModel> objectModels = new ArrayList<>();
+        List<ValueModel> valueModels = new ArrayList<>();
+        List<ServiceModel> serviceModels = new ArrayList<>();
+        List<ImportedServiceModel> importedServiceModels = new ArrayList<>();
 
         if( name == null )
         {
@@ -441,7 +441,7 @@ public final class ModuleAssemblyImpl
             valueModels.add( valueDeclaration.newValueModel( metaInfoDeclaration, helper ) );
         }
 
-        List<EntityModel> entityModels = new ArrayList<EntityModel>();
+        List<EntityModel> entityModels = new ArrayList<>();
         for( EntityAssemblyImpl entityDeclaration : entityAssemblies.values() )
         {
             entityModels.add( entityDeclaration.newEntityModel( metaInfoDeclaration, metaInfoDeclaration, metaInfoDeclaration, helper ) );
@@ -469,7 +469,7 @@ public final class ModuleAssemblyImpl
 
         ModuleModel moduleModel = new ModuleModel( name,
                                                    metaInfo,
-                                                   new ActivatorsModel<Module>( activators ),
+                                                   new ActivatorsModel<>( activators ),
                                                    new TransientsModel( transientModels ),
                                                    new EntitiesModel( entityModels ),
                                                    new ObjectsModel( objectModels ),
@@ -478,7 +478,7 @@ public final class ModuleAssemblyImpl
                                                    new ImportedServicesModel( importedServiceModels ) );
 
         // Check for duplicate service identities
-        Set<String> identities = new HashSet<String>();
+        Set<String> identities = new HashSet<>();
         for( ServiceModel serviceModel : serviceModels )
         {
             String identity = serviceModel.identity();

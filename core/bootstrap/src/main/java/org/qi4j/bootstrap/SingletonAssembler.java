@@ -32,7 +32,7 @@ public abstract class SingletonAssembler
 {
     private Energy4Java qi4j;
     private Application applicationInstance;
-    private Module moduleInstance;
+    private final Module moduleInstance;
 
     /**
      * Creates a Qi4j Runtime instance containing one Layer with one Module.
