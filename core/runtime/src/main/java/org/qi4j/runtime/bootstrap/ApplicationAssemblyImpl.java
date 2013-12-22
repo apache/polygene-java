@@ -27,6 +27,7 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.AssemblyVisitor;
 import org.qi4j.bootstrap.LayerAssembly;
+import org.qi4j.bootstrap.ModuleAssembly;
 
 /**
  * The representation of an entire application. From
@@ -62,6 +63,12 @@ public final class ApplicationAssemblyImpl
         LayerAssemblyImpl layerAssembly = new LayerAssemblyImpl( this, name );
         layerAssemblies.put( name, layerAssembly );
         return layerAssembly;
+    }
+
+    @Override
+    public ModuleAssembly module( String layerName, String moduleName )
+    {
+        return layer( layerName ).module( moduleName );
     }
 
     @Override

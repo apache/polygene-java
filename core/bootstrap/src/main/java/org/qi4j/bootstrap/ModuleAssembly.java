@@ -39,6 +39,16 @@ public interface ModuleAssembly
     LayerAssembly layer();
 
     /**
+     * Get an assembly for a particular Module. If this is called many times with the same names, then the same module
+     * is affected.
+     *
+     * @param layerName The name of the Layer
+     * @param moduleName The name of the Module to retrieve or create.
+     * @return The ModuleAssembly for the Module.
+     */
+    ModuleAssembly module( String layerName, String moduleName );
+
+    /**
      * Set the name of this module.
      *
      * @param name The name that this Module should have.

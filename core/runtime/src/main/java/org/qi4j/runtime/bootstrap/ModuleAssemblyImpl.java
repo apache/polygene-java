@@ -107,6 +107,12 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
+    public ModuleAssembly module( String layerName, String moduleName )
+    {
+        return layerAssembly.application().module( layerName, moduleName );
+    }
+
+    @Override
     public ModuleAssembly setName( String name )
     {
         this.name = name;
