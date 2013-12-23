@@ -16,7 +16,6 @@ package org.qi4j.runtime.service;
 
 import java.lang.reflect.Method;
 import org.qi4j.api.activation.Activation;
-import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.activation.PassivationException;
@@ -29,7 +28,6 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.ServiceUnavailableException;
 import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.activation.ActivationDelegate;
-import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -38,6 +36,8 @@ import org.qi4j.runtime.structure.ModuleInstance;
  * <p/>
  * Whenever the service is requested a proxy is returned which points to this class. This means
  * that the instance can be passivated even though a client is holding on to a service proxy.
+ *
+ * @param <T> Service Type
  */
 public final class ServiceReferenceInstance<T>
     implements ServiceReference<T>, Activation
@@ -47,7 +47,6 @@ public final class ServiceReferenceInstance<T>
     private final ModuleInstance module;
     private final ServiceModel serviceModel;
     private final ActivationDelegate activation = new ActivationDelegate( this );
-    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
     private boolean active = false;
 
     public ServiceReferenceInstance( ServiceModel serviceModel, ModuleInstance module )
@@ -116,18 +115,14 @@ public final class ServiceReferenceInstance<T>
         if( instance != null )
         {
             try {
-                activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
                 activation.passivate( new Runnable()
                 {
-
                     @Override
                     public void run()
                     {
                         active = false;
                     }
-
                 } );
-                activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
             } finally {
                 instance = null;
                 active = false;
@@ -149,18 +144,14 @@ public final class ServiceReferenceInstance<T>
 
                     try
                     {
-                        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
                         activation.activate( serviceModel.newActivatorsInstance(), instance, new Runnable()
                         {
-
                             @Override
                             public void run()
                             {
                                 active = true;
                             }
-
                         } );
-                        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
                     }
                     catch( Exception e )
                     {
@@ -286,13 +277,13 @@ public final class ServiceReferenceInstance<T>
     @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
-        activationEventSupport.registerActivationEventListener( listener );
+        activation.registerActivationEventListener( listener );
     }
 
     @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
-        activationEventSupport.deregisterActivationEventListener( listener );
+        activation.deregisterActivationEventListener( listener );
     }
 
     @Override

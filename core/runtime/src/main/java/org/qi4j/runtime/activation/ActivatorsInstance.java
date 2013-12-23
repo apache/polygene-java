@@ -13,10 +13,9 @@
  */
 package org.qi4j.runtime.activation;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import org.qi4j.api.activation.ActivationException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.qi4j.api.activation.Activator;
 import org.qi4j.api.activation.PassivationException;
 import org.qi4j.functional.Iterables;
@@ -28,7 +27,7 @@ import org.qi4j.functional.Iterables;
  * @param <ActivateeType> Type of the activation target
  */
 public class ActivatorsInstance<ActivateeType>
-        implements Activator<ActivateeType>
+    implements Activator<ActivateeType>
 {
     public static final ActivatorsInstance EMPTY = new ActivatorsInstance( Collections.emptyList() );
 
@@ -41,77 +40,66 @@ public class ActivatorsInstance<ActivateeType>
 
     @Override
     public void beforeActivation( ActivateeType activating )
-            throws ActivationException
+        throws Exception
     {
-        for( Activator<ActivateeType> activator : activators ) {
-            try
-            {
-                activator.beforeActivation( activating );
-            }
-            catch( Exception e )
-            {
-                throw new ActivationException( "Unable to activate: " + activator, e );
-            }
+        for( Activator<ActivateeType> activator : activators )
+        {
+            activator.beforeActivation( activating );
         }
     }
 
     @Override
     public void afterActivation( ActivateeType activated )
-            throws Exception
+        throws Exception
     {
-        for( Activator<ActivateeType> activator : activators ) {
+        for( Activator<ActivateeType> activator : activators )
+        {
             activator.afterActivation( activated );
         }
     }
 
     @Override
     public void beforePassivation( ActivateeType passivating )
-            throws Exception
+        throws Exception
     {
-        List<Exception> exceptions = new ArrayList<>();
-        for( Activator<ActivateeType> activator : Iterables.reverse( activators ) ) {
+        Set<Exception> exceptions = new LinkedHashSet<>();
+        for( Activator<ActivateeType> activator : Iterables.reverse( activators ) )
+        {
             try
             {
                 activator.beforePassivation( passivating );
             }
-            catch( Exception ex ) {
+            catch( Exception ex )
+            {
                 exceptions.add( ex );
             }
         }
-        if( exceptions.isEmpty() )
+        if( !exceptions.isEmpty() )
         {
-            return;
+            throw new PassivationException( exceptions );
         }
-        if( exceptions.size() == 1 )
-        {
-            throw exceptions.get( 0 );
-        }
-        throw new PassivationException( exceptions );
     }
 
     @Override
     public void afterPassivation( ActivateeType passivated )
-            throws Exception
+        throws Exception
     {
-        List<Exception> exceptions = new ArrayList<>();
-        for( Activator<ActivateeType> activator : Iterables.reverse( activators ) ) {
+        Set<Exception> exceptions = new LinkedHashSet<>();
+        for( Activator<ActivateeType> activator : Iterables.reverse( activators ) )
+        {
             try
             {
                 activator.afterPassivation( passivated );
             }
-            catch( Exception ex ) {
+            catch( Exception ex )
+            {
                 exceptions.add( ex );
             }
         }
-        if( exceptions.isEmpty() )
+        if( !exceptions.isEmpty() )
         {
-            return;
+            throw new PassivationException( exceptions );
         }
-        if( exceptions.size() == 1 )
-        {
-            throw exceptions.get( 0 );
-        }
-        throw new PassivationException( exceptions );
     }
 
 }

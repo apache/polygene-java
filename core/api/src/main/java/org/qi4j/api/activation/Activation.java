@@ -24,13 +24,30 @@ public interface Activation
 {
     /**
      * Activate.
-     * @throws ActivationException with first Exception of activation if any
+     * <p>Fail fast execution order is:</p>
+     * <ul>
+     *   <li>Fire {@link ActivationEvent.EventType#ACTIVATING}</li>
+     *   <li>{@link Activator#beforeActivation(java.lang.Object)} on each Activator</li>
+     *   <li>{@link #activate()} children</li>
+     *   <li>{@link Activator#afterActivation(java.lang.Object)} on each Activator</li>
+     *   <li>Fire {@link ActivationEvent.EventType#ACTIVATED}</li>
+     * </ul>
+     * <p>If an Exception is thrown, passivation occurs.</p>
+     * @throws ActivationException with first Exception of activation plus the PassivationException if any
      */
     void activate()
         throws ActivationException;
 
     /**
      * Passivate.
+     * <p>Fail safe execution order is:</p>
+     * <ul>
+     *   <li>Fire {@link ActivationEvent.EventType#PASSIVATING}</li>
+     *   <li>{@link Activator#beforePassivation(java.lang.Object)} on each Activator</li>
+     *   <li>{@link #passivate()} children</li>
+     *   <li>{@link Activator#afterPassivation(java.lang.Object)} on each Activator</li>
+     *   <li>Fire {@link ActivationEvent.EventType#PASSIVATED}</li>
+     * </ul>
      * @throws PassivationException after passivation with all Exceptions of passivation if any
      */
     void passivate()

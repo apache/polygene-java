@@ -16,7 +16,6 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.activation.PassivationException;
@@ -27,7 +26,6 @@ import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.activation.ActivationDelegate;
-import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 
 /**
  * Instance of a Qi4j application. Contains a list of layers which are managed by this application
@@ -42,7 +40,6 @@ public class ApplicationInstance
     private final MetaInfo instanceMetaInfo;
     // Eager instance objects
     private final ActivationDelegate activation;
-    private final ActivationEventListenerSupport activationEventSupport;
     private final List<LayerInstance> layerInstances;
 
     public ApplicationInstance( ApplicationModel model, Qi4jRuntime runtime, MetaInfo instanceMetaInfo )
@@ -54,7 +51,6 @@ public class ApplicationInstance
 
         // Eager instance objects
         activation = new ActivationDelegate( this );
-        activationEventSupport = new ActivationEventListenerSupport();
         layerInstances = new ArrayList<>();
     }
 
@@ -129,36 +125,32 @@ public class ApplicationInstance
     public void activate()
         throws ActivationException
     {
-        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATING ) );
         activation.activate( applicationModel.newActivatorsInstance(), layerInstances );
-        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.ACTIVATED ) );
     }
 
     @Override
     public void passivate()
         throws PassivationException
     {
-        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATING ) );
         activation.passivate();
-        activationEventSupport.fireEvent( new ActivationEvent( this, ActivationEvent.EventType.PASSIVATED ) );
     }
 
     @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
-        activationEventSupport.registerActivationEventListener( listener );
+        activation.registerActivationEventListener( listener );
     }
 
     @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
-        activationEventSupport.deregisterActivationEventListener( listener );
+        activation.deregisterActivationEventListener( listener );
     }
 
     // Other methods
     /* package */ void addLayer( LayerInstance layer )
     {
-        layer.registerActivationEventListener( activationEventSupport );
+        layer.registerActivationEventListener( activation );
         layerInstances.add( layer );
     }
 

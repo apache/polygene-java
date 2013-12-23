@@ -23,10 +23,10 @@ import org.qi4j.api.activation.ActivationEventListenerRegistration;
 /**
  * Internal helper for managing registrations and firing events
  */
-public class ActivationEventListenerSupport
+/* package */ class ActivationEventListenerSupport
     implements ActivationEventListenerRegistration, ActivationEventListener
 {
-    List<ActivationEventListener> listeners = new ArrayList<>();
+    protected List<ActivationEventListener> listeners = new ArrayList<>();
 
     @Override
     public void registerActivationEventListener( ActivationEventListener listener )
@@ -46,7 +46,8 @@ public class ActivationEventListenerSupport
         listeners = newListeners;
     }
 
-    public void fireEvent( ActivationEvent event )
+    /* package */ void fireEvent( ActivationEvent event )
+        throws Exception
     {
         for( ActivationEventListener listener : listeners )
         {
@@ -56,6 +57,7 @@ public class ActivationEventListenerSupport
 
     @Override
     public void onEvent( ActivationEvent event )
+        throws Exception
     {
         fireEvent( event );
     }

@@ -25,7 +25,6 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.runtime.activation.ActivationDelegate;
-import org.qi4j.runtime.activation.ActivationEventListenerSupport;
 import org.qi4j.runtime.activation.ActivatorsInstance;
 
 import static org.qi4j.api.util.Classes.instanceOf;
@@ -39,8 +38,7 @@ public class ImportedServicesInstance
 {
     private final ImportedServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
-    private final ActivationDelegate activation = new ActivationDelegate( this );
-    private final ActivationEventListenerSupport activationEventSupport = new ActivationEventListenerSupport();
+    private final ActivationDelegate activation = new ActivationDelegate( this, false );
 
     public ImportedServicesInstance( ImportedServicesModel servicesModel,
                                      List<ServiceReference> serviceReferences
@@ -50,7 +48,7 @@ public class ImportedServicesInstance
         this.serviceReferences = serviceReferences;
         for( ServiceReference serviceReference : serviceReferences )
         {
-            serviceReference.registerActivationEventListener( activationEventSupport );
+            serviceReference.registerActivationEventListener( activation );
         }
     }
 
@@ -77,8 +75,8 @@ public class ImportedServicesInstance
             public boolean satisfiedBy( ServiceReference item )
             {
                 return ( (ImportedServiceReferenceInstance) item ).serviceDescriptor()
-                           .visibility()
-                           .ordinal() >= visibility.ordinal();
+                    .visibility()
+                    .ordinal() >= visibility.ordinal();
             }
         }, serviceReferences );
     }
@@ -101,12 +99,12 @@ public class ImportedServicesInstance
     @Override
     public void registerActivationEventListener( ActivationEventListener listener )
     {
-        activationEventSupport.registerActivationEventListener( listener );
+        activation.registerActivationEventListener( listener );
     }
 
     @Override
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
-        activationEventSupport.deregisterActivationEventListener( listener );
+        activation.deregisterActivationEventListener( listener );
     }
 }

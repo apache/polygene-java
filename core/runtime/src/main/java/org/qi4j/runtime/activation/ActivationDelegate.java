@@ -19,23 +19,47 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import org.qi4j.api.activation.Activation;
+import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.service.ServiceReference;
 
+import static org.qi4j.api.activation.ActivationEvent.EventType.ACTIVATED;
+import static org.qi4j.api.activation.ActivationEvent.EventType.ACTIVATING;
+import static org.qi4j.api.activation.ActivationEvent.EventType.PASSIVATED;
+import static org.qi4j.api.activation.ActivationEvent.EventType.PASSIVATING;
+
 /**
- * This class will manage Activation of a target and propagates to children.
+ * This class manage Activation of a target and propagates to children.
  */
 public final class ActivationDelegate
+    extends ActivationEventListenerSupport
 {
     private final Object target;
+    private final boolean fireEvents;
     private ActivatorsInstance targetActivators = null;
     private final LinkedList<Activation> activeChildren = new LinkedList<>();
 
+    /**
+     * Create a new ActivationDelegate that will fire events.
+     * @param target target of Activation
+     */
     public ActivationDelegate( Object target )
     {
+        this( target, true );
+    }
+
+    /**
+     * Create a new ActivationDelegate.
+     * @param target target of Activation
+     * @param fireEvents if {@link ActivationEvent}s should be fired
+     */
+    public ActivationDelegate( Object target, boolean fireEvents )
+    {
+        super();
         this.target = target;
+        this.fireEvents = fireEvents;
     }
 
     public void activate( ActivatorsInstance targetActivators, Activation child )
@@ -61,16 +85,23 @@ public final class ActivationDelegate
     {
         if( this.targetActivators != null )
         {
-            throw new IllegalStateException( "Activation.activate() called multiple times or without calling passivate() first!" );
+            throw new IllegalStateException( "Activation.activate() called multiple times "
+                                             + "or without calling passivate() first!" );
         }
-
-        // Before Activation
-        targetActivators.beforeActivation( target instanceof ServiceReference
-                                           ? new PassiveServiceReference( (ServiceReference) target )
-                                           : target );
 
         try
         {
+            // Before Activation Events
+            if( fireEvents )
+            {
+                fireEvent( new ActivationEvent( target, ACTIVATING ) );
+            }
+
+            // Before Activation for Activators
+            targetActivators.beforeActivation( target instanceof ServiceReference
+                                               ? new PassiveServiceReference( (ServiceReference) target )
+                                               : target );
+
             // Activation
             for( Activation child : children )
             {
@@ -89,6 +120,14 @@ public final class ActivationDelegate
 
             // After Activation
             targetActivators.afterActivation( target );
+
+            // After Activation Events
+            if( fireEvents )
+            {
+                fireEvent( new ActivationEvent( target, ACTIVATED ) );
+            }
+
+            // Activated
             this.targetActivators = targetActivators;
         }
         catch( Exception e )
@@ -100,7 +139,9 @@ public final class ActivationDelegate
             }
             catch( PassivationException e1 )
             {
-                throw new ActivationException( "Passivation Exception during cleanup of Activation:" + e1, e );
+                ActivationException activationEx = new ActivationException( "Unable to Activate application.", e );
+                activationEx.addSuppressed( e1 );
+                throw activationEx;
             }
             if( e instanceof ActivationException )
             {
@@ -121,7 +162,31 @@ public final class ActivationDelegate
     {
         Set<Exception> exceptions = new LinkedHashSet<>();
 
-        // Before Passivation
+        // Before Passivation Events
+        if( fireEvents )
+        {
+            ActivationEvent event = new ActivationEvent( target, PASSIVATING );
+            for( ActivationEventListener listener : listeners )
+            {
+                try
+                {
+                    listener.onEvent( event );
+                }
+                catch( Exception ex )
+                {
+                    if( ex instanceof PassivationException )
+                    {
+                        exceptions.addAll( ( (PassivationException) ex ).causes() );
+                    }
+                    else
+                    {
+                        exceptions.add( ex );
+                    }
+                }
+            }
+        }
+
+        // Before Passivation for Activators
         if( targetActivators != null )
         {
             try
@@ -147,10 +212,24 @@ public final class ActivationDelegate
         // Internal Passivation Callback
         if( callback != null )
         {
-            callback.run();
+            try
+            {
+                callback.run();
+            }
+            catch( Exception ex )
+            {
+                if( ex instanceof PassivationException )
+                {
+                    exceptions.addAll( ( (PassivationException) ex ).causes() );
+                }
+                else
+                {
+                    exceptions.add( ex );
+                }
+            }
         }
 
-        // After Passivation
+        // After Passivation for Activators
         if( targetActivators != null )
         {
             try
@@ -169,6 +248,30 @@ public final class ActivationDelegate
             }
         }
         targetActivators = null;
+
+        // After Passivation Events
+        if( fireEvents )
+        {
+            ActivationEvent event = new ActivationEvent( target, PASSIVATED );
+            for( ActivationEventListener listener : listeners )
+            {
+                try
+                {
+                    listener.onEvent( event );
+                }
+                catch( Exception ex )
+                {
+                    if( ex instanceof PassivationException )
+                    {
+                        exceptions.addAll( ( (PassivationException) ex ).causes() );
+                    }
+                    else
+                    {
+                        exceptions.add( ex );
+                    }
+                }
+            }
+        }
 
         // Error handling
         if( exceptions.isEmpty() )
@@ -277,6 +380,11 @@ public final class ActivationDelegate
             return identity().equals( other.identity() );
         }
 
+        @Override
+        public String toString()
+        {
+            return reference.toString();
+        }
     }
 
 }

@@ -19,5 +19,6 @@ package org.qi4j.api.activation;
  */
 public interface ActivationEventListener
 {
-    void onEvent( ActivationEvent event );
+    void onEvent( ActivationEvent event )
+        throws Exception;
 }
