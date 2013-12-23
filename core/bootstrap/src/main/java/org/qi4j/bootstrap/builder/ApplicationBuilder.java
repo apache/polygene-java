@@ -10,6 +10,7 @@ import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationEventListenerRegistration;
 import org.qi4j.api.activation.ActivationException;
+import org.qi4j.api.activation.ApplicationPassivationThread;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.bootstrap.ApplicationAssembler;
@@ -185,5 +186,6 @@ public class ApplicationBuilder
     {
         ApplicationBuilder builder = fromJson( System.in );
         Application application = builder.newActivatedApplication();
+        Runtime.getRuntime().addShutdownHook( new ApplicationPassivationThread( application, System.err ) );
     }
 }
