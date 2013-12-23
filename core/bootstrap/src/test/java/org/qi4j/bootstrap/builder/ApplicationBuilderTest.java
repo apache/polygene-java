@@ -21,7 +21,7 @@ public class ApplicationBuilderTest
         throws JSONException, ActivationException, AssemblyException
     {
         ApplicationBuilder builder = ApplicationBuilder.fromJson( APPLICATION );
-        Application application = builder.newApplication();
+        Application application = builder.newActivatedApplication();
         Module module = application.findModule( "layer3", "test module" );
         TestService service = module.findService( TestService.class ).get();
         assertThat(service.sayHello(), equalTo("Hello Qi4j!"));

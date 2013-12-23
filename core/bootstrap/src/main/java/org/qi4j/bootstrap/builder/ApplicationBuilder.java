@@ -6,6 +6,9 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.qi4j.api.activation.ActivationEvent;
+import org.qi4j.api.activation.ActivationEventListener;
+import org.qi4j.api.activation.ActivationEventListenerRegistration;
 import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
@@ -15,6 +18,9 @@ import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
+
+import static org.qi4j.api.activation.ActivationEvent.EventType.ACTIVATED;
+import static org.qi4j.api.activation.ActivationEvent.EventType.ACTIVATING;
 
 public class ApplicationBuilder
 {
@@ -27,7 +33,13 @@ public class ApplicationBuilder
     }
 
     public Application newApplication()
-        throws AssemblyException, ActivationException
+        throws AssemblyException
+    {
+        return newApplication( null );
+    }
+
+    private Application newApplication( ActivationEventListener activationListener )
+        throws AssemblyException
     {
         Energy4Java qi4j = new Energy4Java();
         ApplicationDescriptor model = qi4j.newApplicationModel( new ApplicationAssembler()
@@ -52,6 +64,43 @@ public class ApplicationBuilder
             }
         } );
         Application application = model.newInstance( qi4j.api() );
+        application.registerActivationEventListener( new ActivationEventListener()
+        {
+
+            @Override
+            public void onEvent( ActivationEvent event )
+            {
+                if( event.source() instanceof Application )
+                {
+                    if( event.type() == ACTIVATING )
+                    {
+                        beforeActivation();
+                    }
+                    if( event.type() == ACTIVATED )
+                    {
+                        afterActivation();
+                        ( (ActivationEventListenerRegistration) event.source() ).deregisterActivationEventListener( this );
+                    }
+                }
+            }
+        } );
+        if( activationListener != null )
+        {
+            application.registerActivationEventListener( activationListener );
+        }
+        return application;
+    }
+
+    public Application newActivatedApplication()
+        throws AssemblyException, ActivationException
+    {
+        return newActivatedApplication( null );
+    }
+
+    private Application newActivatedApplication( ActivationEventListener activationListener )
+        throws AssemblyException, ActivationException
+    {
+        Application application = newApplication( activationListener );
         beforeActivation();
         application.activate();
         afterActivation();
@@ -135,6 +184,6 @@ public class ApplicationBuilder
         throws JSONException, ActivationException, AssemblyException
     {
         ApplicationBuilder builder = fromJson( System.in );
-        builder.newApplication();
+        Application application = builder.newActivatedApplication();
     }
 }
