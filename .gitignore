@@ -13,3 +13,6 @@ derby.log
 *pom.xml
 *target/
 .nb-gradle-properties
+.nb-gradle
+.gradletasknamecache
+
