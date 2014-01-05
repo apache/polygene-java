@@ -4,7 +4,6 @@ import org.json.JSONException;
 import org.junit.Test;
 import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.Assembler;
@@ -21,7 +20,7 @@ public class ApplicationBuilderTest
         throws JSONException, ActivationException, AssemblyException
     {
         ApplicationBuilder builder = ApplicationBuilder.fromJson( APPLICATION );
-        Application application = builder.newActivatedApplication();
+        Application application = builder.newApplication();
         Module module = application.findModule( "layer3", "test module" );
         TestService service = module.findService( TestService.class ).get();
         assertThat(service.sayHello(), equalTo("Hello Qi4j!"));

@@ -104,12 +104,12 @@ public class PassivationExceptionTest
                     instantiateOnStartup();
             }
         } );
+        appBuilder.registerActivationEventListener( new TestActivationEventListener() );
+
         Application app = appBuilder.newApplication();
-        app.registerActivationEventListener( new TestActivationEventListener() );
 
         try
         {
-            app.activate();
             Module moduleA = app.findModule( "Layer 1", "Module A" );
             TestService service = moduleA.findService( TestService.class ).get();
             assertThat( service.hello(), equalTo( "Hello Qi4j!" ) );

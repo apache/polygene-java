@@ -1,12 +1,13 @@
 package org.qi4j.bootstrap.builder;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.qi4j.api.activation.ActivationEvent;
 import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationEventListenerRegistration;
 import org.qi4j.api.activation.ActivationException;
@@ -20,13 +21,12 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 
-import static org.qi4j.api.activation.ActivationEvent.EventType.ACTIVATED;
-import static org.qi4j.api.activation.ActivationEvent.EventType.ACTIVATING;
-
 public class ApplicationBuilder
+    implements ActivationEventListenerRegistration
 {
     private final String applicationName;
     private final Map<String, LayerDeclaration> layers = new HashMap<>();
+    private final List<ActivationEventListener> activationListeners = new ArrayList<>();
 
     public ApplicationBuilder( String applicationName )
     {
@@ -34,13 +34,7 @@ public class ApplicationBuilder
     }
 
     public Application newApplication()
-        throws AssemblyException
-    {
-        return newApplication( null );
-    }
-
-    private Application newApplication( ActivationEventListener activationListener )
-        throws AssemblyException
+        throws AssemblyException, ActivationException
     {
         Energy4Java qi4j = new Energy4Java();
         ApplicationDescriptor model = qi4j.newApplicationModel( new ApplicationAssembler()
@@ -65,43 +59,10 @@ public class ApplicationBuilder
             }
         } );
         Application application = model.newInstance( qi4j.api() );
-        application.registerActivationEventListener( new ActivationEventListener()
-        {
-
-            @Override
-            public void onEvent( ActivationEvent event )
-            {
-                if( event.source() instanceof Application )
-                {
-                    if( event.type() == ACTIVATING )
-                    {
-                        beforeActivation();
-                    }
-                    if( event.type() == ACTIVATED )
-                    {
-                        afterActivation();
-                        ( (ActivationEventListenerRegistration) event.source() ).deregisterActivationEventListener( this );
-                    }
-                }
-            }
-        } );
-        if( activationListener != null )
+        for( ActivationEventListener activationListener : activationListeners )
         {
             application.registerActivationEventListener( activationListener );
         }
-        return application;
-    }
-
-    public Application newActivatedApplication()
-        throws AssemblyException, ActivationException
-    {
-        return newActivatedApplication( null );
-    }
-
-    private Application newActivatedApplication( ActivationEventListener activationListener )
-        throws AssemblyException, ActivationException
-    {
-        Application application = newApplication( activationListener );
         beforeActivation();
         application.activate();
         afterActivation();
@@ -114,6 +75,18 @@ public class ApplicationBuilder
 
     protected void afterActivation()
     {
+    }
+
+    @Override
+    public void registerActivationEventListener( ActivationEventListener listener )
+    {
+        activationListeners.add( listener );
+    }
+
+    @Override
+    public void deregisterActivationEventListener( ActivationEventListener listener )
+    {
+        activationListeners.remove( listener );
     }
 
     public LayerDeclaration withLayer( String layerName )
@@ -185,7 +158,7 @@ public class ApplicationBuilder
         throws JSONException, ActivationException, AssemblyException
     {
         ApplicationBuilder builder = fromJson( System.in );
-        Application application = builder.newActivatedApplication();
+        Application application = builder.newApplication();
         Runtime.getRuntime().addShutdownHook( new ApplicationPassivationThread( application, System.err ) );
     }
 }
