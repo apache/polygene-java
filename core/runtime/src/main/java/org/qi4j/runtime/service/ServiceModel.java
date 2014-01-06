@@ -121,7 +121,7 @@ public final class ServiceModel extends CompositeModel
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
-        Map<AccessibleObject, Property<?>> properties = new HashMap<AccessibleObject, Property<?>>();
+        Map<AccessibleObject, Property<?>> properties = new HashMap<>();
         for( PropertyModel propertyModel : stateModel.properties() )
         {
             Object initialValue = propertyModel.initialValue( module );
@@ -130,7 +130,7 @@ public final class ServiceModel extends CompositeModel
                 initialValue = identity;
             }
 
-            Property property = new PropertyInstance<Object>( propertyModel, initialValue );
+            Property property = new PropertyInstance<>( propertyModel, initialValue );
             properties.put( propertyModel.accessor(), property );
         }
 

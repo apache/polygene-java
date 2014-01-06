@@ -30,7 +30,7 @@ public final class UsesInstance
 
     static
     {
-        EMPTY_USES = new UsesInstance( new HashSet<Object>() );
+        EMPTY_USES = new UsesInstance( new HashSet<>() );
     }
 
     private UsesInstance( HashSet<Object> uses )
@@ -40,7 +40,7 @@ public final class UsesInstance
 
     public UsesInstance use( Object... objects )
     {
-        HashSet<Object> useObjects = new HashSet<Object>();
+        HashSet<Object> useObjects = new HashSet<>();
         if( !uses.isEmpty() )
         {
             useObjects.addAll( uses );

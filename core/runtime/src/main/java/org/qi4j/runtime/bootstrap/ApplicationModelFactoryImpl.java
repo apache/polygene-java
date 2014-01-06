@@ -127,7 +127,7 @@ public final class ApplicationModelFactoryImpl
         private Resolution resolution;
         private final ApplicationModel applicationModel;
 
-        public BindingVisitor( org.qi4j.runtime.structure.ApplicationModel applicationModel )
+        private BindingVisitor( ApplicationModel applicationModel )
         {
             this.applicationModel = applicationModel;
         }

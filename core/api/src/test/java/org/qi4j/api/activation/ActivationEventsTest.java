@@ -60,7 +60,7 @@ public class ActivationEventsTest
     public void testSingleModuleSingleService()
         throws Exception
     {
-        final List<ActivationEvent> events = new ArrayList<ActivationEvent>();
+        final List<ActivationEvent> events = new ArrayList<>();
 
         new SingletonAssembler()
         {
@@ -109,7 +109,7 @@ public class ActivationEventsTest
     public void testSingleModuleSingleImportedService()
             throws Exception
     {
-        final List<ActivationEvent> events = new ArrayList<ActivationEvent>();
+        final List<ActivationEvent> events = new ArrayList<>();
 
         new SingletonAssembler()
         {
@@ -160,7 +160,7 @@ public class ActivationEventsTest
     public void testSingleModuleSingleLazyService()
             throws Exception
     {
-        final List<ActivationEvent> events = new ArrayList<ActivationEvent>();
+        final List<ActivationEvent> events = new ArrayList<>();
 
         SingletonAssembler assembler = new SingletonAssembler()
         {

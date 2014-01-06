@@ -20,11 +20,13 @@ import java.util.Comparator;
 
 /**
  * DescriptorName comparator.
- * Implementation it is using toString() for comparing
+ * Implementation is using toString() for comparing
+ * @param <T> Parameterized descriptor type
  */
 public class DescriptorNameComparator<T>
     implements Comparator<T>
 {
+    @Override
     public int compare( T o1, T o2 )
     {
         return o1.toString().compareTo( o2.toString() );

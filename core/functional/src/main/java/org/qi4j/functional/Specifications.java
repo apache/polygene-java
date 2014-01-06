@@ -50,7 +50,7 @@ public class Specifications
 
     public static <T> AndSpecification<T> and( final Iterable<Specification<T>> specifications )
     {
-        return new AndSpecification<T>( specifications );
+        return new AndSpecification<>( specifications );
     }
 
     public static <T> OrSpecification<T> or( final Specification<T>... specifications )
@@ -60,7 +60,7 @@ public class Specifications
 
     public static <T> OrSpecification<T> or( final Iterable<Specification<T>> specifications )
     {
-        return new OrSpecification<T>( specifications );
+        return new OrSpecification<>( specifications );
     }
 
     public static <T> Specification<T> in( final T... allowed )

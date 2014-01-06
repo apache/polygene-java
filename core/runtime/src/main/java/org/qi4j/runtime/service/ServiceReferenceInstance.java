@@ -234,18 +234,14 @@ public final class ServiceReferenceInstance<T>
         {
             if( method.getDeclaringClass().equals( Object.class ) )
             {
-                if( method.getName().equals( "toString" ) )
+                switch( method.getName() )
                 {
-                    return serviceModel.toString();
-                }
-                else if( method.getName().equals( "equals" ) )
-                {
-                    Object obj = objects[ 0 ];
-                    return obj == object;
-                }
-                else if( method.getName().equals( "hashCode" ) )
-                {
-                    return serviceModel.toString().hashCode();
+                    case "toString":
+                        return serviceModel.toString();
+                    case "equals":
+                        return objects[0] == object;
+                    case "hashCode":
+                        return serviceModel.toString().hashCode();
                 }
             }
 

@@ -232,7 +232,7 @@ public final class Functions
     {
         return new Comparator<T>()
         {
-            Map<T, Comparable> compareKeys = new HashMap<T, Comparable>();
+            Map<T, Comparable> compareKeys = new HashMap<>();
 
             @Override
             public int compare( T o1, T o2 )

@@ -149,7 +149,7 @@ public abstract class CompositeModel
         {
             if( compositeMethodsModel.accept( visitor ) )
             {
-                if( ( (VisitableHierarchy<Object, Object>) stateModel ).accept( visitor ) )
+                if( stateModel.accept( visitor ) )
                 {
                     mixinsModel.accept( visitor );
                 }

@@ -18,7 +18,7 @@ import java.util.List;
 import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.activation.Activator;
 
-public class ActivatorsModel<T>
+public class ActivatorsModel<ActivateeType>
 {
 
     private final Iterable<Class<? extends Activator<T>>> activatorsClasses;

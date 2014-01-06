@@ -118,7 +118,7 @@ class ServiceConfigurationFinder
 
         for( Object obj : iter )
         {
-            ModelDescriptor descriptor = null;
+            ModelDescriptor descriptor;
 
             if( obj instanceof ServiceDetailDescriptor )
             {

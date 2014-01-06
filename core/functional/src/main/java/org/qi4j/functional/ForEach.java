@@ -14,10 +14,10 @@ public final class ForEach<T>
 {
     public static <T> ForEach<T> forEach( Iterable<T> iterable )
     {
-        return new ForEach<T>( iterable );
+        return new ForEach<>( iterable );
     }
 
-    private Iterable<T> iterable;
+    private final Iterable<T> iterable;
 
     public ForEach( Iterable<T> iterable )
     {
@@ -32,19 +32,19 @@ public final class ForEach<T>
 
     public ForEach<T> filter( Specification<? super T> specification )
     {
-        return new ForEach<T>( Iterables.filter( specification, iterable ) );
+        return new ForEach<>( Iterables.filter( specification, iterable ) );
     }
 
     public <TO> ForEach<TO> map( Function<? /* super T */, TO> function )
     {
-        return new ForEach<TO>( Iterables.map( function, iterable ) );
+        return new ForEach<>( Iterables.map( function, iterable ) );
     }
 
     public <TO> ForEach<TO> flatten()
     {
         Iterable<Iterable<TO>> original = iterable();
         Iterable<TO> iterable1 = Iterables.flattenIterables( original );
-        return new ForEach<TO>( iterable1 );
+        return new ForEach<>( iterable1 );
     }
 
     private <TO> Iterable<Iterable<TO>> iterable()
