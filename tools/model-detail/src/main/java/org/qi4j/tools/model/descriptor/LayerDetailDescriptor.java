@@ -1,18 +1,20 @@
-/*  Copyright 2008 Edward Yakop.
+/*
+ * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * limitations under the License. 
  */
 package org.qi4j.tools.model.descriptor;
 
@@ -23,20 +25,19 @@ import org.qi4j.api.structure.LayerDescriptor;
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
 public final class LayerDetailDescriptor
+    implements ActivateeDetailDescriptor
 {
     private final LayerDescriptor descriptor;
     private ApplicationDetailDescriptor application;
-    private final List<LayerDetailDescriptor> usedLayers;
-    private final List<ModuleDetailDescriptor> modules;
+    private final List<LayerDetailDescriptor> usedLayers = new LinkedList<>();
+    private final List<ActivatorDetailDescriptor> activators = new LinkedList<>();
+    private final List<ModuleDetailDescriptor> modules = new LinkedList<>();
 
-    LayerDetailDescriptor( LayerDescriptor aDescriptor )
+    LayerDetailDescriptor( LayerDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        descriptor = aDescriptor;
-        usedLayers = new LinkedList<LayerDetailDescriptor>();
-        modules = new LinkedList<ModuleDetailDescriptor>();
+        validateNotNull( "LayerDescriptor", descriptor );
+        this.descriptor = descriptor;
     }
 
     /**
@@ -61,30 +62,28 @@ public final class LayerDetailDescriptor
 
     /**
      * @return Layers that used this layer.
-     *
-     * @since 0.5
      */
     public final List<LayerDetailDescriptor> usedBy()
     {
-        List<LayerDetailDescriptor> usedBy = new LinkedList<LayerDetailDescriptor>();
-
-        Iterable<LayerDetailDescriptor> layers = application.layers();
-        for( LayerDetailDescriptor layer : layers )
+        List<LayerDetailDescriptor> usedBy = new LinkedList<>();
+        for( LayerDetailDescriptor layer : application.layers() )
         {
-            List<LayerDetailDescriptor> layerUsedLayers = layer.usedLayers;
-            if( layerUsedLayers.contains( this ) )
+            if( layer.usedLayers.contains( this ) )
             {
                 usedBy.add( layer );
             }
         }
-
         return usedBy;
+    }
+
+    @Override
+    public Iterable<ActivatorDetailDescriptor> activators()
+    {
+        return activators;
     }
 
     /**
      * @return Modules of this {@code LayerDetailDescriptor}. Never return {@code null}.
-     *
-     * @since 0.5
      */
     public final Iterable<ModuleDetailDescriptor> modules()
     {
@@ -93,35 +92,36 @@ public final class LayerDetailDescriptor
 
     /**
      * @return Application that owns this {@code LayerDetailDescriptor}. Never return {@code null}.
-     *
-     * @since 0.5
      */
     public final ApplicationDetailDescriptor application()
     {
         return application;
     }
 
-    final void setApplication( ApplicationDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void setApplication( ApplicationDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-        application = aDescriptor;
+        validateNotNull( "ApplicationDetailDescriptor", descriptor );
+        application = descriptor;
     }
 
-    final void addUsedLayer( LayerDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void addActivator( ActivatorDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-        usedLayers.add( aDescriptor );
+        validateNotNull( "ActivatorDetailDescriptor", descriptor );
+        descriptor.setLayer( this );
+        activators.add( descriptor );
     }
 
-    final void addModule( ModuleDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void addUsedLayer( LayerDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        validateNotNull( "LayerDetailDescriptor", descriptor );
+        usedLayers.add( descriptor );
+    }
 
-        aDescriptor.setLayer( this );
-        modules.add( aDescriptor );
+    final void addModule( ModuleDetailDescriptor descriptor )
+    {
+        validateNotNull( "ModuleDetailDescriptor", descriptor );
+        descriptor.setLayer( this );
+        modules.add( descriptor );
     }
 
     @Override
@@ -129,4 +129,5 @@ public final class LayerDetailDescriptor
     {
         return descriptor.name();
     }
+
 }

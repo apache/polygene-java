@@ -1,19 +1,20 @@
-/*  Copyright 2008 Edward Yakop.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.tools.model.descriptor;
 
 import java.util.LinkedList;
@@ -27,25 +28,18 @@ public final class ObjectDetailDescriptor
 {
     private final ObjectDescriptor descriptor;
     private ModuleDetailDescriptor module;
-    private final List<ConstructorDetailDescriptor> constructors;
-    private final List<InjectedMethodDetailDescriptor> injectedMethods;
-    private final List<InjectedFieldDetailDescriptor> injectedFields;
+    private final List<ConstructorDetailDescriptor> constructors = new LinkedList<>();
+    private final List<InjectedMethodDetailDescriptor> injectedMethods = new LinkedList<>();
+    private final List<InjectedFieldDetailDescriptor> injectedFields = new LinkedList<>();
 
-    ObjectDetailDescriptor( ObjectDescriptor aDescriptor )
-        throws IllegalArgumentException
+    ObjectDetailDescriptor( ObjectDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        descriptor = aDescriptor;
-        constructors = new LinkedList<ConstructorDetailDescriptor>();
-        injectedMethods = new LinkedList<InjectedMethodDetailDescriptor>();
-        injectedFields = new LinkedList<InjectedFieldDetailDescriptor>();
+        validateNotNull( "ObjectDescriptor", descriptor );
+        this.descriptor = descriptor;
     }
 
     /**
      * @return Descriptor of this {@code ObjectDetailDescriptor}. Never return {@code null}.
-     *
-     * @since 0.5
      */
     public final ObjectDescriptor descriptor()
     {
@@ -54,8 +48,6 @@ public final class ObjectDetailDescriptor
 
     /**
      * @return Constructors of this {@code ObjectDetailDescriptor}. Never return {@code null}.
-     *
-     * @since 0.5
      */
     @Override
     public final Iterable<ConstructorDetailDescriptor> constructors()
@@ -65,8 +57,6 @@ public final class ObjectDetailDescriptor
 
     /**
      * @return Injected methods of this {@code ObjectDetailDescriptor}. Never return {@code null}.
-     *
-     * @since 0.5
      */
     @Override
     public final Iterable<InjectedMethodDetailDescriptor> injectedMethods()
@@ -76,8 +66,6 @@ public final class ObjectDetailDescriptor
 
     /**
      * @return Injected fields of this {@code ObjectDetailDescriptor}. Never return {@code null}.
-     *
-     * @since 0.5
      */
     @Override
     public final Iterable<InjectedFieldDetailDescriptor> injectedFields()
@@ -87,45 +75,37 @@ public final class ObjectDetailDescriptor
 
     /**
      * @return Module that own this {@code ObjectDetailDescriptor}. Never return {@code null}.
-     *
-     * @since 0.5
      */
     public final ModuleDetailDescriptor module()
     {
         return module;
     }
 
-    final void setModule( ModuleDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void setModule( ModuleDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-        module = aDescriptor;
+        validateNotNull( "ModuleDetailDescriptor", descriptor );
+        module = descriptor;
     }
 
-    final void addConstructor( ConstructorDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void addConstructor( ConstructorDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        aDescriptor.setObject( this );
-        constructors.add( aDescriptor );
+        validateNotNull( "ConstructorDetailDescriptor", descriptor );
+        descriptor.setObject( this );
+        constructors.add( descriptor );
     }
 
-    final void addInjectedMethod( InjectedMethodDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void addInjectedMethod( InjectedMethodDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        aDescriptor.setObject( this );
-        injectedMethods.add( aDescriptor );
+        validateNotNull( "InjectedMethodDetailDescriptor", descriptor );
+        descriptor.setObject( this );
+        injectedMethods.add( descriptor );
     }
 
-    final void addInjectedField( InjectedFieldDetailDescriptor aDescriptor )
+    final void addInjectedField( InjectedFieldDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        aDescriptor.setObject( this );
-        injectedFields.add( aDescriptor );
+        validateNotNull( "InjectedFieldDetailDescriptor", descriptor );
+        descriptor.setObject( this );
+        injectedFields.add( descriptor );
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Paul Merlin.
+ * Copyright (c) 2013-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import org.junit.Test;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
@@ -150,9 +151,13 @@ public class PassivationExceptionTest
         static class Mixin
             implements TestService
         {
+            @Structure
+            private Module module;
+
             @Override
             public String hello()
             {
+                module.name();
                 return "Hello Qi4j!";
             }
         }

@@ -1,6 +1,7 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2012, Paul Merlin.
+ * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2012-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +13,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
@@ -97,11 +97,14 @@ public final class ApplicationModel
     {
         if( visitor.visitEnter( this ) )
         {
-            for( LayerModel layer : layers )
+            if( activatorsModel.accept( visitor ) )
             {
-                if( !layer.accept( visitor ) )
+                for( LayerModel layer : layers )
                 {
-                    break;
+                    if( !layer.accept( visitor ) )
+                    {
+                        break;
+                    }
                 }
             }
         }

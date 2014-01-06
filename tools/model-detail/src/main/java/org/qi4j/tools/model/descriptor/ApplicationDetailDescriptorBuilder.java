@@ -2,6 +2,7 @@
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2008, Sonny Gill. All Rights Reserved.
  * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -21,6 +22,7 @@ package org.qi4j.tools.model.descriptor;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.qi4j.api.activation.ActivatorDescriptor;
 import org.qi4j.api.composite.ConstructorDescriptor;
 import org.qi4j.api.composite.InjectedFieldDescriptor;
 import org.qi4j.api.composite.InjectedMethodDescriptor;
@@ -76,6 +78,9 @@ public final class ApplicationDetailDescriptorBuilder
         // Temp: current composite
         private CompositeDetailDescriptor currCompositeDescriptor;
 
+        // Temp: curr activator
+        private ActivatorDetailDescriptor currActivatorDescriptor;
+
         // Temp: curr mixin
         private MixinDetailDescriptor currMixinDescriptor;
 
@@ -108,7 +113,7 @@ public final class ApplicationDetailDescriptorBuilder
 
         private ApplicationDescriptorVisitor()
         {
-            layerDescToDetail = new HashMap<LayerDescriptor, LayerDetailDescriptor>();
+            layerDescToDetail = new HashMap<>();
         }
 
         @Override
@@ -139,10 +144,54 @@ public final class ApplicationDetailDescriptorBuilder
                 currModuleDescriptor = new ModuleDetailDescriptor( moduleDescriptor );
                 currLayerDescriptor.addModule( currModuleDescriptor );
             }
+            else if( visited instanceof ActivatorDescriptor )
+            {
+                ActivatorDescriptor activatorDescriptor = (ActivatorDescriptor) visited;
+                currActivatorDescriptor = new ActivatorDetailDescriptor( activatorDescriptor );
+                if( currCompositeDescriptor != null )
+                {
+                    if( currCompositeDescriptor instanceof ServiceDetailDescriptor )
+                    {
+                        ( (ServiceDetailDescriptor) currCompositeDescriptor ).addActivator( currActivatorDescriptor );
+                    }
+                    else if( currCompositeDescriptor instanceof ImportedServiceDetailDescriptor )
+                    {
+                        ( (ImportedServiceDetailDescriptor) currCompositeDescriptor ).addActivator( currActivatorDescriptor );
+                    }
+                    else
+                    {
+                        throw new IllegalStateException( "ActivatorDescriptor is only valid for "
+                                                         + "services, modules, layers and application." );
+                    }
+                }
+                else if( currModuleDescriptor != null )
+                {
+                    currModuleDescriptor.addActivator( currActivatorDescriptor );
+                }
+                else if( currLayerDescriptor != null )
+                {
+                    currLayerDescriptor.addActivator( currActivatorDescriptor );
+                }
+                else if( applicationDescriptor != null )
+                {
+                    applicationDescriptor.addActivator( currActivatorDescriptor );
+                }
+                else
+                {
+                    throw new IllegalStateException( "ActivatorDescriptor is only valid for "
+                                                     + "services, modules, layers and application." );
+                }
+            }
             else if( visited instanceof ServiceDescriptor )
             {
                 ServiceDetailDescriptor descriptor = new ServiceDetailDescriptor( (ServiceDescriptor) visited );
                 currModuleDescriptor.addService( descriptor );
+                currCompositeDescriptor = descriptor;
+            }
+            else if( visited instanceof ImportedServiceDescriptor )
+            {
+                ImportedServiceDetailDescriptor descriptor = new ImportedServiceDetailDescriptor( new ImportedServiceCompositeDescriptor( (ImportedServiceDescriptor) visited ) );
+                currModuleDescriptor.addImportedService( descriptor );
                 currCompositeDescriptor = descriptor;
             }
             else if( visited instanceof EntityDescriptor )
@@ -159,7 +208,7 @@ public final class ApplicationDetailDescriptorBuilder
             }
             else if( visited instanceof TransientDescriptor )
             {
-                currCompositeDescriptor = new CompositeDetailDescriptor<TransientDescriptor>( (TransientDescriptor) visited );
+                currCompositeDescriptor = new CompositeDetailDescriptor<>( (TransientDescriptor) visited );
                 currModuleDescriptor.addComposite( currCompositeDescriptor );
             }
             else if( visited instanceof MethodDescriptor )
@@ -179,8 +228,7 @@ public final class ApplicationDetailDescriptorBuilder
                     // Service via CompositeDescriptor in progress )
                     return false;
                 }
-                currMethodConstraintsDescriptor =
-                    new MethodConstraintsDetailDescriptor( (ConstraintsDescriptor) visited );
+                currMethodConstraintsDescriptor = new MethodConstraintsDetailDescriptor( (ConstraintsDescriptor) visited );
                 currMethodDesciptor.setConstraints( currMethodConstraintsDescriptor );
             }
             else if( visited instanceof ConcernsDescriptor )
@@ -257,7 +305,11 @@ public final class ApplicationDetailDescriptorBuilder
                 currInjectedMethodDescriptor = null;
 
                 // Invoked for mixin and object
-                if( currMixinDescriptor != null )
+                if( currActivatorDescriptor != null )
+                {
+                    currActivatorDescriptor.addConstructor( currConstructorDescriptor );
+                }
+                else if( currMixinDescriptor != null )
                 {
                     currMixinDescriptor.addConstructor( currConstructorDescriptor );
                 }
@@ -275,9 +327,9 @@ public final class ApplicationDetailDescriptorBuilder
                 }
                 else
                 {
-                    throw new IllegalStateException(
-                        "ConstructorDescriptor is only valid for mixin and object."
-                    );
+                    throw new IllegalStateException( "ConstructorDescriptor is only valid for "
+                                                     + "activator, mixin, object, concern and side-effect. "
+                                                     + "Visiting [" + visited + "]" );
                 }
             }
             else if( visited instanceof InjectedParametersDescriptor )
@@ -300,9 +352,8 @@ public final class ApplicationDetailDescriptorBuilder
                 }
                 else
                 {
-                    throw new IllegalStateException(
-                        "InjectedParametersDescriptor is only valid for constructor and injector method descriptor."
-                    );
+                    throw new IllegalStateException( "InjectedParametersDescriptor is only valid for "
+                                                     + "constructor and injector method descriptor." );
                 }
             }
             else if( visited instanceof InjectedMethodDescriptor )
@@ -317,7 +368,11 @@ public final class ApplicationDetailDescriptorBuilder
                 currConstructorDescriptor = null;
 
                 // Invoked for mixin and object
-                if( currMixinDescriptor != null )
+                if( currActivatorDescriptor != null )
+                {
+                    currActivatorDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
+                }
+                else if( currMixinDescriptor != null )
                 {
                     currMixinDescriptor.addInjectedMethod( currInjectedMethodDescriptor );
                 }
@@ -335,9 +390,8 @@ public final class ApplicationDetailDescriptorBuilder
                 }
                 else
                 {
-                    throw new IllegalStateException(
-                        "InjectedMethodDescriptor is only valid for mixin and object."
-                    );
+                    throw new IllegalStateException( "InjectedMethodDescriptor is only valid for "
+                                                     + "mixin, object, concern and side-effect." );
                 }
             }
 
@@ -365,12 +419,6 @@ public final class ApplicationDetailDescriptorBuilder
                 MethodConstraintDetailDescriptor detailDescriptor = new MethodConstraintDetailDescriptor( (ConstraintDescriptor) visited );
                 currMethodConstraintsDescriptor.addConstraint( detailDescriptor );
             }
-            else if( visited instanceof ImportedServiceDescriptor )
-            {
-                ImportedServiceDetailDescriptor descriptor = new ImportedServiceDetailDescriptor( new ImportedServiceCompositeDescriptor( (ImportedServiceDescriptor) visited ) );
-                currModuleDescriptor.addImportedService( descriptor );
-                currCompositeDescriptor = descriptor;
-            }
             else if( visited instanceof InjectedFieldDescriptor )
             {
                 if( currCompositeDescriptor == null )
@@ -381,7 +429,11 @@ public final class ApplicationDetailDescriptorBuilder
                 InjectedFieldDetailDescriptor detailDescriptor = new InjectedFieldDetailDescriptor( (InjectedFieldDescriptor) visited );
 
                 // Invoked for mixin and object
-                if( currMixinDescriptor != null )
+                if( currActivatorDescriptor != null )
+                {
+                    currActivatorDescriptor.addInjectedField( detailDescriptor );
+                }
+                else if( currMixinDescriptor != null )
                 {
                     currMixinDescriptor.addInjectedField( detailDescriptor );
                 }
@@ -399,9 +451,8 @@ public final class ApplicationDetailDescriptorBuilder
                 }
                 else
                 {
-                    throw new IllegalStateException(
-                        "InjectedFieldDescriptor is only valid for mixin and object."
-                    );
+                    throw new IllegalStateException( "InjectedFieldDescriptor is only valid for "
+                                                     + "mixin, object, concern and side-effect." );
                 }
             }
 
@@ -428,4 +479,5 @@ public final class ApplicationDetailDescriptorBuilder
             currMethodSideEffectDescriptor = null;
         }
     }
+
 }

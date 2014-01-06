@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008-2012, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2008-2012, Niclas Hedhman. All Rights Reserved.
- * Copyright (c) 2012, Paul Merlin.
+ * Copyright (c) 2008-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2012-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -307,7 +307,7 @@ public class ModuleInstance
         for( PropertyModel propertyModel : modelModule.model().state().properties() )
         {
             Property<?> property = new PropertyInstance<>( propertyModel.getBuilderInfo(),
-                                                                 propertyModel.initialValue( modelModule.module() ) );
+                                                           propertyModel.initialValue( modelModule.module() ) );
             properties.put( propertyModel.accessor(), property );
         }
 
@@ -583,6 +583,7 @@ public class ModuleInstance
     {
         activation.deregisterActivationEventListener( listener );
     }
+
 
     // Other methods
     /* package */ ModuleModel model()

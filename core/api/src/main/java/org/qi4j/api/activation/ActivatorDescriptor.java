@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -15,15 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package org.qi4j.tools.model.descriptor;
+package org.qi4j.api.activation;
 
-import org.qi4j.api.entity.EntityDescriptor;
-
-public final class EntityDetailDescriptor
-    extends CompositeDetailDescriptor<EntityDescriptor>
+/**
+ * Activator Descriptor.
+ */
+public interface ActivatorDescriptor
 {
-    EntityDetailDescriptor( EntityDescriptor aDescriptor )
-    {
-        super( aDescriptor );
-    }
 }

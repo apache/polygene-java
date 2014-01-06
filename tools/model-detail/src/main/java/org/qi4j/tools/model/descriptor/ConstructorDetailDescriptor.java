@@ -1,19 +1,21 @@
-/*  Copyright 2008 Edward Yakop.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.tools.model.descriptor;
 
 import org.qi4j.api.composite.ConstructorDescriptor;
@@ -23,25 +25,23 @@ import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 public final class ConstructorDetailDescriptor
 {
     private final ConstructorDescriptor descriptor;
+    private ActivatorDetailDescriptor activator;
     private ObjectDetailDescriptor object;
     private MixinDetailDescriptor mixin;
     private MethodConcernDetailDescriptor methodConcern;
     private MethodSideEffectDetailDescriptor methodSideEffect;
     private InjectedParametersDetailDescriptor parameters;
 
-    ConstructorDetailDescriptor( ConstructorDescriptor aDescriptor )
+    ConstructorDetailDescriptor( ConstructorDescriptor descriptor )
         throws IllegalArgumentException
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        descriptor = aDescriptor;
-        parameters = null;
+        validateNotNull( "ConstructorDescriptor", descriptor );
+        this.descriptor = descriptor;
+        this.parameters = null;
     }
 
     /**
      * @return Descriptor of this {@code ConstructorDetailDescriptor}. Never return {@code null}.
-     *
-     * @since 0.5
      */
     public final ConstructorDescriptor descriptor()
     {
@@ -50,8 +50,6 @@ public final class ConstructorDetailDescriptor
 
     /**
      * @return Constructor parameters of this {@code ConstructorDetailDescriptor}. Never return {@code null}.
-     *
-     * @since 0.5
      */
     public final InjectedParametersDetailDescriptor parameters()
     {
@@ -59,12 +57,15 @@ public final class ConstructorDetailDescriptor
     }
 
     /**
+     * @return Activator that own this {@code ConstructorDetailDescriptor}.
+     */
+    public final ActivatorDetailDescriptor activator()
+    {
+        return activator;
+    }
+
+    /**
      * @return Object that own this {@code ConstructorDetailDescriptor}.
-     *
-     * @see #mixin()
-     * @see #methodConcern()
-     * @see #methodSideEffect()
-     * @since 0.5
      */
     public final ObjectDetailDescriptor object()
     {
@@ -73,11 +74,6 @@ public final class ConstructorDetailDescriptor
 
     /**
      * @return Mixin that own this {@code ConstructorDetailDescriptor}.
-     *
-     * @see #object()
-     * @see #methodConcern()
-     * @see #methodSideEffect()
-     * @since 0.5
      */
     public final MixinDetailDescriptor mixin()
     {
@@ -86,11 +82,6 @@ public final class ConstructorDetailDescriptor
 
     /**
      * @return Method concern that own this {@code ConstructorDetailDescriptor}.
-     *
-     * @see #object()
-     * @see #mixin()
-     * @see #methodSideEffect()
-     * @since 0.5
      */
     public final MethodConcernDetailDescriptor methodConcern()
     {
@@ -99,56 +90,47 @@ public final class ConstructorDetailDescriptor
 
     /**
      * @return Method side effect that own this {@code ConstructorDetailDescriptor}.
-     *
-     * @see #object()
-     * @see #mixin()
-     * @see #methodConcern()
-     * @since 0.5
      */
     public final MethodSideEffectDetailDescriptor methodSideEffect()
     {
         return methodSideEffect;
     }
 
-    final void setObject( ObjectDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void setActivator( ActivatorDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        object = aDescriptor;
+        validateNotNull( "ActivatorDetailDescriptor", descriptor );
+        activator = descriptor;
     }
 
-    final void setMixin( MixinDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void setObject( ObjectDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        mixin = aDescriptor;
+        validateNotNull( "ObjectDetailDescriptor", descriptor );
+        object = descriptor;
     }
 
-    final void setMethodConcern( MethodConcernDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void setMixin( MixinDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        methodConcern = aDescriptor;
+        validateNotNull( "MixinDetailDescriptor", descriptor );
+        mixin = descriptor;
     }
 
-    final void setInjectedParameter( InjectedParametersDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void setMethodConcern( MethodConcernDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
-
-        aDescriptor.setConstructor( this );
-        parameters = aDescriptor;
+        validateNotNull( "MethodConcernDetailDescriptor", descriptor );
+        methodConcern = descriptor;
     }
 
-    final void setMethodSideEffect( MethodSideEffectDetailDescriptor aDescriptor )
-        throws IllegalArgumentException
+    final void setInjectedParameter( InjectedParametersDetailDescriptor descriptor )
     {
-        validateNotNull( "aDescriptor", aDescriptor );
+        validateNotNull( "InjectedParametersDetailDescriptor", descriptor );
+        descriptor.setConstructor( this );
+        parameters = descriptor;
+    }
 
-        methodSideEffect = aDescriptor;
+    final void setMethodSideEffect( MethodSideEffectDetailDescriptor descriptor )
+    {
+        validateNotNull( "MethodSideEffectDetailDescriptor", descriptor );
+        methodSideEffect = descriptor;
     }
 
     @Override
@@ -156,4 +138,5 @@ public final class ConstructorDetailDescriptor
     {
         return descriptor.constructor().getDeclaringClass().getSimpleName();
     }
+
 }
