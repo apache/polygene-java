@@ -20,7 +20,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.value.AbstractPlainValueSerializationTest;
 
-import static org.junit.Assume.assumeTrue;
+import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
 public class StaxPlainValueSerializationTest
     extends AbstractPlainValueSerializationTest
@@ -29,8 +29,7 @@ public class StaxPlainValueSerializationTest
     @BeforeClass
     public static void beforeClass_IBMJDK()
     {
-        // Ignore this test on IBM JDK
-        assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
+        assumeNoIbmJdk();
     }
 
     // START SNIPPET: assembly

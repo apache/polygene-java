@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.concern.GenericConcern;
@@ -29,6 +30,7 @@ import org.qi4j.test.AbstractQi4jTest;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Test if the stacktrace is cleaned up properly.
@@ -39,6 +41,13 @@ public class CleanStackTraceTest
     extends AbstractQi4jTest
 {
 
+    @BeforeClass
+    public static void beforeClass_IBMJDK()
+    {   
+        assumeTrue( !( System.getProperty( "java.vendor" ).contains( "IBM" ) ) );
+    }   
+
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
@@ -66,14 +75,14 @@ public class CleanStackTraceTest
         {
             String separator = System.getProperty( "line.separator" );
             String correctTrace1 = "java.lang.RuntimeException: level 2" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:111)" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:124)" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:63)";
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:121)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:134)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:72)";
             assertEquality( e, correctTrace1 );
             String correctTrace2 = "java.lang.RuntimeException: level 1" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:107)" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:124)" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:63)";
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:117)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:134)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:72)";
             assertThat( e.getCause(), notNullValue() );
             assertEquality( e.getCause(), correctTrace2 );
         }
@@ -100,6 +109,7 @@ public class CleanStackTraceTest
         implements TestComposite
     {
 
+        @Override
         public void doStuff()
         {
             try

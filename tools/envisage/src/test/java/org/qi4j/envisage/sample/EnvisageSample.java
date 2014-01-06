@@ -17,7 +17,6 @@
 
 package org.qi4j.envisage.sample;
 
-import java.awt.GraphicsEnvironment;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
@@ -33,8 +32,7 @@ import org.qi4j.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assume.*;
+import static org.qi4j.test.util.Assume.assumeDisplayPresent;
 
 public class EnvisageSample
     extends AbstractQi4jTest
@@ -50,10 +48,7 @@ public class EnvisageSample
     @BeforeClass
     public static void assumeDisplay()
     {
-        assumeFalse( GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() );
-        String display = System.getenv( "DISPLAY" );
-        assumeThat( display, is( notNullValue() ) );
-        assumeTrue( display.length() > 0 );
+        assumeDisplayPresent();
     }
 
     @Test

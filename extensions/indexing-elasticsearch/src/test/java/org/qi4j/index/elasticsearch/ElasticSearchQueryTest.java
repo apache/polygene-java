@@ -31,7 +31,7 @@ import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractQueryTest;
 import org.qi4j.test.util.DelTreeAfter;
 
-import static org.junit.Assume.assumeTrue;
+import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
 public class ElasticSearchQueryTest
         extends AbstractQueryTest {
@@ -42,8 +42,7 @@ public class ElasticSearchQueryTest
 
     @BeforeClass
     public static void beforeClass_IBMJDK() {
-        // Ignore this test on IBM JDK
-        assumeTrue(!(System.getProperty("java.vendor").contains("IBM")));
+        assumeNoIbmJdk();
     }
     
     @Override

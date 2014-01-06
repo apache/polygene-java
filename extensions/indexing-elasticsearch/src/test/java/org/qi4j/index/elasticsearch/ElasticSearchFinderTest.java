@@ -30,7 +30,7 @@ import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 import org.qi4j.test.util.DelTreeAfter;
 
-import static org.junit.Assume.assumeTrue;
+import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
 public class ElasticSearchFinderTest
         extends AbstractEntityFinderTest {
@@ -41,8 +41,7 @@ public class ElasticSearchFinderTest
 
     @BeforeClass
     public static void beforeClass_IBMJDK() {
-        // Ignore this test on IBM JDK
-        assumeTrue(!(System.getProperty("java.vendor").contains("IBM")));
+        assumeNoIbmJdk();
     }
 
     @Override

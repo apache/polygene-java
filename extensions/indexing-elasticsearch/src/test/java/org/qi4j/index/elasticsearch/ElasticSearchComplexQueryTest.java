@@ -31,7 +31,7 @@ import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractComplexQueryTest;
 import org.qi4j.test.util.DelTreeAfter;
 
-import static org.junit.Assume.assumeTrue;
+import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
 @Ignore("ElasticSearch Index/Query do not support Complex Queries, ie. queries by 'example values'")
 public class ElasticSearchComplexQueryTest
@@ -43,8 +43,7 @@ public class ElasticSearchComplexQueryTest
 
     @BeforeClass
     public static void beforeClass_IBMJDK() {
-        // Ignore this test on IBM JDK
-        assumeTrue(!(System.getProperty("java.vendor").contains("IBM")));
+        assumeNoIbmJdk();
     }
 
     @Override
