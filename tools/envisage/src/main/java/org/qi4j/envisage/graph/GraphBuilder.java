@@ -1,25 +1,34 @@
-/*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.envisage.graph;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.qi4j.tools.model.descriptor.*;
+import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
+import org.qi4j.tools.model.descriptor.CompositeDetailDescriptor;
+import org.qi4j.tools.model.descriptor.EntityDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ImportedServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ObjectDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.ValueDetailDescriptor;
 import org.qi4j.tools.model.util.DescriptorNameComparator;
 import prefuse.data.Edge;
 import prefuse.data.Graph;
@@ -29,19 +38,19 @@ import prefuse.data.Table;
 /**
  * Build Qi4J application model as Prefuse Tree Graph
  */
-public class GraphBuilder
+/* package */ final class GraphBuilder
 {
-    private DescriptorNameComparator<Object> nameComparator = new DescriptorNameComparator<Object>();
-    private Graph graph = null;
-    private List childList;
+    private final DescriptorNameComparator<Object> nameComparator = new DescriptorNameComparator<>();
+    private final Graph graph;
+    private final List childList;
 
-    public static Graph buildGraph( ApplicationDetailDescriptor descriptor )
+    /* package */ static Graph buildGraph( ApplicationDetailDescriptor descriptor )
     {
         GraphBuilder builder = new GraphBuilder();
         return builder.buildApplicationNode( descriptor );
     }
 
-    private GraphBuilder()
+    /* package */ GraphBuilder()
     {
         graph = new Graph( true );
 

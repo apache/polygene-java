@@ -1,24 +1,27 @@
-/*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.envisage.tree;
 
-import java.awt.*;
+import java.awt.Component;
 import java.util.ResourceBundle;
-import javax.swing.*;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.qi4j.tools.model.descriptor.*;
@@ -26,34 +29,34 @@ import org.qi4j.tools.model.descriptor.*;
 /**
  * TreeCellRenderer
  */
-public class TreeModelCellRenderer
+/* package */ final class TreeModelCellRenderer
     extends DefaultTreeCellRenderer
 {
-    protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle( TreeModelCellRenderer.class.getName() );
 
-    protected Icon applicationIcon;
-    protected Icon layerIcon;
-    protected Icon moduleIcon;
-    protected Icon serviceIcon;
-    protected Icon importedServiceIcon;
-    protected Icon entityIcon;
-    protected Icon valueIcon;
-    protected Icon transientIcon;
-    protected Icon objectIcon;
+    private final Icon applicationIcon;
+    private final Icon layerIcon;
+    private final Icon moduleIcon;
+    private final Icon serviceIcon;
+    private final Icon importedServiceIcon;
+    private final Icon entityIcon;
+    private final Icon valueIcon;
+    private final Icon transientIcon;
+    private final Icon objectIcon;
 
-    public TreeModelCellRenderer()
+    /* package */ TreeModelCellRenderer()
     {
         try
         {
-            applicationIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Application" ) ) );
-            layerIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Layer" ) ) );
-            moduleIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Module" ) ) );
-            serviceIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Service" ) ) );
-            importedServiceIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_ImportedService" ) ) );
-            entityIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Entity" ) ) );
-            valueIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Value" ) ) );
-            transientIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Transient" ) ) );
-            objectIcon = new ImageIcon( getClass().getResource( bundle.getString( "ICON_Object" ) ) );
+            applicationIcon = new ImageIcon( getClass().getResource( BUNDLE.getString( "ICON_Application" ) ) );
+            layerIcon = new ImageIcon( getClass().getResource( BUNDLE.getString( "ICON_Layer" ) ) );
+            moduleIcon = new ImageIcon( getClass().getResource( BUNDLE.getString( "ICON_Module" ) ) );
+            serviceIcon = new ImageIcon( getClass().getResource( BUNDLE.getString( "ICON_Service" ) ) );
+            importedServiceIcon = new ImageIcon( getClass().getResource( BUNDLE.getString( "ICON_ImportedService" ) ) );
+            entityIcon = new ImageIcon( getClass().getResource( BUNDLE.getString( "ICON_Entity" ) ) );
+            valueIcon = new ImageIcon( getClass().getResource( BUNDLE.getString( "ICON_Value" ) ) );
+            transientIcon = new ImageIcon( getClass().getResource( BUNDLE.getString( "ICON_Transient" ) ) );
+            objectIcon = new ImageIcon( getClass().getResource( BUNDLE.getString( "ICON_Object" ) ) );
         }
         catch( Exception ex )
         {

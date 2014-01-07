@@ -1,19 +1,20 @@
-/*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.envisage.tree;
 
 import java.util.ArrayList;
@@ -27,16 +28,16 @@ import org.qi4j.tools.model.util.DescriptorNameComparator;
 /**
  * Helper class to build tree model for Qi4J model as Type Tree
  */
-public class TypeModelBuilder
+/* package */ final class TypeModelBuilder
 {
-    private List<ServiceDetailDescriptor> serviceList;
-    private List<ImportedServiceDetailDescriptor> importedServiceList;
-    private List<EntityDetailDescriptor> entityList;
-    private List<CompositeDetailDescriptor> transientList;
-    private List<ValueDetailDescriptor> valueList;
-    private List<ObjectDetailDescriptor> objectList;
+    private final List<ServiceDetailDescriptor> serviceList = new ArrayList<>();
+    private final List<ImportedServiceDetailDescriptor> importedServiceList = new ArrayList<>();
+    private final List<EntityDetailDescriptor> entityList = new ArrayList<>();
+    private final List<CompositeDetailDescriptor> transientList = new ArrayList<>();
+    private final List<ValueDetailDescriptor> valueList = new ArrayList<>();
+    private final List<ObjectDetailDescriptor> objectList = new ArrayList<>();
 
-    public static MutableTreeNode build( ApplicationDetailDescriptor descriptor )
+    /* package */ static MutableTreeNode build( ApplicationDetailDescriptor descriptor )
     {
         TypeModelBuilder builder = new TypeModelBuilder();
         return builder.buildNode( descriptor );
@@ -44,19 +45,13 @@ public class TypeModelBuilder
 
     private TypeModelBuilder()
     {
-        serviceList = new ArrayList<ServiceDetailDescriptor>();
-        importedServiceList = new ArrayList<ImportedServiceDetailDescriptor>();
-        entityList = new ArrayList<EntityDetailDescriptor>();
-        transientList = new ArrayList<CompositeDetailDescriptor>();
-        valueList = new ArrayList<ValueDetailDescriptor>();
-        objectList = new ArrayList<ObjectDetailDescriptor>();
     }
 
     private MutableTreeNode buildNode( ApplicationDetailDescriptor descriptor )
     {
         traverseLayers( descriptor.layers() );
 
-        DescriptorNameComparator<Object> nameComparator = new DescriptorNameComparator<Object>();
+        DescriptorNameComparator<Object> nameComparator = new DescriptorNameComparator<>();
 
         // sort based on name order
         Collections.sort( serviceList, nameComparator );

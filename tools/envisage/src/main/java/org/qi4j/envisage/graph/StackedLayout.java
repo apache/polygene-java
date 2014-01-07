@@ -1,22 +1,24 @@
-/*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.envisage.graph;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import prefuse.Display;
@@ -24,14 +26,14 @@ import prefuse.action.layout.graph.TreeLayout;
 import prefuse.render.Renderer;
 import prefuse.visual.NodeItem;
 
-public class StackedLayout
+/* package */ final class StackedLayout
     extends TreeLayout
 {
-    public static int INSET = 10;
+    /* package */ static int INSET = 10;
 
     private int zoom = 2;
 
-    public StackedLayout( String group )
+    /* package */ StackedLayout( String group )
     {
         super( group );
     }
@@ -54,7 +56,7 @@ public class StackedLayout
         }
     }
 
-    public void zoomOut()
+    /* package */ void zoomOut()
     {
         zoom--;
         if( zoom < 1 )
@@ -63,7 +65,7 @@ public class StackedLayout
         }
     }
 
-    public void zoomIn()
+    /* package */ void zoomIn()
     {
         zoom++;
         if( zoom > 4 )
@@ -72,17 +74,17 @@ public class StackedLayout
         }
     }
 
-    public void zoom( int zoom )
+    /* package */ void zoom( int zoom )
     {
         this.zoom = zoom;
     }
 
-    public int getZoom()
+    /* package */ int getZoom()
     {
         return zoom;
     }
 
-    protected Dimension getItemMinSize( NodeItem node, Dimension minSize )
+    private Dimension getItemMinSize( NodeItem node, Dimension minSize )
     {
         if( minSize == null )
         {
@@ -96,11 +98,10 @@ public class StackedLayout
         minSize.setSize( width + INSET + INSET, height + INSET + INSET );
 
         //System.out.println(fm.getAscent());
-
         return minSize;
     }
 
-    protected void layout( NodeItem node, double x, double y )
+    private void layout( NodeItem node, double x, double y )
     {
         Dimension minSize = getItemMinSize( node, null );
         node.setBounds( x, y, minSize.width, minSize.height );

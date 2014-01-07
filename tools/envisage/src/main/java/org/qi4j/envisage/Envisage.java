@@ -1,20 +1,20 @@
 /*
- * Copyright 2009 Tonny Kohar.
- * Copyright 2012 Paul Merlin.
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
+ * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * limitations under the License. 
  */
 package org.qi4j.envisage;
 
@@ -29,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.qi4j.api.structure.ApplicationDescriptor;
 
 /**
@@ -49,19 +50,17 @@ public class Envisage
 
         SwingUtilities.invokeLater( new Runnable()
         {
-
             @Override
             public void run()
             {
                 showMainFrame();
             }
-
         } );
     }
 
     public void stop()
     {
-        if ( mainFrame != null && mainFrame.isDisplayable() )
+        if( mainFrame != null && mainFrame.isDisplayable() )
         {
             mainFrame.dispose();
             mainFrame = null;
@@ -78,22 +77,18 @@ public class Envisage
 
         mainFrame.addWindowListener( new WindowAdapter()
         {
-
             @Override
             public void windowOpened( WindowEvent evt )
             {
                 SwingUtilities.invokeLater( new Runnable()
                 {
-
                     @Override
                     public void run()
                     {
                         mainFrame.initQi4J();
                     }
-
                 } );
             }
-
         } );
     }
 
@@ -140,7 +135,8 @@ public class Envisage
                 {
                     UIManager.setLookAndFeel( lnfClassName );
                 }
-                catch( Exception ex )
+                catch( ClassNotFoundException | IllegalAccessException | InstantiationException |
+                       UnsupportedLookAndFeelException ex )
                 {
                     System.err.println( "Unable to set LookAndFeel, use default LookAndFeel.\n" + ex.getMessage() );
                 }

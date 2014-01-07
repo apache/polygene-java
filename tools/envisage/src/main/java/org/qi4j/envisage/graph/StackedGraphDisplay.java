@@ -1,28 +1,34 @@
 /*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.qi4j.envisage.graph;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
-import javax.swing.*;
+import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 import org.qi4j.envisage.event.LinkEvent;
 import prefuse.Constants;
 import prefuse.Visualization;
@@ -56,13 +62,13 @@ import prefuse.visual.VisualItem;
 import prefuse.visual.expression.InGroupPredicate;
 import prefuse.visual.sort.TreeDepthItemSorter;
 
-public class StackedGraphDisplay
+/* package */ class StackedGraphDisplay
     extends GraphDisplay
 {
-    public static final Font FONT = FontLib.getFont( "Tahoma", 12 );
+    /* package */ static final Font FONT = FontLib.getFont( "Tahoma", 12 );
 
     // create data description of LABELS, setting colors, fonts ahead of time
-    static final Schema LABEL_SCHEMA = PrefuseLib.getVisualItemSchema();
+    private static final Schema LABEL_SCHEMA = PrefuseLib.getVisualItemSchema();
 
     static
     {
@@ -71,20 +77,20 @@ public class StackedGraphDisplay
         LABEL_SCHEMA.setDefault( VisualItem.FONT, FONT );
     }
 
-    static final String LABELS = "labels";
+    private static final String LABELS = "labels";
 
-    static final String LAYOUT_ACTION = "layout";
-    static final String COLORS_ACTION = "colors";
-    static final String AUTO_PAN_ACTION = "autoPan";
+    private static final String LAYOUT_ACTION = "layout";
+    private static final String COLORS_ACTION = "colors";
+    private static final String AUTO_PAN_ACTION = "autoPan";
 
-    static int OUTLINE_COLOR = ColorLib.rgb( 33, 115, 170 );
-    static int OUTLINE_FOCUS_COLOR = ColorLib.rgb( 255, 255, 255 );  // alternative color ColorLib.rgb(150,200,200);
+    private static int OUTLINE_COLOR = ColorLib.rgb( 33, 115, 170 );
+    private static int OUTLINE_FOCUS_COLOR = ColorLib.rgb( 255, 255, 255 );  // alternative color ColorLib.rgb(150,200,200);
 
-    protected StackedLayout stackedLayout;
+    private StackedLayout stackedLayout;
 
-    protected Activity activity;
+    private Activity activity;
 
-    public StackedGraphDisplay()
+    /* package */ StackedGraphDisplay()
     {
         super( new Visualization() );
 
@@ -233,7 +239,7 @@ public class StackedGraphDisplay
         }
     }
 
-    public void zoomIn()
+    private void zoomIn()
     {
         if( isInProgress() )
         {
@@ -244,7 +250,7 @@ public class StackedGraphDisplay
         run();
     }
 
-    public void zoomOut()
+    private void zoomOut()
     {
         if( isInProgress() )
         {
@@ -255,7 +261,7 @@ public class StackedGraphDisplay
         run();
     }
 
-    protected boolean isInProgress()
+    private boolean isInProgress()
     {
         if( isTranformInProgress() )
         {
@@ -274,15 +280,14 @@ public class StackedGraphDisplay
     }
 
     // ------------------------------------------------------------------------
-
     /**
      * Set the stroke color for drawing border node outlines.
      */
-    public class BorderColorAction
+    private static class BorderColorAction
         extends ColorAction
     {
 
-        public BorderColorAction( String group )
+        private BorderColorAction( String group )
         {
             super( group, VisualItem.STROKECOLOR );
         }
@@ -308,20 +313,19 @@ public class StackedGraphDisplay
      * Set fill colors for treemap nodes. Normal nodes are shaded according to their
      * depth in the tree.
      */
-    public class FillColorAction
+    private static class FillColorAction
         extends ColorAction
     {
-        private ColorMap cmap = new ColorMap(
-            new int[]{
-                ColorLib.rgb( 11, 117, 188 ),
-                ColorLib.rgb( 8, 99, 160 ),
-                ColorLib.rgb( 5, 77, 126 ),
-                ColorLib.rgb( 2, 61, 100 ),
-                ColorLib.rgb( 148, 55, 87 )
-            }
-            , 0, 4 );
+        private static final ColorMap CMAP = new ColorMap( new int[]
+        {
+            ColorLib.rgb( 11, 117, 188 ),
+            ColorLib.rgb( 8, 99, 160 ),
+            ColorLib.rgb( 5, 77, 126 ),
+            ColorLib.rgb( 2, 61, 100 ),
+            ColorLib.rgb( 148, 55, 87 )
+        }, 0, 4 );
 
-        public FillColorAction( String group )
+        private FillColorAction( String group )
         {
             super( group, VisualItem.FILLCOLOR );
         }
@@ -334,19 +338,19 @@ public class StackedGraphDisplay
                 NodeItem nItem = (NodeItem) item;
                 if( m_vis.isInGroup( nItem, Visualization.FOCUS_ITEMS ) )
                 {
-                    int c = cmap.getColor( nItem.getDepth() );
+                    int c = CMAP.getColor( nItem.getDepth() );
                     return ColorLib.darker( c );
                 }
-                return cmap.getColor( nItem.getDepth() );
+                return CMAP.getColor( nItem.getDepth() );
             }
             else
             {
-                return cmap.getColor( 0 );
+                return CMAP.getColor( 0 );
             }
         }
     } // end of inner class FillColorAction
 
-    public class HoverControl
+    private static class HoverControl
         extends ControlAdapter
     {
         @Override
@@ -370,10 +374,10 @@ public class StackedGraphDisplay
      * of the decorated node and assigns the label coordinates to the center
      * of those bounds.
      */
-    public class LabelLayout
+    private static class LabelLayout
         extends Layout
     {
-        public LabelLayout( String group )
+        private LabelLayout( String group )
         {
             super( group );
         }
@@ -397,12 +401,12 @@ public class StackedGraphDisplay
      * A renderer for treemap nodes. Draws simple rectangles, but defers
      * the bounds management to the layout.
      */
-    public class NodeRenderer
+    private static class NodeRenderer
         extends AbstractShapeRenderer
     {
         private Rectangle2D m_bounds = new Rectangle2D.Double();
 
-        public NodeRenderer()
+        private NodeRenderer()
         {
             m_manageBounds = false;
         }
@@ -415,7 +419,7 @@ public class StackedGraphDisplay
         }
     } // end of inner class NodeRenderer
 
-    public class WheelMouseControl
+    private class WheelMouseControl
         extends ControlAdapter
     {
         @Override
@@ -454,7 +458,7 @@ public class StackedGraphDisplay
         }
     }
 
-    public class ItemSelectionControl
+    private class ItemSelectionControl
         extends ControlAdapter
     {
         @Override
@@ -474,7 +478,7 @@ public class StackedGraphDisplay
         }
     }
 
-    public class AutoPanAction
+    private class AutoPanAction
         extends Action
     {
         @Override
@@ -511,7 +515,7 @@ public class StackedGraphDisplay
             {
                 setTransform( new AffineTransform() );
             }
-            catch( Exception ex )
+            catch( NoninvertibleTransformException ex )
             {
                 return;
             }
@@ -546,15 +550,15 @@ public class StackedGraphDisplay
      * ExtenedTreeDepthItemSorter to alter the default ordering/sorter,
      * to make sure Edge item is drawn in front. This is for Edge Uses
      */
-    public class ExtendedTreeDepthItemSorter
+    private static class ExtendedTreeDepthItemSorter
         extends TreeDepthItemSorter
     {
-        public ExtendedTreeDepthItemSorter()
+        private ExtendedTreeDepthItemSorter()
         {
             this( false );
         }
 
-        public ExtendedTreeDepthItemSorter( boolean childrenAbove )
+        private ExtendedTreeDepthItemSorter( boolean childrenAbove )
         {
             super( childrenAbove );
         }
@@ -572,4 +576,5 @@ public class StackedGraphDisplay
             return score;
         }
     }
+
 }

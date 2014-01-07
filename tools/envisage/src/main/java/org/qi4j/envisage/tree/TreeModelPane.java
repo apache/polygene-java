@@ -1,26 +1,36 @@
-/*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.envisage.tree;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ResourceBundle;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
@@ -32,23 +42,21 @@ import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
  * - by Structure<br/>
  * - by Type<br/>
  */
-public class TreeModelPane
+public final class TreeModelPane
     extends JPanel
 {
-    protected static final String STRUCTURE_VIEW = "Structure";
-    protected static final String TYPE_VIEW = "Type";
+    private static final String STRUCTURE_VIEW = "Structure";
+    private static final String TYPE_VIEW = "Type";
 
-    protected ResourceBundle bundle = ResourceBundle.getBundle( this.getClass().getName() );
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle( TreeModelPane.class.getName() );
 
-    protected JPanel mainPane;
-    protected CardLayout cardLayout;
-    protected JTree structureTree;
-    protected JTree typeTree;
-    protected JComboBox viewAsCombo;
+    private JPanel mainPane;
+    private CardLayout cardLayout;
+    private JTree structureTree;
+    private JTree typeTree;
+    private JComboBox viewAsCombo;
 
-    protected boolean selectionInProgress;
-
-    protected ApplicationDetailDescriptor descriptor;
+    private boolean selectionInProgress;
 
     public TreeModelPane()
     {
@@ -84,13 +92,16 @@ public class TreeModelPane
         viewAsPane.setLayout( new java.awt.GridBagLayout() );
 
         GridBagConstraints gridBagConstraints;
-        JLabel viewAsLabel = new JLabel( bundle.getString( "CTL_ViewAs.Text" ) );
+        JLabel viewAsLabel = new JLabel( BUNDLE.getString( "CTL_ViewAs.Text" ) );
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = GridBagConstraints.WEST;
         gridBagConstraints.insets = new Insets( 0, 0, 0, 6 );
         viewAsPane.add( viewAsLabel, gridBagConstraints );
 
-        viewAsCombo = new JComboBox( new DefaultComboBoxModel( new String[]{ STRUCTURE_VIEW, TYPE_VIEW } ) );
+        viewAsCombo = new JComboBox( new DefaultComboBoxModel( new String[]
+        {
+            STRUCTURE_VIEW, TYPE_VIEW
+        } ) );
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -120,11 +131,6 @@ public class TreeModelPane
      */
     public void initQi4J( ApplicationDetailDescriptor descriptor )
     {
-        this.descriptor = descriptor;
-
-        //Application Application = (Application) application;
-        //ApplicationDetailDescriptor descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( Application );
-
         // traverse the model and build JTree representation
         MutableTreeNode rootNode1 = StructureModelBuilder.build( descriptor );
         MutableTreeNode rootNode2 = TypeModelBuilder.build( descriptor );
@@ -169,7 +175,6 @@ public class TreeModelPane
         }
 
         //System.out.println(obj.toString());
-
         TreeNode node = findNode( structureTree, obj );
         if( node != null )
         {
@@ -234,12 +239,12 @@ public class TreeModelPane
         return foundNode;
     }
 
-    public void addTreeSelectionListener( TreeSelectionListener listener )
+    public final void addTreeSelectionListener( TreeSelectionListener listener )
     {
         structureTree.addTreeSelectionListener( listener );
     }
 
-    public void removeTreeSelectionListener( TreeSelectionListener listener )
+    public final void removeTreeSelectionListener( TreeSelectionListener listener )
     {
         structureTree.removeTreeSelectionListener( listener );
     }

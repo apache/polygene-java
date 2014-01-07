@@ -1,22 +1,23 @@
-/*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.envisage.print;
 
-import java.awt.*;
+import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +30,7 @@ import java.lang.reflect.WildcardType;
 import java.util.HashSet;
 import java.util.List;
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -115,7 +116,7 @@ public class PDFWriter
         {
             writeImpl( file, descriptor, graphDisplays );
         }
-        catch( Exception ex )
+        catch( IOException | COSVisitorException ex )
         {
             ex.printStackTrace();
         }
@@ -314,29 +315,29 @@ public class PDFWriter
         else if( objectDesciptor instanceof EntityDetailDescriptor )
         {
             EntityDescriptor descriptor = ( (EntityDetailDescriptor) objectDesciptor ).descriptor();
-            writeString( "- name: " + descriptor.toString());
+            writeString( "- name: " + descriptor.toString() );
             writeString( "- class: " + descriptor.toString() );
             writeString( "- visibility: " + descriptor.visibility().toString() );
         }
         else if( objectDesciptor instanceof ValueDetailDescriptor )
         {
             ValueDescriptor descriptor = ( (ValueDetailDescriptor) objectDesciptor ).descriptor();
-            writeString( "- name: " + descriptor.toString());
+            writeString( "- name: " + descriptor.toString() );
             writeString( "- class: " + descriptor.toString() );
             writeString( "- visibility: " + descriptor.visibility().toString() );
         }
         else if( objectDesciptor instanceof ObjectDetailDescriptor )
         {
             ObjectDescriptor descriptor = ( (ObjectDetailDescriptor) objectDesciptor ).descriptor();
-            writeString( "- name: " + descriptor.toString());
-            writeString( "- class: " + descriptor.toString());
+            writeString( "- name: " + descriptor.toString() );
+            writeString( "- class: " + descriptor.toString() );
             writeString( "- visibility: " + descriptor.visibility().toString() );
         }
         else if( objectDesciptor instanceof CompositeDetailDescriptor )
         {
             CompositeDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor ).descriptor();
-            writeString( "- name: " + descriptor.toString());
-            writeString( "- class: " + descriptor.toString());
+            writeString( "- name: " + descriptor.toString() );
+            writeString( "- class: " + descriptor.toString() );
             writeString( "- visibility: " + descriptor.visibility().toString() );
         }
     }
@@ -391,7 +392,7 @@ public class PDFWriter
         CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) objectDesciptor;
         List<CompositeMethodDetailDescriptor> list = DescriptorUtilities.findMethod( descriptor );
 
-        HashSet<String> imports = new HashSet<String>();
+        HashSet<String> imports = new HashSet<>();
         for( CompositeMethodDetailDescriptor methodDescriptor : list )
         {
             addImport( imports, methodDescriptor.descriptor().method().getGenericReturnType() );
@@ -409,9 +410,9 @@ public class PDFWriter
         for( CompositeMethodDetailDescriptor methodDescriptor : list )
         {
             Type returnType = methodDescriptor.descriptor().method().getGenericReturnType();
-            writeString( "    " + formatType( returnType ) + "." +
-                         methodDescriptor.toString() +
-                         formatParameters( methodDescriptor.descriptor().method().getParameterTypes() )
+            writeString( "    " + formatType( returnType ) + "."
+                         + methodDescriptor.toString()
+                         + formatParameters( methodDescriptor.descriptor().method().getParameterTypes() )
             );
         }
     }
@@ -604,7 +605,7 @@ public class PDFWriter
         }
 
         setFont( normalFont, normalFontSize );
-        writeString( "- name: " + spiDescriptor.toString());
+        writeString( "- name: " + spiDescriptor.toString() );
         writeString( "- class: " + spiDescriptor.toString() );
         writeString( "- type: " + typeString );
     }
@@ -771,11 +772,11 @@ public class PDFWriter
         return scale;
     }
 
-    class PDFFileFilter
+    static class PDFFileFilter
         extends FileFilter
     {
 
-        private String description;
+        private final String description;
         protected String extension = null;
 
         public PDFFileFilter()
@@ -822,4 +823,5 @@ public class PDFWriter
             return description;
         }
     }
+
 }

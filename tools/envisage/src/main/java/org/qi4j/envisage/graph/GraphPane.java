@@ -1,28 +1,32 @@
-/*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.envisage.graph;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import org.qi4j.envisage.event.LinkEvent;
 import org.qi4j.envisage.event.LinkListener;
 import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
@@ -31,24 +35,22 @@ import prefuse.data.Graph;
 /**
  * Just a simple wrapper for ApplicationModel Graph Display
  */
-public class GraphPane
+public final class GraphPane
     extends JPanel
 {
     private TreeGraphDisplay treeDisplay;
-    private StackedGraphDisplay stackedDisplay;
-    private List<GraphDisplay> displays;
+    private final StackedGraphDisplay stackedDisplay;
+    private final List<GraphDisplay> displays;
 
-    protected ApplicationDetailDescriptor descriptor;
-
-    protected JTabbedPane tabPane;
-    protected JScrollPane scrollPane;
+    private JTabbedPane tabPane;
+    private final JScrollPane scrollPane;
 
     public GraphPane()
     {
         treeDisplay = new TreeGraphDisplay();
         stackedDisplay = new StackedGraphDisplay();
 
-        List<GraphDisplay> tmpList = new ArrayList<GraphDisplay>( 2 );
+        List<GraphDisplay> tmpList = new ArrayList<>( 2 );
         tmpList.add( treeDisplay );
         tmpList.add( stackedDisplay );
         displays = Collections.unmodifiableList( tmpList );
@@ -99,8 +101,6 @@ public class GraphPane
 
     public void initQi4J( ApplicationDetailDescriptor descriptor )
     {
-        this.descriptor = descriptor;
-
         Graph graph = GraphBuilder.buildGraph( descriptor );
         Dimension size = getSize();
         treeDisplay.setSize( size.width, size.height );

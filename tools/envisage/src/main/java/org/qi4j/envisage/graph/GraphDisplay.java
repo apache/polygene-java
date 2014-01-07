@@ -1,19 +1,20 @@
-/*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.envisage.graph;
 
 import org.qi4j.envisage.event.LinkEvent;
@@ -33,7 +34,7 @@ public abstract class GraphDisplay
     public static final String GRAPH_EDGES = "graph.edges";
     public static final String USES_EDGES = "uses.edges";
 
-    public GraphDisplay( Visualization visualization )
+    protected GraphDisplay( Visualization visualization )
     {
         super( visualization );
     }
@@ -49,7 +50,7 @@ public abstract class GraphDisplay
      *
      * @param listener the LinkListener to add
      */
-    public void addLinkListener( LinkListener listener )
+    public final void addLinkListener( LinkListener listener )
     {
         listenerList.add( LinkListener.class, listener );
     }
@@ -59,12 +60,12 @@ public abstract class GraphDisplay
      *
      * @param listener the LinkListener to remove
      */
-    public void removeLinkListener( LinkListener listener )
+    public final void removeLinkListener( LinkListener listener )
     {
         listenerList.remove( LinkListener.class, listener );
     }
 
-    protected void fireLinkActivated( LinkEvent evt )
+    protected final void fireLinkActivated( LinkEvent evt )
     {
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();
@@ -72,9 +73,9 @@ public abstract class GraphDisplay
         // those that are interested in this event
         for( int i = listeners.length - 2; i >= 0; i -= 2 )
         {
-            if( listeners[ i ] == LinkListener.class )
+            if( listeners[i] == LinkListener.class )
             {
-                ( (LinkListener) listeners[ i + 1 ] ).activated( evt );
+                ( (LinkListener) listeners[i + 1] ).activated( evt );
             }
         }
     }

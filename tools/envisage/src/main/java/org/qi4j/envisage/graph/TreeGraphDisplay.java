@@ -1,22 +1,23 @@
-/*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.envisage.graph;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -38,7 +39,12 @@ import prefuse.action.filter.FisheyeTreeFilter;
 import prefuse.action.layout.CollapsedSubtreeLayout;
 import prefuse.action.layout.graph.NodeLinkTreeLayout;
 import prefuse.activity.SlowInSlowOutPacer;
-import prefuse.controls.*;
+import prefuse.controls.ControlAdapter;
+import prefuse.controls.FocusControl;
+import prefuse.controls.PanControl;
+import prefuse.controls.WheelZoomControl;
+import prefuse.controls.ZoomControl;
+import prefuse.controls.ZoomToFitControl;
 import prefuse.data.Graph;
 import prefuse.data.expression.Predicate;
 import prefuse.data.expression.parser.ExpressionParser;
@@ -55,7 +61,7 @@ import prefuse.util.display.DisplayLib;
 import prefuse.visual.VisualItem;
 import prefuse.visual.sort.TreeDepthItemSorter;
 
-public class TreeGraphDisplay
+public final class TreeGraphDisplay
     extends GraphDisplay
 {
 
@@ -68,11 +74,11 @@ public class TreeGraphDisplay
     static final String SUB_LAYOUT_ACTION = "subLayout";
     static final String AUTO_ZOOM_ACTION = "autoZoom";
 
-    private LabelRenderer nodeRenderer;
-    private EdgeRenderer edgeRenderer;
-    private EdgeRenderer usesRenderer;
+    private final LabelRenderer nodeRenderer;
+    private final EdgeRenderer edgeRenderer;
+    private final EdgeRenderer usesRenderer;
 
-    private int orientation = Constants.ORIENT_LEFT_RIGHT;
+    private final int orientation = Constants.ORIENT_LEFT_RIGHT;
 
     public TreeGraphDisplay()
     {
@@ -239,7 +245,7 @@ public class TreeGraphDisplay
         }
     }
 
-    public class AutoZoomAction
+    private class AutoZoomAction
         extends Action
     {
         @Override
@@ -254,13 +260,13 @@ public class TreeGraphDisplay
         }
     }
 
-    public class AutoPanAction
+    private class AutoPanAction
         extends Action
     {
-        private Point2D m_start = new Point2D.Double();
-        private Point2D m_end = new Point2D.Double();
-        private Point2D m_cur = new Point2D.Double();
-        private int m_bias = 150;
+        private final Point2D m_start = new Point2D.Double();
+        private final Point2D m_end = new Point2D.Double();
+        private final Point2D m_cur = new Point2D.Double();
+        private final int m_bias = 150;
 
         @Override
         public void run( double frac )
@@ -273,23 +279,23 @@ public class TreeGraphDisplay
 
             if( frac == 0.0 )
             {
-                int xbias = 0, ybias = 0;
+                int xbias, ybias = 0;
 
                 xbias = m_bias;
                 switch( orientation )
                 {
-                case Constants.ORIENT_LEFT_RIGHT:
+                    case Constants.ORIENT_LEFT_RIGHT:
 
-                    break;
-                case Constants.ORIENT_RIGHT_LEFT:
-                    xbias = -m_bias;
-                    break;
-                case Constants.ORIENT_TOP_BOTTOM:
-                    ybias = m_bias;
-                    break;
-                case Constants.ORIENT_BOTTOM_TOP:
-                    ybias = -m_bias;
-                    break;
+                        break;
+                    case Constants.ORIENT_RIGHT_LEFT:
+                        xbias = -m_bias;
+                        break;
+                    case Constants.ORIENT_TOP_BOTTOM:
+                        ybias = m_bias;
+                        break;
+                    case Constants.ORIENT_BOTTOM_TOP:
+                        ybias = -m_bias;
+                        break;
                 }
 
                 VisualItem vi = (VisualItem) ts.tuples().next();
@@ -306,11 +312,11 @@ public class TreeGraphDisplay
         }
     }
 
-    public class NodeColorAction
+    private static class NodeColorAction
         extends ColorAction
     {
 
-        public NodeColorAction( String group )
+        private NodeColorAction( String group )
         {
             super( group, VisualItem.FILLCOLOR );
         }
@@ -337,7 +343,7 @@ public class TreeGraphDisplay
         }
     }
 
-    public class ItemSelectionControl
+    private class ItemSelectionControl
         extends ControlAdapter
     {
         @Override
@@ -353,10 +359,10 @@ public class TreeGraphDisplay
         }
     }
 
-    public class ExtendedFisheyeTreeFilter
+    private static class ExtendedFisheyeTreeFilter
         extends FisheyeTreeFilter
     {
-        public ExtendedFisheyeTreeFilter( String group, int distance )
+        private ExtendedFisheyeTreeFilter( String group, int distance )
         {
             super( group, distance );
         }
@@ -378,4 +384,5 @@ public class TreeGraphDisplay
             }
         }
     }
+
 }
