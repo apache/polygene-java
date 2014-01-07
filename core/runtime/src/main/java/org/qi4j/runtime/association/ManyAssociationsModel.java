@@ -1,17 +1,20 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
  *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
-
 package org.qi4j.runtime.association;
 
 import java.lang.reflect.AccessibleObject;
@@ -28,16 +31,20 @@ import org.qi4j.runtime.value.ValueStateInstance;
 import org.qi4j.spi.entity.EntityState;
 
 /**
- * JAVADOC
+ * Model for ManyAssociations.
  */
 public final class ManyAssociationsModel
     implements VisitableHierarchy<ManyAssociationsModel, ManyAssociationModel>
 {
-    private final Map<AccessibleObject, ManyAssociationModel> mapAccessorAssociationModel = new LinkedHashMap<AccessibleObject, ManyAssociationModel>();
+    private final Map<AccessibleObject, ManyAssociationModel> mapAccessorAssociationModel = new LinkedHashMap<>();
 
-    public ManyAssociationsModel(
-    )
+    public ManyAssociationsModel()
     {
+    }
+
+    public Iterable<ManyAssociationModel> manyAssociations()
+    {
+        return mapAccessorAssociationModel.values();
     }
 
     public void addManyAssociation( ManyAssociationModel model )
@@ -62,6 +69,13 @@ public final class ManyAssociationsModel
         return visitor.visitLeave( this );
     }
 
+    public <T> ManyAssociation<T> newInstance( AccessibleObject accessor,
+                                               EntityState entityState,
+                                               ModuleUnitOfWork uow )
+    {
+        return mapAccessorAssociationModel.get( accessor ).newInstance( uow, entityState );
+    }
+
     public ManyAssociationModel getManyAssociation( AccessibleObject accessor )
         throws IllegalArgumentException
     {
@@ -71,19 +85,6 @@ public final class ManyAssociationsModel
             throw new IllegalArgumentException( "No many-association found with name:" + ( (Member) accessor ).getName() );
         }
         return manyAssociationModel;
-    }
-
-    public Iterable<ManyAssociationModel> manyAssociations()
-    {
-        return mapAccessorAssociationModel.values();
-    }
-
-    public <T> ManyAssociation<T> newInstance( AccessibleObject accessor,
-                                               EntityState entityState,
-                                               ModuleUnitOfWork uow
-    )
-    {
-        return mapAccessorAssociationModel.get( accessor ).newInstance( uow, entityState );
     }
 
     public AssociationDescriptor getManyAssociationByName( String name )
@@ -96,7 +97,6 @@ public final class ManyAssociationsModel
                 return associationModel;
             }
         }
-
         throw new IllegalArgumentException( "No many-association found with name:" + name );
     }
 
@@ -110,7 +110,6 @@ public final class ManyAssociationsModel
                 return associationModel;
             }
         }
-
         throw new IllegalArgumentException( "No many-association found with qualified name:" + name );
     }
 

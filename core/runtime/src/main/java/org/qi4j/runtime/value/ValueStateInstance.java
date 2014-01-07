@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008-2013, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.runtime.value;
 
 import java.lang.reflect.AccessibleObject;
@@ -40,37 +58,41 @@ public final class ValueStateInstance
     }
 
     public ValueStateInstance( ModelModule<ValueModel> compositeModelModule,
-                                                            ModuleInstance currentModule,
-                                                            ValueStateModel.StateResolver stateResolver )
+                               ModuleInstance currentModule,
+                               ValueStateModel.StateResolver stateResolver )
     {
         ValueModel valueModel = compositeModelModule.model();
-        this.properties = new LinkedHashMap<AccessibleObject, PropertyInstance<?>>();
+        this.properties = new LinkedHashMap<>();
         for( PropertyDescriptor propertyDescriptor : valueModel.state().properties() )
         {
             PropertyInfo builderInfo = ( (PropertyModel) propertyDescriptor ).getBuilderInfo();
             Object value = stateResolver.getPropertyState( propertyDescriptor );
-            PropertyInstance<Object> propertyInstance = new PropertyInstance<Object>( builderInfo, value );
+            PropertyInstance<Object> propertyInstance = new PropertyInstance<>( builderInfo, value );
             properties.put( propertyDescriptor.accessor(), propertyInstance );
         }
 
-        this.associations = new LinkedHashMap<AccessibleObject, AssociationInstance<?>>();
+        this.associations = new LinkedHashMap<>();
         for( AssociationDescriptor associationDescriptor : valueModel.state().associations() )
         {
             AssociationInfo builderInfo = ( (AssociationModel) associationDescriptor ).getBuilderInfo();
             EntityReference value = stateResolver.getAssociationState( associationDescriptor );
-            AssociationInstance<Object> associationInstance1 =
-                new AssociationInstance<Object>( builderInfo, currentModule.getEntityFunction(), new ReferenceProperty( value ) );
+            AssociationInstance<Object> associationInstance1 = new AssociationInstance<>(
+                builderInfo,
+                currentModule.getEntityFunction(),
+                new ReferenceProperty( value ) );
             associations.put( associationDescriptor.accessor(), associationInstance1 );
         }
 
-        this.manyAssociations = new LinkedHashMap<AccessibleObject, ManyAssociationInstance<?>>();
+        this.manyAssociations = new LinkedHashMap<>();
         for( AssociationDescriptor associationDescriptor : valueModel.state().manyAssociations() )
         {
             AssociationInfo builderInfo = ( (ManyAssociationModel) associationDescriptor ).getBuilderInfo();
             List<EntityReference> value = stateResolver.getManyAssociationState( associationDescriptor );
             ManyAssociationValueState manyAssociationState = new ManyAssociationValueState( value );
-            ManyAssociationInstance<Object> associationInstance = new ManyAssociationInstance<Object>( builderInfo, currentModule.getEntityFunction(),
-                                                                                                       manyAssociationState );
+            ManyAssociationInstance<Object> associationInstance = new ManyAssociationInstance<>(
+                builderInfo,
+                currentModule.getEntityFunction(),
+                manyAssociationState );
             manyAssociations.put( associationDescriptor.accessor(), associationInstance );
         }
     }
@@ -136,6 +158,10 @@ public final class ValueStateInstance
     @Override
     public boolean equals( Object obj )
     {
+        if( !( obj instanceof ValueStateInstance ) )
+        {
+            return false;
+        }
         ValueStateInstance state = (ValueStateInstance) obj;
         if( !properties.equals( state.properties ) )
         {
@@ -145,12 +171,7 @@ public final class ValueStateInstance
         {
             return false;
         }
-        if( !manyAssociations.equals( state.manyAssociations ) )
-        {
-            return false;
-        }
-
-        return true;
+        return manyAssociations.equals( state.manyAssociations );
     }
 
     @Override

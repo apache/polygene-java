@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008-2013, Niclas Hedhman. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.AccessibleObject;
@@ -37,8 +55,7 @@ public final class EntityStateInstance
     private EntityState entityState;
     protected Function2<EntityReference, Type, Object> entityFunction;
 
-    public EntityStateInstance( EntityStateModel stateModel, final UnitOfWork uow, EntityState entityState
-    )
+    public EntityStateInstance( EntityStateModel stateModel, final UnitOfWork uow, EntityState entityState )
     {
         this.stateModel = stateModel;
         this.entityState = entityState;
@@ -64,12 +81,11 @@ public final class EntityStateInstance
         if( property == null )
         {
             PropertyModel entityPropertyModel = stateModel.propertyModelFor( accessor );
-            if( entityPropertyModel == null )
-            {
-                throw new IllegalArgumentException( "No such property:" + accessor );
-            }
-
-            property = new EntityPropertyInstance<>( entityState instanceof BuilderEntityState ? entityPropertyModel.getBuilderInfo() : entityPropertyModel, entityState );
+            property = new EntityPropertyInstance<>(
+                entityState instanceof BuilderEntityState
+                ? entityPropertyModel.getBuilderInfo()
+                : entityPropertyModel,
+                entityState );
             state.put( accessor, property );
         }
 
@@ -99,12 +115,12 @@ public final class EntityStateInstance
         if( association == null )
         {
             final AssociationModel associationModel = stateModel.getAssociation( accessor );
-            if( associationModel == null )
-            {
-                throw new IllegalArgumentException( "No such association:" + accessor );
-            }
-
-            association = new AssociationInstance<>( entityState instanceof BuilderEntityState ? associationModel.getBuilderInfo() : associationModel, entityFunction, new Property<EntityReference>()
+            association = new AssociationInstance<>(
+                entityState instanceof BuilderEntityState
+                ? associationModel.getBuilderInfo()
+                : associationModel,
+                entityFunction,
+                new Property<EntityReference>()
             {
                 @Override
                 public EntityReference get()
@@ -147,15 +163,13 @@ public final class EntityStateInstance
 
         if( manyAssociation == null )
         {
-            final ManyAssociationModel associationModel = stateModel.getManyAssociation( accessor );
-            if( associationModel == null )
-            {
-                throw new IllegalArgumentException( "No such many-association:" + accessor );
-            }
-
-            manyAssociation = new ManyAssociationInstance<>( entityState instanceof BuilderEntityState ? associationModel
-                .getBuilderInfo() : associationModel, entityFunction, entityState.manyAssociationValueOf( associationModel
-                                                                                                              .qualifiedName() ) );
+            ManyAssociationModel associationModel = stateModel.getManyAssociation( accessor );
+            manyAssociation = new ManyAssociationInstance<>(
+                entityState instanceof BuilderEntityState
+                ? associationModel.getBuilderInfo()
+                : associationModel,
+                entityFunction,
+                entityState.manyAssociationValueOf( associationModel.qualifiedName() ) );
             state.put( accessor, manyAssociation );
         }
 

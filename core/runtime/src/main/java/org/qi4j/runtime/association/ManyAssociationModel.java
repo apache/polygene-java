@@ -1,17 +1,20 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
  *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
-
 package org.qi4j.runtime.association;
 
 import java.lang.reflect.AccessibleObject;
@@ -55,12 +58,12 @@ import static org.qi4j.functional.Iterables.first;
 public final class ManyAssociationModel
     implements AssociationDescriptor, AssociationInfo, Binder, Visitable<ManyAssociationModel>
 {
-    private ValueConstraintsInstance associationConstraints;
-    private MetaInfo metaInfo;
+    private final ValueConstraintsInstance associationConstraints;
+    private final MetaInfo metaInfo;
     private Type type;
-    private AccessibleObject accessor;
+    private final AccessibleObject accessor;
     private QualifiedName qualifiedName;
-    private ValueConstraintsInstance constraints;
+    private final ValueConstraintsInstance constraints;
     private boolean queryable;
     private boolean immutable;
     private boolean aggregated;
@@ -139,7 +142,7 @@ public final class ManyAssociationModel
 
     public <T> ManyAssociation<T> newInstance( final ModuleUnitOfWork uow, EntityState state )
     {
-        return new ManyAssociationInstance<T>( state instanceof BuilderEntityState ? builderInfo : this, new Function2<EntityReference, Type, Object>()
+        return new ManyAssociationInstance<>( state instanceof BuilderEntityState ? builderInfo : this, new Function2<EntityReference, Type, Object>()
         {
             @Override
             public Object map( EntityReference entityReference, Type type )
