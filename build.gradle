@@ -381,7 +381,7 @@ task javadocs( type: Javadoc ) {
   classpath = files( apiSources.collect { project ->
     project.sourceSets.main.compileClasspath
   } )
-  options.links( "http://java.sun.com/j2se/1.6.0/docs/api" )
+  options.links( "http://docs.oracle.com/javase/7/docs/api/" )
   options.group( [ "Core API": [ "org.qi4j.api", "org.qi4j.api.*", "org.qi4j.io", "org.qi4j.functional" ],
                          "Core Bootstrap": [ "org.qi4j.bootstrap", "org.qi4j.bootstrap.*" ],
                          "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
