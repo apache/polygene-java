@@ -1,22 +1,22 @@
-/*  Copyright 2009 Tonny Kohar.
+/*
+ * Copyright (c) 2009, Tony Kohar. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * limitations under the License. 
  */
 package org.qi4j.swing.library.swing.entityviewer.sample;
 
-import java.awt.GraphicsEnvironment;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityBuilder;
@@ -32,8 +32,7 @@ import org.qi4j.library.swing.entityviewer.EntityViewer;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assume.*;
+import static org.qi4j.test.util.Assume.assumeDisplayPresent;
 
 public class ApplicationSample
     extends AbstractQi4jTest
@@ -42,10 +41,7 @@ public class ApplicationSample
     @BeforeClass
     public static void assumeDisplay()
     {
-        assumeFalse( GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() );
-        String display = System.getenv( "DISPLAY" );
-        assumeThat( display, is( notNullValue() ) );
-        assumeTrue( display.length() > 0 );
+        assumeDisplayPresent();
     }
 
     @Override
@@ -59,28 +55,22 @@ public class ApplicationSample
     }
 
     public void createTestData()
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork uow = module.newUnitOfWork();
-        try
-        {
-            createCar( "Volvo", "S80", 2007 );
-            createCar( "Volvo", "C70", 2006 );
-            createCar( "Ford", "Transit", 2007 );
-            createCar( "Ford", "Mustang", 2007 );
-            createCar( "Ford", "Mustang", 2006 );
-            createCar( "Ford", "Mustang", 2005 );
+        createCar( "Volvo", "S80", 2007 );
+        createCar( "Volvo", "C70", 2006 );
+        createCar( "Ford", "Transit", 2007 );
+        createCar( "Ford", "Mustang", 2007 );
+        createCar( "Ford", "Mustang", 2006 );
+        createCar( "Ford", "Mustang", 2005 );
 
-            createAnimal( "Cat", "Miaow" );
-            createAnimal( "Duck", "Kwek-kwek" );
-            createAnimal( "Dog", "Guk" );
-            createAnimal( "Cow", "Moooo" );
+        createAnimal( "Cat", "Miaow" );
+        createAnimal( "Duck", "Kwek-kwek" );
+        createAnimal( "Dog", "Guk" );
+        createAnimal( "Cow", "Moooo" );
 
-            uow.complete();
-        }
-        catch( UnitOfWorkCompletionException e )
-        {
-            e.printStackTrace();
-        }
+        uow.complete();
     }
 
     public void testQuery()
