@@ -265,6 +265,7 @@ public final class QueryExpressions
      *
      * @return a new AND specification
      */
+    @SafeVarargs
     public static AndSpecification and( Specification<Composite> left,
                                         Specification<Composite> right,
                                         Specification<Composite>... optionalRight
@@ -282,6 +283,7 @@ public final class QueryExpressions
      *
      * @return a new OR specification
      */
+    @SafeVarargs
     public static OrSpecification or( Specification<Composite> left,
                                       Specification<Composite> right,
                                       Specification<Composite>... optionalRight

@@ -132,7 +132,8 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    public ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators )
+    @SafeVarargs
+    public final ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators )
     {
         this.activators.addAll( Arrays.asList( activators ) );
         return this;

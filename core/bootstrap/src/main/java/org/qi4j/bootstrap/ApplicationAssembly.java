@@ -101,7 +101,8 @@ public interface ApplicationAssembly
      *
      * @param activators the application activators
      * @return the assembly
-     */    
+     */
+    @SuppressWarnings( { "unchecked","varargs" } )
     ApplicationAssembly withActivators( Class<? extends Activator<Application>>... activators );
 
     <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )

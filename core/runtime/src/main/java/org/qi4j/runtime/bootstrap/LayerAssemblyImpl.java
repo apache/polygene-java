@@ -116,7 +116,8 @@ public final class LayerAssemblyImpl
     }
 
     @Override
-    public LayerAssembly withActivators( Class<? extends Activator<Layer>>... activators )
+    @SafeVarargs
+    public final LayerAssembly withActivators( Class<? extends Activator<Layer>>... activators )
     {
         this.activators.addAll( Arrays.asList( activators ) );
         return this;
@@ -280,7 +281,8 @@ public final class LayerAssemblyImpl
             }
 
             @Override
-            public ServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
+            @SafeVarargs
+            public final ServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
             {
                 for( ServiceDeclaration declaration : declarations )
                 {
@@ -576,7 +578,8 @@ public final class LayerAssemblyImpl
             }
 
             @Override
-            public ImportedServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
+            @SafeVarargs
+            public final ImportedServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
             {
                 for( ImportedServiceDeclaration declaration : declarations )
                 {

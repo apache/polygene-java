@@ -100,7 +100,8 @@ public final class ApplicationAssemblyImpl
     }
 
     @Override
-    public ApplicationAssembly withActivators( Class<? extends Activator<Application>>... activators )
+    @SafeVarargs
+    public final ApplicationAssembly withActivators( Class<? extends Activator<Application>>... activators )
     {
         this.activators.addAll( Arrays.asList( activators ) );
         return this;

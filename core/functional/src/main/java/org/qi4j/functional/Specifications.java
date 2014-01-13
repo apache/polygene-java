@@ -42,6 +42,7 @@ public class Specifications
         };
     }
 
+    @SafeVarargs
     public static <T> AndSpecification<T> and( final Specification<T>... specifications )
     {
         return and( Iterables.iterable( specifications ) );
@@ -52,6 +53,7 @@ public class Specifications
         return new AndSpecification<>( specifications );
     }
 
+    @SafeVarargs
     public static <T> OrSpecification<T> or( final Specification<T>... specifications )
     {
         return or( Iterables.iterable( specifications ) );
@@ -62,6 +64,7 @@ public class Specifications
         return new OrSpecification<>( specifications );
     }
 
+    @SafeVarargs
     public static <T> Specification<T> in( final T... allowed )
     {
         return in( Iterables.iterable( allowed ) );
@@ -139,14 +142,16 @@ public class Specifications
             return true;
         }
 
-        public AndSpecification<T> and( Specification<T>... specifications )
+        @SafeVarargs
+        public final AndSpecification<T> and( Specification<T>... specifications )
         {
             Iterable<Specification<T>> iterable = Iterables.iterable( specifications );
             Iterable<Specification<T>> flatten = Iterables.flatten( this.specifications, iterable );
             return Specifications.and( flatten );
         }
 
-        public OrSpecification<T> or( Specification<T>... specifications )
+        @SafeVarargs
+        public final OrSpecification<T> or( Specification<T>... specifications )
         {
             return Specifications.or( Iterables.prepend( this, Iterables.iterable( specifications ) ) );
         }
@@ -179,12 +184,14 @@ public class Specifications
             return false;
         }
 
-        public AndSpecification<T> and( Specification<T>... specifications )
+        @SafeVarargs
+        public final AndSpecification<T> and( Specification<T>... specifications )
         {
             return Specifications.and( Iterables.prepend( this, Iterables.iterable( specifications ) ) );
         }
 
-        public OrSpecification<T> or( Specification<T>... specifications )
+        @SafeVarargs
+        public final OrSpecification<T> or( Specification<T>... specifications )
         {
             Iterable<Specification<T>> iterable = Iterables.iterable( specifications );
             Iterable<Specification<T>> flatten = Iterables.flatten( this.specifications, iterable );

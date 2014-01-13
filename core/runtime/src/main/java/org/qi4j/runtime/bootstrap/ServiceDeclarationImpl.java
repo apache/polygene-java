@@ -140,7 +140,8 @@ public final class ServiceDeclarationImpl
     }
 
     @Override
-    public ServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
+    @SafeVarargs
+    public final ServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
     {
         for ( ServiceAssemblyImpl serviceAssembly : serviceAssemblies ) {
             serviceAssembly.activators.addAll( asList( activators ) );

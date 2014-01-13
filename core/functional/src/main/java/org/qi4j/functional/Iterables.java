@@ -331,7 +331,7 @@ public final class Iterables
         return new FlattenIterable<>( Iterables.<Iterable<X>>cast( multiIterator ) );
     }
 
-    @SuppressWarnings( "varargs" )
+    @SafeVarargs
     public static <T> Iterable<T> mix( final Iterable<T>... iterables )
     {
         return new Iterable<T>()
@@ -422,7 +422,7 @@ public final class Iterables
         return list;
     }
 
-    @SuppressWarnings( "varargs" )
+    @SafeVarargs
     public static <T> Iterable<T> iterable( T... items )
     {
         return Arrays.asList( items );
@@ -567,7 +567,7 @@ public final class Iterables
         };
     }
 
-    @SuppressWarnings( "varargs" )
+    @SafeVarargs
     public static <T> Iterable<T> debug( String format,
                                          final Iterable<T> iterable,
                                          final Function<T, String>... functions

@@ -33,6 +33,7 @@ public final class AssemblerCollection
         this.assemblers = Arrays.asList( assemblers );
     }
 
+    @SafeVarargs
     public AssemblerCollection( Class<? extends Assembler>... assemblyClasses )
         throws AssemblyException
     {

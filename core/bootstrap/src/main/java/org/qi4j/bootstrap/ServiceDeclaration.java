@@ -53,5 +53,6 @@ public interface ServiceDeclaration
      * @param activators the service activators
      * @return the assembly
      */    
+    @SuppressWarnings( { "unchecked","varargs" } )
     ServiceDeclaration withActivators( Class<? extends Activator<?>>... activators );
 }

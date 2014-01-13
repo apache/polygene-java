@@ -71,6 +71,7 @@ public interface ModuleAssembly
      * @param activators the module activators
      * @return the assembly
      */    
+    @SuppressWarnings( { "unchecked","varargs" } )
     ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators );
 
     /**

@@ -112,7 +112,8 @@ public final class ImportedServiceDeclarationImpl
     }
 
     @Override
-    public ImportedServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
+    @SafeVarargs
+    public final ImportedServiceDeclaration withActivators( Class<? extends Activator<?>>... activators )
     {
         for ( ImportedServiceAssemblyImpl serviceAssembly : assemblies ) {
             serviceAssembly.activators.addAll( Arrays.asList( activators ) );

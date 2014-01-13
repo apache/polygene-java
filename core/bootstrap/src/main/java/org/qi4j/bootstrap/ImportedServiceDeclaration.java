@@ -58,5 +58,6 @@ public interface ImportedServiceDeclaration
      * @param activators the imported service activators
      * @return the assembly
      */    
+    @SuppressWarnings( { "unchecked","varargs" } )
     ImportedServiceDeclaration withActivators( Class<? extends Activator<?>>... activators );
 }

@@ -55,6 +55,7 @@ public interface LayerAssembly
      * @param activators the layer activators
      * @return the assembly
      */    
+    @SuppressWarnings( { "unchecked","varargs" } )
     LayerAssembly withActivators( Class<? extends Activator<Layer>>... activators );
 
     <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
