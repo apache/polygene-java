@@ -88,6 +88,7 @@ allprojects {
   version = System.properties.version ?: "0"
   tasks.withType(Compile) {
     options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
   }
   tasks.withType(Javadoc) {
     options.encoding = 'UTF-8'
