@@ -57,6 +57,7 @@ public final class ObjectModel
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public Iterable<Class<?>> types()
     {
         Iterable<? extends Class<?>> iterable = iterable( objectType );

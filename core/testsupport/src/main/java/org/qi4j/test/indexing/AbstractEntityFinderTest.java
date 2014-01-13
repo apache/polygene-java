@@ -43,7 +43,18 @@ import org.qi4j.test.indexing.model.Nameable;
 import org.qi4j.test.indexing.model.Person;
 
 import static org.junit.Assert.assertEquals;
-import static org.qi4j.api.query.QueryExpressions.*;
+import static org.qi4j.api.query.QueryExpressions.and;
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.ge;
+import static org.qi4j.api.query.QueryExpressions.gt;
+import static org.qi4j.api.query.QueryExpressions.isNotNull;
+import static org.qi4j.api.query.QueryExpressions.isNull;
+import static org.qi4j.api.query.QueryExpressions.matches;
+import static org.qi4j.api.query.QueryExpressions.not;
+import static org.qi4j.api.query.QueryExpressions.or;
+import static org.qi4j.api.query.QueryExpressions.orderBy;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
+import static org.qi4j.api.query.QueryExpressions.variable;
 import static org.qi4j.functional.Iterables.toList;
 import static org.qi4j.test.indexing.NameableAssert.assertNames;
 
@@ -177,6 +188,7 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
+    @SuppressWarnings( "unchecked" )
     public void script07()
             throws EntityFinderException
     {
@@ -192,6 +204,7 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
+    @SuppressWarnings( "unchecked" )
     public void script08()
             throws EntityFinderException
     {
@@ -207,6 +220,7 @@ public abstract class AbstractEntityFinderTest
     }
 
     @Test
+    @SuppressWarnings( "unchecked" )
     public void script09()
             throws EntityFinderException
     {
@@ -363,7 +377,7 @@ public abstract class AbstractEntityFinderTest
     {
         // should return all Nameable entities with a name > "B" sorted by name
         Nameable nameable = templateFor( Nameable.class );
-        List<String> largerThanB = new ArrayList<String>();
+        List<String> largerThanB = new ArrayList<>();
         for ( String name : NameableAssert.allNames() ) {
             if ( name.compareTo( "B" ) > 0 ) {
                 largerThanB.add( name );
@@ -430,7 +444,7 @@ public abstract class AbstractEntityFinderTest
     {
         Nameable nameable = templateFor( Nameable.class );
         // Try using variables
-        Map<String, Object> variables = new HashMap<String, Object>();
+        Map<String, Object> variables = new HashMap<>();
         variables.put( "domain", "Gaming" );
         Iterable<EntityReference> entities = entityFinder.findEntities(
                 Domain.class,

@@ -74,7 +74,7 @@ public abstract class AbstractQueryTest
 
     private static void verifyUnorderedResults( final Iterable<? extends Nameable> results, final String... names )
     {
-        final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
+        final List<String> expected = new ArrayList<>( Arrays.asList( names ) );
 
         for( Nameable entity : results )
         {
@@ -90,8 +90,8 @@ public abstract class AbstractQueryTest
 
     private static void verifyOrderedResults( final Iterable<? extends Nameable> results, final String... names )
     {
-        final List<String> expected = new ArrayList<String>( Arrays.asList( names ) );
-        final List<String> actual = new ArrayList<String>();
+        final List<String> expected = new ArrayList<>( Arrays.asList( names ) );
+        final List<String> actual = new ArrayList<>();
         for( Nameable result : results )
         {
             actual.add( result.name().get() );
@@ -172,6 +172,7 @@ public abstract class AbstractQueryTest
     }
 
     @Test
+    @SuppressWarnings( "unchecked" )
     public void script07()
         throws EntityFinderException
     {
@@ -184,6 +185,7 @@ public abstract class AbstractQueryTest
     }
 
     @Test
+    @SuppressWarnings( "unchecked" )
     public void script08()
         throws EntityFinderException
     {
@@ -196,6 +198,7 @@ public abstract class AbstractQueryTest
     }
 
     @Test
+    @SuppressWarnings( "unchecked" )
     public void script09()
         throws EntityFinderException
     {
@@ -439,6 +442,7 @@ public abstract class AbstractQueryTest
 
     @Test
     @Ignore( "Wait till 1.1?" )
+    @SuppressWarnings( "unchecked" )
     public void script30()
     {
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
@@ -456,7 +460,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Map<String, String> info = new HashMap<String, String>();
+        Map<String, String> info = new HashMap<>();
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.additionalInfo(), info ) ) );
         System.out.println( "*** script31: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
@@ -467,7 +471,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Map<String, String> info = new HashMap<String, String>();
+        Map<String, String> info = new HashMap<>();
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.address().get().line1(), "Qi Alley 4j" ) ) );
         System.out.println( "*** script32: " + query );
         verifyUnorderedResults( query, "Joe Doe" );

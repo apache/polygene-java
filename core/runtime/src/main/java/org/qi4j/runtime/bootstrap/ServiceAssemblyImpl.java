@@ -56,6 +56,7 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
         return identity;
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     ServiceModel newServiceModel( StateDeclarations stateDeclarations, AssemblyHelper helper )
     {
         try
@@ -74,7 +75,7 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
         }
     }
     
-    protected Iterable<Class<? extends Activator<?>>> activatorsDeclarations( Iterable<? extends Class<?>> typess )
+    private Iterable<Class<? extends Activator<?>>> activatorsDeclarations( Iterable<? extends Class<?>> typess )
     {
         // Find activator declarations
         ArrayList<Type> allTypes = new ArrayList<>();

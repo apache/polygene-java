@@ -68,6 +68,7 @@ public @interface HasMetaInfo
             return new Specification<ServiceReference<?>>()
             {
                 @Override
+                @SuppressWarnings( {"raw", "unchecked"} )
                 public boolean satisfiedBy( ServiceReference<?> service )
                 {
                     for( Class metaInfoType : hasMetaInfo.value() )

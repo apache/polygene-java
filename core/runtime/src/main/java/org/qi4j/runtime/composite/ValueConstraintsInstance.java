@@ -33,6 +33,7 @@ public final class ValueConstraintsInstance
         OPTIONAL = new OptionalDummy();
     }
 
+    @SuppressWarnings( "raw" )
     private final List<ConstraintInstance> constraints;
     private String name;
     private boolean optional;
@@ -41,14 +42,14 @@ public final class ValueConstraintsInstance
     {
         this.name = name;
         this.optional = optional;
-        constraints = new ArrayList<ConstraintInstance>();
+        constraints = new ArrayList<>();
         for( AbstractConstraintModel constraintModel : constraintModels )
         {
-            ConstraintInstance instance = constraintModel.newInstance();
-            constraints.add( instance );
+            constraints.add( constraintModel.newInstance() );
         }
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     public List<ConstraintViolation> checkConstraints( Object value )
     {
         List<ConstraintViolation> violations = null;
@@ -65,7 +66,7 @@ public final class ValueConstraintsInstance
         {
             if( value == null )
             {
-                violations = new ArrayList<ConstraintViolation>();
+                violations = new ArrayList<>();
                 violations.add( new ConstraintViolation( name, OPTIONAL, null ) );
             }
         }
@@ -89,7 +90,7 @@ public final class ValueConstraintsInstance
                 {
                     if( violations == null )
                     {
-                        violations = new ArrayList<ConstraintViolation>();
+                        violations = new ArrayList<>();
                     }
                     ConstraintViolation violation = new ConstraintViolation( name, constraint.annotation(), value );
                     violations.add( violation );

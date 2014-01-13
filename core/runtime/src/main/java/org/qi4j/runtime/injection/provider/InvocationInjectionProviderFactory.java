@@ -21,6 +21,7 @@ public final class InvocationInjectionProviderFactory
     implements InjectionProviderFactory
 {
     @Override
+    @SuppressWarnings( "raw" )
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
@@ -45,13 +46,14 @@ public final class InvocationInjectionProviderFactory
         private final Resolution resolution;
         private final DependencyModel dependencyModel;
 
-        public InvocationDependencyResolution( Resolution resolution, DependencyModel dependencyModel )
+        private InvocationDependencyResolution( Resolution resolution, DependencyModel dependencyModel )
         {
             this.resolution = resolution;
             this.dependencyModel = dependencyModel;
         }
 
         @Override
+        @SuppressWarnings( {"raw", "unchecked"} )
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {

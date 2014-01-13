@@ -23,14 +23,17 @@ import org.qi4j.api.common.AppliesToFilter;
 final class TypeCheckAppliesToFilter
     implements AppliesToFilter
 {
+    @SuppressWarnings( "raw" )
     private final Class type;
 
+    @SuppressWarnings( "raw" )
     TypeCheckAppliesToFilter( Class type )
     {
         this.type = type;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
         return type.isAssignableFrom( compositeType );

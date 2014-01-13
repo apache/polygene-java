@@ -57,6 +57,7 @@ public final class InstanceImporter<T>
             Function<Class<?>, T> metaFinder = new Function<Class<?>, T>()
             {
                 @Override
+                @SuppressWarnings( "unchecked" )
                 public T map( Class<?> type )
                 {
                     return (T) metaInfoHolder.metaInfo( type );

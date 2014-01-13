@@ -216,6 +216,7 @@ public interface Configuration<T>
             }
         }
 
+        @SuppressWarnings( "unchecked" )
         public <T> T findConfigurationInstanceFor( ServiceComposite serviceComposite, UnitOfWork uow )
             throws InstantiationException
         {
@@ -228,17 +229,14 @@ public interface Configuration<T>
                 configuration = uow.get( serviceModel.<T>configurationType(), identity );
                 uow.pause();
             }
-            catch( NoSuchEntityException e )
+            catch( NoSuchEntityException | EntityTypeNotFoundException e )
             {
                 return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
             }
-            catch( EntityTypeNotFoundException e )
-            {
-                return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
-            }
-            return (T) configuration;
+            return configuration;
         }
 
+        @SuppressWarnings( "unchecked" )
         private <T> T initializeConfigurationInstance( ServiceComposite serviceComposite,
                                                        UnitOfWork uow,
                                                        ServiceDescriptor serviceModel,

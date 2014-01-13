@@ -60,7 +60,8 @@ import org.qi4j.functional.Function2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.empty;
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * Adapter for pull-parsing and tree-parsing capable ValueDeserializers.
@@ -92,7 +93,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private static final Logger PULL_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#PullParsing" );
     private static final Logger TREE_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#TreeParsing" );
     private static final String UTF_8 = "UTF-8";
-    private final Map<Class<?>, Function<Object, Object>> deserializers = new HashMap<Class<?>, Function<Object, Object>>();
+    private final Map<Class<?>, Function<Object, Object>> deserializers = new HashMap<>();
     private final Application application;
     private final Module module;
     private Function<Application, Module> valuesModuleFinder;
@@ -539,11 +540,11 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         Class<?> collectionMainType = first( collectionType.types() );
         if( Set.class.equals( collectionMainType ) )
         {
-            collection = new LinkedHashSet<T>();
+            collection = new LinkedHashSet<>();
         }
         else
         {
-            collection = new ArrayList<T>();
+            collection = new ArrayList<>();
         }
         return readArrayInCollection( input,
                                       this.<T>buildDeserializeInputFunction( collectionType.collectedType() ),
@@ -604,10 +605,11 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         return deserializeValueComposite( valueCompositeType, valueBuilderType, inputNode );
     }
 
+    @SuppressWarnings( "unchecked" )
     private <T> T deserializeValueComposite( ValueCompositeType valueCompositeType, Class<?> valueBuilderType, InputNodeType inputNode )
         throws Exception
     {
-        final Map<String, Object> stateMap = new HashMap<String, Object>();
+        final Map<String, Object> stateMap = new HashMap<>();
 
         // Properties
         for( PropertyDescriptor property : valueCompositeType.properties() )
@@ -771,12 +773,12 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         return valuesModule().newValueBuilderWithState(
             type,
             new Function<PropertyDescriptor, Object>()
+        {
+            @Override
+            public Object map( PropertyDescriptor property )
             {
-                @Override
-                public Object map( PropertyDescriptor property )
-                {
-                    return stateMap.get( property.qualifiedName().name() );
-                }
+                return stateMap.get( property.qualifiedName().name() );
+            }
             },
             new Function<AssociationDescriptor, EntityReference>()
             {
@@ -833,11 +835,11 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         Class<?> collectionMainType = first( collectionType.types() );
         if( Set.class.equals( collectionMainType ) )
         {
-            collection = new LinkedHashSet<T>();
+            collection = new LinkedHashSet<>();
         }
         else
         {
-            collection = new ArrayList<T>();
+            collection = new ArrayList<>();
         }
         putArrayNodeInCollection( inputNode,
                                   this.<T>buildDeserializeInputNodeFunction( collectionType.collectedType() ),

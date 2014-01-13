@@ -12,6 +12,7 @@ public class GtSpecification<T>
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     protected boolean compare( T value )
     {
         return ( (Comparable) value ).compareTo( this.value ) > 0;

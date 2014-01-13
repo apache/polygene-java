@@ -32,6 +32,7 @@ public abstract class UnitOfWorkTemplate<RESULT, ThrowableType extends Throwable
     protected abstract RESULT withUnitOfWork( UnitOfWork uow )
         throws ThrowableType;
 
+    @SuppressWarnings( "unchecked" )
     public RESULT withModule( Module module )
         throws ThrowableType, UnitOfWorkCompletionException
     {

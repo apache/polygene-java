@@ -86,7 +86,12 @@ allprojects {
 
   group = name.substring( 0, name.lastIndexOf( '.' ) )
   version = System.properties.version ?: "0"
-  [ compileJava, compileTestJava, javadoc ]*.options*.encoding = 'UTF-8'
+  tasks.withType(Compile) {
+    options.encoding = 'UTF-8'
+  }
+  tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+  }
 
   repositories {
     mavenCentral()

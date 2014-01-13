@@ -68,8 +68,8 @@ import static org.qi4j.runtime.composite.TransientInstance.compositeInstanceOf;
 public final class Qi4jRuntimeImpl
     implements Qi4jSPI, Qi4jRuntime
 {
-    private ApplicationAssemblyFactory applicationAssemblyFactory;
-    private ApplicationModelFactory applicationModelFactory;
+    private final ApplicationAssemblyFactory applicationAssemblyFactory;
+    private final ApplicationModelFactory applicationModelFactory;
 
     public Qi4jRuntimeImpl()
     {
@@ -104,6 +104,7 @@ public final class Qi4jRuntimeImpl
     // API
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> T dereference( T composite )
     {
         InvocationHandler handler = getInvocationHandler( composite );
@@ -119,6 +120,7 @@ public final class Qi4jRuntimeImpl
     }
 
     @Override
+    @SuppressWarnings( "raw" )
     public Module moduleOf( Object compositeOrServiceReferenceOrUow )
     {
         if( compositeOrServiceReferenceOrUow instanceof TransientComposite )
@@ -168,6 +170,7 @@ public final class Qi4jRuntimeImpl
     }
 
     @Override
+    @SuppressWarnings( "raw" )
     public ModelDescriptor modelDescriptorFor( Object compositeOrServiceReference )
     {
         if( compositeOrServiceReference instanceof TransientComposite )
@@ -271,6 +274,7 @@ public final class Qi4jRuntimeImpl
     }
 
     @Override
+    @SuppressWarnings( "raw" )
     public ServiceDescriptor serviceDescriptorFor( Object service )
     {
         if( service instanceof ServiceReferenceInstance )
@@ -288,6 +292,7 @@ public final class Qi4jRuntimeImpl
     }
 
     @Override
+    @SuppressWarnings( "raw" )
     public PropertyDescriptor propertyDescriptorFor( Property property )
     {
         while( property instanceof PropertyWrapper )

@@ -24,6 +24,7 @@ public final class ThisInjectionProviderFactory
     implements InjectionProviderFactory
 {
     @Override
+    @SuppressWarnings( "unchecked" )
     public InjectionProvider newInjectionProvider( Resolution bindingContext, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
@@ -66,13 +67,14 @@ public final class ThisInjectionProviderFactory
         }
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     private static class ThisInjectionProvider
         implements InjectionProvider
     {
         Constructor proxyConstructor;
         private Class[] interfaces;
 
-        public ThisInjectionProvider( Iterable<Class<?>> types )
+        private ThisInjectionProvider( Iterable<Class<?>> types )
         {
             try
             {

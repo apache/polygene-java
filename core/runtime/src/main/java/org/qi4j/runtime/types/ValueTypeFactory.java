@@ -55,6 +55,7 @@ public class ValueTypeFactory
         return instance;
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     public ValueType newValueType( Type type,
                                    Class declaringClass,
                                    Class compositeType,
@@ -146,6 +147,7 @@ public class ValueTypeFactory
         return valueType;
     }
 
+    @SuppressWarnings( "raw" )
     private static class ValueFinder
         extends HierarchicalVisitorAdapter<Object, Object, RuntimeException>
     {

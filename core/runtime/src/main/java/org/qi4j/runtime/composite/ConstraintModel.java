@@ -33,6 +33,7 @@ public final class ConstraintModel
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public ConstraintInstance<?, ?> newInstance()
     {
         try

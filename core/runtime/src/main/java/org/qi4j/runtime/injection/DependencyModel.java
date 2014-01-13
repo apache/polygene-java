@@ -295,6 +295,7 @@ public final class DependencyModel
         return getInjectedValue( injectedValue );
     }
 
+    @SuppressWarnings( "unchecked" )
     private Object getInjectedValue( Object injectionResult )
     {
         if( injectionResult == null )

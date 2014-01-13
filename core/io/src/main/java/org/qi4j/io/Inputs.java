@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.io;
 
 import java.io.BufferedOutputStream;
@@ -154,9 +153,7 @@ public class Inputs
                     stream = new GZIPInputStream( stream );
                 }
 
-                final BufferedReader reader = new BufferedReader( new InputStreamReader( stream, encoding ) );
-
-                try
+                try( BufferedReader reader = new BufferedReader( new InputStreamReader( stream, encoding ) ) )
                 {
                     output.receiveFrom( new Sender<String, IOException>()
                     {
@@ -171,10 +168,6 @@ public class Inputs
                             }
                         }
                     } );
-                }
-                finally
-                {
-                    reader.close();
                 }
             }
         };
@@ -219,9 +212,8 @@ public class Inputs
                 {
                     charSet = contentType.substring( contentType.indexOf( "charset=" ) + "charset=".length() );
                 }
-                final BufferedReader reader = new BufferedReader( new InputStreamReader( stream, charSet ) );
 
-                try
+                try( BufferedReader reader = new BufferedReader( new InputStreamReader( stream, charSet ) ) )
                 {
                     output.receiveFrom( new Sender<String, IOException>()
                     {
@@ -236,10 +228,6 @@ public class Inputs
                             }
                         }
                     } );
-                }
-                finally
-                {
-                    reader.close();
                 }
             }
         };
@@ -454,10 +442,11 @@ public class Inputs
                 output.receiveFrom( new Sender<ByteBuffer, IOException>()
                 {
                     @Override
+                    @SuppressWarnings( "unchecked" )
                     public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super ByteBuffer, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, IOException
                     {
-                        OutputStream out = new BufferedOutputStream( new OutputStream()
+                        try( OutputStream out = new BufferedOutputStream( new OutputStream()
                         {
                             @Override
                             public void write( int b )
@@ -480,9 +469,7 @@ public class Inputs
                                     throw new IOException( ex );
                                 }
                             }
-                        }, bufferSize );
-
-                        try
+                        }, bufferSize ) )
                         {
                             outputVisitor.visit( out );
                         }
@@ -490,13 +477,13 @@ public class Inputs
                         {
                             throw (ReceiverThrowableType) ex.getCause();
                         }
-                        finally
-                        {
-                            out.close();
-                        }
                     }
                 } );
             }
         };
+    }
+
+    private Inputs()
+    {
     }
 }

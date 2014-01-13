@@ -34,12 +34,15 @@ import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
 
 import static org.qi4j.api.util.Annotations.hasAnnotation;
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.iterable;
 
 public final class ServiceInjectionProviderFactory
     implements InjectionProviderFactory
 {
     @Override
+    @SuppressWarnings( "unchecked" )
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
@@ -176,10 +179,10 @@ public final class ServiceInjectionProviderFactory
     private abstract static class ServiceInjectionProvider
         implements InjectionProvider
     {
-        private Type serviceType;
-        private Specification<ServiceReference<?>> serviceQualifier;
+        private final Type serviceType;
+        private final Specification<ServiceReference<?>> serviceQualifier;
 
-        protected ServiceInjectionProvider( Type serviceType,
+        private ServiceInjectionProvider( Type serviceType,
                                             Specification<ServiceReference<?>> serviceQualifier
         )
         {

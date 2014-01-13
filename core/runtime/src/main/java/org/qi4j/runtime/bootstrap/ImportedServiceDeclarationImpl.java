@@ -59,6 +59,7 @@ public final class ImportedServiceDeclarationImpl
     }
 
     @Override
+    @SuppressWarnings( "raw" )
     public ImportedServiceDeclaration importedBy( Class<? extends ServiceImporter> sip )
     {
         for( ImportedServiceAssemblyImpl assembly : assemblies )

@@ -17,7 +17,7 @@ public abstract class AbstractAssociationInstance<T>
     implements AbstractAssociation
 {
     protected AssociationInfo associationInfo;
-    private Function2<EntityReference, Type, Object> entityFunction;
+    private final Function2<EntityReference, Type, Object> entityFunction;
 
     public AbstractAssociationInstance( AssociationInfo associationInfo,
                                         Function2<EntityReference, Type, Object> entityFunction
@@ -37,6 +37,7 @@ public abstract class AbstractAssociationInstance<T>
         this.associationInfo = newInfo;
     }
 
+    @SuppressWarnings( "unchecked" )
     protected T getEntity( EntityReference entityId )
     {
         if( entityId == null )

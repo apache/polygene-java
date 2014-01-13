@@ -33,6 +33,7 @@ import static org.qi4j.api.activation.ActivationEvent.EventType.PASSIVATING;
 /**
  * This class manage Activation of a target and propagates to children.
  */
+@SuppressWarnings( "raw" )
 public final class ActivationDelegate
     extends ActivationEventListenerSupport
 {
@@ -80,6 +81,7 @@ public final class ActivationDelegate
         activate( targetActivators, children, null );
     }
 
+    @SuppressWarnings( "unchecked" )
     public void activate( ActivatorsInstance targetActivators, Iterable<? extends Activation> children, Runnable callback )
         throws ActivationException
     {
@@ -157,6 +159,7 @@ public final class ActivationDelegate
         passivate( (Runnable) null );
     }
 
+    @SuppressWarnings( "unchecked" )
     public void passivate( Runnable callback )
         throws PassivationException
     {
@@ -299,6 +302,7 @@ public final class ActivationDelegate
         }
     }
 
+    @SuppressWarnings( "raw" )
     private static class PassiveServiceReference
         implements ServiceReference
     {

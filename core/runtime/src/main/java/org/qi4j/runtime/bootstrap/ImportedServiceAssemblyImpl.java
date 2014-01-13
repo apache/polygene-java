@@ -38,6 +38,7 @@ public final class ImportedServiceAssemblyImpl
 {
     private final Class<?> serviceType;
     private final ModuleAssemblyImpl moduleAssembly;
+    @SuppressWarnings( "raw" )
     Class<? extends ServiceImporter> serviceProvider = InstanceImporter.class;
     String identity;
     boolean importOnStartup = false;
@@ -57,6 +58,7 @@ public final class ImportedServiceAssemblyImpl
         return Iterables.<Class<?>>iterable( serviceType );
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     void addImportedServiceModel( List<ImportedServiceModel> serviceModels )
     {
         try
@@ -83,6 +85,7 @@ public final class ImportedServiceAssemblyImpl
         }
     }
 
+    @SuppressWarnings( "raw" )
     private String generateId( List<ImportedServiceModel> serviceModels, Class serviceType )
     {
         // Find identity that is not yet used

@@ -77,6 +77,7 @@ public class ActivatorModel<ActivateeType>
         }
     }
 
+    @SuppressWarnings( "unchecked" )
     public Activator<ActivateeType> newInstance( InjectionContext injectionContext )
     {
         try

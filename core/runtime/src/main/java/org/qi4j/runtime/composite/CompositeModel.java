@@ -108,6 +108,7 @@ public abstract class CompositeModel
     }
 
     @Override
+    @SuppressWarnings( {"raw", "unchecked"} )
     public Class<?> primaryType()
     {
         Class primaryType = null;
@@ -158,7 +159,7 @@ public abstract class CompositeModel
         return visitor.visitLeave( this );
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings( {"raw", "unchecked"} )
     private void createProxyClass()
     {
         Class<?> mainType = first( types );
@@ -237,6 +238,7 @@ public abstract class CompositeModel
         }
     }
 
+    @SuppressWarnings( "raw" )
     public <T> T newProxy( InvocationHandler invocationHandler, Class<T> mixinType )
         throws IllegalArgumentException
     {

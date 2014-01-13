@@ -31,7 +31,7 @@ public final class ValueBuilderInstance<T>
 {
 
     private final ModuleInstance currentModule;
-    private ValueInstance prototypeInstance;
+    private final ValueInstance prototypeInstance;
 
     public ValueBuilderInstance( ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, ValueStateModel.StateResolver stateResolver )
     {
@@ -60,6 +60,7 @@ public final class ValueBuilderInstance<T>
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T newInstance()
         throws ConstructionException
     {
@@ -71,7 +72,7 @@ public final class ValueBuilderInstance<T>
         {
             throw new NoSuchValueException( valueType.getName(), currentModule.name() );
         }
-        return new ValueBuilderWithPrototype<T>( valueModel, currentModule, prototype() ).newInstance();
+        return new ValueBuilderWithPrototype<>( valueModel, currentModule, prototype() ).newInstance();
     }
 
 }

@@ -31,6 +31,7 @@ public final class NewObjectImporter<T>
     private ObjectFactory obf;
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {

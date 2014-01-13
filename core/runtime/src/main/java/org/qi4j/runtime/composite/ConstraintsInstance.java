@@ -30,13 +30,14 @@ import static org.qi4j.functional.Iterables.iterable;
  */
 public final class ConstraintsInstance
 {
-    private List<ValueConstraintsInstance> valueConstraintsInstances;
+    private final List<ValueConstraintsInstance> valueConstraintsInstances;
 
     public ConstraintsInstance( List<ValueConstraintsInstance> parameterConstraints )
     {
         valueConstraintsInstances = parameterConstraints;
     }
 
+    @SuppressWarnings( "unchecked" )
     public void checkValid( Object instance, Method method, Object[] params )
         throws ConstraintViolationException
     {
@@ -55,7 +56,7 @@ public final class ConstraintsInstance
             {
                 if( violations == null )
                 {
-                    violations = new ArrayList<ConstraintViolation>();
+                    violations = new ArrayList<>();
                 }
                 violations.addAll( paramViolations );
             }

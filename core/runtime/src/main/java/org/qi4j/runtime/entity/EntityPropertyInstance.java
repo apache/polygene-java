@@ -24,7 +24,7 @@ import org.qi4j.spi.entity.EntityState;
 public class EntityPropertyInstance<T>
     extends PropertyInstance<T>
 {
-    private EntityState entityState;
+    private final EntityState entityState;
 
     /**
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
@@ -32,6 +32,7 @@ public class EntityPropertyInstance<T>
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
      * @param entityState
      */
+    @SuppressWarnings( "unchecked" )
     public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState )
     {
         super( aPropertyInfo, (T) entityState.propertyValueOf( aPropertyInfo.qualifiedName() ) );

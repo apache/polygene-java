@@ -89,6 +89,7 @@ public final class EntityInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> T proxy()
     {
         return (T) proxy;
@@ -262,11 +263,12 @@ public final class EntityInstance
         entityModel.invokeLifecycle( create, mixins, this, state );
     }
 
+    @SuppressWarnings( "raw" )
     private void removeAggregatedEntities( UnitOfWork unitOfWork )
     {
         // Calculate aggregated Entities
         AssociationStateDescriptor stateDescriptor = entityModel.state();
-        Set<Object> aggregatedEntities = new HashSet<Object>();
+        Set<Object> aggregatedEntities = new HashSet<>();
         Iterable<? extends AssociationDescriptor> associations = stateDescriptor.associations();
         for( AssociationDescriptor association : associations )
         {

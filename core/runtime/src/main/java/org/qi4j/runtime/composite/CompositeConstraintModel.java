@@ -24,7 +24,7 @@ import org.qi4j.api.constraint.Constraint;
 public final class CompositeConstraintModel
     extends AbstractConstraintModel
 {
-    private ValueConstraintsModel constraintsModel;
+    private final ValueConstraintsModel constraintsModel;
 
     public CompositeConstraintModel( Annotation annotation, ValueConstraintsModel constraintsModel )
     {
@@ -33,6 +33,7 @@ public final class CompositeConstraintModel
     }
 
     @Override
+    @SuppressWarnings( {"raw", "unchecked"} )
     public ConstraintInstance<?, ?> newInstance()
     {
         try
@@ -50,7 +51,7 @@ public final class CompositeConstraintModel
     private static class CompositeConstraintInstance
         implements Constraint<Annotation, Object>
     {
-        private ValueConstraintsInstance valueConstraintsInstance;
+        private final ValueConstraintsInstance valueConstraintsInstance;
 
         private CompositeConstraintInstance( ValueConstraintsInstance valueConstraintsInstance )
         {

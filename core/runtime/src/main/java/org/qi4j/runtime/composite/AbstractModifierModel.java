@@ -29,7 +29,11 @@ import org.qi4j.runtime.structure.ModuleInstance;
 
 import static org.qi4j.api.util.Classes.RAW_CLASS;
 import static org.qi4j.api.util.Classes.interfacesOf;
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.flattenIterables;
+import static org.qi4j.functional.Iterables.iterable;
+import static org.qi4j.functional.Iterables.map;
+import static org.qi4j.functional.Iterables.toArray;
+import static org.qi4j.functional.Iterables.unique;
 
 /**
  * JAVADOC
@@ -39,12 +43,13 @@ public abstract class AbstractModifierModel
 {
     private final Class<?> modifierClass;
 
-    private ConstructorsModel constructorsModel;
-    private InjectedFieldsModel injectedFieldsModel;
-    private InjectedMethodsModel injectedMethodsModel;
+    private final ConstructorsModel constructorsModel;
+    private final InjectedFieldsModel injectedFieldsModel;
+    private final InjectedMethodsModel injectedMethodsModel;
 
-    private Class<?>[] nextInterfaces;
+    private final Class<?>[] nextInterfaces;
 
+    @SuppressWarnings( "unchecked" )
     public AbstractModifierModel( Class<?> declaredModifierClass, Class<?> instantiationClass )
     {
         this.modifierClass = instantiationClass;
@@ -61,6 +66,7 @@ public abstract class AbstractModifierModel
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public Iterable<DependencyModel> dependencies()
     {
         return flattenIterables( map( DEPENDENCIES_FUNCTION, iterable( constructorsModel, injectedFieldsModel, injectedMethodsModel ) ) );
@@ -107,11 +113,7 @@ public abstract class AbstractModifierModel
                 modifier.getClass().getField( "_instance" ).set( modifier, proxyHandler );
             }
         }
-        catch( IllegalAccessException e )
-        {
-            e.printStackTrace();
-        }
-        catch( NoSuchFieldException e )
+        catch( IllegalAccessException | NoSuchFieldException e )
         {
             e.printStackTrace();
         }
@@ -163,15 +165,8 @@ public abstract class AbstractModifierModel
         {
             return false;
         }
-
         AbstractModifierModel that = (AbstractModifierModel) o;
-
-        if( !modifierClass.equals( that.modifierClass ) )
-        {
-            return false;
-        }
-
-        return true;
+        return modifierClass.equals( that.modifierClass );
     }
 
     @Override

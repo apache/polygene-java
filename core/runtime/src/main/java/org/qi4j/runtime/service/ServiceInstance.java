@@ -39,8 +39,8 @@ public class ServiceInstance
         return (TransientInstance) Proxy.getInvocationHandler( composite );
     }
 
-    private boolean implementsServiceAvailable;
-    private boolean hasEnabledConfiguration;
+    private final boolean implementsServiceAvailable;
+    private final boolean hasEnabledConfiguration;
 
     public ServiceInstance( ServiceModel compositeModel,
                             ModuleInstance moduleInstance,
@@ -70,6 +70,7 @@ public class ServiceInstance
         // NOOP
     }
 
+    @SuppressWarnings( "unchecked" )
     public boolean isAvailable()
     {
         // Check Enabled in configuration first

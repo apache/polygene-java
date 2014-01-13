@@ -43,9 +43,9 @@ import org.qi4j.runtime.structure.ModuleInstance;
 public final class ValueStateInstance
     implements AssociationStateHolder
 {
-    protected Map<AccessibleObject, PropertyInstance<?>> properties;
-    protected Map<AccessibleObject, AssociationInstance<?>> associations;
-    protected Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations;
+    private final Map<AccessibleObject, PropertyInstance<?>> properties;
+    private final Map<AccessibleObject, AssociationInstance<?>> associations;
+    private final Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations;
 
     public ValueStateInstance( Map<AccessibleObject, PropertyInstance<?>> properties,
                                Map<AccessibleObject, AssociationInstance<?>> associations,
@@ -98,6 +98,7 @@ public final class ValueStateInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> PropertyInstance<T> propertyFor( AccessibleObject accessor )
         throws IllegalArgumentException
     {
@@ -118,6 +119,7 @@ public final class ValueStateInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> AssociationInstance<T> associationFor( AccessibleObject accessor )
     {
         AssociationInstance<T> association = (AssociationInstance<T>) associations.get( accessor );
@@ -137,6 +139,7 @@ public final class ValueStateInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> ManyAssociationInstance<T> manyAssociationFor( AccessibleObject accessor )
     {
         ManyAssociationInstance<T> manyAssociation = (ManyAssociationInstance<T>) manyAssociations.get( accessor );

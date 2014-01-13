@@ -166,6 +166,7 @@ public class PropertyInstance<T>
         return value == null ? "" : value.toString();
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     public void prepareToBuild( PropertyModel propertyDescriptor )
     {
         // Check if state has to be modified
@@ -237,6 +238,7 @@ public class PropertyInstance<T>
         }
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     public void prepareBuilderState( PropertyModel propertyDescriptor )
     {
         // Check if state has to be modified

@@ -46,7 +46,7 @@ final class QueryBuilderImpl<T>
     /**
      * Where clause.
      */
-    private Specification<Composite> whereClause;
+    private final Specification<Composite> whereClause;
 
     /**
      * Constructor.
@@ -55,9 +55,9 @@ final class QueryBuilderImpl<T>
      * @param resultType   type of queried entities; cannot be null
      * @param whereClause  current where-clause
      */
-    public QueryBuilderImpl( final EntityFinder entityFinder,
-                             final Class<T> resultType,
-                             final Specification<Composite> whereClause
+    QueryBuilderImpl( final EntityFinder entityFinder,
+                      final Class<T> resultType,
+                      final Specification<Composite> whereClause
     )
     {
         this.entityFinder = entityFinder;
@@ -66,6 +66,7 @@ final class QueryBuilderImpl<T>
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public QueryBuilder<T> where( Specification<Composite> specification )
     {
         if( specification == null )
@@ -76,19 +77,19 @@ final class QueryBuilderImpl<T>
         {
             specification = QueryExpressions.and( this.whereClause, specification );
         }
-        return new QueryBuilderImpl<T>( entityFinder, resultType, specification );
+        return new QueryBuilderImpl<>( entityFinder, resultType, specification );
     }
 
     @Override
     public Query<T> newQuery( Iterable<T> iterable )
     {
-        return new QueryImpl<T>( resultType, whereClause, new IterableQuerySource( iterable ) );
+        return new QueryImpl<>( resultType, whereClause, new IterableQuerySource( iterable ) );
     }
 
     // SPI
     @Override
     public Query<T> newQuery( QuerySource querySource )
     {
-        return new QueryImpl<T>( resultType, whereClause, querySource );
+        return new QueryImpl<>( resultType, whereClause, querySource );
     }
 }

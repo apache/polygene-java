@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.functional;
 
 /**
@@ -192,4 +191,9 @@ public class Specifications
             return Specifications.or( flatten );
         }
     }
+
+    private Specifications()
+    {
+    }
+
 }

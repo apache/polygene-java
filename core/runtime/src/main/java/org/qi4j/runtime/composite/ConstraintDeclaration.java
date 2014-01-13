@@ -26,9 +26,11 @@ import org.qi4j.api.util.Classes;
 public final class ConstraintDeclaration
 {
     private final Class<? extends Constraint<?, ?>> constraintClass;
+    @SuppressWarnings( "raw" )
     private final Class constraintAnnotationType;
     private final Type constraintValueType;
 
+    @SuppressWarnings( "unchecked" )
     public ConstraintDeclaration( Class<? extends Constraint<?, ?>> constraintClass )
     {
         this.constraintClass = constraintClass;
@@ -43,6 +45,7 @@ public final class ConstraintDeclaration
         return constraintClass;
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     public boolean appliesTo( Class annotationType, Type valueType )
     {
         if( constraintValueType instanceof Class )

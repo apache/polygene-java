@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.io;
 
 import java.io.BufferedOutputStream;
@@ -68,6 +67,7 @@ public class Outputs
         return new Output<String, IOException>()
         {
             @Override
+            @SuppressWarnings( "unchecked" )
             public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
                 throws IOException, SenderThrowableType
             {
@@ -204,6 +204,7 @@ public class Outputs
         return new Output<ByteBuffer, IOException>()
         {
             @Override
+            @SuppressWarnings( "unchecked" )
             public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends ByteBuffer, SenderThrowableType> sender )
                 throws IOException, SenderThrowableType
             {
@@ -314,6 +315,7 @@ public class Outputs
         return new Output<byte[], IOException>()
         {
             @Override
+            @SuppressWarnings( "unchecked" )
             public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends byte[], SenderThrowableType> sender )
                 throws IOException, SenderThrowableType
             {
@@ -484,5 +486,9 @@ public class Outputs
                 } );
             }
         };
+    }
+
+    private Outputs()
+    {
     }
 }

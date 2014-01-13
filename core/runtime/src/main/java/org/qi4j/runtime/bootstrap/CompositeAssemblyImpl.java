@@ -244,6 +244,7 @@ public abstract class CompositeAssemblyImpl
                     Iterable<Class<?>> map1 = map( new DependencyModel.InjectionTypeFunction(),
                                                    filter( new DependencyModel.ScopeSpecification( This.class ),
                                                            mixinModel.dependencies() ) );
+                    @SuppressWarnings( "unchecked" )
                     Iterable<Class<?>> filter = filter(
                         not( in( Initializable.class, Lifecycle.class, InvocationHandler.class ) ),
                         map( Classes.RAW_CLASS, interfacesOf( mixinModel.mixinClass() ) )
@@ -275,11 +276,13 @@ public abstract class CompositeAssemblyImpl
                 mixinClasses,
                 mixinDeclarations( thisDependency ) );
 
+            @SuppressWarnings( "unchecked" )
             Iterable<? extends Class<?>> singleton = iterable( thisDependency );
             implementMixinType( singleton, typeConstraintClasses, typeConcernClasses, typeSideEffectClasses, typeMixinClasses );
         }
     }
 
+    @SuppressWarnings( "raw" )
     protected MixinModel implementMethod( Method method, Iterable<Class<?>> mixinDeclarations )
     {
         MixinModel implementationModel = mixinsModel.mixinFor( method );
@@ -304,6 +307,7 @@ public abstract class CompositeAssemblyImpl
                                              + "\nin\n    " + types );
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     private Class findTypedImplementation( final Method method, Iterable<Class<?>> mixins )
     {
         // Check if mixinClass implements the method. If so, check if the mixinClass is generic or if the filter passes.
@@ -322,6 +326,7 @@ public abstract class CompositeAssemblyImpl
                               mixins ) );
     }
 
+    @SuppressWarnings( "unchecked" )
     private Class<?> findGenericImplementation( final Method method, Iterable<Class<?>> mixins )
     {
         // Check if mixinClass is generic and the applies-to filter passes
@@ -608,6 +613,7 @@ public abstract class CompositeAssemblyImpl
         // Check annotations on method that have @Concerns annotations themselves
         for( Annotation annotation : method.getAnnotations() )
         {
+            @SuppressWarnings( "raw" )
             Concerns concerns = annotation.annotationType().getAnnotation( Concerns.class );
             if( concerns != null )
             {
@@ -674,6 +680,7 @@ public abstract class CompositeAssemblyImpl
         }
     }
 
+    @SuppressWarnings( "unchecked" )
     private Iterable<Class<? extends Constraint<?, ?>>> constraintDeclarations( Class<?> type )
     {
         Iterable<? extends Class<?>> iterable = iterable( type );
@@ -711,6 +718,7 @@ public abstract class CompositeAssemblyImpl
         return toList( flatten );
     }
 
+    @SuppressWarnings( "unchecked" )
     private Iterable<Class<?>> concernDeclarations( Class<?> type )
     {
         Iterable<? extends Class<?>> iterable = iterable( type );
@@ -756,6 +764,7 @@ public abstract class CompositeAssemblyImpl
         return toList( flatten );
     }
 
+    @SuppressWarnings( "unchecked" )
     protected Iterable<Class<?>> sideEffectDeclarations( Class<?> type )
     {
         Iterable<? extends Class<?>> iterable = iterable( type );
@@ -793,6 +802,7 @@ public abstract class CompositeAssemblyImpl
         return toList( flatten );
     }
 
+    @SuppressWarnings( "unchecked" )
     protected Iterable<Class<?>> mixinDeclarations( Class<?> type )
     {
         Iterable<? extends Class<?>> iterable = iterable( type );

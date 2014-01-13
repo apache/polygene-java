@@ -11,7 +11,7 @@ import org.qi4j.api.property.StateHolder;
 public final class TransientStateInstance
     implements StateHolder
 {
-    protected Map<AccessibleObject, Property<?>> properties;
+    private final Map<AccessibleObject, Property<?>> properties;
 
     public TransientStateInstance( Map<AccessibleObject, Property<?>> properties
     )
@@ -20,6 +20,7 @@ public final class TransientStateInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> Property<T> propertyFor( AccessibleObject accessor )
         throws IllegalArgumentException
     {

@@ -77,6 +77,7 @@ public final class ServiceModel extends CompositeModel
     private final String identity;
     private final boolean instantiateOnStartup;
     private final ActivatorsModel<?> activatorsModel;
+    @SuppressWarnings( "raw" )
     private final Class configurationType;
 
     public ServiceModel( Iterable<Class<?>> types,
@@ -112,12 +113,14 @@ public final class ServiceModel extends CompositeModel
         return identity;
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     public ActivatorsInstance<?> newActivatorsInstance( Module module ) throws Exception
     {
         return new ActivatorsInstance( activatorsModel.newInstances( module ) );
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> Class<T> configurationType()
     {
         return configurationType;
@@ -156,7 +159,7 @@ public final class ServiceModel extends CompositeModel
                 initialValue = identity;
             }
 
-            Property property = new PropertyInstance<>( propertyModel, initialValue );
+            Property<?> property = new PropertyInstance<>( propertyModel, initialValue );
             properties.put( propertyModel.accessor(), property );
         }
 
@@ -181,6 +184,7 @@ public final class ServiceModel extends CompositeModel
         return super.toString() + ":" + identity;
     }
 
+    @SuppressWarnings( { "raw", "unchecked" } )
     public Class calculateConfigurationType()
     {
         Class injectionClass = null;

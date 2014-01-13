@@ -42,6 +42,7 @@ public final class ImportedServiceModel
 {
     private final Class<?> type;
     private final Visibility visibility;
+    @SuppressWarnings( "raw" )
     private final Class<? extends ServiceImporter> serviceImporter;
     private final String identity;
     private final boolean importOnStartup;
@@ -49,6 +50,7 @@ public final class ImportedServiceModel
     private final ActivatorsModel<?> activatorsModel;
     private final String moduleName;
 
+    @SuppressWarnings( "raw" )
     public ImportedServiceModel( Class serviceType,
                                  Visibility visibility,
                                  Class<? extends ServiceImporter> serviceImporter,
@@ -75,6 +77,7 @@ public final class ImportedServiceModel
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public Iterable<Class<?>> types()
     {
         Iterable<? extends Class<?>> iterable = iterable( type );
@@ -94,6 +97,7 @@ public final class ImportedServiceModel
     }
 
     @Override
+    @SuppressWarnings( "raw" )
     public Class<? extends ServiceImporter> serviceImporter()
     {
         return serviceImporter;
@@ -116,6 +120,7 @@ public final class ImportedServiceModel
         return moduleName;
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     public ActivatorsInstance<?> newActivatorsInstance( Module module )
         throws Exception
     {
@@ -139,6 +144,7 @@ public final class ImportedServiceModel
         return visitor.visitLeave( this );
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     public <T> ImportedServiceInstance<T> importInstance( Module module )
     {
         ServiceImporter importer = module.newObject( serviceImporter );
@@ -157,6 +163,7 @@ public final class ImportedServiceModel
         }
     }
 
+    @SuppressWarnings( "raw" )
     public Object newProxy( InvocationHandler serviceInvocationHandler )
     {
         if( type.isInterface() )

@@ -55,6 +55,7 @@ public class ServiceInstanceImporter<T>
         return serviceImporter().isAvailable( instance );
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     private ServiceImporter<T> serviceImporter()
     {
         if( service == null )

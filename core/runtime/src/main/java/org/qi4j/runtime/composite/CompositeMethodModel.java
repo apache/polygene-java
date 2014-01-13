@@ -43,18 +43,18 @@ public final class CompositeMethodModel
     implements MethodDescriptor, Dependencies, VisitableHierarchy<Object, Object>
 {
     // Model
-    private Method method;
+    private final Method method;
     private Method invocationMethod; // This will be the _ prefixed method on typed mixins
-    private ConstraintsModel constraints;
-    private ConcernsModel concerns;
-    private SideEffectsModel sideEffects;
-    private MixinsModel mixins;
+    private final ConstraintsModel constraints;
+    private final ConcernsModel concerns;
+    private final SideEffectsModel sideEffects;
+    private final MixinsModel mixins;
     private AnnotatedElement annotations;
 
     // Context
 //    private final SynchronizedCompositeMethodInstancePool instancePool = new SynchronizedCompositeMethodInstancePool();
     private final AtomicInstancePool instancePool = new AtomicInstancePool();
-    private ConstraintsInstance constraintsInstance;
+    private final ConstraintsInstance constraintsInstance;
 
     public CompositeMethodModel( Method method,
                                  ConstraintsModel constraintsModel,
@@ -93,6 +93,7 @@ public final class CompositeMethodModel
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public Iterable<DependencyModel> dependencies()
     {
         return flattenIterables( filter( notNull(), iterable( concerns != null ? concerns.dependencies() : null,

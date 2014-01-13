@@ -39,6 +39,7 @@ public final class MetaInfoDeclaration
 
     public <T> MixinDeclaration<T> on( Class<T> mixinType )
     {
+        @SuppressWarnings( "unchecked" )
         InfoHolder<T> propertyDeclarationHolder = (InfoHolder<T>) mixinPropertyDeclarations.get( mixinType );
         if( propertyDeclarationHolder == null )
         {
@@ -119,12 +120,13 @@ public final class MetaInfoDeclaration
         // temporary holder
         private MetaInfo metaInfo = null;
 
-        public InfoHolder( Class<T> mixinType )
+        private InfoHolder( Class<T> mixinType )
         {
             this.mixinType = mixinType;
         }
 
         @Override
+        @SuppressWarnings( "raw" )
         public Object invoke( Object o, Method method, Object[] objects )
             throws Throwable
         {
@@ -198,6 +200,7 @@ public final class MetaInfoDeclaration
         // DSL Interface
 
         @Override
+        @SuppressWarnings( "raw" )
         public T declareDefaults()
         {
             return mixinType.cast(

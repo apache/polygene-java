@@ -56,15 +56,17 @@ import static org.qi4j.functional.Iterables.iterable;
 public final class ConstructorsModel
     implements Binder, Dependencies, VisitableHierarchy<Object, Object>
 {
+    @SuppressWarnings( "raw" )
     private final Class fragmentClass;
     private final List<ConstructorModel> constructorModels;
     private List<ConstructorModel> boundConstructors;
 
+    @SuppressWarnings( { "raw", "unchecked" } )
     public ConstructorsModel( Class fragmentClass )
     {
         this.fragmentClass = fragmentClass;
         validate( fragmentClass );
-        constructorModels = new ArrayList<ConstructorModel>();
+        constructorModels = new ArrayList<>();
         Constructor[] realConstructors = this.fragmentClass.getDeclaredConstructors();
         Class injectionClass = FragmentClassLoader.getSourceClass( fragmentClass );
         for( Constructor constructor : realConstructors )
@@ -89,6 +91,7 @@ public final class ConstructorsModel
         }
     }
 
+    @SuppressWarnings( "raw" )
     private void validate( Class fragmentClass )
     {
         // Ensure that the fragment class is not an inner class, in which case we should give a reasonable exception
@@ -118,6 +121,7 @@ public final class ConstructorsModel
         return Iterables.flattenIterables( Iterables.map( constructorDependencies, boundConstructors == null ? constructorModels : boundConstructors ) );
     }
 
+    @SuppressWarnings( "raw" )
     private ConstructorModel newConstructorModel( Class fragmentClass,
                                                   Constructor realConstructor,
                                                   Constructor injectedConstructor
@@ -212,7 +216,7 @@ public final class ConstructorsModel
     public void bind( final Resolution resolution )
         throws BindingException
     {
-        boundConstructors = new ArrayList<ConstructorModel>();
+        boundConstructors = new ArrayList<>();
         for( ConstructorModel constructorModel : constructorModels )
         {
             try

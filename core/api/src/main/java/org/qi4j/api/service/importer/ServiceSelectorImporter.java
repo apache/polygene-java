@@ -43,13 +43,14 @@ public final class ServiceSelectorImporter<T>
     private ServiceFinder locator;
 
     @Override
+    @SuppressWarnings( { "raw", "unchecked" } )
     public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
         Specification<ServiceReference<?>> selector = serviceDescriptor.metaInfo( Specification.class );
         Class serviceType = Iterables.first( serviceDescriptor.types() );
         Iterable<ServiceReference<T>> services = locator.findServices( serviceType );
-        List<ServiceReference<T>> filteredServices = new ArrayList<ServiceReference<T>>();
+        List<ServiceReference<T>> filteredServices = new ArrayList<>();
         for( ServiceReference<T> service : services )
         {
             Specification selector1 = service.metaInfo( Specification.class );

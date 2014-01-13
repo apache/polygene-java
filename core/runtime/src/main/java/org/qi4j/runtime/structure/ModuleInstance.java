@@ -97,8 +97,15 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerialization;
 
-import static org.qi4j.api.util.Classes.*;
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.api.util.Classes.RAW_CLASS;
+import static org.qi4j.api.util.Classes.modelTypeSpecification;
+import static org.qi4j.functional.Iterables.cast;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.flatten;
+import static org.qi4j.functional.Iterables.iterable;
+import static org.qi4j.functional.Iterables.map;
+import static org.qi4j.functional.Iterables.toList;
 
 /**
  * Instance of a Qi4j Module. Contains the various composites for this Module.
@@ -374,7 +381,7 @@ public class ModuleInstance
 
         private final ModuleInstance module;
 
-        public InitialStateResolver( ModuleInstance module )
+        private InitialStateResolver( ModuleInstance module )
         {
             this.module = module;
         }
@@ -435,6 +442,7 @@ public class ModuleInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> ValueBuilder<T> newValueBuilderWithPrototype( T prototype )
     {
         NullArgumentException.validateNotNull( "prototype", prototype );
@@ -559,6 +567,7 @@ public class ModuleInstance
 
     // Implementation of Activation
     @Override
+    @SuppressWarnings( "unchecked" )
     public void activate()
         throws ActivationException
     {

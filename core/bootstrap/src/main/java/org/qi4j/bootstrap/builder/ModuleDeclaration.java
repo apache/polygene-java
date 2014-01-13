@@ -53,6 +53,7 @@ public class ModuleDeclaration
         }
     }
 
+    @SuppressWarnings( "unchecked" )
     private Class<? extends Assembler> loadClass( String classname )
         throws AssemblyException
     {

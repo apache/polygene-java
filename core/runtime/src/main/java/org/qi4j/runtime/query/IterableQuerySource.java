@@ -34,13 +34,14 @@ import org.qi4j.spi.query.QuerySource;
 public class IterableQuerySource
     implements QuerySource
 {
-    private Iterable iterable;
+    private final Iterable iterable;
 
     /**
      * Constructor.
      *
      * @param iterable iterable
      */
+    @SuppressWarnings( "raw" )
     IterableQuerySource( final Iterable iterable )
     {
         this.iterable = iterable;
@@ -87,6 +88,7 @@ public class IterableQuerySource
         return list( resultType, whereClause, orderBySegments, firstResult, maxResults, variables ).iterator();
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     private <T> List<T> list( Class<T> resultType,
                               Specification<Composite> whereClause,
                               Iterable<OrderBy> orderBySegments,
@@ -143,6 +145,7 @@ public class IterableQuerySource
         return list;
     }
 
+    @SuppressWarnings( {"raw", "unchecked"} )
     private <T> List<T> filter( Class<T> resultType, Specification whereClause )
     {
         if( whereClause == null )
@@ -165,7 +168,7 @@ public class IterableQuerySource
         implements Comparator<T>
     {
 
-        private Iterable<OrderBy> orderBySegments;
+        private final Iterable<OrderBy> orderBySegments;
 
         private OrderByComparator( Iterable<OrderBy> orderBySegments )
         {
@@ -173,6 +176,7 @@ public class IterableQuerySource
         }
 
         @Override
+        @SuppressWarnings( {"raw", "unchecked"} )
         public int compare( T o1, T o2 )
         {
             for( OrderBy orderBySegment : orderBySegments )

@@ -35,7 +35,7 @@ public final class EntityBuilderInstance<T>
 {
     private static final QualifiedName identityStateName;
 
-    private ModelModule<EntityModel> model;
+    private final ModelModule<EntityModel> model;
     private final ModuleUnitOfWork uow;
     private final EntityStoreUnitOfWork store;
     private String identity;
@@ -89,6 +89,7 @@ public final class EntityBuilderInstance<T>
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public T newInstance()
         throws LifecycleException
     {

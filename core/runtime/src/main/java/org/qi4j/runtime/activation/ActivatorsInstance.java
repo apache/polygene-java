@@ -29,6 +29,7 @@ import org.qi4j.functional.Iterables;
 public class ActivatorsInstance<ActivateeType>
     implements Activator<ActivateeType>
 {
+    @SuppressWarnings( {"raw", "unchecked"} )
     public static final ActivatorsInstance EMPTY = new ActivatorsInstance( Collections.emptyList() );
 
     private final Iterable<Activator<ActivateeType>> activators;

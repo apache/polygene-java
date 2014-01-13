@@ -23,9 +23,9 @@ import static org.qi4j.api.util.Classes.typeOf;
 public class PropertyFunction<T>
     implements Function<Composite, Property<T>>
 {
-    private PropertyFunction<?> traversedProperty;
-    private AssociationFunction<?> traversedAssociation;
-    private ManyAssociationFunction<?> traversedManyAssociation;
+    private final PropertyFunction<?> traversedProperty;
+    private final AssociationFunction<?> traversedAssociation;
+    private final ManyAssociationFunction<?> traversedManyAssociation;
     private final AccessibleObject accessor;
 
     public PropertyFunction( PropertyFunction<?> traversedProperty,
@@ -58,6 +58,7 @@ public class PropertyFunction<T>
         {
             throw new QueryExpressionException( "Unsupported property type:" + propertyTypeAsType );
         }
+        @SuppressWarnings( "unchecked" )
         Class<T> type = (Class<T>) propertyTypeAsType;
         NotQueryableException.throwIfNotQueryable( type );
     }

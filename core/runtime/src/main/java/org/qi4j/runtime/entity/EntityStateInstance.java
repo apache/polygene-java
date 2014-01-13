@@ -49,11 +49,11 @@ import org.qi4j.spi.entity.EntityState;
 public final class EntityStateInstance
     implements AssociationStateHolder
 {
-    protected Map<AccessibleObject, Object> state;
+    private Map<AccessibleObject, Object> state;
 
     private final EntityStateModel stateModel;
     private EntityState entityState;
-    protected Function2<EntityReference, Type, Object> entityFunction;
+    private final Function2<EntityReference, Type, Object> entityFunction;
 
     public EntityStateInstance( EntityStateModel stateModel, final UnitOfWork uow, EntityState entityState )
     {
@@ -71,6 +71,7 @@ public final class EntityStateInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> Property<T> propertyFor( AccessibleObject accessor )
         throws IllegalArgumentException
     {
@@ -106,6 +107,7 @@ public final class EntityStateInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> Association<T> associationFor( AccessibleObject accessor )
         throws IllegalArgumentException
     {
@@ -155,6 +157,7 @@ public final class EntityStateInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> ManyAssociation<T> manyAssociationFor( AccessibleObject accessor )
     {
         Map<AccessibleObject, Object> state = state();

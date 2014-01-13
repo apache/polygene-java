@@ -35,7 +35,7 @@ public final class PropertyMapper
 
     static
     {
-        STRATEGY = new HashMap<Type, MappingStrategy>();
+        STRATEGY = new HashMap<>();
         STRATEGY.put( Integer.class, new IntegerMapper() );
         STRATEGY.put( Long.class, new LongMapper() );
         STRATEGY.put( Short.class, new ShortMapper() );
@@ -101,6 +101,7 @@ public final class PropertyMapper
         }
     }
 
+    @SuppressWarnings( "raw" )
     private static Object mapToType( Composite composite, Type propertyType, Object value )
     {
         final String stringValue = value.toString();
@@ -217,15 +218,7 @@ public final class PropertyMapper
                     Property<?> property = (Property<?>) propertyMethod.invoke( composite );
                     return property.get();
                 }
-                catch( NoSuchMethodException e )
-                {
-                    return null;
-                }
-                catch( IllegalAccessException e )
-                {
-                    return null;
-                }
-                catch( InvocationTargetException e )
+                catch( NoSuchMethodException | IllegalAccessException | InvocationTargetException e )
                 {
                     return null;
                 }
@@ -241,15 +234,7 @@ public final class PropertyMapper
                     Method propertyMethod = composite.getClass().getMethod( o.toString(), Object.class );
                     propertyMethod.invoke( composite, o1 );
                 }
-                catch( NoSuchMethodException e )
-                {
-                    e.printStackTrace();
-                }
-                catch( IllegalAccessException e )
-                {
-                    e.printStackTrace();
-                }
-                catch( InvocationTargetException e )
+                catch( NoSuchMethodException | IllegalAccessException | InvocationTargetException e )
                 {
                     e.printStackTrace();
                 }
@@ -435,6 +420,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
+        @SuppressWarnings( "unchecked" )
         public Object map( Composite composite, Type type, String value )
         {
             return Enum.valueOf( (Class<Enum>) type, value );
@@ -455,6 +441,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
+        @SuppressWarnings( "unchecked" )
         public Object map( Composite composite, Type type, String value )
         {
             return Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).module().newValueFromSerializedState( (Class<Object>) type, value );
@@ -465,6 +452,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
+        @SuppressWarnings( {"raw", "unchecked"} )
         public Object map( final Composite composite, Type type, String value )
         {
             final Class arrayType = ( (Class) type ).getComponentType();
@@ -495,6 +483,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
+        @SuppressWarnings( {"raw", "unchecked"} )
         public Object map( final Composite composite, Type type, String value )
         {
             final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
@@ -515,6 +504,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
+        @SuppressWarnings( {"raw", "unchecked"} )
         public Object map( final Composite composite, Type type, String value )
         {
             final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
@@ -535,6 +525,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
+        @SuppressWarnings( {"raw", "unchecked"} )
         public Object map( final Composite composite, Type generictype, String value )
         {
             ParameterizedType type = (ParameterizedType) generictype;
@@ -563,5 +554,9 @@ public final class PropertyMapper
             } );
             return result;
         }
+    }
+
+    private PropertyMapper()
+    {
     }
 }

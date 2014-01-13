@@ -66,6 +66,7 @@ public class TransientInstance
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> T proxy()
     {
         return (T) proxy;

@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.util;
 
 import java.lang.annotation.Annotation;
@@ -50,7 +49,7 @@ import static org.qi4j.functional.Iterables.prepend;
  */
 public final class Classes
 {
-    private final static Map<Type, Type> wrapperClasses = new HashMap<Type, Type>();
+    private final static Map<Type, Type> wrapperClasses = new HashMap<>();
 
     static
     {
@@ -64,7 +63,7 @@ public final class Classes
         wrapperClasses.put( double.class, Double.class );
     }
 
-    private final static Map<Type, Type> primitiveClasses = new HashMap<Type, Type>();
+    private final static Map<Type, Type> primitiveClasses = new HashMap<>();
 
     static
     {
@@ -131,7 +130,7 @@ public final class Classes
             }
             else if( genericType instanceof WildcardType )
             {
-                return (Class<?>) ( (WildcardType) genericType ).getUpperBounds()[ 0 ];
+                return (Class<?>) ( (WildcardType) genericType ).getUpperBounds()[ 0];
             }
             else if( genericType instanceof GenericArrayType )
             {
@@ -154,6 +153,7 @@ public final class Classes
     private static final Function<Type, Iterable<Class<?>>> CLASS_HIERARCHY = new Function<Type, Iterable<Class<?>>>()
     {
         @Override
+        @SuppressWarnings( {"raw", "unchecked"} )
         public Iterable<Class<?>> map( Type type )
         {
             if( type == null )
@@ -174,6 +174,7 @@ public final class Classes
         }
     };
 
+    @SuppressWarnings( "raw" )
     private static final Function<Type, Iterable<Type>> INTERFACES_OF = new Function<Type, Iterable<Type>>()
     {
         @Override
@@ -203,6 +204,7 @@ public final class Classes
         }
     };
 
+    @SuppressWarnings( "raw" )
     private static final Function<Type, Iterable<Type>> TYPES_OF = new Function<Type, Iterable<Type>>()
     {
         @Override
@@ -274,6 +276,7 @@ public final class Classes
         return new Specification<Class<?>>()
         {
             @Override
+            @SuppressWarnings( "unchecked" )
             public boolean satisfiedBy( Class<?> item )
             {
                 return clazz.isAssignableFrom( item );
@@ -281,6 +284,7 @@ public final class Classes
         };
     }
 
+    @SuppressWarnings( "raw" )
     public static Specification<Object> instanceOf( final Class clazz )
     {
         return new Specification<Object>()
@@ -329,9 +333,10 @@ public final class Classes
         };
     }
 
+    @SuppressWarnings( "raw" )
     public static Set<Class<?>> interfacesWithMethods( Set<Class<?>> interfaces )
     {
-        Set<Class<?>> newSet = new LinkedHashSet<Class<?>>();
+        Set<Class<?>> newSet = new LinkedHashSet<>();
         for( Class type : interfaces )
         {
             if( type.isInterface() && type.getDeclaredMethods().length > 0 )
@@ -350,6 +355,7 @@ public final class Classes
         return sb.toString();
     }
 
+    @SuppressWarnings( "raw" )
     private static void simpleGenericNameOf( StringBuilder sb, Type type )
     {
         if( type instanceof Class )
@@ -406,7 +412,7 @@ public final class Classes
     }
 
     public static <AnnotationType extends Annotation>
-    AnnotationType findAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type, Class<AnnotationType> annotationClass )
+        AnnotationType findAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type, Class<AnnotationType> annotationClass )
     {
         AnnotationType result = null;
         for( Type clazz : Classes.TYPES_OF.map( type ) )
@@ -443,6 +449,7 @@ public final class Classes
      *
      * @return
      */
+    @SuppressWarnings( "raw" )
     public static Type resolveTypeVariable( TypeVariable name, Class declaringClass, Class topClass )
     {
         Type type = resolveTypeVariable( name, declaringClass, new HashMap<TypeVariable, Type>(), topClass );
@@ -453,6 +460,7 @@ public final class Classes
         return type;
     }
 
+    @SuppressWarnings( "raw" )
     private static Type resolveTypeVariable( TypeVariable name,
                                              Class declaringClass,
                                              Map<TypeVariable, Type> mappings,
@@ -469,7 +477,7 @@ public final class Classes
             return resolvedType;
         }
 
-        List<Type> types = new ArrayList<Type>();
+        List<Type> types = new ArrayList<>();
         for( Type type : current.getGenericInterfaces() )
         {
             Iterable<Type> interfaces = Classes.INTERFACES_OF.map( type );
@@ -499,8 +507,8 @@ public final class Classes
                 TypeVariable[] vars = clazz.getTypeParameters();
                 for( int i = 0; i < vars.length; i++ )
                 {
-                    TypeVariable var = vars[ i ];
-                    Type mappedType = args[ i ];
+                    TypeVariable var = vars[ i];
+                    Type mappedType = args[ i];
                     mappings.put( var, mappedType );
                 }
                 subClass = (Class) pt.getRawType();
@@ -529,6 +537,7 @@ public final class Classes
      *
      * @throws NullPointerException if clazz is null
      */
+    @SuppressWarnings( "raw" )
     public static String toURI( final Class clazz )
         throws NullPointerException
     {
@@ -609,6 +618,7 @@ public final class Classes
         };
     }
 
+    @SuppressWarnings( "raw" )
     public static Specification<ModelDescriptor> exactTypeSpecification( final Class type )
     {
         return new Specification<ModelDescriptor>()
@@ -628,6 +638,7 @@ public final class Classes
         };
     }
 
+    @SuppressWarnings( "raw" )
     public static Specification<ModelDescriptor> assignableTypeSpecification( final Class type )
     {
         return new Specification<ModelDescriptor>()
@@ -638,6 +649,7 @@ public final class Classes
                 return matchesAny( new Specification<Class<?>>()
                 {
                     @Override
+                    @SuppressWarnings( "unchecked" )
                     public boolean satisfiedBy( Class<?> itemType )
                     {
                         return !type.equals( itemType ) && type.isAssignableFrom( itemType );
@@ -647,6 +659,7 @@ public final class Classes
         };
     }
 
+    @SuppressWarnings( "raw" )
     public static String toString( Iterable<? extends Class> type )
     {
         StringBuilder builder = new StringBuilder();
@@ -676,6 +689,8 @@ public final class Classes
             }
         };
     }
+
+    private Classes()
+    {
+    }
 }
-
-

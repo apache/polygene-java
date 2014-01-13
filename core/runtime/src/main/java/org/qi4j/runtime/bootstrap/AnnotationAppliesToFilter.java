@@ -23,14 +23,17 @@ import org.qi4j.api.common.AppliesToFilter;
 final class AnnotationAppliesToFilter
     implements AppliesToFilter
 {
+    @SuppressWarnings( "raw" )
     private final Class annotationType;
 
+    @SuppressWarnings( "raw" )
     AnnotationAppliesToFilter( Class type )
     {
         this.annotationType = type;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
     {
         return method.getAnnotation( annotationType ) != null;

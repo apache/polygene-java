@@ -123,6 +123,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
+    @SuppressWarnings( {"raw", "unchecked"} )
     public <T> Query<T> newQuery( QueryBuilder<T> queryBuilder )
     {
         QueryBuilderSPI queryBuilderSPI = (QueryBuilderSPI) queryBuilder;
@@ -198,6 +199,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> T get( T entity )
         throws EntityTypeNotFoundException
     {
@@ -326,7 +328,7 @@ public class ModuleUnitOfWork
     {
         private final ModuleUnitOfWork moduleUnitOfWork;
 
-        public UoWQuerySource( ModuleUnitOfWork moduleUnitOfWork )
+        private UoWQuerySource( ModuleUnitOfWork moduleUnitOfWork )
         {
             this.moduleUnitOfWork = moduleUnitOfWork;
         }

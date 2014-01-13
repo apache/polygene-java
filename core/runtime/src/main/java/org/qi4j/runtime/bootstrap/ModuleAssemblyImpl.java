@@ -139,6 +139,7 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
+    @SuppressWarnings( {"raw", "unchecked"} )
     public ValueDeclaration values( Class<?>... valueTypes )
     {
         List<ValueAssemblyImpl> assemblies = new ArrayList<>();
@@ -176,6 +177,7 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
+    @SuppressWarnings( {"raw", "unchecked"} )
     public TransientDeclaration transients( Class<?>... transientTypes )
     {
         List<TransientAssemblyImpl> assemblies = new ArrayList<>();
@@ -213,6 +215,7 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
+    @SuppressWarnings( {"raw", "unchecked"} )
     public EntityDeclaration entities( Class<?>... entityTypes )
     {
         List<EntityAssemblyImpl> assemblies = new ArrayList<>();
@@ -521,6 +524,7 @@ public final class ModuleAssemblyImpl
             }
             if( !found )
             {
+                @SuppressWarnings( "raw" )
                 Class<? extends ServiceImporter> serviceFactoryType = importedServiceModel.serviceImporter();
                 ObjectModel objectModel = new ObjectModel( serviceFactoryType, Visibility.module, new MetaInfo() );
                 objectModels.add( objectModel );

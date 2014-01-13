@@ -176,6 +176,7 @@ public final class ServiceReferenceInstance<T>
         return serviceModel.identity() + "(active=" + isActive() + ",module='" + module.name() + "')";
     }
 
+    @SuppressWarnings( "unchecked" )
     public T newProxy()
     {
         return (T) serviceModel.newProxy( new ServiceReferenceInstance.ServiceInvocationHandler() );
@@ -190,6 +191,7 @@ public final class ServiceReferenceInstance<T>
         implements CompositeInstance
     {
         @Override
+        @SuppressWarnings( "unchecked" )
         public <T> T proxy()
         {
             return (T) ServiceReferenceInstance.this.get();
@@ -294,6 +296,7 @@ public final class ServiceReferenceInstance<T>
     }
 
     @Override
+    @SuppressWarnings( "raw" )
     public boolean equals( Object obj )
     {
         if ( obj == null ) {
