@@ -1,19 +1,40 @@
-description = "Qi4j Performance Test Suite for Entity Stores."
+description = "Qi4j Performance Test Suite."
 
-jar { manifest { name = "Qi4j Performance Test - EntityStores" }}
+jar { manifest { name = "Qi4j Tests - Performance" }}
+
+sourceSets {
+    perf
+}
 
 dependencies {
 
-    compile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
-    compile project( ":org.qi4j.libraries:org.qi4j.library.sql-dbcp" )
-    compile project( ':org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson' )
-    compile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm" )
-    compile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-sql" )
-    compile project( ":org.qi4j.extensions:org.qi4j.extension.cache-ehcache" )
-    compile project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" )
-    compile libraries.derby
+    compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
+    compile libraries.junit
+    
+    perfCompile sourceSets.main.output
+    perfCompile configurations.testCompile
+    perfCompile sourceSets.test.output
+    perfRuntime configurations.testRuntime
+    
+    perfCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
+    perfCompile project( ":org.qi4j.libraries:org.qi4j.library.sql-dbcp" )
+    perfCompile project( ':org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson' )
+    perfCompile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-memory" )
+    perfCompile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-jdbm" )
+    perfCompile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-sql" )
+    perfCompile project( ":org.qi4j.extensions:org.qi4j.extension.cache-ehcache" )
+    perfCompile project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" )
+    perfCompile libraries.derby
 
-    runtime project(":org.qi4j.core:org.qi4j.core.runtime")
-    runtime libraries.logback
+    perfRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
+    perfRuntime libraries.logback
 
+}
+
+check.dependsOn compilePerfJava
+
+task testPerf( type: Test, dependsOn: jar ) {
+    testClassesDir = sourceSets.perf.output.classesDir
+    classpath = sourceSets.perf.runtimeClasspath
+    systemProperties['jar.path'] = jar.archivePath
 }
