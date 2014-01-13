@@ -83,7 +83,7 @@ public interface CronSchedule extends Schedule, EntityComposite
             {
                 from = firstRun;
             }
-            Long nextRun = new org.codeartisans.sked.crontab.schedule.CronSchedule( cronExpression().get() ).firstRunAfter( from );
+            Long nextRun = new org.codeartisans.sked.cron.CronSchedule( cronExpression().get() ).firstRunAfter( from );
             LOGGER.info( "Schedule.firstRunAfter({}) CronSchedule result is {}", from, firstRun );
             return nextRun;
         }
