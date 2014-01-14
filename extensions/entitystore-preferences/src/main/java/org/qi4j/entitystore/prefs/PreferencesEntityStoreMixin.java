@@ -423,11 +423,7 @@ public class PreferencesEntityStoreMixin
                                            manyAssociations
             );
         }
-        catch( ValueSerializationException e )
-        {
-            throw new EntityStoreException( e );
-        }
-        catch( BackingStoreException e )
+        catch( ValueSerializationException | BackingStoreException e )
         {
             throw new EntityStoreException( e );
         }

@@ -21,17 +21,18 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 
 /**
- * ValueComposites are Composites that only has value, and equality is defined from its values and not any identity
- * nor instance references.
+ * ValueComposites are Composites that has state, and equality is defined from its values and not any identity nor
+ * instance references.
  *
  * <ul>
  * <li>No Identity</li>
  * <li>No Lifecycle</li>
  * <li>Immutable</li>
  * <li>equals()/hashCode() operates on the Properties</li>
- * <li>Can only have property methods.</li>
+ * <li>Can have property and associations methods.</li>
  * <li>Can not reference Services</li>
  * <li>Can not have @Uses</li>
+ * </ul>
  */
 @Immutable
 @Mixins( { AssociationMixin.class, ManyAssociationMixin.class } )

@@ -93,7 +93,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private static final Logger PULL_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#PullParsing" );
     private static final Logger TREE_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#TreeParsing" );
     private static final String UTF_8 = "UTF-8";
-    private final Map<Class<?>, Function<Object, Object>> deserializers = new HashMap<>();
+    private final Map<Class<?>, Function<Object, Object>> deserializers = new HashMap<>( 16 );
     private final Application application;
     private final Module module;
     private Function<Application, Module> valuesModuleFinder;
@@ -790,10 +790,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                     {
                         return null;
                     }
-                    else
-                    {
-                        return (EntityReference) entityRef;
-                    }
+                    return (EntityReference) entityRef;
                 }
             },
             new Function<AssociationDescriptor, Iterable<EntityReference>>()
@@ -926,9 +923,11 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     {
         byte[] bytes = inputString.getBytes( UTF_8 );
         bytes = Base64Encoder.decode( bytes );
-        ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
-        Object result = oin.readObject();
-        oin.close();
+        Object result;
+        try( ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) ) )
+        {
+            result = oin.readObject();
+        }
         return (T) result;
     }
 

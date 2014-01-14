@@ -20,7 +20,8 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.mixin.Mixins;
 
 /**
- * Entity Composites must extend this interface.
+ * EntityComposites are Composites that has mutable state persisted in EntityStores and equality defined from its
+ * identity.
  */
 @Mixins( { AssociationMixin.class, ManyAssociationMixin.class } )
 public interface EntityComposite

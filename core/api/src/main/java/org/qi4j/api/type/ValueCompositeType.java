@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api.type;
 
 import java.lang.reflect.Type;
@@ -27,7 +26,7 @@ import org.qi4j.api.value.ValueDescriptor;
 public final class ValueCompositeType
     extends ValueType
 {
-    private ValueDescriptor model;
+    private final ValueDescriptor model;
 
     public static boolean isValueComposite( Type type )
     {

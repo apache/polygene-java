@@ -1,21 +1,21 @@
 /*
- * Copyright 2007, Niclas Hedhman. All Rights Reserved.
- * Copyright 2009, Rickard Öberg. All Rights Reserved.
- * Copyright 2013, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2009-2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2013-2014, Paul Merlin. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * limitations under the License. 
  */
 package org.qi4j.spi.entitystore.helpers;
 
@@ -36,7 +36,7 @@ import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityStoreException;
 
 /**
- * Standard implementation of EntityState.
+ * Standard JSON implementation of EntityState.
  */
 public final class JSONEntityState
     implements EntityState
@@ -50,7 +50,8 @@ public final class JSONEntityState
     public static final String JSON_KEY_VERSION = "version";
     public static final String JSON_KEY_MODIFIED = "modified";
     private static final String[] EMPTY_NAMES = new String[ 0 ];
-    private static final String[] CLONE_NAMES = {
+    private static final String[] CLONE_NAMES =
+    {
         JSON_KEY_IDENTITY,
         JSON_KEY_APPLICATION_VERSION,
         JSON_KEY_TYPE,
@@ -105,7 +106,6 @@ public final class JSONEntityState
     }
 
     // EntityState implementation
-
     @Override
     public final String version()
     {
@@ -144,11 +144,7 @@ public final class JSONEntityState
                 return valueSerialization.deserialize( descriptor.valueType(), json.toString() );
             }
         }
-        catch( ValueSerializationException e )
-        {
-            throw new EntityStoreException( e );
-        }
-        catch( JSONException e )
+        catch( ValueSerializationException | JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -184,11 +180,7 @@ public final class JSONEntityState
             state.getJSONObject( JSON_KEY_PROPERTIES ).put( stateName.name(), jsonValue );
             markUpdated();
         }
-        catch( ValueSerializationException e )
-        {
-            throw new EntityStoreException( e );
-        }
-        catch( JSONException e )
+        catch( ValueSerializationException | JSONException e )
         {
             throw new EntityStoreException( e );
         }
@@ -216,8 +208,9 @@ public final class JSONEntityState
                 return null;
             }
 
-            EntityReference value = jsonValue == JSONObject.NULL ? null : EntityReference.parseEntityReference(
-                (String) jsonValue );
+            EntityReference value = jsonValue == JSONObject.NULL
+                                    ? null
+                                    : EntityReference.parseEntityReference( (String) jsonValue );
             return value;
         }
         catch( JSONException e )
@@ -232,8 +225,9 @@ public final class JSONEntityState
         try
         {
             cloneStateIfGlobalStateLoaded();
-            state.getJSONObject( JSON_KEY_ASSOCIATIONS )
-                .put( stateName.name(), newEntity == null ? null : newEntity.identity() );
+            state.getJSONObject( JSON_KEY_ASSOCIATIONS ).put( stateName.name(), newEntity == null
+                                                                                ? null
+                                                                                : newEntity.identity() );
             markUpdated();
         }
         catch( JSONException e )

@@ -1,7 +1,7 @@
 /*
- * Copyright 2007, Niclas Hedhman. All Rights Reserved.
- * Copyright 2009, Rickard Öberg. All Rights Reserved.
- * Copyright 2012, Paul Merlin. All Rights Reserved.
+ * Copyright 2007-2011, Niclas Hedhman. All Rights Reserved.
+ * Copyright 2009-2013, Rickard Öberg. All Rights Reserved.
+ * Copyright 2012-2013, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,9 @@ import org.qi4j.spi.entitystore.StateCommitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
+import static org.qi4j.functional.Iterables.toList;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.

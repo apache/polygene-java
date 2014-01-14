@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
- * Copyright (c) 2010, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010-2012, Stanislav Muhametsin. All Rights Reserved.
+ * Copyright (c) 2010-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,7 +114,7 @@ public class SQLEntityStoreMixin
 
     private String uuid;
 
-    private AtomicInteger count = new AtomicInteger();
+    private final AtomicInteger count = new AtomicInteger();
 
     @Override
     public void activateService()
@@ -388,7 +388,7 @@ public class SQLEntityStoreMixin
                 throw new EntityTypeNotFoundException( type );
             }
 
-            Map<QualifiedName, Object> properties = new HashMap<QualifiedName, Object>();
+            Map<QualifiedName, Object> properties = new HashMap<>();
             JSONObject props = jsonObject.getJSONObject( "properties" );
             for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
             {
@@ -416,7 +416,7 @@ public class SQLEntityStoreMixin
                 }
             }
 
-            Map<QualifiedName, EntityReference> associations = new HashMap<QualifiedName, EntityReference>();
+            Map<QualifiedName, EntityReference> associations = new HashMap<>();
             JSONObject assocs = jsonObject.getJSONObject( "associations" );
             for( AssociationDescriptor associationType : entityDescriptor.state().associations() )
             {
@@ -436,10 +436,10 @@ public class SQLEntityStoreMixin
             }
 
             JSONObject manyAssocs = jsonObject.getJSONObject( "manyassociations" );
-            Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<QualifiedName, List<EntityReference>>();
+            Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<>();
             for( AssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
             {
-                List<EntityReference> references = new ArrayList<EntityReference>();
+                List<EntityReference> references = new ArrayList<>();
                 try
                 {
                     JSONArray jsonValues = manyAssocs.getJSONArray( manyAssociationType.qualifiedName().name() );
@@ -473,9 +473,8 @@ public class SQLEntityStoreMixin
     public JSONObject jsonStateOf( String id )
         throws IOException
     {
-        Reader reader = getValue( EntityReference.parseEntityReference( id ) ).getReader();
         JSONObject jsonObject;
-        try
+        try( Reader reader = getValue( EntityReference.parseEntityReference( id ) ).getReader() )
         {
             jsonObject = new JSONObject( new JSONTokener( reader ) );
         }
@@ -483,7 +482,6 @@ public class SQLEntityStoreMixin
         {
             throw new IOException( e );
         }
-        reader.close();
         return jsonObject;
     }
 

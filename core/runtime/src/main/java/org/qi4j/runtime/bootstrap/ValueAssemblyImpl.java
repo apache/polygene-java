@@ -59,8 +59,8 @@ public final class ValueAssemblyImpl
     extends CompositeAssemblyImpl
     implements ValueAssembly
 {
-    protected AssociationsModel associationsModel;
-    protected ManyAssociationsModel manyAssociationsModel;
+    private AssociationsModel associationsModel;
+    private ManyAssociationsModel manyAssociationsModel;
 
     public ValueAssemblyImpl( Class<?> compositeType )
     {

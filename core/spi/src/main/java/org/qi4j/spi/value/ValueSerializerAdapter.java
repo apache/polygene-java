@@ -50,7 +50,7 @@ import org.qi4j.functional.Functions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.first;
 
 /**
  * Adapter for pull-parsing capable ValueSerializers.
@@ -79,7 +79,7 @@ public abstract class ValueSerializerAdapter<OutputType>
 
     private static final Logger LOG = LoggerFactory.getLogger( ValueSerializerAdapter.class );
     private static final String UTF_8 = "UTF-8";
-    private final Map<Class<?>, Function<Object, Object>> serializers = new HashMap<>();
+    private final Map<Class<?>, Function<Object, Object>> serializers = new HashMap<>( 16 );
 
     /**
      * Register a Plain Value type serialization Function.
@@ -461,9 +461,10 @@ public abstract class ValueSerializerAdapter<OutputType>
         throws Exception
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream( bout );
-        out.writeUnshared( object );
-        out.close();
+        try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
+        {
+            out.writeUnshared( object );
+        }
         byte[] bytes = Base64Encoder.encode( bout.toByteArray(), true );
         return new String( bytes, UTF_8 );
     }

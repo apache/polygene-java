@@ -66,8 +66,8 @@ public final class EntityAssemblyImpl
 {
     private AssociationDeclarations associationDeclarations;
     private ManyAssociationDeclarations manyAssociationDeclarations;
-    protected AssociationsModel associationsModel;
-    protected ManyAssociationsModel manyAssociationsModel;
+    private AssociationsModel associationsModel;
+    private ManyAssociationsModel manyAssociationsModel;
 
     public EntityAssemblyImpl( Class<?> entityType )
     {

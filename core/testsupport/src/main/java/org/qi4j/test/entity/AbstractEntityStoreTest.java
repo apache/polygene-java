@@ -136,7 +136,7 @@ public abstract class AbstractEntityStoreTest
 
         prototype.valueProperty().set( valueBuilder2.newInstance() );
         prototype.tjabbaProperty().set( valueBuilder3.newInstance() );
-        Map<String, String> mapValue = new HashMap<String, String>();
+        Map<String, String> mapValue = new HashMap<>();
         mapValue.put( "foo", "bar" );
         prototype.mapStringStringProperty().set( mapValue );
         instance.valueProperty().set( valueBuilder1.newInstance() );
@@ -237,7 +237,7 @@ public abstract class AbstractEntityStoreTest
                         instance.valueProperty().get().tjabbaProperty().get().bling().get(),
                         equalTo( "Brakfis" ) );
 
-            Map<String, String> mapValue = new HashMap<String, String>();
+            Map<String, String> mapValue = new HashMap<>();
             mapValue.put( "foo", "bar" );
             assertThat( "property 'valueProperty.mapStringStringProperty' has correct value",
                         instance.valueProperty().get().mapStringStringProperty().get(),
@@ -404,7 +404,7 @@ public abstract class AbstractEntityStoreTest
             unitOfWork1 = module.newUnitOfWork();
             testEntity1 = unitOfWork1.get( testEntity );
             version = spi.entityStateOf( testEntity1 ).version();
-            if( version.equals( "" ) )
+            if( version.isEmpty() )
             {
                 unitOfWork1.discard();
                 return; // Store doesn't track versions - no point in testing it
