@@ -164,17 +164,17 @@ public class MapEntityStoreMixin
                                 DefaultEntityState state = (DefaultEntityState) entityState;
                                 if( state.status().equals( EntityStatus.NEW ) )
                                 {
-                                    Writer writer = changer.newEntity( state.identity(),
-                                                                       state.entityDescriptor() );
-                                    writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
-                                    writer.close();
+                                    try( Writer writer = changer.newEntity( state.identity(), state.entityDescriptor() ) )
+                                    {
+                                        writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
+                                    }
                                 }
                                 else if( state.status().equals( EntityStatus.UPDATED ) )
                                 {
-                                    Writer writer = changer.updateEntity( state.identity(),
-                                                                          state.entityDescriptor() );
-                                    writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
-                                    writer.close();
+                                    try( Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ) )
+                                    {
+                                        writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
+                                    }
                                 }
                                 else if( state.status().equals( EntityStatus.REMOVED ) )
                                 {
@@ -286,9 +286,10 @@ public class MapEntityStoreMixin
                     for( EntityState migratedEntity : migratedEntities )
                     {
                         DefaultEntityState state = (DefaultEntityState) migratedEntity;
-                        Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() );
-                        writeEntityState( state, writer, state.version(), state.lastModified() );
-                        writer.close();
+                        try( Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ) )
+                        {
+                            writeEntityState( state, writer, state.version(), state.lastModified() );
+                        }
                     }
                 }
             } );
