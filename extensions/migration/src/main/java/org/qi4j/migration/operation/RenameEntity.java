@@ -11,14 +11,13 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.migration.operation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.migration.Migrator;
 import org.qi4j.migration.assembly.EntityMigrationOperation;
-import org.qi4j.spi.entitystore.helpers.MapEntityStore;
+import org.qi4j.spi.entitystore.helpers.JSONKeys;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
@@ -40,7 +39,7 @@ public class RenameEntity
     public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        String type = state.getString( MapEntityStore.JSONKeys.type.name() );
+        String type = state.getString( JSONKeys.TYPE );
 
         if( type.equals( fromName ) )
         {
@@ -57,7 +56,7 @@ public class RenameEntity
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        String type = state.getString( MapEntityStore.JSONKeys.type.name() );
+        String type = state.getString( JSONKeys.TYPE );
 
         if( type.equals( toName ) )
         {

@@ -11,14 +11,13 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.migration.assembly;
 
 import java.util.Arrays;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.migration.Migrator;
-import org.qi4j.spi.entitystore.helpers.MapEntityStore;
+import org.qi4j.spi.entitystore.helpers.JSONKeys;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 
 /**
@@ -27,8 +26,8 @@ import org.qi4j.spi.entitystore.helpers.StateStore;
 public class EntityMigrationRule
     extends AbstractMigrationRule
 {
-    private String[] entityTypes;
-    private EntityMigrationOperation operationEntity;
+    private final String[] entityTypes;
+    private final EntityMigrationOperation operationEntity;
 
     public EntityMigrationRule( String fromVersion,
                                 String toVersion,
@@ -49,7 +48,7 @@ public class EntityMigrationRule
     public boolean upgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        if( appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() ) ) )
+        if( appliesTo( state.getString( JSONKeys.TYPE ) ) )
         {
             return operationEntity.upgrade( state, stateStore, migrator );
         }
@@ -62,7 +61,7 @@ public class EntityMigrationRule
     public boolean downgrade( JSONObject state, StateStore stateStore, Migrator migrator )
         throws JSONException
     {
-        if( appliesTo( state.getString( MapEntityStore.JSONKeys.type.name() ) ) )
+        if( appliesTo( state.getString( JSONKeys.TYPE ) ) )
         {
             return operationEntity.downgrade( state, stateStore, migrator );
         }

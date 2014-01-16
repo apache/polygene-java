@@ -41,22 +41,14 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 public final class JSONEntityState
     implements EntityState
 {
-    public static final String JSON_KEY_PROPERTIES = "properties";
-    public static final String JSON_KEY_ASSOCIATIONS = "associations";
-    public static final String JSON_KEY_MANYASSOCIATIONS = "manyassociations";
-    public static final String JSON_KEY_IDENTITY = "identity";
-    public static final String JSON_KEY_APPLICATION_VERSION = "application_version";
-    public static final String JSON_KEY_TYPE = "type";
-    public static final String JSON_KEY_VERSION = "version";
-    public static final String JSON_KEY_MODIFIED = "modified";
     private static final String[] EMPTY_NAMES = new String[ 0 ];
     private static final String[] CLONE_NAMES =
     {
-        JSON_KEY_IDENTITY,
-        JSON_KEY_APPLICATION_VERSION,
-        JSON_KEY_TYPE,
-        JSON_KEY_VERSION,
-        JSON_KEY_MODIFIED
+        JSONKeys.IDENTITY,
+        JSONKeys.APPLICATION_VERSION,
+        JSONKeys.TYPE,
+        JSONKeys.VERSION,
+        JSONKeys.MODIFIED
     };
 
     private final DefaultEntityStoreUnitOfWork unitOfWork;
@@ -129,7 +121,7 @@ public final class JSONEntityState
     {
         try
         {
-            Object json = state.getJSONObject( JSON_KEY_PROPERTIES ).opt( stateName.name() );
+            Object json = state.getJSONObject( JSONKeys.PROPERTIES ).opt( stateName.name() );
             if( JSONObject.NULL.equals( json ) )
             {
                 return null;
@@ -177,7 +169,7 @@ public final class JSONEntityState
                 }
             }
             cloneStateIfGlobalStateLoaded();
-            state.getJSONObject( JSON_KEY_PROPERTIES ).put( stateName.name(), jsonValue );
+            state.getJSONObject( JSONKeys.PROPERTIES ).put( stateName.name(), jsonValue );
             markUpdated();
         }
         catch( ValueSerializationException | JSONException e )
@@ -202,7 +194,7 @@ public final class JSONEntityState
     {
         try
         {
-            Object jsonValue = state.getJSONObject( JSON_KEY_ASSOCIATIONS ).opt( stateName.name() );
+            Object jsonValue = state.getJSONObject( JSONKeys.ASSOCIATIONS ).opt( stateName.name() );
             if( jsonValue == null )
             {
                 return null;
@@ -225,7 +217,7 @@ public final class JSONEntityState
         try
         {
             cloneStateIfGlobalStateLoaded();
-            state.getJSONObject( JSON_KEY_ASSOCIATIONS ).put( stateName.name(), newEntity == null
+            state.getJSONObject( JSONKeys.ASSOCIATIONS ).put( stateName.name(), newEntity == null
                                                                                 ? null
                                                                                 : newEntity.identity() );
             markUpdated();
@@ -241,7 +233,7 @@ public final class JSONEntityState
     {
         try
         {
-            JSONObject manyAssociations = state.getJSONObject( JSON_KEY_MANYASSOCIATIONS );
+            JSONObject manyAssociations = state.getJSONObject( JSONKeys.MANY_ASSOCIATIONS );
             JSONArray jsonValues = manyAssociations.optJSONArray( stateName.name() );
             if( jsonValues == null )
             {
@@ -313,13 +305,13 @@ public final class JSONEntityState
 
         try
         {
-            JSONObject newProperties = cloneJSON( state.getJSONObject( JSON_KEY_PROPERTIES ) );
-            JSONObject newAssoc = cloneJSON( state.getJSONObject( JSON_KEY_ASSOCIATIONS ) );
-            JSONObject newManyAssoc = cloneJSON( state.getJSONObject( JSON_KEY_MANYASSOCIATIONS ) );
+            JSONObject newProperties = cloneJSON( state.getJSONObject( JSONKeys.PROPERTIES ) );
+            JSONObject newAssoc = cloneJSON( state.getJSONObject( JSONKeys.ASSOCIATIONS ) );
+            JSONObject newManyAssoc = cloneJSON( state.getJSONObject( JSONKeys.MANY_ASSOCIATIONS ) );
             JSONObject stateClone = new JSONObject( state, CLONE_NAMES );
-            stateClone.put( JSON_KEY_PROPERTIES, newProperties );
-            stateClone.put( JSON_KEY_ASSOCIATIONS, newAssoc );
-            stateClone.put( JSON_KEY_MANYASSOCIATIONS, newManyAssoc );
+            stateClone.put( JSONKeys.PROPERTIES, newProperties );
+            stateClone.put( JSONKeys.ASSOCIATIONS, newAssoc );
+            stateClone.put( JSONKeys.MANY_ASSOCIATIONS, newManyAssoc );
             state = stateClone;
         }
         catch( JSONException e )

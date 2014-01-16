@@ -20,6 +20,7 @@ import org.qi4j.spi.entitystore.BackupRestore;
 import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
+import org.qi4j.spi.entitystore.helpers.JSONKeys;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 import org.qi4j.spi.entitystore.helpers.MapEntityStoreActivation;
 
@@ -33,7 +34,7 @@ public class MemoryMapEntityStoreMixin
 
     public MemoryMapEntityStoreMixin()
     {
-        store = new HashMap<EntityReference, String>();
+        store = new HashMap<>();
     }
 
     @Override
@@ -142,7 +143,7 @@ public class MemoryMapEntityStoreMixin
                             {
                                 JSONTokener tokener = new JSONTokener( item );
                                 JSONObject entity = (JSONObject) tokener.nextValue();
-                                String id = entity.getString( JSONKeys.identity.name() );
+                                String id = entity.getString( JSONKeys.IDENTITY );
                                 store.put( new EntityReference( id ), item );
                             }
                             catch( JSONException e )
@@ -218,4 +219,5 @@ public class MemoryMapEntityStoreMixin
 //            }
         }
     }
+
 }

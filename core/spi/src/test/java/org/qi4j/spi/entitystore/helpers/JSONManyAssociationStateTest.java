@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2013-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,9 +40,10 @@ public class JSONManyAssociationStateTest
     {
         // Fake JSONManyAssociationState
         JSONObject state = new JSONObject();
-        state.put( JSONEntityState.JSON_KEY_PROPERTIES, new JSONObject() );
-        state.put( JSONEntityState.JSON_KEY_ASSOCIATIONS, new JSONObject() );
-        state.put( JSONEntityState.JSON_KEY_MANYASSOCIATIONS, new JSONObject() );
+        state.put( JSONKeys.PROPERTIES, new JSONObject() );
+        state.put( JSONKeys.ASSOCIATIONS, new JSONObject() );
+        state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
+        state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
         JSONEntityState entityState = new JSONEntityState( null,
                                                            null,
                                                            "0",
@@ -65,9 +66,10 @@ public class JSONManyAssociationStateTest
     {
         // Fake JSONManyAssociationState
         JSONObject state = new JSONObject();
-        state.put( JSONEntityState.JSON_KEY_PROPERTIES, new JSONObject() );
-        state.put( JSONEntityState.JSON_KEY_ASSOCIATIONS, new JSONObject() );
-        state.put( JSONEntityState.JSON_KEY_MANYASSOCIATIONS, new JSONObject() );
+        state.put( JSONKeys.PROPERTIES, new JSONObject() );
+        state.put( JSONKeys.ASSOCIATIONS, new JSONObject() );
+        state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
+        state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
         JSONEntityState entityState = new JSONEntityState( null,
                                                            null,
                                                            "0",
@@ -130,8 +132,8 @@ public class JSONManyAssociationStateTest
         }, jsonState ) );
         assertThat( refList.isEmpty(), is( false ) );
         assertArrayEquals( new String[]
-            {
-                "C", "B", "A", "0", "2", "1"
-            }, refList.toArray() );
+        {
+            "C", "B", "A", "0", "2", "1"
+        }, refList.toArray() );
     }
 }

@@ -73,7 +73,7 @@ import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
-import org.qi4j.spi.entitystore.helpers.MapEntityStore;
+import org.qi4j.spi.entitystore.helpers.JSONKeys;
 import org.qi4j.spi.entitystore.helpers.Migration;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 import org.slf4j.Logger;
@@ -137,7 +137,6 @@ public class SQLEntityStoreMixin
     {
         return new StateCommitter()
         {
-
             @Override
             public void commit()
             {
@@ -189,7 +188,6 @@ public class SQLEntityStoreMixin
                     updatePS.executeBatch();
 
                     connection.commit();
-
                 }
                 catch( SQLException sqle )
                 {
@@ -227,7 +225,6 @@ public class SQLEntityStoreMixin
             public void cancel()
             {
             }
-
         };
     }
 
@@ -260,22 +257,18 @@ public class SQLEntityStoreMixin
     {
         return new Input<EntityState, EntityStoreException>()
         {
-
             @Override
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super EntityState, ReceiverThrowableType> output )
                 throws EntityStoreException, ReceiverThrowableType
             {
                 output.receiveFrom( new Sender<EntityState, EntityStoreException>()
                 {
-
                     @Override
                     public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, EntityStoreException
                     {
-
                         queryAllEntities( module, new EntityStatesVisitor()
                         {
-
                             @Override
                             public boolean visit( EntityState visited )
                                 throws SQLException
@@ -289,16 +282,11 @@ public class SQLEntityStoreMixin
                                     throw new SQLException( receiverThrowableType );
                                 }
                                 return true;
-
                             }
-
                         } );
-
                     }
-
                 } );
             }
-
         };
     }
 
@@ -358,12 +346,12 @@ public class SQLEntityStoreMixin
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
-            String version = jsonObject.getString( "version" );
-            long modified = jsonObject.getLong( "modified" );
-            String identity = jsonObject.getString( "identity" );
+            String version = jsonObject.getString( JSONKeys.VERSION );
+            long modified = jsonObject.getLong( JSONKeys.MODIFIED );
+            String identity = jsonObject.getString( JSONKeys.IDENTITY );
 
             // Check if version is correct
-            String currentAppVersion = jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(), "0.0" );
+            String currentAppVersion = jsonObject.optString( JSONKeys.APPLICATION_VERSION, "0.0" );
             if( !currentAppVersion.equals( application.version() ) )
             {
                 if( migration != null )
@@ -373,7 +361,7 @@ public class SQLEntityStoreMixin
                 else
                 {
                     // Do nothing - set version to be correct
-                    jsonObject.put( MapEntityStore.JSONKeys.application_version.name(), application.version() );
+                    jsonObject.put( JSONKeys.APPLICATION_VERSION, application.version() );
                 }
 
                 LOGGER.trace( "Updated version nr on {} from {} to {}",
@@ -383,7 +371,7 @@ public class SQLEntityStoreMixin
                 status = EntityStatus.UPDATED;
             }
 
-            String type = jsonObject.getString( "type" );
+            String type = jsonObject.getString( JSONKeys.TYPE );
 
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
@@ -392,7 +380,7 @@ public class SQLEntityStoreMixin
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();
-            JSONObject props = jsonObject.getJSONObject( "properties" );
+            JSONObject props = jsonObject.getJSONObject( JSONKeys.PROPERTIES );
             for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
             {
                 Object jsonValue;
@@ -420,7 +408,7 @@ public class SQLEntityStoreMixin
             }
 
             Map<QualifiedName, EntityReference> associations = new HashMap<>();
-            JSONObject assocs = jsonObject.getJSONObject( "associations" );
+            JSONObject assocs = jsonObject.getJSONObject( JSONKeys.ASSOCIATIONS );
             for( AssociationDescriptor associationType : entityDescriptor.state().associations() )
             {
                 try
@@ -438,7 +426,7 @@ public class SQLEntityStoreMixin
                 }
             }
 
-            JSONObject manyAssocs = jsonObject.getJSONObject( "manyassociations" );
+            JSONObject manyAssocs = jsonObject.getJSONObject( JSONKeys.MANY_ASSOCIATIONS );
             Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<>();
             for( AssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
             {
@@ -527,12 +515,12 @@ public class SQLEntityStoreMixin
         {
             JSONWriter json = new JSONWriter( writer );
             JSONWriter properties = json.object().
-                key( "identity" ).value( state.identity().identity() ).
-                key( "application_version" ).value( application.version() ).
-                key( "type" ).value( first( state.entityDescriptor().types() ).getName() ).
-                key( "version" ).value( version ).
-                key( "modified" ).value( state.lastModified() ).
-                key( "properties" ).object();
+                key( JSONKeys.IDENTITY ).value( state.identity().identity() ).
+                key( JSONKeys.APPLICATION_VERSION ).value( application.version() ).
+                key( JSONKeys.TYPE ).value( first( state.entityDescriptor().types() ).getName() ).
+                key( JSONKeys.VERSION ).value( version ).
+                key( JSONKeys.MODIFIED ).value( state.lastModified() ).
+                key( JSONKeys.PROPERTIES ).object();
 
             for( PropertyDescriptor persistentProperty : state.entityDescriptor().state().properties() )
             {
@@ -560,7 +548,7 @@ public class SQLEntityStoreMixin
                 }
             }
 
-            JSONWriter associations = properties.endObject().key( "associations" ).object();
+            JSONWriter associations = properties.endObject().key( JSONKeys.ASSOCIATIONS ).object();
             for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations().entrySet() )
             {
                 EntityReference value = stateNameEntityReferenceEntry.getValue();
@@ -568,7 +556,7 @@ public class SQLEntityStoreMixin
                     value( value != null ? value.identity() : null );
             }
 
-            JSONWriter manyAssociations = associations.endObject().key( "manyassociations" ).object();
+            JSONWriter manyAssociations = associations.endObject().key( JSONKeys.MANY_ASSOCIATIONS ).object();
             for( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations().entrySet() )
             {
                 JSONWriter assocs = manyAssociations.key( stateNameListEntry.getKey().name() ).array();

@@ -29,46 +29,6 @@ public interface MapEntityStore
 {
 
     /**
-     * JSON keys for values in the stored data.
-     */
-    enum JSONKeys
-    {
-
-        /**
-         * Identity of the entity.
-         */
-        identity,
-        /**
-         * Version of the application which last updated the entity.
-         */
-        application_version,
-        /**
-         * Type of the entity.
-         */
-        type,
-        /**
-         * Version of the entity.
-         */
-        version,
-        /**
-         * When entity was last modified according to System.currentTimeMillis().
-         */
-        modified,
-        /**
-         * Map of properties.
-         */
-        properties,
-        /**
-         * Map of associations.
-         */
-        associations,
-        /**
-         * Map of manyassociations.
-         */
-        manyassociations
-    }
-
-    /**
      * @return Entity state Reader
      */
     Reader get( EntityReference entityReference )

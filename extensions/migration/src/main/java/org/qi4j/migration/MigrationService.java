@@ -1,17 +1,20 @@
 /*
- * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2009-2011, Rickard Öberg. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
  *
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
-
 package org.qi4j.migration;
 
 import java.util.ArrayList;
@@ -36,7 +39,7 @@ import org.qi4j.migration.assembly.EntityMigrationRule;
 import org.qi4j.migration.assembly.MigrationBuilder;
 import org.qi4j.migration.assembly.MigrationRule;
 import org.qi4j.spi.entitystore.EntityStore;
-import org.qi4j.spi.entitystore.helpers.MapEntityStore;
+import org.qi4j.spi.entitystore.helpers.JSONKeys;
 import org.qi4j.spi.entitystore.helpers.Migration;
 import org.qi4j.spi.entitystore.helpers.StateStore;
 import org.slf4j.Logger;
@@ -60,15 +63,15 @@ public interface MigrationService
 {
 
     void initialize()
-            throws Exception;
+        throws Exception;
 
     class Activator
-            extends ActivatorAdapter<ServiceReference<MigrationService>>
+        extends ActivatorAdapter<ServiceReference<MigrationService>>
     {
 
         @Override
         public void afterActivation( ServiceReference<MigrationService> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().initialize();
         }
@@ -108,7 +111,7 @@ public interface MigrationService
             throws JSONException
         {
             // Get current version
-            String fromVersion = state.optString( MapEntityStore.JSONKeys.application_version.name(), "0.0" );
+            String fromVersion = state.optString( JSONKeys.APPLICATION_VERSION, "0.0" );
 
             Iterable<EntityMigrationRule> matchedRules = builder.entityMigrationRules().rulesBetweenVersions( fromVersion, toVersion );
 
@@ -119,18 +122,20 @@ public interface MigrationService
                 {
                     boolean ruleExecuted = matchedRule.upgrade( state, stateStore, migrator );
 
-                    if (ruleExecuted && log.isDebugEnabled())
+                    if( ruleExecuted && log.isDebugEnabled() )
+                    {
                         log.debug( matchedRule.toString() );
+                    }
 
                     changed = ruleExecuted || changed;
                 }
             }
 
-            state.put( MapEntityStore.JSONKeys.application_version.name(), toVersion );
+            state.put( JSONKeys.APPLICATION_VERSION, toVersion );
 
             if( changed )
             {
-                log.info( "Migrated " + state.getString( MapEntityStore.JSONKeys.identity.name() ) + " from " + fromVersion + " to " + toVersion );
+                log.info( "Migrated " + state.getString( JSONKeys.IDENTITY ) + " from " + fromVersion + " to " + toVersion );
             }
 
             return changed;
@@ -187,7 +192,7 @@ public interface MigrationService
         public boolean addProperty( JSONObject state, String name, Object defaultValue )
             throws JSONException
         {
-            JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
+            JSONObject properties = (JSONObject) state.get( JSONKeys.PROPERTIES );
             if( !properties.has( name ) )
             {
                 if( defaultValue == null )
@@ -201,7 +206,7 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.propertyAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), name, defaultValue );
+                    migrationEvent.propertyAdded( state.getString( JSONKeys.IDENTITY ), name, defaultValue );
                 }
 
                 return true;
@@ -216,13 +221,13 @@ public interface MigrationService
         public boolean removeProperty( JSONObject state, String name )
             throws JSONException
         {
-            JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
+            JSONObject properties = (JSONObject) state.get( JSONKeys.PROPERTIES );
             if( properties.has( name ) )
             {
                 properties.remove( name );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.propertyRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ), name );
+                    migrationEvent.propertyRemoved( state.getString( JSONKeys.IDENTITY ), name );
                 }
 
                 return true;
@@ -237,14 +242,14 @@ public interface MigrationService
         public boolean renameProperty( JSONObject state, String from, String to )
             throws JSONException
         {
-            JSONObject properties = (JSONObject) state.get( MapEntityStore.JSONKeys.properties.name() );
+            JSONObject properties = (JSONObject) state.get( JSONKeys.PROPERTIES );
             if( properties.has( from ) )
             {
                 Object value = properties.remove( from );
                 properties.put( to, value );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.propertyRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ), from, to );
+                    migrationEvent.propertyRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
 
                 return true;
@@ -259,7 +264,7 @@ public interface MigrationService
         public boolean addAssociation( JSONObject state, String name, String defaultReference )
             throws JSONException
         {
-            JSONObject associations = (JSONObject) state.get( MapEntityStore.JSONKeys.associations.name() );
+            JSONObject associations = (JSONObject) state.get( JSONKeys.ASSOCIATIONS );
             if( !associations.has( name ) )
             {
                 if( defaultReference == null )
@@ -273,7 +278,7 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.associationAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), name, defaultReference );
+                    migrationEvent.associationAdded( state.getString( JSONKeys.IDENTITY ), name, defaultReference );
                 }
 
                 return true;
@@ -288,13 +293,13 @@ public interface MigrationService
         public boolean removeAssociation( JSONObject state, String name )
             throws JSONException
         {
-            JSONObject associations = (JSONObject) state.get( MapEntityStore.JSONKeys.associations.name() );
+            JSONObject associations = (JSONObject) state.get( JSONKeys.ASSOCIATIONS );
             if( associations.has( name ) )
             {
                 associations.remove( name );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.associationRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ), name );
+                    migrationEvent.associationRemoved( state.getString( JSONKeys.IDENTITY ), name );
                 }
 
                 return true;
@@ -309,7 +314,7 @@ public interface MigrationService
         public boolean renameAssociation( JSONObject state, String from, String to )
             throws JSONException
         {
-            JSONObject associations = (JSONObject) state.get( MapEntityStore.JSONKeys.associations.name() );
+            JSONObject associations = (JSONObject) state.get( JSONKeys.ASSOCIATIONS );
             if( associations.has( from ) )
             {
                 Object value = associations.remove( from );
@@ -317,7 +322,7 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.associationRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ), from, to );
+                    migrationEvent.associationRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
 
                 return true;
@@ -332,7 +337,7 @@ public interface MigrationService
         public boolean addManyAssociation( JSONObject state, String name, String... defaultReferences )
             throws JSONException
         {
-            JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
+            JSONObject manyAssociations = (JSONObject) state.get( JSONKeys.MANY_ASSOCIATIONS );
             if( !manyAssociations.has( name ) )
             {
                 JSONArray references = new JSONArray();
@@ -344,7 +349,7 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.manyAssociationAdded( state.getString( MapEntityStore.JSONKeys.identity.name() ), name, defaultReferences );
+                    migrationEvent.manyAssociationAdded( state.getString( JSONKeys.IDENTITY ), name, defaultReferences );
                 }
 
                 return true;
@@ -359,13 +364,13 @@ public interface MigrationService
         public boolean removeManyAssociation( JSONObject state, String name )
             throws JSONException
         {
-            JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
+            JSONObject manyAssociations = (JSONObject) state.get( JSONKeys.MANY_ASSOCIATIONS );
             if( manyAssociations.has( name ) )
             {
                 manyAssociations.remove( name );
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.manyAssociationRemoved( state.getString( MapEntityStore.JSONKeys.identity.name() ), name );
+                    migrationEvent.manyAssociationRemoved( state.getString( JSONKeys.IDENTITY ), name );
                 }
 
                 return true;
@@ -380,7 +385,7 @@ public interface MigrationService
         public boolean renameManyAssociation( JSONObject state, String from, String to )
             throws JSONException
         {
-            JSONObject manyAssociations = (JSONObject) state.get( MapEntityStore.JSONKeys.manyassociations.name() );
+            JSONObject manyAssociations = (JSONObject) state.get( JSONKeys.MANY_ASSOCIATIONS );
             if( manyAssociations.has( from ) )
             {
                 Object value = manyAssociations.remove( from );
@@ -388,7 +393,7 @@ public interface MigrationService
 
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
-                    migrationEvent.manyAssociationRenamed( state.getString( MapEntityStore.JSONKeys.identity.name() ), from, to );
+                    migrationEvent.manyAssociationRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
 
                 return true;
@@ -403,12 +408,13 @@ public interface MigrationService
         public void changeEntityType( JSONObject state, String newEntityType )
             throws JSONException
         {
-            state.put( MapEntityStore.JSONKeys.type.name(), newEntityType );
+            state.put( JSONKeys.TYPE, newEntityType );
 
             for( MigrationEvents migrationEvent : migrationEvents )
             {
-                migrationEvent.entityTypeChanged( state.getString( MapEntityStore.JSONKeys.identity.name() ), newEntityType );
+                migrationEvent.entityTypeChanged( state.getString( JSONKeys.IDENTITY ), newEntityType );
             }
         }
     }
+
 }

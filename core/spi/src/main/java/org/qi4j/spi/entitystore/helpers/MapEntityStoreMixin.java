@@ -50,7 +50,6 @@ import org.qi4j.api.type.ValueType;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
@@ -68,8 +67,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.qi4j.functional.Iterables.first;
-import static org.qi4j.functional.Iterables.map;
-import static org.qi4j.functional.Iterables.toList;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -313,13 +310,13 @@ public class MapEntityStoreMixin
         {
             JSONWriter json = new JSONWriter( writer );
             JSONWriter properties = json.object().
-                key( "identity" ).value( state.identity().identity() ).
-                key( "application_version" ).value( application.version() ).
-                key( "type" ).value( first( state.entityDescriptor().types() ).getName() ).
+                key( JSONKeys.IDENTITY ).value( state.identity().identity() ).
+                key( JSONKeys.APPLICATION_VERSION ).value( application.version() ).
+                key( JSONKeys.TYPE ).value( first( state.entityDescriptor().types() ).getName() ).
                 key( "types" ).value( toList( map( Classes.toClassName(), state.entityDescriptor().mixinTypes() ) ) ).
-                key( "version" ).value( version ).
-                key( "modified" ).value( lastModified ).
-                key( "properties" ).object();
+                key( JSONKeys.VERSION ).value( version ).
+                key( JSONKeys.MODIFIED ).value( lastModified ).
+                key( JSONKeys.PROPERTIES ).object();
             EntityDescriptor entityType = state.entityDescriptor();
             for( PropertyDescriptor persistentProperty : entityType.state().properties() )
             {
@@ -347,18 +344,16 @@ public class MapEntityStoreMixin
                 }
             }
 
-            JSONWriter associations = properties.endObject().key( "associations" ).object();
-            for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations()
-                .entrySet() )
+            JSONWriter associations = properties.endObject().key( JSONKeys.ASSOCIATIONS ).object();
+            for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations().entrySet() )
             {
                 EntityReference value = stateNameEntityReferenceEntry.getValue();
                 associations.key( stateNameEntityReferenceEntry.getKey().name() ).
                     value( value != null ? value.identity() : null );
             }
 
-            JSONWriter manyAssociations = associations.endObject().key( "manyassociations" ).object();
-            for( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations()
-                .entrySet() )
+            JSONWriter manyAssociations = associations.endObject().key( JSONKeys.MANY_ASSOCIATIONS ).object();
+            for( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations().entrySet() )
             {
                 JSONWriter assocs = manyAssociations.key( stateNameListEntry.getKey().name() ).array();
                 for( EntityReference entityReference : stateNameListEntry.getValue() )
@@ -384,13 +379,12 @@ public class MapEntityStoreMixin
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
-            String version = jsonObject.getString( "version" );
-            long modified = jsonObject.getLong( "modified" );
-            String identity = jsonObject.getString( "identity" );
+            String version = jsonObject.getString( JSONKeys.VERSION );
+            long modified = jsonObject.getLong( JSONKeys.MODIFIED );
+            String identity = jsonObject.getString( JSONKeys.IDENTITY );
 
             // Check if version is correct
-            String currentAppVersion = jsonObject.optString( MapEntityStore.JSONKeys.application_version.name(),
-                                                             "0.0" );
+            String currentAppVersion = jsonObject.optString( JSONKeys.APPLICATION_VERSION, "0.0" );
             if( !currentAppVersion.equals( application.version() ) )
             {
                 if( migration != null )
@@ -400,7 +394,7 @@ public class MapEntityStoreMixin
                 else
                 {
                     // Do nothing - set version to be correct
-                    jsonObject.put( MapEntityStore.JSONKeys.application_version.name(), application.version() );
+                    jsonObject.put( JSONKeys.APPLICATION_VERSION, application.version() );
                 }
 
                 LoggerFactory.getLogger( MapEntityStoreMixin.class )
@@ -411,7 +405,7 @@ public class MapEntityStoreMixin
                 status = EntityStatus.UPDATED;
             }
 
-            String type = jsonObject.getString( "type" );
+            String type = jsonObject.getString( JSONKeys.TYPE );
 
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
@@ -420,7 +414,7 @@ public class MapEntityStoreMixin
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();
-            JSONObject props = jsonObject.getJSONObject( "properties" );
+            JSONObject props = jsonObject.getJSONObject( JSONKeys.PROPERTIES );
             for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
             {
                 Object jsonValue;
@@ -448,7 +442,7 @@ public class MapEntityStoreMixin
             }
 
             Map<QualifiedName, EntityReference> associations = new HashMap<>();
-            JSONObject assocs = jsonObject.getJSONObject( "associations" );
+            JSONObject assocs = jsonObject.getJSONObject( JSONKeys.ASSOCIATIONS );
             for( AssociationDescriptor associationType : entityDescriptor.state().associations() )
             {
                 try
@@ -467,7 +461,7 @@ public class MapEntityStoreMixin
                 }
             }
 
-            JSONObject manyAssocs = jsonObject.getJSONObject( "manyassociations" );
+            JSONObject manyAssocs = jsonObject.getJSONObject( JSONKeys.MANY_ASSOCIATIONS );
             Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<>();
             for( AssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
             {
