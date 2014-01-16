@@ -125,7 +125,11 @@ public class ValueTypeFactory
                     // Create default model
                     MixinsModel mixinsModel = new MixinsModel();
                     Iterable valueComposite = (Iterable) Iterables.iterable( ValueComposite.class );
-                    model = new ValueModel( valueComposite, Visibility.application, new MetaInfo(), mixinsModel, new ValueStateModel( new PropertiesModel(), new AssociationsModel(), new ManyAssociationsModel() ), new CompositeMethodsModel( mixinsModel ) );
+                    ValueStateModel valueStateModel = new ValueStateModel( new PropertiesModel(),
+                                                                           new AssociationsModel(),
+                                                                           new ManyAssociationsModel() );
+                    model = new ValueModel( valueComposite, Visibility.application, new MetaInfo(),
+                                            mixinsModel, valueStateModel, new CompositeMethodsModel( mixinsModel ) );
                 }
                 else
                 {

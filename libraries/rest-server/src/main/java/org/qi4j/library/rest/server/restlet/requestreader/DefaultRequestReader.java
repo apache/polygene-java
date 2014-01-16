@@ -31,6 +31,7 @@ import org.restlet.data.Status;
 import org.restlet.representation.EmptyRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ResourceException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.qi4j.api.util.Annotations.isType;
@@ -43,10 +44,12 @@ import static org.qi4j.functional.Iterables.matchesAny;
  * Convert request into method arguments.
  *
  * TODO: This should be split into many classes to handle the different cases.
+ * TODO: This does not support ManyAssociations
  */
 public class DefaultRequestReader
     implements RequestReader
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger( DefaultRequestReader.class );
     @Structure
     private Module module;
 
@@ -55,6 +58,7 @@ public class DefaultRequestReader
     private ValueDeserializer valueDeserializer;
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public Object[] readRequest( Request request, Method method )
         throws ResourceException
     {
@@ -63,7 +67,7 @@ public class DefaultRequestReader
             Object[] args = new Object[ method.getParameterTypes().length ];
 
             Form queryAsForm = Request.getCurrent().getResourceRef().getQueryAsForm();
-            Form entityAsForm = null;
+            Form entityAsForm;
             Representation representation = Request.getCurrent().getEntity();
             if( representation != null && !EmptyRepresentation.class.isInstance( representation ) )
             {
@@ -82,21 +86,20 @@ public class DefaultRequestReader
 
             if( args.length == 1 )
             {
-                if( ValueComposite.class.isAssignableFrom( method.getParameterTypes()[ 0 ] ) )
+                if( ValueComposite.class.isAssignableFrom( method.getParameterTypes()[0] ) )
                 {
-                    Class<?> valueType = method.getParameterTypes()[ 0 ];
-
-                    args[ 0 ] = getValueFromForm( (Class<ValueComposite>) valueType, queryAsForm, entityAsForm );
+                    Class<?> valueType = method.getParameterTypes()[0];
+                    args[0] = getValueFromForm( (Class<ValueComposite>) valueType, queryAsForm, entityAsForm );
                     return args;
                 }
-                else if( Form.class.equals( method.getParameterTypes()[ 0 ] ) )
+                else if( Form.class.equals( method.getParameterTypes()[0] ) )
                 {
-                    args[ 0 ] = queryAsForm.isEmpty() ? entityAsForm : queryAsForm;
+                    args[0] = queryAsForm.isEmpty() ? entityAsForm : queryAsForm;
                     return args;
                 }
-                else if( Response.class.equals( method.getParameterTypes()[ 0 ] ) )
+                else if( Response.class.equals( method.getParameterTypes()[0] ) )
                 {
-                    args[ 0 ] = Response.getCurrent();
+                    args[0] = Response.getCurrent();
                     return args;
                 }
             }
@@ -108,21 +111,22 @@ public class DefaultRequestReader
         {
 
             Object[] args = new Object[ method.getParameterTypes().length ];
-
-            Class<? extends ValueComposite> commandType = (Class<? extends ValueComposite>) method.getParameterTypes()[ 0 ];
-
-            if( method.getParameterTypes()[ 0 ].equals( Response.class ) )
+            Class<? extends ValueComposite> commandType = (Class<? extends ValueComposite>) method.getParameterTypes()[0];
+            if( method.getParameterTypes()[0].equals( Response.class ) )
             {
-                return new Object[]{ Response.getCurrent() };
+                return new Object[]
+                {
+                    Response.getCurrent()
+                };
             }
             Representation representation = Request.getCurrent().getEntity();
             MediaType type = representation.getMediaType();
             if( type == null )
             {
                 Form queryAsForm = Request.getCurrent().getResourceRef().getQueryAsForm( CharacterSet.UTF_8 );
-                if( ValueComposite.class.isAssignableFrom( method.getParameterTypes()[ 0 ] ) )
+                if( ValueComposite.class.isAssignableFrom( method.getParameterTypes()[0] ) )
                 {
-                    args[ 0 ] = getValueFromForm( commandType, queryAsForm, new Form() );
+                    args[0] = getValueFromForm( commandType, queryAsForm, new Form() );
                 }
                 else
                 {
@@ -132,17 +136,23 @@ public class DefaultRequestReader
             }
             else
             {
-                if( method.getParameterTypes()[ 0 ].equals( Representation.class ) )
+                if( method.getParameterTypes()[0].equals( Representation.class ) )
                 {
                     // Command method takes Representation as input
-                    return new Object[]{ representation };
+                    return new Object[]
+                    {
+                        representation
+                    };
                 }
-                else if( method.getParameterTypes()[ 0 ].equals( Form.class ) )
+                else if( method.getParameterTypes()[0].equals( Form.class ) )
                 {
                     // Command method takes Form as input
-                    return new Object[]{ new Form( representation ) };
+                    return new Object[]
+                    {
+                        new Form( representation )
+                    };
                 }
-                else if( ValueComposite.class.isAssignableFrom( method.getParameterTypes()[ 0 ] ) )
+                else if( ValueComposite.class.isAssignableFrom( method.getParameterTypes()[0] ) )
                 {
                     // Need to parse input into ValueComposite
                     if( type.equals( MediaType.APPLICATION_JSON ) )
@@ -150,13 +160,14 @@ public class DefaultRequestReader
                         String json = Request.getCurrent().getEntityAsText();
                         if( json == null )
                         {
-                            LoggerFactory.getLogger( getClass() )
-                                .error( "Restlet bugg http://restlet.tigris.org/issues/show_bug.cgi?id=843 detected. Notify developers!" );
-                            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "Bug in Tomcat encountered; notify developers!" );
+                            LOGGER.error( "Restlet bug http://restlet.tigris.org/issues/show_bug.cgi?id=843 detected. "
+                                          + "Notify developers!" );
+                            throw new ResourceException( Status.SERVER_ERROR_INTERNAL,
+                                                         "Bug in Restlet encountered; notify developers!" );
                         }
 
                         Object command = module.newValueFromSerializedState( commandType, json );
-                        args[ 0 ] = command;
+                        args[0] = command;
                         return args;
                     }
                     else if( type.equals( MediaType.TEXT_PLAIN ) )
@@ -164,11 +175,12 @@ public class DefaultRequestReader
                         String text = Request.getCurrent().getEntityAsText();
                         if( text == null )
                         {
-                            LoggerFactory.getLogger( getClass() )
-                                .error( "Restlet bugg http://restlet.tigris.org/issues/show_bug.cgi?id=843 detected. Notify developers!" );
-                            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, "Bug in Tomcat encountered; notify developers!" );
+                            LOGGER.error( "Restlet bug http://restlet.tigris.org/issues/show_bug.cgi?id=843 detected. "
+                                          + "Notify developers!" );
+                            throw new ResourceException( Status.SERVER_ERROR_INTERNAL,
+                                                         "Bug in Restlet encountered; notify developers!" );
                         }
-                        args[ 0 ] = text;
+                        args[0] = text;
                         return args;
                     }
                     else if( type.equals( ( MediaType.APPLICATION_WWW_FORM ) ) )
@@ -176,8 +188,9 @@ public class DefaultRequestReader
 
                         Form queryAsForm = Request.getCurrent().getResourceRef().getQueryAsForm();
                         Form entityAsForm;
-                        if( representation != null && !EmptyRepresentation.class.isInstance( representation ) && representation
-                            .isAvailable() )
+                        if( representation != null
+                            && !EmptyRepresentation.class.isInstance( representation )
+                            && representation.isAvailable() )
                         {
                             entityAsForm = new Form( representation );
                         }
@@ -186,21 +199,23 @@ public class DefaultRequestReader
                             entityAsForm = new Form();
                         }
 
-                        Class<?> valueType = method.getParameterTypes()[ 0 ];
-                        args[ 0 ] = getValueFromForm( (Class<ValueComposite>) valueType, queryAsForm, entityAsForm );
+                        Class<?> valueType = method.getParameterTypes()[0];
+                        args[0] = getValueFromForm( (Class<ValueComposite>) valueType, queryAsForm, entityAsForm );
                         return args;
                     }
                     else
                     {
-                        throw new ResourceException( Status.CLIENT_ERROR_BAD_REQUEST, "Command has to be in JSON format" );
+                        throw new ResourceException( Status.CLIENT_ERROR_BAD_REQUEST,
+                                                     "Command has to be in JSON format" );
                     }
                 }
-                else if( method.getParameterTypes()[ 0 ].isInterface() && method.getParameterTypes().length == 1 )
+                else if( method.getParameterTypes()[0].isInterface() && method.getParameterTypes().length == 1 )
                 {
                     Form queryAsForm = Request.getCurrent().getResourceRef().getQueryAsForm();
                     Form entityAsForm;
-                    if( representation != null && !EmptyRepresentation.class.isInstance( representation ) && representation
-                        .isAvailable() )
+                    if( representation != null
+                        && !EmptyRepresentation.class.isInstance( representation )
+                        && representation.isAvailable() )
                     {
                         entityAsForm = new Form( representation );
                     }
@@ -209,8 +224,8 @@ public class DefaultRequestReader
                         entityAsForm = new Form();
                     }
 
-                    args[ 0 ] = module.currentUnitOfWork()
-                        .get( method.getParameterTypes()[ 0 ], getValue( "entity", queryAsForm, entityAsForm ) );
+                    args[0] = module.currentUnitOfWork().get( method.getParameterTypes()[0],
+                                                              getValue( "entity", queryAsForm, entityAsForm ) );
 
                     return args;
                 }
@@ -218,8 +233,9 @@ public class DefaultRequestReader
                 {
                     Form queryAsForm = Request.getCurrent().getResourceRef().getQueryAsForm();
                     Form entityAsForm;
-                    if( representation != null && !EmptyRepresentation.class.isInstance( representation ) && representation
-                        .isAvailable() )
+                    if( representation != null
+                        && !EmptyRepresentation.class.isInstance( representation )
+                        && representation.isAvailable() )
                     {
                         entityAsForm = new Form( representation );
                     }
@@ -241,95 +257,76 @@ public class DefaultRequestReader
                                              final Form entityAsForm
     )
     {
-        ValueBuilder<? extends ValueComposite> builder = module.newValueBuilderWithState( valueType,
-                                                                                          new Function<PropertyDescriptor, Object>()
-                                                                                          {
-                                                                                              @Override
-                                                                                              public Object map(
-                                                                                                  PropertyDescriptor propertyDescriptor
-                                                                                              )
-                                                                                              {
-                                                                                                  Parameter param = queryAsForm
-                                                                                                      .getFirst( propertyDescriptor
-                                                                                                                     .qualifiedName()
-                                                                                                                     .name() );
+        ValueBuilder<? extends ValueComposite> builder = module.newValueBuilderWithState(
+            valueType,
+            new Function<PropertyDescriptor, Object>()
+        {
+            @Override
+            public Object map( PropertyDescriptor propertyDescriptor )
+            {
+                Parameter param = queryAsForm.getFirst( propertyDescriptor.qualifiedName().name() );
 
-                                                                                                  if( param == null )
-                                                                                                  {
-                                                                                                      param = entityAsForm
-                                                                                                          .getFirst( propertyDescriptor
-                                                                                                                         .qualifiedName()
-                                                                                                                         .name() );
-                                                                                                  }
+                if( param == null )
+                {
+                    param = entityAsForm.getFirst( propertyDescriptor.qualifiedName().name() );
+                }
 
-                                                                                                  if( param != null )
-                                                                                                  {
-                                                                                                      String value = param
-                                                                                                          .getValue();
-                                                                                                      if( value != null )
-                                                                                                      {
-                                                                                                          try
-                                                                                                          {
-                                                                                                              return valueDeserializer.deserialize( propertyDescriptor.valueType(), value );
-                                                                                                          }
-                                                                                                          catch( ValueSerializationException e )
-                                                                                                          {
-                                                                                                              throw new IllegalArgumentException( "Query parameter has invalid JSON format", e );
-                                                                                                          }
-                                                                                                      }
-                                                                                                  }
+                if( param != null )
+                {
+                    String value = param.getValue();
+                    if( value != null )
+                    {
+                        try
+                        {
+                            return valueDeserializer.deserialize( propertyDescriptor.valueType(), value );
+                        }
+                        catch( ValueSerializationException e )
+                        {
+                            throw new IllegalArgumentException( "Query parameter has invalid JSON format", e );
+                        }
+                    }
+                }
 
-                                                                                                  return null;
-                                                                                              }
-                                                                                          },
-                                                                                          new Function<AssociationDescriptor, EntityReference>()
-                                                                                          {
-                                                                                              @Override
-                                                                                              public EntityReference map(
-                                                                                                  AssociationDescriptor associationDescriptor
-                                                                                              )
-                                                                                              {
-                                                                                                  Parameter param = queryAsForm
-                                                                                                      .getFirst( associationDescriptor
-                                                                                                                     .qualifiedName()
-                                                                                                                     .name() );
+                return null;
+            }
+            },
+            new Function<AssociationDescriptor, EntityReference>()
+            {
+                @Override
+                public EntityReference map( AssociationDescriptor associationDescriptor )
+                {
+                    Parameter param = queryAsForm.getFirst( associationDescriptor.qualifiedName().name() );
 
-                                                                                                  if( param == null )
-                                                                                                  {
-                                                                                                      param = entityAsForm
-                                                                                                          .getFirst( associationDescriptor
-                                                                                                                         .qualifiedName()
-                                                                                                                         .name() );
-                                                                                                  }
+                    if( param == null )
+                    {
+                        param = entityAsForm.getFirst( associationDescriptor.qualifiedName().name() );
+                    }
 
-                                                                                                  if( param != null )
-                                                                                                  {
-                                                                                                      return EntityReference
-                                                                                                          .parseEntityReference( param
-                                                                                                                                     .getValue() );
-                                                                                                  }
-                                                                                                  else
-                                                                                                  {
-                                                                                                      return null;
-                                                                                                  }
-                                                                                              }
-                                                                                          },
-                                                                                          new Function<AssociationDescriptor, Iterable<EntityReference>>()
-                                                                                          {
-                                                                                              @Override
-                                                                                              public Iterable<EntityReference> map(
-                                                                                                  AssociationDescriptor associationDescriptor
-                                                                                              )
-                                                                                              {
-                                                                                                  // TODO
-                                                                                                  return Iterables.empty();
-                                                                                              }
-                                                                                          }
+                    if( param != null )
+                    {
+                        return EntityReference.parseEntityReference( param.getValue() );
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            },
+            new Function<AssociationDescriptor, Iterable<EntityReference>>()
+            {
+                @Override
+                public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+                {
+                    // TODO
+                    return Iterables.empty();
+                }
+            }
         );
 
         return builder.newInstance();
     }
 
+    @SuppressWarnings( "unchecked" )
     private void parseMethodArguments( Method method, Object[] args, Form queryAsForm, Form entityAsForm )
     {
         // Parse each argument separately using the @Name annotation as help
@@ -346,7 +343,7 @@ public class DefaultRequestReader
             String argString = getValue( name.value(), queryAsForm, entityAsForm );
 
             // Parameter conversion
-            Class<?> parameterType = method.getParameterTypes()[ idx ];
+            Class<?> parameterType = method.getParameterTypes()[idx];
             Object arg = null;
             if( parameterType.equals( String.class ) )
             {
@@ -447,8 +444,8 @@ public class DefaultRequestReader
             }
             else
             {
-                throw new IllegalArgumentException( "Don't know how to parse parameter " + name.value() + " of type " + parameterType
-                    .getName() );
+                throw new IllegalArgumentException( "Don't know how to parse parameter " + name.value()
+                                                    + " of type " + parameterType.getName() );
             }
 
             if( arg == null && !matchesAny( isType( Optional.class ), iterable( annotations ) ) )
@@ -456,7 +453,7 @@ public class DefaultRequestReader
                 throw new IllegalArgumentException( "Parameter " + name.value() + " was not set" );
             }
 
-            args[ idx++ ] = arg;
+            args[idx++] = arg;
         }
     }
 

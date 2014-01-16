@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import static org.qi4j.library.rest.client.api.HandlerCommand.*;
+import static org.qi4j.library.rest.client.api.HandlerCommand.refresh;
 
 /**
  * Reads Qi4j Github commits on develop ATOM feed and prints out all title and detail url for each entry.
@@ -110,7 +110,7 @@ public class RssReaderTest
                     System.out.println( "== " + xPath.evaluate( "feed/title", result ) + " ==" );
 
                     final NodeList nodes = (NodeList) xPath.evaluate( "feed/entry", result, XPathConstants.NODESET );
-                    List<Node> items = new ArrayList<Node>();
+                    List<Node> items = new ArrayList<>();
                     for( int i = 0; i < nodes.getLength(); i++ )
                     {
                         items.add( nodes.item( i ) );

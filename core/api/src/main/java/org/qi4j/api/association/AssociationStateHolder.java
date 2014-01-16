@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Niclas Hedhman.
+ * Copyright (c) 2008-2013, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -13,7 +13,7 @@
  * implied.
  *
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * limitations under the License. 
  */
 package org.qi4j.api.association;
 
@@ -23,7 +23,8 @@ import org.qi4j.api.property.StateHolder;
 /**
  * This represents the state of a entity (properties+associations).
  */
-public interface AssociationStateHolder extends StateHolder
+public interface AssociationStateHolder
+    extends StateHolder
 {
     /**
      * Get an association for a specific accessor method

@@ -263,14 +263,14 @@ public class SQLEntityStoreMixin
 
             @Override
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super EntityState, ReceiverThrowableType> output )
-                    throws EntityStoreException, ReceiverThrowableType
+                throws EntityStoreException, ReceiverThrowableType
             {
                 output.receiveFrom( new Sender<EntityState, EntityStoreException>()
                 {
 
                     @Override
                     public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, EntityStoreException
+                        throws ReceiverThrowableType, EntityStoreException
                     {
 
                         queryAllEntities( module, new EntityStatesVisitor()
@@ -278,12 +278,14 @@ public class SQLEntityStoreMixin
 
                             @Override
                             public boolean visit( EntityState visited )
-                                    throws SQLException
+                                throws SQLException
                             {
-
-                                try {
+                                try
+                                {
                                     receiver.receive( visited );
-                                } catch ( Throwable receiverThrowableType ) {
+                                }
+                                catch( Throwable receiverThrowableType )
+                                {
                                     throw new SQLException( receiverThrowableType );
                                 }
                                 return true;
@@ -310,34 +312,35 @@ public class SQLEntityStoreMixin
         final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSPI,
                                                                                    newUnitOfWorkId(), module, usecase,
                                                                                    System.currentTimeMillis() );
-        try {
-
+        try
+        {
             connection = database.getConnection();
             ps = database.prepareGetAllEntitiesStatement( connection );
             database.populateGetAllEntitiesStatement( ps );
             rs = ps.executeQuery();
-            while ( rs.next() ) {
+            while( rs.next() )
+            {
                 DefaultEntityState entityState = readEntityState( uow, database.getEntityValue( rs ).getReader() );
-                if ( !entityStatesVisitor.visit( entityState ) ) {
+                if( !entityStatesVisitor.visit( entityState ) )
+                {
                     return;
                 }
             }
-
-        } catch ( SQLException ex ) {
-
+        }
+        catch( SQLException ex )
+        {
             throw new EntityStoreException( ex );
-
-        } finally {
-
+        }
+        finally
+        {
             SQLUtil.closeQuietly( rs );
             SQLUtil.closeQuietly( ps );
             SQLUtil.closeQuietly( connection );
-
         }
     }
 
     private interface EntityStatesVisitor
-            extends Visitor<EntityState, SQLException>
+        extends Visitor<EntityState, SQLException>
     {
     }
 
@@ -374,7 +377,7 @@ public class SQLEntityStoreMixin
                 }
 
                 LOGGER.trace( "Updated version nr on {} from {} to {}",
-                              new Object[]{ identity, currentAppVersion, application.version() } );
+                              identity, currentAppVersion, application.version() );
 
                 // State changed
                 status = EntityStatus.UPDATED;
@@ -400,7 +403,7 @@ public class SQLEntityStoreMixin
                 catch( JSONException e )
                 {
                     // Value not found, default it
-                    Object initialValue = propertyDescriptor.initialValue(module);
+                    Object initialValue = propertyDescriptor.initialValue( module );
                     properties.put( propertyDescriptor.qualifiedName(), initialValue );
                     status = EntityStatus.UPDATED;
                     continue;

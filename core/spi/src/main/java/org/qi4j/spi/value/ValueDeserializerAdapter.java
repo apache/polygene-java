@@ -804,13 +804,9 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                     {
                         return empty();
                     }
-                    else
-                    {
-                        return (Iterable<EntityReference>) entityRefs;
-                    }
+                    return (Iterable<EntityReference>) entityRefs;
                 }
             } );
-
     }
 
     @SuppressWarnings( "unchecked" )

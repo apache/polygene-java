@@ -212,8 +212,8 @@ public interface EntityToValue
                                     return Collections.emptyList();
                                 }
 
-                                ManyAssociation state = associationState.manyAssociationFor( associationDescriptor.accessor() );
-                                List<String> entities = new ArrayList<>();
+                                ManyAssociation<?> state = associationState.manyAssociationFor( associationDescriptor.accessor() );
+                                List<String> entities = new ArrayList<>( state.count() );
                                 for( Object entity : state )
                                 {
                                     entities.add( ( (Identity) entity ).identity().get() );
@@ -239,8 +239,9 @@ public interface EntityToValue
                         @Override
                         public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
                         {
-                            List<EntityReference> refs = new ArrayList<>();
-                            for( Object entity : associationState.manyAssociationFor( associationDescriptor.accessor() ) )
+                            ManyAssociation<?> state = associationState.manyAssociationFor( associationDescriptor.accessor() );
+                            List<EntityReference> refs = new ArrayList<>( state.count() );
+                            for( Object entity : state )
                             {
                                 refs.add( EntityReference.entityReferenceFor( entity ) );
                             }
@@ -264,7 +265,7 @@ public interface EntityToValue
                             PropertyDescriptor propertyDescriptor = entityState.findPropertyModelByName( propertyName );
                             return associationState.propertyFor( propertyDescriptor.accessor() ).get();
                         }
-                        catch( Exception e )
+                        catch( IllegalArgumentException e )
                         {
                             if( descriptor.valueType().mainType().equals( String.class ) )
                             {
@@ -304,8 +305,8 @@ public interface EntityToValue
                                 }
 
                                 AccessibleObject associationMethod = associationDescriptor.accessor();
-                                ManyAssociation state = associationState.manyAssociationFor( associationMethod );
-                                List<String> entities = new ArrayList<>();
+                                ManyAssociation<?> state = associationState.manyAssociationFor( associationMethod );
+                                List<String> entities = new ArrayList<>( state.count() );
                                 for( Object entity : state )
                                 {
                                     entities.add( ( (Identity) entity ).identity().get() );
@@ -325,10 +326,9 @@ public interface EntityToValue
                             try
                             {
                                 associationDescriptor = entityDescriptor.state()
-                                    .getAssociationByName( descriptor.qualifiedName()
-                                        .name() );
+                                    .getAssociationByName( descriptor.qualifiedName().name() );
                             }
-                            catch( Exception e )
+                            catch( IllegalArgumentException e )
                             {
                                 return null;
                             }
@@ -355,9 +355,9 @@ public interface EntityToValue
                                 return Iterables.empty();
                             }
 
-                            List<EntityReference> refs = new ArrayList<>();
-                            AccessibleObject associationMethod = associationDescriptor.accessor();
-                            for( Object entity : associationState.manyAssociationFor( associationMethod ) )
+                            ManyAssociation<?> state = associationState.manyAssociationFor( associationDescriptor.accessor() );
+                            List<EntityReference> refs = new ArrayList<>( state.count() );
+                            for( Object entity : state )
                             {
                                 refs.add( EntityReference.entityReferenceFor( entity ) );
                             }
