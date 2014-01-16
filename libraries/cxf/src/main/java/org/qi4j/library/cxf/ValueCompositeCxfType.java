@@ -151,7 +151,6 @@ public class ValueCompositeCxfType
     }
 
     @Override
-    @SuppressWarnings( "raw" )
     public void writeObject( Object object, final MessageWriter writer, final Context context )
         throws DatabindingException
     {
@@ -188,7 +187,7 @@ public class ValueCompositeCxfType
         }
 
         AegisType type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName( String.class ) );
-        for( Association association : state.allAssociations() )
+        for( Association<?> association : state.allAssociations() )
         {
             QName childName = new QName( "", spi.associationDescriptorFor( association ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );
@@ -200,7 +199,7 @@ public class ValueCompositeCxfType
             cwriter.close();
         }
 
-        for( ManyAssociation association : state.allManyAssociations() )
+        for( ManyAssociation<?> association : state.allManyAssociations() )
         {
             QName childName = new QName( "", spi.associationDescriptorFor( association ).qualifiedName().name() );
             MessageWriter cwriter = writer.getElementWriter( childName );
