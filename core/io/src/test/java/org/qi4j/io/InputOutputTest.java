@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.io;
 
 import java.io.BufferedReader;
@@ -45,9 +44,10 @@ import static java.util.Arrays.asList;
 import static org.qi4j.functional.Iterables.iterable;
 import static org.qi4j.io.Inputs.text;
 import static org.qi4j.io.Transforms.lock;
+import static org.qi4j.test.util.Assume.assumeConnectivity;
 
 /**
- * Test Input/Output
+ * Test Input/Output.
  */
 public class InputOutputTest
 {
@@ -114,6 +114,8 @@ public class InputOutputTest
     public void testCopyURL()
         throws IOException
     {
+        assumeConnectivity( "www.google.com", 80 );
+
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
 
@@ -168,7 +170,7 @@ public class InputOutputTest
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
         File sourceFile = sourceFile();
-        Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
+        Transforms.Counter<String> stringCounter = new Transforms.Counter<>();
         text( sourceFile ).transferTo(
             Transforms.map(
                 stringCounter,
@@ -194,7 +196,7 @@ public class InputOutputTest
         File tempFile = File.createTempFile( "test", ".txt" );
         tempFile.deleteOnExit();
         File sourceFile = sourceFile();
-        Transforms.Counter<String> stringCounter = new Transforms.Counter<String>();
+        Transforms.Counter<String> stringCounter = new Transforms.Counter<>();
         Input<String, IOException> text1 = text( sourceFile );
         Input<String, IOException> text2 = text( sourceFile );
         List<Input<String, IOException>> list = createList( text1, text2 );
@@ -202,12 +204,12 @@ public class InputOutputTest
             Transforms.map(
                 stringCounter,
                 Transforms.map( new Function<String, String>()
+            {
+                public String map( String s )
                 {
-                    public String map( String s )
-                    {
-                        System.out.println( s );
-                        return s;
-                    }
+                    System.out.println( s );
+                    return s;
+                }
                 }, Outputs.text( tempFile ) )
             )
         );
@@ -231,27 +233,27 @@ public class InputOutputTest
 
         text( sourceFile() ).
             transferTo( writerOutput( new Writer()
-            {
-                @Override
-                public void write( char[] cbuf, int off, int len )
-                    throws IOException
-                {
-                    throw new IOException();
-                }
+                    {
+                        @Override
+                        public void write( char[] cbuf, int off, int len )
+                        throws IOException
+                        {
+                            throw new IOException();
+                        }
 
-                @Override
-                public void flush()
-                    throws IOException
-                {
-                    throw new IOException();
-                }
+                        @Override
+                        public void flush()
+                        throws IOException
+                        {
+                            throw new IOException();
+                        }
 
-                @Override
-                public void close()
-                    throws IOException
-                {
-                    throw new IOException();
-                }
+                        @Override
+                        public void close()
+                        throws IOException
+                        {
+                            throw new IOException();
+                        }
             } ) );
     }
 
@@ -262,6 +264,7 @@ public class InputOutputTest
 
         Input<String, RemoteException> input = new Input<String, RemoteException>()
         {
+            @Override
             public <OutputThrowableType extends Throwable> void transferTo( Output<? super String, OutputThrowableType> output )
                 throws RemoteException, OutputThrowableType
             {
@@ -301,7 +304,7 @@ public class InputOutputTest
     @Test
     public void testGenerics()
     {
-        ArrayList<Object> objects = new ArrayList<Object>();
+        ArrayList<Object> objects = new ArrayList<>( 3 );
         Inputs.iterable( Arrays.asList( "Foo", "Bar", "Xyzzy" ) ).transferTo( Outputs.collection( objects ) );
 
         Inputs.iterable( objects ).transferTo( Outputs.systemOut() );
@@ -317,9 +320,10 @@ public class InputOutputTest
             public boolean visit( OutputStream visited )
                 throws IOException
             {
-                PrintWriter writer = new PrintWriter( visited );
-                writer.print( "Hello World!" );
-                writer.close();
+                try( PrintWriter writer = new PrintWriter( visited ) )
+                {
+                    writer.print( "Hello World!" );
+                }
                 return true;
             }
         }, 256 );
@@ -332,6 +336,7 @@ public class InputOutputTest
     {
         return new Output<String, IOException>()
         {
+            @Override
             public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends String, SenderThrowableType> sender )
                 throws IOException, SenderThrowableType
             {
@@ -342,6 +347,7 @@ public class InputOutputTest
                 {
                     sender.sendTo( new Receiver<String, IOException>()
                     {
+                        @Override
                         public void receive( String item )
                             throws IOException
                         {
