@@ -18,6 +18,15 @@
 package org.qi4j.test.util;
 
 import java.awt.GraphicsEnvironment;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -48,4 +57,46 @@ public class Assume
         assumeTrue( display.length() > 0 );
     }
 
+    /**
+     * If called on a networkless runtime, the test will halt and be ignored.
+     */
+    public static void assumeNetworking()
+    {
+        try
+        {
+            Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
+            assumeThat( ifaces, is( notNullValue() ) );
+            assumeTrue( ifaces.hasMoreElements() );
+        }
+        catch( SocketException ex )
+        {
+            assumeFalse( true );
+        }
+    }
+
+    /**
+     * If called on a runtime with to access to qi4j.org on port 80, the test will halt and be ignored.
+     */
+    public static void assumeConnectivity()
+    {
+        assumeConnectivity( "qi4j.org", 80 );
+    }
+
+    /**
+     * If called on a runtime with to access to given host and port, the test will halt and be ignored.
+     *
+     * @param host Host
+     * @param port Port
+     */
+    public static void assumeConnectivity( String host, int port )
+    {
+        try( Socket socket = new Socket( host, port ) )
+        {
+            // Connected
+        }
+        catch( IOException ex )
+        {
+            assumeFalse( true );
+        }
+    }
 }
