@@ -209,9 +209,11 @@ public class ValueCompositeCxfType
             for( Object entity : association )
             {
                 String id = EntityReference.entityReferenceFor( entity ).identity();
-                if (ids != null)
-                    ids+=",";
-                ids+=ids;
+                if( ids != null )
+                {
+                    ids += ",";
+                }
+                ids += id;
             }
             if( ids == null )
             {
