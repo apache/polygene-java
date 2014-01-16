@@ -26,11 +26,11 @@ import javax.jws.WebService;
              serviceName = "HelloWorld" )
 public class HelloWorldImpl implements HelloWorld
 {
-    private Map<Integer, User> users;
+    private final Map<Integer, User> users;
 
     public HelloWorldImpl()
     {
-        users = new LinkedHashMap<Integer, User>();
+        users = new LinkedHashMap<>();
     }
 
     public String sayHi( String text )

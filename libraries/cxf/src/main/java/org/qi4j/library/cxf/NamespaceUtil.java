@@ -36,7 +36,7 @@ public final class NamespaceUtil
     {
         if( type instanceof Class )
         {
-            Class valueType = (Class) type;
+            Class<?> valueType = (Class<?>) type;
             String packageName = valueType.getPackage().getName();
             String className = valueType.getSimpleName();
             QName typeQName = new QName( "urn:qi4j:type:value:" + packageName, className );
