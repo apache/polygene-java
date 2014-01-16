@@ -68,6 +68,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
+import static org.qi4j.functional.Iterables.toList;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
