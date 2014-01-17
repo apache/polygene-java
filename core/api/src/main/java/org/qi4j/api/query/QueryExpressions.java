@@ -127,7 +127,7 @@ public final class QueryExpressions
                                                                new Class<?>[]{ field.getType() },
                                                                new AssociationReferenceHandler<>( new AssociationFunction<T>( null, null, field ) ) ) );
                         }
-                        else if( field.getType().equals( Property.class ) )
+                        else if( field.getType().equals( ManyAssociation.class ) )
                         {
                             field.set( mixin,
                                        Proxy.newProxyInstance( field.getType().getClassLoader(),
