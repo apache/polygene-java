@@ -138,7 +138,7 @@ public final class QueryExpressions
                 }
                 return mixin;
             }
-            catch( Throwable e )
+            catch( IllegalAccessException | IllegalArgumentException | InstantiationException | SecurityException e )
             {
                 throw new IllegalArgumentException( "Cannot use class as template", e );
             }
@@ -825,5 +825,9 @@ public final class QueryExpressions
 
             return null;
         }
+    }
+
+    private QueryExpressions()
+    {
     }
 }
