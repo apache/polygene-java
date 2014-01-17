@@ -86,9 +86,17 @@ allprojects {
 
   group = name.substring( 0, name.lastIndexOf( '.' ) )
   version = System.properties.version ?: "0"
+  
+  // UTF-8 For all compilations and javadocs
+  // Deprecation warnings for all compilations
+  // Unchecked warnings for non-test core compilations
   tasks.withType(Compile) {
     options.encoding = 'UTF-8'
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    options.compilerArgs << "-Xlint:deprecation"
+  }
+  if("core".equals(group)) {
+    tasks.matching({ task -> task instanceof Compile && !task.name.contains('test') }).
+        each({ task -> task.options.compilerArgs << "-Xlint:unchecked" })
   }
   tasks.withType(Javadoc) {
     options.encoding = 'UTF-8'
