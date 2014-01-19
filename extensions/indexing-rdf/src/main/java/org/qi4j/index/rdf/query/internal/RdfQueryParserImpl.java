@@ -1,5 +1,5 @@
 /*
- * Copyright 2008 Alin Dreghiciu.
+ * Copyright 2011 Rickard Öberg.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -17,14 +17,57 @@
  */
 package org.qi4j.index.rdf.query.internal;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.query.grammar.AndSpecification;
+import org.qi4j.api.query.grammar.AssociationNotNullSpecification;
+import org.qi4j.api.query.grammar.AssociationNullSpecification;
+import org.qi4j.api.query.grammar.ComparisonSpecification;
+import org.qi4j.api.query.grammar.ContainsAllSpecification;
+import org.qi4j.api.query.grammar.ContainsSpecification;
+import org.qi4j.api.query.grammar.EqSpecification;
+import org.qi4j.api.query.grammar.GeSpecification;
+import org.qi4j.api.query.grammar.GtSpecification;
+import org.qi4j.api.query.grammar.LeSpecification;
+import org.qi4j.api.query.grammar.LtSpecification;
+import org.qi4j.api.query.grammar.ManyAssociationContainsSpecification;
+import org.qi4j.api.query.grammar.MatchesSpecification;
+import org.qi4j.api.query.grammar.NeSpecification;
+import org.qi4j.api.query.grammar.NotSpecification;
+import org.qi4j.api.query.grammar.OrSpecification;
+import org.qi4j.api.query.grammar.OrderBy;
+import org.qi4j.api.query.grammar.PropertyFunction;
+import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
+import org.qi4j.api.query.grammar.PropertyNullSpecification;
+import org.qi4j.api.query.grammar.QuerySpecification;
+import org.qi4j.api.query.grammar.Variable;
+import org.qi4j.api.value.ValueSerializer;
+import org.qi4j.functional.Iterables;
+import org.qi4j.functional.Specification;
+import org.qi4j.index.rdf.query.RdfQueryParser;
+import org.qi4j.spi.Qi4jSPI;
+import org.slf4j.LoggerFactory;
+
+import static java.lang.String.format;
+
 /**
  * JAVADOC Add JavaDoc
  */
 public class RdfQueryParserImpl
-//    implements RdfQueryParser
+    implements RdfQueryParser
 {
-    /*
-    private static ThreadLocal<DateFormat> ISO8601_UTC = new ThreadLocal<DateFormat>()
+    private static final ThreadLocal<DateFormat> ISO8601_UTC = new ThreadLocal<DateFormat>()
     {
         @Override
         protected DateFormat initialValue()
@@ -35,42 +78,82 @@ public class RdfQueryParserImpl
         }
     };
 
-    private static final Map<Class<? extends Predicate>, String> m_operators;
-    private static final Set<Character> reservedChars;
+    private static final Map<Class<? extends ComparisonSpecification>, String> OPERATORS;
+    private static final Set<Character> RESERVED_CHARS;
 
-    private Namespaces namespaces = new Namespaces();
-    private Triples triples = new Triples( namespaces );
+    private final Namespaces namespaces = new Namespaces();
+    private final Triples triples = new Triples( namespaces );
+    private final Qi4jSPI spi;
+    private final ValueSerializer valueSerializer;
+    private Map<String, Object> variables;
 
     static
     {
-        m_operators = new HashMap<Class<? extends Predicate>, String>();
-        m_operators.put( EqualsPredicate.class, "=" );
-        m_operators.put( GreaterOrEqualPredicate.class, ">=" );
-        m_operators.put( GreaterThanPredicate.class, ">" );
-        m_operators.put( LessOrEqualPredicate.class, "<=" );
-        m_operators.put( LessThanPredicate.class, "<" );
-        m_operators.put( NotEqualsPredicate.class, "!=" );
-        m_operators.put( ManyAssociationContainsPredicate.class, "=" );
+        OPERATORS = new HashMap<>( 6 );
+        OPERATORS.put( EqSpecification.class, "=" );
+        OPERATORS.put( GeSpecification.class, ">=" );
+        OPERATORS.put( GtSpecification.class, ">" );
+        OPERATORS.put( LeSpecification.class, "<=" );
+        OPERATORS.put( LtSpecification.class, "<" );
+        OPERATORS.put( NeSpecification.class, "!=" );
 
-        reservedChars = new HashSet<Character>( Arrays.asList(
+        RESERVED_CHARS = new HashSet<>( Arrays.asList(
             '\"', '^', '.', '\\', '?', '*', '+', '{', '}', '(', ')', '|', '$', '[', ']'
         ) );
     }
 
-    public String query( final Class<?> resultType,
-                            final BooleanExpression whereClause,
-                            final OrderBy[] orderBySegments,
-                            final Integer firstResult,
-                            final Integer maxResults
+    public RdfQueryParserImpl( Qi4jSPI spi, ValueSerializer valueSerializer )
+    {
+        this.spi = spi;
+        this.valueSerializer = valueSerializer;
+    }
+
+    @Override
+    public String constructQuery( final Class<?> resultType,
+                                  final Specification<Composite> specification,
+                                  final OrderBy[] orderBySegments,
+                                  final Integer firstResult,
+                                  final Integer maxResults,
+                                  final Map<String, Object> variables
     )
     {
-        // Add type+identity triples last. This makes queries faster since the query engine can reduce the number of triples
-        // to check faster
-        triples.addDefaultTriples( resultType.getName() );
+        this.variables = variables;
+
+        if( QuerySpecification.isQueryLanguage( "SPARQL", specification ) )
+        {
+            // Custom query
+            StringBuilder queryBuilder = new StringBuilder();
+            String query = ( (QuerySpecification) specification ).query();
+            queryBuilder.append( query );
+
+            if( orderBySegments != null )
+            {
+                queryBuilder.append( "\nORDER BY " );
+                processOrderBy( orderBySegments, queryBuilder );
+            }
+            if( firstResult != null )
+            {
+                queryBuilder.append( "\nOFFSET " ).append( firstResult );
+            }
+            if( maxResults != null )
+            {
+                queryBuilder.append( "\nLIMIT " ).append( maxResults );
+            }
+
+            return queryBuilder.toString();
+        }
+        else
+        {
+            // Add type+identity triples last. This makes queries faster since the query engine can reduce the number
+            // of triples to check faster
+            triples.addDefaultTriples( resultType.getName() );
+        }
 
         // and collect namespaces
-        final String filter = processFilter( whereClause, true );
-        final String orderBy = processOrderBy( orderBySegments );
+        StringBuilder filter = new StringBuilder();
+        processFilter( specification, true, filter );
+        StringBuilder orderBy = new StringBuilder();
+        processOrderBy( orderBySegments, orderBy );
 
         StringBuilder query = new StringBuilder();
 
@@ -102,8 +185,10 @@ public class RdfQueryParserImpl
             }
 
             // Add OPTIONAL statements last
-            if (optional.length() > 0)
+            if( optional.length() > 0 )
+            {
                 query.append( optional.toString() );
+            }
 
             if( filter.length() > 0 )
             {
@@ -111,7 +196,7 @@ public class RdfQueryParserImpl
             }
             query.append( "\n}" );
         }
-        if( orderBy != null )
+        if( orderBy.length() > 0 )
         {
             query.append( "\nORDER BY " ).append( orderBy );
         }
@@ -124,101 +209,138 @@ public class RdfQueryParserImpl
             query.append( "\nLIMIT " ).append( maxResults );
         }
 
-        LoggerFactory.getLogger( getClass()).debug( "Query:\n" + query );
+        LoggerFactory.getLogger( getClass() ).debug( "Query:\n" + query );
         return query.toString();
     }
 
-    private String processFilter( final BooleanExpression expression, boolean allowInline )
+    private void processFilter( final Specification<Composite> expression, boolean allowInline, StringBuilder builder )
     {
         if( expression == null )
         {
-            return "";
+            return;
         }
-        if( expression instanceof Conjunction )
-        {
-            final Conjunction conjunction = (Conjunction) expression;
-            String left = processFilter( conjunction.leftSideExpression(), allowInline );
-            String right = processFilter( conjunction.rightSideExpression(), allowInline );
 
-            if( left.equals( "" ) )
-            {
-                return right;
-            }
-            else if( right.equals( "" ) )
-            {
-                return left;
-            }
-            else
-            {
-                return format( "(%s && %s)", left, right );
-            }
-        }
-        if( expression instanceof Disjunction )
+        if( expression instanceof AndSpecification )
         {
-            final Disjunction disjunction = (Disjunction) expression;
-            String left = processFilter( disjunction.leftSideExpression(), false );
-            String right = processFilter( disjunction.rightSideExpression(), false );
-            if( left.equals( "" ) )
+            final AndSpecification conjunction = (AndSpecification) expression;
+
+            int start = builder.length();
+            boolean first = true;
+            for( Specification<Composite> operand : conjunction.operands() )
             {
-                return right;
+                int size = builder.length();
+                processFilter( operand, allowInline, builder );
+                if( builder.length() > size )
+                {
+                    if( first )
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        builder.insert( size, " && " );
+                    }
+                }
             }
-            else if( right.equals( "" ) )
+
+            if( builder.length() > start )
             {
-                return left;
-            }
-            else
-            {
-                return format( "(%s || %s)", left, right );
+                builder.insert( start, '(' );
+                builder.append( ')' );
             }
         }
-        if( expression instanceof Negation )
+        else if( expression instanceof OrSpecification )
         {
-            return format( "(!%s)", processFilter( ( (Negation) expression ).expression(), false ) );
+            final OrSpecification disjunction = (OrSpecification) expression;
+
+            int start = builder.length();
+            boolean first = true;
+            for( Specification<Composite> operand : disjunction.operands() )
+            {
+                int size = builder.length();
+                processFilter( operand, false, builder );
+                if( builder.length() > size )
+                {
+                    if( first )
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        builder.insert( size, "||" );
+                    }
+                }
+            }
+
+            if( builder.length() > start )
+            {
+                builder.insert( start, '(' );
+                builder.append( ')' );
+            }
         }
-        if( expression instanceof MatchesPredicate )
+        else if( expression instanceof NotSpecification )
         {
-            return processMatchesPredicate( (MatchesPredicate) expression );
+            builder.insert( 0, "(!" );
+            processFilter( ( (NotSpecification) expression ).operand(), false, builder );
+            builder.append( ")" );
         }
-        if( expression instanceof ComparisonPredicate )
+        else if( expression instanceof ComparisonSpecification )
         {
-            return processComparisonPredicate( (ComparisonPredicate) expression, allowInline );
+            processComparisonPredicate( expression, allowInline, builder );
         }
-        if( expression instanceof ManyAssociationContainsPredicate )
+        else if( expression instanceof ContainsAllSpecification )
         {
-            return processManyAssociationContainsPredicate( (ManyAssociationContainsPredicate) expression, allowInline );
+            processContainsAllPredicate( (ContainsAllSpecification) expression, builder );
         }
-        if( expression instanceof PropertyNullPredicate )
+        else if( expression instanceof ContainsSpecification<?> )
         {
-            return processNullPredicate( (PropertyNullPredicate) expression );
+            processContainsPredicate( (ContainsSpecification<?>) expression, builder );
         }
-        if( expression instanceof AssociationNullPredicate )
+        else if( expression instanceof MatchesSpecification )
         {
-            return processNullPredicate( (AssociationNullPredicate) expression );
+            processMatchesPredicate( (MatchesSpecification) expression, builder );
         }
-        if( expression instanceof ContainsPredicate<?, ?> )
+        else if( expression instanceof PropertyNotNullSpecification<?> )
         {
-            return processContainsPredicate( (ContainsPredicate<?, ?>) expression );
+            processNotNullPredicate( (PropertyNotNullSpecification) expression, builder );
         }
-        if( expression instanceof ContainsAllPredicate<?, ?> )
+        else if( expression instanceof PropertyNullSpecification<?> )
         {
-            return processContainsAllPredicate( (ContainsAllPredicate<?, ?>) expression );
+            processNullPredicate( (PropertyNullSpecification) expression, builder );
         }
-        throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
+        else if( expression instanceof AssociationNotNullSpecification<?> )
+        {
+            processNotNullPredicate( (AssociationNotNullSpecification) expression, builder );
+        }
+        else if( expression instanceof AssociationNullSpecification<?> )
+        {
+            processNullPredicate( (AssociationNullSpecification) expression, builder );
+        }
+        else if( expression instanceof ManyAssociationContainsSpecification<?> )
+        {
+            processManyAssociationContainsPredicate( (ManyAssociationContainsSpecification) expression, allowInline, builder );
+        }
+        else
+        {
+            throw new UnsupportedOperationException( "Expression " + expression + " is not supported" );
+        }
     }
 
-    private static String join( String[] strings, String delimiter )
+    private static void join( String[] strings, String delimiter, StringBuilder builder )
     {
-        StringBuilder builder = new StringBuilder();
         for( Integer x = 0; x < strings.length; ++x )
         {
-            builder.append( strings[ x ] );
+            builder.append( strings[ x] );
             if( x + 1 < strings.length )
             {
                 builder.append( delimiter );
             }
         }
+    }
 
-        return builder.toString();
+    private String createAndEscapeJSONString( Object value )
+    {
+        return escapeJSONString( valueSerializer.serialize( value, false ) );
     }
 
     private String createRegexStringForContaining( String valueVariable, String containedString )
@@ -228,13 +350,21 @@ public class RdfQueryParserImpl
         return format( "regex(str(%s), \"^\\\\u005B.*%s.*\\\\u005D$\", \"s\")", valueVariable, containedString );
     }
 
-
     private String escapeJSONString( String jsonStr )
     {
         StringBuilder builder = new StringBuilder();
-        for( Character c : jsonStr.toCharArray() )
+        char[] chars = jsonStr.toCharArray();
+        for( int i = 0; i < chars.length; i++ )
         {
-            if( reservedChars.contains( c ) )
+            char c = chars[ i];
+
+            /*
+             if ( reservedJsonChars.contains( c ))
+             {
+             builder.append( "\\\\u" ).append( format( "%04X", (int) '\\' ) );
+             }
+             */
+            if( RESERVED_CHARS.contains( c ) )
             {
                 builder.append( "\\\\u" ).append( format( "%04X", (int) c ) );
             }
@@ -247,213 +377,168 @@ public class RdfQueryParserImpl
         return builder.toString();
     }
 
-    private String processContainsAllPredicate( final ContainsAllPredicate<?, ?> predicate )
+    private void processContainsAllPredicate( final ContainsAllSpecification<?> predicate, StringBuilder builder )
     {
-        ValueExpression<?> valueExpression = predicate.valueExpression();
-        if( valueExpression instanceof SingleValueExpression<?> )
+        Iterable<?> values = predicate.containedValues();
+        String valueVariable = triples.addTriple( predicate.collectionProperty(), false ).value();
+        String[] strings;
+        if( values instanceof Collection )
         {
-            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).value();
-            final SingleValueExpression<?> singleValueExpression = (SingleValueExpression<?>) valueExpression;
-            String[] strings = new String[( (Collection<?>) singleValueExpression.value() ).size()];
-            Integer x = 0;
-            for( Object o : (Collection<?>) singleValueExpression.value() )
+            strings = new String[ ( (Collection<?>) values ).size() ];
+        }
+        else
+        {
+            strings = new String[ ( (int) Iterables.count( values ) ) ];
+        }
+        Integer x = 0;
+        for( Object item : (Collection<?>) values )
+        {
+            String jsonStr = "";
+            if( item != null )
             {
-                String jsonStr = "";
-                if( o != null )
+                String serialized = valueSerializer.serialize( item, false );
+                if( item instanceof String )
                 {
-                    try
-                    {
-                        jsonStr = this.createAndEscapeJSONString( o, predicate.propertyReference() );
-                    }
-                    catch( JSONException jsone )
-                    {
-                        throw new UnsupportedOperationException( "Error when JSONing value", jsone );
-                    }
+                    serialized = "\"" + StringEscapeUtils.escapeJava( serialized ) + "\"";
                 }
-                strings[ x ] = this.createRegexStringForContaining( valueVariable, jsonStr );
-                x++;
+                jsonStr = escapeJSONString( serialized );
             }
-            StringBuilder regex = new StringBuilder();
-            if( strings.length > 0 )
-            {
-                // For some reason, just "FILTER ()" causes error in SPARQL query
-                regex.append( "(" );
-                regex.append( join( strings, " && " ) );
-                regex.append( ")" );
-            }
-            else
-            {
-                regex.append( this.createRegexStringForContaining( valueVariable, "" ) );
-            }
-            return regex.toString();
+            strings[ x] = this.createRegexStringForContaining( valueVariable, jsonStr );
+            x++;
+        }
+
+        if( strings.length > 0 )
+        {
+            // For some reason, just "FILTER ()" causes error in SPARQL query
+            builder.append( "(" );
+            join( strings, " && ", builder );
+            builder.append( ")" );
         }
         else
         {
-            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported." );
+            builder.append( this.createRegexStringForContaining( valueVariable, "" ) );
         }
     }
 
-    private String processContainsPredicate( final ContainsPredicate<?, ?> predicate )
+    private void processContainsPredicate( final ContainsSpecification<?> predicate, StringBuilder builder )
     {
-        ValueExpression<?> valueExpression = predicate.valueExpression();
-        if( valueExpression instanceof SingleValueExpression<?> )
-        {
-            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).value();
-            SingleValueExpression<?> singleValueExpression = (SingleValueExpression<?>) valueExpression;
-            try
-            {
-                return this.createRegexStringForContaining(
-                    valueVariable,
-                    this.createAndEscapeJSONString(
-                        singleValueExpression.value(),
-                        predicate.propertyReference()
-                    )
-                );
-            }
-            catch( JSONException jsone )
-            {
-                throw new UnsupportedOperationException( "Error when JSONing value", jsone );
-            }
-        }
-        else
-        {
-            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported." );
-        }
+        Object value = predicate.value();
+        String valueVariable = triples.addTriple( predicate.collectionProperty(), false ).value();
+        builder.append( this.createRegexStringForContaining(
+            valueVariable,
+            this.createAndEscapeJSONString( value )
+        ) );
     }
 
-    private String processMatchesPredicate( final MatchesPredicate predicate )
+    private void processMatchesPredicate( final MatchesSpecification predicate, StringBuilder builder )
     {
-        ValueExpression valueExpression = predicate.valueExpression();
-        if( valueExpression instanceof SingleValueExpression )
-        {
-            String valueVariable = triples.addTriple( predicate.propertyReference(), false ).value();
-            final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-            return format( "regex(%s,\"%s\")", valueVariable, singleValueExpression.value() );
-        }
-        else
-        {
-            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported" );
-        }
+        String valueVariable = triples.addTriple( predicate.property(), false ).value();
+        builder.append( format( "regex(%s,\"%s\")", valueVariable, predicate.regexp() ) );
     }
 
-    private String processComparisonPredicate( final ComparisonPredicate predicate, boolean allowInline )
-    {
-        ValueExpression valueExpression = predicate.valueExpression();
-        if( valueExpression instanceof SingleValueExpression )
-        {
-            Triples.Triple triple = triples.addTriple( predicate.propertyReference(), false );
-
-            // Don't use FILTER for equals-comparison. Do direct match instead
-            if( predicate instanceof EqualsPredicate && allowInline )
-            {
-                final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-                triple.setValue( "\"" + toString( singleValueExpression.value() ) + "\"" );
-                return "";
-            }
-            else
-            {
-                String valueVariable = triple.value();
-                final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-                return String.format( "(%s %s \"%s\")", valueVariable, operand( predicate.getClass() ), toString( singleValueExpression.value() ) );
-            }
-        }
-        else
-        {
-            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported" );
-        }
-    }
-
-    private String processManyAssociationContainsPredicate( ManyAssociationContainsPredicate predicate,
-                                                            boolean allowInline
+    private void processComparisonPredicate( final Specification<Composite> predicate,
+                                             boolean allowInline,
+                                             StringBuilder builder
     )
     {
-        ValueExpression valueExpression = predicate.valueExpression();
-        if( valueExpression instanceof SingleValueExpression )
+        if( predicate instanceof ComparisonSpecification )
         {
-            Triples.Triple triple = triples.addTriple( predicate.associationReference(), false );
+            ComparisonSpecification<?> comparisonSpecification = (ComparisonSpecification<?>) predicate;
+            Triples.Triple triple = triples.addTriple( (PropertyFunction) comparisonSpecification.property(), false );
 
-            if( allowInline )
+            // Don't use FILTER for equals-comparison. Do direct match instead
+            if( predicate instanceof EqSpecification && allowInline )
             {
-                final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-                triple.setValue( "<" + toString( singleValueExpression.value() ) + ">" );
-                return "";
+                triple.setValue( "\"" + toString( comparisonSpecification.value() ) + "\"" );
             }
             else
             {
                 String valueVariable = triple.value();
-                final SingleValueExpression singleValueExpression = (SingleValueExpression) valueExpression;
-                return String.format( "(%s %s <%s>)", valueVariable, operand( predicate.getClass() ), toString( singleValueExpression.value() ) );
+                builder.append( String.format(
+                    "(%s %s \"%s\")",
+                    valueVariable,
+                    getOperator( comparisonSpecification.getClass() ),
+                    toString( comparisonSpecification.value() ) ) );
             }
         }
         else
         {
-            throw new UnsupportedOperationException( "Value " + valueExpression + " is not supported" );
+            throw new UnsupportedOperationException( "Operator " + predicate.getClass()
+                .getName() + " is not supported" );
         }
     }
 
-    private String processNullPredicate( final PropertyNullPredicate predicate )
+    private void processNullPredicate( final PropertyNullSpecification<?> predicate, StringBuilder builder )
     {
-        final String value = triples.addTriple( predicate.propertyReference(), true ).value();
-        if( predicate instanceof PropertyIsNullPredicate )
+        final String value = triples.addTriple( predicate.property(), true ).value();
+        builder.append( format( "(! bound(%s))", value ) );
+    }
+
+    private void processNotNullPredicate( final PropertyNotNullSpecification<?> predicate, StringBuilder builder )
+    {
+        final String value = triples.addTriple( predicate.property(), true ).value();
+        builder.append( format( "(bound(%s))", value ) );
+    }
+
+    private void processNullPredicate( final AssociationNullSpecification<?> predicate, StringBuilder builder )
+    {
+        final String value = triples.addTripleAssociation( predicate.association(), true ).value();
+        builder.append( format( "(! bound(%s))", value ) );
+    }
+
+    private void processNotNullPredicate( final AssociationNotNullSpecification<?> predicate, StringBuilder builder )
+    {
+        final String value = triples.addTripleAssociation( predicate.association(), true ).value();
+        builder.append( format( "(bound(%s))", value ) );
+    }
+
+    private void processManyAssociationContainsPredicate( ManyAssociationContainsSpecification<?> predicate,
+                                                          boolean allowInline, StringBuilder builder
+    )
+    {
+        Triples.Triple triple = triples.addTripleManyAssociation( predicate.manyAssociation(), false );
+
+        if( allowInline )
         {
-            return format( "(! bound(%s))", value );
+            triple.setValue( "<" + toString( predicate.value() ) + ">" );
         }
         else
         {
-            return format( "(bound(%s))", value );
+            String valueVariable = triple.value();
+            builder.append( String.format( "(%s %s <%s>)", valueVariable, "=", toString( predicate.value() ) ) );
         }
     }
 
-    private String processNullPredicate( final AssociationNullPredicate predicate )
-    {
-        final String value = triples.addTriple( predicate.associationReference(), true ).value();
-        if( predicate instanceof AssociationIsNullPredicate )
-        {
-            return format( "(! bound(%s))", value );
-        }
-        else
-        {
-            return format( "(bound(%s))", value );
-        }
-    }
-
-    private String processOrderBy( OrderBy[] orderBySegments )
+    private void processOrderBy( OrderBy[] orderBySegments, StringBuilder builder )
     {
         if( orderBySegments != null && orderBySegments.length > 0 )
         {
-            final StringBuilder orderBy = new StringBuilder();
             for( OrderBy orderBySegment : orderBySegments )
             {
-                if( orderBySegment != null )
-                {
-                    final String valueVariable = triples.addTriple( orderBySegment.getPropertyFunction(), false )
-                        .value();
-                    if( orderBySegment.order() == OrderBy.Order.ASCENDING )
-                    {
-                        orderBy.append( format( "ASC(%s)", valueVariable ) );
-                    }
-                    else
-                    {
-                        orderBy.append( format( "DESC(%s)", valueVariable ) );
-                    }
-                }
+                processOrderBy( builder, orderBySegment );
             }
-            return orderBy.length() > 0 ? orderBy.toString() : null;
         }
-        return null;
     }
 
-    private String operand( final Class<? extends Predicate> predicateClass )
+    private void processOrderBy( StringBuilder builder, OrderBy orderBySegment )
     {
-        String operator = null;
-        for( Map.Entry<Class<? extends Predicate>, String> entry : m_operators.entrySet() )
+        if( orderBySegment != null )
         {
-            if( entry.getKey().isAssignableFrom( predicateClass ) )
+            final String valueVariable = triples.addTriple( orderBySegment.property(), false ).value();
+            if( orderBySegment.order() == OrderBy.Order.ASCENDING )
             {
-                operator = entry.value();
-                break;
+                builder.append( format( "ASC(%s)", valueVariable ) );
+            }
+            else
+            {
+                builder.append( format( "DESC(%s)", valueVariable ) );
             }
         }
+    }
+
+    private String getOperator( final Class<? extends ComparisonSpecification> predicateClass )
+    {
+        String operator = OPERATORS.get( predicateClass );
         if( operator == null )
         {
             throw new UnsupportedOperationException( "Predicate [" + predicateClass.getName() + "] is not supported" );
@@ -472,14 +557,24 @@ public class RdfQueryParserImpl
         {
             return ISO8601_UTC.get().format( (Date) value );
         }
-        else if( value instanceof Entity )
+        else if( value instanceof EntityComposite )
         {
             return "urn:qi4j:entity:" + value.toString();
+        }
+        else if( value instanceof Variable )
+        {
+            Object realValue = variables.get( ( (Variable) value ).variableName() );
+
+            if( realValue == null )
+            {
+                throw new IllegalArgumentException( "Variable " + ( (Variable) value ).variableName() + " not bound" );
+            }
+
+            return toString( realValue );
         }
         else
         {
             return value.toString();
         }
     }
-    */
 }
