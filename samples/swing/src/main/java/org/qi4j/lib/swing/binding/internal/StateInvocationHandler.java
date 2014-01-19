@@ -28,9 +28,6 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
 
-/**
- * @author edward.yakop@gmail.com
- */
 public final class StateInvocationHandler<T>
     implements InvocationHandler
 {
@@ -41,14 +38,14 @@ public final class StateInvocationHandler<T>
     private final HashMap<Method, BoundProperty> properties;
     private final HashMap<Method, BoundAssociation> associations;
     private final HashMap<Method, BoundManyAssociation> manyassociations;
-    private final Class type;
+    private final Class<?> type;
 
-    public StateInvocationHandler( @Uses Class aType )
+    public StateInvocationHandler( @Uses Class<?> aType )
     {
         type = aType;
-        properties = new HashMap<Method, BoundProperty>();
-        associations = new HashMap<Method, BoundAssociation>();
-        manyassociations = new HashMap<Method, BoundManyAssociation>();
+        properties = new HashMap<>();
+        associations = new HashMap<>();
+        manyassociations = new HashMap<>();
     }
 
     public final Object invoke( Object aProxy, Method aMethod, Object[] args )
@@ -106,11 +103,7 @@ public final class StateInvocationHandler<T>
                 {
                     actualProperty = (Property) method.invoke( actualData );
                 }
-                catch( IllegalAccessException e )
-                {
-                    e.printStackTrace();  //TODO: Auto-generated, need attention.
-                }
-                catch( InvocationTargetException e )
+                catch( IllegalAccessException | InvocationTargetException e )
                 {
                     e.printStackTrace();  //TODO: Auto-generated, need attention.
                 }
@@ -119,4 +112,3 @@ public final class StateInvocationHandler<T>
         }
     }
 }
-

@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.rest.server.api;
 
 import java.io.UnsupportedEncodingException;
@@ -86,11 +85,11 @@ public class ContextResource
     protected Module module;
 
     // Private state
-    private Map<String, Method> resourceMethodQueries = new HashMap<String, Method>();
-    private Map<String, Method> resourceMethodCommands = new HashMap<String, Method>();
-    private Map<String, Method> subResources = new LinkedHashMap<String, Method>();
-    private List<Method> resourceQueries = new ArrayList<Method>();
-    private List<Method> resourceCommands = new ArrayList<Method>();
+    private final Map<String, Method> resourceMethodQueries = new HashMap<>();
+    private final Map<String, Method> resourceMethodCommands = new HashMap<>();
+    private final Map<String, Method> subResources = new LinkedHashMap<>();
+    private final List<Method> resourceQueries = new ArrayList<>();
+    private final List<Method> resourceCommands = new ArrayList<>();
 
     @Structure
     private Qi4jSPI spi;
@@ -122,7 +121,7 @@ public class ContextResource
             {
                 if( method.getAnnotation( SubResource.class ) == null )
                 {
-                    Method oldMethod = null;
+                    Method oldMethod;
 
                     if( isCommand( method ) )
                     {
@@ -207,11 +206,7 @@ public class ContextResource
             current().select( composite );
             return composite;
         }
-        catch( EntityTypeNotFoundException e )
-        {
-            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-        }
-        catch( NoSuchEntityException e )
+        catch( EntityTypeNotFoundException | NoSuchEntityException e )
         {
             throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
         }
@@ -228,18 +223,6 @@ public class ContextResource
 
         current().select( entity );
         return entity;
-/*
-        for( T entity : manyAssociation )
-        {
-            if( entity.toString().equals( id ) )
-            {
-                current().select( entity );
-                return entity;
-            }
-        }
-
-        throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
-*/
     }
 
     protected void selectFromList( List<?> list, String indexString )
@@ -506,7 +489,7 @@ public class ContextResource
     private void handleResource( String segment )
     {
         Request request = Request.getCurrent();
-        if( segment.equals( "" ) || segment.equals( "." ) )
+        if( segment.isEmpty() || segment.equals( "." ) )
         {
             StringBuilder template = (StringBuilder) request.getAttributes().get( "template" );
             template.append( "resource" );
@@ -800,7 +783,7 @@ public class ContextResource
                 Locale locale = ObjectSelection.type( Locale.class );
                 for( ConstraintViolation constraintViolation : e.constraintViolations() )
                 {
-                    if( !messages.equals( "" ) )
+                    if( !messages.isEmpty() )
                     {
                         messages += "\n";
                     }
@@ -854,7 +837,7 @@ public class ContextResource
         Form form = new Form();
 
         Form queryAsForm = Request.getCurrent().getResourceRef().getQueryAsForm();
-        Form entityAsForm = null;
+        Form entityAsForm;
         Representation representation = Request.getCurrent().getEntity();
         if( representation != null && !EmptyRepresentation.class.isInstance( representation ) )
         {
@@ -865,7 +848,7 @@ public class ContextResource
             entityAsForm = new Form();
         }
 
-        Class valueType = interactionMethod.getParameterTypes()[ 0 ];
+        Class<?> valueType = interactionMethod.getParameterTypes()[ 0 ];
         if( ValueComposite.class.isAssignableFrom( valueType ) )
         {
             ValueDescriptor valueDescriptor = module.valueDescriptor( valueType.getName() );
@@ -894,26 +877,10 @@ public class ContextResource
         else
         {
             // Construct form out of individual parameters instead
-            int idx = 0;
             for( Annotation[] annotations : interactionMethod.getParameterAnnotations() )
             {
                 Name name = (Name) first( filter( isType( Name.class ), iterable( annotations ) ) );
-
-                String value = getValue( name.value(), queryAsForm, entityAsForm );
-
-                String paramName;
-                if( name != null )
-                {
-                    paramName = name.value();
-                }
-                else
-                {
-                    paramName = "param" + idx;
-                }
-
-                form.add( paramName, value );
-
-                idx++;
+                form.add( name.value(), getValue( name.value(), queryAsForm, entityAsForm ) );
             }
         }
 

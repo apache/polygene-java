@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.migration;
 
 import org.json.JSONException;
@@ -41,7 +40,7 @@ public interface Migrator
     boolean renameAssociation( JSONObject state, String from, String to )
         throws JSONException;
 
-    boolean addManyAssociation( JSONObject state, String name, String... defaultReference )
+    boolean addManyAssociation( JSONObject state, String name, String... defaultReferences )
         throws JSONException;
 
     boolean removeManyAssociation( JSONObject state, String name )

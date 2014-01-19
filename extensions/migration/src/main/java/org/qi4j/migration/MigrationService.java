@@ -30,7 +30,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Application;
@@ -59,7 +58,7 @@ import org.slf4j.LoggerFactory;
 @Mixins( MigrationService.MigrationMixin.class )
 @Activators( MigrationService.Activator.class )
 public interface MigrationService
-    extends Migration, ServiceComposite
+    extends Migration
 {
 
     void initialize()
@@ -78,7 +77,7 @@ public interface MigrationService
 
     }
 
-    public abstract class MigrationMixin
+    public class MigrationMixin
         implements MigrationService, Migrator
     {
         @Structure
@@ -156,7 +155,7 @@ public interface MigrationService
             if( !app.version().equals( lastVersion ) )
             {
                 Iterable<MigrationRule> rules = builder.migrationRules().rulesBetweenVersions( lastVersion, version );
-                List<MigrationRule> executedRules = new ArrayList<MigrationRule>();
+                List<MigrationRule> executedRules = new ArrayList<>();
                 try
                 {
                     if( rules != null )
@@ -192,7 +191,7 @@ public interface MigrationService
         public boolean addProperty( JSONObject state, String name, Object defaultValue )
             throws JSONException
         {
-            JSONObject properties = (JSONObject) state.get( JSONKeys.PROPERTIES );
+            JSONObject properties = state.getJSONObject( JSONKeys.PROPERTIES );
             if( !properties.has( name ) )
             {
                 if( defaultValue == null )
@@ -221,7 +220,7 @@ public interface MigrationService
         public boolean removeProperty( JSONObject state, String name )
             throws JSONException
         {
-            JSONObject properties = (JSONObject) state.get( JSONKeys.PROPERTIES );
+            JSONObject properties = state.getJSONObject( JSONKeys.PROPERTIES );
             if( properties.has( name ) )
             {
                 properties.remove( name );
@@ -242,7 +241,7 @@ public interface MigrationService
         public boolean renameProperty( JSONObject state, String from, String to )
             throws JSONException
         {
-            JSONObject properties = (JSONObject) state.get( JSONKeys.PROPERTIES );
+            JSONObject properties = state.getJSONObject( JSONKeys.PROPERTIES );
             if( properties.has( from ) )
             {
                 Object value = properties.remove( from );
@@ -264,7 +263,7 @@ public interface MigrationService
         public boolean addAssociation( JSONObject state, String name, String defaultReference )
             throws JSONException
         {
-            JSONObject associations = (JSONObject) state.get( JSONKeys.ASSOCIATIONS );
+            JSONObject associations = state.getJSONObject( JSONKeys.ASSOCIATIONS );
             if( !associations.has( name ) )
             {
                 if( defaultReference == null )
@@ -293,7 +292,7 @@ public interface MigrationService
         public boolean removeAssociation( JSONObject state, String name )
             throws JSONException
         {
-            JSONObject associations = (JSONObject) state.get( JSONKeys.ASSOCIATIONS );
+            JSONObject associations = state.getJSONObject( JSONKeys.ASSOCIATIONS );
             if( associations.has( name ) )
             {
                 associations.remove( name );
@@ -314,7 +313,7 @@ public interface MigrationService
         public boolean renameAssociation( JSONObject state, String from, String to )
             throws JSONException
         {
-            JSONObject associations = (JSONObject) state.get( JSONKeys.ASSOCIATIONS );
+            JSONObject associations = state.getJSONObject( JSONKeys.ASSOCIATIONS );
             if( associations.has( from ) )
             {
                 Object value = associations.remove( from );
@@ -337,7 +336,7 @@ public interface MigrationService
         public boolean addManyAssociation( JSONObject state, String name, String... defaultReferences )
             throws JSONException
         {
-            JSONObject manyAssociations = (JSONObject) state.get( JSONKeys.MANY_ASSOCIATIONS );
+            JSONObject manyAssociations = state.getJSONObject( JSONKeys.MANY_ASSOCIATIONS );
             if( !manyAssociations.has( name ) )
             {
                 JSONArray references = new JSONArray();
@@ -364,7 +363,7 @@ public interface MigrationService
         public boolean removeManyAssociation( JSONObject state, String name )
             throws JSONException
         {
-            JSONObject manyAssociations = (JSONObject) state.get( JSONKeys.MANY_ASSOCIATIONS );
+            JSONObject manyAssociations = state.getJSONObject( JSONKeys.MANY_ASSOCIATIONS );
             if( manyAssociations.has( name ) )
             {
                 manyAssociations.remove( name );
@@ -385,7 +384,7 @@ public interface MigrationService
         public boolean renameManyAssociation( JSONObject state, String from, String to )
             throws JSONException
         {
-            JSONObject manyAssociations = (JSONObject) state.get( JSONKeys.MANY_ASSOCIATIONS );
+            JSONObject manyAssociations = state.getJSONObject( JSONKeys.MANY_ASSOCIATIONS );
             if( manyAssociations.has( from ) )
             {
                 Object value = manyAssociations.remove( from );

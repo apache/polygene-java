@@ -17,6 +17,13 @@
  */
 package org.qi4j.lib.swing.binding.adapters;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.concern.ConcernOf;
@@ -27,17 +34,14 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.lib.swing.binding.SwingAdapter;
 
-import javax.swing.*;
-import javax.swing.text.JTextComponent;
-import java.util.HashSet;
-import java.util.Set;
-
 @Concerns( StringToTextFieldAdapterService.StringToTextFieldAdapterConcern.class )
 @Mixins( NoopMixin.class )
-public interface StringToTextFieldAdapterService extends SwingAdapter, ServiceComposite
+public interface StringToTextFieldAdapterService
+    extends SwingAdapter, ServiceComposite
 {
 
-    class StringToTextFieldAdapterConcern extends ConcernOf<SwingAdapter>
+    class StringToTextFieldAdapterConcern
+        extends ConcernOf<SwingAdapter>
         implements SwingAdapter
     {
 
@@ -51,11 +55,13 @@ public interface StringToTextFieldAdapterService extends SwingAdapter, ServiceCo
             canHandle.add( new Capabilities( JLabel.class, String.class, true, false, false, false ) );
         }
 
+        @Override
         public Set<Capabilities> canHandle()
         {
             return canHandle;
         }
 
+        @Override
         public void fromSwingToProperty( JComponent component, Property property )
         {
             if( property == null )
@@ -74,6 +80,7 @@ public interface StringToTextFieldAdapterService extends SwingAdapter, ServiceCo
             }
         }
 
+        @Override
         public void fromPropertyToSwing( JComponent component, Property<?> property )
         {
             String value;
@@ -97,18 +104,22 @@ public interface StringToTextFieldAdapterService extends SwingAdapter, ServiceCo
             }
         }
 
+        @Override
         public void fromSwingToAssociation( JComponent component, Association<?> association )
         {
         }
 
+        @Override
         public void fromAssociationToSwing( JComponent component, Association<?> association )
         {
         }
 
+        @Override
         public void fromSwingToSetAssociation( JComponent component, ManyAssociation<?> setAssociation )
         {
         }
 
+        @Override
         public void fromSetAssociationToSwing( JComponent component, ManyAssociation<?> setAssociation )
         {
         }

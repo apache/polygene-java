@@ -46,13 +46,13 @@ public class TreePanel
     public TreePanel()
     {
         this.setLayout( new BorderLayout() );
+
+        this.applicationTree = new JTree();
+        this.applicationTree.getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION );
+
         JScrollPane scrollPane = new JScrollPane();
         this.add( scrollPane, BorderLayout.CENTER );
-
-        applicationTree = new JTree();
-        applicationTree.getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION );
-
-        scrollPane.setViewportView( applicationTree );
+        scrollPane.setViewportView( this.applicationTree );
     }
 
     public void initializeQi4J( Qi4jSPI qi4j, ApplicationDescriptor model )

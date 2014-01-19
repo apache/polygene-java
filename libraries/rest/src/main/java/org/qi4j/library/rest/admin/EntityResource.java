@@ -17,7 +17,11 @@
  */
 package org.qi4j.library.rest.admin;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -45,8 +49,18 @@ import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.helpers.JSONEntityState;
-import org.restlet.data.*;
-import org.restlet.representation.*;
+import org.restlet.data.CharacterSet;
+import org.restlet.data.Form;
+import org.restlet.data.Language;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Status;
+import org.restlet.data.Tag;
+import org.restlet.representation.EmptyRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
+import org.restlet.representation.Variant;
+import org.restlet.representation.WriterRepresentation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
@@ -110,7 +124,9 @@ public class EntityResource
     protected Representation get( Variant variant )
         throws ResourceException
     {
-        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Get entity" ), module, System.currentTimeMillis() );
+        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Get entity" ),
+                                                               module,
+                                                               System.currentTimeMillis() );
 
         try
         {
@@ -184,7 +200,9 @@ public class EntityResource
                 throws IOException
             {
                 PrintWriter out = new PrintWriter( writer );
-                out.println( "<html><head><title>" + entity.identity() + "</title><link rel=\"alternate\" type=\"application/rdf+xml\" href=\"" + entity.identity() + ".rdf\"/></head><body>" );
+                out.println( "<html><head><title>" + entity.identity() + "</title>"
+                             + "<link rel=\"alternate\" type=\"application/rdf+xml\" "
+                             + "href=\"" + entity.identity() + ".rdf\"/></head><body>" );
                 out.println( "<h1>" + entity.identity() + "</h1>" );
 
                 out.println( "<form method=\"post\" action=\"" + getRequest().getResourceRef().getPath() + "\">\n" );
@@ -204,7 +222,8 @@ public class EntityResource
                                  + "type=\"text\" "
                                  + ( persistentProperty.isImmutable() ? "readonly=\"true\" " : "" )
                                  + "name=\"" + persistentProperty.qualifiedName() + "\" "
-                                 + "value=\"" + ( value == null ? "" : valueSerialization.serialize( value ) ) + "\"/></td></tr>" );
+                                 + "value=\"" + ( value == null ? "" : valueSerialization.serialize( value ) )
+                                 + "\"/></td></tr>" );
                 }
                 out.println( "</table></fieldset>\n" );
 
@@ -235,7 +254,7 @@ public class EntityResource
                     String value = "";
                     for( EntityReference identity : identities )
                     {
-                        value += identity.toString() + "\n";
+                        value += identity.identity()+ "\n";
                     }
 
                     out.println( "<tr><td>"
@@ -250,6 +269,7 @@ public class EntityResource
                                  + "</textarea></td></tr>" );
                 }
                 out.println( "</table></fieldset>\n" );
+                
                 out.println( "<input type=\"submit\" value=\"Update\"/></form>\n" );
 
                 out.println( "</body></html>\n" );
@@ -328,7 +348,9 @@ public class EntityResource
                     }
                     else
                     {
-                        entity.setPropertyValue( persistentProperty.qualifiedName(), valueSerialization.deserialize( persistentProperty.valueType(), formValue ) );
+                        entity.setPropertyValue(
+                            persistentProperty.qualifiedName(),
+                            valueSerialization.deserialize( persistentProperty.valueType(), formValue ) );
                     }
                 }
             }
@@ -336,13 +358,14 @@ public class EntityResource
             for( AssociationDescriptor associationType : descriptor.state().associations() )
             {
                 String newStringAssociation = form.getFirstValue( associationType.qualifiedName().name() );
-                if( newStringAssociation == null || newStringAssociation.equals( "" ) )
+                if( newStringAssociation == null || newStringAssociation.isEmpty() )
                 {
                     entity.setAssociationValue( associationType.qualifiedName(), null );
                 }
                 else
                 {
-                    entity.setAssociationValue( associationType.qualifiedName(), EntityReference.parseEntityReference( newStringAssociation ) );
+                    entity.setAssociationValue( associationType.qualifiedName(), 
+                                                EntityReference.parseEntityReference( newStringAssociation ) );
                 }
             }
             for( AssociationDescriptor associationType : descriptor.state().manyAssociations() )
@@ -400,11 +423,7 @@ public class EntityResource
                 }
             }
         }
-        catch( ValueSerializationException e )
-        {
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
-        }
-        catch( IllegalArgumentException e )
+        catch( ValueSerializationException | IllegalArgumentException e )
         {
             throw new ResourceException( Status.SERVER_ERROR_INTERNAL, e );
         }

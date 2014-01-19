@@ -183,10 +183,12 @@ public class PreferencesEntityStoreMixin
                     {
                         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.preferences.visit" );
                         Usecase visitUsecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
-                        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(),
-                                                                                                   module, visitUsecase, System
-                            .currentTimeMillis() );
-
+                        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork(
+                            entityStoreSpi,
+                            newUnitOfWorkId(),
+                            module,
+                            visitUsecase,
+                            System.currentTimeMillis() );
                         try
                         {
                             String[] identities = root.childrenNames();
@@ -552,10 +554,10 @@ public class PreferencesEntityStoreMixin
             if( !state.manyAssociations().isEmpty() )
             {
                 Preferences manyAssocsPrefs = entityPrefs.node( "manyassociations" );
-                for( Map.Entry<QualifiedName, List<EntityReference>> manyAssociations : state.manyAssociations().entrySet() )
+                for( Map.Entry<QualifiedName, List<EntityReference>> manyAssociation : state.manyAssociations().entrySet() )
                 {
                     StringBuilder manyAssocs = new StringBuilder();
-                    for( EntityReference entityReference : manyAssociations.getValue() )
+                    for( EntityReference entityReference : manyAssociation.getValue() )
                     {
                         if( manyAssocs.length() > 0 )
                         {
@@ -565,7 +567,7 @@ public class PreferencesEntityStoreMixin
                     }
                     if( manyAssocs.length() > 0 )
                     {
-                        manyAssocsPrefs.put( manyAssociations.getKey().name(), manyAssocs.toString() );
+                        manyAssocsPrefs.put( manyAssociation.getKey().name(), manyAssocs.toString() );
                     }
                 }
             }

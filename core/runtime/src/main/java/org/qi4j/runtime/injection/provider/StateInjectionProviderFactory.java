@@ -71,7 +71,7 @@ public final class StateInjectionProviderFactory
 
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
-            if( annotation.value().equals( "" ) )
+            if( annotation.value().isEmpty() )
             {
                 name = resolution.field().getName();
             }
@@ -89,7 +89,7 @@ public final class StateInjectionProviderFactory
             AssociationStateDescriptor descriptor = ( (EntityDescriptor) resolution.model() ).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
-            if( annotation.value().equals( "" ) )
+            if( annotation.value().isEmpty() )
             {
                 name = resolution.field().getName();
             }
@@ -106,7 +106,7 @@ public final class StateInjectionProviderFactory
             AssociationStateDescriptor descriptor = ( (EntityDescriptor) resolution.model() ).state();
             State annotation = (State) dependencyModel.injectionAnnotation();
             String name;
-            if( annotation.value().equals( "" ) )
+            if( annotation.value().isEmpty() )
             {
                 name = resolution.field().getName();
             }
@@ -121,12 +121,12 @@ public final class StateInjectionProviderFactory
         throw new InjectionProviderException( "Injected value has invalid type" );
     }
 
-    static private class PropertyInjectionProvider
+    private static class PropertyInjectionProvider
         implements InjectionProvider
     {
         private final PropertyDescriptor propertyDescriptor;
 
-        public PropertyInjectionProvider( PropertyDescriptor propertyDescriptor )
+        private PropertyInjectionProvider( PropertyDescriptor propertyDescriptor )
         {
             this.propertyDescriptor = propertyDescriptor;
         }
@@ -135,7 +135,7 @@ public final class StateInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            Property value = context.state().propertyFor( propertyDescriptor.accessor() );
+            Property<?> value = context.state().propertyFor( propertyDescriptor.accessor() );
             if( value != null )
             {
                 return value;
@@ -147,12 +147,12 @@ public final class StateInjectionProviderFactory
         }
     }
 
-    static private class AssociationInjectionProvider
+    private static class AssociationInjectionProvider
         implements InjectionProvider
     {
         private final AssociationDescriptor associationDescriptor;
 
-        public AssociationInjectionProvider( AssociationDescriptor associationDescriptor )
+        private AssociationInjectionProvider( AssociationDescriptor associationDescriptor )
         {
             this.associationDescriptor = associationDescriptor;
         }
@@ -174,12 +174,12 @@ public final class StateInjectionProviderFactory
         }
     }
 
-    static private class ManyAssociationInjectionProvider
+    private static class ManyAssociationInjectionProvider
         implements InjectionProvider
     {
         private final AssociationDescriptor manyAssociationDescriptor;
 
-        public ManyAssociationInjectionProvider( AssociationDescriptor manyAssociationDescriptor )
+        private ManyAssociationInjectionProvider( AssociationDescriptor manyAssociationDescriptor )
         {
             this.manyAssociationDescriptor = manyAssociationDescriptor;
         }
@@ -188,7 +188,7 @@ public final class StateInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            ManyAssociation abstractAssociation = ( (AssociationStateHolder) context.state() ).
+            ManyAssociation<?> abstractAssociation = ( (AssociationStateHolder) context.state() ).
                 manyAssociationFor( manyAssociationDescriptor.accessor() );
             if( abstractAssociation != null )
             {
