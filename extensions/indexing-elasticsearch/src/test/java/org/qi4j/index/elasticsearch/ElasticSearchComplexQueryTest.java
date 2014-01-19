@@ -33,42 +33,50 @@ import org.qi4j.test.util.DelTreeAfter;
 
 import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
-@Ignore("ElasticSearch Index/Query do not support Complex Queries, ie. queries by 'example values'")
+@Ignore( "ElasticSearch Index/Query do not support Complex Queries, ie. queries by 'example values'" )
 public class ElasticSearchComplexQueryTest
-        extends AbstractComplexQueryTest {
+    extends AbstractComplexQueryTest
+{
 
     private static final File DATA_DIR = new File( "build/tmp/es-complex-query-test" );
     @Rule
     public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
 
     @BeforeClass
-    public static void beforeClass_IBMJDK() {
+    public static void beforeClass_IBMJDK()
+    {
         assumeNoIbmJdk();
     }
 
     @Override
-    public void assemble(ModuleAssembly module)
-            throws AssemblyException {
-        super.assemble(module);
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
+    {
+        super.assemble( module );
 
         // Config module
-        ModuleAssembly config = module.layer().module("config");
-        new EntityTestAssembler().assemble(config);
+        ModuleAssembly config = module.layer().module( "config" );
+        new EntityTestAssembler().assemble( config );
 
         // Index/Query
-        new ESFilesystemIndexQueryAssembler().withConfigModule(config).withConfigVisibility(Visibility.layer).assemble(module);
-        ElasticSearchConfiguration esConfig = config.forMixin(ElasticSearchConfiguration.class).declareDefaults();
-        esConfig.indexNonAggregatedAssociations().set(Boolean.TRUE);
+        new ESFilesystemIndexQueryAssembler().
+            withConfigModule( config ).
+            withConfigVisibility( Visibility.layer ).
+            assemble( module );
+        ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
+        esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
 
         // FileConfig
-        FileConfigurationOverride override = new FileConfigurationOverride().withData(new File(DATA_DIR,"qi4j-data")).
-                withLog(new File(DATA_DIR,"qi4j-logs")).withTemporary(new File(DATA_DIR,"qi4j-temp"));
-        module.services(FileConfigurationService.class).
-                setMetaInfo(override);
+        FileConfigurationOverride override = new FileConfigurationOverride().
+            withData( new File( DATA_DIR, "qi4j-data" ) ).
+            withLog( new File( DATA_DIR, "qi4j-logs" ) ).
+            withTemporary( new File( DATA_DIR, "qi4j-temp" ) );
+        module.services( FileConfigurationService.class ).setMetaInfo( override );
     }
 
     @Override
-    public void showNetwork() {
+    public void showNetwork()
+    {
         // IndexExporter not supported by ElasticSearch
     }
 

@@ -12,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql.postgresql;
 
 import org.junit.Ignore;
@@ -40,7 +39,7 @@ public class PostgreSQLQueryTest extends AbstractQueryTest
         {
             super.setUp();
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
             // Let's check if exception was because database was not available
             if( this.module != null )
@@ -52,20 +51,5 @@ public class PostgreSQLQueryTest extends AbstractQueryTest
             // had other reason!
             throw e;
         }
-    }
-
-    @Test
-    public void ignoredScript29()
-    {
-        // PostgreSQL indexing engine supports complex value indexing.
-        super.script29();
-    }
-
-    @Test
-    public void ignoredScript23()
-        throws Exception
-    {
-        // This test doesn't seem to sporadically fail anymore, at least for this test.
-        super.script23();
     }
 }

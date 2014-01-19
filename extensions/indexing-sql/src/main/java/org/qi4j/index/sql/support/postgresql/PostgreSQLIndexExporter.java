@@ -2,15 +2,19 @@
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
  * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 package org.qi4j.index.sql.support.postgresql;
 
@@ -51,285 +55,287 @@ public class PostgreSQLIndexExporter
 
     private static final String SEPARATOR = "-----------------------------------------------";
 
-    private static final Map<Integer, String> _typeStrings;
+    private static final Map<Integer, String> TYPE_STRINGS;
 
     static
     {
-        _typeStrings = new HashMap<Integer, String>();
-        _typeStrings.put( Types.BIGINT, "BIGINT" );
-        _typeStrings.put( Types.BOOLEAN, "BOOLEAN" );
-        _typeStrings.put( Types.CHAR, "CHAR" );
-        _typeStrings.put( Types.DATE, "DATE" );
-        _typeStrings.put( Types.DECIMAL, "DECIMAL" );
-        _typeStrings.put( Types.DOUBLE, "DOUBLE" );
-        _typeStrings.put( Types.FLOAT, "FLOAT" );
-        _typeStrings.put( Types.INTEGER, "INTEGER" );
-        _typeStrings.put( Types.NULL, "NULL" );
-        _typeStrings.put( Types.NUMERIC, "NUMERIC" );
-        _typeStrings.put( Types.REAL, "REAL" );
-        _typeStrings.put( Types.SMALLINT, "SMALLINT" );
-        _typeStrings.put( Types.TIME, "TIME" );
-        _typeStrings.put( Types.TIMESTAMP, "TIMESTAMP" );
-        _typeStrings.put( Types.VARCHAR, "VARCHAR" );
-        _typeStrings.put( Types.VARBINARY, "VARBINARY" );
+        TYPE_STRINGS = new HashMap<>( 16 );
+        TYPE_STRINGS.put( Types.BIGINT, "BIGINT" );
+        TYPE_STRINGS.put( Types.BOOLEAN, "BOOLEAN" );
+        TYPE_STRINGS.put( Types.CHAR, "CHAR" );
+        TYPE_STRINGS.put( Types.DATE, "DATE" );
+        TYPE_STRINGS.put( Types.DECIMAL, "DECIMAL" );
+        TYPE_STRINGS.put( Types.DOUBLE, "DOUBLE" );
+        TYPE_STRINGS.put( Types.FLOAT, "FLOAT" );
+        TYPE_STRINGS.put( Types.INTEGER, "INTEGER" );
+        TYPE_STRINGS.put( Types.NULL, "NULL" );
+        TYPE_STRINGS.put( Types.NUMERIC, "NUMERIC" );
+        TYPE_STRINGS.put( Types.REAL, "REAL" );
+        TYPE_STRINGS.put( Types.SMALLINT, "SMALLINT" );
+        TYPE_STRINGS.put( Types.TIME, "TIME" );
+        TYPE_STRINGS.put( Types.TIMESTAMP, "TIMESTAMP" );
+        TYPE_STRINGS.put( Types.VARCHAR, "VARCHAR" );
+        TYPE_STRINGS.put( Types.VARBINARY, "VARBINARY" );
     }
 
     @Override
     public void exportFormalToWriter( final PrintWriter out )
-        throws IOException,
-        UnsupportedOperationException
+        throws IOException, UnsupportedOperationException
     {
         Connection connection = null;
         try
         {
             connection = this._dataSource.getConnection();
             GenericDatabaseExplorer.visitDatabaseTables( connection, null,
-                this._state.schemaName().get(), null, new DatabaseProcessor()
+                                                         this._state.schemaName().get(), null, new DatabaseProcessor()
+            {
+
+                @Override
+                public void endProcessColumns( String schemaName, String tableName, String tableRemarks )
                 {
+                    out.write( "</columns>" + "\n" );
+                }
 
-                    @Override
-                    public void endProcessColumns( String schemaName, String tableName, String tableRemarks )
+                @Override
+                public void endProcessRows( String schemaName, String tableName, String tableRemarks )
+                {
+                    out.write( "</rows>" + "\n" );
+                }
+
+                @Override
+                public void endProcessTableInfo( String schemaName, String tableName, String tableRemarks )
+                {
+                    out.write( "</table>" + "\n" );
+                }
+
+                @Override
+                public void endProcessSchemaInfo( String schemaName )
+                {
+                    out.write( "</schema>" + "\n" );
+                }
+
+                @Override
+                public void endProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
+                {
+                    out.write( "</row>" + "\n" );
+                }
+
+                @Override
+                public void endProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
+                                                  ForeignKeyInfo fkInfo )
+                {
+                }
+
+                @Override
+                public void beginProcessTableInfo( String schemaName, String tableName, String tableRemarks )
+                {
+                    out.write( "<table name=\"" + tableName + "\" remarks=\"" + tableRemarks + "\">" + "\n" );
+                }
+
+                @Override
+                public void beginProcessColumns( String schemaName, String tableName, String tableRemarks )
+                {
+                    out.write( "<columns>" + "\n" );
+                }
+
+                @Override
+                public void beginProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
+                                                    ForeignKeyInfo fkInfo )
+                {
+                    String defaultValue = colInfo.getDefaultValue();
+                    if( defaultValue.startsWith( "'" ) )
                     {
-                        out.write( "</columns>" + "\n" );
+                        defaultValue = defaultValue.substring( 1, defaultValue.length() - 1 );
                     }
-
-                    @Override
-                    public void endProcessRows( String schemaName, String tableName, String tableRemarks )
+                    out.write( "<column name=\"" + colInfo.getName() + "\" colType=\"" + colInfo.getTypeName()
+                               + "\" colSize=\"" + colInfo.getSize() + "\" colScale=\""
+                               + //
+                        colInfo.getScale() + "\" nullable=\"" + colInfo.getNullable() + "\" default=\""
+                               + defaultValue + "\" " //
+                    );
+                    if( fkInfo != null )
                     {
-                        out.write( "</rows>" + "\n" );
-                    }
-
-                    @Override
-                    public void endProcessTableInfo( String schemaName, String tableName, String tableRemarks )
-                    {
-                        out.write( "</table>" + "\n" );
-                    }
-
-                    @Override
-                    public void endProcessSchemaInfo( String schemaName )
-                    {
-                        out.write( "</schema>" + "\n" );
-                    }
-
-                    @Override
-                    public void endProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
-                    {
-                        out.write( "</row>" + "\n" );
-                    }
-
-                    @Override
-                    public void endProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
-                        ForeignKeyInfo fkInfo )
-                    {
-                    }
-
-                    @Override
-                    public void beginProcessTableInfo( String schemaName, String tableName, String tableRemarks )
-                    {
-                        out.write( "<table name=\"" + tableName + "\" remarks=\"" + tableRemarks + "\">" + "\n" );
-                    }
-
-                    @Override
-                    public void beginProcessColumns( String schemaName, String tableName, String tableRemarks )
-                    {
-                        out.write( "<columns>" + "\n" );
-                    }
-
-                    @Override
-                    public void beginProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
-                        ForeignKeyInfo fkInfo )
-                    {
-                        String defaultValue = colInfo.getDefaultValue();
-                        if( defaultValue.startsWith( "'" ) )
-                        {
-                            defaultValue = defaultValue.substring( 1, defaultValue.length() - 1 );
-                        }
-                        out.write( "<column name=\"" + colInfo.getName() + "\" colType=\"" + colInfo.getTypeName()
-                            + "\" colSize=\"" + colInfo.getSize() + "\" colScale=\""
-                            + //
-                            colInfo.getScale() + "\" nullable=\"" + colInfo.getNullable() + "\" default=\""
-                            + defaultValue + "\" " //
+                        out.write( "refSchemaName=\"" + fkInfo.getPkSchemaName() + "\" refTableName=\""
+                                   + fkInfo.getPkTableName() + "\" refPKColumnName=\""
+                                   + fkInfo.getPkTablePKColumnName()
+                                   + //
+                            "\" onUpdate=\"" + fkInfo.getOnUpdateAction() + "\" onDelete=\""
+                                   + fkInfo.getOnDeleteAction() + "\" deferrability=\"" + fkInfo.getDeferrability()
+                                   + "\" " //
                         );
-                        if( fkInfo != null )
-                        {
-                            out.write( "refSchemaName=\"" + fkInfo.getPkSchemaName() + "\" refTableName=\""
-                                + fkInfo.getPkTableName() + "\" refPKColumnName=\""
-                                + fkInfo.getPkTablePKColumnName()
-                                + //
-                                "\" onUpdate=\"" + fkInfo.getOnUpdateAction() + "\" onDelete=\""
-                                + fkInfo.getOnDeleteAction() + "\" deferrability=\"" + fkInfo.getDeferrability()
-                                + "\" " //
-                            );
-                        }
-
-                        out.write( "/>" + "\n" );
                     }
 
-                    @Override
-                    public void beginProcessSchemaInfo( String schemaName )
+                    out.write( "/>" + "\n" );
+                }
+
+                @Override
+                public void beginProcessSchemaInfo( String schemaName )
+                {
+                    out.write( "<schema name=\"" + schemaName + "\">" + "\n" );
+                }
+
+                @Override
+                public void beginProcessRows( String schemaName, String tableName, String tableRemarks )
+                {
+                    out.write( "<rows>" + "\n" );
+                }
+
+                @Override
+                public void beginProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
+                {
+                    out.write( "<row>" + "\n" );
+                    for( Integer x = 0; x < rowContents.length; ++x )
                     {
-                        out.write( "<schema name=\"" + schemaName + "\">" + "\n" );
+                        out.write( "<value index=\"" + x + "\" >" + rowContents[x] + "</value>" + "\n" );
                     }
-
-                    @Override
-                    public void beginProcessRows( String schemaName, String tableName, String tableRemarks )
-                    {
-                        out.write( "<rows>" + "\n" );
-                    }
-
-                    @Override
-                    public void beginProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
-                    {
-                        out.write( "<row>" + "\n" );
-                        for( Integer x = 0; x < rowContents.length; ++x )
-                        {
-                            out.write( "<value index=\"" + x + "\" >" + rowContents[x] + "</value>" + "\n" );
-                        }
-                    }
-                }, this.descriptor.metaInfo( SQLVendor.class ) );
+                }
+            }, this.descriptor.metaInfo( SQLVendor.class ) );
         }
         catch( SQLException sqle )
         {
             // TODO Just wrap around for now...
             throw new IOException( sqle );
-        } finally {
+        }
+        finally
+        {
             SQLUtil.closeQuietly( connection );
         }
     }
 
     @Override
     public void exportReadableToStream( final PrintStream out )
-        throws IOException,
-        UnsupportedOperationException
+        throws IOException, UnsupportedOperationException
     {
         Connection connection = null;
         try
         {
             connection = this._dataSource.getConnection();
             GenericDatabaseExplorer.visitDatabaseTables( connection, null,
-                this._state.schemaName().get(), null, new DatabaseProcessor()
+                                                         this._state.schemaName().get(), null, new DatabaseProcessor()
+            {
+
+                @Override
+                public void endProcessTableInfo( String schemaName, String tableName, String tableRemarks )
+                {
+                    out.print( "\n\n\n" );
+                }
+
+                @Override
+                public void endProcessSchemaInfo( String schemaName )
+                {
+                    out.print( "\n\n" );
+                }
+
+                @Override
+                public void endProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
                 {
 
-                    @Override
-                    public void endProcessTableInfo( String schemaName, String tableName, String tableRemarks )
+                }
+
+                @Override
+                public void endProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
+                                                  ForeignKeyInfo fkInfo )
+                {
+
+                }
+
+                @Override
+                public void endProcessColumns( String schemaName, String tableName, String tableRemarks )
+                {
+                    out.print( SEPARATOR + "\n" + SEPARATOR + "\n" );
+                }
+
+                @Override
+                public void endProcessRows( String schemaName, String tableName, String tableRemarks )
+                {
+                    out.print( SEPARATOR + "\n" + SEPARATOR + "\n" );
+                }
+
+                private String parseSQLType( ColumnInfo colInfo )
+                {
+                    String result = colInfo.getTypeName();
+                    Integer sqlType = colInfo.getSQLType();
+                    if( TYPE_STRINGS.containsKey( sqlType ) )
                     {
-                        out.print( "\n\n\n" );
-                    }
-
-                    @Override
-                    public void endProcessSchemaInfo( String schemaName )
-                    {
-                        out.print( "\n\n" );
-                    }
-
-                    @Override
-                    public void endProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
-                    {
-
-                    }
-
-                    @Override
-                    public void endProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
-                        ForeignKeyInfo fkInfo )
-                    {
-
-                    }
-
-                    @Override
-                    public void endProcessColumns( String schemaName, String tableName, String tableRemarks )
-                    {
-                        out.print( SEPARATOR + "\n" + SEPARATOR + "\n" );
-                    }
-
-                    @Override
-                    public void endProcessRows( String schemaName, String tableName, String tableRemarks )
-                    {
-                        out.print( SEPARATOR + "\n" + SEPARATOR + "\n" );
-                    }
-
-                    private String parseSQLType( ColumnInfo colInfo )
-                    {
-                        String result = colInfo.getTypeName();
-                        Integer sqlType = colInfo.getSQLType();
-                        if( _typeStrings.containsKey( sqlType ) )
+                        result = TYPE_STRINGS.get( sqlType );
+                        if( sqlType == Types.DECIMAL || sqlType == Types.NUMERIC )
                         {
-                            result = _typeStrings.get( sqlType );
-                            if( sqlType == Types.DECIMAL || sqlType == Types.NUMERIC )
-                            {
-                                result = result + "(" + colInfo.getSize() + ", " + colInfo.getScale() + ")";
-                            }
-                            else if( sqlType == Types.VARCHAR || sqlType == Types.VARBINARY )
-                            {
-                                result = result + "(" + colInfo.getSize() + ")";
-                            }
+                            result = result + "(" + colInfo.getSize() + ", " + colInfo.getScale() + ")";
                         }
-                        return result;
-                    }
-
-                    @Override
-                    public void beginProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
-                        ForeignKeyInfo fkInfo )
-                    {
-                        out.print( colInfo.getName() + ":" + this.parseSQLType( colInfo ) + "[nullable:"
-                            + colInfo.getNullable() + "; default: " + colInfo.getDefaultValue() + "]" );
-                        if( fkInfo != null )
+                        else if( sqlType == Types.VARCHAR || sqlType == Types.VARBINARY )
                         {
-                            out.print( " -> " + fkInfo.getPkSchemaName() + "." + fkInfo.getPkTableName() + "("
-                                + fkInfo.getPkTablePKColumnName() + ")[ON UPDATE " + fkInfo.getOnUpdateAction()
-                                + ", ON DELETE " + fkInfo.getOnDeleteAction() + ", " + fkInfo.getDeferrability() + "]" );
+                            result = result + "(" + colInfo.getSize() + ")";
                         }
-                        out.print( "\n" );
                     }
+                    return result;
+                }
 
-                    @Override
-                    public void beginProcessTableInfo( String schemaName, String tableName, String tableRemarks )
+                @Override
+                public void beginProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
+                                                    ForeignKeyInfo fkInfo )
+                {
+                    out.print( colInfo.getName() + ":" + this.parseSQLType( colInfo ) + "[nullable:"
+                               + colInfo.getNullable() + "; default: " + colInfo.getDefaultValue() + "]" );
+                    if( fkInfo != null )
                     {
-                        out.print( "Table: " + schemaName + "." + tableName
-                            + (tableRemarks == null ? "" : " (" + tableRemarks + ")") + "\n" );
+                        out.print( " -> " + fkInfo.getPkSchemaName() + "." + fkInfo.getPkTableName() + "("
+                                   + fkInfo.getPkTablePKColumnName() + ")[ON UPDATE " + fkInfo.getOnUpdateAction()
+                                   + ", ON DELETE " + fkInfo.getOnDeleteAction() + ", " + fkInfo.getDeferrability() + "]" );
                     }
+                    out.print( "\n" );
+                }
 
-                    @Override
-                    public void beginProcessSchemaInfo( String schemaName )
-                    {
-                        out.print( //
+                @Override
+                public void beginProcessTableInfo( String schemaName, String tableName, String tableRemarks )
+                {
+                    out.print( "Table: " + schemaName + "." + tableName
+                               + ( tableRemarks == null ? "" : " (" + tableRemarks + ")" ) + "\n" );
+                }
+
+                @Override
+                public void beginProcessSchemaInfo( String schemaName )
+                {
+                    out.print( //
                         "\n\n" + "Schema: " + schemaName + "\n" + //
-                            SEPARATOR + "\n\n\n" //
-                        );
-                    }
+                        SEPARATOR + "\n\n\n" //
+                    );
+                }
 
-                    @Override
-                    public void beginProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
+                @Override
+                public void beginProcessRowInfo( String schemaName, String tableName, Object[] rowContents )
+                {
+                    for( Integer x = 0; x < rowContents.length; ++x )
                     {
-                        for( Integer x = 0; x < rowContents.length; ++x )
+                        Object value = rowContents[x];
+                        out.print( value == null ? "NULL" : ( "\"" + value + "\"" ) );
+                        if( x + 1 < rowContents.length )
                         {
-                            Object value = rowContents[x];
-                            out.print( value == null ? "NULL" : ("\"" + value + "\"") );
-                            if( x + 1 < rowContents.length )
-                            {
-                                out.print( " ; " );
-                            }
+                            out.print( " ; " );
                         }
-                        out.print( "\n" );
                     }
+                    out.print( "\n" );
+                }
 
-                    @Override
-                    public void beginProcessColumns( String schemaName, String tableName, String tableRemarks )
-                    {
-                        out.print( SEPARATOR + "\n" + SEPARATOR + "\n" );
-                    }
+                @Override
+                public void beginProcessColumns( String schemaName, String tableName, String tableRemarks )
+                {
+                    out.print( SEPARATOR + "\n" + SEPARATOR + "\n" );
+                }
 
-                    @Override
-                    public void beginProcessRows( String schemaName, String tableName, String tableRemarks )
-                    {
+                @Override
+                public void beginProcessRows( String schemaName, String tableName, String tableRemarks )
+                {
 
-                    }
-                }, this.descriptor.metaInfo( SQLVendor.class ) );
+                }
+            }, this.descriptor.metaInfo( SQLVendor.class ) );
         }
         catch( SQLException sqle )
         {
             // TODO Just wrap around for now...
             throw new IOException( sqle );
-        } finally {
+        }
+        finally
+        {
             SQLUtil.closeQuietly( connection );
         }
     }

@@ -1,17 +1,20 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
 package org.qi4j.library.rdf.entity;
 
 import java.math.BigDecimal;
@@ -40,7 +43,7 @@ import static org.qi4j.functional.Iterables.first;
 public class EntityTypeSerializer
 {
 
-    private Map<String, URI> dataTypes = new HashMap<String, URI>();
+    private final Map<String, URI> dataTypes = new HashMap<>();
 
     public EntityTypeSerializer()
     {
@@ -60,13 +63,13 @@ public class EntityTypeSerializer
     {
         Graph graph = new GraphImpl();
         ValueFactory values = graph.getValueFactory();
-        URI entityTypeUri = values.createURI(Classes.toURI( first( entityDescriptor.types() )) );
+        URI entityTypeUri = values.createURI( Classes.toURI( first( entityDescriptor.types() ) ) );
 
         graph.add( entityTypeUri, Rdfs.TYPE, Rdfs.CLASS );
         graph.add( entityTypeUri, Rdfs.TYPE, OWL.CLASS );
 
-        graph.add(entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( first( entityDescriptor.types()).toString() ));
-        graph.add(entityTypeUri, Qi4jEntityType.QUERYABLE, values.createLiteral( entityDescriptor.queryable() ));
+        graph.add( entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( first( entityDescriptor.types() ).toString() ) );
+        graph.add( entityTypeUri, Qi4jEntityType.QUERYABLE, values.createLiteral( entityDescriptor.queryable() ) );
 
         serializeMixinTypes( entityDescriptor, graph, entityTypeUri );
 
@@ -84,12 +87,9 @@ public class EntityTypeSerializer
         ValueFactory values = graph.getValueFactory();
 
         // Mixin types
-        for( Class mixinType : entityDescriptor.mixinTypes() )
+        for( Class<?> mixinType : entityDescriptor.mixinTypes() )
         {
-//            if( !mixinType.equals( entityDescriptor.type() ) )
-//            {
             graph.add( entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI( Classes.toURI( mixinType ) ) );
-//            }
         }
     }
 
@@ -124,7 +124,7 @@ public class EntityTypeSerializer
             graph.add( associationURI, Rdfs.DOMAIN, entityTypeUri );
             graph.add( associationURI, Rdfs.TYPE, Rdfs.PROPERTY );
 
-            URI associatedURI = values.createURI( Classes.toURI( Classes.RAW_CLASS.map( associationType.type())) );
+            URI associatedURI = values.createURI( Classes.toURI( Classes.RAW_CLASS.map( associationType.type() ) ) );
             graph.add( associationURI, Rdfs.RANGE, associatedURI );
             graph.add( associationURI, Rdfs.RANGE, XMLSchema.ANYURI );
         }

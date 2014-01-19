@@ -120,27 +120,27 @@ public final class BuilderEntityState
             state = new BuilderManyAssociationState();
             manyAssociations.put( stateName, state );
         }
-
         return state;
     }
 
     public void copyTo( EntityState newEntityState )
     {
-        for( Map.Entry<QualifiedName, Object> stateNameStringEntry : properties.entrySet() )
+        for( Map.Entry<QualifiedName, Object> fromPropertyEntry : properties.entrySet() )
         {
-            newEntityState.setPropertyValue( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
+            newEntityState.setPropertyValue( fromPropertyEntry.getKey(), fromPropertyEntry.getValue() );
         }
-        for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : associations.entrySet() )
+        for( Map.Entry<QualifiedName, EntityReference> fromAssociationEntry : associations.entrySet() )
         {
-            newEntityState.setAssociationValue( stateNameEntityReferenceEntry.getKey(), stateNameEntityReferenceEntry.getValue() );
+            newEntityState.setAssociationValue( fromAssociationEntry.getKey(), fromAssociationEntry.getValue() );
         }
-        for( Map.Entry<QualifiedName, ManyAssociationState> stateNameManyAssociationStateEntry : manyAssociations.entrySet() )
+        for( Map.Entry<QualifiedName, ManyAssociationState> fromManyAssociationEntry : manyAssociations.entrySet() )
         {
-            ManyAssociationState manyAssoc = newEntityState.manyAssociationValueOf( stateNameManyAssociationStateEntry.getKey() );
-            int idx = 0;
-            for( EntityReference entityReference : stateNameManyAssociationStateEntry.getValue() )
+            QualifiedName qName = fromManyAssociationEntry.getKey();
+            ManyAssociationState fromManyAssoc = fromManyAssociationEntry.getValue();
+            ManyAssociationState toManyAssoc = newEntityState.manyAssociationValueOf( qName );
+            for( EntityReference entityReference : fromManyAssoc )
             {
-                manyAssoc.add( idx, entityReference );
+                toManyAssoc.add( 0, entityReference );
             }
         }
     }

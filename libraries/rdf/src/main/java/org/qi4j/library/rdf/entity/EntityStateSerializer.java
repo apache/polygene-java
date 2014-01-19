@@ -1,15 +1,19 @@
 /*
- * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 package org.qi4j.library.rdf.entity;
 
@@ -52,7 +56,7 @@ import static org.qi4j.functional.Iterables.first;
 public class EntityStateSerializer
 {
 
-    private Map<String, URI> dataTypes = new HashMap<String, URI>();
+    private final Map<String, URI> dataTypes = new HashMap<>();
     @Service
     @Tagged( ValueSerialization.Formats.JSON )
     private ValueSerializer valueSerializer;
@@ -107,12 +111,17 @@ public class EntityStateSerializer
                              entityState.entityDescriptor(),
                              includeNonQueryable );
 
-        serializeAssociations( entityState, graph, entityUri, entityState.entityDescriptor()
-            .state()
-            .associations(), includeNonQueryable );
-        serializeManyAssociations( entityState, graph, entityUri, entityState.entityDescriptor()
-            .state()
-            .manyAssociations(), includeNonQueryable );
+        serializeAssociations( entityState,
+                               graph,
+                               entityUri,
+                               entityState.entityDescriptor().state().associations(),
+                               includeNonQueryable );
+
+        serializeManyAssociations( entityState,
+                                   graph,
+                                   entityUri,
+                                   entityState.entityDescriptor().state().manyAssociations(),
+                                   includeNonQueryable );
     }
 
     private void serializeProperties( final EntityState entityState,
@@ -153,7 +162,8 @@ public class EntityStateSerializer
 
         if( valueType instanceof ValueCompositeType )
         {
-            serializeValueComposite( subject, predicate, (ValueComposite) property, valueType, graph, baseURI, includeNonQueryable );
+            serializeValueComposite( subject, predicate, (ValueComposite) property, valueType,
+                                     graph, baseURI, includeNonQueryable );
         }
         else
         {
@@ -191,9 +201,9 @@ public class EntityStateSerializer
             if( type instanceof ValueCompositeType )
             {
                 URI pred = valueFactory.createURI( baseUri, persistentProperty.qualifiedName().name() );
-                serializeValueComposite( collection, pred, (ValueComposite) propertyValue, type, graph, baseUri + persistentProperty
-                    .qualifiedName()
-                    .name() + "/", includeNonQueryable );
+                serializeValueComposite( collection, pred, (ValueComposite) propertyValue, type, graph,
+                                         baseUri + persistentProperty.qualifiedName().name() + "/",
+                                         includeNonQueryable );
             }
             else
             {

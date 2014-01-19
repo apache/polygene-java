@@ -1,17 +1,20 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
 package org.qi4j.index.sql.support.common;
 
 import java.lang.reflect.ParameterizedType;
@@ -39,11 +42,11 @@ public final class QNameInfo
     public enum QNameType
     {
         PROPERTY,
-            ASSOCIATION,
-            MANY_ASSOCIATION
+        ASSOCIATION,
+        MANY_ASSOCIATION
     }
 
-    private static final List<Class<?>> EMPTY_COLL_CLASSES = new ArrayList<Class<?>>();
+    private static final List<Class<?>> EMPTY_COLL_CLASSES = new ArrayList<>();
 
     private String _tableName;
 
@@ -67,18 +70,18 @@ public final class QNameInfo
     private final AssociationDescriptor _manyAssociationDescriptor;
 
     private QNameInfo( QualifiedName qName, //
-            QNameType qNameType, //
-            List<Class<?>> collectionClasses, //
-            String tableName, //
-            Type finalType, //
-            PropertyDescriptor propertyDescriptor, //
-            AssociationDescriptor associationDescriptor, //
-            AssociationDescriptor manyAssociationDescriptor //
+                       QNameType qNameType, //
+                       List<Class<?>> collectionClasses, //
+                       String tableName, //
+                       Type finalType, //
+                       PropertyDescriptor propertyDescriptor, //
+                       AssociationDescriptor associationDescriptor, //
+                       AssociationDescriptor manyAssociationDescriptor //
     )
     {
         if( ( propertyDescriptor != null && associationDescriptor == null && manyAssociationDescriptor == null )
-                || ( propertyDescriptor == null && associationDescriptor != null && manyAssociationDescriptor == null )
-                || ( propertyDescriptor == null && associationDescriptor == null && manyAssociationDescriptor != null ) )
+            || ( propertyDescriptor == null && associationDescriptor != null && manyAssociationDescriptor == null )
+            || ( propertyDescriptor == null && associationDescriptor == null && manyAssociationDescriptor != null ) )
         {
             this._propertyDescriptor = propertyDescriptor;
             this._associationDescriptor = associationDescriptor;
@@ -91,9 +94,9 @@ public final class QNameInfo
         }
         this._qName = qName;
         this._qNameType = qNameType;
-        this._collectionClasses =
-            ( collectionClasses == null || collectionClasses.isEmpty() ? EMPTY_COLL_CLASSES
-                    : collectionClasses );
+        this._collectionClasses = ( collectionClasses == null || collectionClasses.isEmpty()
+                                    ? EMPTY_COLL_CLASSES
+                                    : collectionClasses );
         this._tableName = tableName;
         this._finalType = finalType;
         Boolean isFinalTypePrimitive = false;
@@ -102,12 +105,12 @@ public final class QNameInfo
             Class<?> finalClass = (Class<?>) finalType;
             isFinalTypePrimitive = //
                 Number.class.isAssignableFrom( finalClass )//
-                        || Boolean.class.isAssignableFrom( finalClass ) //
-                        || Character.class.isAssignableFrom( finalClass ) //
-                        || Date.class.isAssignableFrom( finalClass ) //
-                        || Enum.class.isAssignableFrom( finalClass ) //
-                        || String.class.isAssignableFrom( finalClass )//
-            ;
+                || Boolean.class.isAssignableFrom( finalClass ) //
+                || Character.class.isAssignableFrom( finalClass ) //
+                || Date.class.isAssignableFrom( finalClass ) //
+                || Enum.class.isAssignableFrom( finalClass ) //
+                || String.class.isAssignableFrom( finalClass )//
+                ;
         }
         this._isFinalTypePrimitive = isFinalTypePrimitive;
     }
@@ -260,24 +263,24 @@ public final class QNameInfo
      *         instances of this property are stored in database.
      */
     public static QNameInfo fromProperty( //
-            QualifiedName qName, //
-            String tableName, //
-            PropertyDescriptor propertyDescriptor //
-        )
+        QualifiedName qName, //
+        String tableName, //
+        PropertyDescriptor propertyDescriptor //
+    )
     {
         Type vType = propertyDescriptor.type();
-        List<Class<?>> collectionClasses = new ArrayList<Class<?>>();
+        List<Class<?>> collectionClasses = new ArrayList<>();
         while( vType instanceof ParameterizedType
-                && Collection.class.isAssignableFrom( (Class<?>) ( (ParameterizedType) vType )
-                    .getRawType() ) )
+               && Collection.class.isAssignableFrom( (Class<?>) ( (ParameterizedType) vType )
+            .getRawType() ) )
         {
             collectionClasses.add( (Class<?>) ( (ParameterizedType) vType ).getRawType() );
             vType = ( (ParameterizedType) vType ).getActualTypeArguments()[0];
         }
 
         return new QNameInfo( qName, QNameType.PROPERTY, collectionClasses, tableName, vType,
-            propertyDescriptor, null,
-            null );
+                              propertyDescriptor, null,
+                              null );
     }
 
     /**
@@ -291,14 +294,14 @@ public final class QNameInfo
      *         how instances of this association are stored in database.
      */
     public static QNameInfo fromAssociation( //
-            QualifiedName qName, //
-            String tableName, //
-            AssociationDescriptor assoDescriptor //
-        )
+        QualifiedName qName, //
+        String tableName, //
+        AssociationDescriptor assoDescriptor //
+    )
     {
         return new QNameInfo( qName, QNameType.ASSOCIATION, null, tableName, assoDescriptor.type(),
-            null,
-            assoDescriptor, null );
+                              null,
+                              assoDescriptor, null );
     }
 
     /**
@@ -312,21 +315,21 @@ public final class QNameInfo
      *         and how instances of this many-association are stored in database.
      */
     public static QNameInfo fromManyAssociation( //
-            QualifiedName qName, //
-            String tableName, //
-            AssociationDescriptor manyAssoDescriptor //
-        )
+        QualifiedName qName, //
+        String tableName, //
+        AssociationDescriptor manyAssoDescriptor //
+    )
     {
         return new QNameInfo( qName, QNameType.MANY_ASSOCIATION, null, tableName,
-            manyAssoDescriptor.type(), null,
-            null, manyAssoDescriptor );
+                              manyAssoDescriptor.type(), null,
+                              null, manyAssoDescriptor );
     }
 
     @Override
     public String toString()
     {
         return "[table: " + this._tableName + ", final type: " + this._finalType + ", qNameType: "
-                + this._qNameType + ", qName: " + this._qName + "]";
+               + this._qNameType + ", qName: " + this._qName + "]";
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Paul Merlin.
+ * Copyright 2012-2014 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -84,7 +84,7 @@ public interface ElasticSearchIndexer
         public void notifyChanges( Iterable<EntityState> changedStates )
         {
             // All updated or new states
-            Map<String, EntityState> newStates = new HashMap<String, EntityState>();
+            Map<String, EntityState> newStates = new HashMap<>();
             for( EntityState eState : changedStates )
             {
                 if( eState.status() == EntityStatus.UPDATED || eState.status() == EntityStatus.NEW )
@@ -173,8 +173,8 @@ public interface ElasticSearchIndexer
          *  "_identity": "ENTITY-IDENTITY",
          *  "_types": [ "All", "Entity", "types" ],
          *  "property.name": property.value,
-         *  "association.name": "ASSOCIATED-IDENTITY",
-         *  "manyassociation.name": [ "ASSOCIATED", "IDENTITIES" ]
+         *  "association.name": { "identity": "ASSOCIATED-IDENTITY" }
+         *  "manyassociation.name": [ { "identity": "ASSOCIATED" }, { "identity": "IDENTITIES" } ]
          * }
          * </pre>
          */

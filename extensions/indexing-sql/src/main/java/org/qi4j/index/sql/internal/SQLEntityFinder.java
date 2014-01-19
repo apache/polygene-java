@@ -2,17 +2,20 @@
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
  * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
 package org.qi4j.index.sql.internal;
 
 import java.sql.Connection;
@@ -55,12 +58,13 @@ public class SQLEntityFinder
     }
 
     @Override
-    public long countEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
+    public long countEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables )
+        throws EntityFinderException
     {
-        final List<Object> values = new ArrayList<Object>();
-        final List<Integer> valueSQLTypes = new ArrayList<Integer>();
+        final List<Object> values = new ArrayList<>();
+        final List<Integer> valueSQLTypes = new ArrayList<>();
         final String query = this.parser.constructQuery( resultType, whereClause, null, null, null, variables, values,
-            valueSQLTypes, true );
+                                                         valueSQLTypes, true );
 
         return this.performQuery( new DoQuery<Long>()
         {
@@ -88,17 +92,23 @@ public class SQLEntityFinder
     }
 
     @Override
-    public Iterable<EntityReference> findEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, @Optional OrderBy[] orderBySegments, @Optional final Integer firstResult, @Optional final Integer maxResults, Map<String, Object> variables ) throws EntityFinderException
+    public Iterable<EntityReference> findEntities( Class<?> resultType,
+                                                   @Optional Specification<Composite> whereClause,
+                                                   @Optional OrderBy[] orderBySegments,
+                                                   @Optional final Integer firstResult,
+                                                   @Optional final Integer maxResults,
+                                                   Map<String, Object> variables )
+        throws EntityFinderException
     {
         // TODO what is Qi4j's policy on negative firstResult and/or maxResults? JDBC has its own way of interpreting
         // these values - does it match with Qi4j's way?
         Iterable<EntityReference> result;
         if( maxResults == null || maxResults > 0 )
         {
-            final List<Object> values = new ArrayList<Object>();
-            final List<Integer> valueSQLTypes = new ArrayList<Integer>();
+            final List<Object> values = new ArrayList<>();
+            final List<Integer> valueSQLTypes = new ArrayList<>();
             final String query = this.parser.constructQuery( resultType, whereClause, orderBySegments, firstResult,
-                maxResults, variables, values, valueSQLTypes, false );
+                                                             maxResults, variables, values, valueSQLTypes, false );
 
             result = this.performQuery( new DoQuery<Iterable<EntityReference>>()
             {
@@ -108,21 +118,22 @@ public class SQLEntityFinder
                 {
                     PreparedStatement ps = null;
                     ResultSet rs = null;
-                    List<EntityReference> resultList = new ArrayList<EntityReference>( maxResults == null ? 100
-                        : maxResults );
+                    List<EntityReference> resultList = new ArrayList<>( maxResults == null ? 100 : maxResults );
                     try
                     {
                         // TODO possibility to further optimize by setting fetch size (not too small not too little).
                         Integer rsType = parser.getResultSetType( firstResult, maxResults );
-                        ps = createPS( connection, query, values, valueSQLTypes, rsType, ResultSet.CLOSE_CURSORS_AT_COMMIT );
+                        ps = createPS( connection, query, values, valueSQLTypes,
+                                       rsType, ResultSet.CLOSE_CURSORS_AT_COMMIT );
                         rs = ps.executeQuery();
-                        if( firstResult != null && !parser.isFirstResultSettingSupported()
+                        if( firstResult != null
+                            && !parser.isFirstResultSettingSupported()
                             && rsType != ResultSet.TYPE_FORWARD_ONLY )
                         {
                             rs.absolute( firstResult );
                         }
                         Integer i = 0;
-                        while( rs.next() && (maxResults == null || i < maxResults) )
+                        while( rs.next() && ( maxResults == null || i < maxResults ) )
                         {
                             resultList.add( new EntityReference( rs.getString( 1 ) ) );
                             ++i;
@@ -142,20 +153,22 @@ public class SQLEntityFinder
         }
         else
         {
-            result = new ArrayList<EntityReference>( 0 );
+            result = new ArrayList<>( 0 );
         }
 
         return result;
     }
 
-
     @Override
-    public EntityReference findEntity( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
+    public EntityReference findEntity( Class<?> resultType,
+                                       @Optional Specification<Composite> whereClause,
+                                       Map<String, Object> variables )
+        throws EntityFinderException
     {
-        final List<Object> values = new ArrayList<Object>();
-        final List<Integer> valueSQLTypes = new ArrayList<Integer>();
+        final List<Object> values = new ArrayList<>();
+        final List<Integer> valueSQLTypes = new ArrayList<>();
         final String query = this.parser.constructQuery( resultType, whereClause, null, null, null, variables, values,
-            valueSQLTypes, false );
+                                                         valueSQLTypes, false );
 
         return this.performQuery( new DoQuery<EntityReference>()
         {
@@ -188,23 +201,25 @@ public class SQLEntityFinder
         } );
     }
 
-    private PreparedStatement createPS( Connection connection, String query, List<Object> values, List<Integer> valueSQLTypes )
+    private PreparedStatement createPS( Connection connection, String query,
+                                        List<Object> values, List<Integer> valueSQLTypes )
         throws SQLException
     {
-        return this.createPS( connection, query, values, valueSQLTypes, ResultSet.TYPE_FORWARD_ONLY,
-            ResultSet.CLOSE_CURSORS_AT_COMMIT );
+        return this.createPS( connection, query, values, valueSQLTypes,
+                              ResultSet.TYPE_FORWARD_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT );
     }
 
-    private PreparedStatement createPS( Connection connection,  String query, List<Object> values, List<Integer> valueSQLTypes,
-        Integer resultSetType, Integer resultSetHoldability )
+    private PreparedStatement createPS( Connection connection, String query,
+                                        List<Object> values, List<Integer> valueSQLTypes,
+                                        Integer resultSetType, Integer resultSetHoldability )
         throws SQLException
     {
-        PreparedStatement ps = connection
-            .prepareStatement( query, resultSetType, ResultSet.CONCUR_READ_ONLY, resultSetHoldability );
+        PreparedStatement ps = connection.prepareStatement( query, resultSetType,
+                                                            ResultSet.CONCUR_READ_ONLY, resultSetHoldability );
         if( values.size() != valueSQLTypes.size() )
         {
             throw new InternalError( "There was either too little or too much sql types for values [values="
-                + values.size() + ", types=" + valueSQLTypes.size() + "]." );
+                                     + values.size() + ", types=" + valueSQLTypes.size() + "]." );
         }
 
         for( Integer x = 0; x < values.size(); ++x )
@@ -216,7 +231,6 @@ public class SQLEntityFinder
     }
 
     // Helper method to perform SQL queries and handle things if/when something happens
-
     private <ReturnType> ReturnType performQuery( DoQuery<ReturnType> doQuery )
         throws EntityFinderException
     {

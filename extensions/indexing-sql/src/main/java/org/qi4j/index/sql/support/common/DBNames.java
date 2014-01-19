@@ -1,17 +1,20 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
 package org.qi4j.index.sql.support.common;
 
 /**
@@ -71,8 +74,7 @@ public class DBNames
 
     public static final String ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME = "application_version";
 
-    public static final String ENTITY_TYPES_JOIN_TABLE_NAME = ENTITY_TABLE_NAME + "_"
-            + ENTITY_TYPES_TABLE_NAME;
+    public static final String ENTITY_TYPES_JOIN_TABLE_NAME = ENTITY_TABLE_NAME + "_" + ENTITY_TYPES_TABLE_NAME;
 
     public static final String APP_VERSION_TABLE_NAME = "app_version";
 
@@ -83,5 +85,9 @@ public class DBNames
     public static final String ENUM_LOOKUP_TABLE_PK_COLUMN_NAME = "enum_id";
 
     public static final String ENUM_LOOKUP_TABLE_ENUM_VALUE_NAME = "enum_value";
+
+    private DBNames()
+    {
+    }
 
 }

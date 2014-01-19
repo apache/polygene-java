@@ -33,7 +33,7 @@ public class Triples
     implements Iterable<Triples.Triple>
 {
     private int valueCounter = 0;
-    private final List<Triple> triples = new ArrayList<Triple>();
+    private final List<Triple> triples = new ArrayList<>();
     private final Namespaces namespaces;
 
     public Triples( Namespaces namespaces )
@@ -72,7 +72,7 @@ public class Triples
         return namespaces.addNamespace( namespace );
     }
 
-    public Triple addTriple( final PropertyFunction propertyFunction, boolean optional )
+    public Triple addTriple( final PropertyFunction<?> propertyFunction, boolean optional )
     {
         String subject = "?entity";
         if( propertyFunction.traversedAssociation() != null )
@@ -88,7 +88,7 @@ public class Triples
         return addTriple( subject, prefix + ":" + qualifiedName.name(), optional );
     }
 
-    public Triple addTripleAssociation( AssociationFunction associationReference, boolean optional )
+    public Triple addTripleAssociation( AssociationFunction<?> associationReference, boolean optional )
     {
         String subject = "?entity";
         if( associationReference.traversedAssociation() != null )
@@ -100,11 +100,11 @@ public class Triples
         return addTriple( subject, prefix + ":" + qualifiedName.name(), optional );
     }
 
-    public Triple addTripleManyAssociation( final ManyAssociationFunction manyAssociationReference,
-                                             final boolean optional
+    public Triple addTripleManyAssociation( final ManyAssociationFunction<?> manyAssociationReference,
+                                            final boolean optional
     )
     {
-        AssociationFunction traversedAssociation = manyAssociationReference.traversedAssociation();
+        AssociationFunction<?> traversedAssociation = manyAssociationReference.traversedAssociation();
         String subject = "?entity";
         if( traversedAssociation != null )
         {
@@ -158,6 +158,7 @@ public class Triples
         return !triples.isEmpty();
     }
 
+    @Override
     public Iterator<Triple> iterator()
     {
         return triples.iterator();

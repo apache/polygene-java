@@ -24,7 +24,6 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.test.indexing.model.Account;
 import org.qi4j.test.indexing.model.Address;
 import org.qi4j.test.indexing.model.Cat;
@@ -51,8 +50,6 @@ class TestData
         UnitOfWork unitOfWork = module.newUnitOfWork();
         try
         {
-            ValueBuilderFactory valueBuilderFactory = module;
-
             NameableAssert.clear();
             Domain gaming;
             {
@@ -200,7 +197,7 @@ class TestData
                 Protocol protocol = protocolBuilder.prototype();
                 protocol.value().set( "http" );
 
-                List<QueryParam> queryParams = new ArrayList<QueryParam>();
+                List<QueryParam> queryParams = new ArrayList<>( 2 );
                 QueryParam param = queryParamBuilder.prototype();
                 param.name().set( "user" );
                 param.value().set( "jackdoe" );
@@ -234,5 +231,9 @@ class TestData
         {
             unitOfWork.discard();
         }
+    }
+
+    private TestData()
+    {
     }
 }

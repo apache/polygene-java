@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
- * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,37 +53,40 @@ public class SQLTestHelper
         // START SNIPPET: assembly
         // DataSourceService
         new DBCPDataSourceServiceAssembler().
-                identifiedBy( "postgres-datasource-service" ).
-                visibleIn( Visibility.module ).
-                withConfig( config ).
-                withConfigVisibility( Visibility.layer ).
-                assemble( mainModule );
+            identifiedBy( "postgres-datasource-service" ).
+            visibleIn( Visibility.module ).
+            withConfig( config ).
+            withConfigVisibility( Visibility.layer ).
+            assemble( mainModule );
 
         // DataSource
         new DataSourceAssembler().
-                withDataSourceServiceIdentity( "postgres-datasource-service" ).
-                identifiedBy( "postgres-datasource" ).
-                visibleIn( Visibility.module ).
-                withCircuitBreaker().
-                assemble( mainModule );
+            withDataSourceServiceIdentity( "postgres-datasource-service" ).
+            identifiedBy( "postgres-datasource" ).
+            visibleIn( Visibility.module ).
+            withCircuitBreaker().
+            assemble( mainModule );
 
         // SQL Index/Query
         new PostgreSQLIndexQueryAssembler().
-                visibleIn( Visibility.application ).
-                withConfig( config ).
-                withConfigVisibility( Visibility.layer ).
-                assemble( mainModule );
+            visibleIn( Visibility.module ).
+            withConfig( config ).
+            withConfigVisibility( Visibility.layer ).
+            assemble( mainModule );
         // END SNIPPET: assembly
 
         // Always re-build schema in test scenarios because of possibly different app structure in
         // various tests
-        mainModule.services( RebuildingStrategy.class )
-            .withMixins( RebuildingStrategy.AlwaysNeed.class ).visibleIn( Visibility.module );
+        mainModule.services( RebuildingStrategy.class ).
+            withMixins( RebuildingStrategy.AlwaysNeed.class ).
+            visibleIn( Visibility.module );
 
         // Always re-index in test scenarios
-        mainModule.services( ReindexingStrategy.class ).withMixins(
-            ReindexingStrategy.AlwaysNeed.class ).visibleIn( Visibility.module );
-        config.entities( ReindexerConfiguration.class ).visibleIn( Visibility.layer );
+        mainModule.services( ReindexingStrategy.class ).
+            withMixins( ReindexingStrategy.AlwaysNeed.class ).
+            visibleIn( Visibility.module );
+        config.entities( ReindexerConfiguration.class ).
+            visibleIn( Visibility.layer );
     }
 
     public static void setUpTest( Module module )
@@ -97,7 +100,7 @@ public class SQLTestHelper
             Assume.assumeNotNull( connection );
 
         }
-        catch ( Throwable t )
+        catch( Throwable t )
         {
 
             t.printStackTrace();
@@ -110,6 +113,10 @@ public class SQLTestHelper
             SQLUtil.closeQuietly( connection );
 
         }
+    }
+
+    private SQLTestHelper()
+    {
     }
 
 }

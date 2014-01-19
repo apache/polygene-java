@@ -1,6 +1,6 @@
 /*
  * Copyright 2008 Alin Dreghiciu.
- * Copyright 2009 Niclas Hedhman.
+ * Copyright 2009-2012 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -19,10 +19,7 @@
 package org.qi4j.test.indexing;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,11 +38,9 @@ import org.qi4j.test.indexing.model.Nameable;
 import org.qi4j.test.indexing.model.Person;
 import org.qi4j.test.indexing.model.QueryParam;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.qi4j.api.query.QueryExpressions.and;
 import static org.qi4j.api.query.QueryExpressions.contains;
 import static org.qi4j.api.query.QueryExpressions.eq;
@@ -59,6 +54,8 @@ import static org.qi4j.api.query.QueryExpressions.oneOf;
 import static org.qi4j.api.query.QueryExpressions.or;
 import static org.qi4j.api.query.QueryExpressions.orderBy;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
+import static org.qi4j.test.indexing.NameableAssert.verifyOrderedResults;
+import static org.qi4j.test.indexing.NameableAssert.verifyUnorderedResults;
 
 public abstract class AbstractQueryTest
     extends AbstractAnyQueryTest
@@ -70,34 +67,6 @@ public abstract class AbstractQueryTest
     {
         IndexExporter indexerExporter = module.findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
-    }
-
-    private static void verifyUnorderedResults( final Iterable<? extends Nameable> results, final String... names )
-    {
-        final List<String> expected = new ArrayList<>( Arrays.asList( names ) );
-
-        for( Nameable entity : results )
-        {
-            String name = entity.name().get();
-            assertTrue( name + " returned but not expected", expected.remove( name ) );
-        }
-
-        for( String notReturned : expected )
-        {
-            fail( notReturned + " was expected but not returned" );
-        }
-    }
-
-    private static void verifyOrderedResults( final Iterable<? extends Nameable> results, final String... names )
-    {
-        final List<String> expected = new ArrayList<>( Arrays.asList( names ) );
-        final List<String> actual = new ArrayList<>();
-        for( Nameable result : results )
-        {
-            actual.add( result.name().get() );
-        }
-
-        assertThat( "Result is incorrect", actual, equalTo( expected ) );
     }
 
     @Test
@@ -151,10 +120,10 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother()
-                                                                     .get()
-                                                                     .placeOfBirth()
-                                                                     .get()
-                                                                     .name(), "Kuala Lumpur" ) )
+            .get()
+            .placeOfBirth()
+            .get()
+            .name(), "Kuala Lumpur" ) )
         );
         System.out.println( "*** script05: " + query );
         verifyUnorderedResults( query, "Joe Doe" );
@@ -370,7 +339,6 @@ public abstract class AbstractQueryTest
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
 
-    @Ignore( "Skip this one for now. It sporadically fails sometimes." )
     @Test
     public void script23()
         throws EntityFinderException
@@ -425,16 +393,15 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    @Ignore( "Wait until indexing of complex values is implemented" )
     public void script29()
     {
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.personalWebsite()
-                                                                     .get()
-                                                                     .protocol()
-                                                                     .get()
-                                                                     .value(), "http" ) )
+            .get()
+            .protocol()
+            .get()
+            .value(), "http" ) )
         );
         System.out.println( "*** script29: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
@@ -442,25 +409,25 @@ public abstract class AbstractQueryTest
 
     @Test
     @Ignore( "Wait till 1.1?" )
+    // Paul: I don't understand this test
     @SuppressWarnings( "unchecked" )
     public void script30()
     {
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         QueryParam queryParam = null; // oneOf( person.personalWebsite().get().queryParams() );
-        Query<Person> query = unitOfWork.newQuery( qb.where( and( eq( queryParam.name(), "foo" ), eq( queryParam.value(), "bar" ) ) )
-        );
+        Query<Person> query = unitOfWork.newQuery( qb.where( and( eq( queryParam.name(), "foo" ), eq( queryParam.value(), "bar" ) ) ) );
         System.out.println( "*** script30: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
     }
 
     @Test
-    @Ignore( "Wait till 1.1?" )
+    @Ignore( "Equality on Property<Map<?,?>> not implemented" )
     public void script31()
     {
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Map<String, String> info = new HashMap<>();
+        Map<String, String> info = new HashMap<>( 0 );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.additionalInfo(), info ) ) );
         System.out.println( "*** script31: " + query );
         verifyUnorderedResults( query, "Jack Doe" );
@@ -471,7 +438,6 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Map<String, String> info = new HashMap<>();
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.address().get().line1(), "Qi Alley 4j" ) ) );
         System.out.println( "*** script32: " + query );
         verifyUnorderedResults( query, "Joe Doe" );

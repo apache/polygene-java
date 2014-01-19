@@ -12,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
@@ -41,12 +40,16 @@ import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
-import static org.qi4j.functional.Iterables.*;
+import static org.qi4j.functional.Iterables.filter;
+import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.flattenIterables;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * JAVADOC
  */
-public final class EntityModel extends CompositeModel
+public final class EntityModel
+    extends CompositeModel
     implements EntityDescriptor
 {
     private static final Method IDENTITY_METHOD;
@@ -76,8 +79,8 @@ public final class EntityModel extends CompositeModel
         super( types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
         final Queryable queryable = first( Iterables.<Queryable>cast(
-                filter( Annotations.isType( Queryable.class ),
-                        flattenIterables( map( Annotations.ANNOTATIONS_OF, types ) ) ) ) );
+            filter( Annotations.isType( Queryable.class ),
+                    flattenIterables( map( Annotations.ANNOTATIONS_OF, types ) ) ) ) );
         this.queryable = queryable == null || queryable.value();
     }
 
@@ -139,28 +142,22 @@ public final class EntityModel extends CompositeModel
 
     public void initState( ModuleInstance module, EntityState entityState )
     {
+        // Set new properties to default value
+        for( PropertyModel propertyDescriptor : state().properties() )
         {
-            // Set new properties to default value
-            for( PropertyModel propertyDescriptor : state().properties() )
-            {
-                entityState.setPropertyValue( propertyDescriptor.qualifiedName(), propertyDescriptor.initialValue( module ) );
-            }
+            entityState.setPropertyValue( propertyDescriptor.qualifiedName(), propertyDescriptor.initialValue( module ) );
         }
 
+        // Set new associations to null
+        for( AssociationDescriptor associationDescriptor : state().associations() )
         {
-            // Set new manyAssociations to null
-            for( AssociationDescriptor associationDescriptor : state().associations() )
-            {
-                entityState.setAssociationValue( associationDescriptor.qualifiedName(), null );
-            }
+            entityState.setAssociationValue( associationDescriptor.qualifiedName(), null );
         }
 
+        // Set new many-associations to empty
+        for( AssociationDescriptor associationDescriptor : state().manyAssociations() )
         {
-            // Set new many-manyAssociations to empty
-            for( AssociationDescriptor associationDescriptor : state().manyAssociations() )
-            {
-                entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() );
-            }
+            entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() );
         }
     }
 

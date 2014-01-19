@@ -29,8 +29,8 @@ public final class JSONManyAssociationState
     implements ManyAssociationState
 {
 
-    private JSONEntityState entityState;
-    private JSONArray references;
+    private final JSONEntityState entityState;
+    private final JSONArray references;
 
     public JSONManyAssociationState( JSONEntityState entityState, JSONArray references )
     {

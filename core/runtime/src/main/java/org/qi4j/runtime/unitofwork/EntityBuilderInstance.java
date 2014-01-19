@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.unitofwork;
 
 import org.qi4j.api.common.QualifiedName;
@@ -33,7 +32,7 @@ import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 public final class EntityBuilderInstance<T>
     implements EntityBuilder<T>
 {
-    private static final QualifiedName identityStateName;
+    private static final QualifiedName IDENTITY_STATE_NAME;
 
     private final ModelModule<EntityModel> model;
     private final ModuleUnitOfWork uow;
@@ -47,7 +46,7 @@ public final class EntityBuilderInstance<T>
     {
         try
         {
-            identityStateName = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
+            IDENTITY_STATE_NAME = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
         }
         catch( NoSuchMethodException e )
         {
@@ -69,7 +68,7 @@ public final class EntityBuilderInstance<T>
         EntityReference reference = new EntityReference( identity );
         entityState = new BuilderEntityState( model.model(), reference );
         model.model().initState( model.module(), entityState );
-        entityState.setPropertyValue( identityStateName, identity );
+        entityState.setPropertyValue( IDENTITY_STATE_NAME, identity );
         prototypeInstance = model.model().newInstance( uow, model.module(), entityState );
     }
 
@@ -98,9 +97,9 @@ public final class EntityBuilderInstance<T>
         String identity;
 
         // Figure out whether to use given or generated identity
-        identity = (String) entityState.propertyValueOf( identityStateName );
-        EntityState newEntityState = model.model()
-            .newEntityState( store, EntityReference.parseEntityReference( identity ) );
+        identity = (String) entityState.propertyValueOf( IDENTITY_STATE_NAME );
+        EntityState newEntityState = model.model().newEntityState( store,
+                                                                   EntityReference.parseEntityReference( identity ) );
 
         prototypeInstance.invokeCreate();
 

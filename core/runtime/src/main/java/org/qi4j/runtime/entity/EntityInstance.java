@@ -12,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.entity;
 
 import java.lang.reflect.Method;
@@ -263,7 +262,6 @@ public final class EntityInstance
         entityModel.invokeLifecycle( create, mixins, this, state );
     }
 
-    @SuppressWarnings( "raw" )
     private void removeAggregatedEntities( UnitOfWork unitOfWork )
     {
         // Calculate aggregated Entities
@@ -274,7 +272,7 @@ public final class EntityInstance
         {
             if( association.isAggregated() )
             {
-                Association assoc = state.associationFor( association.accessor() );
+                Association<?> assoc = state.associationFor( association.accessor() );
                 Object aggregatedEntity = assoc.get();
                 if( aggregatedEntity != null )
                 {
@@ -287,7 +285,7 @@ public final class EntityInstance
         {
             if( association.isAggregated() )
             {
-                ManyAssociation manyAssoc = state.manyAssociationFor( association.accessor() );
+                ManyAssociation<?> manyAssoc = state.manyAssociationFor( association.accessor() );
                 for( Object entity : manyAssoc )
                 {
                     aggregatedEntities.add( entity );

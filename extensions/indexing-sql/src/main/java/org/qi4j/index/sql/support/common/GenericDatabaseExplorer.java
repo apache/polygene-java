@@ -1,20 +1,27 @@
 /*
  * Copyright (c) 2010, Stanislav Muhametsin. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
-
 package org.qi4j.index.sql.support.common;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +36,6 @@ import org.sql.generation.api.vendor.SQLVendor;
 /**
  * This is a helper class to traverse through all content in specified tables in database. Typical usecase would be by
  * {@link IndexExporter} implementation.
- *
- * @author Stanislav Muhametsin
  */
 public final class GenericDatabaseExplorer
 {
@@ -50,23 +55,23 @@ public final class GenericDatabaseExplorer
         NOT_DEFERRABLE
     }
 
-    private static Map<Integer, IntegrityActions> _integrityActions;
+    private static final Map<Integer, IntegrityActions> INTEGRITY_ACTIONS;
 
-    private static Map<Integer, Deferrability> _deferrabilities;
+    private static final Map<Integer, Deferrability> DEFERRABILITIES;
 
     static
     {
-        _deferrabilities = new HashMap<Integer, Deferrability>();
-        _deferrabilities.put( DatabaseMetaData.importedKeyInitiallyDeferred, Deferrability.INITIALLY_DEFERRED );
-        _deferrabilities.put( DatabaseMetaData.importedKeyInitiallyImmediate, Deferrability.INITIALLY_IMMEDIATE );
-        _deferrabilities.put( DatabaseMetaData.importedKeyNotDeferrable, Deferrability.NOT_DEFERRABLE );
+        DEFERRABILITIES = new HashMap<>( 3 );
+        DEFERRABILITIES.put( DatabaseMetaData.importedKeyInitiallyDeferred, Deferrability.INITIALLY_DEFERRED );
+        DEFERRABILITIES.put( DatabaseMetaData.importedKeyInitiallyImmediate, Deferrability.INITIALLY_IMMEDIATE );
+        DEFERRABILITIES.put( DatabaseMetaData.importedKeyNotDeferrable, Deferrability.NOT_DEFERRABLE );
 
-        _integrityActions = new HashMap<Integer, IntegrityActions>();
-        _integrityActions.put( DatabaseMetaData.importedKeyCascade, IntegrityActions.CASCADE );
-        _integrityActions.put( DatabaseMetaData.importedKeyNoAction, IntegrityActions.NO_ACTION );
-        _integrityActions.put( DatabaseMetaData.importedKeyRestrict, IntegrityActions.RESTRICT );
-        _integrityActions.put( DatabaseMetaData.importedKeySetDefault, IntegrityActions.SET_DEFAULT );
-        _integrityActions.put( DatabaseMetaData.importedKeySetNull, IntegrityActions.SET_NULL );
+        INTEGRITY_ACTIONS = new HashMap<>( 5 );
+        INTEGRITY_ACTIONS.put( DatabaseMetaData.importedKeyCascade, IntegrityActions.CASCADE );
+        INTEGRITY_ACTIONS.put( DatabaseMetaData.importedKeyNoAction, IntegrityActions.NO_ACTION );
+        INTEGRITY_ACTIONS.put( DatabaseMetaData.importedKeyRestrict, IntegrityActions.RESTRICT );
+        INTEGRITY_ACTIONS.put( DatabaseMetaData.importedKeySetDefault, IntegrityActions.SET_DEFAULT );
+        INTEGRITY_ACTIONS.put( DatabaseMetaData.importedKeySetNull, IntegrityActions.SET_NULL );
     }
 
     public static class ColumnInfo
@@ -89,7 +94,7 @@ public final class GenericDatabaseExplorer
         private final String _remarks;
 
         private ColumnInfo( String name, Integer sqlType, String typeName, Integer size, Integer scale,
-            String nullable, String defaultValue, String remarks )
+                            String nullable, String defaultValue, String remarks )
         {
             this._name = name;
             this._sqlType = sqlType;
@@ -158,14 +163,14 @@ public final class GenericDatabaseExplorer
         private final Deferrability _deferrability;
 
         private ForeignKeyInfo( String pkSchemaName, String pkTableName, String pkTablePKColumnName, short onUpdate,
-            short onDelete, short deferrability )
+                                short onDelete, short deferrability )
         {
             this._pkSchemaName = pkSchemaName;
             this._pkTableName = pkTableName;
             this._pkTablePKColumnName = pkTablePKColumnName;
-            this._onUpdateAction = _integrityActions.get( (int) onUpdate );
-            this._onDeleteAction = _integrityActions.get( (int) onDelete );
-            this._deferrability = _deferrabilities.get( (int) deferrability );
+            this._onUpdateAction = INTEGRITY_ACTIONS.get( (int) onUpdate );
+            this._onDeleteAction = INTEGRITY_ACTIONS.get( (int) onDelete );
+            this._deferrability = DEFERRABILITIES.get( (int) deferrability );
         }
 
         public String getPkSchemaName()
@@ -212,10 +217,11 @@ public final class GenericDatabaseExplorer
 
         public void beginProcessColumns( String schemaName, String tableName, String tableRemarks );
 
-        public void beginProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
-            ForeignKeyInfo fkInfo );
+        public void beginProcessColumnInfo( String schemaName, String tableName,
+                                            ColumnInfo colInfo, ForeignKeyInfo fkInfo );
 
-        public void endProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo );
+        public void endProcessColumnInfo( String schemaName, String tableName,
+                                          ColumnInfo colInfo, ForeignKeyInfo fkInfo );
 
         public void endProcessColumns( String schemaName, String tableName, String tableRemarks );
 
@@ -233,8 +239,8 @@ public final class GenericDatabaseExplorer
     {
 
         @Override
-        public void beginProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo,
-            ForeignKeyInfo fkInfo )
+        public void beginProcessColumnInfo( String schemaName, String tableName,
+                                            ColumnInfo colInfo, ForeignKeyInfo fkInfo )
         {
         }
 
@@ -264,7 +270,8 @@ public final class GenericDatabaseExplorer
         }
 
         @Override
-        public void endProcessColumnInfo( String schemaName, String tableName, ColumnInfo colInfo, ForeignKeyInfo fkInfo )
+        public void endProcessColumnInfo( String schemaName, String tableName,
+                                          ColumnInfo colInfo, ForeignKeyInfo fkInfo )
         {
         }
 
@@ -295,8 +302,9 @@ public final class GenericDatabaseExplorer
 
     }
 
-    public static void visitDatabaseTables( Connection connection, String catalogName, String schemaNamePattern,
-        String tableNamePattern, DatabaseProcessor processor, SQLVendor sqlSyntaxVendor )
+    public static void visitDatabaseTables( Connection connection, String catalogName,
+                                            String schemaNamePattern, String tableNamePattern,
+                                            DatabaseProcessor processor, SQLVendor sqlSyntaxVendor )
         throws SQLException
     {
         DatabaseMetaData metaData = connection.getMetaData();
@@ -318,17 +326,22 @@ public final class GenericDatabaseExplorer
                     try
                     {
                         processor.beginProcessTableInfo( schemaName, tableName, tableRemarks );
-                        List<ColumnInfo> colInfos = new ArrayList<ColumnInfo>();
+                        List<ColumnInfo> colInfos = new ArrayList<>();
                         ResultSet rsCols = metaData.getColumns( null, schemaName, tableName, null );
                         try
                         {
                             while( rsCols.next() )
                             {
                                 String nullable = rsCols.getString( 18 );
-                                colInfos.add( new ColumnInfo( rsCols.getString( 4 ), rsCols.getInt( 5 ), rsCols
-                                    .getString( 6 ), rsCols.getInt( 7 ), rsCols.getInt( 9 ),
+                                colInfos.add( new ColumnInfo(
+                                    rsCols.getString( 4 ),
+                                    rsCols.getInt( 5 ),
+                                    rsCols.getString( 6 ),
+                                    rsCols.getInt( 7 ),
+                                    rsCols.getInt( 9 ),
                                     nullable.length() > 0 ? Boolean.toString( nullable.equals( "YES" ) ) : "unknown",
-                                    rsCols.getString( 13 ), rsCols.getString( 12 ) ) );
+                                    rsCols.getString( 13 ),
+                                    rsCols.getString( 12 ) ) );
                             }
                         }
                         finally
@@ -337,7 +350,7 @@ public final class GenericDatabaseExplorer
                         }
 
                         rsCols = metaData.getImportedKeys( null, schemaName, tableName );
-                        Map<String, ForeignKeyInfo> fkInfos = new HashMap<String, ForeignKeyInfo>();
+                        Map<String, ForeignKeyInfo> fkInfos = new HashMap<>();
                         try
                         {
                             while( rsCols.next() )
@@ -346,8 +359,8 @@ public final class GenericDatabaseExplorer
                                     //
                                     rsCols.getString( 8 ), //
                                     new ForeignKeyInfo( rsCols.getString( 2 ), rsCols.getString( 3 ), rsCols
-                                        .getString( 4 ), rsCols.getShort( 10 ), rsCols.getShort( 11 ), rsCols
-                                        .getShort( 14 ) ) );
+                                    .getString( 4 ), rsCols.getShort( 10 ), rsCols.getShort( 11 ), rsCols
+                                    .getShort( 14 ) ) );
                             }
                         }
                         finally
@@ -363,12 +376,12 @@ public final class GenericDatabaseExplorer
                                 try
                                 {
                                     processor.beginProcessColumnInfo( schemaName, tableName, colInfo,
-                                        fkInfos.get( colInfo._name ) );
+                                                                      fkInfos.get( colInfo._name ) );
                                 }
                                 finally
                                 {
                                     processor.endProcessColumnInfo( schemaName, tableName, colInfo,
-                                        fkInfos.get( colInfo._name ) );
+                                                                    fkInfos.get( colInfo._name ) );
                                 }
                             }
                         }
@@ -392,7 +405,7 @@ public final class GenericDatabaseExplorer
                             processor.beginProcessRows( schemaName, tableName, tableRemarks );
                             while( rowsRs.next() )
                             {
-                                Object[] rowContents = new Object[colInfos.size()];
+                                Object[] rowContents = new Object[ colInfos.size() ];
                                 for( Integer x = 0; x < rowContents.length; ++x )
                                 {
                                     rowContents[x] = rowsRs.getObject( x + 1 );
@@ -433,5 +446,9 @@ public final class GenericDatabaseExplorer
         {
             SQLUtil.closeQuietly( rs );
         }
+    }
+
+    private GenericDatabaseExplorer()
+    {
     }
 }
