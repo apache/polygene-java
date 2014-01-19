@@ -50,7 +50,6 @@ import org.qi4j.api.type.ValueType;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
@@ -68,8 +67,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.qi4j.functional.Iterables.first;
-import static org.qi4j.functional.Iterables.map;
-import static org.qi4j.functional.Iterables.toList;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -316,7 +313,6 @@ public class MapEntityStoreMixin
                 key( JSONKeys.IDENTITY ).value( state.identity().identity() ).
                 key( JSONKeys.APPLICATION_VERSION ).value( application.version() ).
                 key( JSONKeys.TYPE ).value( first( state.entityDescriptor().types() ).getName() ).
-                key( "types" ).value( toList( map( Classes.toClassName(), state.entityDescriptor().mixinTypes() ) ) ).
                 key( JSONKeys.VERSION ).value( version ).
                 key( JSONKeys.MODIFIED ).value( lastModified ).
                 key( JSONKeys.PROPERTIES ).object();

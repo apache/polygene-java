@@ -46,7 +46,6 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
-import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
@@ -67,8 +66,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.qi4j.functional.Iterables.first;
-import static org.qi4j.functional.Iterables.map;
-import static org.qi4j.functional.Iterables.toList;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -164,12 +161,12 @@ public class JSONMapEntityStoreMixin
             state.put( JSONKeys.IDENTITY, identity.identity() );
             state.put( JSONKeys.APPLICATION_VERSION, application.version() );
             state.put( JSONKeys.TYPE, first( entityDescriptor.types() ).getName() );
-            state.put( "types", toList( map( Classes.toClassName(), entityDescriptor.mixinTypes() ) ) );
             state.put( JSONKeys.VERSION, unitOfWork.identity() );
             state.put( JSONKeys.MODIFIED, unitOfWork.currentTime() );
             state.put( JSONKeys.PROPERTIES, new JSONObject() );
             state.put( JSONKeys.ASSOCIATIONS, new JSONObject() );
             state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
+            state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
             return new JSONEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, valueSerialization,
                                         identity, entityDescriptor, state );
         }
