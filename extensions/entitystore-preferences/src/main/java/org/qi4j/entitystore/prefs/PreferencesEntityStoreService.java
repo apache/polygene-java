@@ -33,9 +33,9 @@ import org.qi4j.spi.entitystore.EntityStore;
  * Property types are converted to native Preferences API types
  * as much as possible. All others will be serialized to a string using JSON.
  * <p/>
- * ManyAssociations are stored as multi-line strings (one identity
- * per line), and Associations are stored as the identity
- * of the referenced Entity.
+ * Associations are stored as the identity of the referenced Entity, ManyAssociations are stored as multi-line strings
+ * (one identity per line), and NamedAssociations are stored as multi-line strings (one name on a line, identity on the
+ * next line).
  * <p/>
  * The main use of the EntityStore is for storage of ConfigurationComposites for ServiceComposites.
  *

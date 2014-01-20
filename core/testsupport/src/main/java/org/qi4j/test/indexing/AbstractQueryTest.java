@@ -1,6 +1,7 @@
 /*
  * Copyright 2008 Alin Dreghiciu.
  * Copyright 2009-2012 Niclas Hedhman.
+ * Copyright 2014 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -29,6 +30,7 @@ import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.IndexExporter;
+import org.qi4j.test.indexing.model.Account;
 import org.qi4j.test.indexing.model.City;
 import org.qi4j.test.indexing.model.Domain;
 import org.qi4j.test.indexing.model.Female;
@@ -43,6 +45,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.qi4j.api.query.QueryExpressions.and;
 import static org.qi4j.api.query.QueryExpressions.contains;
+import static org.qi4j.api.query.QueryExpressions.containsName;
 import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.ge;
 import static org.qi4j.api.query.QueryExpressions.gt;
@@ -464,5 +467,38 @@ public abstract class AbstractQueryTest
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother(), annDoe ) ) );
 
         verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script35()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where( containsName( person.accounts(), "anns" ) ) );
+
+        verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
+    }
+
+    @Test
+    public void script36()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Account anns = unitOfWork.get( Account.class, "accountOfAnnDoe" );
+        Query<Person> query = unitOfWork.newQuery( qb.where( contains( person.accounts(), anns ) ) );
+
+        verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
+    }
+
+    @Test
+    @Ignore( "Traversing of NamedAssociations is not implemented" )
+    public void script37()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.accounts().get( "anns" ).number(),
+                                                                 "accountOfAnnDoe" ) ) );
+
+        verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
     }
 }

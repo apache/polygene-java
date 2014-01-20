@@ -13,14 +13,18 @@
  */
 package org.qi4j.migration.assembly;
 
+import java.util.Map;
 import org.qi4j.migration.operation.AddAssociation;
 import org.qi4j.migration.operation.AddManyAssociation;
+import org.qi4j.migration.operation.AddNamedAssociation;
 import org.qi4j.migration.operation.AddProperty;
 import org.qi4j.migration.operation.RemoveAssociation;
 import org.qi4j.migration.operation.RemoveManyAssociation;
+import org.qi4j.migration.operation.RemoveNamedAssociation;
 import org.qi4j.migration.operation.RemoveProperty;
 import org.qi4j.migration.operation.RenameAssociation;
 import org.qi4j.migration.operation.RenameManyAssociation;
+import org.qi4j.migration.operation.RenameNamedAssociation;
 import org.qi4j.migration.operation.RenameProperty;
 
 /**
@@ -215,6 +219,63 @@ public class EntityMigrationBuilder
                                               migrationBuilder.toVersion,
                                               entityTypes,
                                               new RenameManyAssociation( from, to ) ) );
+
+        return this;
+    }
+
+    /**
+     * Add rule to add an Entity named-association.
+     *
+     * @param association       to be added
+     * @param defaultReferences default references
+     *
+     * @return the builder
+     */
+    public EntityMigrationBuilder addNamedAssociation( String association, Map<String, String> defaultReferences )
+    {
+        migrationBuilder.builder.entityMigrationRules().
+            addRule( new EntityMigrationRule( migrationBuilder.fromVersion,
+                                              migrationBuilder.toVersion,
+                                              entityTypes,
+                                              new AddNamedAssociation( association, defaultReferences ) ) );
+
+        return this;
+    }
+
+    /**
+     * Add rule to remove an Entity named-association
+     *
+     * @param association       to be removed
+     * @param defaultReferences default value (used for downgrading)
+     *
+     * @return the builder
+     */
+    public EntityMigrationBuilder removeNamedAssociation( String association, Map<String, String> defaultReferences )
+    {
+        migrationBuilder.builder.entityMigrationRules().
+            addRule( new EntityMigrationRule( migrationBuilder.fromVersion,
+                                              migrationBuilder.toVersion,
+                                              entityTypes,
+                                              new RemoveNamedAssociation( association, defaultReferences ) ) );
+
+        return this;
+    }
+
+    /**
+     * Add rule to rename an Entity named-association.
+     *
+     * @param from many-assocation name
+     * @param to   many-association name
+     *
+     * @return the builder
+     */
+    public EntityMigrationBuilder renameNamedAssociation( String from, String to )
+    {
+        migrationBuilder.builder.entityMigrationRules().
+            addRule( new EntityMigrationRule( migrationBuilder.fromVersion,
+                                              migrationBuilder.toVersion,
+                                              entityTypes,
+                                              new RenameNamedAssociation( from, to ) ) );
 
         return this;
     }

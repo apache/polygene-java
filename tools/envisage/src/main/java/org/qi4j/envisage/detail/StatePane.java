@@ -43,6 +43,7 @@ import javax.swing.table.TableColumnModel;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.GenericAssociationInfo;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.util.Classes;
@@ -360,6 +361,14 @@ import static org.qi4j.functional.Iterables.first;
                 if( t instanceof Class )
                 {
                     setText( method.getName() + "=>" + ( (Class) t ).getSimpleName() );
+                }
+            }
+            else if( NamedAssociation.class.isAssignableFrom( methodReturnType ) )
+            {
+                Type t = GenericAssociationInfo.associationTypeOf( method );
+                if( t instanceof Class )
+                {
+                    setText( method.getName() + ">>" + ( (Class) t ).getSimpleName() );
                 }
             }
 

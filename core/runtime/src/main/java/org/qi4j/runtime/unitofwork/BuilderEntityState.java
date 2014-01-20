@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2009-2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2009-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -27,6 +28,7 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 
 /**
  * Implementation of EntityState for use through EntityBuilder.
@@ -39,6 +41,7 @@ public final class BuilderEntityState
     private final Map<QualifiedName, Object> properties = new HashMap<>();
     private final Map<QualifiedName, EntityReference> associations = new HashMap<>();
     private final Map<QualifiedName, ManyAssociationState> manyAssociations = new HashMap<>();
+    private final Map<QualifiedName, NamedAssociationState> namedAssociations = new HashMap<>();
 
     public BuilderEntityState( EntityDescriptor type, EntityReference reference )
     {
@@ -123,6 +126,18 @@ public final class BuilderEntityState
         return state;
     }
 
+    @Override
+    public NamedAssociationState namedAssociationValueOf( QualifiedName stateName )
+    {
+        NamedAssociationState state = namedAssociations.get( stateName );
+        if( state == null )
+        {
+            state = new BuilderNamedAssociationState();
+            namedAssociations.put( stateName, state );
+        }
+        return state;
+    }
+
     public void copyTo( EntityState newEntityState )
     {
         for( Map.Entry<QualifiedName, Object> fromPropertyEntry : properties.entrySet() )
@@ -141,6 +156,16 @@ public final class BuilderEntityState
             for( EntityReference entityReference : fromManyAssoc )
             {
                 toManyAssoc.add( 0, entityReference );
+            }
+        }
+        for( Map.Entry<QualifiedName, NamedAssociationState> fromNamedAssociationEntry : namedAssociations.entrySet() )
+        {
+            QualifiedName qName = fromNamedAssociationEntry.getKey();
+            NamedAssociationState fromNamedAssoc = fromNamedAssociationEntry.getValue();
+            NamedAssociationState toNamedAssoc = newEntityState.namedAssociationValueOf( qName );
+            for( String name : fromNamedAssoc )
+            {
+                toNamedAssoc.put( name, fromNamedAssoc.get( name ) );
             }
         }
     }

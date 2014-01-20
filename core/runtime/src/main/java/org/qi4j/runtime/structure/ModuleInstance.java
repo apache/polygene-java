@@ -358,11 +358,13 @@ public class ModuleInstance
     public <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType,
                                                          Function<PropertyDescriptor, Object> propertyFunction,
                                                          Function<AssociationDescriptor, EntityReference> associationFunction,
-                                                         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction )
+                                                         Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
+                                                         Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
     {
         NullArgumentException.validateNotNull( "propertyFunction", propertyFunction );
         NullArgumentException.validateNotNull( "associationFunction", associationFunction );
         NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
+        NullArgumentException.validateNotNull( "namedAssociationFunction", namedAssociationFunction );
 
         ModelModule<ValueModel> compositeModelModule = typeLookup.lookupValueModel( mixinType );
 
@@ -371,7 +373,7 @@ public class ModuleInstance
             throw new NoSuchValueException( mixinType.getName(), name() );
         }
 
-        ValueStateModel.StateResolver stateResolver = new FunctionStateResolver( propertyFunction, associationFunction, manyAssociationFunction );
+        ValueStateModel.StateResolver stateResolver = new FunctionStateResolver( propertyFunction, associationFunction, manyAssociationFunction, namedAssociationFunction );
         return new ValueBuilderWithState<>( compositeModelModule, this, stateResolver );
     }
 
@@ -403,6 +405,13 @@ public class ModuleInstance
         {
             return new ArrayList<>();
         }
+
+        @Override
+        public Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor )
+        {
+            return new HashMap<>();
+        }
+        
     }
 
     private static class FunctionStateResolver
@@ -412,14 +421,17 @@ public class ModuleInstance
         private final Function<PropertyDescriptor, Object> propertyFunction;
         private final Function<AssociationDescriptor, EntityReference> associationFunction;
         private final Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction;
+        private final Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction;
 
         private FunctionStateResolver( Function<PropertyDescriptor, Object> propertyFunction,
                                        Function<AssociationDescriptor, EntityReference> associationFunction,
-                                       Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction )
+                                       Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
+                                       Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
         {
             this.propertyFunction = propertyFunction;
             this.associationFunction = associationFunction;
             this.manyAssociationFunction = manyAssociationFunction;
+            this.namedAssociationFunction = namedAssociationFunction;
         }
 
         @Override
@@ -439,6 +451,13 @@ public class ModuleInstance
         {
             return toList( manyAssociationFunction.map( associationDescriptor ) );
         }
+
+        @Override
+        public Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor )
+        {
+            return namedAssociationFunction.map( associationDescriptor );
+        }
+
     }
 
     @Override

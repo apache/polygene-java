@@ -80,4 +80,20 @@ public class RdfQueryTest
         super.script29();
     }
 
+    @Test
+    @Ignore( "NamedAssociation are not supported by RDF Indexing" )
+    @Override
+    public void script35()
+    {
+        super.script35();
+    }
+
+    @Test
+    @Ignore( "NamedAssociation are not supported by RDF Indexing" )
+    @Override
+    public void script36()
+    {
+        super.script36();
+    }
+
 }

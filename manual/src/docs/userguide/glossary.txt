@@ -293,6 +293,15 @@ Modules defines the scope of the <<def-composite,Composites>>. Modules are wired
 --
 
 
+[[def-namedassociation,NamedAssociation]]NamedAssociation::
++
+--
+TODO
+
+This term has no definition yet. Learn how to contribute in <<community-docs>>.
+--
+
+
 [[def-private-mixin,Private Mixin]]Private Mixin::
 +
 --

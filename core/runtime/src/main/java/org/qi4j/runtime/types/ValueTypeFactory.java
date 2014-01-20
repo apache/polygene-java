@@ -36,6 +36,7 @@ import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.association.AssociationsModel;
 import org.qi4j.runtime.association.ManyAssociationsModel;
+import org.qi4j.runtime.association.NamedAssociationsModel;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.MixinsModel;
 import org.qi4j.runtime.property.PropertiesModel;
@@ -127,7 +128,8 @@ public class ValueTypeFactory
                     Iterable valueComposite = (Iterable) Iterables.iterable( ValueComposite.class );
                     ValueStateModel valueStateModel = new ValueStateModel( new PropertiesModel(),
                                                                            new AssociationsModel(),
-                                                                           new ManyAssociationsModel() );
+                                                                           new ManyAssociationsModel(),
+                                                                           new NamedAssociationsModel() );
                     model = new ValueModel( valueComposite, Visibility.application, new MetaInfo(),
                                             mixinsModel, valueStateModel, new CompositeMethodsModel( mixinsModel ) );
                 }

@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -450,9 +451,38 @@ public class SQLEntityStoreMixin
                 }
             }
 
+            JSONObject namedAssocs = jsonObject.has( JSONKeys.NAMED_ASSOCIATIONS )
+                                     ? jsonObject.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS )
+                                     : new JSONObject();
+            Map<QualifiedName, Map<String, EntityReference>> namedAssociations = new HashMap<>();
+            for( AssociationDescriptor namedAssociationType : entityDescriptor.state().namedAssociations() )
+            {
+                Map<String, EntityReference> references = new LinkedHashMap<>();
+                try
+                {
+                    JSONObject jsonValues = namedAssocs.getJSONObject( namedAssociationType.qualifiedName().name() );
+                    JSONArray names = jsonValues.names();
+                    if( names != null )
+                    {
+                        for( int idx = 0; idx < names.length(); idx++ )
+                        {
+                            String name = names.getString( idx );
+                            String jsonValue = jsonValues.getString( name );
+                            references.put( name, EntityReference.parseEntityReference( jsonValue ) );
+                        }
+                    }
+                    namedAssociations.put( namedAssociationType.qualifiedName(), references );
+                }
+                catch( JSONException e )
+                {
+                    // NamedAssociation not found, default to empty one
+                    namedAssociations.put( namedAssociationType.qualifiedName(), references );
+                }
+            }
+
             return new DefaultEntityState( unitOfWork, version, modified,
                                            EntityReference.parseEntityReference( identity ), status, entityDescriptor,
-                                           properties, associations, manyAssociations );
+                                           properties, associations, manyAssociations, namedAssociations );
         }
         catch( JSONException e )
         {
@@ -566,7 +596,18 @@ public class SQLEntityStoreMixin
                 }
                 assocs.endArray();
             }
-            manyAssociations.endObject().endObject();
+
+            JSONWriter namedAssociations = manyAssociations.endObject().key( JSONKeys.NAMED_ASSOCIATIONS ).object();
+            for( Map.Entry<QualifiedName, Map<String, EntityReference>> stateNameMapEntry : state.namedAssociations().entrySet() )
+            {
+                JSONWriter assocs = namedAssociations.key( stateNameMapEntry.getKey().name() ).object();
+                for( Map.Entry<String, EntityReference> entry : stateNameMapEntry.getValue().entrySet() )
+                {
+                    assocs.key( entry.getKey() ).value( entry.getValue().identity() );
+                }
+                assocs.endObject();
+            }
+            namedAssociations.endObject().endObject();
         }
         catch( JSONException e )
         {

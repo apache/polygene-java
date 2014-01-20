@@ -52,4 +52,20 @@ public class PostgreSQLQueryTest extends AbstractQueryTest
             throw e;
         }
     }
+
+    @Test
+    @Ignore( "NamedAssociation are not supported by SQL Indexing" )
+    @Override
+    public void script35()
+    {
+        super.script35();
+    }
+
+    @Test
+    @Ignore( "NamedAssociation are not supported by SQL Indexing" )
+    @Override
+    public void script36()
+    {
+        super.script36();
+    }
 }

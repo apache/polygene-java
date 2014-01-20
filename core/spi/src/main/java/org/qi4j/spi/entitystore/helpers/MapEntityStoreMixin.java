@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2009-2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2009-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -23,6 +24,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -361,7 +363,18 @@ public class MapEntityStoreMixin
                 }
                 assocs.endArray();
             }
-            manyAssociations.endObject().endObject();
+
+            JSONWriter namedAssociations = manyAssociations.endObject().key( JSONKeys.NAMED_ASSOCIATIONS ).object();
+            for( Map.Entry<QualifiedName, Map<String, EntityReference>> stateNameMapEntry : state.namedAssociations().entrySet() )
+            {
+                JSONWriter assocs = namedAssociations.key( stateNameMapEntry.getKey().name() ).object();
+                for( Map.Entry<String, EntityReference> namedRef : stateNameMapEntry.getValue().entrySet() )
+                {
+                    assocs.key( namedRef.getKey() ).value( namedRef.getValue().identity() );
+                }
+                assocs.endObject();
+            }
+            namedAssociations.endObject().endObject();
         }
         catch( JSONException e )
         {
@@ -485,6 +498,36 @@ public class MapEntityStoreMixin
                 }
             }
 
+            JSONObject namedAssocs = jsonObject.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS );
+            Map<QualifiedName, Map<String, EntityReference>> namedAssociations = new HashMap<>();
+            for( AssociationDescriptor namedAssociationType : entityDescriptor.state().namedAssociations() )
+            {
+                Map<String, EntityReference> references = new LinkedHashMap<>();
+                try
+                {
+                    JSONObject jsonValues = namedAssocs.getJSONObject( namedAssociationType.qualifiedName().name() );
+                    JSONArray names = jsonValues.names();
+                    if( names != null )
+                    {
+                        for( int idx = 0; idx < names.length(); idx++ )
+                        {
+                            String name = names.getString( idx );
+                            Object value = jsonValues.get( name );
+                            EntityReference ref = value == JSONObject.NULL
+                                                  ? null
+                                                  : EntityReference.parseEntityReference( (String) value );
+                            references.put( name, ref );
+                        }
+                    }
+                    namedAssociations.put( namedAssociationType.qualifiedName(), references );
+                }
+                catch( JSONException e )
+                {
+                    // NamedAssociation not found, default to empty one
+                    namedAssociations.put( namedAssociationType.qualifiedName(), references );
+                }
+            }
+
             return new DefaultEntityState( unitOfWork,
                                            version,
                                            modified,
@@ -493,7 +536,8 @@ public class MapEntityStoreMixin
                                            entityDescriptor,
                                            properties,
                                            associations,
-                                           manyAssociations
+                                           manyAssociations,
+                                           namedAssociations
             );
         }
         catch( JSONException e )

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -217,6 +218,20 @@ public class ContextResource
     {
         T entity = (T) module.currentUnitOfWork().get( Object.class, id );
         if( !manyAssociation.contains( entity ) )
+        {
+            throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
+        }
+
+        current().select( entity );
+        return entity;
+    }
+    
+    protected <T> T selectFromNamedAssociation( NamedAssociation<T> namedAssociation, String id )
+        throws ResourceException
+    {
+        T entity = (T) module.currentUnitOfWork().get( Object.class, id );
+        String name = namedAssociation.nameOf( entity );
+        if(name == null)
         {
             throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
         }

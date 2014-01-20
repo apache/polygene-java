@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityBuilder;
@@ -143,6 +144,9 @@ public abstract class AbstractEntityStoreTest
 
         instance.manyAssociation().add( 0, instance );
 
+        instance.namedAssociation().put( "foo", instance );
+        instance.namedAssociation().put( "bar", instance );
+
         return instance;
     }
 
@@ -249,6 +253,14 @@ public abstract class AbstractEntityStoreTest
 
             assertThat( "manyAssociation has correct value",
                         instance.manyAssociation().iterator().next(),
+                        equalTo( instance ) );
+
+            assertThat( "namedAssociation has correct 'foo' value",
+                        instance.namedAssociation().get( "foo" ),
+                        equalTo( instance ) );
+
+            assertThat( "namedAssociation has correct 'bar' value",
+                        instance.namedAssociation().get( "bar" ),
                         equalTo( instance ) );
 
             unitOfWork.discard();
@@ -499,6 +511,8 @@ public abstract class AbstractEntityStoreTest
         Association<TestEntity> unsetAssociation();
 
         ManyAssociation<TestEntity> manyAssociation();
+
+        NamedAssociation<TestEntity> namedAssociation();
     }
 
     public interface TjabbaValue

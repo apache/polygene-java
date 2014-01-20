@@ -26,6 +26,7 @@ import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.mixin.Mixins;
@@ -49,10 +50,10 @@ public interface StringToTextFieldAdapterService
 
         public StringToTextFieldAdapterConcern()
         {
-            canHandle = new HashSet<Capabilities>();
-            canHandle.add( new Capabilities( JTextArea.class, String.class, true, false, false, false ) );
-            canHandle.add( new Capabilities( JTextField.class, String.class, true, false, false, false ) );
-            canHandle.add( new Capabilities( JLabel.class, String.class, true, false, false, false ) );
+            canHandle = new HashSet<>();
+            canHandle.add( new Capabilities( JTextArea.class, String.class, true, false, false, false, false ) );
+            canHandle.add( new Capabilities( JTextField.class, String.class, true, false, false, false, false ) );
+            canHandle.add( new Capabilities( JLabel.class, String.class, true, false, false, false, false ) );
         }
 
         @Override
@@ -121,6 +122,16 @@ public interface StringToTextFieldAdapterService
 
         @Override
         public void fromSetAssociationToSwing( JComponent component, ManyAssociation<?> setAssociation )
+        {
+        }
+
+        @Override
+        public void fromSwingToNamedAssociation( JComponent component, NamedAssociation<?> namedAssociation )
+        {
+        }
+
+        @Override
+        public void fromNamedAssociationToSwing( JComponent component, NamedAssociation<?> namedAssociation )
         {
         }
 

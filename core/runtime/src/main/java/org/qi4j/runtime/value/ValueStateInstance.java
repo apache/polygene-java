@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.runtime.association.AssociationInfo;
@@ -31,6 +32,8 @@ import org.qi4j.runtime.association.AssociationInstance;
 import org.qi4j.runtime.association.AssociationModel;
 import org.qi4j.runtime.association.ManyAssociationInstance;
 import org.qi4j.runtime.association.ManyAssociationModel;
+import org.qi4j.runtime.association.NamedAssociationInstance;
+import org.qi4j.runtime.association.NamedAssociationModel;
 import org.qi4j.runtime.property.PropertyInfo;
 import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.property.PropertyModel;
@@ -46,15 +49,18 @@ public final class ValueStateInstance
     private final Map<AccessibleObject, PropertyInstance<?>> properties;
     private final Map<AccessibleObject, AssociationInstance<?>> associations;
     private final Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations;
+    private final Map<AccessibleObject, NamedAssociationInstance<?>> namedAssociations;
 
     public ValueStateInstance( Map<AccessibleObject, PropertyInstance<?>> properties,
                                Map<AccessibleObject, AssociationInstance<?>> associations,
-                               Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations
+                               Map<AccessibleObject, ManyAssociationInstance<?>> manyAssociations,
+                               Map<AccessibleObject, NamedAssociationInstance<?>> namedAssociations
     )
     {
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
+        this.namedAssociations = namedAssociations;
     }
 
     public ValueStateInstance( ModelModule<ValueModel> compositeModelModule,
@@ -94,6 +100,19 @@ public final class ValueStateInstance
                 currentModule.getEntityFunction(),
                 manyAssociationState );
             manyAssociations.put( associationDescriptor.accessor(), associationInstance );
+        }
+
+        this.namedAssociations = new LinkedHashMap<>();
+        for( AssociationDescriptor associationDescriptor : valueModel.state().namedAssociations() )
+        {
+            AssociationInfo builderInfo = ( (NamedAssociationModel) associationDescriptor ).getBuilderInfo();
+            Map<String, EntityReference> value = stateResolver.getNamedAssociationState( associationDescriptor );
+            NamedAssociationValueState namedAssociationState = new NamedAssociationValueState( value );
+            NamedAssociationInstance<Object> associationInstance = new NamedAssociationInstance<>(
+                builderInfo,
+                currentModule.getEntityFunction(),
+                namedAssociationState );
+            namedAssociations.put( associationDescriptor.accessor(), associationInstance );
         }
     }
 
@@ -156,6 +175,26 @@ public final class ValueStateInstance
     public Iterable<ManyAssociationInstance<?>> allManyAssociations()
     {
         return manyAssociations.values();
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public <T> NamedAssociation<T> namedAssociationFor( AccessibleObject accessor )
+    {
+        NamedAssociationInstance<T> namedAssociation = (NamedAssociationInstance<T>) namedAssociations.get( accessor );
+
+        if( namedAssociation == null )
+        {
+            throw new IllegalArgumentException( "No such named-association:" + accessor );
+        }
+
+        return namedAssociation;
+    }
+
+    @Override
+    public Iterable<? extends NamedAssociation<?>> allNamedAssociations()
+    {
+        return namedAssociations.values();
     }
 
     @Override

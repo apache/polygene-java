@@ -53,4 +53,9 @@ public final class ValueCompositeType
     {
         return model.state().manyAssociations();
     }
+
+    public Iterable<? extends AssociationDescriptor> namedAssociations()
+    {
+        return model.state().namedAssociations();
+    }
 }

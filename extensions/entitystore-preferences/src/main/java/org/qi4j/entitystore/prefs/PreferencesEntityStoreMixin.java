@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -20,6 +21,7 @@ package org.qi4j.entitystore.prefs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -75,7 +77,11 @@ import static org.qi4j.functional.Iterables.first;
  * Implementation of EntityStore that is backed by the Preferences API.
  *
  * <p>@see Preferences</p>
- * <p>ManyAssociation is stored as string, one identity string per line</p>
+ * <p>
+ * Associations are stored as the identity of the referenced Entity, ManyAssociations are stored as multi-line strings
+ * (one identity per line), and NamedAssociations are stored as multi-line strings (one name on a line, identity on the
+ * next line).
+ * </p>
  * <p>Nested ValuesComposites, Collections and Maps are stored using available ValueSerialization service.</p>
  */
 public class PreferencesEntityStoreMixin
@@ -392,6 +398,40 @@ public class PreferencesEntityStoreMixin
                 }
             }
 
+            // NamedAssociations
+            Map<QualifiedName, Map<String, EntityReference>> namedAssociations = new HashMap<>();
+            Preferences namedAssocs = null;
+            for( AssociationDescriptor namedAssociationType : entityDescriptor.state().namedAssociations() )
+            {
+                if( namedAssocs == null )
+                {
+                    namedAssocs = entityPrefs.node( "namedassociations" );
+                }
+
+                Map<String, EntityReference> references = new LinkedHashMap<>();
+                String entityReferences = namedAssocs.get( namedAssociationType.qualifiedName().name(), null );
+                if( entityReferences == null )
+                {
+                    // NamedAssociation not found, default to empty one
+                    namedAssociations.put( namedAssociationType.qualifiedName(), references );
+                }
+                else
+                {
+                    String[] namedRefs = entityReferences.split( "\n" );
+                    if( namedRefs.length % 2 != 0 )
+                    {
+                        throw new EntityStoreException( "Invalid NamedAssociation storage format" );
+                    }
+                    for( int idx = 0; idx < namedRefs.length; idx += 2 )
+                    {
+                        String name = namedRefs[idx];
+                        String ref = namedRefs[idx + 1];
+                        references.put( name, EntityReference.parseEntityReference( ref ) );
+                    }
+                    namedAssociations.put( namedAssociationType.qualifiedName(), references );
+                }
+            }
+
             return new DefaultEntityState( desuw,
                                            entityPrefs.get( "version", "" ),
                                            entityPrefs.getLong( "modified", unitOfWork.currentTime() ),
@@ -400,7 +440,8 @@ public class PreferencesEntityStoreMixin
                                            entityDescriptor,
                                            properties,
                                            associations,
-                                           manyAssociations
+                                           manyAssociations,
+                                           namedAssociations
             );
         }
         catch( ValueSerializationException | BackingStoreException e )
@@ -568,6 +609,28 @@ public class PreferencesEntityStoreMixin
                     if( manyAssocs.length() > 0 )
                     {
                         manyAssocsPrefs.put( manyAssociation.getKey().name(), manyAssocs.toString() );
+                    }
+                }
+            }
+
+            // NamedAssociations
+            if( !state.namedAssociations().isEmpty() )
+            {
+                Preferences namedAssocsPrefs = entityPrefs.node( "namedassociations" );
+                for( Map.Entry<QualifiedName, Map<String, EntityReference>> namedAssociation : state.namedAssociations().entrySet() )
+                {
+                    StringBuilder namedAssocs = new StringBuilder();
+                    for( Map.Entry<String, EntityReference> namedRef : namedAssociation.getValue().entrySet() )
+                    {
+                        if( namedAssocs.length() > 0 )
+                        {
+                            namedAssocs.append( "\n" );
+                        }
+                        namedAssocs.append( namedRef.getKey() ).append( "\n" ).append( namedRef.getValue().identity() );
+                    }
+                    if( namedAssocs.length() > 0 )
+                    {
+                        namedAssocsPrefs.put( namedAssociation.getKey().name(), namedAssocs.toString() );
                     }
                 }
             }

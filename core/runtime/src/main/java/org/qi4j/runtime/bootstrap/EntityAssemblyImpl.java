@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2007-2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -23,6 +24,7 @@ import java.lang.reflect.Member;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.GenericAssociationInfo;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.common.InvalidApplicationException;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Optional;
@@ -38,11 +40,14 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.AssociationDeclarations;
 import org.qi4j.bootstrap.EntityAssembly;
 import org.qi4j.bootstrap.ManyAssociationDeclarations;
+import org.qi4j.bootstrap.NamedAssociationDeclarations;
 import org.qi4j.bootstrap.StateDeclarations;
 import org.qi4j.runtime.association.AssociationModel;
 import org.qi4j.runtime.association.AssociationsModel;
 import org.qi4j.runtime.association.ManyAssociationModel;
 import org.qi4j.runtime.association.ManyAssociationsModel;
+import org.qi4j.runtime.association.NamedAssociationModel;
+import org.qi4j.runtime.association.NamedAssociationsModel;
 import org.qi4j.runtime.composite.MixinsModel;
 import org.qi4j.runtime.composite.StateModel;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -66,8 +71,10 @@ public final class EntityAssemblyImpl
 {
     private AssociationDeclarations associationDeclarations;
     private ManyAssociationDeclarations manyAssociationDeclarations;
+    private NamedAssociationDeclarations namedAssociationDeclarations;
     private AssociationsModel associationsModel;
     private ManyAssociationsModel manyAssociationsModel;
+    private NamedAssociationsModel namedAssociationsModel;
 
     public EntityAssemblyImpl( Class<?> entityType )
     {
@@ -88,22 +95,25 @@ public final class EntityAssemblyImpl
     @Override
     protected StateModel createStateModel()
     {
-        return new EntityStateModel( propertiesModel, associationsModel, manyAssociationsModel );
+        return new EntityStateModel( propertiesModel, associationsModel, manyAssociationsModel, namedAssociationsModel );
     }
 
     EntityModel newEntityModel(
         StateDeclarations stateDeclarations,
         AssociationDeclarations associationDecs,
         ManyAssociationDeclarations manyAssociationDecs,
+        NamedAssociationDeclarations namedAssociationDecs,
         AssemblyHelper helper
     )
     {
         this.associationDeclarations = associationDecs;
         this.manyAssociationDeclarations = manyAssociationDecs;
+        this.namedAssociationDeclarations = namedAssociationDecs;
         try
         {
             associationsModel = new AssociationsModel();
             manyAssociationsModel = new ManyAssociationsModel();
+            namedAssociationsModel = new NamedAssociationsModel();
             buildComposite( helper, stateDeclarations );
 
             EntityModel entityModel = new EntityModel(
@@ -143,6 +153,11 @@ public final class EntityAssemblyImpl
         else if( ManyAssociation.class.isAssignableFrom( accessorType ) )
         {
             manyAssociationsModel.addManyAssociation( newManyAssociationModel( accessor, constraintClasses ) );
+            registeredStateNames.add( stateName );
+        }
+        else if( NamedAssociation.class.isAssignableFrom( accessorType ) )
+        {
+            namedAssociationsModel.addNamedAssociation( newNamedAssociationModel( accessor, constraintClasses ) );
             registeredStateNames.add( stateName );
         }
     }
@@ -223,6 +238,34 @@ public final class EntityAssemblyImpl
         }
         MetaInfo metaInfo = manyAssociationDeclarations.metaInfoFor( accessor );
         ManyAssociationModel associationModel = new ManyAssociationModel( accessor, valueConstraintsInstance, manyValueConstraintsInstance, metaInfo );
+        return associationModel;
+    }
+
+    public NamedAssociationModel newNamedAssociationModel( AccessibleObject accessor,
+                                                           Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
+    )
+    {
+        Iterable<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+
+        // Constraints for entities in NamedAssociation
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
+            .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance valueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            valueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+
+        // Constraints for the NamedAssociation itself
+        valueConstraintsModel = constraintsFor( annotations, NamedAssociation.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        ValueConstraintsInstance namedValueConstraintsInstance = null;
+        if( valueConstraintsModel.isConstrained() )
+        {
+            namedValueConstraintsInstance = valueConstraintsModel.newInstance();
+        }
+        MetaInfo metaInfo = namedAssociationDeclarations.metaInfoFor( accessor );
+        NamedAssociationModel associationModel = new NamedAssociationModel( accessor, valueConstraintsInstance, namedValueConstraintsInstance, metaInfo );
         return associationModel;
     }
 }

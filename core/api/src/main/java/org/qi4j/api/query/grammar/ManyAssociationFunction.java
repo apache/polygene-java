@@ -35,15 +35,18 @@ public class ManyAssociationFunction<T>
 {
     private final AssociationFunction<?> traversedAssociation;
     private final ManyAssociationFunction<?> traversedManyAssociation;
+    private final NamedAssociationFunction<?> traversedNamedAssociation;
     private final AccessibleObject accessor;
 
     public ManyAssociationFunction( AssociationFunction<?> traversedAssociation,
                                     ManyAssociationFunction<?> traversedManyAssociation,
+                                    NamedAssociationFunction<?> traversedNamedAssociation,
                                     AccessibleObject accessor
     )
     {
         this.traversedAssociation = traversedAssociation;
         this.traversedManyAssociation = traversedManyAssociation;
+        this.traversedNamedAssociation = traversedNamedAssociation;
         this.accessor = accessor;
     }
 
@@ -55,6 +58,11 @@ public class ManyAssociationFunction<T>
     public ManyAssociationFunction<?> traversedManyAssociation()
     {
         return traversedManyAssociation;
+    }
+
+    public NamedAssociationFunction<?> traversedNamedAssociation()
+    {
+        return traversedNamedAssociation;
     }
 
     public AccessibleObject accessor()
@@ -75,6 +83,10 @@ public class ManyAssociationFunction<T>
             if( traversedManyAssociation != null )
             {
                 throw new IllegalArgumentException( "Cannot traverse ManyAssociations" );
+            }
+            if( traversedNamedAssociation != null )
+            {
+                throw new IllegalArgumentException( "Cannot traverse NamedAssociations" );
             }
 
             CompositeInstance handler = (CompositeInstance) Proxy.getInvocationHandler( target );

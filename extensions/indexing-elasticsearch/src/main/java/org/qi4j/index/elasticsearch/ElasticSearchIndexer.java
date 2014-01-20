@@ -44,6 +44,7 @@ import org.qi4j.functional.Iterables;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateChangeListener;
@@ -175,6 +176,7 @@ public interface ElasticSearchIndexer
          *  "property.name": property.value,
          *  "association.name": { "identity": "ASSOCIATED-IDENTITY" }
          *  "manyassociation.name": [ { "identity": "ASSOCIATED" }, { "identity": "IDENTITIES" } ]
+         *  "namedassociation.name": [ { "_named": "NAMED", "identity": "IDENTITY" } }
          * }
          * </pre>
          */
@@ -280,6 +282,45 @@ public interface ElasticSearchIndexer
                             else
                             {
                                 array.put( new JSONObject( Collections.singletonMap( "identity", associated.identity() ) ) );
+                            }
+                        }
+                        json.put( key, array );
+                    }
+                }
+
+                // NamedAssociations
+                for( AssociationDescriptor namedAssocDesc : entityType.state().namedAssociations() )
+                {
+                    if( namedAssocDesc.queryable() )
+                    {
+                        String key = namedAssocDesc.qualifiedName().name();
+                        JSONArray array = new JSONArray();
+                        NamedAssociationState associateds = state.namedAssociationValueOf( namedAssocDesc.qualifiedName() );
+                        for( String name : associateds )
+                        {
+                            if( namedAssocDesc.isAggregated() || support.indexNonAggregatedAssociations() )
+                            {
+                                String identity = associateds.get( name ).identity();
+                                if( newStates.containsKey( identity ) )
+                                {
+                                    JSONObject obj = new JSONObject( toJSON( newStates.get( identity ), newStates, uow ) );
+                                    obj.put( "_named", name );
+                                    array.put( obj );
+                                }
+                                else
+                                {
+                                    EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( identity ) );
+                                    JSONObject obj = new JSONObject( toJSON( assocState, newStates, uow ) );
+                                    obj.put( "_named", name );
+                                    array.put( obj );
+                                }
+                            }
+                            else
+                            {
+                                JSONObject obj = new JSONObject();
+                                obj.put( "_named", name );
+                                obj.put( "identity", associateds.get( name ).identity() );
+                                array.put( obj );
                             }
                         }
                         json.put( key, array );

@@ -454,7 +454,11 @@ public final class ModuleAssemblyImpl
         List<EntityModel> entityModels = new ArrayList<>();
         for( EntityAssemblyImpl entityDeclaration : entityAssemblies.values() )
         {
-            entityModels.add( entityDeclaration.newEntityModel( metaInfoDeclaration, metaInfoDeclaration, metaInfoDeclaration, helper ) );
+            entityModels.add( entityDeclaration.newEntityModel( metaInfoDeclaration, 
+                                                                metaInfoDeclaration, 
+                                                                metaInfoDeclaration, 
+                                                                metaInfoDeclaration, 
+                                                                helper ) );
         }
 
         for( ObjectAssemblyImpl objectDeclaration : objectAssemblies.values() )
