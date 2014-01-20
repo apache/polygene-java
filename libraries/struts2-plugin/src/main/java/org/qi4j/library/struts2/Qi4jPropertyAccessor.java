@@ -3,7 +3,12 @@ package org.qi4j.library.struts2;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import ognl.*;
+import ognl.MethodFailedException;
+import ognl.ObjectMethodAccessor;
+import ognl.ObjectPropertyAccessor;
+import ognl.OgnlContext;
+import ognl.OgnlException;
+import ognl.OgnlRuntime;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
@@ -58,15 +63,15 @@ public class Qi4jPropertyAccessor
         Object qi4jField = getQi4jField( aContext, aTarget, fieldName );
         if( qi4jField != null )
         {
-            Class memberClass = qi4jField.getClass();
+            Class<?> memberClass = qi4jField.getClass();
             if( Property.class.isAssignableFrom( memberClass ) )
             {
-                Property property = (Property) qi4jField;
+                Property<?> property = (Property) qi4jField;
                 return property.get();
             }
             else if( Association.class.isAssignableFrom( memberClass ) )
             {
-                Association association = (Association) qi4jField;
+                Association<?> association = (Association) qi4jField;
                 return association.get();
             }
             else if( ManyAssociation.class.isAssignableFrom( memberClass ) )
@@ -119,14 +124,14 @@ public class Qi4jPropertyAccessor
 
         if( qi4jField != null )
         {
-            Class memberClass = qi4jField.getClass();
+            Class<?> memberClass = qi4jField.getClass();
 
             if( Property.class.isAssignableFrom( memberClass ) )
             {
                 Property property = (Property) qi4jField;
 
                 OgnlContext ognlContext = (OgnlContext) aContext;
-                Class propertyType = (Class) api.propertyDescriptorFor( property ).type();
+                Class<?> propertyType = (Class) api.propertyDescriptorFor( property ).type();
                 Object convertedValue = getConvertedType(
                     ognlContext, aTarget, null, fieldName, aPropertyValue, propertyType );
                 try
@@ -145,7 +150,7 @@ public class Qi4jPropertyAccessor
             {
                 Association association = (Association) qi4jField;
                 OgnlContext ognlContext = (OgnlContext) aContext;
-                Class associationType = (Class) api.associationDescriptorFor( association ).type();
+                Class<?> associationType = (Class) api.associationDescriptorFor( association ).type();
                 Object convertedValue = getConvertedType(
                     ognlContext, aTarget, null, fieldName, aPropertyValue, associationType );
                 if( convertedValue == OgnlRuntime.NoConversionPossible )
@@ -179,11 +184,11 @@ public class Qi4jPropertyAccessor
         Collection<ConstraintViolation> violations
     )
     {
-        Map<String, FieldConstraintViolations> allPropertyConstraintViolations =
-            (Map<String, FieldConstraintViolations>) aContext.get( CONTEXT_CONSTRAINT_VIOLATIONS );
+        Map<String, FieldConstraintViolations> allPropertyConstraintViolations
+                                               = (Map<String, FieldConstraintViolations>) aContext.get( CONTEXT_CONSTRAINT_VIOLATIONS );
         if( allPropertyConstraintViolations == null )
         {
-            allPropertyConstraintViolations = new HashMap<String, FieldConstraintViolations>();
+            allPropertyConstraintViolations = new HashMap<>();
             aContext.put( CONTEXT_CONSTRAINT_VIOLATIONS, allPropertyConstraintViolations );
         }
 

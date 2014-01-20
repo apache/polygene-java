@@ -254,7 +254,7 @@ public class EntityResource
                     String value = "";
                     for( EntityReference identity : identities )
                     {
-                        value += identity.identity()+ "\n";
+                        value += identity.identity() + "\n";
                     }
 
                     out.println( "<tr><td>"
@@ -269,7 +269,7 @@ public class EntityResource
                                  + "</textarea></td></tr>" );
                 }
                 out.println( "</table></fieldset>\n" );
-                
+
                 out.println( "<input type=\"submit\" value=\"Update\"/></form>\n" );
 
                 out.println( "</body></html>\n" );

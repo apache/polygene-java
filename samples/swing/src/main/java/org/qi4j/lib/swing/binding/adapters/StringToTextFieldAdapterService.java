@@ -123,5 +123,7 @@ public interface StringToTextFieldAdapterService
         public void fromSetAssociationToSwing( JComponent component, ManyAssociation<?> setAssociation )
         {
         }
+
     }
+
 }

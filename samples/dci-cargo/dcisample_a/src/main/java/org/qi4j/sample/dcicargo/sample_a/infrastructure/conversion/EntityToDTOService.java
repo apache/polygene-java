@@ -138,7 +138,7 @@ public interface EntityToDTOService
                                 }
                                 return entities;
                             }
-                            
+
                             return null;
                         }
                     }
@@ -223,7 +223,7 @@ public interface EntityToDTOService
                                 }
                                 return entities;
                             }
-                            
+
                             // DTO
                             Class<?> type = descriptor.valueType().mainType();
                             if( DTO.class.isAssignableFrom( type ) )

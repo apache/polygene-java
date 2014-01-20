@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.migration;
 
 import java.util.Arrays;
@@ -29,7 +28,7 @@ public class MigrationEventLogger
     @Override
     public void propertyAdded( String entity, String name, Object value )
     {
-        logger.info( "Added property " + name + " with value " + (value==null?"null":value.toString()) + " in " + entity );
+        logger.info( "Added property " + name + " with value " + ( value == null ? "null" : value.toString() ) + " in " + entity );
     }
 
     @Override
