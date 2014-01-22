@@ -95,6 +95,18 @@ public class ClassesTest
             TypeVariable typeVariable = (TypeVariable) type;
             Type resolvedType = Classes.resolveTypeVariable( typeVariable, method.getDeclaringClass(), Type1.class );
             System.out.println( type + "=" + resolvedType );
+            switch( method.getName() )
+            {
+                case "type":
+                    assertThat( resolvedType, equalTo( (Type) String.class ) );
+                    break;
+                case "type1":
+                    assertThat( resolvedType, equalTo( (Type) String.class ) );
+                    break;
+                case "type2":
+                    assertThat( resolvedType, equalTo( (Type) Long.class ) );
+                    break;
+            }
         }
     }
 
