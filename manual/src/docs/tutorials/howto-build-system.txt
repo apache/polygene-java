@@ -1,20 +1,26 @@
 [[build-system,Build System]]
 = Build System =
+
+This tutorial is intended for developpers that want to build the Qi4j SDK themselves.
+It describe the Qi4j SDK Build System from compilation to publication of artifacts for consumption by other
+applications.
+
+If instead you want to setup your project build system to depend on modules of the Qi4j SDK see the
+<<howto-depend-on-qi4j,dedicated tutorial>>.
+
+TIP: All major Java IDEs have great Gradle support.
+Visit the http://www.gradle.org/tooling[Gradle Tooling] page to learn how to import the Qi4j SDK build into your
+favorite IDE.
+
 Qi4j community migrated away from Maven after several years of frustration, especially around release management,
 versioning and cross-module dependency resolution issues, in Feb 2011.
 The tool of choice is now Gradle, and it doesn't require any installation, there are +gradlew+ and +gradlew.bat+ in
 the root folder of the Qi4j SDK that will bootstrap Gradle if not done so already.
 
 
-TIP: All major Java IDEs have great Gradle support.
-Visit the http://www.gradle.org/tooling[Gradle Tooling] page to learn how to import the Qi4j SDK build into your
-favorite IDE.
-
-
-
 == Tasks ==
 
-The root project has tasks that work with the whole SDK.
+The Qi4j SDK root project has tasks that work with the whole SDK.
 The default build, triggered when running gradle without any command line arguments, compiles the code and run the
 tests, but nothing else.
 A quick way to check that nothing broke.
