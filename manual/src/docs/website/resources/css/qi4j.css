@@ -796,3 +796,10 @@ h5 { font-size: 1em; margin-bottom: 0.5em; }
     text-align: center;
     text-shadow: none  !important;
 }
+
+
+.section .variablelist dt .term {
+    font-weight: bolder;
+    font-family: Consolas, Monaco, monospace;
+    background: #DEDEDE;
+}
