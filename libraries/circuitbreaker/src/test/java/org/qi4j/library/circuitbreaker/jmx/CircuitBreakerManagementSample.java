@@ -50,8 +50,12 @@ public class CircuitBreakerManagementSample
                 module.importedServices( TestService.class ).setMetaInfo( new TestService( cb ) );
 
                 // START SNIPPET: jmx
-                module.importedServices( MBeanServer.class ).importedBy( MBeanServerImporter.class ); // JMX Library
-                module.services( CircuitBreakerManagement.class ).instantiateOnStartup(); // CircuitBreakers in JMX
+                // JMX Library
+                module.importedServices( MBeanServer.class ).
+                    importedBy( MBeanServerImporter.class );
+                // CircuitBreakers in JMX
+                module.services( CircuitBreakerManagement.class ).
+                    instantiateOnStartup();
             }
             // END SNIPPET: jmx
 
