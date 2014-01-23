@@ -21,6 +21,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -43,7 +46,7 @@ import static org.qi4j.functional.Iterables.first;
 public class EntityTypeSerializer
 {
 
-    private final Map<String, URI> dataTypes = new HashMap<>();
+    private final Map<String, URI> dataTypes = new HashMap<>( 12 );
 
     public EntityTypeSerializer()
     {
@@ -57,6 +60,9 @@ public class EntityTypeSerializer
         dataTypes.put( Long.class.getName(), XMLSchema.LONG );
         dataTypes.put( Short.class.getName(), XMLSchema.SHORT );
         dataTypes.put( Date.class.getName(), XMLSchema.DATETIME );
+        dataTypes.put( DateTime.class.getName(), XMLSchema.DATETIME );
+        dataTypes.put( LocalDateTime.class.getName(), XMLSchema.DATETIME );
+        dataTypes.put( LocalDate.class.getName(), XMLSchema.DATE );
     }
 
     public Iterable<Statement> serialize( final EntityDescriptor entityDescriptor )

@@ -17,10 +17,6 @@
  */
 package org.qi4j.library.rdf.entity;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Literal;
@@ -29,7 +25,6 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
-import org.openrdf.model.vocabulary.XMLSchema;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.composite.Composite;
@@ -56,24 +51,9 @@ import static org.qi4j.functional.Iterables.first;
 public class EntityStateSerializer
 {
 
-    private final Map<String, URI> dataTypes = new HashMap<>();
     @Service
     @Tagged( ValueSerialization.Formats.JSON )
     private ValueSerializer valueSerializer;
-
-    public EntityStateSerializer()
-    {
-        // TODO A ton more types need to be added here
-        dataTypes.put( String.class.getName(), XMLSchema.STRING );
-        dataTypes.put( Integer.class.getName(), XMLSchema.INT );
-        dataTypes.put( Boolean.class.getName(), XMLSchema.BOOLEAN );
-        dataTypes.put( Byte.class.getName(), XMLSchema.BYTE );
-        dataTypes.put( BigDecimal.class.getName(), XMLSchema.DECIMAL );
-        dataTypes.put( Double.class.getName(), XMLSchema.DOUBLE );
-        dataTypes.put( Long.class.getName(), XMLSchema.LONG );
-        dataTypes.put( Short.class.getName(), XMLSchema.SHORT );
-        dataTypes.put( Date.class.getName(), XMLSchema.DATETIME );
-    }
 
     public URI createEntityURI( ValueFactory valueFactory, EntityReference identity )
     {
