@@ -334,7 +334,7 @@ public interface ElasticSearchFinder
             }
         }
 
-        private String toString( Object value, Map<String, Object> variables )
+        private Object resolveVariable( Object value, Map<String, Object> variables )
         {
             if( value == null )
             {
@@ -348,9 +348,9 @@ public interface ElasticSearchFinder
                 {
                     throw new IllegalArgumentException( "Variable " + var.variableName() + " not bound" );
                 }
-                return realValue.toString();
+                return realValue;
             }
-            return value.toString();
+            return value;
         }
 
         private void processBinarySpecification( FilterBuilder filterBuilder,
@@ -428,7 +428,7 @@ public interface ElasticSearchFinder
             {
 
                 // Query by simple property value
-                String value = toString( spec.value(), variables );
+                Object value = resolveVariable( spec.value(), variables );
                 if( spec instanceof EqSpecification )
                 {
 
@@ -449,39 +449,29 @@ public interface ElasticSearchFinder
         {
             LOGGER.trace( "Processing ComparisonSpecification {}", spec );
             String name = spec.property().toString();
-            String value = toString( spec.value(), variables );
+            Object value = resolveVariable( spec.value(), variables );
 
             if( spec instanceof GeSpecification )
             {
-
-                addFilter( rangeFilter( name ).from( value ).includeLower( true ), filterBuilder );
-
+                addFilter( rangeFilter( name ).gte( value ), filterBuilder );
             }
             else if( spec instanceof GtSpecification )
             {
-
-                addFilter( rangeFilter( name ).from( value ).includeLower( false ), filterBuilder );
-
+                addFilter( rangeFilter( name ).gt( value ), filterBuilder );
             }
             else if( spec instanceof LeSpecification )
             {
-
-                addFilter( rangeFilter( name ).to( value ).includeUpper( true ), filterBuilder );
-
+                addFilter( rangeFilter( name ).lte( value ), filterBuilder );
             }
             else if( spec instanceof LtSpecification )
             {
-
-                addFilter( rangeFilter( name ).to( value ).includeUpper( false ), filterBuilder );
-
+                addFilter( rangeFilter( name ).lt( value ), filterBuilder );
             }
             else
             {
-
                 throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search "
                                                          + "(New Query API support missing?): "
                                                          + spec.getClass() + ": " + spec );
-
             }
         }
 
@@ -507,7 +497,7 @@ public interface ElasticSearchFinder
                 else
                 {
 
-                    contAllFilter.add( termFilter( name, toString( value, variables ) ) );
+                    contAllFilter.add( termFilter( name, resolveVariable( value, variables ) ) );
 
                 }
             }
@@ -533,7 +523,7 @@ public interface ElasticSearchFinder
             else
             {
 
-                String value = toString( spec.value(), variables );
+                Object value = resolveVariable( spec.value(), variables );
                 addFilter( termFilter( name, value ), filterBuilder );
 
             }
@@ -545,7 +535,7 @@ public interface ElasticSearchFinder
         {
             LOGGER.trace( "Processing MatchesSpecification {}", spec );
             String name = spec.property().toString();
-            String regexp = toString( spec.regexp(), variables );
+            String regexp = resolveVariable( spec.regexp(), variables ).toString();
             addFilter( regexpFilter( name, regexp ), filterBuilder );
         }
 
@@ -583,7 +573,7 @@ public interface ElasticSearchFinder
         {
             LOGGER.trace( "Processing ManyAssociationContainsSpecification {}", spec );
             String name = spec.manyAssociation().toString() + ".identity";
-            String value = toString( spec.value(), variables );
+            Object value = resolveVariable( spec.value(), variables );
             addFilter( termFilter( name, value ), filterBuilder );
         }
 
