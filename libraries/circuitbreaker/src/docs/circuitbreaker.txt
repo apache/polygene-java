@@ -87,7 +87,7 @@ Here is how it goes:
 
 [snippet,java]
 ----
-source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/jmx/CircuitBreakerManagementTest.java
+source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/jmx/CircuitBreakerManagementSample.java
 tag=jmx
 ----
 
