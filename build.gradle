@@ -458,18 +458,25 @@ buildAll.doLast {
 
 def srcDistImage = copySpec {
   from '.'
-  exclude '**/build/'     // build output
-  exclude '**/bin/'       // helper scripts
-  exclude 'derby.log'     // Derby test garbage
-  exclude '**/*.iml'      // IDEA files
-  exclude 'org.qi4j.ipr'  // IDEA files
-  exclude 'org.qi4j.iws'  // IDEA files
-  exclude '**/out/*'       // build output
-  exclude '**/.git/'      // git directories
-  exclude '**/.git*'      // git files
-  exclude '**/.gradle/'   // gradle management files
+  exclude '**/build/'               // Build output
+  exclude '**/bin/'                 // Helper scripts
+  exclude 'derby.log'               // Derby test garbage
+  exclude '**/*.iml'                // IDEA files
+  exclude '**/*.ipr'                // IDEA files
+  exclude '**/*.iws'                // IDEA files
+  exclude '**/.idea'                // IDEA files
+  exclude '**/out/*'                // IDEA build output
+  exclude '**/.classpath'           // Eclipse files
+  exclude '**/.project'             // Eclipse files
+  exclude '**/.settings'            // Eclipse files
+  exclude '**/.nb-gradle/'          // Netbeans files
+  exclude '**/.nb-gradle*'          // Netbeans files
+  exclude '**/.git/'                // Git directories
+  exclude '**/.git*'                // Git files
+  exclude '**/.gradle/'             // Gradle management files
+  exclude '**/gradle.properties'    // Gradle properties
+  exclude '**/.gradletasknamecache' // Gradle cache
   into "qi4j-sdk-$version/src/"
-
 }
 
 def reportsDistImage = copySpec {
