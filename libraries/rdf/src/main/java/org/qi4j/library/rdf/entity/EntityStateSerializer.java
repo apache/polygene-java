@@ -39,6 +39,7 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.api.value.ValueSerializer;
+import org.qi4j.api.value.ValueSerializer.Options;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -147,7 +148,7 @@ public class EntityStateSerializer
         }
         else
         {
-            String stringProperty = valueSerializer.serialize( property, false );
+            String stringProperty = valueSerializer.serialize( new Options().withoutTypeInfo(), property );
             final Literal object = valueFactory.createLiteral( stringProperty );
             graph.add( subject, predicate, object );
         }

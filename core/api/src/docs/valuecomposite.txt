@@ -67,6 +67,10 @@ Plain Values can be one of :
     * LocalDateTime (JodaTime),
     * LocalDate (JodaTime).
 
+TIP: Serialization behaviour can be tuned with options.
+Every +ValueSerializer+ methods can take a +ValueSerializer.Options+ object that contains flags to change how some
+values are serialized. See the <<javadocs>> for more details.
+
 Values of unknown types and all arrays are considered as +java.io.Serializable+ and by so are (de)serialized to (from)
 base64 encoded bytes using pure Java serialization. If it happens that the value is not Serializable or the input to
 deserialize is invalid, a +ValueSerializationException+ is thrown.

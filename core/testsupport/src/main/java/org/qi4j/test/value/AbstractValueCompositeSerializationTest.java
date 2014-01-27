@@ -102,7 +102,7 @@ public abstract class AbstractValueCompositeSerializationTest
 
             // Serialize using injected service
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            valueSerialization.serialize( some, output, true );
+            valueSerialization.serialize( some, output );
             String stateString = output.toString( "UTF-8" );
 
             log.info( "Complex ValueComposite state:\n\n{}\n", stateString );

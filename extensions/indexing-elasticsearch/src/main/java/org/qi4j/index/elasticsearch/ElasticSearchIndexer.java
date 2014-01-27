@@ -40,6 +40,7 @@ import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.api.value.ValueSerializer;
+import org.qi4j.api.value.ValueSerializer.Options;
 import org.qi4j.functional.Iterables;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -202,8 +203,8 @@ public interface ElasticSearchIndexer
                         }
                         else
                         {
+                            String serialized = valueSerializer.serialize( new Options().bigNumToDouble(), value );
                             // TODO Theses tests are pretty fragile, find a better way to fix this, Jackson API should behave better
-                            String serialized = valueSerializer.serialize( value );
                             if( serialized.startsWith( "{" ) )
                             {
                                 json.put( key, new JSONObject( serialized ) );

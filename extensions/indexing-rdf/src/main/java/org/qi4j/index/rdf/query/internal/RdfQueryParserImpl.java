@@ -53,6 +53,7 @@ import org.qi4j.api.query.grammar.PropertyNullSpecification;
 import org.qi4j.api.query.grammar.QuerySpecification;
 import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.value.ValueSerializer;
+import org.qi4j.api.value.ValueSerializer.Options;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.rdf.query.RdfQueryParser;
@@ -340,7 +341,7 @@ public class RdfQueryParserImpl
 
     private String createAndEscapeJSONString( Object value )
     {
-        return escapeJSONString( valueSerializer.serialize( value, false ) );
+        return escapeJSONString( valueSerializer.serialize( new Options().withoutTypeInfo(), value ) );
     }
 
     private String createRegexStringForContaining( String valueVariable, String containedString )

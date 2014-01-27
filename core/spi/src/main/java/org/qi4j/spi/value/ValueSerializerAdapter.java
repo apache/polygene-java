@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2010, Niclas Hehdman. All Rights Reserved.
- * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,7 @@ import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.functional.Function;
-import org.qi4j.functional.Functions;
+import org.qi4j.functional.Function2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +80,20 @@ public abstract class ValueSerializerAdapter<OutputType>
 
     private static final Logger LOG = LoggerFactory.getLogger( ValueSerializerAdapter.class );
     private static final String UTF_8 = "UTF-8";
-    private final Map<Class<?>, Function<Object, Object>> serializers = new HashMap<>( 16 );
+
+    private static <TO, FROM extends TO> Function2<Options, FROM, TO> identitySerializer()
+    {
+        return new Function2<Options, FROM, TO>()
+        {
+            @Override
+            public TO map( Options options, FROM from )
+            {
+                return from;
+            }
+        };
+    }
+
+    private final Map<Class<?>, Function2<Options, Object, Object>> serializers = new HashMap<>( 16 );
 
     /**
      * Register a Plain Value type serialization Function.
@@ -89,81 +103,97 @@ public abstract class ValueSerializerAdapter<OutputType>
      * @param serializer Serialization Function
      */
     @SuppressWarnings( "unchecked" )
-    protected final <T> void registerSerializer( Class<T> type, Function<T, Object> serializer )
+    protected final <T> void registerSerializer( Class<T> type, Function2<Options, T, Object> serializer )
     {
-        serializers.put( type, (Function<Object, Object>) serializer );
+        serializers.put( type, (Function2<Options, Object, Object>) serializer );
     }
 
     public ValueSerializerAdapter()
     {
         // Primitive Value types
-        registerSerializer( String.class, Functions.<Object, String>identity() );
-        registerSerializer( Character.class, Functions.<Object, Character>identity() );
-        registerSerializer( Boolean.class, Functions.<Object, Boolean>identity() );
-        registerSerializer( Integer.class, Functions.<Object, Integer>identity() );
-        registerSerializer( Long.class, Functions.<Object, Long>identity() );
-        registerSerializer( Short.class, Functions.<Object, Short>identity() );
-        registerSerializer( Byte.class, Functions.<Object, Byte>identity() );
-        registerSerializer( Float.class, Functions.<Object, Float>identity() );
-        registerSerializer( Double.class, Functions.<Object, Double>identity() );
+        registerSerializer( String.class, ValueSerializerAdapter.<Object, String>identitySerializer() );
+        registerSerializer( Character.class, ValueSerializerAdapter.<Object, Character>identitySerializer() );
+        registerSerializer( Boolean.class, ValueSerializerAdapter.<Object, Boolean>identitySerializer() );
+        registerSerializer( Integer.class, ValueSerializerAdapter.<Object, Integer>identitySerializer() );
+        registerSerializer( Long.class, ValueSerializerAdapter.<Object, Long>identitySerializer() );
+        registerSerializer( Short.class, ValueSerializerAdapter.<Object, Short>identitySerializer() );
+        registerSerializer( Byte.class, ValueSerializerAdapter.<Object, Byte>identitySerializer() );
+        registerSerializer( Float.class, ValueSerializerAdapter.<Object, Float>identitySerializer() );
+        registerSerializer( Double.class, ValueSerializerAdapter.<Object, Double>identitySerializer() );
 
         // Number types
-        registerSerializer( BigDecimal.class, new Function<BigDecimal, Object>()
+        registerSerializer( BigDecimal.class, new Function2<Options, BigDecimal, Object>()
         {
             @Override
-            public Object map( BigDecimal bigDecimal )
+            public Object map( Options options, BigDecimal bigDecimal )
             {
+                Boolean toDouble = options.getBoolean( Options.BIGNUM_TO_DOUBLE );
+                if( toDouble != null && toDouble )
+                {
+                    Integer scale = options.getInteger( Options.BIGNUM_TO_DOUBLE_SCALE );
+                    scale = scale == null ? bigDecimal.scale() : scale;
+                    String roundingName = options.getString( Options.BIGNUM_TO_DOUBLE_ROUNDING );
+                    RoundingMode roundingMode = roundingName == null
+                                                ? RoundingMode.HALF_UP
+                                                : RoundingMode.valueOf( roundingName );
+                    return bigDecimal.setScale( scale, roundingMode ).doubleValue();
+                }
                 return bigDecimal.toString();
             }
         } );
-        registerSerializer( BigInteger.class, new Function<BigInteger, Object>()
+        registerSerializer( BigInteger.class, new Function2<Options, BigInteger, Object>()
         {
             @Override
-            public Object map( BigInteger bigInteger )
+            public Object map( Options options, BigInteger bigInteger )
             {
+                Boolean toDouble = options.getBoolean( Options.BIGNUM_TO_DOUBLE );
+                if( toDouble != null && toDouble )
+                {
+                    return bigInteger.doubleValue();
+                }
                 return bigInteger.toString();
             }
         } );
 
         // Date types
-        registerSerializer( Date.class, new Function<Date, Object>()
+        registerSerializer( Date.class, new Function2<Options, Date, Object>()
         {
             @Override
-            public Object map( Date date )
+            public Object map( Options options, Date date )
             {
                 return Dates.toUtcString( date );
             }
         } );
-        registerSerializer( DateTime.class, new Function<DateTime, Object>()
+        registerSerializer( DateTime.class, new Function2<Options, DateTime, Object>()
         {
             @Override
-            public Object map( DateTime date )
+            public Object map( Options options, DateTime date )
             {
                 return date.toString();
             }
         } );
-        registerSerializer( LocalDateTime.class, new Function<LocalDateTime, Object>()
+        registerSerializer( LocalDateTime.class, new Function2<Options, LocalDateTime, Object>()
         {
             @Override
-            public Object map( LocalDateTime date )
+            public Object map( Options options, LocalDateTime date )
             {
                 return date.toString();
             }
         } );
-        registerSerializer( LocalDate.class, new Function<LocalDate, Object>()
+        registerSerializer( LocalDate.class, new Function2<Options, LocalDate, Object>()
         {
             @Override
-            public Object map( LocalDate date )
+            public Object map( Options options, LocalDate date )
             {
                 return date.toString();
             }
         } );
 
         // Other supported types
-        registerSerializer( EntityReference.class, new Function<EntityReference, Object>()
+        registerSerializer( EntityReference.class, new Function2<Options, EntityReference, Object>()
         {
             @Override
-            public Object map( EntityReference ref )
+            public Object map( Options options, EntityReference ref )
             {
                 return ref.toString();
             }
@@ -184,6 +214,20 @@ public abstract class ValueSerializerAdapter<OutputType>
     }
 
     @Override
+    public final <T> Function<T, String> serialize( final Options options )
+    {
+        return new Function<T, String>()
+        {
+            @Override
+            public String map( T object )
+            {
+                return serialize( options, object );
+            }
+        };
+    }
+
+    @Override
+    @Deprecated
     public final <T> Function<T, String> serialize( final boolean includeTypeInfo )
     {
         return new Function<T, String>()
@@ -191,7 +235,8 @@ public abstract class ValueSerializerAdapter<OutputType>
             @Override
             public String map( T object )
             {
-                return serialize( object, includeTypeInfo );
+                return serialize( includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
+                                  object );
             }
         };
     }
@@ -200,17 +245,17 @@ public abstract class ValueSerializerAdapter<OutputType>
     public final String serialize( Object object )
         throws ValueSerializationException
     {
-        return serialize( object, true );
+        return serialize( new Options(), object );
     }
 
     @Override
-    public final String serialize( Object object, boolean includeTypeInfo )
+    public final String serialize( Options options, Object object )
         throws ValueSerializationException
     {
         try
         {
             ByteArrayOutputStream output = new ByteArrayOutputStream();
-            serializeRoot( object, output, includeTypeInfo );
+            serializeRoot( options, object, output );
             return output.toString( UTF_8 );
         }
         catch( ValueSerializationException ex )
@@ -224,19 +269,28 @@ public abstract class ValueSerializerAdapter<OutputType>
     }
 
     @Override
-    public final void serialize( Object object, OutputStream output )
+    @Deprecated
+    public final String serialize( Object object, boolean includeTypeInfo )
         throws ValueSerializationException
     {
-        serialize( object, output, true );
+        return serialize( includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
+                          object );
     }
 
     @Override
-    public final void serialize( Object object, OutputStream output, boolean includeTypeInfo )
+    public final void serialize( Object object, OutputStream output )
+        throws ValueSerializationException
+    {
+        serialize( new Options(), object, output );
+    }
+
+    @Override
+    public final void serialize( Options options, Object object, OutputStream output )
         throws ValueSerializationException
     {
         try
         {
-            serializeRoot( object, output, includeTypeInfo );
+            serializeRoot( options, object, output );
         }
         catch( ValueSerializationException ex )
         {
@@ -248,7 +302,16 @@ public abstract class ValueSerializerAdapter<OutputType>
         }
     }
 
-    private void serializeRoot( Object object, OutputStream output, boolean includeTypeInfo )
+    @Override
+    @Deprecated
+    public final void serialize( Object object, OutputStream output, boolean includeTypeInfo )
+        throws ValueSerializationException
+    {
+        serialize( includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
+                   object, output );
+    }
+
+    private void serializeRoot( Options options, Object object, OutputStream output )
         throws Exception
     {
         if( object != null )
@@ -257,7 +320,7 @@ public abstract class ValueSerializerAdapter<OutputType>
             if( serializers.get( object.getClass() ) != null )
             {
                 // Plain Value
-                Object serialized = serializers.get( object.getClass() ).map( object );
+                Object serialized = serializers.get( object.getClass() ).map( options, object );
                 output.write( serialized.toString().getBytes( UTF_8 ) );
             }
             else if( object.getClass().isEnum() )
@@ -275,13 +338,13 @@ public abstract class ValueSerializerAdapter<OutputType>
                 // Complex Value
                 OutputType adaptedOutput = adaptOutput( output );
                 onSerializationStart( object, adaptedOutput );
-                doSerialize( object, adaptedOutput, includeTypeInfo, true );
+                doSerialize( options, object, adaptedOutput, true );
                 onSerializationEnd( object, adaptedOutput );
             }
         }
     }
 
-    private void doSerialize( Object object, OutputType output, boolean includeTypeInfo, boolean rootPass )
+    private void doSerialize( Options options, Object object, OutputType output, boolean rootPass )
         throws Exception
     {
         // Null
@@ -294,13 +357,13 @@ public abstract class ValueSerializerAdapter<OutputType>
         if( serializers.get( object.getClass() ) != null )
         {
             LOG.trace( "Registered serializer matches -> onValue( serialized )" );
-            onValue( output, serializers.get( object.getClass() ).map( object ) );
+            onValue( output, serializers.get( object.getClass() ).map( options, object ) );
         }
         else // ValueComposite
         if( ValueComposite.class.isAssignableFrom( object.getClass() ) )
         {
             LOG.trace( "ValueComposite assignable -> serializeValueComposite( object )" );
-            serializeValueComposite( object, output, includeTypeInfo, rootPass );
+            serializeValueComposite( options, object, output, rootPass );
         }
         else // EntityComposite
         if( EntityComposite.class.isAssignableFrom( object.getClass() ) )
@@ -312,7 +375,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         if( Iterable.class.isAssignableFrom( object.getClass() ) )
         {
             LOG.trace( "Iterable assignable -> serializeIterable( object )" );
-            serializeIterable( object, output, includeTypeInfo );
+            serializeIterable( options, object, output );
         }
         else // Array - QUID Remove this and use java serialization for arrays?
         if( object.getClass().isArray() )
@@ -324,7 +387,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         if( Map.class.isAssignableFrom( object.getClass() ) )
         {
             LOG.trace( "Map assignable -> serializeMap( object )" );
-            serializeMap( object, output, includeTypeInfo );
+            serializeMap( options, object, output );
         }
         else // Enum
         if( object.getClass().isEnum() )
@@ -339,7 +402,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         }
     }
 
-    private void serializeValueComposite( Object object, OutputType output, boolean includeTypeInfo, boolean rootPass )
+    private void serializeValueComposite( Options options, Object object, OutputType output, boolean rootPass )
         throws Exception
     {
         CompositeInstance valueInstance = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) object );
@@ -348,7 +411,7 @@ public abstract class ValueSerializerAdapter<OutputType>
 
         onObjectStart( output );
 
-        if( includeTypeInfo && !rootPass )
+        if( options.getBoolean( Options.INCLUDE_TYPE_INFO ) && !rootPass )
         {
             onFieldStart( output, "_type" );
             onValueStart( output );
@@ -362,7 +425,7 @@ public abstract class ValueSerializerAdapter<OutputType>
             Property<?> property = state.propertyFor( persistentProperty.accessor() );
             onFieldStart( output, persistentProperty.qualifiedName().name() );
             onValueStart( output );
-            doSerialize( property.get(), output, includeTypeInfo, false );
+            doSerialize( options, property.get(), output, false );
             onValueEnd( output );
             onFieldEnd( output );
         }
@@ -409,7 +472,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         onValue( output, EntityReference.entityReferenceFor( object ) );
     }
 
-    private void serializeIterable( Object object, OutputType output, boolean includeTypeInfo )
+    private void serializeIterable( Options options, Object object, OutputType output )
         throws Exception
     {
         @SuppressWarnings( "unchecked" )
@@ -418,13 +481,13 @@ public abstract class ValueSerializerAdapter<OutputType>
         for( Object item : collection )
         {
             onValueStart( output );
-            doSerialize( item, output, includeTypeInfo, false );
+            doSerialize( options, item, output, false );
             onValueEnd( output );
         }
         onArrayEnd( output );
     }
 
-    private void serializeMap( Object object, OutputType output, boolean includeTypeInfo )
+    private void serializeMap( Options options, Object object, OutputType output )
         throws Exception
     {
         @SuppressWarnings( "unchecked" )
@@ -442,7 +505,7 @@ public abstract class ValueSerializerAdapter<OutputType>
 
             onFieldStart( output, "value" );
             onValueStart( output );
-            doSerialize( entry.getValue(), output, includeTypeInfo, false );
+            doSerialize( options, entry.getValue(), output, false );
             onValueEnd( output );
             onFieldEnd( output );
 

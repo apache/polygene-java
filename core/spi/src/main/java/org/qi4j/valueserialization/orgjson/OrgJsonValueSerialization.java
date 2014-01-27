@@ -63,6 +63,13 @@ public class OrgJsonValueSerialization
     }
 
     @Override
+    public <T> Function<T, String> serialize( Options options )
+    {
+        return serializer.serialize( options );
+    }
+
+    @Override
+    @Deprecated
     public <T> Function<T, String> serialize( boolean includeTypeInfo )
     {
         return serializer.serialize( includeTypeInfo );
@@ -76,6 +83,14 @@ public class OrgJsonValueSerialization
     }
 
     @Override
+    public String serialize( Options options, Object object )
+        throws ValueSerializationException
+    {
+        return serializer.serialize( options, object );
+    }
+
+    @Override
+    @Deprecated
     public String serialize( Object object, boolean includeTypeInfo )
         throws ValueSerializationException
     {
@@ -90,6 +105,14 @@ public class OrgJsonValueSerialization
     }
 
     @Override
+    public void serialize( Options options, Object object, OutputStream output )
+        throws ValueSerializationException
+    {
+        serializer.serialize( options, object, output );
+    }
+
+    @Override
+    @Deprecated
     public void serialize( Object object, OutputStream output, boolean includeTypeInfo )
         throws ValueSerializationException
     {
