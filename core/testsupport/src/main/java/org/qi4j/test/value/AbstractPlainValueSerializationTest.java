@@ -29,9 +29,9 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.joda.time.DateTimeZone.UTC;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Assert that ValueSerialization behaviour on plain values is correct.

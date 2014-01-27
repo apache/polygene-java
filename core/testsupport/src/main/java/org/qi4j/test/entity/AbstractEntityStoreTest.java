@@ -136,7 +136,7 @@ public abstract class AbstractEntityStoreTest
 
         prototype.valueProperty().set( valueBuilder2.newInstance() );
         prototype.tjabbaProperty().set( valueBuilder3.newInstance() );
-        Map<String, String> mapValue = new HashMap<>();
+        Map<String, String> mapValue = new HashMap<>( 1 );
         mapValue.put( "foo", "bar" );
         prototype.mapStringStringProperty().set( mapValue );
         instance.valueProperty().set( valueBuilder1.newInstance() );

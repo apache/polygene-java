@@ -1,7 +1,7 @@
 [[build-system,Build System]]
 = Build System =
 
-This tutorial is intended for developpers that want to build the Qi4j SDK themselves.
+This tutorial is intended for developpers who want to build the Qi4j SDK themselves.
 It describe the Qi4j SDK Build System from compilation to publication of artifacts for consumption by other
 applications.
 

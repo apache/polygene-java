@@ -52,8 +52,9 @@ import org.qi4j.test.EntityTestAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Assert that ValueSerialization behaviour on ValueComposites is correct.
@@ -141,7 +142,7 @@ public abstract class AbstractValueCompositeSerializationTest
 
         ValueBuilder<SpecificCollection> specificColBuilder = module.newValueBuilder( SpecificCollection.class );
         SpecificCollection specificColProto = specificColBuilder.prototype();
-        List<String> genericList = new ArrayList<String>();
+        List<String> genericList = new ArrayList<>( 2 );
         genericList.add( "Some" );
         genericList.add( "String" );
         specificColProto.genericList().set( genericList );
@@ -152,7 +153,6 @@ public abstract class AbstractValueCompositeSerializationTest
          specificValue.prototype().item().set("Foo");
          proto.specificValue().set(specificValue.newInstance());
          */
-
         ValueBuilder<AnotherValue> valueBuilder = module.newValueBuilder( AnotherValue.class );
         valueBuilder.prototype().val1().set( "Foo" );
         valueBuilder.prototypeFor( AnotherValueInternalState.class ).val2().set( "Bar" );
@@ -410,8 +410,8 @@ public abstract class AbstractValueCompositeSerializationTest
     {
 
         private static final long serialVersionUID = 1L;
-        private String foo = "Foo";
-        private int val = 35;
+        private final String foo = "Foo";
+        private final int val = 35;
 
         @Override
         @SuppressWarnings( "AccessingNonPublicFieldOfAnotherObject" )

@@ -2,15 +2,15 @@
 <configuration>
 
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%-5level %logger{24} - %msg%n</Pattern>
-        </layout>
+        <encoder>
+            <pattern>%-5level %logger{24} - %msg%n</pattern>
+        </encoder>
     </appender>
 
-    <root level="info">
+    <root level="warn">
         <appender-ref ref="stdout" />
     </root>
 
-    <logger name="org.qi4j.runtime" level="debug"/>
+    <logger name="org.qi4j.index" level="trace"/>
 
 </configuration>

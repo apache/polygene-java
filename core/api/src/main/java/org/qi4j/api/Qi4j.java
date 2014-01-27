@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.api;
 
 import java.lang.reflect.Field;
@@ -43,6 +42,7 @@ public interface Qi4j
      * then that reference must be dereferenced using this method
      * before handing it out for others to use.
      *
+     * @param <T> Parameterized type of the Composite
      * @param composite instance reference injected in Modified using @This
      * @return the dereferenced Composite
      */
@@ -113,7 +113,7 @@ public interface Qi4j
      * @param property The Property for which to lookup the PropertyDescriptor
      * @return The PropertyDescriptor of the Property
      */
-    PropertyDescriptor propertyDescriptorFor( Property property );
+    PropertyDescriptor propertyDescriptorFor( Property<?> property );
 
     /**
      * Returns the AssociationDescriptor of the Association.
@@ -141,7 +141,7 @@ public interface Qi4j
                 Class<? extends Composite> compositeClass = composite.getClass();
                 Field instanceField = compositeClass.getField( "_instance" );
                 Object instance = instanceField.get( composite );
-                return ((CompositeInstance) instance).descriptor();
+                return ( (CompositeInstance) instance ).descriptor();
             }
             catch( Exception e )
             {

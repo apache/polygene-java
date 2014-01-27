@@ -103,19 +103,19 @@ public class StaxValueDeserializer
         {
             throw new ValueSerializationException( "Expected an <array/> but got: " + nextTag );
         }
+        WHILE:
         while( input.hasNext() )
         {
             XMLEvent currentTag = input.nextTag();
             if( currentTag.isEndElement() )
             {
                 String endElementName = currentTag.asEndElement().getName().getLocalPart();
-                if( "array".equals( endElementName ) )
+                switch( endElementName )
                 {
-                    break;
-                }
-                else if( "value".equals( endElementName ) )
-                {
-                    continue;
+                    case "array":
+                        break WHILE;
+                    case "value":
+                        continue;
                 }
             }
             if( !"value".equals( currentTag.asStartElement().getName().getLocalPart() ) )
@@ -165,17 +165,17 @@ public class StaxValueDeserializer
                 String keyOrValue = input.nextEvent().asCharacters().getData();
                 input.nextTag(); // </name>
                 input.nextTag(); // <value>
-                if( "key".equals( keyOrValue ) )
+                switch( keyOrValue )
                 {
-                    key = keyDeserializer.map( input );
-                }
-                else if( "value".equals( keyOrValue ) )
-                {
-                    value = valueDeserializer.map( input );
-                }
-                else
-                {
-                    readObjectTree( input );
+                    case "key":
+                        key = keyDeserializer.map( input );
+                        break;
+                    case "value":
+                        value = valueDeserializer.map( input );
+                        break;
+                    default:
+                        readObjectTree( input );
+                        break;
                 }
                 input.nextTag(); // </value>
                 input.nextTag(); // </field>
@@ -308,6 +308,7 @@ public class StaxValueDeserializer
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     protected <T> T getObjectFieldValue( Node inputNode,
                                          String key,
                                          Function<Node, T> valueDeserializer )

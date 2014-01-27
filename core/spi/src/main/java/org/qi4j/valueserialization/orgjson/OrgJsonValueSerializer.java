@@ -39,8 +39,8 @@ public class OrgJsonValueSerializer
     public static class OrgJsonOutput
     {
 
-        /* package */ final Writer writer;
-        /* package */ final JSONWriter json;
+        private final Writer writer;
+        private final JSONWriter json;
 
         private OrgJsonOutput( Writer writer, JSONWriter json )
         {

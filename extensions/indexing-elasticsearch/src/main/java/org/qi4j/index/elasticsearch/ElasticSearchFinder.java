@@ -28,7 +28,6 @@ import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
-import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
@@ -54,12 +53,11 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
 import org.qi4j.api.query.grammar.PropertyNullSpecification;
 import org.qi4j.api.query.grammar.QuerySpecification;
-import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
+import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
@@ -75,6 +73,7 @@ import static org.elasticsearch.index.query.FilterBuilders.termFilter;
 import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.wrapperQuery;
+import static org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.resolveVariable;
 
 @Mixins( ElasticSearchFinder.Mixin.class )
 public interface ElasticSearchFinder
@@ -226,99 +225,73 @@ public interface ElasticSearchFinder
         {
             if( spec instanceof BinarySpecification )
             {
-
                 BinarySpecification binSpec = (BinarySpecification) spec;
                 processBinarySpecification( filterBuilder, binSpec, variables );
-
             }
             else if( spec instanceof NotSpecification )
             {
-
                 NotSpecification notSpec = (NotSpecification) spec;
                 processNotSpecification( filterBuilder, notSpec, variables );
-
             }
             else if( spec instanceof EqSpecification || spec instanceof NeSpecification )
             {
-
                 ComparisonSpecification<?> compSpec = (ComparisonSpecification<?>) spec;
                 processEqualitySpecification( filterBuilder, compSpec, variables );
-
             }
             else if( spec instanceof ComparisonSpecification )
             {
-
                 ComparisonSpecification<?> compSpec = (ComparisonSpecification<?>) spec;
                 processComparisonSpecification( filterBuilder, compSpec, variables );
-
             }
             else if( spec instanceof ContainsAllSpecification )
             {
-
                 ContainsAllSpecification<?> contAllSpec = (ContainsAllSpecification) spec;
                 processContainsAllSpecification( filterBuilder, contAllSpec, variables );
-
             }
             else if( spec instanceof ContainsSpecification )
             {
-
                 ContainsSpecification<?> contSpec = (ContainsSpecification) spec;
                 processContainsSpecification( filterBuilder, contSpec, variables );
-
             }
             else if( spec instanceof MatchesSpecification )
             {
-
                 MatchesSpecification matchSpec = (MatchesSpecification) spec;
                 processMatchesSpecification( filterBuilder, matchSpec, variables );
-
             }
             else if( spec instanceof PropertyNotNullSpecification )
             {
-
                 PropertyNotNullSpecification<?> propNotNullSpec = (PropertyNotNullSpecification) spec;
                 processPropertyNotNullSpecification( filterBuilder, propNotNullSpec );
-
             }
             else if( spec instanceof PropertyNullSpecification )
             {
-
                 PropertyNullSpecification<?> propNullSpec = (PropertyNullSpecification) spec;
                 processPropertyNullSpecification( filterBuilder, propNullSpec );
-
             }
             else if( spec instanceof AssociationNotNullSpecification )
             {
-
                 AssociationNotNullSpecification<?> assNotNullSpec = (AssociationNotNullSpecification) spec;
                 processAssociationNotNullSpecification( filterBuilder, assNotNullSpec );
-
             }
             else if( spec instanceof AssociationNullSpecification )
             {
-
                 AssociationNullSpecification<?> assNullSpec = (AssociationNullSpecification) spec;
                 processAssociationNullSpecification( filterBuilder, assNullSpec );
-
             }
             else if( spec instanceof ManyAssociationContainsSpecification )
             {
-
                 ManyAssociationContainsSpecification<?> manyAssContSpec = (ManyAssociationContainsSpecification) spec;
                 processManyAssociationContainsSpecification( filterBuilder, manyAssContSpec, variables );
-
             }
             else
             {
-
                 throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search "
                                                          + "(New Query API support missing?): "
                                                          + spec.getClass() + ": " + spec );
-
             }
         }
 
-        private void addFilter( FilterBuilder filter, FilterBuilder into )
+        private static void addFilter( FilterBuilder filter, FilterBuilder into )
         {
             if( into instanceof AndFilterBuilder )
             {
@@ -334,25 +307,6 @@ public interface ElasticSearchFinder
             }
         }
 
-        private Object resolveVariable( Object value, Map<String, Object> variables )
-        {
-            if( value == null )
-            {
-                return null;
-            }
-            if( value instanceof Variable )
-            {
-                Variable var = (Variable) value;
-                Object realValue = variables.get( var.variableName() );
-                if( realValue == null )
-                {
-                    throw new IllegalArgumentException( "Variable " + var.variableName() + " not bound" );
-                }
-                return realValue;
-            }
-            return value;
-        }
-
         private void processBinarySpecification( FilterBuilder filterBuilder,
                                                  BinarySpecification spec,
                                                  Map<String, Object> variables )
@@ -363,29 +317,21 @@ public interface ElasticSearchFinder
 
             if( spec instanceof AndSpecification )
             {
-
                 AndFilterBuilder andFilterBuilder = new AndFilterBuilder();
                 for( Specification<Composite> operand : operands )
                 {
-
                     processSpecification( andFilterBuilder, operand, variables );
-
                 }
                 addFilter( andFilterBuilder, filterBuilder );
-
             }
             else if( spec instanceof OrSpecification )
             {
-
                 OrFilterBuilder orFilterBuilder = new OrFilterBuilder();
                 for( Specification<Composite> operand : operands )
                 {
-
                     processSpecification( orFilterBuilder, operand, variables );
-
                 }
                 addFilter( orFilterBuilder, filterBuilder );
-
             }
             else
             {
@@ -411,33 +357,24 @@ public interface ElasticSearchFinder
             throws EntityFinderException
         {
             LOGGER.trace( "Processing EqualitySpecification {}", spec );
-            String name = spec.property().toString();
 
             if( spec.value() instanceof ValueComposite )
             {
-
-                // Query by complex property "example value"
-                ValueComposite value = (ValueComposite) spec.value();
-                ValueDescriptor valueDescriptor = (ValueDescriptor) Qi4j.FUNCTION_DESCRIPTOR_FOR.map( value );
-
+                // Query by "example value"
                 throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
                                                          + "queries, ie. queries by 'example value'." );
-
             }
             else
             {
-
                 // Query by simple property value
+                String name = spec.property().toString();
                 Object value = resolveVariable( spec.value(), variables );
                 if( spec instanceof EqSpecification )
                 {
-
                     addFilter( termFilter( name, value ), filterBuilder );
-
                 }
                 else if( spec instanceof NeSpecification )
                 {
-
                     addFilter( notFilter( termFilter( name, value ) ), filterBuilder );
                 }
             }
@@ -448,30 +385,40 @@ public interface ElasticSearchFinder
                                                      Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ComparisonSpecification {}", spec );
-            String name = spec.property().toString();
-            Object value = resolveVariable( spec.value(), variables );
 
-            if( spec instanceof GeSpecification )
+            if( spec.value() instanceof ValueComposite )
             {
-                addFilter( rangeFilter( name ).gte( value ), filterBuilder );
-            }
-            else if( spec instanceof GtSpecification )
-            {
-                addFilter( rangeFilter( name ).gt( value ), filterBuilder );
-            }
-            else if( spec instanceof LeSpecification )
-            {
-                addFilter( rangeFilter( name ).lte( value ), filterBuilder );
-            }
-            else if( spec instanceof LtSpecification )
-            {
-                addFilter( rangeFilter( name ).lt( value ), filterBuilder );
+                // Query by "example value"
+                throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
+                                                         + "queries, ie. queries by 'example value'." );
             }
             else
             {
-                throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search "
-                                                         + "(New Query API support missing?): "
-                                                         + spec.getClass() + ": " + spec );
+                // Query by simple property value
+                String name = spec.property().toString();
+                Object value = resolveVariable( spec.value(), variables );
+                if( spec instanceof GeSpecification )
+                {
+                    addFilter( rangeFilter( name ).gte( value ), filterBuilder );
+                }
+                else if( spec instanceof GtSpecification )
+                {
+                    addFilter( rangeFilter( name ).gt( value ), filterBuilder );
+                }
+                else if( spec instanceof LeSpecification )
+                {
+                    addFilter( rangeFilter( name ).lte( value ), filterBuilder );
+                }
+                else if( spec instanceof LtSpecification )
+                {
+                    addFilter( rangeFilter( name ).lt( value ), filterBuilder );
+                }
+                else
+                {
+                    throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search "
+                                                             + "(New Query API support missing?): "
+                                                             + spec.getClass() + ": " + spec );
+                }
             }
         }
 
@@ -480,28 +427,23 @@ public interface ElasticSearchFinder
                                                       Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ContainsAllSpecification {}", spec );
-            String name = spec.collectionProperty().toString();
-            AndFilterBuilder contAllFilter = new AndFilterBuilder();
-            for( Object value : spec.containedValues() )
+            Object firstValue = Iterables.first( spec.containedValues() );
+            if( firstValue instanceof ValueComposite )
             {
-                if( value instanceof ValueComposite )
-                {
-
-                    // Query by complex property "example value"
-                    ValueComposite valueComposite = (ValueComposite) value;
-                    ValueDescriptor valueDescriptor = (ValueDescriptor) Qi4j.FUNCTION_DESCRIPTOR_FOR.map( valueComposite );
-                    throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
-                                                             + "queries, ie. queries by 'example value'." );
-
-                }
-                else
-                {
-
-                    contAllFilter.add( termFilter( name, resolveVariable( value, variables ) ) );
-
-                }
+                // Query by complex property "example value"
+                throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
+                                                         + "queries, ie. queries by 'example value'." );
             }
-            addFilter( contAllFilter, filterBuilder );
+            else
+            {
+                String name = spec.collectionProperty().toString();
+                AndFilterBuilder contAllFilter = new AndFilterBuilder();
+                for( Object value : spec.containedValues() )
+                {
+                    contAllFilter.add( termFilter( name, resolveVariable( value, variables ) ) );
+                }
+                addFilter( contAllFilter, filterBuilder );
+            }
         }
 
         private void processContainsSpecification( FilterBuilder filterBuilder,
@@ -512,20 +454,14 @@ public interface ElasticSearchFinder
             String name = spec.collectionProperty().toString();
             if( spec.value() instanceof ValueComposite )
             {
-
                 // Query by complex property "example value"
-                ValueComposite value = (ValueComposite) spec.value();
-                ValueDescriptor valueDescriptor = (ValueDescriptor) Qi4j.FUNCTION_DESCRIPTOR_FOR.map( value );
                 throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
                                                          + "queries, ie. queries by 'example value'." );
-
             }
             else
             {
-
                 Object value = resolveVariable( spec.value(), variables );
                 addFilter( termFilter( name, value ), filterBuilder );
-
             }
         }
 
