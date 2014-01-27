@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2010, Niclas Hehdman. All Rights Reserved.
- * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,12 +88,21 @@ import static org.qi4j.functional.Iterables.first;
 public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     implements ValueDeserializer
 {
+    public static interface ComplexDeserializer<T, InputType, InputNodeType>
+    {
+        T deserializePull( InputType input )
+            throws Exception;
+
+        T deserializeTree( InputNodeType inputNode )
+            throws Exception;
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class );
     private static final Logger PULL_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#PullParsing" );
     private static final Logger TREE_PARSING_LOG = LoggerFactory.getLogger( ValueDeserializerAdapter.class.getName() + "#TreeParsing" );
     private static final String UTF_8 = "UTF-8";
     private final Map<Class<?>, Function<Object, Object>> deserializers = new HashMap<>( 16 );
+    private final Map<Class<?>, ComplexDeserializer<Object, InputType, InputNodeType>> complexDeserializers = new HashMap<>( 2 );
     private final Application application;
     private final Module module;
     private Function<Application, Module> valuesModuleFinder;
@@ -110,6 +119,13 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     protected final <T> void registerDeserializer( Class<T> type, Function<Object, T> deserializer )
     {
         deserializers.put( type, (Function<Object, Object>) deserializer );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    protected final <T> void registerComplexDeserializer( Class<T> type,
+                                                          ComplexDeserializer<T, InputType, InputNodeType> deserializer )
+    {
+        complexDeserializers.put( type, (ComplexDeserializer<Object, InputType, InputNodeType>) deserializer );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -476,6 +492,10 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             }
             return (T) deserializers.get( type ).map( value );
         }
+        else if( complexDeserializers.get( type ) != null )
+        {
+            return (T) complexDeserializers.get( type ).deserializePull( input );
+        }
         else // Explicit ValueComposite
         if( ValueCompositeType.class.isAssignableFrom( valueType.getClass() ) )
         {
@@ -735,6 +755,10 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 return null;
             }
             return (T) deserializers.get( type ).map( value );
+        }
+        else if( complexDeserializers.get( type ) != null )
+        {
+            return (T) complexDeserializers.get( type ).deserializeTree( inputNode );
         }
         else // Explicit ValueComposite
         if( ValueCompositeType.class.isAssignableFrom( valueType.getClass() ) )

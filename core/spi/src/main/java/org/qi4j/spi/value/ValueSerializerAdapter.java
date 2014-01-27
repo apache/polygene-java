@@ -78,6 +78,12 @@ public abstract class ValueSerializerAdapter<OutputType>
     implements ValueSerializer
 {
 
+    public static interface ComplexSerializer<T, OutputType>
+    {
+        void serialize( Options options, T object, OutputType output )
+            throws Exception;
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger( ValueSerializerAdapter.class );
     private static final String UTF_8 = "UTF-8";
 
@@ -94,6 +100,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     }
 
     private final Map<Class<?>, Function2<Options, Object, Object>> serializers = new HashMap<>( 16 );
+    private final Map<Class<?>, ComplexSerializer<Object, OutputType>> complexSerializers = new HashMap<>( 2 );
 
     /**
      * Register a Plain Value type serialization Function.
@@ -106,6 +113,19 @@ public abstract class ValueSerializerAdapter<OutputType>
     protected final <T> void registerSerializer( Class<T> type, Function2<Options, T, Object> serializer )
     {
         serializers.put( type, (Function2<Options, Object, Object>) serializer );
+    }
+
+    /**
+     * Register a Complex Value type serialization Function.
+     *
+     * @param <T> Complex Value parametrized Type
+     * @param type Complex Value Type
+     * @param serializer Serialization Function
+     */
+    @SuppressWarnings( "unchecked" )
+    protected final <T> void registerComplexSerializer( Class<T> type, ComplexSerializer<T, OutputType> serializer )
+    {
+        complexSerializers.put( type, (ComplexSerializer<Object, OutputType>) serializer );
     }
 
     public ValueSerializerAdapter()
@@ -358,6 +378,10 @@ public abstract class ValueSerializerAdapter<OutputType>
         {
             LOG.trace( "Registered serializer matches -> onValue( serialized )" );
             onValue( output, serializers.get( object.getClass() ).map( options, object ) );
+        }
+        else if( complexSerializers.get( object.getClass() ) != null )
+        {
+            complexSerializers.get( object.getClass() ).serialize( options, object, output );
         }
         else // ValueComposite
         if( ValueComposite.class.isAssignableFrom( object.getClass() ) )
