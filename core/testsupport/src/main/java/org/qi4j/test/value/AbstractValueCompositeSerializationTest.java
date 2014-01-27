@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.joda.money.BigMoney;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -119,6 +122,9 @@ public abstract class AbstractValueCompositeSerializationTest
             assertThat( "String Integer Map", some2.stringIntMap().get().get( "foo" ), equalTo( 42 ) );
             assertThat( "String Value Map", some2.stringValueMap().get().get( "foo" ).internalVal(), equalTo( "Bar" ) );
             assertThat( "Nested Entities", some2.barAssociation().get().cathedral().get(), equalTo( "bazar in barAssociation" ) );
+
+            assertThat( "Money Support", some2.money().get(), equalTo( Money.of( CurrencyUnit.USD, 42.23 ) ) );
+            assertThat( "BigMoney Support", some2.bigMoney().get(), equalTo( BigMoney.of( CurrencyUnit.USD, 42.232323 ) ) );
         }
         catch( Exception ex )
         {
@@ -168,6 +174,8 @@ public abstract class AbstractValueCompositeSerializationTest
         proto.dateTime().set( new DateTime() );
         proto.localDate().set( new LocalDate() );
         proto.localDateTime().set( new LocalDateTime() );
+        proto.money().set( Money.of( CurrencyUnit.USD, 42.23 ) );
+        proto.bigMoney().set( BigMoney.of( CurrencyUnit.USD, 42.232323 ) );
         proto.entityReference().set( EntityReference.parseEntityReference( "12345" ) );
         proto.stringIntMap().get().put( "foo", 42 );
 
@@ -246,6 +254,10 @@ public abstract class AbstractValueCompositeSerializationTest
         Property<LocalDate> localDate();
 
         Property<LocalDateTime> localDateTime();
+
+        Property<Money> money();
+
+        Property<BigMoney> bigMoney();
 
         Property<EntityReference> entityReference();
 

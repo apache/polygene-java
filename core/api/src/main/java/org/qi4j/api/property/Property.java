@@ -32,6 +32,8 @@ package org.qi4j.api.property;
  * <li> Date</li>
  * <li> DateTime (Joda Time)</li>
  * <li> LocalDateTime (Joda Time)</li>
+ * <li> Money (Joda Money)</li>
+ * <li> BigMoney (Joda Money)</li>
  * <li> A serializable</li>
  * <li> A ValueComposite</li>
  * <li> A List, Set or Collection of any of the above</li>

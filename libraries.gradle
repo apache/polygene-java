@@ -28,6 +28,7 @@ def jdomVersion = '2.0.2'
 def jedisVersion = '2.2.1'
 def jettyVersion = '9.1.0.v20131115'
 def jgoodiesLooksVersion = '2.5.3'
+def jodaMoneyVersion = '0.9'
 def jodaTimeVersion = '2.3'
 def jrubyVersion = '1.7.8' // 1.7.9 - Fails to run!
 def jtaVersion = '1.1'
@@ -195,6 +196,7 @@ rootProject.ext {
           wicket_stateless: "com.jolira:wicket-stateless:$wicketStatelessVersion",
 
           // Library & Extension dependencies
+          jodamoney: "org.joda:joda-money:$jodaMoneyVersion",
           jodatime: "joda-time:joda-time:$jodaTimeVersion",
           ehcache: "net.sf.ehcache:ehcache:$ehcacheVersion",
           elasticsearch: "org.elasticsearch:elasticsearch:$elasticsearchVersion",

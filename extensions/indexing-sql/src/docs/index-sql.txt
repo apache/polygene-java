@@ -7,7 +7,7 @@ source=extensions/indexing-sql/dev-status.xml
 --------------
 
 This extension fully leverage the <<library-sql>> meaning that you must use it to assemble your DataSource and that you
-get <<library-circuitbreaker,Cricuit Breaker>> and <<library-jmx, JMX>> integration for free.
+get <<library-circuitbreaker,Circuit Breaker>> and <<library-jmx, JMX>> integration for free.
 
 TIP: See the <<sample-sql-support>> that demonstrate combined use of <<library-sql>>, <<extension-es-sql>> and
 <<extension-indexing-sql>>.
@@ -31,6 +31,8 @@ the DataSource properly, see <<library-sql>> and <<howto-configure-service>>.
 
 
 == PostgreSQL ==
+
+WARNING: The PostgreSQL Index/Query engine do not support queries on Money values.
 
 Assembly is done using the provided Assembler:
 

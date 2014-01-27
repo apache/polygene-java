@@ -1,0 +1,18 @@
+[[core-api-money, Money API]]
+= Money API =
+The Qi4j platform supports Money idioms thanks to the JodaMoney project.
+
+== Money State ==
+
+JodaMoney types, +Money+ and +BigMoney+, are both supported in Values and Entities.
+
+Here are some sample Properties that contains monetary values:
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/money/DocumentationSupport.java
+tag=state
+--------------
+
+See <<core-api-value>> and <<core-api-entity>> for details about the serialization of such values.
+

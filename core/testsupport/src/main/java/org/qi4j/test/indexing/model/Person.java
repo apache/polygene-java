@@ -17,7 +17,10 @@
  */
 package org.qi4j.test.indexing.model;
 
+import java.util.List;
 import java.util.Map;
+import org.joda.money.BigMoney;
+import org.joda.money.Money;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
@@ -71,4 +74,13 @@ public interface Person
 
     @Optional
     Property<Map<String, String>> additionalInfo();
+
+    @Optional
+    Property<Money> money();
+
+    @Optional
+    Property<BigMoney> bigMoney();
+
+    @Optional
+    Property<List<Money>> moneys();
 }

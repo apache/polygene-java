@@ -26,6 +26,8 @@ import java.math.RoundingMode;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.joda.money.BigMoney;
+import org.joda.money.Money;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -216,6 +218,80 @@ public abstract class ValueSerializerAdapter<OutputType>
             public Object map( Options options, EntityReference ref )
             {
                 return ref.toString();
+            }
+        } );
+
+        // Complex Value types
+        registerComplexSerializer( Money.class, new ComplexSerializer<Money, OutputType>()
+        {
+            @Override
+            public void serialize( Options options, Money money, OutputType output )
+                throws Exception
+            {
+                onObjectStart( output );
+                onFieldStart( output, "currency" );
+                onValueStart( output );
+                onValue( output, money.getCurrencyUnit().getCurrencyCode() );
+                onValueEnd( output );
+                onFieldEnd( output );
+                onFieldStart( output, "amount" );
+                onValueStart( output );
+
+                Boolean toDouble = options.getBoolean( Options.BIGNUM_TO_DOUBLE );
+                if( toDouble != null && toDouble )
+                {
+                    Integer scale = options.getInteger( Options.BIGNUM_TO_DOUBLE_SCALE );
+                    scale = scale == null ? money.getScale() : scale;
+                    String roundingName = options.getString( Options.BIGNUM_TO_DOUBLE_ROUNDING );
+                    RoundingMode roundingMode = roundingName == null
+                                                ? RoundingMode.HALF_UP
+                                                : RoundingMode.valueOf( roundingName );
+                    onValue( output, money.getAmount().setScale( scale, roundingMode ).doubleValue() );
+                }
+                else
+                {
+                    onValue( output, money.getAmount().toString() );
+                }
+
+                onValueEnd( output );
+                onFieldEnd( output );
+                onObjectEnd( output );
+            }
+        } );
+        registerComplexSerializer( BigMoney.class, new ComplexSerializer<BigMoney, OutputType>()
+        {
+            @Override
+            public void serialize( Options options, BigMoney money, OutputType output )
+                throws Exception
+            {
+                onObjectStart( output );
+                onFieldStart( output, "currency" );
+                onValueStart( output );
+                onValue( output, money.getCurrencyUnit().getCurrencyCode() );
+                onValueEnd( output );
+                onFieldEnd( output );
+                onFieldStart( output, "amount" );
+                onValueStart( output );
+
+                Boolean toDouble = options.getBoolean( Options.BIGNUM_TO_DOUBLE );
+                if( toDouble != null && toDouble )
+                {
+                    Integer scale = options.getInteger( Options.BIGNUM_TO_DOUBLE_SCALE );
+                    scale = scale == null ? money.getScale() : scale;
+                    String roundingName = options.getString( Options.BIGNUM_TO_DOUBLE_ROUNDING );
+                    RoundingMode roundingMode = roundingName == null
+                                                ? RoundingMode.HALF_UP
+                                                : RoundingMode.valueOf( roundingName );
+                    onValue( output, money.getAmount().setScale( scale, roundingMode ).doubleValue() );
+                }
+                else
+                {
+                    onValue( output, money.getAmount().toString() );
+                }
+
+                onValueEnd( output );
+                onFieldEnd( output );
+                onObjectEnd( output );
             }
         } );
     }

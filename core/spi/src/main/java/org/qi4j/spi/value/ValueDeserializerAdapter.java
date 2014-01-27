@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import org.joda.money.BigMoney;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
@@ -292,6 +295,56 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             public EntityReference map( Object input )
             {
                 return EntityReference.parseEntityReference( input.toString() );
+            }
+        } );
+
+        // Complex Value types
+        registerComplexDeserializer( Money.class, new ComplexDeserializer<Money, InputType, InputNodeType>()
+        {
+            @Override
+            public Money deserializePull( InputType input )
+                throws Exception
+            {
+                return deserializeTree( readObjectTree( input ) );
+            }
+
+            @Override
+            public Money deserializeTree( InputNodeType inputNode )
+                throws Exception
+            {
+                String currency = getObjectFieldValue(
+                    inputNode,
+                    "currency",
+                    ValueDeserializerAdapter.this.<String>buildDeserializeInputNodeFunction( new ValueType( String.class ) ) );
+                BigDecimal amount = getObjectFieldValue(
+                    inputNode,
+                    "amount",
+                    ValueDeserializerAdapter.this.<BigDecimal>buildDeserializeInputNodeFunction( new ValueType( BigDecimal.class ) ) );
+                return Money.of( CurrencyUnit.of( currency ), amount );
+            }
+        } );
+        registerComplexDeserializer( BigMoney.class, new ComplexDeserializer<BigMoney, InputType, InputNodeType>()
+        {
+            @Override
+            public BigMoney deserializePull( InputType input )
+                throws Exception
+            {
+                return deserializeTree( readObjectTree( input ) );
+            }
+
+            @Override
+            public BigMoney deserializeTree( InputNodeType inputNode )
+                throws Exception
+            {
+                String currency = getObjectFieldValue(
+                    inputNode,
+                    "currency",
+                    ValueDeserializerAdapter.this.<String>buildDeserializeInputNodeFunction( new ValueType( String.class ) ) );
+                BigDecimal amount = getObjectFieldValue(
+                    inputNode,
+                    "amount",
+                    ValueDeserializerAdapter.this.<BigDecimal>buildDeserializeInputNodeFunction( new ValueType( BigDecimal.class ) ) );
+                return BigMoney.of( CurrencyUnit.of( currency ), amount );
             }
         } );
     }

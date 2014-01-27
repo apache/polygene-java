@@ -17,6 +17,7 @@
  */
 package org.qi4j.index.elasticsearch;
 
+import java.util.HashMap;
 import java.util.Map;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
@@ -28,6 +29,8 @@ import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.money.BigMoney;
+import org.joda.money.Money;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
@@ -57,6 +60,7 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
+import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
@@ -78,12 +82,17 @@ import static org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.resolveVar
 public interface ElasticSearchFinder
     extends EntityFinder
 {
-
     class Mixin
         implements EntityFinder
     {
-
         private static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchFinder.class );
+        private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 2 );
+
+        static
+        {
+            COMPLEX_TYPE_SUPPORTS.put( Money.class, new ElasticSearchFinderSupport.MoneySupport() );
+            COMPLEX_TYPE_SUPPORTS.put( BigMoney.class, new ElasticSearchFinderSupport.MoneySupport() );
+        }
 
         @This
         private ElasticSearchSupport support;
@@ -232,11 +241,6 @@ public interface ElasticSearchFinder
                 NotSpecification notSpec = (NotSpecification) spec;
                 processNotSpecification( filterBuilder, notSpec, variables );
             }
-            else if( spec instanceof EqSpecification || spec instanceof NeSpecification )
-            {
-                ComparisonSpecification<?> compSpec = (ComparisonSpecification<?>) spec;
-                processEqualitySpecification( filterBuilder, compSpec, variables );
-            }
             else if( spec instanceof ComparisonSpecification )
             {
                 ComparisonSpecification<?> compSpec = (ComparisonSpecification<?>) spec;
@@ -350,18 +354,23 @@ public interface ElasticSearchFinder
             addFilter( notFilter( operandFilter ), filterBuilder );
         }
 
-        private void processEqualitySpecification( FilterBuilder filterBuilder,
-                                                   ComparisonSpecification<?> spec,
-                                                   Map<String, Object> variables )
-            throws EntityFinderException
+        private void processComparisonSpecification( FilterBuilder filterBuilder,
+                                                     ComparisonSpecification<?> spec,
+                                                     Map<String, Object> variables )
         {
-            LOGGER.trace( "Processing EqualitySpecification {}", spec );
+            LOGGER.trace( "Processing ComparisonSpecification {}", spec );
 
             if( spec.value() instanceof ValueComposite )
             {
                 // Query by "example value"
                 throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
                                                          + "queries, ie. queries by 'example value'." );
+            }
+            else if( COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() ) != null )
+            {
+                // Query on complex type property
+                ComplexTypeSupport support = COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() );
+                addFilter( support.comparison( spec, variables ), filterBuilder );
             }
             else
             {
@@ -376,27 +385,7 @@ public interface ElasticSearchFinder
                 {
                     addFilter( notFilter( termFilter( name, value ) ), filterBuilder );
                 }
-            }
-        }
-
-        private void processComparisonSpecification( FilterBuilder filterBuilder,
-                                                     ComparisonSpecification<?> spec,
-                                                     Map<String, Object> variables )
-        {
-            LOGGER.trace( "Processing ComparisonSpecification {}", spec );
-
-            if( spec.value() instanceof ValueComposite )
-            {
-                // Query by "example value"
-                throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
-                                                         + "queries, ie. queries by 'example value'." );
-            }
-            else
-            {
-                // Query by simple property value
-                String name = spec.property().toString();
-                Object value = resolveVariable( spec.value(), variables );
-                if( spec instanceof GeSpecification )
+                else if( spec instanceof GeSpecification )
                 {
                     addFilter( rangeFilter( name ).gte( value ), filterBuilder );
                 }
@@ -433,6 +422,11 @@ public interface ElasticSearchFinder
                 throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
                                                          + "queries, ie. queries by 'example value'." );
             }
+            else if( COMPLEX_TYPE_SUPPORTS.get( firstValue.getClass() ) != null )
+            {
+                ComplexTypeSupport support = COMPLEX_TYPE_SUPPORTS.get( firstValue.getClass() );
+                addFilter( support.containsAll( spec, variables ), filterBuilder );
+            }
             else
             {
                 String name = spec.collectionProperty().toString();
@@ -456,6 +450,11 @@ public interface ElasticSearchFinder
                 // Query by complex property "example value"
                 throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
                                                          + "queries, ie. queries by 'example value'." );
+            }
+            else if( COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() ) != null )
+            {
+                ComplexTypeSupport support = COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() );
+                addFilter( support.contains( spec, variables ), filterBuilder );
             }
             else
             {
@@ -511,7 +510,6 @@ public interface ElasticSearchFinder
             Object value = resolveVariable( spec.value(), variables );
             addFilter( termFilter( name, value ), filterBuilder );
         }
-
     }
 
 }

@@ -6,6 +6,8 @@
 source=extensions/indexing-rdf/dev-status.xml
 --------------
 
+WARNING: The OpenRDF Index/Query engine do not support queries on Money values.
+
 Index/Query services backed by http://www.openrdf.org/[OpenRDF Sesame] framework for processing RDF data.
 
 include::../../build/docs/buildinfo/artifact.txt[]

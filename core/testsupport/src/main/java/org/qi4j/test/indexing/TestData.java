@@ -17,8 +17,13 @@
  */
 package org.qi4j.test.indexing;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.joda.money.BigMoney;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -170,6 +175,9 @@ class TestData
                 address = module.newValueBuilderWithPrototype( address ).prototype();
                 address.line1().set( "Qi Alley 4j" );
                 joeDoe.address().set( address );
+                joeDoe.money().set( Money.of( CurrencyUnit.USD, 100 ) );
+                joeDoe.bigMoney().set( BigMoney.of( CurrencyUnit.USD, new BigDecimal( "1000000000000.000000" ) ) );
+                joeDoe.moneys().set( Arrays.asList( Money.of( CurrencyUnit.USD, 100 ) ) );
                 NameableAssert.trace( joeDoe );
             }
 
@@ -189,6 +197,9 @@ class TestData
                 address = module.newValueBuilderWithPrototype( address ).prototype();
                 address.line1().set( "Qi Avenue 4j" );
                 jackDoe.address().set( address );
+                jackDoe.money().set( Money.of( CurrencyUnit.USD, 1000 ) );
+                jackDoe.moneys().set( Arrays.asList( Money.of( CurrencyUnit.USD, 100 ),
+                                                     Money.of( CurrencyUnit.USD, 1000 ) ) );
 
                 ValueBuilder<URL> urlBuilder = module.newValueBuilder( URL.class );
                 ValueBuilder<Protocol> protocolBuilder = module.newValueBuilder( Protocol.class );

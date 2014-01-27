@@ -3,6 +3,7 @@ jar { manifest { name = "Qi4j Core API"}}
 dependencies {
 
   compile project( ':org.qi4j.core:org.qi4j.core.io' )
+  compile libraries.jodamoney
   compile libraries.jodatime
 
   testCompile project( ':org.qi4j.core:org.qi4j.core.testsupport' )

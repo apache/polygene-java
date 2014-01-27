@@ -25,6 +25,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.joda.money.BigMoney;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -111,6 +114,9 @@ public abstract class AbstractEntityStoreTest
         instance.dateTimeValue().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
         instance.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00", UTC ) );
         instance.localDateValue().set( new LocalDate( "2020-03-04" ) );
+        instance.money().set( Money.of( CurrencyUnit.USD, 42.23 ) );
+        instance.bigMoney().set( BigMoney.of( CurrencyUnit.USD,
+                                              new BigDecimal( "42424242424242424242424242.232323230000000000000" ) ) );
         instance.association().set( instance );
 
         ValueBuilder<Tjabba> valueBuilder4 = module.newValueBuilder( Tjabba.class );
@@ -204,6 +210,15 @@ public abstract class AbstractEntityStoreTest
             assertThat( "property 'localDateValue' has correct value",
                         instance.localDateValue().get(),
                         equalTo( new LocalDate( "2020-03-04" ) ) );
+
+            assertThat( "property 'bigMoney' has correct value",
+                        instance.bigMoney().get(),
+                        equalTo( BigMoney.of( CurrencyUnit.USD,
+                                              new BigDecimal( "42424242424242424242424242.232323230000000000000" ) ) ) );
+
+            assertThat( "property 'money' has correct value",
+                        instance.money().get(),
+                        equalTo( Money.of( CurrencyUnit.USD, 42.23 ) ) );
 
             assertThat( "property 'name' has correct value",
                         instance.name().get(),
@@ -479,6 +494,12 @@ public abstract class AbstractEntityStoreTest
 
         @Optional
         Property<LocalDate> localDateValue();
+
+        @Optional
+        Property<Money> money();
+
+        @Optional
+        Property<BigMoney> bigMoney();
 
         @Optional
         Property<String> name();
