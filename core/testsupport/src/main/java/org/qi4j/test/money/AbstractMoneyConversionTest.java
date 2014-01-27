@@ -31,6 +31,9 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+/**
+ * Abstract satisfiedBy with tests for the MoneyConversion interface.
+ */
 public abstract class AbstractMoneyConversionTest
     extends AbstractQi4jTest
 {
@@ -45,10 +48,9 @@ public abstract class AbstractMoneyConversionTest
     @Test
     public void script1()
     {
-        Rate rate = moneyConversion.get().currentRate( CurrencyUnit.EUR, CurrencyUnit.of( "MAD" ) );
-        System.out.println( "==========================" );
-        System.out.println( rate );
-        System.out.println( "==========================" );
+        Rate rate = moneyConversion.get().endOfDateRateAt( new DateTime( 2014, 1, 23, 23, 23 ),
+                                                           CurrencyUnit.EUR,
+                                                           CurrencyUnit.of( "MAD" ) );
         try
         {
             rate.convert( Money.of( CurrencyUnit.USD, 10 ) );
@@ -57,10 +59,15 @@ public abstract class AbstractMoneyConversionTest
         catch( IllegalArgumentException expected )
         {
         }
-        Money dinars = rate.convert( Money.of( CurrencyUnit.EUR, 10 ) );
-        assertThat( dinars.getAmount().intValue(), equalTo( 114 ) );
+    }
 
-        Rate eod = moneyConversion.get().endOfDateRateAt( new DateTime(), CurrencyUnit.EUR, CurrencyUnit.of( "MAD" ) );
-        assertThat( eod.convert( Money.of( CurrencyUnit.EUR, 10 ) ).getAmount().intValue(), equalTo( 114 ) );
+    @Test
+    public void script2()
+    {
+        Rate rate = moneyConversion.get().endOfDateRateAt( new DateTime( 2014, 1, 23, 23, 23 ),
+                                                           CurrencyUnit.EUR,
+                                                           CurrencyUnit.of( "MAD" ) );
+        Money dinars = rate.convert( Money.of( CurrencyUnit.EUR, 10 ) );
+        assertThat( dinars.getAmount().doubleValue(), equalTo( 114.92 ) );
     }
 }

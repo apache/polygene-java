@@ -55,7 +55,6 @@ import static org.joda.time.DateTimeFieldType.year;
 public class OERMoneyConversionMixin
     implements OERMoneyConversionService
 {
-
     private static final Logger LOGGER = LoggerFactory.getLogger( OERMoneyConversionService.class );
     private static final DateTime OER_DATA_FROM = new DateTime( 1999, 1, 1, 0, 0 );
     @This
@@ -63,31 +62,26 @@ public class OERMoneyConversionMixin
     private AccountLevel accountLevel = AccountLevel.free;
     private String latest;
     private String endOfDate;
-    private boolean available = false;
-
-    @Override
-    public boolean isAvailable()
-    {
-        return available;
-    }
 
     @Override
     public void activateService()
     {
+        configuration.refresh();
         OERConfiguration config = configuration.get();
-        String apiKey = config.apiKey().get();
-        accountLevel = config.accountLevel().get();
-        String baseUrl = ( config.https().get() ? "https" : "http" ) + "://openexchangerates.org/api/";
-        latest = baseUrl + "latest.json?app_id=" + apiKey;
-        endOfDate = baseUrl + "historical/%04d-%02d-%02d.json?app_id=" + apiKey;
-        available = true;
-        LOGGER.trace( "Open Exchange Rates Money Conversion Service is now available" );
+        if( config.enabled().get() )
+        {
+            String apiKey = config.apiKey().get();
+            accountLevel = config.accountLevel().get();
+            String baseUrl = ( config.https().get() ? "https" : "http" ) + "://openexchangerates.org/api/";
+            latest = baseUrl + "latest.json?app_id=" + apiKey;
+            endOfDate = baseUrl + "historical/%04d-%02d-%02d.json?app_id=" + apiKey;
+            LOGGER.trace( "Open Exchange Rates Money Conversion Service is now available" );
+        }
     }
 
     @Override
     public void passivateService()
     {
-        available = false;
         accountLevel = AccountLevel.free;
         latest = null;
         endOfDate = null;

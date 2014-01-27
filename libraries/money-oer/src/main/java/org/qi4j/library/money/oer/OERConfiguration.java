@@ -18,12 +18,14 @@
 package org.qi4j.library.money.oer;
 
 import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.configuration.Enabled;
 import org.qi4j.api.property.Property;
 
 /**
  * OpenExchangeRates.org Configuration.
  */
 public interface OERConfiguration
+    extends Enabled
 {
     /**
      * OpenExchangeRates.org account level.

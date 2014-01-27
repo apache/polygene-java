@@ -60,6 +60,8 @@ public class OERMoneyConversionTest
             withConfigVisibility( layer ).
             assemble( module );
         // END SNIPPET: assembly
-        configModule.forMixin( OERConfiguration.class ).declareDefaults().apiKey().set( apiKey );
+        OERConfiguration config = configModule.forMixin( OERConfiguration.class ).declareDefaults();
+        config.enabled().set( true );
+        config.apiKey().set( apiKey );
     }
 }

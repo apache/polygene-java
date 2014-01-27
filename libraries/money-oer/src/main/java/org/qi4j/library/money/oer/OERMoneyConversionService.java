@@ -19,7 +19,6 @@ package org.qi4j.library.money.oer;
 
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.money.MoneyConversion;
-import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ServiceActivation;
 
 /**
@@ -27,6 +26,6 @@ import org.qi4j.api.service.ServiceActivation;
  */
 @Mixins( OERMoneyConversionMixin.class )
 public interface OERMoneyConversionService
-    extends MoneyConversion, ServiceActivation, Availability
+    extends MoneyConversion, ServiceActivation
 {
 }
