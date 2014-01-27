@@ -32,33 +32,27 @@ public abstract class EhCachePoolMixin
     implements EhCachePoolService
 {
 
-    private ConcurrentHashMap<String, EhCacheImpl> caches;
-    @Optional
-    @This
+    private final ConcurrentHashMap<String, EhCacheImpl<?>> caches = new ConcurrentHashMap<>();
+    @This @Optional
     private Configuration<EhCacheConfiguration> config;
     private CacheManager cacheManager;
 
-    public EhCachePoolMixin()
-    {
-        caches = new ConcurrentHashMap<String, EhCacheImpl>();
-    }
-
     @Override
+    @SuppressWarnings( "unchecked" )
     public <T> Cache<T> fetchCache( String cacheId, Class<T> valueType )
     {
         // Note: Small bug in Ehcache; If the cache name is an empty String it will actually work until
         //       you try to remove the Cache instance from the CacheManager, at which point it is silently
         //       ignored but not removed so there is an follow up problem of too much in the CacheManager.
         NullArgumentException.validateNotEmpty( "cacheId", cacheId );
-        @SuppressWarnings( "unchecked" )
-        EhCacheImpl<T> cache = caches.get( cacheId );
+        EhCacheImpl<?> cache = caches.get( cacheId );
         if( cache == null )
         {
             cache = createNewCache( cacheId, valueType );
             caches.put( cacheId, cache );
         }
         cache.incRefCount();
-        return cache;
+        return (Cache<T>) cache;
     }
 
     private <T> EhCacheImpl<T> createNewCache( String cacheId, Class<T> valueType )
@@ -69,13 +63,13 @@ public abstract class EhCachePoolMixin
         net.sf.ehcache.Cache cache = new net.sf.ehcache.Cache( cc );
         cacheManager.addCache( cache );
 
-        return new EhCacheImpl<T>( cacheId, cache, valueType );
+        return new EhCacheImpl<>( cacheId, cache, valueType );
     }
 
     @Override
-    public void returnCache( Cache cache )
+    public void returnCache( Cache<?> cache )
     {
-        EhCacheImpl eh = (EhCacheImpl) cache;
+        EhCacheImpl<?> eh = (EhCacheImpl<?>) cache;
         eh.decRefCount();
         if( eh.isNotUsed() )
         {
@@ -85,7 +79,7 @@ public abstract class EhCachePoolMixin
     }
 
     @Override
-    public void activateCache()
+    public void activateService()
         throws Exception
     {
         net.sf.ehcache.config.Configuration configuration = new net.sf.ehcache.config.Configuration();
@@ -96,7 +90,7 @@ public abstract class EhCachePoolMixin
     }
 
     @Override
-    public void passivateCache()
+    public void passivateService()
         throws Exception
     {
         cacheManager.shutdown();

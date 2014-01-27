@@ -136,6 +136,7 @@ public class JSONMapEntityStoreMixin
         if( caching != null )
         {
             caching.returnCache( cache );
+            cache = null;
         }
     }
 
