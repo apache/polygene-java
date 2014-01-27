@@ -17,14 +17,19 @@
  */
 package org.qi4j.api.money;
 
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import org.joda.money.BigMoney;
+import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
+import org.joda.time.DateTime;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.property.Property;
 
 public class DocumentationSupport
 {
+
     public interface CustomValueOrEntity
     {
         // START SNIPPET: state
@@ -36,6 +41,34 @@ public class DocumentationSupport
 
         Property<Map<String, Money>> mapOfMoney();
         // END SNIPPET: state
+    }
+
+    // START SNIPPET: injection
+    @Service
+    private MoneyConversion moneyConversion;
+    // END SNIPPET: injection
+
+    public void forDocumentationOnly()
+    {
+        DateTime pastDate = new DateTime( 1999, 7, 23, 12, 00 );
+        // START SNIPPET: conversion
+        Rate nowRate = moneyConversion.currentRate( CurrencyUnit.USD, CurrencyUnit.EUR );
+        Rate pastRate = moneyConversion.endOfDateRateAt( pastDate, CurrencyUnit.USD, CurrencyUnit.EUR );
+        // END SNIPPET: conversion
+        // START SNIPPET: conversion
+        BigMoney someBigMoney = BigMoney.of( CurrencyUnit.USD, 4096 );
+
+        BigMoney pastEuros = pastRate.convert( someBigMoney );
+        BigMoney nowEuros = nowRate.convert( someBigMoney );
+        BigMoney balance = nowEuros.minus( pastEuros );
+        // END SNIPPET: conversion
+        // START SNIPPET: conversion
+        Money someMoney = Money.of( CurrencyUnit.USD, 4096 );
+
+        Money pastRoundedEuros = pastRate.convert( someMoney, RoundingMode.HALF_EVEN );
+        Money nowRoundedEuros = nowRate.convert( someMoney, RoundingMode.HALF_EVEN );
+        Money roundedBalance = nowRoundedEuros.minus( pastRoundedEuros );
+        // END SNIPPET: conversion
     }
 
 }

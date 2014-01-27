@@ -1,0 +1,43 @@
+[[library-money-oer, OpenExchangeRates.org]]
+= OpenExchangeRates.org =
+
+[devstatus]
+--------------
+source=libraries/money-oer/dev-status.xml
+--------------
+
+The OpenExchangeRates.org Money Conversion Library implements the +MoneyConversion+ service by consuming the 
+OpenExchangeRates.org JSON API.
+
+See <<core-api-money>> for usage instructions.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assemble the OpenExchangeRates.org MoneyConversion Service:
+
+[snippet,java]
+----
+source=libraries/money-oer/src/test/java/org/qi4j/library/money/oer/OERMoneyConversionTest.java
+tag=assembly
+----
+
+As this service relies on a third party service reached through network you should consider using the
+<<library-circuitbreaker>>.
+
+== Configuration ==
+
+Here are the configuration properties:
+
+[snippet,java]
+----
+source=libraries/money-oer/src/main/java/org/qi4j/library/money/oer/OERConfiguration.java
+tag=config
+----
+
+Only the +apiKey+ configuration property is mandatory.
+
+== Logging ==
+
+The SLF4J Logger used by this library is named +org.qi4j.library.money.oer+.

@@ -1,6 +1,6 @@
 [[core-api-money, Money API]]
 = Money API =
-The Qi4j platform supports Money idioms thanks to the JodaMoney project.
+The Qi4j platform supports Money idioms thanks to the JodaMoney project and defines a Money Conversion API.
 
 == Money State ==
 
@@ -16,3 +16,37 @@ tag=state
 
 See <<core-api-value>> and <<core-api-entity>> for details about the serialization of such values.
 
+
+== Money Conversion ==
+
+The Money API defines the +MoneyConversion+ service API as follows:
+
+[snippet,java]
+--------------
+source=core/api/src/main/java/org/qi4j/api/money/MoneyConversion.java
+tag=conversion
+--------------
+
+TIP: By default, no +MoneyConversion+ service is available, you need to choose one among the <<libraries>> and
+assemble it in your Application.
+
+The +MoneyConversion+ service supports getting current and past (End Of Day) rates.
++Rate+ objects are dated and allow to perform currency conversion on both +Money+ and +BigMoney+ values.
+When converting +Money+ values you can choose the rounding mode to use.
+
+MoneyConversion service is injected like this:
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/money/DocumentationSupport.java
+tag=injection
+--------------
+
+
+You can then use it directly:
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/money/DocumentationSupport.java
+tag=conversion
+--------------

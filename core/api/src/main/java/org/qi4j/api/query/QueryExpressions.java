@@ -277,19 +277,14 @@ public final class QueryExpressions
     /**
      * Create a new OR specification.
      *
-     * @param left first operand
-     * @param right second operand
-     * @param optionalRight optional operands
+     * @param specs operands
      *
      * @return a new OR specification
      */
     @SafeVarargs
-    public static OrSpecification or( Specification<Composite> left,
-                                      Specification<Composite> right,
-                                      Specification<Composite>... optionalRight
-    )
+    public static OrSpecification or( Specification<Composite>... specs )
     {
-        return new OrSpecification( prepend( left, prepend( right, Arrays.asList( optionalRight ) ) ) );
+        return new OrSpecification( Arrays.asList( specs ) );
     }
 
     /**
