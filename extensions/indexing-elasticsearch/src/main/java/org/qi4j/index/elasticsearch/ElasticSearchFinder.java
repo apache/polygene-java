@@ -57,7 +57,6 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
-import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
