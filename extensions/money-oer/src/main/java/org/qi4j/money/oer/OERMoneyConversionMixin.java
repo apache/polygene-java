@@ -24,21 +24,31 @@ import java.math.RoundingMode;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 import org.joda.money.CurrencyUnit;
+import org.joda.money.IllegalCurrencyException;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.money.MoneyConversionException;
 import org.qi4j.api.money.Rate;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.money.oer.OERConfiguration.AccountLevel;
+import org.qi4j.spi.cache.Cache;
+import org.qi4j.spi.cache.CachePool;
 import org.qi4j.spi.money.DefaultRate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.util.Locale.US;
 import static org.joda.time.DateTimeFieldType.dayOfMonth;
 import static org.joda.time.DateTimeFieldType.monthOfYear;
 import static org.joda.time.DateTimeFieldType.year;
@@ -49,9 +59,8 @@ import static org.joda.time.DateTimeFieldType.year;
  * <p>Currencies are updated on a hourly basis.</p>
  * <p>Historical EOD rates are starting from 1999.</p>
  * <p>Support free to unlimited account types.</p>
+ * <p>Qi4j Cache extension is leveraged if available.</p>
  */
-// TODO Use Cache API to minimize calls to the provider
-// TODO Add out of the box optional CircuitBreaker support
 public class OERMoneyConversionMixin
     implements OERMoneyConversionService
 {
@@ -59,7 +68,15 @@ public class OERMoneyConversionMixin
     private static final DateTime OER_DATA_FROM = new DateTime( 1999, 1, 1, 0, 0 );
     @This
     private Configuration<OERConfiguration> configuration;
-    private AccountLevel accountLevel = AccountLevel.free;
+    @Uses
+    private ServiceDescriptor descriptor;
+    @Optional @Service
+    private CachePool caching;
+    private Cache<Rate> rateCache;
+    private Cache<List> ratesCache;
+    private final AtomicLong cacheMisses = new AtomicLong( 0 );
+    private final AtomicLong cacheHits = new AtomicLong( 0 );
+    private AccountLevel accountLevel;
     private String latest;
     private String endOfDate;
 
@@ -70,11 +87,22 @@ public class OERMoneyConversionMixin
         OERConfiguration config = configuration.get();
         if( config.enabled().get() )
         {
+            // Configure MoneyConversion if enabled
             String apiKey = config.apiKey().get();
             accountLevel = config.accountLevel().get();
             String baseUrl = ( config.https().get() ? "https" : "http" ) + "://openexchangerates.org/api/";
             latest = baseUrl + "latest.json?app_id=" + apiKey;
             endOfDate = baseUrl + "historical/%04d-%02d-%02d.json?app_id=" + apiKey;
+
+            // Enable caching if available
+            if( caching != null )
+            {
+                String rateCacheId = descriptor.identity() + "-" + UUID.randomUUID().toString();
+                rateCache = caching.fetchCache( rateCacheId, Rate.class );
+                String ratesCacheId = descriptor.identity() + "-" + UUID.randomUUID().toString();
+                ratesCache = caching.fetchCache( ratesCacheId, List.class );
+            }
+
             LOGGER.trace( "Open Exchange Rates Money Conversion Service is now available" );
         }
     }
@@ -85,13 +113,54 @@ public class OERMoneyConversionMixin
         accountLevel = AccountLevel.free;
         latest = null;
         endOfDate = null;
+        if( caching != null )
+        {
+            caching.returnCache( rateCache );
+            rateCache = null;
+            caching.returnCache( ratesCache );
+            ratesCache = null;
+            cacheHits.set( 0L );
+            cacheMisses.set( 0L );
+        }
+    }
+
+    @Override
+    public long cacheHits()
+    {
+        return cacheHits.get();
+    }
+
+    @Override
+    public long cacheMisses()
+    {
+        return cacheMisses.get();
     }
 
     @Override
     public Rate currentRate( CurrencyUnit from, CurrencyUnit to )
         throws MoneyConversionException
     {
-        return getRate( latest, from, to );
+        String cacheKey = String.format( "LATEST-%s-%s", from.getCode(), to.getCode() );
+        if( caching != null && rateCache.exists( cacheKey ) )
+        {
+            Rate rate = rateCache.get( cacheKey );
+            if( rate.when().plusHours( 1 ).isAfterNow() )
+            {
+                cacheHits.incrementAndGet();
+                return rate;
+            }
+            else
+            {
+                rateCache.remove( cacheKey );
+            }
+        }
+        Rate rate = getRate( latest, from, to );
+        if( caching != null )
+        {
+            cacheMisses.incrementAndGet();
+            rateCache.put( cacheKey, rate );
+        }
+        return rate;
     }
 
     @Override
@@ -103,21 +172,55 @@ public class OERMoneyConversionMixin
             throw new MoneyConversionException( "End of date exchange rate unavailable before " + OER_DATA_FROM
                                                 + ", nor in the future. Was asked for " + date );
         }
-        String url = String.format( endOfDate,
-                                    date.get( year() ),
-                                    date.get( monthOfYear() ),
-                                    date.get( dayOfMonth() ) );
-        return getRate( url, from, to );
+        int year = date.get( year() );
+        int month = date.get( monthOfYear() );
+        int day = date.get( dayOfMonth() );
+        String cacheKey = String.format( US, "EOD-%s-%s-%d-%d-%d", from.getCode(), to.getCode(), year, month, day );
+        if( caching != null && rateCache.exists( cacheKey ) )
+        {
+            cacheHits.incrementAndGet();
+            return rateCache.get( cacheKey );
+        }
+        String url = String.format( endOfDate, year, month, day );
+        Rate rate = getRate( url, from, to );
+        if( caching != null )
+        {
+            cacheMisses.incrementAndGet();
+            rateCache.put( cacheKey, rate );
+        }
+        return rate;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public Iterable<Rate> currentRates( CurrencyUnit from )
         throws MoneyConversionException
     {
-        return getRates( latest, from );
+        String cacheKey = String.format( "LATEST-%s", from.getCode() );
+        if( caching != null && ratesCache.exists( cacheKey ) )
+        {
+            List<Rate> rates = ratesCache.get( cacheKey );
+            if( rates.get( 0 ).when().plusHours( 1 ).isAfterNow() )
+            {
+                cacheHits.incrementAndGet();
+                return rates;
+            }
+            else
+            {
+                ratesCache.remove( cacheKey );
+            }
+        }
+        List<Rate> rates = getRates( latest, from );
+        if( caching != null )
+        {
+            cacheMisses.incrementAndGet();
+            ratesCache.put( cacheKey, rates );
+        }
+        return rates;
     }
 
     @Override
+    @SuppressWarnings( "unchecked" )
     public Iterable<Rate> endOfDateRatesAt( DateTime date, CurrencyUnit from )
         throws MoneyConversionException
     {
@@ -126,14 +229,26 @@ public class OERMoneyConversionMixin
             throw new MoneyConversionException( "End of date exchange rate unavailable before " + OER_DATA_FROM
                                                 + ", nor in the future. Was asked for " + date );
         }
-        String url = String.format( endOfDate,
-                                    date.get( year() ),
-                                    date.get( monthOfYear() ),
-                                    date.get( dayOfMonth() ) );
-        return getRates( url, from );
+        int year = date.get( year() );
+        int month = date.get( monthOfYear() );
+        int day = date.get( dayOfMonth() );
+        String cacheKey = String.format( US, "EOD-%s-%d-%d-%d", from.getCode(), year, month, day );
+        if( caching != null && ratesCache.exists( cacheKey ) )
+        {
+            cacheHits.incrementAndGet();
+            return ratesCache.get( cacheKey );
+        }
+        String url = String.format( endOfDate, year, month, day );
+        List<Rate> rates = getRates( url, from );
+        if( caching != null )
+        {
+            cacheMisses.incrementAndGet();
+            ratesCache.put( cacheKey, rates );
+        }
+        return rates;
     }
 
-    private Iterable<Rate> getRates( String url, CurrencyUnit from )
+    private List<Rate> getRates( String url, CurrencyUnit from )
     {
         switch( accountLevel )
         {
@@ -151,8 +266,16 @@ public class OERMoneyConversionMixin
             JSONArray names = rates.names();
             for( int idx = 0; idx < names.length(); idx++ )
             {
-                CurrencyUnit currency = CurrencyUnit.of( names.getString( idx ) );
-                ratesList.add( getRate( json, from, currency ) );
+                String currencyCode = names.getString( idx );
+                try
+                {
+                    CurrencyUnit currency = CurrencyUnit.of( currencyCode );
+                    ratesList.add( extractRate( json, from, currency ) );
+                }
+                catch( IllegalCurrencyException ex )
+                {
+                    LOGGER.warn( "Ignored unknown currency '{}' present in OpenExchangeRates data set", currencyCode );
+                }
             }
             return ratesList;
         }
@@ -173,7 +296,7 @@ public class OERMoneyConversionMixin
             default:
         }
         JSONObject json = getJSON( url );
-        return getRate( json, from, to );
+        return extractRate( json, from, to );
     }
 
     private JSONObject getJSON( String url )
@@ -193,7 +316,7 @@ public class OERMoneyConversionMixin
         }
     }
 
-    private Rate getRate( JSONObject json, CurrencyUnit from, CurrencyUnit to )
+    private Rate extractRate( JSONObject json, CurrencyUnit from, CurrencyUnit to )
     {
         try
         {
@@ -213,8 +336,6 @@ public class OERMoneyConversionMixin
                     BigDecimal baseMultiplier = BigDecimal.valueOf( rates.getDouble( baseCurrency.getCode() ) );
                     BigDecimal fromMultiplier = BigDecimal.valueOf( rates.getDouble( from.getCode() ) );
                     BigDecimal toMultiplier = BigDecimal.valueOf( rates.getDouble( to.getCode() ) );
-                    LOGGER.trace( "Multipliers:\n\t{}: {}\n\t{}: {}\n\t{}: {}",
-                                  baseCurrency, baseMultiplier, from, fromMultiplier, to, toMultiplier );
 
                     BigDecimal computedMultiplier = baseMultiplier.
                         divide( fromMultiplier, RoundingMode.HALF_EVEN ).

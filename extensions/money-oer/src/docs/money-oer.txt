@@ -11,6 +11,10 @@ OpenExchangeRates.org JSON API.
 
 See <<core-api-money>> for usage instructions.
 
+If a Qi4j Cache Extension is visible from the Money Conversion service it is leveraged to minimize requests going to
+OpenExchangeRates.org. End Of Date rates are cached forever, current rates are cached one hour according to the
+OpenExchangeRates.org update policy.
+
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Assembly ==

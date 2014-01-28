@@ -28,4 +28,13 @@ import org.qi4j.api.service.ServiceActivation;
 public interface OERMoneyConversionService
     extends MoneyConversion, ServiceActivation
 {
+    /**
+     * @return Number of cache hits
+     */
+    long cacheHits();
+
+    /**
+     * @return Number of cache misses
+     */
+    long cacheMisses();
 }

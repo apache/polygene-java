@@ -57,7 +57,7 @@ public class OERMoneyConversionAssembler
         module.services( OERMoneyConversionService.class ).visibleIn( visibility );
         if( configModule != null )
         {
-            module.entities( OERConfiguration.class ).visibleIn( configVisibility );
+            configModule.entities( OERConfiguration.class ).visibleIn( configVisibility );
         }
     }
 
