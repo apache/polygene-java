@@ -37,11 +37,12 @@ class VersionClass implements Plugin<Project>
       {
         tmpGroup = tmpGroup - ".core"
       }
+      tmpGroup = tmpGroup.replace('-','_')
       def outFilename = "java/" + tmpGroup.replace('.', '/') + "/BuildVersion.java"
       def outFile = new File(generatedSrcDir, outFilename)
       outFile.getParentFile().mkdirs()
       def f = new FileWriter(outFile)
-      f.write('package ' + tmpGroup.replace('-', '_') + ';\n')
+      f.write('package ' + tmpGroup + ';\n')
       f.write("""
 /**
  * Simple class for storing the version derived from the build system.
