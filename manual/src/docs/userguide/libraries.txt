@@ -17,10 +17,6 @@ include::../../../../libraries/alarm/src/docs/alarm.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/cache/src/docs/cache.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/circuitbreaker/src/docs/circuitbreaker.txt[]
 
 :leveloffset: 2
@@ -54,6 +50,10 @@ include::../../../../libraries/fileconfig/src/docs/fileconfig.txt[]
 :leveloffset: 2
 
 include::../../../../libraries/http/src/docs/http.txt[]
+
+:leveloffset: 2
+
+include::../../../../libraries/invocation-cache/src/docs/invocation-cache.txt[]
 
 :leveloffset: 2
 

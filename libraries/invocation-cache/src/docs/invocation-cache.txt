@@ -1,0 +1,14 @@
+[[library-invocation-cache, Invocation Cache Library]]
+= Invocation Cache =
+
+[devstatus]
+--------------
+source=libraries/invocation-cache/dev-status.xml
+--------------
+
+The Invocation Cache Library provides constructs to easily cache composite methods invocations.
+It has nothing to do with the <<core-spi-cache>>.
+
+NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+
+include::../../build/docs/buildinfo/artifact.txt[]

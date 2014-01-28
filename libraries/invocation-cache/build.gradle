@@ -1,6 +1,6 @@
-description = "Qi4j Cache Library provides caching framework for methods."
+description = "Qi4j Invocation Cache Library provides caching framework for methods."
 
-jar { manifest { name = "Qi4j Library - Cache" }}
+jar { manifest { name = "Qi4j Library - Invocation Cache" }}
 
 dependencies {
   compile( project(":org.qi4j.core:org.qi4j.core.api") )
