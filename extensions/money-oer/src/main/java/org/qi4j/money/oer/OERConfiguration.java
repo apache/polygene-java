@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.money.oer;
+package org.qi4j.money.oer;
 
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.Enabled;

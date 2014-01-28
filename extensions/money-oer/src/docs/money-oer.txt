@@ -1,12 +1,12 @@
-[[library-money-oer, OpenExchangeRates.org]]
+[[extension-money-oer, OpenExchangeRates.org]]
 = OpenExchangeRates.org =
 
 [devstatus]
 --------------
-source=libraries/money-oer/dev-status.xml
+source=extensions/money-oer/dev-status.xml
 --------------
 
-The OpenExchangeRates.org Money Conversion Library implements the +MoneyConversion+ service by consuming the 
+The OpenExchangeRates.org Money Conversion Extension implements the +MoneyConversion+ service by consuming the 
 OpenExchangeRates.org JSON API.
 
 See <<core-api-money>> for usage instructions.
@@ -19,7 +19,7 @@ Assemble the OpenExchangeRates.org MoneyConversion Service:
 
 [snippet,java]
 ----
-source=libraries/money-oer/src/test/java/org/qi4j/library/money/oer/OERMoneyConversionTest.java
+source=extensions/money-oer/src/test/java/org/qi4j/money/oer/OERMoneyConversionTest.java
 tag=assembly
 ----
 
@@ -32,7 +32,7 @@ Here are the configuration properties:
 
 [snippet,java]
 ----
-source=libraries/money-oer/src/main/java/org/qi4j/library/money/oer/OERConfiguration.java
+source=extensions/money-oer/src/main/java/org/qi4j/money/oer/OERConfiguration.java
 tag=config
 ----
 

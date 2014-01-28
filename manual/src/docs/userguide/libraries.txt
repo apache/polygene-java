@@ -73,10 +73,6 @@ include::../../../../libraries/neo4j/src/docs/neo4j.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/money-oer/src/docs/money-oer.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/osgi/src/docs/osgi.txt[]
 
 :leveloffset: 2

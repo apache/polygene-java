@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.library.money.oer;
+package org.qi4j.money.oer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +34,7 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.money.MoneyConversionException;
 import org.qi4j.api.money.Rate;
-import org.qi4j.library.money.oer.OERConfiguration.AccountLevel;
+import org.qi4j.money.oer.OERConfiguration.AccountLevel;
 import org.qi4j.spi.money.DefaultRate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

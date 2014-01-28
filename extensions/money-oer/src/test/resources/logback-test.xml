@@ -11,6 +11,6 @@
         <appender-ref ref="stdout" />
     </root>
 
-    <logger name="org.qi4j.library.money" level="trace"/>
+    <logger name="org.qi4j.money" level="trace"/>
 
 </configuration>

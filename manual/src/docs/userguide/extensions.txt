@@ -38,6 +38,10 @@ include::../../../../extensions/valueserialization-stax/src/docs/vs-stax.txt[]
 
 :leveloffset: 2
 
+include::../../../../extensions/money-oer/src/docs/money-oer.txt[]
+
+:leveloffset: 2
+
 include::../../../../extensions/cache-ehcache/src/docs/ehcache.txt[]
 
 :leveloffset: 2

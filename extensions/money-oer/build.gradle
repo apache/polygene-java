@@ -3,7 +3,7 @@ description = "Qi4j MoneyConversion service backed by OpenExchangeRates.org."
 // Unit tests run only if the 'oer-api-key' system property is set and use its
 // value to set the OpenExchangeRates API key.
 
-jar { manifest { name = "Qi4j Library - Money Conversion - Open Exchange" }}
+jar { manifest { name = "Qi4j Extension - MoneyConversion - OpenExchangeRates.org" }}
 
 dependencies {
     compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
@@ -17,3 +17,4 @@ dependencies {
 test {
     systemProperties = System.properties
 }
+
