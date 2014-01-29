@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.api.service;
 
 import java.util.List;
+import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.qualifier.ServiceTags;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
@@ -66,4 +67,69 @@ public class DocumentationSupport
         }
         // END SNIPPET: UseTag
     }
+
+    // START SNIPPET: activation1
+    @Mixins( MyActivationMixin.class )
+    public static interface MyActivationDemoService
+        extends ServiceComposite, ServiceActivation
+    {
+    }
+
+    public static class MyActivationMixin
+        implements ServiceActivation
+    {
+        @Override
+        public void activateService()
+            throws Exception
+        {
+            // Activation code
+        }
+
+        @Override
+        public void passivateService()
+            throws Exception
+        {
+            // Passivation code
+        }
+    }
+    // END SNIPPET: activation1
+
+    // START SNIPPET: activation2
+    @Activators( MyActivator.class )
+    public static interface MyOtherActivationDemoService
+        extends ServiceComposite
+    {
+    }
+
+    public static class MyActivator
+        extends ServiceActivatorAdapter<MyOtherActivationDemoService>
+    {
+        @Override
+        public void afterActivation( ServiceReference<MyOtherActivationDemoService> activated )
+            throws Exception
+        {
+            // Activation code
+        }
+
+        @Override
+        public void beforePassivation( ServiceReference<MyOtherActivationDemoService> passivating )
+            throws Exception
+        {
+            // Passivation code
+        }
+    }
+    // END SNIPPET: activation2
+
+    static class Activation3
+        implements Assembler
+    {
+        // START SNIPPET: activation3
+        @Override
+        public void assemble( ModuleAssembly module )
+        {
+            module.services( MyDemoService.class ).withActivators( MyActivator.class );
+        }
+        // END SNIPPET: activation3
+    }
+
 }

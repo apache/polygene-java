@@ -19,15 +19,16 @@ package org.qi4j.api.activation;
 
 /**
  * Adapter for Activator.
+ * <p>If you are thinking about Service activation, see {@link ServiceActivatorAdapter}.</p>
  *
  * @param <ActivateeType> Type of the activatee.
  */
 public class ActivatorAdapter<ActivateeType>
     implements Activator<ActivateeType>
 {
-
     /**
      * Called before activatee activation.
+     * @param activating Activating activatee
      */
     @Override
     public void beforeActivation( ActivateeType activating )
@@ -37,6 +38,7 @@ public class ActivatorAdapter<ActivateeType>
 
     /**
      * Called after activatee activation.
+     * @param activated Activating activatee
      */
     @Override
     public void afterActivation( ActivateeType activated )
@@ -46,6 +48,7 @@ public class ActivatorAdapter<ActivateeType>
 
     /**
      * Called before activatee passivation.
+     * @param passivating Passivating activatee
      */
     @Override
     public void beforePassivation( ActivateeType passivating )
@@ -55,6 +58,7 @@ public class ActivatorAdapter<ActivateeType>
 
     /**
      * Called after activatee passivation.
+     * @param passivated Passivated activatee
      */
     @Override
     public void afterPassivation( ActivateeType passivated )

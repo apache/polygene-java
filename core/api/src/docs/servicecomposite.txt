@@ -64,10 +64,37 @@ Passivation occurs when a <<core-api-module>> is deactivated, typically because 
 Passivation occurs in the reverse order of the activation, to ensure that dependent services are still available for a
 passivating service.
 
-Activators assembled with the service will get their beforeActivation and afterActivation methods called around the
-ServiceComposite activation and their beforePassivation and afterPassivation around the ServiceComposite passivation.
+Activators can be assembled with Services to manage their activation.
+The easiest way is to implement the ServiceActivation interface directly in the ServiceComposite;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+tag=activation1
+--------------
+
+The activation code can also be moved outside the composite by using the ServiceActivatorAdapter;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+tag=activation2
+--------------
+
+Activators can be registered on Service assembly too, this way;
+
+[snippet,java]
+--------------
+source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+tag=activation3
+--------------
+
+
+Activators assembled with the service will get their +beforeActivation+ and +afterActivation+ methods called around the
+ServiceComposite activation and their +beforePassivation+ and +afterPassivation+ around the ServiceComposite
+passivation.
 Member injection and constructor initialization occur during the activation. The ServiceComposite can be used from the
-afterActivation to the beforePassivation method.
++afterActivation+ to the +beforePassivation+ method.
 
 == Identity and Tags ==
 Services has an Identity, which drives the <<core-api-service-configuration>> system and can be used to lookup a particular service

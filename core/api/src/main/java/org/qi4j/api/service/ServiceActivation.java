@@ -17,7 +17,6 @@
  */
 package org.qi4j.api.service;
 
-import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
 
 /**
@@ -34,31 +33,31 @@ public interface ServiceActivation
      * Called after ServiceComposite Activation.
      */
     void activateService()
-            throws Exception;
+        throws Exception;
 
     /**
      * Called before ServiceComposite Passivation.
      */
     void passivateService()
-            throws Exception;
+        throws Exception;
 
     /**
      * Service Activator.
      */
     class ServiceActivator
-            extends ActivatorAdapter<ServiceReference<ServiceActivation>>
+        extends ServiceActivatorAdapter<ServiceActivation>
     {
 
         @Override
         public void afterActivation( ServiceReference<ServiceActivation> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().activateService();
         }
 
         @Override
         public void beforePassivation( ServiceReference<ServiceActivation> passivating )
-                throws Exception
+            throws Exception
         {
             passivating.get().passivateService();
         }
