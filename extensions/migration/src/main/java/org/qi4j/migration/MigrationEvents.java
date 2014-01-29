@@ -13,6 +13,8 @@
  */
 package org.qi4j.migration;
 
+import java.util.Map;
+
 /**
  * Implement this as a service to receive events from the Migration process.
  */
@@ -35,6 +37,12 @@ public interface MigrationEvents
     void manyAssociationRemoved( String entity, String name );
 
     void manyAssociationRenamed( String entity, String from, String to );
+
+    void namedAssociationAdded( String entity, String name, Map<String, String> defaultReferences );
+
+    void namedAssociationRemoved( String entity, String name );
+
+    void namedAssociationRenamed( String entity, String from, String to );
 
     void entityTypeChanged( String entity, String newEntityType );
 }

@@ -18,6 +18,7 @@
 package org.qi4j.runtime.value;
 
 import java.util.List;
+import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.common.QualifiedName;
@@ -29,6 +30,8 @@ import org.qi4j.runtime.association.AssociationModel;
 import org.qi4j.runtime.association.AssociationsModel;
 import org.qi4j.runtime.association.ManyAssociationModel;
 import org.qi4j.runtime.association.ManyAssociationsModel;
+import org.qi4j.runtime.association.NamedAssociationModel;
+import org.qi4j.runtime.association.NamedAssociationsModel;
 import org.qi4j.runtime.composite.StateModel;
 import org.qi4j.runtime.property.PropertiesModel;
 
@@ -41,15 +44,18 @@ public final class ValueStateModel
 {
     private final AssociationsModel associationsModel;
     private final ManyAssociationsModel manyAssociationsModel;
+    private final NamedAssociationsModel namedAssociationsModel;
 
     public ValueStateModel( PropertiesModel propertiesModel,
                             AssociationsModel associationsModel,
-                            ManyAssociationsModel manyAssociationsModel
+                            ManyAssociationsModel manyAssociationsModel,
+                            NamedAssociationsModel namedAssociationsModel
     )
     {
         super( propertiesModel );
         this.associationsModel = associationsModel;
         this.manyAssociationsModel = manyAssociationsModel;
+        this.namedAssociationsModel = namedAssociationsModel;
     }
 
     @Override
@@ -77,6 +83,18 @@ public final class ValueStateModel
     }
 
     @Override
+    public AssociationDescriptor getNamedAssociationByName( String name )
+    {
+        return namedAssociationsModel.getNamedAssociationByName( name );
+    }
+
+    @Override
+    public AssociationDescriptor getNamedAssociationByQualifiedName( QualifiedName name )
+    {
+        return namedAssociationsModel.getNamedAssociationByQualifiedName( name );
+    }
+
+    @Override
     public Iterable<AssociationModel> associations()
     {
         return associationsModel.associations();
@@ -89,6 +107,12 @@ public final class ValueStateModel
     }
 
     @Override
+    public Iterable<? extends AssociationDescriptor> namedAssociations()
+    {
+        return namedAssociationsModel.namedAssociations();
+    }
+
+    @Override
     public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
         throws ThrowableType
     {
@@ -98,7 +122,10 @@ public final class ValueStateModel
             {
                 if( ( (VisitableHierarchy<AssociationsModel, AssociationModel>) associationsModel ).accept( visitor ) )
                 {
-                    ( (VisitableHierarchy<ManyAssociationsModel, ManyAssociationModel>) manyAssociationsModel ).accept( visitor );
+                    if( ( (VisitableHierarchy<ManyAssociationsModel, ManyAssociationModel>) manyAssociationsModel ).accept( visitor ) )
+                    {
+                        ( (VisitableHierarchy<NamedAssociationsModel, NamedAssociationModel>) namedAssociationsModel ).accept( visitor );
+                    }
                 }
             }
         }
@@ -113,6 +140,8 @@ public final class ValueStateModel
         public EntityReference getAssociationState( AssociationDescriptor associationDescriptor );
 
         public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor );
+
+        public Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor );
     }
 
 }

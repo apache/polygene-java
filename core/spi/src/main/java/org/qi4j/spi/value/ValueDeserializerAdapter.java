@@ -760,6 +760,20 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             }
         }
 
+        // NamedAssociations
+        for( AssociationDescriptor namedAssociation : valueCompositeType.namedAssociations() )
+        {
+            String namedAssociationName = namedAssociation.qualifiedName().name();
+            if( objectHasField( inputNode, namedAssociationName ) )
+            {
+                Object value = getObjectFieldValue(
+                    inputNode,
+                    namedAssociationName,
+                    buildDeserializeInputNodeFunction( MapType.of( String.class, EntityReference.class ) ) );
+                stateMap.put( namedAssociationName, value );
+            }
+        }
+
         ValueBuilder<?> valueBuilder = buildNewValueBuilderWithState( valueBuilderType, stateMap );
         return (T) valueBuilder.newInstance(); // Unchecked cast because the builder could use a type != T
     }
@@ -882,6 +896,20 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                         return empty();
                     }
                     return (Iterable<EntityReference>) entityRefs;
+                }
+            },
+            new Function<AssociationDescriptor, Map<String, EntityReference>>()
+            {
+                @Override
+                @SuppressWarnings( "unchecked" )
+                public Map<String, EntityReference> map( AssociationDescriptor namedAssociation )
+                {
+                    Object entityRefs = stateMap.get( namedAssociation.qualifiedName().name() );
+                    if( entityRefs == null )
+                    {
+                        return Collections.emptyMap();
+                    }
+                    return (Map<String, EntityReference>) entityRefs;
                 }
             } );
     }

@@ -15,6 +15,7 @@ import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
@@ -50,6 +51,11 @@ public class NeoEntityState
         }
     }
 
+    static RelationshipType namedAssociation( QualifiedName stateName )
+    {
+        return DynamicRelationshipType.withName( "named_association::" + stateName.toString() );
+    }
+
     static RelationshipType manyAssociation( QualifiedName stateName )
     {
         return DynamicRelationshipType.withName( "many_association::" + stateName.toString() );
@@ -60,6 +66,21 @@ public class NeoEntityState
         return DynamicRelationshipType.withName( "association::" + stateName.toString() );
     }
 
+    @Override
+    public NamedAssociationState namedAssociationValueOf( QualifiedName stateName )
+    {
+        RelationshipType namedAssociation = namedAssociation( stateName );
+        Relationship rel = underlyingNode.getSingleRelationship( namedAssociation, Direction.OUTGOING );
+        if( rel != null )
+        {
+            return new NeoNamedAssociationState( uow, this, rel.getEndNode() );
+        }
+        Node node = uow.getNeo().createNode();
+        node.setProperty( NeoNamedAssociationState.COUNT, 0 );
+        underlyingNode.createRelationshipTo( node, namedAssociation );
+        return new NeoNamedAssociationState( uow, this, node );
+    }
+    
     @Override
     public ManyAssociationState manyAssociationValueOf( QualifiedName stateName )
     {
@@ -193,13 +214,18 @@ public class NeoEntityState
         for( Relationship rel : underlyingNode.getRelationships( Direction.OUTGOING ) )
         {
             Node endNode = rel.getEndNode();
-            boolean manyAssocNode = false;
+            boolean manyAssocNode = false, namedAssocNode = false;
             for( Relationship manyRel : endNode.getRelationships( RelTypes.MANY_ASSOCIATION, Direction.OUTGOING ) )
             {
                 manyRel.delete();
                 manyAssocNode = true;
             }
-            if( manyAssocNode )
+            for( Relationship namedRel : endNode.getRelationships( RelTypes.NAMED_ASSOCIATION, Direction.OUTGOING ) )
+            {
+                namedRel.delete();
+                namedAssocNode = true;
+            }
+            if( manyAssocNode || namedAssocNode )
             {
                 endNode.delete();
             }

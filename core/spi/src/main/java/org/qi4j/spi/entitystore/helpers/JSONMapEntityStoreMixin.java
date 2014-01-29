@@ -1,7 +1,7 @@
 /*
  * Copyright 2007-2011, Niclas Hedhman. All Rights Reserved.
  * Copyright 2009-2013, Rickard Öberg. All Rights Reserved.
- * Copyright 2012-2013, Paul Merlin. All Rights Reserved.
+ * Copyright 2012-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -404,6 +404,12 @@ public class JSONMapEntityStoreMixin
             String version = jsonObject.getString( JSONKeys.VERSION );
             long modified = jsonObject.getLong( JSONKeys.MODIFIED );
             String identity = jsonObject.getString( JSONKeys.IDENTITY );
+
+            // Check if NamedAssociation is supported
+            if( !jsonObject.has( JSONKeys.NAMED_ASSOCIATIONS ) )
+            {
+                jsonObject.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
+            }
 
             // Check if version is correct
             String currentAppVersion = jsonObject.optString( JSONKeys.APPLICATION_VERSION, "0.0" );

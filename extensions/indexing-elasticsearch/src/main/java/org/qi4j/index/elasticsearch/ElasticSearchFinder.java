@@ -49,6 +49,8 @@ import org.qi4j.api.query.grammar.LeSpecification;
 import org.qi4j.api.query.grammar.LtSpecification;
 import org.qi4j.api.query.grammar.ManyAssociationContainsSpecification;
 import org.qi4j.api.query.grammar.MatchesSpecification;
+import org.qi4j.api.query.grammar.NamedAssociationContainsNameSpecification;
+import org.qi4j.api.query.grammar.NamedAssociationContainsSpecification;
 import org.qi4j.api.query.grammar.NeSpecification;
 import org.qi4j.api.query.grammar.NotSpecification;
 import org.qi4j.api.query.grammar.OrSpecification;
@@ -286,6 +288,20 @@ public interface ElasticSearchFinder
                 ManyAssociationContainsSpecification<?> manyAssContSpec = (ManyAssociationContainsSpecification) spec;
                 processManyAssociationContainsSpecification( filterBuilder, manyAssContSpec, variables );
             }
+            else if( spec instanceof NamedAssociationContainsSpecification )
+            {
+
+                NamedAssociationContainsSpecification<?> namedAssContSpec = (NamedAssociationContainsSpecification) spec;
+                processNamedAssociationContainsSpecification( filterBuilder, namedAssContSpec, variables );
+
+            }
+            else if( spec instanceof NamedAssociationContainsNameSpecification )
+            {
+
+                NamedAssociationContainsNameSpecification<?> namedAssContNameSpec = (NamedAssociationContainsNameSpecification) spec;
+                processNamedAssociationContainsNameSpecification( filterBuilder, namedAssContNameSpec, variables );
+
+            }
             else
             {
                 throw new UnsupportedOperationException( "Query specification unsupported by Elastic Search "
@@ -508,6 +524,26 @@ public interface ElasticSearchFinder
             LOGGER.trace( "Processing ManyAssociationContainsSpecification {}", spec );
             String name = spec.manyAssociation().toString() + ".identity";
             Object value = resolveVariable( spec.value(), variables );
+            addFilter( termFilter( name, value ), filterBuilder );
+        }
+
+        private void processNamedAssociationContainsSpecification( FilterBuilder filterBuilder,
+                                                                   NamedAssociationContainsSpecification<?> spec,
+                                                                   Map<String, Object> variables )
+        {
+            LOGGER.trace( "Processing NamedAssociationContainsSpecification {}", spec );
+            String name = spec.namedAssociation().toString() + ".identity";
+            String value = toString( spec.value(), variables );
+            addFilter( termFilter( name, value ), filterBuilder );
+        }
+
+        private void processNamedAssociationContainsNameSpecification( FilterBuilder filterBuilder,
+                                                                       NamedAssociationContainsNameSpecification<?> spec,
+                                                                       Map<String, Object> variables )
+        {
+            LOGGER.trace( "Processing NamedAssociationContainsNameSpecification {}", spec );
+            String name = spec.namedAssociation().toString() + "._named";
+            String value = toString( spec.name(), variables );
             addFilter( termFilter( name, value ), filterBuilder );
         }
     }

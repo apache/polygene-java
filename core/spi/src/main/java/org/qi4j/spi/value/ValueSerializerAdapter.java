@@ -36,6 +36,7 @@ import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -559,6 +560,24 @@ public abstract class ValueSerializerAdapter<OutputType>
                 onValueEnd( output );
             }
             onArrayEnd( output );
+            onValueEnd( output );
+            onFieldEnd( output );
+        }
+        for( AssociationDescriptor associationDescriptor : descriptor.valueType().namedAssociations() )
+        {
+            NamedAssociation<?> namedAssociation = state.namedAssociationFor( associationDescriptor.accessor() );
+            onFieldStart( output, associationDescriptor.qualifiedName().name() );
+            onValueStart( output );
+            onObjectStart( output );
+            for( String name : namedAssociation )
+            {
+                onFieldStart( output, name );
+                onValueStart( output );
+                onValue( output, ( (Identity) namedAssociation.get( name ) ).identity().get() );
+                onValueEnd( output );
+                onFieldEnd( output );
+            }
+            onObjectEnd( output );
             onValueEnd( output );
             onFieldEnd( output );
         }

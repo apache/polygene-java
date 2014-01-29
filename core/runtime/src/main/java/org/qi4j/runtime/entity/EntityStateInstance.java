@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2008-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -26,6 +27,7 @@ import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
@@ -38,6 +40,8 @@ import org.qi4j.runtime.association.AssociationInstance;
 import org.qi4j.runtime.association.AssociationModel;
 import org.qi4j.runtime.association.ManyAssociationInstance;
 import org.qi4j.runtime.association.ManyAssociationModel;
+import org.qi4j.runtime.association.NamedAssociationInstance;
+import org.qi4j.runtime.association.NamedAssociationModel;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.unitofwork.BuilderEntityState;
@@ -190,6 +194,42 @@ public final class EntityStateInstance
                 return manyAssociationFor( associationDescriptor.accessor() );
             }
         }, stateModel.manyAssociations() );
+    }
+
+    @Override
+    @SuppressWarnings( "unchecked" )
+    public <T> NamedAssociation<T> namedAssociationFor( AccessibleObject accessor )
+    {
+        Map<AccessibleObject, Object> state = state();
+
+        NamedAssociation<T> namedAssociation = (NamedAssociation<T>) state.get( accessor );
+
+        if( namedAssociation == null )
+        {
+            NamedAssociationModel associationModel = stateModel.getNamedAssociation( accessor );
+            namedAssociation = new NamedAssociationInstance<>(
+                entityState instanceof BuilderEntityState
+                ? associationModel.getBuilderInfo()
+                : associationModel,
+                entityFunction,
+                entityState.namedAssociationValueOf( associationModel.qualifiedName() ) );
+            state.put( accessor, namedAssociation );
+        }
+
+        return namedAssociation;
+    }
+
+    @Override
+    public Iterable<? extends NamedAssociation<?>> allNamedAssociations()
+    {
+        return Iterables.map( new Function<AssociationDescriptor, NamedAssociation<?>>()
+        {
+            @Override
+            public NamedAssociation<?> map( AssociationDescriptor associationDescriptor )
+            {
+                return namedAssociationFor( associationDescriptor.accessor() );
+            }
+        }, stateModel.namedAssociations() );
     }
 
     public void checkConstraints()

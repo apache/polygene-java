@@ -20,6 +20,7 @@ package org.qi4j.sample.dcicargo.sample_a.infrastructure.conversion;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.ManyAssociation;
@@ -48,6 +49,7 @@ import org.qi4j.spi.Qi4jSPI;
  * Value composites that extend {@link DTO} will have association properties converted recursively.
  *
  * Modification of {org.qi4j.library.conversion.values.EntityToValue}
+ * WARN No support of NamedAssociations
  */
 @SuppressWarnings( "unchecked" )
 @Mixins( EntityToDTOService.Mixin.class )
@@ -139,6 +141,8 @@ public interface EntityToDTOService
                                 return entities;
                             }
 
+                            // No NamedAssociation support
+
                             return null;
                         }
                     }
@@ -162,6 +166,14 @@ public interface EntityToDTOService
                             refs.add( EntityReference.entityReferenceFor( entity ) );
                         }
                         return refs;
+                    }
+                }, new Function<AssociationDescriptor, Map<String, EntityReference>>()
+                {
+                    @Override
+                    public Map<String, EntityReference> map( AssociationDescriptor from )
+                    {
+                        // No NamedAssociation support
+                        return Collections.emptyMap();
                     }
                 } );
             }
@@ -223,6 +235,8 @@ public interface EntityToDTOService
                                 }
                                 return entities;
                             }
+
+                            // No NamedAssociation support
 
                             // DTO
                             Class<?> type = descriptor.valueType().mainType();
@@ -291,6 +305,14 @@ public interface EntityToDTOService
                             refs.add( EntityReference.entityReferenceFor( entity ) );
                         }
                         return refs;
+                    }
+                }, new Function<AssociationDescriptor, Map<String, EntityReference>>()
+                {
+                    @Override
+                    public Map<String, EntityReference> map( AssociationDescriptor from )
+                    {
+                        // No NamedAssociations support
+                        return Collections.emptyMap();
                     }
                 } );
             }

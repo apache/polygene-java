@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2009-2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2007-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -20,6 +21,7 @@ package org.qi4j.spi.entitystore.helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
@@ -29,6 +31,7 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 
 /**
@@ -49,6 +52,7 @@ public final class DefaultEntityState
     private final Map<QualifiedName, Object> properties;
     private final Map<QualifiedName, EntityReference> associations;
     private final Map<QualifiedName, List<EntityReference>> manyAssociations;
+    private final Map<QualifiedName, Map<String, EntityReference>> namedAssociations;
 
     public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
                                EntityReference identity,
@@ -62,7 +66,8 @@ public final class DefaultEntityState
               entityDescriptor,
               new HashMap<QualifiedName, Object>(),
               new HashMap<QualifiedName, EntityReference>(),
-              new HashMap<QualifiedName, List<EntityReference>>() );
+              new HashMap<QualifiedName, List<EntityReference>>(),
+              new HashMap<QualifiedName, Map<String, EntityReference>>() );
     }
 
     public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
@@ -73,7 +78,8 @@ public final class DefaultEntityState
                                EntityDescriptor entityDescriptor,
                                Map<QualifiedName, Object> properties,
                                Map<QualifiedName, EntityReference> associations,
-                               Map<QualifiedName, List<EntityReference>> manyAssociations
+                               Map<QualifiedName, List<EntityReference>> manyAssociations,
+                               Map<QualifiedName, Map<String, EntityReference>> namedAssociations
     )
     {
         this.unitOfWork = unitOfWork;
@@ -85,6 +91,7 @@ public final class DefaultEntityState
         this.properties = properties;
         this.associations = associations;
         this.manyAssociations = manyAssociations;
+        this.namedAssociations = namedAssociations;
     }
 
     // EntityState implementation
@@ -144,6 +151,18 @@ public final class DefaultEntityState
         return new DefaultManyAssociationState( this, manyAssociationState );
     }
 
+    @Override
+    public NamedAssociationState namedAssociationValueOf( QualifiedName stateName )
+    {
+        Map<String, EntityReference> namedAssociationState = namedAssociations.get( stateName );
+        if( namedAssociationState == null )
+        {
+            namedAssociationState = new LinkedHashMap<>();
+            namedAssociations.put( stateName, namedAssociationState );
+        }
+        return new DefaultNamedAssociationState( this, namedAssociationState );
+    }
+
     public void copyTo( DefaultEntityState entityState )
     {
         // Copy properties
@@ -165,6 +184,13 @@ public final class DefaultEntityState
         for( Map.Entry<QualifiedName, List<EntityReference>> stateNameStringEntry : manyAssociations.entrySet() )
         {
             entityState.manyAssociations.put( stateNameStringEntry.getKey(), stateNameStringEntry.getValue() );
+        }
+
+        // Copy named-associations
+        entityState.namedAssociations.clear();
+        for( Map.Entry<QualifiedName, Map<String, EntityReference>> entry : namedAssociations.entrySet() )
+        {
+            entityState.namedAssociations.put( entry.getKey(), entry.getValue() );
         }
 
         // Set version and timestamp
@@ -211,13 +237,19 @@ public final class DefaultEntityState
         return manyAssociations;
     }
 
+    public Map<QualifiedName, Map<String, EntityReference>> namedAssociations()
+    {
+        return namedAssociations;
+    }
+
     @Override
     public String toString()
     {
-        return identity + "(" +
-               properties.size() + " properties, " +
-               associations.size() + " associations, " +
-               manyAssociations.size() + " many-associations)";
+        return identity + "("
+               + properties.size() + " properties, "
+               + associations.size() + " associations, "
+               + manyAssociations.size() + " many-associations, "
+               + namedAssociations.size() + " named-associations)";
     }
 
     public void markUpdated()

@@ -21,6 +21,7 @@ import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.AssociationWrapper;
 import org.qi4j.api.association.ManyAssociationWrapper;
+import org.qi4j.api.association.NamedAssociationWrapper;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
@@ -310,6 +311,11 @@ public final class Qi4jRuntimeImpl
         while( association instanceof ManyAssociationWrapper )
         {
             association = ( (ManyAssociationWrapper) association ).next();
+        }
+        
+        while( association instanceof NamedAssociationWrapper )
+        {
+            association = ( (NamedAssociationWrapper) association ).next();
         }
 
         return (AssociationDescriptor) ( (AbstractAssociationInstance) association ).associationInfo();

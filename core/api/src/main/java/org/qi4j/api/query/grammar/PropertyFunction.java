@@ -44,17 +44,20 @@ public class PropertyFunction<T>
     private final PropertyFunction<?> traversedProperty;
     private final AssociationFunction<?> traversedAssociation;
     private final ManyAssociationFunction<?> traversedManyAssociation;
+    private final NamedAssociationFunction<?> traversedNamedAssociation;
     private final AccessibleObject accessor;
 
     public PropertyFunction( PropertyFunction<?> traversedProperty,
                              AssociationFunction<?> traversedAssociation,
                              ManyAssociationFunction<?> traversedManyAssociation,
+                             NamedAssociationFunction<?> traversedNamedAssociation,
                              AccessibleObject accessor
     )
     {
         this.traversedProperty = traversedProperty;
         this.traversedAssociation = traversedAssociation;
         this.traversedManyAssociation = traversedManyAssociation;
+        this.traversedNamedAssociation = traversedNamedAssociation;
         this.accessor = accessor;
 
         // Verify that the property accessor is not marked as non queryable
@@ -96,6 +99,11 @@ public class PropertyFunction<T>
         return traversedManyAssociation;
     }
 
+    public NamedAssociationFunction<?> traversedNamedAssociation()
+    {
+        return traversedNamedAssociation;
+    }
+
     public AccessibleObject accessor()
     {
         return accessor;
@@ -128,6 +136,10 @@ public class PropertyFunction<T>
             else if( traversedManyAssociation != null )
             {
                 throw new IllegalArgumentException( "Cannot evaluate a ManyAssociation" );
+            }
+            else if( traversedNamedAssociation != null )
+            {
+                throw new IllegalArgumentException( "Cannot evaluate a NamedAssociation" );
             }
 
             if( target == null )

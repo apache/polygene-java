@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -57,4 +58,20 @@ public interface AssociationStateHolder
      * @return iterable of many-associations
      */
     Iterable<? extends ManyAssociation<?>> allManyAssociations();
+
+    /**
+     * Get a named-association for a specific accessor method
+     *
+     * @param namedassociationMethod for the named-association
+     *
+     * @return the association
+     */
+    <T> NamedAssociation<T> namedAssociationFor( AccessibleObject namedassociationMethod );
+
+    /**
+     * Get all NmaedAssociations
+     *
+     * @return iterable of named-associations
+     */
+    Iterable<? extends NamedAssociation<?>> allNamedAssociations();
 }

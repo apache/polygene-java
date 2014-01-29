@@ -159,6 +159,12 @@ public final class EntityModel
         {
             entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() );
         }
+
+        // Set new named-associations to empty
+        for( AssociationDescriptor associationDescriptor : state().namedAssociations() )
+        {
+            entityState.namedAssociationValueOf( associationDescriptor.qualifiedName() );
+        }
     }
 
     public void invokeLifecycle( boolean create, Object[] mixins, CompositeInstance instance, StateHolder state )

@@ -13,6 +13,7 @@
  */
 package org.qi4j.api.value;
 
+import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.entity.EntityReference;
@@ -71,6 +72,7 @@ public interface ValueBuilderFactory
      * @param propertyFunction a function providing the state of properties
      * @param associationFunction a function providing the state of associations
      * @param manyAssociationFunction a function providing the state of many associations
+     * @param namedAssociationFunction a function providing the state of named associations
      *
      * @return a ValueBuilder for creation of ValueComposites implementing the interface
      *
@@ -79,7 +81,8 @@ public interface ValueBuilderFactory
     <T> ValueBuilder<T> newValueBuilderWithState( Class<T> mixinType,
                                                   Function<PropertyDescriptor, Object> propertyFunction,
                                                   Function<AssociationDescriptor, EntityReference> associationFunction,
-                                                  Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction );
+                                                  Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
+                                                  Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction );
 
     /**
      * Instantiate a Value of the given type using the serialized state given as String.

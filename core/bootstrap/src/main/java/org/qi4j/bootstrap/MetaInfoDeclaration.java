@@ -29,7 +29,7 @@ import org.qi4j.api.property.Property;
  * Declaration of a Property or Association.
  */
 public final class MetaInfoDeclaration
-    implements StateDeclarations, AssociationDeclarations, ManyAssociationDeclarations
+    implements StateDeclarations, AssociationDeclarations, ManyAssociationDeclarations, NamedAssociationDeclarations
 {
     Map<Class<?>, InfoHolder<?>> mixinPropertyDeclarations = new HashMap<>();
 

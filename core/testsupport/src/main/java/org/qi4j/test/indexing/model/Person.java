@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Alin Dreghiciu.
+ * Copyright 2014 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -23,6 +24,7 @@ import org.joda.money.BigMoney;
 import org.joda.money.Money;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Property;
@@ -65,12 +67,10 @@ public interface Person
     @Queryable( false )
     Property<String> password();
 
-    @Queryable( false )
     @Optional
     Association<Account> mainAccount();
 
-    @Queryable( false )
-    ManyAssociation<Account> accounts();
+    NamedAssociation<Account> accounts();
 
     @Optional
     Property<Map<String, String>> additionalInfo();

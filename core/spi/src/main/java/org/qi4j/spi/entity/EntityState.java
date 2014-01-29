@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2007-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -79,4 +80,6 @@ public interface EntityState
     void setAssociationValue( QualifiedName stateName, EntityReference newEntity );
 
     ManyAssociationState manyAssociationValueOf( QualifiedName stateName );
+    
+    NamedAssociationState namedAssociationValueOf( QualifiedName stateName );
 }

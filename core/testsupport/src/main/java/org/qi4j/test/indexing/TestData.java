@@ -120,7 +120,7 @@ class TestData
 
             Account annsAccount;
             {
-                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class );
+                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class, "accountOfAnnDoe" );
                 annsAccount = accountBuilder.instance();
                 annsAccount.number().set( "accountOfAnnDoe" );
                 annsAccount = accountBuilder.newInstance();
@@ -128,7 +128,7 @@ class TestData
 
             Account jacksAccount;
             {
-                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class );
+                EntityBuilder<Account> accountBuilder = unitOfWork.newEntityBuilder( Account.class, "accountOfJackDoe" );
                 jacksAccount = accountBuilder.instance();
                 jacksAccount.number().set( "accountOfJackDoe" );
                 jacksAccount = accountBuilder.newInstance();
@@ -151,8 +151,8 @@ class TestData
                 annDoe.interests().add( 0, cooking );
                 annDoe.password().set( "passwordOfAnnDoe" );
                 annDoe.mainAccount().set( annsAccount );
-                annDoe.accounts().add( 0, annsAccount );
-                annDoe.accounts().add( 0, jacksAccount );
+                annDoe.accounts().put( "anns", annsAccount );
+                annDoe.accounts().put( "jacks", jacksAccount );
                 annDoe.address().set( addressBuilder.newInstance() );
                 annDoe = femaleBuilder.newInstance();
                 NameableAssert.trace( annDoe );
@@ -192,8 +192,8 @@ class TestData
                 jackDoe.wife().set( annDoe );
                 jackDoe.password().set( "passwordOfJohnDoe" );
                 jackDoe.mainAccount().set( jacksAccount );
-                jackDoe.accounts().add( 0, annsAccount );
-                jackDoe.accounts().add( 0, jacksAccount );
+                jackDoe.accounts().put( "anns", annsAccount );
+                jackDoe.accounts().put( "jacks", jacksAccount );
                 address = module.newValueBuilderWithPrototype( address ).prototype();
                 address.line1().set( "Qi Avenue 4j" );
                 jackDoe.address().set( address );

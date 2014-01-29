@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -37,8 +38,10 @@ import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.toList;
 
 public class GaeEntityState
     implements EntityState
@@ -273,6 +276,14 @@ public class GaeEntityState
         return state;
     }
 
+    @Override
+    public NamedAssociationState namedAssociationValueOf( QualifiedName stateName )
+    {
+        Map<String, String> assocs = (Map<String, String>) entity.getProperty( stateName.toURI() );
+        NamedAssociationState state = new GaeNamedAssociationState( this, assocs );
+        return state;
+    }
+
     public void hasBeenApplied()
     {
         System.out.println( "hasBeenApplied()" );
@@ -349,6 +360,85 @@ public class GaeEntityState
             }
             return result.iterator();
         }
+    }
+
+    private static class GaeNamedAssociationState
+        implements NamedAssociationState
+    {
+        private final Map<String, String> assocs;
+        private final GaeEntityState entityState;
+
+        private GaeNamedAssociationState( GaeEntityState entityState, Map<String, String> associations )
+        {
+            this.entityState = entityState;
+            if( associations == null )
+            {
+                this.assocs = new HashMap<>();
+            }
+            else
+            {
+                this.assocs = associations;
+            }
+        }
+
+        @Override
+        public int count()
+        {
+            return assocs.size();
+        }
+
+        @Override
+        public boolean containsName( String name )
+        {
+            return assocs.containsKey( name );
+        }
+
+        @Override
+        public boolean put( String name, EntityReference entityReference )
+        {
+            if( assocs.containsKey( name ) && entityReference.identity().equals( assocs.get( name ) ) )
+            {
+                return false;
+            }
+            assocs.put( name, entityReference.identity() );
+            entityState.markUpdated();
+            return true;
+        }
+
+        @Override
+        public boolean remove( String name )
+        {
+            boolean removed = assocs.remove( name ) != null;
+            entityState.markUpdated();
+            return removed;
+        }
+
+        @Override
+        public EntityReference get( String name )
+        {
+            return new EntityReference( assocs.get( name ) );
+        }
+
+        @Override
+        public String nameOf( EntityReference entityReference )
+        {
+            String identity = entityReference.identity();
+            for( Map.Entry<String, String> entry : assocs.entrySet() )
+            {
+                if( identity.equals( entry.getValue() ) )
+                {
+                    return entry.getKey();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public Iterator<String> iterator()
+        {
+            return toList( assocs.keySet() ).iterator();
+        }
+
     }
 
     private void markUpdated()

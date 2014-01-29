@@ -19,6 +19,7 @@ package org.qi4j.migration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -393,6 +394,78 @@ public interface MigrationService
                 for( MigrationEvents migrationEvent : migrationEvents )
                 {
                     migrationEvent.manyAssociationRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        @Override
+        public boolean addNamedAssociation( JSONObject state, String name, Map<String, String> defaultReferences )
+            throws JSONException
+        {
+            JSONObject namedAssociations = state.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS );
+            if( !namedAssociations.has( name ) )
+            {
+                JSONObject references = new JSONObject();
+                for( Map.Entry<String, String> namedRef : defaultReferences.entrySet() )
+                {
+                    references.put( namedRef.getKey(), namedRef.getValue() );
+                }
+                namedAssociations.put( name, references );
+
+                for( MigrationEvents migrationEvent : migrationEvents )
+                {
+                    migrationEvent.namedAssociationAdded( state.getString( JSONKeys.IDENTITY ), name, defaultReferences );
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        @Override
+        public boolean removeNamedAssociation( JSONObject state, String name )
+            throws JSONException
+        {
+            JSONObject namedAssociations = state.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS );
+            if( namedAssociations.has( name ) )
+            {
+                namedAssociations.remove( name );
+
+                for( MigrationEvents migrationEvent : migrationEvents )
+                {
+                    migrationEvent.namedAssociationRemoved( state.getString( JSONKeys.IDENTITY ), name );
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        @Override
+        public boolean renameNamedAssociation( JSONObject state, String from, String to )
+            throws JSONException
+        {
+            JSONObject namedAssociations = state.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS );
+            if( namedAssociations.has( from ) )
+            {
+                Object value = namedAssociations.remove( from );
+                namedAssociations.put( to, value );
+
+                for( MigrationEvents migrationEvent : migrationEvents )
+                {
+                    migrationEvent.namedAssociationRenamed( state.getString( JSONKeys.IDENTITY ), from, to );
                 }
 
                 return true;

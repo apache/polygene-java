@@ -32,6 +32,7 @@ import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityStoreException;
 
@@ -249,6 +250,26 @@ public final class JSONEntityState
     }
 
     @Override
+    public NamedAssociationState namedAssociationValueOf( QualifiedName stateName )
+    {
+        try
+        {
+            JSONObject namedAssociations = state.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS );
+            JSONObject jsonValues = namedAssociations.optJSONObject( stateName.name() );
+            if( jsonValues == null )
+            {
+                jsonValues = new JSONObject();
+                namedAssociations.put( stateName.name(), jsonValues );
+            }
+            return new JSONNamedAssociationState( this, jsonValues );
+        }
+        catch( JSONException e )
+        {
+            throw new EntityStoreException( e );
+        }
+    }
+
+    @Override
     public void remove()
     {
         status = EntityStatus.REMOVED;
@@ -308,10 +329,12 @@ public final class JSONEntityState
             JSONObject newProperties = cloneJSON( state.getJSONObject( JSONKeys.PROPERTIES ) );
             JSONObject newAssoc = cloneJSON( state.getJSONObject( JSONKeys.ASSOCIATIONS ) );
             JSONObject newManyAssoc = cloneJSON( state.getJSONObject( JSONKeys.MANY_ASSOCIATIONS ) );
+            JSONObject newNamedAssoc = cloneJSON( state.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS ) );
             JSONObject stateClone = new JSONObject( state, CLONE_NAMES );
             stateClone.put( JSONKeys.PROPERTIES, newProperties );
             stateClone.put( JSONKeys.ASSOCIATIONS, newAssoc );
             stateClone.put( JSONKeys.MANY_ASSOCIATIONS, newManyAssoc );
+            stateClone.put( JSONKeys.NAMED_ASSOCIATIONS, newNamedAssoc );
             state = stateClone;
         }
         catch( JSONException e )

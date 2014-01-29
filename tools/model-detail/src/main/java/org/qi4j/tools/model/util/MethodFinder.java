@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.tools.model.descriptor.CompositeDetailDescriptor;
@@ -68,14 +69,14 @@ public class MethodFinder
         // combine into one list, with public listed first then private
         publicList.addAll( privateList );
 
-        // filter Property, Association, and ManyAssociation
+        // filter Property, Association, ManyAssociation and NamedAssociation
         doFilter( publicList );
 
         return publicList;
     }
 
     /**
-     * Do the filter for method return type (Property, Association, ManyAssociation)
+     * Do the filter for method return type (Property, Association, ManyAssociation, NamedAssociation)
      * by removing the entry from the list.
      *
      * @param list list of CompositeMethodDetailDescriptor
@@ -101,6 +102,10 @@ public class MethodFinder
                 iter.remove();
             }
             else if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                iter.remove();
+            }
+            else if( NamedAssociation.class.isAssignableFrom( method.getReturnType() ) )
             {
                 iter.remove();
             }

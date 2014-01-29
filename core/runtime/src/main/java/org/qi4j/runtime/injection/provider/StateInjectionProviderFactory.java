@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2008-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -24,6 +25,7 @@ import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.composite.StateDescriptor;
 import org.qi4j.api.composite.StatefulCompositeDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
@@ -117,6 +119,23 @@ public final class StateInjectionProviderFactory
             AssociationDescriptor model = descriptor.getManyAssociationByName( name );
             return new ManyAssociationInjectionProvider( model );
         }
+        else if( NamedAssociation.class.isAssignableFrom( dependencyModel.rawInjectionType() ) )
+        {
+            // @State NamedAssociation<MyEntity> name;
+            AssociationStateDescriptor descriptor = ( (EntityDescriptor) resolution.model() ).state();
+            State annotation = (State) dependencyModel.injectionAnnotation();
+            String name;
+            if( annotation.value().isEmpty() )
+            {
+                name = resolution.field().getName();
+            }
+            else
+            {
+                name = annotation.value();
+            }
+            AssociationDescriptor model = descriptor.getNamedAssociationByName( name );
+            return new NamedAssociationInjectionProvider( model );
+        }
 
         throw new InjectionProviderException( "Injected value has invalid type" );
     }
@@ -197,6 +216,33 @@ public final class StateInjectionProviderFactory
             else
             {
                 throw new InjectionProviderException( "Non-optional association " + manyAssociationDescriptor.qualifiedName() + " had no association" );
+            }
+        }
+    }
+
+    private static class NamedAssociationInjectionProvider
+        implements InjectionProvider
+    {
+        private final AssociationDescriptor namedAssociationDescriptor;
+
+        private NamedAssociationInjectionProvider( AssociationDescriptor namedAssociationDescriptor )
+        {
+            this.namedAssociationDescriptor = namedAssociationDescriptor;
+        }
+
+        @Override
+        public Object provideInjection( InjectionContext context )
+            throws InjectionProviderException
+        {
+            NamedAssociation<?> abstractAssociation = ( (AssociationStateHolder) context.state() ).
+                namedAssociationFor( namedAssociationDescriptor.accessor() );
+            if( abstractAssociation != null )
+            {
+                return abstractAssociation;
+            }
+            else
+            {
+                throw new InjectionProviderException( "Non-optional association " + namedAssociationDescriptor.qualifiedName() + " had no association" );
             }
         }
     }

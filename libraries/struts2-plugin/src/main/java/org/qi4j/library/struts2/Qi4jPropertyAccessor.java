@@ -12,6 +12,7 @@ import ognl.OgnlRuntime;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.constraint.ConstraintViolation;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.injection.scope.Structure;
@@ -75,6 +76,10 @@ public class Qi4jPropertyAccessor
                 return association.get();
             }
             else if( ManyAssociation.class.isAssignableFrom( memberClass ) )
+            {
+                return qi4jField;
+            }
+            else if( NamedAssociation.class.isAssignableFrom( memberClass ) )
             {
                 return qi4jField;
             }
@@ -172,6 +177,10 @@ public class Qi4jPropertyAccessor
             else if( ManyAssociation.class.isAssignableFrom( memberClass ) )
             {
                 throw new OgnlException( "Setting many association [" + fieldName + "] is impossible." );
+            }
+            else if( NamedAssociation.class.isAssignableFrom( memberClass ) )
+            {
+                throw new OgnlException( "Setting named association [" + fieldName + "] is impossible." );
             }
         }
 

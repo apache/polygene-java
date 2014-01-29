@@ -1,7 +1,7 @@
 /*
  * Copyright 2010 Niclas Hedhman.
  * Copyright 2011 Rickard Öberg.
- * Copyright 2013 Paul Merlin.
+ * Copyright 2013-2014 Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,15 @@ package org.qi4j.library.conversion.values;
 import java.lang.reflect.AccessibleObject;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -37,6 +40,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.CollectionType;
+import org.qi4j.api.type.MapType;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueDescriptor;
@@ -220,6 +224,28 @@ public interface EntityToValue
                                 }
                                 return entities;
                             }
+                            else if( descriptor.valueType() instanceof MapType
+                                     && ( (MapType) descriptor.valueType() ).keyType().mainType().equals( String.class )
+                                     && ( (MapType) descriptor.valueType() ).valueType().mainType().equals( String.class ) )
+                            {
+                                AssociationDescriptor associationDescriptor;
+                                try
+                                {
+                                    associationDescriptor = entityState.getNamedAssociationByName( associationName );
+                                }
+                                catch( IllegalArgumentException e1 )
+                                {
+                                    return Collections.emptyMap();
+                                }
+
+                                NamedAssociation<?> state = associationState.namedAssociationFor( associationDescriptor.accessor() );
+                                Map<String, String> entities = new LinkedHashMap<>( state.count() );
+                                for( String name : state )
+                                {
+                                    entities.put( name, ( (Identity) state.get( name ) ).identity().get() );
+                                }
+                                return entities;
+                            }
 
                             return null;
                         }
@@ -244,6 +270,20 @@ public interface EntityToValue
                             for( Object entity : state )
                             {
                                 refs.add( EntityReference.entityReferenceFor( entity ) );
+                            }
+                            return refs;
+                        }
+                    },
+                    new Function<AssociationDescriptor, Map<String, EntityReference>>()
+                    {
+                        @Override
+                        public Map<String, EntityReference> map( AssociationDescriptor associationDescriptor )
+                        {
+                            NamedAssociation<?> assoc = associationState.namedAssociationFor( associationDescriptor.accessor() );
+                            Map<String, EntityReference> refs = new LinkedHashMap<>( assoc.count() );
+                            for( String name : assoc )
+                            {
+                                refs.put( name, EntityReference.entityReferenceFor( assoc.get( name ) ) );
                             }
                             return refs;
                         }
@@ -313,6 +353,29 @@ public interface EntityToValue
                                 }
                                 return entities;
                             }
+                            else if( descriptor.valueType() instanceof MapType
+                                     && ( (MapType) descriptor.valueType() ).keyType().mainType().equals( String.class )
+                                     && ( (MapType) descriptor.valueType() ).valueType().mainType().equals( String.class ) )
+                            {
+                                AssociationDescriptor associationDescriptor;
+                                try
+                                {
+                                    associationDescriptor = entityState.getNamedAssociationByName( propertyName );
+                                }
+                                catch( IllegalArgumentException e1 )
+                                {
+                                    return null;
+                                }
+
+                                AccessibleObject associationMethod = associationDescriptor.accessor();
+                                NamedAssociation<?> state = associationState.namedAssociationFor( associationMethod );
+                                Map<String, String> entities = new LinkedHashMap<>( state.count() );
+                                for( String name : state )
+                                {
+                                    entities.put( name, ( (Identity) state.get( name ) ).identity().get() );
+                                }
+                                return entities;
+                            }
                             return null;
                         }
                     }
@@ -360,6 +423,32 @@ public interface EntityToValue
                             for( Object entity : state )
                             {
                                 refs.add( EntityReference.entityReferenceFor( entity ) );
+                            }
+                            return refs;
+                        }
+                    },
+                    new Function<AssociationDescriptor, Map<String, EntityReference>>()
+                    {
+                        @Override
+                        public Map<String, EntityReference> map( AssociationDescriptor descriptor )
+                        {
+                            AssociationDescriptor associationDescriptor;
+                            try
+                            {
+                                String associationName = descriptor.qualifiedName().name();
+                                AssociationStateDescriptor entityState = entityDescriptor.state();
+                                associationDescriptor = entityState.getNamedAssociationByName( associationName );
+                            }
+                            catch( IllegalArgumentException e )
+                            {
+                                return Collections.emptyMap();
+                            }
+                            AccessibleObject associationMethod = associationDescriptor.accessor();
+                            NamedAssociation<Object> assoc = associationState.namedAssociationFor( associationMethod );
+                            Map<String, EntityReference> refs = new LinkedHashMap<>( assoc.count() );
+                            for( String name : assoc )
+                            {
+                                refs.put( name, EntityReference.entityReferenceFor( assoc.get( name ) ) );
                             }
                             return refs;
                         }

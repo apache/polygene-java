@@ -21,6 +21,7 @@ import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 
 public interface SQLEntityState
@@ -96,6 +97,12 @@ public interface SQLEntityState
         public ManyAssociationState manyAssociationValueOf( QualifiedName stateName )
         {
             return state.manyAssociationValueOf( stateName );
+        }
+
+        @Override
+        public NamedAssociationState namedAssociationValueOf( QualifiedName stateName )
+        {
+            return state.namedAssociationValueOf( stateName );
         }
 
         @Override

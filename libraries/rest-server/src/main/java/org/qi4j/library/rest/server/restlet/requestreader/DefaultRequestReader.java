@@ -2,7 +2,9 @@ package org.qi4j.library.rest.server.restlet.requestreader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.Name;
@@ -45,6 +47,7 @@ import static org.qi4j.functional.Iterables.matchesAny;
  *
  * TODO: This should be split into many classes to handle the different cases.
  * TODO: This does not support ManyAssociations
+ * TODO: This does not support NamedAssociations
  */
 public class DefaultRequestReader
     implements RequestReader
@@ -319,6 +322,15 @@ public class DefaultRequestReader
                 {
                     // TODO
                     return Iterables.empty();
+                }
+            },
+            new Function<AssociationDescriptor, Map<String, EntityReference>>()
+            {
+                @Override
+                public Map<String, EntityReference> map( AssociationDescriptor from )
+                {
+                    // TODO
+                    return Collections.emptyMap();
                 }
             }
         );

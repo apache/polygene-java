@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2008-2009, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2009-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +23,7 @@ import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -289,6 +291,18 @@ public final class EntityInstance
                 for( Object entity : manyAssoc )
                 {
                     aggregatedEntities.add( entity );
+                }
+            }
+        }
+        Iterable<? extends AssociationDescriptor> namedAssociations = stateDescriptor.namedAssociations();
+        for( AssociationDescriptor association : namedAssociations )
+        {
+            if( association.isAggregated() )
+            {
+                NamedAssociation<?> namedAssoc = state.namedAssociationFor( association.accessor() );
+                for( String name : namedAssoc )
+                {
+                    aggregatedEntities.add( namedAssoc.get( name ) );
                 }
             }
         }

@@ -3,7 +3,7 @@
  * Copyright 2007-2010 Niclas Hedhman.
  * Copyright 2008 Alin Dreghiciu.
  * Copyright 2012 Stanislav Muhametsin.
- * Copyright 2012 Paul Merlin.
+ * Copyright 2012-2014 Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import java.util.Collection;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.GenericAssociationInfo;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.State;
@@ -50,6 +51,9 @@ import org.qi4j.api.query.grammar.LtSpecification;
 import org.qi4j.api.query.grammar.ManyAssociationContainsSpecification;
 import org.qi4j.api.query.grammar.ManyAssociationFunction;
 import org.qi4j.api.query.grammar.MatchesSpecification;
+import org.qi4j.api.query.grammar.NamedAssociationContainsNameSpecification;
+import org.qi4j.api.query.grammar.NamedAssociationContainsSpecification;
+import org.qi4j.api.query.grammar.NamedAssociationFunction;
 import org.qi4j.api.query.grammar.NeSpecification;
 import org.qi4j.api.query.grammar.NotSpecification;
 import org.qi4j.api.query.grammar.OrSpecification;
@@ -62,6 +66,7 @@ import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.functional.Specification;
 
+import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.functional.Iterables.prepend;
 
 /**
@@ -102,7 +107,7 @@ public final class QueryExpressions
         {
             return clazz.cast( Proxy.newProxyInstance( clazz.getClassLoader(),
                                                        array( clazz ),
-                                                       new TemplateHandler<T>( null, null, null ) ) );
+                                                       new TemplateHandler<T>( null, null, null, null ) ) );
         }
         else
         {
@@ -118,21 +123,28 @@ public final class QueryExpressions
                             field.set( mixin,
                                        Proxy.newProxyInstance( field.getType().getClassLoader(),
                                                                array( field.getType() ),
-                                                               new PropertyReferenceHandler<>( new PropertyFunction<T>( null, null, null, field ) ) ) );
+                                                               new PropertyReferenceHandler<>( new PropertyFunction<T>( null, null, null, null, field ) ) ) );
                         }
                         else if( field.getType().equals( Association.class ) )
                         {
                             field.set( mixin,
                                        Proxy.newProxyInstance( field.getType().getClassLoader(),
                                                                array( field.getType() ),
-                                                               new AssociationReferenceHandler<>( new AssociationFunction<T>( null, null, field ) ) ) );
+                                                               new AssociationReferenceHandler<>( new AssociationFunction<T>( null, null, null, field ) ) ) );
                         }
                         else if( field.getType().equals( ManyAssociation.class ) )
                         {
                             field.set( mixin,
                                        Proxy.newProxyInstance( field.getType().getClassLoader(),
                                                                array( field.getType() ),
-                                                               new ManyAssociationReferenceHandler<>( new ManyAssociationFunction<T>( null, null, field ) ) ) );
+                                                               new ManyAssociationReferenceHandler<>( new ManyAssociationFunction<T>( null, null, null, field ) ) ) );
+                        }
+                        else if( field.getType().equals( NamedAssociation.class ) )
+                        {
+                            field.set( mixin,
+                                       Proxy.newProxyInstance( field.getType().getClassLoader(),
+                                                               array( field.getType() ),
+                                                               new NamedAssociationReferenceHandler<>( new NamedAssociationFunction<T>( null, null, null, field ) ) ) );
                         }
                     }
                 }
@@ -160,13 +172,22 @@ public final class QueryExpressions
         NullArgumentException.validateNotNull( "Association", association );
         return mixinType.cast( Proxy.newProxyInstance( mixinType.getClassLoader(),
                                                        array( mixinType ),
-                                                       new TemplateHandler<T>( null, association( association ), null ) ) );
+                                                       new TemplateHandler<T>( null,
+                                                                               association( association ),
+                                                                               null,
+                                                                               null ) ) );
     }
 
     public static <T> T oneOf( final ManyAssociation<T> association )
     {
         NullArgumentException.validateNotNull( "Association", association );
         return association.get( 0 );
+    }
+
+    public static <T> T oneOf( final NamedAssociation<T> association )
+    {
+        NullArgumentException.validateNotNull( "Association", association );
+        return association.get( first( association ) );
     }
 
     /**
@@ -218,7 +239,7 @@ public final class QueryExpressions
             return (Property<T>) Proxy.newProxyInstance(
                 mixinClass.getClassLoader(),
                 array( field.getType() ),
-                new PropertyReferenceHandler<>( new PropertyFunction<T>( null, null, null, field ) ) );
+                new PropertyReferenceHandler<>( new PropertyFunction<T>( null, null, null, null, field ) ) );
         }
         catch( NoSuchFieldException e )
         {
@@ -254,8 +275,21 @@ public final class QueryExpressions
         return ( (ManyAssociationReferenceHandler<T>) Proxy.getInvocationHandler( association ) ).manyAssociation();
     }
 
-    // And/Or/Not ------------------------------------------------------------|
+    /**
+     * Create a new Query Template NamedAssociationFunction.
+     *
+     * @param <T> type of the NamedAssociation
+     * @param association a NamedAssociation
+     *
+     * @return a new Query Template NamedAssociationFunction
+     */
+    @SuppressWarnings( "unchecked" )
+    public static <T> NamedAssociationFunction<T> namedAssociation( NamedAssociation<T> association )
+    {
+        return ( (NamedAssociationReferenceHandler<T>) Proxy.getInvocationHandler( association ) ).namedAssociation();
+    }
 
+    // And/Or/Not ------------------------------------------------------------|
     /**
      * Create a new AND specification.
      *
@@ -340,6 +374,7 @@ public final class QueryExpressions
     {
         return new EqSpecification<>( new PropertyFunction<String>( null,
                                                                     association( association ),
+                                                                    null,
                                                                     null,
                                                                     IDENTITY_METHOD ),
                                       value.toString() );
@@ -634,8 +669,34 @@ public final class QueryExpressions
         return new ManyAssociationContainsSpecification<>( manyAssociation( manyAssoc ), value );
     }
 
-    // Ordering --------------------------------------------------------------|
+    /**
+     * Create a new CONTAINS specification for a NamedAssociation.
+     *
+     * @param namedAssoc  a NamedAssociation
+     * @param value the value
+     *
+     * @return a new CONTAINS specification for a NamedAssociation.
+     */
+    public static <T> NamedAssociationContainsSpecification<T> contains( NamedAssociation<T> namedAssoc, T value )
+    {
+        return new NamedAssociationContainsSpecification<>( namedAssociation( namedAssoc ), value );
+    }
 
+    /**
+     * Create a new CONTAINS NAME specification for a NamedAssociation.
+     *
+     * @param namedAssoc  a NamedAssociation
+     * @param name the name
+     *
+     * @return a new CONTAINS NAME specification for a NamedAssociation.
+     */
+    public static <T> NamedAssociationContainsNameSpecification<T> containsName( NamedAssociation<T> namedAssoc,
+                                                                                 String name )
+    {
+        return new NamedAssociationContainsNameSpecification<>( namedAssociation( namedAssoc ), name );
+    }
+
+    // Ordering --------------------------------------------------------------|
     /**
      * Create a new Query ascending order segment for a Property.
      *
@@ -671,15 +732,18 @@ public final class QueryExpressions
         private final PropertyFunction<?> compositeProperty;
         private final AssociationFunction<?> compositeAssociation;
         private final ManyAssociationFunction<?> compositeManyAssociation;
+        private final NamedAssociationFunction<?> compositeNamedAssociation;
 
-        private TemplateHandler( PropertyFunction<?> CompositeProperty,
-                                 AssociationFunction<?> CompositeAssociation,
-                                 ManyAssociationFunction<?> CompositeManyAssociation
+        private TemplateHandler( PropertyFunction<?> compositeProperty,
+                                 AssociationFunction<?> compositeAssociation,
+                                 ManyAssociationFunction<?> compositeManyAssociation,
+                                 NamedAssociationFunction<?> compositeNamedAssociation
         )
         {
-            this.compositeProperty = CompositeProperty;
-            this.compositeAssociation = CompositeAssociation;
-            this.compositeManyAssociation = CompositeManyAssociation;
+            this.compositeProperty = compositeProperty;
+            this.compositeAssociation = compositeAssociation;
+            this.compositeManyAssociation = compositeManyAssociation;
+            this.compositeNamedAssociation = compositeNamedAssociation;
         }
 
         @Override
@@ -694,6 +758,7 @@ public final class QueryExpressions
                     new PropertyReferenceHandler<>( new PropertyFunction<T>( compositeProperty,
                                                                              compositeAssociation,
                                                                              compositeManyAssociation,
+                                                                             compositeNamedAssociation,
                                                                              method ) ) );
             }
             else if( Association.class.isAssignableFrom( method.getReturnType() ) )
@@ -703,6 +768,7 @@ public final class QueryExpressions
                     array( method.getReturnType() ),
                     new AssociationReferenceHandler<>( new AssociationFunction<T>( compositeAssociation,
                                                                                    compositeManyAssociation,
+                                                                                   compositeNamedAssociation,
                                                                                    method ) ) );
             }
             else if( ManyAssociation.class.isAssignableFrom( method.getReturnType() ) )
@@ -712,7 +778,18 @@ public final class QueryExpressions
                     array( method.getReturnType() ),
                     new ManyAssociationReferenceHandler<>( new ManyAssociationFunction<T>( compositeAssociation,
                                                                                            compositeManyAssociation,
+                                                                                           compositeNamedAssociation,
                                                                                            method ) ) );
+            }
+            else if( NamedAssociation.class.isAssignableFrom( method.getReturnType() ) )
+            {
+                return Proxy.newProxyInstance(
+                    method.getReturnType().getClassLoader(),
+                    array( method.getReturnType() ),
+                    new NamedAssociationReferenceHandler<>( new NamedAssociationFunction<T>( compositeAssociation,
+                                                                                             compositeManyAssociation,
+                                                                                             compositeNamedAssociation,
+                                                                                             method ) ) );
             }
 
             return null;
@@ -745,7 +822,7 @@ public final class QueryExpressions
                 {
                     return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
                                                    array( (Class<?>) propertyType, PropertyReference.class ),
-                                                   new TemplateHandler<T>( property, null, null ) );
+                                                   new TemplateHandler<T>( property, null, null, null ) );
                 }
             }
 
@@ -779,7 +856,7 @@ public final class QueryExpressions
                 {
                     return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
                                                    array( (Class) associationType, PropertyReference.class ),
-                                                   new TemplateHandler<T>( null, association, null ) );
+                                                   new TemplateHandler<T>( null, association, null, null ) );
                 }
             }
 
@@ -813,7 +890,41 @@ public final class QueryExpressions
                 {
                     return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
                                                    array( (Class) manyAssociationType, PropertyReference.class ),
-                                                   new TemplateHandler<T>( null, null, manyAssociation ) );
+                                                   new TemplateHandler<T>( null, null, manyAssociation, null ) );
+                }
+            }
+
+            return null;
+        }
+    }
+
+    private static class NamedAssociationReferenceHandler<T>
+        implements InvocationHandler
+    {
+        private final NamedAssociationFunction<T> namedAssociation;
+
+        private NamedAssociationReferenceHandler( NamedAssociationFunction<T> namedAssociation )
+        {
+            this.namedAssociation = namedAssociation;
+        }
+
+        public NamedAssociationFunction<T> namedAssociation()
+        {
+            return namedAssociation;
+        }
+
+        @Override
+        public Object invoke( Object o, final Method method, Object[] objects )
+            throws Throwable
+        {
+            if( method.equals( NamedAssociation.class.getMethod( "get", String.class ) ) )
+            {
+                Type namedAssociationType = GenericAssociationInfo.associationTypeOf( namedAssociation.accessor() );
+                if( namedAssociationType.getClass().equals( Class.class ) )
+                {
+                    return Proxy.newProxyInstance( method.getDeclaringClass().getClassLoader(),
+                                                   array( (Class) namedAssociationType, PropertyReference.class ),
+                                                   new TemplateHandler<T>( null, null, null, namedAssociation ) );
                 }
             }
 

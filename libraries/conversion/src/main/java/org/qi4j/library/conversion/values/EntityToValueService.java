@@ -36,6 +36,10 @@ import org.qi4j.api.service.ServiceComposite;
  *  <li>For any ManyAssociation in the EntityComposite, a Property&lt;List&lt;String&gt;&gt; with the same <strong>
  *      unqualified</strong> name will be looked up in the ValueComposite. If found, the EntityReferences in the
  *      ManyAssociation will be converted to URIs and placed into a List and set to the Property in ValueComposite.</li>
+ *  <li>For any NamedAssociation in the EntityComposite, a Property&lt;Map&lt;String,String&gt;&gt; with the same
+ *      <strong>unqualified</strong> name will be looked up in the ValueComposite. If found, the EntityReferences in
+ *      the NamedAssociation will be converted to URIs and placed into a Map and set to the Property in ValueComposite.
+ *      </li>
  *
  * </ol>
  * <p>

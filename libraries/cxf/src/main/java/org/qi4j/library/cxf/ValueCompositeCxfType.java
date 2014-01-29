@@ -19,6 +19,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.StateDescriptor;
@@ -145,6 +147,26 @@ public class ValueCompositeCxfType
                     }
                     return references;
                 }
+            },
+            new Function<AssociationDescriptor, Map<String, EntityReference>>()
+            {
+                @Override
+                public Map<String, EntityReference> map( AssociationDescriptor descriptor )
+                {
+                    Object value = values.get( descriptor.qualifiedName() );
+                    if( value == null )
+                    {
+                        return Collections.emptyMap();
+                    }
+                    String[] namedRefs = value.toString().split( "," );
+                    Map<String, EntityReference> references = new HashMap<>( namedRefs.length );
+                    for( String namedRef : namedRefs )
+                    {
+                        String[] splitted = namedRef.split( ":" );
+                        references.put( splitted[0], EntityReference.parseEntityReference( splitted[1] ) );
+                    }
+                    return references;
+                }
             } );
 
         return builder.newInstance();
@@ -213,6 +235,29 @@ public class ValueCompositeCxfType
                     ids += ",";
                 }
                 ids += id;
+            }
+            if( ids == null )
+            {
+                ids = "";
+            }
+            type.writeObject( ids, cwriter, context );
+            cwriter.close();
+        }
+
+        for( NamedAssociation<?> association : state.allNamedAssociations() )
+        {
+            QName childName = new QName( "", spi.associationDescriptorFor( association ).qualifiedName().name() );
+            MessageWriter cwriter = writer.getElementWriter( childName );
+
+            String ids = null;
+            for( String name : association )
+            {
+                String id = EntityReference.entityReferenceFor( association.get( name ) ).identity();
+                if( ids != null )
+                {
+                    ids += ",";
+                }
+                ids += name + ":" + id;
             }
             if( ids == null )
             {
