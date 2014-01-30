@@ -11,7 +11,6 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.service;
 
 import java.util.ArrayList;
@@ -29,9 +28,9 @@ public class ServicesModel
 {
     private final Iterable<ServiceModel> serviceModels;
 
-    public ServicesModel( Iterable<ServiceModel> serviceModels )
+    public ServicesModel( List<ServiceModel> serviceModels )
     {
-        this.serviceModels = serviceModels;
+        this.serviceModels = new ArrayList<>( serviceModels );
     }
 
     public ServicesInstance newInstance( ModuleInstance module )
@@ -43,7 +42,7 @@ public class ServicesModel
             serviceReferences.add( serviceReferenceInstance );
         }
 
-        return new ServicesInstance( this, serviceReferences );
+        return new ServicesInstance( serviceReferences );
     }
 
     @Override

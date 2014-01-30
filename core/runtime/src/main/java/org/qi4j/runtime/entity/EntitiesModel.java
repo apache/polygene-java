@@ -11,9 +11,9 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
@@ -28,7 +28,7 @@ public class EntitiesModel
 
     public EntitiesModel( List<EntityModel> entityModels )
     {
-        this.entityModels = entityModels;
+        this.entityModels = new ArrayList<>( entityModels );
     }
 
     public Iterable<EntityModel> models()

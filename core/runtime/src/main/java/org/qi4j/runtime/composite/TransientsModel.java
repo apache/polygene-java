@@ -11,9 +11,9 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.composite;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
@@ -28,7 +28,7 @@ public class TransientsModel
 
     public TransientsModel( List<TransientModel> transientModels )
     {
-        this.transientModels = transientModels;
+        this.transientModels = new ArrayList<>( transientModels );
     }
 
     public Iterable<TransientModel> models()

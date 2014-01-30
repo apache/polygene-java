@@ -28,6 +28,8 @@ import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.ModuleInstance;
 
+import static org.qi4j.functional.Iterables.toList;
+
 /**
  * Activators Model.
  *
@@ -37,12 +39,13 @@ public class ActivatorsModel<ActivateeType>
     implements VisitableHierarchy<Object, Object>
 {
 
-    private final List<ActivatorModel<ActivateeType>> activatorModels = new ArrayList<>();
-    private final Iterable<Class<? extends Activator<ActivateeType>>> activatorsClasses;
+    private final List<ActivatorModel<ActivateeType>> activatorModels;
+    private final List<Class<? extends Activator<ActivateeType>>> activatorsClasses;
 
     public ActivatorsModel( Iterable<Class<? extends Activator<ActivateeType>>> activatorsClasses )
     {
-        this.activatorsClasses = activatorsClasses;
+        this.activatorsClasses = toList( activatorsClasses );
+        this.activatorModels = new ArrayList<>( this.activatorsClasses.size() );
         for( Class<? extends Activator<ActivateeType>> activatorClass : activatorsClasses )
         {
             activatorModels.add( new ActivatorModel<>( activatorClass ) );
@@ -74,7 +77,7 @@ public class ActivatorsModel<ActivateeType>
     public Iterable<Activator<ActivateeType>> newInstances()
         throws ActivationException
     {
-        List<Activator<ActivateeType>> activators = new ArrayList<>();
+        List<Activator<ActivateeType>> activators = new ArrayList<>( activatorModels.size() );
         for( ActivatorModel<ActivateeType> activatorModel : activatorModels )
         {
             activators.add( activatorModel.newInstance() );
@@ -85,7 +88,7 @@ public class ActivatorsModel<ActivateeType>
     public Iterable<Activator<ActivateeType>> newInstances( Module module )
         throws ActivationException
     {
-        List<Activator<ActivateeType>> activators = new ArrayList<>();
+        List<Activator<ActivateeType>> activators = new ArrayList<>( activatorModels.size() );
         for( ActivatorModel<ActivateeType> activatorModel : activatorModels )
         {
             InjectionContext injectionContext = new InjectionContext( (ModuleInstance) module, UsesInstance.EMPTY_USES );

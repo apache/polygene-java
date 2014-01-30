@@ -11,9 +11,9 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.runtime.value;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
@@ -28,7 +28,7 @@ public final class ValuesModel
 
     public ValuesModel( List<ValueModel> valueModels )
     {
-        this.valueModels = valueModels;
+        this.valueModels = new ArrayList<>( valueModels );
     }
 
     public Iterable<ValueModel> models()
