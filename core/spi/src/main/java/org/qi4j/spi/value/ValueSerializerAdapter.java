@@ -74,6 +74,20 @@ import static org.qi4j.functional.Iterables.first;
  *     <li>Float or float,</li>
  *     <li>Double or double.</li>
  * </ul>
+ * <p>
+ *     Some other Plain values are transformed before being handed to implementations:
+ * </p>
+ * <ul>
+ *     <li>BigInteger and BigDecimal depends on ValueSerializer.{@link Options};</li>
+ *     <li>Date as a ISO-8601 UTC String;</li>
+ *     <li>DateTime (JodaTime) as a ISO-8601 String with timezone offset or Z for UTC;</li>
+ *     <li>LocalDateTime (JodaTime) as a ISO-8601 String with no timezone offset;</li>
+ *     <li>LocalDate (JodaTime) as a ISO-8601 String with no time info;</li>
+ *     <li>
+ *         Money and BigMoney (JodaMoney) as an object with two values, {@literal currency} as a ISO-4217 String and
+ *         {@literal amount} as a BigDecimal (see above).
+ *     </li>
+ * </ul>
  *
  * @param <OutputType> Implementor output type
  */

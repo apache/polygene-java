@@ -113,7 +113,7 @@ public abstract class AbstractEntityStoreTest
         instance.bigDecimalValue().set( new BigDecimal( "42" ) );
         instance.dateValue().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
         instance.dateTimeValue().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
-        instance.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00", UTC ) );
+        instance.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00" ) );
         instance.localDateValue().set( new LocalDate( "2020-03-04" ) );
         instance.money().set( Money.of( CurrencyUnit.USD, 42.23 ) );
         instance.bigMoney().set( BigMoney.of( CurrencyUnit.USD,

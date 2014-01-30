@@ -36,7 +36,6 @@ import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.qi4j.api.association.AssociationDescriptor;
@@ -83,6 +82,20 @@ import static org.qi4j.functional.Iterables.first;
  *     <li>Byte or byte,</li>
  *     <li>Float or float,</li>
  *     <li>Double or double.</li>
+ * </ul>
+ * <p>
+ *     Some other Plain values are expected in given formats:
+ * </p>
+ * <ul>
+ *     <li>BigInteger and BigDecimal depends on ValueSerializer.{@link Options};</li>
+ *     <li>Date as String in ISO-8601, {@literal @millis@} or {@literal /Date(..)} Microsoft format;</li>
+ *     <li>DateTime (JodaTime) as a ISO-8601 String with optional timezone offset;</li>
+ *     <li>LocalDateTime (JodaTime) as whatever {@link LocalDateTime#LocalDateTime(java.lang.Object)} accept as {@literal instant};</li>
+ *     <li>LocalDate (JodaTime) as whatever {@link LocalDate#LocalDate(java.lang.Object)} accept as {@literal instant};</li>
+ *     <li>
+ *         Money and BigMoney (JodaMoney) as an object with two values, {@literal currency} as a ISO-4217 String and
+ *         {@literal amount} as a BigDecimal (see above).
+ *     </li>
  * </ul>
  *
  * @param <InputType> Implementor pull-parser type
@@ -268,7 +281,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             @Override
             public DateTime map( Object input )
             {
-                return new DateTime( input, DateTimeZone.UTC );
+                return DateTime.parse( input.toString() );
             }
         } );
         registerDeserializer( LocalDateTime.class, new Function<Object, LocalDateTime>()

@@ -23,6 +23,7 @@ import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
@@ -34,6 +35,8 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.joda.time.DateTimeZone.UTC;
+import static org.joda.time.DateTimeZone.forID;
+import static org.joda.time.DateTimeZone.forOffsetHours;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -173,26 +176,28 @@ public abstract class AbstractPlainValueSerializationTest
     @Test
     public void givenDateValueWhenSerializingAndDeserializingExpectEquals()
     {
-        String serialized = valueSerialization.serialize( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
-        assertThat( serialized, equalTo( "2020-03-04T13:24:35.000Z" ) );
+        String serialized = valueSerialization.serialize( new DateTime( "2020-03-04T13:24:35", forID( "CET" ) ).toDate() );
+        assertThat( serialized, equalTo( "2020-03-04T12:24:35.000Z" ) );
 
         Date deserialized = valueSerialization.deserialize( Date.class, serialized );
-        assertThat( deserialized, equalTo( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() ) );
+        assertThat( deserialized, equalTo( new DateTime( "2020-03-04T13:24:35", forID( "CET" ) ).toDate() ) );
+        assertThat( deserialized, equalTo( new DateTime( "2020-03-04T12:24:35", UTC ).toDate() ) );
     }
 
     @Test
     public void givenDateTimeValueWhenSerializingAndDeserializingExpectEquals()
     {
-        String serialized = valueSerialization.serialize( new DateTime( "2020-03-04T13:24:35", UTC ) );
-        assertThat( serialized, equalTo( "2020-03-04T13:24:35.000Z" ) );
+        String serialized = valueSerialization.serialize( new DateTime( "2020-03-04T13:24:35", forOffsetHours( 1 ) ) );
+        assertThat( serialized, equalTo( "2020-03-04T13:24:35.000+01:00" ) );
         DateTime deserialized = valueSerialization.deserialize( DateTime.class, serialized );
-        assertThat( deserialized, equalTo( new DateTime( "2020-03-04T13:24:35", UTC ) ) );
+        assertThat( deserialized, equalTo( new DateTime( "2020-03-04T13:24:35", forOffsetHours( 1 ) ) ) );
     }
 
     @Test
     public void givenLocalDateTimeValueWhenSerializingAndDeserializingExpectEquals()
     {
-        String serialized = valueSerialization.serialize( new LocalDateTime( "2020-03-04T13:23:00", UTC ) );
+        // Serialized without TimeZone
+        String serialized = valueSerialization.serialize( new LocalDateTime( "2020-03-04T13:23:00", forID( "CET" ) ) );
         assertThat( serialized, equalTo( "2020-03-04T13:23:00.000" ) );
 
         LocalDateTime deserialized = valueSerialization.deserialize( LocalDateTime.class, serialized );

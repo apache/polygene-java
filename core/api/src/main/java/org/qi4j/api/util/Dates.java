@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.api.util;
 
 import java.text.DateFormat;
@@ -30,7 +29,7 @@ import java.util.TimeZone;
 public final class Dates
 {
     // Formatters are not thread-safe. Create one per thread
-    private static ThreadLocal<DateFormat> ISO8601 = new ThreadLocal<DateFormat>()
+    private static final ThreadLocal<DateFormat> ISO8601 = new ThreadLocal<DateFormat>()
     {
         @Override
         protected DateFormat initialValue()
@@ -39,7 +38,7 @@ public final class Dates
         }
     };
 
-    private static ThreadLocal<DateFormat> ISO8601_UTC = new ThreadLocal<DateFormat>()
+    private static final ThreadLocal<DateFormat> ISO8601_UTC = new ThreadLocal<DateFormat>()
     {
         @Override
         protected DateFormat initialValue()
@@ -95,5 +94,9 @@ public final class Dates
     public static String toUtcString( Date date )
     {
         return ISO8601_UTC.get().format( date );
+    }
+
+    private Dates()
+    {
     }
 }
