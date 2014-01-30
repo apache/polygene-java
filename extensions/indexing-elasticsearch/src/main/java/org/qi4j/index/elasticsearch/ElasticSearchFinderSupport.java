@@ -20,7 +20,6 @@ package org.qi4j.index.elasticsearch;
 import java.util.Map;
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.OrFilterBuilder;
 import org.joda.money.BigMoney;
 import org.joda.money.BigMoneyProvider;
 import org.qi4j.api.query.grammar.ComparisonSpecification;
@@ -34,7 +33,10 @@ import org.qi4j.api.query.grammar.LtSpecification;
 import org.qi4j.api.query.grammar.NeSpecification;
 import org.qi4j.api.query.grammar.Variable;
 
+import static org.elasticsearch.index.query.FilterBuilders.andFilter;
+import static org.elasticsearch.index.query.FilterBuilders.existsFilter;
 import static org.elasticsearch.index.query.FilterBuilders.notFilter;
+import static org.elasticsearch.index.query.FilterBuilders.orFilter;
 import static org.elasticsearch.index.query.FilterBuilders.rangeFilter;
 import static org.elasticsearch.index.query.FilterBuilders.termFilter;
 
@@ -88,42 +90,43 @@ import static org.elasticsearch.index.query.FilterBuilders.termFilter;
             double amount = money.getAmount().doubleValue();
             if( spec instanceof EqSpecification )
             {
-                return new AndFilterBuilder(
+                return andFilter(
                     termFilter( currencyTerm, currency ),
                     termFilter( amountTerm, amount )
                 );
             }
             else if( spec instanceof NeSpecification )
             {
-                return new OrFilterBuilder(
-                    notFilter( termFilter( currencyTerm, currency ) ),
-                    notFilter( termFilter( amountTerm, amount ) )
+                return andFilter(
+                    existsFilter( name ),
+                    orFilter( notFilter( termFilter( currencyTerm, currency ) ),
+                              notFilter( termFilter( amountTerm, amount ) ) )
                 );
             }
             else if( spec instanceof GeSpecification )
             {
-                return new AndFilterBuilder(
+                return andFilter(
                     termFilter( currencyTerm, currency ),
                     rangeFilter( amountTerm ).gte( amount )
                 );
             }
             else if( spec instanceof GtSpecification )
             {
-                return new AndFilterBuilder(
+                return andFilter(
                     termFilter( currencyTerm, currency ),
                     rangeFilter( amountTerm ).gt( amount )
                 );
             }
             else if( spec instanceof LeSpecification )
             {
-                return new AndFilterBuilder(
+                return andFilter(
                     termFilter( currencyTerm, currency ),
                     rangeFilter( amountTerm ).lte( amount )
                 );
             }
             else if( spec instanceof LtSpecification )
             {
-                return new AndFilterBuilder(
+                return andFilter(
                     termFilter( currencyTerm, currency ),
                     rangeFilter( amountTerm ).lt( amount )
                 );
@@ -144,7 +147,7 @@ import static org.elasticsearch.index.query.FilterBuilders.termFilter;
             BigMoney money = ( (BigMoneyProvider) spec.value() ).toBigMoney();
             String currency = money.getCurrencyUnit().getCurrencyCode();
             double amount = money.getAmount().doubleValue();
-            return new AndFilterBuilder(
+            return andFilter(
                 termFilter( name + CURRENCY, currency ),
                 termFilter( name + AMOUNT, amount )
             );

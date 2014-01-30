@@ -61,7 +61,7 @@ public class AbstractMoneyQueryTest
             where( ne( templateFor( Person.class ).money(),
                        Money.of( CurrencyUnit.USD, 100 ) ) ) );
 
-        verifyUnorderedResults( query, "Ann Doe", "Jack Doe" );
+        verifyUnorderedResults( query, "Jack Doe" );
     }
 
     @Test

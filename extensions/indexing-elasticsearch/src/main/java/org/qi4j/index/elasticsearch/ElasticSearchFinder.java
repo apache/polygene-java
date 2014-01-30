@@ -399,7 +399,9 @@ public interface ElasticSearchFinder
                 }
                 else if( spec instanceof NeSpecification )
                 {
-                    addFilter( notFilter( termFilter( name, value ) ), filterBuilder );
+                    addFilter( andFilter( existsFilter( name ),
+                                          notFilter( termFilter( name, value ) ) ),
+                               filterBuilder );
                 }
                 else if( spec instanceof GeSpecification )
                 {

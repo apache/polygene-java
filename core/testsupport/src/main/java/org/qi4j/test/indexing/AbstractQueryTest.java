@@ -103,9 +103,9 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Nameable> qb = this.module.newQueryBuilder( Nameable.class );
         Query<Nameable> query = unitOfWork.newQuery( qb );
+        System.out.println( "*** script03: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
                                 "Programming", "Cars" );
-        System.out.println( "*** script03: " + query );
     }
 
     @Test
@@ -118,6 +118,18 @@ public abstract class AbstractQueryTest
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ) );
         System.out.println( "*** script04: " + query );
         verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
+    }
+
+    @Test
+    public void script04_ne()
+        throws EntityFinderException
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person personTemplate = templateFor( Person.class );
+        City placeOfBirth = personTemplate.placeOfBirth().get();
+        Query<Person> query = unitOfWork.newQuery( qb.where( ne( placeOfBirth.name(), "Kuala Lumpur" ) ) );
+        System.out.println( "*** script04_ne: " + query );
+        verifyUnorderedResults( query, "Jack Doe" );
     }
 
     @Test
@@ -217,6 +229,17 @@ public abstract class AbstractQueryTest
         Query<Person> query = unitOfWork.newQuery( qb.where( isNull( person.email() ) ) );
         System.out.println( "*** script12: " + query );
         verifyUnorderedResults( query, "Ann Doe", "Jack Doe" );
+    }
+
+    @Test
+    public void script12_ne()
+        throws EntityFinderException
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where( ne( person.email(), "joe@thedoes.net" ) ) );
+        System.out.println( "*** script12_ne: " + query );
+        verifyUnorderedResults( query );
     }
 
     @Test
@@ -469,6 +492,7 @@ public abstract class AbstractQueryTest
         Person person = templateFor( Person.class );
         Female annDoe = unitOfWork.get( Female.class, "anndoe" );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother(), annDoe ) ) );
+        System.out.println( "*** script34: " + query );
 
         verifyUnorderedResults( query, "Joe Doe" );
     }
@@ -479,6 +503,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( containsName( person.accounts(), "anns" ) ) );
+        System.out.println( "*** script35: " + query );
 
         verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
     }
@@ -490,6 +515,7 @@ public abstract class AbstractQueryTest
         Person person = templateFor( Person.class );
         Account anns = unitOfWork.get( Account.class, "accountOfAnnDoe" );
         Query<Person> query = unitOfWork.newQuery( qb.where( contains( person.accounts(), anns ) ) );
+        System.out.println( "*** script36: " + query );
 
         verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
     }
@@ -502,6 +528,7 @@ public abstract class AbstractQueryTest
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.accounts().get( "anns" ).number(),
                                                                  "accountOfAnnDoe" ) ) );
+        System.out.println( "*** script37: " + query );
 
         verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
     }
@@ -512,6 +539,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.title(), Person.Title.DR ) ) );
+        System.out.println( "*** script38: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );
     }
@@ -522,6 +550,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where( ne( person.title(), Person.Title.DR ) ) );
+        System.out.println( "*** script39: " + query );
 
         verifyUnorderedResults( query, "Ann Doe", "Joe Doe" );
     }
