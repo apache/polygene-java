@@ -533,7 +533,7 @@ public interface ElasticSearchFinder
         {
             LOGGER.trace( "Processing NamedAssociationContainsSpecification {}", spec );
             String name = spec.namedAssociation().toString() + ".identity";
-            String value = toString( spec.value(), variables );
+            Object value = resolveVariable( spec.value(), variables );
             addFilter( termFilter( name, value ), filterBuilder );
         }
 
@@ -543,7 +543,7 @@ public interface ElasticSearchFinder
         {
             LOGGER.trace( "Processing NamedAssociationContainsNameSpecification {}", spec );
             String name = spec.namedAssociation().toString() + "._named";
-            String value = toString( spec.name(), variables );
+            Object value = resolveVariable( spec.name(), variables );
             addFilter( termFilter( name, value ), filterBuilder );
         }
     }
