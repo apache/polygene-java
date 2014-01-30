@@ -11,9 +11,9 @@
  * limitations under the License.
  *
  */
+
 package org.qi4j.runtime.object;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
@@ -28,7 +28,7 @@ public class ObjectsModel
 
     public ObjectsModel( List<ObjectModel> objectModels )
     {
-        this.objectModels = new ArrayList<>( objectModels );
+        this.objectModels = objectModels;
     }
 
     @Override

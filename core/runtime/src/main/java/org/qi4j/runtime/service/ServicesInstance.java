@@ -36,11 +36,13 @@ import static org.qi4j.functional.Iterables.filter;
 public class ServicesInstance
     implements Activation, ActivationEventListenerRegistration
 {
+    private final ServicesModel servicesModel;
     private final List<ServiceReference> serviceReferences;
     private final ActivationDelegate activation = new ActivationDelegate( this, false );
 
-    public ServicesInstance( List<ServiceReference> serviceReferences )
+    public ServicesInstance( ServicesModel servicesModel, List<ServiceReference> serviceReferences )
     {
+        this.servicesModel = servicesModel;
         this.serviceReferences = serviceReferences;
         for( ServiceReference serviceReference : serviceReferences )
         {
@@ -71,8 +73,8 @@ public class ServicesInstance
             public boolean satisfiedBy( ServiceReference item )
             {
                 return ( (ServiceReferenceInstance) item ).serviceDescriptor()
-                    .visibility()
-                    .ordinal() >= visibility.ordinal();
+                           .visibility()
+                           .ordinal() >= visibility.ordinal();
             }
         }, serviceReferences );
     }
