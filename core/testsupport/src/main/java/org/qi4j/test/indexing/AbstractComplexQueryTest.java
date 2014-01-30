@@ -42,7 +42,7 @@ import static org.qi4j.api.query.QueryExpressions.templateFor;
 import static org.qi4j.test.indexing.NameableAssert.verifyUnorderedResults;
 
 /**
- * Test Index/Query service for complex queries, ie. queries by "example values".
+ * Abstract satisfiedBy with tests for complex queries against Index/Query engines, ie. queries by "example values".
  */
 public abstract class AbstractComplexQueryTest
     extends AbstractAnyQueryTest

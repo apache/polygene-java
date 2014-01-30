@@ -37,6 +37,9 @@ import static org.qi4j.api.query.QueryExpressions.ne;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
 import static org.qi4j.test.indexing.NameableAssert.verifyUnorderedResults;
 
+/**
+ * Abstract satisfiedBy with tests for Money queries against Index/Query engines.
+ */
 public class AbstractMoneyQueryTest
     extends AbstractAnyQueryTest
 {

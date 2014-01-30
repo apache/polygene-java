@@ -58,6 +58,9 @@ import static org.qi4j.api.query.QueryExpressions.variable;
 import static org.qi4j.functional.Iterables.toList;
 import static org.qi4j.test.indexing.NameableAssert.assertNames;
 
+/**
+ * Abstract satisfiedBy with tests for the EntityFinder interface.
+ */
 public abstract class AbstractEntityFinderTest
     extends AbstractAnyQueryTest
 {
