@@ -11,6 +11,7 @@
  * limitations under the License.
  *
  */
+
 package org.qi4j.runtime.service;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class ImportedServicesModel
 
     public ImportedServicesModel( List<ImportedServiceModel> importedServiceModels )
     {
-        this.importedServiceModels = new ArrayList<>( importedServiceModels );
+        this.importedServiceModels = importedServiceModels;
     }
 
     public ImportedServicesInstance newInstance( ModuleInstance module )
