@@ -52,6 +52,7 @@ import static org.qi4j.api.query.QueryExpressions.gt;
 import static org.qi4j.api.query.QueryExpressions.isNotNull;
 import static org.qi4j.api.query.QueryExpressions.isNull;
 import static org.qi4j.api.query.QueryExpressions.matches;
+import static org.qi4j.api.query.QueryExpressions.ne;
 import static org.qi4j.api.query.QueryExpressions.not;
 import static org.qi4j.api.query.QueryExpressions.oneOf;
 import static org.qi4j.api.query.QueryExpressions.or;
@@ -503,5 +504,25 @@ public abstract class AbstractQueryTest
                                                                  "accountOfAnnDoe" ) ) );
 
         verifyUnorderedResults( query, "Jack Doe", "Ann Doe" );
+    }
+
+    @Test
+    public void script38()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.title(), Person.Title.DR ) ) );
+
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script39()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where( ne( person.title(), Person.Title.DR ) ) );
+
+        verifyUnorderedResults( query, "Ann Doe", "Joe Doe" );
     }
 }
