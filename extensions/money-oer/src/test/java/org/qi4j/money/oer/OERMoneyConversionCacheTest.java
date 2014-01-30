@@ -31,11 +31,10 @@ import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeThat;
 import static org.qi4j.api.common.Visibility.layer;
 import static org.qi4j.test.util.Assume.assumeConnectivity;
+import static org.qi4j.test.util.Assume.assumeSystemPropertyNotNull;
 
 /**
  * OpenExchangeRates.org MoneyConversion Cache Test.
@@ -50,8 +49,7 @@ public class OERMoneyConversionCacheTest
     public static void beforeOERMoneyConversionTests()
     {
         assumeConnectivity( "openexchangerates.org", 443 );
-        apiKey = System.getProperty( "oer-api-key" );
-        assumeThat( apiKey, notNullValue() );
+        apiKey = assumeSystemPropertyNotNull( "oer-api-key" );
     }
 
     @Override

@@ -71,7 +71,7 @@ public class Assume
     }
 
     /**
-     * If called on a runtime with to access to qi4j.org on port 80, the test will halt and be ignored.
+     * If called on a runtime with no access to qi4j.org on port 80, the test will halt and be ignored.
      */
     public static void assumeConnectivity()
     {
@@ -79,7 +79,7 @@ public class Assume
     }
 
     /**
-     * If called on a runtime with to access to given host and port, the test will halt and be ignored.
+     * If called on a runtime with no access to given host and port, the test will halt and be ignored.
      *
      * @param host Host
      * @param port Port
@@ -94,5 +94,17 @@ public class Assume
         {
             assumeFalse( true );
         }
+    }
+
+    /**
+     * If called on a runtime without the given System Property set, the test will halt and be ignored.
+     * @param key the name of the system property
+     * @return The System Propery value if not null
+     */
+    public static String assumeSystemPropertyNotNull( String key )
+    {
+        String property = System.getProperty( key );
+        assumeNotNull( property );
+        return property;
     }
 }

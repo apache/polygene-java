@@ -23,10 +23,9 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.money.AbstractMoneyConversionTest;
 
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assume.assumeThat;
 import static org.qi4j.api.common.Visibility.layer;
 import static org.qi4j.test.util.Assume.assumeConnectivity;
+import static org.qi4j.test.util.Assume.assumeSystemPropertyNotNull;
 
 /**
  * OpenExchangeRates.org MoneyConversion Test.
@@ -43,8 +42,7 @@ public class OERMoneyConversionTest
     public static void beforeOERMoneyConversionTests()
     {
         assumeConnectivity( "openexchangerates.org", 443 );
-        apiKey = System.getProperty( "oer-api-key" );
-        assumeThat( apiKey, notNullValue() );
+        apiKey = assumeSystemPropertyNotNull( "oer-api-key" );
     }
 
     @Override
