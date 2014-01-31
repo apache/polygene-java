@@ -14,19 +14,21 @@
  */
 package org.qi4j.index.sql.postgresql;
 
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractComplexQueryTest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@Ignore( "should pass with actual DB running" )
+import static org.qi4j.test.util.Assume.assumeConnectivity;
+
 public class PostgreSQLComplexQueryTest
-        extends AbstractComplexQueryTest
+    extends AbstractComplexQueryTest
 {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger( PostgreSQLComplexQueryTest.class );
+    @BeforeClass
+    public static void beforePostgreSQLQueryTests()
+    {
+        assumeConnectivity( "localhost", 5432 );
+    }
 
     @Override
     public void assemble( ModuleAssembly mainModule )
@@ -44,7 +46,7 @@ public class PostgreSQLComplexQueryTest
         {
             super.setUp();
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
             // Let's check if exception was because database was not available
             if( this.module != null )

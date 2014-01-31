@@ -17,15 +17,24 @@
  */
 package org.qi4j.index.sql.postgresql;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractMoneyQueryTest;
 
+import static org.qi4j.test.util.Assume.assumeConnectivity;
+
 @Ignore( "Money values not supported by SQL Indexing" )
 public class PostgreSQLMoneyQueryTest
     extends AbstractMoneyQueryTest
 {
+    @BeforeClass
+    public static void beforePostgreSQLMoneyQueryTests()
+    {
+        assumeConnectivity( "localhost", 5432 );
+    }
+
     @Override
     public void assemble( ModuleAssembly mainModule )
         throws AssemblyException

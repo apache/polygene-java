@@ -14,15 +14,27 @@
  */
 package org.qi4j.index.sql.postgresql;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractQueryTest;
 
-@Ignore("should pass with actual DB running")
-public class PostgreSQLQueryTest extends AbstractQueryTest
+import static org.qi4j.test.util.Assume.assumeConnectivity;
+
+/**
+ * PostgreSQL Query Tests.
+ */
+public class PostgreSQLQueryTest
+    extends AbstractQueryTest
 {
+    @BeforeClass
+    public static void beforePostgreSQLQueryTests()
+    {
+        assumeConnectivity( "localhost", 5432 );
+    }
+
     @Override
     public void assemble( ModuleAssembly mainModule )
         throws AssemblyException

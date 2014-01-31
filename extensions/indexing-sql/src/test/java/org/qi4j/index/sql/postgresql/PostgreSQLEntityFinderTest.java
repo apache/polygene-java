@@ -12,17 +12,24 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql.postgresql;
 
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.indexing.AbstractEntityFinderTest;
 
-@Ignore("Should pass with actual DB running")
-public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
+import static org.qi4j.test.util.Assume.assumeConnectivity;
+
+public class PostgreSQLEntityFinderTest
+    extends AbstractEntityFinderTest
 {
+    @BeforeClass
+    public static void beforePostgreSQLQueryTests()
+    {
+        assumeConnectivity( "localhost", 5432 );
+    }
+
     @Override
     public void assemble( ModuleAssembly mainModule )
         throws AssemblyException
@@ -39,7 +46,7 @@ public class PostgreSQLEntityFinderTest extends AbstractEntityFinderTest
         {
             super.setUp();
         }
-        catch ( Exception e )
+        catch( Exception e )
         {
             // Let's check if exception was because database was not available
             if( this.module != null )

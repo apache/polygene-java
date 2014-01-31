@@ -12,13 +12,12 @@
  * limitations under the License.
  *
  */
-
 package org.qi4j.index.sql.postgresql;
 
 import java.sql.Connection;
 import javax.sql.DataSource;
 import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
@@ -37,12 +36,19 @@ import org.qi4j.test.AbstractQi4jTest;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-@Ignore( "should pass with actual DB running " )
-public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
+import static org.qi4j.test.util.Assume.assumeConnectivity;
+
+public class PostgreSQLDBIntegrityTest
+    extends AbstractQi4jTest
 {
+    @BeforeClass
+    public static void beforePostgreSQLQueryTests()
+    {
+        assumeConnectivity( "localhost", 5432 );
+    }
 
     public static interface TestEntity
-            extends EntityComposite
+        extends EntityComposite
     {
         @UseDefaults
         public Property<String> testString();
@@ -51,6 +57,7 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         public Property<Integer> testInt();
     }
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
@@ -88,28 +95,27 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
         uow.remove( entity );
         uow.complete();
 
-        Connection connection =
-            ( (DataSource) this.module.findService( DataSource.class ).get() ).getConnection();
+        Connection connection = this.module.findService( DataSource.class ).get().getConnection();
         try
         {
-            GenericDatabaseExplorer.visitDatabaseTables( connection, null, schemaName, null,
+            GenericDatabaseExplorer.visitDatabaseTables(
+                connection, null, schemaName, null,
                 new DatabaseProcessorAdapter()
+            {
+                @Override
+                public void beginProcessRowInfo( String schemaNamee, String tableName, Object[] rowContents )
                 {
-
-                    @Override
-                    public void beginProcessRowInfo( String schemaNamee, String tableName,
-                            Object[] rowContents )
+                    if( ( tableName.startsWith( DBNames.QNAME_TABLE_NAME_PREFIX )
+                          && ( tableName.equals( DBNames.QNAME_TABLE_NAME_PREFIX + 0 )
+                               || tableName.equals( DBNames.QNAME_TABLE_NAME_PREFIX + 1 ) ) )
+                        || tableName.equals( DBNames.ALL_QNAMES_TABLE_NAME )
+                        || tableName.equals( DBNames.ENTITY_TABLE_NAME ) )
                     {
-                        if( ( tableName.startsWith( DBNames.QNAME_TABLE_NAME_PREFIX )
-                                && ( tableName.equals( DBNames.QNAME_TABLE_NAME_PREFIX + 0 ) || tableName
-                            .equals( DBNames.QNAME_TABLE_NAME_PREFIX + 1 ) ) )
-                                || tableName.equals( DBNames.ALL_QNAMES_TABLE_NAME )
-                                || tableName.equals( DBNames.ENTITY_TABLE_NAME ) )
-                        {
-                            throw new RuntimeException( "Table: " + schemaNamee + "." + tableName );
-                        }
+                        throw new RuntimeException( "Table: " + schemaNamee + "." + tableName );
                     }
-                }, SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
+                }
+                },
+                SQLVendorProvider.createVendor( PostgreSQLVendor.class ) );
         }
         finally
         {
@@ -136,5 +142,4 @@ public class PostgreSQLDBIntegrityTest extends AbstractQi4jTest
             .testString().get() );
         uow.discard();
     }
-
 }
