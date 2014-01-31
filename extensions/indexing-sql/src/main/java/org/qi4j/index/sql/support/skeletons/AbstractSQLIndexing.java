@@ -47,6 +47,7 @@ import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.api.SQLIndexing;
@@ -204,7 +205,7 @@ public abstract class AbstractSQLIndexing
                 {
                     return item.entityDescriptor().queryable();
                 }
-            }, changedStates );
+            }, Iterables.map( SQLCompatEntityStateWrapper.WRAP, changedStates ) );
 
             for( EntityState eState : relatedStates )
             {

@@ -94,4 +94,15 @@ public class ElasticSearchQueryTest
     {
         super.script23();
     }
+
+    @Test
+    @Ignore(
+         "ElasticSearch perform automatic TimeZone resolution when querying on dates, this test assert that the "
+         + "underlying Index/Query engine do not."
+    )
+    @Override
+    public void script42_DateTime()
+    {
+        super.script42_DateTime();
+    }
 }

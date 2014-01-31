@@ -22,6 +22,9 @@ package org.qi4j.test.indexing;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.query.NotQueryableException;
@@ -42,6 +45,8 @@ import org.qi4j.test.indexing.model.QueryParam;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.joda.time.DateTimeZone.UTC;
+import static org.joda.time.DateTimeZone.forID;
 import static org.junit.Assert.assertThat;
 import static org.qi4j.api.query.QueryExpressions.and;
 import static org.qi4j.api.query.QueryExpressions.contains;
@@ -51,6 +56,7 @@ import static org.qi4j.api.query.QueryExpressions.ge;
 import static org.qi4j.api.query.QueryExpressions.gt;
 import static org.qi4j.api.query.QueryExpressions.isNotNull;
 import static org.qi4j.api.query.QueryExpressions.isNull;
+import static org.qi4j.api.query.QueryExpressions.lt;
 import static org.qi4j.api.query.QueryExpressions.matches;
 import static org.qi4j.api.query.QueryExpressions.ne;
 import static org.qi4j.api.query.QueryExpressions.not;
@@ -553,5 +559,201 @@ public abstract class AbstractQueryTest
         System.out.println( "*** script39: " + query );
 
         verifyUnorderedResults( query, "Ann Doe", "Joe Doe" );
+    }
+
+    @Test
+    public void script40_Date()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            eq( person.dateValue(), new DateTime( "2010-03-04T13:24:35", UTC ).toDate() ) ) );
+        System.out.println( "*** script40_Date: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script41_Date()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ne( person.dateValue(), new DateTime( "2010-03-04T13:24:35", UTC ).toDate() ) ) );
+        System.out.println( "*** script41_Date: " + query );
+
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script42_Date()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ne( person.dateValue(), new DateTime( "2010-03-04T14:24:35", forID( "CET" ) ).toDate() ) ) );
+        System.out.println( "*** script42_Date: " + query );
+
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script43_Date()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            and( gt( person.dateValue(), new DateTime( "2005-03-04T13:24:35", UTC ).toDate() ),
+                 lt( person.dateValue(), new DateTime( "2015-03-04T13:24:35", UTC ).toDate() ) ) ) );
+        System.out.println( "*** script43_Date: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script40_DateTime()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            eq( person.dateTimeValue(), new DateTime( "2010-03-04T13:24:35", UTC ) ) ) );
+        System.out.println( "*** script40_DateTime: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script41_DateTime()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ne( person.dateTimeValue(), new DateTime( "2010-03-04T13:24:35", UTC ) ) ) );
+        System.out.println( "*** script41_DateTime: " + query );
+
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script42_DateTime()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ne( person.dateTimeValue(), new DateTime( "2010-03-04T14:24:35", forID( "CET" ) ) ) ) );
+        System.out.println( "*** script42_DateTime: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
+    }
+
+    @Test
+    public void script43_DateTime()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            and( gt( person.dateTimeValue(), new DateTime( "2005-03-04T13:24:35", UTC ) ),
+                 lt( person.dateTimeValue(), new DateTime( "2015-03-04T13:24:35", UTC ) ) ) ) );
+        System.out.println( "*** script43_DateTime: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script40_LocalDateTime()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            eq( person.localDateTimeValue(), new LocalDateTime( "2010-03-04T13:23:00", UTC ) ) ) );
+        System.out.println( "*** script40_LocalDateTime: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script41_LocalDateTime()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ne( person.localDateTimeValue(), new LocalDateTime( "2010-03-04T13:23:00", UTC ) ) ) );
+        System.out.println( "*** script41_LocalDateTime: " + query );
+
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script42_LocalDateTime()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ne( person.localDateTimeValue(), new LocalDateTime( "2010-03-04T13:23:00", forID( "CET" ) ) ) ) );
+        System.out.println( "*** script42_LocalDateTime: " + query );
+
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script43_LocalDateTime()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            and( gt( person.localDateTimeValue(), new LocalDateTime( "2005-03-04T13:24:35", UTC ) ),
+                 lt( person.localDateTimeValue(), new LocalDateTime( "2015-03-04T13:24:35", UTC ) ) ) ) );
+        System.out.println( "*** script43_LocalDateTime: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script40_LocalDate()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            eq( person.localDateValue(), new LocalDate( "2010-03-04", UTC ) ) ) );
+        System.out.println( "*** script40_LocalDate: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script41_LocalDate()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ne( person.localDateValue(), new LocalDate( "2010-03-04", UTC ) ) ) );
+        System.out.println( "*** script41_LocalDate: " + query );
+
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script42_LocalDate()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ne( person.localDateValue(), new LocalDate( "2010-03-04", forID( "CET" ) ) ) ) );
+        System.out.println( "*** script42_LocalDate: " + query );
+
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script43_LocalDate()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            and( gt( person.localDateValue(), new LocalDate( "2005-03-04", UTC ) ),
+                 lt( person.localDateValue(), new LocalDate( "2015-03-04", UTC ) ) ) ) );
+        System.out.println( "*** script43_LocalDate: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe" );
     }
 }

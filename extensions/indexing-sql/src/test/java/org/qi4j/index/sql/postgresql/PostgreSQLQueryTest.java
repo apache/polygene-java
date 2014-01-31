@@ -26,7 +26,9 @@ import static org.qi4j.test.util.Assume.assumeConnectivity;
 
 /**
  * PostgreSQL Query Tests.
+ * <p>Many features are not supported.</p>
  */
+// See org.qi4j.index.sql.support.skeletons.SQLCompatEntityStateWrapper that filter out unsupported properties.
 public class PostgreSQLQueryTest
     extends AbstractQueryTest
 {
@@ -114,5 +116,133 @@ public class PostgreSQLQueryTest
     public void script39()
     {
         super.script39();
+    }
+
+    @Test
+    @Ignore( "Date is not supported by SQL Indexing" )
+    @Override
+    public void script40_Date()
+    {
+        super.script40_Date();
+    }
+
+    @Test
+    @Ignore( "DateTime is not supported by SQL Indexing" )
+    @Override
+    public void script40_DateTime()
+    {
+        super.script40_DateTime();
+    }
+
+    @Test
+    @Ignore( "LocalDate is not supported by SQL Indexing" )
+    @Override
+    public void script40_LocalDate()
+    {
+        super.script40_LocalDate();
+    }
+
+    @Test
+    @Ignore( "LocalDateTime is not supported by SQL Indexing" )
+    @Override
+    public void script40_LocalDateTime()
+    {
+        super.script40_LocalDateTime();
+    }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script41_Date()
+    {
+        super.script41_Date();
+    }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script41_DateTime()
+    {
+        super.script41_DateTime();
+    }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script41_LocalDate()
+    {
+        super.script41_LocalDate();
+    }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script41_LocalDateTime()
+    {
+        super.script41_LocalDateTime();
+    }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script42_Date()
+    {
+        super.script42_Date();
+    }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script42_DateTime()
+    {
+        super.script42_DateTime();
+    }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script42_LocalDate()
+    {
+        super.script42_LocalDate();
+    }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script42_LocalDateTime()
+    {
+        super.script42_LocalDateTime();
+    }
+
+    @Test
+    @Ignore( "Date is not supported by SQL Indexing" )
+    @Override
+    public void script43_Date()
+    {
+        super.script43_Date();
+    }
+
+    @Test
+    @Ignore( "DateTime is not supported by SQL Indexing" )
+    @Override
+    public void script43_DateTime()
+    {
+        super.script43_DateTime();
+    }
+
+    @Test
+    @Ignore( "LocalDate is not supported by SQL Indexing" )
+    @Override
+    public void script43_LocalDate()
+    {
+        super.script43_LocalDate();
+    }
+
+    @Test
+    @Ignore( "LocalDateTime is not supported by SQL Indexing" )
+    @Override
+    public void script43_LocalDateTime()
+    {
+        super.script43_LocalDateTime();
     }
 }

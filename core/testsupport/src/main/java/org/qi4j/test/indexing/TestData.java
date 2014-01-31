@@ -24,6 +24,9 @@ import java.util.List;
 import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -44,16 +47,17 @@ import org.qi4j.test.indexing.model.entities.CatEntity;
 import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
 
+import static org.joda.time.DateTimeZone.UTC;
+
 /**
- * JAVADOC Add JavaDoc
+ * Utility class to populate Index/Query tests data.
  */
 class TestData
 {
     static void populate( Module module )
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
-        try
+        try( UnitOfWork unitOfWork = module.newUnitOfWork() )
         {
             NameableAssert.clear();
             Domain gaming;
@@ -159,7 +163,6 @@ class TestData
             }
 
             {
-
                 EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
                 Male joeDoe = maleBuilder.instance();
                 joeDoe.name().set( "Joe Doe" );
@@ -175,6 +178,10 @@ class TestData
                 address = module.newValueBuilderWithPrototype( address ).prototype();
                 address.line1().set( "Qi Alley 4j" );
                 joeDoe.address().set( address );
+                joeDoe.dateValue().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
+                joeDoe.dateTimeValue().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
+                joeDoe.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00" ) );
+                joeDoe.localDateValue().set( new LocalDate( "2020-03-04" ) );
                 joeDoe.money().set( Money.of( CurrencyUnit.USD, 100 ) );
                 joeDoe.bigMoney().set( BigMoney.of( CurrencyUnit.USD, new BigDecimal( "1000000000000.000000" ) ) );
                 joeDoe.moneys().set( Arrays.asList( Money.of( CurrencyUnit.USD, 100 ) ) );
@@ -197,6 +204,10 @@ class TestData
                 address = module.newValueBuilderWithPrototype( address ).prototype();
                 address.line1().set( "Qi Avenue 4j" );
                 jackDoe.address().set( address );
+                jackDoe.dateValue().set( new DateTime( "2010-03-04T13:24:35", UTC ).toDate() );
+                jackDoe.dateTimeValue().set( new DateTime( "2010-03-04T13:24:35", UTC ) );
+                jackDoe.localDateTimeValue().set( new LocalDateTime( "2010-03-04T13:23:00" ) );
+                jackDoe.localDateValue().set( new LocalDate( "2010-03-04" ) );
                 jackDoe.money().set( Money.of( CurrencyUnit.USD, 1000 ) );
                 jackDoe.moneys().set( Arrays.asList( Money.of( CurrencyUnit.USD, 100 ),
                                                      Money.of( CurrencyUnit.USD, 1000 ) ) );
@@ -233,14 +244,9 @@ class TestData
                 EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder( CatEntity.class );
                 Cat felix = catBuilder.instance();
                 felix.name().set( "Felix" );
-                felix = catBuilder.newInstance();
-                // NameableAssert.trace( felix );
-                unitOfWork.complete();
+                catBuilder.newInstance();
             }
-        }
-        finally
-        {
-            unitOfWork.discard();
+            unitOfWork.complete();
         }
     }
 

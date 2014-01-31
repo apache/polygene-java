@@ -18,10 +18,14 @@
  */
 package org.qi4j.test.indexing.model;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.joda.money.BigMoney;
 import org.joda.money.Money;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.association.NamedAssociation;
@@ -74,6 +78,18 @@ public interface Person
 
     @Optional
     Property<Map<String, String>> additionalInfo();
+
+    @Optional
+    Property<Date> dateValue();
+
+    @Optional
+    Property<DateTime> dateTimeValue();
+
+    @Optional
+    Property<LocalDateTime> localDateTimeValue();
+
+    @Optional
+    Property<LocalDate> localDateValue();
 
     @Optional
     Property<Money> money();
