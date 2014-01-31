@@ -343,7 +343,6 @@ configurations {
   jacoco
 }
 dependencies {
-  // jacoco 'org.jacoco:org.jacoco.ant:0.6.2.201302030002'
   jacoco 'org.jacoco:org.jacoco.ant:0.6.4.201312101107'
 }
 task coverageReport( type: JacocoReport ) {
