@@ -141,17 +141,20 @@ public class OERMoneyConversionMixin
         throws MoneyConversionException
     {
         String cacheKey = String.format( "LATEST-%s-%s", from.getCode(), to.getCode() );
-        if( caching != null && rateCache.exists( cacheKey ) )
+        if( caching != null )
         {
             Rate rate = rateCache.get( cacheKey );
-            if( rate.when().plusHours( 1 ).isAfterNow() )
+            if( rate != null )
             {
-                cacheHits.incrementAndGet();
-                return rate;
-            }
-            else
-            {
-                rateCache.remove( cacheKey );
+                if( rate.when().plusHours( 1 ).isAfterNow() )
+                {
+                    cacheHits.incrementAndGet();
+                    return rate;
+                }
+                else
+                {
+                    rateCache.remove( cacheKey );
+                }
             }
         }
         Rate rate = getRate( latest, from, to );
@@ -176,10 +179,14 @@ public class OERMoneyConversionMixin
         int month = date.get( monthOfYear() );
         int day = date.get( dayOfMonth() );
         String cacheKey = String.format( US, "EOD-%s-%s-%d-%d-%d", from.getCode(), to.getCode(), year, month, day );
-        if( caching != null && rateCache.exists( cacheKey ) )
+        if( caching != null )
         {
-            cacheHits.incrementAndGet();
-            return rateCache.get( cacheKey );
+            Rate rate = rateCache.get( cacheKey );
+            if( rate != null )
+            {
+                cacheHits.incrementAndGet();
+                return rate;
+            }
         }
         String url = String.format( endOfDate, year, month, day );
         Rate rate = getRate( url, from, to );
@@ -197,17 +204,20 @@ public class OERMoneyConversionMixin
         throws MoneyConversionException
     {
         String cacheKey = String.format( "LATEST-%s", from.getCode() );
-        if( caching != null && ratesCache.exists( cacheKey ) )
+        if( caching != null )
         {
             List<Rate> rates = ratesCache.get( cacheKey );
-            if( rates.get( 0 ).when().plusHours( 1 ).isAfterNow() )
+            if( rates != null )
             {
-                cacheHits.incrementAndGet();
-                return rates;
-            }
-            else
-            {
-                ratesCache.remove( cacheKey );
+                if( rates.get( 0 ).when().plusHours( 1 ).isAfterNow() )
+                {
+                    cacheHits.incrementAndGet();
+                    return rates;
+                }
+                else
+                {
+                    ratesCache.remove( cacheKey );
+                }
             }
         }
         List<Rate> rates = getRates( latest, from );
@@ -233,10 +243,14 @@ public class OERMoneyConversionMixin
         int month = date.get( monthOfYear() );
         int day = date.get( dayOfMonth() );
         String cacheKey = String.format( US, "EOD-%s-%d-%d-%d", from.getCode(), year, month, day );
-        if( caching != null && ratesCache.exists( cacheKey ) )
+        if( caching != null )
         {
-            cacheHits.incrementAndGet();
-            return ratesCache.get( cacheKey );
+            List<Rate> rates = ratesCache.get( cacheKey );
+            if( rates != null )
+            {
+                cacheHits.incrementAndGet();
+                return rates;
+            }
         }
         String url = String.format( endOfDate, year, month, day );
         List<Rate> rates = getRates( url, from );
