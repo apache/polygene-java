@@ -16,6 +16,8 @@ dependencies {
 }
 
 test {
-    systemProperties = System.properties
+    if( System.getProperty( 'oer-api-key' ) != null ) {
+        systemProperties['oer-api-key'] = System.getProperty( 'oer-api-key' )
+    }
 }
 
