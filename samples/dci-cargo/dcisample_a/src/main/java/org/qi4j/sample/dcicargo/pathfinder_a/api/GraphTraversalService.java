@@ -15,35 +15,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.sample.dcicargo.pathfinder.api;
+package org.qi4j.sample.dcicargo.pathfinder_a.api;
 
-import java.io.Serializable;
-import java.util.Collections;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.List;
 
 /**
- *
+ * Part of the external graph traversal API exposed by the routing team
+ * and used by us (booking and tracking team).
  */
-public final class TransitPath implements Serializable
+public interface GraphTraversalService extends Remote
 {
 
-    private final List<TransitEdge> transitEdges;
-
     /**
-     * Constructor.
+     * @param originUnLocode      origin UN Locode
+     * @param destinationUnLocode destination UN Locode
      *
-     * @param transitEdges The legs for this itinerary.
+     * @return A list of transit paths
+     *
+     * @throws RemoteException RMI problem
      */
-    public TransitPath( final List<TransitEdge> transitEdges )
-    {
-        this.transitEdges = transitEdges;
-    }
-
-    /**
-     * @return An unmodifiable list DTOs.
-     */
-    public List<TransitEdge> getTransitEdges()
-    {
-        return Collections.unmodifiableList( transitEdges );
-    }
+    List<TransitPath> findShortestPath( String originUnLocode, String destinationUnLocode )
+        throws RemoteException;
 }

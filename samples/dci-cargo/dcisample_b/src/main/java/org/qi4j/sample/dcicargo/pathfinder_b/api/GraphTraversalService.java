@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.sample.dcicargo.pathfinder.api;
+package org.qi4j.sample.dcicargo.pathfinder_b.api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.sample.dcicargo.pathfinder.internal;
+package org.qi4j.sample.dcicargo.pathfinder_b.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import org.qi4j.sample.dcicargo.pathfinder.api.TransitEdge;
-import org.qi4j.sample.dcicargo.pathfinder.api.TransitPath;
+import org.qi4j.sample.dcicargo.pathfinder_b.api.TransitEdge;
+import org.qi4j.sample.dcicargo.pathfinder_b.api.TransitPath;
 
 public class GraphDAO
 {
