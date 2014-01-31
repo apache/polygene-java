@@ -17,6 +17,8 @@
  */
 package org.qi4j.index.elasticsearch;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -202,6 +204,13 @@ public interface ElasticSearchIndexer
                         if( value == null || ValueType.isPrimitiveValue( value ) )
                         {
                             json.put( key, value );
+                        }
+                        else if( value instanceof BigInteger || value instanceof BigDecimal )
+                        {
+                            json.put(
+                                key,
+                                Double.valueOf( valueSerializer.serialize( new Options().bigNumToDouble(), value ) )
+                            );
                         }
                         else
                         {
