@@ -175,6 +175,7 @@ allprojects {
   if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() ||
       ext.testJavaDir.isDirectory() || ext.testScalaDir.isDirectory() )
   {
+    apply plugin: 'jacoco'
     apply plugin: 'osgi'
     apply plugin: VersionClass
     apply plugin: AsciidocBuildInfo
@@ -247,6 +248,7 @@ allprojects {
     test {
       maxHeapSize = "1024m"
       systemProperties = testProperties
+      systemProperties['user.dir'] = workingDir // GRADLE-2859
       ignoreFailures = true
       testReport = true
       afterSuite { descriptor, result ->
@@ -335,6 +337,30 @@ test {
   dependsOn subprojects*.test, globalTestReport
   testReport = false
 }
+
+// Jacoco
+configurations {
+  jacoco
+}
+dependencies {
+  // jacoco 'org.jacoco:org.jacoco.ant:0.6.2.201302030002'
+  jacoco 'org.jacoco:org.jacoco.ant:0.6.4.201312101107'
+}
+task coverageReport( type: JacocoReport ) {
+  dependsOn subprojects*.test
+  jacocoClasspath = configurations.jacoco
+  executionData fileTree(project.rootDir.absolutePath).include( "**/build/jacoco/*.exec" )
+  subprojects.each {
+    sourceSets it.sourceSets.main
+  }
+  reports {
+    html {
+      enabled true
+      destination "build/reports/coverage"
+    }
+  }
+}
+
 
 // Build the whole SDK public Javadoc
 task javadocs( type: Javadoc ) {
