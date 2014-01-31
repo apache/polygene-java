@@ -15,7 +15,6 @@ apply plugin: 'signing'
 apply plugin: 'maven'
 apply from: 'maven-compat.gradle'
 apply plugin: 'project-report'
-apply plugin: 'sonar'
 apply from: 'libraries.gradle'
 
 targetCompatibility = "1.7"
@@ -36,20 +35,6 @@ buildscript {
 
 
 // External tools BEGIN ---------------------------------------------------
-
-// Sonar configuration - Used at nemo.sonarsource.org
-// Using system properties for easy configuration from outside the build
-sonar {
-    server {
-        url = System.getProperty("sonar.host.url") ?: "http://localhost:9000/"
-    }
-    database {
-        url = System.getProperty("sonar.jdbc.url") ?: "jdbc:h2:tcp://localhost:9092/sonar"
-        driverClassName = System.getProperty("sonar.jdbc.driver") ?: "org.h2.Driver"
-        username = System.getProperty("sonar.jdbc.username") ?: "sonar"
-        password = System.getProperty("sonar.jdbc.password") ?: "sonar"
-    }
-}
 
 // IDEA plugin configuration
 idea.project.ipr {
@@ -287,29 +272,6 @@ allprojects {
     dependencyReport {
         configurations = [ project.configurations.runtime ]
     }
-
-    // Sonar configuration, mainly for code coverage BEGIN ----------------
-    // See http://www.gradle.org/docs/current/userguide/dependency_management.html#sub:configurations
-    // and http://www.gradle.org/docs/current/dsl/org.gradle.api.artifacts.ConfigurationContainer.html
-    configurations {
-        jacoco // Configuration Group used by Sonar to provide Code Coverage using JaCoCo
-        sonar {
-          project {
-              dynamicAnalysis  = "reuseReports"
-              withProjectProperties { props ->
-                  props["sonar.core.codeCoveragePlugin"] = "jacoco"
-                  props["sonar.jacoco.reportPath"]       = "${buildDir}/jacoco.exec"
-              }
-          }
-        }
-    }
-    dependencies {
-        jacoco group: "org.jacoco", name: "org.jacoco.agent", version: "0.5.10.201208310627", classifier: "runtime"
-    }
-    test {
-        jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.qi4j.*"
-    }
-    // Sonar configuration, mainly for code coverage END ------------------
 
     task minBuild {
       dependsOn classes
