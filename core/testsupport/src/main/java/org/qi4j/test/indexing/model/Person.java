@@ -18,6 +18,8 @@
  */
 package org.qi4j.test.indexing.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +80,12 @@ public interface Person
 
     @Optional
     Property<Map<String, String>> additionalInfo();
+
+    @Optional
+    Property<BigInteger> bigInteger();
+
+    @Optional
+    Property<BigDecimal> bigDecimal();
 
     @Optional
     Property<Date> dateValue();

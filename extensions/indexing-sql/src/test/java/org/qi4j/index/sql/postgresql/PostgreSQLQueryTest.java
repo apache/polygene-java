@@ -245,4 +245,20 @@ public class PostgreSQLQueryTest
     {
         super.script43_LocalDateTime();
     }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script51_BigInteger()
+    {
+        super.script51_BigInteger();
+    }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script51_BigDecimal()
+    {
+        super.script51_BigDecimal();
+    }
 }

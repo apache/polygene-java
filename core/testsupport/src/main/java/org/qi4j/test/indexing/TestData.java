@@ -1,5 +1,6 @@
 /*
  * Copyright 2008 Alin Dreghiciu.
+ * Copyright 2014 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -18,6 +19,7 @@
 package org.qi4j.test.indexing;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -178,6 +180,8 @@ class TestData
                 address = module.newValueBuilderWithPrototype( address ).prototype();
                 address.line1().set( "Qi Alley 4j" );
                 joeDoe.address().set( address );
+                joeDoe.bigInteger().set( new BigInteger( "23232323232323232323232323" ) );
+                joeDoe.bigDecimal().set( new BigDecimal( "23232323232323232323232323.424242420000000000000" ) );
                 joeDoe.dateValue().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
                 joeDoe.dateTimeValue().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
                 joeDoe.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00" ) );
@@ -204,6 +208,8 @@ class TestData
                 address = module.newValueBuilderWithPrototype( address ).prototype();
                 address.line1().set( "Qi Avenue 4j" );
                 jackDoe.address().set( address );
+                jackDoe.bigInteger().set( new BigInteger( "42424242424242424242424242" ) );
+                jackDoe.bigDecimal().set( new BigDecimal( "42424242424242424242424242.232323230000000000000" ) );
                 jackDoe.dateValue().set( new DateTime( "2010-03-04T13:24:35", UTC ).toDate() );
                 jackDoe.dateTimeValue().set( new DateTime( "2010-03-04T13:24:35", UTC ) );
                 jackDoe.localDateTimeValue().set( new LocalDateTime( "2010-03-04T13:23:00" ) );

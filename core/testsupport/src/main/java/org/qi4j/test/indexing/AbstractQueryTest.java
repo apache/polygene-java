@@ -20,6 +20,8 @@
 package org.qi4j.test.indexing;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import org.joda.time.DateTime;
@@ -755,5 +757,77 @@ public abstract class AbstractQueryTest
         System.out.println( "*** script43_LocalDate: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script50_BigInteger()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            eq( person.bigInteger(), new BigInteger( "23232323232323232323232323" ) ) ) );
+        System.out.println( "*** script50_BigInteger: " + query );
+
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script51_BigInteger()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ne( person.bigInteger(), new BigInteger( "23232323232323232323232323" ) ) ) );
+        System.out.println( "*** script51_BigInteger: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script52_BigInteger()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ge( person.bigInteger(), new BigInteger( "23232323232323232323232323" ) ) ) );
+        System.out.println( "*** script52_BigInteger: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
+    }
+
+    @Test
+    public void script50_BigDecimal()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            eq( person.bigDecimal(), new BigDecimal( "23232323232323232323232323.424242420000000000000" ) ) ) );
+        System.out.println( "*** script50_BigDecimal: " + query );
+
+        verifyUnorderedResults( query, "Joe Doe" );
+    }
+
+    @Test
+    public void script51_BigDecimal()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ne( person.bigDecimal(), new BigDecimal( "23232323232323232323232323.424242420000000000000" ) ) ) );
+        System.out.println( "*** script51_BigDecimal: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe" );
+    }
+
+    @Test
+    public void script52_BigDecimal()
+    {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qb.where(
+            ge( person.bigDecimal(), new BigDecimal( "23232323232323232323232323.424242420000000000000" ) ) ) );
+        System.out.println( "*** script52_BigDecimal: " + query );
+
+        verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
     }
 }
