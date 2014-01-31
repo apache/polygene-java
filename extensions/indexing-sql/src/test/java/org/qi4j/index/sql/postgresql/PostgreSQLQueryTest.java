@@ -19,6 +19,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.indexing.AbstractQueryTest;
 
 import static org.qi4j.test.util.Assume.assumeConnectivity;
@@ -66,6 +67,24 @@ public class PostgreSQLQueryTest
     }
 
     @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script04_ne()
+        throws EntityFinderException
+    {
+        super.script04_ne();
+    }
+
+    @Test
+    @Ignore( "NeSpecification is not supported by SQL Indexing" )
+    @Override
+    public void script12_ne()
+        throws EntityFinderException
+    {
+        super.script04_ne();
+    }
+
+    @Test
     @Ignore( "NamedAssociation are not supported by SQL Indexing" )
     @Override
     public void script35()
@@ -79,5 +98,21 @@ public class PostgreSQLQueryTest
     public void script36()
     {
         super.script36();
+    }
+
+    @Test
+    @Ignore( "Queries on Enums are not supported by SQL Indexing" )
+    @Override
+    public void script38()
+    {
+        super.script38();
+    }
+
+    @Test
+    @Ignore( "Queries on Enums and NeSpecification are not supported by SQL Indexing" )
+    @Override
+    public void script39()
+    {
+        super.script39();
     }
 }
