@@ -16,7 +16,6 @@
 package org.qi4j.api.value;
 
 import java.io.OutputStream;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.composite.AmbiguousTypeException;
@@ -177,19 +176,6 @@ public interface ValueSerializer
          * Default to TRUE.
          */
         public static final String INCLUDE_TYPE_INFO = "includeTypeInfo";
-        /**
-         * Boolean option to convert BigInteger and BigDecimal to Double loosing precision.
-         * Default to FALSE.
-         */
-        public static final String BIGNUM_TO_DOUBLE = "bigNumToDouble";
-        /**
-         * Integer option to set BigDecimal scale before conversion to Double.
-         */
-        public static final String BIGNUM_TO_DOUBLE_SCALE = "bigNumToDoubleScale";
-        /**
-         * String option to set BigDecimal {@link java.math.RoundingMode} before conversion to Double.
-         */
-        public static final String BIGNUM_TO_DOUBLE_ROUNDING = "bigNumToDoubleRounding";
         private final Map<String, String> options = new HashMap<>();
 
         /**
@@ -226,51 +212,6 @@ public interface ValueSerializer
         public Options withoutTypeInfo()
         {
             return put( INCLUDE_TYPE_INFO, false );
-        }
-
-        /**
-         * Set {@link #BIGNUM_TO_DOUBLE} option to TRUE.
-         * @return This
-         */
-        public Options bigNumToDouble()
-        {
-            return put( BIGNUM_TO_DOUBLE, true );
-        }
-
-        /**
-         * Set {@link #BIGNUM_TO_DOUBLE} option to TRUE and {@link #BIGNUM_TO_DOUBLE_SCALE} value.
-         * @param scale BigDecimal scale
-         * @return This
-         */
-        public Options bigNumToDouble( int scale )
-        {
-            return put( BIGNUM_TO_DOUBLE, true ).
-                put( BIGNUM_TO_DOUBLE_SCALE, scale );
-        }
-
-        /**
-         * Set {@link #BIGNUM_TO_DOUBLE} option to TRUE and {@link #BIGNUM_TO_DOUBLE_ROUNDING} value.
-         * @param rounding BigDecimal rounding mode
-         * @return This
-         */
-        public Options bigNumToDouble( RoundingMode rounding )
-        {
-            return put( BIGNUM_TO_DOUBLE, true ).
-                put( BIGNUM_TO_DOUBLE_ROUNDING, rounding.name() );
-        }
-
-        /**
-         * Set {@link #BIGNUM_TO_DOUBLE} option to TRUE, {@link #BIGNUM_TO_DOUBLE_SCALE} and
-         * {@link #BIGNUM_TO_DOUBLE_ROUNDING} values.
-         * @param scale BigDecimal scale
-         * @param rounding BigDecimal rounding mode
-         * @return This
-         */
-        public Options bigNumToDouble( int scale, RoundingMode rounding )
-        {
-            return put( BIGNUM_TO_DOUBLE, true ).
-                put( BIGNUM_TO_DOUBLE_SCALE, scale ).
-                put( BIGNUM_TO_DOUBLE_ROUNDING, rounding.name() );
         }
 
         /**

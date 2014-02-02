@@ -92,8 +92,9 @@ public interface ElasticSearchFinder
 
         static
         {
-            COMPLEX_TYPE_SUPPORTS.put( Money.class, new ElasticSearchFinderSupport.MoneySupport() );
-            COMPLEX_TYPE_SUPPORTS.put( BigMoney.class, new ElasticSearchFinderSupport.MoneySupport() );
+            ComplexTypeSupport moneySupport = new ElasticSearchFinderSupport.MoneySupport();
+            COMPLEX_TYPE_SUPPORTS.put( Money.class, moneySupport );
+            COMPLEX_TYPE_SUPPORTS.put( BigMoney.class, moneySupport );
         }
 
         @This

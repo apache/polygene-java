@@ -134,27 +134,4 @@ public class AbstractMoneyQueryTest
 
         verifyUnorderedResults( query, "Joe Doe" );
     }
-
-    @Test
-    public void script10()
-    {
-        // This test exhibit rounding applied to BigMoney amount according to the currency scale
-        Query<Person> query = unitOfWork.newQuery( module.newQueryBuilder( Person.class ).
-            where( ge( templateFor( Person.class ).bigMoney(),
-                       BigMoney.of( CurrencyUnit.USD, new BigDecimal( "1000000000000.001" ) ) ) ) );
-
-        verifyUnorderedResults( query );
-    }
-
-    @Test
-    public void script11()
-    {
-        // This test exhibit rounding applied to BigMoney amount according to the currency scale
-        Query<Person> query = unitOfWork.newQuery( module.newQueryBuilder( Person.class ).
-            where( ge( templateFor( Person.class ).bigMoney(),
-                       BigMoney.of( CurrencyUnit.USD, new BigDecimal( "1000000000000.00001" ) ) ) ) );
-
-        verifyUnorderedResults( query, "Joe Doe" );
-    }
-
 }

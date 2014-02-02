@@ -32,7 +32,8 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
 import static org.joda.time.DateTimeZone.UTC;
 import static org.joda.time.DateTimeZone.forID;
 import static org.joda.time.DateTimeZone.forOffsetHours;
@@ -155,21 +156,27 @@ public abstract class AbstractPlainValueSerializationTest
     @Test
     public void givenBigIntegerValueWhenSerializingAndDeserializingExpectEquals()
     {
-        String serialized = valueSerialization.serialize( new BigInteger( "42" ) );
-        assertThat( serialized, equalTo( "42" ) );
+        BigInteger bigInteger = new BigInteger( "42424242424242424242424242" );
+        assertThat( bigInteger, not( equalTo( BigInteger.valueOf( bigInteger.longValue() ) ) ) );
+
+        String serialized = valueSerialization.serialize( bigInteger );
+        assertThat( serialized, equalTo( "42424242424242424242424242" ) );
 
         BigInteger deserialized = valueSerialization.deserialize( BigInteger.class, serialized );
-        assertThat( deserialized, equalTo( new BigInteger( "42" ) ) );
+        assertThat( deserialized, equalTo( bigInteger ) );
     }
 
     @Test
     public void givenBigDecimalValueWhenSerializingAndDeserializingExpectEquals()
     {
-        String serialized = valueSerialization.serialize( new BigDecimal( "42" ) );
-        assertThat( serialized, equalTo( "42" ) );
+        BigDecimal bigDecimal = new BigDecimal( "42.2376931348623157e+309" );
+        assertThat( bigDecimal.doubleValue(), equalTo( Double.POSITIVE_INFINITY ) );
+        
+        String serialized = valueSerialization.serialize( bigDecimal );
+        assertThat( serialized, equalTo( "4.22376931348623157E+310" ) );
 
         BigDecimal deserialized = valueSerialization.deserialize( BigDecimal.class, serialized );
-        assertThat( deserialized, equalTo( new BigDecimal( "42" ) ) );
+        assertThat( deserialized, equalTo( bigDecimal ) );
     }
 
     @Test

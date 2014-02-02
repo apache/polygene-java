@@ -22,7 +22,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -164,17 +163,6 @@ public abstract class ValueSerializerAdapter<OutputType>
             @Override
             public Object map( Options options, BigDecimal bigDecimal )
             {
-                Boolean toDouble = options.getBoolean( Options.BIGNUM_TO_DOUBLE );
-                if( toDouble != null && toDouble )
-                {
-                    Integer scale = options.getInteger( Options.BIGNUM_TO_DOUBLE_SCALE );
-                    scale = scale == null ? bigDecimal.scale() : scale;
-                    String roundingName = options.getString( Options.BIGNUM_TO_DOUBLE_ROUNDING );
-                    RoundingMode roundingMode = roundingName == null
-                                                ? RoundingMode.HALF_UP
-                                                : RoundingMode.valueOf( roundingName );
-                    return bigDecimal.setScale( scale, roundingMode ).doubleValue();
-                }
                 return bigDecimal.toString();
             }
         } );
@@ -183,11 +171,6 @@ public abstract class ValueSerializerAdapter<OutputType>
             @Override
             public Object map( Options options, BigInteger bigInteger )
             {
-                Boolean toDouble = options.getBoolean( Options.BIGNUM_TO_DOUBLE );
-                if( toDouble != null && toDouble )
-                {
-                    return bigInteger.doubleValue();
-                }
                 return bigInteger.toString();
             }
         } );
@@ -251,23 +234,7 @@ public abstract class ValueSerializerAdapter<OutputType>
                 onFieldEnd( output );
                 onFieldStart( output, "amount" );
                 onValueStart( output );
-
-                Boolean toDouble = options.getBoolean( Options.BIGNUM_TO_DOUBLE );
-                if( toDouble != null && toDouble )
-                {
-                    Integer scale = options.getInteger( Options.BIGNUM_TO_DOUBLE_SCALE );
-                    scale = scale == null ? money.getScale() : scale;
-                    String roundingName = options.getString( Options.BIGNUM_TO_DOUBLE_ROUNDING );
-                    RoundingMode roundingMode = roundingName == null
-                                                ? RoundingMode.HALF_UP
-                                                : RoundingMode.valueOf( roundingName );
-                    onValue( output, money.getAmount().setScale( scale, roundingMode ).doubleValue() );
-                }
-                else
-                {
-                    onValue( output, money.getAmount().toString() );
-                }
-
+                onValue( output, money.getAmount().toString() );
                 onValueEnd( output );
                 onFieldEnd( output );
                 onObjectEnd( output );
@@ -287,23 +254,7 @@ public abstract class ValueSerializerAdapter<OutputType>
                 onFieldEnd( output );
                 onFieldStart( output, "amount" );
                 onValueStart( output );
-
-                Boolean toDouble = options.getBoolean( Options.BIGNUM_TO_DOUBLE );
-                if( toDouble != null && toDouble )
-                {
-                    Integer scale = options.getInteger( Options.BIGNUM_TO_DOUBLE_SCALE );
-                    scale = scale == null ? money.getScale() : scale;
-                    String roundingName = options.getString( Options.BIGNUM_TO_DOUBLE_ROUNDING );
-                    RoundingMode roundingMode = roundingName == null
-                                                ? RoundingMode.HALF_UP
-                                                : RoundingMode.valueOf( roundingName );
-                    onValue( output, money.getAmount().setScale( scale, roundingMode ).doubleValue() );
-                }
-                else
-                {
-                    onValue( output, money.getAmount().toString() );
-                }
-
+                onValue( output, money.getAmount().toString() );
                 onValueEnd( output );
                 onFieldEnd( output );
                 onObjectEnd( output );

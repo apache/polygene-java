@@ -181,7 +181,7 @@ class TestData
                 address.line1().set( "Qi Alley 4j" );
                 joeDoe.address().set( address );
                 joeDoe.bigInteger().set( new BigInteger( "23232323232323232323232323" ) );
-                joeDoe.bigDecimal().set( new BigDecimal( "23232323232323232323232323.424242420000000000000" ) );
+                joeDoe.bigDecimal().set( new BigDecimal( "23.4276931348623157e+309" ) );
                 joeDoe.dateValue().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
                 joeDoe.dateTimeValue().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
                 joeDoe.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00" ) );
@@ -209,7 +209,7 @@ class TestData
                 address.line1().set( "Qi Avenue 4j" );
                 jackDoe.address().set( address );
                 jackDoe.bigInteger().set( new BigInteger( "42424242424242424242424242" ) );
-                jackDoe.bigDecimal().set( new BigDecimal( "42424242424242424242424242.232323230000000000000" ) );
+                jackDoe.bigDecimal().set( new BigDecimal( "42.2376931348623157e+309" ) );
                 jackDoe.dateValue().set( new DateTime( "2010-03-04T13:24:35", UTC ).toDate() );
                 jackDoe.dateTimeValue().set( new DateTime( "2010-03-04T13:24:35", UTC ) );
                 jackDoe.localDateTimeValue().set( new LocalDateTime( "2010-03-04T13:23:00" ) );

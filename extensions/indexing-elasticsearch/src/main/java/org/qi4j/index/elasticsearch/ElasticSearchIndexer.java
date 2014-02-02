@@ -17,8 +17,6 @@
  */
 package org.qi4j.index.elasticsearch;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -97,9 +95,11 @@ public interface ElasticSearchIndexer
                 }
             }
 
-            EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Load associations for indexing" ),
-                                                                   module,
-                                                                   System.currentTimeMillis() );
+            EntityStoreUnitOfWork uow = entityStore.newUnitOfWork(
+                UsecaseBuilder.newUsecase( "Load associations for indexing" ),
+                module,
+                System.currentTimeMillis()
+            );
 
             // Bulk index request builder
             BulkRequestBuilder bulkBuilder = support.client().prepareBulk();
@@ -205,16 +205,9 @@ public interface ElasticSearchIndexer
                         {
                             json.put( key, value );
                         }
-                        else if( value instanceof BigInteger || value instanceof BigDecimal )
-                        {
-                            json.put(
-                                key,
-                                Double.valueOf( valueSerializer.serialize( new Options().bigNumToDouble(), value ) )
-                            );
-                        }
                         else
                         {
-                            String serialized = valueSerializer.serialize( new Options().bigNumToDouble(), value );
+                            String serialized = valueSerializer.serialize( new Options().withoutTypeInfo(), value );
                             // TODO Theses tests are pretty fragile, find a better way to fix this, Jackson API should behave better
                             if( serialized.startsWith( "{" ) )
                             {

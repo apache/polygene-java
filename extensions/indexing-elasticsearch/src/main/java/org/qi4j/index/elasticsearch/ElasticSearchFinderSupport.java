@@ -17,6 +17,7 @@
  */
 package org.qi4j.index.elasticsearch;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
@@ -87,7 +88,7 @@ import static org.elasticsearch.index.query.FilterBuilders.termFilter;
             String amountTerm = name + AMOUNT;
             BigMoney money = ( (BigMoneyProvider) spec.value() ).toBigMoney();
             String currency = money.getCurrencyUnit().getCurrencyCode();
-            double amount = money.getAmount().doubleValue();
+            BigDecimal amount = money.getAmount();
             if( spec instanceof EqSpecification )
             {
                 return andFilter(
@@ -146,7 +147,7 @@ import static org.elasticsearch.index.query.FilterBuilders.termFilter;
             String name = spec.collectionProperty().toString();
             BigMoney money = ( (BigMoneyProvider) spec.value() ).toBigMoney();
             String currency = money.getCurrencyUnit().getCurrencyCode();
-            double amount = money.getAmount().doubleValue();
+            BigDecimal amount = money.getAmount();
             return andFilter(
                 termFilter( name + CURRENCY, currency ),
                 termFilter( name + AMOUNT, amount )
@@ -163,7 +164,7 @@ import static org.elasticsearch.index.query.FilterBuilders.termFilter;
             {
                 BigMoney money = ( (BigMoneyProvider) value ).toBigMoney();
                 String currency = money.getCurrencyUnit().getCurrencyCode();
-                double amount = money.getAmount().doubleValue();
+                BigDecimal amount = money.getAmount();
                 contAllFilter.add( termFilter( name + CURRENCY, currency ) );
                 contAllFilter.add( termFilter( name + AMOUNT, amount ) );
             }

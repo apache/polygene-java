@@ -801,7 +801,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            eq( person.bigDecimal(), new BigDecimal( "23232323232323232323232323.424242420000000000000" ) ) ) );
+            eq( person.bigDecimal(), new BigDecimal( "2342.76931348623157e+307" ) ) ) );
         System.out.println( "*** script50_BigDecimal: " + query );
 
         verifyUnorderedResults( query, "Joe Doe" );
@@ -813,7 +813,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            ne( person.bigDecimal(), new BigDecimal( "23232323232323232323232323.424242420000000000000" ) ) ) );
+            ne( person.bigDecimal(), new BigDecimal( "2342.76931348623157e+307" ) ) ) );
         System.out.println( "*** script51_BigDecimal: " + query );
 
         verifyUnorderedResults( query, "Jack Doe" );
@@ -825,7 +825,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
         Query<Person> query = unitOfWork.newQuery( qb.where(
-            ge( person.bigDecimal(), new BigDecimal( "23232323232323232323232323.424242420000000000000" ) ) ) );
+            ge( person.bigDecimal(), new BigDecimal( "2342.76931348623157e+307" ) ) ) );
         System.out.println( "*** script52_BigDecimal: " + query );
 
         verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
