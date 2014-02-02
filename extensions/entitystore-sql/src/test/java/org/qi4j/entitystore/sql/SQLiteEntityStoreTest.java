@@ -16,8 +16,6 @@ package org.qi4j.entitystore.sql;
 import org.apache.derby.iapi.services.io.FileUtil;
 import org.junit.BeforeClass;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.sql.assembly.SQLiteEntityStoreAssembler;
@@ -30,9 +28,8 @@ import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
 public class SQLiteEntityStoreTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
-
     @BeforeClass
     public static void beforeClass_IBMJDK()
     {
@@ -42,7 +39,7 @@ public class SQLiteEntityStoreTest
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
@@ -53,44 +50,39 @@ public class SQLiteEntityStoreTest
         // START SNIPPET: assembly
         // DataSourceService
         new DBCPDataSourceServiceAssembler().
-                identifiedBy( "sqlite-datasource-service" ).
-                visibleIn( Visibility.module ).
-                withConfig( config ).
-                withConfigVisibility( Visibility.layer ).
-                assemble( module );
+            identifiedBy( "sqlite-datasource-service" ).
+            visibleIn( Visibility.module ).
+            withConfig( config ).
+            withConfigVisibility( Visibility.layer ).
+            assemble( module );
 
         // DataSource
         new DataSourceAssembler().
-                withDataSourceServiceIdentity( "sqlite-datasource-service" ).
-                identifiedBy( "sqlite-datasource" ).
-                visibleIn( Visibility.module ).
-                withCircuitBreaker().
-                assemble( module );
+            withDataSourceServiceIdentity( "sqlite-datasource-service" ).
+            identifiedBy( "sqlite-datasource" ).
+            visibleIn( Visibility.module ).
+            withCircuitBreaker().
+            assemble( module );
 
         // SQL EntityStore
         new SQLiteEntityStoreAssembler().
-                visibleIn( Visibility.application ).
-                withConfig( config ).
-                withConfigVisibility( Visibility.layer ).
-                assemble( module );
+            visibleIn( Visibility.application ).
+            withConfig( config ).
+            withConfigVisibility( Visibility.layer ).
+            assemble( module );
     }
     // END SNIPPET: assembly
 
     @Override
     public void tearDown()
-            throws Exception
+        throws Exception
     {
-        if ( module == null ) {
-            return;
-        }
-        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase(
-                "Delete " + getClass().getSimpleName() + " test data" ) );
-        try {
-
+        try
+        {
             FileUtil.removeDirectory( "target/qi4j-data" );
-
-        } finally {
-            uow.discard();
+        }
+        finally
+        {
             super.tearDown();
         }
     }

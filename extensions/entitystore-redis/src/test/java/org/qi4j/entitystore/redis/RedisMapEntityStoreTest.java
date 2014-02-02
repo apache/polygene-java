@@ -17,7 +17,7 @@
  */
 package org.qi4j.entitystore.redis;
 
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.EntityTestAssembler;
@@ -26,10 +26,16 @@ import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-@Ignore( "This test is ignored because it needs a Redis instance" )
+import static org.qi4j.test.util.Assume.assumeConnectivity;
+
 public class RedisMapEntityStoreTest
     extends AbstractEntityStoreTest
 {
+    @BeforeClass
+    public static void beforeRedisMapEntityStoreTests()
+    {
+        assumeConnectivity( "localhost", 6379 );
+    }
 
     @Override
     // START SNIPPET: assembly

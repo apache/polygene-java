@@ -30,6 +30,7 @@ import org.qi4j.spi.entitystore.StateChangeNotificationConcern;
 import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreActivation;
 import org.qi4j.spi.entitystore.helpers.JSONMapEntityStoreMixin;
 import org.qi4j.spi.entitystore.helpers.MapEntityStoreActivation;
+import org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin;
 
 /**
  * Riak EntityStore service.
@@ -37,7 +38,7 @@ import org.qi4j.spi.entitystore.helpers.MapEntityStoreActivation;
  * <p>Based on {@link JSONMapEntityStoreMixin}</p>
  */
 @Concerns( { StateChangeNotificationConcern.class, ConcurrentModificationCheckConcern.class } )
-@Mixins( { JSONMapEntityStoreMixin.class } )
+@Mixins( { JSONMapEntityStoreMixin.class, MapEntityStoreMixin.class } )
 public interface RiakMapEntityStoreService
     extends EntityStore,
             EntityStateVersions,

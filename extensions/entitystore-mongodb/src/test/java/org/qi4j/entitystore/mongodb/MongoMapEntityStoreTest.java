@@ -18,25 +18,28 @@
 package org.qi4j.entitystore.mongodb;
 
 import com.mongodb.Mongo;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
+import static org.qi4j.test.util.Assume.assumeConnectivity;
+
 /**
  * Test the MongoMapEntityStoreService.
- *
- *
- * Installing mongodb and starting it should suffice as the test use mongodb defaults: 127.0.0.1:27017
- *
- * Do we have a build-wise way to switch on/off theses kind of tests ?
+ * <p>Installing mongodb and starting it should suffice as the test use mongodb defaults: 127.0.0.1:27017</p>
  */
-@Ignore( "This test is ignored because it needs a MongoDB instance" )
 public class MongoMapEntityStoreTest
     extends AbstractEntityStoreTest
 {
+    @BeforeClass
+    public static void beforeRedisMapEntityStoreTests()
+    {
+        assumeConnectivity( "localhost", 27017 );
+    }
 
     @Override
     // START SNIPPET: assembly
@@ -47,7 +50,7 @@ public class MongoMapEntityStoreTest
         super.assemble( module );
 
         ModuleAssembly config = module.layer().module( "config" );
-        config.services( MemoryEntityStoreService.class );
+        new EntityTestAssembler().assemble( config );
 
         new OrgJsonValueSerializationAssembler().assemble( module );
 

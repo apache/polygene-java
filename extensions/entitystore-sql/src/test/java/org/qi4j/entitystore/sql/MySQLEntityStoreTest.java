@@ -17,7 +17,7 @@ package org.qi4j.entitystore.sql;
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.sql.DataSource;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.usecase.UsecaseBuilder;
@@ -27,21 +27,26 @@ import org.qi4j.entitystore.sql.assembly.MySQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
-@Ignore( "This test needs a MySQL instance running" )
+import static org.qi4j.test.util.Assume.assumeConnectivity;
+
 public class MySQLEntityStoreTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
+    @BeforeClass
+    public static void beforeMySQLEntityStoreTests()
+    {
+        assumeConnectivity( "localhost", 3306 );
+    }
 
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
@@ -52,57 +57,59 @@ public class MySQLEntityStoreTest
         // START SNIPPET: assembly
         // DataSourceService
         new DBCPDataSourceServiceAssembler().
-                identifiedBy( "mysql-datasource-service" ).
-                visibleIn( Visibility.module ).
-                withConfig( config ).
-                withConfigVisibility( Visibility.layer ).
-                assemble( module );
+            identifiedBy( "mysql-datasource-service" ).
+            visibleIn( Visibility.module ).
+            withConfig( config ).
+            withConfigVisibility( Visibility.layer ).
+            assemble( module );
 
         // DataSource
         new DataSourceAssembler().
-                withDataSourceServiceIdentity( "mysql-datasource-service" ).
-                identifiedBy( "mysql-datasource" ).
-                visibleIn( Visibility.module ).
-                withCircuitBreaker().
-                assemble( module );
+            withDataSourceServiceIdentity( "mysql-datasource-service" ).
+            identifiedBy( "mysql-datasource" ).
+            visibleIn( Visibility.module ).
+            withCircuitBreaker().
+            assemble( module );
 
         // SQL EntityStore
         new MySQLEntityStoreAssembler().
-                visibleIn( Visibility.application ).
-                withConfig( config ).
-                withConfigVisibility( Visibility.layer ).
-                assemble( module );
+            visibleIn( Visibility.application ).
+            withConfig( config ).
+            withConfigVisibility( Visibility.layer ).
+            assemble( module );
     }
     // END SNIPPET: assembly
 
     @Override
     public void tearDown()
-            throws Exception
+        throws Exception
     {
-        if ( true ) {
+        if( true )
+        {
             return;
         }
-        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase(
-                "Delete " + getClass().getSimpleName() + " test data" ) );
-        try {
+        UnitOfWork uow = this.module.newUnitOfWork(
+            UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" )
+        );
+        try
+        {
             SQLConfiguration config = uow.get( SQLConfiguration.class,
                                                MySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = module.findService( DataSource.class ).get().getConnection();
+            connection.setAutoCommit( false );
             String schemaName = config.schemaName().get();
-            if ( schemaName == null ) {
+            if( schemaName == null )
+            {
                 schemaName = SQLs.DEFAULT_SCHEMA_NAME;
             }
-
-            Statement stmt = null;
-            try {
-                stmt = connection.createStatement();
+            try( Statement stmt = connection.createStatement() )
+            {
                 stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
                 connection.commit();
-            } finally {
-                SQLUtil.closeQuietly( stmt );
             }
-
-        } finally {
+        }
+        finally
+        {
             uow.discard();
             super.tearDown();
         }

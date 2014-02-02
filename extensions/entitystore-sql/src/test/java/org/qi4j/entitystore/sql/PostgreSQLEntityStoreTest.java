@@ -17,7 +17,7 @@ package org.qi4j.entitystore.sql;
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.sql.DataSource;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.usecase.UsecaseBuilder;
@@ -27,14 +27,15 @@ import org.qi4j.entitystore.sql.assembly.PostgreSQLEntityStoreAssembler;
 import org.qi4j.entitystore.sql.internal.SQLs;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.common.SQLConfiguration;
-import org.qi4j.library.sql.common.SQLUtil;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
+import static org.qi4j.test.util.Assume.assumeConnectivity;
+
 /**
- * WARN This test is deactivated on purpose, please do not commit it activated.
+ * WARN This test run only if localhost:5432 is listening.
  *
  * To run it you need to have a user & database set up in postgresql. Here are two snippets to create and drop the
  * needed test environment.
@@ -63,15 +64,19 @@ import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
  * dropuser -W jdbc_test_login
  * </pre>
  */
-@Ignore( "This test needs a PostgreSQL instance running" )
 public class PostgreSQLEntityStoreTest
-        extends AbstractEntityStoreTest
+    extends AbstractEntityStoreTest
 {
+    @BeforeClass
+    public static void beforePostgreSQLEntityStoreTests()
+    {
+        assumeConnectivity( "localhost", 5432 );
+    }
 
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         // END SNIPPET: assembly
         super.assemble( module );
@@ -82,53 +87,55 @@ public class PostgreSQLEntityStoreTest
         // START SNIPPET: assembly
         // DataSourceService
         new DBCPDataSourceServiceAssembler().
-                identifiedBy( "postgresql-datasource-service" ).
-                visibleIn( Visibility.module ).
-                withConfig( config ).
-                withConfigVisibility( Visibility.layer ).
-                assemble( module );
+            identifiedBy( "postgresql-datasource-service" ).
+            visibleIn( Visibility.module ).
+            withConfig( config ).
+            withConfigVisibility( Visibility.layer ).
+            assemble( module );
 
         // DataSource
         new DataSourceAssembler().
-                withDataSourceServiceIdentity( "postgresql-datasource-service" ).
-                identifiedBy( "postgresql-datasource" ).
-                visibleIn( Visibility.module ).
-                withCircuitBreaker();
+            withDataSourceServiceIdentity( "postgresql-datasource-service" ).
+            identifiedBy( "postgresql-datasource" ).
+            visibleIn( Visibility.module ).
+            withCircuitBreaker().
+            assemble( module );
 
         // SQL EntityStore
         new PostgreSQLEntityStoreAssembler().
-                visibleIn( Visibility.application ).
-                withConfig( config ).
-                withConfigVisibility( Visibility.layer ).
-                assemble( module );
+            visibleIn( Visibility.application ).
+            withConfig( config ).
+            withConfigVisibility( Visibility.layer ).
+            assemble( module );
     }
     // END SNIPPET: assembly
 
     @Override
     public void tearDown()
-            throws Exception
+        throws Exception
     {
-
-        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase(
-                "Delete " + getClass().getSimpleName() + " test data" ) );
-        try {
+        UnitOfWork uow = module.newUnitOfWork(
+            UsecaseBuilder.newUsecase( "Delete " + getClass().getSimpleName() + " test data" )
+        );
+        try
+        {
             SQLConfiguration config = uow.get( SQLConfiguration.class,
                                                PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
             Connection connection = module.findService( DataSource.class ).get().getConnection();
+            connection.setAutoCommit( false );
             String schemaName = config.schemaName().get();
-            if ( schemaName == null ) {
+            if( schemaName == null )
+            {
                 schemaName = SQLs.DEFAULT_SCHEMA_NAME;
             }
-
-            Statement stmt = null;
-            try {
-                stmt = connection.createStatement();
+            try( Statement stmt = connection.createStatement() )
+            {
                 stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
                 connection.commit();
-            } finally {
-                SQLUtil.closeQuietly( stmt );
             }
-        } finally {
+        }
+        finally
+        {
             uow.discard();
             super.tearDown();
         }

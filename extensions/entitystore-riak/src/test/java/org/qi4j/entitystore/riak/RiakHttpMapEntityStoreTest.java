@@ -19,17 +19,23 @@ package org.qi4j.entitystore.riak;
 
 import com.basho.riak.client.IRiakClient;
 import com.basho.riak.client.bucket.Bucket;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.entity.AbstractEntityStoreTest;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
-@Ignore( "This test is ignored because it needs a Riak instance" )
+import static org.qi4j.test.util.Assume.assumeConnectivity;
+
 public class RiakHttpMapEntityStoreTest
     extends AbstractEntityStoreTest
 {
+    @BeforeClass
+    public static void beforeRiakHttpMapEntityStoreTests()
+    {
+        assumeConnectivity( "localhost", 8087 );
+    }
 
     @Override
     // START SNIPPET: assembly
