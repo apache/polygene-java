@@ -42,7 +42,7 @@ include::../../../../extensions/money-oer/src/docs/money-oer.txt[]
 
 :leveloffset: 2
 
-include::../../../../extensions/cache-ehcache/src/docs/ehcache.txt[]
+include::../../../../extensions/cache-ehcache/src/docs/cache-ehcache.txt[]
 
 :leveloffset: 2
 

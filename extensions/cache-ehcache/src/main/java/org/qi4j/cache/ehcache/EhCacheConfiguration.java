@@ -23,6 +23,7 @@ import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
+// START SNIPPET: config
 public interface EhCacheConfiguration
     extends ConfigurationComposite
 {
@@ -99,3 +100,4 @@ public interface EhCacheConfiguration
     @Optional @UseDefaults
     Property<Boolean> updateCheck();
 }
+// END SNIPPET: config

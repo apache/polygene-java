@@ -28,14 +28,18 @@ public class EhCacheTest
     extends AbstractCachePoolTest
 {
     @Override
+    // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+	    // END SNIPPET: assembly
         ModuleAssembly confModule = module.layer().module( "confModule" );
         new EntityTestAssembler( Visibility.layer ).assemble( confModule );
 
+	    // START SNIPPET: assembly
         new EhCacheAssembler( Visibility.module ).
         	withConfig( confModule, Visibility.layer ).
         	assemble( module );
     }
+    // END SNIPPET: assembly
 }

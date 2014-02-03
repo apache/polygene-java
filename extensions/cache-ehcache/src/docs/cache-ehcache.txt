@@ -1,0 +1,38 @@
+
+[[extension-cache-ehcache, Ehcache Cache]]
+= Ehcache Cache =
+
+[devstatus]
+--------------
+source=extensions/cache-ehcache/dev-status.xml
+--------------
+
+EntityStore cache backed by http://ehcache.org/[EhCache].
+
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+Not all EntityStore implementations use the Cache extension, so check the implementation details of the
+EntityStore whether the cache extension can bring any benefits or not.
+
+
+== Assembly ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=extensions/cache-ehcache/src/test/java/org/qi4j/cache/ehcache/EhCacheTest.java
+tag=assembly
+----
+
+
+== Configuration ==
+
+Here are the configuration properties for the EhCache EntityStore Cache:
+
+[snippet,java]
+----
+source=extensions/cache-ehcache/src/main/java/org/qi4j/cache/ehcache/EhCacheConfiguration.java
+tag=config
+----
