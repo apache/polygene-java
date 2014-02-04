@@ -50,6 +50,12 @@ public class MemcacheCachePoolTest
         new MemcacheAssembler( Visibility.module ).
             withConfig( confModule, Visibility.layer ).
             assemble( module );
+        // END SNIPPET: assembly
+        MemcacheConfiguration memcacheConf = confModule.forMixin( MemcacheConfiguration.class ).declareDefaults();
+        memcacheConf.protocol().set( "binary" );
+        //memcacheConf.username().set( "foo" );
+        //memcacheConf.password().set( "bar" );
+        // START SNIPPET: assembly
     }
     // END SNIPPET: assembly
 }

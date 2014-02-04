@@ -43,3 +43,5 @@ Here are the configuration properties for the Memcache EntityStore Cache:
 source=extensions/cache-memcache/src/main/java/org/qi4j/cache/memcache/MemcacheConfiguration.java
 tag=config
 ----
+
+As you can see both ASCII and binary flavours of the Memcache protocol are supported as well as SASL authentication.

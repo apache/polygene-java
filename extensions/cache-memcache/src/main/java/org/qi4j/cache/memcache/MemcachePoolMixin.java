@@ -20,7 +20,11 @@ package org.qi4j.cache.memcache;
 import java.util.HashMap;
 import java.util.Map;
 import net.spy.memcached.AddrUtil;
+import net.spy.memcached.ConnectionFactoryBuilder;
+import net.spy.memcached.ConnectionFactoryBuilder.Protocol;
 import net.spy.memcached.MemcachedClient;
+import net.spy.memcached.auth.AuthDescriptor;
+import net.spy.memcached.auth.PlainCallbackHandler;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
@@ -53,7 +57,31 @@ public class MemcachePoolMixin
             String addresses = ( config.addresses().get() == null )
                                ? "localhost:11211"
                                : config.addresses().get();
-            client = new MemcachedClient( AddrUtil.getAddresses( addresses ) );
+            Protocol protocol = ( config.protocol().get() == null )
+                                ? Protocol.TEXT
+                                : Protocol.valueOf( config.protocol().get().toUpperCase() );
+            String username = config.username().get();
+            String password = config.password().get();
+            String authMech = config.authMechanism().get() == null
+                              ? "PLAIN"
+                              : config.authMechanism().get();
+
+            ConnectionFactoryBuilder builder = new ConnectionFactoryBuilder();
+            builder.setProtocol( protocol );
+            if( username != null && !username.isEmpty() )
+            {
+                builder.setAuthDescriptor(
+                    new AuthDescriptor(
+                        new String[]
+                        {
+                            authMech
+                        },
+                        new PlainCallbackHandler( username, password )
+                    )
+                );
+            }
+
+            client = new MemcachedClient( builder.build(), AddrUtil.getAddresses( addresses ) );
         }
     }
 

@@ -44,5 +44,37 @@ public interface MemcacheConfiguration
      */
     @Optional
     Property<String> addresses();
+
+    /**
+     * Memcache Protocol.
+     * Can be {@literal text} or {@literal binary}
+     * Defaulted to {@literal text}.
+     * @return Memcache Protocol configuration property
+     */
+    @Optional
+    Property<String> protocol();
+
+    /**
+     * Username.
+     * Authentication happens only if set.
+     * @return Username configuration property
+     */
+    @Optional
+    Property<String> username();
+
+    /**
+     * Password.
+     * @return Password configuration property
+     */
+    @Optional
+    Property<String> password();
+
+    /**
+     * SASL authentication mechanism.
+     * Defaulted to PLAIN.
+     * @return Authentication mechanism configuration property
+     */
+    @Optional
+    Property<String> authMechanism();
 }
 // END SNIPPET: config
