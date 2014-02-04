@@ -5,7 +5,8 @@ jar { manifest { name = "Qi4j Extension - Cache - Memcache"}}
 dependencies {
 
     compile project( ':org.qi4j.core:org.qi4j.core.bootstrap' )
-    compile 'net.spy:spymemcached:2.10.4'
+    compile libraries.spymemcached
+
     testCompile project( ':org.qi4j.core:org.qi4j.core.testsupport' )
 
     testRuntime project( ':org.qi4j.core:org.qi4j.core.runtime' )
