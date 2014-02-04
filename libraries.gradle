@@ -57,6 +57,7 @@ def sleepycatVersion = '5.0.73'
 def slf4jVersion = '1.7.5'
 def solrVersion = "1.4.1" // 4.6.0 - Fails to compile!
 def springVersion = '3.2.6.RELEASE' // 4.0.0.RELEASE - Fails to compile!
+def spymemcachedVersion = '2.10.4'
 def sqliteVersion = '3.7.2'
 def strutsVersion = '2.3.15.3' // 2.3.16 - Fails to compile!
 def velocityVersion = '1.7'
@@ -255,6 +256,7 @@ rootProject.ext {
           yammer_metrics: "com.yammer.metrics:metrics-core:$yammerMetricsVersion",
           pdfbox: "org.apache.pdfbox:pdfbox:$pdfboxVersion",
           prefuse: "de.sciss:prefuse-core:$prefuseVersion",
+          spymemcached: "net.spy:spymemcached:$spymemcachedVersion",
 
           // testing
           derby: "org.apache.derby:derby:$derbyVersion",

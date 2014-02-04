@@ -1,0 +1,15 @@
+description = "Qi4j Memcache Cache Extension"
+
+jar { manifest { name = "Qi4j Extension - Cache - Memcache"}}
+
+dependencies {
+
+    compile project( ':org.qi4j.core:org.qi4j.core.bootstrap' )
+    compile libraries.spymemcached
+
+    testCompile project( ':org.qi4j.core:org.qi4j.core.testsupport' )
+
+    testRuntime project( ':org.qi4j.core:org.qi4j.core.runtime' )
+    testRuntime libraries.logback
+
+}

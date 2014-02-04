@@ -1,0 +1,47 @@
+
+[[extension-cache-memcache, Memcache Cache]]
+= Memcache Cache =
+
+[devstatus]
+--------------
+source=extensions/cache-memcache/dev-status.xml
+--------------
+
+
+EntityStore cache backed by a Memcache server like http://memcached.org/[Memcached].
+
+Memcached is an in-memory key-value store for small chunks of arbitrary data.
+By default, entities serialized state must not exceed 1MB.
+
+Other implementations such as https://www.memcachier.com/[MemCachier] have different peculiarities,
+see their documentation.
+
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+Not all EntityStore implementations use the Cache extension, so check the implementation details of the
+EntityStore whether the cache extension can bring any benefits or not.
+
+
+== Assembly ==
+
+Assembly is done using the +MemcacheAssembler+:
+
+[snippet,java]
+----
+source=extensions/cache-memcache/src/test/java/org/qi4j/cache/memcache/MemcacheCachePoolTest.java
+tag=assembly
+----
+
+
+== Configuration ==
+
+Here are the configuration properties for the Memcache EntityStore Cache:
+
+[snippet,java]
+----
+source=extensions/cache-memcache/src/main/java/org/qi4j/cache/memcache/MemcacheConfiguration.java
+tag=config
+----
+
+As you can see both ASCII and binary flavours of the Memcache protocol are supported as well as SASL authentication.
