@@ -105,7 +105,3 @@ include::type-lookup.txt[]
 :leveloffset: {level3}
 
 include::metrics.txt[]
-
-:leveloffset: {level3}
-
-include::money.txt[]
