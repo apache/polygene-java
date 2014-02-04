@@ -46,6 +46,10 @@ include::../../../../extensions/cache-ehcache/src/docs/cache-ehcache.txt[]
 
 :leveloffset: 2
 
+include::../../../../extensions/cache-memcache/src/docs/cache-memcache.txt[]
+
+:leveloffset: 2
+
 include::../../../../extensions/entitystore-memory/src/docs/es-memory.txt[]
 
 :leveloffset: 2
