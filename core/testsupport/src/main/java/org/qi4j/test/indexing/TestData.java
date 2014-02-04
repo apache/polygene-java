@@ -23,9 +23,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.joda.money.BigMoney;
-import org.joda.money.CurrencyUnit;
-import org.joda.money.Money;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -186,9 +183,6 @@ class TestData
                 joeDoe.dateTimeValue().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
                 joeDoe.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00" ) );
                 joeDoe.localDateValue().set( new LocalDate( "2020-03-04" ) );
-                joeDoe.money().set( Money.of( CurrencyUnit.USD, 100 ) );
-                joeDoe.bigMoney().set( BigMoney.of( CurrencyUnit.USD, new BigDecimal( "1000000000000.000000" ) ) );
-                joeDoe.moneys().set( Arrays.asList( Money.of( CurrencyUnit.USD, 100 ) ) );
                 NameableAssert.trace( joeDoe );
             }
 
@@ -214,9 +208,6 @@ class TestData
                 jackDoe.dateTimeValue().set( new DateTime( "2010-03-04T13:24:35", UTC ) );
                 jackDoe.localDateTimeValue().set( new LocalDateTime( "2010-03-04T13:23:00" ) );
                 jackDoe.localDateValue().set( new LocalDate( "2010-03-04" ) );
-                jackDoe.money().set( Money.of( CurrencyUnit.USD, 1000 ) );
-                jackDoe.moneys().set( Arrays.asList( Money.of( CurrencyUnit.USD, 100 ),
-                                                     Money.of( CurrencyUnit.USD, 1000 ) ) );
 
                 ValueBuilder<URL> urlBuilder = module.newValueBuilder( URL.class );
                 ValueBuilder<Protocol> protocolBuilder = module.newValueBuilder( Protocol.class );

@@ -17,12 +17,6 @@
  */
 package org.qi4j.index.sql.support.skeletons;
 
-import java.util.Date;
-import org.joda.money.BigMoney;
-import org.joda.money.Money;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.common.QualifiedName;
@@ -94,8 +88,6 @@ import org.slf4j.LoggerFactory;
                    // || DateTime.class.isAssignableFrom( mainType )
                    // || LocalDateTime.class.isAssignableFrom( mainType )
                    // || LocalDate.class.isAssignableFrom( mainType )
-                   // || Money.class.isAssignableFrom( mainType )
-                   // || BigMoney.class.isAssignableFrom( mainType )
                    || valueType instanceof ValueCompositeType;
         }
     };

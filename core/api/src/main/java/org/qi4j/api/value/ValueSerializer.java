@@ -57,8 +57,6 @@ import org.qi4j.functional.Function;
  *     <li>DateTime (JodaTime),</li>
  *     <li>LocalDateTime (JodaTime),</li>
  *     <li>LocalDate (JodaTime).</li>
- *     <li>Money (JodaMoney).</li>
- *     <li>BigMoney (JodaMoney).</li>
  * </ul>
  * <p>
  *     Values of unknown types and all arrays are considered as {@link java.io.Serializable} and by so are serialized to

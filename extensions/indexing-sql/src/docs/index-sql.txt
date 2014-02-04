@@ -32,8 +32,6 @@ the DataSource properly, see <<library-sql>> and <<howto-configure-service>>.
 
 == PostgreSQL ==
 
-WARNING: The PostgreSQL Index/Query engine do not support queries on Money values.
-
 Assembly is done using the provided Assembler:
 
 [snippet,java]

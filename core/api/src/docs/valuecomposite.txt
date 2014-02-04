@@ -66,8 +66,6 @@ Plain Values can be one of :
     * DateTime (JodaTime),
     * LocalDateTime (JodaTime),
     * LocalDate (JodaTime).
-    * Money (JodaMoney).
-    * BigMoney (JodaMoney).
 
 TIP: Serialization behaviour can be tuned with options.
 Every +ValueSerializer+ methods can take a +ValueSerializer.Options+ object that contains flags to change how some

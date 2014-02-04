@@ -29,8 +29,6 @@ import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
-import org.joda.money.BigMoney;
-import org.joda.money.Money;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
@@ -88,14 +86,7 @@ public interface ElasticSearchFinder
         implements EntityFinder
     {
         private static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchFinder.class );
-        private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 2 );
-
-        static
-        {
-            ComplexTypeSupport moneySupport = new ElasticSearchFinderSupport.MoneySupport();
-            COMPLEX_TYPE_SUPPORTS.put( Money.class, moneySupport );
-            COMPLEX_TYPE_SUPPORTS.put( BigMoney.class, moneySupport );
-        }
+        private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 0 );
 
         @This
         private ElasticSearchSupport support;

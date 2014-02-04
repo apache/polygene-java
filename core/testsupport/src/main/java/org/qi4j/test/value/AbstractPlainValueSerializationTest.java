@@ -19,9 +19,6 @@ package org.qi4j.test.value;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-import org.joda.money.BigMoney;
-import org.joda.money.CurrencyUnit;
-import org.joda.money.Money;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -228,32 +225,5 @@ public abstract class AbstractPlainValueSerializationTest
 
         EntityReference deserialized = valueSerialization.deserialize( EntityReference.class, serialized );
         assertThat( deserialized, equalTo( EntityReference.parseEntityReference( "ABCD-1234" ) ) );
-    }
-
-    @Test
-    public void givenMoneyValueWhenSerializingAndDeserializingExpectEquals()
-    {
-        Money money = Money.of( CurrencyUnit.USD, 42.23 );
-        String serialized = valueSerialization.serialize( money );
-
-        System.out.println( serialized );
-
-        Money deserialized = valueSerialization.deserialize( Money.class, serialized );
-        assertThat( deserialized, equalTo( money ) );
-        assertThat( deserialized.getScale(), equalTo( money.getScale() ) );
-    }
-
-    @Test
-    public void givenBigMoneyValueWhenSerializingAndDeserializingExpectEquals()
-    {
-        BigMoney bigMoney = BigMoney.of( CurrencyUnit.USD, new BigDecimal( "42424242424242424242424242.232323230000000000000" ) );
-        String serialized = valueSerialization.serialize( bigMoney );
-
-        System.out.println( serialized );
-
-        BigMoney deserialized = valueSerialization.deserialize( BigMoney.class, serialized );
-        assertThat( deserialized, equalTo( bigMoney ) );
-        assertThat( deserialized.getScale(), equalTo( bigMoney.getScale() ) );
-        assertThat( deserialized.getAmount(), equalTo( new BigDecimal( "42424242424242424242424242.232323230000000000000" ) ) );
     }
 }

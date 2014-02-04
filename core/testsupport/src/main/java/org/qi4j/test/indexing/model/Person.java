@@ -23,8 +23,6 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.joda.money.BigMoney;
-import org.joda.money.Money;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -98,13 +96,4 @@ public interface Person
 
     @Optional
     Property<LocalDate> localDateValue();
-
-    @Optional
-    Property<Money> money();
-
-    @Optional
-    Property<BigMoney> bigMoney();
-
-    @Optional
-    Property<List<Money>> moneys();
 }

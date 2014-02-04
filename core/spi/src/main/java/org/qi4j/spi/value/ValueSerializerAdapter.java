@@ -25,8 +25,6 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.joda.money.BigMoney;
-import org.joda.money.Money;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -82,10 +80,6 @@ import static org.qi4j.functional.Iterables.first;
  *     <li>DateTime (JodaTime) as a ISO-8601 String with timezone offset or Z for UTC;</li>
  *     <li>LocalDateTime (JodaTime) as a ISO-8601 String with no timezone offset;</li>
  *     <li>LocalDate (JodaTime) as a ISO-8601 String with no time info;</li>
- *     <li>
- *         Money and BigMoney (JodaMoney) as an object with two values, {@literal currency} as a ISO-4217 String and
- *         {@literal amount} as a BigDecimal (see above).
- *     </li>
  * </ul>
  *
  * @param <OutputType> Implementor output type
@@ -216,48 +210,6 @@ public abstract class ValueSerializerAdapter<OutputType>
             public Object map( Options options, EntityReference ref )
             {
                 return ref.toString();
-            }
-        } );
-
-        // Complex Value types
-        registerComplexSerializer( Money.class, new ComplexSerializer<Money, OutputType>()
-        {
-            @Override
-            public void serialize( Options options, Money money, OutputType output )
-                throws Exception
-            {
-                onObjectStart( output );
-                onFieldStart( output, "currency" );
-                onValueStart( output );
-                onValue( output, money.getCurrencyUnit().getCurrencyCode() );
-                onValueEnd( output );
-                onFieldEnd( output );
-                onFieldStart( output, "amount" );
-                onValueStart( output );
-                onValue( output, money.getAmount().toString() );
-                onValueEnd( output );
-                onFieldEnd( output );
-                onObjectEnd( output );
-            }
-        } );
-        registerComplexSerializer( BigMoney.class, new ComplexSerializer<BigMoney, OutputType>()
-        {
-            @Override
-            public void serialize( Options options, BigMoney money, OutputType output )
-                throws Exception
-            {
-                onObjectStart( output );
-                onFieldStart( output, "currency" );
-                onValueStart( output );
-                onValue( output, money.getCurrencyUnit().getCurrencyCode() );
-                onValueEnd( output );
-                onFieldEnd( output );
-                onFieldStart( output, "amount" );
-                onValueStart( output );
-                onValue( output, money.getAmount().toString() );
-                onValueEnd( output );
-                onFieldEnd( output );
-                onObjectEnd( output );
             }
         } );
     }
