@@ -1,4 +1,21 @@
-package org.qi4j.tests.regression.qi382;
+/*
+ * Copyright 2013 Niclas Hedhman.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.qi4j.regression.qi382;
 
 import org.junit.Test;
 import org.qi4j.api.association.Association;
@@ -12,6 +29,7 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -37,35 +55,20 @@ public class Qi382Test extends AbstractQi4jTest
 
     @Test
     public void givenCreationOfTwoEntitiesWhenAssigningOneToOtherExpectCompletionToSucceed()
+        throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
-        try
+        try( UnitOfWork unitOfWork = module.newUnitOfWork() )
         {
             Car car = unitOfWork.newEntity( Car.class, "Ferrari" );
             unitOfWork.complete();
         }
-        catch( RuntimeException e )
-        {
-            unitOfWork.discard();
-            throw e;
-        }
-        catch( Exception e )
-        {
-            e.printStackTrace();
-            throw new RuntimeException( e );
-        }
-        unitOfWork = module.newUnitOfWork();
-        try
+        try( UnitOfWork unitOfWork = module.newUnitOfWork() )
         {
             Car car = unitOfWork.get( Car.class, "Ferrari" );
             assertThat( car, notNullValue() );
             Person p = unitOfWork.get( Person.class, "Niclas" );
             assertThat( p, notNullValue() );
             assertThat( p.car().get(), equalTo( car ) );
-        }
-        finally
-        {
-            unitOfWork.discard();
         }
     }
 
