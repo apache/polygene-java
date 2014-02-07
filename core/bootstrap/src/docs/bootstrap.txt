@@ -131,6 +131,8 @@ tag=properties-defaults
 
 === Class Scanner ===
 
+=== Application Builder ===
+
 
 == Using Assemblers ==
 Many <<libraries,libraries>> and <<extensions,extensions>> provides a cookie-cutter _Assembler_, to simplify the set up
@@ -156,12 +158,13 @@ possible to chain this, so that for instance the Neo4J Entity Store uses the Pre
 configuration, and the Preferences Entity Store uses the Memory Entity Store (i.e. the properties file).
 
 The point is that the entity store used for the configuration of the primary entity store used in the application is
-that it must not be visible to the application itself. Sometimes it is easiest to put a Memory Entity Store in the
+that it must not be visible to the application itself. Sometimes it is easier to put a Memory Entity Store in the
 same module, with Visibility set to _module_. Sometimes it makes sense to have an additional Configuration layer below
 the infrastructure layer, which has this setup.
 
 As mentioned above, most entity stores defines a reasonable default _Assembler_, possibly with some constructor
-arguments to define certain aspects. An example is the popular JdbmEntityStore, which _Assembler_ can be used like;
+arguments or methods to define certain aspects. An example is the popular JdbmEntityStore, which _Assembler_ can be
+used like;
 
 [snippet,java]
 --------------

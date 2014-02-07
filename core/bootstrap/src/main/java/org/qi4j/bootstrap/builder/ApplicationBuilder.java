@@ -1,3 +1,21 @@
+/*
+ * Copyright 2014 Niclas Hedhman.
+ * Copyright 2014 Paul Merlin.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.qi4j.bootstrap.builder;
 
 import java.io.InputStream;
@@ -22,6 +40,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.LayerAssembly;
 
+/**
+ * Application Builder.
+ */
 public class ApplicationBuilder
     implements ActivationEventListenerRegistration
 {
@@ -34,6 +55,12 @@ public class ApplicationBuilder
         this.applicationName = applicationName;
     }
 
+    /**
+     * Create and activate a new Application.
+     * @return Activated Application
+     * @throws AssemblyException if the assembly failed
+     * @throws ActivationException if the activation failed
+     */
     public Application newApplication()
         throws AssemblyException, ActivationException
     {
@@ -70,10 +97,16 @@ public class ApplicationBuilder
         return application;
     }
 
+    /**
+     * Called before application activation.
+     */
     protected void beforeActivation()
     {
     }
 
+    /**
+     * Called after application activation.
+     */
     protected void afterActivation()
     {
     }
@@ -90,13 +123,30 @@ public class ApplicationBuilder
         activationListeners.remove( listener );
     }
 
+    /**
+     * Declare Layer.
+     * @param layerName Name of the Layer
+     * @return Layer declaration for the given name, new if did not already exists
+     */
     public LayerDeclaration withLayer( String layerName )
     {
-        LayerDeclaration layerDeclaration = new LayerDeclaration( layerName );
+        LayerDeclaration layerDeclaration = layers.get( layerName );
+        if( layerDeclaration != null )
+        {
+            return layerDeclaration;
+        }
+        layerDeclaration = new LayerDeclaration( layerName );
         layers.put( layerName, layerDeclaration );
         return layerDeclaration;
     }
 
+    /**
+     * Load an ApplicationBuilder from a JSON String.
+     * @param json JSON String
+     * @return Application Builder loaded from JSON
+     * @throws JSONException if unable to read JSON
+     * @throws AssemblyException if unable to declare the assembly
+     */
     public static ApplicationBuilder fromJson( String json )
         throws JSONException, AssemblyException
     {
@@ -104,6 +154,13 @@ public class ApplicationBuilder
         return fromJson( root );
     }
 
+    /**
+     * Load an ApplicationBuilder from a JSON InputStream.
+     * @param json JSON input
+     * @return Application Builder loaded from JSON
+     * @throws JSONException if unable to read JSON
+     * @throws AssemblyException if unable to declare the assembly
+     */
     public static ApplicationBuilder fromJson( InputStream json )
         throws JSONException, AssemblyException
     {
@@ -111,6 +168,13 @@ public class ApplicationBuilder
         return fromJson( jsonString );
     }
 
+    /**
+     * Load an ApplicationBuilder from a JSONObject.
+     * @param root JSON object
+     * @return Application Builder loaded from JSON
+     * @throws JSONException if unable to read JSON
+     * @throws AssemblyException if unable to declare the assembly
+     */
     public static ApplicationBuilder fromJson( JSONObject root )
         throws JSONException, AssemblyException
     {
@@ -155,6 +219,13 @@ public class ApplicationBuilder
         return builder;
     }
 
+    /**
+     * {@literal main} method that read JSON from STDIN.
+     * @param args Unused
+     * @throws JSONException if unable to read JSON
+     * @throws AssemblyException if the assembly failed
+     * @throws ActivationException if the activation failed
+     */
     public static void main( String[] args )
         throws JSONException, ActivationException, AssemblyException
     {

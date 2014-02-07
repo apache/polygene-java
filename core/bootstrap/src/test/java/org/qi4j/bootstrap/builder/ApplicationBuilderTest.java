@@ -1,3 +1,21 @@
+/*
+ * Copyright 2014 Niclas Hedhman.
+ * Copyright 2014 Paul Merlin.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.qi4j.bootstrap.builder;
 
 import java.io.ByteArrayInputStream;
@@ -15,9 +33,27 @@ import org.qi4j.bootstrap.ModuleAssembly;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.qi4j.bootstrap.ClassScanner.findClasses;
+import static org.qi4j.bootstrap.ClassScanner.matches;
+import static org.qi4j.functional.Iterables.filter;
 
 public class ApplicationBuilderTest
 {
+    @Test
+    public void givenBuilderUseWhenBuildingApplicationExpectSuccess()
+        throws AssemblyException, ActivationException
+    {
+        ApplicationBuilder builder = new ApplicationBuilder( "Build from API test." );
+        builder.withLayer( "layer1" ).using( "layer2" ).using( "layer3" );
+        builder.withLayer( "layer2" );
+        builder.withLayer( "layer3" ).withModule( "test module" ).
+            withAssemblers( filter( matches( ".*ServiceAssembler" ), findClasses( getClass() ) ) );
+        Application application = builder.newApplication();
+        Module module = application.findModule( "layer3", "test module" );
+        TestService service = module.findService( TestService.class ).get();
+        assertThat( service.sayHello(), equalTo( "Hello Qi4j!" ) );
+    }
+
     @Test
     public void givenJsonWhenBuildingApplicationExpectSuccess()
         throws JSONException, ActivationException, AssemblyException
@@ -26,7 +62,7 @@ public class ApplicationBuilderTest
         Application application = builder.newApplication();
         Module module = application.findModule( "layer3", "test module" );
         TestService service = module.findService( TestService.class ).get();
-        assertThat(service.sayHello(), equalTo("Hello Qi4j!"));
+        assertThat( service.sayHello(), equalTo( "Hello Qi4j!" ) );
     }
 
     @Test
