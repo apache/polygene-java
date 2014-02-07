@@ -1,5 +1,8 @@
 package org.qi4j.bootstrap.builder;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import org.json.JSONException;
 import org.junit.Test;
 import org.qi4j.api.activation.ActivationException;
@@ -26,6 +29,17 @@ public class ApplicationBuilderTest
         assertThat(service.sayHello(), equalTo("Hello Qi4j!"));
     }
 
+    @Test
+    public void givenJsonInputStreamWhenBuildingApplicationExpectSuccess()
+        throws IOException, JSONException, ActivationException, AssemblyException
+    {
+        InputStream input = new ByteArrayInputStream( APPLICATION.getBytes( "UTF-8" ) );
+        ApplicationBuilder builder = ApplicationBuilder.fromJson( input );
+        Application application = builder.newApplication();
+        Module module = application.findModule( "layer3", "test module" );
+        TestService service = module.findService( TestService.class ).get();
+        assertThat( service.sayHello(), equalTo( "Hello Qi4j!" ) );
+    }
 
 
     private static final String APPLICATION =

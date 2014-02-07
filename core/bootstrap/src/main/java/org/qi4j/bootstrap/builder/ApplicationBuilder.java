@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,8 +107,8 @@ public class ApplicationBuilder
     public static ApplicationBuilder fromJson( InputStream json )
         throws JSONException, AssemblyException
     {
-        JSONObject root = new JSONObject( json );
-        return fromJson( root );
+        String jsonString = new Scanner( json, "UTF-8" ).useDelimiter( "\\A" ).next();
+        return fromJson( jsonString );
     }
 
     public static ApplicationBuilder fromJson( JSONObject root )
