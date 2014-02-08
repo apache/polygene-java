@@ -314,7 +314,7 @@ allprojects {
       module.dependencies*.exported = true
     }
   }
-} // allproject END -------------------------------------------------------
+} // allprojects END -------------------------------------------------------
 
 gradle.taskGraph.whenReady {taskGraph ->
   taskGraph.allTasks.last().doLast {
@@ -600,6 +600,36 @@ task dist( type: Copy, dependsOn: install ) {
   into "$buildDir/dist"
 }
 
+task checkReleaseSpec {
+  description = "Ensure that no releasable module depend on module(s) that don't fit the release criteria."
+  group = 'release'
+  dependsOn releaseApprovedProjects*.configurations.runtime
+  doFirst {
+    def notReleasable = [:]
+    releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({ it instanceof ProjectDependency }).each { dep ->
+      def depNotReleaseApproved = releaseApprovedProjects.findAll { rp ->
+        rp.group == dep.dependencyProject.group && rp.name == dep.dependencyProject.name 
+      }.isEmpty()
+      if( depNotReleaseApproved )
+      {
+        if( !notReleasable[p] ) notReleasable[p] = []
+        notReleasable[p] << dep
+      }
+    }
+    if(!notReleasable.isEmpty()) {
+      def errorMessage = new StringBuilder()
+      errorMessage << "At least one releasable module depends on module(s) that don't fit the release criteria!\n"
+      errorMessage << "\tOffending module -> Non releasable dependencies\n"
+      notReleasable.each { k,v ->
+        def noRlsDeps = v.collect{d -> ':'+d.dependencyProject.group+':'+d.dependencyProject.name}
+        errorMessage << "\t$k -> ${noRlsDeps})\n"
+      }
+      errorMessage << "Check the dev-status.xml file content in each modules directory."
+      throw new GradleException( errorMessage.toString() )
+    }
+  }
+}
+
 task release {
   description = 'Builds, tests and uploads the release artifacts'
   group = 'release'
@@ -609,7 +639,7 @@ task release {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
   }
-  dependsOn archiveJavadocs, ':org.qi4j.manual:copyWebsite', allprojects*.uploadArchives, dist
+  dependsOn checkReleaseSpec, archiveJavadocs, ':org.qi4j.manual:copyWebsite', allprojects*.uploadArchives, dist
 }
 
 //
