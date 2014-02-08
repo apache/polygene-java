@@ -59,8 +59,7 @@ public class MySQLEntityStoreTest
         new DBCPDataSourceServiceAssembler().
             identifiedBy( "mysql-datasource-service" ).
             visibleIn( Visibility.module ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
 
         // DataSource
@@ -74,8 +73,7 @@ public class MySQLEntityStoreTest
         // SQL EntityStore
         new MySQLEntityStoreAssembler().
             visibleIn( Visibility.application ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
     }
     // END SNIPPET: assembly

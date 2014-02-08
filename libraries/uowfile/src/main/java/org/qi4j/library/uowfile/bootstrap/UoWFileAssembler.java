@@ -13,8 +13,7 @@
  */
 package org.qi4j.library.uowfile.bootstrap;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.uowfile.internal.UoWFileFactory;
@@ -32,26 +31,12 @@ import org.qi4j.library.uowfile.singular.UoWFileLocator;
  * Their mixins must respectively implements {@link UoWFileLocator} and {@link UoWFilesLocator}
  */
 public class UoWFileAssembler
-        implements Assembler
+    extends Assemblers.Visibility<UoWFileAssembler>
 {
-
-    private final Visibility visibility;
-
-    public UoWFileAssembler()
-    {
-        this.visibility = Visibility.module;
-    }
-
-    public UoWFileAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        module.services( UoWFileFactory.class ).visibleIn( visibility );
+        module.services( UoWFileFactory.class ).visibleIn( visibility() );
     }
-
 }

@@ -15,11 +15,10 @@
  */
 package org.qi4j.valueserialization.jackson;
 
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueSerialization;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Function;
@@ -28,17 +27,9 @@ import org.qi4j.functional.Function;
  * Assemble a ValueSerialization Service producing and consuming JSON documents.
  */
 public class JacksonValueSerializationAssembler
-    implements Assembler
+    extends Assemblers.Visibility<JacksonValueSerializationAssembler>
 {
-
-    private Visibility visibility = Visibility.module;
     private Function<Application, Module> valuesModuleFinder;
-
-    public JacksonValueSerializationAssembler visibleIn( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
 
     public JacksonValueSerializationAssembler withValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
     {
@@ -53,13 +44,13 @@ public class JacksonValueSerializationAssembler
         if( valuesModuleFinder == null )
         {
             module.services( JacksonValueSerializationService.class ).
-                visibleIn( visibility ).
+                visibleIn( visibility() ).
                 taggedWith( ValueSerialization.Formats.JSON );
         }
         else
         {
             module.services( JacksonValueSerializationService.class ).
-                visibleIn( visibility ).
+                visibleIn( visibility() ).
                 taggedWith( ValueSerialization.Formats.JSON ).
                 setMetaInfo( valuesModuleFinder );
         }

@@ -13,11 +13,11 @@
  */
 package org.qi4j.test;
 
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.value.ValueSerialization;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
@@ -26,28 +26,18 @@ import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
  * Helper assembler that adds an in-memory EntityStore, a UUID generator, and an Entity type registry to the module
  */
 public class EntityTestAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentity<EntityTestAssembler>
 {
-
-    Visibility visibility;
-
-    public EntityTestAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
-
-    public EntityTestAssembler()
-    {
-        this( Visibility.application );
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class ).visibleIn( visibility );
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        ServiceDeclaration service = module.services( MemoryEntityStoreService.class ).visibleIn( visibility() );
+        if( hasIdentity() )
+        {
+            service.identifiedBy( identity() );
+        }
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
-
 }

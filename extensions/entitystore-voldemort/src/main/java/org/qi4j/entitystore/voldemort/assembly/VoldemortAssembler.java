@@ -17,29 +17,32 @@
  */
 package org.qi4j.entitystore.voldemort.assembly;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.entitystore.voldemort.VoldemortConfiguration;
 import org.qi4j.entitystore.voldemort.VoldemortEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class VoldemortAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentityConfig<VoldemortAssembler>
 {
-
-    private Visibility visibility;
-
-    public VoldemortAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( VoldemortEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( VoldemortEntityStoreService.class ).
+            visibleIn( visibility() ).
+            instantiateOnStartup();
+        if( hasIdentity() )
+        {
+            service.identifiedBy( identity() );
+        }
+        if( hasConfig() )
+        {
+            configModule().entities( VoldemortConfiguration.class ).visibleIn( configVisibility() );
+        }
     }
 }

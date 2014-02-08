@@ -43,6 +43,7 @@ import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.SimpleAccountRealm;
 import org.junit.Test;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceComposite;
@@ -62,20 +63,20 @@ import static org.qi4j.library.http.Servlets.addServlets;
 import static org.qi4j.library.http.Servlets.serve;
 
 public class WebRealmServiceTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
 
     private int port;
 
     @Mixins( MyRealmMixin.class )
     public interface MyRealmService
-            extends Realm, ServiceComposite, ServiceActivation
+        extends Realm, ServiceComposite, ServiceActivation
     {
     }
 
     public class MyRealmMixin
-            extends SimpleAccountRealm
-            implements ServiceActivation
+        extends SimpleAccountRealm
+        implements ServiceActivation
     {
 
         private final PasswordService passwordService;
@@ -89,15 +90,17 @@ public class WebRealmServiceTest
             setCredentialsMatcher( matcher );
         }
 
+        @Override
         public void activateService()
-                throws Exception
+            throws Exception
         {
             // Create a test account
             addAccount( "foo", passwordService.encryptPassword( "bar" ) );
         }
 
+        @Override
         public void passivateService()
-                throws Exception
+            throws Exception
         {
         }
 
@@ -105,17 +108,17 @@ public class WebRealmServiceTest
 
     @Mixins( MyServlet.class )
     public interface MyServletService
-            extends Servlet, ServiceComposite
+        extends Servlet, ServiceComposite
     {
     }
 
     public static class MyServlet
-            extends HttpServlet
+        extends HttpServlet
     {
 
         @Override
         protected void doGet( HttpServletRequest req, HttpServletResponse resp )
-                throws ServletException, IOException
+            throws ServletException, IOException
         {
             resp.getWriter().println( "FOO" );
         }
@@ -124,14 +127,14 @@ public class WebRealmServiceTest
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        try {
-
-            new EntityTestAssembler().assemble( module );
+        try
+        {
             ModuleAssembly configModule = module;
+            new EntityTestAssembler().assemble( configModule );
             // START SNIPPET: assembly
-            new JettyServiceAssembler().assemble( module );
+            new JettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
             // END SNIPPET: assembly
 
             port = FreePortFinder.findFreePortOnLoopback();
@@ -140,24 +143,27 @@ public class WebRealmServiceTest
             config.port().set( port );
 
             // START SNIPPET: assembly
-            new HttpShiroAssembler().withConfig( configModule ).assemble( module );
+            new HttpShiroAssembler().
+                withConfig( configModule, Visibility.layer ).
+                assemble( module );
             module.services( MyRealmService.class );
             // END SNIPPET: assembly
 
             configModule.forMixin( ShiroIniConfiguration.class ).
-                    declareDefaults().
-                    iniResourcePath().set( "classpath:web-shiro.ini" );
+                declareDefaults().
+                iniResourcePath().set( "classpath:web-shiro.ini" );
 
             addServlets( serve( "/*" ).with( MyServletService.class ) ).to( module );
-
-        } catch ( IOException ex ) {
+        }
+        catch( IOException ex )
+        {
             throw new AssemblyException( "Unable to find free port to bind to", ex );
         }
     }
 
     @Test
     public void test()
-            throws IOException
+        throws IOException
     {
         DefaultHttpClient client = new DefaultHttpClient();
 
@@ -193,31 +199,31 @@ public class WebRealmServiceTest
      * Needed for HTTP Basic Authentication.
      */
     public class BasicAuthRequestInterceptor
-            implements HttpRequestInterceptor
+        implements HttpRequestInterceptor
     {
-
+        @Override
         public void process( final HttpRequest request, final HttpContext context )
-                throws HttpException, IOException
+            throws HttpException, IOException
         {
-
-            AuthState authState = ( AuthState ) context.getAttribute( ClientContext.TARGET_AUTH_STATE );
-            CredentialsProvider credsProvider = ( CredentialsProvider ) context.getAttribute( ClientContext.CREDS_PROVIDER );
-            HttpHost targetHost = ( HttpHost ) context.getAttribute( ExecutionContext.HTTP_TARGET_HOST );
+            AuthState authState = (AuthState) context.getAttribute( ClientContext.TARGET_AUTH_STATE );
+            CredentialsProvider credsProvider = (CredentialsProvider) context.getAttribute( ClientContext.CREDS_PROVIDER );
+            HttpHost targetHost = (HttpHost) context.getAttribute( ExecutionContext.HTTP_TARGET_HOST );
 
             // If not auth scheme has been initialized yet
-            if ( authState.getAuthScheme() == null ) {
+            if( authState.getAuthScheme() == null )
+            {
                 AuthScope authScope = new AuthScope( targetHost.getHostName(),
                                                      targetHost.getPort() );
                 // Obtain credentials matching the target host
                 Credentials creds = credsProvider.getCredentials( authScope );
                 // If found, generate BasicScheme preemptively
-                if ( creds != null ) {
+                if( creds != null )
+                {
                     authState.setAuthScheme( new BasicScheme() );
                     authState.setCredentials( creds );
                 }
             }
         }
-
     }
 
 }

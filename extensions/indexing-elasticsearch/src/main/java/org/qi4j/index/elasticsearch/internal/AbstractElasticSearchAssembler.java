@@ -17,60 +17,13 @@
  */
 package org.qi4j.index.elasticsearch.internal;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.Assemblers;
 
-public abstract class AbstractElasticSearchAssembler<AssemblerType extends AbstractElasticSearchAssembler>
-        implements Assembler
+public abstract class AbstractElasticSearchAssembler<AssemblerType>
+    extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
-
-    private String identity;
-
-    private Visibility visibility = Visibility.module;
-
-    private ModuleAssembly configModule;
-
-    private Visibility configVisibility = Visibility.module;
-
-    public final AssemblerType withIdentity( String identity )
+    public AbstractElasticSearchAssembler()
     {
-        this.identity = identity;
-        return ( AssemblerType ) this;
+        identifiedBy( "es-indexing" );
     }
-
-    public final AssemblerType withVisibility( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return ( AssemblerType ) this;
-    }
-
-    public final AssemblerType withConfigVisibility( Visibility configVisibility )
-    {
-        this.configVisibility = configVisibility;
-        return ( AssemblerType ) this;
-    }
-
-    public final AssemblerType withConfigModule( ModuleAssembly configModule )
-    {
-        this.configModule = configModule;
-        return ( AssemblerType ) this;
-    }
-
-    @Override
-    public final void assemble( ModuleAssembly module )
-            throws AssemblyException
-    {
-        if ( identity == null ) {
-            identity = "es-indexing";
-        }
-        doAssemble( identity, module, visibility, configModule, configVisibility );
-    }
-
-    protected abstract void doAssemble( String identity,
-                                        ModuleAssembly module, Visibility visibility,
-                                        ModuleAssembly configModule, Visibility configVisibility )
-            throws AssemblyException;
-
 }

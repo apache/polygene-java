@@ -17,29 +17,18 @@
  */
 package org.qi4j.library.uid.sequence.assembly;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.uid.sequence.TransientSequencingService;
 
 public class TransientSequencingAssembler
-    implements Assembler
+    extends Assemblers.Visibility<TransientSequencingAssembler>
 {
-
-    private Visibility visibility = Visibility.module;
-
-    public TransientSequencingAssembler withVisibility( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( TransientSequencingService.class ).visibleIn( visibility );
+        module.services( TransientSequencingService.class ).visibleIn( visibility() );
     }
-
 }

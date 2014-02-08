@@ -17,57 +17,35 @@
  */
 package org.qi4j.entitystore.riak;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * Riak Http EntityStore assembly.
  */
 public class RiakHttpMapEntityStoreAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentityConfig<RiakHttpMapEntityStoreAssembler>
 {
-
-    private Visibility visibility = Visibility.application;
-    private ModuleAssembly configModule;
-    private Visibility configVisibility = Visibility.layer;
-
-    public RiakHttpMapEntityStoreAssembler withVisibility( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
-
-    public RiakHttpMapEntityStoreAssembler withConfigModule( ModuleAssembly configModule )
-    {
-        this.configModule = configModule;
-        return this;
-    }
-
-    public RiakHttpMapEntityStoreAssembler withConfigVisibility( Visibility configVisibility )
-    {
-        this.configVisibility = configVisibility;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
         module.services( UuidIdentityGeneratorService.class ).
-            visibleIn( visibility );
-
-        module.services( RiakMapEntityStoreService.class ).
+            visibleIn( visibility() );
+        ServiceDeclaration service = module.services( RiakMapEntityStoreService.class ).
             withMixins( RiakHttpMapEntityStoreMixin.class ).
-            visibleIn( visibility );
-
-        if( configModule != null )
+            visibleIn( visibility() );
+        if( hasIdentity() )
         {
-            configModule.entities( RiakHttpEntityStoreConfiguration.class ).
-                visibleIn( configVisibility );
+            service.identifiedBy( identity() );
+        }
+        if( hasConfig() )
+        {
+            configModule().entities( RiakHttpEntityStoreConfiguration.class ).
+                visibleIn( configVisibility() );
         }
     }
-
 }

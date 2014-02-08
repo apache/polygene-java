@@ -44,7 +44,7 @@ public class HazelcastEntityStoreTest
         new EntityTestAssembler().assemble( configModule );
         new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
-        new HazelcastEntityStoreAssembler().withConfigIn( configModule, Visibility.layer ).assemble( module );
+        new HazelcastEntityStoreAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
     }
     // END SNIPPET: assembly
 

@@ -1,100 +1,85 @@
 /*
  * Copyright 2008 Edward Yakop.
- * Copyright (c) 2011, Paul Merlin. All Rights Reserved.
+ * Copyright 2011-2014 Paul Merlin.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 package org.qi4j.library.http;
 
 import org.eclipse.jetty.server.Server;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.importer.InstanceImporter;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 
 public class JettyServiceAssembler
-        implements Assembler
+    extends Assemblers.VisibilityIdentityConfig<JettyServiceAssembler>
 {
-
-    protected Visibility serverVisibility = Visibility.module;
-    protected ModuleAssembly configModule;
-    protected Visibility configVisibility = Visibility.layer;
     protected ModuleAssembly serverModule;
-    protected Visibility httpServiceVisibility = Visibility.module;
+    protected Visibility serverVisibility = Visibility.module;
+    protected String serverIdentity;
 
     /**
+     * @param serverModule Defaults to assembled module
      * @param serverVisibility Defaults to {@link Visibility#module}
      */
-    public JettyServiceAssembler withServerVisibility( Visibility serverVisibility )
+    public JettyServiceAssembler withServer( ModuleAssembly serverModule, Visibility serverVisibility )
     {
+        this.serverModule = serverModule;
         this.serverVisibility = serverVisibility;
         return this;
     }
 
-    /**
-     * @param serverModule Defaults to assembled module
-     */
-    public JettyServiceAssembler withServerModule( ModuleAssembly serverModule )
+    public JettyServiceAssembler serverIdentifiedBy( String serverIdentity )
     {
-        this.serverModule = serverModule;
-        return this;
-    }
-
-    /**
-     * @param configVisibility Defaults to {@link Visibility#layer}
-     */
-    public JettyServiceAssembler withConfigVisibility( Visibility configVisibility )
-    {
-        this.configVisibility = configVisibility;
-        return this;
-    }
-
-    /**
-     * @param configModule Defaults to assembled module
-     */
-    public JettyServiceAssembler withConfigModule( ModuleAssembly configModule )
-    {
-        this.configModule = configModule;
-        return this;
-    }
-
-    /**
-     * @param httpServiceVisibility Defaults to {@link Visibility#module}
-     */
-    public JettyServiceAssembler withHttpServiceVisibility( Visibility httpServiceVisibility )
-    {
-        this.httpServiceVisibility = httpServiceVisibility;
+        this.serverIdentity = serverIdentity;
         return this;
     }
 
     @Override
     public final void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
+        ServiceDeclaration service = module.services( httpService() ).
+            visibleIn( visibility() ).
+            instantiateOnStartup();
+        if( hasIdentity() )
+        {
+            service.identifiedBy( identity() );
+        }
+        if( hasConfig() )
+        {
+            configModule().entities( configurationEntity() ).visibleIn( configVisibility() );
+        }
         assembleServer( module );
-        configModule = configModule != null ? configModule : module;
-        configModule.entities( configurationEntity() ).visibleIn( configVisibility );
-        module.services( httpService() ).
-                visibleIn( httpServiceVisibility ).
-                instantiateOnStartup();
     }
 
     protected final void assembleServer( ModuleAssembly module )
     {
         serverModule = serverModule != null ? serverModule : module;
-        serverModule.importedServices( Server.class ).
-                importedBy( InstanceImporter.class ).
-                setMetaInfo( new Server() ).
-                visibleIn( serverVisibility );
+        ImportedServiceDeclaration server = serverModule.importedServices( Server.class ).
+            importedBy( InstanceImporter.class ).
+            setMetaInfo( new Server() ).
+            visibleIn( serverVisibility );
+        if( serverIdentity != null )
+        {
+            server.identifiedBy( serverIdentity );
+        }
     }
 
     protected Class<? extends JettyConfiguration> configurationEntity()
@@ -106,5 +91,4 @@ public class JettyServiceAssembler
     {
         return JettyService.class;
     }
-
 }

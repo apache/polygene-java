@@ -13,57 +13,30 @@
  */
 package org.qi4j.entitystore.jclouds;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class JCloudsMapEntityStoreAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentityConfig<JCloudsMapEntityStoreAssembler>
 {
-
-    private final Visibility visibility;
-    private String identity;
-    private ModuleAssembly config;
-    private Visibility configVisibility;
-
-    public JCloudsMapEntityStoreAssembler()
-    {
-        this( Visibility.layer );
-    }
-
-    public JCloudsMapEntityStoreAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
-
-    public JCloudsMapEntityStoreAssembler identifiedBy( String identity )
-    {
-        this.identity = identity;
-        return this;
-    }
-
-    public JCloudsMapEntityStoreAssembler withConfigIn( ModuleAssembly config, Visibility configVisibility )
-    {
-        this.config = config;
-        this.configVisibility = configVisibility;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
         module.services( UuidIdentityGeneratorService.class );
-        module.services( JCloudsMapEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
-        if( identity != null && identity.length() > 0 )
+        ServiceDeclaration service = module.services( JCloudsMapEntityStoreService.class ).
+            visibleIn( visibility() ).
+            instantiateOnStartup();
+        if( hasIdentity() )
         {
-            module.services( JCloudsMapEntityStoreService.class ).identifiedBy( identity );
+            service.identifiedBy( identity() );
         }
-        if( config != null )
+        if( hasConfig() )
         {
-            config.entities( JCloudsMapEntityStoreConfiguration.class ).visibleIn( configVisibility );
+            configModule().entities( JCloudsMapEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

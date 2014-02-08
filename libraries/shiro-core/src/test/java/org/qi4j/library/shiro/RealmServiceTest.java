@@ -22,6 +22,7 @@ import org.apache.shiro.realm.Realm;
 import org.apache.shiro.realm.SimpleAccountRealm;
 import org.apache.shiro.subject.Subject;
 import org.junit.Test;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceComposite;
@@ -87,7 +88,9 @@ public class RealmServiceTest
         new EntityTestAssembler().assemble( module );
         ModuleAssembly configModule = module;
         // START SNIPPET: realm-service
-        new StandaloneShiroAssembler().withConfig( configModule ).assemble( module );
+        new StandaloneShiroAssembler().
+            withConfig( configModule, Visibility.layer ).
+            assemble( module );
         module.services( MyRealmService.class );
 
         // END SNIPPET: realm-service

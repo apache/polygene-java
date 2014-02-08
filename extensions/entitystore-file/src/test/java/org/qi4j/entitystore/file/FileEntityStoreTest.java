@@ -39,10 +39,9 @@ public class FileEntityStoreTest
         module.services( FileConfigurationService.class );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        // START SNIPPET: assembly
         new OrgJsonValueSerializationAssembler().assemble( module );
-        new FileEntityStoreAssembler().assemble( module );
-        config.entities( FileEntityStoreConfiguration.class ).visibleIn( Visibility.layer );
+        // START SNIPPET: assembly
+        new FileEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
     // END SNIPPET: assembly
 }

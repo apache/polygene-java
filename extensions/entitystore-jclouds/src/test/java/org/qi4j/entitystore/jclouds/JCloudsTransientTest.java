@@ -33,7 +33,7 @@ public class JCloudsTransientTest
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
-        new JCloudsMapEntityStoreAssembler().withConfigIn( config, Visibility.layer ).assemble( module );
+        new JCloudsMapEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         // END SNIPPET: assembly
     }
 

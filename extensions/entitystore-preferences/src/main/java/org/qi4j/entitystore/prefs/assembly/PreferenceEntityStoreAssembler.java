@@ -18,25 +18,17 @@
 package org.qi4j.entitystore.prefs.assembly;
 
 import java.util.prefs.Preferences;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.entitystore.prefs.PreferencesEntityStoreInfo;
 import org.qi4j.entitystore.prefs.PreferencesEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class PreferenceEntityStoreAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentity<PreferenceEntityStoreAssembler>
 {
-
-    private Visibility visibility;
-
-    public PreferenceEntityStoreAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -46,10 +38,14 @@ public class PreferenceEntityStoreAssembler
         Preferences root = Preferences.userRoot();
         Preferences node = root.node( applicationName );
         PreferencesEntityStoreInfo info = new PreferencesEntityStoreInfo( node );
-        module.services( PreferencesEntityStoreService.class )
+        ServiceDeclaration service = module.services( PreferencesEntityStoreService.class )
             .setMetaInfo( info )
-            .visibleIn( visibility )
+            .visibleIn( visibility() )
             .instantiateOnStartup();
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        if( hasIdentity() )
+        {
+            service.identifiedBy( identity() );
+        }
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
     }
 }

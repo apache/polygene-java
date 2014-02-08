@@ -13,53 +13,31 @@
  */
 package org.qi4j.library.shiro.assembly;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.library.shiro.ini.IniSecurityManagerService;
 import org.qi4j.library.shiro.ini.ShiroIniConfiguration;
 
 public class StandaloneShiroAssembler
-        implements Assembler
+    extends Assemblers.VisibilityIdentityConfig<StandaloneShiroAssembler>
 {
-
-    private Visibility visibility = Visibility.module;
-
-    private ModuleAssembly configModule;
-
-    private Visibility configVisibility = Visibility.layer;
-
-    public StandaloneShiroAssembler withVisibility( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
-
-    public StandaloneShiroAssembler withConfig( ModuleAssembly config )
-    {
-        this.configModule = config;
-        return this;
-    }
-
-    public StandaloneShiroAssembler withConfigVisibility( Visibility configVisibility )
-    {
-        this.configVisibility = configVisibility;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        module.services( IniSecurityManagerService.class ).
-                visibleIn( visibility ).
-                instantiateOnStartup();
-        if ( configModule == null ) {
-            configModule = module;
+        ServiceDeclaration service = module.services( IniSecurityManagerService.class ).
+            visibleIn( visibility() ).
+            instantiateOnStartup();
+        if( hasIdentity() )
+        {
+            service.identifiedBy( identity() );
         }
-        configModule.entities( ShiroIniConfiguration.class ).
-                visibleIn( configVisibility );
+        if( hasConfig() )
+        {
+            configModule().entities( ShiroIniConfiguration.class ).
+                visibleIn( configVisibility() );
+        }
     }
-
 }

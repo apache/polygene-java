@@ -14,29 +14,29 @@
 package org.qi4j.library.http;
 
 import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
+import org.apache.http.client.methods.HttpGet;
 import org.junit.Test;
-
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.test.EntityTestAssembler;
+
+import static org.junit.Assert.assertEquals;
 import static org.qi4j.library.http.Servlets.addServlets;
 import static org.qi4j.library.http.Servlets.serve;
 
-import org.apache.http.client.methods.HttpGet;
-import org.qi4j.test.EntityTestAssembler;
-
 public class MutualSecureJettyServiceTest
-        extends AbstractSecureJettyTest
+    extends AbstractSecureJettyTest
 {
-
+    @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        new EntityTestAssembler().assemble( module );
-        new SecureJettyServiceAssembler().assemble( module );
+        ModuleAssembly configModule = module;
+        new EntityTestAssembler().assemble( configModule );
+        new SecureJettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
         // START SNIPPET: config
-        SecureJettyConfiguration config = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
+        SecureJettyConfiguration config = configModule.forMixin( SecureJettyConfiguration.class ).declareDefaults();
         config.hostName().set( "127.0.0.1" );
         config.port().set( HTTPS_PORT );
 
@@ -56,7 +56,7 @@ public class MutualSecureJettyServiceTest
 
     @Test
     public void testWithoutClientCertificate()
-            throws IOException
+        throws IOException
     {
         // As we set wantClientAuth we can request without a client certificate ...
         String output = trustHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ), stringResponseHandler );
@@ -65,11 +65,10 @@ public class MutualSecureJettyServiceTest
 
     @Test
     public void testWithClientCertificate()
-            throws IOException
+        throws IOException
     {
         // ... and with one
         String output = mutualHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ), stringResponseHandler );
         assertEquals( "Hello Mutual World", output );
     }
-
 }

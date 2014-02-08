@@ -89,8 +89,7 @@ public class PostgreSQLEntityStoreTest
         new DBCPDataSourceServiceAssembler().
             identifiedBy( "postgresql-datasource-service" ).
             visibleIn( Visibility.module ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
 
         // DataSource
@@ -104,8 +103,7 @@ public class PostgreSQLEntityStoreTest
         // SQL EntityStore
         new PostgreSQLEntityStoreAssembler().
             visibleIn( Visibility.application ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
     }
     // END SNIPPET: assembly

@@ -62,8 +62,7 @@ public class ElasticSearchQueryTest
 
         // Index/Query
         new ESFilesystemIndexQueryAssembler().
-            withConfigModule( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );

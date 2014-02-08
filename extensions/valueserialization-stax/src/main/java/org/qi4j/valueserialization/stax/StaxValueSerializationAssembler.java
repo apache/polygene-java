@@ -15,11 +15,10 @@
  */
 package org.qi4j.valueserialization.stax;
 
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueSerialization;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Function;
@@ -28,17 +27,9 @@ import org.qi4j.functional.Function;
  * Assemble a ValueSerialization Service producing and consuming XML documents.
  */
 public class StaxValueSerializationAssembler
-    implements Assembler
+    extends Assemblers.Visibility<StaxValueSerializationAssembler>
 {
-
-    private Visibility visibility = Visibility.module;
     private Function<Application, Module> valuesModuleFinder;
-
-    public StaxValueSerializationAssembler visibleIn( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
 
     public StaxValueSerializationAssembler withValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
     {
@@ -53,13 +44,13 @@ public class StaxValueSerializationAssembler
         if( valuesModuleFinder == null )
         {
             module.services( StaxValueSerializationService.class ).
-                visibleIn( visibility ).
+                visibleIn( visibility() ).
                 taggedWith( ValueSerialization.Formats.XML );
         }
         else
         {
             module.services( StaxValueSerializationService.class ).
-                visibleIn( visibility ).
+                visibleIn( visibility() ).
                 taggedWith( ValueSerialization.Formats.XML ).
                 setMetaInfo( valuesModuleFinder );
         }

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.cache.memcache;
+package org.qi4j.library.conversion.values;
 
 import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
@@ -23,23 +23,19 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ServiceDeclaration;
 
 /**
- * Memcache CachePool Assembler.
+ * EntityToValue Service Assembler.
  */
-public class MemcacheAssembler
-    extends Assemblers.VisibilityIdentityConfig<MemcacheAssembler>
+public class EntityToValueAssembler
+    extends Assemblers.VisibilityIdentity<EntityToValueAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        ServiceDeclaration service = module.services( MemcachePoolService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( EntityToValueService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );
-        }
-        if( hasConfig() )
-        {
-            configModule().entities( MemcacheConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

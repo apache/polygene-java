@@ -20,7 +20,7 @@ source=libraries/fileconfig/src/main/java/org/qi4j/library/fileconfig/FileConfig
 tag=fileconfig
 ----
 
-To use it you simply need to declare the FileConfiguration Service in your application assembly:
+To use it you simply need to use the FileConfigurationAssembler in your application assembly:
 
 [snippet,java]
 ----

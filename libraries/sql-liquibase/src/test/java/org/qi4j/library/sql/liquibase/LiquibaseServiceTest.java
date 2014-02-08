@@ -59,31 +59,33 @@ public class LiquibaseServiceTest
         final SingletonAssembler assembler = new SingletonAssembler()
         {
             @Override
-            public void assemble( ModuleAssembly module ) throws AssemblyException
+            public void assemble( ModuleAssembly module )
+                throws AssemblyException
             {
+                ModuleAssembly configModule = module;
+                // Create in-memory store for configurations
+                new EntityTestAssembler().assemble( configModule );
+
                 new C3P0DataSourceServiceAssembler().
-                        identifiedBy( "datasource-service" ).
-                        assemble( module );
+                    identifiedBy( "datasource-service" ).
+                    withConfig( configModule, Visibility.layer ).
+                    assemble( module );
                 new DataSourceAssembler().
-                        withDataSourceServiceIdentity( "datasource-service").
-                        identifiedBy( "testds-liquibase").
-                        withCircuitBreaker().
-                        assemble( module );
+                    withDataSourceServiceIdentity( "datasource-service" ).
+                    identifiedBy( "testds-liquibase" ).
+                    withCircuitBreaker().
+                    assemble( module );
 
                 module.values( SomeValue.class );
 
                 // Set up Liquibase service that will create the tables
-                ModuleAssembly configModule = module;
                 // START SNIPPET: assembly
-                new LiquibaseAssembler( Visibility.module ).
-                        withConfigIn( configModule, Visibility.layer ).
-                        assemble( module );
+                new LiquibaseAssembler().
+                    withConfig( configModule, Visibility.layer ).
+                    assemble( module );
                 // END SNIPPET: assembly
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().enabled().set( true );
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().changeLog().set( "changelog.xml" );
-
-                // Create in-memory store for configurations
-                new EntityTestAssembler().assemble( module );
             }
 
             @Override
@@ -119,7 +121,8 @@ public class LiquibaseServiceTest
         database.query( "select * from test", new Databases.ResultSetVisitor()
         {
             @Override
-            public boolean visit( ResultSet visited ) throws SQLException
+            public boolean visit( ResultSet visited )
+                throws SQLException
             {
                 assertThat( visited.getString( "id" ), equalTo( "someid" ) );
                 assertThat( visited.getString( "foo" ), equalTo( "bar" ) );
@@ -138,7 +141,8 @@ public class LiquibaseServiceTest
                 {
                     builder.prototype().id().set( resultSet.getString( "id" ) );
                     builder.prototype().foo().set( resultSet.getString( "foo" ) );
-                } catch( SQLException e )
+                }
+                catch( SQLException e )
                 {
                     throw new IllegalArgumentException( "Could not convert to SomeValue", e );
                 }
@@ -158,10 +162,11 @@ public class LiquibaseServiceTest
     }
 
     interface SomeValue
-            extends ValueComposite
+        extends ValueComposite
     {
         Property<String> id();
 
         Property<String> foo();
     }
+
 }

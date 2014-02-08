@@ -14,27 +14,30 @@
 package org.qi4j.library.http;
 
 import org.junit.Test;
-
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.library.jmx.JMXAssembler;
+import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
-import static org.qi4j.library.http.Servlets.*;
+
+import static org.qi4j.library.http.Servlets.addServlets;
+import static org.qi4j.library.http.Servlets.serve;
 
 public class JettyJMXStatisticsTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
-
+    @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        new EntityTestAssembler().assemble( module );
+        ModuleAssembly configModule = module;
+        new EntityTestAssembler().assemble( configModule );
         // START SNIPPET: jmx
-        new JettyServiceAssembler().assemble( module );
+        new JettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
         new JMXAssembler().assemble( module ); // Assemble both JettyService and JMX
 
-        JettyConfiguration config = module.forMixin( JettyConfiguration.class ).declareDefaults();
+        JettyConfiguration config = configModule.forMixin( JettyConfiguration.class ).declareDefaults();
         config.hostName().set( "127.0.0.1" );
         config.port().set( 8441 );
         config.statistics().set( Boolean.TRUE ); // Set statistics default to TRUE in configuration
@@ -49,11 +52,11 @@ public class JettyJMXStatisticsTest
      */
     @Test
     public void dummy()
-            throws InterruptedException
+        throws InterruptedException
     {
-        if ( !"false".equals( System.getProperty( "jmxtest", "false" ) ) ) {
+        if( !"false".equals( System.getProperty( "jmxtest", "false" ) ) )
+        {
             Thread.sleep( Long.MAX_VALUE );
         }
     }
-
 }

@@ -229,7 +229,7 @@ public class Qi95IssueTest
         public ModuleAssembly buildModuleAssembly( LayerAssembly layer, String name )
             throws AssemblyException
         {
-            return addModule( layer, name, new EntityTestAssembler() );
+            return addModule( layer, name, new EntityTestAssembler().visibleIn( Visibility.application ) );
         }
     };
 
@@ -292,7 +292,7 @@ public class Qi95IssueTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                new EntityTestAssembler( Visibility.module ).assemble( module );
+                new EntityTestAssembler().assemble( module );
 
                 module.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
                 module.forMixin( NativeConfiguration.class )
@@ -319,7 +319,7 @@ public class Qi95IssueTest
                 throws AssemblyException
             {
                 new OrgJsonValueSerializationAssembler().assemble( module );
-                new JdbmEntityStoreAssembler( Visibility.application ).assemble( module );
+                new JdbmEntityStoreAssembler().visibleIn( Visibility.application ).assemble( module );
             }
         };
     }

@@ -61,7 +61,7 @@ public class EntityCompositeEqualityTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        new EntityTestAssembler( Visibility.layer ).assemble( module );
+        new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module );
         module.objects( EntityCompositeEqualityTest.class );
         module.entities( MyComposite.class );
     }

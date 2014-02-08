@@ -43,8 +43,7 @@ public class H2SQLEntityStoreTest
         new DBCPDataSourceServiceAssembler().
             identifiedBy( "h2-datasource-service" ).
             visibleIn( Visibility.module ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
 
         // DataSource
@@ -58,8 +57,7 @@ public class H2SQLEntityStoreTest
         // SQL EntityStore
         new H2SQLEntityStoreAssembler().
             visibleIn( Visibility.application ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
     }
     // END SNIPPET: assembly

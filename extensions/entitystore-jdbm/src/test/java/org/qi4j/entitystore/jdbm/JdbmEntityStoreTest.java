@@ -47,10 +47,10 @@ public class JdbmEntityStoreTest
 
         ModuleAssembly config = module.layer().module( "config" );
         config.services( FileConfigurationService.class ).visibleIn( Visibility.layer ).instantiateOnStartup();
-        new EntityTestAssembler( Visibility.module ).assemble( config );
+        new EntityTestAssembler().assemble( config );
 
         new OrgJsonValueSerializationAssembler().assemble( module );
-        new JdbmEntityStoreAssembler( Visibility.module ).withConfig( config, Visibility.layer ).assemble( module );
+        new JdbmEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
 
 }

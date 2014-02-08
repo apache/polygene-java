@@ -17,33 +17,27 @@
  */
 package org.qi4j.entitystore.memory;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 /**
  * Assemble an in-memory EntityStore.
  */
 public class MemoryEntityStoreAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentity<MemoryEntityStoreAssembler>
 {
-
-    private Visibility visibility = Visibility.module;
-
-    public MemoryEntityStoreAssembler visibleIn( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class,
-                         UuidIdentityGeneratorService.class ).
-            visibleIn( visibility );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( MemoryEntityStoreService.class ).visibleIn( visibility() );
+        if( hasIdentity() )
+        {
+            service.identifiedBy( identity() );
+        }
     }
 }

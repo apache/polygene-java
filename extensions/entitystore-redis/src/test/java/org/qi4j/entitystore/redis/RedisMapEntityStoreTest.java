@@ -18,6 +18,7 @@
 package org.qi4j.entitystore.redis;
 
 import org.junit.BeforeClass;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.EntityTestAssembler;
@@ -48,7 +49,7 @@ public class RedisMapEntityStoreTest
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
-        new RedisMapEntityStoreAssembler().withConfigModule( config ).assemble( module );
+        new RedisMapEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
     // END SNIPPET: assembly
     private JedisPool jedisPool;

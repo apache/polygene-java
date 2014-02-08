@@ -52,8 +52,7 @@ public class SQLiteEntityStoreTest
         new DBCPDataSourceServiceAssembler().
             identifiedBy( "sqlite-datasource-service" ).
             visibleIn( Visibility.module ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
 
         // DataSource
@@ -67,8 +66,7 @@ public class SQLiteEntityStoreTest
         // SQL EntityStore
         new SQLiteEntityStoreAssembler().
             visibleIn( Visibility.application ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
     }
     // END SNIPPET: assembly

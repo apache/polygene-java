@@ -13,55 +13,43 @@
  */
 package org.qi4j.library.shiro.web.assembly;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.shiro.ini.ShiroIniConfiguration;
 import org.qi4j.library.shiro.web.EnvironmentLoaderService;
 import org.qi4j.library.shiro.web.ShiroFilterService;
 
-import static javax.servlet.DispatcherType.*;
-import static org.qi4j.library.http.Servlets.*;
+import static javax.servlet.DispatcherType.ASYNC;
+import static javax.servlet.DispatcherType.ERROR;
+import static javax.servlet.DispatcherType.FORWARD;
+import static javax.servlet.DispatcherType.INCLUDE;
+import static javax.servlet.DispatcherType.REQUEST;
+import static org.qi4j.library.http.Servlets.addContextListeners;
+import static org.qi4j.library.http.Servlets.addFilters;
+import static org.qi4j.library.http.Servlets.filter;
+import static org.qi4j.library.http.Servlets.listen;
 
 public class HttpShiroAssembler
-        implements Assembler
+    extends Assemblers.Config<HttpShiroAssembler>
 {
-
-    private ModuleAssembly configModule;
-
-    private Visibility configVisibility = Visibility.layer;
-
-    public HttpShiroAssembler withConfig( ModuleAssembly config )
-    {
-        this.configModule = config;
-        return this;
-    }
-
-    public HttpShiroAssembler withConfigVisibility( Visibility configVisibility )
-    {
-        this.configVisibility = configVisibility;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         addContextListeners( listen().
-                with( EnvironmentLoaderService.class ) ).
-                to( module );
+            with( EnvironmentLoaderService.class ) ).
+            to( module );
 
         addFilters( filter( "/*" ).
-                through( ShiroFilterService.class ).
-                on( REQUEST, FORWARD, INCLUDE, ERROR, ASYNC ) ).
-                to( module );
+            through( ShiroFilterService.class ).
+            on( REQUEST, FORWARD, INCLUDE, ERROR, ASYNC ) ).
+            to( module );
 
-        if ( configModule == null ) {
-            configModule = module;
+        if( hasConfig() )
+        {
+            configModule().entities( ShiroIniConfiguration.class ).
+                visibleIn( configVisibility() );
         }
-        configModule.entities( ShiroIniConfiguration.class ).
-                visibleIn( configVisibility );
     }
-
 }

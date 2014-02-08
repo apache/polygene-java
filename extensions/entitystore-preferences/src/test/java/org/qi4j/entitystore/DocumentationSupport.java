@@ -17,7 +17,6 @@
  */
 package org.qi4j.entitystore;
 
-import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.prefs.assembly.PreferenceEntityStoreAssembler;
@@ -31,7 +30,7 @@ public class DocumentationSupport
     public void assemble( ModuleAssembly module )
             throws AssemblyException
     {
-        new PreferenceEntityStoreAssembler( Visibility.module ).assemble( module );
+        new PreferenceEntityStoreAssembler().assemble( module );
     }
     // END SNIPPET: assembly
 

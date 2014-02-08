@@ -36,7 +36,7 @@ public class JniLevelDBEntityStoreTest
         super.assemble( module );
 
         ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler( Visibility.module ).assemble( config );
+        new EntityTestAssembler().visibleIn( Visibility.module ).assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
 
         module.services( FileConfigurationService.class );

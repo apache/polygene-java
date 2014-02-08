@@ -77,7 +77,7 @@ public class DataSourceConfigurationManagerServiceTest
                 new JMXAssembler().assemble( module );
 
                 // Create in-memory store for configurations
-                new EntityTestAssembler( Visibility.layer ).assemble( module );
+                new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module );
 
                 // Set up DataSource service that will manage the connection pools
                 new C3P0DataSourceServiceAssembler().identifiedBy( "datasource-service" ).visibleIn( Visibility.layer ).assemble( module );

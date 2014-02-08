@@ -51,8 +51,7 @@ public class DerbySQLEntityStoreTest
         new DBCPDataSourceServiceAssembler().
             identifiedBy( "derby-datasource-service" ).
             visibleIn( Visibility.module ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
 
         // DataSource
@@ -66,8 +65,7 @@ public class DerbySQLEntityStoreTest
         // SQL EntityStore
         new DerbySQLEntityStoreAssembler().
             visibleIn( Visibility.application ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( module );
     }
     // END SNIPPET: assembly

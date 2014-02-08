@@ -15,33 +15,37 @@ package org.qi4j.library.http;
 
 import java.io.IOException;
 import javax.net.ssl.SSLPeerUnverifiedException;
-import static javax.servlet.DispatcherType.REQUEST;
-
 import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.methods.HttpGet;
-
-import static org.junit.Assert.*;
 import org.junit.Test;
-
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.EntityTestAssembler;
-import static org.qi4j.library.http.Servlets.*;
+
+import static javax.servlet.DispatcherType.REQUEST;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.qi4j.library.http.Servlets.addFilters;
+import static org.qi4j.library.http.Servlets.addServlets;
+import static org.qi4j.library.http.Servlets.filter;
+import static org.qi4j.library.http.Servlets.serve;
 
 public class SecureJettyServiceTest
-        extends AbstractSecureJettyTest
+    extends AbstractSecureJettyTest
 {
-
+    @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        new EntityTestAssembler().assemble( module );
+        ModuleAssembly configModule = module;
+        new EntityTestAssembler().assemble( configModule );
         // START SNIPPET: assemblyssl
-        new SecureJettyServiceAssembler().assemble( module );
+        new SecureJettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
         // END SNIPPET: assemblyssl
 
         // START SNIPPET: configssl
-        SecureJettyConfiguration config = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
+        SecureJettyConfiguration config = configModule.forMixin( SecureJettyConfiguration.class ).declareDefaults();
         config.hostName().set( "127.0.0.1" );
         config.port().set( HTTPS_PORT );
         config.keystorePath().set( SERVER_KEYSTORE_PATH );
@@ -58,13 +62,16 @@ public class SecureJettyServiceTest
     @Test
     // This test exists for demonstration purpose only, it do not test usefull things but it's on purpose
     public void testNoSSL()
-            throws IOException
+        throws IOException
     {
-        try {
+        try
+        {
             HttpGet get = new HttpGet( "http://127.0.0.1:8441/hello" );
             defaultHttpClient.execute( get );
             fail( "We could reach the HTTPS connector using a HTTP url, that's no good" );
-        } catch ( NoHttpResponseException ex ) {
+        }
+        catch( NoHttpResponseException ex )
+        {
             // Expected
         }
     }
@@ -72,22 +79,24 @@ public class SecureJettyServiceTest
     @Test
     // This test exists for demonstration purpose only, it do not test usefull things but it's on purpose
     public void testNoTruststore()
-            throws IOException
+        throws IOException
     {
-        try {
+        try
+        {
             defaultHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ) );
             fail( "We could reach the HTTPS connector without proper truststore, this should not happen" );
-        } catch ( SSLPeerUnverifiedException ex ) {
+        }
+        catch( SSLPeerUnverifiedException ex )
+        {
             // Expected
         }
     }
 
     @Test
     public void testTrust()
-            throws IOException, InterruptedException
+        throws IOException, InterruptedException
     {
         String output = trustHttpClient.execute( new HttpGet( "https://127.0.0.1:8441/hello" ), stringResponseHandler );
         assertEquals( "Hello World", output );
     }
-
 }

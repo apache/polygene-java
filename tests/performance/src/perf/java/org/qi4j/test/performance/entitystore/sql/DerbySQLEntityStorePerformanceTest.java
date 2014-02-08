@@ -65,8 +65,7 @@ public class DerbySQLEntityStorePerformanceTest
                 new DBCPDataSourceServiceAssembler().
                     identifiedBy( "derby-datasource-service" ).
                     visibleIn( Visibility.module ).
-                    withConfig( config ).
-                    withConfigVisibility( Visibility.layer ).
+                    withConfig( config, Visibility.layer ).
                     assemble( module );
 
                 // DataSource
@@ -78,8 +77,7 @@ public class DerbySQLEntityStorePerformanceTest
 
                 // SQL EntityStore
                 new DerbySQLEntityStoreAssembler().
-                    withConfig( config ).
-                    withConfigVisibility( Visibility.layer ).
+                    withConfig( config, Visibility.layer ).
                     assemble( module );
             }
         };
