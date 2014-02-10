@@ -71,10 +71,12 @@ public class VoldemortTest
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
-        config.entities( VoldemortConfiguration.class ).visibleIn( Visibility.layer );
         new OrgJsonValueSerializationAssembler().assemble( module );
 
-        new VoldemortAssembler( Visibility.layer ).assemble( module );
+        new VoldemortAssembler().
+            visibleIn( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
+            assemble( module );
     }
 
     private File setupVoldemortHome()

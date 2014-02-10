@@ -52,7 +52,7 @@ public class EntityToValueTest
         throws AssemblyException
     {
         // START SNIPPET: assembly
-        module.services( EntityToValueService.class );
+        new EntityToValueAssembler().assemble( module );
         // END SNIPPET: assembly
         new EntityTestAssembler().assemble( module );
         module.entities( PersonEntity.class );

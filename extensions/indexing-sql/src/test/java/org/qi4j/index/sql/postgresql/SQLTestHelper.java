@@ -39,7 +39,7 @@ public class SQLTestHelper
         throws AssemblyException
     {
         // EntityStore
-        new EntityTestAssembler( Visibility.application ).assemble( mainModule );
+        new EntityTestAssembler().visibleIn( Visibility.application ).assemble( mainModule );
 
         doCommonAssembling( mainModule );
     }
@@ -55,8 +55,7 @@ public class SQLTestHelper
         new DBCPDataSourceServiceAssembler().
             identifiedBy( "postgres-datasource-service" ).
             visibleIn( Visibility.module ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( mainModule );
 
         // DataSource
@@ -70,8 +69,7 @@ public class SQLTestHelper
         // SQL Index/Query
         new PostgreSQLIndexQueryAssembler().
             visibleIn( Visibility.module ).
-            withConfig( config ).
-            withConfigVisibility( Visibility.layer ).
+            withConfig( config, Visibility.layer ).
             assemble( mainModule );
         // END SNIPPET: assembly
 

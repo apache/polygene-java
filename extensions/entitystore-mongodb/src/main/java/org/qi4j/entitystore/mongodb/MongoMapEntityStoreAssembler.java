@@ -17,139 +17,28 @@
  */
 package org.qi4j.entitystore.mongodb;
 
-import com.mongodb.ServerAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.mongodb.MongoEntityStoreConfiguration.WriteConcern;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class MongoMapEntityStoreAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentityConfig<MongoMapEntityStoreAssembler>
 {
-
-    private Visibility visibility = Visibility.application;
-    private ModuleAssembly configModule;
-    private Visibility configVisibility = Visibility.layer;
-    private String hostname = "127.0.0.1";
-    private Integer port = 27017;
-    private String database;
-    private String collection;
-    private WriteConcern writeConcern;
-    private List<ServerAddress> serverAddresses;
-
-    public MongoMapEntityStoreAssembler withVisibility( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
-
-    public MongoMapEntityStoreAssembler withConfigModule( ModuleAssembly configModule )
-    {
-        this.configModule = configModule;
-        return this;
-    }
-
-    public MongoMapEntityStoreAssembler withConfigVisibility( Visibility configVisibility )
-    {
-        this.configVisibility = configVisibility;
-        return this;
-    }
-
-    /**
-     * Add a MongoDB node's hostname and port.
-     *
-     * Calling this method once disable the default behavior that use the MongoDB defaults: 127.0.0.1 27017
-     */
-    public MongoMapEntityStoreAssembler addHostnameAndPort( String hostname, Integer port )
-        throws UnknownHostException, AssemblyException
-    {
-        if( configModule == null )
-        {
-            throw new AssemblyException( "Cannot set assembly time configuration without a config module" );
-        }
-        this.hostname = null;
-        this.port = null;
-        if( serverAddresses == null )
-        {
-            serverAddresses = new ArrayList<ServerAddress>();
-        }
-        serverAddresses.add( new ServerAddress( hostname, port ) );
-        return this;
-    }
-
-    public MongoMapEntityStoreAssembler withDatabase( String database )
-        throws AssemblyException
-    {
-        if( configModule == null )
-        {
-            throw new AssemblyException( "Cannot set assembly time configuration without a config module" );
-        }
-        this.database = database;
-        return this;
-    }
-
-    public MongoMapEntityStoreAssembler withCollection( String collection )
-        throws AssemblyException
-    {
-        if( configModule == null )
-        {
-            throw new AssemblyException( "Cannot set assembly time configuration without a config module" );
-        }
-        this.collection = collection;
-        return this;
-    }
-
-    public MongoMapEntityStoreAssembler withWriteConcern( WriteConcern writeConcern )
-        throws AssemblyException
-    {
-        if( configModule == null )
-        {
-            throw new AssemblyException( "Cannot set assembly time configuration without a config module" );
-        }
-        this.writeConcern = writeConcern;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( MongoMapEntityStoreService.class ).visibleIn( visibility );
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-        if( configModule != null )
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( MongoMapEntityStoreService.class ).visibleIn( visibility() );
+        if( hasIdentity() )
         {
-            configModule.entities( MongoEntityStoreConfiguration.class ).visibleIn( configVisibility );
-            MongoEntityStoreConfiguration mongoConfig = configModule.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
-            if( hostname != null )
-            {
-                mongoConfig.hostname().set( hostname );
-            }
-            if( port != null )
-            {
-                mongoConfig.port().set( port );
-            }
-            if( database != null )
-            {
-                mongoConfig.database().set( database );
-            }
-            if( collection != null )
-            {
-                mongoConfig.collection().set( collection );
-            }
-            if( writeConcern != null )
-            {
-                mongoConfig.writeConcern().set( writeConcern );
-            }
-            if( serverAddresses != null )
-            {
-                mongoConfig.nodes().set( serverAddresses );
-            }
+            service.identifiedBy( identity() );
+        }
+        if( hasConfig() )
+        {
+            configModule().entities( MongoEntityStoreConfiguration.class ).visibleIn( configVisibility() );
         }
     }
-
 }

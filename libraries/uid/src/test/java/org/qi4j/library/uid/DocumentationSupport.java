@@ -40,7 +40,7 @@ public class DocumentationSupport
                 throws AssemblyException
         {
             // START SNIPPET: uuid-assembly
-            new UuidServiceAssembler().withVisibility( layer ).assemble( moduleAssembly );
+            new UuidServiceAssembler().visibleIn( layer ).assemble( moduleAssembly );
             // END SNIPPET: uuid-assembly
         }
 
@@ -67,7 +67,7 @@ public class DocumentationSupport
                 throws AssemblyException
         {
             // START SNIPPET: seq-assembly
-            new TransientSequencingAssembler().withVisibility( layer ).assemble( moduleAssembly );
+            new TransientSequencingAssembler().visibleIn( layer ).assemble( moduleAssembly );
             // END SNIPPET: seq-assembly
         }
 
@@ -93,7 +93,7 @@ public class DocumentationSupport
                 throws AssemblyException
         {
             // START SNIPPET: perseq-assembly
-            new PersistingSequencingAssembler().withVisibility( layer ).assemble( moduleAssembly );
+            new PersistingSequencingAssembler().visibleIn( layer ).assemble( moduleAssembly );
             // END SNIPPET: perseq-assembly
         }
 

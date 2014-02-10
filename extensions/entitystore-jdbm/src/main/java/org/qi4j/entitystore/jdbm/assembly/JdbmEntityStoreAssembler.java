@@ -17,48 +17,30 @@
  */
 package org.qi4j.entitystore.jdbm.assembly;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.entitystore.jdbm.JdbmConfiguration;
 import org.qi4j.entitystore.jdbm.JdbmEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class JdbmEntityStoreAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentityConfig<JdbmEntityStoreAssembler>
 {
-
-    private Visibility visibility = Visibility.module;
-    private Visibility configVisibility = Visibility.module;
-    private ModuleAssembly configModule;
-
-    public JdbmEntityStoreAssembler()
-    {
-    }
-
-    public JdbmEntityStoreAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
-
-    public JdbmEntityStoreAssembler withConfig( ModuleAssembly configModule, Visibility configVisibility )
-    {
-        this.configModule = configModule;
-        this.configVisibility = configVisibility;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( JdbmEntityStoreService.class ).visibleIn( visibility );
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-        if( configModule != null )
+        module.services( JdbmEntityStoreService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
+        if( hasIdentity() )
         {
-            configModule.entities( JdbmConfiguration.class ).visibleIn( configVisibility );
+            service.identifiedBy( identity() );
+        }
+        if( hasConfig() )
+        {
+            configModule().entities( JdbmConfiguration.class ).visibleIn( configVisibility() );
         }
     }
-
 }

@@ -19,30 +19,40 @@
 package org.qi4j.library.http;
 
 import java.util.Iterator;
-import static javax.servlet.DispatcherType.REQUEST;
 import org.apache.http.client.methods.HttpGet;
-import static org.junit.Assert.*;
 import org.junit.Test;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.EntityTestAssembler;
-import static org.qi4j.library.http.Servlets.*;
 
-public final class JettyServiceTest extends AbstractJettyTest
+import static javax.servlet.DispatcherType.REQUEST;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.qi4j.library.http.Servlets.addFilters;
+import static org.qi4j.library.http.Servlets.addServlets;
+import static org.qi4j.library.http.Servlets.filter;
+import static org.qi4j.library.http.Servlets.serve;
+
+public final class JettyServiceTest
+    extends AbstractJettyTest
 {
 
+    @Override
     public final void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        new EntityTestAssembler().assemble( module );
+        ModuleAssembly configModule = module;
+        new EntityTestAssembler().assemble( configModule );
 
         // START SNIPPET: assembly
         // Assemble the JettyService
-        new JettyServiceAssembler().assemble( module );
+        new JettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
 
         // Set HTTP port as JettyConfiguration default
-        JettyConfiguration config = module.forMixin( JettyConfiguration.class ).declareDefaults();
+        JettyConfiguration config = configModule.forMixin( JettyConfiguration.class ).declareDefaults();
         config.hostName().set( "127.0.0.1" );
         config.port().set( HTTP_PORT );
 
@@ -56,7 +66,7 @@ public final class JettyServiceTest extends AbstractJettyTest
 
     @Test
     public final void testInstantiation()
-            throws Throwable
+        throws Throwable
     {
         Iterable<ServiceReference<JettyService>> services = module.findServices( JettyService.class );
         assertNotNull( services );
@@ -73,5 +83,4 @@ public final class JettyServiceTest extends AbstractJettyTest
         String output = defaultHttpClient.execute( new HttpGet( "http://127.0.0.1:8041/helloWorld" ), stringResponseHandler );
         assertEquals( "Hello World", output );
     }
-
 }

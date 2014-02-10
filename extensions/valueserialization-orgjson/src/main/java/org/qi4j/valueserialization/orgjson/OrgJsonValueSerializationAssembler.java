@@ -15,11 +15,10 @@
  */
 package org.qi4j.valueserialization.orgjson;
 
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueSerialization;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Function;
@@ -28,17 +27,9 @@ import org.qi4j.functional.Function;
  * Assemble a ValueSerialization Service producing and consuming JSON documents.
  */
 public class OrgJsonValueSerializationAssembler
-    implements Assembler
+    extends Assemblers.Visibility<OrgJsonValueSerializationAssembler>
 {
-
-    private Visibility visibility = Visibility.module;
     private Function<Application, Module> valuesModuleFinder;
-
-    public OrgJsonValueSerializationAssembler visibleIn( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
 
     public OrgJsonValueSerializationAssembler withValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
     {
@@ -53,13 +44,13 @@ public class OrgJsonValueSerializationAssembler
         if( valuesModuleFinder == null )
         {
             module.services( OrgJsonValueSerializationService.class ).
-                visibleIn( visibility ).
+                visibleIn( visibility() ).
                 taggedWith( ValueSerialization.Formats.JSON );
         }
         else
         {
             module.services( OrgJsonValueSerializationService.class ).
-                visibleIn( visibility ).
+                visibleIn( visibility() ).
                 taggedWith( ValueSerialization.Formats.JSON ).
                 setMetaInfo( valuesModuleFinder );
         }

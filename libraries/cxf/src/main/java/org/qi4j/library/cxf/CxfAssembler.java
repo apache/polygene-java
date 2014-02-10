@@ -15,20 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.cxf;
 
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 
 public class CxfAssembler
-    implements Assembler
+    extends Assemblers.Visibility<CxfAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.objects( Qi4jTypeCreator.class, ValueCompositeCxfType.class );
+        module.objects( Qi4jTypeCreator.class, ValueCompositeCxfType.class ).visibleIn( visibility() );
     }
 }

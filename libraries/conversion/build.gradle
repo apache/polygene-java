@@ -3,7 +3,7 @@ description = "Qi4j Values Library has various generic services to manipulate Qi
 jar { manifest { name = "Qi4j Library - Values" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
 
   testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
 

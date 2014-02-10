@@ -37,12 +37,12 @@ import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
  * EntityStore and Index/Query use different DataSource in order to allow splitting the two in two servers/databases.
  */
 public class AppAssembler
-        implements ApplicationAssembler
+    implements ApplicationAssembler
 {
 
     @Override
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-            throws AssemblyException
+        throws AssemblyException
     {
         ApplicationAssembly appAss = applicationFactory.newApplicationAssembly();
         appAss.setName( "SQL Support Sample" );
@@ -69,36 +69,33 @@ public class AppAssembler
             // SQL DataSource Service
             String dataSourceServiceIdentity = "postgresql-datasource-service";
             new DBCPDataSourceServiceAssembler().
-                    identifiedBy( dataSourceServiceIdentity ).
-                    visibleIn( Visibility.module ).
-                    withConfig( configModule ).
-                    withConfigVisibility( Visibility.application ).
-                    assemble( persistenceModule );
+                identifiedBy( dataSourceServiceIdentity ).
+                visibleIn( Visibility.module ).
+                withConfig( configModule, Visibility.application ).
+                assemble( persistenceModule );
 
             // SQL EntityStore DataSource and Service
             new DataSourceAssembler().
-                    withDataSourceServiceIdentity( dataSourceServiceIdentity ).
-                    identifiedBy( "postgresql-es-datasource" ).
-                    visibleIn( Visibility.module ).
-                    withCircuitBreaker( DataSources.newDataSourceCircuitBreaker() ).assemble( persistenceModule );
+                withDataSourceServiceIdentity( dataSourceServiceIdentity ).
+                identifiedBy( "postgresql-es-datasource" ).
+                visibleIn( Visibility.module ).
+                withCircuitBreaker( DataSources.newDataSourceCircuitBreaker() ).assemble( persistenceModule );
             new PostgreSQLEntityStoreAssembler().
-                    visibleIn( Visibility.application ).
-                    withConfig( configModule ).
-                    withConfigVisibility( Visibility.application ).
-                    assemble( persistenceModule );
+                visibleIn( Visibility.application ).
+                withConfig( configModule, Visibility.application ).
+                assemble( persistenceModule );
 
             // SQL Index/Query DataSource and Service
             new DataSourceAssembler().
-                    withDataSourceServiceIdentity( dataSourceServiceIdentity ).
-                    identifiedBy( "postgresql-index-datasource" ).
-                    visibleIn( Visibility.module ).
-                    withCircuitBreaker().
-                    assemble( persistenceModule );
+                withDataSourceServiceIdentity( dataSourceServiceIdentity ).
+                identifiedBy( "postgresql-index-datasource" ).
+                visibleIn( Visibility.module ).
+                withCircuitBreaker().
+                assemble( persistenceModule );
             new PostgreSQLIndexQueryAssembler().
-                    visibleIn( Visibility.application ).
-                    withConfig( configModule ).
-                    withConfigVisibility( Visibility.application ).
-                    assemble( persistenceModule );
+                visibleIn( Visibility.application ).
+                withConfig( configModule, Visibility.application ).
+                assemble( persistenceModule );
         }
 
         // App

@@ -17,7 +17,6 @@
  */
 package org.qi4j.index.elasticsearch.assembly;
 
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -29,26 +28,22 @@ import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 public class ESClusterIndexQueryAssembler
     extends AbstractElasticSearchAssembler<ESClusterIndexQueryAssembler>
 {
-
     @Override
-    protected void doAssemble( String identity,
-                               ModuleAssembly module, Visibility visibility,
-                               ModuleAssembly configModule, Visibility configVisibility )
+    public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
         module.services( ESClusterIndexQueryService.class ).
-            identifiedBy( identity ).
-            visibleIn( visibility ).
+            identifiedBy( identity() ).
+            visibleIn( visibility() ).
             instantiateOnStartup();
 
         module.services( OrgJsonValueSerializationService.class ).
             taggedWith( ValueSerialization.Formats.JSON );
 
-        if( configModule != null )
+        if( hasConfig() )
         {
-            configModule.entities( ElasticSearchClusterConfiguration.class ).
-                visibleIn( configVisibility );
+            configModule().entities( ElasticSearchClusterConfiguration.class ).
+                visibleIn( configVisibility() );
         }
     }
-
 }

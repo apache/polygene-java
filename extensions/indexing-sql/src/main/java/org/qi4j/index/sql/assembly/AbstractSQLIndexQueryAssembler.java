@@ -20,7 +20,7 @@ package org.qi4j.index.sql.assembly;
 
 import java.io.IOException;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.reindexer.ReindexerConfiguration;
@@ -30,50 +30,23 @@ import org.qi4j.library.sql.common.SQLConfiguration;
 import org.sql.generation.api.vendor.SQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
-public abstract class AbstractSQLIndexQueryAssembler<T extends AbstractSQLIndexQueryAssembler<?>>
-    implements Assembler
+public abstract class AbstractSQLIndexQueryAssembler<AssemblerType>
+    extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
-
     public static final String DEFAULT_IDENTITY = "indexing-sql";
-
-    private String identity = DEFAULT_IDENTITY;
-
-    private Visibility visibility = Visibility.module;
-
-    private ModuleAssembly configModule;
-
-    private Visibility configVisibility = Visibility.module;
 
     private Class<? extends ReindexingStrategy> reindexingStrategy = ReindexingStrategy.NeverNeed.class;
 
-    public T identifiedBy( String identity )
+    public AbstractSQLIndexQueryAssembler()
     {
-        this.identity = identity;
-        return (T) this;
+        identifiedBy( DEFAULT_IDENTITY );
     }
 
-    public T visibleIn( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return (T) this;
-    }
-
-    public T withConfig( ModuleAssembly configModule )
-    {
-        this.configModule = configModule;
-        return (T) this;
-    }
-
-    public T withConfigVisibility( Visibility configVisibility )
-    {
-        this.configVisibility = configVisibility;
-        return (T) this;
-    }
-
-    public T withReindexingStrategy( Class<? extends ReindexingStrategy> reindexingStrategy )
+    @SuppressWarnings( "unchecked" )
+    public AssemblerType withReindexingStrategy( Class<? extends ReindexingStrategy> reindexingStrategy )
     {
         this.reindexingStrategy = reindexingStrategy;
-        return (T) this;
+        return (AssemblerType) this;
     }
 
     protected SQLVendor getSQLVendor()
@@ -96,9 +69,9 @@ public abstract class AbstractSQLIndexQueryAssembler<T extends AbstractSQLIndexQ
                 throw new AssemblyException( "SQL Vendor could not be determined." );
             }
             module.services( getIndexQueryServiceType() )
-                .identifiedBy( identity )
+                .identifiedBy( identity() )
                 .setMetaInfo( sqlVendor )
-                .visibleIn( visibility )
+                .visibleIn( visibility() )
                 .instantiateOnStartup();
         }
         catch( IOException ex )
@@ -112,11 +85,11 @@ public abstract class AbstractSQLIndexQueryAssembler<T extends AbstractSQLIndexQ
             withMixins( reindexingStrategy ).
             visibleIn( Visibility.module );
 
-        if( configModule != null )
+        if( hasConfig() )
         {
-            configModule.entities( SQLConfiguration.class,
-                                   ReindexerConfiguration.class ).
-                visibleIn( configVisibility );
+            configModule().entities( SQLConfiguration.class,
+                                     ReindexerConfiguration.class ).
+                visibleIn( configVisibility() );
         }
     }
 

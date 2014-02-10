@@ -17,52 +17,28 @@
  */
 package org.qi4j.cache.ehcache.assembly;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.cache.ehcache.EhCacheConfiguration;
 import org.qi4j.cache.ehcache.EhCachePoolService;
 
 public class EhCacheAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentityConfig<EhCacheAssembler>
 {
-
-    private Visibility visibility = Visibility.module;
-    private Visibility configVisibility = Visibility.module;
-    private ModuleAssembly configModule = null;
-
-    public EhCacheAssembler()
-    {
-    }
-
-    public EhCacheAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
-
-    public EhCacheAssembler visibleIn( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
-
-    public EhCacheAssembler withConfig( ModuleAssembly configModule, Visibility configVisibility )
-    {
-        this.configModule = configModule;
-        this.configVisibility = configVisibility;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( EhCachePoolService.class ).visibleIn( visibility );
-        if( configModule != null )
+        ServiceDeclaration service = module.services( EhCachePoolService.class ).visibleIn( visibility() );
+        if( hasIdentity() )
         {
-            configModule.entities( EhCacheConfiguration.class ).visibleIn( configVisibility );
+            service.identifiedBy( identity() );
+        }
+        if( hasConfig() )
+        {
+            configModule().entities( EhCacheConfiguration.class ).visibleIn( configVisibility() );
         }
     }
-
 }

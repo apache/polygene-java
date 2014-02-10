@@ -50,11 +50,11 @@ public class JdbmEntityStorePerformanceTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                new JdbmEntityStoreAssembler( Visibility.module ).assemble( module );
+                new JdbmEntityStoreAssembler().assemble( module );
                 new OrgJsonValueSerializationAssembler().assemble( module );
                 ModuleAssembly configModule = module.layer().module( "Config" );
                 configModule.entities( JdbmConfiguration.class ).visibleIn( Visibility.layer );
-                new EntityTestAssembler( Visibility.module ).assemble( configModule );
+                new EntityTestAssembler().assemble( configModule );
 
                 module.services( EhCachePoolService.class );
                 configModule.entities( EhCacheConfiguration.class ).visibleIn( Visibility.layer );

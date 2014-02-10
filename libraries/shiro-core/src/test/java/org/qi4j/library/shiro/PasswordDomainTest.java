@@ -18,6 +18,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.subject.Subject;
 import org.junit.Test;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -92,8 +93,12 @@ public class PasswordDomainTest
         new RdfMemoryStoreAssembler().assemble( module );
         ModuleAssembly configModule = module;
         // START SNIPPET: assembly
-        new StandaloneShiroAssembler().withConfig( configModule ).assemble( module );
-        new PasswordDomainAssembler().withConfig( configModule ).assemble( module );
+        new StandaloneShiroAssembler().
+            withConfig( configModule, Visibility.layer ).
+            assemble( module );
+        new PasswordDomainAssembler().
+            withConfig( configModule, Visibility.layer ).
+            assemble( module );
 
         module.entities( User.class );
         module.services( UserFactory.class );

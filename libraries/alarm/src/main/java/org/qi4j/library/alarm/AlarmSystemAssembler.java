@@ -10,22 +10,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.alarm;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 
 public class AlarmSystemAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentity<AlarmSystemAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( AlarmSystemService.class ).visibleIn( Visibility.application );
+        ServiceDeclaration alarmSystem = module.services( AlarmSystemService.class ).visibleIn( visibility() );
+        if( hasIdentity() )
+        {
+            alarmSystem.identifiedBy( identity() );
+        }
         module.services( SimpleAlarmModelService.class ).setMetaInfo( new AlarmModelDescriptor( "Simple", false ) );
         module.services( StandardAlarmModelService.class ).setMetaInfo( new AlarmModelDescriptor( "Standard", true ) );
         module.services( ExtendedAlarmModelService.class ).setMetaInfo( new AlarmModelDescriptor( "Extended", false ) );

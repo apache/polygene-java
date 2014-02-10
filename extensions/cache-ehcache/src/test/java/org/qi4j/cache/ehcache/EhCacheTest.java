@@ -34,12 +34,12 @@ public class EhCacheTest
     {
 	    // END SNIPPET: assembly
         ModuleAssembly confModule = module.layer().module( "confModule" );
-        new EntityTestAssembler( Visibility.layer ).assemble( confModule );
+        new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( confModule );
 
-	    // START SNIPPET: assembly
-        new EhCacheAssembler( Visibility.module ).
-        	withConfig( confModule, Visibility.layer ).
-        	assemble( module );
+        // START SNIPPET: assembly
+        new EhCacheAssembler().
+            withConfig( confModule, Visibility.layer ).
+            assemble( module );
     }
     // END SNIPPET: assembly
 }

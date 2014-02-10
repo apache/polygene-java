@@ -36,7 +36,7 @@ public class JCloudsFilesystemTest
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
-        new JCloudsMapEntityStoreAssembler().withConfigIn( config, Visibility.layer ).assemble( module );
+        new JCloudsMapEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
         JCloudsMapEntityStoreConfiguration defaults = config.forMixin( JCloudsMapEntityStoreConfiguration.class ).declareDefaults();
         defaults.provider().set( "filesystem" );
         Map<String, String> props = new HashMap<String, String>();

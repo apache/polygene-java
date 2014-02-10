@@ -17,6 +17,7 @@
  */
 package org.qi4j.index.elasticsearch;
 
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -25,25 +26,26 @@ import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
 import org.qi4j.index.elasticsearch.assembly.ESMemoryIndexQueryAssembler;
 
 public class DocumentationSupport
-        implements Assembler
+    implements Assembler
 {
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         ModuleAssembly configModule = module;
+        Visibility configVisibility = Visibility.module;
 
         // START SNIPPET: memory
-        new ESMemoryIndexQueryAssembler().withConfigModule( configModule ).assemble( module );
+        new ESMemoryIndexQueryAssembler().withConfig( configModule, configVisibility ).assemble( module );
         // END SNIPPET: memory
 
         // START SNIPPET: filesystem
-        new ESFilesystemIndexQueryAssembler().withConfigModule( configModule ).assemble( module );
+        new ESFilesystemIndexQueryAssembler().withConfig( configModule, configVisibility ).assemble( module );
         // END SNIPPET: filesystem
 
         // START SNIPPET: cluster
-        new ESClusterIndexQueryAssembler().withConfigModule( configModule ).assemble( module );
+        new ESClusterIndexQueryAssembler().withConfig( configModule, configVisibility ).assemble( module );
         // END SNIPPET: cluster
 
     }

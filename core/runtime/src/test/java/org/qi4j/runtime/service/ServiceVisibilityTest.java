@@ -670,7 +670,7 @@ public class ServiceVisibilityTest
             module.services( BelowLayerVisible.class ).visibleIn( Visibility.layer );
             module.services( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
-            new EntityTestAssembler( Visibility.application ).assemble( module );
+            new EntityTestAssembler().visibleIn( Visibility.application ).assemble( module );
         }
     }
 

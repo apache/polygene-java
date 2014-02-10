@@ -13,31 +13,18 @@
  */
 package org.qi4j.library.rest.admin;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 
 public class RestAssembler
-    implements Assembler
+    extends Assemblers.Visibility<RestAssembler>
 {
-    private Visibility visibility;
-
-    public RestAssembler()
-    {
-        this( Visibility.application );
-    }
-
-    public RestAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.objects( RestApplication.class ).visibleIn( visibility );
+        module.objects( RestApplication.class ).visibleIn( visibility() );
         module.objects( Qi4jFinder.class,
                         EntitiesResource.class,
                         EntityResource.class,

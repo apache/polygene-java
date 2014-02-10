@@ -18,48 +18,32 @@
  */
 package org.qi4j.entitystore.hazelcast.assembly;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.entitystore.hazelcast.HazelcastConfiguration;
 import org.qi4j.entitystore.hazelcast.HazelcastEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class HazelcastEntityStoreAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentityConfig<HazelcastEntityStoreAssembler>
 {
-
-    private final Visibility visibility;
-    private ModuleAssembly config;
-    private Visibility configVisibility;
-
-    public HazelcastEntityStoreAssembler()
-    {
-        this( Visibility.application );
-    }
-
-    public HazelcastEntityStoreAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
-
-    public HazelcastEntityStoreAssembler withConfigIn( ModuleAssembly config, Visibility configVisibility )
-    {
-        this.config = config;
-        this.configVisibility = configVisibility;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( HazelcastEntityStoreService.class ).visibleIn( visibility ).instantiateOnStartup();
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
-        if( config != null )
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( HazelcastEntityStoreService.class ).
+            visibleIn( visibility() ).
+            instantiateOnStartup();
+        if( hasIdentity() )
         {
-            config.entities( HazelcastConfiguration.class ).visibleIn( configVisibility );
+            service.identifiedBy( identity() );
+        }
+        if( hasConfig() )
+        {
+            configModule().entities( HazelcastConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

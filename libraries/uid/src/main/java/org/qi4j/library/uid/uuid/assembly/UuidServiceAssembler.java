@@ -17,29 +17,18 @@
  */
 package org.qi4j.library.uid.uuid.assembly;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.uid.uuid.UuidServiceComposite;
 
 public class UuidServiceAssembler
-    implements Assembler
+    extends Assemblers.Visibility<UuidServiceAssembler>
 {
-
-    private Visibility visibility = Visibility.module;
-
-    public UuidServiceAssembler withVisibility( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( UuidServiceComposite.class ).visibleIn( visibility );
+        module.services( UuidServiceComposite.class ).visibleIn( visibility() );
     }
-
 }

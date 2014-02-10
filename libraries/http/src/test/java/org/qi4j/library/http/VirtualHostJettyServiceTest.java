@@ -18,6 +18,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.http.dns.LocalManagedDns;
@@ -29,19 +30,20 @@ import static org.qi4j.library.http.Servlets.serve;
 import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
 public class VirtualHostJettyServiceTest
-        extends AbstractJettyTest
+    extends AbstractJettyTest
 {
-
     private static final String HOST1 = "host1.http.library.qi4j";
     private static final String HOST2 = "host2.http.library.qi4j";
 
+    @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        new EntityTestAssembler().assemble( module );
-        new JettyServiceAssembler().assemble( module );
+        ModuleAssembly configModule = module;
+        new EntityTestAssembler().assemble( configModule );
+        new JettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
 
-        SecureJettyConfiguration config = module.forMixin( SecureJettyConfiguration.class ).declareDefaults();
+        SecureJettyConfiguration config = configModule.forMixin( SecureJettyConfiguration.class ).declareDefaults();
         config.hostName().set( "127.0.0.1" );
         config.port().set( HTTP_PORT );
         config.virtualHosts().set( HOST1 + "," + HOST2 );
@@ -66,14 +68,15 @@ public class VirtualHostJettyServiceTest
 
     @Test
     public void test()
-            throws IOException
+        throws IOException
     {
         // Available on HOST1 and HOST2
-        String output = defaultHttpClient.execute( new HttpGet( "http://" + HOST1 + ":8041/hello" ), stringResponseHandler );
+        String output = defaultHttpClient.execute( new HttpGet( "http://" + HOST1 + ":8041/hello" ),
+                                                   stringResponseHandler );
         assertEquals( "Hello World", output );
 
-        output = defaultHttpClient.execute( new HttpGet( "http://" + HOST2 + ":8041/hello" ), stringResponseHandler );
+        output = defaultHttpClient.execute( new HttpGet( "http://" + HOST2 + ":8041/hello" ),
+                                            stringResponseHandler );
         assertEquals( "Hello World", output );
     }
-
 }

@@ -111,12 +111,22 @@ public class MongoMapEntityStoreMixin
         MongoEntityStoreConfiguration config = configuration.get();
 
         // Combine hostname, port and nodes configuration properties
-        serverAddresses = new ArrayList<ServerAddress>();
-        if( config.hostname().get() != null && !config.hostname().get().isEmpty() )
+        // If no configuration, use 127.0.0.1:27017
+        serverAddresses = new ArrayList<>();
+        int port = config.port().get() == null ? 27017 : config.port().get();
+        if( config.nodes().get().isEmpty() )
         {
-            serverAddresses.add( new ServerAddress( config.hostname().get(), config.port().get() ) );
+            String hostname = config.hostname().get() == null ? "127.0.0.1" : config.hostname().get();
+            serverAddresses.add( new ServerAddress( hostname, port ) );
         }
-        serverAddresses.addAll( config.nodes().get() );
+        else
+        {
+            if( config.hostname().get() != null && !config.hostname().get().isEmpty() )
+            {
+                serverAddresses.add( new ServerAddress( config.hostname().get(), port ) );
+            }
+            serverAddresses.addAll( config.nodes().get() );
+        }
 
         // If database name not configured, set it to qi4j:entitystore
         databaseName = config.database().get();

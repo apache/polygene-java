@@ -17,34 +17,30 @@
  */
 package org.qi4j.entitystore.file.assembly;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.entitystore.file.FileEntityStoreConfiguration;
 import org.qi4j.entitystore.file.FileEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 
 public class FileEntityStoreAssembler
-    implements Assembler
+    extends Assemblers.VisibilityIdentityConfig<FileEntityStoreAssembler>
 {
-
-    private Visibility visibility;
-
-    public FileEntityStoreAssembler()
-    {
-        this.visibility = Visibility.module;
-    }
-
-    public FileEntityStoreAssembler( Visibility visibility )
-    {
-        this.visibility = visibility;
-    }
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( FileEntityStoreService.class ).visibleIn( visibility );
-        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility );
+        module.services( UuidIdentityGeneratorService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( FileEntityStoreService.class ).visibleIn( visibility() );
+        if( hasIdentity() )
+        {
+            service.identifiedBy( identity() );
+        }
+        if( hasConfig() )
+        {
+            configModule().entities( FileEntityStoreConfiguration.class ).visibleIn( configVisibility() );
+        }
     }
 }

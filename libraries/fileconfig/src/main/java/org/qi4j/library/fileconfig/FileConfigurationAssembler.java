@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.qi4j.cache.memcache;
+package org.qi4j.library.fileconfig;
 
 import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
@@ -23,23 +23,31 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ServiceDeclaration;
 
 /**
- * Memcache CachePool Assembler.
+ * FileConfiguration Service Assembler.
  */
-public class MemcacheAssembler
-    extends Assemblers.VisibilityIdentityConfig<MemcacheAssembler>
+public class FileConfigurationAssembler
+    extends Assemblers.VisibilityIdentity<FileConfigurationAssembler>
 {
+    private FileConfigurationOverride override;
+
+    public FileConfigurationAssembler withOverride( FileConfigurationOverride override )
+    {
+        this.override = override;
+        return this;
+    }
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        ServiceDeclaration service = module.services( MemcachePoolService.class ).visibleIn( visibility() );
+        ServiceDeclaration service = module.services( FileConfigurationService.class ).visibleIn( visibility() );
         if( hasIdentity() )
         {
             service.identifiedBy( identity() );
         }
-        if( hasConfig() )
+        if( override != null )
         {
-            configModule().entities( MemcacheConfiguration.class ).visibleIn( configVisibility() );
+            service.setMetaInfo( override );
         }
     }
 }

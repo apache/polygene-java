@@ -25,6 +25,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.junit.Test;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -36,7 +37,9 @@ import org.qi4j.test.EntityTestAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 public class StandaloneShiroTest
         extends AbstractQi4jTest
@@ -85,7 +88,10 @@ public class StandaloneShiroTest
         new EntityTestAssembler().assemble( module );
         ModuleAssembly configModule = module;
         // START SNIPPET: assembly
-        new StandaloneShiroAssembler().withConfig( configModule ).assemble( module );
+        new StandaloneShiroAssembler().
+            withConfig( configModule, Visibility.layer ).
+            assemble( module );
+
         // END SNIPPET: assembly
         configModule.forMixin( ShiroIniConfiguration.class ).
                 declareDefaults().

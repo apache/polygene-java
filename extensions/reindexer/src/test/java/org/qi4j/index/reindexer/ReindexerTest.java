@@ -18,6 +18,8 @@
 package org.qi4j.index.reindexer;
 
 import info.aduna.io.FileUtil;
+import java.io.File;
+import org.apache.tools.ant.util.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
@@ -35,9 +37,6 @@ import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
-
-import java.io.File;
-import org.apache.tools.ant.util.FileUtils;
 import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
@@ -54,7 +53,7 @@ public class ReindexerTest
             throws AssemblyException
     {
         // JDBM EntityStore
-        new JdbmEntityStoreAssembler( Visibility.module ).assemble( module );
+        new JdbmEntityStoreAssembler().assemble( module );
 
         // Native Sesame EntityFinder
         new RdfNativeSesameStoreAssembler().assemble( module );

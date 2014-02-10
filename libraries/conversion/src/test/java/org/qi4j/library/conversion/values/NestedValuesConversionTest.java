@@ -41,7 +41,7 @@ public class NestedValuesConversionTest
     public void assemble( ModuleAssembly ma )
         throws AssemblyException
     {
-        ma.services( EntityToValueService.class );
+        new EntityToValueAssembler().assemble( ma );
         new EntityTestAssembler().assemble( ma );
 
         ma.entities( FooEntity.class );

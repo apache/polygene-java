@@ -20,6 +20,7 @@ package org.qi4j.entitystore.riak;
 import com.basho.riak.client.IRiakClient;
 import com.basho.riak.client.bucket.Bucket;
 import org.junit.BeforeClass;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.EntityTestAssembler;
@@ -48,7 +49,7 @@ public class RiakHttpMapEntityStoreTest
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
-        new RiakHttpMapEntityStoreAssembler().withConfigModule( config ).assemble( module );
+        new RiakHttpMapEntityStoreAssembler().withConfig( config, Visibility.layer ).assemble( module );
     }
     // END SNIPPET: assembly
     private IRiakClient riakClient;

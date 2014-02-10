@@ -16,7 +16,6 @@
 
 package org.qi4j.entitystore.jdbm;
 
-import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
@@ -30,8 +29,7 @@ public class DocumentationSupport extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        JdbmEntityStoreAssembler assembler = new JdbmEntityStoreAssembler( Visibility.application );
-        assembler.assemble( module );
+        new JdbmEntityStoreAssembler().assemble( module );
     }
     // END SNIPPET: UsingAssembler
 }

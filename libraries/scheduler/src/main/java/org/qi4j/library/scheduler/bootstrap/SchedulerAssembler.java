@@ -14,8 +14,7 @@
  */
 package org.qi4j.library.scheduler.bootstrap;
 
-import org.qi4j.api.common.Visibility;
-import org.qi4j.bootstrap.Assembler;
+import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -35,8 +34,6 @@ import org.qi4j.library.scheduler.timeline.TimelineRecord;
 import org.qi4j.library.scheduler.timeline.TimelineScheduleMixin;
 import org.qi4j.library.scheduler.timeline.TimelineSchedulerServiceMixin;
 
-import static org.qi4j.api.common.Visibility.module;
-
 /**
  * Assembler for Scheduler.
  *
@@ -48,51 +45,15 @@ import static org.qi4j.api.common.Visibility.module;
  * <pre>
  *      new SchedulerAssembler().
  *              visibleIn( Visibility.layer ).
- *              withConfigAssembly( configModuleAssembly ).
- *              withConfigVisibility( Visibility.application ).
+ *              withConfig( configModuleAssembly, Visibility.application ).
+ *              withTimeline().
  *              assemble( module );
  * </pre>
  */
 public class SchedulerAssembler
-    implements Assembler
+    extends Assemblers.VisibilityConfig<SchedulerAssembler>
 {
-
-    private Visibility visibility = module;
-    private ModuleAssembly configAssembly;
-    private Visibility configVisibility = Visibility.application;
     private boolean timeline;
-
-    public SchedulerAssembler visibleIn( Visibility visibility )
-    {
-        this.visibility = visibility;
-        return this;
-    }
-
-    /**
-     * Set the ModuleAssembly to use for Configuration entities.
-     *
-     * @param configAssembly ModuleAssembly to use for Configuration entities
-     *
-     * @return SchedulerAssembler
-     */
-    public SchedulerAssembler withConfigAssembly( ModuleAssembly configAssembly )
-    {
-        this.configAssembly = configAssembly;
-        return this;
-    }
-
-    /**
-     * Set the configuration entity visibility.
-     *
-     * @param configVisibility SchedulerConfiguration visibility
-     *
-     * @return SchedulerAssembler
-     */
-    public SchedulerAssembler withConfigVisibility( Visibility configVisibility )
-    {
-        this.configVisibility = configVisibility;
-        return this;
-    }
 
     /**
      * Activate the assembly of Timeline related services.
@@ -116,7 +77,7 @@ public class SchedulerAssembler
         ValueDeclaration scheduleValues = assembly.values( CronScheduleValue.class, OnceScheduleValue.class );
 
         ServiceDeclaration schedulerDeclaration = assembly.services( SchedulerService.class )
-            .visibleIn( visibility )
+            .visibleIn( visibility() )
             .instantiateOnStartup();
 
         if( timeline )
@@ -134,9 +95,9 @@ public class SchedulerAssembler
             schedulerDeclaration.withTypes( Timeline.class ).withMixins( TimelineSchedulerServiceMixin.class );
         }
 
-        if( configAssembly != null )
+        if( hasConfig() )
         {
-            configAssembly.entities( SchedulerConfiguration.class ).visibleIn( configVisibility );
+            configModule().entities( SchedulerConfiguration.class ).visibleIn( configVisibility() );
         }
     }
 }

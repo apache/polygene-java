@@ -15,6 +15,7 @@ package org.qi4j.library.shiro.web;
 
 import java.io.IOException;
 import org.junit.Test;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.http.JettyConfiguration;
@@ -26,20 +27,20 @@ import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.util.FreePortFinder;
 
 public class WebHttpShiroTest
-        extends AbstractQi4jTest
+    extends AbstractQi4jTest
 {
-
     private int port;
 
+    @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
-        try {
-
-            new EntityTestAssembler().assemble( module );
+        try
+        {
             ModuleAssembly configModule = module;
+            new EntityTestAssembler().assemble( configModule );
             // START SNIPPET: assembly
-            new JettyServiceAssembler().assemble( module );
+            new JettyServiceAssembler().withConfig( configModule, Visibility.layer ).assemble( module );
             // END SNIPPET: assembly
 
             port = FreePortFinder.findFreePortOnLoopback();
@@ -48,22 +49,23 @@ public class WebHttpShiroTest
             config.port().set( port );
 
             // START SNIPPET: assembly
-            new HttpShiroAssembler().withConfig( configModule ).assemble( module );
+            new HttpShiroAssembler().
+                withConfig( configModule, Visibility.layer ).
+                assemble( module );
             // END SNIPPET: assembly
 
             configModule.forMixin( ShiroIniConfiguration.class ).
-                    declareDefaults().
-                    iniResourcePath().set( "classpath:web-shiro.ini" );
-
-        } catch ( IOException ex ) {
+                declareDefaults().
+                iniResourcePath().set( "classpath:web-shiro.ini" );
+        }
+        catch( IOException ex )
+        {
             throw new AssemblyException( "Unable to find free port to bind to", ex );
         }
-
     }
 
     @Test
     public void test()
     {
     }
-
 }
