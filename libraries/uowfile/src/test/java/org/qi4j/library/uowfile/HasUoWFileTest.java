@@ -1,15 +1,19 @@
 /*
- * Copyright (c) 2011, Paul Merlin. All Rights Reserved.
+ * Copyright 2011-2014 Paul Merlin.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 package org.qi4j.library.uowfile;
 
@@ -18,20 +22,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -47,40 +46,36 @@ import org.qi4j.library.uowfile.internal.ConcurrentUoWFileModificationException;
 import org.qi4j.library.uowfile.singular.HasUoWFileLifecycle;
 import org.qi4j.library.uowfile.singular.UoWFileLocator;
 import org.qi4j.test.EntityTestAssembler;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 public class HasUoWFileTest
-        extends AbstractUoWFileTest
+    extends AbstractUoWFileTest
 {
-
     private static final Logger LOGGER = LoggerFactory.getLogger( HasUoWFileTest.class );
-
     private static final URL CREATION_CONTENT_URL = HasUoWFileTest.class.getResource( "creation.txt" );
-
     private static final URL MODIFICATION_CONTENT_URL = HasUoWFileTest.class.getResource( "modification.txt" );
 
     // START SNIPPET: entity
     // START SNIPPET: uowfile
     public interface TestedEntity
-            extends EntityComposite,
-                    // END SNIPPET: entity
-                    HasUoWFileLifecycle
+        extends HasUoWFileLifecycle // END SNIPPET: entity
+        , Identity
     // START SNIPPET: entity
     {
-
         Property<String> name();
-
     }
     // END SNIPPET: entity
     // END SNIPPET: uowfile
 
     // START SNIPPET: locator
-    public static abstract class TestedFileLocatorMixin
-            implements UoWFileLocator
+    public static class TestedFileLocatorMixin
+        implements UoWFileLocator
     {
-
         @This
         private Identity meAsIdentity;
 
@@ -89,65 +84,68 @@ public class HasUoWFileTest
         {
             return new File( baseTestDir, meAsIdentity.identity().get() );
         }
-
     }
     // END SNIPPET: locator
 
     @Mixins( HasUoWFileTest.TestServiceMixin.class )
     @Concerns( UnitOfWorkConcern.class )
     public interface TestService
-            extends ServiceComposite
     {
-
         void modifyFile( String entityId )
-                throws IOException;
+            throws IOException;
 
         @UnitOfWorkPropagation
         @UnitOfWorkRetry
         void modifyFileWithRetry( String entityId, long sleepBefore, long sleepAfter )
-                throws IOException;
-
+            throws IOException;
     }
 
     public static abstract class TestServiceMixin
-            implements TestService
+        implements TestService
     {
-
         @Structure
         private Module module;
 
         @Override
         public void modifyFile( String entityId )
-                throws IOException
+            throws IOException
         {
             modifyFileImmediatly( entityId );
         }
 
         @Override
         public void modifyFileWithRetry( String entityId, long sleepBefore, long sleepAfter )
-                throws IOException
+            throws IOException
         {
             LOGGER.info( "Waiting " + sleepBefore + "ms before file modification" );
-            if ( sleepBefore > 0 ) {
-                try {
+            if( sleepBefore > 0 )
+            {
+                try
+                {
                     Thread.sleep( sleepBefore );
-                } catch ( InterruptedException ex ) {
+                }
+                catch( InterruptedException ex )
+                {
                     throw new RuntimeException( ex );
                 }
             }
             modifyFileImmediatly( entityId );
             LOGGER.info( "Waiting " + sleepAfter + "ms after file modification" );
-            if ( sleepAfter > 0 ) {
-                try {
+            if( sleepAfter > 0 )
+            {
+                try
+                {
                     Thread.sleep( sleepAfter );
-                } catch ( InterruptedException ex ) {
+                }
+                catch( InterruptedException ex )
+                {
                     throw new RuntimeException( ex );
                 }
             }
         }
 
         private void modifyFileImmediatly( String entityId )
-                throws IOException
+            throws IOException
         {
             TestedEntity entity = module.currentUnitOfWork().get( TestedEntity.class, entityId );
             // START SNIPPET: api
@@ -162,7 +160,7 @@ public class HasUoWFileTest
     @Override
     // START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
         new UoWFileAssembler().assemble( module );
 
@@ -184,148 +182,183 @@ public class HasUoWFileTest
 
     @Test
     public void testCreation()
-            throws UnitOfWorkCompletionException, IOException
+        throws UnitOfWorkCompletionException, IOException
     {
         LOGGER.info( "# Test Creation ##############################################################################" );
+        File attachedFile;
 
         // Test discarded creation
-        UnitOfWork uow = module.newUnitOfWork();
-        TestedEntity entity = createTestedEntity( uow, "Testing Creation Rollback" );
-        File attachedFile = entity.attachedFile();
-        uow.discard();
+        try( UnitOfWork uow = module.newUnitOfWork() )
+        {
+            TestedEntity entity = createTestedEntity( uow, "Testing Creation Rollback" );
+            attachedFile = entity.attachedFile();
+        }
         assertFalse( "File still exists after discarded creation UoW", attachedFile.exists() );
 
         // Test completed creation
-        uow = module.newUnitOfWork();
-        entity = createTestedEntity( uow, "Testing Creation" );
-        attachedFile = entity.attachedFile();
-        uow.complete();
+        try( UnitOfWork uow = module.newUnitOfWork() )
+        {
+            TestedEntity entity = createTestedEntity( uow, "Testing Creation" );
+            attachedFile = entity.attachedFile();
+            uow.complete();
+        }
         assertTrue( "File content was not the good one", isFileFirstLineEqualsTo( attachedFile, "Creation" ) );
     }
 
     @Test
     public void testModification()
-            throws UnitOfWorkCompletionException, IOException
+        throws UnitOfWorkCompletionException, IOException
     {
         LOGGER.info( "# Test Modification ##########################################################################" );
+        final String entityId;
+        File attachedFile;
 
         // Create new
-        UnitOfWork uow = module.newUnitOfWork();
-        TestedEntity entity = createTestedEntity( uow, "Testing Modification" );
-        String entityId = entity.identity().get();
-        File attachedFile = entity.attachedFile();
-        uow.complete();
+        try( UnitOfWork uow = module.newUnitOfWork() )
+        {
+            TestedEntity entity = createTestedEntity( uow, "Testing Modification" );
+            entityId = entity.identity().get();
+            attachedFile = entity.attachedFile();
+            uow.complete();
+        }
 
         // Testing discarded modification
-        uow = module.newUnitOfWork();
-        testService.modifyFile( entityId );
-        uow.discard();
+        try( UnitOfWork uow = module.newUnitOfWork() )
+        {
+            testService.modifyFile( entityId );
+        }
         assertTrue( "File content after discarded modification was not the good one", isFileFirstLineEqualsTo( attachedFile, "Creation" ) );
 
         // Testing completed modification
-        uow = module.newUnitOfWork();
-        testService.modifyFile( entityId );
-        uow.complete();
+        try( UnitOfWork uow = module.newUnitOfWork() )
+        {
+            testService.modifyFile( entityId );
+            uow.complete();
+        }
         assertTrue( "Modified file content was not the good one", isFileFirstLineEqualsTo( attachedFile, "Modification" ) );
     }
 
     @Test
     public void testDeletion()
-            throws UnitOfWorkCompletionException, IOException
+        throws UnitOfWorkCompletionException, IOException
     {
         LOGGER.info( "# Test Deletion ##############################################################################" );
+        final String entityId;
+        File attachedFile;
 
         // Create new
-        UnitOfWork uow = module.newUnitOfWork();
-        TestedEntity entity = createTestedEntity( uow, "Testing Deletion" );
-        String entityId = entity.identity().get();
-        File attachedFile = entity.attachedFile();
-        uow.complete();
+        try( UnitOfWork uow = module.newUnitOfWork() )
+        {
+            TestedEntity entity = createTestedEntity( uow, "Testing Deletion" );
+            entityId = entity.identity().get();
+            attachedFile = entity.attachedFile();
+            uow.complete();
+        }
 
         // Testing discarded deletion
-        uow = module.newUnitOfWork();
-        entity = uow.get( TestedEntity.class, entityId );
-        uow.remove( entity );
-        uow.discard();
+        try( UnitOfWork uow = module.newUnitOfWork() )
+        {
+            TestedEntity entity = uow.get( TestedEntity.class, entityId );
+            uow.remove( entity );
+        }
         assertTrue( "File do not exists after discarded deletion", attachedFile.exists() );
 
         // Testing completed deletion
-        uow = module.newUnitOfWork();
-        entity = uow.get( TestedEntity.class, entityId );
-        uow.remove( entity );
-        uow.complete();
+        try( UnitOfWork uow = module.newUnitOfWork() )
+        {
+            TestedEntity entity = uow.get( TestedEntity.class, entityId );
+            uow.remove( entity );
+            uow.complete();
+        }
         assertFalse( "File still exists after deletion", attachedFile.exists() );
     }
 
     @Test
     public void testConcurrentModification()
-            throws IOException, UnitOfWorkCompletionException
+        throws IOException, UnitOfWorkCompletionException
     {
         LOGGER.info( "# Test Concurrent Modification ###############################################################" );
+        final String entityId;
 
         // Create new
-        UnitOfWork uow = module.newUnitOfWork();
-        TestedEntity entity = createTestedEntity( uow, "Testing Concurrent Modification" );
-        String entityId = entity.identity().get();
-        uow.complete();
+        try( UnitOfWork uow = module.newUnitOfWork() )
+        {
+            TestedEntity entity = createTestedEntity( uow, "Testing Concurrent Modification" );
+            entityId = entity.identity().get();
+            uow.complete();
+        }
 
         // Testing concurrent modification
+        UnitOfWork uow, uow2;
+        TestedEntity entity;
+
         uow = module.newUnitOfWork();
         entity = uow.get( TestedEntity.class, entityId );
         Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile() ) );
-        UnitOfWork uow2 = module.newUnitOfWork();
+
+        uow2 = module.newUnitOfWork();
         entity = uow2.get( TestedEntity.class, entityId );
         Inputs.text( MODIFICATION_CONTENT_URL ).transferTo( Outputs.text( entity.managedFile() ) );
+
         uow.complete();
-        try {
+        try
+        {
             uow2.complete();
             fail( "A ConcurrentUoWFileModificationException should have been raised" );
-        } catch ( ConcurrentUoWFileModificationException expected ) {
+        }
+        catch( ConcurrentUoWFileModificationException expected )
+        {
             uow2.discard();
         }
     }
 
     @Test
     public void testRetry()
-            throws IOException, UnitOfWorkCompletionException, InterruptedException
+        throws IOException, UnitOfWorkCompletionException, InterruptedException
     {
         LOGGER.info( "# Test Retry #################################################################################" );
+        final String entityId;
+        File attachedFile;
 
         // Create new
-        UnitOfWork uow = module.newUnitOfWork();
-        TestedEntity entity = createTestedEntity( uow, "Testing Concurrent Modification" );
-        final String entityId = entity.identity().get();
-        File attachedFile = entity.attachedFile();
-        uow.complete();
+        try( UnitOfWork uow = module.newUnitOfWork() )
+        {
+            TestedEntity entity = createTestedEntity( uow, "Testing Concurrent Modification" );
+            entityId = entity.identity().get();
+            attachedFile = entity.attachedFile();
+            uow.complete();
+        }
 
-        final List<Exception> ex = new ArrayList<Exception>();
+        final List<Exception> ex = new ArrayList<>();
         Thread t1 = new Thread( new Runnable()
         {
-
             @Override
             public void run()
             {
-                try {
+                try
+                {
                     testService.modifyFileWithRetry( entityId, 0, 3000 );
-                } catch ( Exception ex1 ) {
+                }
+                catch( Exception ex1 )
+                {
                     ex.add( ex1 );
                 }
             }
-
         }, "job1" );
         Thread t2 = new Thread( new Runnable()
         {
-
             @Override
             public void run()
             {
-                try {
+                try
+                {
                     testService.modifyFileWithRetry( entityId, 1000, 0 );
-                } catch ( Exception ex1 ) {
+                }
+                catch( Exception ex1 )
+                {
                     ex.add( ex1 );
                 }
             }
-
         }, "job2" );
 
         t1.start();
@@ -334,7 +367,8 @@ public class HasUoWFileTest
         t1.join();
         t2.join();
 
-        for ( Exception eachEx : ex ) {
+        for( Exception eachEx : ex )
+        {
             eachEx.printStackTrace();
         }
 
@@ -343,7 +377,7 @@ public class HasUoWFileTest
     }
 
     private TestedEntity createTestedEntity( UnitOfWork uow, String name )
-            throws IOException
+        throws IOException
     {
         EntityBuilder<TestedEntity> builder = uow.newEntityBuilder( TestedEntity.class );
         TestedEntity entity = builder.instance();

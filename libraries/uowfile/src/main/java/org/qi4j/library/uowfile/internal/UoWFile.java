@@ -1,15 +1,19 @@
 /*
- * Copyright (c) 2011, Paul Merlin. All Rights Reserved.
+ * Copyright 2011 Paul Merlin.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 package org.qi4j.library.uowfile.internal;
 
@@ -23,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 public class UoWFile
 {
-
     /* package */ static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.library.uowfile" );
     private static final int FILE_BUFFER_SIZE = 4096;
     private static final AtomicLong COUNT = new AtomicLong( 0L );
@@ -52,33 +55,38 @@ public class UoWFile
         StringBuilder sb = new StringBuilder().append( UoWFile.class.getSimpleName() );
         // UoWFile{parent/( original(oid->id) | current(id) | backup(id) )}
         sb.append( "{" ).append( original.getParentFile().getName() ).append( "/( " ).
-                append( original.getName() ).append( "(" ).append( originalIdentity ).append( "->" ).append( fileTag( original ) ).append( ") | " ).
-                append( current.getName() ).append( "(" ).append( fileTag( current ) ).append( ") | " ).
-                append( backup.getName() ).append( "(" ).append( fileTag( backup ) ).
-                append( ") )}" );
+            append( original.getName() ).append( "(" ).append( originalIdentity ).append( "->" ).append( fileTag( original ) ).append( ") | " ).
+            append( current.getName() ).append( "(" ).append( fileTag( current ) ).append( ") | " ).
+            append( backup.getName() ).append( "(" ).append( fileTag( backup ) ).
+            append( ") )}" );
         return sb.toString();
     }
 
     void copyOriginalToCurrent()
     {
-        if ( original.exists() ) {
+        if( original.exists() )
+        {
             copy( original, current );
         }
     }
 
     void apply()
-            throws ConcurrentUoWFileStateModificationException
+        throws ConcurrentUoWFileStateModificationException
     {
         LOGGER.trace( "Will apply changes to {}", this );
-        if ( fileTag( current ) != originalIdentity ) {
-            if ( fileTag( original ) != originalIdentity ) {
+        if( fileTag( current ) != originalIdentity )
+        {
+            if( fileTag( original ) != originalIdentity )
+            {
                 LOGGER.info( "Concurrent modification, original creation identity is {} and original apply identity is {}", originalIdentity, fileTag( original ) );
                 throw new ConcurrentUoWFileStateModificationException( this );
             }
-            if ( original.exists() ) {
+            if( original.exists() )
+            {
                 move( original, backup );
             }
-            if ( current.exists() ) {
+            if( current.exists() )
+            {
                 move( current, original );
             }
             LOGGER.debug( "Applied changes to {}", original );
@@ -87,8 +95,10 @@ public class UoWFile
 
     void rollback()
     {
-        if ( backup.exists() ) {
-            if ( fileTag( original ) != originalIdentity ) {
+        if( backup.exists() )
+        {
+            if( fileTag( original ) != originalIdentity )
+            {
                 delete( original );
                 move( backup, original );
             }
@@ -98,10 +108,12 @@ public class UoWFile
 
     void cleanup()
     {
-        if ( current.exists() ) {
+        if( current.exists() )
+        {
             delete( current );
         }
-        if ( backup.exists() ) {
+        if( backup.exists() )
+        {
             delete( backup );
         }
     }
@@ -116,16 +128,20 @@ public class UoWFile
 
     private void copy( File source, File dest )
     {
-        try {
+        try
+        {
             Inputs.byteBuffer( source, FILE_BUFFER_SIZE ).transferTo( Outputs.byteBuffer( dest ) );
-        } catch ( IOException ex ) {
+        }
+        catch( IOException ex )
+        {
             throw new UoWFileException( ex );
         }
     }
 
     private void delete( File file )
     {
-        if ( !file.delete() ) {
+        if( !file.delete() )
+        {
             throw new UoWFileException( new IOException( "Unable to delete file " + file ) );
         }
     }
@@ -133,10 +149,12 @@ public class UoWFile
     private void move( File source, File dest )
     {
         // Atomic move attempt
-        if ( !source.renameTo( dest ) ) {
+        if( !source.renameTo( dest ) )
+        {
             // source and dest are probably on different filesystem, fallback to a non atomic copy/move operation
             copy( source, dest );
-            if ( !source.delete() ) {
+            if( !source.delete() )
+            {
                 throw new UoWFileException( new IOException( "Unable to delete source file " + source
                                                              + " after copy(move) to " + dest
                                                              + " (rename failed before that)." ) );
