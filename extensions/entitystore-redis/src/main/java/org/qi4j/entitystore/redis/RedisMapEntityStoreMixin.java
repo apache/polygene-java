@@ -32,6 +32,7 @@ import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
+import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
@@ -122,7 +123,11 @@ public class RedisMapEntityStoreMixin
                             throws IOException
                         {
                             super.close();
-                            jedis.set( ref.identity(), toString() );
+                            String statusCode = jedis.set( ref.identity(), toString(), "NX" );
+                            if( !"OK".equals( statusCode ) )
+                            {
+                                throw new EntityAlreadyExistsException( ref );
+                            }
                         }
                     };
                 }
@@ -138,7 +143,11 @@ public class RedisMapEntityStoreMixin
                             throws IOException
                         {
                             super.close();
-                            jedis.set( ref.identity(), toString() );
+                            String statusCode = jedis.set( ref.identity(), toString(), "XX" );
+                            if( !"OK".equals( statusCode ) )
+                            {
+                                throw new EntityNotFoundException( ref );
+                            }
                         }
                     };
                 }
