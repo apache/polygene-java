@@ -70,11 +70,13 @@ def wsdl4jVersion = '1.6.3'
 def yammerMetricsVersion = '2.2.0'
 
 def antVersion = '1.9.2'
-def junitVersion = '4.11'
-def testNgVersion = '6.8.7'
-def jmockVersion = '2.6.0'
-def mockitoVersion = '1.9.5'
+def awaitilityVersion = '1.5.0'
 def easyMockVersion = '3.2'
+def jmockVersion = '2.6.0'
+def junitVersion = '4.11'
+def mockitoVersion = '1.9.5'
+def testNgVersion = '6.8.7'
+def restAssuredVersion= '2.3.0'
 def xmlunitVersion = '1.5'
 
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
@@ -260,19 +262,23 @@ rootProject.ext {
           prefuse: "de.sciss:prefuse-core:$prefuseVersion",
           spymemcached: "net.spy:spymemcached:$spymemcachedVersion",
 
-          // testing
+          // Testing
+          junit: "junit:junit:$junitVersion",
+          awaitility: "com.jayway.awaitility:awaitility:$awaitilityVersion",
+          easymock: "org.easymock:easymock:$easyMockVersion",
+          jmock: "org.jmock:jmock:$jmockVersion",
+          mockito: "org.mockito:mockito-core:$mockitoVersion",
+          rest_assured: "com.jayway.restassured:rest-assured:$restAssuredVersion",
+          testng: "org.testng:testng:$testNgVersion",
+          xmlunit: "xmlunit:xmlunit:$xmlunitVersion",
+          
+          // Tests dependencies
           derby: "org.apache.derby:derby:$derbyVersion",
           derbyclient: "org.apache.derby:derbyclient:$derbyVersion",
           derbynet: "org.apache.derby:derbynet:$derbyVersion",
           postgres: "org.postgresql:postgresql:$postgresqlVersion",
           mysql_connector: "mysql:mysql-connector-java:$mysqlVersion",
           sqlite: "org.xerial:sqlite-jdbc:$sqliteVersion",
-          junit: "junit:junit:$junitVersion",
-          easymock: "org.easymock:easymock:$easyMockVersion",
-          mockito: "org.mockito:mockito-core:$mockitoVersion",
-          jmock: "org.jmock:jmock:$jmockVersion",
-          testng: "org.testng:testng:$testNgVersion",
-          xmlunit: "xmlunit:xmlunit:$xmlunitVersion"
   ]
 }
 
