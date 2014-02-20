@@ -22,7 +22,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mongodb.util.JSON;
@@ -35,8 +35,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -58,7 +56,6 @@ import org.slf4j.LoggerFactory;
 public class MongoMapEntityStoreMixin
     implements ServiceActivation, MapEntityStore, MongoAccessors
 {
-
     private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.mongodb" );
     private static final String DEFAULT_DATABASE_NAME = "qi4j:entitystore";
     private static final String DEFAULT_COLLECTION_NAME = "qi4j:entitystore:entities";
@@ -72,7 +69,7 @@ public class MongoMapEntityStoreMixin
     private WriteConcern writeConcern;
     private String username;
     private char[] password;
-    private Mongo mongo;
+    private MongoClient mongo;
     private DB db;
 
     @Override
@@ -82,7 +79,7 @@ public class MongoMapEntityStoreMixin
         loadConfiguration();
 
         // Create Mongo driver and open the database
-        mongo = new Mongo( serverAddresses );
+        mongo = new MongoClient( serverAddresses );
         db = mongo.getDB( databaseName );
 
         // Authenticate if needed
@@ -90,7 +87,8 @@ public class MongoMapEntityStoreMixin
         {
             if( !db.authenticate( username, password ) )
             {
-                LOGGER.warn( "Authentication against MongoDB with username '" + username + "' failed. Subsequent requests will be made 'anonymously'." );
+                LOGGER.warn( "Authentication against MongoDB with username '" + username + "' failed. "
+                             + "Subsequent requests will be made 'anonymously'." );
             }
         }
 
@@ -189,7 +187,7 @@ public class MongoMapEntityStoreMixin
     }
 
     @Override
-    public Mongo mongoInstanceUsed()
+    public MongoClient mongoInstanceUsed()
     {
         return mongo;
     }
@@ -247,22 +245,12 @@ public class MongoMapEntityStoreMixin
                         super.close();
 
                         String jsonState = toString();
-                        System.out.println( "############################################" );
-                        try
-                        {
-                            System.out.println( new JSONObject( jsonState ).toString( 2 ) );
-                        }
-                        catch( JSONException ex )
-                        {
-                            ex.printStackTrace();
-                        }
-                        System.out.println( "############################################" );
                         DBObject bsonState = (DBObject) JSON.parse( jsonState );
 
                         BasicDBObject entity = new BasicDBObject();
                         entity.put( IDENTITY_COLUMN, ref.identity() );
                         entity.put( STATE_COLUMN, bsonState );
-                        entities.save( entity, writeConcern );
+                        entities.insert( entity, writeConcern );
                     }
                 };
             }
@@ -284,7 +272,7 @@ public class MongoMapEntityStoreMixin
                         BasicDBObject entity = new BasicDBObject();
                         entity.put( IDENTITY_COLUMN, ref.identity() );
                         entity.put( STATE_COLUMN, bsonState );
-                        entities.update( byIdentity( ref ), entity, true, false, writeConcern );
+                        entities.update( byIdentity( ref ), entity, false, false, writeConcern );
                     }
                 };
             }
@@ -311,13 +299,15 @@ public class MongoMapEntityStoreMixin
         return new Input<Reader, IOException>()
         {
             @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
+            public <ReceiverThrowableType extends Throwable> void transferTo(
+                Output<? super Reader, ReceiverThrowableType> output )
                 throws IOException, ReceiverThrowableType
             {
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
                     @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
+                    public <ReceiverThrowableType extends Throwable> void sendTo(
+                        Receiver<? super Reader, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, IOException
                     {
                         db.requestStart();

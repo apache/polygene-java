@@ -18,12 +18,12 @@
 package org.qi4j.entitystore.mongodb;
 
 import com.mongodb.DB;
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 
 public interface MongoAccessors
 {
 
-    Mongo mongoInstanceUsed();
+    MongoClient mongoInstanceUsed();
 
     DB dbInstanceUsed();
 
