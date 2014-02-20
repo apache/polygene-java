@@ -1,16 +1,20 @@
 /*
- * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
- * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2010-2012, Paul Merlin.
+ * Copyright (c) 2012, Niclas Hedhman.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 package org.qi4j.library.scheduler.bootstrap;
 
@@ -24,10 +28,8 @@ import org.qi4j.library.scheduler.SchedulerConfiguration;
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.ScheduleFactory;
 import org.qi4j.library.scheduler.schedule.Schedules;
-import org.qi4j.library.scheduler.schedule.cron.CronScheduleEntity;
-import org.qi4j.library.scheduler.schedule.cron.CronScheduleValue;
-import org.qi4j.library.scheduler.schedule.once.OnceScheduleEntity;
-import org.qi4j.library.scheduler.schedule.once.OnceScheduleValue;
+import org.qi4j.library.scheduler.schedule.cron.CronSchedule;
+import org.qi4j.library.scheduler.schedule.once.OnceSchedule;
 import org.qi4j.library.scheduler.timeline.Timeline;
 import org.qi4j.library.scheduler.timeline.TimelineForScheduleConcern;
 import org.qi4j.library.scheduler.timeline.TimelineRecord;
@@ -72,9 +74,9 @@ public class SchedulerAssembler
     {
         assembly.services( ScheduleFactory.class );
         assembly.entities( Schedules.class );
-        EntityDeclaration scheduleEntities = assembly.entities( CronScheduleEntity.class, OnceScheduleEntity.class );
+        EntityDeclaration scheduleEntities = assembly.entities( CronSchedule.class, OnceSchedule.class );
 
-        ValueDeclaration scheduleValues = assembly.values( CronScheduleValue.class, OnceScheduleValue.class );
+        ValueDeclaration scheduleValues = assembly.values( CronSchedule.class, OnceSchedule.class );
 
         ServiceDeclaration schedulerDeclaration = assembly.services( SchedulerService.class )
             .visibleIn( visibility() )

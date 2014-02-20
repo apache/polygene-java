@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.scheduler.timeline;
 
 import java.util.Collection;
@@ -49,7 +48,7 @@ public class TimelineScheduleMixin
         {
             return Collections.unmodifiableCollection( timelineRecords );
         }
-        SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
+        SortedSet<TimelineRecord> result = new TreeSet<>();
         for( int i = size - maxResults; i < size; i++ )
         {
             result.add( timelineRecords.get( i ) );
@@ -60,7 +59,7 @@ public class TimelineScheduleMixin
     @Override
     public Iterable<TimelineRecord> getNextRecords( int maxResults )
     {
-        SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
+        SortedSet<TimelineRecord> result = new TreeSet<>();
         long time = System.currentTimeMillis();
         for( int i = 0; i < maxResults; i++ )
         {
@@ -80,7 +79,7 @@ public class TimelineScheduleMixin
     public Iterable<TimelineRecord> getRecords( long from, long to )
     {
         long now = System.currentTimeMillis();
-        SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
+        SortedSet<TimelineRecord> result = new TreeSet<>();
         result.addAll( getPastRecords( from ) );
         result.addAll( getFutureRecords( now, to ) );
         return result;
@@ -88,7 +87,7 @@ public class TimelineScheduleMixin
 
     private Collection<? extends TimelineRecord> getPastRecords( long from )
     {
-        SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
+        SortedSet<TimelineRecord> result = new TreeSet<>();
         List<TimelineRecord> timelineRecords = state.history().get();
         for( TimelineRecord record : timelineRecords )
         {
@@ -108,7 +107,7 @@ public class TimelineScheduleMixin
             return Collections.emptyList();
         }
 
-        SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
+        SortedSet<TimelineRecord> result = new TreeSet<>();
         long time = now;
         while( time <= to )
         {

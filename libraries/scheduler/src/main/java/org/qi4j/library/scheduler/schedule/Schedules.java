@@ -14,13 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.scheduler.schedule;
 
 import org.qi4j.api.association.ManyAssociation;
-import org.qi4j.api.entity.EntityComposite;
 
-public interface Schedules extends EntityComposite
+public interface Schedules
 {
     ManyAssociation<Schedule> schedules();
 }

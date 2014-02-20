@@ -14,20 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.scheduler.schedule.once;
 
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.scheduler.schedule.Schedule;
 
 @Mixins( OnceSchedule.OnceScheduleMixin.class )
-public interface OnceSchedule extends Schedule, EntityComposite
+public interface OnceSchedule
+    extends Schedule
 {
     abstract class OnceScheduleMixin
         implements OnceSchedule
     {
-
         private boolean running;
 
         @Override
@@ -71,4 +69,5 @@ public interface OnceSchedule extends Schedule, EntityComposite
             return start().get().toString();
         }
     }
+
 }

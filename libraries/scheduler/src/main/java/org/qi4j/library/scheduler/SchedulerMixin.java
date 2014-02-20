@@ -1,16 +1,20 @@
 /*
- * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
- * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2010-2012, Paul Merlin.
+ * Copyright (c) 2012, Niclas Hedhman.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 package org.qi4j.library.scheduler;
 
@@ -29,6 +33,7 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -44,7 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SchedulerMixin
-    implements Scheduler, SchedulerActivation
+    implements Scheduler, ServiceActivation
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
     private static final int DEFAULT_WORKERS_COUNT = Runtime.getRuntime().availableProcessors() + 1;
@@ -53,7 +58,7 @@ public class SchedulerMixin
     @Service
     private ScheduleFactory scheduleFactory;
 
-    private final SortedSet<ScheduleTime> timingQueue = new TreeSet<ScheduleTime>();
+    private final SortedSet<ScheduleTime> timingQueue = new TreeSet<>();
 
     private ScheduledExecutorService managementExecutor;
     private ThreadPoolExecutor taskExecutor;
@@ -191,10 +196,9 @@ public class SchedulerMixin
     }
 
     @Override
-    public void activateScheduler()
+    public void activateService()
         throws Exception
     {
-
         // Handle configuration defaults
         SchedulerConfiguration configuration = config.get();
         Integer workersCount = configuration.workersCount().get();
@@ -260,7 +264,7 @@ public class SchedulerMixin
     }
 
     @Override
-    public void passivateScheduler()
+    public void passivateService()
         throws Exception
     {
         LOGGER.debug( "Passivated" );
@@ -273,7 +277,6 @@ public class SchedulerMixin
     class ScheduleHandler
         implements Runnable
     {
-
         private ScheduleRunner scheduleRunner;
         private ScheduledFuture<?> future;
 
@@ -305,9 +308,9 @@ public class SchedulerMixin
     public static class ScheduleRunner
         implements Runnable
     {
-        private Module module;
-        private ScheduleTime schedule;
-        private SchedulerMixin schedulerMixin;
+        private final Module module;
+        private final ScheduleTime schedule;
+        private final SchedulerMixin schedulerMixin;
 
         public ScheduleRunner( ScheduleTime schedule, SchedulerMixin schedulerMixin, Module module )
         {
@@ -354,4 +357,5 @@ public class SchedulerMixin
             }
         }
     }
+
 }

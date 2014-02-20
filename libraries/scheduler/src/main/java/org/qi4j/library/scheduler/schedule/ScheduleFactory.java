@@ -20,7 +20,6 @@ import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueBuilder;
@@ -32,14 +31,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Mixins( ScheduleFactory.Mixin.class )
-public interface ScheduleFactory extends ServiceComposite
+public interface ScheduleFactory
 {
-
     Schedule newCronSchedule( Task task, String cronExpression, DateTime start, boolean durable );
 
     Schedule newOnceSchedule( Task task, DateTime runAt, boolean durable );
 
-    abstract class Mixin
+    class Mixin
         implements ScheduleFactory
     {
         private static final Logger logger = LoggerFactory.getLogger( ScheduleFactory.class );
@@ -118,4 +116,5 @@ public interface ScheduleFactory extends ServiceComposite
             return schedule;
         }
     }
+
 }

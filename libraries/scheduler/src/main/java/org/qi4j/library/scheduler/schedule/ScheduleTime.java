@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.scheduler.schedule;
 
 public final class ScheduleTime
@@ -44,19 +43,12 @@ public final class ScheduleTime
         {
             return false;
         }
-
         ScheduleTime that = (ScheduleTime) o;
-
         if( nextTime != that.nextTime )
         {
             return false;
         }
-        if( !scheduleIdentity.equals( that.scheduleIdentity ) )
-        {
-            return false;
-        }
-
-        return true;
+        return scheduleIdentity.equals( that.scheduleIdentity );
     }
 
     @Override

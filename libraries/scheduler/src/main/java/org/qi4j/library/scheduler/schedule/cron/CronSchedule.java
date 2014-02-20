@@ -14,10 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.scheduler.schedule.cron;
 
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
@@ -26,7 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Mixins( CronSchedule.CronScheduleMixin.class )
-public interface CronSchedule extends Schedule, EntityComposite
+public interface CronSchedule
+    extends Schedule
 {
     /**
      * The Cron expression indicating when the Schedule is to be run.
@@ -72,6 +71,7 @@ public interface CronSchedule extends Schedule, EntityComposite
         @Override
         public boolean isTaskRunning()
         {
+            // See SchedulerMixin.ScheduleRunner::run
             return false;
         }
 
@@ -88,4 +88,5 @@ public interface CronSchedule extends Schedule, EntityComposite
             return nextRun;
         }
     }
+
 }

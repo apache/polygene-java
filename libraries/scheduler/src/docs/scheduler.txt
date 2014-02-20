@@ -42,7 +42,7 @@ tag=configuration
 
 == Writing Tasks ==
 
-To write a schedulable Task, compose an EntityComposite using Task to be able to schedule it.
+To write a schedulable Task, compose an Entity with the Task type to be able to schedule it.
 
 The Task contract is quite simple:
 

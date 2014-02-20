@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.qi4j.library.scheduler.timeline;
 
 import java.util.SortedSet;
@@ -25,22 +24,18 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.functional.Iterables;
-import org.qi4j.library.scheduler.Scheduler;
 import org.qi4j.library.scheduler.SchedulerMixin;
 import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.schedule.Schedule;
 import org.qi4j.library.scheduler.schedule.Schedules;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * WARN TimelineService Mixin use SortedSets to keep records ordered and repeatedly search for the next run. Could be greedy with large intervals
+ * WARN TimelineService Mixin use SortedSets to keep records ordered and repeatedly search for the next run.
+ * Could be greedy with large intervals
  */
 public abstract class TimelineSchedulerServiceMixin
     implements Timeline, ServiceComposite
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
-
     @Structure
     private Module module;
 
@@ -50,7 +45,7 @@ public abstract class TimelineSchedulerServiceMixin
     @Override
     public Iterable<TimelineRecord> getLastRecords( int maxResults )
     {
-        SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
+        SortedSet<TimelineRecord> result = new TreeSet<>();
 
         UnitOfWork uow = module.currentUnitOfWork();
         String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
@@ -67,7 +62,7 @@ public abstract class TimelineSchedulerServiceMixin
     @Override
     public Iterable<TimelineRecord> getNextRecords( int maxResults )
     {
-        SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
+        SortedSet<TimelineRecord> result = new TreeSet<>();
         UnitOfWork uow = module.currentUnitOfWork();
         String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
         Schedules schedules = uow.get( Schedules.class, schedulesName );
@@ -83,7 +78,7 @@ public abstract class TimelineSchedulerServiceMixin
     @Override
     public Iterable<TimelineRecord> getRecords( DateTime from, DateTime to )
     {
-        SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
+        SortedSet<TimelineRecord> result = new TreeSet<>();
 
         UnitOfWork uow = module.currentUnitOfWork();
         String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
@@ -100,7 +95,7 @@ public abstract class TimelineSchedulerServiceMixin
     @Override
     public Iterable<TimelineRecord> getRecords( long from, long to )
     {
-        SortedSet<TimelineRecord> result = new TreeSet<TimelineRecord>();
+        SortedSet<TimelineRecord> result = new TreeSet<>();
 
         UnitOfWork uow = module.currentUnitOfWork();
         String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );

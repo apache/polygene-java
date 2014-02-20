@@ -1,7 +1,24 @@
+/*
+ * Copyright (c) 2010-2014, Paul Merlin.
+ * Copyright (c) 2012, Niclas Hedhman.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.qi4j.library.scheduler.docsupport;
 
 import org.qi4j.api.association.Association;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.property.Property;
@@ -24,7 +41,8 @@ public class SchedulerDocs
     public void method()
     {
         MyTaskEntity myTask = todo();
-        Schedule schedule = scheduler.scheduleOnce( myTask, 10, false ); // myTask will be run in 10 seconds from now
+        Schedule schedule = scheduler.scheduleOnce( myTask, 10, false );
+        // myTask will be run in 10 seconds from now
     }
 
 // END SNIPPET: 2
@@ -33,18 +51,18 @@ public class SchedulerDocs
     }
 
 // START SNIPPET: 1
-    interface MyTaskEntity extends Task, EntityComposite
+    interface MyTaskEntity extends Task
     {
-
         Property<String> myTaskState();
 
         Association<AnotherEntity> anotherEntity();
     }
 
-    abstract class MyTaskMixin implements Runnable
+    class MyTaskMixin implements Runnable
     {
         @This MyTaskEntity me;
 
+        @Override
         public void run()
         {
             me.myTaskState().set(me.anotherEntity().get().doSomeStuff(me.myTaskState().get()));
@@ -52,7 +70,7 @@ public class SchedulerDocs
     }
 
 // END SNIPPET: 1
-    interface AnotherEntity extends EntityComposite
+    interface AnotherEntity
     {
         String doSomeStuff(String p);
     }
