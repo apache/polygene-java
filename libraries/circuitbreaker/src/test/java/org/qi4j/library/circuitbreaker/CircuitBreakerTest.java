@@ -20,10 +20,14 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.jayway.awaitility.Awaitility.await;
+import static com.jayway.awaitility.Duration.FIVE_HUNDRED_MILLISECONDS;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -126,18 +130,26 @@ public class CircuitBreakerTest
 
         // END SNIPPET: direct
         assertThat( cb.status(), CoreMatchers.equalTo( CircuitBreaker.Status.off ) );
-        try {
-            System.out.println( "Wait..." );
-            Thread.sleep( 300 );
-        } catch ( InterruptedException e ) {
-            // Ignore
-        }
+        System.out.println( "Wait..." );
+        await().atMost( FIVE_HUNDRED_MILLISECONDS ).until( circuitBreakerStatus(), is( CircuitBreaker.Status.on ) );
 
         // START SNIPPET: direct
         // CircuitBreaker is back on
         
         // END SNIPPET: direct
         assertThat( cb.status(), CoreMatchers.equalTo( CircuitBreaker.Status.on ) );
+    }
+    
+    private Callable<CircuitBreaker.Status> circuitBreakerStatus()
+    {
+        return new Callable<CircuitBreaker.Status>()
+        {
+            @Override
+            public CircuitBreaker.Status call() throws Exception
+            {
+                return cb.status();
+            }
+        };
     }
 
     @Test
