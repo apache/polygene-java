@@ -5,8 +5,7 @@ jar { manifest { name = "Qi4j Extension - ValueSerialization - Jackson" } }
 dependencies {
 
     compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
-    compile 'org.codehaus.jackson:jackson-core-asl:1.9.11'
-    compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.11'
+    compile libraries.jackson_mapper
 
     testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
 

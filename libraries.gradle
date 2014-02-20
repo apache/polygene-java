@@ -20,6 +20,7 @@ def guavaVersion = '15.0'
 def h2Version = '1.3.174'
 def hazelcastVersion = '3.1.3'
 def httpClientVersion = '4.2.2' // 4.3.1 exists
+def jacksonVersion = '1.9.11'
 def javascriptVersion = '1.7R4'
 def javasqlgeneratorVersion = '0.3.2'
 def jcloudsVersion = '1.7.0'
@@ -197,6 +198,7 @@ rootProject.ext {
           wicket_stateless: "com.jolira:wicket-stateless:$wicketStatelessVersion",
 
           // Library & Extension dependencies
+          jackson_mapper: "org.codehaus.jackson:jackson-mapper-asl:$jacksonVersion",
           jodamoney: "org.joda:joda-money:$jodaMoneyVersion",
           jodatime: "joda-time:joda-time:$jodaTimeVersion",
           ehcache: "net.sf.ehcache:ehcache:$ehcacheVersion",
