@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2010-2014, Paul Merlin. All Rights Reserved.
  * Copyright (c) 2012, Niclas Hedhman. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -18,6 +18,7 @@
  */
 package org.qi4j.library.scheduler;
 
+import java.util.concurrent.Callable;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.junit.Test;
@@ -28,14 +29,19 @@ import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Iterables;
 import org.qi4j.library.scheduler.bootstrap.SchedulerAssembler;
 import org.qi4j.library.scheduler.timeline.Timeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static com.jayway.awaitility.Awaitility.await;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+import static org.qi4j.functional.Iterables.count;
+import static org.qi4j.library.scheduler.Constants.BAR;
+import static org.qi4j.library.scheduler.Constants.BAZAR;
 
 public class SchedulerTest
     extends AbstractSchedulerTest
@@ -57,119 +63,111 @@ public class SchedulerTest
     }
 
     @Test
-    public void testTask()
-        throws UnitOfWorkCompletionException,
-               InterruptedException
+    public void testTaskWithoutScheduling()
+        throws UnitOfWorkCompletionException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "testTask" );
-        UnitOfWork uow = module.newUnitOfWork( usecase );
-        FooTask task = createFooTask( uow, "TestTask", Constants.BAZAR );
-
-        String taskId = task.identity().get();
-        task.run();
-        uow.complete();
-
-        usecase = UsecaseBuilder.newUsecase( "testTask" );
-        uow = module.newUnitOfWork( usecase );
-        task = uow.get( FooTask.class, taskId );
-        assertEquals( Constants.BAR, task.output().get() );
-
-        Thread.sleep( 10 * 1000 );
-        uow.complete();
+        String taskId;
+        try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
+        {
+            FooTask task = createFooTask( uow, "TestTask", BAZAR );
+            taskId = task.identity().get();
+            task.run();
+            uow.complete();
+        }
+        try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
+        {
+            FooTask task = uow.get( FooTask.class, taskId );
+            assertThat( task.output().get(), equalTo( BAR ) );
+        }
     }
 
     @Test
     public void testMinutely()
-        throws Exception
+        throws UnitOfWorkCompletionException
     {
-        Usecase usecase = UsecaseBuilder.newUsecase( "testMinutely" );
-        UnitOfWork uow = module.newUnitOfWork( usecase );
-        try
+        Usecase usecase = UsecaseBuilder.newUsecase( "TestMinutely" );
+        DateTime start = new DateTime();
+        String taskIdentity;
+        long sleepMillis;
+        try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
         {
-            Scheduler scheduler = module.<Scheduler>findService( Scheduler.class ).get();
-            DateTime start = new DateTime();
+            Scheduler scheduler = module.findService( Scheduler.class ).get();
 
-            FooTask task = createFooTask( uow, "TestMinutely", Constants.BAZAR );
-            String taskIdentity = task.identity().get();
+            FooTask task = createFooTask( uow, usecase.name(), BAZAR );
+            taskIdentity = task.identity().get();
 
             DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
             scheduler.scheduleCron( task, "@minutely", true );
 
             uow.complete();
 
+            sleepMillis = new Interval( start, expectedRun ).toDurationMillis();
             LOGGER.info( "Task scheduled on {} to be run at {}", start.getMillis(), expectedRun.getMillis() );
+        }
 
-            Thread.sleep( new Interval( start, expectedRun ).toDurationMillis() + 5000 ); // waiting a little more
+        await( usecase.name() ).
+            atMost( sleepMillis + 5000, MILLISECONDS ).
+            until( taskOutput( taskIdentity ), equalTo( BAR ) );
 
-            usecase = UsecaseBuilder.newUsecase( "testMinutely" );
-            uow = module.newUnitOfWork( usecase );
-
-            task = uow.get( FooTask.class, taskIdentity );
-            assertNotNull( task );
-            assertEquals( Constants.BAR, task.output().get() );
-
-            Timeline timeline = module.<Timeline>findService( Timeline.class ).get();
+        try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
+        {
+            Timeline timeline = module.findService( Timeline.class ).get();
             DateTime now = new DateTime();
 
             // Queries returning past records
-            assertEquals( 2, Iterables.count( timeline.getLastRecords( 5 ) ) );
-            assertEquals( 2, Iterables.count( timeline.getRecords( start.getMillis(), now.getMillis() ) ) );
+            assertThat( count( timeline.getLastRecords( 5 ) ),
+                        is( 2L ) );
+            assertThat( count( timeline.getRecords( start.getMillis(), now.getMillis() ) ),
+                        is( 2L ) );
 
             // Queries returning future records
-            assertEquals( 4, Iterables.count( timeline.getNextRecords( 4 ) ) );
-            assertEquals( 5, Iterables.count( timeline.getRecords( now.getMillis() + 100,
-                                                                   now.plusMinutes( 5 ).getMillis() ) ) );
+            assertThat( count( timeline.getNextRecords( 4 ) ),
+                        is( 4L ) );
+            assertThat( count( timeline.getRecords( now.getMillis() + 100, now.plusMinutes( 5 ).getMillis() ) ),
+                        is( 5L ) );
 
             // Queries returning mixed past and future records
-            assertEquals( 7, Iterables.count( timeline.getRecords( start.getMillis(),
-                                                                   now.plusMinutes( 5 ).getMillis() ) ) );
-
-            uow.complete();
-        }
-        finally
-        {
-            if( uow.isOpen() )
-            {
-                uow.discard();
-            }
+            assertThat( count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 ).getMillis() ) ),
+                        is( 7L ) );
         }
     }
 
     @Test
     public void testOnce()
-        throws UnitOfWorkCompletionException,
-               InterruptedException
+        throws UnitOfWorkCompletionException
     {
-        Usecase usecase = UsecaseBuilder.newUsecase( "testOnce" );
-        UnitOfWork uow = module.newUnitOfWork( usecase );
-        try
+        final Usecase usecase = UsecaseBuilder.newUsecase( "TestOnce" );
+        final String taskIdentity;
+        try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
         {
-            Scheduler scheduler = module.<Scheduler>findService( Scheduler.class ).get();
+            Scheduler scheduler = module.findService( Scheduler.class ).get();
 
-            FooTask task = createFooTask( uow, "TestOnce", Constants.BAZAR );
-            String taskIdentity = task.identity().get();
+            FooTask task = createFooTask( uow, usecase.name(), BAZAR );
+            taskIdentity = task.identity().get();
 
-            scheduler.scheduleOnce( task, 4, true );
-
-            uow.complete();
-
-            Thread.sleep( 5000 );
-
-            usecase = UsecaseBuilder.newUsecase( "testOnce" );
-            uow = module.newUnitOfWork( usecase );
-
-            task = uow.get( FooTask.class, taskIdentity );
-            assertNotNull( task );
-            assertEquals( Constants.BAR, task.output().get() );
+            scheduler.scheduleOnce( task, 2, true );
 
             uow.complete();
         }
-        finally
+
+        await( usecase.name() ).until( taskOutput( taskIdentity ), equalTo( BAR ) );
+    }
+
+    private Callable<String> taskOutput( final String taskIdentity )
+    {
+        return new Callable<String>()
         {
-            if( uow.isOpen() )
+            @Override
+            public String call()
+                throws Exception
             {
-                uow.discard();
+                try( UnitOfWork uow = module.newUnitOfWork() )
+                {
+                    FooTask task = uow.get( FooTask.class, taskIdentity );
+                    return task == null ? null : task.output().get();
+                }
             }
-        }
+        };
     }
 }
