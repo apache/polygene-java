@@ -46,7 +46,6 @@ import redis.clients.jedis.Protocol;
 public class RedisMapEntityStoreMixin
     implements ServiceActivation, RedisAccessors, MapEntityStore
 {
-
     private static final String DEFAULT_HOST = "127.0.0.1";
     private static final String NIL = "nil";
     @This
@@ -110,17 +109,14 @@ public class RedisMapEntityStoreMixin
         final Jedis jedis = pool.getResource();
         try
         {
-
             changes.visitMap( new MapChanger()
             {
-
                 @Override
                 public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
                     throws IOException
                 {
                     return new StringWriter( 1000 )
                     {
-
                         @Override
                         public void close()
                             throws IOException
@@ -128,7 +124,6 @@ public class RedisMapEntityStoreMixin
                             super.close();
                             jedis.set( ref.identity(), toString() );
                         }
-
                     };
                 }
 
@@ -138,7 +133,6 @@ public class RedisMapEntityStoreMixin
                 {
                     return new StringWriter( 1000 )
                     {
-
                         @Override
                         public void close()
                             throws IOException
@@ -146,7 +140,6 @@ public class RedisMapEntityStoreMixin
                             super.close();
                             jedis.set( ref.identity(), toString() );
                         }
-
                     };
                 }
 
@@ -161,9 +154,7 @@ public class RedisMapEntityStoreMixin
                     }
                     jedis.del( ref.identity() );
                 }
-
             } );
-
         }
         finally
         {
@@ -176,14 +167,12 @@ public class RedisMapEntityStoreMixin
     {
         return new Input<Reader, IOException>()
         {
-
             @Override
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
                 throws IOException, ReceiverThrowableType
             {
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
-
                     @Override
                     public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, IOException
@@ -191,24 +180,20 @@ public class RedisMapEntityStoreMixin
                         Jedis jedis = pool.getResource();
                         try
                         {
-
                             Set<String> keys = jedis.keys( "*" );
                             for( String key : keys )
                             {
                                 String jsonState = jedis.get( key );
                                 receiver.receive( new StringReader( jsonState ) );
                             }
-
                         }
                         finally
                         {
                             pool.returnResource( jedis );
                         }
                     }
-
                 } );
             }
-
         };
     }
 
@@ -216,5 +201,4 @@ public class RedisMapEntityStoreMixin
     {
         return jsonState == null || NIL.equals( jsonState );
     }
-
 }
