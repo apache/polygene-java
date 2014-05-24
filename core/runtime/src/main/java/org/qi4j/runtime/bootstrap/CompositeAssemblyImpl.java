@@ -173,9 +173,10 @@ public abstract class CompositeAssemblyImpl
         compositeMethodsModel = new CompositeMethodsModel( mixinsModel );
 
         // Implement composite methods
-        Iterable<Class<? extends Constraint<?, ?>>> constraintClasses = constraintDeclarations( this.types );
-        Iterable<Class<?>> concernClasses = flatten( concerns, concernDeclarations( this.types ) );
-        Iterable<Class<?>> sideEffectClasses = flatten( sideEffects, sideEffectDeclarations( this.types ) );
+        ArrayList<Type> allTypes = getTypes( this.types );
+        Iterable<Class<? extends Constraint<?, ?>>> constraintClasses = constraintDeclarations( getTypes( this.types ) );
+        Iterable<Class<?>> concernClasses = flatten( concerns, concernDeclarations( allTypes ) );
+        Iterable<Class<?>> sideEffectClasses = flatten( sideEffects, sideEffectDeclarations( allTypes ) );
         Iterable<Class<?>> mixinClasses = flatten( mixins, mixinDeclarations( this.types ) );
         implementMixinType( types, constraintClasses, concernClasses, sideEffectClasses, mixinClasses );
 
@@ -683,20 +684,12 @@ public abstract class CompositeAssemblyImpl
     @SuppressWarnings( "unchecked" )
     private Iterable<Class<? extends Constraint<?, ?>>> constraintDeclarations( Class<?> type )
     {
-        Iterable<? extends Class<?>> iterable = iterable( type );
-        return constraintDeclarations( iterable );
+        ArrayList<Type> allTypes = getTypes( type );
+        return constraintDeclarations( allTypes );
     }
 
-    private Iterable<Class<? extends Constraint<?, ?>>> constraintDeclarations( Iterable<? extends Class<?>> typess )
+    private Iterable<Class<? extends Constraint<?, ?>>> constraintDeclarations( ArrayList<Type> allTypes )
     {
-        // Find constraint declarations
-        List<Type> allTypes = new ArrayList<>();
-        for( Class<?> type : typess )
-        {
-            Iterable<Type> types = typesOf( type );
-            addAll( allTypes, types );
-        }
-
         // Find all constraints and flatten them into an iterable
         Function<Type, Iterable<Class<? extends Constraint<?, ?>>>> function = new Function<Type, Iterable<Class<? extends Constraint<?, ?>>>>()
         {
@@ -722,27 +715,11 @@ public abstract class CompositeAssemblyImpl
     private Iterable<Class<?>> concernDeclarations( Class<?> type )
     {
         Iterable<? extends Class<?>> iterable = iterable( type );
-        return concernDeclarations( iterable );
+        return concernDeclarations( getTypes( iterable ) );
     }
 
-    private Iterable<Class<?>> concernDeclarations( Iterable<? extends Class<?>> typess )
+    private Iterable<Class<?>> concernDeclarations( ArrayList<Type> allTypes )
     {
-        // Find concern declarations
-        ArrayList<Type> allTypes = new ArrayList<>();
-        for( Class<?> type : typess )
-        {
-            Iterable<Type> types;
-            if( type.isInterface() )
-            {
-                types = typesOf( type );
-            }
-            else
-            {
-                types = cast( classHierarchy( type ) );
-            }
-            addAll( allTypes, types );
-        }
-
         // Find all concerns and flattern them into an iterable
         Function<Type, Iterable<Class<?>>> function = new Function<Type, Iterable<Class<?>>>()
         {
@@ -768,19 +745,11 @@ public abstract class CompositeAssemblyImpl
     protected Iterable<Class<?>> sideEffectDeclarations( Class<?> type )
     {
         Iterable<? extends Class<?>> iterable = iterable( type );
-        return sideEffectDeclarations( iterable );
+        return sideEffectDeclarations( getTypes( iterable ) );
     }
 
-    protected Iterable<Class<?>> sideEffectDeclarations( Iterable<? extends Class<?>> typess )
+    protected Iterable<Class<?>> sideEffectDeclarations( ArrayList<Type> allTypes )
     {
-        // Find side-effect declarations
-        ArrayList<Type> allTypes = new ArrayList<>();
-        for( Class<?> type : typess )
-        {
-            Iterable<Type> types = typesOf( type );
-            addAll( allTypes, types );
-        }
-
         // Find all side-effects and flattern them into an iterable
         Function<Type, Iterable<Class<?>>> function = new Function<Type, Iterable<Class<?>>>()
         {
@@ -800,6 +769,32 @@ public abstract class CompositeAssemblyImpl
         };
         Iterable<Class<?>> flatten = flattenIterables( map( function, allTypes ) );
         return toList( flatten );
+    }
+
+    private ArrayList<Type> getTypes( Class<?> type )
+    {
+        Iterable<? extends Class<?>> iterable = iterable( type );
+        return getTypes( iterable );
+    }
+
+    private ArrayList<Type> getTypes( Iterable<? extends Class<?>> typess )
+    {
+        // Find side-effect declarations
+        ArrayList<Type> allTypes = new ArrayList<>();
+        for( Class<?> type : typess )
+        {
+            Iterable<Type> types;
+            if( type.isInterface() )
+            {
+                types = typesOf( type );
+            }
+            else
+            {
+                types = cast( classHierarchy( type ) );
+            }
+            addAll( allTypes, types );
+        }
+        return allTypes;
     }
 
     @SuppressWarnings( "unchecked" )

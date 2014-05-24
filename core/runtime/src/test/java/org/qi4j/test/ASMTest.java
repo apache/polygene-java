@@ -143,7 +143,7 @@ public class ASMTest
     }
 
     @Test
-    @Ignore( "This was dead commented code, ~70% of this source file ... What should we do about this!?!" )
+    @Ignore( "Convenience to look at what code is generated in the Fragment Classloader, and is not really a test case." )
     public void fragmentClassLoaderGenerateClassTest()
         throws Exception
     {

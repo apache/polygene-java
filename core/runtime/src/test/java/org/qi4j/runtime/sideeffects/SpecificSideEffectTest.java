@@ -50,7 +50,7 @@ public class SpecificSideEffectTest
         Property<Integer> count = some.count();
         assertThat( "count is zero", count.get(), equalTo( 0 ) );
         some.doStuff();
-        assertThat( "count is not zero", count.get(), not( equalTo( 0 ) ) );
+        assertThat( "count is not zero", count.get(), equalTo( 1 ) );
     }
 
     @SideEffects( CounterSideEffect.class )
