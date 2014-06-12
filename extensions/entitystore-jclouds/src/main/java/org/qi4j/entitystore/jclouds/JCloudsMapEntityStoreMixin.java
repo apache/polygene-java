@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ package org.qi4j.entitystore.jclouds;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import com.google.common.io.ByteSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +55,7 @@ import org.qi4j.spi.entitystore.helpers.MapEntityStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.contains;
 import static org.qi4j.api.entity.EntityReference.parseEntityReference;
@@ -73,13 +75,19 @@ public class JCloudsMapEntityStoreMixin
 
     private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.jclouds" );
 
-    private static final Map<String, ApiMetadata> allApis = Maps.uniqueIndex( Apis.viewableAs( BlobStoreContext.class ), Apis
-        .idFunction() );
+    private static final Map<String, ApiMetadata> allApis = Maps.uniqueIndex(
+        Apis.viewableAs( BlobStoreContext.class ),
+        Apis.idFunction()
+    );
 
-    private static final Map<String, ProviderMetadata> appProviders = Maps.uniqueIndex( Providers.viewableAs( BlobStoreContext.class ), Providers
-        .idFunction() );
+    private static final Map<String, ProviderMetadata> appProviders = Maps.uniqueIndex(
+        Providers.viewableAs( BlobStoreContext.class ),
+        Providers.idFunction()
+    );
 
-    private static final Set<String> allKeys = ImmutableSet.copyOf( Iterables.concat( appProviders.keySet(), allApis.keySet() ) );
+    private static final Set<String> allKeys = ImmutableSet.copyOf(
+        Iterables.concat( appProviders.keySet(), allApis.keySet() )
+    );
 
     @This
     private Configuration<JCloudsMapEntityStoreConfiguration> configuration;
@@ -165,9 +173,10 @@ public class JCloudsMapEntityStoreMixin
         {
             throw new EntityNotFoundException( entityReference );
         }
-        InputStream input = payload.getInput();
+        InputStream input = null;
         try
         {
+            input = payload.openStream();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Inputs.byteBuffer( input, 4096 ).transferTo( Outputs.byteBuffer( baos ) );
             return new StringReader( baos.toString( "UTF-8" ) );
@@ -178,12 +187,15 @@ public class JCloudsMapEntityStoreMixin
         }
         finally
         {
-            try
+            if( input != null )
             {
-                input.close();
-            }
-            catch( IOException ignored )
-            {
+                try
+                {
+                    input.close();
+                }
+                catch( IOException ignored )
+                {
+                }
             }
         }
     }
@@ -193,61 +205,63 @@ public class JCloudsMapEntityStoreMixin
         throws IOException
     {
         final BlobStore blobStore = storeContext.getBlobStore();
-
-        changes.visitMap( new MapChanger()
-        {
-
-            @Override
-            public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
-                throws IOException
+        changes.visitMap(
+            new MapChanger()
             {
-                return new StringWriter()
+                @Override
+                public Writer newEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+                    throws IOException
                 {
-
-                    @Override
-                    public void close()
-                        throws IOException
+                    return new StringWriter()
                     {
-                        super.close();
-                        Blob blob = blobStore.blobBuilder( ref.identity() ).payload( toString() ).build();
-                        blobStore.putBlob( container, blob );
-                    }
-                };
-            }
-
-            @Override
-            public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
-                throws IOException
-            {
-                if( !blobStore.blobExists( container, ref.identity() ) )
-                {
-                    throw new EntityNotFoundException( ref );
-                }
-                return new StringWriter()
-                {
-
-                    @Override
-                    public void close()
+                        @Override
+                        public void close()
                         throws IOException
-                    {
-                        super.close();
-                        Blob blob = blobStore.blobBuilder( ref.identity() ).payload( toString() ).build();
-                        blobStore.putBlob( container, blob );
-                    }
-                };
-            }
-
-            @Override
-            public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
-                throws EntityNotFoundException
-            {
-                if( !blobStore.blobExists( container, ref.identity() ) )
-                {
-                    throw new EntityNotFoundException( ref );
+                        {
+                            super.close();
+                            Blob blob = blobStore.blobBuilder( ref.identity() )
+                                .payload( ByteSource.wrap( toString().getBytes( UTF_8 ) ) )
+                                .build();
+                            blobStore.putBlob( container, blob );
+                        }
+                    };
                 }
-                blobStore.removeBlob( container, ref.identity() );
+
+                @Override
+                public Writer updateEntity( final EntityReference ref, EntityDescriptor entityDescriptor )
+                    throws IOException
+                {
+                    if( !blobStore.blobExists( container, ref.identity() ) )
+                    {
+                        throw new EntityNotFoundException( ref );
+                    }
+                    return new StringWriter()
+                    {
+                        @Override
+                        public void close()
+                        throws IOException
+                        {
+                            super.close();
+                            Blob blob = blobStore.blobBuilder( ref.identity() )
+                                .payload( ByteSource.wrap( toString().getBytes( UTF_8 ) ) )
+                                .build();
+                            blobStore.putBlob( container, blob );
+                        }
+                    };
+                }
+
+                @Override
+                public void removeEntity( EntityReference ref, EntityDescriptor entityDescriptor )
+                    throws EntityNotFoundException
+                {
+                    if( !blobStore.blobExists( container, ref.identity() ) )
+                    {
+                        throw new EntityNotFoundException( ref );
+                    }
+                    blobStore.removeBlob( container, ref.identity() );
+                }
             }
-        } );
+        );
     }
 
     @Override
@@ -255,45 +269,48 @@ public class JCloudsMapEntityStoreMixin
     {
         return new Input<Reader, IOException>()
         {
-
             @Override
             public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super Reader, ReceiverThrowableType> output )
                 throws IOException, ReceiverThrowableType
             {
-                output.receiveFrom( new Sender<Reader, IOException>()
-                {
-
-                    @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
+                output.receiveFrom(
+                    new Sender<Reader, IOException>()
                     {
-                        for( StorageMetadata stored : storeContext.getBlobStore().list() )
+                        @Override
+                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
+                            throws ReceiverThrowableType, IOException
                         {
-                            Payload payload = storeContext.getBlobStore().getBlob( container, stored.getName() ).getPayload();
-                            if( payload == null )
+                            for( StorageMetadata stored : storeContext.getBlobStore().list() )
                             {
-                                throw new EntityNotFoundException( parseEntityReference( stored.getName() ) );
-                            }
-                            InputStream input = payload.getInput();
-                            try
-                            {
-                                receiver.receive( new InputStreamReader( input, "UTF-8" ) );
-                            }
-                            finally
-                            {
+                                Payload payload = storeContext.getBlobStore().getBlob( container, stored.getName() ).getPayload();
+                                if( payload == null )
+                                {
+                                    throw new EntityNotFoundException( parseEntityReference( stored.getName() ) );
+                                }
+                                InputStream input = null;
                                 try
                                 {
-                                    input.close();
+                                    input = payload.openStream();
+                                    receiver.receive( new InputStreamReader( input, "UTF-8" ) );
                                 }
-                                catch( IOException ignored )
+                                finally
                                 {
+                                    if( input != null )
+                                    {
+                                        try
+                                        {
+                                            input.close();
+                                        }
+                                        catch( IOException ignored )
+                                        {
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                } );
+                );
             }
         };
     }
-
 }

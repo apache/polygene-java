@@ -23,7 +23,7 @@ def httpClientVersion = '4.2.2' // 4.3.4 exists
 def jacksonVersion = '2.4.0'
 def javascriptVersion = '1.7R4'
 def javasqlgeneratorVersion = '0.3.2'
-def jcloudsVersion = '1.7.0'
+def jcloudsVersion = '1.7.3'
 def jdbmVersion = '2.4'
 def jdomVersion = '2.0.2'
 def jedisVersion = '2.5.1'
@@ -208,7 +208,7 @@ rootProject.ext {
           h2: "com.h2database:h2:$h2Version",
           hazelcast: "com.hazelcast:hazelcast:$hazelcastVersion",
           jclouds_core: "org.apache.jclouds:jclouds-core:$jcloudsVersion",
-          jclouds_blobstore: "org.apache.jclouds:jclouds-blobstore:$jcloudsVersion",
+          jclouds_blobstore: "org.apache.jclouds:jclouds-allblobstore:$jcloudsVersion",
           jclouds_filesystem: "org.apache.jclouds.api:filesystem:$jcloudsVersion",
           jdbm: "jdbm:jdbm:$jdbmVersion",
           jedis: "redis.clients:jedis:$jedisVersion",
