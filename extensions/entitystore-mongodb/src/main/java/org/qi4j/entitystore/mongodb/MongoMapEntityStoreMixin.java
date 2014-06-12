@@ -23,6 +23,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mongodb.util.JSON;
@@ -47,8 +48,6 @@ import org.qi4j.io.Sender;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * MongoDB implementation of MapEntityStore.
@@ -56,10 +55,9 @@ import org.slf4j.LoggerFactory;
 public class MongoMapEntityStoreMixin
     implements ServiceActivation, MapEntityStore, MongoAccessors
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.mongodb" );
     private static final String DEFAULT_DATABASE_NAME = "qi4j:entitystore";
     private static final String DEFAULT_COLLECTION_NAME = "qi4j:entitystore:entities";
-    public static final String IDENTITY_COLUMN = "identity";
+    public static final String IDENTITY_COLUMN = "_id";
     public static final String STATE_COLUMN = "state";
     @This
     private Configuration<MongoEntityStoreConfiguration> configuration;
@@ -79,18 +77,16 @@ public class MongoMapEntityStoreMixin
         loadConfiguration();
 
         // Create Mongo driver and open the database
-        mongo = new MongoClient( serverAddresses );
-        db = mongo.getDB( databaseName );
-
-        // Authenticate if needed
-        if( !username.isEmpty() )
+        if( username.isEmpty() )
         {
-            if( !db.authenticate( username, password ) )
-            {
-                LOGGER.warn( "Authentication against MongoDB with username '" + username + "' failed. "
-                             + "Subsequent requests will be made 'anonymously'." );
-            }
+            mongo = new MongoClient( serverAddresses );
         }
+        else
+        {
+            MongoCredential credential = MongoCredential.createMongoCRCredential( username, databaseName, password );
+            mongo = new MongoClient( serverAddresses, Arrays.asList( credential ) );
+        }
+        db = mongo.getDB( databaseName );
 
         // Create index if needed
         db.requestStart();
@@ -151,9 +147,6 @@ public class MongoMapEntityStoreMixin
                 break;
             case MAJORITY:
                 writeConcern = WriteConcern.MAJORITY;
-                break;
-            case NONE:
-                writeConcern = WriteConcern.NONE;
                 break;
             case REPLICAS_SAFE:
                 writeConcern = WriteConcern.REPLICAS_SAFE;
