@@ -15,10 +15,10 @@
  */
 package org.qi4j.valueserialization.jackson;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.OutputStream;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.MappingJsonFactory;
 import org.qi4j.spi.value.ValueSerializerAdapter;
 
 /**
@@ -34,7 +34,7 @@ public class JacksonValueSerializer
     protected JsonGenerator adaptOutput( OutputStream output )
         throws Exception
     {
-        return jsonFactory.createJsonGenerator( output );
+        return jsonFactory.createGenerator( output );
     }
 
     @Override

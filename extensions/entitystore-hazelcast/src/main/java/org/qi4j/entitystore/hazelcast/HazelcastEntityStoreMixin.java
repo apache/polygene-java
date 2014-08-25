@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Paul Merlin.
+ * Copyright 2009-2014 Paul Merlin.
  * Copyright 2011 Niclas Hedhman.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
@@ -174,9 +174,9 @@ public class HazelcastEntityStoreMixin
         throws IOException
     {
         String hzConfLocation = configuration.configXmlLocation().get();
-        if( hzConfLocation == null )
+        if( hzConfLocation == null || hzConfLocation.isEmpty() )
         {
-            hzConfLocation = "org/qi4j/entitystore/hazelcast/defaultConfiguration.xml";
+            hzConfLocation = "hazelcast-default.xml";
         }
         Config conf;
         if( hzConfLocation.contains( ":" ) )

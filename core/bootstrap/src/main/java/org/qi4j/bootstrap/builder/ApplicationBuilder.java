@@ -221,6 +221,7 @@ public class ApplicationBuilder
 
     /**
      * {@literal main} method that read JSON from STDIN.
+     * <p>Passivation exceptions are written to STDERR if any.</p>
      * @param args Unused
      * @throws JSONException if unable to read JSON
      * @throws AssemblyException if the assembly failed

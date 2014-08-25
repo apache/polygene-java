@@ -343,7 +343,7 @@ configurations {
   jacoco
 }
 dependencies {
-  jacoco 'org.jacoco:org.jacoco.ant:0.6.4.201312101107'
+  jacoco 'org.jacoco:org.jacoco.ant:0.7.1.201405082137'
 }
 // Generate a global code codeverage report
 task coverageReport {
@@ -650,5 +650,5 @@ task release {
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
 task wrapper( type: Wrapper ) {
-  gradleVersion = '1.11'
+  gradleVersion = '1.12'
 }

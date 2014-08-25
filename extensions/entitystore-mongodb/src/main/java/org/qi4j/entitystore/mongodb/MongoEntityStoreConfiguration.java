@@ -58,8 +58,6 @@ public interface MongoEntityStoreConfiguration
 
         /** Exceptions are raised for network issues, but not server errors */
         NORMAL,
-        /** No exceptions are raised, even for network issues */
-        NONE,
         /** Exceptions are raised for network issues, and server errors; waits on a server for the write operation */
         SAFE,
         /** Exceptions are raised for network issues, and server errors; waits on a majority of servers for the write operation */

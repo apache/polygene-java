@@ -19,14 +19,55 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import org.objectweb.asm.*;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.qi4j.api.entity.Lifecycle;
 import org.qi4j.api.mixin.Initializable;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Methods;
 import org.qi4j.functional.Iterables;
 
-import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.AASTORE;
+import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ACC_STATIC;
+import static org.objectweb.asm.Opcodes.ACC_SUPER;
+import static org.objectweb.asm.Opcodes.ACONST_NULL;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.ANEWARRAY;
+import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.ASTORE;
+import static org.objectweb.asm.Opcodes.ATHROW;
+import static org.objectweb.asm.Opcodes.BIPUSH;
+import static org.objectweb.asm.Opcodes.CHECKCAST;
+import static org.objectweb.asm.Opcodes.DLOAD;
+import static org.objectweb.asm.Opcodes.DRETURN;
+import static org.objectweb.asm.Opcodes.DUP;
+import static org.objectweb.asm.Opcodes.FLOAD;
+import static org.objectweb.asm.Opcodes.FRETURN;
+import static org.objectweb.asm.Opcodes.GETFIELD;
+import static org.objectweb.asm.Opcodes.GETSTATIC;
+import static org.objectweb.asm.Opcodes.GOTO;
+import static org.objectweb.asm.Opcodes.ICONST_0;
+import static org.objectweb.asm.Opcodes.ICONST_1;
+import static org.objectweb.asm.Opcodes.ICONST_2;
+import static org.objectweb.asm.Opcodes.ICONST_3;
+import static org.objectweb.asm.Opcodes.ICONST_4;
+import static org.objectweb.asm.Opcodes.ICONST_5;
+import static org.objectweb.asm.Opcodes.ILOAD;
+import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
+import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.IRETURN;
+import static org.objectweb.asm.Opcodes.LLOAD;
+import static org.objectweb.asm.Opcodes.LRETURN;
+import static org.objectweb.asm.Opcodes.POP;
+import static org.objectweb.asm.Opcodes.PUTSTATIC;
+import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Type.getInternalName;
 import static org.qi4j.api.util.Classes.interfacesOf;
 
@@ -34,23 +75,25 @@ import static org.qi4j.api.util.Classes.interfacesOf;
  * Generate subclasses of mixins/modifiers that implement all interfaces not in the class itself
  * and which delegates those calls to a given composite invoker.
  */
+@SuppressWarnings( "raw" )
 public class FragmentClassLoader
     extends ClassLoader
 {
-    private static int jdkVersion = Opcodes.V1_5;
+    private static final int JDK_VERSION;
     public static final String GENERATED_POSTFIX = "_Stub";
 
     static
     {
         String jdkString = System.getProperty( "java.specification.version" );
-
-        if( jdkString.equals( "1.6" ) )
+        switch( jdkString )
         {
-            jdkVersion = Opcodes.V1_6;
-        }
-        else if( jdkString.equals( "1.7" ) )
-        {
-            jdkVersion = Opcodes.V1_7;
+            case "1.8":
+                JDK_VERSION = Opcodes.V1_8;
+                break;
+            case "1.7":
+            default:
+                JDK_VERSION = Opcodes.V1_7;
+                break;
         }
     }
 
@@ -117,7 +160,7 @@ public class FragmentClassLoader
         ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_MAXS );
 
         // Class definition start
-        cw.visit( jdkVersion, ACC_PUBLIC + ACC_SUPER, classSlash, null, baseClassSlash, null );
+        cw.visit( JDK_VERSION, ACC_PUBLIC + ACC_SUPER, classSlash, null, baseClassSlash, null );
 
         // Composite reference
         {
