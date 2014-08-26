@@ -1,6 +1,6 @@
 <body>
 <h1>Tutorial 8 - Generic mixins</h1>
-
+<p>
 In this tutorial we will look at how to use generic Fragments. So far all Fragments, i.e.
 the Concerns, SideEffects, and Mixins, have directly implemented the domain interface. But sometimes it is
 useful to be able to provide a generic implementation of an interface. An example of this is
@@ -8,19 +8,24 @@ the HelloWorldState interface. Since it only handles properties, and the old ver
 for naming getters and setters we could create a mixin that handles invocations of such methods
 automatically for us by storing the properties in a map and use the methods
 to look them up.
-<p/>
+</p>
+<p>
 Implementing a generic Fragment is done by creating a class that implements the interface
 java.lang.proxy.InvocationHandler. This has a single "invoke" method which is passed the
 object that was invoked (the TransientComposite in this case), the method, and the arguments. The
 Fragment is then allowed to implement the method any way it wants.
-<p/>
+</p>
+<p>
 Since interfaces with only Properties is such a common case Qi4j already has a generic Mixin
 that implements the Properties management described above, but for the builtin Property type instead
 of the getter/setter variant. The class is aptly named PropertyMixin.
-<p/>
+</p>
+<p>
 While we could use it, for now we will implement it ourselves to get a feel for how generic Mixins work.
-<p/>
+</p>
+<p>
 Steps for this tutorial:
+</p>
 <ol>
     <li>Remove the HelloWorldStateMixin</li>
     <li>Add a GenericPropertyMixin, and have it implement InvocationHandler</li>

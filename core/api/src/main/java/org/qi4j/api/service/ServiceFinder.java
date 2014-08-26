@@ -17,8 +17,11 @@ package org.qi4j.api.service;
 import java.lang.reflect.Type;
 
 /**
- * Interface used to query for ServiceReferences. Each ServiceFinder is
+ * Interface used to query for ServiceReferences.
+ * <p>
+ * Each ServiceFinder is
  * obtained from a specific Module, and the lookup rules are the following:
+ * </p>
  * <ol>
  * <li>First look in the same Module as the ServiceFinder</li>
  * <li>Then look in the same Layer as the ServiceFinder. Any Services declared
@@ -26,8 +29,9 @@ import java.lang.reflect.Type;
  * <li>Then look in the used Layers. Any Services declared with Visibility Application
  * should be included</li>
  * </ol>
- *
+ * <p>
  * Both native Qi4j services and imported services are considered, with preference to native services.
+ * </p>
  */
 public interface ServiceFinder
 {
@@ -57,9 +61,10 @@ public interface ServiceFinder
 
     /**
      * Find ServiceReferences that implements the given type.
-     * <p/>
+     * <p>
      * The order of the references is such that Services more local to the querying
      * Module is earlier in the list.
+     * </p>
      *
      * @param serviceType the type that the Services must implement
      *
@@ -69,9 +74,10 @@ public interface ServiceFinder
 
     /**
      * Find ServiceReferences that implements the given type.
-     * <p/>
+     * <p>
      * The order of the references is such that Services more local to the querying
      * Module is earlier in the list.
+     * </p>
      *
      * @param serviceType the type that the Services must implement
      *

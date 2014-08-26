@@ -19,29 +19,36 @@ package org.qi4j.library.rest.server.api.constraint;
 
 /**
  * Interface that resources can implement to achieve custom validation
- * of whether an interaction is valid or not. If the logic only applies for one
+ * of whether an interaction is valid or not.
+ * <p>
+ * If the logic only applies for one
  * method it is usually better to use this instead of creating a new annotation for it.
- * <p/>
+ * </p>
+ * <p>
  * This is triggered by annotating the method that should be validated like so:
+ * </p>
  * <pre><code>
  *
  * &#64;RequiresValid("xyz") public void xyz()
  * {...}
- * <p/>
+ *
  * </code></pre>
+ * <p>
  * This causes isValid("xyz") to be called. The isValid()
  * method can use the name to determine which set of logic is to be applied. Typically the provided
  * string will correspond to the name of the interaction, but this is not strictly necessary. It is
  * possible to combine several annotations on one method, if desired:
+ * </p>
  * <pre><code>
  *
  * &#64;RequiresValid("allowed") &#64;RequiresValid("officehours")
  * public void xyz()
  * {...}
  * </code></pre>
- * <p/>
+ * <p>
  * The validation occurs both when a Resource is computed for the resource as a whole, and when an actual
  * invocation of an interaction is made.
+ * </p>
  */
 public interface InteractionValidation
 {

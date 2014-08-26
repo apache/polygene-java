@@ -38,10 +38,12 @@ import org.qi4j.test.performance.entitystore.AbstractEntityStorePerformanceTest;
 
 /**
  * Performance test for PostgreSQLEntityStore.
- * <p/>
+ * <p>
  * WARN This test is deactivated on purpose, please do not commit it activated.
- * <p/>
+ * </p>
+ * <p>
  * To run it see PostgreSQLEntityStoreTest.
+ * </p>
  */
 @Ignore( "WARN Tearing down this test is broken!" )
 public class PostgreSQLEntityStorePerformanceTest

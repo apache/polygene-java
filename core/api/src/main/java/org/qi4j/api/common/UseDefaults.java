@@ -52,22 +52,22 @@ import java.lang.annotation.Target;
  * Example;
  * Let's assume that we have the following mixin type;
  *
- * <code><pre>
+ * <pre><code>
  * public interface SomeType
  * {
  *     &#64;UseDefaults
- *     Property<String> someValue();
+ *     Property&lt;String&gt; someValue();
  * }
- * </pre></code>
+ * </code></pre>
  * And that we want to have {@code someValue()} to be initialized to "&lt;unknown&gt;" instead of the empty string.
  * Then we need to declare the default for that with the following in the assembler.
- * <code><pre>
+ * <pre><code>
  * public void assemble( ModuleAssembly module )
  * {
  *     module.forMixin( SomeType.class ).declareDefaults().someValue().set( "&lt;unknown&gt;" );
  * }
  * }
- * </pre></code>
+ * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.METHOD, ElementType.FIELD } )

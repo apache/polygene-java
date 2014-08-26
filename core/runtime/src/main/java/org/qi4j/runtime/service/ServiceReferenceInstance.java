@@ -36,12 +36,14 @@ import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
- * Implementation of ServiceReference. This manages the actual instance of the service
- * and implements the service Activation.
- * <p/>
+ * Implementation of ServiceReference.
+ * <p>
+ * This manages the actual instance of the service and implements the service Activation.
+ * </p>
+ * <p>
  * Whenever the service is requested a proxy is returned which points to this class. This means
  * that the instance can be passivated even though a client is holding on to a service proxy.
- *
+ * </p>
  * @param <T> Service Type
  */
 public final class ServiceReferenceInstance<T>

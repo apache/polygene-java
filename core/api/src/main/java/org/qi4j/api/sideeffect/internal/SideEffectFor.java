@@ -25,36 +25,37 @@ import org.qi4j.api.injection.InjectionScope;
  * This annotation is required once in each SideEffect, to mark the
  * field where the element providing the invocation result should be
  * injected.
- * <p/>
+ * <p>
  * The type of the field must be of the same type as the SideEffect
  * itself, or an InvocationHandler.
- * <p/>
- * <p/>
+ * </p>
+ * <p>
  * Example;
+ * </p>
  * <pre><code>
  * public interface MyStuff
  * {
  *     SomeResult doSomething();
  * }
- * <p/>
+ *
  * public class MyStuffSideEffect
  *     implements MyStuff
  * {
  *     &#64;SideEffectFor MyStuff next;
- * <p/>
+ *
  *     public SomeResult doSomething()
  *     {
  *          SomeResult result = next.doSomething();
- * <p/>
+ *
  *         // HERE DO THE SIDEEFFECT STUFF.
- * <p/>
+ *
  *          return result; // Result value is ignored, null would work too.
  *     }
  * }
  * </code></pre>
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Documented
 @InjectionScope
 public @interface SideEffectFor

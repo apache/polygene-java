@@ -23,7 +23,7 @@ package org.qi4j.api.activation;
  * @param <ActivateeType> Type of the activatee.
  *
  * @see ActivatorAdapter
- * @see ServiceActivation
+ * @see org.qi4j.api.service.ServiceActivation
  */
 public interface Activator<ActivateeType>
 {

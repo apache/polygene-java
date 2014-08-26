@@ -32,11 +32,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of ServiceReference. This manages the reference to the imported service.
- * <p/>
+ * <p>
  * Whenever the service is requested it is returned directly to the client. That means that
  * to handle service passivation and unavailability correctly, any proxying must be done in the
  * service importer.
- *
+ * </p>
  * @param <T> Service Type
  */
 public final class ImportedServiceReferenceInstance<T>

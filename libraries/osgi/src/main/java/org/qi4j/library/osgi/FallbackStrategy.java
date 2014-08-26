@@ -15,13 +15,13 @@ import org.osgi.framework.ServiceReference;
  * The fallback strategy is invoked when the OSGi service is not available and a method call is invoked.
  * <p>
  * The FallbackStrategy is declared on the {@link OSGiServiceImporter} service declaration, like;
- * <code><pre>
+ * <pre><code>
  *     FallbackStrategy strategy = new MyStrategy();
  *     module.services( OSGiServiceImporter.class )
  *         .identifiedBy( "osgi" )
  *         .setMetaInfo( bundleContext )
  *         .setMetaInfo( strategy );
- * </pre></code>
+ * </code></pre>
  */
 public interface FallbackStrategy {
     Object invoke(final ServiceReference reference, Method method, Object... args);

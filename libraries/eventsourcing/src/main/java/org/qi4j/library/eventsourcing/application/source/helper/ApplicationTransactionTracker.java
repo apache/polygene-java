@@ -28,14 +28,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Helper that enables a service to easily track transactions. Upon startup
- * the tracker will get all the transactions from the store since the last
+ * Helper that enables a service to easily track transactions.
+ * <p>
+ * Upon startup the tracker will get all the transactions from the store since the last
  * check, and delegate them to the given Output. It will also register itself
  * with the store so that it can get continuous updates.
- * <p/>
+ * </p>
+ * <p>
  * Then, as transactions come in from the store, they will be processed in real-time.
  * If a transaction is successfully handled the configuration of the service, which must
  * extend DomainEventTrackerConfiguration, will update the marker for the last successfully handled transaction.
+ * </p>
  */
 public class ApplicationTransactionTracker<ReceiverThrowableType extends Throwable>
 {

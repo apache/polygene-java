@@ -17,19 +17,24 @@
  */
 package org.qi4j.logging.trace;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import org.qi4j.api.injection.InjectionScope;
 
 /**
  * The Trace annotation is to indicate which methods should be traced when tracing is enabled.
- * <p/>
+ * <p>
  * The <i>level</i> of the Trace indicates the <i>threshold level</i> that the <code>Tracer</code> instance must be set
  * to, to enable tracing. If the <i>threshold level</i> of the <code>Tracer</code> instance is equal to or higher than
  * the <i>level</i> of the <code>Trace</code> annotation the method will be traced.
  * </p>
- * <p/>
+ * <p>
  * The <code>Trace</code> annotation will only be used for <code>TraceConcern</code> and not if the
  * all encompassing <code>TraceAllConcern</code> is used.
+ * </p>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.METHOD } )
@@ -47,7 +52,7 @@ public @interface Trace
 
     /**
      * The value is the threshold level required to enable the tracing.
-     * <p/>
+     * <p>
      * If the Trace level is set to 100 (default), it is required that the
      * Tracer (retrieved from the LogService) used is set to 100 or higher.
      * </p>

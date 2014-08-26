@@ -23,8 +23,9 @@ import java.lang.annotation.Target;
 /**
  * This annotation is used by composites and mixins to declare what Constraints
  * can be applied in the Composite.
- * <p/>
+ * <p>
  * Constraints implement the {@link Constraint} interface
+ * </p>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.TYPE } )

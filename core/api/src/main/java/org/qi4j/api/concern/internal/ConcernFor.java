@@ -25,27 +25,28 @@ import org.qi4j.api.injection.InjectionScope;
  * This annotation is required once in each Concern, to mark the
  * field where the next element in the call sequence should be
  * injected.
- * <p/>
+ * <p>
  * The type of the field must be of the same type as the Concern
  * itself, or an InvocationHandler.
- * <p/>
- * <p/>
+ * </p>
+ * <p>
  * Example;
+ * </p>
  * <pre><code>
  * public interface MyStuff
  * {
  *     void doSomething();
  * }
- * <p/>
+ *
  * public class MyStuffConcern
  *     implements MyStuff
  * {
  *     &#64;ConcernFor MyStuff next;
- * <p/>
+ *
  *     public void doSomething()
  *     {
  *         // HERE DO THE MODIFIER STUFF.
- * <p/>
+ *
  *         // Delegate to the underlying mixin/modifier.
  *         next.doSomething();
  *     }

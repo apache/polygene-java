@@ -25,7 +25,7 @@ import org.qi4j.functional.Specification;
  * At an injection point you can do this:
  *
  * <pre><code>
- * &#64;Service @Available MyService service;
+ * &#64;Service &#64;Available MyService service;
  * </code></pre>
  * to get only a service that is currently available.
  */
@@ -35,7 +35,7 @@ public @interface Available
 {
     /**
      * Available Annotation Qualifier.
-     * See {@see Available}.
+     * See {@link Available}.
      */
     public final class AvailableQualifier
         implements AnnotationQualifier<Available>

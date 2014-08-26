@@ -22,14 +22,19 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 
 /**
- * Representation of an application-event. An application event is triggered by calling a method
+ * Representation of an application-event.
+ * <p>
+ * An application event is triggered by calling a method
  * that is of the form:
- * <p/>
+ * </p>
+ * <pre><code>
  * void someName(ApplicationEvent event, SomeParam param);
- * <p/>
+ * </code></pre>
+ * <p>
  * The "event" argument should be invoked with null, as it will be created during
  * the method call. If it is not null, then the method call is a replay of previously
  * created events.
+ * </p>
  */
 public interface ApplicationEvent
         extends ValueComposite, Identity

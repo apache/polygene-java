@@ -32,8 +32,9 @@ import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * PropertyMixin invocation performance test.
- * <p/>
+ * <p>
  * Don't forget to add VM value "-server" before running this test!
+ * </p>
  */
 public class PropertyMixinInvocationPerformanceTest
     extends AbstractQi4jTest

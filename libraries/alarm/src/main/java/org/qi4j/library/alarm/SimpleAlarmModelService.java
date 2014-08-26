@@ -34,12 +34,10 @@ import org.qi4j.api.value.ValueBuilderFactory;
 public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
 {
     /**
-     * <p>
      * The Simple AlarmPoint Model is centered around the Normal and Activated.
      * The triggers "activate" and "deactivate". The following matrix details the
-     * resulting grid;
-     * <p>
-     * <table>
+     * resulting grid.
+     * <table summary="Transitions">
      * <tr><th>Initial State</th><th>Trigger</th><th>Resulting State</th><th>Event Generated</th></tr>
      * <tr><td>Normal</td><td>activate</td><td>Activated</td><td>activation</td></tr>
      * <tr><td>Normal</td><td>deactivate</td><td>Normal</td><td>-</td></tr>

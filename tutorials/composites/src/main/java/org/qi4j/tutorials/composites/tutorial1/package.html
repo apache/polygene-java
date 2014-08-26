@@ -1,22 +1,26 @@
 <body>
 <h1>Tutorial 1 - Interface refactoring</h1>
-
+<p>
 In this tutorial we start with a basic Java class, which when invoked will concatenate
 the two properties "phrase" and "name". If invoked with the properties set to "Hello"
 and "World" respectively it will hence return "Hello World".
-<p/>
+</p>
+<p>
 Qi4j relies heavily on the use of interfaces. This makes it possible for an object
 to externally implement a number of interfaces which internally is backed by a number
 of Mixins, some of which you may have written yourself, and some of which may have been
 reused. This also makes it easy to introduce Modifiers (aka "interceptors", aka "advice"),
 which are Fragments which execute before and/or after the method on the Mixin is invoked.
-<p/>
+</p>
+<p>
 The first task is therefore to refactor the code so that the method is implemented from an
 interface instead. We should then also separate the state into one interface and the behaviour
 into another. This will make things easier for us later when state and behaviour becomes
 implemented by separate Mixins.
-<p/>
+</p>
+<p>
 Steps for this tutorial:
+</p>
 <ol>
     <li>Refactor the class into interface and implementation.</li>
     <li>Refactor the interface so that it extends one interface called HelloWorldBehaviour with behaviour and one called

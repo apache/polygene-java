@@ -42,10 +42,13 @@ import org.qi4j.io.Outputs;
  * using Groovy. Each method in an interface is declared by a Groovy method
  * in a file located in classpath with the name "<interface>.groovy",
  * where the interface name includes the package, and has "." replaced with "/".
- * <p/>
+ * <p>
  * Example:
+ * </p>
+ * <pre><code>
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.groovy
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.sayAgain.groovy
+ * </code></pre>
  *
  */
 @AppliesTo( GroovyMixin.AppliesTo.class )

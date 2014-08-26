@@ -31,12 +31,13 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 
 /**
- * <p>
  * The Standard AlarmPoint Model is centered around the Normal, Activated, Acknowledged
  * and Deactivated states, and the triggers "activate", "deactivate",
- * and "acknowledge". The following matrix details the resulting grid;
+ * and "acknowledge".
  * <p>
- * <table>
+ * The following matrix details the resulting grid.
+ * </p>
+ * <table summary="Transitions">
  * <tr><th>Initial State</th><th>Trigger</th><th>Resulting State</th><th>Event Generated</th></tr>
  * <tr><td>Normal</td><td>activate</td><td>Activated</td><td>activation</td></tr>
  * <tr><td>Normal</td><td>deactivate</td><td>Normal</td><td>-</td></tr>

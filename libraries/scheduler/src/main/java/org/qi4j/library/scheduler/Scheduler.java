@@ -40,7 +40,7 @@ import static org.qi4j.api.unitofwork.concern.UnitOfWorkPropagation.Propagation.
  *
  * By default, a {@link Schedule} is not durable. In other words, it do not survive an {@link Application} restart.
  * To make a {@link Schedule} durable, set it's durable property to true once its scheduled.
- * Durable {@link Schedule}s that have no future run are removed by {@link SchedulerGarbageCollector}.
+ * Durable {@link Schedule}s that have no future run are removed by {@code SchedulerGarbageCollector} (not implemented?).
  */
 @Concerns( UnitOfWorkConcern.class )
 public interface Scheduler

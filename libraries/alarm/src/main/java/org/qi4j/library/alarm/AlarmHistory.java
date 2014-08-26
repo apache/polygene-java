@@ -29,7 +29,6 @@ import org.qi4j.api.property.Property;
  * AlarmPoint system <i>should</i> implement <code>AlarmHistory</code> classes to
  * record the events of an <code>AlarmPoint</code>.
  *
- * @author Niclas Hedhman
  */
 @Mixins( AlarmHistory.AlarmHistoryMixin.class )
 public interface AlarmHistory
@@ -98,7 +97,8 @@ public interface AlarmHistory
      * <code>activate();
      * acknowledge();
      * deactivate();
-     * </code></pre>, the Map contains <table>
+     * </code></pre>, the Map contains
+     * <table summary="Triggers">
      * <tr><td>(String) activate</td><td>(Integer) 1</td></tr>
      * <tr><td>(String) deactivate</td><td>(Integer) 1</td></tr>
      * <tr><td>(String) acknowledge</td><td>(Integer) 1</td></tr>

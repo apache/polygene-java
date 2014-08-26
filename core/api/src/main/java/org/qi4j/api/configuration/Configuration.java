@@ -39,15 +39,16 @@ import static org.qi4j.functional.Iterables.first;
 /**
  * Provide Configurations for Services. A Service that wants to be configurable
  * should inject a reference to Configuration with the Configuration type:
- * <code><pre>
- * <p/>
- * &#64;This Configuration&#60;MyServiceConfiguration&#62; config;
- * </pre></code>
+ * <pre><code>
+ *  * &#64;This Configuration&#60;MyServiceConfiguration&#62; config;
+ * </code></pre>
+ * <p>
  * where MyServiceConfiguration extends {@link ConfigurationComposite}, which itself is an ordinary
  * {@link org.qi4j.api.entity.EntityComposite}. The Configuration implementation
  * will either locate an instance of the given Configuration type in the
  * persistent store using the identity of the Service, or create a new such instance
  * if one doesn't already exist.
+ * </p>
  * <p>
  * If a new Configuration instance is created then it will be populated with properties
  * from the properties file whose filesystem name is the same as the identity (e.g. "MyService.properties").
@@ -68,6 +69,7 @@ import static org.qi4j.functional.Iterables.first;
  * <p>
  * The user configuration entity is part of a long running {@link UnitOfWork}, and to persist changes to it the
  * {@link #save()} method must be called. No other actions are required. Example;
+ * </p>
  * <pre><code>
  *
  * public interface MyConfiguration extends ConfigurationComposite
@@ -85,10 +87,12 @@ import static org.qi4j.functional.Iterables.first;
  *     config.save();
  * }
  * </code></pre>
+ * <p>
  * And even if a separate thread is using the {@code timeout()} configuration when this is happening, the
  * {@link UnitOfWork} isolation will ensure that the other thread is not affected. That thread, on the other hand
  * will need to do a {@link #refresh()} at an appropriate time to pick up the timeout change. For instance;
- * <code><pre>
+ * </p>
+ * <pre><code>
  *
  * &#64;Service InventoryService remoteInventoryService;
  *
@@ -102,15 +106,14 @@ import static org.qi4j.functional.Iterables.first;
  *     :
  *     :
  * }
- * </pre></code>
- * </p>
+ * </code></pre>
+ *
  */
 @Mixins( Configuration.ConfigurationMixin.class )
 public interface Configuration<T>
 {
     /**
      * Retrieves the user configuration instance managed by this Configuration.
-     * <p/>
      * <p>
      * Even if the user configuration is initialized from properties file, the consistency rules of Qi4j composites
      * still applies. If the the properties file is missing a value, then the initialization will fail with a
@@ -132,9 +135,6 @@ public interface Configuration<T>
 
     /**
      * Persists the modified values in the user configuration instance to the underlying store.
-     * <p>
-     *
-     * </p>
      */
     void save();
 

@@ -27,12 +27,15 @@ import org.qi4j.api.query.grammar.OrderBy;
 /**
  * This represents a Query in an indexing system. It is created from a
  * {@link QueryBuilder}, which decides the "where" clause in the query.
+ * <p>
  * Additional limitations, such as paging, ordering, and variables, can be set on
  * a Query before it is executed by calling one of find(), iterator(),
  * or count().
- * <p/>
+ * </p>
+ * <p>
  * DDD tip: typically Queries are created in the Domain Model and passed to the UI,
  * which sets the order and paging before executing it.
+ * </p>
  */
 public interface Query<T>
     extends Iterable<T>, Serializable

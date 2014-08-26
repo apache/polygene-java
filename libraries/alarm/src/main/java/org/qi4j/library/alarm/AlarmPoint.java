@@ -51,7 +51,8 @@ import org.qi4j.api.property.Property;
  * <i>acknowledge</i> and must be present in all standard systems and standard impl.
  * </p>
  * <p>
- * The basic usage looks like this;<code><pre>
+ * The basic usage looks like this;
+ * <pre><code>
  *     // Creation
  *     AlarmPoint ala1 = alarmService.createAlarm( "My AlarmPoint" );
  *       :
@@ -59,16 +60,22 @@ import org.qi4j.api.property.Property;
  *     // use
  *     if( alarmcondition )  // The condition should only detect transitions.
  *         ala1.trigger( this, "activate" );
- * </pre></code>
+ * </code></pre>
  * <p>
  * It is important to know that every call to <code>trigger()</code>
  * will generate an AlarmEvent, so the <code>trigger()</code> should
  * only be called when the standard condition changes. For this purpose, there is
  * a convenience method, that will create/generate the <code>trigger</code>
  * method calls when a boolean standard condition changes. The usage is fairly
- * simple. Example;<code><pre>
- *     ala1.updateCondition( value > highlimit );
- * </pre></code>
+ * simple.
+ * </p>
+ * <p>
+ * Example;
+ * </p>
+ * <pre><code>
+ *     ala1.updateCondition( value &gt; highlimit );
+ * </code></pre>
+ * <p>
  * It is possible to mix and match the usage of <code>updateCondition()</code>
  * and <code>trigger()</code> methods without any concerns.
  * </p>
@@ -76,12 +83,12 @@ import org.qi4j.api.property.Property;
  * To create alarms with different AlarmModels, other than the
  * default as shown above, you need to retrieve the AlarmModel that
  * fulfill the needs required. This can be done in the following manner;
- * <code><pre>
+ * </p>
+ * <pre><code>
  *     AlarmModel[] impl = alarmService.getAlarmModelsAvailable();
  *     // selection algorithm
  *     AlarmPoint ala2 = impl[selected].createAlarm( "My AlarmPoint" );
- * </pre></code>
- * </p>
+ * </code></pre>
  * <p>
  * The default AlarmModel can be changed by a call to the
  * <code>AlarmSystem.setDefaultAlarmModel()</code> and
@@ -96,12 +103,9 @@ import org.qi4j.api.property.Property;
  * for the pre-defined AlarmPoint behaviours, and the others for the rest of
  * the Alarms.
  * </p>
- *
- * @author Niclas Hedhman
  */
 public interface AlarmPoint
 {
-
     String STATUS_NORMAL = "Normal";
     String STATUS_ACTIVATED = "Activated";
     String STATUS_DEACTIVATED = "Deactivated";
@@ -144,10 +148,12 @@ public interface AlarmPoint
     /**
      * Activates an AlarmPoint.
      * <p>
-     * Convinience method for:<pre>
-     *       trigger( "activate" );
-     *   </pre>
+     * Convenience method for:
      * </p>
+     * <pre><code>
+     *       trigger( "activate" );
+     * </code>
+     * </pre>
      */
     void activate();
 

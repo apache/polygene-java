@@ -1,11 +1,12 @@
 <body>
 <h1>Tutorial 9 - Private and abstract mixins</h1>
-
+<p>
 Now we're going to turn around and see how we can reduce the code needed to implement the
 HelloWorld example. We will also look at how to hide the Properties from the client code,
 since Properties are often considered to be implementation details that should not be exposed
 to clients.
-<p/>
+</p>
+<p>
 The first thing we will do is remove the behaviour interface, and move the say() method
 to the TransientComposite type. This forces the mixin to implement the TransientComposite type, which would
 normally mean that it would have to implement all methods, including those found in the TransientComposite
@@ -17,7 +18,8 @@ only map it to that specific method. In order to instantiate the Mixin it will g
 which implements the remaining methods in the TransientComposite type, as no-ops. These will never be called however,
 and is there purely for the purpose of being able to instantiate the Mixin. The Mixin is considered
 to be an Abstract Fragment.
-<p/>
+</p>
+<p>
 To hide the state from the client we need to use what is called Private Mixins. A Private Mixin is
 any mixin that is referenced by another Mixin by using the @This injection, but which is not included
 in the TransientComposite type. As long as there is a Mixin implementation declared for the interface specified
@@ -26,13 +28,16 @@ it is not extended by the TransientComposite type there is no way for a user of 
 That
 Mixin becomes an implementation detail. This can be used either for encapsulation purposes, or for referencing
 utility mixins that help the rest of the code implement some interface, but which itself should not be exposed.
-<p/>
+</p>
+<p>
 Since the state is now hidden the initialization of the TransientComposite is a bit more tricky. Instead of just
 instantiating it you have to create a TransientBuilder first, then set the state using .prototypeFor(), and then
 call newInstance(). This ensures that the state can be set during construction, but not at any later point, other
 than through publicly exposed methods.
-<p/>
+</p>
+<p>
 Steps for this tutorial:
+</p>
 <ol>
     <li>Move the say() method into the TransientComposite interface.</li>
     <li>Remove the behaviour interface.</li>

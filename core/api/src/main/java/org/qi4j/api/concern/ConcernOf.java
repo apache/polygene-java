@@ -23,11 +23,13 @@ import org.qi4j.api.concern.internal.ConcernFor;
  * Base class for Concerns. It introduces a typed "next" pointer
  * that Concerns can use to invoke the next Concern (or mixin) in
  * the chain.
- * <p/>
+ * <p>
  * Generic Concerns should subclass {@link GenericConcern} instead.
- * <p/>
+ * </p>
+ * <p>
  * Concerns implementations must be thread-safe in their implementation,
  * as multiple threads may share instances.
+ * </p>
  */
 public abstract class ConcernOf<T>
 {

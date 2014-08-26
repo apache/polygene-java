@@ -31,7 +31,6 @@ public interface MetricsHealthCheckFactory extends MetricsFactory
      *
      * @return A MetricsHealthCheck instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
      *
-     * @see DefaultMetric
      */
     MetricsHealthCheck registerHealthCheck( Class<?> origin, String name, MetricsHealthCheck check );
 }

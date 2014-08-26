@@ -10,7 +10,7 @@ import org.restlet.data.Status;
 import org.restlet.resource.ResourceException;
 
 /**
- * Implements a chained list of specification->handler. Add the most specific handlers first, and the most generic last.
+ * Implements a chained list of specification-&gt;handler. Add the most specific handlers first, and the most generic last.
  */
 public class ErrorHandler
     implements ResponseHandler

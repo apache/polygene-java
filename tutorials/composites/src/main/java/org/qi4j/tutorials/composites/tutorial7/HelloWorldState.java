@@ -7,9 +7,10 @@ import org.qi4j.library.constraints.annotation.NotEmpty;
 /**
  * This interface contains only the state
  * of the HelloWorld object.
- * <p/>
+ * <p>
  * The parameters are declared as @NotEmpty, so the client cannot pass in empty strings
  * as values.
+ * </p>
  */
 public interface HelloWorldState
 {

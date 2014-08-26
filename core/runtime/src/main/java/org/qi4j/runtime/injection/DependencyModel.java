@@ -209,11 +209,22 @@ public final class DependencyModel
     }
 
     /**
-     * Get the raw dependency type. If the dependency uses generics this is the raw type,
-     * and otherwise it is the type of the field. Examples:<br/>
-     * {@code @Service MyService service} -> MyService<br/>
-     * {@code @Entity Iterable<Foo> fooList} -> Iterable<br/>
-     * {@code @Entity Query<Foo> fooQuery} -> Query<br/>
+     * Get the raw dependency type.
+     * <p>
+     * If the dependency uses generics this is the raw type,
+     * and otherwise it is the type of the field.
+     * </p>
+     * <p>
+     * Examples:
+     * </p>
+     * {@code @Service MyService service} -> MyService
+     * </p>
+     * <p>
+     * {@code @Entity Iterable<Foo> fooList} -> Iterable
+     * </p>
+     * <p>
+     * {@code @Entity Query<Foo> fooQuery} -> Query
+     * </p>
      *
      * @return raw injection type.
      */

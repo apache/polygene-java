@@ -7,8 +7,9 @@ import org.qi4j.api.injection.scope.This;
 /**
  * This is the implementation of the HelloWorld
  * behaviour interface.
- * <p/>
+ * <p>
  * This version access the state using Qi4j Properties.
+ * </p>
  */
 public class HelloWorldBehaviourMixin
     implements HelloWorldBehaviour

@@ -24,7 +24,6 @@ import org.qi4j.library.constraints.annotation.NotEmpty;
 /**
  * This Composite interface declares a simple "Hello World" interface with a single say() method. What is being
  * said is defined in the HelloWorldState interface, which is a private mixin.
- * <p/>
  */
 @Mixins( { Hello.HelloWorldMixin.class } )
 public interface Hello

@@ -27,12 +27,12 @@ import java.lang.annotation.Target;
  * annotation or implement a known interface should use this annotation.
  * <p>
  * &#64;AppliesTo can specify one of;
+ * </p>
  * <ul>
  * <li>An annotation,</li>
  * <li>An interface,</li>
  * <li>An AppliesToFilter implementation.</li>
  * </ul>
- * </p>
  * <p>
  * Example with annotation:
  * </p>

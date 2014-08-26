@@ -15,10 +15,13 @@
 package org.qi4j.bootstrap;
 
 /**
- * Visitor interface to visit the whole or parts of an assembly. Implement this
- * interface and call visit() on ApplicationAssembly, LayerAssembly or ModuleAssembly.
- * <p/>
+ * Visitor interface to visit the whole or parts of an assembly.
+ * <p>
+ * Implement this interface and call visit() on ApplicationAssembly, LayerAssembly or ModuleAssembly.
+ * </p>
+ * <p>
  * This can be used to, for example, add metadata to all entities, add concerns on composites, or similar.
+ * </p>
  */
 public interface AssemblyVisitor<ThrowableType extends Throwable>
 {

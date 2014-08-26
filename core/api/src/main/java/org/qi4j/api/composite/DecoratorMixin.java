@@ -26,10 +26,11 @@ import org.qi4j.api.injection.scope.Uses;
 /**
  * Generic decorator mixin that allows a Composite to wrap
  * any other Composite as long as they share an interface.
- * <p/>
+ * <p>
  * Can be used to effectively implement
  * singleton mixins, since the decorated object can be shared between
  * many instances.
+ * </p>
  */
 public class DecoratorMixin
     implements InvocationHandler

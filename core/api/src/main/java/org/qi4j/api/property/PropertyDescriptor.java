@@ -29,8 +29,10 @@ public interface PropertyDescriptor extends MetaInfoHolder
     boolean isImmutable();
 
     /**
-     * Get the qualified name of the property which is equal to:<br/>
-     * <interface name>:<method name>
+     * Get the qualified name of the property which is equal to:
+     * <pre><code>
+     * &lt;interface name&gt;:&lt;method name&gt;
+     * </code></pre>
      *
      * @return the qualified name of the property
      */
@@ -38,7 +40,7 @@ public interface PropertyDescriptor extends MetaInfoHolder
 
     /**
      * Get the type of the property. If the property is declared
-     * as Property<X> then X is returned.
+     * as Property&lt;X&gt; then X is returned.
      *
      * @return the property type
      */

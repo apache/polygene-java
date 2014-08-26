@@ -25,11 +25,11 @@ import org.qi4j.api.injection.scope.This;
 /**
  * The TraceAllConcern will call the traceEntry(), traceExit() and traceException() methods in the
  * Tracer instance associated with the CompositeType that the TraceAllConcern is part of.
- * <p/>
+ * <p>
  * The Trace paradigm is all about tracking the entry and exit (both normal and exceptional ones)
  * of methods.
  * </p>
- * <p/>
+ * <p>
  * The main difference to the <code>TraceConcern</code> is that this concern is not associated with
  * the <code>@Trace</code> annotation, and all methods in the interfaces will be traced, unless
  * the LogService has turned off tracing.

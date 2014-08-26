@@ -28,13 +28,13 @@ public interface Assembler
      * to register objects, composites, services etc. and
      * the additional metadata that may exist for these
      * artifacts.
-     * <p/>
+     * <p>
      * An Assembler may create new Modules by calling
      * {@link org.qi4j.bootstrap.ModuleAssembly#layer()} and
      * then {@link LayerAssembly#module(String)} (String)}.
      * This allows an Assembler to bootstrap an entire Layer with
      * more Modules.
-     *
+     * </p>
      * @param module the Module to assemble
      *
      * @throws AssemblyException thrown if the assembler tries to do something illegal

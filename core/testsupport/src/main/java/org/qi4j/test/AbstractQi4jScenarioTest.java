@@ -97,13 +97,13 @@ public abstract class AbstractQi4jScenarioTest
 
     /**
      * This method is called when there was an AssemblyException in the creation of the Qi4j application model.
-     * <p/>
+     * <p>
      * Override this method to catch valid failures to place into satisfiedBy suites.
+     * </p>
      *
      * @param exception the exception thrown.
      *
-     * @throws org.qi4j.bootstrap.AssemblyException
-     *          The default implementation of this method will simply re-throw the exception.
+     * @throws org.qi4j.bootstrap.AssemblyException The default implementation of this method will simply re-throw the exception.
      */
     static protected void assemblyException( AssemblyException exception )
         throws AssemblyException
@@ -131,7 +131,9 @@ public abstract class AbstractQi4jScenarioTest
                 }
                 else
                 {
-                    throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened. First is" + uow.usecase().name() );
+                    throw new InternalError( "I have seen a case where a UoW is on the stack, but not opened. First is" + uow
+                        .usecase()
+                        .name() );
                 }
             }
             new Exception( "UnitOfWork not properly cleaned up" ).printStackTrace();

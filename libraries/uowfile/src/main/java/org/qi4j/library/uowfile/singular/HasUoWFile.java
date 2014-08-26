@@ -30,6 +30,7 @@ public interface HasUoWFile
 {
     /**
      * IMPORTANT Use this {@link File} inside read-only {@link UnitOfWork}s only
+     * @return The file that is attached.
      */
     File attachedFile();
 

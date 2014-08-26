@@ -30,12 +30,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
- * <p/>
+ * <p>
  * It caches the versions of state that it loads, and forgets them when
  * the state is committed. For normal operation this means that it does
  * not have to go down to the underlying store to get the current version.
  * Whenever there is a concurrent modification the store will most likely
  * have to check with the underlying store what the current version is.
+ * </p>
  */
 public abstract class ConcurrentModificationCheckConcern
     extends ConcernOf<EntityStore>

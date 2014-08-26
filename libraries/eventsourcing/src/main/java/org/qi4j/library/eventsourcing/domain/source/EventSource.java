@@ -27,8 +27,10 @@ import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 public interface EventSource
 {
     /**
-     * Get list of UnitOfWorkDomainEventsValue after the given offset. To get the first set of events, use 0 as offset parameter to get events from the start.
-     * <p/>
+     * Get list of UnitOfWorkDomainEventsValue after the given offset.
+     * <p>
+     * To get the first set of events, use 0 as offset parameter to get events from the start.
+     * </p>
      *
      * @param offset where in the list of events to start
      * @param limit maximum number of events returned

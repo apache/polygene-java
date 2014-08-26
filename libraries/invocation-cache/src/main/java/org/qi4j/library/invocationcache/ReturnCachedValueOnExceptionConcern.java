@@ -26,8 +26,9 @@ import org.qi4j.api.injection.scope.This;
 
 /**
  * Return value of @Cached calls on exceptions.
- * <p/>
+ * <p>
  * If an Exception occurs, try to reuse a previous result. Don't do anything on Throwables.
+ * </p>
  */
 @AppliesTo( Cached.class )
 public class ReturnCachedValueOnExceptionConcern

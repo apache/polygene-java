@@ -25,9 +25,9 @@ import org.qi4j.dci.moneytransfer.rolemap.CreditorRolemap;
 
 /**
  * Context for paying bills from an account to a list of creditor accounts.
- * <p/>
- * Roles are defined within the context
- * A RoleMap lists what Roles an entity can play.
+ * <p>
+ * Roles are defined within the context. A RoleMap lists what Roles an entity can play.
+ * </p>
  */
 public class PayBillsContext
 {
@@ -47,26 +47,37 @@ public class PayBillsContext
 
     /**
      * The SourceAccountRole orchestrates the Pay Bills use case interactions.
-     * <p/>
+     * <p>
      * Code matches the use case text carefully (see references below).
-     * <p/>
+     * </p>
+     * <p>
      * Pay Bills use case scenario:
-     * <p/>
-     * 1) Bank finds creditors (could be a use case scenario in itself)
-     * 2) Bank calculates the amount owed to creditors
-     * 3) Bank verifies sufficient funds
-     * 4) Bank transfer money to each creditor
-     * <p/>
+     * </p>
+     * <ol>
+     * <li> Bank finds creditors (could be a use case scenario in itself)</li>
+     * <li> Bank calculates the amount owed to creditors</li>
+     * <li>Bank verifies sufficient funds</li>
+     * <li>Bank transfer money to each creditor</li>
+     * </ol>
+     *
+     * <p>
      * Algorithm (steps to implement the scenario):
-     * <p/>
+     * </p>
+     * <p>
      * 1a) Source Account finds list of creditors
-     * <p/>
+     * </p>
+     * <p>
      * 2a) Source Account loops creditors to find the sum owed
-     * <p/>
+     * </p>
+     * <p>
      * 3a) Source Account verifies that its current balance is greater than the sum owed, and throws an exception if not
-     * <p/>
+     * </p>
+     * <p>
      * 4a) Source Account loops creditors
+     * </p>
+     * <p>
      * 4b) Make a MoneyTransfer of the amount owed to each creditor
+     * </p>
      */
 
     @Mixins( SourceAccountRole.Mixin.class )

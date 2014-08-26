@@ -153,14 +153,14 @@ public interface SecureJettyConfiguration
     /**
      * If the {@link SecureJettyService} certificate MUST be PKIX validated.
      *
-     * <p/><b>IMPORTANT:</b>
+     * <p><b>IMPORTANT:</b></p>
      * <ul>
      *   <li>Server certificate validation do not use the configured truststore but the one of the JVM.</li>
      *   <li>Server certificates validation behavior depends on CRL and OCSP related configuration properties.</li>
      * </ul>
-     * <p/>
+     * <p>
      * Defaults to false.
-     *
+     * </p>
      * @return If the {@link SecureJettyService} certificate MUST be PKIX validated.
      */
     @UseDefaults
@@ -169,14 +169,14 @@ public interface SecureJettyConfiguration
     /**
      * If client certificates PKIX validation MUST use either CRL or OCSP.
      *
-     * <p/><b>IMPORTANT:</b>
+     * <p><b>IMPORTANT:</b></p>
      * <ul>
      *   <li>Peer certificates validation use the configured truststore if present, the one of the JVM if not.</li>
      *   <li>Peer certificates validation behavior depends on CRL and OCSP related configuration properties.</li>
      * </ul>
-     * <p/>
+     * <p>
      * Defaults to false.
-     *
+     * </p>
      * @return If client certificates PKIX validation MUST use either CRL or OCSP.
      */
     @UseDefaults

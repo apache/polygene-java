@@ -43,10 +43,10 @@ public class ClassScanner
 {
     /**
      * Get all classes from the same package of the given class, and recursively in all subpackages.
-     * <p/>
+     * <p>
      * This only works if the seed class is loaded from a file: URL. Jar files are possible as well. Abstract classes
      * are not included in the results. For further filtering use e.g. Iterables.filter.
-     *
+     * </p>
      * @param seedClass starting point for classpath scanning
      *
      * @return iterable of all concrete classes in the same package as the seedclass, and also all classes in subpackages.
@@ -162,12 +162,11 @@ public class ClassScanner
 
     /**
      * Useful specification for filtering classes based on a regular expression matching the class names.
-     * <p/>
-     * Example: matches(".*Model") -> match only class names that end with Model
-     * <p/>
-     * Example:
+     * <p>
+     * Example: matches(".*Model") -&gt; match only class names that end with Model
+     * </p>
      *
-     * @param regex
+     * @param regex The regular expression to be matched.
      *
      * @return regex class name specification
      */

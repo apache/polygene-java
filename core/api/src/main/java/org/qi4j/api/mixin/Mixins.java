@@ -23,45 +23,50 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation is used in composites to declare mixin implementation classes.
- * <p/>
+ * <p>
  * Mixins tells the runtime which implementation class of a Mixin should be
  * used. The &#64;Mixins annotation can occur at any level in the composite hierarchy
  * and the runtime will match each found Mixin implementation against a Mixins annotation.
  * All mixin interfaces must have a Mixin implementation in the composite hierarchy or
  * a runtime exception will occur.
- * <p/>
+ * </p>
+ * <p>
  * Example;
+ * </p>
  * <pre><code>
- * <p/>
+ *
  * &#64;Mixins( MyBeerOrder.class )
  * public interface BeerOrderComposite extends BeerOrder, Composite
  * {
  * }
- * <p/>
+ *
  * public class MyBeerOrder
  * implements BeerOrder
  * {
  * :
  * }
  * </code></pre>
- * <p/>
+ * <p>
  * Many implementations can be listed,
+ * </p>
  * <pre><code>
  * &#64;Mixins( { MyBeerOrder.class, DescriptionImpl.class } )
  * public interface BeerOrderComposite extends BeerOrder, Description, Composite
  * {
  * }
  * </code></pre>
- * <p/>
+ * <p>
  * If the Mixins is a class that implements InvocationHandler, it will be
  * used for all mixins. To avoid that an invocation handler based implementation
  * not service all mixin, use the AppliesTo annotation.
- * <p/>
- * <p/>
+ * </p>
+ *
+ * <p>
  * It is valid to have multiple Mixins for a mixin. The first one found
  * will be used. The search order is in the order they are written in the Mixins
  * annotation left-to-right, and depth-first recursive search of the super-interfaces again
  * left-to-right.
+ * </p>
  *
  * @see org.qi4j.api.common.AppliesTo
  */

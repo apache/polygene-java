@@ -8,9 +8,10 @@ import org.qi4j.library.constraints.annotation.NotEmpty;
 /**
  * This interface contains only the state
  * of the HelloWorld object.
- * <p/>
+ * <p>
  * The state is now declared using Properties. The @NotEmpty annotation is applied to the
  * method instead, and has the same meaning as before.
+ * </p>
  */
 public interface HelloWorldState
 {

@@ -29,10 +29,10 @@ public interface Identity
 {
     /**
      * Returns the client view of the identity.
-     * <p/>
+     * <p>
      * It is unique within the owning repository, but potentially not unique globally and between
      * types.
-     *
+     * </p>
      * @return The Identity of 'this' composite.
      */
     @Immutable

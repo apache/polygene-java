@@ -35,13 +35,10 @@ public final class Functions
     }
 
     /**
-     * compose(F1(M,T),F2(F,M)) = F1(F2(F)) -> T
+     * compose(F1(M,T),F2(F,M)) = F1(F2(F)) -&gt; T
      *
      * @param outer
      * @param inner
-     * @param <FROM>
-     * @param <MIDDLE>
-     * @param <TO>
      *
      * @return
      */

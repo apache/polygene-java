@@ -43,13 +43,17 @@ import org.restlet.resource.ResourceException;
 import static org.qi4j.functional.Iterables.iterable;
 
 /**
- * Get events in various formats. The feed is paged, with one
+ * Get events in various formats.
+ * <p>
+ * The feed is paged, with one
  * current set page, one working set page, and the rest being archive pages that never change. The links "next", "previous",
  * "first" and "last" are used as expected per the Atom spec.
- * <p/>
+ * </p>
+ * <pre><code>
  * / = current set of most recent events (event range: count-pagesize to count)
  * /n,m = events from index n to index m. These are archive pages.
  * /n = working set page, where n is the first event index to be presented
+ * </code></pre>>
  */
 public class DomainEventSourceResource
         extends Restlet

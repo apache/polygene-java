@@ -21,11 +21,13 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 
 /**
- * Representation of a domain-event. An event is triggered by calling a method
- * that is of the form:
- * <p/>
+ * Representation of a domain-event.
+ * <p>An event is triggered by calling a method that is of the form:
+ * </p>
+ * <pre><code>
  * &#64;DomainEvent
  * void someName(SomeParam param, AnotherParam param2);
+ * </code></pre>
  *
  */
 public interface DomainEventValue

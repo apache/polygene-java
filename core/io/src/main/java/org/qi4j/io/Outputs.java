@@ -36,9 +36,9 @@ public class Outputs
     /**
      * Write lines to a text file with UTF-8 encoding. Separate each line with a newline ("\n" character). If the writing or sending fails,
      * the file is deleted.
-     * <p/>
+     * <p>
      * If the filename ends with .gz, then the data is automatically GZipped.
-     *
+     * </p>
      * @param file the file to save the text to
      *
      * @return an Output for storing text in a file
@@ -54,9 +54,9 @@ public class Outputs
     /**
      * Write lines to a text file. Separate each line with a newline ("\n" character). If the writing or sending fails,
      * the file is deleted.
-     * <p/>
+     * <p>
      * If the filename ends with .gz, then the data is automatically GZipped.
-     *
+     * </p>
      * @param file the file to save the text to
      *
      * @return an Output for storing text in a file

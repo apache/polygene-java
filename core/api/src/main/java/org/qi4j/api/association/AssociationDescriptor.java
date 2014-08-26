@@ -27,11 +27,20 @@ public interface AssociationDescriptor extends MetaInfoHolder
     /**
      * Get the qualified name of the association. This is constructed by
      * concatenating the name of the declaring interface with the name
-     * of the method, using ":" as separator. Example:<br/>
-     * com.somecompany.MyInterface with association method<br/>
-     * Association<String> someAssociation();<br/>
-     * will have the qualified name:<br/>
+     * of the method, using ":" as separator.
+     * <p>
+     * Example:
+     * </p>
+     * <p>
+     * com.somecompany.MyInterface with association method
+     * </p>
+     * <pre><code>
+     * Association&lt;String&gt; someAssociation();
+     * </code></pre>
+     * will have the qualified name:
+     * <pre><code>
      * com.somecompany.MyInterface:someAssociation
+     * </code></pre>
      *
      * @return the qualified name of the association
      */

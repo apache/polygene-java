@@ -64,7 +64,7 @@ import org.qi4j.functional.Function2;
  * </p>
  * <p>
  *     Having type information in the serialized payload allows to keep actual ValueComposite types and by so
- *     circumvent {@link AmbiguousTypeException} when deserializing.
+ *     circumvent {@link org.qi4j.api.composite.AmbiguousTypeException} when deserializing.
  * </p>
  */
 public interface ValueDeserializer

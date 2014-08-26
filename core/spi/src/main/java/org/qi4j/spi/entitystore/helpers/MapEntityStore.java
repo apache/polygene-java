@@ -29,6 +29,7 @@ public interface MapEntityStore
 {
 
     /**
+     * @param entityReference The reference to the entity that we want to get.
      * @return Entity state Reader
      */
     Reader get( EntityReference entityReference )

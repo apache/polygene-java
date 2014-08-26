@@ -8,9 +8,10 @@ import org.qi4j.api.mixin.Mixins;
 /**
  * This interface contains only the behaviour
  * of the HelloWorld object.
- * <p/>
+ * <p>
  * It declares what Mixin to use as default implementation, and also the extra
  * concern to be applied.
+ * </p>
  */
 @Concerns( HelloWorldBehaviourConcern.class )
 @Mixins( HelloWorldBehaviourMixin.class )

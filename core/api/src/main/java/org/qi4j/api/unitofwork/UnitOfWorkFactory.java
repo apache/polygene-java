@@ -23,33 +23,31 @@ import org.qi4j.api.usecase.Usecase;
 public interface UnitOfWorkFactory
 {
     /**
-     * Create a new UnitOfWork and associate
-     * it with the current thread.
-     * <p/>
+     * Create a new UnitOfWork and associate it with the current thread.
+     * <p>
      * The UnitOfWork will use the default Usecase settings.
-     * <p/>
+     * </p>
+     * <p>
      * Current time will be set to System.currentTimeMillis();
-     *
+     * </p>
      * @return a new UnitOfWork
      */
     UnitOfWork newUnitOfWork();
 
     /**
-     * Create a new UnitOfWork and associate
-     * it with the current thread.
-     * <p/>
+     * Create a new UnitOfWork and associate it with the current thread.
+     * <p>
      * The UnitOfWork will use the default Usecase settings.
-     *
+     * </p>
      * @return a new UnitOfWork
      */
     UnitOfWork newUnitOfWork( long currentTime );
 
     /**
-     * Create a new UnitOfWork for the given Usecase and
-     * associate it with the current thread.
-     * <p/>
+     * Create a new UnitOfWork for the given Usecase and associate it with the current thread.
+     * <p>
      * Current time will be set to System.currentTimeMillis();
-     *
+     * </p>
      * @param usecase the Usecase for this UnitOfWork
      *
      * @return a new UnitOfWork
@@ -57,8 +55,7 @@ public interface UnitOfWorkFactory
     UnitOfWork newUnitOfWork( Usecase usecase );
 
     /**
-     * Create a new UnitOfWork for the given Usecase and
-     * associate it with the current thread.
+     * Create a new UnitOfWork for the given Usecase and associate it with the current thread.
      *
      * @param usecase the Usecase for this UnitOfWork
      *

@@ -546,11 +546,12 @@ public final class Classes
 
     /**
      * Get URI for a class name.
-     * <p/>
+     * <p>
      * Example:
-     * Class name com.example.Foo$Bar
-     * is converted to
-     * URI urn:qi4j:com.example.Foo-Bar
+     * </p>
+     * <p>
+     * Class name com.example.Foo$Bar is converted to URI urn:qi4j:com.example.Foo-Bar
+     * </p>
      *
      * @param className class name
      *

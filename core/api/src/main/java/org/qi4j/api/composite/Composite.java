@@ -19,12 +19,14 @@ import org.qi4j.api.property.PropertyMixin;
 
 /**
  * Base Composite interface.
- * 
+ * <p>
  * All Composite objects must implement this interface. Let the
  * Composite interface extend this one. An implementation will be provided
  * by the framework.
- * <p/>
+ * </p>
+ * <p>
  * Properties and associations are handled by default.
+ * </p>
  */
 @Mixins( { PropertyMixin.class } )
 public interface Composite

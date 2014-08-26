@@ -41,9 +41,12 @@ import org.qi4j.library.scripting.ScriptReloadable;
  * using JRuby. Each method in an interface is declared by a Ruby method
  * in a file located in classpath with the name "<interface>.rb",
  * where the interface name includes the package, and has "." replaced with "/".
- * <p/>
+ * <p>
  * Example:
+ * </p>
+ * <pre><code>
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.rb
+ * </code></pre>
  */
 @AppliesTo( JRubyMixin.AppliesTo.class )
 public class JRubyMixin

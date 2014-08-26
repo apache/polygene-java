@@ -36,8 +36,8 @@ import org.qi4j.api.constraint.Constraints;
  *
  * public interface ExpressiveAlarm extends AlarmPoint
  * {
- *     &#64AlarmNameFormat(minimumLength=25)
- *     Property<String> systemName();
+ *     &#64;AlarmNameFormat(minimumLength=25)
+ *     Property&lt;String&gt; systemName();
  * }
  * </code></pre>
  * <p>

@@ -9,8 +9,9 @@ import org.qi4j.api.sideeffect.SideEffects;
 /**
  * This Composite interface declares transitively
  * all the Fragments of the HelloWorld composite.
- * <p/>
+ * <p>
  * It declares that the HelloWorldBehaviourSideEffect should be applied.
+ * </p>
  */
 @Mixins( { HelloWorldBehaviourMixin.class, HelloWorldStateMixin.class } )
 @SideEffects( HelloWorldBehaviourSideEffect.class )

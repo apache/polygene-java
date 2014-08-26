@@ -29,10 +29,10 @@ public interface EntityStoreUnitOfWork
 
     /**
      * Create new EntityState for a given identity.
-     * <p/>
+     * <p>
      * This should only create the EntityState and not insert it into any database, since that should occur during
      * the {@link EntityStoreUnitOfWork#applyChanges()} call.
-     *
+     * </p>
      * @param anIdentity       the identity of the entity
      * @param entityDescriptor entity descriptor
      *

@@ -26,7 +26,7 @@ import org.qi4j.api.injection.scope.This;
 /**
  * The TraceConcern will call the traceEntry(), traceExit() and traceException() methods in the
  * Tracer instance associated with the CompositeType that the TraceConcern is part of.
- * <p/>
+ * <p>
  * The Trace paradigm is all about tracking the entry and exit (both normal and exceptional ones)
  * of methods. The TraceConcern will be added to all methods that declares the <code>@Trace</code>
  * annotation, with an optional <i>level</i> argument. The <i>level</i> is the threshold of the
@@ -34,9 +34,10 @@ import org.qi4j.api.injection.scope.This;
  * must be equal or higher than the <i>level</i> set in the <code>@Trace</code> annotation of the
  * method.
  * </p>
- * <p/>
- * If the <i>priority</p> of the <code>Tracer</code> is set to OFF (Integer.MIN_VALUE) then no
+ * <p>
+ * If the <i>priority</i> of the <code>Tracer</code> is set to OFF (Integer.MIN_VALUE) then no
  * tracing will happen.
+ * </p>
  */
 @AppliesTo( Trace.class )
 public final class TraceConcern extends AbstractTraceConcern

@@ -24,21 +24,25 @@ import org.qi4j.spi.entitystore.EntityStore;
 
 /**
  * EntityStore backed by Preferences API.
- * <p/>
+ * <p>
  * A root node is created in the System preferences, whose name
  * is the same as the Application name (default:"Application").
- * <p/>
+ * </p>
+ * <p>
  * Each entity is stored under its identity name.
- * <p/>
+ * </p>
+ * <p>
  * Property types are converted to native Preferences API types
  * as much as possible. All others will be serialized to a string using JSON.
- * <p/>
+ * </p>
+ * <p>
  * Associations are stored as the identity of the referenced Entity, ManyAssociations are stored as multi-line strings
  * (one identity per line), and NamedAssociations are stored as multi-line strings (one name on a line, identity on the
  * next line).
- * <p/>
+ * </p>
+ * <p>
  * The main use of the EntityStore is for storage of ConfigurationComposites for ServiceComposites.
- *
+ * </p>
  * @see org.qi4j.api.service.ServiceComposite
  * @see org.qi4j.api.configuration.Configuration
  */

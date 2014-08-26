@@ -24,11 +24,14 @@ import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
- * Main bootstrap class for starting Qi4j and creating new applications. Instantiate this
- * and call one of the factory methods to get started.
- * <p/>
+ * Main bootstrap class for starting Qi4j and creating new applications.
+ * <p>
+ * Instantiate this and call one of the factory methods to get started.
+ * </p>
+ * <p>
  * This class will use the Service Loader mechanism in Java to try to locate a runtime that implements
  * the Qi4jRuntime interface. This avoids a direct dependency from the bootstrap to the runtime.
+ * </p>
  */
 public final class Energy4Java
 {

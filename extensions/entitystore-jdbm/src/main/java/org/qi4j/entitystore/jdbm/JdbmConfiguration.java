@@ -31,9 +31,9 @@ public interface JdbmConfiguration
     // END SNIPPET: config
    /**
     * The file where the JDBM data will be stored
-    * <p/>
+    * <p>
     * Default: System.getProperty( "user.dir" ) + "/qi4j/jdbmstore.data";
-    *
+    * </p>
     * @return path to data file relative to current path
     */
     // START SNIPPET: config

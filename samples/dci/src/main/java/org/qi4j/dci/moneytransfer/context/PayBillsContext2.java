@@ -22,9 +22,10 @@ import org.qi4j.dci.moneytransfer.domain.data.BalanceData;
 
 /**
  * Context for paying bills from an account to a list of creditor accounts.
- * <p/>
- * Roles are defined within the context
+ * <p>
+ * Roles are defined within the context.
  * A RoleMap lists what Roles an entity can play.
+ * </p>
  */
 public class PayBillsContext2
 {
@@ -47,26 +48,42 @@ public class PayBillsContext2
 
     /**
      * The SourceAccountRole orchestrates the Pay Bills use case interactions.
-     * <p/>
+     * <p>
      * Code matches the use case text carefully (see references below).
-     * <p/>
+     * </p>
+     * <p>
      * Pay Bills use case scenario:
-     * <p/>
+     * </p>
+     * <p>
      * 1) Bank finds creditors (could be a use case scenario in itself)
+     * </p>
+     * <p>
      * 2) Bank calculates the amount owed to creditors
+     * </p>
+     * <p>
      * 3) Bank verifies sufficient funds
+     * </p>
+     * <p>
      * 4) Bank transfer money to each creditor
-     * <p/>
+     * </p>
+     * <p>
      * Algorithm (steps to implement the scenario):
-     * <p/>
+     * </p>
+     * <p>
+     * <p>
      * 1a) Source Account finds list of creditors
-     * <p/>
+     * </p>
+     * <p>
      * 2a) Source Account loops creditors to find the sum owed
-     * <p/>
+     * </p>
+     * <p>
      * 3a) Source Account verifies that its current balance is greater than the sum owed, and throws an exception if not
-     * <p/>
+     * </p>
+     * <p>
      * 4a) Source Account loops creditors
+     * <p>
      * 4b) Make a MoneyTransfer of the amount owed to each creditor
+     * </p>
      */
     class SourceAccountRole
         extends Role<BalanceData>

@@ -38,9 +38,11 @@ import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
 
 /**
  * Application Model View as Swing Component.
- * It support 2 view:<br/>
- * - by Structure<br/>
- * - by Type<br/>
+ * It support 2 view:
+ * <pre><code>
+ * - by Structure
+ * - by Type
+ * </code></pre>
  */
 public final class TreeModelPane
     extends JPanel

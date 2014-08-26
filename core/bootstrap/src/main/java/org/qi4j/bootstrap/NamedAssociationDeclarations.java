@@ -23,7 +23,7 @@ import java.lang.reflect.AccessibleObject;
 import org.qi4j.api.common.MetaInfo;
 
 /**
- * This provides declared {@see org.qi4j.api.association.NamedAssociation} information that the runtime can use.
+ * This provides declared {@link org.qi4j.api.association.NamedAssociation} information that the runtime can use.
  */
 public interface NamedAssociationDeclarations
 {

@@ -42,7 +42,7 @@ public abstract class SingletonAssembler
      *
      * @throws AssemblyException Either if the model can not be created from the disk, or some inconsistency in
      *                           the programming model makes it impossible to create it.
-     * @throws
+     * @throws ActivationException If the automatic {@code activate()} method is throwing this Exception..
      */
     public SingletonAssembler()
         throws AssemblyException, ActivationException

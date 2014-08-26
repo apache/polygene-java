@@ -64,9 +64,9 @@ public interface EntityDeclaration
 
     /**
      * Declare additional mixins for these entities.
-     * <p/>
+     * <p>
      * This can be useful to override any default mixins from the entity interface.
-     *
+     * </p>
      * @param mixins The mixins that are to be added to the EntityComposite beyond the statically declared ones.
      *
      * @return This instance for a fluid DSL
@@ -75,10 +75,10 @@ public interface EntityDeclaration
 
     /**
      * Declare additional interfaces for these declared interfaces.
-     * <p/>
+     * <p>
      * This can be useful to add types that the entities should implement, but
      * which you do not want to include in the entity interface itself.
-     *
+     * </p>
      * @param types list of interfaces to add
      *
      * @return This instance for a fluid DSL

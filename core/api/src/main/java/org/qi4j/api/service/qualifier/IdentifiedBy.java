@@ -39,7 +39,7 @@ public @interface IdentifiedBy
 
     /**
      * IdentifiedBy Annotation Qualifier.
-     * See {@see IdentifiedBy}.
+     * See {@link IdentifiedBy}.
      */
     public final class IdentifiedByQualifier
         implements AnnotationQualifier<IdentifiedBy>

@@ -43,8 +43,9 @@ import org.restlet.resource.ServerResource;
 
 /**
  * Listing of all Entities.
- * <p/>
+ * <p>
  * Mapped to /entity
+ * </p>
  */
 public class EntitiesResource
     extends ServerResource

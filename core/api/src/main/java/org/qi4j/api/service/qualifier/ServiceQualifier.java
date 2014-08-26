@@ -19,20 +19,26 @@ import org.qi4j.functional.Specification;
 
 /**
  * This class helps you select a particular service
- * from a list. Provide a Selector which does the actual
+ * from a list.
+ * <p>
+ * Provide a Selector which does the actual
  * selection from the list. A common case is to select
  * based on identity of the service, which you can do this way:
+ * </p>
  *
  * <pre><code>
- * new ServiceQualifier<MyService>(services, ServiceQualifier.withId("someId"))
+ * new ServiceQualifier&lt;MyService&gt;(services, ServiceQualifier.withId("someId"))
  * </code></pre>
- *
+ * <p>
  * Many selectors can be combined by using firstOf. Example:
+ * </p>
  * <pre><code>
- * new ServiceQualifier<MyService>(services, firstOf(withTags("sometag"), firstActive(), first()))
+ * new ServiceQualifier&lt;MyService&gt;(services, firstOf(withTags("sometag"), firstActive(), first()))
  * </code></pre>
+ * <p>
  * This will pick a service that has the tag "sometag", or if none is found take the first active one. If no
  * service is active, then the first service will be picked.
+ * </p>
  */
 public abstract class ServiceQualifier
 {

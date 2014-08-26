@@ -24,10 +24,10 @@ import org.qi4j.api.injection.InjectionScope;
  * Annotation to denote the injection of a property, association or
  * StateHolder.
  * <pre><code>
- * &#64;State Property<String> propertyName;
- * &#64;State Association<MyEntity> associationName;
- * &#64;State ManyAssociation<MyEntity> manyAssociationName;
- * &#64;State NamedAssociation<MyEntity> namedAssociationName;
+ * &#64;State Property&lt;StringState propertyName;
+ * &#64;State Association&lt;MyEntityState associationName;
+ * &#64;State ManyAssociation&lt;MyEntityState manyAssociationName;
+ * &#64;State NamedAssociation&lt;MyEntityState namedAssociationName;
  * &#64;State StateHolder state;
  * &#64;State AssociationStateHolder associationState;
  * </code></pre>

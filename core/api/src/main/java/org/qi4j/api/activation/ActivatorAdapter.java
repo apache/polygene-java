@@ -19,7 +19,7 @@ package org.qi4j.api.activation;
 
 /**
  * Adapter for Activator.
- * <p>If you are thinking about Service activation, see {@link ServiceActivatorAdapter}.</p>
+ * <p>If you are thinking about Service activation, see {@link org.qi4j.api.service.ServiceActivatorAdapter}.</p>
  *
  * @param <ActivateeType> Type of the activatee.
  */

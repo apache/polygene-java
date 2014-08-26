@@ -28,7 +28,8 @@ import java.io.File;
  * <p>
  * You can override defaults by adding org.qi4j.library.fileconfig.FileConfiguration_OS.properties files to your
  * classpath where OS is one of win, mac or unix.
- * <br/>
+ * </p>
+ * <p>
  * You can also override all properties definitions at assembly time by setting a FileConfigurationOverride object
  * as meta info of this service.
  * </p>

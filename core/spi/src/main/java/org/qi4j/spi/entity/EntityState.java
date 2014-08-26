@@ -37,20 +37,20 @@ public interface EntityState
 
     /**
      * Version of the entity. This is managed by the EntityStore.
-     * <p/>
+     * <p>
      * If the underlying EntityStore does not support versioning, then version
      * must always be set to 0.
-     *
+     * </p>
      * @return version of the entity
      */
     String version();
 
     /**
      * Last modified timestamp of the entity. This is managed by the EntityStore.
-     * <p/>
+     * <p>
      * If the underlying EntityStore does not support timestamping, then last modified
      * must always be set to the current time.
-     *
+     * </p>
      * @return last modified timestamp of the entity, as defined by System.currentTimeMillis()
      */
     long lastModified();

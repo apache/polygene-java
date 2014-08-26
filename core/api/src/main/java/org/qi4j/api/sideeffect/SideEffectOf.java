@@ -22,11 +22,13 @@ import org.qi4j.api.sideeffect.internal.SideEffectFor;
 /**
  * Base class for SideEffects. It introduces a typed "next" pointer
  * that SideEffects can use to get the result of the original invocation.
- * <p/>
+ * <p>
  * Generic SideEffects should subclass {@link GenericSideEffect} instead.
- * <p/>
+ * </p>
+ * <p>
  * SideEffects implementations must be thread-safe in their implementation,
  * as multiple threads may share instances.
+ * </p>
  */
 public abstract class SideEffectOf<T>
 {

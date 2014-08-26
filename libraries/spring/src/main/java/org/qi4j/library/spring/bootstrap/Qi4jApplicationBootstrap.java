@@ -23,8 +23,9 @@ import org.springframework.context.ApplicationContextAware;
 
 /**
  * Run a Qi4j Application as a Spring Bean and export its Services to Spring.
- * 
+ * <p>
  * Steps to export Qi4j service:
+ * </p>
  * <ul>
  * <li>Create spring BeanFactory service of qi4j services to export.</li>
  * <li>Create a class that extends {@link Qi4jApplicationBootstrap}.</li>
@@ -32,32 +33,33 @@ import org.springframework.context.ApplicationContextAware;
  * <li>Assemble qi4j application by implementing #assemble method.</li>
  * <li>Sets the identity of bean factory service. This identity is the spring
  * bean name.</li>
- * <li>Declare qi4j bootstrap in spring xml application context. <br/>
+ * <li>Declare qi4j bootstrap in spring xml application context. </li>
  * 
- * <pre>
- * &lt?xml version="1.0" encoding="UTF-8"?&gt<br/>
+ * <pre><code>
+ * &lt?xml version="1.0" encoding="UTF-8"?&gt
+ *
  * &lt;beans xmlns="http://www.springframework.org/schema/beans"
  * xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  * xmlns:qi4j="http://www.qi4j.org/schema/qi4j/spring"
  * xsi:schemaLocation="
  * http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
  * http://www.qi4j.org/schema/qi4j/spring http://www.qi4j.org/schema/qi4j/spring/spring-0.5.xsd"&gt
- * <br/>
+ *
  * &lt!-- class that implements Qi4jApplicationBootstrap --&gt
- * <br/>
+ *
  * &lt;qi4j:bootstrap class="org.qi4j.library.spring.bootstrap.Qi4jTestBootstrap"/&gt
- * <br/>
+ *
  * &lt;bean id="commentServiceHolder" class="org.qi4j.library.spring.bootstrap.CommentServiceHolder"&gt
- * <p/>
+ *
  * &lt;constructor-arg ref="commentService"/&gt &lt;!-- Reference qi4j comment service --&gt
- * <br/>
+ *
  * &lt;/bean&gt;
- * </pre>
+ * </code></pre>
  * </li>
  * </ul>
- * <p/>
  * <p>
  * <b>Importing Spring beans as services</b><br/>
+ * </p>
  * <ol>
  * <li>Application bootstrap class must implement interface
  * {@link ApplicationContextAware}.</li>
@@ -65,11 +67,10 @@ import org.springframework.context.ApplicationContextAware;
  * {@link ModuleAssembly#importedServices(Class...)}.</li>
  * <li>Set concrete Spring bean as meta-data of the imported service.</li>
  * </ol>
- * </p>
- * 
+ * <p>
  * Look at org.qi4j.library.spring.bootstrap.Qi4jExportServiceTest for sample
  * implementation.
- * 
+ * </p>
  */
 public abstract class Qi4jApplicationBootstrap
 {

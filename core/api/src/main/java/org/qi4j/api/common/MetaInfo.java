@@ -43,19 +43,19 @@ import static org.qi4j.api.util.Classes.typesOf;
  * To set the MetaInfo on a Composite, call the {@code setMetaInfo()} methods on the various composite declaration
  * types, such as;
  * </p>
- * <code><pre>
+ * <pre><code>
  * public void assemble( ModuleAssembly module )
  *     throws AssemblyException
  * {
- *     Map<String,String> properties = ...;
+ *     Map&lt;String,String&gt; properties = ...;
  *     module.services( MyService.class ).setMetaInfo( properties );
  * }
- * </pre></code>
+ * </code></pre>
  * <p>
  * which can later be retrieved by calling the {@code metaInfo()} method on the composite itself. For the example
  * above that would be;
  * </p>
- * <code><pre>
+ * <pre><code>
  * &#64;Mixins(MyServiceMixin.class)
  * public interface MyService extends ServiceComposite
  * {
@@ -72,8 +72,7 @@ import static org.qi4j.api.util.Classes.typesOf;
  *         props = metaInfo( Map.class );
  *     }
  * }
- * </pre></code>
- * <p>
+ * </code></pre>
  */
 public final class MetaInfo
 {

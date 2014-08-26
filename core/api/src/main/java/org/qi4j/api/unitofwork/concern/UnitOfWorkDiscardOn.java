@@ -23,35 +23,39 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation to denote the unit of work discard policy.
+ * <p>
  * By default, discard is applied on any method that has {@link UnitOfWorkPropagation} and any exception is thrown.
- * <p/>
+ * </p>
+ * <p>
  * Apply {@code UnitOfWorkDiscardOn} to override the default settings.
- * <p/>
- * <p/>
+ * </p>
+ * <p>
  * Usage example:
+ * </p>
  * <pre>
  * <code>
- * <p/>
+ *
  * &#64;Concerns( UnitOfWorkConcern.class )
  * public class MyBusinessServiceMixin implements BusinessService
  * {
  *   &#64;Structure UnitOfWorkFactory uowf;
- * <p/>
+ *
  *   &#64;UnitOfWorkDiscardOn( MyBusinessException.class )
  *   public void myBusinessMethod()
  *   {
  *     // Must invoke current unit of work.
  *     UnitOfWork uow = uowf.currentUnitOfWork();
- * <p/>
+ *
  *     // Perform business logic
  *   }
  * }
  * </code>
  * </pre>
- * <p/>
- * <p/>
+ *
+ * <p>
  * The unit of work will be discarded iff {@code MyBusinessException} exceptions or its subclass is thrown from within
  * {@code myBusinessMethod} method.
+ * </p>
  */
 @Retention( RUNTIME )
 @Target( METHOD )

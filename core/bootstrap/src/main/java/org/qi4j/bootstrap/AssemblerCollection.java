@@ -20,8 +20,9 @@ import java.util.Collection;
 
 /**
  * Assembler that delegates to a collection of Assemblers.
- * <p/>
+ * <p>
  * Makes it easy to collect and compose assemblers into bigger assemblers.
+ * </p>
  */
 public final class AssemblerCollection
     implements Assembler

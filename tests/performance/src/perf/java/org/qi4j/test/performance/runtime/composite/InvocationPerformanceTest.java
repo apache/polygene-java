@@ -32,11 +32,13 @@ import org.qi4j.test.AbstractQi4jTest;
 
 /**
  * Invocation performance test.
- * <p/>
+ * <p>
  * Don't forget to add VM value "-server" before running this test!
- * <p/>
+ * </p>
+ * <p>
  * These tests are very sensitive to warmup of JVM, hence the duplication. Often the first round
  * is only for getting the code jitted, and the second round is what you want to look at.
+ * </p>
  */
 public class InvocationPerformanceTest
     extends AbstractQi4jTest

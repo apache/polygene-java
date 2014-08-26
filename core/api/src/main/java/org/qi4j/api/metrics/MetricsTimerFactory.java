@@ -34,7 +34,6 @@ public interface MetricsTimerFactory extends MetricsFactory
      *
      * @return A Metric instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
      *
-     * @see DefaultMetric
      */
     MetricsTimer createTimer( Class<?> origin, String name, TimeUnit duration, TimeUnit rate );
 }

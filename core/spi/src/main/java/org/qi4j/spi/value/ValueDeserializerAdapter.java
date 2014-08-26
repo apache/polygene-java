@@ -84,7 +84,7 @@ import static org.qi4j.functional.Iterables.first;
  *     Some other Plain values are expected in given formats:
  * </p>
  * <ul>
- *     <li>BigInteger and BigDecimal depends on ValueSerializer.{@link Options};</li>
+ *     <li>BigInteger and BigDecimal depends on {@link org.qi4j.api.value.ValueSerializer.Options};</li>
  *     <li>Date as String in ISO-8601, {@literal @millis@} or {@literal /Date(..)} Microsoft format;</li>
  *     <li>DateTime (JodaTime) as a ISO-8601 String with optional timezone offset;</li>
  *     <li>LocalDateTime (JodaTime) as whatever {@link LocalDateTime#LocalDateTime(java.lang.Object)} accept as {@literal instant};</li>

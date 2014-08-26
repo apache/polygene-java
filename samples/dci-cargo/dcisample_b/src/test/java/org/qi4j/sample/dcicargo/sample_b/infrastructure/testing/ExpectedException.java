@@ -22,19 +22,30 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
- * ExpectedException
- *
+ * ExpectedException.
+ * <p>
  * Wrapper of {@link org.junit.rules.ExpectedException} in order to provide custom
  * expected exception one-liners for convenience.
- *
+ * </p>
+ * <p>
  * If you're checking certain DomainSpecificException often, you could wrap it here too...
- *
- * {@see http://alexruiz.developerblogs.com/?p=1530}
- *
+ * </p>
+ * <p>
+ * See <a href="http://alexruiz.developerblogs.com/?p=1530">http://alexruiz.developerblogs.com/?p=1530</a>
+ * </p>
+ * <p>
  * NOTE!
+ * </p>
+ * <p>
  * 1. the check for the expected exception must be immediately above the code that is expected to throw such exception
+ * </p>
+ * <p>
  * 2. the line of code that is expected to throw an exception should be the last line in the test method
- * {@see http://java.dzone.com/articles/unexpected-behavior-junits}
+ * </p>
+ * <p>
+ * See <a href="http://java.dzone.com/articles/unexpected-behavior-junits">http://java.dzone.com/articles/unexpected-behavior-junits</a>
+ * </p>
+ * <p>
  */
 public class ExpectedException implements TestRule
 {

@@ -29,8 +29,6 @@ public interface MetricsCounterFactory extends MetricsFactory
      * @param name   A human readable, short name of the metric.
      *
      * @return A Metric instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
-     *
-     * @see DefaultMetric
      */
     MetricsCounter createCounter( Class<?> origin, String name );
 }

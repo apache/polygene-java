@@ -25,9 +25,10 @@ import org.qi4j.api.injection.InjectionScope;
  * Annotation to denote the injection of a
  * resource specific for the module which the
  * injected object/fragment is instantiated in.
- * <p/>
+ * <p>
  * Valid types are:
- * <code><pre>
+ * </p>
+ * <pre><code>
  * - TransientBuilderFactory
  * - ObjectBuilderFactory
  * - UnitOfWorkFactory
@@ -37,7 +38,7 @@ import org.qi4j.api.injection.InjectionScope;
  * - Application
  * - Qi4j
  * - Qi4jSPI
- * </pre></code>
+ * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

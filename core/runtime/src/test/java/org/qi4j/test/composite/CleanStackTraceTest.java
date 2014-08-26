@@ -34,8 +34,9 @@ import static org.junit.Assume.assumeTrue;
 
 /**
  * Test if the stacktrace is cleaned up properly.
- * <p/>
+ * <p>
  * NOTE: This satisfiedBy MUST NOT be inside package org.qi4j.runtime, or it will fail.
+ * </p>
  */
 public class CleanStackTraceTest
     extends AbstractQi4jTest

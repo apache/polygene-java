@@ -24,10 +24,11 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Specification;
 
 /**
- * The ModuleAssembly is used to register any information about
- * what the module should contain, such as composites, entities and services.
- * <p/>
+ * The ModuleAssembly is used to register any information about * what the module should contain, such as composites,
+ * entities and services.
+ * <p>
  * Use the methods and the fluent API's to declare how the module should be constructed.
+ * </p>
  */
 public interface ModuleAssembly
 {
@@ -42,8 +43,9 @@ public interface ModuleAssembly
      * Get an assembly for a particular Module. If this is called many times with the same names, then the same module
      * is affected.
      *
-     * @param layerName The name of the Layer
+     * @param layerName  The name of the Layer
      * @param moduleName The name of the Module to retrieve or create.
+     *
      * @return The ModuleAssembly for the Module.
      */
     ModuleAssembly module( String layerName, String moduleName );
@@ -69,9 +71,10 @@ public interface ModuleAssembly
      * Module activation and passivation.
      *
      * @param activators the module activators
+     *
      * @return the assembly
-     */    
-    @SuppressWarnings( { "unchecked","varargs" } )
+     */
+    @SuppressWarnings({ "unchecked", "varargs" })
     ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators );
 
     /**

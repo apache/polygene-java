@@ -16,12 +16,13 @@ package org.qi4j.io;
 
 /**
  * Input source of data.
- * <p/>
+ * <p>
  * Invoke transferTo to send data from this input to given output. transferTo can be invoked
  * as many times as you want. The transferTo implementation must ensure that any exceptions thrown
  * by the Input or the Output which transferred data is sent to is handled properly, i.e. that resources
  * are closed. Any client code to transferTo calls should not have to bother with resource management,
  * but may catch exceptions anyway for logging and similar purposes.
+ * </p>
  */
 // START SNIPPET: input
 public interface Input<T, SenderThrowableType extends Throwable>

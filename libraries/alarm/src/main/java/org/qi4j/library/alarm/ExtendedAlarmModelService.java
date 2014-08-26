@@ -31,14 +31,12 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 
 /**
- * <p>
  * The Standard Model is centered around the Normal, Activated, Acknowledged
  * Deactivated, Reactivated, Blocked and Disabled states, and the triggers "activate", "deactivate",
  * "acknowledge", "block", "unblock", "enable" and "disable". The following matrix details the
- * resulting grid;
- * <p>
- * <table>
- * <tr><th>Initial State</th>* <th>Trigger</th><th>Resulting State</th><th>Event Generated</th></tr>
+ * resulting grid.
+ * <table summary="Transitions">
+ * <tr><th>Initial State</th><th>Trigger</th><th>Resulting State</th><th>Event Generated</th></tr>
  * <tr><td>Normal</td><td>activate</td><td>Activated</td><td>activation</td></tr>
  * <tr><td>Normal</td><td>deactivate</td><td>Normal</td><td>-</td></tr>
  * <tr><td>Normal</td><td>acknowledge</td><td>Normal</td><td>-</td></tr>
@@ -78,7 +76,6 @@ import org.qi4j.api.value.ValueBuilderFactory;
  * <tr><td>Activated</td><td>enable</td><td>Activated</td><td>-</td></tr>
  * <tr><td>Reactivated</td><td>enable</td><td>Reactivated</td><td>-</td></tr>
  * <tr><td>Disabled</td><td>enable</td><td>Normal</td><td>enable</td></tr>
- *
  * </table>
  */
 

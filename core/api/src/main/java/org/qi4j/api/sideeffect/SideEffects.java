@@ -23,7 +23,6 @@ import java.lang.annotation.Target;
 /**
  * This annotation is used by composites and mixins to declare what SideEffects
  * should apply to the type or specific method.
- * <p/>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.TYPE, ElementType.METHOD } )

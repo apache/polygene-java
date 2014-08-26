@@ -24,12 +24,14 @@ import org.qi4j.api.injection.InjectionScope;
 /**
  * Annotation to denote the injection of a reference to the same Composite
  * as the fragment is a part of.
- * <p/>
+ * <p>
  * If the Composite type does not implement the type of the field or parameter
  * then it will be referencing a private mixin.
- * <p/>
+ * </p>
+ * <p>
  * Calls to the reference will have the same semantics as calls to the Composite itself.
  * Specifically the same set of Modifiers will be used.
+ * </p>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

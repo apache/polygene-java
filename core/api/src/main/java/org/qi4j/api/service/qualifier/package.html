@@ -27,16 +27,16 @@
         </blockquote>
         <p>
             Let's say these SomeImportedService are only sometimes available. Then whenever iterator() is called the
-            {@see org.qi4j.api.service.qualifier.Active} tag can kick in and filter out those whose
+            {@link org.qi4j.api.service.qualifier.Active} tag can kick in and filter out those whose
             ServiceReference.isActive() returns false.
         </p>
         <p>Standard ones defined in the API are:</p>
         <ul>
-            <li>{@see org.qi4j.api.service.qualifier.Active}</li>
-            <li>{@see org.qi4j.api.service.qualifier.Available}</li>
-            <li>{@see org.qi4j.api.service.qualifier.HasMetaInfo}</li>
-            <li>{@see org.qi4j.api.service.qualifier.IdentifiedBy}</li>
-            <li>{@see org.qi4j.api.service.qualifier.Tagged}</li>
+            <li>{@link org.qi4j.api.service.qualifier.Active}</li>
+            <li>{@link org.qi4j.api.service.qualifier.Available}</li>
+            <li>{@link org.qi4j.api.service.qualifier.HasMetaInfo}</li>
+            <li>{@link org.qi4j.api.service.qualifier.IdentifiedBy}</li>
+            <li>{@link org.qi4j.api.service.qualifier.Tagged}</li>
         </ul>
         <p>See tests and API for more examples, and how to implement your own qualifiers.</p>
     </body>

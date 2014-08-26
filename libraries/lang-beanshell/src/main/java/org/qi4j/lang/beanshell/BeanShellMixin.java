@@ -41,9 +41,12 @@ import org.qi4j.library.scripting.ScriptReloadable;
  * Each method in an interface is declared by a BeanShell method
  * in a file located in classpath with the name "&lt;interface&gt;.bsh",
  * where the interface name includes the package, and has "." replaced with "/".
- * <p/>
+ * <p>
  * Example:
+ * </p>
+ * <p>
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.bsh
+ * </p>
  */
 @AppliesTo( BeanShellMixin.AppliesTo.class )
 public class BeanShellMixin

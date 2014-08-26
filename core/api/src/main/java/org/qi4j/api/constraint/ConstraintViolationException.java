@@ -38,10 +38,6 @@ import org.qi4j.functional.Iterables;
  * violations, together with the Composite instance it happened on as well as the Method that
  * was invoked. The Exception also has support for localized messages of these violations.
  * </p>
- * <p>
- * <b>This class is still under evolution. Beware that the methods, formatting, Locale spec may
- * change. It will be stable before the 1.0 release.
- * </p>
  */
 public class ConstraintViolationException
     extends IllegalArgumentException
@@ -95,13 +91,15 @@ public class ConstraintViolationException
 
     /**
      * Creates localized messages of all the constraint violations that has occured.
-     * <p/>
-     * The key &nbsp;"<code>Qi4j_ConstraintViolation_<i><strong>CompositeType</strong></code></i>" will be used to lookup the text formatting
+     * <p>
+     * The key "<code>Qi4j_ConstraintViolation_<i><strong>CompositeType</strong></i></code>" will be used to lookup the text formatting
      * pattern from the ResourceBundle, where <strong><code><i>CompositeType</i></code></strong> is the
      * class name of the Composite where the constraint was violated. If such key does not exist, then the
      * key &nbsp;"<code>Qi4j_ConstraintViolation</code>" will be used, and if that one also doesn't exist, or
      * the resourceBundle argument is null, then the default patterns will be used;
-     * <table><tr><th>Type of Composite</th><th>Pattern used</th></tr>
+     * </p>
+     * <table summary="Localization of constraint vioations.">
+     * <tr><th>Type of Composite</th><th>Pattern used</th></tr>
      * <tr><td>Composite</td>
      * <td><code>Constraint Violation in {2}.{3} with constraint {4}, in composite \n{0} of type {1}</code></td>
      * </tr>
@@ -113,7 +111,7 @@ public class ConstraintViolationException
      * </tr>
      * </table>
      * Then format each ConstraintViolation according to such pattern, where the following argument are passed;
-     * <table><tr><th>Arg</th><th>Value</th></tr>
+     * <table summary="List of arguments available."><tr><th>Arg</th><th>Value</th></tr>
      * <tr>
      * <td>{0}</td>
      * <td>Composite instance toString()</td>
@@ -139,8 +137,9 @@ public class ConstraintViolationException
      * <td>toString() of value passed as the argument, or "null" text if argument was null.</td>
      * </tr>
      * </table>
-     * <p/>
+     * <p>
      * <b>NOTE!!!</b> This class is still under construction and will be modified further.
+     * </p>
      *
      * @param bundle The ResourceBundle for Localization, or null if default formatting and locale to be used.
      *
@@ -183,7 +182,7 @@ public class ConstraintViolationException
             String name = violation.name();
             Object value = violation.value();
             String classes;
-            if( Iterables.count( instanceTypes) == 1 )
+            if( Iterables.count( instanceTypes ) == 1 )
             {
                 classes = Iterables.first( instanceTypes ).getSimpleName();
             }

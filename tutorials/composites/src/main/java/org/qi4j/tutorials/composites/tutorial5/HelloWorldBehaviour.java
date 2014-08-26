@@ -5,8 +5,9 @@ import org.qi4j.api.mixin.Mixins;
 /**
  * This interface contains only the behaviour
  * of the HelloWorld object.
- * <p/>
+ * <p>
  * It declares what Mixin to use as default implementation.
+ * </p>
  */
 @Mixins( HelloWorldBehaviourMixin.class )
 public interface HelloWorldBehaviour

@@ -35,11 +35,11 @@ import org.qi4j.api.injection.InjectionScope;
  *  - An Annotation of a specific type
  * </code></pre>
  * Examples:
- * <code><pre>
+ * <pre><code>
  * &#64;Invocation Method theInvokedMethod
  * &#64;Invocation AnnotationElement annotations
  * &#64;Invocation Matches matchesAnnotation
- * </pre></code>
+ * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

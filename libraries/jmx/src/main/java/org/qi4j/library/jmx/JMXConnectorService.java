@@ -36,11 +36,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This service starts a JMX RMI connector. It also creates an RMI-registry
+ * This service starts a JMX RMI connector.
+ * <p>
+ * It also creates an RMI-registry
  * to register the connector. The service is configured by changing the
  * settings in the JMXConnectorConfiguration.
- * <p/>
+ * </p>
+ * <p>
  * Authentication is done with an optional username+password in the configuration.
+ * </p>
  */
 @Mixins(JMXConnectorService.JmxConnectorMixin.class)
 @Activators( JMXConnectorService.Activator.class )

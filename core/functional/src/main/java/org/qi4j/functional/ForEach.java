@@ -18,9 +18,12 @@ import java.util.Iterator;
 /**
  * When using Iterables with map() and filter() the code often reads "in reverse", with the first item last in the code.
  * Example: Iterables.map(function,Iterables.filter(specification, iterable))
- * <p/>
+ * <p>
  * This ForEach class reverses that order and makes the code more readable, and allows easy application of visitors on iterables.
+ * </p>
+ * <p>
  * Example: forEach(iterable).filter(specification).map(function).visit(visitor)
+ * </p>
  */
 public final class ForEach<T>
     implements Iterable<T>

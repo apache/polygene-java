@@ -21,13 +21,15 @@ import org.qi4j.functional.Specification;
 
 /**
  * Filter services based on whether they are active or not.
- *
+ * <p>
  * At an injection point you can do this:
- *
+ * </p>
  * <pre><code>
- * &#64;Service @Active MyService service;
+ * &#64;Service &#64;Active MyService service;
  * </code></pre>
+ * <p>
  * to get only a service that is currently active.
+ * </p>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Qualifier( Active.ActiveQualifier.class )
@@ -35,7 +37,7 @@ public @interface Active
 {
     /**
      * Active Annotation Qualifier.
-     * See {@see Active}.
+     * See {@link Active}.
      */
     public final class ActiveQualifier
         implements AnnotationQualifier<Active>

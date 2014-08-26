@@ -20,17 +20,22 @@ import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Specification;
 
 /**
- * Filter services based on Meta Info being declared on the Service. Meta Info of any type can be set on the service
- * during assembly, e.g.;
- * <code><pre>
+ * Filter services based on Meta Info being declared on the Service.
+ * <p>
+ * Meta Info of any type can be set on the service during assembly, e.g.;
+ * </p>
+ * <pre><code>
  * module.addService( MyService.class ).setMetaInfo( new MyCustomInfo(someData) );
- * </pre></code>
- * <p/>
+ * </code></pre>
+ * <p>
  * and then at an injection point you can do this:
- * <code><pre>
+ * </p>
+ * <pre><code>
  * &#64;Service &#64;HasMetaInfo(MyCustomInfo.class) MyService service;
- * </pre></code>
+ * </code></pre>
+ * <p>
  * to get only a service that has a MyCustomInfo instance set as meta info.
+ * </p>
  */
 @Retention( RetentionPolicy.RUNTIME )
 @Qualifier( HasMetaInfo.HasMetaInfoQualifier.class )
@@ -57,7 +62,7 @@ public @interface HasMetaInfo
 
     /**
      * HasMetaInfo Annotation Qualifier.
-     * See {@see HasMetaInfo}.
+     * See {@link HasMetaInfo}.
      */
     public static class HasMetaInfoQualifier
         implements AnnotationQualifier<HasMetaInfo>

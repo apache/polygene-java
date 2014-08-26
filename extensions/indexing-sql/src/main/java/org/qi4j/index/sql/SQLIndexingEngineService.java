@@ -26,11 +26,12 @@ import org.qi4j.spi.query.EntityFinder;
 
 /**
  * This is actual service responsible of managing indexing and queries and creating database structure.
- * <p/>
+ * <p>
  * The reason why all these components are in one single service is that they all require some data about
  * the database structure. Rather than exposing all of that data publicly to be available via another service,
  * it is stored in a state-style private mixin. Thus all the database-related data is available only to this
  * service, and no one else.
+ * </p>
  */
 @Mixins( {
     SQLEntityFinder.class,

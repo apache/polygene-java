@@ -6,10 +6,10 @@ import org.qi4j.api.mixin.Mixins;
 // START SNIPPET: solution
 
 /**
- * This Composite interface declares all the Fragments
- * of the HelloWorld composite.
- * <p/>
+ * This Composite interface declares all the Fragments of the HelloWorld composite.
+ * <p>
  * Currently it only declares one Mixin.
+ * </p>
  */
 @Mixins( HelloWorldMixin.class )
 public interface HelloWorldComposite

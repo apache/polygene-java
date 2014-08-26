@@ -23,7 +23,7 @@ package org.qi4j.api.composite;
  * <p>
  * For instance;
  * </p>
- * <code><pre>
+ * <pre><code>
  * public interface AbcComposite extends TransientComposite, Abc
  * {}
  *
@@ -38,7 +38,7 @@ package org.qi4j.api.composite;
  *
  *
  * TransientBuilder cb = factory.newTransientBuilder( Abc.class );
- * </pre></code>
+ * </code></pre>
  * <p>
  * In the code above, both the AbcComposite and DefComposite implement Abc, and therefore
  * the <code>newTransientBuilder</code> method can not unambiguously figure out which

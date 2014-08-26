@@ -28,7 +28,7 @@ import org.qi4j.functional.Specification;
  * and then at an injection point you can do this:
  *
  * <pre><code>
- * &#64;Service @Tagged("onetag") MyService service;
+ * &#64;Service &#64;Tagged("onetag") MyService service;
  * </code></pre>
  * to get only a service tagged with MyService. If several match only the first match is used.
  */
@@ -40,7 +40,7 @@ public @interface Tagged
 
     /**
      * Tagged Annotation Qualifier.
-     * See {@see Tagged}.
+     * See {@link Tagged}.
      */
     public final class TaggedQualifier
         implements AnnotationQualifier<Tagged>

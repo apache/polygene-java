@@ -16,21 +16,23 @@ package org.qi4j.api.entity;
 
 /**
  * Lifecycle interface for all Composites.
- * <p/>
+ * <p>
  * This Lifecycle interface is a built-in feature of the Qi4j runtime, similar to the Initializable interface.
  * Any Mixin that implements this interface AND is part of an EntityComposite will have these two methods called
  * upon creation/removal of the EntityComposite instance to/from the EntityStore. Meaning, the create method is called
  * only when the identifiable EntityComposite is created the first time, and not when it is read from its persisted
  * state and created into memory.
- * <p/>
+ * </p>
+ * <p>
  * Example;
- * <code><pre>
+ * </p>
+ * <pre><code>
  * public interface System
  * {
  *     Property&lt;User&gt; admin();
  * }
  *
- * public class SystemAdminMixin<LifeCycle>
+ * public class SystemAdminMixin&lt;LifeCycle&gt;
  *     implements System, Lifecyle, ...
  * {
  *      &#64;Structure private UnitOfWork uow;
@@ -54,17 +56,17 @@ package org.qi4j.api.entity;
  * public interface SystemEntity extends System, EntityComposite
  * {}
  *
- * </pre></code>
+ * </code></pre>
  */
 public interface Lifecycle
 {
 
     /**
      * Creation callback method.
-     * <p/>
+     * <p>
      * Called by the Qi4j runtime before the newInstance of the entity completes, before the constraints are checked,
      * allowing for additional initialization.
-     *
+     * </p>
      * @throws LifecycleException if the entity could not be created
      */
     void create()
@@ -72,10 +74,10 @@ public interface Lifecycle
 
     /**
      * Removal callback method.
-     * <p/>
+     * <p>
      * Called by the Qi4j runtime before the entity is removed from the system, allowing
      * for clean-up operations.
-     *
+     * </p>
      * @throws LifecycleException if the entity could not be removed
      */
     void remove()

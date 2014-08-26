@@ -32,9 +32,12 @@ import org.qi4j.library.scripting.ScriptReloadable;
  * using Rhino. Each method in an interface is declared as a JS function
  * in a file located in classpath with the name "<interface>.<method>.js",
  * where the interface name includes the package, and has "." replaced with "/".
- * <p/>
+ * <p>
  * Example:
+ * </p>
+ * <pre><code>
  * org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
+ * </code></pre>
  */
 @AppliesTo( JavaScriptMixin.AppliesTo.class )
 public class JavaScriptMixin

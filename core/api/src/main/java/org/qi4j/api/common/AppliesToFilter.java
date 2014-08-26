@@ -26,7 +26,8 @@ import java.lang.reflect.Method;
  * <p>
  * The starting point is the basic use of AppliesToFilter, where the &#64;AppliesTo annotation is given an
  * AppliesToFilter implementation as an argument, for instance at a Mixin implementation;
- * <pre></code>
+ * </p>
+ * <pre><code>
  * &#64;AppliesTo( MyAppliesToFilter.class )
  * public class SomeMixin
  *     implements InvocationHandler
@@ -43,6 +44,7 @@ import java.lang.reflect.Method;
  *     }
  * }
  * </code></pre>
+ * <p>
  * In the case above, the generic mixin will only be applied to the methods that that is defined by the
  * AppliesToFilter. This is the primary way to define limits on the application of generic fragments, since
  * especially mixins are rarely applied to all methods.

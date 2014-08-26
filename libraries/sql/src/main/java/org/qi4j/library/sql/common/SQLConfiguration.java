@@ -19,7 +19,7 @@ import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
 /**
- * Typical configuration for service, which uses a {@link DataSource} as connection to SQL
+ * Typical configuration for service, which uses a {@link javax.sql.DataSource} as connection to SQL
  * database, and given schema name as schema to create tables in.
  */
 public interface SQLConfiguration
