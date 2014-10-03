@@ -1,6 +1,7 @@
 package org.qi4j.samples.forum.assembler;
 
 import java.lang.reflect.Modifier;
+import java.util.function.Function;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.structure.Application;
@@ -16,7 +17,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.entitystore.neo4j.NeoConfiguration;
 import org.qi4j.entitystore.neo4j.NeoEntityStoreService;
-import org.qi4j.functional.Function;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.rest.common.ValueAssembler;
 import org.qi4j.library.rest.server.assembler.RestServerAssembler;
@@ -75,7 +75,7 @@ public class ForumAssembler
                 withValuesModuleFinder( new Function<Application, Module>()
             {
                 @Override
-                public Module map( Application app )
+                public Module apply( Application app )
                 {
                     return app.findModule( "REST", "Values" );
                 }

@@ -18,12 +18,12 @@
 package org.qi4j.index.solr;
 
 import java.io.File;
+import java.util.function.Predicate;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Specification;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.indexing.AbstractNamedQueryTest;
@@ -59,7 +59,7 @@ public class SolrNamedQueryTest
     }
 
     @Override
-    protected Specification<Composite> createNamedQueryDescriptor( String queryName, String queryString )
+    protected Predicate<Composite> createNamedQueryDescriptor( String queryName, String queryString )
     {
         return SolrExpressions.search( queryString );
     }

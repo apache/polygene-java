@@ -20,9 +20,9 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 import org.junit.Test;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -61,7 +61,7 @@ public class ClassesTest
     {
         Iterable<Type> types = Iterables.filter( Methods.HAS_METHODS, interfacesOf( C.class ) );
         assertThat( "one interface returned", count( types ), equalTo( 1L ) );
-        assertThat( "correct interface returned", Iterables.matchesAny( (Specification) Specifications.in( B.class ), Iterables
+        assertThat( "correct interface returned", Iterables.matchesAny( (Predicate) Specifications.in( B.class ), Iterables
             .<Class<?>>cast( types ) ), is( true ) );
     }
 
@@ -83,7 +83,7 @@ public class ClassesTest
     {
         Type returnType = Generics.class.getMethod( "wildcard" ).getGenericReturnType();
         Type wildcardType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0];
-        assertThat( "Return type is A", Classes.RAW_CLASS.map( wildcardType ), equalTo( (Class) A.class ) );
+        assertThat( "Return type is A", Classes.RAW_CLASS.apply( wildcardType ), equalTo( (Class) A.class ) );
     }
 
     @Test

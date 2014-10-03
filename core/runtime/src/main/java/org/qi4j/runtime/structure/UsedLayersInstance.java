@@ -15,9 +15,9 @@
 package org.qi4j.runtime.structure;
 
 import java.util.List;
+import java.util.function.Function;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.functional.Function;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
@@ -42,7 +42,7 @@ public final class UsedLayersInstance
         return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<ObjectModel>>>()
         {
             @Override
-            public Iterable<ModelModule<ObjectModel>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<ObjectModel>> apply( LayerInstance layerInstance )
             {
                 return layerInstance.visibleObjects( Visibility.application );
             }
@@ -54,7 +54,7 @@ public final class UsedLayersInstance
         return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<TransientModel>>>()
         {
             @Override
-            public Iterable<ModelModule<TransientModel>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<TransientModel>> apply( LayerInstance layerInstance )
             {
                 return layerInstance.visibleTransients( Visibility.application );
             }
@@ -66,7 +66,7 @@ public final class UsedLayersInstance
         return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<EntityModel>>>()
         {
             @Override
-            public Iterable<ModelModule<EntityModel>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<EntityModel>> apply( LayerInstance layerInstance )
             {
                 return layerInstance.visibleEntities( Visibility.application );
             }
@@ -78,7 +78,7 @@ public final class UsedLayersInstance
         return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<ValueModel>>>()
         {
             @Override
-            public Iterable<ModelModule<ValueModel>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<ValueModel>> apply( LayerInstance layerInstance )
             {
                 return layerInstance.visibleValues( Visibility.application );
             }
@@ -90,7 +90,7 @@ public final class UsedLayersInstance
         return flattenIterables( map( new Function<LayerInstance, Iterable<ServiceReference<?>>>()
         {
             @Override
-            public Iterable<ServiceReference<?>> map( LayerInstance layerInstance )
+            public Iterable<ServiceReference<?>> apply( LayerInstance layerInstance )
             {
                 return layerInstance.visibleServices( Visibility.application );
             }

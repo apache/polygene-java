@@ -18,8 +18,8 @@ package org.qi4j.api.value;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.qi4j.api.composite.AmbiguousTypeException;
-import org.qi4j.functional.Function;
 
 /**
  * Use a ValueSerializer to serialize values state.

@@ -1,5 +1,6 @@
 package org.qi4j.api;
 
+import java.util.function.Predicate;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.activation.ActivationException;
@@ -16,7 +17,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.test.EntityTestAssembler;
 
 /**
@@ -59,17 +59,17 @@ public class OperatorsTest
             QueryBuilder<TestEntity> builder = assembler.module().newQueryBuilder( TestEntity.class );
 
             {
-                Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class )
+                Predicate<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class )
                                                                           .foo(), "Bar" );
-                Assert.assertTrue( where.satisfiedBy( testEntity ) );
+                Assert.assertTrue( where.test( testEntity ) );
                 System.out.println( where );
             }
             {
-                Specification<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class )
+                Predicate<Composite> where = QueryExpressions.eq( QueryExpressions.templateFor( TestEntity.class )
                                                                           .value()
                                                                           .get()
                                                                           .bar(), "Xyz" );
-                Assert.assertTrue( where.satisfiedBy( testEntity ) );
+                Assert.assertTrue( where.test( testEntity ) );
                 System.out.println( where );
 
                 Assert.assertTrue( builder.where( where ).newQuery( entities ).find().equals( testEntity ) );

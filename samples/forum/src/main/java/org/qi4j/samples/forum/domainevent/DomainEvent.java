@@ -3,6 +3,7 @@ package org.qi4j.samples.forum.domainevent;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
+import java.util.function.Function;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.concern.GenericConcern;
 import org.qi4j.api.injection.scope.Structure;
@@ -12,7 +13,6 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.library.rest.server.api.ObjectSelection;
 import org.restlet.Request;
@@ -62,7 +62,7 @@ public @interface DomainEvent
             Iterables.addAll( prototype.selection().get(), Iterables.map( new Function<Object, String>()
             {
                 @Override
-                public String map( Object o )
+                public String apply( Object o )
                 {
                     return o.toString();
                 }

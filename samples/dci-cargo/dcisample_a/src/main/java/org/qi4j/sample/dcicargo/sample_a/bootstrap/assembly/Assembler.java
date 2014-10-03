@@ -17,6 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.bootstrap.assembly;
 
+import java.util.function.Function;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueSerialization;
@@ -27,7 +28,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.functional.Function;
 import org.qi4j.index.rdf.RdfIndexingEngineService;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
 import org.qi4j.library.rdf.entity.EntityTypeSerializer;
@@ -255,7 +255,7 @@ public class Assembler
             .setMetaInfo( new Function<Application, Module>()
         {
             @Override
-            public Module map( Application application )
+            public Module apply( Application application )
             {
                 return application.findModule( "CONTEXT", "CONTEXT-ContextSupport" );
             }

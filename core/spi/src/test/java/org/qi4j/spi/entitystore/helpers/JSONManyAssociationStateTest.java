@@ -16,12 +16,12 @@
 package org.qi4j.spi.entitystore.helpers;
 
 import java.util.List;
+import java.util.function.Function;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.functional.Function;
 import org.qi4j.spi.entity.EntityStatus;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -125,7 +125,7 @@ public class JSONManyAssociationStateTest
         List<String> refList = toList( map( new Function<EntityReference, String>()
         {
             @Override
-            public String map( EntityReference from )
+            public String apply( EntityReference from )
             {
                 return from.identity();
             }

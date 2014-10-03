@@ -16,8 +16,8 @@ package org.qi4j.api.service.qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.function.Predicate;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.functional.Specification;
 
 /**
  * Filter services based on whether they are active or not.
@@ -43,7 +43,7 @@ public @interface Active
         implements AnnotationQualifier<Active>
     {
         @Override
-        public <T> Specification<ServiceReference<?>> qualifier( Active active )
+        public <T> Predicate<ServiceReference<?>> qualifier( Active active )
         {
             return ServiceQualifier.whereActive();
         }

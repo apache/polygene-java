@@ -18,6 +18,7 @@
 package org.qi4j.index.rdf.query;
 
 import java.util.Map;
+import java.util.function.Predicate;
 import org.openrdf.query.QueryLanguage;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
@@ -27,7 +28,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.query.grammar.QuerySpecification;
 import org.qi4j.api.service.ServiceComposite;
-import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -55,7 +55,7 @@ public interface RdfQueryService
 
         @Override
         public Iterable<EntityReference> findEntities( Class<?> resultType,
-                                                       Specification<Composite> whereClause,
+                                                       Predicate<Composite> whereClause,
                                                        OrderBy[] orderBySegments,
                                                        Integer firstResult,
                                                        Integer maxResults,
@@ -82,7 +82,7 @@ public interface RdfQueryService
         }
 
         @Override
-        public EntityReference findEntity( Class<?> resultType, Specification<Composite> whereClause, Map<String, Object> variables )
+        public EntityReference findEntity( Class<?> resultType, Predicate<Composite> whereClause, Map<String, Object> variables )
             throws EntityFinderException
         {
             final SingleQualifiedIdentityResultCallback singleCallback = new SingleQualifiedIdentityResultCallback();
@@ -102,7 +102,7 @@ public interface RdfQueryService
         }
 
         @Override
-        public long countEntities( Class<?> resultType, Specification<Composite> whereClause, Map<String, Object> variables )
+        public long countEntities( Class<?> resultType, Predicate<Composite> whereClause, Map<String, Object> variables )
             throws EntityFinderException
         {
             if (QuerySpecification.isQueryLanguage( "SERQL", whereClause ))

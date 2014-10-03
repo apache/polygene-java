@@ -1,7 +1,7 @@
 package org.qi4j.library.struts2.util;
 
 import java.util.Arrays;
-import org.qi4j.functional.Function;
+import java.util.function.Function;
 import org.qi4j.functional.Iterables;
 
 import static java.lang.Character.isLowerCase;

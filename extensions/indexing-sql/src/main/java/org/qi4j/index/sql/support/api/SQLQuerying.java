@@ -20,10 +20,10 @@ package org.qi4j.index.sql.support.api;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinderException;
 
 /**
@@ -53,7 +53,7 @@ public interface SQLQuerying
      */
     public String constructQuery( //
         Class<?> resultType, //
-        @Optional Specification<Composite> whereClause, //
+        @Optional Predicate<Composite> whereClause, //
         @Optional OrderBy[] orderBySegments, //
         @Optional Integer firstResult, //
         @Optional Integer maxResults, //

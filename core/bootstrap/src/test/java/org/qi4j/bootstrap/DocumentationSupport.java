@@ -1,5 +1,6 @@
 package org.qi4j.bootstrap;
 
+import java.util.function.Predicate;
 import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.property.Property;
@@ -9,15 +10,14 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 
 public class DocumentationSupport
 {
 
-    public static Specification<ObjectAssembly> hasMyTypeSpecification = new Specification<ObjectAssembly>()
+    public static Predicate<ObjectAssembly> hasMyTypeSpecification = new Predicate<ObjectAssembly>()
     {
 
-        public boolean satisfiedBy( ObjectAssembly item )
+        public boolean test( ObjectAssembly item )
         {
             return Iterables.toList( item.types() ).contains( String.class );
         }

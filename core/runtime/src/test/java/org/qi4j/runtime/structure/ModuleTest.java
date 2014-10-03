@@ -33,7 +33,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 /**
- * Test of the Module interface. This should satisfiedBy both the general interface and all possible visibility
+ * Test of the Module interface. This should test both the general interface and all possible visibility
  * rules.
  */
 public class ModuleTest

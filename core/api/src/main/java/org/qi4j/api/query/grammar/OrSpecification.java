@@ -1,7 +1,7 @@
 package org.qi4j.api.query.grammar;
 
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 
 /**
@@ -11,15 +11,15 @@ public class OrSpecification
     extends BinarySpecification
 {
 
-    public OrSpecification( Iterable<Specification<Composite>> operands )
+    public OrSpecification( Iterable<Predicate<Composite>> operands )
     {
         super( operands );
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
-        return Specifications.or( operands ).satisfiedBy( item );
+        return Specifications.or( operands ).test( item );
     }
 
     @Override
@@ -27,7 +27,7 @@ public class OrSpecification
     {
         StringBuilder sb = new StringBuilder( "(" );
         String or = "";
-        for( Specification<Composite> operand : operands )
+        for( Predicate<Composite> operand : operands )
         {
             sb.append( or ).append( operand );
             or = " or ";

@@ -37,7 +37,7 @@ import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
 
 /**
- * Abstract satisfiedBy with tests for any queries against Index/Query engines.
+ * Abstract test with tests for any queries against Index/Query engines.
  */
 public class AbstractAnyQueryTest
     extends AbstractQi4jTest

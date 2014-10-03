@@ -1,6 +1,7 @@
 package org.qi4j.api.query.grammar;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.functional.Iterables;
 
@@ -8,7 +9,7 @@ import org.qi4j.functional.Iterables;
  * Contains All Specification.
  */
 public class ContainsAllSpecification<T>
-    extends ExpressionSpecification
+    implements Predicate<Composite>
 {
     private PropertyFunction<? extends Collection<T>> collectionProperty;
     private Iterable<T> valueCollection;
@@ -32,9 +33,9 @@ public class ContainsAllSpecification<T>
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
-        Collection<T> collection = collectionProperty.map( item ).get();
+        Collection<T> collection = collectionProperty.apply( item ).get();
 
         if( collection == null )
         {

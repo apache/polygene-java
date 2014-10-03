@@ -1,18 +1,18 @@
 package org.qi4j.runtime.structure;
 
+import java.util.function.Predicate;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.ModelDescriptor;
-import org.qi4j.functional.Specification;
 
 /**
  * TODO
  */
 public class VisibilitySpecification
-    implements Specification<ModelDescriptor>
+    implements Predicate<ModelDescriptor>
 {
-    public static final Specification<ModelDescriptor> MODULE = new VisibilitySpecification( Visibility.module );
-    public static final Specification<ModelDescriptor> LAYER = new VisibilitySpecification( Visibility.layer );
-    public static final Specification<ModelDescriptor> APPLICATION = new VisibilitySpecification( Visibility.application );
+    public static final Predicate<ModelDescriptor> MODULE = new VisibilitySpecification( Visibility.module );
+    public static final Predicate<ModelDescriptor> LAYER = new VisibilitySpecification( Visibility.layer );
+    public static final Predicate<ModelDescriptor> APPLICATION = new VisibilitySpecification( Visibility.application );
 
     private final Visibility visibility;
 
@@ -22,7 +22,7 @@ public class VisibilitySpecification
     }
 
     @Override
-    public boolean satisfiedBy( ModelDescriptor item )
+    public boolean test( ModelDescriptor item )
     {
         return item.visibility().ordinal() >= visibility.ordinal();
     }

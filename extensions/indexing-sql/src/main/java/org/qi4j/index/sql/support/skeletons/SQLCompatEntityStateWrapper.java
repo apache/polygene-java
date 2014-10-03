@@ -17,6 +17,8 @@
  */
 package org.qi4j.index.sql.support.skeletons;
 
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.common.QualifiedName;
@@ -27,9 +29,7 @@ import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.type.CollectionType;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.type.ValueType;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -52,16 +52,16 @@ import org.slf4j.LoggerFactory;
     {
 
         @Override
-        public EntityState map( EntityState from )
+        public EntityState apply( EntityState from )
         {
             return new SQLCompatEntityStateWrapper( from );
         }
     };
-    private static final Specification<PropertyDescriptor> PROPERTY_SPEC = new Specification<PropertyDescriptor>()
+    private static final Predicate<PropertyDescriptor> PROPERTY_SPEC = new Predicate<PropertyDescriptor>()
     {
 
         @Override
-        public boolean satisfiedBy( PropertyDescriptor propertyDescriptor )
+        public boolean test( PropertyDescriptor propertyDescriptor )
         {
             boolean supported = isSupported( propertyDescriptor.valueType() );
             if( !supported )

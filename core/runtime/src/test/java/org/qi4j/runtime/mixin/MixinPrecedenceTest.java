@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
- * Test mixin declaration precedence satisfiedBy
+ * Test mixin declaration precedence test
  */
 public class MixinPrecedenceTest
     extends AbstractQi4jTest

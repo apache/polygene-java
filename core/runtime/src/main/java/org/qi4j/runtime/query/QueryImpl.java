@@ -21,6 +21,7 @@ package org.qi4j.runtime.query;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
@@ -28,7 +29,6 @@ import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.QuerySource;
 
 /**
@@ -46,7 +46,7 @@ import org.qi4j.spi.query.QuerySource;
     /**
      * Where clause.
      */
-    private final Specification<Composite> whereClause;
+    private final Predicate<Composite> whereClause;
     private QuerySource querySource;
     /**
      * Order by clause segments.
@@ -72,7 +72,7 @@ import org.qi4j.spi.query.QuerySource;
      * @param whereClause where clause
      */
     /* package */ QueryImpl( final Class<T> resultType,
-               final Specification<Composite> whereClause,
+               final Predicate<Composite> whereClause,
                final QuerySource querySource
     )
     {

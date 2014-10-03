@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
@@ -33,7 +34,6 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.query.grammar.QuerySpecification;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.index.solr.EmbeddedSolrService;
 import org.qi4j.index.solr.SolrSearch;
 import org.qi4j.spi.query.EntityFinder;
@@ -53,7 +53,7 @@ public class SolrEntityQueryMixin
     private Logger logger = LoggerFactory.getLogger( SolrEntityQueryMixin.class );
 
     @Override
-    public Iterable<EntityReference> findEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, @Optional OrderBy[] orderBySegments, @Optional Integer firstResult, @Optional Integer maxResults, Map<String, Object> variables ) throws EntityFinderException
+    public Iterable<EntityReference> findEntities( Class<?> resultType, @Optional Predicate<Composite> whereClause, @Optional OrderBy[] orderBySegments, @Optional Integer firstResult, @Optional Integer maxResults, Map<String, Object> variables ) throws EntityFinderException
     {
         try
         {
@@ -99,7 +99,7 @@ public class SolrEntityQueryMixin
     }
 
     @Override
-    public EntityReference findEntity( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
+    public EntityReference findEntity( Class<?> resultType, @Optional Predicate<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
     {
         Iterator<EntityReference> iter = findEntities( resultType, whereClause, null, 0, 1, variables ).iterator();
 
@@ -110,7 +110,7 @@ public class SolrEntityQueryMixin
     }
 
     @Override
-    public long countEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
+    public long countEntities( Class<?> resultType, @Optional Predicate<Composite> whereClause, Map<String, Object> variables ) throws EntityFinderException
     {
         return Iterables.count( findEntities( resultType, whereClause, null, 0, 1, variables ) );
     }

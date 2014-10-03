@@ -18,7 +18,7 @@
 
 package org.qi4j.logging;
 
-import org.junit.Ignore;
+import java.util.function.Function;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -28,7 +28,6 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Function;
 import org.qi4j.io.Outputs;
 import org.qi4j.io.Transforms;
 import org.qi4j.logging.debug.Debug;
@@ -79,7 +78,7 @@ public class DebuggingTest
             final String[] result = new String[1];
             es.entityStates( module ).transferTo( Transforms.map( new Function<EntityState, EntityState>()
                     {
-                        public EntityState map( EntityState entityState )
+                        public EntityState apply( EntityState entityState )
                         {
                             if( ServiceDebugRecordEntity.class.getName()
                                     .equals( first(entityState.entityDescriptor().types()).getName() ) )

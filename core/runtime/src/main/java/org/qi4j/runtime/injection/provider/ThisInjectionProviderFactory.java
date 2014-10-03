@@ -34,7 +34,7 @@ public final class ThisInjectionProviderFactory
             final Class<?> thisType = dependencyModel.rawInjectionType();
 
             Iterable<Class<?>> injectionTypes = null;
-            if( Classes.assignableTypeSpecification( thisType ).satisfiedBy( bindingContext.model() ) )
+            if( Classes.assignableTypeSpecification( thisType ).test( bindingContext.model() ) )
             {
                 injectionTypes = bindingContext.model().types();
             }

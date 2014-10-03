@@ -17,6 +17,7 @@
  */
 package org.qi4j.sample.rental.web.assembly;
 
+import java.util.function.Function;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
@@ -24,7 +25,6 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.functional.Function;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
@@ -43,7 +43,7 @@ public class StorageModule
             withValuesModuleFinder( new Function<Application, Module>()
         {
             @Override
-            public Module map( Application app )
+            public Module apply( Application app )
             {
                 return app.findModule( "DomainLayer", "RentalModule" );
             }

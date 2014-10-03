@@ -48,7 +48,7 @@ public final class InjectedMethodsModel
     public InjectedMethodsModel( Class fragmentClass )
     {
         nextMethod:
-        for( Method method : Methods.METHODS_OF.map( fragmentClass ) )
+        for( Method method : Methods.METHODS_OF.apply( fragmentClass ) )
         {
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
             if( parameterAnnotations.length > 0 )

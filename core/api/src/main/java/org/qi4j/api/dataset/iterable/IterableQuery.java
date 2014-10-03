@@ -2,11 +2,11 @@ package org.qi4j.api.dataset.iterable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.qi4j.api.dataset.Query;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryException;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.Visitor;
 
 /**
@@ -25,7 +25,7 @@ public class IterableQuery<T> implements Query<T>
     }
 
     @Override
-    public Query filter( Specification<T> filter )
+    public Query filter( Predicate<T> filter )
     {
         iterable = Iterables.filter( filter, iterable );
 

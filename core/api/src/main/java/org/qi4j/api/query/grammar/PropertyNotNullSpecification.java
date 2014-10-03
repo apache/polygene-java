@@ -1,5 +1,6 @@
 package org.qi4j.api.query.grammar;
 
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 
@@ -7,7 +8,7 @@ import org.qi4j.api.property.Property;
  * Property not null Specification.
  */
 public class PropertyNotNullSpecification<T>
-    extends ExpressionSpecification
+    implements Predicate<Composite>
 {
     private PropertyFunction<T> property;
 
@@ -22,9 +23,9 @@ public class PropertyNotNullSpecification<T>
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
-        Property<T> prop = property.map( item );
+        Property<T> prop = property.apply( item );
 
         if( prop == null )
         {

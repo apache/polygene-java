@@ -17,13 +17,13 @@ package org.qi4j.valueserialization.orgjson;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.Function;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.api.value.ValueSerializationException;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Function2;
+import java.util.function.BiFunction;
 
 /**
  * ValueSerialization producing and consuming JSON documents using org.json.
@@ -49,7 +49,7 @@ public class OrgJsonValueSerialization
         this.deserializer = new OrgJsonValueDeserializer( application, module, new Function<Application, Module>()
         {
             @Override
-            public Module map( Application from )
+            public Module apply( Application from )
             {
                 return valuesModule;
             }
@@ -132,7 +132,7 @@ public class OrgJsonValueSerialization
     }
 
     @Override
-    public <T> Function2<ValueType, String, T> deserialize()
+    public <T> BiFunction<ValueType, String, T> deserialize()
     {
         return deserializer.deserialize();
     }

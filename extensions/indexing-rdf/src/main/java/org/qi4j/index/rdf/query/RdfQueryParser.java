@@ -19,14 +19,14 @@
 package org.qi4j.index.rdf.query;
 
 import java.util.Map;
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.functional.Specification;
 
 public interface RdfQueryParser
 {
     String constructQuery( Class<?> resultType,
-                           Specification<Composite> whereClause,
+                           Predicate<Composite> whereClause,
                            OrderBy[] orderBySegments,
                            Integer firstResult,
                            Integer maxResults,

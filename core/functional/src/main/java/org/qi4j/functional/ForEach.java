@@ -14,6 +14,8 @@
 package org.qi4j.functional;
 
 import java.util.Iterator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * When using Iterables with map() and filter() the code often reads "in reverse", with the first item last in the code.
@@ -46,7 +48,7 @@ public final class ForEach<T>
         return iterable.iterator();
     }
 
-    public ForEach<T> filter( Specification<? super T> specification )
+    public ForEach<T> filter( Predicate<? super T> specification )
     {
         return new ForEach<>( Iterables.filter( specification, iterable ) );
     }

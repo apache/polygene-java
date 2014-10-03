@@ -20,10 +20,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.qi4j.api.util.Methods;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
@@ -61,19 +61,19 @@ public class ApplicationEvents
         return Iterables.flatten( events.<Iterable<ApplicationEvent>>toArray( iterables ) );
     }
 
-    public static boolean matches( Specification<ApplicationEvent> specification, Iterable<TransactionApplicationEvents> transactions )
+    public static boolean matches( Predicate<ApplicationEvent> specification, Iterable<TransactionApplicationEvents> transactions )
     {
         return Iterables.filter( specification, events( transactions ) ).iterator().hasNext();
     }
 
     // Common specifications
 
-    public static Specification<ApplicationEvent> withNames( final Iterable<String> names )
+    public static Predicate<ApplicationEvent> withNames( final Iterable<String> names )
     {
-        return new Specification<ApplicationEvent>()
+        return new Predicate<ApplicationEvent>()
         {
             @Override
-            public boolean satisfiedBy( ApplicationEvent event )
+            public boolean test( ApplicationEvent event )
             {
                 for (String name : names)
                 {
@@ -85,12 +85,12 @@ public class ApplicationEvents
         };
     }
 
-    public static Specification<ApplicationEvent> withNames( final String... names )
+    public static Predicate<ApplicationEvent> withNames( final String... names )
     {
-        return new Specification<ApplicationEvent>()
+        return new Predicate<ApplicationEvent>()
         {
             @Override
-            public boolean satisfiedBy( ApplicationEvent event )
+            public boolean test( ApplicationEvent event )
             {
                 for (String name : names)
                 {
@@ -102,48 +102,48 @@ public class ApplicationEvents
         };
     }
 
-    public static Specification<ApplicationEvent> withNames( final Class eventClass )
+    public static Predicate<ApplicationEvent> withNames( final Class eventClass )
     {
         return ApplicationEvents.withNames( Iterables.map( new Function<Method, String>()
         {
             @Override
-            public String map( Method method )
+            public String apply( Method method )
             {
                 return method.getName();
             }
-        }, Iterables.toList( Methods.METHODS_OF.map( eventClass ) ) ));
+        }, Iterables.toList( Methods.METHODS_OF.apply( eventClass ) ) ));
     }
 
-    public static Specification<ApplicationEvent> afterDate( final Date afterDate )
+    public static Predicate<ApplicationEvent> afterDate( final Date afterDate )
     {
-        return new Specification<ApplicationEvent>()
+        return new Predicate<ApplicationEvent>()
         {
             @Override
-            public boolean satisfiedBy( ApplicationEvent event )
+            public boolean test( ApplicationEvent event )
             {
                 return event.on().get().after( afterDate );
             }
         };
     }
 
-    public static Specification<ApplicationEvent> beforeDate( final Date beforeDate )
+    public static Predicate<ApplicationEvent> beforeDate( final Date beforeDate )
     {
-        return new Specification<ApplicationEvent>()
+        return new Predicate<ApplicationEvent>()
         {
             @Override
-            public boolean satisfiedBy( ApplicationEvent event )
+            public boolean test( ApplicationEvent event )
             {
                 return event.on().get().before( beforeDate );
             }
         };
     }
 
-    public static Specification<ApplicationEvent> withUsecases( final String... names )
+    public static Predicate<ApplicationEvent> withUsecases( final String... names )
     {
-        return new Specification<ApplicationEvent>()
+        return new Predicate<ApplicationEvent>()
         {
             @Override
-            public boolean satisfiedBy( ApplicationEvent event )
+            public boolean test( ApplicationEvent event )
             {
                 for (String name : names)
                 {
@@ -155,12 +155,12 @@ public class ApplicationEvents
         };
     }
 
-    public static Specification<ApplicationEvent> paramIs( final String name, final String value )
+    public static Predicate<ApplicationEvent> paramIs( final String name, final String value )
     {
-        return new Specification<ApplicationEvent>()
+        return new Predicate<ApplicationEvent>()
         {
             @Override
-            public boolean satisfiedBy( ApplicationEvent event )
+            public boolean test( ApplicationEvent event )
             {
                 return ApplicationEventParameters.getParameter( event, name ).equals( value );
             }
@@ -169,7 +169,7 @@ public class ApplicationEvents
 
     public static Output<TransactionApplicationEvents, ApplicationEventReplayException> playEvents( final ApplicationEventPlayer player, final Object eventHandler )
     {
-        final Specification<ApplicationEvent> specification = ApplicationEvents.withNames( eventHandler.getClass() );
+        final Predicate<ApplicationEvent> specification = ApplicationEvents.withNames( eventHandler.getClass() );
 
         return new Output<TransactionApplicationEvents, ApplicationEventReplayException>()
         {
@@ -183,7 +183,7 @@ public class ApplicationEvents
                     {
                         for (ApplicationEvent applicationEvent : events( item ))
                         {
-                            if (specification.satisfiedBy( applicationEvent ))
+                            if (specification.test( applicationEvent ))
                                 player.playEvent( applicationEvent, eventHandler );
                         }
                     }

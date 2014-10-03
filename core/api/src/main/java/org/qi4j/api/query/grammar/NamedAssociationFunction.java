@@ -21,11 +21,11 @@ package org.qi4j.api.query.grammar;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Proxy;
+import java.util.function.Function;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
-import org.qi4j.functional.Function;
 
 /**
  * Function to get Entity NamedAssociations.
@@ -71,14 +71,14 @@ public class NamedAssociationFunction<T>
     }
 
     @Override
-    public NamedAssociation<T> map( Composite entity )
+    public NamedAssociation<T> apply( Composite entity )
     {
         try
         {
             Object target = entity;
             if( traversedAssociation != null )
             {
-                target = traversedAssociation.map( entity ).get();
+                target = traversedAssociation.apply( entity ).get();
             }
             if( traversedManyAssociation != null )
             {

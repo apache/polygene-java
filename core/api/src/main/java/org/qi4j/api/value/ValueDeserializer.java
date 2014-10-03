@@ -16,9 +16,9 @@
 package org.qi4j.api.value;
 
 import java.io.InputStream;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.qi4j.api.type.ValueType;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Function2;
 
 /**
  * Use a ValueDeserializer to create new values instances from serialized state.
@@ -100,7 +100,7 @@ public interface ValueDeserializer
      * @param <T> the parametrized function return type
      * @return a deserialization function
      */
-    <T> Function2<ValueType, String, T> deserialize();
+    <T> BiFunction<ValueType, String, T> deserialize();
 
     /**
      * Deserialize a value from a state.

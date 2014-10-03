@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,6 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Specification;
 import org.qi4j.test.AbstractQi4jTest;
 
 import static org.hamcrest.core.IsEqual.*;
@@ -103,8 +103,8 @@ public class JDKMixinTest
 
     private static final String EXTENDS_IDENTITY = ExtendsJDKMixin.class.getName();
     private static final String COMPOSE_IDENTITY = ComposeWithJDKMixin.class.getName();
-    private static final Specification<ServiceReference<?>> EXTENDS_IDENTITY_SPEC = new ServiceIdentitySpec( EXTENDS_IDENTITY );
-    private static final Specification<ServiceReference<?>> COMPOSE_IDENTITY_SPEC = new ServiceIdentitySpec( COMPOSE_IDENTITY );
+    private static final Predicate<ServiceReference<?>> EXTENDS_IDENTITY_SPEC = new ServiceIdentitySpec( EXTENDS_IDENTITY );
+    private static final Predicate<ServiceReference<?>> COMPOSE_IDENTITY_SPEC = new ServiceIdentitySpec( COMPOSE_IDENTITY );
     private static final List<String> CONCERN_RECORDS = new ArrayList<String>();
 
     @Before
@@ -170,7 +170,7 @@ public class JDKMixinTest
     }
 
     private static class ServiceIdentitySpec
-        implements Specification<ServiceReference<?>>
+        implements Predicate<ServiceReference<?>>
     {
 
         private final String identity;
@@ -181,7 +181,7 @@ public class JDKMixinTest
         }
 
         @Override
-        public boolean satisfiedBy( ServiceReference<?> item )
+        public boolean test( ServiceReference<?> item )
         {
             return item.identity().equals( identity );
         }

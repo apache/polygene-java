@@ -14,8 +14,8 @@
 
 package org.qi4j.api.service.qualifier;
 
+import java.util.function.Predicate;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.functional.Specification;
 
 /**
  * This class helps you select a particular service
@@ -42,13 +42,13 @@ import org.qi4j.functional.Specification;
  */
 public abstract class ServiceQualifier
 {
-    public static <T> T firstService( Specification<ServiceReference<?>> qualifier,
+    public static <T> T firstService( Predicate<ServiceReference<?>> qualifier,
                                       Iterable<ServiceReference<T>> services
     )
     {
         for( ServiceReference<T> service : services )
         {
-            if( qualifier.satisfiedBy( service ) )
+            if( qualifier.test( service ) )
             {
                 return service.get();
             }
@@ -56,24 +56,24 @@ public abstract class ServiceQualifier
         return null;
     }
 
-    public static Specification<ServiceReference<?>> withId( final String anId )
+    public static Predicate<ServiceReference<?>> withId( final String anId )
     {
-        return new Specification<ServiceReference<?>>()
+        return new Predicate<ServiceReference<?>>()
         {
             @Override
-            public boolean satisfiedBy( ServiceReference<?> service )
+            public boolean test( ServiceReference<?> service )
             {
                 return service.identity().equals( anId );
             }
         };
     }
 
-    public static Specification<ServiceReference<?>> whereMetaInfoIs( final Object metaInfo )
+    public static Predicate<ServiceReference<?>> whereMetaInfoIs( final Object metaInfo )
     {
-        return new Specification<ServiceReference<?>>()
+        return new Predicate<ServiceReference<?>>()
         {
             @Override
-            public boolean satisfiedBy( ServiceReference<?> service )
+            public boolean test( ServiceReference<?> service )
             {
                 Object metaObject = service.metaInfo( metaInfo.getClass() );
                 return metaObject != null && metaInfo.equals( metaObject );
@@ -81,36 +81,36 @@ public abstract class ServiceQualifier
         };
     }
 
-    public static Specification<ServiceReference<?>> whereActive()
+    public static Predicate<ServiceReference<?>> whereActive()
     {
-        return new Specification<ServiceReference<?>>()
+        return new Predicate<ServiceReference<?>>()
         {
             @Override
-            public boolean satisfiedBy( ServiceReference<?> service )
+            public boolean test( ServiceReference<?> service )
             {
                 return service.isActive();
             }
         };
     }
 
-    public static Specification<ServiceReference<?>> whereAvailable()
+    public static Predicate<ServiceReference<?>> whereAvailable()
     {
-        return new Specification<ServiceReference<?>>()
+        return new Predicate<ServiceReference<?>>()
         {
             @Override
-            public boolean satisfiedBy( ServiceReference<?> service )
+            public boolean test( ServiceReference<?> service )
             {
                 return service.isAvailable();
             }
         };
     }
 
-    public static Specification<ServiceReference<?>> withTags( final String... tags )
+    public static Predicate<ServiceReference<?>> withTags( final String... tags )
     {
-        return new Specification<ServiceReference<?>>()
+        return new Predicate<ServiceReference<?>>()
         {
             @Override
-            public boolean satisfiedBy( ServiceReference<?> service )
+            public boolean test( ServiceReference<?> service )
             {
                 ServiceTags serviceTags = service.metaInfo( ServiceTags.class );
 

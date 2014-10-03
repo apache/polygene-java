@@ -1,7 +1,7 @@
 package org.qi4j.bootstrap;
 
+import java.util.function.Predicate;
 import org.qi4j.api.type.HasTypes;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 
 /**
@@ -9,17 +9,17 @@ import org.qi4j.functional.Specifications;
  */
 public class AssemblySpecifications
 {
-    public static Specification<HasTypes> types( final Class... types )
+    public static Predicate<HasTypes> types( final Class... types )
     {
-        return new Specification<HasTypes>()
+        return new Predicate<HasTypes>()
         {
             @Override
-            public boolean satisfiedBy( HasTypes item )
+            public boolean test( HasTypes item )
             {
 
                 for( Class<?> type : item.types() )
                 {
-                    if( Specifications.in( types ).satisfiedBy( type ) )
+                    if( Specifications.in( types ).test( type ) )
                     {
                         return true;
                     }

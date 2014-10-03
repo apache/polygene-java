@@ -77,7 +77,7 @@ public class ContextResourceClient
             @Override
             public HandlerCommand handleResponse( Response response, ContextResourceClient client )
             {
-                final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.map(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
+                final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.apply(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
                 T result = contextResourceFactory.readResponse( response, resultType );
 
                 if (result instanceof Resource)
@@ -100,7 +100,7 @@ public class ContextResourceClient
     public <T> ContextResourceClient onQuery( String relation, final ResultHandler<T> handler
     )
     {
-        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.map(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
+        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.apply(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
 
         queryHandlers.put( relation,  new ResponseHandler()
         {
@@ -123,7 +123,7 @@ public class ContextResourceClient
 
     public <T> ContextResourceClient onCommand( String relation, final ResultHandler<T> handler )
     {
-        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.map(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
+        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.apply(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
 
         commandHandlers.put( relation,  new ResponseHandler()
         {
@@ -146,7 +146,7 @@ public class ContextResourceClient
 
     public <T> ContextResourceClient onProcessingError( String relation, final ResultHandler<T> handler)
     {
-        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.map(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
+        final Class<T> resultType = (Class<T>) Classes.RAW_CLASS.apply(( (ParameterizedType) handler.getClass().getGenericInterfaces()[ 0 ] ).getActualTypeArguments()[0]);
 
         processingErrorHandlers.put( relation,  new ResponseHandler()
         {
@@ -272,7 +272,7 @@ public class ContextResourceClient
 
         // Check if we should do POST or PUT
         Method method;
-        if( LinksUtil.withClass( "idempotent" ).satisfiedBy( link ) )
+        if( LinksUtil.withClass( "idempotent" ).test( link ) )
         {
             method = Method.PUT;
         }

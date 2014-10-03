@@ -19,14 +19,14 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.DependencyDescriptor;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InvalidInjectionException;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.Visitable;
 import org.qi4j.functional.Visitor;
 import org.qi4j.runtime.injection.provider.InjectionProviderException;
@@ -384,7 +384,7 @@ public final class DependencyModel
     }
 
     public static class ScopeSpecification
-        implements Specification<DependencyModel>
+        implements Predicate<DependencyModel>
     {
         private final Class<? extends Annotation> scope;
 
@@ -394,7 +394,7 @@ public final class DependencyModel
         }
 
         @Override
-        public boolean satisfiedBy( DependencyModel model )
+        public boolean test( DependencyModel model )
         {
             return model.hasScope( scope );
         }
@@ -404,7 +404,7 @@ public final class DependencyModel
         implements Function<DependencyModel, Class<?>>
     {
         @Override
-        public Class<?> map( DependencyModel dependencyModel )
+        public Class<?> apply( DependencyModel dependencyModel )
         {
             return dependencyModel.rawInjectionType();
         }

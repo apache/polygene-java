@@ -1,5 +1,6 @@
 package org.qi4j.api.query.grammar;
 
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 
@@ -7,7 +8,7 @@ import org.qi4j.api.property.Property;
  * Base comparison Specification.
  */
 public abstract class ComparisonSpecification<T>
-    extends ExpressionSpecification
+    implements Predicate<Composite>
 {
     protected final PropertyFunction<T> property;
     protected final T value;
@@ -24,11 +25,11 @@ public abstract class ComparisonSpecification<T>
     }
 
     @Override
-    public final boolean satisfiedBy( Composite item )
+    public final boolean test( Composite item )
     {
         try
         {
-            Property<T> prop = property.map( item );
+            Property<T> prop = property.apply( item );
 
             if( prop == null )
             {

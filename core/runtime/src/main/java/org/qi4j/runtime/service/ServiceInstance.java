@@ -51,7 +51,7 @@ public class ServiceInstance
         super( compositeModel, moduleInstance, mixins, state );
 
         implementsServiceAvailable =
-            Classes.assignableTypeSpecification( Availability.class ).satisfiedBy( descriptor() );
+            Classes.assignableTypeSpecification( Availability.class ).test( descriptor() );
         hasEnabledConfiguration = compositeModel.configurationType() != null
                                   && Enabled.class.isAssignableFrom( compositeModel.configurationType() );
     }

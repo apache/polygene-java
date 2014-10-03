@@ -54,7 +54,7 @@ public interface DomainEventFactoryService
 
             DomainEventValue prototype = builder.prototype();
             prototype.name().set( name );
-            prototype.entityType().set( first(Qi4j.FUNCTION_DESCRIPTOR_FOR.map( entity ).types()).getName() );
+            prototype.entityType().set( first(Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( entity ).types()).getName() );
             prototype.entityId().set( entity.identity().get() );
 
             // JSON-ify parameters

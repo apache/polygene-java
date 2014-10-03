@@ -18,6 +18,7 @@
  */
 package org.qi4j.api.query.grammar;
 
+import java.util.function.Predicate;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.composite.Composite;
 
@@ -25,7 +26,7 @@ import org.qi4j.api.composite.Composite;
  * ManyAssociation Contains Specification.
  */
 public class ManyAssociationContainsSpecification<T>
-    extends ExpressionSpecification
+    implements Predicate<Composite>
 {
     private final ManyAssociationFunction<T> manyAssociationFunction;
     private final T value;
@@ -47,9 +48,9 @@ public class ManyAssociationContainsSpecification<T>
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
-        ManyAssociation<T> collection = manyAssociationFunction.map( item );
+        ManyAssociation<T> collection = manyAssociationFunction.apply( item );
         if( collection == null )
         {
             return false;

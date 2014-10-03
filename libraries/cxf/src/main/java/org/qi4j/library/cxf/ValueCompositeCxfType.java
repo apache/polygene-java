@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import javax.xml.namespace.QName;
 import org.apache.cxf.aegis.Context;
 import org.apache.cxf.aegis.DatabindingException;
@@ -59,7 +60,6 @@ import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.spi.Qi4jSPI;
 
@@ -91,7 +91,7 @@ public class ValueCompositeCxfType
         // Read attributes
         ValueDescriptor descriptor = module.valueDescriptor( className );
         StateDescriptor stateDescriptor = descriptor.state();
-        final Map<QualifiedName, Object> values = new HashMap<>();
+        final Map<QualifiedName, ? super Object> values = new HashMap<>();
         while( reader.hasMoreElementReaders() )
         {
             MessageReader childReader = reader.getNextElementReader();
@@ -111,7 +111,7 @@ public class ValueCompositeCxfType
             new Function<PropertyDescriptor, Object>()
         {
             @Override
-            public Object map( PropertyDescriptor descriptor1 )
+            public Object apply( PropertyDescriptor descriptor1 )
             {
                 return values.get( descriptor1.qualifiedName() );
             }
@@ -119,7 +119,7 @@ public class ValueCompositeCxfType
             new Function<AssociationDescriptor, EntityReference>()
             {
                 @Override
-                public EntityReference map( AssociationDescriptor descriptor )
+                public EntityReference apply( AssociationDescriptor descriptor )
                 {
                     Object value = values.get( descriptor.qualifiedName() );
                     if( value == null )
@@ -132,7 +132,7 @@ public class ValueCompositeCxfType
             new Function<AssociationDescriptor, Iterable<EntityReference>>()
             {
                 @Override
-                public Iterable<EntityReference> map( AssociationDescriptor descriptor )
+                public Iterable<EntityReference> apply( AssociationDescriptor descriptor )
                 {
                     Object value = values.get( descriptor.qualifiedName() );
                     if( value == null )
@@ -151,7 +151,7 @@ public class ValueCompositeCxfType
             new Function<AssociationDescriptor, Map<String, EntityReference>>()
             {
                 @Override
-                public Map<String, EntityReference> map( AssociationDescriptor descriptor )
+                public Map<String, EntityReference> apply( AssociationDescriptor descriptor )
                 {
                     Object value = values.get( descriptor.qualifiedName() );
                     if( value == null )
@@ -178,7 +178,7 @@ public class ValueCompositeCxfType
     {
         ValueComposite composite = (ValueComposite) object;
         writer.writeXsiType( NamespaceUtil.convertJavaTypeToQName(
-            first( Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types() ) ) );
+            first( Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types() ) ) );
         AssociationStateHolder state = spi.stateOf( composite );
         for( Property<?> property : state.properties() )
         {
@@ -188,7 +188,7 @@ public class ValueCompositeCxfType
             {
                 ValueComposite compositeValue = (ValueComposite) value;
                 type = getTypeMapping().getType( NamespaceUtil.convertJavaTypeToQName(
-                    first( Qi4j.FUNCTION_DESCRIPTOR_FOR.map( compositeValue ).types() ) ) );
+                    first( Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( compositeValue ).types() ) ) );
             }
             else if( value != null )
             {
@@ -358,7 +358,7 @@ public class ValueCompositeCxfType
         {
             AegisType keyType = getOrCreateAegisType( getMapKeyComponentType( type ), root );
             AegisType valueType = getOrCreateAegisType( getMapValueComponentType( type ), root );
-            QName schemaType = new QName( Classes.toURI( Classes.RAW_CLASS.map( type ) ), "map" );
+            QName schemaType = new QName( Classes.toURI( Classes.RAW_CLASS.apply( type ) ), "map" );
             return new MapType( schemaType, keyType, valueType );
         }
         else if( isValueComposite( type ) )
@@ -470,7 +470,7 @@ public class ValueCompositeCxfType
     @SuppressWarnings( "raw" )
     private boolean isValueComposite( Type type )
     {
-        Class clazz = Classes.RAW_CLASS.map( type );
+        Class clazz = Classes.RAW_CLASS.apply( type );
         ValueDescriptor descriptor = module.valueDescriptor( clazz.getName() );
         return descriptor != null;
     }

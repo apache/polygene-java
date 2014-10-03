@@ -110,7 +110,7 @@ public final class MetaInfo
             Iterable<Type> types = typesOf( metaInfoclass );
             for( Type type : types )
             {
-                metaInfoMap.put( Classes.RAW_CLASS.map( type ), metaInfo );
+                metaInfoMap.put( Classes.RAW_CLASS.apply( type ), metaInfo );
             }
         }
     }

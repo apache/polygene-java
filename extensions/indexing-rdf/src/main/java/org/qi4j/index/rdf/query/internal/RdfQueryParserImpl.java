@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.function.Predicate;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
@@ -55,7 +56,6 @@ import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.api.value.ValueSerializer.Options;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.index.rdf.query.RdfQueryParser;
 import org.qi4j.spi.Qi4jSPI;
 import org.slf4j.LoggerFactory;
@@ -111,7 +111,7 @@ public class RdfQueryParserImpl
 
     @Override
     public String constructQuery( final Class<?> resultType,
-                                  final Specification<Composite> specification,
+                                  final Predicate<Composite> specification,
                                   final OrderBy[] orderBySegments,
                                   final Integer firstResult,
                                   final Integer maxResults,
@@ -214,7 +214,7 @@ public class RdfQueryParserImpl
         return query.toString();
     }
 
-    private void processFilter( final Specification<Composite> expression, boolean allowInline, StringBuilder builder )
+    private void processFilter( final Predicate<Composite> expression, boolean allowInline, StringBuilder builder )
     {
         if( expression == null )
         {
@@ -227,7 +227,7 @@ public class RdfQueryParserImpl
 
             int start = builder.length();
             boolean first = true;
-            for( Specification<Composite> operand : conjunction.operands() )
+            for( Predicate<Composite> operand : conjunction.operands() )
             {
                 int size = builder.length();
                 processFilter( operand, allowInline, builder );
@@ -256,7 +256,7 @@ public class RdfQueryParserImpl
 
             int start = builder.length();
             boolean first = true;
-            for( Specification<Composite> operand : disjunction.operands() )
+            for( Predicate<Composite> operand : disjunction.operands() )
             {
                 int size = builder.length();
                 processFilter( operand, false, builder );
@@ -437,7 +437,7 @@ public class RdfQueryParserImpl
         builder.append( format( "regex(%s,\"%s\")", valueVariable, predicate.regexp() ) );
     }
 
-    private void processComparisonPredicate( final Specification<Composite> predicate,
+    private void processComparisonPredicate( final Predicate<Composite> predicate,
                                              boolean allowInline,
                                              StringBuilder builder
     )

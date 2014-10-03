@@ -130,7 +130,7 @@ public class EntityTypeSerializer
             graph.add( associationURI, Rdfs.DOMAIN, entityTypeUri );
             graph.add( associationURI, Rdfs.TYPE, Rdfs.PROPERTY );
 
-            URI associatedURI = values.createURI( Classes.toURI( Classes.RAW_CLASS.map( associationType.type() ) ) );
+            URI associatedURI = values.createURI( Classes.toURI( Classes.RAW_CLASS.apply( associationType.type() ) ) );
             graph.add( associationURI, Rdfs.RANGE, associatedURI );
             graph.add( associationURI, Rdfs.RANGE, XMLSchema.ANYURI );
         }

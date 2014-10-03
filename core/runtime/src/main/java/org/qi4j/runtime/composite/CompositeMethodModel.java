@@ -216,7 +216,7 @@ public final class CompositeMethodModel
             try
             {
                 MixinModel model = mixins.mixinFor( method );
-                if( GenericSpecification.INSTANCE.satisfiedBy( model.mixinClass() ) )
+                if( GenericSpecification.INSTANCE.test( model.mixinClass() ) )
                 {
                     return false;
                 }
@@ -237,7 +237,7 @@ public final class CompositeMethodModel
             try
             {
                 MixinModel model = mixins.mixinFor( method );
-                if( !GenericSpecification.INSTANCE.satisfiedBy( model.mixinClass() ) )
+                if( !GenericSpecification.INSTANCE.test( model.mixinClass() ) )
                 {
                     T annotation = annotationClass.cast( model.mixinClass()
                                                              .getMethod( method.getName(), method.getParameterTypes() )
@@ -264,7 +264,7 @@ public final class CompositeMethodModel
             List<Annotation> annotations = new ArrayList<Annotation>();
             MixinModel model = mixins.mixinFor( method );
             Annotation[] mixinAnnotations = new Annotation[ 0 ];
-            if( !GenericSpecification.INSTANCE.satisfiedBy( model.mixinClass() ) )
+            if( !GenericSpecification.INSTANCE.test( model.mixinClass() ) )
             {
                 mixinAnnotations = model.mixinClass().getAnnotations();
                 annotations.addAll( Arrays.asList( mixinAnnotations ) );

@@ -1,10 +1,11 @@
 package org.qi4j.functional.docsupport;
 
 import java.util.ArrayList;
+import java.util.function.Function;
+
+import static org.qi4j.functional.ForEach.forEach;
 
 // START SNIPPET: func2
-import static org.qi4j.functional.ForEach.forEach;
-import static org.qi4j.functional.Functions.longSum;
 // END SNIPPET: func2
 
 public class FunctionalDocs
@@ -33,5 +34,20 @@ public class FunctionalDocs
 
 // END SNIPPET: func2
         }
+    }
+
+    private static Function<Number, Long> longSum()
+    {
+        return new Function<Number, Long>()
+        {
+            long sum;
+
+            @Override
+            public Long apply( Number number )
+            {
+                sum += number.longValue();
+                return sum;
+            }
+        };
     }
 }

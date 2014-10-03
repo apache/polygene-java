@@ -19,11 +19,11 @@
 package org.qi4j.spi.query;
 
 import java.util.Map;
+import java.util.function.Predicate;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.functional.Specification;
 
 /**
  * Entity Finder.
@@ -42,7 +42,7 @@ public interface EntityFinder
      * @return Single entity matching the query criterion.
      */
     Iterable<EntityReference> findEntities( Class<?> resultType,
-                                            @Optional Specification<Composite> whereClause,
+                                            @Optional Predicate<Composite> whereClause,
                                             @Optional OrderBy[] orderBySegments,
                                             @Optional Integer firstResult,
                                             @Optional Integer maxResults,
@@ -59,7 +59,7 @@ public interface EntityFinder
      * @return Single entity matching the query criterion.
      */
     EntityReference findEntity( Class<?> resultType,
-                                @Optional Specification<Composite> whereClause,
+                                @Optional Predicate<Composite> whereClause,
                                 Map<String, Object> variables
     )
         throws EntityFinderException;
@@ -73,7 +73,7 @@ public interface EntityFinder
      * @return Count entities matching the query criterion.
      */
     long countEntities( Class<?> resultType,
-                        @Optional Specification<Composite> whereClause,
+                        @Optional Predicate<Composite> whereClause,
                         Map<String, Object> variables
     )
         throws EntityFinderException;

@@ -19,8 +19,8 @@ import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Specification;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.slf4j.Logger;
 
 /**
@@ -38,7 +38,7 @@ public class Transforms
      *
      * @return
      */
-    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filter( final Specification<? super T> specification,
+    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filter( final Predicate<? super T> specification,
                                                                                                         final Output<T, ReceiverThrowableType> output
     )
     {
@@ -60,7 +60,7 @@ public class Transforms
                             public void receive( T item )
                                 throws ReceiverThrowableType
                             {
-                                if( specification.satisfiedBy( item ) )
+                                if( specification.test( item ) )
                                 {
                                     receiver.receive( item );
                                 }
@@ -105,7 +105,7 @@ public class Transforms
                             public void receive( From item )
                                 throws ReceiverThrowableType
                             {
-                                receiver.receive( function.map( item ) );
+                                receiver.receive( function.apply( item ) );
                             }
                         } );
                     }
@@ -126,7 +126,7 @@ public class Transforms
      *
      * @return
      */
-    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filteredMap( final Specification<? super T> specification,
+    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filteredMap( final Predicate<? super T> specification,
                                                                                                              final Function<? super T, ? extends T> function,
                                                                                                              final Output<T, ReceiverThrowableType> output
     )
@@ -149,9 +149,9 @@ public class Transforms
                             public void receive( T item )
                                 throws ReceiverThrowableType
                             {
-                                if( specification.satisfiedBy( item ) )
+                                if( specification.test( item ) )
                                 {
-                                    receiver.receive( function.map( item ) );
+                                    receiver.receive( function.apply( item ) );
                                 }
                                 else
                                 {
@@ -289,7 +289,7 @@ public class Transforms
         }
 
         @Override
-        public T map( T t )
+        public T apply( T t )
         {
             count++;
             return t;
@@ -311,7 +311,7 @@ public class Transforms
         }
 
         @Override
-        public byte[] map( String s )
+        public byte[] apply( String s )
         {
             return s.getBytes( charSet );
         }
@@ -331,7 +331,7 @@ public class Transforms
         }
 
         @Override
-        public String map( ByteBuffer buffer )
+        public String apply( ByteBuffer buffer )
         {
             return new String( buffer.array(), charSet );
         }
@@ -344,7 +344,7 @@ public class Transforms
         implements Function<Object, String>
     {
         @Override
-        public String map( Object o )
+        public String apply( Object o )
         {
             return o.toString();
         }
@@ -369,7 +369,7 @@ public class Transforms
         }
 
         @Override
-        public T map( T item )
+        public T apply( T item )
         {
             logger.info( format.format( new String[]{ item.toString() } ) );
             return item;
@@ -408,9 +408,9 @@ public class Transforms
         }
 
         @Override
-        public T map( T t )
+        public T apply( T t )
         {
-            counter.map( t );
+            counter.apply( t );
             if( counter.count % interval == 0 )
             {
                 logProgress();
@@ -423,7 +423,7 @@ public class Transforms
         {
             if( log != null )
             {
-                log.map( counter.count + "" );
+                log.apply( counter.count + "" );
             }
         }
     }

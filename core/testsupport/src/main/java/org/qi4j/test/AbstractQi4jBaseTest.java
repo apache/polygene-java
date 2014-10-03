@@ -85,7 +85,7 @@ public abstract class AbstractQi4jBaseTest
     /**
      * This method is called when there was an AssemblyException in the creation of the Qi4j application model.
      * <p>
-     * Override this method to catch valid failures to place into satisfiedBy suites.
+     * Override this method to catch valid failures to place into test suites.
      * </p>
      * @param exception the exception thrown.
      *

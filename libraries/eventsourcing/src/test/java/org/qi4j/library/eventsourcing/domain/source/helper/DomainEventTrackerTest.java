@@ -16,6 +16,7 @@ package org.qi4j.library.eventsourcing.domain.source.helper;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.function.Function;
 import org.junit.Test;
 import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
@@ -34,7 +35,6 @@ import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Function;
 import org.qi4j.io.Output;
 import org.qi4j.io.Outputs;
 import org.qi4j.io.Transforms;
@@ -163,7 +163,7 @@ public class DomainEventTrackerTest
 
                Output<UnitOfWorkDomainEventsValue,RuntimeException> map = Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
                        {
-                           public String map( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
+                           public String apply( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
                            {
                                return unitOfWorkDomainEventsValue.toString();
                            }

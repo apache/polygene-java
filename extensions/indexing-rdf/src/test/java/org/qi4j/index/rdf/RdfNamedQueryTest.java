@@ -17,11 +17,11 @@
  */
 package org.qi4j.index.rdf;
 
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Specification;
 import org.qi4j.index.rdf.query.RdfQueryParserFactory;
 import org.qi4j.index.rdf.query.SesameExpressions;
 import org.qi4j.library.rdf.entity.EntityStateSerializer;
@@ -39,7 +39,7 @@ public class RdfNamedQueryTest extends AbstractNamedQueryTest
     }
 
     @Override
-    protected Specification<Composite> createNamedQueryDescriptor( String queryName, String queryString )
+    protected Predicate<Composite> createNamedQueryDescriptor( String queryName, String queryString )
     {
         return SesameExpressions.sparql( queryString );
     }

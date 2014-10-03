@@ -23,6 +23,8 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
@@ -33,8 +35,6 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.util.Classes;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Function2;
 import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.association.AssociationInstance;
 import org.qi4j.runtime.association.AssociationModel;
@@ -57,19 +57,19 @@ public final class EntityStateInstance
 
     private final EntityStateModel stateModel;
     private EntityState entityState;
-    private final Function2<EntityReference, Type, Object> entityFunction;
+    private final BiFunction<EntityReference, Type, Object> entityFunction;
 
     public EntityStateInstance( EntityStateModel stateModel, final UnitOfWork uow, EntityState entityState )
     {
         this.stateModel = stateModel;
         this.entityState = entityState;
 
-        entityFunction = new Function2<EntityReference, Type, Object>()
+        entityFunction = new BiFunction<EntityReference, Type, Object>()
         {
             @Override
-            public Object map( EntityReference entityReference, Type type )
+            public Object apply( EntityReference entityReference, Type type )
             {
-                return uow.get( Classes.RAW_CLASS.map( type ), entityReference.identity() );
+                return uow.get( Classes.RAW_CLASS.apply( type ), entityReference.identity() );
             }
         };
     }
@@ -103,7 +103,7 @@ public final class EntityStateInstance
         return Iterables.map( new Function<PropertyDescriptor, Property<?>>()
         {
             @Override
-            public Property<?> map( PropertyDescriptor propertyDescriptor )
+            public Property<?> apply( PropertyDescriptor propertyDescriptor )
             {
                 return propertyFor( propertyDescriptor.accessor() );
             }
@@ -153,7 +153,7 @@ public final class EntityStateInstance
         return Iterables.map( new Function<AssociationDescriptor, Association<?>>()
         {
             @Override
-            public Association<?> map( AssociationDescriptor associationDescriptor )
+            public Association<?> apply( AssociationDescriptor associationDescriptor )
             {
                 return associationFor( associationDescriptor.accessor() );
             }
@@ -189,7 +189,7 @@ public final class EntityStateInstance
         return Iterables.map( new Function<AssociationDescriptor, ManyAssociation<?>>()
         {
             @Override
-            public ManyAssociation<?> map( AssociationDescriptor associationDescriptor )
+            public ManyAssociation<?> apply( AssociationDescriptor associationDescriptor )
             {
                 return manyAssociationFor( associationDescriptor.accessor() );
             }
@@ -225,7 +225,7 @@ public final class EntityStateInstance
         return Iterables.map( new Function<AssociationDescriptor, NamedAssociation<?>>()
         {
             @Override
-            public NamedAssociation<?> map( AssociationDescriptor associationDescriptor )
+            public NamedAssociation<?> apply( AssociationDescriptor associationDescriptor )
             {
                 return namedAssociationFor( associationDescriptor.accessor() );
             }

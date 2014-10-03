@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.sql.DataSource;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AssociationDescriptor;
@@ -47,9 +48,7 @@ import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.api.SQLIndexing;
 import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.QNameInfo;
@@ -198,10 +197,10 @@ public abstract class AbstractSQLIndexing
             Map<Long, EntityState> statesByPK = new HashMap<>();
             Map<Long, Integer> qNamePKs = new HashMap<>();
 
-            Iterable<EntityState> relatedStates = Iterables.filter( new Specification<EntityState>()
+            Iterable<EntityState> relatedStates = Iterables.filter( new Predicate<EntityState>()
             {
                 @Override
-                public boolean satisfiedBy( EntityState item )
+                public boolean test( EntityState item )
                 {
                     return item.entityDescriptor().queryable();
                 }
@@ -928,7 +927,7 @@ public abstract class AbstractSQLIndexing
         throws SQLException
     {
         ValueDescriptor vDesc = this._qi4SPI.valueDescriptorFor( (ValueComposite) property );
-        StateHolder state = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) property ).state();
+        StateHolder state = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) property ).state();
         Integer originalPropertyPK = propertyPK;
         ++propertyPK;
         for( PropertyDescriptor pDesc : vDesc.state().properties() )

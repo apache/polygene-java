@@ -19,8 +19,8 @@ package org.qi4j.library.rest.common.table;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.functional.Function;
 
 /**
  * Factory for setting up TableBuilder instances. Defines available columns, and how they are extracted from objects.

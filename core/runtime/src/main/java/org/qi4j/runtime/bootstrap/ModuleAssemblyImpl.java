@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
@@ -51,7 +52,6 @@ import org.qi4j.bootstrap.TransientDeclaration;
 import org.qi4j.bootstrap.ValueAssembly;
 import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.runtime.activation.ActivatorsModel;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.TransientsModel;
@@ -163,12 +163,12 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    public ValueDeclaration values( Specification<? super ValueAssembly> specification )
+    public ValueDeclaration values( Predicate<? super ValueAssembly> specification )
     {
         List<ValueAssemblyImpl> assemblies = new ArrayList<>();
         for( ValueAssemblyImpl transientAssembly : valueAssemblies.values() )
         {
-            if( specification.satisfiedBy( transientAssembly ) )
+            if( specification.test( transientAssembly ) )
             {
                 assemblies.add( transientAssembly );
             }
@@ -201,12 +201,12 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    public TransientDeclaration transients( Specification<? super TransientAssembly> specification )
+    public TransientDeclaration transients( Predicate<? super TransientAssembly> specification )
     {
         List<TransientAssemblyImpl> assemblies = new ArrayList<>();
         for( TransientAssemblyImpl transientAssembly : transientAssemblies.values() )
         {
-            if( specification.satisfiedBy( transientAssembly ) )
+            if( specification.test( transientAssembly ) )
             {
                 assemblies.add( transientAssembly );
             }
@@ -239,12 +239,12 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    public EntityDeclaration entities( Specification<? super EntityAssembly> specification )
+    public EntityDeclaration entities( Predicate<? super EntityAssembly> specification )
     {
         List<EntityAssemblyImpl> assemblies = new ArrayList<>();
         for( EntityAssemblyImpl entityAssembly : entityAssemblies.values() )
         {
-            if( specification.satisfiedBy( entityAssembly ) )
+            if( specification.test( entityAssembly ) )
             {
                 assemblies.add( entityAssembly );
             }
@@ -281,12 +281,12 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    public ObjectDeclaration objects( Specification<? super ObjectAssembly> specification )
+    public ObjectDeclaration objects( Predicate<? super ObjectAssembly> specification )
     {
         List<ObjectAssemblyImpl> assemblies = new ArrayList<>();
         for( ObjectAssemblyImpl objectAssembly : objectAssemblies.values() )
         {
-            if( specification.satisfiedBy( objectAssembly ) )
+            if( specification.test( objectAssembly ) )
             {
                 assemblies.add( objectAssembly );
             }
@@ -333,12 +333,12 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    public ServiceDeclaration services( Specification<? super ServiceAssembly> specification )
+    public ServiceDeclaration services( Predicate<? super ServiceAssembly> specification )
     {
         List<ServiceAssemblyImpl> assemblies = new ArrayList<>();
         for( ServiceAssemblyImpl serviceAssembly : serviceAssemblies )
         {
-            if( specification.satisfiedBy( serviceAssembly ) )
+            if( specification.test( serviceAssembly ) )
             {
                 assemblies.add( serviceAssembly );
             }
@@ -370,12 +370,12 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    public ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification )
+    public ImportedServiceDeclaration importedServices( Predicate<? super ImportedServiceAssembly> specification )
     {
         List<ImportedServiceAssemblyImpl> assemblies = new ArrayList<>();
         for( ImportedServiceAssemblyImpl objectAssembly : importedServiceAssemblies.values() )
         {
-            if( specification.satisfiedBy( objectAssembly ) )
+            if( specification.test( objectAssembly ) )
             {
                 assemblies.add( objectAssembly );
             }

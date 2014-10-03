@@ -1,5 +1,6 @@
 package org.qi4j.api.query.grammar;
 
+import java.util.function.Predicate;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.composite.Composite;
 
@@ -7,7 +8,7 @@ import org.qi4j.api.composite.Composite;
  * Association not null Specification.
  */
 public class AssociationNotNullSpecification<T>
-    extends ExpressionSpecification
+    implements Predicate<Composite>
 {
     private AssociationFunction<T> association;
 
@@ -22,11 +23,11 @@ public class AssociationNotNullSpecification<T>
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
         try
         {
-            Association<T> assoc = association.map( item );
+            Association<T> assoc = association.apply( item );
 
             if( assoc == null )
             {

@@ -25,9 +25,9 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 
 /**
@@ -54,7 +54,7 @@ public class ConstraintViolationException
                                          Collection<ConstraintViolation> constraintViolations
     )
     {
-        this( instance.toString(), Qi4j.FUNCTION_DESCRIPTOR_FOR.map( instance ).types(), method, constraintViolations );
+        this( instance.toString(), Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( instance ).types(), method, constraintViolations );
     }
 
     public ConstraintViolationException( String instanceToString,
@@ -191,7 +191,7 @@ public class ConstraintViolationException
                 classes = "[" + Iterables.<Class<?>>toString( instanceTypes, new Function<Class<?>, String>()
                 {
                     @Override
-                    public String map( Class<?> from )
+                    public String apply( Class<?> from )
                     {
                         return from.getSimpleName();
                     }

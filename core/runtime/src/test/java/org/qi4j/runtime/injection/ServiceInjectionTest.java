@@ -17,6 +17,7 @@ package org.qi4j.runtime.injection;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.function.Predicate;
 import org.junit.Test;
 import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.common.ConstructionException;
@@ -36,7 +37,6 @@ import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.functional.Specification;
 
 import static org.junit.Assert.assertEquals;
 import static org.qi4j.api.common.Visibility.application;
@@ -294,11 +294,11 @@ public class ServiceInjectionTest
     public static final class NamedSelector
         implements AnnotationQualifier<Named>
     {
-        public <T> Specification<ServiceReference<?>> qualifier( final Named named )
+        public <T> Predicate<ServiceReference<?>> qualifier( final Named named )
         {
-            return new Specification<ServiceReference<?>>()
+            return new Predicate<ServiceReference<?>>()
             {
-                public boolean satisfiedBy( ServiceReference<?> service )
+                public boolean test( ServiceReference<?> service )
                 {
                     ServiceName serviceName = service.metaInfo( ServiceName.class );
                     return ( serviceName != null && serviceName.getName().equals( named.value() ) );

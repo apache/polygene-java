@@ -15,7 +15,7 @@
  */
 package org.qi4j.library.circuitbreaker;
 
-import org.qi4j.functional.Specification;
+import java.util.function.Predicate;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
@@ -73,12 +73,12 @@ public class CircuitBreakers
     * @param throwables The Throwable types that are allowed.
     * @return A Specification that specifies the allowed Throwables.
     */
-   public static Specification<Throwable> in( final Class<? extends Throwable>... throwables)
+   public static Predicate<Throwable> in( final Class<? extends Throwable>... throwables)
    {
-      return new Specification<Throwable>()
+      return new Predicate<Throwable>()
       {
          @Override
-         public boolean satisfiedBy( Throwable item )
+         public boolean test( Throwable item )
          {
             Class<? extends Throwable> throwableClass = item.getClass();
             for (Class<? extends Throwable> throwable : throwables)
@@ -91,14 +91,14 @@ public class CircuitBreakers
       };
    }
 
-   public static Specification<Throwable> rootCause( final Specification<Throwable> specification)
+   public static Predicate<Throwable> rootCause( final Predicate<Throwable> specification)
    {
-      return new Specification<Throwable>()
+      return new Predicate<Throwable>()
       {
          @Override
-         public boolean satisfiedBy( Throwable item )
+         public boolean test( Throwable item )
          {
-            return specification.satisfiedBy( unwrap(item) );
+            return specification.test( unwrap(item) );
          }
 
          private Throwable unwrap(Throwable item)

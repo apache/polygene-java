@@ -16,6 +16,7 @@ package org.qi4j.api.service.importer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.Availability;
 import org.qi4j.api.service.ImportedServiceDescriptor;
@@ -25,7 +26,6 @@ import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 
 /**
  * If several services are available with a given type, and you want to constrain
@@ -47,13 +47,13 @@ public final class ServiceSelectorImporter<T>
     public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        Specification<ServiceReference<?>> selector = serviceDescriptor.metaInfo( Specification.class );
+        Predicate<ServiceReference<?>> selector = serviceDescriptor.metaInfo( Predicate.class );
         Class serviceType = Iterables.first( serviceDescriptor.types() );
         Iterable<ServiceReference<T>> services = locator.findServices( serviceType );
         List<ServiceReference<T>> filteredServices = new ArrayList<>();
         for( ServiceReference<T> service : services )
         {
-            Specification selector1 = service.metaInfo( Specification.class );
+            Predicate selector1 = service.metaInfo( Predicate.class );
             if( selector1 != null && selector1 == selector )
             {
                 continue;

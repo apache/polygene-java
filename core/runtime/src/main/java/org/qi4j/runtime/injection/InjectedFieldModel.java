@@ -19,12 +19,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+import java.util.function.Predicate;
 import org.qi4j.api.composite.InjectedFieldDescriptor;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
 import org.qi4j.bootstrap.InjectionException;
 import org.qi4j.functional.HierarchicalVisitor;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.model.Resolution;
@@ -129,9 +129,9 @@ public final class InjectedFieldModel
         return visitor.visitLeave( this );
     }
 
-    public Collection<DependencyModel> filter( Specification<DependencyModel> specification )
+    public Collection<DependencyModel> filter( Predicate<DependencyModel> specification )
     {
-        if( specification.satisfiedBy( dependencyModel ) )
+        if( specification.test( dependencyModel ) )
         {
             return singleton( dependencyModel );
         }

@@ -148,7 +148,7 @@ public class ConstraintViolationInterceptor
         if( target instanceof Composite )
         {
             Composite composite = (Composite) target;
-            types = Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types();
+            types = Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types();
         }
         else
         {

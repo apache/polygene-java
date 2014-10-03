@@ -113,7 +113,7 @@ public final class PropertyMapper
             {
                 strategy = STRATEGY.get( Array.class );
             }
-            else if( Enum.class.isAssignableFrom( Classes.RAW_CLASS.map( propertyType ) ) )
+            else if( Enum.class.isAssignableFrom( Classes.RAW_CLASS.apply( propertyType ) ) )
             {
                 strategy = STRATEGY.get( Enum.class );
             }
@@ -444,7 +444,7 @@ public final class PropertyMapper
         @SuppressWarnings( "unchecked" )
         public Object map( Composite composite, Type type, String value )
         {
-            return Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).module().newValueFromSerializedState( (Class<Object>) type, value );
+            return Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite ).module().newValueFromSerializedState( (Class<Object>) type, value );
         }
     }
 

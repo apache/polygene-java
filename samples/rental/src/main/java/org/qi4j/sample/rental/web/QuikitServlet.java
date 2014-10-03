@@ -194,8 +194,8 @@ public class QuikitServlet
     private void renderPage( Page page, String path, PrintWriter output, HttpServletRequest httpRequest )
         throws ParserConfigurationException, SAXException, IOException, RenderException, TransformerException
     {
-        Class<? extends Composite> pageClass = (Class<Composite>) first( Qi4j.FUNCTION_DESCRIPTOR_FOR
-                                                                             .map( page ).types() );
+        Class<? extends Composite> pageClass =
+            (Class<Composite>) first( Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( page ).types() );
 
         String pageName = pageClass.getSimpleName() + ".html";
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();

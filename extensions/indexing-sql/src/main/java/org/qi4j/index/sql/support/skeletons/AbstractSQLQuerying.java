@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.function.Predicate;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
@@ -65,7 +66,6 @@ import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.api.SQLQuerying;
 import org.qi4j.index.sql.support.common.DBNames;
 import org.qi4j.index.sql.support.common.QNameInfo;
@@ -196,7 +196,7 @@ public abstract class AbstractSQLQuerying
     {
         public QueryBuilder processBooleanExpression(
             AbstractSQLQuerying thisObject,
-            Specification<Composite> expression,
+            Predicate<Composite> expression,
             Boolean negationActive,
             SQLVendor vendor,
             org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
@@ -206,11 +206,11 @@ public abstract class AbstractSQLQuerying
         );
     }
 
-    private static final Map<Class<? extends Specification>, SQLBooleanCreator> SQL_OPERATORS;
+    private static final Map<Class<? extends Predicate>, SQLBooleanCreator> SQL_OPERATORS;
 
-    private static final Map<Class<? extends Specification>, JoinType> JOIN_STYLES;
+    private static final Map<Class<? extends Predicate>, JoinType> JOIN_STYLES;
 
-    private static final Map<Class<? extends Specification>, JoinType> NEGATED_JOIN_STYLES;
+    private static final Map<Class<? extends Predicate>, JoinType> NEGATED_JOIN_STYLES;
 
     private static final Map<Class<?>, BooleanExpressionProcessor> EXPRESSION_PROCESSORS;
 
@@ -350,14 +350,14 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                Predicate<Composite> expression, Boolean negationActive, SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
                 List<Integer> valueSQLTypes )
             {
                 QueryBuilder result = null;
                 AndSpecification conjunction = (AndSpecification) expression;
-                for( Specification<Composite> entitySpecification : conjunction.operands() )
+                for( Predicate<Composite> entitySpecification : conjunction.operands() )
                 {
                     if( result == null )
                     {
@@ -382,14 +382,14 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                Predicate<Composite> expression, Boolean negationActive, SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
                 List<Integer> valueSQLTypes )
             {
                 QueryBuilder result = null;
                 OrSpecification conjunction = (OrSpecification) expression;
-                for( Specification<Composite> entitySpecification : conjunction.operands() )
+                for( Predicate<Composite> entitySpecification : conjunction.operands() )
                 {
                     if( result == null )
                     {
@@ -416,7 +416,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                Predicate<Composite> expression, Boolean negationActive, SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
                 List<Integer> valueSQLTypes )
@@ -431,7 +431,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                Predicate<Composite> expression, Boolean negationActive, SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
                 List<Integer> valueSQLTypes )
@@ -446,7 +446,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive,
+                Predicate<Composite> expression, Boolean negationActive,
                 SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
@@ -463,7 +463,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive,
+                Predicate<Composite> expression, Boolean negationActive,
                 SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
@@ -479,7 +479,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive,
+                Predicate<Composite> expression, Boolean negationActive,
                 SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
@@ -495,7 +495,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive,
+                Predicate<Composite> expression, Boolean negationActive,
                 SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
@@ -510,7 +510,7 @@ public abstract class AbstractSQLQuerying
         {
             @Override
             public QueryBuilder processBooleanExpression( AbstractSQLQuerying thisObject,
-                                                          Specification<Composite> expression, Boolean negationActive,
+                                                          Predicate<Composite> expression, Boolean negationActive,
                                                           SQLVendor vendor,
                                                           BooleanExpression entityTypeCondition, Map<String, Object> variables,
                                                           List<Object> values,
@@ -526,7 +526,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                Predicate<Composite> expression, Boolean negationActive, SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
                 List<Integer> valueSQLTypes )
@@ -541,7 +541,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                Predicate<Composite> expression, Boolean negationActive, SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
                 List<Integer> valueSQLTypes )
@@ -556,7 +556,7 @@ public abstract class AbstractSQLQuerying
             @Override
             public QueryBuilder processBooleanExpression(
                 AbstractSQLQuerying thisObject,
-                Specification<Composite> expression, Boolean negationActive, SQLVendor vendor,
+                Predicate<Composite> expression, Boolean negationActive, SQLVendor vendor,
                 BooleanExpression entityTypeCondition, Map<String, Object> variables,
                 List<Object> values,
                 List<Integer> valueSQLTypes )
@@ -744,7 +744,7 @@ public abstract class AbstractSQLQuerying
 
     @Override
     public String constructQuery( Class<?> resultType, //
-                                  Specification<Composite> whereClause, //
+                                  Predicate<Composite> whereClause, //
                                   OrderBy[] orderBySegments, //
                                   Integer firstResult, //
                                   Integer maxResults, //
@@ -813,7 +813,7 @@ public abstract class AbstractSQLQuerying
     protected abstract QueryExpression finalizeQuery(
         SQLVendor sqlVendor, QuerySpecificationBuilder specBuilder,
         Class<?> resultType,
-        Specification<Composite> whereClause,
+        Predicate<Composite> whereClause,
         OrderBy[] orderBySegments,
         Integer firstResult,
         Integer maxResults,
@@ -823,7 +823,7 @@ public abstract class AbstractSQLQuerying
         Boolean countOnly );
 
     protected QueryBuilder processBooleanExpression(
-        Specification<Composite> expression,
+        Predicate<Composite> expression,
         Boolean negationActive,
         SQLVendor vendor,
         org.sql.generation.api.grammar.booleans.BooleanExpression entityTypeCondition,
@@ -1248,7 +1248,7 @@ public abstract class AbstractSQLQuerying
     }
 
     protected QueryBuilder singleQuery(
-        Specification<Composite> predicate, //
+        Predicate<Composite> predicate, //
         PropertyFunction<?> propRef, //
         TraversedAssoOrManyAssoRef assoRef, //
         Boolean includeLastAssoPathTable, //
@@ -1265,7 +1265,7 @@ public abstract class AbstractSQLQuerying
     }
 
     protected QuerySpecification constructQueryForPredicate(
-        Specification<Composite> predicate, //
+        Predicate<Composite> predicate, //
         PropertyFunction<?> propRef, //
         TraversedAssoOrManyAssoRef assoRef, //
         Boolean includeLastAssoPathTable, //
@@ -1340,29 +1340,29 @@ public abstract class AbstractSQLQuerying
         );
     }
 
-    protected SQLBooleanCreator getOperator( Specification<Composite> predicate )
+    protected SQLBooleanCreator getOperator( Predicate<Composite> predicate )
     {
         return this.findFromLookupTables( SQL_OPERATORS, null, predicate, false );
     }
 
     protected JoinType
-        getTableJoinStyle( Specification<Composite> predicate, Boolean negationActive )
+        getTableJoinStyle( Predicate<Composite> predicate, Boolean negationActive )
     {
         return this.findFromLookupTables( JOIN_STYLES, NEGATED_JOIN_STYLES, predicate,
                                           negationActive );
     }
 
     protected <ReturnType> ReturnType findFromLookupTables(
-        Map<Class<? extends Specification>, ReturnType> normal,
-        Map<Class<? extends Specification>, ReturnType> negated,
-        Specification<Composite> predicate, Boolean negationActive )
+        Map<Class<? extends Predicate>, ReturnType> normal,
+        Map<Class<? extends Predicate>, ReturnType> negated,
+        Predicate<Composite> predicate, Boolean negationActive )
     {
-        Class<? extends Specification> predicateClass = predicate.getClass();
+        Class<? extends Predicate> predicateClass = predicate.getClass();
         ReturnType result = null;
-        Set<Map.Entry<Class<? extends Specification>, ReturnType>> entries = negationActive
+        Set<Map.Entry<Class<? extends Predicate>, ReturnType>> entries = negationActive
                                                                              ? negated.entrySet()
                                                                              : normal.entrySet();
-        for( Map.Entry<Class<? extends Specification>, ReturnType> entry : entries )
+        for( Map.Entry<Class<? extends Predicate>, ReturnType> entry : entries )
         {
             if( entry.getKey().isAssignableFrom( predicateClass ) )
             {
@@ -1644,7 +1644,7 @@ public abstract class AbstractSQLQuerying
     protected Integer modifyFromClauseAndWhereClauseToGetValue(
         final QualifiedName qName,
         Object value,
-        final Specification<Composite> predicate, final Boolean negationActive,
+        final Predicate<Composite> predicate, final Boolean negationActive,
         final Integer currentTableIndex,
         final ModifiableInt maxTableIndex, final String columnName,
         final String collectionPath,
@@ -1747,7 +1747,7 @@ public abstract class AbstractSQLQuerying
             // Visit all properties with recursion and make joins as necessary
             // @formatter:off
             for( Property<?> property
-                 : Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) value ).state().properties() )
+                 : Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) value ).state().properties() )
             {
                 Boolean qNameJoinDone = false;
                 Integer sourceIndex = maxTableIndex.getInt();

@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -54,8 +56,6 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.api.value.ValueDeserializer;
 import org.qi4j.api.value.ValueSerializationException;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Function2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,7 +158,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( String.class, new Function<Object, String>()
         {
             @Override
-            public String map( Object input )
+            public String apply( Object input )
             {
                 return input.toString();
             }
@@ -166,7 +166,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( Character.class, new Function<Object, Character>()
         {
             @Override
-            public Character map( Object input )
+            public Character apply( Object input )
             {
                 return input.toString().charAt( 0 );
             }
@@ -174,7 +174,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( Boolean.class, new Function<Object, Boolean>()
         {
             @Override
-            public Boolean map( Object input )
+            public Boolean apply( Object input )
             {
                 return ( input instanceof String )
                        ? Boolean.parseBoolean( (String) input )
@@ -184,7 +184,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( Integer.class, new Function<Object, Integer>()
         {
             @Override
-            public Integer map( Object input )
+            public Integer apply( Object input )
             {
                 return ( input instanceof String )
                        ? Integer.parseInt( (String) input )
@@ -194,7 +194,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( Long.class, new Function<Object, Long>()
         {
             @Override
-            public Long map( Object input )
+            public Long apply( Object input )
             {
                 return ( input instanceof String )
                        ? Long.parseLong( (String) input )
@@ -204,7 +204,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( Short.class, new Function<Object, Short>()
         {
             @Override
-            public Short map( Object input )
+            public Short apply( Object input )
             {
                 return ( input instanceof String )
                        ? Short.parseShort( (String) input )
@@ -214,7 +214,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( Byte.class, new Function<Object, Byte>()
         {
             @Override
-            public Byte map( Object input )
+            public Byte apply( Object input )
             {
                 return ( input instanceof String )
                        ? Byte.parseByte( (String) input )
@@ -224,7 +224,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( Float.class, new Function<Object, Float>()
         {
             @Override
-            public Float map( Object input )
+            public Float apply( Object input )
             {
                 return ( input instanceof String )
                        ? Float.parseFloat( (String) input )
@@ -234,7 +234,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( Double.class, new Function<Object, Double>()
         {
             @Override
-            public Double map( Object input )
+            public Double apply( Object input )
             {
                 return ( input instanceof String )
                        ? Double.parseDouble( (String) input )
@@ -246,7 +246,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( BigDecimal.class, new Function<Object, BigDecimal>()
         {
             @Override
-            public BigDecimal map( Object input )
+            public BigDecimal apply( Object input )
             {
                 return new BigDecimal( input.toString() );
             }
@@ -254,7 +254,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( BigInteger.class, new Function<Object, BigInteger>()
         {
             @Override
-            public BigInteger map( Object input )
+            public BigInteger apply( Object input )
             {
                 return new BigInteger( input.toString() );
             }
@@ -264,7 +264,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( Date.class, new Function<Object, Date>()
         {
             @Override
-            public Date map( Object input )
+            public Date apply( Object input )
             {
                 return Dates.fromString( input.toString() );
             }
@@ -272,7 +272,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( DateTime.class, new Function<Object, DateTime>()
         {
             @Override
-            public DateTime map( Object input )
+            public DateTime apply( Object input )
             {
                 return DateTime.parse( input.toString() );
             }
@@ -280,7 +280,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( LocalDateTime.class, new Function<Object, LocalDateTime>()
         {
             @Override
-            public LocalDateTime map( Object input )
+            public LocalDateTime apply( Object input )
             {
                 return new LocalDateTime( input );
             }
@@ -288,7 +288,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( LocalDate.class, new Function<Object, LocalDate>()
         {
             @Override
-            public LocalDate map( Object input )
+            public LocalDate apply( Object input )
             {
                 return new LocalDate( input );
             }
@@ -298,7 +298,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( EntityReference.class, new Function<Object, EntityReference>()
         {
             @Override
-            public EntityReference map( Object input )
+            public EntityReference apply( Object input )
             {
                 return EntityReference.parseEntityReference( input.toString() );
             }
@@ -326,7 +326,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             }
             else
             {
-                valuesModule = valuesModuleFinder.map( application );
+                valuesModule = valuesModuleFinder.apply( application );
                 if( valuesModule == null )
                 {
                     throw new ValueSerializationException( "Values Module provided by the finder Function was null." );
@@ -356,23 +356,16 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     @Override
     public final <T> Function<String, T> deserialize( final ValueType valueType )
     {
-        return new Function<String, T>()
-        {
-            @Override
-            public T map( String input )
-            {
-                return deserialize( valueType, input );
-            }
-        };
+        return input -> deserialize( valueType, input );
     }
 
     @Override
-    public final <T> Function2<ValueType, String, T> deserialize()
+    public final <T> BiFunction<ValueType, String, T> deserialize()
     {
-        return new Function2<ValueType, String, T>()
+        return new BiFunction<ValueType, String, T>()
         {
             @Override
-            public T map( ValueType valueType, String input )
+            public T apply( ValueType valueType, String input )
             {
                 return deserialize( valueType, input );
             }
@@ -463,7 +456,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 return String.class.equals( type ) ? (T) "" : null;
             }
             String string = scanner.next();
-            return (T) deserializers.get( type ).map( string );
+            return (T) deserializers.get( type ).apply( string );
         }
         else // Array ValueType
         if( type.isArray() )
@@ -499,7 +492,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             {
                 return null;
             }
-            return (T) deserializers.get( type ).map( value );
+            return (T) deserializers.get( type ).apply( value );
         }
         else if( complexDeserializers.get( type ) != null )
         {
@@ -544,7 +537,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         return new Function<InputType, T>()
         {
             @Override
-            public T map( InputType input )
+            public T apply( InputType input )
             {
                 try
                 {
@@ -739,7 +732,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         return new Function<InputNodeType, T>()
         {
             @Override
-            public T map( InputNodeType inputNode )
+            public T apply( InputNodeType inputNode )
             {
                 try
                 {
@@ -777,7 +770,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             {
                 return null;
             }
-            return (T) deserializers.get( type ).map( value );
+            return (T) deserializers.get( type ).apply( value );
         }
         else if( complexDeserializers.get( type ) != null )
         {
@@ -822,7 +815,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             new Function<PropertyDescriptor, Object>()
         {
             @Override
-            public Object map( PropertyDescriptor property )
+            public Object apply( PropertyDescriptor property )
             {
                 return stateMap.get( property.qualifiedName().name() );
             }
@@ -830,7 +823,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             new Function<AssociationDescriptor, EntityReference>()
             {
                 @Override
-                public EntityReference map( AssociationDescriptor association )
+                public EntityReference apply( AssociationDescriptor association )
                 {
                     Object entityRef = stateMap.get( association.qualifiedName().name() );
                     if( entityRef == null )
@@ -844,7 +837,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             {
                 @Override
                 @SuppressWarnings( "unchecked" )
-                public Iterable<EntityReference> map( AssociationDescriptor manyAssociation )
+                public Iterable<EntityReference> apply( AssociationDescriptor manyAssociation )
                 {
                     Object entityRefs = stateMap.get( manyAssociation.qualifiedName().name() );
                     if( entityRefs == null )
@@ -858,7 +851,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             {
                 @Override
                 @SuppressWarnings( "unchecked" )
-                public Map<String, EntityReference> map( AssociationDescriptor namedAssociation )
+                public Map<String, EntityReference> apply( AssociationDescriptor namedAssociation )
                 {
                     Object entityRefs = stateMap.get( namedAssociation.qualifiedName().name() );
                     if( entityRefs == null )

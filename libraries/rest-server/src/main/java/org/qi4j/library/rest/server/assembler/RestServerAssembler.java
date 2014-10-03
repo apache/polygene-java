@@ -19,6 +19,7 @@ package org.qi4j.library.rest.server.assembler;
 
 import java.lang.reflect.Modifier;
 import java.util.Properties;
+import java.util.function.Predicate;
 import org.apache.velocity.app.VelocityEngine;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.importer.NewObjectImporter;
@@ -26,7 +27,6 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ClassScanner;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Specification;
 import org.qi4j.library.rest.server.restlet.InteractionConstraintsService;
 import org.qi4j.library.rest.server.restlet.RequestReaderDelegator;
 import org.qi4j.library.rest.server.restlet.ResponseWriterDelegator;
@@ -97,8 +97,8 @@ public class RestServerAssembler
 
         // Standard response writers
         Iterable<Class<?>> writers = ClassScanner.findClasses( DefaultResponseWriter.class );
-        Specification<Class<?>> responseWriterClass = isAssignableFrom( ResponseWriter.class );
-        Specification<Class<?>> isNotAnAbstract = not( hasModifier( Modifier.ABSTRACT ) );
+        Predicate<Class<?>> responseWriterClass = isAssignableFrom( ResponseWriter.class );
+        Predicate<Class<?>> isNotAnAbstract = not( hasModifier( Modifier.ABSTRACT ) );
         Iterable<Class<?>> candidates = filter( and( isNotAnAbstract, responseWriterClass ), writers );
         for( Class<?> responseWriter : candidates )
         {

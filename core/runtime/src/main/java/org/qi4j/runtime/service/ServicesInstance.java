@@ -15,6 +15,7 @@
 package org.qi4j.runtime.service;
 
 import java.util.List;
+import java.util.function.Predicate;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationEventListenerRegistration;
@@ -23,7 +24,6 @@ import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.activation.ActivatorsInstance;
 
@@ -67,10 +67,10 @@ public class ServicesInstance
 
     public Iterable<ServiceReference> visibleServices( final Visibility visibility )
     {
-        return Iterables.filter( new Specification<ServiceReference>()
+        return Iterables.filter( new Predicate<ServiceReference>()
         {
             @Override
-            public boolean satisfiedBy( ServiceReference item )
+            public boolean test( ServiceReference item )
             {
                 return ( (ServiceReferenceInstance) item ).serviceDescriptor()
                            .visibility()

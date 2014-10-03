@@ -22,6 +22,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.function.Function;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.GenericAssociationInfo;
@@ -31,7 +32,6 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.util.Classes;
-import org.qi4j.functional.Function;
 
 import static org.qi4j.api.util.Classes.typeOf;
 
@@ -58,9 +58,9 @@ public class AssociationFunction<T>
         this.accessor = accessor;
 
         Type returnType = typeOf( accessor );
-        if( !Association.class.isAssignableFrom( Classes.RAW_CLASS.map( returnType ) )
-            && !ManyAssociation.class.isAssignableFrom( Classes.RAW_CLASS.map( returnType ) )
-            && !NamedAssociation.class.isAssignableFrom( Classes.RAW_CLASS.map( returnType ) ) )
+        if( !Association.class.isAssignableFrom( Classes.RAW_CLASS.apply( returnType ) )
+            && !ManyAssociation.class.isAssignableFrom( Classes.RAW_CLASS.apply( returnType ) )
+            && !NamedAssociation.class.isAssignableFrom( Classes.RAW_CLASS.apply( returnType ) ) )
         {
             throw new QueryExpressionException( "Unsupported association type:" + returnType );
         }
@@ -92,14 +92,14 @@ public class AssociationFunction<T>
     }
 
     @Override
-    public Association<T> map( Composite entity )
+    public Association<T> apply( Composite entity )
     {
         try
         {
             Object target = entity;
             if( traversedAssociation != null )
             {
-                Association<?> association = traversedAssociation.map( entity );
+                Association<?> association = traversedAssociation.apply( entity );
                 if( association == null )
                 {
                     return null;

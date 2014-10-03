@@ -22,9 +22,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.BiFunction;
 import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.functional.Function2;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.entity.NamedAssociationState;
 
@@ -36,7 +36,7 @@ public class NamedAssociationInstance<T>
     private final NamedAssociationState namedAssociationState;
 
     public NamedAssociationInstance( AssociationInfo associationInfo,
-                                     Function2<EntityReference, Type, Object> associationFunction,
+                                     BiFunction<EntityReference, Type, Object> associationFunction,
                                      NamedAssociationState namedAssociationState )
     {
         super( associationInfo, associationFunction );

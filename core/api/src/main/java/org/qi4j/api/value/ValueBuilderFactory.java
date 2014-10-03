@@ -14,11 +14,11 @@
 package org.qi4j.api.value;
 
 import java.util.Map;
+import java.util.function.Function;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.functional.Function;
 
 /**
  * Factory for Values and ValueBuilders.

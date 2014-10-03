@@ -1,5 +1,6 @@
 package org.qi4j.api.query.grammar;
 
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 
@@ -7,7 +8,7 @@ import org.qi4j.api.property.Property;
  * Regular expression match Specification.
  */
 public class MatchesSpecification
-    extends ExpressionSpecification
+    implements Predicate<Composite>
 {
     private PropertyFunction<String> property;
     private Object value;
@@ -40,9 +41,9 @@ public class MatchesSpecification
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
-        Property<String> prop = property.map( item );
+        Property<String> prop = property.apply( item );
 
         if( prop == null )
         {

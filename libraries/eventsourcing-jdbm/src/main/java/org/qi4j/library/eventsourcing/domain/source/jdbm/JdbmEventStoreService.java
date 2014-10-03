@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.function.Function;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.RecordManagerOptions;
@@ -37,7 +38,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.value.ValueSerialization;
-import org.qi4j.functional.Function;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
@@ -123,7 +123,7 @@ public interface JdbmEventStoreService
             }, Transforms.map( new Function<String, UnitOfWorkDomainEventsValue>()
             {
                 @Override
-                public UnitOfWorkDomainEventsValue map( String item )
+                public UnitOfWorkDomainEventsValue apply( String item )
                 {
                     return valueSerialization.<UnitOfWorkDomainEventsValue>deserialize( eventsType, item );
                 }

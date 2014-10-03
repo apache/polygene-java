@@ -3,10 +3,10 @@ package org.qi4j.runtime.association;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.function.BiFunction;
 import org.qi4j.api.association.AbstractAssociation;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.functional.Function2;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.entity.EntityInstance;
 
@@ -17,10 +17,10 @@ public abstract class AbstractAssociationInstance<T>
     implements AbstractAssociation
 {
     protected AssociationInfo associationInfo;
-    private final Function2<EntityReference, Type, Object> entityFunction;
+    private final BiFunction<EntityReference, Type, Object> entityFunction;
 
     public AbstractAssociationInstance( AssociationInfo associationInfo,
-                                        Function2<EntityReference, Type, Object> entityFunction
+                                        BiFunction<EntityReference, Type, Object> entityFunction
     )
     {
         this.associationInfo = associationInfo;
@@ -45,7 +45,7 @@ public abstract class AbstractAssociationInstance<T>
             return null;
         }
 
-        return (T) entityFunction.map( entityId, associationInfo.type() );
+        return (T) entityFunction.apply( entityId, associationInfo.type() );
     }
 
     protected EntityReference getEntityReference( Object composite )

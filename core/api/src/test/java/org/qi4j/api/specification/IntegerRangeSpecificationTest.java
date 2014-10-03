@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.qi4j.functional;
+package org.qi4j.api.specification;
 
+import java.util.function.Predicate;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -27,17 +28,17 @@ public class IntegerRangeSpecificationTest
     @Test
     public void test1()
     {
-        Specification<Integer> spec = new IntegerRangeSpecification( 10, 12 );
-        assertTrue( spec.satisfiedBy( 10 ) );
-        assertTrue( spec.satisfiedBy( 11 ) );
-        assertTrue( spec.satisfiedBy( 12 ) );
-        assertFalse( spec.satisfiedBy( 9 ) );
-        assertFalse( spec.satisfiedBy( 13 ) );
+        Predicate<Integer> spec = new IntegerRangeSpecification( 10, 12 );
+        assertTrue( spec.test( 10 ) );
+        assertTrue( spec.test( 11 ) );
+        assertTrue( spec.test( 12 ) );
+        assertFalse( spec.test( 9 ) );
+        assertFalse( spec.test( 13 ) );
     }
 
     // START SNIPPET: specification
     public static class IntegerRangeSpecification
-        implements Specification<Integer>
+        implements Predicate<Integer>
     {
 
         private int lower;
@@ -50,7 +51,7 @@ public class IntegerRangeSpecificationTest
         }
 
         @Override
-        public boolean satisfiedBy( Integer item )
+        public boolean test( Integer item )
         {
             return item >= lower && item <= higher;
         }

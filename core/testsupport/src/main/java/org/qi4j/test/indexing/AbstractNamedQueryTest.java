@@ -20,13 +20,13 @@ package org.qi4j.test.indexing;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.junit.Test;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.IndexExporter;
 import org.qi4j.test.EntityTestAssembler;
@@ -45,13 +45,13 @@ import static org.qi4j.test.indexing.NameableAssert.verifyOrderedResults;
 import static org.qi4j.test.indexing.NameableAssert.verifyUnorderedResults;
 
 /**
- * Abstract satisfiedBy with tests for named queries against Index/Query engines.
+ * Abstract test with tests for named queries against Index/Query engines.
  */
 public abstract class AbstractNamedQueryTest
     extends AbstractAnyQueryTest
 {
 
-    private final Map<String, Specification<Composite>> queries = new HashMap<>();
+    private final Map<String, Predicate<Composite>> queries = new HashMap<>();
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -65,7 +65,7 @@ public abstract class AbstractNamedQueryTest
             String queryName = String.format( "script%02d", i + 1 );
             if( query[i].length() != 0 )
             {
-                Specification<Composite> expression = createNamedQueryDescriptor( queryName, query[i] );
+                Predicate<Composite> expression = createNamedQueryDescriptor( queryName, query[i] );
                 queries.put( queryName, expression );
             }
         }
@@ -73,7 +73,7 @@ public abstract class AbstractNamedQueryTest
 
     protected abstract String[] queryStrings();
 
-    protected abstract Specification<Composite> createNamedQueryDescriptor( String queryName, String queryString );
+    protected abstract Predicate<Composite> createNamedQueryDescriptor( String queryName, String queryString );
 
     @Test
     public void showNetwork()

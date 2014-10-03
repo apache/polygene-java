@@ -17,6 +17,7 @@ package org.qi4j.runtime.bootstrap;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import org.qi4j.api.activation.Activator;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.common.InvalidApplicationException;
@@ -25,7 +26,6 @@ import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.ServiceAssembly;
 import org.qi4j.bootstrap.StateDeclarations;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.activation.ActivatorsModel;
 import org.qi4j.runtime.service.ServiceModel;
@@ -88,7 +88,7 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
         Function<Type, Iterable<Class<? extends Activator<?>>>> function = new Function<Type, Iterable<Class<? extends Activator<?>>>>()
         {
             @Override
-            public Iterable<Class<? extends Activator<?>>> map( Type type )
+            public Iterable<Class<? extends Activator<?>>> apply( Type type )
             {
                 Activators activators = Annotations.annotationOn( type, Activators.class );
                 if( activators == null )

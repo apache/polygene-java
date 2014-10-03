@@ -13,11 +13,11 @@
  */
 package org.qi4j.library.jmx;
 
+import java.util.function.Predicate;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 
 /**
  * Helper for working with Qi4j MBeans.
@@ -28,10 +28,10 @@ public class Qi4jMBeans
     public static ObjectName findServiceName( MBeanServer server, String applicationName, String serviceId )
             throws MalformedObjectNameException
     {
-        return Iterables.first( Iterables.filter( new Specification<ObjectName>()
+        return Iterables.first( Iterables.filter( new Predicate<ObjectName>()
         {
             @Override
-            public boolean satisfiedBy( ObjectName item )
+            public boolean test( ObjectName item )
             {
                 return item.getKeyPropertyList().size() == 5;
             }

@@ -168,7 +168,7 @@ public class EntityStateSerializer
         for( PropertyDescriptor persistentProperty : ( (ValueCompositeType) valueType ).properties() )
         {
             Object propertyValue = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
-                .map( (Composite) value )
+                .apply( (Composite) value )
                 .state()
                 .propertyFor( persistentProperty.accessor() )
                 .get();

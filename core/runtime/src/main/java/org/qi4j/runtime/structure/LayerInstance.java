@@ -16,13 +16,13 @@ package org.qi4j.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Layer;
-import org.qi4j.functional.Function;
 import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
@@ -136,7 +136,7 @@ public class LayerInstance
         {
 
             @Override
-            public Iterable<ModelModule<ObjectModel>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<ObjectModel>> apply( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleObjects( visibility );
             }
@@ -150,7 +150,7 @@ public class LayerInstance
         {
 
             @Override
-            public Iterable<ModelModule<TransientModel>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<TransientModel>> apply( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleTransients( visibility );
             }
@@ -164,7 +164,7 @@ public class LayerInstance
         {
 
             @Override
-            public Iterable<ModelModule<EntityModel>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<EntityModel>> apply( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleEntities( visibility );
             }
@@ -178,7 +178,7 @@ public class LayerInstance
         {
 
             @Override
-            public Iterable<ModelModule<ValueModel>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<ValueModel>> apply( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleValues( visibility );
             }
@@ -192,7 +192,7 @@ public class LayerInstance
         {
 
             @Override
-            public Iterable<ServiceReference<?>> map( ModuleInstance moduleInstance )
+            public Iterable<ServiceReference<?>> apply( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleServices( visibility );
             }

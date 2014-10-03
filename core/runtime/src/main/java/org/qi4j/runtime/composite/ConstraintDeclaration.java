@@ -51,14 +51,14 @@ public final class ConstraintDeclaration
         if( constraintValueType instanceof Class )
         {
             Class constraintValueClass = (Class) constraintValueType;
-            Class valueClass = Classes.RAW_CLASS.map( valueType );
+            Class valueClass = Classes.RAW_CLASS.apply( valueType );
             return constraintAnnotationType.equals( annotationType ) && constraintValueClass.isAssignableFrom( valueClass );
         }
         else if( constraintValueType instanceof ParameterizedType )
         {
             // TODO Handle nested generics
-            Class constraintValueClass = Classes.RAW_CLASS.map( constraintValueType );
-            Class valueClass = Classes.RAW_CLASS.map( valueType );
+            Class constraintValueClass = Classes.RAW_CLASS.apply( constraintValueType );
+            Class valueClass = Classes.RAW_CLASS.apply( valueType );
             return constraintAnnotationType.equals( annotationType ) && constraintValueClass.isAssignableFrom( valueClass );
         }
         else

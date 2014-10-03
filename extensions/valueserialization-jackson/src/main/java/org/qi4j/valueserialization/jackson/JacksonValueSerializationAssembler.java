@@ -15,13 +15,13 @@
  */
 package org.qi4j.valueserialization.jackson;
 
+import java.util.function.Function;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Function;
 
 /**
  * Assemble a ValueSerialization Service producing and consuming JSON documents.

@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,36 +72,6 @@ public final class Iterables
     public static <T> Iterable<T> empty()
     {
         return EMPTY;
-    }
-
-    public static <T> Iterable<T> constant( final T item )
-    {
-        return new Iterable<T>()
-        {
-            @Override
-            public Iterator<T> iterator()
-            {
-                return new Iterator<T>()
-                {
-                    @Override
-                    public boolean hasNext()
-                    {
-                        return true;
-                    }
-
-                    @Override
-                    public T next()
-                    {
-                        return item;
-                    }
-
-                    @Override
-                    public void remove()
-                    {
-                    }
-                };
-            }
-        };
     }
 
     public static <T> Iterable<T> limit( final int limitItems, final Iterable<T> iterable )
@@ -207,9 +179,9 @@ public final class Iterables
     }
 
     @SuppressWarnings( "unchecked" )
-    public static <X> Iterable<X> filter( Specification<? /* super X*/> specification, Iterable<X> i )
+    public static <X> Iterable<X> filter( Predicate<? /* super X*/> specification, Iterable<X> i )
     {
-        return new FilterIterable<>( i, (Specification<? super X>) specification );
+        return new FilterIterable<>( i, (Predicate<? super X>) specification );
     }
 
     public static <X> X first( Iterable<X> i )
@@ -290,13 +262,13 @@ public final class Iterables
         return list;
     }
 
-    public static <T> boolean matchesAny( Specification<? super T> specification, Iterable<T> iterable )
+    public static <T> boolean matchesAny( Predicate<? super T> specification, Iterable<T> iterable )
     {
         boolean result = false;
 
         for( T item : iterable )
         {
-            if( ( (Specification<? super T>) specification ).satisfiedBy( item ) )
+            if( specification.test( item ) )
             {
                 result = true;
                 break;
@@ -306,12 +278,12 @@ public final class Iterables
         return result;
     }
 
-    public static <T> boolean matchesAll( Specification<? super T> specification, Iterable<T> iterable )
+    public static <T> boolean matchesAll( Predicate<? super T> specification, Iterable<T> iterable )
     {
         boolean result = true;
         for( T item : iterable )
         {
-            if( !specification.satisfiedBy( item ) )
+            if( !specification.test( item ) )
             {
                 result = false;
             }
@@ -342,7 +314,7 @@ public final class Iterables
                 final Iterable<Iterator<T>> iterators = toList( map( new Function<Iterable<T>, Iterator<T>>()
                 {
                     @Override
-                    public Iterator<T> map( Iterable<T> iterable )
+                    public Iterator<T> apply( Iterable<T> iterable )
                     {
                         return iterable.iterator();
                     }
@@ -441,7 +413,7 @@ public final class Iterables
         {
             @Override
             @SuppressWarnings( "unchecked" )
-            public TO map( FROM from )
+            public TO apply( FROM from )
             {
                 return (TO) from;
             }
@@ -578,7 +550,7 @@ public final class Iterables
         return map( new Function<T, T>()
         {
             @Override
-            public T map( T t )
+            public T apply( T t )
             {
                 if( functions.length == 0 )
                 {
@@ -590,7 +562,7 @@ public final class Iterables
                     for( int i = 0; i < functions.length; i++ )
                     {
                         Function<T, String> function = functions[i];
-                        mapped[i] = function.map( t );
+                        mapped[i] = function.apply( t );
                         debugLogger.info( msgFormat.format( mapped ) );
                     }
                 }
@@ -610,7 +582,7 @@ public final class Iterables
         return toString( iterable, new Function<T, String>()
         {
             @Override
-            public String map( T t )
+            public String apply( T t )
             {
                 return t == null ? "[null]" : t.toString();
             }
@@ -627,7 +599,7 @@ public final class Iterables
             {
                 builder.append( separator );
             }
-            builder.append( toStringFunction.map( item ) );
+            builder.append( toStringFunction.apply( item ) );
             first = false;
         }
         return builder.toString();
@@ -709,7 +681,7 @@ public final class Iterables
             public TO next()
             {
                 FROM from = fromIterator.next();
-                return function.map( from );
+                return function.apply( from );
             }
 
             @Override
@@ -726,9 +698,9 @@ public final class Iterables
     {
         private final Iterable<T> iterable;
 
-        private final Specification<? super T> specification;
+        private final Predicate<? super T> specification;
 
-        private FilterIterable( Iterable<T> iterable, Specification<? super T> specification )
+        private FilterIterable( Iterable<T> iterable, Predicate<? super T> specification )
         {
             this.iterable = iterable;
             this.specification = specification;
@@ -745,13 +717,13 @@ public final class Iterables
         {
             private final Iterator<T> iterator;
 
-            private final Specification<? super T> specification;
+            private final Predicate<? super T> specification;
 
             private T currentValue;
             boolean finished = false;
             boolean nextConsumed = true;
 
-            private FilterIterator( Iterator<T> iterator, Specification<? super T> specification )
+            private FilterIterator( Iterator<T> iterator, Predicate<? super T> specification )
             {
                 this.specification = specification;
                 this.iterator = iterator;
@@ -763,7 +735,7 @@ public final class Iterables
                 while( !found && iterator.hasNext() )
                 {
                     T currentValue = iterator.next();
-                    boolean satisfies = specification.satisfiedBy( currentValue );
+                    boolean satisfies = specification.test( currentValue );
 
                     if( satisfies )
                     {

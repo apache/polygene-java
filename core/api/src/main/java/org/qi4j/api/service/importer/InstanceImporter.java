@@ -14,6 +14,7 @@
 
 package org.qi4j.api.service.importer;
 
+import java.util.function.Function;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceImporter;
@@ -22,7 +23,6 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.MetaInfoHolder;
 import org.qi4j.api.structure.Module;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 
 import static org.qi4j.functional.Iterables.filter;
@@ -58,7 +58,7 @@ public final class InstanceImporter<T>
             {
                 @Override
                 @SuppressWarnings( "unchecked" )
-                public T map( Class<?> type )
+                public T apply( Class<?> type )
                 {
                     return (T) metaInfoHolder.metaInfo( type );
                 }

@@ -22,7 +22,7 @@ import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
 import java.util.Date;
-import org.qi4j.functional.Specification;
+import java.util.function.Predicate;
 import org.qi4j.functional.Specifications;
 
 import static org.qi4j.functional.Specifications.not;
@@ -40,7 +40,7 @@ public class CircuitBreaker
 
     private int threshold;
     private long timeout;
-    private Specification<Throwable> allowedThrowables;
+    private Predicate<Throwable> allowedThrowables;
 
     private int countDown;
     private long trippedOn = -1;
@@ -53,7 +53,7 @@ public class CircuitBreaker
     PropertyChangeSupport pcs = new PropertyChangeSupport( this );
     VetoableChangeSupport vcs = new VetoableChangeSupport( this );
 
-    public CircuitBreaker( int threshold, long timeout, Specification<Throwable> allowedThrowables )
+    public CircuitBreaker( int threshold, long timeout, Predicate<Throwable> allowedThrowables )
     {
         this.threshold = threshold;
         this.countDown = threshold;
@@ -186,7 +186,7 @@ public class CircuitBreaker
     {
         if( status == Status.on )
         {
-            if( allowedThrowables.satisfiedBy( throwable ) )
+            if( allowedThrowables.test( throwable ) )
             {
                 // Allowed throwable, so counts as success
                 success();

@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -34,19 +36,6 @@ public class IterablesTest
     private List<String> numbers = Arrays.asList( "1", "2", "3" );
     private Iterable<Long> numberLongs = Arrays.asList( 1L, 2L, 3L );
     private Iterable<Integer> numberIntegers = Arrays.asList( 1, 2, 3 );
-
-    @Test
-    public void testConstant()
-    {
-        String str = "";
-
-        for( String string : Iterables.limit( 3, Iterables.constant( "123" ) ) )
-        {
-            str += string;
-        }
-
-        assertThat( str, CoreMatchers.equalTo( "123123123" ) );
-    }
 
     @Test
     public void testUnique()
@@ -103,7 +92,7 @@ public class IterablesTest
             int sum = 0;
 
             @Override
-            public Integer map( Integer number )
+            public Integer apply( Integer number )
             {
                 return sum += number;
             }
@@ -172,7 +161,7 @@ public class IterablesTest
         assertThat( Iterables.toList( Iterables.map( new Function<String, String>()
         {
 
-            public String map( String s )
+            public String apply( String s )
             {
                 return s + s;
             }
@@ -184,7 +173,7 @@ public class IterablesTest
         {
 
             @Override
-            public Integer map( Collection collection )
+            public Integer apply( Collection collection )
             {
                 return collection.size();
             }
@@ -231,7 +220,7 @@ public class IterablesTest
         {
 
             @Override
-            public String map( String s )
+            public String apply( String s )
             {
                 return s + ":" + s.length();
             }
@@ -248,11 +237,11 @@ public class IterablesTest
     {
         final int[] count = new int[ 1 ];
 
-        Iterable<String> b = Iterables.cache( Iterables.filter( Specifications.and( new Specification<String>()
+        Iterable<String> b = Iterables.cache( Iterables.filter( Specifications.and( new Predicate<String>()
         {
 
             @Override
-            public boolean satisfiedBy( String item )
+            public boolean test( String item )
             {
                 count[ 0] = count[ 0] + 1;
                 return true;

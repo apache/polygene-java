@@ -18,11 +18,11 @@
  */
 package org.qi4j.runtime.query;
 
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
-import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.QueryBuilderSPI;
 import org.qi4j.spi.query.QuerySource;
@@ -46,7 +46,7 @@ final class QueryBuilderImpl<T>
     /**
      * Where clause.
      */
-    private final Specification<Composite> whereClause;
+    private final Predicate<Composite> whereClause;
 
     /**
      * Constructor.
@@ -57,7 +57,7 @@ final class QueryBuilderImpl<T>
      */
     QueryBuilderImpl( final EntityFinder entityFinder,
                       final Class<T> resultType,
-                      final Specification<Composite> whereClause
+                      final Predicate<Composite> whereClause
     )
     {
         this.entityFinder = entityFinder;
@@ -67,7 +67,7 @@ final class QueryBuilderImpl<T>
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public QueryBuilder<T> where( Specification<Composite> specification )
+    public QueryBuilder<T> where( Predicate<Composite> specification )
     {
         if( specification == null )
         {

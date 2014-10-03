@@ -11,14 +11,14 @@ public class QualifiedNameTest
     public void testQualifiedNameWithDollar()
     {
         assertEquals( "Name containing dollar is modified", "Test-Test",
-                      new QualifiedName( TypeName.nameOf( "Test$Test" ), "satisfiedBy" ).type() );
+                      new QualifiedName( TypeName.nameOf( "Test$Test" ), "test" ).type() );
     }
 
     @Test
     public void testQualifiedNameFromQNWithDollar()
     {
         assertEquals( "Name containing dollar is cleaned up", "Test-Test",
-                      QualifiedName.fromFQN( "Test$Test:satisfiedBy" ).type() );
+                      QualifiedName.fromFQN( "Test$Test:test" ).type() );
     }
 
     @Test( expected = NullArgumentException.class )
@@ -30,7 +30,7 @@ public class QualifiedNameTest
     @Test( expected = NullArgumentException.class )
     public void nonNullArguments2()
     {
-        new QualifiedName( null, "satisfiedBy" );
+        new QualifiedName( null, "test" );
     }
 
     @Test( expected = NullArgumentException.class )
@@ -54,7 +54,7 @@ public class QualifiedNameTest
     @Test( expected = NullArgumentException.class )
     public void nonNullArguments6()
     {
-        QualifiedName.fromClass( null, "satisfiedBy" );
+        QualifiedName.fromClass( null, "test" );
     }
 
     @Test( expected = NullArgumentException.class )

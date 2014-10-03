@@ -35,7 +35,7 @@ import static org.junit.Assume.assumeTrue;
 /**
  * Test if the stacktrace is cleaned up properly.
  * <p>
- * NOTE: This satisfiedBy MUST NOT be inside package org.qi4j.runtime, or it will fail.
+ * NOTE: This test MUST NOT be inside package org.qi4j.runtime, or it will fail.
  * </p>
  */
 public class CleanStackTraceTest
@@ -61,7 +61,7 @@ public class CleanStackTraceTest
     @Test
     public void cleanStackTraceOnApplicationException()
     {
-        // Don't run the satisfiedBy if compacttrace is set to anything else but proxy
+        // Don't run the test if compacttrace is set to anything else but proxy
         String compactTracePropertyValue = System.getProperty( "qi4j.compacttrace" );
         if( compactTracePropertyValue != null && !"proxy".equals( compactTracePropertyValue ) )
         {

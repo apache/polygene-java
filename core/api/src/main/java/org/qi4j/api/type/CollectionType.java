@@ -29,7 +29,7 @@ public final class CollectionType
 
     public static boolean isCollection( Type type )
     {
-        Class<?> cl = Classes.RAW_CLASS.map( type );
+        Class<?> cl = Classes.RAW_CLASS.apply( type );
         return cl.equals( Collection.class ) || cl.equals( List.class ) || cl.equals( Set.class );
     }
 

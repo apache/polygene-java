@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.InvalidCompositeException;
@@ -32,7 +33,6 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.util.Annotations;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.functional.Iterables;
@@ -112,7 +112,7 @@ public final class ConstructorsModel
         Function<ConstructorModel, Iterable<DependencyModel>> constructorDependencies = new Function<ConstructorModel, Iterable<DependencyModel>>()
         {
             @Override
-            public Iterable<DependencyModel> map( ConstructorModel constructorModel )
+            public Iterable<DependencyModel> apply( ConstructorModel constructorModel )
             {
                 return constructorModel.dependencies();
             }

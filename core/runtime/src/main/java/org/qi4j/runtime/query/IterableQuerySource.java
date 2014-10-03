@@ -19,12 +19,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 import org.qi4j.spi.query.QuerySource;
 
@@ -49,7 +49,7 @@ public class IterableQuerySource
 
     @Override
     public <T> T find( Class<T> resultType,
-                       Specification<Composite> whereClause,
+                       Predicate<Composite> whereClause,
                        Iterable<OrderBy> orderBySegments,
                        Integer firstResult,
                        Integer maxResults,
@@ -66,7 +66,7 @@ public class IterableQuerySource
 
     @Override
     public <T> long count( Class<T> resultType,
-                           Specification<Composite> whereClause,
+                           Predicate<Composite> whereClause,
                            Iterable<OrderBy> orderBySegments,
                            Integer firstResult,
                            Integer maxResults,
@@ -78,7 +78,7 @@ public class IterableQuerySource
 
     @Override
     public <T> Iterator<T> iterator( Class<T> resultType,
-                                     Specification<Composite> whereClause,
+                                     Predicate<Composite> whereClause,
                                      Iterable<OrderBy> orderBySegments,
                                      Integer firstResult,
                                      Integer maxResults,
@@ -90,7 +90,7 @@ public class IterableQuerySource
 
     @SuppressWarnings( {"raw", "unchecked"} )
     private <T> List<T> list( Class<T> resultType,
-                              Specification<Composite> whereClause,
+                              Predicate<Composite> whereClause,
                               Iterable<OrderBy> orderBySegments,
                               Integer firstResult,
                               Integer maxResults,
@@ -146,7 +146,7 @@ public class IterableQuerySource
     }
 
     @SuppressWarnings( {"raw", "unchecked"} )
-    private <T> List<T> filter( Class<T> resultType, Specification whereClause )
+    private <T> List<T> filter( Class<T> resultType, Predicate whereClause )
     {
         if( whereClause == null )
         {
@@ -183,8 +183,8 @@ public class IterableQuerySource
             {
                 try
                 {
-                    final Property prop1 = orderBySegment.property().map( o1 );
-                    final Property prop2 = orderBySegment.property().map( o2 );
+                    final Property prop1 = orderBySegment.property().apply( o1 );
+                    final Property prop2 = orderBySegment.property().apply( o2 );
                     if( prop1 == null || prop2 == null )
                     {
                         if( prop1 == null && prop2 == null )

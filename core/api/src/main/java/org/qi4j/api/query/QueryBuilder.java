@@ -19,8 +19,8 @@
  */
 package org.qi4j.api.query;
 
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.functional.Specification;
 
 /**
  * QueryBuilders are used to create {@link Query} instances.
@@ -43,7 +43,7 @@ public interface QueryBuilder<T>
      *
      * @return a new builder with the added where-clause
      */
-    QueryBuilder<T> where( Specification<Composite> specification );
+    QueryBuilder<T> where( Predicate<Composite> specification );
 
     /**
      * Create a new query with the declared where-clauses that will be evaluated against the iterable entries.

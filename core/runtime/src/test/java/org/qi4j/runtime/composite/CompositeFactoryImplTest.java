@@ -57,7 +57,7 @@ public class CompositeFactoryImplTest
             TransientBuilder<SecondComposite> builder = module.newTransientBuilder(
                 SecondComposite.class );
             SecondComposite composition9 = builder.newInstance();
-            composition9.setValue( "satisfiedBy value" );
+            composition9.setValue( "test value" );
         }
         catch( Exception e )
         {

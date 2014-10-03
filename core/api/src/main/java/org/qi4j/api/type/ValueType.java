@@ -15,8 +15,8 @@
 package org.qi4j.api.type;
 
 import java.util.Collections;
+import java.util.function.Function;
 import org.qi4j.api.util.NullArgumentException;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 
 import static org.qi4j.functional.Iterables.first;
@@ -138,7 +138,7 @@ public class ValueType
             new Function<Class<?>, String>()
             {
                 @Override
-                public String map( Class<?> item )
+                public String apply( Class<?> item )
                 {
                     return item.getName();
                 }

@@ -23,10 +23,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
-import org.qi4j.functional.Function;
 
 import static java.util.Collections.reverseOrder;
 
@@ -112,10 +112,10 @@ public class TableBuilder
             String f = null;
             Function valueFunction = columns.get( column.id().get()).getValueFunction();
             if (!no_values && valueFunction != null)
-               v = valueFunction.map(rowObject);
+               v = valueFunction.apply(rowObject);
             Function formattedFunction = columns.get( column.id().get()).getFormattedFunction();
             if (!no_format && formattedFunction != null)
-               f = (String) formattedFunction.map(rowObject);
+               f = (String) formattedFunction.apply(rowObject);
             else if (v != null)
             {
                if ( column.columnType().get().equals( Table.DATETIME))

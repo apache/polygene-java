@@ -2,7 +2,7 @@ package org.qi4j.library.rest.client.api;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.qi4j.functional.Specification;
+import java.util.function.Predicate;
 import org.qi4j.functional.Specifications;
 import org.qi4j.library.rest.client.spi.ResponseHandler;
 import org.restlet.Response;
@@ -15,31 +15,31 @@ import org.restlet.resource.ResourceException;
 public class ErrorHandler
     implements ResponseHandler
 {
-    public static Specification<Response> AUTHENTICATION_REQUIRED = new Specification<Response>()
+    public static Predicate<Response> AUTHENTICATION_REQUIRED = new Predicate<Response>()
     {
         @Override
-        public boolean satisfiedBy( Response item )
+        public boolean test( Response item )
         {
             return item.getStatus().equals( Status.CLIENT_ERROR_UNAUTHORIZED );
         }
     };
 
-    public static Specification<Response> RECOVERABLE_ERROR = new Specification<Response>()
+    public static Predicate<Response> RECOVERABLE_ERROR = new Predicate<Response>()
     {
         @Override
-        public boolean satisfiedBy( Response item )
+        public boolean test( Response item )
         {
             return item.getStatus().isRecoverableError();
         }
     };
 
-    LinkedHashMap<Specification<Response>, ResponseHandler> handlers = new LinkedHashMap<Specification<Response>, ResponseHandler>(  );
+    LinkedHashMap<Predicate<Response>, ResponseHandler> handlers = new LinkedHashMap<Predicate<Response>, ResponseHandler>(  );
 
     public ErrorHandler()
     {
     }
 
-    public ErrorHandler onError(Specification<Response> responseSpecification, ResponseHandler handler)
+    public ErrorHandler onError(Predicate<Response> responseSpecification, ResponseHandler handler)
     {
         handlers.put( responseSpecification, handler );
         return this;
@@ -54,9 +54,9 @@ public class ErrorHandler
     @Override
     public HandlerCommand handleResponse( Response response, ContextResourceClient client )
     {
-        for( Map.Entry<Specification<Response>, ResponseHandler> specificationResponseHandlerEntry : handlers.entrySet() )
+        for( Map.Entry<Predicate<Response>, ResponseHandler> specificationResponseHandlerEntry : handlers.entrySet() )
         {
-            if (specificationResponseHandlerEntry.getKey().satisfiedBy( response ))
+            if (specificationResponseHandlerEntry.getKey().test( response ))
             {
                 return specificationResponseHandlerEntry.getValue().handleResponse( response, client );
             }

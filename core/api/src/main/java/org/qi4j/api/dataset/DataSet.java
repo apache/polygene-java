@@ -1,7 +1,7 @@
 package org.qi4j.api.dataset;
 
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Specification;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * definition.constrain(entity(Person.class))
@@ -10,7 +10,7 @@ import org.qi4j.functional.Specification;
  */
 public interface DataSet<T>
 {
-    DataSet<T> constrain( Specification<T> selection );
+    DataSet<T> constrain( Predicate<T> selection );
 
     <U> DataSet<U> project( Function<T, U> conversion );
 

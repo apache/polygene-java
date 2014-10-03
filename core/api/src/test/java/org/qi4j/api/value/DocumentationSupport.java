@@ -27,6 +27,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Service;
@@ -41,7 +42,6 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Function;
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
 import org.qi4j.io.Transforms;
@@ -252,7 +252,7 @@ public class DocumentationSupport
                                     Function<Application, Module> valuesModuleFinder = new Function<Application, Module>()
                                     {
                                         @Override
-                                        public Module map( Application app )
+                                        public Module apply( Application app )
                                         {
                                             return app.findModule( "SINGLE-Layer", "VALUES-Module" );
                                         }

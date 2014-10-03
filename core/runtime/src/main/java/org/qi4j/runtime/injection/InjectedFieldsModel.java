@@ -21,10 +21,10 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import org.qi4j.api.injection.InjectionScope;
 import org.qi4j.api.util.Classes;
 import org.qi4j.api.util.Fields;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
@@ -46,7 +46,7 @@ public final class InjectedFieldsModel
 
     public InjectedFieldsModel( Class fragmentClass )
     {
-        Iterable<Field> mappedFields = Fields.FIELDS_OF.map( fragmentClass );
+        Iterable<Field> mappedFields = Fields.FIELDS_OF.apply( fragmentClass );
         for( Field field : mappedFields )
         {
             Annotation injectionAnnotation = first( filter( translate( type(), hasAnnotation( InjectionScope.class ) ), iterable( field
@@ -90,7 +90,7 @@ public final class InjectedFieldsModel
         return Iterables.map( new Function<InjectedFieldModel, DependencyModel>()
         {
             @Override
-            public DependencyModel map( InjectedFieldModel injectedFieldModel )
+            public DependencyModel apply( InjectedFieldModel injectedFieldModel )
             {
                 return injectedFieldModel.dependency();
             }

@@ -16,6 +16,7 @@ package org.qi4j.api;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.function.Function;
 import org.qi4j.api.association.AbstractAssociation;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.composite.Composite;
@@ -30,7 +31,6 @@ import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.Function;
 
 /**
  * Encapsulation of the Qi4j API.
@@ -126,10 +126,10 @@ public interface Qi4j
     /**
      * Function that returns the CompositeDescriptor of a Composite.
      */
-    Function<Composite, CompositeDescriptor> FUNCTION_DESCRIPTOR_FOR = new Function<Composite, CompositeDescriptor>()
+    Function<Composite, CompositeDescriptor> FUNCTION_DESCRIPTOR_FOR = new Function<Composite,CompositeDescriptor>()
     {
         @Override
-        public CompositeDescriptor map( Composite composite )
+        public CompositeDescriptor apply( Composite composite )
         {
             if( composite instanceof Proxy )
             {
@@ -158,7 +158,7 @@ public interface Qi4j
     Function<Composite, CompositeInstance> FUNCTION_COMPOSITE_INSTANCE_OF = new Function<Composite, CompositeInstance>()
     {
         @Override
-        public CompositeInstance map( Composite composite )
+        public CompositeInstance apply( Composite composite )
         {
             if( composite instanceof Proxy )
             {

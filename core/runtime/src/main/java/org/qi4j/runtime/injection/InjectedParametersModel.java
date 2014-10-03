@@ -17,9 +17,9 @@ package org.qi4j.runtime.injection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 import org.qi4j.api.composite.InjectedParametersDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.VisitableHierarchy;
 
 /**
@@ -79,12 +79,12 @@ public final class InjectedParametersModel
         return visitor.visitLeave( this );
     }
 
-    public Collection<DependencyModel> filter( Specification<DependencyModel> specification )
+    public Collection<DependencyModel> filter( Predicate<DependencyModel> specification )
     {
         ArrayList<DependencyModel> result = new ArrayList<DependencyModel>();
         for( DependencyModel model : parameterDependencies )
         {
-            if( specification.satisfiedBy( model ) )
+            if( specification.test( model ) )
             {
                 result.add( model );
             }

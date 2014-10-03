@@ -3,6 +3,7 @@ package org.qi4j.library.rdf.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.function.Function;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.qi4j.api.composite.DependencyDescriptor;
@@ -12,7 +13,6 @@ import org.qi4j.api.mixin.MixinDescriptor;
 import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.api.structure.ModuleDescriptor;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -45,7 +45,7 @@ public class Model2XML
     }
 
     @Override
-    public Document map( ApplicationDescriptor Application )
+    public Document apply( ApplicationDescriptor Application )
     {
         try
         {

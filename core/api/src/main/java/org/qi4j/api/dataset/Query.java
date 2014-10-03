@@ -1,9 +1,9 @@
 package org.qi4j.api.dataset;
 
+import java.util.function.Predicate;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryException;
 import org.qi4j.api.query.QueryExecutionException;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.Visitor;
 
 /**
@@ -16,7 +16,7 @@ public interface Query<T>
         ASCENDING, DESCENDING
     }
 
-    Query filter( Specification<T> filter );
+    Query filter( Predicate<T> filter );
 
     Query orderBy( final Property<?> property, final Order order );
 

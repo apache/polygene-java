@@ -30,10 +30,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.qi4j.api.composite.ModelDescriptor;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 
 import static org.qi4j.functional.Iterables.cast;
 import static org.qi4j.functional.Iterables.empty;
@@ -85,7 +85,7 @@ public final class Classes
     private static final Function<Type, Type> WRAPPER_CLASS = new Function<Type, Type>()
     {
         @Override
-        public Type map( Type aClass )
+        public Type apply( Type aClass )
         {
             Type wrapperClass = wrapperClasses.get( aClass );
             return wrapperClass == null ? aClass : wrapperClass;
@@ -100,7 +100,7 @@ public final class Classes
     private static final Function<Type, Type> PRIMITIVE_CLASS = new Function<Type, Type>()
     {
         @Override
-        public Type map( Type aClass )
+        public Type apply( Type aClass )
         {
             Type primitiveClass = primitiveClasses.get( aClass );
             return primitiveClass == null ? aClass : primitiveClass;
@@ -113,7 +113,7 @@ public final class Classes
     public static final Function<Type, Class<?>> RAW_CLASS = new Function<Type, Class<?>>()
     {
         @Override
-        public Class<?> map( Type genericType )
+        public Class<?> apply( Type genericType )
         {
             // Calculate raw type
             if( genericType instanceof Class )
@@ -144,7 +144,7 @@ public final class Classes
     private static final Function<AccessibleObject, Type> TYPE_OF = new Function<AccessibleObject, Type>()
     {
         @Override
-        public Type map( AccessibleObject accessor )
+        public Type apply( AccessibleObject accessor )
         {
             return accessor instanceof Method ? ( (Method) accessor ).getGenericReturnType() : ( (Field) accessor ).getGenericType();
         }
@@ -154,7 +154,7 @@ public final class Classes
     {
         @Override
         @SuppressWarnings( {"raw", "unchecked"} )
-        public Iterable<Class<?>> map( Type type )
+        public Iterable<Class<?>> apply( Type type )
         {
             if( type == null )
             {
@@ -167,9 +167,9 @@ public final class Classes
             }
             else
             {
-                type = RAW_CLASS.map( type );
+                type = RAW_CLASS.apply( type );
                 Class superclass = ( (Class) type ).getSuperclass();
-                return prepend( (Class<?>) type, map( superclass ) );
+                return prepend( (Class<?>) type, apply( superclass ) );
             }
         }
     };
@@ -178,9 +178,9 @@ public final class Classes
     private static final Function<Type, Iterable<Type>> INTERFACES_OF = new Function<Type, Iterable<Type>>()
     {
         @Override
-        public Iterable<Type> map( Type type )
+        public Iterable<Type> apply( Type type )
         {
-            Class clazz = RAW_CLASS.map( type );
+            Class clazz = RAW_CLASS.apply( type );
 
             if( clazz.isInterface() )
             {
@@ -198,7 +198,7 @@ public final class Classes
                 {
                     return flatten( flattenIterables( Iterables.map( INTERFACES_OF,
                                                                      iterable( clazz.getGenericInterfaces() ) ) ),
-                                    INTERFACES_OF.map( RAW_CLASS.map( type ).getSuperclass() ) );
+                                    INTERFACES_OF.apply( RAW_CLASS.apply( type ).getSuperclass() ) );
                 }
             }
         }
@@ -208,9 +208,9 @@ public final class Classes
     private static final Function<Type, Iterable<Type>> TYPES_OF = new Function<Type, Iterable<Type>>()
     {
         @Override
-        public Iterable<Type> map( Type type )
+        public Iterable<Type> apply( Type type )
         {
-            Class clazz = RAW_CLASS.map( type );
+            Class clazz = RAW_CLASS.apply( type );
 
             if( clazz.isInterface() )
             {
@@ -220,15 +220,15 @@ public final class Classes
             }
             else
             {
-                return flatten( CLASS_HIERARCHY.map( type ),
-                                flattenIterables( Iterables.map( INTERFACES_OF, CLASS_HIERARCHY.map( type ) ) ) );
+                return flatten( CLASS_HIERARCHY.apply( type ),
+                                flattenIterables( Iterables.map( INTERFACES_OF, CLASS_HIERARCHY.apply( type ) ) ) );
             }
         }
     };
 
     public static Type typeOf( AccessibleObject from )
     {
-        return TYPE_OF.map( from );
+        return TYPE_OF.apply( from );
     }
 
     public static Iterable<Type> typesOf( Iterable<Type> types )
@@ -243,7 +243,7 @@ public final class Classes
 
     public static Iterable<Type> typesOf( Type type )
     {
-        return TYPES_OF.map( type );
+        return TYPES_OF.apply( type );
     }
 
     public static Iterable<? extends Type> interfacesOf( Iterable<? extends Type> types )
@@ -258,26 +258,26 @@ public final class Classes
 
     public static Iterable<Type> interfacesOf( Type type )
     {
-        return INTERFACES_OF.map( type );
+        return INTERFACES_OF.apply( type );
     }
 
     public static Iterable<Class<?>> classHierarchy( Class<?> type )
     {
-        return CLASS_HIERARCHY.map( type );
+        return CLASS_HIERARCHY.apply( type );
     }
 
     public static Type wrapperClass( Type type )
     {
-        return WRAPPER_CLASS.map( type );
+        return WRAPPER_CLASS.apply( type );
     }
 
-    public static Specification<Class<?>> isAssignableFrom( final Class clazz )
+    public static Predicate<Class<?>> isAssignableFrom( final Class clazz )
     {
-        return new Specification<Class<?>>()
+        return new Predicate<Class<?>>()
         {
             @Override
             @SuppressWarnings( "unchecked" )
-            public boolean satisfiedBy( Class<?> item )
+            public boolean test( Class<?> item )
             {
                 return clazz.isAssignableFrom( item );
             }
@@ -285,24 +285,24 @@ public final class Classes
     }
 
     @SuppressWarnings( "raw" )
-    public static Specification<Object> instanceOf( final Class clazz )
+    public static Predicate<Object> instanceOf( final Class clazz )
     {
-        return new Specification<Object>()
+        return new Predicate<Object>()
         {
             @Override
-            public boolean satisfiedBy( Object item )
+            public boolean test( Object item )
             {
                 return clazz.isInstance( item );
             }
         };
     }
 
-    public static Specification<Class<?>> hasModifier( final int classModifier )
+    public static Predicate<Class<?>> hasModifier( final int classModifier )
     {
-        return new Specification<Class<?>>()
+        return new Predicate<Class<?>>()
         {
             @Override
-            public boolean satisfiedBy( Class<?> item )
+            public boolean test( Class<?> item )
             {
                 return ( item.getModifiers() & classModifier ) != 0;
             }
@@ -314,9 +314,9 @@ public final class Classes
         return new Function<Type, Iterable<T>>()
         {
             @Override
-            public Iterable<T> map( Type type )
+            public Iterable<T> apply( Type type )
             {
-                return flattenIterables( Iterables.map( function, CLASS_HIERARCHY.map( type ) ) );
+                return flattenIterables( Iterables.map( function, CLASS_HIERARCHY.apply( type ) ) );
             }
         };
     }
@@ -326,9 +326,9 @@ public final class Classes
         return new Function<Type, Iterable<T>>()
         {
             @Override
-            public Iterable<T> map( Type type )
+            public Iterable<T> apply( Type type )
             {
-                return flattenIterables( Iterables.map( function, TYPES_OF.map( type ) ) );
+                return flattenIterables( Iterables.map( function, TYPES_OF.apply( type ) ) );
             }
         };
     }
@@ -415,9 +415,9 @@ public final class Classes
         AnnotationType findAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type, Class<AnnotationType> annotationClass )
     {
         AnnotationType result = null;
-        for( Type clazz : Classes.TYPES_OF.map( type ) )
+        for( Type clazz : Classes.TYPES_OF.apply( type ) )
         {
-            result = Classes.RAW_CLASS.map( clazz ).getAnnotation( annotationClass );
+            result = Classes.RAW_CLASS.apply( clazz ).getAnnotation( annotationClass );
             if( result != null )
             {
                 break;
@@ -427,12 +427,12 @@ public final class Classes
         return result;
     }
 
-    public static Specification<Member> memberNamed( final String name )
+    public static Predicate<Member> memberNamed( final String name )
     {
-        return new Specification<Member>()
+        return new Predicate<Member>()
         {
             @Override
-            public boolean satisfiedBy( Member item )
+            public boolean test( Member item )
             {
                 return item.getName().equals( name );
             }
@@ -480,7 +480,7 @@ public final class Classes
         List<Type> types = new ArrayList<>();
         for( Type type : current.getGenericInterfaces() )
         {
-            Iterable<Type> interfaces = Classes.INTERFACES_OF.map( type );
+            Iterable<Type> interfaces = Classes.INTERFACES_OF.apply( type );
             for( Type anInterface : interfaces )
             {
                 if( !types.contains( anInterface ) )
@@ -593,24 +593,24 @@ public final class Classes
         return uriPart.replace( '-', '$' );
     }
 
-    public static Specification<ModelDescriptor> modelTypeSpecification( final String className )
+    public static Predicate<ModelDescriptor> modelTypeSpecification( final String className )
     {
-        return new Specification<ModelDescriptor>()
+        return new Predicate<ModelDescriptor>()
         {
             @Override
-            public boolean satisfiedBy( ModelDescriptor item )
+            public boolean test( ModelDescriptor item )
             {
-                return matchesAny( new Specification<String>()
+                return matchesAny( new Predicate<String>()
                 {
                     @Override
-                    public boolean satisfiedBy( String item )
+                    public boolean test( String item )
                     {
                         return item.equals( className );
                     }
                 }, map( new Function<Class<?>, String>()
                 {
                     @Override
-                    public String map( Class<?> item )
+                    public String apply( Class<?> item )
                     {
                         return item.getName();
                     }
@@ -620,17 +620,17 @@ public final class Classes
     }
 
     @SuppressWarnings( "raw" )
-    public static Specification<ModelDescriptor> exactTypeSpecification( final Class type )
+    public static Predicate<ModelDescriptor> exactTypeSpecification( final Class type )
     {
-        return new Specification<ModelDescriptor>()
+        return new Predicate<ModelDescriptor>()
         {
             @Override
-            public boolean satisfiedBy( ModelDescriptor item )
+            public boolean test( ModelDescriptor item )
             {
-                return matchesAny( new Specification<Class<?>>()
+                return matchesAny( new Predicate<Class<?>>()
                 {
                     @Override
-                    public boolean satisfiedBy( Class<?> item )
+                    public boolean test( Class<?> item )
                     {
                         return item.equals( type );
                     }
@@ -640,18 +640,18 @@ public final class Classes
     }
 
     @SuppressWarnings( "raw" )
-    public static Specification<ModelDescriptor> assignableTypeSpecification( final Class type )
+    public static Predicate<ModelDescriptor> assignableTypeSpecification( final Class type )
     {
-        return new Specification<ModelDescriptor>()
+        return new Predicate<ModelDescriptor>()
         {
             @Override
-            public boolean satisfiedBy( ModelDescriptor item )
+            public boolean test( ModelDescriptor item )
             {
-                return matchesAny( new Specification<Class<?>>()
+                return matchesAny( new Predicate<Class<?>>()
                 {
                     @Override
                     @SuppressWarnings( "unchecked" )
-                    public boolean satisfiedBy( Class<?> itemType )
+                    public boolean test( Class<?> itemType )
                     {
                         return !type.equals( itemType ) && type.isAssignableFrom( itemType );
                     }
@@ -684,9 +684,9 @@ public final class Classes
         return new Function<Type, String>()
         {
             @Override
-            public String map( Type type )
+            public String apply( Type type )
             {
-                return RAW_CLASS.map( type ).getName();
+                return RAW_CLASS.apply( type ).getName();
             }
         };
     }

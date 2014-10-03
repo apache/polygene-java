@@ -23,6 +23,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
+import java.util.function.Function;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
@@ -31,7 +32,6 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.query.NotQueryableException;
 import org.qi4j.api.query.QueryExpressionException;
 import org.qi4j.api.util.Classes;
-import org.qi4j.functional.Function;
 
 import static org.qi4j.api.util.Classes.typeOf;
 
@@ -65,7 +65,7 @@ public class PropertyFunction<T>
         // Verify that the property type itself (value composites) is not marked as non queryable
 
         Type returnType = typeOf( accessor );
-        if( !Property.class.isAssignableFrom( Classes.RAW_CLASS.map( returnType ) ) )
+        if( !Property.class.isAssignableFrom( Classes.RAW_CLASS.apply( returnType ) ) )
         {
             throw new QueryExpressionException( "Not a property type:" + returnType );
         }
@@ -110,14 +110,14 @@ public class PropertyFunction<T>
     }
 
     @Override
-    public Property<T> map( Composite entity )
+    public Property<T> apply( Composite entity )
     {
         try
         {
             Object target = entity;
             if( traversedProperty != null )
             {
-                Property<?> property = traversedProperty.map( entity );
+                Property<?> property = traversedProperty.apply( entity );
                 if( property == null )
                 {
                     return null;
@@ -126,7 +126,7 @@ public class PropertyFunction<T>
             }
             else if( traversedAssociation != null )
             {
-                Association<?> association = traversedAssociation.map( entity );
+                Association<?> association = traversedAssociation.apply( entity );
                 if( association == null )
                 {
                     return null;

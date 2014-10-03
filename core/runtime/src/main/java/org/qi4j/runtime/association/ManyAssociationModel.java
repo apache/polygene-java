@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
+import java.util.function.BiFunction;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.GenericAssociationInfo;
 import org.qi4j.api.association.ManyAssociation;
@@ -37,7 +38,6 @@ import org.qi4j.api.entity.Queryable;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.util.Classes;
 import org.qi4j.bootstrap.BindingException;
-import org.qi4j.functional.Function2;
 import org.qi4j.functional.Visitable;
 import org.qi4j.functional.Visitor;
 import org.qi4j.runtime.composite.ValueConstraintsInstance;
@@ -142,12 +142,12 @@ public final class ManyAssociationModel
 
     public <T> ManyAssociation<T> newInstance( final ModuleUnitOfWork uow, EntityState state )
     {
-        return new ManyAssociationInstance<>( state instanceof BuilderEntityState ? builderInfo : this, new Function2<EntityReference, Type, Object>()
+        return new ManyAssociationInstance<>( state instanceof BuilderEntityState ? builderInfo : this, new BiFunction<EntityReference, Type, Object>()
         {
             @Override
-            public Object map( EntityReference entityReference, Type type )
+            public Object apply( EntityReference entityReference, Type type )
             {
-                return uow.get( Classes.RAW_CLASS.map( type ), entityReference.identity() );
+                return uow.get( Classes.RAW_CLASS.apply( type ), entityReference.identity() );
             }
         }, state.manyAssociationValueOf( qualifiedName ) );
     }

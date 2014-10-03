@@ -81,7 +81,7 @@ public final class BuilderEntityState
     @Override
     public boolean isAssignableTo( Class<?> type )
     {
-        return Classes.exactTypeSpecification( type ).satisfiedBy( entityType );
+        return Classes.exactTypeSpecification( type ).test( entityType );
     }
 
     @Override

@@ -142,7 +142,7 @@ public class TransientInstance
         {
             return false;
         }
-        TransientInstance other = (TransientInstance) Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (Composite) o );
+        TransientInstance other = (TransientInstance) Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (Composite) o );
         if( other.mixins.length != mixins.length )
         {
             return false;

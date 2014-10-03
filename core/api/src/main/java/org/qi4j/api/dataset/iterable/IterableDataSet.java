@@ -1,10 +1,10 @@
 package org.qi4j.api.dataset.iterable;
 
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.qi4j.api.dataset.DataSet;
 import org.qi4j.api.dataset.Query;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 
 /**
  * TODO
@@ -20,7 +20,7 @@ public class IterableDataSet<T>
     }
 
     @Override
-    public DataSet<T> constrain( Specification<T> selection )
+    public DataSet<T> constrain( Predicate<T> selection )
     {
         return new IterableDataSet<T>( Iterables.filter( selection, iterable ) );
     }

@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Function;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ServiceReference;
@@ -33,7 +34,6 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.value.ValueDeserializer;
 import org.qi4j.api.value.ValueSerializationException;
-import org.qi4j.functional.Function;
 import org.qi4j.spi.value.ValueDeserializerAdapter;
 
 /**
@@ -125,7 +125,7 @@ public class JacksonValueDeserializer
         }
         while( input.nextToken() != JsonToken.END_ARRAY )
         {
-            T element = deserializer.map( input );
+            T element = deserializer.apply( input );
             collection.add( element );
         }
         return collection;
@@ -173,11 +173,11 @@ public class JacksonValueDeserializer
                 input.nextToken();
                 if( "key".equals( objectKey ) )
                 {
-                    key = keyDeserializer.map( input );
+                    key = keyDeserializer.apply( input );
                 }
                 else if( "value".equals( objectKey ) )
                 {
-                    value = valueDeserializer.map( input );
+                    value = valueDeserializer.apply( input );
                 }
                 else
                 {
@@ -282,7 +282,7 @@ public class JacksonValueDeserializer
         {
             return null;
         }
-        T value = valueDeserializer.map( valueNode );
+        T value = valueDeserializer.apply( valueNode );
         return value;
     }
 
@@ -303,7 +303,7 @@ public class JacksonValueDeserializer
         ArrayNode array = (ArrayNode) inputNode;
         for( JsonNode item : array )
         {
-            T value = deserializer.map( item );
+            T value = deserializer.apply( item );
             collection.add( value );
         }
     }
@@ -332,8 +332,8 @@ public class JacksonValueDeserializer
             }
             JsonNode keyNode = item.get( "key" );
             JsonNode valueNode = item.get( "value" );
-            K key = keyDeserializer.map( keyNode );
-            V value = valueDeserializer.map( valueNode );
+            K key = keyDeserializer.apply( keyNode );
+            V value = valueDeserializer.apply( valueNode );
             if( key != null )
             {
                 map.put( key, value );

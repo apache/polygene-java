@@ -32,7 +32,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 /**
- * Abstract satisfiedBy with tests for the CachePool interface.
+ * Abstract test with tests for the CachePool interface.
  */
 public abstract class AbstractCachePoolTest
     extends AbstractQi4jTest

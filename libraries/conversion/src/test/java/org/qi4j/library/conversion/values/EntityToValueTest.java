@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.function.Function;
 import org.junit.Test;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
@@ -37,7 +38,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Function;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -172,7 +172,7 @@ public class EntityToValueTest
             PersonValue value = conversion.convert( PersonValue.class, entity, new Function<PersonValue, PersonValue>()
             {
                 @Override
-                public PersonValue map( PersonValue prototype )
+                public PersonValue apply( PersonValue prototype )
                 {
                     prototype.firstName().set( "Prototype Opportunity" );
                     return prototype;

@@ -14,6 +14,7 @@
 
 package org.qi4j.library.eventsourcing.domain;
 
+import java.util.function.Function;
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.EntityComposite;
@@ -25,7 +26,6 @@ import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ImportedServiceDeclaration;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Function;
 import org.qi4j.io.Outputs;
 import org.qi4j.io.Transforms;
 import org.qi4j.library.eventsourcing.domain.api.DomainEvent;
@@ -86,7 +86,7 @@ public class DomainEventTest
 
         source.events( 0, Long.MAX_VALUE ).transferTo( Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
                 {
-                    public String map( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
+                    public String apply( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
                     {
                         return unitOfWorkDomainEventsValue.toString();
                     }

@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.common.AppliesTo;
 import org.qi4j.api.common.AppliesToFilter;
@@ -33,7 +34,6 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.util.Classes;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 
 import static org.qi4j.api.util.Classes.interfacesOf;
@@ -51,7 +51,7 @@ public class ScalaTraitMixin
 
     public ScalaTraitMixin( @This Composite composite )
     {
-        compositeType = Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite).primaryType();
+        compositeType = Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( composite ).primaryType();
     }
 
     @Override
@@ -107,7 +107,7 @@ public class ScalaTraitMixin
                     Class current;
 
                     @Override
-                    public Class map( Class aClass )
+                    public Class apply( Class aClass )
                     {
                         if ( declaringClass.isAssignableFrom(aClass))
                         {

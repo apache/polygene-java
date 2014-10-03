@@ -27,13 +27,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.service.NoSuchServiceException;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
@@ -356,7 +356,7 @@ public class TypeLookup
 
         if( serviceReference == null )
         {
-            throw new NoSuchServiceException( RAW_CLASS.map( serviceType ).getName(), moduleInstance.name() );
+            throw new NoSuchServiceException( RAW_CLASS.apply( serviceType ).getName(), moduleInstance.name() );
         }
 
         return (ServiceReference<T>) serviceReference;
@@ -411,19 +411,19 @@ public class TypeLookup
     }
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    private static <T extends ModelDescriptor> Iterable<ModelModule<T>> findModels( Specification<Iterable<Class<?>>> specification,
+    private static <T extends ModelDescriptor> Iterable<ModelModule<T>> findModels( Predicate<Iterable<Class<?>>> specification,
                                                                                     Iterable<ModelModule<T>>... models )
     {
-        Specification<ModelModule<T>> spec = Specifications.translate( new ModelModuleTypesFunction(), specification );
+        Predicate<ModelModule<T>> spec = Specifications.translate( new ModelModuleTypesFunction(), specification );
         Iterable<ModelModule<T>> flattened = flattenIterables( iterable( models ) );
         return filter( spec, flattened );
     }
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    private static Iterable<ServiceReference<?>> findServiceReferences( Specification<Iterable<Class<?>>> specification,
+    private static Iterable<ServiceReference<?>> findServiceReferences( Predicate<Iterable<Class<?>>> specification,
                                                                         Iterable<ServiceReference<?>>... references )
     {
-        Specification<ServiceReference<?>> spec = Specifications.translate( new ServiceReferenceTypesFunction(), specification );
+        Predicate<ServiceReference<?>> spec = Specifications.translate( new ServiceReferenceTypesFunction(), specification );
         Iterable<ServiceReference<?>> flattened = flattenIterables( iterable( references ) );
         return filter( spec, flattened );
     }
@@ -482,7 +482,7 @@ public class TypeLookup
     {
 
         @Override
-        public Iterable<Class<?>> map( ModelModule<T> modelModule )
+        public Iterable<Class<?>> apply( ModelModule<T> modelModule )
         {
             return modelModule.model().types();
         }
@@ -494,7 +494,7 @@ public class TypeLookup
     {
 
         @Override
-        public Iterable<Class<?>> map( ServiceReference<?> serviceReference )
+        public Iterable<Class<?>> apply( ServiceReference<?> serviceReference )
         {
             return serviceReference.types();
         }
@@ -502,7 +502,7 @@ public class TypeLookup
     }
 
     private static abstract class AbstractTypeLookupSpecification
-        implements Specification<Iterable<Class<?>>>
+        implements Predicate<Iterable<Class<?>>>
     {
 
         protected final Type lookedUpType;
@@ -513,7 +513,7 @@ public class TypeLookup
         }
 
         @Override
-        public final boolean satisfiedBy( Iterable<Class<?>> types )
+        public final boolean test( Iterable<Class<?>> types )
         {
             if( lookedUpType instanceof Class )
             {

@@ -18,6 +18,7 @@ package org.qi4j.runtime.structure;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
@@ -38,7 +39,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
@@ -335,7 +335,7 @@ public class ModuleUnitOfWork
 
         @Override
         public <T> T find( Class<T> resultType,
-                           Specification<Composite> whereClause,
+                           Predicate<Composite> whereClause,
                            Iterable<OrderBy> orderBySegments,
                            Integer firstResult,
                            Integer maxResults,
@@ -370,7 +370,7 @@ public class ModuleUnitOfWork
 
         @Override
         public <T> long count( Class<T> resultType,
-                               Specification<Composite> whereClause,
+                               Predicate<Composite> whereClause,
                                Iterable<OrderBy> orderBySegments,
                                Integer firstResult,
                                Integer maxResults,
@@ -392,7 +392,7 @@ public class ModuleUnitOfWork
 
         @Override
         public <T> Iterator<T> iterator( final Class<T> resultType,
-                                         Specification<Composite> whereClause,
+                                         Predicate<Composite> whereClause,
                                          Iterable<OrderBy> orderBySegments,
                                          Integer firstResult,
                                          Integer maxResults,

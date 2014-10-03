@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
@@ -44,7 +45,6 @@ import org.qi4j.api.type.MapType;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.spi.Qi4jSPI;
 
@@ -114,7 +114,7 @@ public interface EntityToValue
         public <T> T convert( final Class<T> valueType, Object entity, Function<T, T> prototypeOpportunity )
         {
             ValueBuilder<?> builder = doConversion( valueType, entity );
-            prototypeOpportunity.map( (T) builder.prototype() );
+            prototypeOpportunity.apply( (T) builder.prototype() );
             return createInstance( builder );
         }
 
@@ -125,7 +125,7 @@ public interface EntityToValue
                 new Function<Object, T>()
                 {
                     @Override
-                    public T map( Object entity )
+                    public T apply( Object entity )
                     {
                         return convert( valueType, entity );
                     }
@@ -139,7 +139,7 @@ public interface EntityToValue
                 new Function<Object, T>()
                 {
                     @Override
-                    public T map( Object entity )
+                    public T apply( Object entity )
                     {
                         return convert( valueType, entity, prototypeOpportunity );
                     }
@@ -168,7 +168,7 @@ public interface EntityToValue
                     new Function<PropertyDescriptor, Object>()
                 {
                     @Override
-                    public Object map( PropertyDescriptor descriptor )
+                    public Object apply( PropertyDescriptor descriptor )
                     {
                         try
                         {
@@ -254,7 +254,7 @@ public interface EntityToValue
                     new Function<AssociationDescriptor, EntityReference>()
                     {
                         @Override
-                        public EntityReference map( AssociationDescriptor associationDescriptor )
+                        public EntityReference apply( AssociationDescriptor associationDescriptor )
                         {
                             return EntityReference.entityReferenceFor(
                                 associationState.associationFor( associationDescriptor.accessor() ).get() );
@@ -263,7 +263,7 @@ public interface EntityToValue
                     new Function<AssociationDescriptor, Iterable<EntityReference>>()
                     {
                         @Override
-                        public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+                        public Iterable<EntityReference> apply( AssociationDescriptor associationDescriptor )
                         {
                             ManyAssociation<?> state = associationState.manyAssociationFor( associationDescriptor.accessor() );
                             List<EntityReference> refs = new ArrayList<>( state.count() );
@@ -277,7 +277,7 @@ public interface EntityToValue
                     new Function<AssociationDescriptor, Map<String, EntityReference>>()
                     {
                         @Override
-                        public Map<String, EntityReference> map( AssociationDescriptor associationDescriptor )
+                        public Map<String, EntityReference> apply( AssociationDescriptor associationDescriptor )
                         {
                             NamedAssociation<?> assoc = associationState.namedAssociationFor( associationDescriptor.accessor() );
                             Map<String, EntityReference> refs = new LinkedHashMap<>( assoc.count() );
@@ -296,7 +296,7 @@ public interface EntityToValue
                     new Function<PropertyDescriptor, Object>()
                 {
                     @Override
-                    public Object map( final PropertyDescriptor descriptor )
+                    public Object apply( final PropertyDescriptor descriptor )
                     {
                         AssociationStateDescriptor entityState = entityDescriptor.state();
                         String propertyName = descriptor.qualifiedName().name();
@@ -383,7 +383,7 @@ public interface EntityToValue
                     new Function<AssociationDescriptor, EntityReference>()
                     {
                         @Override
-                        public EntityReference map( AssociationDescriptor descriptor )
+                        public EntityReference apply( AssociationDescriptor descriptor )
                         {
                             AssociationDescriptor associationDescriptor;
                             try
@@ -404,7 +404,7 @@ public interface EntityToValue
                     new Function<AssociationDescriptor, Iterable<EntityReference>>()
                     {
                         @Override
-                        public Iterable<EntityReference> map( final AssociationDescriptor descriptor )
+                        public Iterable<EntityReference> apply( final AssociationDescriptor descriptor )
                         {
                             AssociationDescriptor associationDescriptor;
                             try
@@ -430,7 +430,7 @@ public interface EntityToValue
                     new Function<AssociationDescriptor, Map<String, EntityReference>>()
                     {
                         @Override
-                        public Map<String, EntityReference> map( AssociationDescriptor descriptor )
+                        public Map<String, EntityReference> apply( AssociationDescriptor descriptor )
                         {
                             AssociationDescriptor associationDescriptor;
                             try

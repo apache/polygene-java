@@ -30,7 +30,7 @@ public final class MapType
 
     public static boolean isMap( Type type )
     {
-        Class<?> cl = Classes.RAW_CLASS.map( type );
+        Class<?> cl = Classes.RAW_CLASS.apply( type );
         return Map.class.isAssignableFrom( cl );
     }
 

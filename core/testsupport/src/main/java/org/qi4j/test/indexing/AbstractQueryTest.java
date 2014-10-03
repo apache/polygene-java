@@ -70,7 +70,7 @@ import static org.qi4j.test.indexing.NameableAssert.verifyOrderedResults;
 import static org.qi4j.test.indexing.NameableAssert.verifyUnorderedResults;
 
 /**
- * Abstract satisfiedBy with tests for simple queries against Index/Query engines.
+ * Abstract test with tests for simple queries against Index/Query engines.
  */
 public abstract class AbstractQueryTest
     extends AbstractAnyQueryTest

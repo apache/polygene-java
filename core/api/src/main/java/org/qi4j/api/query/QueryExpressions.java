@@ -28,6 +28,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Predicate;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.GenericAssociationInfo;
 import org.qi4j.api.association.ManyAssociation;
@@ -64,7 +65,6 @@ import org.qi4j.api.query.grammar.PropertyNullSpecification;
 import org.qi4j.api.query.grammar.PropertyReference;
 import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.util.NullArgumentException;
-import org.qi4j.functional.Specification;
 
 import static org.qi4j.functional.Iterables.first;
 import static org.qi4j.functional.Iterables.prepend;
@@ -300,9 +300,9 @@ public final class QueryExpressions
      * @return a new AND specification
      */
     @SafeVarargs
-    public static AndSpecification and( Specification<Composite> left,
-                                        Specification<Composite> right,
-                                        Specification<Composite>... optionalRight
+    public static AndSpecification and( Predicate<Composite> left,
+                                        Predicate<Composite> right,
+                                        Predicate<Composite>... optionalRight
     )
     {
         return new AndSpecification( prepend( left, prepend( right, Arrays.asList( optionalRight ) ) ) );
@@ -316,7 +316,7 @@ public final class QueryExpressions
      * @return a new OR specification
      */
     @SafeVarargs
-    public static OrSpecification or( Specification<Composite>... specs )
+    public static OrSpecification or( Predicate<Composite>... specs )
     {
         return new OrSpecification( Arrays.asList( specs ) );
     }
@@ -328,7 +328,7 @@ public final class QueryExpressions
      *
      * @return a new NOT specification
      */
-    public static NotSpecification not( Specification<Composite> operand )
+    public static NotSpecification not( Predicate<Composite> operand )
     {
         return new NotSpecification( operand );
     }

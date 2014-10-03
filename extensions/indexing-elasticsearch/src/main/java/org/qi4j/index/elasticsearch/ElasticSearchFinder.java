@@ -19,6 +19,8 @@ package org.qi4j.index.elasticsearch;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -57,9 +59,7 @@ import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
 import org.qi4j.api.query.grammar.PropertyNullSpecification;
 import org.qi4j.api.query.grammar.QuerySpecification;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
@@ -93,7 +93,7 @@ public interface ElasticSearchFinder
 
         @Override
         public Iterable<EntityReference> findEntities( Class<?> resultType,
-                                                       Specification<Composite> whereClause,
+                                                       Predicate<Composite> whereClause,
                                                        OrderBy[] orderBySegments,
                                                        Integer firstResult, Integer maxResults,
                                                        Map<String, Object> variables )
@@ -136,7 +136,7 @@ public interface ElasticSearchFinder
             return Iterables.map( new Function<SearchHit, EntityReference>()
             {
                 @Override
-                public EntityReference map( SearchHit from )
+                public EntityReference apply( SearchHit from )
                 {
                     return EntityReference.parseEntityReference( from.id() );
                 }
@@ -146,7 +146,7 @@ public interface ElasticSearchFinder
 
         @Override
         public EntityReference findEntity( Class<?> resultType,
-                                           Specification<Composite> whereClause,
+                                           Predicate<Composite> whereClause,
                                            Map<String, Object> variables )
             throws EntityFinderException
         {
@@ -175,7 +175,7 @@ public interface ElasticSearchFinder
 
         @Override
         public long countEntities( Class<?> resultType,
-                                   Specification<Composite> whereClause,
+                                   Predicate<Composite> whereClause,
                                    Map<String, Object> variables )
             throws EntityFinderException
         {
@@ -202,7 +202,7 @@ public interface ElasticSearchFinder
         }
 
         private QueryBuilder processWhereSpecification( AndFilterBuilder filterBuilder,
-                                                        Specification<Composite> spec,
+                                                        Predicate<Composite> spec,
                                                         Map<String, Object> variables )
             throws EntityFinderException
         {
@@ -221,7 +221,7 @@ public interface ElasticSearchFinder
         }
 
         private void processSpecification( FilterBuilder filterBuilder,
-                                           Specification<Composite> spec,
+                                           Predicate<Composite> spec,
                                            Map<String, Object> variables )
             throws EntityFinderException
         {
@@ -324,12 +324,12 @@ public interface ElasticSearchFinder
             throws EntityFinderException
         {
             LOGGER.trace( "Processing BinarySpecification {}", spec );
-            Iterable<Specification<Composite>> operands = spec.operands();
+            Iterable<Predicate<Composite>> operands = spec.operands();
 
             if( spec instanceof AndSpecification )
             {
                 AndFilterBuilder andFilterBuilder = new AndFilterBuilder();
-                for( Specification<Composite> operand : operands )
+                for( Predicate<Composite> operand : operands )
                 {
                     processSpecification( andFilterBuilder, operand, variables );
                 }
@@ -338,7 +338,7 @@ public interface ElasticSearchFinder
             else if( spec instanceof OrSpecification )
             {
                 OrFilterBuilder orFilterBuilder = new OrFilterBuilder();
-                for( Specification<Composite> operand : operands )
+                for( Predicate<Composite> operand : operands )
                 {
                     processSpecification( orFilterBuilder, operand, variables );
                 }

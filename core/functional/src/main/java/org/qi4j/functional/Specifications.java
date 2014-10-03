@@ -13,127 +13,104 @@
  */
 package org.qi4j.functional;
 
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  * Common generic specification expressions
  */
 public class Specifications
 {
-    public static <T> Specification<T> TRUE()
+    public static <T> Predicate<T> TRUE()
     {
-        return new Specification<T>()
-        {
-            @Override
-            public boolean satisfiedBy( T instance )
-            {
-                return true;
-            }
-        };
+        return instance -> true;
     }
 
-    public static <T> Specification<T> not( final Specification<T> specification )
+    public static <T> Predicate<T> not( final Predicate<T> specification )
     {
-        return new Specification<T>()
+        return new Predicate<T>()
         {
             @Override
-            public boolean satisfiedBy( T instance )
+            public boolean test( T instance )
             {
-                return !specification.satisfiedBy( instance );
+                return !specification.test( instance );
             }
         };
     }
 
     @SafeVarargs
-    public static <T> AndSpecification<T> and( final Specification<T>... specifications )
+    public static <T> AndSpecification<T> and( final Predicate<T>... specifications )
     {
         return and( Iterables.iterable( specifications ) );
     }
 
-    public static <T> AndSpecification<T> and( final Iterable<Specification<T>> specifications )
+    public static <T> AndSpecification<T> and( final Iterable<Predicate<T>> specifications )
     {
         return new AndSpecification<>( specifications );
     }
 
     @SafeVarargs
-    public static <T> OrSpecification<T> or( final Specification<T>... specifications )
+    public static <T> OrSpecification<T> or( final Predicate<T>... specifications )
     {
         return or( Iterables.iterable( specifications ) );
     }
 
-    public static <T> OrSpecification<T> or( final Iterable<Specification<T>> specifications )
+    public static <T> OrSpecification<T> or( final Iterable<Predicate<T>> specifications )
     {
         return new OrSpecification<>( specifications );
     }
 
     @SafeVarargs
-    public static <T> Specification<T> in( final T... allowed )
+    public static <T> Predicate<T> in( final T... allowed )
     {
         return in( Iterables.iterable( allowed ) );
     }
 
-    public static <T> Specification<T> in( final Iterable<T> allowed )
+    public static <T> Predicate<T> in( final Iterable<T> allowed )
     {
-        return new Specification<T>()
-        {
-            @Override
-            public boolean satisfiedBy( T item )
+        return item -> {
+            for( T allow : allowed )
             {
-                for( T allow : allowed )
+                if( allow.equals( item ) )
                 {
-                    if( allow.equals( item ) )
-                    {
-                        return true;
-                    }
+                    return true;
                 }
-                return false;
             }
+            return false;
         };
     }
 
-    public static <T> Specification<T> notNull()
+    public static <T> Predicate<T> notNull()
     {
-        return new Specification<T>()
-        {
-            @Override
-            public boolean satisfiedBy( T item )
-            {
-                return item != null;
-            }
-        };
+        return item -> item != null;
     }
 
-    public static <FROM, TO> Specification<FROM> translate( final Function<FROM, TO> function,
-                                                            final Specification<? super TO> specification
+    public static <FROM, TO> Predicate<FROM> translate( final Function<FROM, TO> function,
+                                                            final Predicate<? super TO> specification
     )
     {
-        return new Specification<FROM>()
-        {
-            @Override
-            public boolean satisfiedBy( FROM item )
-            {
-                return specification.satisfiedBy( function.map( item ) );
-            }
-        };
+        return item -> specification.test( function.apply( item ) );
     }
 
     /**
      * AND Specification.
      */
     public static class AndSpecification<T>
-        implements Specification<T>
+        implements Predicate<T>
     {
-        private final Iterable<Specification<T>> specifications;
+        private final Iterable<Predicate<T>> specifications;
 
-        private AndSpecification( Iterable<Specification<T>> specifications )
+        private AndSpecification( Iterable<Predicate<T>> specifications )
         {
             this.specifications = specifications;
         }
 
         @Override
-        public boolean satisfiedBy( T instance )
+        public boolean test( T instance )
         {
-            for( Specification<T> specification : specifications )
+            for( Predicate<T> specification : specifications )
             {
-                if( !specification.satisfiedBy( instance ) )
+                if( !specification.test( instance ) )
                 {
                     return false;
                 }
@@ -143,15 +120,15 @@ public class Specifications
         }
 
         @SafeVarargs
-        public final AndSpecification<T> and( Specification<T>... specifications )
+        public final AndSpecification<T> and( Predicate<T>... specifications )
         {
-            Iterable<Specification<T>> iterable = Iterables.iterable( specifications );
-            Iterable<Specification<T>> flatten = Iterables.flatten( this.specifications, iterable );
+            Iterable<Predicate<T>> iterable = Iterables.iterable( specifications );
+            Iterable<Predicate<T>> flatten = Iterables.flatten( this.specifications, iterable );
             return Specifications.and( flatten );
         }
 
         @SafeVarargs
-        public final OrSpecification<T> or( Specification<T>... specifications )
+        public final OrSpecification<T> or( Predicate<T>... specifications )
         {
             return Specifications.or( Iterables.prepend( this, Iterables.iterable( specifications ) ) );
         }
@@ -161,21 +138,21 @@ public class Specifications
      * OR Specification.
      */
     public static class OrSpecification<T>
-        implements Specification<T>
+        implements Predicate<T>
     {
-        private final Iterable<Specification<T>> specifications;
+        private final Iterable<Predicate<T>> specifications;
 
-        private OrSpecification( Iterable<Specification<T>> specifications )
+        private OrSpecification( Iterable<Predicate<T>> specifications )
         {
             this.specifications = specifications;
         }
 
         @Override
-        public boolean satisfiedBy( T instance )
+        public boolean test( T instance )
         {
-            for( Specification<T> specification : specifications )
+            for( Predicate<T> specification : specifications )
             {
-                if( specification.satisfiedBy( instance ) )
+                if( specification.test( instance ) )
                 {
                     return true;
                 }
@@ -185,16 +162,16 @@ public class Specifications
         }
 
         @SafeVarargs
-        public final AndSpecification<T> and( Specification<T>... specifications )
+        public final AndSpecification<T> and( Predicate<T>... specifications )
         {
             return Specifications.and( Iterables.prepend( this, Iterables.iterable( specifications ) ) );
         }
 
         @SafeVarargs
-        public final OrSpecification<T> or( Specification<T>... specifications )
+        public final OrSpecification<T> or( Predicate<T>... specifications )
         {
-            Iterable<Specification<T>> iterable = Iterables.iterable( specifications );
-            Iterable<Specification<T>> flatten = Iterables.flatten( this.specifications, iterable );
+            Iterable<Predicate<T>> iterable = Iterables.iterable( specifications );
+            Iterable<Predicate<T>> flatten = Iterables.flatten( this.specifications, iterable );
             return Specifications.or( flatten );
         }
     }

@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Function;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -23,7 +24,6 @@ import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueDeserializer;
 import org.qi4j.api.value.ValueSerializationException;
-import org.qi4j.functional.Function;
 import org.qi4j.spi.value.ValueDeserializerAdapter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -122,7 +122,7 @@ public class StaxValueDeserializer
             {
                 throw new ValueSerializationException( "Expected a <value/> but got: " + currentTag );
             }
-            T item = deserializer.map( input );
+            T item = deserializer.apply( input );
             collection.add( item );
         }
         return collection;
@@ -168,10 +168,10 @@ public class StaxValueDeserializer
                 switch( keyOrValue )
                 {
                     case "key":
-                        key = keyDeserializer.map( input );
+                        key = keyDeserializer.apply( input );
                         break;
                     case "value":
-                        value = valueDeserializer.map( input );
+                        value = valueDeserializer.apply( input );
                         break;
                     default:
                         readObjectTree( input );
@@ -350,7 +350,7 @@ public class StaxValueDeserializer
         {
             return null;
         }
-        T value = valueDeserializer.map( valueNode );
+        T value = valueDeserializer.apply( valueNode );
         return value;
     }
 
@@ -372,7 +372,7 @@ public class StaxValueDeserializer
         for( int arrayValuesIndex = 0; arrayValuesIndex < arrayValues.getLength(); arrayValuesIndex++ )
         {
             Node arrayValue = arrayValues.item( arrayValuesIndex );
-            T value = deserializer.map( arrayValue.getFirstChild() );
+            T value = deserializer.apply( arrayValue.getFirstChild() );
             collection.add( value );
         }
     }

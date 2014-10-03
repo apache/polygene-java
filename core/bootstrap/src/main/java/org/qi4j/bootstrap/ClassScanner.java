@@ -23,12 +23,12 @@ import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.CodeSource;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 
 import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Iterables.flatten;
@@ -90,7 +90,7 @@ public class ClassScanner
                                                      map( new Function<JarEntry, Class<?>>()
                                                      {
                                                          @Override
-                                                         public Class map( JarEntry jarEntry )
+                                                         public Class apply( JarEntry jarEntry )
                                                          {
                                                              String name = jarEntry.getName();
                                                              name = name.substring( 0, name.length() - 6 );
@@ -105,10 +105,10 @@ public class ClassScanner
                                                              }
                                                          }
                                                      }
-                                                         , filter( new Specification<JarEntry>()
+                                                         , filter( new Predicate<JarEntry>()
                                                      {
                                                          @Override
-                                                         public boolean satisfiedBy( JarEntry jarEntry )
+                                                         public boolean test( JarEntry jarEntry )
                                                          {
                                                              return jarEntry.getName()
                                                                         .startsWith( packageName ) && jarEntry.getName()
@@ -129,10 +129,10 @@ public class ClassScanner
         else
         {
             final File path = new File( file, seedClass.getPackage().getName().replace( '.', File.separatorChar ) );
-            Iterable<File> files = findFiles( path, new Specification<File>()
+            Iterable<File> files = findFiles( path, new Predicate<File>()
             {
                 @Override
-                public boolean satisfiedBy( File file )
+                public boolean test( File file )
                 {
                     return file.getName().endsWith( ".class" );
                 }
@@ -142,7 +142,7 @@ public class ClassScanner
                            map( new Function<File, Class<?>>()
                            {
                                @Override
-                               public Class<?> map( File f )
+                               public Class<?> apply( File f )
                                {
                                    String fileName = f.getAbsolutePath().substring( file.toString().length() + 1 );
                                    fileName = fileName.replace( File.separatorChar, '.' )
@@ -170,34 +170,34 @@ public class ClassScanner
      *
      * @return regex class name specification
      */
-    public static Specification<Class<?>> matches( String regex )
+    public static Predicate<Class<?>> matches( String regex )
     {
         final Pattern pattern = Pattern.compile( regex );
 
-        return new Specification<Class<?>>()
+        return new Predicate<Class<?>>()
         {
             @Override
-            public boolean satisfiedBy( Class<?> aClass )
+            public boolean test( Class<?> aClass )
             {
                 return pattern.matcher( aClass.getName() ).matches();
             }
         };
     }
 
-    private static Iterable<File> findFiles( File directory, final Specification<File> filter )
+    private static Iterable<File> findFiles( File directory, final Predicate<File> filter )
     {
         return flatten( filter( filter, iterable( directory.listFiles() ) ),
                         flattenIterables( map( new Function<File, Iterable<File>>()
                         {
                             @Override
-                            public Iterable<File> map( File file )
+                            public Iterable<File> apply( File file )
                             {
                                 return findFiles( file, filter );
                             }
-                        }, filter( new Specification<File>()
+                        }, filter( new Predicate<File>()
                         {
                             @Override
-                            public boolean satisfiedBy( File file )
+                            public boolean test( File file )
                             {
                                 return file.isDirectory();
                             }
@@ -205,10 +205,10 @@ public class ClassScanner
     }
 
     private static class ValidClass
-        implements Specification<Class<?>>
+        implements Predicate<Class<?>>
     {
         @Override
-        public boolean satisfiedBy( Class<?> item )
+        public boolean test( Class<?> item )
         {
             return ( item.isInterface() || !Modifier.isAbstract( item.getModifiers() ) ) && ( !item.isEnum() && !item.isAnonymousClass() );
         }

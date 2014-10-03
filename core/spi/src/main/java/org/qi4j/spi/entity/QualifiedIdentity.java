@@ -61,9 +61,8 @@ public final class QualifiedIdentity
 
     public QualifiedIdentity( EntityComposite entityComposite )
     {
-        this( entityComposite.identity().get(), first( Qi4j.FUNCTION_DESCRIPTOR_FOR
-                                                           .map( entityComposite )
-                                                           .types() ).getName() );
+        this( entityComposite.identity().get(),
+              first( Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( entityComposite ).types() ).getName() );
     }
 
     public QualifiedIdentity( String identity, Class<?> clazz )

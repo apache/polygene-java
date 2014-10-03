@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
  * Tests for properties
  */
 //@Ignore(
-//    "This is an incorrect satisfiedBy case. The Property fragment support is not well defined at the moment, so until" +
+//    "This is an incorrect test case. The Property fragment support is not well defined at the moment, so until" +
 //    "more work is finalized on exactly what should be supported, this is ignored not to be forgotten." )
 public class PropertyTest
     extends AbstractQi4jTest

@@ -15,12 +15,12 @@
 package org.qi4j.runtime.association;
 
 import java.lang.reflect.Type;
+import java.util.function.BiFunction;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationWrapper;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.Property;
-import org.qi4j.functional.Function2;
 
 /**
  * Implementation of Association to a single Entity.
@@ -32,7 +32,7 @@ public final class AssociationInstance<T>
     private Property<EntityReference> associationState;
 
     public AssociationInstance( AssociationInfo associationInfo,
-                                Function2<EntityReference, Type, Object> entityFunction,
+                                BiFunction<EntityReference, Type, Object> entityFunction,
                                 Property<EntityReference> associationState
     )
     {

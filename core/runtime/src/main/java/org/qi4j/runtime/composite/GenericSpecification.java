@@ -1,18 +1,18 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.InvocationHandler;
-import org.qi4j.functional.Specification;
+import java.util.function.Predicate;
 
 /**
  * Specification that checks whether a given class implements InvocationHandler or not.
  */
 public class GenericSpecification
-    implements Specification<Class<?>>
+    implements Predicate<Class<?>>
 {
     public static final GenericSpecification INSTANCE = new GenericSpecification();
 
     @Override
-    public boolean satisfiedBy( Class<?> item )
+    public boolean test( Class<?> item )
     {
         return InvocationHandler.class.isAssignableFrom( item );
     }

@@ -59,7 +59,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 /**
- * Abstract satisfiedBy with tests for the EntityStore interface.
+ * Abstract test with tests for the EntityStore interface.
  */
 public abstract class AbstractEntityStoreTest
     extends AbstractQi4jTest

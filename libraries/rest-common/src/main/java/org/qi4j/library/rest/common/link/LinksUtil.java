@@ -17,57 +17,57 @@
 
 package org.qi4j.library.rest.common.link;
 
-import org.qi4j.functional.Function;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 
 /**
  * Helper methods for links
  */
 public final class LinksUtil
 {
-   public static Specification<Link> withId(final String id)
+   public static Predicate<Link> withId(final String id)
    {
-      return new Specification<Link>()
+      return new Predicate<Link>()
       {
          @Override
-         public boolean satisfiedBy(Link link )
+         public boolean test(Link link )
          {
             return link.id().get().equals(id);
          }
       };
    }
 
-   public static Specification<Link> withText(final String text)
+   public static Predicate<Link> withText(final String text)
    {
-      return new Specification<Link>()
+      return new Predicate<Link>()
       {
          @Override
-         public boolean satisfiedBy(Link link )
+         public boolean test(Link link )
          {
             return link.text().get().equals(text);
          }
       };
    }
 
-   public static Specification<Link> withRel(final String rel)
+   public static Predicate<Link> withRel(final String rel)
    {
-      return new Specification<Link>()
+      return new Predicate<Link>()
       {
          @Override
-         public boolean satisfiedBy(Link link )
+         public boolean test(Link link )
          {
             return link.rel().get().equals(rel);
          }
       };
    }
 
-   public static Specification<Link> withClass(final String clazz)
+   public static Predicate<Link> withClass(final String clazz)
    {
-      return new Specification<Link>()
+      return new Predicate<Link>()
       {
          @Override
-         public boolean satisfiedBy(Link link )
+         public boolean test(Link link )
          {
              String classes = link.classes().get();
              return classes != null && classes.contains( clazz );
@@ -90,7 +90,7 @@ public final class LinksUtil
       return new Function<Link, String>()
       {
          @Override
-         public String map(Link link )
+         public String apply(Link link )
          {
             return link.rel().get();
          }

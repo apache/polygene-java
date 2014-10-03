@@ -2,6 +2,7 @@ package org.qi4j.runtime.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -9,7 +10,6 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Function;
 import org.qi4j.test.AbstractQi4jTest;
 
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -38,7 +38,7 @@ public class FunctionalListTest extends AbstractQi4jTest
         List<String> strings = list.translate( new Function<Integer, String>()
         {
             @Override
-            public String map( Integer x )
+            public String apply( Integer x )
             {
                 return x.toString();
             }
@@ -72,7 +72,7 @@ public class FunctionalListTest extends AbstractQi4jTest
             List<TO> result = module.newTransient( List.class );
             for( FROM data : list )
             {
-                result.add( function.map( data ) );
+                result.add( function.apply( data ) );
             }
             return result;
         }

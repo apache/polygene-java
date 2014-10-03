@@ -1,7 +1,7 @@
 package org.qi4j.runtime.structure;
 
+import java.util.function.Function;
 import org.qi4j.api.composite.ModelDescriptor;
-import org.qi4j.functional.Function;
 
 /**
  * TODO
@@ -13,7 +13,7 @@ public class ModelModule<T extends ModelDescriptor>
         return new Function<T, ModelModule<T>>()
         {
             @Override
-            public ModelModule<T> map( T model )
+            public ModelModule<T> apply( T model )
             {
                 return new ModelModule<>( module, model );
             }
@@ -25,7 +25,7 @@ public class ModelModule<T extends ModelDescriptor>
         return new Function<ModelModule<T>, T>()
         {
             @Override
-            public T map( ModelModule<T> modelModule )
+            public T apply( ModelModule<T> modelModule )
             {
                 return modelModule.model();
             }

@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationException;
@@ -62,9 +65,6 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.api.value.ValueSerializationException;
-import org.qi4j.functional.Function;
-import org.qi4j.functional.Function2;
-import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
@@ -320,7 +320,7 @@ public class ModuleInstance
 
         TransientStateInstance state = new TransientStateInstance( properties );
 
-        return new TransientBuilderInstance<>( modelModule, state, UsesInstance.EMPTY_USES );
+        return new TransientBuilderInstance<T>( modelModule, state, UsesInstance.EMPTY_USES );
     }
 
     @Override
@@ -437,25 +437,25 @@ public class ModuleInstance
         @Override
         public Object getPropertyState( PropertyDescriptor propertyDescriptor )
         {
-            return propertyFunction.map( propertyDescriptor );
+            return propertyFunction.apply( propertyDescriptor );
         }
 
         @Override
         public EntityReference getAssociationState( AssociationDescriptor associationDescriptor )
         {
-            return associationFunction.map( associationDescriptor );
+            return associationFunction.apply( associationDescriptor );
         }
 
         @Override
         public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
         {
-            return toList( manyAssociationFunction.map( associationDescriptor ) );
+            return toList( manyAssociationFunction.apply( associationDescriptor ) );
         }
 
         @Override
         public Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor )
         {
-            return namedAssociationFunction.map( associationDescriptor );
+            return namedAssociationFunction.apply( associationDescriptor );
         }
 
     }
@@ -629,13 +629,13 @@ public class ModuleInstance
         return typeLookup;
     }
 
-    public Function2<EntityReference, Type, Object> getEntityFunction()
+    public BiFunction<EntityReference, Type, Object> getEntityFunction()
     {
         return entityFunction;
     }
 
     private static class EntityFunction
-        implements Function2<EntityReference, Type, Object>
+        implements BiFunction<EntityReference, Type, Object>
     {
 
         private final UnitOfWorkFactory uowf;
@@ -646,9 +646,9 @@ public class ModuleInstance
         }
 
         @Override
-        public Object map( EntityReference entityReference, Type type )
+        public Object apply( EntityReference entityReference, Type type )
         {
-            return uowf.currentUnitOfWork().get( RAW_CLASS.map( type ), entityReference.identity() );
+            return uowf.currentUnitOfWork().get( RAW_CLASS.apply( type ), entityReference.identity() );
         }
     }
 
@@ -773,8 +773,8 @@ public class ModuleInstance
             Class<?> clazz = classes.get( name );
             if( clazz == null )
             {
-                Specification<ModelDescriptor> modelTypeSpecification = modelTypeSpecification( name );
-                Specification<ModelModule<ModelDescriptor>> translate = Specifications.translate( ModelModule.modelFunction(), modelTypeSpecification );
+                Predicate<ModelDescriptor> modelTypeSpecification = modelTypeSpecification( name );
+                Predicate<ModelModule<ModelDescriptor>> translate = Specifications.translate( ModelModule.modelFunction(), modelTypeSpecification );
                 // Check module
                 {
                     Iterable<ModelModule<ModelDescriptor>> i = cast( flatten(

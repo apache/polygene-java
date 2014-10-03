@@ -82,7 +82,7 @@ public interface ApplicationAssembly
 
     /**
      * Set the application mode. This will be set to "production" by default. You can
-     * set the system property "mode" to either "development", "satisfiedBy" or "production"
+     * set the system property "mode" to either "test", "development", "staging" or "production"
      * to explicitly set the mode. If that is not an option, then call this method
      * during assembly to set the mode. The mode may then be queried by assemblers,
      * and they may assemble the application differentlly depending on this setting.

@@ -90,7 +90,7 @@ public interface Page
             throws RenderException
         {
             Class<? extends Composite> compositeType = (Class<Composite>) first( Qi4j.FUNCTION_DESCRIPTOR_FOR
-                                                                                     .map( context.page() )
+                                                                                     .apply( context.page() )
                                                                                      .types() );
             try
             {

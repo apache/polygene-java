@@ -9,7 +9,7 @@ public final class ClassNameFilters
     public static ClassNameMapper passThruMapper = new ClassNameMapper()
     {
         @Override
-        public String map( Class<?> type )
+        public String apply( Class<?> type )
         {
             return type.getName();
         }
@@ -20,7 +20,7 @@ public final class ClassNameFilters
         return new ClassNameMapper()
         {
             @Override
-            public String map( Class<?> type )
+            public String apply( Class<?> type )
             {
                 String className = type.getName();
                 for( String suffix : suffixes )

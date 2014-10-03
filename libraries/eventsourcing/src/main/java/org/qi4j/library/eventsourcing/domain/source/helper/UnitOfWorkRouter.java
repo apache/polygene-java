@@ -19,7 +19,7 @@ package org.qi4j.library.eventsourcing.domain.source.helper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.qi4j.functional.Specification;
+import java.util.function.Predicate;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
@@ -33,7 +33,7 @@ import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 public class UnitOfWorkRouter<T extends Throwable>
     implements Output<UnitOfWorkDomainEventsValue, T>
 {
-    private Map<Specification<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>> routes = new LinkedHashMap<Specification<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>>(  );
+    private Map<Predicate<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>> routes = new LinkedHashMap<Predicate<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>>(  );
 
     private Receiver<UnitOfWorkDomainEventsValue, T> defaultReceiver = new Receiver<UnitOfWorkDomainEventsValue, T>()
     {
@@ -44,7 +44,7 @@ public class UnitOfWorkRouter<T extends Throwable>
         }
     };
 
-    public UnitOfWorkRouter route( Specification<UnitOfWorkDomainEventsValue> specification, Receiver<UnitOfWorkDomainEventsValue, T> receiver)
+    public UnitOfWorkRouter route( Predicate<UnitOfWorkDomainEventsValue> specification, Receiver<UnitOfWorkDomainEventsValue, T> receiver)
     {
         routes.put(specification, receiver);
 
@@ -65,9 +65,9 @@ public class UnitOfWorkRouter<T extends Throwable>
             @Override
             public void receive( UnitOfWorkDomainEventsValue item ) throws T
             {
-                for( Map.Entry<Specification<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>> specificationReceiverEntry : routes.entrySet() )
+                for( Map.Entry<Predicate<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>> specificationReceiverEntry : routes.entrySet() )
                 {
-                    if (specificationReceiverEntry.getKey().satisfiedBy( item ))
+                    if (specificationReceiverEntry.getKey().test( item ))
                     {
                         specificationReceiverEntry.getValue().receive( item );
                         return;

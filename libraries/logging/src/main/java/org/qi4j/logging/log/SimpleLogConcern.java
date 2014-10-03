@@ -39,7 +39,7 @@ public final class SimpleLogConcern
     public SimpleLogConcern( @This Composite composite )
     {
         this.composite = composite;
-        Class<?> type = first( Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types() );
+        Class<?> type = first( Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types() );
         category = type.getName();
     }
 

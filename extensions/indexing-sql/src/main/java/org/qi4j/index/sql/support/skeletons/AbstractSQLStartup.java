@@ -37,6 +37,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
@@ -58,10 +60,8 @@ import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.api.structure.ModuleDescriptor;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.HierarchicalVisitorAdapter;
 import org.qi4j.functional.Iterables;
-import org.qi4j.functional.Specification;
 import org.qi4j.index.reindexer.Reindexer;
 import org.qi4j.index.sql.support.api.SQLAppStartup;
 import org.qi4j.index.sql.support.api.SQLTypeInfo;
@@ -1520,10 +1520,10 @@ public abstract class AbstractSQLStartup
                             // TODO this doesn't understand, say, Map<String, String>, or indeed,
                             // any
                             // other Serializable
-                            if( Iterables.matchesAny( new Specification<Class<?>>()
+                            if( Iterables.matchesAny( new Predicate<Class<?>>()
                             {
                                 @Override
-                                public boolean satisfiedBy( Class<?> item )
+                                public boolean test( Class<?> item )
                                 {
                                     return vTypeClass.isAssignableFrom( item );
                                 }
@@ -1690,7 +1690,7 @@ public abstract class AbstractSQLStartup
                + Iterables.toString( descriptor.types(), new Function<Class<?>, String>()
         {
             @Override
-            public String map( Class<?> item )
+            public String apply( Class<?> item )
             {
                 return item.getName();
             }
@@ -1739,7 +1739,7 @@ public abstract class AbstractSQLStartup
                         new Function<Class<?>, String>()
                         {
                             @Override
-                            public String map( Class<?> from )
+                            public String apply( Class<?> from )
                             {
                                 return from.getName();
                             }

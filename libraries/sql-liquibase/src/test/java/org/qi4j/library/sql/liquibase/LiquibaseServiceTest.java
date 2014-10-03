@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import javax.sql.DataSource;
 import org.junit.Test;
 import org.qi4j.api.activation.ActivationEvent;
@@ -33,7 +34,6 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
-import org.qi4j.functional.Function;
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
@@ -134,7 +134,7 @@ public class LiquibaseServiceTest
         Function<ResultSet, SomeValue> toValue = new Function<ResultSet, SomeValue>()
         {
             @Override
-            public SomeValue map( ResultSet resultSet )
+            public SomeValue apply( ResultSet resultSet )
             {
                 ValueBuilder<SomeValue> builder = assembler.module().newValueBuilder( SomeValue.class );
                 try

@@ -6,11 +6,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.association.ManyAssociationWrapper;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.functional.Function2;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.entity.ManyAssociationState;
 
@@ -24,7 +24,7 @@ public class ManyAssociationInstance<T>
     private ManyAssociationState manyAssociationState;
 
     public ManyAssociationInstance( AssociationInfo associationInfo,
-                                    Function2<EntityReference, Type, Object> associationFunction,
+                                    BiFunction<EntityReference, Type, Object> associationFunction,
                                     ManyAssociationState manyAssociationState
     )
     {

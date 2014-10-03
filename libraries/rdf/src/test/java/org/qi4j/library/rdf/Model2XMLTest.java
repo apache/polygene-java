@@ -49,7 +49,7 @@ public class Model2XMLTest
             }
         } );
 
-        Document document = new Model2XML().map( model );
+        Document document = new Model2XML().apply( model );
 
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();

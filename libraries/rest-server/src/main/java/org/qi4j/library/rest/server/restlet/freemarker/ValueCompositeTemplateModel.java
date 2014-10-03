@@ -6,12 +6,12 @@ import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
+import java.util.function.Function;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 
 /**
@@ -28,7 +28,7 @@ public class ValueCompositeTemplateModel
     {
         this.composite = composite;
         this.wrapper = wrapper;
-        descriptor = (ValueDescriptor) Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite );
+        descriptor = (ValueDescriptor) Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( composite );
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ValueCompositeTemplateModel
         return (TemplateCollectionModel) wrapper.wrap( Iterables.map( new Function<PropertyDescriptor, String>()
         {
             @Override
-            public String map( PropertyDescriptor propertyDescriptor )
+            public String apply( PropertyDescriptor propertyDescriptor )
             {
                 return propertyDescriptor.qualifiedName().name();
             }
@@ -59,7 +59,7 @@ public class ValueCompositeTemplateModel
         return (TemplateCollectionModel) wrapper.wrap( Iterables.map( new Function<Property<?>, Object>()
         {
             @Override
-            public Object map( Property<?> objectProperty )
+            public Object apply( Property<?> objectProperty )
             {
                 try
                 {
@@ -70,7 +70,7 @@ public class ValueCompositeTemplateModel
                     throw new IllegalStateException( e );
                 }
             }
-        }, Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).state().properties() ).iterator() );
+        }, Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite ).state().properties() ).iterator() );
     }
 
     @Override
@@ -80,7 +80,7 @@ public class ValueCompositeTemplateModel
         try
         {
             return wrapper.wrap( Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
-                                     .map( composite )
+                                     .apply( composite )
                                      .state()
                                      .propertyFor( descriptor.state().findPropertyModelByName( key ).accessor() )
                                      .get() );

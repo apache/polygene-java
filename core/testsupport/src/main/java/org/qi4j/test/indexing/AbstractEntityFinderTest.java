@@ -26,13 +26,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.IndexExporter;
@@ -59,13 +59,13 @@ import static org.qi4j.functional.Iterables.toList;
 import static org.qi4j.test.indexing.NameableAssert.assertNames;
 
 /**
- * Abstract satisfiedBy with tests for the EntityFinder interface.
+ * Abstract test with tests for the EntityFinder interface.
  */
 public abstract class AbstractEntityFinderTest
     extends AbstractAnyQueryTest
 {
 
-    private static final Specification<Composite> ALL = null;
+    private static final Predicate<Composite> ALL = null;
 
     private static final OrderBy[] NO_SORTING = null;
 
