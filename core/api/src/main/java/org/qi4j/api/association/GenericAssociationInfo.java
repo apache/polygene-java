@@ -20,6 +20,7 @@ package org.qi4j.api.association;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 import static org.qi4j.api.util.Classes.typeOf;
 
@@ -45,14 +46,6 @@ public final class GenericAssociationInfo
         }
 
         Type[] interfaces = ( (Class<?>) methodReturnType ).getGenericInterfaces();
-        for( Type anInterface : interfaces )
-        {
-            Type associationType = toAssociationType( anInterface );
-            if( associationType != null )
-            {
-                return associationType;
-            }
-        }
-        return null;
+        return Arrays.stream( interfaces ).findFirst().filter( intFace -> toAssociationType( intFace ) != null ).get();
     }
 }

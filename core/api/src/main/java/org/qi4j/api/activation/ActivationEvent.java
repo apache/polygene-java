@@ -24,13 +24,11 @@ public final class ActivationEvent
         ACTIVATING, ACTIVATED, PASSIVATING, PASSIVATED
     }
 
-    private final long timestamp;
     private final Object source;
     private final EventType type;
 
     public ActivationEvent( Object source, EventType type )
     {
-        this.timestamp = System.currentTimeMillis();
         this.source = source;
         this.type = type;
     }
