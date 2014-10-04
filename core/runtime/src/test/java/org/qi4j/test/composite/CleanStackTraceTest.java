@@ -76,14 +76,14 @@ public class CleanStackTraceTest
         {
             String separator = System.getProperty( "line.separator" );
             String correctTrace1 = "java.lang.RuntimeException: level 2" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:121)" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:134)" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:72)";
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:122)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:73)";
             assertEquality( e, correctTrace1 );
             String correctTrace2 = "java.lang.RuntimeException: level 1" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:117)" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:134)" + separator +
-                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:72)";
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:118)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:73)";
             assertThat( e.getCause(), notNullValue() );
             assertEquality( e.getCause(), correctTrace2 );
         }
