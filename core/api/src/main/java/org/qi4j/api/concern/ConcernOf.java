@@ -38,7 +38,6 @@ public abstract class ConcernOf<T>
      * the next concern in the chain or the mixin
      * to be invoked.
      */
-    final
     @ConcernFor
-    protected T next = null;
+    final protected T next = null;
 }

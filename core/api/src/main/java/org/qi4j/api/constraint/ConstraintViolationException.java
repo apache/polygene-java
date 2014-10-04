@@ -21,11 +21,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.function.Function;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.functional.Iterables;
@@ -54,7 +54,8 @@ public class ConstraintViolationException
                                          Collection<ConstraintViolation> constraintViolations
     )
     {
-        this( instance.toString(), Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( instance ).types(), method, constraintViolations );
+        this( instance.toString(), Qi4j.FUNCTION_DESCRIPTOR_FOR.apply( instance )
+            .types(), method, constraintViolations );
     }
 
     public ConstraintViolationException( String instanceToString,
@@ -155,21 +156,7 @@ public class ConstraintViolationException
             Locale locale;
             if( bundle != null )
             {
-                try
-                {
-                    pattern = bundle.getString( "qi4j.constraint." + mixinTypeName + "." + methodName );
-                }
-                catch( MissingResourceException e1 )
-                {
-                    try
-                    {
-                        pattern = bundle.getString( "qi4j.constraint" );
-                    }
-                    catch( MissingResourceException e2 )
-                    {
-                        // ignore. The default pattern will be used.
-                    }
-                }
+                pattern = getResourceString( bundle, pattern );
                 locale = bundle.getLocale();
             }
             else
@@ -188,14 +175,7 @@ public class ConstraintViolationException
             }
             else
             {
-                classes = "[" + Iterables.<Class<?>>toString( instanceTypes, new Function<Class<?>, String>()
-                {
-                    @Override
-                    public String apply( Class<?> from )
-                    {
-                        return from.getSimpleName();
-                    }
-                }, "," ) + "]";
+                classes = "[" + Iterables.toString( instanceTypes, Class::getSimpleName, "," ) + "]";
             }
             Object[] args = new Object[]
                 {
@@ -216,21 +196,30 @@ public class ConstraintViolationException
         return result;
     }
 
+    private String getResourceString( ResourceBundle bundle, String pattern )
+    {
+        try
+        {
+            pattern = bundle.getString( "qi4j.constraint." + mixinTypeName + "." + methodName );
+        }
+        catch( MissingResourceException e1 )
+        {
+            try
+            {
+                pattern = bundle.getString( "qi4j.constraint" );
+            }
+            catch( MissingResourceException e2 )
+            {
+                // ignore. The default pattern will be used.
+            }
+        }
+        return pattern;
+    }
+
     public String localizedMessage()
     {
         String[] messages = localizedMessagesFrom( null );
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-        for( String message : messages )
-        {
-            if( !first )
-            {
-                result.append( ',' );
-            }
-            first = false;
-            result.append( message );
-        }
-        return result.toString();
+        return Arrays.stream( messages ).reduce( ( left, right ) -> left + "," + right ).get();
     }
 
     @Override
