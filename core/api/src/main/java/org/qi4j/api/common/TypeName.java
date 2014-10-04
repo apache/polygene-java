@@ -56,6 +56,7 @@ public final class TypeName
         return name;
     }
 
+    @SuppressWarnings( "UnusedDeclaration" )
     public boolean isClass( final Class<?> type )
     {
         return type.getName().equals( name );
@@ -85,6 +86,7 @@ public final class TypeName
     }
 
     @Override
+    @SuppressWarnings( "NullableProblems" )
     public int compareTo( final TypeName typeName )
     {
         return this.name.compareTo( typeName.name );

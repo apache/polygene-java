@@ -98,6 +98,7 @@ public final class QualifiedName
      *
      * @throws NullArgumentException if any of the two arguments are {@code null} or either string is empty.
      */
+    @SuppressWarnings( "UnusedDeclaration" )
     public static QualifiedName fromName( String type, String name )
     {
         return new QualifiedName( TypeName.nameOf( type ), name );
@@ -240,6 +241,7 @@ public final class QualifiedName
     }
 
     @Override
+    @SuppressWarnings( "NullableProblems" )
     public int compareTo( QualifiedName other )
     {
         final int result = typeName.compareTo( other.typeName );
