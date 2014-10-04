@@ -13,6 +13,7 @@ import org.qi4j.samples.forum.data.entity.Topic;
 import org.qi4j.samples.forum.data.entity.User;
 
 import static org.qi4j.api.property.Numbers.add;
+import static org.qi4j.api.property.Numbers.f;
 
 /**
  * TODO
@@ -94,7 +95,7 @@ public class ViewBoard
 
                 self.lastPost().set( post );
                 add( self.topicCount(), 1 );
-                add( self.postCount(), 1 );
+                f( self.postCount(), c -> c + 1 );
 
                 return topic;
             }

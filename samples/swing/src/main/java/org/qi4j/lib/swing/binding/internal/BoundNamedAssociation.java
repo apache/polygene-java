@@ -3,6 +3,7 @@ package org.qi4j.lib.swing.binding.internal;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -79,5 +80,12 @@ public class BoundNamedAssociation<T>
     {
         return actualAssociations.iterator();
     }
+
+    @Override
+    public Stream<Map.Entry<String, T>> stream()
+    {
+        return actualAssociations.stream();
+    }
+
 
 }

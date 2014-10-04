@@ -23,9 +23,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.entity.NamedAssociationState;
 
 public class NamedAssociationInstance<T>
@@ -37,7 +38,8 @@ public class NamedAssociationInstance<T>
 
     public NamedAssociationInstance( AssociationInfo associationInfo,
                                      BiFunction<EntityReference, Type, Object> associationFunction,
-                                     NamedAssociationState namedAssociationState )
+                                     NamedAssociationState namedAssociationState
+    )
     {
         super( associationInfo, associationFunction );
         this.namedAssociationState = namedAssociationState;
@@ -66,7 +68,7 @@ public class NamedAssociationInstance<T>
     {
         checkImmutable();
         checkType( entity );
-        ( (ConstraintsCheck) associationInfo ).checkConstraints( entity );
+        associationInfo.checkConstraints( entity );
         return namedAssociationState.put( name, getEntityReference( entity ) );
     }
 
@@ -80,7 +82,7 @@ public class NamedAssociationInstance<T>
     @Override
     public T get( String name )
     {
-        return getEntity( namedAssociationState.get( name ) );
+        return getEntityByName( name );
     }
 
     @Override
@@ -95,9 +97,53 @@ public class NamedAssociationInstance<T>
         Map<String, T> map = new HashMap<>();
         for( String name : namedAssociationState )
         {
-            map.put( name, getEntity( namedAssociationState.get( name ) ) );
+            map.put( name, getEntityByName( name ) );
         }
         return map;
     }
 
+    @Override
+    public Stream<Map.Entry<String, T>> stream()
+    {
+        final Iterator<String> it = namedAssociationState.iterator();
+        return StreamSupport.stream( new GenericSpliterator<>( it, key -> new Entry<>( key, getEntityByName( key ) ) ),
+                                     false );
+    }
+
+    private T getEntityByName( String name )
+    {
+        return getEntity( namedAssociationState.get( name ) );
+    }
+
+    private static final class Entry<K, V>
+        implements Map.Entry<K, V>
+    {
+
+        private final K key;
+        private final V value;
+
+        private Entry( K key, V value )
+        {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public K getKey()
+        {
+            return key;
+        }
+
+        @Override
+        public V getValue()
+        {
+            return value;
+        }
+
+        @Override
+        public V setValue( V value )
+        {
+            throw new UnsupportedOperationException();
+        }
+    }
 }

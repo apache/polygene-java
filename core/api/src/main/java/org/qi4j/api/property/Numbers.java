@@ -15,6 +15,7 @@
 package org.qi4j.api.property;
 
 import java.math.BigDecimal;
+import java.util.function.Function;
 
 /**
  * Convenience class for mathematical operations on numerical properties.
@@ -24,8 +25,14 @@ import java.math.BigDecimal;
  */
 public final class Numbers
 {
-    // Integer operations
 
+    public static <T> Property<T> f( Property<T> property, Function<T,T> function )
+    {
+        property.set( function.apply( property.get() ));
+        return property;
+    }
+
+    // Integer operations
     public static Property<Integer> add( Property<Integer> property, int amount )
     {
         property.set( property.get() + amount );
@@ -47,6 +54,18 @@ public final class Numbers
     public static Property<Integer> div( Property<Integer> property, int amount )
     {
         property.set( property.get() / amount );
+        return property;
+    }
+
+    public static Property<Integer> inc( Property<Integer> property )
+    {
+        property.set( property.get() + 1 );
+        return property;
+    }
+
+    public static Property<Integer> dec( Property<Integer> property )
+    {
+        property.set( property.get() - 1 );
         return property;
     }
 

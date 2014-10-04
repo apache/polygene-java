@@ -20,6 +20,7 @@ package org.qi4j.api.association;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * If you want to catch calls to NamedAssociations, then create a GenericConcern
@@ -87,6 +88,12 @@ public class NamedAssociationWrapper
     public Map<String, Object> toMap()
     {
         return next.toMap();
+    }
+
+    @Override
+    public Stream<Map.Entry<String, Object>> stream()
+    {
+        return next.stream();
     }
 
     @Override

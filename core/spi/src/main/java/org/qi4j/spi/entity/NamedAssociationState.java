@@ -18,6 +18,7 @@
  */
 package org.qi4j.spi.entity;
 
+import java.util.Spliterators;
 import org.qi4j.api.entity.EntityReference;
 
 /**

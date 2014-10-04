@@ -16,7 +16,11 @@ public class InvalidPropertyTypeException extends ConstructionException
     private static String createMessage( AccessibleObject accessor )
     {
         StringBuilder builder = new StringBuilder();
-        builder.append( "Not allowed to subclass " + Property.class.getName() + ". Property accessor " + accessor + " is returning a Property subclass." );
+        builder.append( "Not allowed to subclass " )
+            .append( Property.class.getName() )
+            .append( ". Property accessor " )
+            .append( accessor )
+            .append( " is returning a Property subclass." );
         return builder.toString();
     }
 }

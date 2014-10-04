@@ -16,6 +16,7 @@ package org.qi4j.api.association;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Association to a collection of entities.
@@ -37,4 +38,6 @@ public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
     List<T> toList();
 
     Set<T> toSet();
+
+    Stream<T> stream();
 }

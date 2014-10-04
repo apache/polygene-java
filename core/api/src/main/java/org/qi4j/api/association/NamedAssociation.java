@@ -19,6 +19,7 @@
 package org.qi4j.api.association;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * Association to named Entities.
@@ -75,4 +76,5 @@ public interface NamedAssociation<T>
      */
     Map<String, T> toMap();
 
+    Stream<Map.Entry<String,T>> stream();
 }

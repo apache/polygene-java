@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -78,6 +79,12 @@ public class BoundManyAssociation<T> extends AbstractBinding<T>
     @Override
     public Iterator<T> iterator()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return actualAssociations.iterator();
+    }
+
+    @Override
+    public Stream<T> stream()
+    {
+        return actualAssociations.stream();
     }
 }

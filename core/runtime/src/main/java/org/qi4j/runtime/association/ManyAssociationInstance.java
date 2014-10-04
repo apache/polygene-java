@@ -5,8 +5,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.association.ManyAssociationWrapper;
@@ -108,6 +114,14 @@ public class ManyAssociationInstance<T>
     public Iterator<T> iterator()
     {
         return new ManyAssociationIterator( manyAssociationState.iterator() );
+    }
+
+    @Override
+    public Stream<T> stream()
+    {
+        final Iterator<T> it = iterator();
+        Spliterator<T> entrySpliterator = new GenericSpliterator<>( it, null );
+        return StreamSupport.stream( entrySpliterator, false );
     }
 
     @Override

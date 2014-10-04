@@ -3,7 +3,6 @@ package org.qi4j.samples.forum.context.view;
 import java.time.ZoneId;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
-import org.qi4j.api.property.Numbers;
 import org.qi4j.api.structure.Module;
 import org.qi4j.library.rest.server.api.ResourceIndex;
 import org.qi4j.library.rest.server.api.dci.Role;
@@ -55,7 +54,7 @@ public class ViewPost
             post.replyTo().set( viewPost.self() );
 
             self().lastPost().set( post );
-            Numbers.add( self().postCount(), 1 );
+            self().postCount().f( c -> c + 1 );
 
             return post;
         }

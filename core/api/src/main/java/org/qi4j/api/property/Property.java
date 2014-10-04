@@ -17,6 +17,8 @@
  */
 package org.qi4j.api.property;
 
+import java.util.function.UnaryOperator;
+
 /**
  * Properties are declared in Composite interfaces by using this interface.
  * <p>
@@ -58,4 +60,15 @@ public interface Property<T>
      */
     void set( T newValue )
         throws IllegalArgumentException, IllegalStateException;
+
+    /**
+     * Applies the function to the property.
+     *
+     * @param function The input to the function is the current value, and the return value is the value to be set
+     *                 to the property.
+     */
+    default void f( UnaryOperator<T> function )
+    {
+        set( function.apply( get() ) );
+    }
 }

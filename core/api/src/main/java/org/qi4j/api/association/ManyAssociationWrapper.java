@@ -3,6 +3,7 @@ package org.qi4j.api.association;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * If you want to catch calls to ManyAssociations, then create a GenericConcern
@@ -70,6 +71,12 @@ public class ManyAssociationWrapper
     public Set<Object> toSet()
     {
         return next.toSet();
+    }
+
+    @Override
+    public Stream<Object> stream()
+    {
+        return next.stream();
     }
 
     @Override
