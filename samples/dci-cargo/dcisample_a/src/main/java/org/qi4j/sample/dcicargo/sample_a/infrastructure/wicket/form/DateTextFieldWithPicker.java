@@ -18,6 +18,10 @@
 package org.qi4j.sample.dcicargo.sample_a.infrastructure.wicket.form;
 
 import com.google.code.joliratools.StatelessAjaxEventBehavior;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 import org.apache.wicket.Component;
@@ -33,9 +37,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 
 //import org.wicketstuff.stateless.StatelessAjaxEventBehavior;
 
@@ -48,8 +49,8 @@ public class DateTextFieldWithPicker extends DateTextField
     DatePicker datePicker;
 
     // Configurable widget options
-    LocalDate earliestDate;
-    LocalDate selectedDate;
+    ZonedDateTime earliestDate;
+    ZonedDateTime selectedDate;
 
     final static String YUI_DATE_FORMAT = "MM/dd/yyyy";
 
@@ -176,7 +177,7 @@ public class DateTextFieldWithPicker extends DateTextField
         widgetProperties.put( "selected", getSelectedDateStr() );
     }
 
-    public DateTextFieldWithPicker earliestDate( LocalDate newEarliestDate )
+    public DateTextFieldWithPicker earliestDate( ZonedDateTime newEarliestDate )
     {
         if( selectedDate != null && newEarliestDate.isAfter( selectedDate ) )
         {
@@ -186,8 +187,8 @@ public class DateTextFieldWithPicker extends DateTextField
         earliestDate = newEarliestDate;
 
         // Input field validation - date should be _after_ minimumDate (not the same)
-        LocalDate minimumDate = newEarliestDate.minusDays( 1 );
-        Date convertedMinimumDate = new DateTime( minimumDate.toDateTime( new LocalTime() ) ).toDate();
+        ZonedDateTime minimumDate = newEarliestDate.minusDays( 1 );
+        Date convertedMinimumDate = new Date( minimumDate.with( LocalTime.MAX ).toInstant().toEpochMilli() );
         add( DateValidator.minimum( convertedMinimumDate ) );
 
         return this;
@@ -195,7 +196,7 @@ public class DateTextFieldWithPicker extends DateTextField
 
     // Add latestDate(..) + other configuration options if needed..
 
-    public DateTextFieldWithPicker selectedDate( LocalDate newSelectedDate )
+    public DateTextFieldWithPicker selectedDate( ZonedDateTime newSelectedDate )
     {
         if( earliestDate != null && newSelectedDate.isBefore( earliestDate ) )
         {
@@ -211,17 +212,22 @@ public class DateTextFieldWithPicker extends DateTextField
     {
         if( selectedDate != null )
         {
-            return selectedDate.toString( YUI_DATE_FORMAT );
+            return formatDate( selectedDate );
         }
 
         // Select today or earliest date (if later) as default
         return earliestDate == null ?
-               new LocalDate().toString( YUI_DATE_FORMAT ) :
-               earliestDate.toString( YUI_DATE_FORMAT );
+               formatDate( ZonedDateTime.now() ) :
+               formatDate( earliestDate );
+    }
+
+    private String formatDate( ZonedDateTime date )
+    {
+        return date.format( DateTimeFormatter.ofPattern( YUI_DATE_FORMAT ) );
     }
 
     private String getEarliestDateStr()
     {
-        return earliestDate == null ? "" : earliestDate.toString( YUI_DATE_FORMAT );
+        return earliestDate == null ? "" : formatDate( earliestDate );
     }
 }

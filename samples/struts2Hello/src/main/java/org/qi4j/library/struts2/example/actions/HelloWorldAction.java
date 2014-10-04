@@ -23,10 +23,9 @@ import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
 import com.opensymphony.xwork2.validator.annotations.RequiredFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import com.opensymphony.xwork2.validator.annotations.Validation;
+import java.time.Instant;
 import org.apache.struts2.config.Result;
 import org.apache.struts2.config.Results;
-
-import java.util.Date;
 
 @Validation
 @Conversion
@@ -37,17 +36,17 @@ public class HelloWorldAction
 
     private static final long serialVersionUID = 1L;
 
-    private Date now;
+    private Instant now;
     private String name;
 
     @TypeConversion( converter = "org.qi4j.library.struts2.example.converters.DateConverter" )
     @RequiredFieldValidator( message = "Please enter the date" )
-    public void setDateNow( Date dateNow )
+    public void setDateNow( Instant dateNow )
     {
         now = dateNow;
     }
 
-    public Date getDateNow()
+    public Instant getDateNow()
     {
         return now;
     }

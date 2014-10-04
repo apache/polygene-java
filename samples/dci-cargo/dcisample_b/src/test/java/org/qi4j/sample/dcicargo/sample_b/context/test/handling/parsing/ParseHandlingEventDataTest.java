@@ -17,8 +17,8 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.parsing;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.constraint.ConstraintViolationException;
@@ -38,7 +38,7 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.Transpor
 public class ParseHandlingEventDataTest extends TestApplication
 {
     static ParseHandlingEventData handlingEventParser;
-    static String completionTime;
+    static String completionTime = Instant.now().toString();
 
     @Before
     public void prepareTest()
@@ -50,18 +50,18 @@ public class ParseHandlingEventDataTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
-        delivery = delivery( TODAY, NOT_RECEIVED, ROUTED, unknownLeg );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, ZonedDateTime.now(), deadline = DAY24 );
+        delivery = delivery( TODAY.toInstant(), NOT_RECEIVED, ROUTED, unknownLeg );
         cargo = CARGOS.createCargo( routeSpec, delivery, "ABC" );
         trackingId = cargo.trackingId().get();
         trackingIdString = trackingId.id().get();
         cargo.itinerary().set( itinerary );
-        completionTime = new SimpleDateFormat( "yyyy-MM-dd HH:mm" ).format( new Date() );
 
         // Start ParseHandlingEventData service
         ServiceReference<ParseHandlingEventData> ParseHandlingEventDataRef =
             module.findService( ParseHandlingEventData.class );
         handlingEventParser = ParseHandlingEventDataRef.get();
+
     }
 
     // Null

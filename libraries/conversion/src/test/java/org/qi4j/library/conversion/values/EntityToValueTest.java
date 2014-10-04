@@ -17,10 +17,10 @@
  */
 package org.qi4j.library.conversion.values;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.function.Function;
 import org.junit.Test;
 import org.qi4j.api.association.Association;
@@ -213,7 +213,7 @@ public class EntityToValueTest
     {
         String firstName = "Niclas";
         String lastName = "Hedhman";
-        Date birthTime = createBirthDate( 1964, 9, 25 );
+        ZonedDateTime birthTime = createBirthDate( 1964, 9, 25 );
         return createPerson( uow, firstName, lastName, birthTime );
     }
 
@@ -221,7 +221,7 @@ public class EntityToValueTest
     {
         String firstName = "Lis";
         String lastName = "Gazi";
-        Date birthTime = createBirthDate( 1976, 2, 19 );
+        ZonedDateTime birthTime = createBirthDate( 1976, 2, 19 );
         return createPerson( uow, firstName, lastName, birthTime );
     }
 
@@ -229,11 +229,11 @@ public class EntityToValueTest
     {
         String firstName = "Eric";
         String lastName = "Hedman";
-        Date birthTime = createBirthDate( 2004, 4, 8 );
+        ZonedDateTime birthTime = createBirthDate( 2004, 4, 8 );
         return createPerson( uow, firstName, lastName, birthTime );
     }
 
-    private PersonEntity createPerson( UnitOfWork uow, String firstName, String lastName, Date birthTime )
+    private PersonEntity createPerson( UnitOfWork uow, String firstName, String lastName, ZonedDateTime birthTime )
     {
         EntityBuilder<PersonEntity> builder = uow.newEntityBuilder( PersonEntity.class, "id:" + firstName );
         PersonState state = builder.instanceFor( PersonState.class );
@@ -243,12 +243,9 @@ public class EntityToValueTest
         return builder.newInstance();
     }
 
-    private Date createBirthDate( int year, int month, int day )
+    private ZonedDateTime createBirthDate( int year, int month, int day )
     {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
-        calendar.set( year, month - 1, day, 12, 0, 0 );
-        return calendar.getTime();
+        return ZonedDateTime.of( year, month, day, 0, 0, 0, 0, ZoneId.systemDefault() );
     }
 
     // START SNIPPET: state
@@ -259,7 +256,7 @@ public class EntityToValueTest
 
         Property<String> lastName();
 
-        Property<Date> dateOfBirth();
+        Property<ZonedDateTime> dateOfBirth();
 
     }
     // END SNIPPET: state
@@ -322,9 +319,7 @@ public class EntityToValueTest
         @Override
         public Integer age()
         {
-            long now = System.currentTimeMillis();
-            long birthdate = state.dateOfBirth().get().getTime();
-            return (int) ( ( now - birthdate ) / 1000 / 3600 / 24 / 365.25 );
+            return (int) state.dateOfBirth().get().until(ZonedDateTime.now(), ChronoUnit.YEARS );
         }
 
         // START SNIPPET: entity
@@ -341,7 +336,7 @@ public class EntityToValueTest
 
         Property<String> lastName();
 
-        Property<Date> dateOfBirth();
+        Property<ZonedDateTime> dateOfBirth();
 
         @Optional
         Property<String> spouse();
@@ -361,7 +356,7 @@ public class EntityToValueTest
 
         Property<String> lastName();
 
-        Property<Date> dateOfBirth();
+        Property<ZonedDateTime> dateOfBirth();
 
         @Optional
         Property<String> spouse();
@@ -380,7 +375,7 @@ public class EntityToValueTest
 
         Property<String> lastName();
 
-        Property<Date> dateOfBirth();
+        Property<ZonedDateTime> dateOfBirth();
 
         @Optional
         Property<String> spouse();

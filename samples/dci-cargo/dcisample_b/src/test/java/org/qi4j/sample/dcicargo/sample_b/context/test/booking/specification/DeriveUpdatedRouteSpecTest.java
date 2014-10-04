@@ -48,7 +48,7 @@ public class DeriveUpdatedRouteSpecTest extends TestApplication
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, TODAY, deadline = DAY24 );
-        delivery = delivery( TODAY, NOT_RECEIVED, ROUTED, unknownLeg );
+        delivery = delivery( TODAY.toInstant(), NOT_RECEIVED, ROUTED, unknownLeg );
         cargo = CARGOS.createCargo( routeSpec, delivery, "ABC" );
         cargo.itinerary().set( itinerary );
         trackingId = cargo.trackingId().get();
@@ -101,7 +101,7 @@ public class DeriveUpdatedRouteSpecTest extends TestApplication
         throws Exception
     {
         cargo.routeSpecification().set( routeSpec );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, ROUTED, unknownLeg ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, ROUTED, unknownLeg ) );
 
         assertRouteSpec( HONGKONG, STOCKHOLM, TODAY, DAY24 );
 

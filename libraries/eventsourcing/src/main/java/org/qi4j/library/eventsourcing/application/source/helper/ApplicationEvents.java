@@ -17,8 +17,8 @@
 package org.qi4j.library.eventsourcing.application.source.helper;
 
 import java.lang.reflect.Method;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -114,26 +114,26 @@ public class ApplicationEvents
         }, Iterables.toList( Methods.METHODS_OF.apply( eventClass ) ) ));
     }
 
-    public static Predicate<ApplicationEvent> afterDate( final Date afterDate )
+    public static Predicate<ApplicationEvent> afterDate( final ZonedDateTime afterDate )
     {
         return new Predicate<ApplicationEvent>()
         {
             @Override
             public boolean test( ApplicationEvent event )
             {
-                return event.on().get().after( afterDate );
+                return event.on().get().isAfter( afterDate );
             }
         };
     }
 
-    public static Predicate<ApplicationEvent> beforeDate( final Date beforeDate )
+    public static Predicate<ApplicationEvent> beforeDate( final ZonedDateTime beforeDate )
     {
         return new Predicate<ApplicationEvent>()
         {
             @Override
             public boolean test( ApplicationEvent event )
             {
-                return event.on().get().before( beforeDate );
+                return event.on().get().isBefore( beforeDate );
             }
         };
     }

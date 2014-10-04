@@ -17,7 +17,9 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.context.shipping.booking;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +39,7 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.location.Location;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 
 /**
@@ -51,7 +54,7 @@ public class BookNewCargoTest
       extends TestApplication
 {
 
-    private static final Date TODAY = new Date();
+    private static final Instant TODAY = Instant.now();
 
     @Before
     public void prepareTest()
@@ -126,18 +129,18 @@ public class BookNewCargoTest
 
         // Test derived delivery snapshot
         Delivery delivery = cargo.delivery().get();
-        assertThat( delivery.timestamp().get().after( TODAY ), is( equalTo( true ) ) ); // TODAY is set first
+        assertThat( delivery.timestamp().get().isAfter( TODAY ), is( equalTo( true ) ) ); // TODAY is set first
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.NOT_ROUTED ) ) );
         assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.NOT_RECEIVED ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
         assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( HONGKONG ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( null ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( null ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( null ) ) ); // Is set when itinerary is assigned
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), nullValue() );
+        assertThat( delivery.lastHandlingEvent().get(), nullValue() );
+        assertThat( delivery.lastKnownLocation().get(), nullValue() );
+        assertThat( delivery.currentVoyage().get(), nullValue() );
+        assertThat( delivery.eta().get(), nullValue() ); // Is set when itinerary is assigned
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( false ) );
     }
 
     @Test( expected = FoundNoRoutesException.class )
@@ -179,7 +182,10 @@ public class BookNewCargoTest
                         itinerary.lastLeg().unloadLocation().get(),
                         is( equalTo( cargo.routeSpecification().get().destination().get() ) ) );
             assertThat( "Cargo will be delivered in time.",
-                        itinerary.finalArrivalDate().before( cargo.routeSpecification().get().arrivalDeadline().get() ),
+                        itinerary.finalArrivalDate().isBefore( cargo.routeSpecification()
+                                                                   .get()
+                                                                   .arrivalDeadline()
+                                                                   .get() ),
                         is( equalTo( true ) ) );
         }
     }
@@ -193,7 +199,7 @@ public class BookNewCargoTest
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
 
         // Create valid cargo
-        Date deadline = day( 30 );
+        ZonedDateTime deadline = day( 60 );
         TrackingId trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, deadline ).book();
         Cargo cargo = uow.get( Cargo.class, trackingId.id().get() );
 
@@ -215,6 +221,6 @@ public class BookNewCargoTest
         assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
 
         // ETA (= Unload time of last Leg) is before Deadline (set in previous test)
-        assertTrue( delivery.eta().get().before( deadline ) );
+        assertTrue( delivery.eta().get().isBefore( deadline ) );
     }
 }

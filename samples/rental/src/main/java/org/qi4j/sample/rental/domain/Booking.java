@@ -18,7 +18,7 @@
 
 package org.qi4j.sample.rental.domain;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
@@ -37,9 +37,9 @@ public interface Booking
 
     @Optional
         // if not set, the pickup has not occurred yet.
-    Property<Date> pickedupTime();
+    Property<ZonedDateTime> pickedupTime();
 
     @Optional
         // if not set, the return has not occurred yet.
-    Property<Date> returnedTime();
+    Property<ZonedDateTime> returnedTime();
 }

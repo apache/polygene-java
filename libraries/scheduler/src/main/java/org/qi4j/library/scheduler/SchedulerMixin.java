@@ -18,6 +18,9 @@
  */
 package org.qi4j.library.scheduler;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -28,7 +31,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.joda.time.DateTime;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -84,7 +86,8 @@ public class SchedulerMixin
     public Schedule scheduleOnce( Task task, int initialSecondsDelay, boolean durable )
     {
         long now = System.currentTimeMillis();
-        Schedule schedule = scheduleFactory.newOnceSchedule( task, new DateTime( now + initialSecondsDelay * 1000 ), durable );
+        Schedule schedule = scheduleFactory.newOnceSchedule( task, Instant.now()
+            .plusSeconds( initialSecondsDelay ), durable );
         if( durable )
         {
             Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
@@ -95,7 +98,7 @@ public class SchedulerMixin
     }
 
     @Override
-    public Schedule scheduleOnce( Task task, DateTime runAt, boolean durable )
+    public Schedule scheduleOnce( Task task, Instant runAt, boolean durable )
     {
         Schedule schedule = scheduleFactory.newOnceSchedule( task, runAt, durable );
         dispatchForExecution( schedule );
@@ -110,8 +113,7 @@ public class SchedulerMixin
     @Override
     public Schedule scheduleCron( Task task, String cronExpression, boolean durable )
     {
-        DateTime now = new DateTime();
-        Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, now, durable );
+        Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, Instant.now(), durable );
         if( durable )
         {
             Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
@@ -122,7 +124,7 @@ public class SchedulerMixin
     }
 
     @Override
-    public Schedule scheduleCron( Task task, @CronExpression String cronExpression, DateTime start, boolean durable )
+    public Schedule scheduleCron( Task task, @CronExpression String cronExpression, Instant start, boolean durable )
     {
         Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start, durable );
         if( durable )
@@ -137,7 +139,7 @@ public class SchedulerMixin
     @Override
     public Schedule scheduleCron( Task task, String cronExpression, long initialDelay, boolean durable )
     {
-        DateTime start = new DateTime( System.currentTimeMillis() + initialDelay );
+        Instant start = Instant.now().plusMillis( initialDelay );
         Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start, durable );
         if( durable )
         {
@@ -150,17 +152,16 @@ public class SchedulerMixin
 
     private void dispatchForExecution( Schedule schedule )
     {
-        long now = System.currentTimeMillis();
         synchronized( timingQueue )
         {
             if( timingQueue.size() == 0 )
             {
-                long nextRun = schedule.nextRun( now );
-                if( nextRun < 0 )
+                Instant nextRun = schedule.nextRun( Instant.now() );
+                if( nextRun.isBefore( Instant.now() ) )
                 {
                     return;
                 }
-                System.out.println( "Next run at: " + new DateTime( nextRun ) );
+                System.out.println( "Next run at: " + nextRun.atOffset( ZoneOffset.UTC ) );
                 timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
                 if( scheduleHandler == null )
                 {
@@ -170,12 +171,12 @@ public class SchedulerMixin
             else
             {
                 ScheduleTime first = timingQueue.first();
-                long nextRun = schedule.nextRun( now );
-                if( nextRun < 0 )
+                Instant nextRun = schedule.nextRun( Instant.now() );
+                if( nextRun.isBefore( Instant.now() ) )
                 {
                     return;
                 }
-                System.out.println( "Next run at: " + new DateTime( nextRun ) );
+                System.out.println( "Next run at: " + nextRun.atOffset( ZoneOffset.UTC ) );
                 timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
                 ScheduleTime newFirst = timingQueue.first();
                 if( !first.equals( newFirst ) )
@@ -192,7 +193,8 @@ public class SchedulerMixin
     private void dispatchHandler()
     {
         scheduleHandler = new ScheduleHandler();
-        managementExecutor.schedule( scheduleHandler, timingQueue.first().nextTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS );
+        long delay = Instant.now().until( timingQueue.first().nextTime, ChronoUnit.MILLIS );
+        managementExecutor.schedule( scheduleHandler, delay, TimeUnit.MILLISECONDS );
     }
 
     @Override
@@ -296,7 +298,7 @@ public class SchedulerMixin
                 else
                 {
                     ScheduleTime nextTime = timingQueue.first();
-                    future = managementExecutor.schedule( scheduleHandler, nextTime.nextTime, TimeUnit.MILLISECONDS );
+                    future = managementExecutor.schedule( scheduleHandler, nextTime.nextTime.toEpochMilli(), TimeUnit.MILLISECONDS );
                 }
             }
         }
@@ -357,5 +359,4 @@ public class SchedulerMixin
             }
         }
     }
-
 }

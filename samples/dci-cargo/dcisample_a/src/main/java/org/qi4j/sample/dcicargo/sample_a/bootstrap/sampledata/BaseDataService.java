@@ -26,9 +26,7 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
-import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.sample.dcicargo.sample_a.data.entity.CargosEntity;
 import org.qi4j.sample.dcicargo.sample_a.data.entity.HandlingEventsEntity;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.location.Location;
@@ -44,26 +42,25 @@ import static org.qi4j.api.usecase.UsecaseBuilder.newUsecase;
 /**
  * Create basic sample data
  */
-@Mixins( BaseDataService.Mixin.class )
-@Activators( BaseDataService.Activator.class )
+@Mixins(BaseDataService.Mixin.class)
+@Activators(BaseDataService.Activator.class)
 public interface BaseDataService
     extends ServiceComposite
 {
 
-    void createBaseData() 
-    		throws Exception;
+    void createBaseData()
+        throws Exception;
 
     class Activator
-            extends ActivatorAdapter<ServiceReference<BaseDataService>>
+        extends ActivatorAdapter<ServiceReference<BaseDataService>>
     {
 
         @Override
         public void afterActivation( ServiceReference<BaseDataService> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().createBaseData();
         }
-
     }
 
     public abstract class Mixin extends BaseData
@@ -78,28 +75,28 @@ public interface BaseDataService
 
         @Override
         public void createBaseData()
-        	throws Exception
+            throws Exception
         {
             logger.debug( "CREATING BASIC DATA..." );
             UnitOfWork uow = module.newUnitOfWork( newUsecase( "Open uow for " ) );
             try
             {
-	            // UnLocode value objects
-	            AUMEL = unlocode( "AUMEL" ); // Melbourne
-	            CNHGH = unlocode( "CNHGH" ); // Hangzou
-	            CNHKG = unlocode( "CNHKG" ); // Hong Kong
-	            CNSHA = unlocode( "CNSHA" ); // Shanghai
-	            DEHAM = unlocode( "DEHAM" ); // Hamburg
-	            FIHEL = unlocode( "FIHEL" ); // Helsinki
-	            JNTKO = unlocode( "JNTKO" ); // Tokyo
-	            NLRTM = unlocode( "NLRTM" ); // Rotterdam
-	            SEGOT = unlocode( "SEGOT" ); // Gothenburg
-	            SESTO = unlocode( "SESTO" ); // Stockholm
-	            USCHI = unlocode( "USCHI" ); // Chicago
-	            USDAL = unlocode( "USDAL" ); // Dallas
-	            USNYC = unlocode( "USNYC" ); // New York
-	
-	            // Location entity objects
+                // UnLocode value objects
+                AUMEL = unlocode( "AUMEL" ); // Melbourne
+                CNHGH = unlocode( "CNHGH" ); // Hangzou
+                CNHKG = unlocode( "CNHKG" ); // Hong Kong
+                CNSHA = unlocode( "CNSHA" ); // Shanghai
+                DEHAM = unlocode( "DEHAM" ); // Hamburg
+                FIHEL = unlocode( "FIHEL" ); // Helsinki
+                JNTKO = unlocode( "JNTKO" ); // Tokyo
+                NLRTM = unlocode( "NLRTM" ); // Rotterdam
+                SEGOT = unlocode( "SEGOT" ); // Gothenburg
+                SESTO = unlocode( "SESTO" ); // Stockholm
+                USCHI = unlocode( "USCHI" ); // Chicago
+                USDAL = unlocode( "USDAL" ); // Dallas
+                USNYC = unlocode( "USNYC" ); // New York
+
+                // Location entity objects
                 Location MELBOURNE = location( AUMEL, "Melbourne" );
                 Location HANGZHOU = location( CNHGH, "Hangzhou" );
                 Location HONGKONG = location( CNHKG, "Hongkong" );
@@ -114,43 +111,43 @@ public interface BaseDataService
                 Location DALLAS = location( USDAL, "Dallas" );
                 Location NEWYORK = location( USNYC, "New York" );
 
-	            // Voyage entity objects
+                // Voyage entity objects
                 Voyage V100S = voyage( "V100S", schedule(
-	                carrierMovement( NEWYORK, CHICAGO, day( 1 ), day( 2 ) ),
-	                carrierMovement( CHICAGO, DALLAS, day( 8 ), day( 9 ) )
-	            ) );
+                    carrierMovement( NEWYORK, CHICAGO, day( 1 ), day( 2 ) ),
+                    carrierMovement( CHICAGO, DALLAS, day( 8 ), day( 9 ) )
+                ) );
                 Voyage V200T = voyage( "V200T", schedule(
-	                carrierMovement( NEWYORK, CHICAGO, day( 7 ), day( 8 ) ),
-	                carrierMovement( CHICAGO, DALLAS, day( 8 ), day( 9 ) )
-	            ) );
+                    carrierMovement( NEWYORK, CHICAGO, day( 7 ), day( 8 ) ),
+                    carrierMovement( CHICAGO, DALLAS, day( 8 ), day( 9 ) )
+                ) );
                 Voyage V300A = voyage( "V300A", schedule(
-	                carrierMovement( DALLAS, HAMBURG, day( 10 ), day( 14 ) ),
-	                carrierMovement( HAMBURG, STOCKHOLM, day( 15 ), day( 16 ) ),
-	                carrierMovement( STOCKHOLM, HELSINKI, day( 17 ), day( 18 ) )
-	            ) );
+                    carrierMovement( DALLAS, HAMBURG, day( 10 ), day( 14 ) ),
+                    carrierMovement( HAMBURG, STOCKHOLM, day( 15 ), day( 16 ) ),
+                    carrierMovement( STOCKHOLM, HELSINKI, day( 17 ), day( 18 ) )
+                ) );
                 Voyage V400S = voyage( "V400S", schedule(
-	                carrierMovement( TOKYO, ROTTERDAM, day( 9 ), day( 15 ) ),
-	                carrierMovement( ROTTERDAM, HAMBURG, day( 15 ), day( 16 ) ),
-	                carrierMovement( HAMBURG, MELBOURNE, day( 17 ), day( 26 ) ),
-	                carrierMovement( MELBOURNE, TOKYO, day( 27 ), day( 33 ) )
-	            ) );
+                    carrierMovement( TOKYO, ROTTERDAM, day( 9 ), day( 15 ) ),
+                    carrierMovement( ROTTERDAM, HAMBURG, day( 15 ), day( 16 ) ),
+                    carrierMovement( HAMBURG, MELBOURNE, day( 17 ), day( 26 ) ),
+                    carrierMovement( MELBOURNE, TOKYO, day( 27 ), day( 33 ) )
+                ) );
                 Voyage V500S = voyage( "V500S", schedule(
-	                carrierMovement( HAMBURG, STOCKHOLM, day( 17 ), day( 19 ) ),
-	                carrierMovement( STOCKHOLM, HELSINKI, day( 20 ), day( 21 ) )
-	            ) );
+                    carrierMovement( HAMBURG, STOCKHOLM, day( 17 ), day( 19 ) ),
+                    carrierMovement( STOCKHOLM, HELSINKI, day( 20 ), day( 21 ) )
+                ) );
 
-	            // Cargo and HandlingEvent factories
+                // Cargo and HandlingEvent factories
                 CargosEntity CARGOS = uow.newEntity( CargosEntity.class, CargosEntity.CARGOS_ID );
                 uow.newEntity( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
-	
-	            logger.debug( "BASIC DATA CREATED" );
-	            uow.complete();
+
+                logger.debug( "BASIC DATA CREATED" );
+                uow.complete();
             }
-            catch(Exception e)
+            catch( Exception e )
             {
-            	uow.discard();
-            	logger.error("CANNOT CREATE BASIC DATA");
-            	throw e;
+                uow.discard();
+                logger.error( "CANNOT CREATE BASIC DATA" );
+                throw e;
             }
         }
 
@@ -177,6 +174,5 @@ public interface BaseDataService
             voyage.instance().schedule().set( schedule );
             return voyage.newInstance();
         }
-
     }
 }

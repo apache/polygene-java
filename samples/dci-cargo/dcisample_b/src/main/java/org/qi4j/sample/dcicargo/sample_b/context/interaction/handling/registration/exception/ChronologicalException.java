@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.registration.exception;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
 
 /**
@@ -25,9 +25,9 @@ import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.parsing.dt
  */
 public final class ChronologicalException extends CannotRegisterHandlingEventException
 {
-    Date lastCompletionTime;
+    ZonedDateTime lastCompletionTime;
 
-    public ChronologicalException( ParsedHandlingEventData parsedHandlingEventData, Date lastCompletionTime )
+    public ChronologicalException( ParsedHandlingEventData parsedHandlingEventData, ZonedDateTime lastCompletionTime )
     {
         super( parsedHandlingEventData );
         this.lastCompletionTime = lastCompletionTime;

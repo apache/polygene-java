@@ -17,7 +17,8 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.data.structure.delivery;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
@@ -91,7 +92,7 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.itinerary.Itinerary;
 public interface Delivery
     extends ValueComposite
 {
-    Property<Date> timestamp();
+    Property<Instant> timestamp();
 
     /* (types:)
      * RECEIVE
@@ -126,7 +127,7 @@ public interface Delivery
     Property<Boolean> isMisdirected();
 
     @Optional
-    Property<Date> eta();
+    Property<ZonedDateTime> eta();
 
     // Index of earliest uncompleted Itinerary Leg - bumped up after each unload (except at destination)
     @UseDefaults

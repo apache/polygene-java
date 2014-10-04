@@ -17,8 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.data.structure.handling;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.mixin.Mixins;
@@ -52,12 +51,12 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
  * {@link HandlingEventType#CLAIM} or {@link HandlingEventType#CUSTOMS}.
  */
 @Immutable
-@Mixins( HandlingEvent.Mixin.class )
+@Mixins(HandlingEvent.Mixin.class)
 public interface HandlingEvent
 {
-    Property<Date> registrationTime();
+    Property<ZonedDateTime> registrationTime();
 
-    Property<Date> completionTime();
+    Property<ZonedDateTime> completionTime();
 
     Property<TrackingId> trackingId();
 
@@ -81,14 +80,12 @@ public interface HandlingEvent
                 voyage = voyage().get().voyageNumber().get().number().get();
             }
 
-            SimpleDateFormat date = new SimpleDateFormat( "yyyy-MM-dd" );
-
             StringBuilder builder = new StringBuilder( "\nHANDLING EVENT -----------------" ).
                 append( "\n  Cargo       " ).append( trackingId().get().id().get() ).
                 append( "\n  Type        " ).append( handlingEventType().get().name() ).
                 append( "\n  Location    " ).append( location().get().getString() ).
-                append( "\n  Completed   " ).append( date.format( completionTime().get() ) ).
-                append( "\n  Registered  " ).append( date.format( registrationTime().get() ) ).
+                append( "\n  Completed   " ).append( completionTime().get() ).
+                append( "\n  Registered  " ).append( registrationTime().get() ).
                 append( "\n  Voyage      " ).append( voyage ).
                 append( "\n--------------------------------\n" );
 

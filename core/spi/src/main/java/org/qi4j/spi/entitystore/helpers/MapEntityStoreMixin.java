@@ -22,6 +22,7 @@ package org.qi4j.spi.entitystore.helpers;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -117,7 +118,7 @@ public class MapEntityStoreMixin
 
     // EntityStore
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, Module module, Instant currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo, currentTime );
     }
@@ -221,7 +222,7 @@ public class MapEntityStoreMixin
                             newUnitOfWorkId(),
                             module,
                             usecase,
-                            System.currentTimeMillis() );
+                            Instant.now() );
 
                         final List<EntityState> migrated = new ArrayList<>();
 
@@ -305,7 +306,7 @@ public class MapEntityStoreMixin
         return uuid + Integer.toHexString( count++ );
     }
 
-    protected void writeEntityState( DefaultEntityState state, Writer writer, String version, long lastModified )
+    protected void writeEntityState( DefaultEntityState state, Writer writer, String version, Instant lastModified )
         throws EntityStoreException
     {
         try
@@ -316,7 +317,7 @@ public class MapEntityStoreMixin
                 key( JSONKeys.APPLICATION_VERSION ).value( application.version() ).
                 key( JSONKeys.TYPE ).value( first( state.entityDescriptor().types() ).getName() ).
                 key( JSONKeys.VERSION ).value( version ).
-                key( JSONKeys.MODIFIED ).value( lastModified ).
+                key( JSONKeys.MODIFIED ).value( lastModified.toEpochMilli() ).
                 key( JSONKeys.PROPERTIES ).object();
             EntityDescriptor entityType = state.entityDescriptor();
             for( PropertyDescriptor persistentProperty : entityType.state().properties() )
@@ -392,7 +393,7 @@ public class MapEntityStoreMixin
             EntityStatus status = EntityStatus.LOADED;
 
             String version = jsonObject.getString( JSONKeys.VERSION );
-            long modified = jsonObject.getLong( JSONKeys.MODIFIED );
+            Instant modified = Instant.ofEpochMilli( jsonObject.getLong( JSONKeys.MODIFIED ) );
             String identity = jsonObject.getString( JSONKeys.IDENTITY );
 
             // Check if version is correct

@@ -17,7 +17,8 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.delivery;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
@@ -76,7 +77,7 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 public interface Delivery
     extends ValueComposite
 {
-    Property<Date> timestamp();
+    Property<Instant> timestamp();
 
     /*
    * NOT_ROUTED
@@ -120,7 +121,7 @@ public interface Delivery
     Association<Voyage> currentVoyage();
 
     @Optional
-    Property<Date> eta();
+    Property<ZonedDateTime> eta();
 
     @UseDefaults
     Property<Boolean> isUnloadedAtDestination();

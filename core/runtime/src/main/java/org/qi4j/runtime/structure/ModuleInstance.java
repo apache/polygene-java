@@ -17,6 +17,7 @@ package org.qi4j.runtime.structure;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -509,7 +510,7 @@ public class ModuleInstance
     }
 
     @Override
-    public UnitOfWork newUnitOfWork( long currentTime )
+    public UnitOfWork newUnitOfWork( Instant currentTime )
     {
         return newUnitOfWork( Usecase.DEFAULT, currentTime );
     }
@@ -517,11 +518,11 @@ public class ModuleInstance
     @Override
     public UnitOfWork newUnitOfWork( Usecase usecase )
     {
-        return newUnitOfWork( usecase == null ? Usecase.DEFAULT : usecase, System.currentTimeMillis() );
+        return newUnitOfWork( usecase == null ? Usecase.DEFAULT : usecase, Instant.now() );
     }
 
     @Override
-    public UnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
+    public UnitOfWork newUnitOfWork( Usecase usecase, Instant currentTime )
     {
         UnitOfWorkInstance unitOfWorkInstance = new UnitOfWorkInstance( usecase, currentTime, metricsProvider() );
         return new ModuleUnitOfWork( ModuleInstance.this, unitOfWorkInstance );

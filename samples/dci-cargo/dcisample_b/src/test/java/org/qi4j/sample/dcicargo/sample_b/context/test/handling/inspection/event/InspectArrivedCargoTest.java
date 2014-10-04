@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -53,8 +53,8 @@ public class InspectArrivedCargoTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
-        delivery = delivery( TODAY, IN_PORT, ROUTED, leg5 );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, ZonedDateTime.now(), deadline = DAY24 );
+        delivery = delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg5 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Arrived_CARGO" );
         trackingId = cargo.trackingId().get();
     }
@@ -65,7 +65,7 @@ public class InspectArrivedCargoTest extends TestApplication
     {
         // Cargo not routed
         cargo.itinerary().set( null );
-        cargo.delivery().set( delivery( TODAY, ONBOARD_CARRIER, NOT_ROUTED, leg5 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), ONBOARD_CARRIER, NOT_ROUTED, leg5 ) );
 
         // Unload in final destination (with no itinerary!)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY23, DAY23, trackingId, UNLOAD, STOCKHOLM, V203 );
@@ -92,7 +92,7 @@ public class InspectArrivedCargoTest extends TestApplication
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, ONBOARD_CARRIER, MISROUTED, leg5 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), ONBOARD_CARRIER, MISROUTED, leg5 ) );
 
         // Unload in final destination (with wrong itinerary)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY23, DAY23, trackingId, UNLOAD, STOCKHOLM, V203 );
@@ -117,7 +117,7 @@ public class InspectArrivedCargoTest extends TestApplication
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, ONBOARD_CARRIER, ROUTED, leg5 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), ONBOARD_CARRIER, ROUTED, leg5 ) );
 
         // Unload in final destination (with satisfying itinerary)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY23, DAY23, trackingId, UNLOAD, STOCKHOLM, V203 );

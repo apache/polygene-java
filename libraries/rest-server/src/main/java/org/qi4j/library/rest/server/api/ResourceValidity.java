@@ -63,7 +63,7 @@ public class ResourceValidity
         if( entity != null )
         {
             EntityState state = spi.entityStateOf( entity );
-            Date lastModified = new Date( state.lastModified() );
+            Date lastModified = new Date( state.lastModified().toEpochMilli() );
             Tag tag = new Tag( state.identity().identity() + "/" + state.version() );
             response.getEntity().setModificationDate( lastModified );
             response.getEntity().setTag( tag );
@@ -78,7 +78,7 @@ public class ResourceValidity
         if( modificationDate != null )
         {
             EntityState state = spi.entityStateOf( entity );
-            Date lastModified = new Date( ( state.lastModified() / 1000 ) * 1000 ); // Cut off milliseconds
+            Date lastModified = new Date( ( state.lastModified().toEpochMilli() / 1000 ) * 1000 ); // Cut off milliseconds
             if( lastModified.after( modificationDate ) )
             {
                 throw new ResourceException( Status.CLIENT_ERROR_CONFLICT );
@@ -90,7 +90,7 @@ public class ResourceValidity
         if( modificationDate != null )
         {
             EntityState state = spi.entityStateOf( entity );
-            Date lastModified = new Date( ( state.lastModified() / 1000 ) * 1000 ); // Cut off milliseconds
+            Date lastModified = new Date( ( state.lastModified().toEpochMilli() / 1000 ) * 1000 ); // Cut off milliseconds
             if( !lastModified.after( modificationDate ) )
             {
                 throw new ResourceException( Status.REDIRECTION_NOT_MODIFIED );

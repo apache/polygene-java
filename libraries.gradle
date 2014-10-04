@@ -30,7 +30,6 @@ def jedisVersion = '2.5.1'
 def jettyVersion = '9.2.1.v20140609'
 def jgoodiesLooksVersion = '2.5.3'
 def jodaMoneyVersion = '0.9.1'
-def jodaTimeVersion = '2.3'
 def jrubyVersion = '1.7.8' // 1.7.12 - Fails to run!
 def jtaVersion = '1.1'
 def leveldbVersion = '0.7'
@@ -202,7 +201,6 @@ rootProject.ext {
           // Library & Extension dependencies
           jackson_mapper: "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
           jodamoney: "org.joda:joda-money:$jodaMoneyVersion",
-          jodatime: "joda-time:joda-time:$jodaTimeVersion",
           ehcache: "net.sf.ehcache:ehcache:$ehcacheVersion",
           elasticsearch: "org.elasticsearch:elasticsearch:$elasticsearchVersion",
           h2: "com.h2database:h2:$h2Version",

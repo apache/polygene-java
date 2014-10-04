@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
@@ -51,7 +51,7 @@ public interface RouteSpecification
 
     Association<Location> destination();
 
-    Property<Date> arrivalDeadline();
+    Property<ZonedDateTime> arrivalDeadline();
 
     // Can we accept to have this "intelligent" logic here?
     // DCI Data is supposed to be dumb, but it's really convenient to have this logic here,
@@ -67,7 +67,7 @@ public interface RouteSpecification
                    !itinerary.legs().get().isEmpty() &&
                    origin().get().equals( itinerary.firstLeg().loadLocation().get() ) &&
                    destination().get().equals( itinerary.lastLeg().unloadLocation().get() ) &&
-                   arrivalDeadline().get().after( itinerary.finalArrivalDate() );
+                   arrivalDeadline().get().isAfter( itinerary.finalArrivalDate() );
         }
     }
 }

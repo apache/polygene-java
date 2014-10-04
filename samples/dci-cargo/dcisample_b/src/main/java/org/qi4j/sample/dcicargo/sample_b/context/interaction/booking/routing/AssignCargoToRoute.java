@@ -17,7 +17,9 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.interaction.booking.routing;
 
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
@@ -39,8 +41,12 @@ import org.qi4j.sample.dcicargo.sample_b.infrastructure.dci.Context;
 import org.qi4j.sample.dcicargo.sample_b.infrastructure.dci.RoleMixin;
 
 import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.RoutingStatus.ROUTED;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.*;
-import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.*;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.CLAIMED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.NOT_RECEIVED;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.delivery.TransportStatus.ONBOARD_CARRIER;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.LOAD;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.RECEIVE;
+import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventType.UNLOAD;
 
 /**
  * Assign Cargo to Route (subfunction use case)
@@ -149,16 +155,12 @@ public class AssignCargoToRoute extends Context
                                                                                                .get() );
 
                     // Estimate carrier arrival time
-                    Date estimatedArrivalDate = carrierMovement.arrivalTime().get();
-                    if( c.lastHandlingEvent.completionTime().get().after( carrierMovement.departureTime().get() ) )
+                    ZonedDateTime estimatedArrivalDate = carrierMovement.arrivalTime().get();
+                    if( c.lastHandlingEvent.completionTime().get().isAfter( carrierMovement.departureTime().get() ) )
                     {
-                        long start = carrierMovement.departureTime().get().getTime();
-                        long end = carrierMovement.arrivalTime().get().getTime();
-                        long duration = end - start;
-                        estimatedArrivalDate = new Date( c.lastHandlingEvent
-                                                             .completionTime()
-                                                             .get()
-                                                             .getTime() + duration );
+                        Duration duration = Duration.between( carrierMovement.departureTime().get(),
+                                                              carrierMovement.arrivalTime().get() );
+                        estimatedArrivalDate = c.lastHandlingEvent.completionTime().get().plus(duration);
                     }
 
                     nextHandlingEvent.handlingEventType().set( UNLOAD );
@@ -179,7 +181,7 @@ public class AssignCargoToRoute extends Context
 
                 ValueBuilder<Delivery> deliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = deliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.lastHandlingEvent );
                 newDelivery.transportStatus().set( c.transportStatus );
                 newDelivery.isUnloadedAtDestination().set( false );

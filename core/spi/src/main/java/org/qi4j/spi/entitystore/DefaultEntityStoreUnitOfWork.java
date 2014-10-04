@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.entitystore;
 
+import java.time.Instant;
 import java.util.HashMap;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -32,13 +33,13 @@ public final class DefaultEntityStoreUnitOfWork
     private Module module;
     private HashMap<EntityReference, EntityState> states = new HashMap<>();
     private Usecase usecase;
-    private long currentTime;
+    private Instant currentTime;
 
     public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI,
                                          String identity,
                                          Module module,
                                          Usecase usecase,
-                                         long currentTime
+                                         Instant currentTime
     )
     {
         this.entityStoreSPI = entityStoreSPI;
@@ -60,7 +61,7 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     @Override
-    public long currentTime()
+    public Instant currentTime()
     {
         return currentTime;
     }

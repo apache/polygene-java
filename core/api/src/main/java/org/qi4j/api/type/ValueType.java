@@ -40,7 +40,7 @@ public class ValueType
      *     counterparts are considered as Primitive Value Types.
      * </p>
      * <p>
-     *     Date, BigInteger, BigDecimal and JodaTime types are not considered as Primitive Value Types.
+     *     Date, BigInteger, BigDecimal types are not considered as Primitive Value Types.
      * </p>
      *
      * @return true if object is a primitive value or an array of primitive values

@@ -18,7 +18,7 @@
 package org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.parsing.dto;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
@@ -33,9 +33,9 @@ import org.qi4j.sample.dcicargo.sample_b.infrastructure.conversion.DTO;
 @Mixins( ParsedHandlingEventData.Mixin.class )
 public interface ParsedHandlingEventData extends DTO
 {
-    Property<Date> registrationTime();
+    Property<ZonedDateTime> registrationTime();
 
-    Property<Date> completionTime();
+    Property<ZonedDateTime> completionTime();
 
     Property<String> trackingIdString();
 

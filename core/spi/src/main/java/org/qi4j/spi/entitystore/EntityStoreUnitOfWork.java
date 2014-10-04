@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.entitystore;
 
+import java.time.Instant;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityState;
@@ -25,7 +26,7 @@ public interface EntityStoreUnitOfWork
 {
     String identity();
 
-    long currentTime();
+    Instant currentTime();
 
     /**
      * Create new EntityState for a given identity.

@@ -30,7 +30,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -292,11 +291,18 @@ public abstract class AbstractSQLStartup
         this._primitiveTypes.put( Long.class, dt.bigInt() );
         this._primitiveTypes.put( Float.class, dt.real() );
         this._primitiveTypes.put( Double.class, dt.doublePrecision() );
-        this._primitiveTypes.put( Date.class, dt.timeStamp( true ) );
         this._primitiveTypes.put( Character.class, dt.integer() );
         this._primitiveTypes.put( String.class, dt.sqlVarChar( 5000 ) );
         this._primitiveTypes.put( BigInteger.class, dt.decimal() );
         this._primitiveTypes.put( BigDecimal.class, dt.decimal() );
+
+        // TODO - ???
+//        this._primitiveTypes.put( LocalDate.class, dt.timeStamp( true ) );
+//        this._primitiveTypes.put( LocalDateTime.class, dt.timeStamp( true ) );
+//        this._primitiveTypes.put( LocalTime.class, dt.timeStamp( true ) );
+//        this._primitiveTypes.put( OffsetTime.class, dt.timeStamp( true ) );
+//        this._primitiveTypes.put( OffsetDateTime.class, dt.timeStamp( true ) );
+//        this._primitiveTypes.put( ZonedDateTime.class, dt.timeStamp( true ) );
 
         Map<Class<?>, Integer> jdbcTypes = new HashMap<>();
         jdbcTypes.put( Boolean.class, Types.BOOLEAN );
@@ -306,12 +312,19 @@ public abstract class AbstractSQLStartup
         jdbcTypes.put( Long.class, Types.BIGINT );
         jdbcTypes.put( Float.class, Types.REAL );
         jdbcTypes.put( Double.class, Types.DOUBLE );
-        jdbcTypes.put( Date.class, Types.TIMESTAMP );
         jdbcTypes.put( Character.class, Types.INTEGER );
         jdbcTypes.put( String.class, Types.VARCHAR );
         jdbcTypes.put( BigInteger.class, Types.NUMERIC );
         jdbcTypes.put( BigDecimal.class, Types.NUMERIC );
         this._state.javaTypes2SQLTypes().set( jdbcTypes );
+
+        // TODO - ???
+//        jdbcTypes.put( LocalDate.class, Types.TIMESTAMP );
+//        jdbcTypes.put( LocalDateTime.class, Types.TIMESTAMP );
+//        jdbcTypes.put( LocalTime.class, Types.TIMESTAMP );
+//        jdbcTypes.put( OffsetTime.class, Types.TIMESTAMP );
+//        jdbcTypes.put( OffsetDateTime.class, Types.TIMESTAMP );
+//        jdbcTypes.put( ZonedDateTime.class, Types.TIMESTAMP );
 
         this._customizableTypes = new HashMap<>();
         this._customizableTypes.put( //
@@ -361,7 +374,7 @@ public abstract class AbstractSQLStartup
     private static class ApplicationInfo
     {
 
-        private final Map<String, EntityDescriptor> entityDescriptors = new HashMap<>();
+        private final Map<String, EntityDescriptor> entityDescriptors = new HashMap<String, EntityDescriptor>();
 
         private final Set<CompositeDescriptorInfo> usedValueComposites = new HashSet<>();
 
@@ -554,8 +567,19 @@ public abstract class AbstractSQLStartup
                                 .get( ENTITY_PK_TYPE ), false, AutoGenerationPolicy.BY_DEFAULT ) )
                         .addTableElement( d.createColumnDefinition( ENTITY_TABLE_IDENTITY_COLUMN_NAME, this._primitiveTypes
                                 .get( String.class ), false ) )
-                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_MODIFIED_COLUMN_NAME, this._primitiveTypes
-                                .get( Date.class ), false ) )
+// TODO -??
+//                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_MODIFIED_COLUMN_NAME, this._primitiveTypes
+//                                .get( LocalDate.class ), false ) )
+//                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_MODIFIED_COLUMN_NAME, this._primitiveTypes
+//                                .get( LocalDateTime.class ), false ) )
+//                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_MODIFIED_COLUMN_NAME, this._primitiveTypes
+//                                .get( LocalTime.class ), false ) )
+//                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_MODIFIED_COLUMN_NAME, this._primitiveTypes
+//                                .get( OffsetTime.class ), false ) )
+//                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_MODIFIED_COLUMN_NAME, this._primitiveTypes
+//                                .get( OffsetDateTime.class ), false ) )
+//                        .addTableElement( d.createColumnDefinition( ENTITY_TABLE_MODIFIED_COLUMN_NAME, this._primitiveTypes
+//                                .get( ZonedDateTime.class ), false ) )
                         .addTableElement( d.createColumnDefinition( ENTITY_TABLE_VERSION_COLUMN_NAME, this._primitiveTypes
                                 .get( String.class ), false ) )
                         .addTableElement( d.createColumnDefinition( ENTITY_TABLE_APPLICATION_VERSION_COLUMN_NAME, this._primitiveTypes

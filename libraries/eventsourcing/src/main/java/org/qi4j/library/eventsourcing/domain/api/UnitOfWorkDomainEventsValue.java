@@ -17,6 +17,8 @@
 
 package org.qi4j.library.eventsourcing.domain.api;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
@@ -41,7 +43,7 @@ public interface UnitOfWorkDomainEventsValue
     Property<String> usecase();
 
     // When the event occurred
-    Property<Long> timestamp();
+    Property<Instant> timestamp();
 
     // Who performed the event. Taken from CurrentUser service.
     @Optional

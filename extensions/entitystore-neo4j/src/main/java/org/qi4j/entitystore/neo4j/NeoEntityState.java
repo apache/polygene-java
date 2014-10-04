@@ -1,5 +1,6 @@
 package org.qi4j.entitystore.neo4j;
 
+import java.time.Instant;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Node;
@@ -32,7 +33,8 @@ public class NeoEntityState
     private EntityStatus status;
 
     NeoEntityState( ValueSerialization valueSerialization, NeoEntityStoreUnitOfWork work, Node node,
-                    EntityStatus status )
+                    EntityStatus status
+    )
     {
         this.valueSerialization = valueSerialization;
         this.uow = work;
@@ -47,7 +49,7 @@ public class NeoEntityState
             status = EntityStatus.UPDATED;
             Long version = (Long) underlyingNode.getProperty( VERSION );
             underlyingNode.setProperty( VERSION, version + 1 );
-            underlyingNode.setProperty( MODIFIED, uow.currentTime() );
+            underlyingNode.setProperty( MODIFIED, uow.currentTime().toEpochMilli() );
         }
     }
 
@@ -80,7 +82,7 @@ public class NeoEntityState
         underlyingNode.createRelationshipTo( node, namedAssociation );
         return new NeoNamedAssociationState( uow, this, node );
     }
-    
+
     @Override
     public ManyAssociationState manyAssociationValueOf( QualifiedName stateName )
     {
@@ -140,7 +142,8 @@ public class NeoEntityState
     {
         try
         {
-            PropertyDescriptor persistentProperty = entityDescriptor().state().findPropertyModelByQualifiedName( stateName );
+            PropertyDescriptor persistentProperty = entityDescriptor().state()
+                .findPropertyModelByQualifiedName( stateName );
             Object prop = underlyingNode.getProperty( "prop::" + stateName.toString(), null );
             if( prop == null )
             {
@@ -168,7 +171,8 @@ public class NeoEntityState
         {
             if( prop != null )
             {
-                PropertyDescriptor persistentProperty = entityDescriptor().state().findPropertyModelByQualifiedName( stateName );
+                PropertyDescriptor persistentProperty = entityDescriptor().state()
+                    .findPropertyModelByQualifiedName( stateName );
                 if( ValueType.isPrimitiveValueType( persistentProperty.valueType() ) )
                 {
                     underlyingNode.setProperty( "prop::" + stateName.toString(), prop );
@@ -263,10 +267,9 @@ public class NeoEntityState
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
-        long modified = (Long) underlyingNode.getProperty( MODIFIED );
-        return modified;
+        return Instant.ofEpochMilli( (Long) underlyingNode.getProperty( MODIFIED ) );
     }
 
     @Override

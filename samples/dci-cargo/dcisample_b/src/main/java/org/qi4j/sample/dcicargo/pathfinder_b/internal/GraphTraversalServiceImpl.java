@@ -18,9 +18,9 @@
 package org.qi4j.sample.dcicargo.pathfinder_b.internal;
 
 import java.rmi.RemoteException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import org.qi4j.sample.dcicargo.pathfinder_b.api.GraphTraversalService;
@@ -40,7 +40,7 @@ public class GraphTraversalServiceImpl
     }
 
     // Combine existing voyages to create a route.
-    public List<TransitPath> findShortestPath( final Date departureDate,
+    public List<TransitPath> findShortestPath( final ZonedDateTime departureDate,
                                                final String originUnLocode,
                                                final String destinationUnLocode
     )
@@ -54,7 +54,7 @@ public class GraphTraversalServiceImpl
         do
         {
             String expectedDeparture = originUnLocode;
-            Date lastArrivalTime = departureDate;
+            ZonedDateTime lastArrivalTime = departureDate;
 
             // Transit edges (itinerary legs)
             final List<TransitEdge> routeEdges = new ArrayList<TransitEdge>();
@@ -83,13 +83,13 @@ public class GraphTraversalServiceImpl
 
                     final String departure = voyageEdge.getFromUnLocode();
                     final String arrival = voyageEdge.getToUnLocode();
-                    final Date departureTime = voyageEdge.getFromDate();
-                    final Date arrivalTime = voyageEdge.getToDate();
+                    final ZonedDateTime departureTime = voyageEdge.getFromDate();
+                    final ZonedDateTime arrivalTime = voyageEdge.getToDate();
 
                     boolean expectsDeparture = departure.equals( expectedDeparture );
                     boolean uniqueDeparture = !oldDepartures.contains( departure );
                     boolean uniqueArrival = !oldDepartures.contains( arrival );
-                    boolean afterLastArrivalTime = departureTime.after( lastArrivalTime );
+                    boolean afterLastArrivalTime = departureTime.isAfter( lastArrivalTime );
 
                     if( expectsDeparture && uniqueDeparture && uniqueArrival && afterLastArrivalTime )
                     {

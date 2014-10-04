@@ -17,6 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.communication.web.tracking;
 
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -63,7 +64,8 @@ public class HandlingHistoryPanel extends Panel
                 item.add( new WebMarkupContainer( "onTrackIcon" ).add( new AttributeAppender( "src", iconName, "" ) ) );
 
                 // Date
-                item.add( new Label( "completion", new Model<Date>( event.completionTime().get() ) ) );
+                Date completeTime = new Date( event.completionTime().get().toInstant().toEpochMilli() );
+                item.add( new Label( "completion", new Model<Date>( completeTime ) ) );
 
                 // Event description (data substitution in strings from HandlingHistoryPanel.properties)
                 ValueMap map = new ValueMap();

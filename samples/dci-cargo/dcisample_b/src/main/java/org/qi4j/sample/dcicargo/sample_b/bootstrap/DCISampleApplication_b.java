@@ -17,7 +17,6 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.bootstrap;
 
-import java.util.Date;
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.Page;
 import org.apache.wicket.datetime.PatternDateConverter;
@@ -54,9 +53,6 @@ public class DCISampleApplication_b
 
         // Show/hide wicket tags in html code
         getMarkupSettings().setStripWicketTags( true );
-
-        // Default date format (we don't care for now about the hour of the day)
-        ( (ConverterLocator) getConverterLocator() ).set( Date.class, new PatternDateConverter( "yyyy-MM-dd", true ) );
     }
 
     private void mountPages()

@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -248,7 +249,7 @@ public class SQLEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, Instant currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module, usecase, currentTime );
     }
@@ -300,7 +301,7 @@ public class SQLEntityStoreMixin
         Usecase usecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
         final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSPI,
                                                                                    newUnitOfWorkId(), module, usecase,
-                                                                                   System.currentTimeMillis() );
+                                                                                   Instant.now() );
         try
         {
             connection = database.getConnection();
@@ -348,7 +349,7 @@ public class SQLEntityStoreMixin
             EntityStatus status = EntityStatus.LOADED;
 
             String version = jsonObject.getString( JSONKeys.VERSION );
-            long modified = jsonObject.getLong( JSONKeys.MODIFIED );
+            Instant modified = Instant.ofEpochMilli( jsonObject.getLong( JSONKeys.MODIFIED ) );
             String identity = jsonObject.getString( JSONKeys.IDENTITY );
 
             // Check if version is correct
@@ -549,7 +550,7 @@ public class SQLEntityStoreMixin
                 key( JSONKeys.APPLICATION_VERSION ).value( application.version() ).
                 key( JSONKeys.TYPE ).value( first( state.entityDescriptor().types() ).getName() ).
                 key( JSONKeys.VERSION ).value( version ).
-                key( JSONKeys.MODIFIED ).value( state.lastModified() ).
+                key( JSONKeys.MODIFIED ).value( state.lastModified().toEpochMilli() ).
                 key( JSONKeys.PROPERTIES ).object();
 
             for( PropertyDescriptor persistentProperty : state.entityDescriptor().state().properties() )

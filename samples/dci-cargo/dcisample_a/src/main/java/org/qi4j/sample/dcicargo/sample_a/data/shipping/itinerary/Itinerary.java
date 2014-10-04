@@ -17,10 +17,10 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.itinerary;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.constraints.annotation.NotEmpty;
@@ -33,7 +33,7 @@ import org.qi4j.library.constraints.annotation.NotEmpty;
  *
  * List of legs is mandatory and immutable.
  */
-@Mixins( Itinerary.Mixin.class )
+@Mixins(Itinerary.Mixin.class)
 public interface Itinerary
 {
     @NotEmpty
@@ -44,7 +44,7 @@ public interface Itinerary
 
     Leg lastLeg();
 
-    Date finalArrivalDate();
+    ZonedDateTime finalArrivalDate();
 
     int days();
 
@@ -71,21 +71,21 @@ public interface Itinerary
             return legs().get().get( legs().get().size() - 1 );
         }
 
-        public Date finalArrivalDate()
+        public ZonedDateTime finalArrivalDate()
         {
             if( lastLeg() == null )
             {
-                return new Date( new Date( Long.MAX_VALUE ).getTime() );
+                return ZonedDateTime.from( LocalDate.MAX );
             }
 
-            return new Date( lastLeg().unloadTime().get().getTime() );
+            return lastLeg().unloadTime().get();
         }
 
         public int days()
         {
-            Date dep = firstLeg().loadTime().get();
-            Date arr = lastLeg().unloadTime().get();
-            return Days.daysBetween( new LocalDate( dep ), new LocalDate( arr ) ).getDays();
+            ZonedDateTime dep = firstLeg().loadTime().get();
+            ZonedDateTime arr = lastLeg().unloadTime().get();
+            return (int) arr.until( dep, ChronoUnit.DAYS );
         }
     }
 }

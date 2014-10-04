@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.communication.query.dto;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
 import org.qi4j.library.conversion.values.Unqualified;
@@ -36,7 +36,7 @@ import org.qi4j.sample.dcicargo.sample_a.infrastructure.conversion.DTO;
 @Unqualified
 public interface HandlingEventDTO extends DTO
 {
-    Property<Date> completionTime();
+    Property<ZonedDateTime> completionTime();
 
     Property<TrackingId> trackingId();
 

@@ -18,10 +18,20 @@ package org.qi4j.runtime.property;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
@@ -36,7 +46,6 @@ import org.qi4j.test.AbstractQi4jTest;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.joda.time.DateTimeZone.UTC;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -97,13 +106,24 @@ public class PropertyEqualityTest
 
         Property<BigDecimal> bigDecimalProperty();
 
-        Property<Date> dateProperty();
+        Property<OffsetDateTime> offsetDateTimeProperty();
+        Property<OffsetTime> offsetTimeProperty();
 
-        Property<DateTime> dateTimeProperty();
+        Property<ZonedDateTime> zonedDateTimeProperty();
 
         Property<LocalDate> localDateProperty();
-
         Property<LocalDateTime> localDateTimeProperty();
+        Property<LocalTime> localTimeProperty();
+
+        Property<Instant> timeInstantProperty();
+        Property<Period> timePeriodProperty();
+        Property<Duration> timeDurationProperty();
+
+        Property<MonthDay> monthDayProperty();
+        Property<YearMonth> yearMonthProperty();
+        Property<Year> yearProperty();
+        Property<ZoneId> zoneIdProperty();
+        Property<ZoneOffset> zoneOffsetProperty();
     }
 
     public interface AnotherSome
@@ -330,10 +350,7 @@ public class PropertyEqualityTest
             builder.prototype().enumProperty().set( AnEnum.BAZAR );
             builder.prototype().bigIntegerProperty().set( new BigInteger( "42" ) );
             builder.prototype().bigDecimalProperty().set( new BigDecimal( "42.23" ) );
-            builder.prototype().dateProperty().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
-            builder.prototype().dateTimeProperty().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
-            builder.prototype().localDateProperty().set( new LocalDate( "2020-03-04" ) );
-            builder.prototype().localDateTimeProperty().set( new LocalDateTime( "2020-03-04T13:23:00", UTC ) );
+            establihDateTimes( builder );
             some = builder.newInstance();
         }
         return some;
@@ -356,10 +373,7 @@ public class PropertyEqualityTest
             builder.prototype().enumProperty().set( AnEnum.CATHEDRAL );
             builder.prototype().bigIntegerProperty().set( new BigInteger( "23" ) );
             builder.prototype().bigDecimalProperty().set( new BigDecimal( "23.42" ) );
-            builder.prototype().dateProperty().set( new DateTime( "2030-02-08T09:09:09", UTC ).toDate() );
-            builder.prototype().dateTimeProperty().set( new DateTime( "2030-02-08T09:09:09", UTC ) );
-            builder.prototype().localDateProperty().set( new LocalDate( "2030-02-08" ) );
-            builder.prototype().localDateTimeProperty().set( new LocalDateTime( "2030-02-08T09:09:09", UTC ) );
+            establihDateTimes( builder );
             some = builder.newInstance();
         }
         return some;
@@ -382,10 +396,7 @@ public class PropertyEqualityTest
             builder.prototype().enumProperty().set( AnEnum.BAZAR );
             builder.prototype().bigIntegerProperty().set( new BigInteger( "42" ) );
             builder.prototype().bigDecimalProperty().set( new BigDecimal( "42.23" ) );
-            builder.prototype().dateProperty().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
-            builder.prototype().dateTimeProperty().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
-            builder.prototype().localDateProperty().set( new LocalDate( "2020-03-04" ) );
-            builder.prototype().localDateTimeProperty().set( new LocalDateTime( "2020-03-04T13:23:00", UTC ) );
+            establihDateTimes( builder );
             anotherSome = builder.newInstance();
         }
         return anotherSome;
@@ -408,10 +419,7 @@ public class PropertyEqualityTest
             builder.prototype().enumProperty().set( AnEnum.CATHEDRAL );
             builder.prototype().bigIntegerProperty().set( new BigInteger( "23" ) );
             builder.prototype().bigDecimalProperty().set( new BigDecimal( "23.42" ) );
-            builder.prototype().dateProperty().set( new DateTime( "2030-02-08T09:09:09", UTC ).toDate() );
-            builder.prototype().dateTimeProperty().set( new DateTime( "2030-02-08T09:09:09", UTC ) );
-            builder.prototype().localDateProperty().set( new LocalDate( "2030-02-08" ) );
-            builder.prototype().localDateTimeProperty().set( new LocalDateTime( "2030-02-08T09:09:09", UTC ) );
+            establihDateTimes( builder );
             anotherSome = builder.newInstance();
         }
         return anotherSome;
@@ -426,5 +434,23 @@ public class PropertyEqualityTest
             other = builder.newInstance();
         }
         return other;
+    }
+
+    private static void establihDateTimes( ValueBuilder<? extends Some> builder )
+    {
+        builder.prototype().offsetDateTimeProperty().set( OffsetDateTime.parse( "2020-03-04T13:24:35+01:00" ) );
+        builder.prototype().offsetTimeProperty().set( OffsetTime.parse( "13:24:35+01:00" ) );
+        builder.prototype().zonedDateTimeProperty().set( ZonedDateTime.parse( "2020-03-04T13:24:35Z" ) );
+        builder.prototype().localDateProperty().set( LocalDate.parse( "2020-03-04" ) );
+        builder.prototype().localDateTimeProperty().set( LocalDateTime.parse( "2020-03-04T13:23:00" ) );
+        builder.prototype().localTimeProperty().set( LocalTime.parse( "13:23:00" ) );
+        builder.prototype().yearProperty().set( Year.parse( "2020" ) );
+        builder.prototype().yearMonthProperty().set( YearMonth.parse( "2020-03" ) );
+        builder.prototype().monthDayProperty().set( MonthDay.parse( "--03-04" ) );
+        builder.prototype().zoneIdProperty().set( ZoneId.of( "Asia/Kuala_Lumpur" ) );
+        builder.prototype().zoneOffsetProperty().set( ZoneOffset.of( "+02:00" ) );
+        builder.prototype().timePeriodProperty().set( Period.parse( "P3y4w" ) );
+        builder.prototype().timeInstantProperty().set( Instant.parse( "2020-03-04T13:24:35Z" ) );
+        builder.prototype().timeDurationProperty().set( Duration.parse( "P3DT4H" ) );
     }
 }

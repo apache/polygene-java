@@ -17,6 +17,7 @@
  */
 package org.qi4j.runtime.unitofwork;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -74,7 +75,7 @@ public final class UnitOfWorkInstance
         return current.get();
     }
 
-    private long currentTime;
+    private Instant currentTime;
     private MetricsProvider metrics;
     final HashMap<EntityReference, EntityInstance> instanceCache;
     final HashMap<EntityStore, EntityStoreUnitOfWork> storeUnitOfWork;
@@ -92,7 +93,7 @@ public final class UnitOfWorkInstance
 
     private List<UnitOfWorkCallback> callbacks;
 
-    public UnitOfWorkInstance( Usecase usecase, long currentTime, MetricsProvider metrics )
+    public UnitOfWorkInstance( Usecase usecase, Instant currentTime, MetricsProvider metrics )
     {
         this.currentTime = currentTime;
         this.open = true;
@@ -104,7 +105,7 @@ public final class UnitOfWorkInstance
         startCapture( metrics );
     }
 
-    public long currentTime()
+    public Instant currentTime()
     {
         return currentTime;
     }

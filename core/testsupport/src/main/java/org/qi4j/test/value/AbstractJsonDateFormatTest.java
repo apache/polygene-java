@@ -17,16 +17,16 @@
  */
 package org.qi4j.test.value;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.type.CollectionType;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.value.ValueDeserializer;
+import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
@@ -41,7 +41,7 @@ public class AbstractJsonDateFormatTest
     extends AbstractQi4jTest
 {
 
-    private final ValueType dateType = new ValueType( Date.class );
+    private final ValueType dateType = new ValueType( ZonedDateTime.class );
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -62,27 +62,25 @@ public class AbstractJsonDateFormatTest
         throws Exception
     {
         CollectionType collectionType = new CollectionType( List.class, dateType );
-        List<Date> value = valueDeserializer.deserialize( collectionType, "[\"2009-08-12T14:54:27.895+0800\"]" );
-        assertEquals( new DateTime( "2009-08-12T06:54:27.895Z", DateTimeZone.UTC ).toDate(), value.get( 0 ) );
+        List<ZonedDateTime> value = valueDeserializer.deserialize( collectionType, "[\"2009-08-12T14:54:27.895+08:00\"]" );
+        assertEquals( ZonedDateTime.parse( "2009-08-12T06:54:27.895Z" ).toInstant(), value.get( 0 ).toInstant() );
     }
 
-    @Test
+    @Test( expected = ValueSerializationException.class)
     public void givenAtDateFormatWhenConvertingFromSerializedStateExpectValidDate()
         throws Exception
     {
-        long tstamp = System.currentTimeMillis();
+        Instant tstamp = Instant.now();
         CollectionType collectionType = new CollectionType( List.class, dateType );
-        List<Date> value = valueDeserializer.deserialize( collectionType, "[\"@" + tstamp + "@\"]" );
-        assertEquals( new Date( tstamp ), value.get( 0 ) );
+        List<Instant> value = valueDeserializer.deserialize( collectionType, "[\"@" + tstamp + "@\"]" );
     }
 
-    @Test
+    @Test( expected = ValueSerializationException.class)
     public void givenMicrosoftDateFormatWhenConvertingFromSerializedStateExpectValidDate()
         throws Exception
     {
-        long tstamp = System.currentTimeMillis();
+        Instant tstamp = Instant.now();
         CollectionType collectionType = new CollectionType( List.class, dateType );
-        List<Date> value = valueDeserializer.deserialize( collectionType, "[\"/Date(" + tstamp + ")/\"]" );
-        assertEquals( new Date( tstamp ), value.get( 0 ) );
+        List<Instant> value = valueDeserializer.deserialize( collectionType, "[\"/Date(" + tstamp + ")/\"]" );
     }
 }

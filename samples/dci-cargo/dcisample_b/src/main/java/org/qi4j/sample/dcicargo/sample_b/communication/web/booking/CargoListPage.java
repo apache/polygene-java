@@ -72,7 +72,7 @@ public class CargoListPage extends BookingBasePage
                 // Route specification
                 RouteSpecification routeSpec = cargo.routeSpecification().get();
                 String destination = routeSpec.destination().get().getCode();
-                Date deadline = routeSpec.arrivalDeadline().get();
+                Date deadline = new Date( routeSpec.arrivalDeadline().get().toInstant().toEpochMilli() );
 
                 // Routing status
                 Delivery delivery = cargo.delivery().get();

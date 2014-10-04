@@ -65,7 +65,10 @@ public class HandlingHistoryPanel extends Panel
                 item.add( new WebMarkupContainer( "onTrackIcon" ).add( new AttributeAppender( "src", iconName, "" ) ) );
 
                 // Date
-                item.add( new Label( "completion", new Model<Date>( event.completionTime().get() ) ) );
+                item.add( new Label( "completion", new Model<Date>( new Date( event.completionTime()
+                                                                                  .get()
+                                                                                  .toInstant()
+                                                                                  .toEpochMilli() ) ) ) );
 
                 // Event description (data substitution in strings from HandlingHistoryPanel.properties)
                 ValueMap map = new ValueMap();

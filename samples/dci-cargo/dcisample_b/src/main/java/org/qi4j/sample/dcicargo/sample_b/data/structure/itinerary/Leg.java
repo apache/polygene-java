@@ -17,7 +17,8 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.data.structure.itinerary;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
@@ -36,11 +37,11 @@ public interface Leg
 {
     Association<Location> loadLocation();
 
-    Property<Date> loadTime();
+    Property<ZonedDateTime> loadTime();
 
     Association<Voyage> voyage();
 
-    Property<Date> unloadTime();
+    Property<ZonedDateTime> unloadTime();
 
     Association<Location> unloadLocation();
 }

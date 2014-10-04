@@ -17,10 +17,11 @@
  */
 package org.qi4j.sample.dcicargo.pathfinder_b.internal;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import org.qi4j.sample.dcicargo.pathfinder_b.api.TransitEdge;
@@ -50,7 +51,7 @@ public class GraphDAO
             return voyages;
         }
 
-        Date departureDate = new Date();
+        ZonedDateTime departureDate = ZonedDateTime.now();
         for( int i = 0; i < 50; i++ )
         {
             List<String> locations = getRandomChunkOfLocations( listLocations() );
@@ -61,9 +62,9 @@ public class GraphDAO
             String from = locations.remove( 0 );
             String destination = locations.remove( 0 );
 
-            Date date = nextDate( departureDate );
-            Date fromDate;
-            Date toDate;
+            ZonedDateTime date = nextDate( departureDate );
+            ZonedDateTime fromDate;
+            ZonedDateTime toDate;
 
             // Carrier movements
             for( final String to : locations )
@@ -92,9 +93,9 @@ public class GraphDAO
         return voyages;
     }
 
-    private Date nextDate( Date date )
+    private ZonedDateTime nextDate( ZonedDateTime date )
     {
-        return new Date( date.getTime() + ONE_DAY_MS + ( random.nextInt( 1000 ) - 500 ) * ONE_MIN_MS );
+        return date.plusDays( 1 + random.nextInt( 30 ) );
     }
 
     private List<String> getRandomChunkOfLocations( List<String> allLocations )

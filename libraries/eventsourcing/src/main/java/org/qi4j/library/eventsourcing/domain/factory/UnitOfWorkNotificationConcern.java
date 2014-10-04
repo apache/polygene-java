@@ -18,6 +18,7 @@
 package org.qi4j.library.eventsourcing.domain.factory;
 
 import java.io.IOException;
+import java.time.Instant;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityComposite;
@@ -111,7 +112,7 @@ public class UnitOfWorkNotificationConcern
 
                         ValueBuilder<UnitOfWorkDomainEventsValue> builder = vbf.newValueBuilder( UnitOfWorkDomainEventsValue.class );
                         builder.prototype().user().set( user );
-                        builder.prototype().timestamp().set( System.currentTimeMillis() );
+                        builder.prototype().timestamp().set( Instant.now() );
                         builder.prototype().usecase().set( unitOfWork.usecase().name() );
                         builder.prototype().version().set( version );
                         builder.prototype().events().get().addAll( events.getEventValues() );

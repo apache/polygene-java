@@ -76,7 +76,7 @@ public class BookNewCargoTest extends TestApplication
     {
         deviation_2a_OriginAndDestinationSame();
         thrown.expect( CannotCreateRouteSpecificationException.class, "Arrival deadline is in the past or Today." );
-        new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( -1 ) ).getTrackingId();
+        new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, TODAY.minusDays( 1 ) ).getTrackingId();
     }
 
     @Test
@@ -85,7 +85,7 @@ public class BookNewCargoTest extends TestApplication
     {
         deviation_2b_DeadlineInThePastNotAccepted();
         thrown.expect( CannotCreateRouteSpecificationException.class, "Arrival deadline is in the past or Today." );
-        new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, day( 0 ) ).getTrackingId();
+        new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, TODAY ).getTrackingId();
     }
 
     @Test

@@ -18,7 +18,7 @@
 
 package org.qi4j.sample.rental.domain;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
@@ -37,10 +37,10 @@ public interface Car
     Association<CarCategory> category();
 
     @Optional
-    Property<Date> purchasedDate();
+    Property<ZonedDateTime> purchasedDate();
 
     @Optional
-    Property<Date> soldDate();
+    Property<ZonedDateTime> soldDate();
 
     Booking currentBooking();
 

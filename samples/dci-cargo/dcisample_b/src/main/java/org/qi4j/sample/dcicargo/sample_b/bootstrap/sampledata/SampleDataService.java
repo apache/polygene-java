@@ -17,14 +17,12 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.bootstrap.sampledata;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Service;
@@ -133,7 +131,7 @@ public interface SampleDataService
                     routeSpec.print();
 
                     NextHandlingEvent nextEvent = null;
-                    Date time = null;
+                    ZonedDateTime time = null;
                     String port = null;
                     String voyageNumber = null;
                     Voyage voyage;
@@ -168,8 +166,7 @@ public interface SampleDataService
                         }
 
                         final RouteSpecification unsatisfiedRouteSpec =
-                            routeSpecFactory.build( origin, badDest, new Date(), new DateTime().plusDays( 25 )
-                                .toDate() );
+                            routeSpecFactory.build( origin, badDest, ZonedDateTime.now(), ZonedDateTime.now().plusDays( 25 ) );
                         cargo.routeSpecification().set( unsatisfiedRouteSpec );
 
                         new InspectUnhandledCargo( cargo ).inspect();
@@ -180,7 +177,7 @@ public interface SampleDataService
                     {
                         nextEvent = cargo.delivery().get().nextHandlingEvent().get();
                         port = nextEvent.location().get().getCode();
-                        final Date mockTime = new Date();
+                        final ZonedDateTime mockTime = ZonedDateTime.now();
                         registerEvent( mockTime, mockTime, trackingId, RECEIVE, port, null );
                     }
 
@@ -358,7 +355,7 @@ public interface SampleDataService
             Location origin;
             Location destination;
             Random random = new Random();
-            Date deadline;
+            ZonedDateTime deadline;
             String uuid;
             String id;
             try
@@ -374,9 +371,7 @@ public interface SampleDataService
                     }
                     while( destination.equals( origin ) );
 
-                    deadline = new LocalDate().plusDays( 35 + random.nextInt( 10 ) )
-                        .toDateTime( new LocalTime() )
-                        .toDate();
+                    deadline = ZonedDateTime.now().plusDays( 35 + random.nextInt( 10 ) );
 
                     // Build sortable random tracking ids
                     uuid = UUID.randomUUID().toString().toUpperCase();
@@ -393,8 +388,8 @@ public interface SampleDataService
             }
         }
 
-        private void registerEvent( Date registrationTime,
-                                    Date completionTime,
+        private void registerEvent( ZonedDateTime registrationTime,
+                                    ZonedDateTime completionTime,
                                     String trackingIdString,
                                     HandlingEventType handlingEventType,
                                     String unLocodeString,

@@ -21,6 +21,7 @@ package org.qi4j.entitystore.gae;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Text;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,7 +61,8 @@ public class GaeEntityState
                            ValueSerialization valueSerialization,
                            Key key,
                            EntityDescriptor descriptor,
-                           Module module )
+                           Module module
+    )
     {
         System.out.println( "GaeEntityState( " + unitOfWork + ", " + key + ", " + descriptor + " )" );
         this.module = module;
@@ -84,7 +86,8 @@ public class GaeEntityState
     public GaeEntityState( GaeEntityStoreUnitOfWork unitOfWork,
                            ValueSerialization valueSerialization,
                            Entity entity,
-                           Module module )
+                           Module module
+    )
     {
         System.out.println( "GaeEntityState( " + unitOfWork + ", " + entity + " )" );
         if( entity == null )
@@ -143,9 +146,9 @@ public class GaeEntityState
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
-        Long lastModified = (Long) entity.getProperty( "$lastModified" );
+        Instant lastModified = Instant.ofEpochMilli( (Long) entity.getProperty( "$lastModified" ) );
         System.out.println( "lastModified()  -->  " + lastModified );
         return lastModified;
     }
@@ -438,7 +441,6 @@ public class GaeEntityState
         {
             return toList( assocs.keySet() ).iterator();
         }
-
     }
 
     private void markUpdated()

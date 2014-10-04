@@ -60,7 +60,7 @@ public class RegisterNewDestinationTest extends TestApplication
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, TODAY, deadline = DAY24 );
-        delivery = delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, leg1 );
+        delivery = delivery( TODAY.toInstant(), NOT_RECEIVED, NOT_ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "ABC" );
         trackingId = cargo.trackingId().get();
         delivery = cargo.delivery().get();
@@ -70,7 +70,7 @@ public class RegisterNewDestinationTest extends TestApplication
     public void precondition_x1_CannotChangeDestinationOfClaimedCargo()
         throws Exception
     {
-        cargo.delivery().set( delivery( DAY1, CLAIMED, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( DAY1.toInstant(), CLAIMED, ROUTED, leg1 ) );
         thrown.expect( ChangeDestinationException.class, "Can't change destination of claimed cargo" );
         new RegisterNewDestination( cargo ).to( "USCHI" );
     }
@@ -81,7 +81,7 @@ public class RegisterNewDestinationTest extends TestApplication
     {
         precondition_x1_CannotChangeDestinationOfClaimedCargo();
 
-        cargo.delivery().set( delivery( DAY1, IN_PORT, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( DAY1.toInstant(), IN_PORT, ROUTED, leg1 ) );
         thrown.expect( ChangeDestinationException.class, "Didn't recognize location 'XXXXX'" );
         new RegisterNewDestination( cargo ).to( "XXXXX" );
     }
@@ -92,7 +92,7 @@ public class RegisterNewDestinationTest extends TestApplication
     {
         deviation_1a_UnrecognizedLocation();
 
-        cargo.delivery().set( delivery( DAY1, IN_PORT, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( DAY1.toInstant(), IN_PORT, ROUTED, leg1 ) );
         thrown.expect( ChangeDestinationException.class, "New destination is same as old destination." );
         new RegisterNewDestination( cargo ).to( "SESTO" );
     }
@@ -104,7 +104,7 @@ public class RegisterNewDestinationTest extends TestApplication
         deviation_1b_NewDestinationSameAsOldDestination();
 
         cargo.routeSpecification().set( routeSpec );
-        cargo.delivery().set( delivery( DAY1, NOT_RECEIVED, NOT_ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( DAY1.toInstant(), NOT_RECEIVED, NOT_ROUTED, leg1 ) );
 
         assertRouteSpec( HONGKONG, STOCKHOLM, TODAY, DAY24 );
         assertDelivery( null, null, null, null,

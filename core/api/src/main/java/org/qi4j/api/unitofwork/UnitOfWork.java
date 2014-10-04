@@ -15,6 +15,7 @@
  */
 package org.qi4j.api.unitofwork;
 
+import java.time.Instant;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.query.Query;
@@ -85,7 +86,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      */
     UnitOfWorkFactory unitOfWorkFactory();
 
-    long currentTime();
+    Instant currentTime();
 
     /**
      * Get the Usecase for this UnitOfWork

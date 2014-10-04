@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.registration;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.query.Query;
@@ -65,8 +65,8 @@ public class RegisterHandlingEventTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
-        delivery = delivery( TODAY, NOT_RECEIVED, ROUTED, unknownLeg );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, ZonedDateTime.now(), deadline = DAY24 );
+        delivery = delivery( TODAY.toInstant(), NOT_RECEIVED, ROUTED, unknownLeg );
         cargo = CARGOS.createCargo( routeSpec, delivery, "ABC" );
         cargo.itinerary().set( itinerary );
         trackingId = cargo.trackingId().get();

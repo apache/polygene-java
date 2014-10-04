@@ -18,7 +18,7 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
-import org.joda.time.DateTime;
+import java.time.Instant;
 import org.qi4j.api.unitofwork.concern.UnitOfWorkPropagation;
 
 /**
@@ -57,17 +57,6 @@ public interface Timeline
      */
     @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
 // START SNIPPET: timeline
-    Iterable<TimelineRecord> getRecords( DateTime from, DateTime to );
-// END SNIPPET: timeline
-
-    /**
-     * @param from Lower limit
-     * @param to   Upper limit
-     *
-     * @return Records between the given dates
-     */
-    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
-// START SNIPPET: timeline
-    Iterable<TimelineRecord> getRecords( long from, long to );
+    Iterable<TimelineRecord> getRecords( Instant from, Instant to );
 }
 // END SNIPPET: timeline

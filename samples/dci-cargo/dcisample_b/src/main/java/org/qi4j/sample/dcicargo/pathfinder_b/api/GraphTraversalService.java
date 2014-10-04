@@ -19,7 +19,8 @@ package org.qi4j.sample.dcicargo.pathfinder_b.api;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public interface GraphTraversalService extends Remote
      *
      * @throws RemoteException RMI problem
      */
-    List<TransitPath> findShortestPath( Date departureDate, String originUnLocode, String destinationUnLocode )
+    List<TransitPath> findShortestPath( ZonedDateTime departureDate, String originUnLocode, String destinationUnLocode )
         throws RemoteException;
 
     List<TransitPath> getVoyages()

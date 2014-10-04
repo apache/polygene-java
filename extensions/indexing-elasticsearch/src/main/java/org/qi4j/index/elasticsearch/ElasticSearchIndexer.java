@@ -17,6 +17,7 @@
  */
 package org.qi4j.index.elasticsearch;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -98,7 +99,7 @@ public interface ElasticSearchIndexer
             EntityStoreUnitOfWork uow = entityStore.newUnitOfWork(
                 UsecaseBuilder.newUsecase( "Load associations for indexing" ),
                 module,
-                System.currentTimeMillis()
+                Instant.now()
             );
 
             // Bulk index request builder

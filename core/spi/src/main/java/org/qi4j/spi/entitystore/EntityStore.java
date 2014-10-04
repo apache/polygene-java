@@ -16,6 +16,7 @@
  */
 package org.qi4j.spi.entitystore;
 
+import java.time.Instant;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.io.Input;
@@ -26,7 +27,7 @@ import org.qi4j.spi.entity.EntityState;
  */
 public interface EntityStore
 {
-    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime );
+    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, Instant currentTime );
 
     Input<EntityState, EntityStoreException> entityStates( Module module );
 }

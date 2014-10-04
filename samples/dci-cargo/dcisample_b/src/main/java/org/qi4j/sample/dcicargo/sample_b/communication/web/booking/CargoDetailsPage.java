@@ -161,14 +161,16 @@ public class CargoDetailsPage extends BookingBasePage
                     Leg leg = item.getModelObject();
 
                     item.add( new Label( "loadLocation", leg.loadLocation().get().getCode() ) );
-                    item.add( new Label( "loadTime", new Model<Date>( leg.loadTime().get() ) ) );
+                    Date loadTime = new Date( leg.loadTime().get().toInstant().toEpochMilli() );
+                    item.add( new Label( "loadTime", new Model<Date>( loadTime ) ) );
                     item.add( new Label( "voyage", leg.voyage().get().voyageNumber().get().number().get() ) );
 
                     Boolean isMisrouted = routingStatus == MISROUTED && item.getIndex() == ( getList().size() - 1 );
                     item.add( new Label( "unloadLocation", leg.unloadLocation().get().getCode() )
                                   .add( new ErrorColor( isMisrouted ) ) );
 
-                    item.add( new Label( "unloadTime", new Model<Date>( leg.unloadTime().get() ) ) );
+                    Date unloadTime = new Date( leg.unloadTime().get().toInstant().toEpochMilli() );
+                    item.add( new Label( "unloadTime", new Model<Date>( unloadTime ) ) );
                 }
             } );
         }

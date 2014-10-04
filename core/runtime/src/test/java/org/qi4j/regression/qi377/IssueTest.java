@@ -19,6 +19,9 @@ package org.qi4j.regression.qi377;
 
 import org.junit.Test;
 import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.composite.TransientBuilder;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -35,7 +38,7 @@ public class IssueTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.transients( TeamMember.class );
+        module.transients( TeamMember.class, Company.class );
     }
 
     @Test
@@ -51,6 +54,20 @@ public class IssueTest
         assertThat( m.name().get(), equalTo( "Paul" ) );
         assertThat( e.name().get(), equalTo( "Paul" ) );
         assertThat( p.name().get(), equalTo( "Paul" ) );
+    }
+
+    @Test
+    public void propertyPrivateMixinIsolationShouldWork()
+    {
+        TransientBuilder<Company> builder = module.newTransientBuilder( Company.class );
+        Person ceo = builder.prototypeFor( Person.class );
+        ceo.name().set( "Niclas" );
+        Employee secretary = builder.prototypeFor( Employee.class );
+        secretary.name().set( "Babe" );
+        Company company = builder.newInstance();
+
+        assertThat( company.secretaryName(), equalTo( "Babe" ) );
+        assertThat( company.ceoName(), equalTo( "Niclas" ) );
     }
 
     public interface Person
@@ -70,4 +87,33 @@ public class IssueTest
     {
     }
 
+    @Mixins( Company.Impl.class )
+    public interface Company
+    {
+        String ceoName();
+
+        String secretaryName();
+
+        public abstract class Impl
+            implements Company
+        {
+            @This
+            Person ceo;
+
+            @This
+            Employee sectretary;
+
+            @Override
+            public String ceoName()
+            {
+                return ceo.name().get();
+            }
+
+            @Override
+            public String secretaryName()
+            {
+                return sectretary.name().get();
+            }
+        }
+    }
 }

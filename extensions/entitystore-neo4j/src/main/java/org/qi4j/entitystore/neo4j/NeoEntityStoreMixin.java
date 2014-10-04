@@ -1,6 +1,7 @@
 package org.qi4j.entitystore.neo4j;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.neo4j.graphdb.Direction;
@@ -74,7 +75,7 @@ public class NeoEntityStoreMixin
    }
 
     @Override
-   public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
+   public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, Instant currentTime )
    {
       return new NeoEntityStoreUnitOfWork(neo, indexService, valueSerialization, newUnitOfWorkId(), module, currentTime);
    }
@@ -92,7 +93,7 @@ public class NeoEntityStoreMixin
                @Override
                public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super EntityState, ReceiverThrowableType> receiver) throws ReceiverThrowableType, EntityStoreException
                {
-                  NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork(neo, indexService, valueSerialization, newUnitOfWorkId(), module, System.currentTimeMillis());
+                  NeoEntityStoreUnitOfWork uow = new NeoEntityStoreUnitOfWork(neo, indexService, valueSerialization, newUnitOfWorkId(), module, Instant.now());
 
                   try
                   {

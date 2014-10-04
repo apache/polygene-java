@@ -17,7 +17,7 @@
  */
 package org.qi4j.library.alarm;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Locale;
 import org.junit.Test;
@@ -355,7 +355,7 @@ public class SimpleAlarmModelTest
         ValueBuilder<AlarmStatus> builder = module.newValueBuilder( AlarmStatus.class );
         AlarmStatus.State statePrototype = builder.prototypeFor( AlarmStatus.State.class );
         statePrototype.name().set( status );
-        statePrototype.creationDate().set( new Date() );
+        statePrototype.creationDate().set( ZonedDateTime.now() );
         return builder.newInstance();
     }
 }

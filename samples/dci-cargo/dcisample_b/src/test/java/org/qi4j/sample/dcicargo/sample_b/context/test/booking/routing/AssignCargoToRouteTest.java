@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.booking.routing;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -60,8 +60,8 @@ public class AssignCargoToRouteTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
-        delivery = delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, unknownLeg );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, ZonedDateTime.now(), deadline = DAY24 );
+        delivery = delivery( TODAY.toInstant(), NOT_RECEIVED, NOT_ROUTED, unknownLeg );
         cargo = CARGOS.createCargo( routeSpec, delivery, "ABC" );
         trackingId = cargo.trackingId().get();
         delivery = cargo.delivery().get();
@@ -71,7 +71,7 @@ public class AssignCargoToRouteTest extends TestApplication
     public void precondition_x1_CannotReRouteClaimedCargo()
         throws Exception
     {
-        cargo.delivery().set( delivery( TODAY, CLAIMED, ROUTED, unknownLeg ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), CLAIMED, ROUTED, unknownLeg ) );
         thrown.expect( RoutingException.class, "Can't re-route claimed cargo" );
         new AssignCargoToRoute( cargo, itinerary ).assign();
     }
@@ -82,7 +82,7 @@ public class AssignCargoToRouteTest extends TestApplication
     {
         precondition_x1_CannotReRouteClaimedCargo();
 
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, unknownLeg ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, NOT_ROUTED, unknownLeg ) );
         thrown.expect( UnsatisfyingRouteException.class, "Route specification was not satisfied with itinerary" );
         new AssignCargoToRoute( cargo, wrongItinerary ).assign();
     }
@@ -93,7 +93,7 @@ public class AssignCargoToRouteTest extends TestApplication
     {
         deviation_1a_UnsatisfyingItinerary();
 
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, unknownLeg ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, NOT_ROUTED, unknownLeg ) );
         new AssignCargoToRoute( cargo, itinerary ).assign();
         assertDelivery( null, null, null, null,
                         NOT_RECEIVED, notArrived,

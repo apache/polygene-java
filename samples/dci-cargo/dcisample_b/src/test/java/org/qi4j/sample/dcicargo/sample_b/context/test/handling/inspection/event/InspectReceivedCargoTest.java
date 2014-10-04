@@ -59,7 +59,7 @@ public class InspectReceivedCargoTest extends TestApplication
 
         // Create new cargo
         routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, TODAY, deadline = DAY24 );
-        delivery = delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, unknownLeg );
+        delivery = delivery( TODAY.toInstant(), NOT_RECEIVED, NOT_ROUTED, unknownLeg );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Received_CARGO" );
         trackingId = cargo.trackingId().get();
     }
@@ -93,7 +93,7 @@ public class InspectReceivedCargoTest extends TestApplication
     {
         // Cargo not routed
         cargo.itinerary().set( null );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, NOT_ROUTED, leg1 ) );
 
         // Receive cargo in Hong Kong (without an itinerary!)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, HONGKONG, noVoyage );
@@ -112,7 +112,7 @@ public class InspectReceivedCargoTest extends TestApplication
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, MISROUTED, unknownLeg ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, MISROUTED, unknownLeg ) );
 
         assertDelivery( null, null, null, null,
                         NOT_RECEIVED, notArrived,
@@ -135,7 +135,7 @@ public class InspectReceivedCargoTest extends TestApplication
         throws Exception
     {
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, MISROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, MISROUTED, leg1 ) );
 
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, NEWYORK, noVoyage );
 
@@ -153,7 +153,7 @@ public class InspectReceivedCargoTest extends TestApplication
         throws Exception
     {
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, MISROUTED, unknownLeg ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, MISROUTED, unknownLeg ) );
 
         assertDelivery( null, null, null, null,
                         NOT_RECEIVED, notArrived,
@@ -177,7 +177,7 @@ public class InspectReceivedCargoTest extends TestApplication
         throws Exception
     {
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, MISROUTED, unknownLeg ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, MISROUTED, unknownLeg ) );
 
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, HANGZHOU, noVoyage );
 
@@ -195,7 +195,7 @@ public class InspectReceivedCargoTest extends TestApplication
         throws Exception
     {
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, ROUTED, leg1 ) );
 
         assertDelivery( null, null, null, null,
                         NOT_RECEIVED, notArrived,
@@ -227,7 +227,7 @@ public class InspectReceivedCargoTest extends TestApplication
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, ROUTED, leg1 ) );
 
         // Receipt in cargo/routeSpec destination = no transportation.
         // This must be a unintended booking. Cargo owner should be notified.
@@ -252,7 +252,7 @@ public class InspectReceivedCargoTest extends TestApplication
         throws Exception
     {
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, ROUTED, leg1 ) );
 
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, HANGZHOU, noVoyage );
         thrown.expect( CargoMisdirectedException.class, "MISDIRECTED! Itinerary expected receipt in Hongkong (CNHKG)" );
@@ -264,7 +264,7 @@ public class InspectReceivedCargoTest extends TestApplication
         throws Exception
     {
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, ROUTED, leg1 ) );
 
         // Receive cargo as planned in origin
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, HONGKONG, noVoyage );

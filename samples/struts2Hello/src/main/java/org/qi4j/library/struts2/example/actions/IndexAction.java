@@ -20,11 +20,10 @@ package org.qi4j.library.struts2.example.actions;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.conversion.annotations.Conversion;
 import com.opensymphony.xwork2.conversion.annotations.TypeConversion;
+import java.time.Instant;
 import org.apache.struts2.config.Result;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.structure.Module;
-
-import java.util.Date;
 
 @Conversion
 @Result( value = "/jsp/index.jsp" )
@@ -37,15 +36,15 @@ public class IndexAction
     @Structure
     private Module module;
 
-    private Date now;
+    private Instant now;
 
     public IndexAction()
     {
-        now = new Date();
+        now = Instant.now();
     }
 
     @TypeConversion( converter = "org.qi4j.library.struts2.example.converters.DateConverter" )
-    public Date getDateNow()
+    public Instant getDateNow()
     {
         return now;
     }
@@ -59,7 +58,7 @@ public class IndexAction
     public String execute()
         throws Exception
     {
-        now = new Date();
+        now = Instant.now();
         return SUCCESS;
     }
 }

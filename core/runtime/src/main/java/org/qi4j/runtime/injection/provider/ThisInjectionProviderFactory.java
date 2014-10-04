@@ -91,6 +91,7 @@ public final class ThisInjectionProviderFactory
                 }
 
                 proxyConstructor = proxyClass.getConstructor( InvocationHandler.class );
+                proxyConstructor.setAccessible( true );
             }
             catch( Exception e )
             {

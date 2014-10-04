@@ -17,6 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.communication.web.booking;
 
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 import org.apache.wicket.AttributeModifier;
@@ -140,14 +141,14 @@ public class CargoDetailsPage extends BookingBasePage
                     Leg leg = item.getModelObject();
 
                     item.add( new Label( "loadLocation", leg.loadLocation().get().getCode() ) );
-                    item.add( new Label( "loadTime", new Model<Date>( leg.loadTime().get() ) ) );
+                    item.add( new Label( "loadTime", new Model<Date>( new Date( leg.loadTime().get().toInstant().toEpochMilli() )) ) );
                     item.add( new Label( "voyage", leg.voyage().get().voyageNumber().get().number().get() ) );
 
                     Boolean isMisrouted = routingStatus == RoutingStatus.MISROUTED && item.getIndex() == ( getList().size() - 1 );
                     item.add( new Label( "unloadLocation", leg.unloadLocation().get().getCode() )
                                   .add( new ErrorColor( isMisrouted ) ) );
 
-                    item.add( new Label( "unloadTime", new Model<Date>( leg.unloadTime().get() ) ) );
+                    item.add( new Label( "unloadTime", new Model<Date>( new Date( leg.unloadTime().get().toInstant().toEpochMilli() ) ) ) );
                 }
             } );
         }

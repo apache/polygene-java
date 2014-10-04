@@ -19,9 +19,14 @@ package org.qi4j.index.sql.support.common;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
@@ -107,7 +112,12 @@ public final class QNameInfo
                 Number.class.isAssignableFrom( finalClass )//
                 || Boolean.class.isAssignableFrom( finalClass ) //
                 || Character.class.isAssignableFrom( finalClass ) //
-                || Date.class.isAssignableFrom( finalClass ) //
+                || LocalDate.class.isAssignableFrom( finalClass ) //
+                || LocalTime.class.isAssignableFrom( finalClass ) //
+                || LocalDateTime.class.isAssignableFrom( finalClass ) //
+                || OffsetTime.class.isAssignableFrom( finalClass ) //
+                || OffsetDateTime.class.isAssignableFrom( finalClass ) //
+                || ZonedDateTime.class.isAssignableFrom( finalClass ) //
                 || Enum.class.isAssignableFrom( finalClass ) //
                 || String.class.isAssignableFrom( finalClass )//
                 ;

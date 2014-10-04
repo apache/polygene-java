@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -52,8 +52,8 @@ public class InspectUnhandledCargoTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
-        delivery = delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, leg1 );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, ZonedDateTime.now(), deadline = DAY24 );
+        delivery = delivery( TODAY.toInstant(), NOT_RECEIVED, NOT_ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Claimed_CARGO" );
         trackingId = cargo.trackingId().get();
     }
@@ -84,7 +84,7 @@ public class InspectUnhandledCargoTest extends TestApplication
     {
         // Cargo not routed
         cargo.itinerary().set( null );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, NOT_ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, NOT_ROUTED, leg1 ) );
 
         new InspectUnhandledCargo( cargo ).inspect();
 
@@ -100,7 +100,7 @@ public class InspectUnhandledCargoTest extends TestApplication
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, MISROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, MISROUTED, leg1 ) );
 
         new InspectUnhandledCargo( cargo ).inspect();
 
@@ -116,7 +116,7 @@ public class InspectUnhandledCargoTest extends TestApplication
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, NOT_RECEIVED, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), NOT_RECEIVED, ROUTED, leg1 ) );
 
         new InspectUnhandledCargo( cargo ).inspect();
 

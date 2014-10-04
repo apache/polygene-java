@@ -14,6 +14,7 @@
  */
 package org.qi4j.api.unitofwork;
 
+import java.time.Instant;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.usecase.Usecase;
 
@@ -41,7 +42,7 @@ public interface UnitOfWorkFactory
      * </p>
      * @return a new UnitOfWork
      */
-    UnitOfWork newUnitOfWork( long currentTime );
+    UnitOfWork newUnitOfWork( Instant currentTime );
 
     /**
      * Create a new UnitOfWork for the given Usecase and associate it with the current thread.
@@ -61,7 +62,7 @@ public interface UnitOfWorkFactory
      *
      * @return a new UnitOfWork
      */
-    UnitOfWork newUnitOfWork( Usecase usecase, long currentTime );
+    UnitOfWork newUnitOfWork( Usecase usecase, Instant currentTime );
 
     /**
      * @return true if there is an active UnitOfWork associated with the executing thread

@@ -54,9 +54,6 @@ import org.qi4j.api.composite.AmbiguousTypeException;
  *     <li>BigInteger,</li>
  *     <li>BigDecimal,</li>
  *     <li>Date,</li>
- *     <li>DateTime (JodaTime),</li>
- *     <li>LocalDateTime (JodaTime),</li>
- *     <li>LocalDate (JodaTime).</li>
  * </ul>
  * <p>
  *     Values of unknown types and all arrays are considered as {@link java.io.Serializable} and by so are serialized to

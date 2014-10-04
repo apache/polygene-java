@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.handling;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
@@ -32,11 +32,11 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
  * HandlingEvent "collection" - could have had a many-association to
  * Handling Events if it was part of the domain model.
  */
-@Mixins( HandlingEvents.Mixin.class )
+@Mixins(HandlingEvents.Mixin.class)
 public interface HandlingEvents
 {
-    HandlingEvent createHandlingEvent( Date registrationTime,
-                                       Date completionTime,
+    HandlingEvent createHandlingEvent( ZonedDateTime registrationTime,
+                                       ZonedDateTime completionTime,
                                        TrackingId trackingId,
                                        HandlingEventType handlingEventType,
                                        Location location,
@@ -50,8 +50,8 @@ public interface HandlingEvents
         @Structure
         UnitOfWorkFactory uowf;
 
-        public HandlingEvent createHandlingEvent( Date registrationTime,
-                                                  Date completionTime,
+        public HandlingEvent createHandlingEvent( ZonedDateTime registrationTime,
+                                                  ZonedDateTime completionTime,
                                                   TrackingId trackingId,
                                                   HandlingEventType handlingEventType,
                                                   Location location,

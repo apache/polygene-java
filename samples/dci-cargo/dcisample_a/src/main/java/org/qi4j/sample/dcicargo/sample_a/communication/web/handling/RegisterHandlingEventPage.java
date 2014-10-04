@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.communication.web.handling;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxFallbackButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -25,7 +25,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
-import org.joda.time.LocalDate;
 import org.qi4j.sample.dcicargo.sample_a.communication.query.CommonQueries;
 import org.qi4j.sample.dcicargo.sample_a.communication.query.HandlingQueries;
 import org.qi4j.sample.dcicargo.sample_a.communication.web.BasePage;
@@ -56,7 +55,7 @@ public class RegisterHandlingEventPage extends BasePage
     private final class RegisterHandlingEventForm extends AbstractForm<Void>
     {
         // Set by Wicket property resolvers:
-        private Date completion;
+        private ZonedDateTime completion;
         private String trackingId, unLocode, voyageNumber, eventType;
 
         private String lastSubmittedData;
@@ -67,7 +66,7 @@ public class RegisterHandlingEventPage extends BasePage
             add( feedback.setOutputMarkupId( true ) );
 
             final DateTextFieldWithPicker completionDateInput = new DateTextFieldWithPicker( "completion", "Completion", this );
-            completionDateInput.earliestDate( new LocalDate() );
+            completionDateInput.earliestDate( ZonedDateTime.now() );
 
             HandlingQueries fetch = new HandlingQueries();
             add( completionDateInput.setLabel( Model.of( "Completion" ) ) );
@@ -91,7 +90,7 @@ public class RegisterHandlingEventPage extends BasePage
 
                         // Perform use case
                         new RegisterHandlingEvent(
-                            new Date(), completion, trackingId, eventType, unLocode, voyageNumber ).register();
+                            ZonedDateTime.now(), completion, trackingId, eventType, unLocode, voyageNumber ).register();
 
                         // We could redirect to Details, but it's more fun to update details in a separate
                         // window to follow the successive handling event registrations you make...

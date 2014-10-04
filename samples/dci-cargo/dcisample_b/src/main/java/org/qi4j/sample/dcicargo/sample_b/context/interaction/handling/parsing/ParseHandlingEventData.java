@@ -17,9 +17,8 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.parsing;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
@@ -45,7 +44,7 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEventTy
  * a file upload solution like UploadDirectoryScanner in the DDD sample - or some other
  * technical solution.
  */
-@Mixins( ParseHandlingEventData.Mixin.class )
+@Mixins(ParseHandlingEventData.Mixin.class)
 public interface ParseHandlingEventData
     extends ServiceComposite
 {
@@ -66,9 +65,7 @@ public interface ParseHandlingEventData
         @Structure
         ValueBuilderFactory vbf;
 
-        static final String ISO_8601_FORMAT = "yyyy-MM-dd HH:mm";
-
-        Date completionTime;
+        ZonedDateTime completionTime;
         HandlingEventType handlingEventType;
 
         public ParsedHandlingEventData parse( String completionStr,
@@ -83,17 +80,12 @@ public interface ParseHandlingEventData
 
             try
             {
-                completionTime = new SimpleDateFormat( ISO_8601_FORMAT ).parse( completionStr.trim() );
-            }
-            catch( ParseException e )
-            {
-                throw new InvalidHandlingEventDataException(
-                    "Invalid date format: '" + completionStr + "' must be on ISO 8601 format " + ISO_8601_FORMAT );
-            }
-
-            try
-            {
+                completionTime = ZonedDateTime.parse( completionStr.trim() );
                 handlingEventType = HandlingEventType.valueOf( handlingEventTypeStr.trim() );
+            }
+            catch( DateTimeParseException e )
+            {
+                throw new InvalidHandlingEventDataException( "Invalid date format: '" + completionStr + "' must be on ISO 8601 format yyyy-MM-dd HH:mm" );
             }
             catch( Exception e )
             {
@@ -103,7 +95,7 @@ public interface ParseHandlingEventData
             // Step 4 - Collect parsed handling event data
 
             ValueBuilder<ParsedHandlingEventData> parsedData = vbf.newValueBuilder( ParsedHandlingEventData.class );
-            parsedData.prototype().registrationTime().set( new Date() );
+            parsedData.prototype().registrationTime().set( ZonedDateTime.now() );
             parsedData.prototype().completionTime().set( completionTime );
             parsedData.prototype().trackingIdString().set( trackingIdStr );
             parsedData.prototype().handlingEventType().set( handlingEventType );

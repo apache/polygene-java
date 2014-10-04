@@ -17,12 +17,9 @@
  */
 package org.qi4j.library.struts2.example.converters;
 
-import org.apache.struts2.util.StrutsTypeConverter;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Map;
+import org.apache.struts2.util.StrutsTypeConverter;
 
 public class DateConverter
     extends StrutsTypeConverter
@@ -32,12 +29,11 @@ public class DateConverter
     {
         if( values != null && values.length > 0 && values[ 0 ] != null && values[ 0 ].length() > 0 )
         {
-            SimpleDateFormat sdf = new SimpleDateFormat( "yyyy/MM/dd" );
             try
             {
-                return sdf.parse( values[ 0 ] );
+                return ZonedDateTime.parse( values[ 0 ] );
             }
-            catch( ParseException e )
+            catch( RuntimeException e )
             {
                 throw new IllegalArgumentException( "Parse [" + values[ 0 ] + "] do date fail.", e );
             }
@@ -48,10 +44,9 @@ public class DateConverter
     @Override
     public String convertToString( Map context, Object o )
     {
-        if( o instanceof Date )
+        if( o instanceof ZonedDateTime )
         {
-            SimpleDateFormat sdf = new SimpleDateFormat( "yyyy/MM/dd" );
-            return sdf.format( (Date) o );
+            return o.toString();
         }
         return "";
     }

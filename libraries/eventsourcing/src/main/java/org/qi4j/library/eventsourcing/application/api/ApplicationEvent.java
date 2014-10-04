@@ -16,7 +16,7 @@
 
 package org.qi4j.library.eventsourcing.application.api;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
@@ -37,7 +37,7 @@ import org.qi4j.api.value.ValueComposite;
  * </p>
  */
 public interface ApplicationEvent
-        extends ValueComposite, Identity
+    extends ValueComposite, Identity
 {
     // Usecase
     Property<String> usecase();
@@ -46,7 +46,7 @@ public interface ApplicationEvent
     Property<String> name();
 
     // When the event was created
-    Property<Date> on();
+    Property<ZonedDateTime> on();
 
     // Method parameters as JSON
     Property<String> parameters();

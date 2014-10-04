@@ -18,9 +18,10 @@
  */
 package org.qi4j.library.scheduler;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Callable;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -87,7 +88,7 @@ public class SchedulerTest
         throws UnitOfWorkCompletionException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "TestMinutely" );
-        DateTime start = new DateTime();
+        ZonedDateTime start = ZonedDateTime.now();
         String taskIdentity;
         long sleepMillis;
         try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
@@ -97,13 +98,13 @@ public class SchedulerTest
             FooTask task = createFooTask( uow, usecase.name(), BAZAR );
             taskIdentity = task.identity().get();
 
-            DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
+            ZonedDateTime expectedRun = start.withNano( 0 ).withSecond( 0 ).plusMinutes( 1 );
             scheduler.scheduleCron( task, "@minutely", true );
 
             uow.complete();
 
-            sleepMillis = new Interval( start, expectedRun ).toDurationMillis();
-            LOGGER.info( "Task scheduled on {} to be run at {}", start.getMillis(), expectedRun.getMillis() );
+            sleepMillis = start.until(expectedRun, ChronoUnit.MILLIS);
+            LOGGER.info( "Task scheduled on {} to be run at {}", start, expectedRun );
         }
 
         await( usecase.name() ).
@@ -113,22 +114,22 @@ public class SchedulerTest
         try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
         {
             Timeline timeline = module.findService( Timeline.class ).get();
-            DateTime now = new DateTime();
 
             // Queries returning past records
             assertThat( count( timeline.getLastRecords( 5 ) ),
                         is( 2L ) );
-            assertThat( count( timeline.getRecords( start.getMillis(), now.getMillis() ) ),
+            Instant now = Instant.now();
+            assertThat( count( timeline.getRecords( start.toInstant(), now ) ),
                         is( 2L ) );
 
             // Queries returning future records
             assertThat( count( timeline.getNextRecords( 4 ) ),
                         is( 4L ) );
-            assertThat( count( timeline.getRecords( now.getMillis() + 100, now.plusMinutes( 5 ).getMillis() ) ),
+            assertThat( count( timeline.getRecords( now.plusMillis( 100 ), now.plusSeconds( 300 ) ) ),
                         is( 5L ) );
 
             // Queries returning mixed past and future records
-            assertThat( count( timeline.getRecords( start.getMillis(), now.plusMinutes( 5 ).getMillis() ) ),
+            assertThat( count( timeline.getRecords( start.toInstant(), now.plusSeconds( 300 ) ) ),
                         is( 7L ) );
         }
     }

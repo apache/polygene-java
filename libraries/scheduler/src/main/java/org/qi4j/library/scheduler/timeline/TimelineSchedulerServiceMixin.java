@@ -15,9 +15,9 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
+import java.time.Instant;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import org.joda.time.DateTime;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.service.ServiceComposite;
@@ -76,24 +76,7 @@ public abstract class TimelineSchedulerServiceMixin
     }
 
     @Override
-    public Iterable<TimelineRecord> getRecords( DateTime from, DateTime to )
-    {
-        SortedSet<TimelineRecord> result = new TreeSet<>();
-
-        UnitOfWork uow = module.currentUnitOfWork();
-        String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
-        Schedules schedules = uow.get( Schedules.class, schedulesName );
-        for( Schedule schedule : schedules.schedules() )
-        {
-            Timeline timeline = (Timeline) schedule;
-            Iterable<TimelineRecord> lastRecords = timeline.getRecords( from, to );
-            Iterables.addAll( result, lastRecords );
-        }
-        return result;
-    }
-
-    @Override
-    public Iterable<TimelineRecord> getRecords( long from, long to )
+    public Iterable<TimelineRecord> getRecords( Instant from, Instant to )
     {
         SortedSet<TimelineRecord> result = new TreeSet<>();
 

@@ -17,9 +17,11 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.bootstrap.sampledata;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueBuilder;
@@ -71,7 +73,7 @@ public abstract class BaseData
         return unlocode.newInstance();
     }
 
-    protected CarrierMovement carrierMovement( Location depLoc, Location arrLoc, Date depTime, Date arrTime )
+    protected CarrierMovement carrierMovement( Location depLoc, Location arrLoc, ZonedDateTime depTime, ZonedDateTime arrTime )
     {
         ValueBuilder<CarrierMovement> carrierMovement = module.newValueBuilder( CarrierMovement.class );
         carrierMovement.prototype().departureLocation().set( depLoc );
@@ -90,7 +92,7 @@ public abstract class BaseData
         return schedule.newInstance();
     }
 
-    protected Leg leg( Voyage voyage, Location load, Location unload, Date loadTime, Date unloadTime )
+    protected Leg leg( Voyage voyage, Location load, Location unload, ZonedDateTime loadTime, ZonedDateTime unloadTime )
     {
         ValueBuilder<Leg> leg = module.newValueBuilder( Leg.class );
         leg.prototype().voyage().set( voyage );
@@ -116,13 +118,13 @@ public abstract class BaseData
         Boolean isUnloadedAtDestination,
         RoutingStatus routingStatus,
         Boolean isMisdirected,
-        Date eta,
+        ZonedDateTime eta,
         Integer itineraryProgressIndex,
         NextHandlingEvent nextHandlingEvent
     )
     {
         ValueBuilder<Delivery> delivery = module.newValueBuilder( Delivery.class );
-        delivery.prototype().timestamp().set( new Date() );
+        delivery.prototype().timestamp().set( Instant.now() );
         delivery.prototype().lastHandlingEvent().set( lastHandlingEvent );
         delivery.prototype().transportStatus().set( transportStatus );
         delivery.prototype().isUnloadedAtDestination().set( isUnloadedAtDestination );
@@ -135,7 +137,7 @@ public abstract class BaseData
     }
 
     // Delivery with only mandatory values
-    protected Delivery delivery( Date date,
+    protected Delivery delivery( Instant date,
                                  TransportStatus transportStatus,
                                  RoutingStatus routingStatus,
                                  Integer itineraryProgressIndex
@@ -151,7 +153,7 @@ public abstract class BaseData
 
     protected NextHandlingEvent nextHandlingEvent( HandlingEventType handlingEventType,
                                                    Location location,
-                                                   Date time,
+                                                   ZonedDateTime time,
                                                    Voyage voyage
     )
     {
@@ -163,8 +165,8 @@ public abstract class BaseData
         return nextHandlingEvent.newInstance();
     }
 
-    protected ParsedHandlingEventData parsedHandlingEventData( Date registrationTime,
-                                                               Date completionTime,
+    protected ParsedHandlingEventData parsedHandlingEventData( ZonedDateTime registrationTime,
+                                                               ZonedDateTime completionTime,
                                                                String trackingIdString,
                                                                HandlingEventType handlingEventType,
                                                                String unLocodeString,
@@ -181,12 +183,5 @@ public abstract class BaseData
         attempt.prototype().voyageNumberString().set( voyageNumberString );
 
         return attempt.newInstance();
-    }
-
-    protected static Date day( int days )
-    {
-        Date today = new Date();
-        long aDay = 24 * 60 * 60 * 1000;
-        return new Date( today.getTime() + days * aDay );
     }
 }

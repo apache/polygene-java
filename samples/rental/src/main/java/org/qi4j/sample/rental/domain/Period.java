@@ -18,14 +18,14 @@
 
 package org.qi4j.sample.rental.domain;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 
 public interface Period
     extends ValueComposite
 {
-    Property<Date> startOfPeriod();
+    Property<ZonedDateTime> startOfPeriod();
 
-    Property<Date> endOfPeriod();
+    Property<ZonedDateTime> endOfPeriod();
 }

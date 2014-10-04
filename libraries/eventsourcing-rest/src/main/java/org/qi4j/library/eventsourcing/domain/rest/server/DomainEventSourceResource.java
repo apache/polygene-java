@@ -189,8 +189,8 @@ public class DomainEventSourceResource
         {
             Entry entry = new Entry();
             entry.setTitle( new Text( eventsValue.usecase().get() + "(" + eventsValue.user().get() + ")" ) );
-            entry.setPublished( new Date( eventsValue.timestamp().get() ) );
-            entry.setModificationDate( lastModified = new Date( eventsValue.timestamp().get() ) );
+            entry.setPublished( new Date( eventsValue.timestamp().get().toEpochMilli() ) );
+            entry.setModificationDate( lastModified = new Date( eventsValue.timestamp().get().toEpochMilli() ) );
             entry.setId( Long.toString( startEvent + 1 ) );
             startEvent++;
             Content content = new Content();

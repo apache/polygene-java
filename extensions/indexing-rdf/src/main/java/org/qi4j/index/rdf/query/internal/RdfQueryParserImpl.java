@@ -17,16 +17,12 @@
  */
 package org.qi4j.index.rdf.query.internal;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.function.Predicate;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.qi4j.api.composite.Composite;
@@ -68,23 +64,11 @@ import static java.lang.String.format;
 public class RdfQueryParserImpl
     implements RdfQueryParser
 {
-    private static final ThreadLocal<DateFormat> ISO8601_UTC = new ThreadLocal<DateFormat>()
-    {
-        @Override
-        protected DateFormat initialValue()
-        {
-            SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" );
-            dateFormat.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
-            return dateFormat;
-        }
-    };
-
     private static final Map<Class<? extends ComparisonSpecification>, String> OPERATORS;
     private static final Set<Character> RESERVED_CHARS;
 
     private final Namespaces namespaces = new Namespaces();
     private final Triples triples = new Triples( namespaces );
-    private final Qi4jSPI spi;
     private final ValueSerializer valueSerializer;
     private Map<String, Object> variables;
 
@@ -103,9 +87,8 @@ public class RdfQueryParserImpl
         ) );
     }
 
-    public RdfQueryParserImpl( Qi4jSPI spi, ValueSerializer valueSerializer )
+    public RdfQueryParserImpl( ValueSerializer valueSerializer )
     {
-        this.spi = spi;
         this.valueSerializer = valueSerializer;
     }
 
@@ -331,7 +314,7 @@ public class RdfQueryParserImpl
     {
         for( Integer x = 0; x < strings.length; ++x )
         {
-            builder.append( strings[ x] );
+            builder.append( strings[ x ] );
             if( x + 1 < strings.length )
             {
                 builder.append( delimiter );
@@ -357,7 +340,7 @@ public class RdfQueryParserImpl
         char[] chars = jsonStr.toCharArray();
         for( int i = 0; i < chars.length; i++ )
         {
-            char c = chars[ i];
+            char c = chars[ i ];
 
             /*
              if ( reservedJsonChars.contains( c ))
@@ -404,7 +387,7 @@ public class RdfQueryParserImpl
                 }
                 jsonStr = escapeJSONString( serialized );
             }
-            strings[ x] = this.createRegexStringForContaining( valueVariable, jsonStr );
+            strings[ x ] = this.createRegexStringForContaining( valueVariable, jsonStr );
             x++;
         }
 
@@ -554,11 +537,7 @@ public class RdfQueryParserImpl
             return null;
         }
 
-        if( value instanceof Date )
-        {
-            return ISO8601_UTC.get().format( (Date) value );
-        }
-        else if( value instanceof EntityComposite )
+        if( value instanceof EntityComposite )
         {
             return "urn:qi4j:entity:" + value.toString();
         }

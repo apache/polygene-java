@@ -19,6 +19,8 @@
  */
 package org.qi4j.spi.entity;
 
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -53,7 +55,7 @@ public interface EntityState
      * </p>
      * @return last modified timestamp of the entity, as defined by System.currentTimeMillis()
      */
-    long lastModified();
+    Instant lastModified();
 
     /**
      * Remove the entity represented by this EntityState when the unit of work is completed.

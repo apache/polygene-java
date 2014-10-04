@@ -18,7 +18,8 @@
 package org.qi4j.sample.dcicargo.pathfinder_b.api;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 /**
  * Represents an edge in a path through a graph,
@@ -30,8 +31,8 @@ public final class TransitEdge implements Serializable
     private final String voyageNumber;
     private final String fromUnLocode;
     private final String toUnLocode;
-    private final Date fromDate;
-    private final Date toDate;
+    private final ZonedDateTime fromDate;
+    private final ZonedDateTime toDate;
 
     /**
      * Constructor.
@@ -45,8 +46,8 @@ public final class TransitEdge implements Serializable
     public TransitEdge( final String voyageNumber,
                         final String fromUnLocode,
                         final String toUnLocode,
-                        final Date fromDate,
-                        final Date toDate
+                        final ZonedDateTime fromDate,
+                        final ZonedDateTime toDate
     )
     {
         this.voyageNumber = voyageNumber;
@@ -71,12 +72,12 @@ public final class TransitEdge implements Serializable
         return toUnLocode;
     }
 
-    public Date getFromDate()
+    public ZonedDateTime getFromDate()
     {
         return fromDate;
     }
 
-    public Date getToDate()
+    public ZonedDateTime getToDate()
     {
         return toDate;
     }

@@ -18,7 +18,7 @@
  */
 package org.qi4j.library.scheduler.schedule;
 
-import org.joda.time.DateTime;
+import java.time.Instant;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.property.Immutable;
@@ -41,7 +41,7 @@ public interface Schedule
      * @return The property containing the first time this Schedule will be run.
      */
     @Immutable
-    Property<DateTime> start();
+    Property<Instant> start();
 
     /**
      * Called just before the {@link org.qi4j.library.scheduler.Task#run()} method is called.
@@ -73,7 +73,7 @@ public interface Schedule
      *
      * @return The exact absolute time when this Schedule is to be run next time.
      */
-    long nextRun( long from );
+    Instant nextRun( Instant from );
 
     /**
      * Return a representation of the Schedule in a human understandable format.

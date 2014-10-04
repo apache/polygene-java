@@ -17,7 +17,8 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.context.shipping.booking;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Iterator;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -80,11 +81,10 @@ public class BuildDeliverySnapshot extends Context
         }
 
         // Deviation 2b
-        if( routeSpecification.arrivalDeadline().get().before( new Date() ) )
+        ZonedDateTime deadline = routeSpecification.arrivalDeadline().get();
+        if( deadline.isBefore( ZonedDateTime.now() ) )
         {
-            throw new RouteException( "Arrival deadline is in the past or Today." +
-                                        "\nDeadline " + routeSpecification.arrivalDeadline().get() +
-                                        "\nToday    " + new Date() );
+            throw new RouteException( "Arrival deadline is in the past or Today: " + deadline );
         }
 
         factory = rolePlayer( FactoryRole.class, routeSpecification );
@@ -121,7 +121,7 @@ public class BuildDeliverySnapshot extends Context
      * When the Cargo has a delivery history the FactoryRole delegates to the LastHandlingEventRole
      * to derive data from the last HandlingEvent.
      */
-    @Mixins( FactoryRole.Mixin.class )
+    @Mixins(FactoryRole.Mixin.class)
     public interface FactoryRole
     {
         void setContext( BuildDeliverySnapshot context );
@@ -155,7 +155,7 @@ public class BuildDeliverySnapshot extends Context
                 // Build delivery snapshot object
                 deliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 context.newDeliverySnapshot = deliveryBuilder.prototype();
-                context.newDeliverySnapshot.timestamp().set( new Date() );
+                context.newDeliverySnapshot.timestamp().set( Instant.now() );
 
                 // Deviation 2c: Cargo is not routed yet
                 if( context.itinerary == null )
@@ -232,7 +232,7 @@ public class BuildDeliverySnapshot extends Context
      *
      * The HandlingEventRole uses the ItineraryRole heavily to calculate values based on Itinerary data.
      */
-    @Mixins( HandlingEventRole.Mixin.class )
+    @Mixins(HandlingEventRole.Mixin.class)
     public interface HandlingEventRole
     {
         void setContext( BuildDeliverySnapshot context );
@@ -412,12 +412,12 @@ public class BuildDeliverySnapshot extends Context
     /**
      * The ItineraryRole supports the HandlingEventRole with calculated results derived from Itinerary Legs.
      */
-    @Mixins( ItineraryRole.Mixin.class )
+    @Mixins(ItineraryRole.Mixin.class)
     public interface ItineraryRole
     {
         void setContext( BuildDeliverySnapshot context );
 
-        Date eta();
+        ZonedDateTime eta();
 
         boolean expectsOrigin( Location location );
 
@@ -440,7 +440,7 @@ public class BuildDeliverySnapshot extends Context
             @This
             Itinerary itinerary;
 
-            public Date eta()
+            public ZonedDateTime eta()
             {
                 return itinerary.lastLeg().unloadTime().get();
             }
@@ -490,8 +490,8 @@ public class BuildDeliverySnapshot extends Context
             {
                 // After RECEIVE, expect LOAD location and voyage of first itinerary leg
                 final Leg firstLeg = itinerary.legs().get().iterator().next();
-                return buildEvent( HandlingEventType.LOAD, firstLeg.loadLocation().get(), firstLeg.loadTime()
-                    .get(), firstLeg.voyage().get() );
+                return buildEvent( HandlingEventType.LOAD, firstLeg.loadLocation().get(),
+                                   firstLeg.loadTime().get(), firstLeg.voyage().get() );
             }
 
             public ExpectedHandlingEvent expectedEventAfterLoadAt( Location lastLoadLocation )
@@ -542,7 +542,7 @@ public class BuildDeliverySnapshot extends Context
 
             private ExpectedHandlingEvent buildEvent( HandlingEventType eventType,
                                                       Location location,
-                                                      Date time,
+                                                      ZonedDateTime time,
                                                       Voyage voyage
             )
             {

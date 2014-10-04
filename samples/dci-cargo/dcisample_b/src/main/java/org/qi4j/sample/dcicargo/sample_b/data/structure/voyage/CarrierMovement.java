@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.data.structure.voyage;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
@@ -37,7 +37,7 @@ public interface CarrierMovement
 
     Association<Location> arrivalLocation();
 
-    Property<Date> departureTime();
+    Property<ZonedDateTime> departureTime();
 
-    Property<Date> arrivalTime();
+    Property<ZonedDateTime> arrivalTime();
 }

@@ -15,6 +15,7 @@
 package org.qi4j.library.rdf.entity;
 
 import java.io.PrintWriter;
+import java.time.Instant;
 import org.junit.Before;
 import org.junit.Test;
 import org.openrdf.model.Statement;
@@ -72,7 +73,7 @@ public class EntitySerializerTest
     public void testEntitySerializer() throws RDFHandlerException
     {
         EntityReference entityReference = new EntityReference( "test2" );
-        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Test" ), module, System.currentTimeMillis() ).entityStateOf( entityReference );
+        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Test" ), module, Instant.now() ).entityStateOf( entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 

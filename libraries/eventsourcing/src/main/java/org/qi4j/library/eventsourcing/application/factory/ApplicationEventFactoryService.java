@@ -16,7 +16,7 @@
 
 package org.qi4j.library.eventsourcing.application.factory;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -73,7 +73,7 @@ public interface ApplicationEventFactoryService
 
             ApplicationEvent prototype = builder.prototype();
             prototype.name().set( name );
-            prototype.on().set( new Date() );
+            prototype.on().set( ZonedDateTime.now() );
 
             prototype.identity().set( idGenerator.generate( ApplicationEvent.class ) );
 

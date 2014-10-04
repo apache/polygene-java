@@ -1,6 +1,6 @@
 package org.qi4j.samples.forum.data.entity;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
@@ -31,5 +31,5 @@ public interface Post
 
     Property<User> createdBy();
 
-    Property<Date> createdOn();
+    Property<ZonedDateTime> createdOn();
 }

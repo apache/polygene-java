@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -52,8 +52,8 @@ public class InspectCargoInCustomsTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
-        delivery = delivery( TODAY, IN_PORT, ROUTED, leg1 );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, ZonedDateTime.now(), deadline = DAY24 );
+        delivery = delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "CARGO_in_customs" );
         trackingId = cargo.trackingId().get();
     }
@@ -86,7 +86,7 @@ public class InspectCargoInCustomsTest extends TestApplication
     {
         // Cargo not routed
         cargo.itinerary().set( null );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, NOT_ROUTED, leg5 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, NOT_ROUTED, leg5 ) );
 
         // Handle in customs (without itinerary!)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, CUSTOMS, STOCKHOLM, noVoyage );
@@ -104,7 +104,7 @@ public class InspectCargoInCustomsTest extends TestApplication
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, MISROUTED, leg3 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, MISROUTED, leg3 ) );
 
         // Handle in customs (with wrong itinerary)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY20, DAY20, trackingId, CUSTOMS, MELBOURNE, noVoyage );
@@ -122,7 +122,7 @@ public class InspectCargoInCustomsTest extends TestApplication
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, MISROUTED, leg5 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, MISROUTED, leg5 ) );
 
         // Handle in customs (without itinerary!)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY24, DAY24, trackingId, CUSTOMS, STOCKHOLM, noVoyage );

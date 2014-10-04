@@ -25,6 +25,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Reader;
 import java.io.Writer;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -143,7 +144,7 @@ public class JSONMapEntityStoreMixin
     // EntityStore
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, Module module, Instant currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo, currentTime );
     }
@@ -292,7 +293,7 @@ public class JSONMapEntityStoreMixin
                             newUnitOfWorkId(),
                             module,
                             usecase,
-                            System.currentTimeMillis() );
+                            Instant.now() );
 
                         final List<EntityState> migrated = new ArrayList<>();
 
@@ -376,14 +377,14 @@ public class JSONMapEntityStoreMixin
         return uuid + Integer.toHexString( count++ );
     }
 
-    protected void writeEntityState( JSONEntityState state, Writer writer, String identity, long lastModified )
+    protected void writeEntityState( JSONEntityState state, Writer writer, String identity, Instant lastModified )
         throws EntityStoreException
     {
         try
         {
             JSONObject jsonState = state.state();
             jsonState.put( JSONKeys.VERSION, identity );
-            jsonState.put( JSONKeys.MODIFIED, lastModified );
+            jsonState.put( JSONKeys.MODIFIED, lastModified.toEpochMilli() );
             writer.append( jsonState.toString() );
         }
         catch( JSONException | IOException e )
@@ -441,10 +442,9 @@ public class JSONMapEntityStoreMixin
                 throw new EntityTypeNotFoundException( type );
             }
 
-            return new JSONEntityState( unitOfWork,
-                                        valueSerialization,
+            return new JSONEntityState( valueSerialization,
                                         version,
-                                        modified,
+                                        Instant.ofEpochMilli(modified),
                                         EntityReference.parseEntityReference( identity ),
                                         status,
                                         entityDescriptor,

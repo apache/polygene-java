@@ -1,5 +1,6 @@
 package org.qi4j.entitystore.neo4j;
 
+import java.time.Instant;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import org.neo4j.graphdb.Node;
@@ -25,7 +26,7 @@ public class NeoEntityStoreUnitOfWork
     private final EmbeddedGraphDatabase neo;
     private final IndexService indexService;
     private final ValueSerialization valueSerialization;
-    private long currentTime;
+    private Instant currentTime;
     private final TransactionManager tm;
 
     private final Transaction transaction;
@@ -34,7 +35,7 @@ public class NeoEntityStoreUnitOfWork
 
     NeoEntityStoreUnitOfWork( EmbeddedGraphDatabase neo, IndexService indexService, ValueSerialization valueSerialization,
                               String identity, Module module,
-                              long currentTime )
+                              Instant currentTime )
     {
         this.neo = neo;
         this.indexService = indexService;
@@ -54,7 +55,7 @@ public class NeoEntityStoreUnitOfWork
     }
 
     @Override
-    public long currentTime()
+    public Instant currentTime()
     {
         return currentTime;
     }
@@ -104,7 +105,7 @@ public class NeoEntityStoreUnitOfWork
         }
         node = neo.createNode();
         node.setProperty( NeoEntityState.VERSION, 0l );
-        node.setProperty( NeoEntityState.MODIFIED, currentTime );
+        node.setProperty( NeoEntityState.MODIFIED, currentTime.toEpochMilli() );
         node.createRelationshipTo( typeNode, RelTypes.IS_OF_TYPE );
         node.setProperty( NeoEntityState.ENTITY_ID, anIdentity.identity() );
         indexService.index( node, ENTITY_STATE_ID, anIdentity.identity() );

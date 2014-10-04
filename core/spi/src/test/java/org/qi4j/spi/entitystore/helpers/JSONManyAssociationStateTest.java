@@ -15,6 +15,7 @@
  */
 package org.qi4j.spi.entitystore.helpers;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.function.Function;
 import org.json.JSONArray;
@@ -45,9 +46,8 @@ public class JSONManyAssociationStateTest
         state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
         state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
         JSONEntityState entityState = new JSONEntityState( null,
-                                                           null,
                                                            "0",
-                                                           System.currentTimeMillis(),
+                                                           Instant.now(),
                                                            EntityReference.parseEntityReference( "123" ),
                                                            EntityStatus.NEW,
                                                            null,
@@ -71,9 +71,8 @@ public class JSONManyAssociationStateTest
         state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
         state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
         JSONEntityState entityState = new JSONEntityState( null,
-                                                           null,
                                                            "0",
-                                                           System.currentTimeMillis(),
+                                                           Instant.now(),
                                                            EntityReference.parseEntityReference( "123" ),
                                                            EntityStatus.NEW,
                                                            null,

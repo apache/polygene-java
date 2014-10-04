@@ -21,7 +21,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.joda.time.LocalDate;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
@@ -117,7 +116,7 @@ public interface RoutingService
             if( itineraries.size() == 0 )
             {
                 throw new FoundNoRoutesException( destination.name().get(),
-                                                  new LocalDate( routeSpecification.arrivalDeadline().get() ) );
+                                                  routeSpecification.arrivalDeadline().get() );
             }
 
             return itineraries;

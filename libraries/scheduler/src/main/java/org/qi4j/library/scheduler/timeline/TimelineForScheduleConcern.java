@@ -20,6 +20,7 @@ package org.qi4j.library.scheduler.timeline;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.time.Instant;
 import java.util.List;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.Structure;
@@ -69,7 +70,7 @@ public abstract class TimelineForScheduleConcern
         prototype.taskName().set( task().get().name().get() );
         List<String> tags = task().get().tags().get();
         prototype.taskTags().set( tags );
-        prototype.timestamp().set( System.currentTimeMillis() );
+        prototype.timestamp().set( Instant.now() );
         prototype.scheduleIdentity().set( this.identity().get() );
         prototype.details().set( details );
         TimelineRecord record = builder.newInstance();

@@ -16,6 +16,7 @@
  */
 package org.qi4j.library.scheduler.schedule.cron;
 
+import java.time.Instant;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Immutable;
 import org.qi4j.api.property.Property;
@@ -76,16 +77,15 @@ public interface CronSchedule
         }
 
         @Override
-        public long nextRun( long from )
+        public Instant nextRun( Instant from )
         {
-            long firstRun = start().get().getMillis();
-            if( firstRun > from )
+            if( start().get().isAfter( from ) )
             {
-                from = firstRun;
+                from = start().get();
             }
-            Long nextRun = new org.codeartisans.sked.cron.CronSchedule( cronExpression().get() ).firstRunAfter( from );
-            LOGGER.info( "Schedule.firstRunAfter({}) CronSchedule result is {}", from, firstRun );
-            return nextRun;
+            Long nextRun = new org.codeartisans.sked.cron.CronSchedule( cronExpression().get() ).firstRunAfter( from.toEpochMilli() );
+            LOGGER.info( "Schedule.firstRunAfter({}) CronSchedule result is {}", from, nextRun );
+            return Instant.ofEpochMilli( nextRun );
         }
     }
 

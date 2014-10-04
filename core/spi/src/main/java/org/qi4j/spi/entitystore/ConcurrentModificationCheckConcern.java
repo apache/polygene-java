@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.entitystore;
 
+import java.time.Instant;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityDescriptor;
@@ -48,7 +49,7 @@ public abstract class ConcurrentModificationCheckConcern
     private Qi4j api;
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, Instant currentTime )
     {
         final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, module, currentTime );
         return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), module, currentTime );
@@ -60,7 +61,7 @@ public abstract class ConcurrentModificationCheckConcern
         private final EntityStoreUnitOfWork uow;
         private EntityStateVersions versions;
         private Module module;
-        private long currentTime;
+        private Instant currentTime;
 
         private List<EntityState> loaded = new ArrayList<EntityState>();
 
@@ -69,7 +70,7 @@ public abstract class ConcurrentModificationCheckConcern
         public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow,
                                                         EntityStateVersions versions,
                                                         Module module,
-                                                        long currentTime
+                                                        Instant currentTime
         )
         {
             this.uow = uow;
@@ -85,7 +86,7 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         @Override
-        public long currentTime()
+        public Instant currentTime()
         {
             return uow.currentTime();
         }

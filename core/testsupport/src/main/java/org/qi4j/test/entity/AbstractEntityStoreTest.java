@@ -21,13 +21,12 @@ package org.qi4j.test.entity;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +53,6 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.joda.time.DateTimeZone.UTC;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -97,7 +95,7 @@ public abstract class AbstractEntityStoreTest
     {
         // Create entity
         EntityBuilder<TestEntity> builder = unitOfWork.newEntityBuilder( TestEntity.class );
-        builder.instance().dateValue().set( new Date() );
+        builder.instance().dateValue().set( LocalDate.now() );
         TestEntity instance = builder.newInstance();
 
         instance.name().set( "Test" );
@@ -108,10 +106,10 @@ public abstract class AbstractEntityStoreTest
         instance.booleanValue().set( Boolean.TRUE );
         instance.bigIntegerValue().set( new BigInteger( "42" ) );
         instance.bigDecimalValue().set( new BigDecimal( "42" ) );
-        instance.dateValue().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
-        instance.dateTimeValue().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
-        instance.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00" ) );
-        instance.localDateValue().set( new LocalDate( "2020-03-04" ) );
+        instance.dateValue().set( LocalDate.parse( "2020-03-04" ));
+        instance.dateTimeValue().set( ZonedDateTime.parse( "2020-03-04T13:24:35Z" ) );
+        instance.localDateTimeValue().set( LocalDateTime.parse( "2020-03-04T13:23:00" ) );
+        instance.localDateValue().set( LocalDate.parse( "2020-03-04" ) );
         instance.association().set( instance );
 
         ValueBuilder<Tjabba> valueBuilder4 = module.newValueBuilder( Tjabba.class );
@@ -195,19 +193,19 @@ public abstract class AbstractEntityStoreTest
 
             assertThat( "property 'dateValue' has correct value",
                         instance.dateValue().get(),
-                        equalTo( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() ) );
+                        equalTo( LocalDate.parse( "2020-03-04") ) );
 
             assertThat( "property 'dateTimeValue' has correct value",
                         instance.dateTimeValue().get(),
-                        equalTo( new DateTime( "2020-03-04T13:24:35", UTC ) ) );
+                        equalTo( ZonedDateTime.parse( "2020-03-04T13:24:35Z" ) ) );
 
             assertThat( "property 'localDateTimeValue' has correct value",
                         instance.localDateTimeValue().get(),
-                        equalTo( new LocalDateTime( "2020-03-04T13:23:00", UTC ) ) );
+                        equalTo( LocalDateTime.parse( "2020-03-04T13:23:00" ) ) );
 
             assertThat( "property 'localDateValue' has correct value",
                         instance.localDateValue().get(),
-                        equalTo( new LocalDate( "2020-03-04" ) ) );
+                        equalTo( LocalDate.parse( "2020-03-04" ) ) );
 
             assertThat( "property 'name' has correct value",
                         instance.name().get(),
@@ -481,10 +479,10 @@ public abstract class AbstractEntityStoreTest
         Property<BigDecimal> bigDecimalValue();
 
         @Optional
-        Property<Date> dateValue();
+        Property<LocalDate> dateValue();
 
         @Optional
-        Property<DateTime> dateTimeValue();
+        Property<ZonedDateTime> dateTimeValue();
 
         @Optional
         Property<LocalDateTime> localDateTimeValue();

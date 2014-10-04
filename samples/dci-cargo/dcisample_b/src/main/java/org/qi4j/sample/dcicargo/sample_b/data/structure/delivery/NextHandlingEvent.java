@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.data.structure.delivery;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
@@ -47,7 +47,7 @@ public interface NextHandlingEvent
     Association<Location> location();
 
     @Optional
-    Property<Date> time();
+    Property<ZonedDateTime> time();
 
     @Optional
     Association<Voyage> voyage();

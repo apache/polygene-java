@@ -2,7 +2,7 @@ package org.qi4j.library.appbrowser;
 
 import java.io.StringWriter;
 import java.io.Writer;
-import org.joda.time.DateTime;
+import java.time.temporal.ChronoUnit;
 import org.junit.Test;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
@@ -106,7 +106,7 @@ public class AppBrowserTest extends AbstractQi4jTest
     @Mixins( Age.AgeMixin.class )
     public interface Age
     {
-        Property<Integer> birthYear();
+        Property<Year> birthYear();
 
         int numberOfYearsOld();
 
@@ -117,7 +117,7 @@ public class AppBrowserTest extends AbstractQi4jTest
             @Override
             public int numberOfYearsOld()
             {
-                return DateTime.now().getYearOfEra() - birthYear().get();
+                return birthYear().get().until( Year.now(), ChronoUnit.YEARS );
             }
         }
     }

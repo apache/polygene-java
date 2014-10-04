@@ -30,8 +30,4 @@ public class SimpleNeoStoreTest
         new OrgJsonValueSerializationAssembler().assemble( module );
     }
 
-    @Override
-    public void givenConcurrentUnitOfWorksWhenUoWCompletesThenCheckConcurrentModification()
-    {
-    }
 }

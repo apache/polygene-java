@@ -17,8 +17,8 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.context.shipping.handling;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -51,8 +51,8 @@ public class RegisterHandlingEvent extends Context
 
     private HandlingEventFactoryRole handlingEventFactory;
 
-    private Date registrationTime;
-    private Date completionTime;
+    private ZonedDateTime registrationTime;
+    private ZonedDateTime completionTime;
     private String trackingIdString;
     private String eventTypeString;
     private String unLocodeString;
@@ -60,8 +60,8 @@ public class RegisterHandlingEvent extends Context
 
     // CONTEXT CONSTRUCTORS ------------------------------------------------------
 
-    public RegisterHandlingEvent( Date registrationTime,
-                                  Date completionTime,
+    public RegisterHandlingEvent( ZonedDateTime registrationTime,
+                                  ZonedDateTime completionTime,
                                   String trackingIdString,
                                   String eventTypeString,
                                   String unLocodeString,

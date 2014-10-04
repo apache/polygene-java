@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.interaction.booking.specification;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -106,8 +106,8 @@ public class DeriveUpdatedRouteSpecification extends Context
 
             Location newOrigin;
             Location newDestination;
-            Date newEarliestDeparture;
-            Date newArrivalDeadline;
+            ZonedDateTime newEarliestDeparture;
+            ZonedDateTime newArrivalDeadline;
 
             public RouteSpecification getUpdatedRouteSpecification()
                 throws CannotCreateRouteSpecificationException, UnexpectedCarrierException

@@ -17,9 +17,9 @@
  */
 package org.qi4j.sample.dcicargo.pathfinder_a.internal;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import org.qi4j.sample.dcicargo.pathfinder_a.api.GraphTraversalService;
@@ -42,7 +42,7 @@ public class GraphTraversalServiceImpl
 
     public List<TransitPath> findShortestPath( String originUnLocode, String destinationUnLocode )
     {
-        Date date = nextDate( new Date() );
+        ZonedDateTime date = nextDate( ZonedDateTime.now() );
 
         List<String> allVertices = dao.listLocations();
         allVertices.remove( originUnLocode );
@@ -57,8 +57,8 @@ public class GraphTraversalServiceImpl
             final List<TransitEdge> transitEdges = new ArrayList<TransitEdge>( allVertices.size() - 1 );
             final String firstLegTo = allVertices.get( 0 );
 
-            Date fromDate = nextDate( date );
-            Date toDate = nextDate( fromDate );
+            ZonedDateTime fromDate = nextDate( date );
+            ZonedDateTime toDate = nextDate( fromDate );
             date = nextDate( toDate );
 
             transitEdges.add( new TransitEdge(
@@ -88,9 +88,9 @@ public class GraphTraversalServiceImpl
         return candidates;
     }
 
-    private Date nextDate( Date date )
+    private ZonedDateTime nextDate( ZonedDateTime date )
     {
-        return new Date( date.getTime() + ONE_DAY_MS + ( random.nextInt( 1000 ) - 500 ) * ONE_MIN_MS );
+        return date.plusDays( 1 + random.nextInt(30) );
     }
 
     private int getRandomNumberOfCandidates()

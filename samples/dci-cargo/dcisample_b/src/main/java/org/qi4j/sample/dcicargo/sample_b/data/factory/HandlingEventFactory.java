@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.data.factory;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
@@ -44,8 +44,8 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
 @Mixins( HandlingEventFactory.Mixin.class )
 public interface HandlingEventFactory
 {
-    HandlingEvent createHandlingEvent( Date registrationTime,
-                                       Date completionTime,
+    HandlingEvent createHandlingEvent( ZonedDateTime registrationTime,
+                                       ZonedDateTime completionTime,
                                        TrackingId trackingId,
                                        HandlingEventType handlingEventType,
                                        Location location,
@@ -59,8 +59,8 @@ public interface HandlingEventFactory
         @Structure
         UnitOfWorkFactory uowf;
 
-        public HandlingEvent createHandlingEvent( Date registrationTime,
-                                                  Date completionTime,
+        public HandlingEvent createHandlingEvent( ZonedDateTime registrationTime,
+                                                  ZonedDateTime completionTime,
                                                   TrackingId trackingId,
                                                   HandlingEventType handlingEventType,
                                                   Location location,

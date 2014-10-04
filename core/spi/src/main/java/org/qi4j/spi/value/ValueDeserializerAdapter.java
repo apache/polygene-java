@@ -22,10 +22,23 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,9 +47,6 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
@@ -51,7 +61,6 @@ import org.qi4j.api.type.MapType;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.util.Base64Encoder;
-import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.api.value.ValueDeserializer;
@@ -86,9 +95,6 @@ import static org.qi4j.functional.Iterables.first;
  * <ul>
  *     <li>BigInteger and BigDecimal depends on {@link org.qi4j.api.value.ValueSerializer.Options};</li>
  *     <li>Date as String in ISO-8601, {@literal @millis@} or {@literal /Date(..)} Microsoft format;</li>
- *     <li>DateTime (JodaTime) as a ISO-8601 String with optional timezone offset;</li>
- *     <li>LocalDateTime (JodaTime) as whatever {@link LocalDateTime#LocalDateTime(java.lang.Object)} accept as {@literal instant};</li>
- *     <li>LocalDate (JodaTime) as whatever {@link LocalDate#LocalDate(java.lang.Object)} accept as {@literal instant};</li>
  * </ul>
  *
  * @param <InputType> Implementor pull-parser type
@@ -260,21 +266,28 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             }
         } );
 
-        // Date types
-        registerDeserializer( Date.class, new Function<Object, Date>()
+        registerDeserializer( ZonedDateTime.class, new Function<Object, ZonedDateTime>()
         {
             @Override
-            public Date apply( Object input )
+            public ZonedDateTime apply( Object input )
             {
-                return Dates.fromString( input.toString() );
+                return ZonedDateTime.parse( input.toString() );
             }
         } );
-        registerDeserializer( DateTime.class, new Function<Object, DateTime>()
+        registerDeserializer( OffsetDateTime.class, new Function<Object, OffsetDateTime>()
         {
             @Override
-            public DateTime apply( Object input )
+            public OffsetDateTime apply( Object input )
             {
-                return DateTime.parse( input.toString() );
+                return OffsetDateTime.parse( input.toString() );
+            }
+        } );
+        registerDeserializer( OffsetTime.class, new Function<Object, OffsetTime>()
+        {
+            @Override
+            public OffsetTime apply( Object input )
+            {
+                return OffsetTime.parse( input.toString() );
             }
         } );
         registerDeserializer( LocalDateTime.class, new Function<Object, LocalDateTime>()
@@ -282,7 +295,15 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             @Override
             public LocalDateTime apply( Object input )
             {
-                return new LocalDateTime( input );
+                return LocalDateTime.parse( input.toString() );
+            }
+        } );
+        registerDeserializer( LocalTime.class, new Function<Object, LocalTime>()
+        {
+            @Override
+            public LocalTime apply( Object input )
+            {
+                return LocalTime.parse( input.toString() );
             }
         } );
         registerDeserializer( LocalDate.class, new Function<Object, LocalDate>()
@@ -290,7 +311,71 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             @Override
             public LocalDate apply( Object input )
             {
-                return new LocalDate( input );
+                return LocalDate.parse( input.toString() );
+            }
+        } );
+        registerDeserializer( Duration.class, new Function<Object, Duration>()
+        {
+            @Override
+            public Duration apply( Object input )
+            {
+                return Duration.parse( input.toString() );
+            }
+        } );
+        registerDeserializer( Instant.class, new Function<Object, Instant>()
+        {
+            @Override
+            public Instant apply( Object input )
+            {
+                return Instant.parse( input.toString() );
+            }
+        } );
+        registerDeserializer( MonthDay.class, new Function<Object, MonthDay>()
+        {
+            @Override
+            public MonthDay apply( Object input )
+            {
+                return MonthDay.parse( input.toString() );
+            }
+        } );
+        registerDeserializer( Period.class, new Function<Object, Period>()
+        {
+            @Override
+            public Period apply( Object input )
+            {
+                return Period.parse( input.toString() );
+            }
+        } );
+        registerDeserializer( Year.class, new Function<Object, Year>()
+        {
+            @Override
+            public Year apply( Object input )
+            {
+                return Year.parse( input.toString() );
+            }
+        } );
+        registerDeserializer( YearMonth.class, new Function<Object, YearMonth>()
+        {
+            @Override
+            public YearMonth apply( Object input )
+            {
+                return YearMonth.parse( input.toString() );
+            }
+        } );
+        registerDeserializer( ZoneId.class, new Function<Object, ZoneId>()
+        {
+            @Override
+            public ZoneId apply( Object input )
+            {
+                return ZoneId.of( input.toString() );
+            }
+        } );
+        registerDeserializer( ZoneOffset.class, new Function<Object, ZoneOffset>()
+        {
+            @Override
+            public ZoneOffset apply( Object input )
+            {
+                return ZoneOffset.of( input.toString() );
             }
         } );
 
@@ -483,8 +568,13 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private <T> T doDeserialize( ValueType valueType, InputType input )
         throws Exception
     {
-        final Class<?> type = first( valueType.types() );
+        Class<?> type = first( valueType.types() );
         // Registered deserializers
+        if( ( !type.equals( ZoneOffset.class ) ) && ZoneId.class.isAssignableFrom( type ) )
+        {
+            type = ZoneId.class;
+        }
+
         if( deserializers.get( type ) != null )
         {
             Object value = readPlainValue( input );

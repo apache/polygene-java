@@ -18,7 +18,7 @@
 
 package org.qi4j.library.alarm;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import org.qi4j.api.injection.scope.Service;
@@ -62,7 +62,7 @@ public interface AlarmEvent
      *
      * @return the timestamp when this event occurred.
      */
-    Property<Date> eventTime();
+    Property<ZonedDateTime> eventTime();
 
     /**
      * Returns the Name of the event.

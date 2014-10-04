@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.delivery;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
@@ -39,7 +39,7 @@ public interface ExpectedHandlingEvent
 
     // Added expected time for the event to happen (compared to the original DDD sample)
     @Optional
-    Property<Date> time();
+    Property<ZonedDateTime> time();
 
     @Optional
     Association<Voyage> voyage();

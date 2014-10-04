@@ -18,6 +18,7 @@
  */
 package org.qi4j.library.scheduler.timeline;
 
+import java.time.Instant;
 import java.util.List;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.Queryable;
@@ -43,7 +44,7 @@ public interface TimelineRecord
     /**
      * @return Timestamp of this record
      */
-    Property<Long> timestamp();
+    Property<Instant> timestamp();
 
     /**
      * @return Name of the associated {@link org.qi4j.library.scheduler.Task}

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.Writer;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -107,7 +108,7 @@ public class EntityResource
         throws ResourceException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Remove entity" );
-        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( usecase, module, System.currentTimeMillis() );
+        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( usecase, module, Instant.now() );
         try
         {
             EntityReference identityRef = EntityReference.parseEntityReference( identity );
@@ -130,7 +131,7 @@ public class EntityResource
     {
         EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Get entity" ),
                                                                module,
-                                                               System.currentTimeMillis() );
+                                                               Instant.now() );
 
         try
         {
@@ -140,7 +141,7 @@ public class EntityResource
             Date lastModified = getRequest().getConditions().getModifiedSince();
             if( lastModified != null )
             {
-                if( lastModified.getTime() / 1000 == entityState.lastModified() / 1000 )
+                if( lastModified.getTime() / 1000 == entityState.lastModified().toEpochMilli() / 1000 )
                 {
                     throw new ResourceException( Status.REDIRECTION_NOT_MODIFIED );
                 }
@@ -187,7 +188,7 @@ public class EntityResource
 
     private Representation entityHeaders( Representation representation, EntityState entityState )
     {
-        representation.setModificationDate( new Date( entityState.lastModified() ) );
+        representation.setModificationDate( new Date( entityState.lastModified().toEpochMilli() ) );
         representation.setTag( new Tag( "" + entityState.version() ) );
         representation.setCharacterSet( CharacterSet.UTF_8 );
         representation.setLanguages( Collections.singletonList( Language.ENGLISH ) );
@@ -354,7 +355,7 @@ public class EntityResource
         throws ResourceException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Update entity" );
-        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, module, System.currentTimeMillis() );
+        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, module, Instant.now() );
         EntityState entity = getEntityState( unitOfWork );
 
         Form form = new Form( entityRepresentation );

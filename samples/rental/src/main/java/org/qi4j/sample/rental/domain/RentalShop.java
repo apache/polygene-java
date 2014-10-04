@@ -20,7 +20,7 @@ package org.qi4j.sample.rental.domain;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,13 +53,13 @@ public interface RentalShop
 
     Booking book( Customer customer, Car car, Period plannedPeriod );
 
-    void pickup( Booking booking, Date time );
+    void pickup( Booking booking, ZonedDateTime time );
 
-    void returned( Booking booking, Date time );
+    void returned( Booking booking, ZonedDateTime time );
 
-    void boughtCar( Car car, Date purchasedate );
+    void boughtCar( Car car, ZonedDateTime purchasedate );
 
-    void soldCar( Car car, Date soldDate );
+    void soldCar( Car car, ZonedDateTime soldDate );
 
     Car createCar( String category, String modelName, String licensePlate );
 
@@ -190,23 +190,23 @@ public interface RentalShop
             return booking;
         }
 
-        public void pickup( Booking booking, Date time )
+        public void pickup( Booking booking, ZonedDateTime time )
         {
             booking.pickedupTime().set( time );
         }
 
-        public void returned( Booking booking, Date time )
+        public void returned( Booking booking, ZonedDateTime time )
         {
             booking.returnedTime().set( time );
         }
 
-        public void boughtCar( Car car, Date purchaseDate )
+        public void boughtCar( Car car, ZonedDateTime purchaseDate )
         {
             state.carsOwned().add( car );
             car.purchasedDate().set( purchaseDate );
         }
 
-        public void soldCar( Car car, Date soldDate )
+        public void soldCar( Car car, ZonedDateTime soldDate )
         {
             state.carsOwned().remove( car );
             car.soldDate().set( soldDate );

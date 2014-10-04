@@ -17,6 +17,7 @@
 package org.qi4j.entitystore.gae;
 
 import com.google.appengine.api.datastore.*;
+import java.time.Instant;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.injection.scope.Service;
@@ -61,7 +62,7 @@ public class GaeEntityStoreMixin
    }
 
     @Override
-   public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
+   public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, Instant currentTime )
    {
        return new GaeEntityStoreUnitOfWork( datastoreService, valueSerialization, generateId(), module, currentTime );
    }
@@ -76,7 +77,7 @@ public class GaeEntityStoreMixin
          {
             final GaeEntityStoreUnitOfWork euow = new GaeEntityStoreUnitOfWork( datastoreService, valueSerialization,
                                                                                 generateId(), module,
-                                                                                System.currentTimeMillis() );
+                                                                                Instant.now() );
             Query query = new Query();
             PreparedQuery q = datastoreService.prepare(query);
             final QueryResultIterable<Entity> iterable = q.asQueryResultIterable();

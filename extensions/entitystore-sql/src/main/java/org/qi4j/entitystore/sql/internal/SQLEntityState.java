@@ -14,6 +14,7 @@
  */
 package org.qi4j.entitystore.sql.internal;
 
+import java.time.Instant;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -124,7 +125,7 @@ public interface SQLEntityState
         }
 
         @Override
-        public long lastModified()
+        public Instant lastModified()
         {
             return state.lastModified();
         }

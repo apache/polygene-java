@@ -17,12 +17,10 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.bootstrap.sampledata;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.RouteSpecification;
@@ -39,6 +37,8 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
  */
 public abstract class BaseData
 {
+    private static final ZonedDateTime TODAY = ZonedDateTime.now().withHour( 0 ).withMinute( 0 ).withSecond( 0 );
+
     protected Module module;
 
     protected static UnLocode AUMEL;
@@ -67,7 +67,11 @@ public abstract class BaseData
         return unlocode.newInstance();
     }
 
-    protected CarrierMovement carrierMovement( Location depLoc, Location arrLoc, Date depTime, Date arrTime )
+    protected CarrierMovement carrierMovement( Location depLoc,
+                                               Location arrLoc,
+                                               ZonedDateTime depTime,
+                                               ZonedDateTime arrTime
+    )
     {
         ValueBuilder<CarrierMovement> carrierMovement = module.newValueBuilder( CarrierMovement.class );
         carrierMovement.prototype().departureLocation().set( depLoc );
@@ -86,7 +90,7 @@ public abstract class BaseData
         return schedule.newInstance();
     }
 
-    protected Leg leg( Voyage voyage, Location load, Location unload, Date loadTime, Date unloadTime )
+    protected Leg leg( Voyage voyage, Location load, Location unload, ZonedDateTime loadTime, ZonedDateTime unloadTime )
     {
         ValueBuilder<Leg> leg = module.newValueBuilder( Leg.class );
         leg.prototype().voyage().set( voyage );
@@ -106,7 +110,7 @@ public abstract class BaseData
         return itinerary.newInstance();
     }
 
-    protected RouteSpecification routeSpecification( Location origin, Location destination, Date deadline )
+    protected RouteSpecification routeSpecification( Location origin, Location destination, ZonedDateTime deadline )
     {
         ValueBuilder<RouteSpecification> routeSpec = module.newValueBuilder( RouteSpecification.class );
         routeSpec.prototype().origin().set( origin );
@@ -115,8 +119,8 @@ public abstract class BaseData
         return routeSpec.newInstance();
     }
 
-    protected static Date day( int days )
+    protected static ZonedDateTime day( int days )
     {
-        return LocalDate.now().plusDays( days ).toDate();
+        return TODAY.plusDays( days );
     }
 }

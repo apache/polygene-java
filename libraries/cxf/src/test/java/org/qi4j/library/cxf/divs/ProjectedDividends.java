@@ -18,8 +18,8 @@
 
 package org.qi4j.library.cxf.divs;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,8 +75,8 @@ public interface ProjectedDividends
             prototype.divPoints().set( divPoints );
             prototype.consolidate().set( "N" );
             prototype.streamName().set( "PRIVATE_niclas" );
-            prototype.systemUpdateTS().set( new Date( 2010, 10, 10 ).toString() );
-            prototype.userUpdateTS().set( new Date( 2010, 10, 10 ).toString() );
+            prototype.systemUpdateTS().set( LocalDate.of( 2010, 10, 10 ).toString() );
+            prototype.userUpdateTS().set( LocalDate.of( 2010, 10, 10 ).toString() );
             prototype.issueId().set( "PC10YZNZC100" );
             prototype.mdSymbol().set( "bt.l" );
             return builder.newInstance();
@@ -99,7 +99,7 @@ public interface ProjectedDividends
             prototype.paydate().set( createRandomDate() );
             prototype.divTypeCD().set( "" );
             prototype.comment().set( "Silly comment" );
-            prototype.updateTS().set( new Date( 2010, 10, 10 ).toString() );
+            prototype.updateTS().set( LocalDate.of( 2010, 10, 10 ).toString() );
             prototype.lastUpdater().set( "niclas" );
             return builder.newInstance();
         }

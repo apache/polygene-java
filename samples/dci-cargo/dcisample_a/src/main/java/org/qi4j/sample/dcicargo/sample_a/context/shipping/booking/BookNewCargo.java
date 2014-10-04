@@ -17,9 +17,9 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.context.shipping.booking;
 
-import java.util.Date;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
-import org.joda.time.DateMidnight;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
@@ -55,7 +55,7 @@ public class BookNewCargo extends Context
     // Methodless Roles
     private Location origin;
     private Location destination;
-    private Date arrivalDeadline;
+    private ZonedDateTime arrivalDeadline;
     private Itinerary itinerary;
 
     // CONTEXT CONSTRUCTORS ------------------------------------------------------
@@ -63,7 +63,7 @@ public class BookNewCargo extends Context
     public BookNewCargo( Cargos cargos,
                          Location origin,
                          Location destination,
-                         Date arrivalDeadline
+                         ZonedDateTime arrivalDeadline
     )
         throws Exception
     {
@@ -86,7 +86,7 @@ public class BookNewCargo extends Context
 
     // Constructor proxies for communication layer
 
-    public BookNewCargo( String originId, String destinationId, Date deadline )
+    public BookNewCargo( String originId, String destinationId, ZonedDateTime deadline )
         throws Exception
     {
         this( loadEntity( CargosEntity.class, CargosEntity.CARGOS_ID ),
@@ -135,7 +135,7 @@ public class BookNewCargo extends Context
 
     // METHODFUL ROLE IMPLEMENTATIONS --------------------------------------------
 
-    @Mixins( CargoFactoryRole.Mixin.class )
+    @Mixins(CargoFactoryRole.Mixin.class)
     public interface CargoFactoryRole
     {
         void setContext( BookNewCargo context );
@@ -166,7 +166,7 @@ public class BookNewCargo extends Context
         }
     }
 
-    @Mixins( RoutingFacadeRole.Mixin.class )
+    @Mixins(RoutingFacadeRole.Mixin.class)
     public interface RoutingFacadeRole
     {
         void setContext( BookNewCargo context );
@@ -212,7 +212,7 @@ public class BookNewCargo extends Context
             public void changeDestination( Location newDestination )
             {
                 Location currentOrigin = cargo.routeSpecification().get().origin().get();
-                Date currentDeadline = cargo.routeSpecification().get().arrivalDeadline().get();
+                ZonedDateTime currentDeadline = cargo.routeSpecification().get().arrivalDeadline().get();
 
                 RouteSpecification newRouteSpecification =
                     context.buildRouteSpecification( vbf, currentOrigin, newDestination, currentDeadline );
@@ -226,7 +226,7 @@ public class BookNewCargo extends Context
     }
 
     public RouteSpecification buildRouteSpecification(
-        ValueBuilderFactory vbf, Location origin, Location destination, Date deadline
+        ValueBuilderFactory vbf, Location origin, Location destination, ZonedDateTime deadline
     )
     {
         if( origin == destination )
@@ -239,12 +239,9 @@ public class BookNewCargo extends Context
             throw new RouteException( "Arrival deadline cannot be null." );
         }
 
-        Date endOfToday = new DateMidnight().plusDays( 1 ).toDate();
-        if( deadline.before( endOfToday ) )
+        if( deadline.isBefore( ZonedDateTime.now().plusDays( 1 ).with( LocalTime.MIDNIGHT ) ) )
         {
-            throw new RouteException( "Arrival deadline is in the past or Today." +
-                                        "\nDeadline           " + deadline +
-                                        "\nToday (midnight)   " + endOfToday );
+            throw new RouteException( "Arrival deadline is in the past or Today: " + deadline );
         }
 
         ValueBuilder<RouteSpecification> routeSpec = vbf.newValueBuilder( RouteSpecification.class );

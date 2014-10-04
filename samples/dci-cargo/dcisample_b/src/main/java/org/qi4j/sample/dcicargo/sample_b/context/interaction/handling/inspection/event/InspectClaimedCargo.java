@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.event;
 
-import java.util.Date;
+import java.time.Instant;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
@@ -38,8 +38,6 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
 
 /**
  * Inspect Claimed Cargo (subfunction use case)
- *
- * This is one the variations of the {@link com.marcgrue.dcisample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus} use case.
  *
  * NOTE: We don't throw any misrouted/misdirected exceptions even though the cargo might not have
  * followed the original itinerary. The cargo has been delivered at destination and claimed by
@@ -106,7 +104,7 @@ public class InspectClaimedCargo extends Context
 
                 ValueBuilder<Delivery> newDeliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = newDeliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.claimEvent );
                 newDelivery.transportStatus().set( CLAIMED );
                 newDelivery.isUnloadedAtDestination().set( false ); // Why not true if claimed in final destination?

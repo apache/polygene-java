@@ -18,8 +18,20 @@ package org.qi4j.library.eventsourcing.application.replay;
 
 import java.lang.reflect.Method;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.qi4j.api.Qi4j;
@@ -53,8 +65,6 @@ public interface ApplicationEventPlayerService
 
         @Structure
         Qi4j api;
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE MMM dd HH:mm:ss zzz yyyy" );
 
         @Override
         public void playEvent( ApplicationEvent applicationEvent, Object object )
@@ -118,9 +128,48 @@ public interface ApplicationEventPlayerService
             } else if (parameterType.equals( Integer.class ) || parameterType.equals( Integer.TYPE ))
             {
                 return ((Number) value).intValue();
-            } else if (parameterType.equals( Date.class ))
+            } else if (parameterType.equals( LocalDate.class ))
             {
-                return dateFormat.parse( (String) value );
+                return LocalDate.parse( (String) value );
+            } else if (parameterType.equals( LocalDateTime.class ))
+            {
+                return LocalDateTime.parse( (String) value );
+            } else if (parameterType.equals( LocalTime.class ))
+            {
+                return LocalTime.parse( (String) value );
+            } else if (parameterType.equals( OffsetTime.class ))
+            {
+                return OffsetTime.parse( (String) value );
+            } else if (parameterType.equals( OffsetDateTime.class ))
+            {
+                return OffsetDateTime.parse( (String) value );
+            } else if (parameterType.equals( ZonedDateTime.class ))
+            {
+                return ZonedDateTime.parse( (String) value );
+            } else if (parameterType.equals( ZoneId.class ))
+            {
+                return ZoneId.of( (String) value );
+            } else if (parameterType.equals( ZoneOffset.class ))
+            {
+                return ZoneOffset.of( (String) value );
+            } else if (parameterType.equals( MonthDay.class ))
+            {
+                return MonthDay.parse( (String) value );
+            } else if (parameterType.equals( YearMonth.class ))
+            {
+                return YearMonth.parse( (String) value );
+            } else if (parameterType.equals( Year.class ))
+            {
+                return Year.parse( (String) value );
+            } else if (parameterType.equals( Instant.class ))
+            {
+                return Instant.parse( (String) value );
+            } else if (parameterType.equals( Duration.class ))
+            {
+                return Duration.parse( (String) value );
+            } else if (parameterType.equals( Period.class ))
+            {
+                return Period.parse( (String) value );
             } else if (ValueComposite.class.isAssignableFrom( parameterType ))
             {
                 return module.newValueFromSerializedState( parameterType, (String) value );

@@ -73,11 +73,13 @@ public class RoutePanel extends Panel
             protected void populateItem( ListItem<Leg> item )
             {
                 Leg leg = item.getModelObject();
+                Date loadTime = new Date( leg.loadTime().get().toInstant().toEpochMilli() );
+                Date unloadTime = new Date( leg.unloadTime().get().toInstant().toEpochMilli() );
                 item.add( new Label( "voyage", leg.voyage().get().toString() ),
                           new Label( "loadLocation", leg.loadLocation().get().getCode() ),
-                          new Label( "loadTime", new Model<Date>( leg.loadTime().get() ) ),
+                          new Label( "loadTime", new Model<Date>( loadTime ) ),
                           new Label( "unloadLocation", leg.unloadLocation().get().getCode() ),
-                          new Label( "unloadTime", new Model<Date>( leg.unloadTime().get() ) )
+                          new Label( "unloadTime", new Model<Date>( unloadTime ) )
                 );
             }
         } );

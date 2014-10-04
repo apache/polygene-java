@@ -19,6 +19,7 @@
  */
 package org.qi4j.spi.entitystore.helpers;
 
+import java.time.Instant;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,14 +53,13 @@ public final class JSONEntityState
         JSONKeys.MODIFIED
     };
 
-    private final DefaultEntityStoreUnitOfWork unitOfWork;
     private final ValueSerialization valueSerialization;
     private final String version;
     private final EntityReference identity;
     private final EntityDescriptor entityDescriptor;
 
     private EntityStatus status;
-    private long lastModified;
+    private Instant lastModified;
     private JSONObject state;
 
     /* package */ JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
@@ -68,8 +68,7 @@ public final class JSONEntityState
                                    EntityDescriptor entityDescriptor,
                                    JSONObject initialState )
     {
-        this( unitOfWork,
-              valueSerialization,
+        this( valueSerialization,
               "",
               unitOfWork.currentTime(),
               identity,
@@ -78,17 +77,15 @@ public final class JSONEntityState
               initialState );
     }
 
-    /* package */ JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
-                                   ValueSerialization valueSerialization,
+    /* package */ JSONEntityState( ValueSerialization valueSerialization,
                                    String version,
-                                   long lastModified,
+                                   Instant lastModified,
                                    EntityReference identity,
                                    EntityStatus status,
                                    EntityDescriptor entityDescriptor,
                                    JSONObject state
     )
     {
-        this.unitOfWork = unitOfWork;
         this.valueSerialization = valueSerialization;
         this.version = version;
         this.lastModified = lastModified;
@@ -106,7 +103,7 @@ public final class JSONEntityState
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
         return lastModified;
     }
@@ -201,10 +198,9 @@ public final class JSONEntityState
                 return null;
             }
 
-            EntityReference value = jsonValue == JSONObject.NULL
+            return jsonValue == JSONObject.NULL
                                     ? null
                                     : EntityReference.parseEntityReference( (String) jsonValue );
-            return value;
         }
         catch( JSONException e )
         {

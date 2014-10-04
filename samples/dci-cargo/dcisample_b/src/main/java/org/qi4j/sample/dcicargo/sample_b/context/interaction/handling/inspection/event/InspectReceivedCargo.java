@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.event;
 
-import java.util.Date;
+import java.time.Instant;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.value.ValueBuilder;
@@ -43,8 +43,6 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
 
 /**
  * Inspect Received Cargo (subfunction use case)
- *
- * This is one the variations of the {@link com.marcgrue.dcisample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus} use case.
  *
  * Note that we consider the cargo still on track if it's received in cargo origin regardless of routing status!
  */
@@ -121,7 +119,7 @@ public class InspectReceivedCargo extends Context
 
                 ValueBuilder<Delivery> newDeliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = newDeliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.receiveEvent );
                 newDelivery.transportStatus().set( IN_PORT );
                 newDelivery.isUnloadedAtDestination().set( false );

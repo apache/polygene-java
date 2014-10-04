@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -50,8 +50,8 @@ public class InspectClaimedCargoTest extends TestApplication
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
-        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, new Date(), deadline = DAY24 );
-        delivery = delivery( TODAY, IN_PORT, ROUTED, leg1 );
+        routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, ZonedDateTime.now(), deadline = DAY24 );
+        delivery = delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Claimed_CARGO" );
         trackingId = cargo.trackingId().get();
     }
@@ -62,7 +62,7 @@ public class InspectClaimedCargoTest extends TestApplication
     {
         // Cargo not routed
         cargo.itinerary().set( null );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, NOT_ROUTED, leg5 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, NOT_ROUTED, leg5 ) );
 
         // Claim in final destination (without itinerary!)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, CLAIM, STOCKHOLM, noVoyage );
@@ -81,7 +81,7 @@ public class InspectClaimedCargoTest extends TestApplication
     {
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, MISROUTED, leg3 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, MISROUTED, leg3 ) );
 
         // Claim in final destination (with wrong itinerary)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY20, DAY20, trackingId, CLAIM, MELBOURNE, noVoyage );
@@ -99,7 +99,7 @@ public class InspectClaimedCargoTest extends TestApplication
     {
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg3 ) );
 
         // Claim in midpoint before arrival at final destination
         // Should this really be considered misdirected?!
@@ -117,7 +117,7 @@ public class InspectClaimedCargoTest extends TestApplication
         throws Exception
     {
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg5 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg5 ) );
 
         // Claim in final destination
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY24, DAY24, trackingId, CLAIM, STOCKHOLM, noVoyage );

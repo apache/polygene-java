@@ -17,7 +17,7 @@
 package org.qi4j.library.eventsourcing.domain.source.helper;
 
 import java.lang.reflect.Method;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import org.qi4j.api.util.Methods;
@@ -50,26 +50,26 @@ public class Events
     }
 
     // Common specifications
-    public static Predicate<UnitOfWorkDomainEventsValue> afterDate( final Date afterDate )
+    public static Predicate<UnitOfWorkDomainEventsValue> afterDate( final ZonedDateTime afterDate )
     {
         return new Predicate<UnitOfWorkDomainEventsValue>()
         {
             @Override
             public boolean test( UnitOfWorkDomainEventsValue eventValue )
             {
-                return eventValue.timestamp().get() > afterDate.getTime();
+                return eventValue.timestamp().get().isAfter( afterDate.toInstant() );
             }
         };
     }
 
-    public static Predicate<UnitOfWorkDomainEventsValue> beforeDate( final Date afterDate )
+    public static Predicate<UnitOfWorkDomainEventsValue> beforeDate( final ZonedDateTime beforeDate )
     {
         return new Predicate<UnitOfWorkDomainEventsValue>()
         {
             @Override
             public boolean test( UnitOfWorkDomainEventsValue eventValue )
             {
-                return eventValue.timestamp().get() < afterDate.getTime();
+                return eventValue.timestamp().get().isBefore( beforeDate.toInstant() );
             }
         };
     }
@@ -81,10 +81,12 @@ public class Events
             @Override
             public boolean test( UnitOfWorkDomainEventsValue eventValue )
             {
-                for (String name : names)
+                for( String name : names )
                 {
-                    if (eventValue.usecase().get().equals( name ))
+                    if( eventValue.usecase().get().equals( name ) )
+                    {
                         return true;
+                    }
                 }
                 return false;
             }
@@ -98,10 +100,12 @@ public class Events
             @Override
             public boolean test( UnitOfWorkDomainEventsValue eventValue )
             {
-                for (String user : by)
+                for( String user : by )
                 {
-                    if (eventValue.user().get().equals( user ))
+                    if( eventValue.user().get().equals( user ) )
+                    {
                         return true;
+                    }
                 }
                 return false;
             }
@@ -115,10 +119,12 @@ public class Events
             @Override
             public boolean test( DomainEventValue eventValue )
             {
-                for (String name : names)
+                for( String name : names )
                 {
-                    if (eventValue.name().get().equals( name ))
+                    if( eventValue.name().get().equals( name ) )
+                    {
                         return true;
+                    }
                 }
                 return false;
             }
@@ -132,10 +138,12 @@ public class Events
             @Override
             public boolean test( DomainEventValue eventValue )
             {
-                for (String name : names)
+                for( String name : names )
                 {
-                    if (eventValue.name().get().equals( name ))
+                    if( eventValue.name().get().equals( name ) )
+                    {
                         return true;
+                    }
                 }
                 return false;
             }
@@ -151,7 +159,7 @@ public class Events
             {
                 return method.getName();
             }
-        }, Iterables.toList( Methods.METHODS_OF.apply( eventClass ) ) ));
+        }, Iterables.toList( Methods.METHODS_OF.apply( eventClass ) ) ) );
     }
 
     public static Predicate<DomainEventValue> onEntities( final String... entities )
@@ -161,10 +169,12 @@ public class Events
             @Override
             public boolean test( DomainEventValue eventValue )
             {
-                for (String entity : entities)
+                for( String entity : entities )
                 {
-                    if (eventValue.entityId().get().equals( entity ))
+                    if( eventValue.entityId().get().equals( entity ) )
+                    {
                         return true;
+                    }
                 }
                 return false;
             }
@@ -178,10 +188,12 @@ public class Events
             @Override
             public boolean test( DomainEventValue eventValue )
             {
-                for (String entityType : entityTypes)
+                for( String entityType : entityTypes )
                 {
-                    if (eventValue.entityType().get().equals( entityType ))
+                    if( eventValue.entityType().get().equals( entityType ) )
+                    {
                         return true;
+                    }
                 }
                 return false;
             }

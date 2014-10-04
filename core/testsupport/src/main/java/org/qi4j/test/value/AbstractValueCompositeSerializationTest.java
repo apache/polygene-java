@@ -19,13 +19,13 @@ package org.qi4j.test.value;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -164,10 +164,10 @@ public abstract class AbstractValueCompositeSerializationTest
         proto.string().set( "Foo\"Bar\"\nTest\t" );
         proto.string2().set( "/Foo/bar" );
         proto.number().set( 42L );
-        proto.date().set( new Date() );
-        proto.dateTime().set( new DateTime() );
-        proto.localDate().set( new LocalDate() );
-        proto.localDateTime().set( new LocalDateTime() );
+        proto.date().set( OffsetDateTime.now() );
+        proto.dateTime().set( ZonedDateTime.now());
+        proto.localDate().set( LocalDate.now() );
+        proto.localDateTime().set( LocalDateTime.now() );
         proto.entityReference().set( EntityReference.parseEntityReference( "12345" ) );
         proto.stringIntMap().get().put( "foo", 42 );
 
@@ -239,9 +239,9 @@ public abstract class AbstractValueCompositeSerializationTest
         @UseDefaults
         Property<Long> number();
 
-        Property<Date> date();
+        Property<OffsetDateTime> date();
 
-        Property<DateTime> dateTime();
+        Property<ZonedDateTime> dateTime();
 
         Property<LocalDate> localDate();
 

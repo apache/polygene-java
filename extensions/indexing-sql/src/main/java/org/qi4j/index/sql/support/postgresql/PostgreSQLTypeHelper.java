@@ -22,7 +22,12 @@ import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.ZonedDateTime;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -41,10 +46,11 @@ public interface PostgreSQLTypeHelper
     /**
      * Adds the specified object at specified index in specified prepared statement.
      *
-     * @param ps The prepared statement.
-     * @param index The index for the object to be inserted in prepared statemtent ({@code > 0}).
-     * @param primitive The object to insert.
+     * @param ps            The prepared statement.
+     * @param index         The index for the object to be inserted in prepared statemtent ({@code > 0}).
+     * @param primitive     The object to insert.
      * @param primitiveType The type of object.
+     *
      * @throws SQLException If something underlying throws it.
      */
     void addPrimitiveToPS( PreparedStatement ps, Integer index, @Optional Object primitive, Type primitiveType )
@@ -66,13 +72,33 @@ public interface PostgreSQLTypeHelper
                 if( primitive instanceof Character )
                 {
                     primitive = Character.codePointAt( new char[]
-                    {
-                        (Character) primitive
-                    }, 0 );
+                                                           {
+                                                               (Character) primitive
+                                                           }, 0 );
                 }
-                else if( primitive instanceof Date )
+                else if( primitive instanceof OffsetDateTime )
                 {
-                    primitive = new Timestamp( ( (Date) primitive ).getTime() );
+                    // TODO = Don't know SQL well enough to figure this out
+                }
+                else if( primitive instanceof OffsetTime )
+                {
+                    // TODO = Don't know SQL well enough to figure this out
+                }
+                else if( primitive instanceof LocalDateTime )
+                {
+                    // TODO = Don't know SQL well enough to figure this out
+                }
+                else if( primitive instanceof LocalTime )
+                {
+                    // TODO = Don't know SQL well enough to figure this out
+                }
+                else if( primitive instanceof LocalDate )
+                {
+                    // TODO = Don't know SQL well enough to figure this out
+                }
+                else if( primitive instanceof ZonedDateTime )
+                {
+                    primitive = new Timestamp( ( (ZonedDateTime) primitive ).toInstant().toEpochMilli() );
                 }
                 else if( primitive instanceof Byte )
                 {
@@ -125,5 +151,4 @@ public interface PostgreSQLTypeHelper
             return sqlType;
         }
     }
-
 }

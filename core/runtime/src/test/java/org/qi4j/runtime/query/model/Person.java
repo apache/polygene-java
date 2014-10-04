@@ -17,7 +17,7 @@
  */
 package org.qi4j.runtime.query.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.qi4j.api.association.Association;
@@ -48,7 +48,7 @@ public interface Person
     Property<String> email();
 
     @Optional
-    Property<Map<Date, String>> datesToRemember();
+    Property<Map<LocalDate, String>> datesToRemember();
 
     @Optional
     Property<List<String>> tags();

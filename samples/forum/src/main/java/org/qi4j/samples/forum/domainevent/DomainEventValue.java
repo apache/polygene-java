@@ -1,5 +1,6 @@
 package org.qi4j.samples.forum.domainevent;
 
+import java.time.Instant;
 import java.util.List;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.property.Property;
@@ -15,7 +16,7 @@ public interface DomainEventValue
     Property<String> version();
 
     // When the event occurred
-    Property<Long> timestamp();
+    Property<Instant> timestamp();
 
     // Selected objects
     @UseDefaults

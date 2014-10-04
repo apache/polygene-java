@@ -18,7 +18,7 @@
 
 package org.qi4j.library.alarm;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import org.qi4j.api.common.Optional;
@@ -60,7 +60,7 @@ public interface AlarmStatus extends ValueComposite
          * @return the timestamp of when the state was created.
          */
         @Optional
-        Property<Date> creationDate();
+        Property<ZonedDateTime> creationDate();
 
         /**
          * Returns the Name of the AlarmStatus.
@@ -101,7 +101,7 @@ public interface AlarmStatus extends ValueComposite
         {
             if( state.creationDate().get() == null )
             {
-                state.creationDate().set( new Date() );
+                state.creationDate().set( ZonedDateTime.now() );
             }
         }
     }

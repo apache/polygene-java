@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.test.handling.inspection.event;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -68,7 +68,7 @@ public class InspectLoadedCargoTest extends TestApplication
         HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
         // Create new cargo
         RouteSpecification routeSpec = routeSpecFactory.build( HONGKONG, STOCKHOLM, TODAY, deadline = DAY24 );
-        Delivery delivery = delivery( TODAY, IN_PORT, ROUTED, leg1 );
+        Delivery delivery = delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Loaded_CARGO" );
         trackingId = cargo.trackingId().get();
 //        delivery = cargo.delivery().get();
@@ -79,7 +79,7 @@ public class InspectLoadedCargoTest extends TestApplication
         throws Exception
     {
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg1 ) );
 
         // V202 doesn't expect a load in Hongkong - can't determine much more before we get a correct voyage schedule
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, LOAD, HONGKONG, V202 );
@@ -105,7 +105,7 @@ public class InspectLoadedCargoTest extends TestApplication
         deviation_2a_WrongCarrierSchedule();
 
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg1 ) );
 
         //
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, LOAD, HONGKONG, V201 );
@@ -123,7 +123,7 @@ public class InspectLoadedCargoTest extends TestApplication
         deviation_2a_CarrierOnTime_ArrivalDate_Planned();
 
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg1 ) );
 
         //
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY2, DAY2, trackingId, LOAD, HONGKONG, V201 );
@@ -142,7 +142,7 @@ public class InspectLoadedCargoTest extends TestApplication
 
         // Cargo not routed
         cargo.itinerary().set( null );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, NOT_ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, NOT_ROUTED, leg1 ) );
 
         // Load cargo in Hong Kong (without an itinerary!)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, LOAD, HONGKONG, V201 );
@@ -169,7 +169,7 @@ public class InspectLoadedCargoTest extends TestApplication
 
         // Misroute cargo - assign unsatisfying itinerary not going to Stockholm
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, MISROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, MISROUTED, leg1 ) );
 
         // Load cargo in Hong Kong (with wrong itinerary)
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, LOAD, HONGKONG, V201 );
@@ -196,7 +196,7 @@ public class InspectLoadedCargoTest extends TestApplication
         deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Origin();
 
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, MISROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, MISROUTED, leg1 ) );
 
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, LOAD, NEWYORK, V201 );
         thrown.expect( CargoMisroutedException.class, "MISROUTED! Route specification is not satisfied with itinerary" );
@@ -210,7 +210,7 @@ public class InspectLoadedCargoTest extends TestApplication
         deviation_3b_Misrouted_LoadLocationOfWrongItinerary_Midpoint();
 
         cargo.itinerary().set( wrongItinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, MISROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, MISROUTED, leg1 ) );
 
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, LOAD, ROTTERDAM, V205 );
         thrown.expect( CargoMisroutedException.class, "MISROUTED! Route specification is not satisfied with itinerary" );
@@ -225,7 +225,7 @@ public class InspectLoadedCargoTest extends TestApplication
 
         // Assign satisfying route going to Stockholm
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg1 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg1 ) );
 
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, LOAD, HONGKONG, V201 );
         new InspectLoadedCargo( cargo, handlingEvent ).inspect();
@@ -270,7 +270,7 @@ public class InspectLoadedCargoTest extends TestApplication
 
         // Move the cargo ahead on the route. Third leg of itinerary expects load in Dallas.
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg3 ) );
 
         // Unexpected load in previous load location of itinerary (onto expected voyage) - can't go back in time.
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY7, DAY5, trackingId, LOAD, ROTTERDAM, V202 );
@@ -296,7 +296,7 @@ public class InspectLoadedCargoTest extends TestApplication
         deviation_4a_Misdirected_UnexpectedLoadLocation();
 
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg3 ) );
 
         // Unexpected load onto previous voyage (in expected location) - can't go back in time.
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY7, DAY7, trackingId, LOAD, NEWYORK, V201 );
@@ -322,7 +322,7 @@ public class InspectLoadedCargoTest extends TestApplication
         deviation_4b_Misdirected_UnexpectedLoadVoyage_PreviousInItinerary();
 
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg3 ) );
 
         // Unexpected load onto future voyage (in expected location) - can't jump ahead in route plan.
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY7, DAY7, trackingId, LOAD, NEWYORK, V203 );
@@ -337,7 +337,7 @@ public class InspectLoadedCargoTest extends TestApplication
         deviation_4b_Misdirected_UnexpectedLoadVoyage_NextInItinerary();
 
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg3 ) );
 
         // Unexpected load onto voyage not in itinerary
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY7, DAY7, trackingId, LOAD, NEWYORK, V204 );
@@ -352,7 +352,7 @@ public class InspectLoadedCargoTest extends TestApplication
         deviation_4b_Misdirected_UnexpectedLoadVoyage_VoyageNotInItinerary();
 
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg3 ) );
 
         // Unexpected load onto voyage not in itinerary - but the carrier is going to our expected arrival location!
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY9, DAY9, trackingId, LOAD, NEWYORK, V205 );
@@ -378,7 +378,7 @@ public class InspectLoadedCargoTest extends TestApplication
         deviation_4c_Misdirected_UnexpectedLoadVoyage_Unplanned_ButGoingToWantedLocation();
 
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg3 ) );
 
         // Unexpected voyage schedule change
         V202 = voyage( "V202", schedule(
@@ -412,7 +412,7 @@ public class InspectLoadedCargoTest extends TestApplication
         deviation_4d_Misdirected_ExpectedLoadVoyage_UnexpectedNewVoyageSchedule();
 
         cargo.itinerary().set( itinerary );
-        cargo.delivery().set( delivery( TODAY, IN_PORT, ROUTED, leg3 ) );
+        cargo.delivery().set( delivery( TODAY.toInstant(), IN_PORT, ROUTED, leg3 ) );
 
         // Restore expected voyage schedule change
         V202 = voyage( "V202", schedule(
@@ -444,8 +444,8 @@ public class InspectLoadedCargoTest extends TestApplication
         success_Load();
 
         // Risk zone destination
-        routeSpec = routeSpecFactory.build( HANGZHOU, ROTTERDAM, new Date(), deadline = DAY24 );
-        delivery = delivery( TODAY, ONBOARD_CARRIER, ROUTED, leg1 );
+        routeSpec = routeSpecFactory.build( HANGZHOU, ROTTERDAM, ZonedDateTime.now(), deadline = DAY24 );
+        delivery = delivery( TODAY.toInstant(), ONBOARD_CARRIER, ROUTED, leg1 );
         cargo = CARGOS.createCargo( routeSpec, delivery, "Naive" );
         trackingId = cargo.trackingId().get();
         itinerary = itinerary(

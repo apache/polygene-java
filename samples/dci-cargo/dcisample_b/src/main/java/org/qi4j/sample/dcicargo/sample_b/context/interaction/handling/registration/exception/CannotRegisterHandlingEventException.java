@@ -17,8 +17,6 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.registration.exception;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
 import org.qi4j.sample.dcicargo.sample_b.data.structure.handling.HandlingEvent;
 
@@ -41,7 +39,7 @@ public class CannotRegisterHandlingEventException extends Exception
         super();
         this.parsedHandlingEventData = parsedHandlingEventData;
 
-        time = parseDate( parsedHandlingEventData.completionTime().get() );
+        time = parsedHandlingEventData.completionTime().get().toString();
         id = parse( parsedHandlingEventData.trackingIdString().get() );
         type = parse( parsedHandlingEventData.handlingEventType().get().name() );
         unloc = parse( parsedHandlingEventData.unLocodeString().get() );
@@ -56,10 +54,5 @@ public class CannotRegisterHandlingEventException extends Exception
     private String parse( String str )
     {
         return str == null ? "null" : str;
-    }
-
-    private String parseDate( Date date )
-    {
-        return date == null ? "null" : new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" ).format( date );
     }
 }

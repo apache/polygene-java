@@ -18,7 +18,7 @@
  */
 package org.qi4j.library.scheduler;
 
-import org.joda.time.DateTime;
+import java.time.Instant;
 import org.qi4j.api.concern.Concerns;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.unitofwork.concern.UnitOfWorkConcern;
@@ -67,7 +67,7 @@ public interface Scheduler
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleOnce( Task task, DateTime runAt, boolean durable );
+    Schedule scheduleOnce( Task task, Instant runAt, boolean durable );
 
     /**
      * Schedule a Task using a CronExpression.
@@ -105,5 +105,5 @@ public interface Scheduler
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleCron( Task task, @CronExpression String cronExpression, DateTime start, boolean durable );
+    Schedule scheduleCron( Task task, @CronExpression String cronExpression, Instant start, boolean durable );
 }

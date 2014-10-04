@@ -2,8 +2,12 @@ package org.qi4j.library.rest.server.restlet.requestreader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 import org.qi4j.api.association.AssociationDescriptor;
@@ -15,7 +19,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDeserializer;
@@ -446,9 +449,25 @@ public class DefaultRequestReader
                     arg = Boolean.valueOf( argString );
                 }
             }
-            else if( Date.class.isAssignableFrom( parameterType ) )
+            else if( LocalDate.class.isAssignableFrom( parameterType ) )
             {
-                arg = Dates.fromString( argString );
+                arg = LocalDate.parse( argString );
+            }
+            else if( LocalTime.class.isAssignableFrom( parameterType ) )
+            {
+                arg = LocalTime.parse( argString );
+            }
+            else if( LocalDateTime.class.isAssignableFrom( parameterType ) )
+            {
+                arg = LocalDateTime.parse( argString );
+            }
+            else if( ZonedDateTime.class.isAssignableFrom( parameterType ) )
+            {
+                arg = ZonedDateTime.parse( argString );
+            }
+            else if( OffsetDateTime.class.isAssignableFrom( parameterType ) )
+            {
+                arg = OffsetDateTime.parse( argString );
             }
             else if( parameterType.isInterface() )
             {

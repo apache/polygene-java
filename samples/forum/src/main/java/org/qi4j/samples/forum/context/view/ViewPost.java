@@ -1,6 +1,6 @@
 package org.qi4j.samples.forum.context.view;
 
-import java.util.Date;
+import java.time.ZoneId;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.Numbers;
@@ -51,7 +51,7 @@ public class ViewPost
             Post post = module.currentUnitOfWork().newEntity( Post.class );
             post.message().set( message );
             post.createdBy().set( poster.self() );
-            post.createdOn().set( new Date( module.currentUnitOfWork().currentTime() ) );
+            post.createdOn().set( module.currentUnitOfWork().currentTime().atZone( ZoneId.systemDefault() ) );
             post.replyTo().set( viewPost.self() );
 
             self().lastPost().set( post );

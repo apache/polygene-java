@@ -18,6 +18,10 @@
 package org.qi4j.sample.dcicargo.sample_b.communication.web.handling;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -30,8 +34,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.value.ValueMap;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.qi4j.sample.dcicargo.sample_b.communication.query.CommonQueries;
 import org.qi4j.sample.dcicargo.sample_b.communication.query.HandlingQueries;
 import org.qi4j.sample.dcicargo.sample_b.communication.web.BasePage;
@@ -81,7 +83,7 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
         FeedbackPanel feedback;
 
         // Form values
-        Date completion;
+        ZonedDateTime completion;
         String trackingId, unLocode, voyageNumber, eventType;
 
         // Input
@@ -100,7 +102,7 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
             // Completion time
 
             final DateTextFieldWithPicker completionDateInput = new DateTextFieldWithPicker( "completion", "Completion", this );
-            completionDateInput.earliestDate( new LocalDate() );
+            completionDateInput.earliestDate( LocalDate.now() );
             add( completionDateInput.setLabel( Model.of( "Completion" ) ) );
 
             HandlingQueries fetch = new HandlingQueries();
@@ -198,7 +200,7 @@ public class IncidentLoggingApplicationMockupPage extends BasePage
 
                         // We simulate receiving raw text data from incident logging applications
                         // Add current time to date to have same-dates in processing order (would register full time in real app)
-                        Date adjustedCompletion = new Date( completion.getTime() + new DateTime().getMillisOfDay() );
+                        Date adjustedCompletion = new Date( completion.toInstant().toEpochMilli() );
                         String completionTimeString = new SimpleDateFormat( "yyyy-MM-dd HH:mm" ).format( adjustedCompletion );
 
                         // Parse "incoming" data (step 1 of ProcessHandlingEvent use case)

@@ -15,7 +15,7 @@
  */
 package org.qi4j.library.scheduler.schedule;
 
-import org.joda.time.DateTime;
+import java.time.Instant;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -33,9 +33,9 @@ import org.slf4j.LoggerFactory;
 @Mixins( ScheduleFactory.Mixin.class )
 public interface ScheduleFactory
 {
-    Schedule newCronSchedule( Task task, String cronExpression, DateTime start, boolean durable );
+    Schedule newCronSchedule( Task task, String cronExpression, Instant start, boolean durable );
 
-    Schedule newOnceSchedule( Task task, DateTime runAt, boolean durable );
+    Schedule newOnceSchedule( Task task, Instant runAt, boolean durable );
 
     class Mixin
         implements ScheduleFactory
@@ -49,7 +49,7 @@ public interface ScheduleFactory
         private SchedulerService scheduler;
 
         @Override
-        public CronSchedule newCronSchedule( Task task, String cronExpression, DateTime start, boolean durable )
+        public CronSchedule newCronSchedule( Task task, String cronExpression, Instant start, boolean durable )
         {
             if( durable )
             {
@@ -59,7 +59,7 @@ public interface ScheduleFactory
         }
 
         @Override
-        public Schedule newOnceSchedule( Task task, DateTime runAt, boolean durable )
+        public Schedule newOnceSchedule( Task task, Instant runAt, boolean durable )
         {
             if( durable )
             {
@@ -68,7 +68,7 @@ public interface ScheduleFactory
             return newTransientOnceSchedule( task, runAt );
         }
 
-        private CronSchedule newTransientCronSchedule( Task task, String cronExpression, DateTime start )
+        private CronSchedule newTransientCronSchedule( Task task, String cronExpression, Instant start )
         {
             ValueBuilder<CronSchedule> builder = module.newValueBuilder( CronSchedule.class );
             CronSchedule prototype = builder.prototype();
@@ -80,7 +80,7 @@ public interface ScheduleFactory
             return schedule;
         }
 
-        private CronSchedule newPersistentCronSchedule( Task task, String cronExpression, DateTime start )
+        private CronSchedule newPersistentCronSchedule( Task task, String cronExpression, Instant start )
         {
             UnitOfWork uow = module.currentUnitOfWork();
             EntityBuilder<CronSchedule> builder = uow.newEntityBuilder( CronSchedule.class );
@@ -93,7 +93,7 @@ public interface ScheduleFactory
             return schedule;
         }
 
-        private Schedule newTransientOnceSchedule( Task task, DateTime runAt )
+        private Schedule newTransientOnceSchedule( Task task, Instant runAt )
         {
             ValueBuilder<OnceSchedule> builder = module.newValueBuilder( OnceSchedule.class );
             OnceSchedule builderInstance = builder.prototype();
@@ -104,7 +104,7 @@ public interface ScheduleFactory
             return schedule;
         }
 
-        private Schedule newPersistentOnceSchedule( Task task, DateTime runAt )
+        private Schedule newPersistentOnceSchedule( Task task, Instant runAt )
         {
             UnitOfWork uow = module.currentUnitOfWork();
             EntityBuilder<OnceSchedule> builder = uow.newEntityBuilder( OnceSchedule.class );

@@ -16,13 +16,15 @@
  */
 package org.qi4j.library.scheduler.schedule;
 
+import java.time.Instant;
+
 public final class ScheduleTime
     implements Comparable<ScheduleTime>
 {
     public String scheduleIdentity;
-    public long nextTime;
+    public Instant nextTime;
 
-    public ScheduleTime( String scheduleIdentity, long nextTime )
+    public ScheduleTime( String scheduleIdentity, Instant nextTime )
     {
         if( scheduleIdentity == null )
         {
@@ -43,38 +45,45 @@ public final class ScheduleTime
         {
             return false;
         }
+
         ScheduleTime that = (ScheduleTime) o;
-        if( nextTime != that.nextTime )
+
+        if( nextTime != null ? !nextTime.equals( that.nextTime ) : that.nextTime != null )
         {
             return false;
         }
-        return scheduleIdentity.equals( that.scheduleIdentity );
+        if( !scheduleIdentity.equals( that.scheduleIdentity ) )
+        {
+            return false;
+        }
+
+        return true;
     }
 
     @Override
     public int hashCode()
     {
         int result = scheduleIdentity.hashCode();
-        result = 31 * result + (int) ( nextTime ^ ( nextTime >>> 32 ) );
+        result = 31 * result + ( nextTime != null ? nextTime.hashCode() : 0 );
         return result;
     }
 
     @Override
     public int compareTo( ScheduleTime another )
     {
-        if( this.nextTime < another.nextTime )
+        if( this.nextTime.isBefore( another.nextTime ) )
         {
             return -1;
         }
         else
         {
-            if( this.nextTime == another.nextTime )
+            if( this.nextTime.isAfter( another.nextTime ) )
             {
-                return 0;
+                return 1;
             }
             else
             {
-                return 1;
+                return 0;
             }
         }
     }

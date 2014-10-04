@@ -15,6 +15,7 @@
  */
 package org.qi4j.runtime.structure;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -59,20 +60,6 @@ import static org.qi4j.functional.Iterables.first;
 public class ModuleUnitOfWork
     implements UnitOfWork
 {
-//    private static final QualifiedName IDENTITY_STATE_NAME;
-//
-//    static
-//    {
-//        try
-//        {
-//            IDENTITY_STATE_NAME = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
-//        }
-//        catch( NoSuchMethodException e )
-//        {
-//            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
-//        }
-//    }
-//
     private final UnitOfWorkInstance uow;
     private final ModuleInstance moduleInstance;
 
@@ -99,7 +86,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    public long currentTime()
+    public Instant currentTime()
     {
         return uow.currentTime();
     }

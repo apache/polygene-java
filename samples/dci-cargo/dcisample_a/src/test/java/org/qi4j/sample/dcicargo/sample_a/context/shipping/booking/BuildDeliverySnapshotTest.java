@@ -17,7 +17,8 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.context.shipping.booking;
 
-import java.util.Date;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -37,9 +38,16 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.itinerary.Itinerary;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.location.Location;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.qi4j.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.qi4j.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType.CLAIM;
+import static org.qi4j.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType.CUSTOMS;
+import static org.qi4j.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType.LOAD;
+import static org.qi4j.sample.dcicargo.sample_a.data.shipping.handling.HandlingEventType.UNLOAD;
 
 /**
  * Tests of the Build Delivery Snapshot subfunction use case.
@@ -53,9 +61,9 @@ import static org.qi4j.sample.dcicargo.sample_a.data.shipping.handling.HandlingE
  * FIXME: Test methods call each other to allow ordered execution, ie. tests are not indepedants !
  */
 public class BuildDeliverySnapshotTest
-      extends TestApplication
+    extends TestApplication
 {
-    final Date TODAY = new Date();
+    final ZonedDateTime TODAY = ZonedDateTime.now().with( LocalTime.MIDNIGHT );
 
     private Location HONGKONG;
     private Location STOCKHOLM;
@@ -105,51 +113,55 @@ public class BuildDeliverySnapshotTest
             leg( V200T, NEWYORK, DALLAS, day( 9 ), day( 12 ) ),
             leg( V300A, DALLAS, STOCKHOLM, day( 13 ), day( 16 ) )
         );
-
-
     }
 
     // DERIVE WITH ROUTE SPECIFICATION ==============================================================================
 
-    @Test( expected = RouteException.class )
-    public void deviation_2a_InvalidRouteSpecification_sameLocations() throws Exception
+    @Test(expected = RouteException.class)
+    public void deviation_2a_InvalidRouteSpecification_sameLocations()
+        throws Exception
     {
         RouteSpecification routeSpec = routeSpecification( HONGKONG, HONGKONG, day( 20 ) );
         new BuildDeliverySnapshot( routeSpec ).get();
     }
 
-    @Test( expected = RouteException.class )
-    public void deviation_2b_InvalidRouteSpecification_tooEarlyDeadline() throws Exception
+    @Test(expected = RouteException.class)
+    public void deviation_2b_InvalidRouteSpecification_tooEarlyDeadline()
+        throws Exception
     {
         RouteSpecification routeSpec = routeSpecification( HONGKONG, STOCKHOLM, TODAY );
         new BuildDeliverySnapshot( routeSpec ).get();
     }
 
     @Test
-    public void deviation_2c_ItineraryIsUnknown_buildFromRouteSpecification() throws Exception
+    public void deviation_2c_ItineraryIsUnknown_buildFromRouteSpecification()
+        throws Exception
     {
         RouteSpecification routeSpec = routeSpecification( HONGKONG, STOCKHOLM, day( 20 ) );
         Delivery delivery = new BuildDeliverySnapshot( routeSpec ).get();
 
-        assertThat( delivery.timestamp().get().after( TODAY ), is( equalTo( true ) ) ); // TODAY is set first
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.NOT_ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.NOT_RECEIVED ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( HONGKONG ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( null ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( null ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( null ) ) );
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
+        assertThat( delivery.timestamp().get().isAfter( TODAY.toInstant() ), equalTo( true ) ); // TODAY is set first
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.NOT_ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.NOT_RECEIVED ) );
+        assertThat( delivery.nextExpectedHandlingEvent()
+                        .get()
+                        .handlingEventType()
+                        .get(), equalTo( HandlingEventType.RECEIVE ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), equalTo( HONGKONG ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), nullValue() );
+        assertThat( delivery.lastHandlingEvent().get(), nullValue() );
+        assertThat( delivery.lastKnownLocation().get(), nullValue() );
+        assertThat( delivery.currentVoyage().get(), nullValue() );
+        assertThat( delivery.eta().get(), nullValue() );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( false ) );
     }
-
 
     // DERIVE WITH NON-ROUTED CARGO ==============================================================================
 
     @Test
-    public void deviation_2c_ItineraryIsUnknown_buildFromNonRoutedCargo() throws Exception
+    public void deviation_2c_ItineraryIsUnknown_buildFromNonRoutedCargo()
+        throws Exception
     {
         deviation_2c_ItineraryIsUnknown_buildFromRouteSpecification();
 
@@ -160,25 +172,28 @@ public class BuildDeliverySnapshotTest
         Cargo cargo = CARGOS.createCargo( routeSpec, delivery, "ABCD" );
 
         // Same as previous test (just build from cargo instead)
-        assertThat( delivery.timestamp().get().after( TODAY ), is( equalTo( true ) ) ); // TODAY is set first
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.NOT_ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.NOT_RECEIVED ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( HONGKONG ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( null ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( null ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( null ) ) );
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
+        assertThat( delivery.timestamp().get().isAfter( TODAY.toInstant() ), equalTo( true ) ); // TODAY is set first
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.NOT_ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.NOT_RECEIVED ) );
+        assertThat( delivery.nextExpectedHandlingEvent()
+                        .get()
+                        .handlingEventType()
+                        .get(), equalTo( HandlingEventType.RECEIVE ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), equalTo( HONGKONG ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), nullValue() );
+        assertThat( delivery.lastHandlingEvent().get(), nullValue() );
+        assertThat( delivery.lastKnownLocation().get(), nullValue() );
+        assertThat( delivery.currentVoyage().get(), nullValue() );
+        assertThat( delivery.eta().get(), nullValue() );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( false ) );
     }
-
 
     // DERIVE WITH ROUTE SPECIFICATION + ITINERARY (Routed cargo) ==============================================
 
     @Test
-    public void deviation_2d_UnsatisfyingItinerary_wrongOrigin() throws Exception
+    public void deviation_2d_UnsatisfyingItinerary_wrongOrigin()
+        throws Exception
     {
         deviation_2c_ItineraryIsUnknown_buildFromNonRoutedCargo();
 
@@ -195,12 +210,13 @@ public class BuildDeliverySnapshotTest
         Delivery delivery = new BuildDeliverySnapshot( cargo ).get();
 
         // Route specification not satisfied by itinerary
-        assertThat( itinerary.firstLeg().loadLocation().get(), is( not( equalTo( routeSpec.origin().get() ) ) ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.MISROUTED ) ) );
+        assertThat( itinerary.firstLeg().loadLocation().get(), not( equalTo( routeSpec.origin().get() ) ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.MISROUTED ) );
     }
 
     @Test
-    public void deviation_2d_UnsatisfyingItinerary_wrongDestination() throws Exception
+    public void deviation_2d_UnsatisfyingItinerary_wrongDestination()
+        throws Exception
     {
         deviation_2d_UnsatisfyingItinerary_wrongOrigin();
 
@@ -210,12 +226,13 @@ public class BuildDeliverySnapshotTest
         Delivery delivery = new BuildDeliverySnapshot( cargo ).get();
 
         // Route specification not satisfied by itinerary
-        assertThat( itinerary.lastLeg().unloadLocation().get(), is( not( equalTo( routeSpec.destination().get() ) ) ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.MISROUTED ) ) );
+        assertThat( itinerary.lastLeg().unloadLocation().get(), not( equalTo( routeSpec.destination().get() ) ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.MISROUTED ) );
     }
 
     @Test
-    public void deviation_2d_UnsatisfyingItinerary_missedDeadline() throws Exception
+    public void deviation_2d_UnsatisfyingItinerary_missedDeadline()
+        throws Exception
     {
         deviation_2d_UnsatisfyingItinerary_wrongDestination();
 
@@ -225,46 +242,50 @@ public class BuildDeliverySnapshotTest
         Delivery delivery = new BuildDeliverySnapshot( cargo ).get();
 
         // Route specification not satisfied by itinerary
-        assertFalse( routeSpec.arrivalDeadline().get().after( itinerary.finalArrivalDate() ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.MISROUTED ) ) );
+        assertFalse( routeSpec.arrivalDeadline().get().isAfter( itinerary.finalArrivalDate() ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.MISROUTED ) );
     }
 
     @Test
-    public void deviation_3a_CargoHasNoHandlingHistory() throws Exception
+    public void deviation_3a_CargoHasNoHandlingHistory()
+        throws Exception
     {
         deviation_2d_UnsatisfyingItinerary_missedDeadline();
 
-        Date arrival = day( 16 );
-        Date deadline = day( 20 );
+        ZonedDateTime arrival = day( 16 );
+        ZonedDateTime deadline = day( 20 );
         // Itinerary will satisfy route specification
         RouteSpecification routeSpec = routeSpecification( HONGKONG, STOCKHOLM, deadline );
         cargo.routeSpecification().set( routeSpec );
         Delivery delivery = new BuildDeliverySnapshot( cargo ).get();
 
         // Route specification satisfied by itinerary
-        assertThat( itinerary.firstLeg().loadLocation().get(), is( equalTo( routeSpec.origin().get() ) ) );
-        assertThat( itinerary.lastLeg().unloadLocation().get(), is( equalTo( routeSpec.destination().get() ) ) );
-        assertTrue( routeSpec.arrivalDeadline().get().after( itinerary.finalArrivalDate() ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
+        assertThat( itinerary.firstLeg().loadLocation().get(), equalTo( routeSpec.origin().get() ) );
+        assertThat( itinerary.lastLeg().unloadLocation().get(), equalTo( routeSpec.destination().get() ) );
+        assertTrue( routeSpec.arrivalDeadline().get().isAfter( itinerary.finalArrivalDate() ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
 
-        assertThat( delivery.timestamp().get().after( TODAY ), is( equalTo( true ) ) ); // TODAY is set first
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.NOT_RECEIVED ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( HandlingEventType.RECEIVE ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( HONGKONG ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( null ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( null ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( arrival ) ) );
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
+        assertThat( delivery.timestamp().get().isAfter( TODAY.toInstant() ), equalTo( true ) ); // TODAY is set first
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.NOT_RECEIVED ) );
+        assertThat( delivery.nextExpectedHandlingEvent()
+                        .get()
+                        .handlingEventType()
+                        .get(), equalTo( HandlingEventType.RECEIVE ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), equalTo( HONGKONG ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), nullValue() );
+        assertThat( delivery.lastHandlingEvent().get(), nullValue() );
+        assertThat( delivery.lastKnownLocation().get(), nullValue() );
+        assertThat( delivery.currentVoyage().get(), nullValue() );
+        assertThat( delivery.eta().get(), equalTo( arrival ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( false ) );
     }
-
 
     // DERIVE WITH ROUTE SPECIFICATION + ITINERARY + LAST HANDLING EVENT ============================================
 
     @Test
-    public void deviation_4a_RECEIVE_1a_UnexpectedPort() throws Exception
+    public void deviation_4a_RECEIVE_1a_UnexpectedPort()
+        throws Exception
     {
         deviation_3a_CargoHasNoHandlingHistory();
 
@@ -275,22 +296,23 @@ public class BuildDeliverySnapshotTest
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
         // We don't know what's next for a misdirected cargo
-        assertThat( delivery.isMisdirected().get(), is( equalTo( true ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( null ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( true ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get(), nullValue() );
+        assertThat( delivery.eta().get(), nullValue() );
 
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.IN_PORT ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( SHANGHAI ) ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.IN_PORT ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( SHANGHAI ) );
 
         // Cargo is still routed - but it should be re-routed according to new (unexpected) location.
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.currentVoyage().get(), nullValue() );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( false ) );
     }
 
     @Test
-    public void deviation_4a_RECEIVE_1b_ExpectedPort() throws Exception
+    public void deviation_4a_RECEIVE_1b_ExpectedPort()
+        throws Exception
     {
         deviation_4a_RECEIVE_1a_UnexpectedPort();
 
@@ -300,21 +322,21 @@ public class BuildDeliverySnapshotTest
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, HandlingEventType.RECEIVE, HONGKONG, null );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.IN_PORT ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( HONGKONG ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.IN_PORT ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( HONGKONG ) );
 
         // We expect the cargo to be loaded on voyage V100S in Hong Kong
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( LOAD ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( HONGKONG ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( V100S ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), equalTo( LOAD ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), equalTo( HONGKONG ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), equalTo( V100S ) );
     }
 
-
     @Test
-    public void deviation_4b_LOAD_2a_UnexpectedPort() throws Exception
+    public void deviation_4b_LOAD_2a_UnexpectedPort()
+        throws Exception
     {
         deviation_4a_RECEIVE_1b_ExpectedPort();
 
@@ -324,19 +346,20 @@ public class BuildDeliverySnapshotTest
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, LOAD, TOKYO, V100S );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
-        assertThat( delivery.isMisdirected().get(), is( equalTo( true ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( null ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( true ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get(), nullValue() );
+        assertThat( delivery.eta().get(), nullValue() );
 
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.ONBOARD_CARRIER ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( TOKYO ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( V100S ) ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.ONBOARD_CARRIER ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( TOKYO ) );
+        assertThat( delivery.currentVoyage().get(), equalTo( V100S ) );
     }
 
     @Test
-    public void deviation_4b_LOAD_2b_ExpectedPort() throws Exception
+    public void deviation_4b_LOAD_2b_ExpectedPort()
+        throws Exception
     {
         deviation_4b_LOAD_2a_UnexpectedPort();
 
@@ -346,21 +369,22 @@ public class BuildDeliverySnapshotTest
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, LOAD, HONGKONG, V100S );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.ONBOARD_CARRIER ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( HONGKONG ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( V100S ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.ONBOARD_CARRIER ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( HONGKONG ) );
+        assertThat( delivery.currentVoyage().get(), equalTo( V100S ) );
 
         // We expect the cargo to be unloaded from voyage V100S in New York
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( UNLOAD ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( NEWYORK ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( V100S ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), equalTo( UNLOAD ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), equalTo( NEWYORK ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), equalTo( V100S ) );
     }
 
     @Test
-    public void deviation_4b_LOAD_2c_UnexpectedVoyageNotFromItinerary() throws Exception
+    public void deviation_4b_LOAD_2c_UnexpectedVoyageNotFromItinerary()
+        throws Exception
     {
         deviation_4b_LOAD_2b_ExpectedPort();
 
@@ -370,19 +394,20 @@ public class BuildDeliverySnapshotTest
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 1 ), trackingId, LOAD, HONGKONG, V400S );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
-        assertThat( delivery.isMisdirected().get(), is( equalTo( true ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( null ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( true ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get(), nullValue() );
+        assertThat( delivery.eta().get(), nullValue() );
 
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.ONBOARD_CARRIER ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( HONGKONG ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( V400S ) ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.ONBOARD_CARRIER ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( HONGKONG ) );
+        assertThat( delivery.currentVoyage().get(), equalTo( V400S ) );
     }
 
     @Test
-    public void deviation_4b_LOAD_2c_ExpectedButLaterVoyageInItinerary() throws Exception
+    public void deviation_4b_LOAD_2c_ExpectedButLaterVoyageInItinerary()
+        throws Exception
     {
         deviation_4b_LOAD_2c_UnexpectedVoyageNotFromItinerary();
 
@@ -395,23 +420,23 @@ public class BuildDeliverySnapshotTest
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
         // Should have been true, but we accept it for now...
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
 
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.ONBOARD_CARRIER ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( NEWYORK ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( V200T ) ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.ONBOARD_CARRIER ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( NEWYORK ) );
+        assertThat( delivery.currentVoyage().get(), equalTo( V200T ) );
 
         // We expect the cargo to be unloaded from voyage V200T in Dallas
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( UNLOAD ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( DALLAS ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( V200T ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), equalTo( UNLOAD ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), equalTo( DALLAS ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), equalTo( V200T ) );
     }
 
-
     @Test
-    public void deviation_4c_UNLOAD_1a_UnexpectedPort() throws Exception
+    public void deviation_4c_UNLOAD_1a_UnexpectedPort()
+        throws Exception
     {
         deviation_4b_LOAD_2c_ExpectedButLaterVoyageInItinerary();
 
@@ -423,18 +448,18 @@ public class BuildDeliverySnapshotTest
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
         cargo.delivery().set( delivery );
 
-        assertThat( delivery.isMisdirected().get(), is( equalTo( true ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( null ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( true ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get(), nullValue() );
+        assertThat( delivery.eta().get(), nullValue() );
 
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.IN_PORT ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastHandlingEvent().get().handlingEventType().get(), is( equalTo( UNLOAD ) ) );
-        assertThat( delivery.lastHandlingEvent().get().voyage().get(), is( equalTo( V100S ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( TOKYO ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.IN_PORT ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastHandlingEvent().get().handlingEventType().get(), equalTo( UNLOAD ) );
+        assertThat( delivery.lastHandlingEvent().get().voyage().get(), equalTo( V100S ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( TOKYO ) );
+        assertThat( delivery.currentVoyage().get(), nullValue() );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( false ) );
 
         // Cargo needs to be rerouted
 
@@ -445,34 +470,34 @@ public class BuildDeliverySnapshotTest
         cargo.delivery().set( delivery );
 
         // Old itinerary will not satisfy new route specification
-        assertThat( itinerary.firstLeg().loadLocation().get(), is( not( equalTo( routeSpec.origin().get() ) ) ) );
-        assertThat( itinerary.lastLeg().unloadLocation().get(), is( equalTo( routeSpec.destination().get() ) ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.MISROUTED ) ) );
+        assertThat( itinerary.firstLeg().loadLocation().get(), not( equalTo( routeSpec.origin().get() ) ) );
+        assertThat( itinerary.lastLeg().unloadLocation().get(), equalTo( routeSpec.destination().get() ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.MISROUTED ) );
 
         // Old planned arrival time is still satisfying new deadline
-        assertTrue( routeSpec.arrivalDeadline().get().after( itinerary.finalArrivalDate() ) );
+        assertTrue( routeSpec.arrivalDeadline().get().isAfter( itinerary.finalArrivalDate() ) );
 
         // We don't know what's next before a new itinerary has been chosen
-        assertThat( delivery.nextExpectedHandlingEvent().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( null ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get(), equalTo( null ) );
+        assertThat( delivery.eta().get(), equalTo( null ) );
 
         // Cargo is still misdirected (in unexpected location) according to old itinerary
-        assertThat( delivery.isMisdirected().get(), is( equalTo( true ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( true ) );
 
         // Last known data
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.IN_PORT ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastHandlingEvent().get().handlingEventType().get(), is( equalTo( UNLOAD ) ) );
-        assertThat( delivery.lastHandlingEvent().get().voyage().get(), is( equalTo( V100S ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( TOKYO ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.IN_PORT ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastHandlingEvent().get().handlingEventType().get(), equalTo( UNLOAD ) );
+        assertThat( delivery.lastHandlingEvent().get().voyage().get(), equalTo( V100S ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( TOKYO ) );
+        assertThat( delivery.currentVoyage().get(), equalTo( null ) );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( false ) );
 
         // New itinerary that satisfy the new route specification. New origin departure from Tokyo.
-        Date arrival= day( 19 );
+        ZonedDateTime arrival = day( 19 );
         itinerary = itinerary(
-              leg( V400S, TOKYO, HAMBURG, day( 9 ), day( 16 ) ),
-              leg( V500S, HAMBURG, STOCKHOLM, day( 17 ), arrival  )
+            leg( V400S, TOKYO, HAMBURG, day( 9 ), day( 16 ) ),
+            leg( V500S, HAMBURG, STOCKHOLM, day( 17 ), arrival )
         );
 
         // Customer reroutes cargo. This is a possible step in the cargo booking process.
@@ -480,31 +505,32 @@ public class BuildDeliverySnapshotTest
         delivery = cargo.delivery().get();
 
         // Cargo is on track again
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.IN_PORT ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastHandlingEvent().get().handlingEventType().get(), is( equalTo( UNLOAD ) ) );
-        assertThat( delivery.lastHandlingEvent().get().voyage().get(), is( equalTo( V100S ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( TOKYO ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( arrival ) ) );
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.IN_PORT ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastHandlingEvent().get().handlingEventType().get(), equalTo( UNLOAD ) );
+        assertThat( delivery.lastHandlingEvent().get().voyage().get(), equalTo( V100S ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( TOKYO ) );
+        assertThat( delivery.currentVoyage().get(), equalTo( null ) );
+        assertThat( delivery.eta().get(), equalTo( arrival ) );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( false ) );
 
         // When a cargo is rerouted the (often misdirected) last handling event is flagged as disregarded
         // since it doesn't have to be part of the new itinerary (this isn't in the Citerus version).
 
         // We now expect the cargo to be loaded onto voyage V400S in Tokyo heading to Hamburg
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( LOAD ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( TOKYO ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( V400S ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), equalTo( LOAD ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), equalTo( TOKYO ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), equalTo( V400S ) );
 
         // Cargo is not misdirected anymore according to new itinerary. Cargo location is now expected to be in Tokyo.
     }
 
     @Test
-    public void deviation_4c_UNLOAD_1b_ExpectedMidpointLocation() throws Exception
+    public void deviation_4c_UNLOAD_1b_ExpectedMidpointLocation()
+        throws Exception
     {
         deviation_4c_UNLOAD_1a_UnexpectedPort();
 
@@ -515,22 +541,23 @@ public class BuildDeliverySnapshotTest
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 8 ), day( 8 ), trackingId, UNLOAD, HAMBURG, V400S );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.IN_PORT ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( HAMBURG ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.IN_PORT ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( HAMBURG ) );
+        assertThat( delivery.currentVoyage().get(), nullValue() );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( false ) );
 
         // We expect the cargo to be loaded onto voyage V200T in New York heading for Dallas
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( LOAD ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( HAMBURG ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( V500S ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), equalTo( LOAD ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), equalTo( HAMBURG ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), equalTo( V500S ) );
     }
 
     @Test
-    public void deviation_4c_UNLOAD_1c_Destination() throws Exception
+    public void deviation_4c_UNLOAD_1c_Destination()
+        throws Exception
     {
         deviation_4c_UNLOAD_1b_ExpectedMidpointLocation();
 
@@ -541,25 +568,25 @@ public class BuildDeliverySnapshotTest
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 16 ), day( 16 ), trackingId, UNLOAD, STOCKHOLM, V500S );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.IN_PORT ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( STOCKHOLM ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.IN_PORT ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( STOCKHOLM ) );
+        assertThat( delivery.currentVoyage().get(), equalTo( null ) );
 
         // Cargo has arrived at destination location
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( true ) ) );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( true ) );
 
         // We expect the cargo to be claimed by customer
-        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), is( equalTo( CLAIM ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), is( equalTo( STOCKHOLM ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), is( equalTo( null ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().handlingEventType().get(), equalTo( CLAIM ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().location().get(), equalTo( STOCKHOLM ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get().voyage().get(), equalTo( null ) );
     }
 
-
     @Test
-    public void deviation_4d_CUSTOMS_1a_CargoIsInDestinationPort() throws Exception
+    public void deviation_4d_CUSTOMS_1a_CargoIsInDestinationPort()
+        throws Exception
     {
         deviation_4c_UNLOAD_1c_Destination();
 
@@ -570,23 +597,23 @@ public class BuildDeliverySnapshotTest
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 16 ), day( 16 ), trackingId, CUSTOMS, STOCKHOLM, null );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.IN_PORT ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( STOCKHOLM ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.IN_PORT ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( STOCKHOLM ) );
+        assertThat( delivery.currentVoyage().get(), equalTo( null ) );
 
         // Cargo might be at destination, but the last handling event wasn't unloading
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( true ) ) );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( true ) );
 
         // Shouldn't we expect the cargo to be claimed by the customer now ?
-        assertThat( delivery.nextExpectedHandlingEvent().get(), is( equalTo( null ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get(), equalTo( null ) );
     }
 
-
     @Test
-    public void deviation_4e_CLAIM_1a_CargoIsNotInDestinationPort() throws Exception
+    public void deviation_4e_CLAIM_1a_CargoIsNotInDestinationPort()
+        throws Exception
     {
         deviation_4d_CUSTOMS_1a_CargoIsInDestinationPort();
 
@@ -597,22 +624,23 @@ public class BuildDeliverySnapshotTest
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 1 ), day( 16 ), trackingId, CLAIM, HELSINKI, null );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
-        assertThat( delivery.isMisdirected().get(), is( equalTo( true ) ) );
-        assertThat( delivery.nextExpectedHandlingEvent().get(), is( equalTo( null ) ) );
-        assertThat( delivery.eta().get(), is( equalTo( null ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( true ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get(), equalTo( null ) );
+        assertThat( delivery.eta().get(), equalTo( null ) );
 
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.CLAIMED ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( HELSINKI ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.CLAIMED ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( HELSINKI ) );
+        assertThat( delivery.currentVoyage().get(), equalTo( null ) );
 
         // Cargo is claimed but has not arrived yet in destination port
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( false ) ) );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( false ) );
     }
 
     @Test
-    public void deviation_4e_CLAIM_1b_CargoIsInDestinationPort() throws Exception
+    public void deviation_4e_CLAIM_1b_CargoIsInDestinationPort()
+        throws Exception
     {
         deviation_4e_CLAIM_1a_CargoIsNotInDestinationPort();
 
@@ -623,17 +651,17 @@ public class BuildDeliverySnapshotTest
         HandlingEvent handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 16 ), day( 16 ), trackingId, CLAIM, STOCKHOLM, null );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
 
-        assertThat( delivery.isMisdirected().get(), is( equalTo( false ) ) );
-        assertThat( delivery.routingStatus().get(), is( equalTo( RoutingStatus.ROUTED ) ) );
-        assertThat( delivery.transportStatus().get(), is( equalTo( TransportStatus.CLAIMED ) ) );
-        assertThat( delivery.lastHandlingEvent().get(), is( equalTo( handlingEvent ) ) );
-        assertThat( delivery.lastKnownLocation().get(), is( equalTo( STOCKHOLM ) ) );
-        assertThat( delivery.currentVoyage().get(), is( equalTo( null ) ) );
+        assertThat( delivery.isMisdirected().get(), equalTo( false ) );
+        assertThat( delivery.routingStatus().get(), equalTo( RoutingStatus.ROUTED ) );
+        assertThat( delivery.transportStatus().get(), equalTo( TransportStatus.CLAIMED ) );
+        assertThat( delivery.lastHandlingEvent().get(), equalTo( handlingEvent ) );
+        assertThat( delivery.lastKnownLocation().get(), equalTo( STOCKHOLM ) );
+        assertThat( delivery.currentVoyage().get(), equalTo( null ) );
 
         // Cargo is claimed in destination port
-        assertThat( delivery.isUnloadedAtDestination().get(), is( equalTo( true ) ) );
+        assertThat( delivery.isUnloadedAtDestination().get(), equalTo( true ) );
 
         // No more expected handling events
-        assertThat( delivery.nextExpectedHandlingEvent().get(), is( equalTo( null ) ) );
+        assertThat( delivery.nextExpectedHandlingEvent().get(), equalTo( null ) );
     }
 }

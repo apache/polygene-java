@@ -17,7 +17,9 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.event;
 
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Random;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -102,7 +104,7 @@ public class InspectLoadedCargo extends Context
         deliveryInspector.inspectLoadedCargo();
     }
 
-    @Mixins( DeliveryInspectorRole.Mixin.class )
+    @Mixins(DeliveryInspectorRole.Mixin.class)
     public interface DeliveryInspectorRole
     {
         void setContext( InspectLoadedCargo context );
@@ -124,7 +126,7 @@ public class InspectLoadedCargo extends Context
 
                 ValueBuilder<Delivery> newDeliveryBuilder = vbf.newValueBuilder( Delivery.class );
                 newDelivery = newDeliveryBuilder.prototype();
-                newDelivery.timestamp().set( new Date() );
+                newDelivery.timestamp().set( Instant.now() );
                 newDelivery.lastHandlingEvent().set( c.loadEvent );
                 newDelivery.transportStatus().set( ONBOARD_CARRIER );
                 newDelivery.isUnloadedAtDestination().set( false );
@@ -144,13 +146,12 @@ public class InspectLoadedCargo extends Context
                 }
 
                 // Estimate carrier arrival time
-                Date estimatedArrivalDate = carrierMovement.arrivalTime().get();
-                if( c.loadEvent.completionTime().get().after( carrierMovement.departureTime().get() ) )
+                ZonedDateTime estimatedArrivalDate = carrierMovement.arrivalTime().get();
+                if( c.loadEvent.completionTime().get().isAfter( carrierMovement.departureTime().get() ) )
                 {
-                    long start = carrierMovement.departureTime().get().getTime();
-                    long end = carrierMovement.arrivalTime().get().getTime();
-                    long duration = end - start;
-                    estimatedArrivalDate = new Date( c.loadEvent.completionTime().get().getTime() + duration );
+                    Duration duration = Duration.between( carrierMovement.departureTime().get(),
+                                                          carrierMovement.arrivalTime().get() );
+                    estimatedArrivalDate = c.loadEvent.completionTime().get().plus(duration);
                     // ... We could notify cargo owner if we already now know that we will miss the next ship
                 }
 

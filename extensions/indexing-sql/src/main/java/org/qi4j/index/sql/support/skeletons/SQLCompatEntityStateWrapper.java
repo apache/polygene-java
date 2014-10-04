@@ -17,6 +17,7 @@
  */
 package org.qi4j.index.sql.support.skeletons;
 
+import java.time.Instant;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import org.qi4j.api.association.AssociationDescriptor;
@@ -112,7 +113,7 @@ import org.slf4j.LoggerFactory;
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
         return wrappedEntityState.lastModified();
     }

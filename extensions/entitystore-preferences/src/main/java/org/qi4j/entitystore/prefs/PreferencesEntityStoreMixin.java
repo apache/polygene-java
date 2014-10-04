@@ -19,6 +19,7 @@
  */
 package org.qi4j.entitystore.prefs;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -167,7 +168,7 @@ public class PreferencesEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, Instant currentTime )
     {
         return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, currentTime );
     }
@@ -194,7 +195,7 @@ public class PreferencesEntityStoreMixin
                             newUnitOfWorkId(),
                             module,
                             visitUsecase,
-                            System.currentTimeMillis() );
+                            Instant.now() );
                         try
                         {
                             String[] identities = root.childrenNames();
@@ -434,7 +435,7 @@ public class PreferencesEntityStoreMixin
 
             return new DefaultEntityState( desuw,
                                            entityPrefs.get( "version", "" ),
-                                           entityPrefs.getLong( "modified", unitOfWork.currentTime() ),
+                                           Instant.ofEpochMilli( entityPrefs.getLong( "modified", unitOfWork.currentTime().toEpochMilli() ) ),
                                            identity,
                                            status,
                                            entityDescriptor,
@@ -499,7 +500,7 @@ public class PreferencesEntityStoreMixin
     protected void writeEntityState( DefaultEntityState state,
                                      Preferences entityPrefs,
                                      String identity,
-                                     long lastModified
+                                     Instant lastModified
     )
         throws EntityStoreException
     {
@@ -508,7 +509,7 @@ public class PreferencesEntityStoreMixin
             // Store into Preferences API
             entityPrefs.put( "type", first( state.entityDescriptor().types() ).getName() );
             entityPrefs.put( "version", identity );
-            entityPrefs.putLong( "modified", lastModified );
+            entityPrefs.putLong( "modified", lastModified.toEpochMilli() );
 
             // Properties
             Preferences propsPrefs = entityPrefs.node( "properties" );

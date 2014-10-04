@@ -18,10 +18,10 @@
 package org.qi4j.sample.dcicargo.sample_b.data.structure.itinerary;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
@@ -49,7 +49,7 @@ public interface Itinerary
 
     Leg lastLeg();
 
-    Date eta();
+    ZonedDateTime eta();
 
     int days();
 
@@ -78,16 +78,16 @@ public interface Itinerary
             return legs().get().get( legs().get().size() - 1 );
         }
 
-        public Date eta()
+        public ZonedDateTime eta()
         {
             return lastLeg().unloadTime().get();
         }
 
         public int days()
         {
-            Date dep = firstLeg().loadTime().get();
-            Date arr = lastLeg().unloadTime().get();
-            return Days.daysBetween( new LocalDate( dep ), new LocalDate( arr ) ).getDays();
+            ZonedDateTime dep = firstLeg().loadTime().get();
+            ZonedDateTime arr = lastLeg().unloadTime().get();
+            return (int) dep.until( arr, ChronoUnit.DAYS );
         }
 
         public String print()
@@ -104,11 +104,11 @@ public interface Itinerary
         {
             sb.append( "\n  Leg " ).append( i );
             sb.append( "  Load " );
-            sb.append( new SimpleDateFormat( "yyyy-MM-dd" ).format( leg.loadTime().get() ) );
+            sb.append( leg.loadTime().get() );
             sb.append( " " ).append( leg.loadLocation().get() );
             sb.append( "   " ).append( leg.voyage().get() );
             sb.append( "   Unload " );
-            sb.append( new SimpleDateFormat( "yyyy-MM-dd" ).format( leg.unloadTime().get() ) );
+            sb.append( leg.unloadTime().get() );
             sb.append( " " ).append( leg.unloadLocation().get() );
         }
     }

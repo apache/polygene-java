@@ -16,6 +16,7 @@
  */
 package org.qi4j.library.scheduler.schedule.once;
 
+import java.time.Instant;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.library.scheduler.schedule.Schedule;
 
@@ -53,14 +54,13 @@ public interface OnceSchedule
         }
 
         @Override
-        public long nextRun( long from )
+        public Instant nextRun( Instant from )
         {
-            long runAt = start().get().getMillis();
-            if( runAt >= from )
+            if( ! start().get().isBefore(from) )
             {
-                return runAt;
+                return start().get();
             }
-            return -1;
+            return Instant.MIN;
         }
 
         @Override

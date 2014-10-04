@@ -19,6 +19,7 @@
  */
 package org.qi4j.runtime.unitofwork;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.common.QualifiedName;
@@ -62,9 +63,9 @@ public final class BuilderEntityState
     }
 
     @Override
-    public long lastModified()
+    public Instant lastModified()
     {
-        return 0;
+        return Instant.MIN;
     }
 
     @Override

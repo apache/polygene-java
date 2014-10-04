@@ -18,7 +18,8 @@
 package org.qi4j.sample.dcicargo.sample_b.communication.web.tracking;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -168,10 +169,9 @@ public class TrackCargoPage extends BasePage
 
                 // ETA ----------------------------------------------------------------------
                 String destination = cargo.routeSpecification().get().destination().get().getString();
-                Date eta = cargo.delivery().get().eta().get();
-                String etaString = eta == null ? "?" : new SimpleDateFormat( "yyyy-MM-dd" ).format( eta );
+                ZonedDateTime eta = cargo.delivery().get().eta().get();
                 add( new Label( "eta", new StringResourceModel(
-                    "eta", this, null, Model.of( destination ), Model.of( etaString ) ) ) );
+                    "eta", this, null, Model.of( destination ), Model.of( eta.toString() ) ) ) );
 
                 // Warning/Notifier ----------------------------------------------------------------------
                 add( new WebMarkupContainer( "isMisdirected" ).setVisible( cargo.delivery()

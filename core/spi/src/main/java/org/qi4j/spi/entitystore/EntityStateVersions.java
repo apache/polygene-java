@@ -14,6 +14,7 @@
 
 package org.qi4j.spi.entitystore;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public interface EntityStateVersions
 
     void rememberVersion( EntityReference identity, String version );
 
-    void checkForConcurrentModification( Iterable<EntityState> loaded, Module module, long currentTime )
+    void checkForConcurrentModification( Iterable<EntityState> loaded, Module module, Instant currentTime )
         throws ConcurrentEntityStateModificationException;
 
     /**
@@ -68,7 +69,7 @@ public interface EntityStateVersions
         @Override
         public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded,
                                                                  Module module,
-                                                                 long currentTime
+                                                                 Instant currentTime
         )
             throws ConcurrentEntityStateModificationException
         {

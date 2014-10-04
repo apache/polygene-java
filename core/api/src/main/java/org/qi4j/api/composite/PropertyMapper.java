@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +21,6 @@ import org.qi4j.api.Qi4j;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.util.Classes;
-import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueComposite;
 
 /**
@@ -44,7 +42,6 @@ public final class PropertyMapper
         STRATEGY.put( Character.class, new CharMapper() );
         STRATEGY.put( Float.class, new FloatMapper() );
         STRATEGY.put( Double.class, new DoubleMapper() );
-        STRATEGY.put( Date.class, new DateMapper() );
         STRATEGY.put( Boolean.class, new BooleanMapper() );
         STRATEGY.put( BigDecimal.class, new BigDecimalMapper() );
         STRATEGY.put( BigInteger.class, new BigIntegerMapper() );
@@ -424,16 +421,6 @@ public final class PropertyMapper
         public Object map( Composite composite, Type type, String value )
         {
             return Enum.valueOf( (Class<Enum>) type, value );
-        }
-    }
-
-    private static class DateMapper
-        implements MappingStrategy
-    {
-        @Override
-        public Object map( Composite composite, Type type, String value )
-        {
-            return Dates.fromString( value.trim() );
         }
     }
 

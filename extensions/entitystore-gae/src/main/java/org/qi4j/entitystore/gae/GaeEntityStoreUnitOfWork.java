@@ -19,6 +19,7 @@
 package org.qi4j.entitystore.gae;
 
 import com.google.appengine.api.datastore.*;
+import java.time.Instant;
 import java.util.LinkedList;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
@@ -38,14 +39,14 @@ public class GaeEntityStoreUnitOfWork
     private final ValueSerialization valueSerialization;
     private final String identity;
     private final Module module;
-    private final long currentTime;
+    private final Instant currentTime;
     private final LinkedList<GaeEntityState> states;
 
     public GaeEntityStoreUnitOfWork( DatastoreService datastore,
                                      ValueSerialization valueSerialization,
                                      String identity,
                                      Module module,
-                                     long currentTime )
+                                     Instant currentTime )
     {
         this.datastore = datastore;
         this.valueSerialization = valueSerialization;
@@ -62,7 +63,7 @@ public class GaeEntityStoreUnitOfWork
     }
 
     @Override
-    public long currentTime()
+    public Instant currentTime()
     {
         return currentTime;
     }

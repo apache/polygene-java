@@ -21,7 +21,7 @@ import java.beans.PropertyChangeSupport;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.function.Predicate;
 import org.qi4j.functional.Specifications;
 
@@ -43,8 +43,8 @@ public class CircuitBreaker
     private Predicate<Throwable> allowedThrowables;
 
     private int countDown;
-    private long trippedOn = -1;
-    private long enableOn = -1;
+    private ZonedDateTime trippedOn = null;
+    private ZonedDateTime enableOn = null;
 
     private Status status = Status.on;
 
@@ -86,8 +86,8 @@ public class CircuitBreaker
             status = Status.off;
             pcs.firePropertyChange( "status", Status.on, Status.off );
 
-            trippedOn = System.currentTimeMillis();
-            enableOn = trippedOn + timeout;
+            trippedOn = ZonedDateTime.now();
+            enableOn = trippedOn.plusNanos( timeout * 1000000 );
         }
     }
 
@@ -101,8 +101,8 @@ public class CircuitBreaker
                 vcs.fireVetoableChange( "status", Status.off, Status.on );
                 status = Status.on;
                 countDown = threshold;
-                trippedOn = -1;
-                enableOn = -1;
+                trippedOn = null;
+                enableOn = null;
                 lastThrowable = null;
 
                 pcs.firePropertyChange( "status", Status.off, Status.on );
@@ -110,7 +110,7 @@ public class CircuitBreaker
             catch( PropertyVetoException e )
             {
                 // Reset timeout
-                enableOn = System.currentTimeMillis() + timeout;
+                enableOn = ZonedDateTime.now().plusNanos( timeout * 1000000 );
 
                 if( e.getCause() != null )
                 {
@@ -144,7 +144,7 @@ public class CircuitBreaker
     {
         if( status == Status.off )
         {
-            if( System.currentTimeMillis() > enableOn )
+            if( ZonedDateTime.now().isAfter( enableOn ) )
             {
                 try
                 {
@@ -167,14 +167,14 @@ public class CircuitBreaker
         return status;
     }
 
-    public Date trippedOn()
+    public ZonedDateTime trippedOn()
     {
-        return trippedOn == -1 ? null : new Date( trippedOn );
+        return trippedOn;
     }
 
-    public Date enabledOn()
+    public ZonedDateTime enabledOn()
     {
-        return enableOn == -1 ? null : new Date( enableOn );
+        return enableOn;
     }
 
     public boolean isOn()

@@ -17,6 +17,9 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.communication.web.booking;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import org.apache.wicket.Session;
@@ -27,7 +30,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.ComponentFeedbackPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.joda.time.LocalDate;
 import org.qi4j.sample.dcicargo.sample_a.communication.query.CommonQueries;
 import org.qi4j.sample.dcicargo.sample_a.context.shipping.booking.BookNewCargo;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.TrackingId;
@@ -58,7 +60,7 @@ public class BookNewCargoPage extends BookingBasePage
     {
         // Set by Wicket property resolvers:
         private String origin, destination;
-        private Date deadline;
+        private Date wicketSetDeadline;
 
         public BookNewCargoForm()
         {
@@ -108,7 +110,7 @@ public class BookNewCargoPage extends BookingBasePage
 
             // Deadline
             final DateTextFieldWithPicker deadlineField = new DateTextFieldWithPicker( "deadline", "Arrival deadline", this );
-            deadlineField.earliestDate( new LocalDate().plusDays( 1 ) );
+            deadlineField.earliestDate( ZonedDateTime.now().plusDays( 1 ) );
 
             final ComponentFeedbackPanel deadlineFeedback = new ComponentFeedbackPanel(
                 "deadlineFeedback", deadlineField );
@@ -124,6 +126,8 @@ public class BookNewCargoPage extends BookingBasePage
                     try
                     {
                         // Perform use case
+                        Instant instant = Instant.ofEpochMilli( wicketSetDeadline.getTime() );
+                        ZonedDateTime deadline = ZonedDateTime.ofInstant( instant, ZoneId.systemDefault() );
                         TrackingId trackingId = new BookNewCargo( origin, destination, deadline ).book();
 
                         // Add new tracking id to list in session

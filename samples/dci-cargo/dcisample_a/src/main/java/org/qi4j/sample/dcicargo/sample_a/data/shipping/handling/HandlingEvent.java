@@ -17,7 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.data.shipping.handling;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
@@ -47,10 +47,10 @@ import org.qi4j.sample.dcicargo.sample_a.data.shipping.voyage.Voyage;
 public interface HandlingEvent
 {
     @Immutable
-    Property<Date> registrationTime();
+    Property<ZonedDateTime> registrationTime();
 
     @Immutable
-    Property<Date> completionTime();
+    Property<ZonedDateTime> completionTime();
 
     @Immutable
     Property<TrackingId> trackingId();

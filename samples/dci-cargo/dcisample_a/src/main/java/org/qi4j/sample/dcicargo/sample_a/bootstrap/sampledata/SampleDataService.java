@@ -17,13 +17,11 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.bootstrap.sampledata;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.qi4j.api.activation.ActivatorAdapter;
 import org.qi4j.api.activation.Activators;
 import org.qi4j.api.injection.scope.Service;
@@ -55,26 +53,25 @@ import static org.qi4j.sample.dcicargo.sample_a.infrastructure.dci.Context.prepa
 /**
  * Create sample Cargos in different delivery stages
  */
-@Mixins( SampleDataService.Mixin.class )
-@Activators( SampleDataService.Activator.class )
+@Mixins(SampleDataService.Mixin.class)
+@Activators(SampleDataService.Activator.class)
 public interface SampleDataService
     extends ServiceComposite
 {
 
     void insertSampleData()
-            throws Exception;
+        throws Exception;
 
     class Activator
-            extends ActivatorAdapter<ServiceReference<SampleDataService>>
+        extends ActivatorAdapter<ServiceReference<SampleDataService>>
     {
 
         @Override
         public void afterActivation( ServiceReference<SampleDataService> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().insertSampleData();
         }
-
     }
 
     public abstract class Mixin
@@ -87,7 +84,7 @@ public interface SampleDataService
         UnitOfWorkFactory uowf;
 
         @Service // We depend on BaseData to be inserted
-        BaseDataService baseDataService;
+            BaseDataService baseDataService;
 
         private static final Logger logger = LoggerFactory.getLogger( SampleDataService.class );
 
@@ -112,7 +109,7 @@ public interface SampleDataService
                 {
                     String trackingId = cargo.trackingId().get().id().get();
                     ExpectedHandlingEvent nextEvent;
-                    Date time;
+                    ZonedDateTime time;
                     String port;
                     String voyage;
                     HandlingEventType type;
@@ -131,7 +128,7 @@ public interface SampleDataService
                     {
                         nextEvent = cargo.delivery().get().nextExpectedHandlingEvent().get();
                         port = nextEvent.location().get().getCode();
-                        Date mockTime = new Date();
+                        ZonedDateTime mockTime = ZonedDateTime.now();
                         new RegisterHandlingEvent( mockTime, mockTime, trackingId, "RECEIVE", port, null ).register();
                     }
 
@@ -283,7 +280,7 @@ public interface SampleDataService
             Location origin;
             Location destination;
             Random random = new Random();
-            Date deadline;
+            ZonedDateTime deadline;
             String uuid;
             String id;
             try
@@ -299,9 +296,7 @@ public interface SampleDataService
                     }
                     while( destination.equals( origin ) );
 
-                    deadline = new LocalDate().plusDays( 15 + random.nextInt( 10 ) )
-                        .toDateTime( new LocalTime() )
-                        .toDate();
+                    deadline = ZonedDateTime.now().plusDays( 15 + random.nextInt( 10 ) );
 
                     // Build sortable random tracking ids
                     uuid = UUID.randomUUID().toString().toUpperCase();

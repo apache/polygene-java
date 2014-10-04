@@ -20,12 +20,12 @@ package org.qi4j.test.indexing;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -45,8 +45,6 @@ import org.qi4j.test.indexing.model.URL;
 import org.qi4j.test.indexing.model.entities.CatEntity;
 import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
-
-import static org.joda.time.DateTimeZone.UTC;
 
 /**
  * Utility class to populate Index/Query tests data.
@@ -179,10 +177,10 @@ class TestData
                 joeDoe.address().set( address );
                 joeDoe.bigInteger().set( new BigInteger( "23232323232323232323232323" ) );
                 joeDoe.bigDecimal().set( new BigDecimal( "23.4276931348623157e+309" ) );
-                joeDoe.dateValue().set( new DateTime( "2020-03-04T13:24:35", UTC ).toDate() );
-                joeDoe.dateTimeValue().set( new DateTime( "2020-03-04T13:24:35", UTC ) );
-                joeDoe.localDateTimeValue().set( new LocalDateTime( "2020-03-04T13:23:00" ) );
-                joeDoe.localDateValue().set( new LocalDate( "2020-03-04" ) );
+                joeDoe.dateValue().set( LocalDate.parse( "2020-03-04" ));
+                joeDoe.dateTimeValue().set( ZonedDateTime.parse( "2020-03-04T13:24:35Z" ) );
+                joeDoe.localDateTimeValue().set( LocalDateTime.parse( "2020-03-04T13:23:00" ) );
+                joeDoe.localDateValue().set( LocalDate.parse( "2020-03-04" ) );
                 NameableAssert.trace( joeDoe );
             }
 
@@ -204,10 +202,10 @@ class TestData
                 jackDoe.address().set( address );
                 jackDoe.bigInteger().set( new BigInteger( "42424242424242424242424242" ) );
                 jackDoe.bigDecimal().set( new BigDecimal( "42.2376931348623157e+309" ) );
-                jackDoe.dateValue().set( new DateTime( "2010-03-04T13:24:35", UTC ).toDate() );
-                jackDoe.dateTimeValue().set( new DateTime( "2010-03-04T13:24:35", UTC ) );
-                jackDoe.localDateTimeValue().set( new LocalDateTime( "2010-03-04T13:23:00" ) );
-                jackDoe.localDateValue().set( new LocalDate( "2010-03-04" ) );
+                jackDoe.dateValue().set( LocalDate.parse( "2010-03-04" ) );
+                jackDoe.dateTimeValue().set( ZonedDateTime.parse( "2010-03-04T13:24:35Z" ) );
+                jackDoe.localDateTimeValue().set( LocalDateTime.parse( "2010-03-04T13:23:00" ) );
+                jackDoe.localDateValue().set( LocalDate.parse( "2010-03-04" ) );
 
                 ValueBuilder<URL> urlBuilder = module.newValueBuilder( URL.class );
                 ValueBuilder<Protocol> protocolBuilder = module.newValueBuilder( Protocol.class );

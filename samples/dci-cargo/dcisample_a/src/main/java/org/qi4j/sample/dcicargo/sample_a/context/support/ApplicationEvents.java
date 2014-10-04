@@ -18,7 +18,6 @@
 package org.qi4j.sample.dcicargo.sample_a.context.support;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.sample.dcicargo.sample_a.data.shipping.cargo.Cargo;
@@ -83,7 +82,7 @@ public interface ApplicationEvents
         public void cargoWasHandled( HandlingEvent registeredHandlingEvent )
         {
             id = registeredHandlingEvent.trackingId().get().id().get();
-            time = parseDate( registeredHandlingEvent.completionTime().get() );
+            time = registeredHandlingEvent.completionTime().get().toString();
             type = registeredHandlingEvent.handlingEventType().get().name();
             unloc = registeredHandlingEvent.location().get().getCode();
             loc = registeredHandlingEvent.location().get().name().get();
@@ -119,7 +118,7 @@ public interface ApplicationEvents
 
         public void receivedHandlingEventRegistrationAttempt( RegisterHandlingEventAttemptDTO attempt )
         {
-            time = parseDate( attempt.completionTime().get() );
+            time = attempt.completionTime().get().toString();
             id = parse( attempt.trackingIdString().get() );
             type = parse( attempt.eventTypeString().get() );
             unloc = parse( attempt.unLocodeString().get() );
@@ -144,9 +143,5 @@ public interface ApplicationEvents
             return str == null ? "null" : str;
         }
 
-        private String parseDate( Date date )
-        {
-            return date == null ? "null" : new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" ).format( date );
-        }
     }
 }

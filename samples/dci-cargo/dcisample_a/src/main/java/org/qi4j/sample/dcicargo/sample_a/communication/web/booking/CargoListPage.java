@@ -17,6 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_a.communication.web.booking;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,10 +71,10 @@ public class CargoListPage extends BookingBasePage
 
                 item.add( new Label( "destination", cargo.routeSpecification().get().destination().get().getCode() ) );
 
-                item.add( new Label( "deadline", new Model<Date>( cargo.routeSpecification()
-                                                                      .get()
-                                                                      .arrivalDeadline()
-                                                                      .get() ) ) );
+                ZonedDateTime arrivalDeadline = cargo.routeSpecification().get().arrivalDeadline().get();
+                item.add( new Label( "deadline", new Model<Date>( new Date( arrivalDeadline.plusDays( 1 )
+                                                                                .toInstant()
+                                                                                .toEpochMilli() ) ) ) );
 
                 item.add( new Label( "routingStatus", routingStatus.toString() ).add( new ErrorColor( routingStatus == RoutingStatus.MISROUTED ) ) );
 

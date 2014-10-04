@@ -17,8 +17,7 @@
  */
 package org.qi4j.sample.dcicargo.sample_b.data.factory;
 
-import java.util.Date;
-import org.joda.time.DateMidnight;
+import java.time.ZonedDateTime;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
@@ -42,7 +41,7 @@ import org.qi4j.sample.dcicargo.sample_b.data.structure.location.Location;
 public interface RouteSpecificationFactoryService
     extends ServiceComposite
 {
-    RouteSpecification build( Location origin, Location destination, Date earliestDeparture, Date deadline )
+    RouteSpecification build( Location origin, Location destination, ZonedDateTime earliestDeparture, ZonedDateTime deadline )
         throws CannotCreateRouteSpecificationException;
 
     abstract class Mixin
@@ -51,7 +50,7 @@ public interface RouteSpecificationFactoryService
         @Structure
         ValueBuilderFactory vbf;
 
-        public RouteSpecification build( Location origin, Location destination, Date earliestDeparture, Date deadline )
+        public RouteSpecification build( Location origin, Location destination, ZonedDateTime earliestDeparture, ZonedDateTime deadline )
             throws CannotCreateRouteSpecificationException
         {
             if( origin == destination )
@@ -59,15 +58,12 @@ public interface RouteSpecificationFactoryService
                 throw new CannotCreateRouteSpecificationException( "Origin location can't be same as destination location." );
             }
 
-            Date endOfToday = new DateMidnight().plusDays( 1 ).toDate();
-            if( deadline.before( endOfToday ) )
+            if( deadline.isBefore( ZonedDateTime.now() ) )
             {
-                throw new CannotCreateRouteSpecificationException( "Arrival deadline is in the past or Today." +
-                                                                   "\nDeadline           " + deadline +
-                                                                   "\nToday (midnight)   " + endOfToday );
+                throw new CannotCreateRouteSpecificationException( "Arrival deadline is in the past or Today: " + deadline );
             }
 
-            if( deadline.before( earliestDeparture ) )
+            if( deadline.isBefore( earliestDeparture ) )
             {
                 throw new CannotCreateRouteSpecificationException( "Deadline can't be before departure:" +
                                                                    "\nDeparture   " + earliestDeparture +
