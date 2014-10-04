@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 import org.qi4j.api.injection.scope.Uses;
 
 /**
@@ -85,8 +86,7 @@ public class DecoratorMixin
         builder.append( "\ndelegateType: " );
         builder.append( delegate == null ? "n/a" : delegate.getClass().getName() );
         builder.append( "\narguments: \n" );
-        for( Object arg : args )
-        {
+        Arrays.stream(args).map( arg -> {
             builder.append( "    " );
             Class argClass = arg.getClass();
             if( Proxy.isProxyClass( argClass ) )
@@ -98,7 +98,7 @@ public class DecoratorMixin
                 builder.append( argClass.getName() );
             }
             builder.append( '\n' );
-        }
+        });
         return builder.toString();
     }
 }
