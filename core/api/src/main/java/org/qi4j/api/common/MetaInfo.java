@@ -17,6 +17,7 @@ package org.qi4j.api.common;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -80,7 +81,7 @@ public final class MetaInfo
 
     static
     {
-        ignored = new HashSet<Class>( 4, 0.8f ); // Optimize size used.
+        ignored = new HashSet<>( 4, 0.8f ); // Optimize size used.
         ignored.addAll( asList( Mixins.class, Concerns.class, SideEffects.class ) );
     }
 
@@ -88,12 +89,12 @@ public final class MetaInfo
 
     public MetaInfo()
     {
-        metaInfoMap = new LinkedHashMap<Class<?>, Object>();
+        metaInfoMap = new LinkedHashMap<>();
     }
 
     public MetaInfo( MetaInfo metaInfo )
     {
-        metaInfoMap = new LinkedHashMap<Class<?>, Object>();
+        metaInfoMap = new LinkedHashMap<>();
         metaInfoMap.putAll( metaInfo.metaInfoMap );
     }
 
@@ -108,10 +109,7 @@ public final class MetaInfo
         {
             Class<?> metaInfoclass = metaInfo.getClass();
             Iterable<Type> types = typesOf( metaInfoclass );
-            for( Type type : types )
-            {
-                metaInfoMap.put( Classes.RAW_CLASS.apply( type ), metaInfo );
-            }
+            types.forEach( type -> metaInfoMap.put( Classes.RAW_CLASS.apply( type ), metaInfo ) );
         }
     }
 
@@ -127,14 +125,10 @@ public final class MetaInfo
 
     public MetaInfo withAnnotations( AnnotatedElement annotatedElement )
     {
-        for( Annotation annotation : annotatedElement.getAnnotations() )
-        {
-            if( !ignored.contains( annotation.annotationType() )
-                && get( annotation.annotationType() ) == null )
-            {
-                set( annotation );
-            }
-        }
+        Arrays.stream( annotatedElement.getAnnotations() )
+            .filter( annotation -> !ignored.contains( annotation.annotationType() )
+                   && get( annotation.annotationType() ) == null )
+            .forEach( this::set );
         return this;
     }
 
