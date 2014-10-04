@@ -86,7 +86,7 @@ public class DecoratorMixin
         builder.append( "\ndelegateType: " );
         builder.append( delegate == null ? "n/a" : delegate.getClass().getName() );
         builder.append( "\narguments: \n" );
-        Arrays.stream(args).map( arg -> {
+        Arrays.stream(args).forEach( arg -> {
             builder.append( "    " );
             Class argClass = arg.getClass();
             if( Proxy.isProxyClass( argClass ) )
