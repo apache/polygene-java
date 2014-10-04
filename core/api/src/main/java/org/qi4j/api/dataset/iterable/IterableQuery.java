@@ -17,7 +17,7 @@ public class IterableQuery<T> implements Query<T>
     private Iterable<T> iterable;
     private int skip;
     private int limit;
-    private Map<String, Object> variables = new HashMap<String, Object>();
+    private Map<String, Object> variables = new HashMap<>();
 
     public IterableQuery( Iterable<T> iterable )
     {

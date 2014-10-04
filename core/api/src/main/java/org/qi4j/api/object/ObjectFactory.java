@@ -37,7 +37,7 @@ public interface ObjectFactory
     /**
      * Inject an existing instance. Only fields and methods will be called.
      *
-     * @param instance
+     * @param instance The object that should receive the injections.
      *
      * @throws ConstructionException
      */

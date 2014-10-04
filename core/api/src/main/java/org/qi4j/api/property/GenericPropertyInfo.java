@@ -20,6 +20,7 @@ package org.qi4j.api.property;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 
 import static org.qi4j.api.util.Classes.typeOf;
 
@@ -46,15 +47,10 @@ public final class GenericPropertyInfo
 
         if( methodReturnType instanceof Class<?> )
         {
-            Type[] interfaces = ( (Class<?>) methodReturnType ).getGenericInterfaces();
-            for( Type anInterface : interfaces )
-            {
-                Type propertyType = toPropertyType( anInterface );
-                if( propertyType != null )
-                {
-                    return propertyType;
-                }
-            }
+            Arrays.stream( ( (Class<?>) methodReturnType ).getGenericInterfaces() )
+                .map( GenericPropertyInfo::toPropertyType )
+                .filter( propType -> propType != null )
+                .findFirst();
         }
         return null;
     }

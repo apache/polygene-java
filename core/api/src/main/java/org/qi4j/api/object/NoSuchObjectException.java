@@ -28,8 +28,7 @@ public class NoSuchObjectException
 
     public NoSuchObjectException( String type, String moduleName )
     {
-        super( "Could not find any visible Object of type [" + type + "] in module [" +
-               moduleName + "]." );
+        super( "Could not find any visible Object of type [" + type + "] in module [" + moduleName + "]." );
         this.objectType = type;
         this.moduleName = moduleName;
     }

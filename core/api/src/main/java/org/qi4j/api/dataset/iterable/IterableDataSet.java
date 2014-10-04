@@ -22,18 +22,18 @@ public class IterableDataSet<T>
     @Override
     public DataSet<T> constrain( Predicate<T> selection )
     {
-        return new IterableDataSet<T>( Iterables.filter( selection, iterable ) );
+        return new IterableDataSet<>( Iterables.filter( selection, iterable ) );
     }
 
     @Override
     public <U> DataSet<U> project( Function<T, U> conversion )
     {
-        return new IterableDataSet<U>( Iterables.map( conversion, iterable ) );
+        return new IterableDataSet<>( Iterables.map( conversion, iterable ) );
     }
 
     @Override
     public Query<T> newQuery()
     {
-        return new IterableQuery<T>( iterable );
+        return new IterableQuery<>( iterable );
     }
 }
