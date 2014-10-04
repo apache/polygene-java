@@ -9,6 +9,20 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -51,6 +65,21 @@ public final class PropertyMapper
         STRATEGY.put( List.class, new ListMapper() );
         STRATEGY.put( Set.class, new SetMapper() );
         STRATEGY.put( ValueComposite.class, new ValueCompositeMapper() );
+
+        STRATEGY.put( OffsetDateTime.class, new OffsetDateTimeMapper() );
+        STRATEGY.put( OffsetTime.class, new OffsetTimeMapper() );
+        STRATEGY.put( LocalDate.class, new LocalDateMapper() );
+        STRATEGY.put( LocalTime.class, new LocalTimeMapper() );
+        STRATEGY.put( LocalDateTime.class, new LocalDateTimeMapper() );
+        STRATEGY.put( Year.class, new YearMapper() );
+        STRATEGY.put( YearMonth.class, new YearMonthMapper() );
+        STRATEGY.put( MonthDay.class, new MonthDayMapper() );
+        STRATEGY.put( Instant.class, new InstantMapper() );
+        STRATEGY.put( Period.class, new PeriodMapper() );
+        STRATEGY.put( Duration.class, new DurationMapper() );
+        STRATEGY.put( ZonedDateTime.class, new ZonedDateTimeMapper() );
+        STRATEGY.put( ZoneId.class, new ZoneIdMapper() );
+        STRATEGY.put( ZoneOffset.class, new ZoneOffsetMapper() );
     }
 
     /**
@@ -76,7 +105,7 @@ public final class PropertyMapper
 
                 value = mapToType( composite, propertyType, value.toString() );
 
-                @SuppressWarnings( "unchecked" )
+                @SuppressWarnings("unchecked")
                 Property<Object> property = (Property<Object>) propertyMethod.invoke( composite );
                 property.set( value );
             }
@@ -98,7 +127,7 @@ public final class PropertyMapper
         }
     }
 
-    @SuppressWarnings( "raw" )
+    @SuppressWarnings("raw")
     private static Object mapToType( Composite composite, Type propertyType, Object value )
     {
         final String stringValue = value.toString();
@@ -116,9 +145,16 @@ public final class PropertyMapper
             }
             else
             {
-                strategy = STRATEGY.get( type );
+                if( ( !type.equals( ZoneOffset.class ) ) && ZoneId.class.isAssignableFrom( type ) )
+                {
+                    strategy = STRATEGY.get( ZoneId.class );
+                }
+                else
+                {
+                    strategy = STRATEGY.get( type );
+                }
             }
-            if( strategy == null  ) // If null, try with the ValueComposite Mapper...
+            if( strategy == null ) // If null, try with the ValueComposite Mapper...
             {
                 strategy = STRATEGY.get( ValueComposite.class );
             }
@@ -200,6 +236,7 @@ public final class PropertyMapper
      *
      * @return properties instance
      */
+    @SuppressWarnings( "UnusedDeclaration" )
     public static Properties toJavaProperties( final Composite composite )
     {
         return new Properties()
@@ -413,11 +450,151 @@ public final class PropertyMapper
         }
     }
 
+    private static class OffsetDateTimeMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return OffsetDateTime.parse( value.trim() );
+        }
+    }
+
+    private static class OffsetTimeMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return OffsetTime.parse( value.trim() );
+        }
+    }
+
+    private static class LocalDateTimeMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return LocalDateTime.parse( value.trim() );
+        }
+    }
+
+    private static class LocalDateMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return LocalDate.parse( value.trim() );
+        }
+    }
+
+    private static class LocalTimeMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return LocalTime.parse( value.trim() );
+        }
+    }
+
+    private static class ZonedDateTimeMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return ZonedDateTime.parse( value.trim() );
+        }
+    }
+
+    private static class InstantMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return Instant.parse( value.trim() );
+        }
+    }
+
+    private static class PeriodMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return Period.parse( value.trim() );
+        }
+    }
+
+    private static class DurationMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return Duration.parse( value.trim() );
+        }
+    }
+
+    private static class YearMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return Year.parse( value.trim() );
+        }
+    }
+
+    private static class YearMonthMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return YearMonth.parse( value.trim() );
+        }
+    }
+
+    private static class MonthDayMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return MonthDay.parse( value.trim() );
+        }
+    }
+
+    private static class ZoneIdMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return ZoneId.of( value.trim() );
+        }
+    }
+
+    private static class ZoneOffsetMapper
+        implements MappingStrategy
+    {
+        @Override
+        public Object map( Composite composite, Type type, String value )
+        {
+            return ZoneOffset.of( value.trim() );
+        }
+    }
+
     private static class EnumMapper
         implements MappingStrategy
     {
         @Override
-        @SuppressWarnings( "unchecked" )
+        @SuppressWarnings("unchecked")
         public Object map( Composite composite, Type type, String value )
         {
             return Enum.valueOf( (Class<Enum>) type, value );
@@ -428,10 +605,12 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
-        @SuppressWarnings( "unchecked" )
+        @SuppressWarnings("unchecked")
         public Object map( Composite composite, Type type, String value )
         {
-            return Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite ).module().newValueFromSerializedState( (Class<Object>) type, value );
+            return Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite )
+                .module()
+                .newValueFromSerializedState( (Class<Object>) type, value );
         }
     }
 
@@ -439,19 +618,12 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
-        @SuppressWarnings( {"raw", "unchecked"} )
+        @SuppressWarnings({ "raw", "unchecked" })
         public Object map( final Composite composite, Type type, String value )
         {
             final Class arrayType = ( (Class) type ).getComponentType();
             final ArrayList result = new ArrayList();
-            tokenize( value, false, new TokenizerCallback()
-            {
-                @Override
-                public void token( String token )
-                {
-                    result.add( mapToType( composite, arrayType, token ) );
-                }
-            } );
+            tokenize( value, false, token -> result.add( mapToType( composite, arrayType, token ) ) );
             return result.toArray( (Object[]) Array.newInstance( arrayType, result.size() ) );
         }
     }
@@ -470,19 +642,12 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
-        @SuppressWarnings( {"raw", "unchecked"} )
+        @SuppressWarnings({ "raw", "unchecked" })
         public Object map( final Composite composite, Type type, String value )
         {
             final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
             final Collection result = new ArrayList();
-            tokenize( value, false, new TokenizerCallback()
-            {
-                @Override
-                public void token( String token )
-                {
-                    result.add( mapToType( composite, dataType, token ) );
-                }
-            } );
+            tokenize( value, false, token -> result.add( mapToType( composite, dataType, token ) ) );
             return result;
         }
     }
@@ -491,19 +656,12 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
-        @SuppressWarnings( {"raw", "unchecked"} )
+        @SuppressWarnings({ "raw", "unchecked" })
         public Object map( final Composite composite, Type type, String value )
         {
             final Type dataType = ( (ParameterizedType) type ).getActualTypeArguments()[ 0 ];
             final Collection result = new HashSet();
-            tokenize( value, false, new TokenizerCallback()
-            {
-                @Override
-                public void token( String token )
-                {
-                    result.add( mapToType( composite, dataType, token ) );
-                }
-            } );
+            tokenize( value, false, token -> result.add( mapToType( composite, dataType, token ) ) );
             return result;
         }
     }
@@ -512,7 +670,7 @@ public final class PropertyMapper
         implements MappingStrategy
     {
         @Override
-        @SuppressWarnings( {"raw", "unchecked"} )
+        @SuppressWarnings({ "raw", "unchecked" })
         public Object map( final Composite composite, Type generictype, String value )
         {
             ParameterizedType type = (ParameterizedType) generictype;
