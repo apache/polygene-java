@@ -60,6 +60,7 @@ public interface Person
     @Optional
     Association<Male> father();
 
+    @Optional
     ManyAssociation<Domain> interests();
 
     @Optional
@@ -96,4 +97,7 @@ public interface Person
 
     @Optional
     Property<LocalDate> localDateValue();
+
+    @Optional
+    NamedAssociation<City> favoritePlaces();
 }

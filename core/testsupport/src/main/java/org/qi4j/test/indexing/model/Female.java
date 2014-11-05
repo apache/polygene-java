@@ -19,6 +19,8 @@ package org.qi4j.test.indexing.model;
 
 import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.geometry.TPoint;
+import org.qi4j.api.property.Property;
 
 /**
  * JAVADOC Add JavaDoc
@@ -28,4 +30,7 @@ public interface Female
 {
     @Optional
     Association<Male> husband();
+
+    // @Optional
+   //  Property<Integer> location();
 }

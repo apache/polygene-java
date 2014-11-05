@@ -15,6 +15,8 @@
 package org.qi4j.api.type;
 
 import java.util.Collections;
+
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
@@ -103,6 +105,15 @@ public class ValueType
         if( type.isArray() )
         {
             return isPrimitiveValueType( type.getComponentType() );
+        }
+        return false;
+    }
+    public static boolean isGeometryValue(Object object)
+    {
+        NullArgumentException.validateNotNull( "object", object );
+        if( object instanceof TGeometry)
+        {
+            return true;
         }
         return false;
     }

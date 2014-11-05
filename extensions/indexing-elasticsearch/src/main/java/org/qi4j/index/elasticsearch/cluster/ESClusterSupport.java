@@ -46,7 +46,7 @@ public class ESClusterSupport
 
         String[] nodes = config.nodes().get() == null ? new String[]{ "localhost:9300" } : config.nodes().get().split( "," );
         boolean clusterSniff = config.clusterSniff().get();
-        boolean ignoreClusterName = config.ignoreClusterName().get();
+        boolean ignoreClusterName = true; // config.ignoreClusterName().get();
         String pingTimeout = config.pingTimeout().get() == null ? "5s" : config.pingTimeout().get();
         String samplerInterval = config.samplerInterval().get() == null ? "5s" : config.samplerInterval().get();
 

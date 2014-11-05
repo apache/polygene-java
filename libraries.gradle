@@ -33,6 +33,7 @@ def jodaMoneyVersion = '0.9.1'
 def jodaTimeVersion = '2.3'
 def jrubyVersion = '1.7.8' // 1.7.12 - Fails to run!
 def jtaVersion = '1.1'
+def jtsVersion = '1.11'
 def leveldbVersion = '0.7'
 def leveldbJniVersion = '1.8'
 def liquibaseVersion = '3.2.0'
@@ -58,6 +59,7 @@ def sleepycatVersion = '5.0.73'
 def slf4jVersion = '1.7.7'
 def solrVersion = "1.4.1" // 4.8.1 Fails to compile!
 def springVersion = '3.2.6.RELEASE' // 4.0.5.RELEASE Fails to compile!
+def spatial4jVersion = '0.4'
 def spymemcachedVersion = '2.11.3'
 def sqliteVersion = '3.7.2'
 def strutsVersion = '2.3.15.3' // 2.3.16.3 Fails to compile!
@@ -130,6 +132,10 @@ rootProject.ext {
 
           spring_testsupport: [
                   "org.springframework:spring-test:$springVersion"
+          ],
+          // Spatial4j
+          spatial4j: [
+                  "com.spatial4j:spatial4j:$spatial4jVersion"
           ],
 
           // RDF
@@ -223,6 +229,7 @@ rootProject.ext {
                   "org.neo4j:neo4j-index:$neoIndexVersion"
           ],
           jta: "javax.transaction:jta:$jtaVersion",
+          jts: "com.vividsolutions:jts:$jtsVersion",
           javaSqlGenerator: "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
           javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
           voldemort: "org.immunogenomics.gl.voldemort:voldemort:$voldemortVersion",

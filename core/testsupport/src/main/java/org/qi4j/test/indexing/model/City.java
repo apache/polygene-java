@@ -17,6 +17,8 @@
  */
 package org.qi4j.test.indexing.model;
 
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.property.Property;
 
 /**
@@ -28,4 +30,7 @@ public interface City
     Property<String> country();
 
     Property<String> county();
+
+    @Optional
+    Property<TPoint> location();
 }

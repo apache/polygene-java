@@ -17,17 +17,23 @@
  */
 package org.qi4j.index.elasticsearch;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.common.io.stream.BytesStreamOutput;
+import org.elasticsearch.common.io.stream.HandlesStreamOutput;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -42,6 +48,7 @@ import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.api.value.ValueSerializer.Options;
 import org.qi4j.functional.Iterables;
+import org.qi4j.index.elasticsearch.features.spatial.ElasticSearchSpatialIndexerSupport;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -118,13 +125,14 @@ public interface ElasticSearchIndexer
                         case UPDATED:
                             LOGGER.trace( "Updating Entity State in Index: {}", changedState );
                             remove( bulkBuilder, changedState.identity().identity() );
-                            String updatedJson = toJSON( changedState, newStates, uow );
+                            String updatedJson = toJSON( null,changedState, newStates, uow );
                             LOGGER.trace( "Will index: {}", updatedJson );
                             index( bulkBuilder, changedState.identity().identity(), updatedJson );
                             break;
                         case NEW:
                             LOGGER.trace( "Creating Entity State in Index: {}", changedState );
-                            String newJson = toJSON( changedState, newStates, uow );
+                            String newJson = toJSON(null, changedState, newStates, uow );
+                            System.out.println("#Will index: {}  : " + newJson);
                             LOGGER.trace( "Will index: {}", newJson );
                             index( bulkBuilder, changedState.identity().identity(), newJson );
                             break;
@@ -140,6 +148,29 @@ public interface ElasticSearchIndexer
 
             if( bulkBuilder.numberOfActions() > 0 )
             {
+
+                try {
+                    BytesStreamOutput bout = new BytesStreamOutput();
+                    HandlesStreamOutput out = new HandlesStreamOutput(bout);
+                    bulkBuilder.request().writeTo(out);
+
+
+                    // bulkBuilder.request().payloads().get(0);
+
+                    // bulkBuilder.request().writeTo();
+
+                    // String aString = new String(bout.bytes().array());
+
+                    // System.out.println(bout.bytes().toUtf8());
+
+
+                    // String aString = new String(bout.bytes().toUtf8(),"UTF-8");
+
+                   // System.out.println("############ " + aString);
+
+                } catch(Exception _ex) {
+                    _ex.printStackTrace();
+                }
 
                 // Execute bulk actions
                 BulkResponse bulkResponse = bulkBuilder.execute().actionGet();
@@ -183,8 +214,14 @@ public interface ElasticSearchIndexer
          * }
          * </pre>
          */
-        private String toJSON( EntityState state, Map<String, EntityState> newStates, EntityStoreUnitOfWork uow )
+
+        int iterations = 0;
+
+        private String toJSON(String assotiationKey, EntityState state, Map<String, EntityState> newStates, EntityStoreUnitOfWork uow )
         {
+
+            System.out.println("# --- > Iterations " + iterations++);
+
             try
             {
                 JSONObject json = new JSONObject();
@@ -197,6 +234,9 @@ public interface ElasticSearchIndexer
                 // Properties
                 for( PropertyDescriptor propDesc : entityType.state().properties() )
                 {
+
+                    AssociationStateDescriptor associationStateDescriptor = entityType.state();
+
                     if( propDesc.queryable() )
                     {
                         String key = propDesc.qualifiedName().name();
@@ -205,6 +245,51 @@ public interface ElasticSearchIndexer
                         {
                             json.put( key, value );
                         }
+
+                        else
+                        if (value != null && ValueType.isGeometryValue(value) )
+                        {
+
+                            System.out.println("---> isSpatial(" + assotiationKey + " key " + key + " - " + propDesc.qualifiedName() + ") " + value);
+
+                            String newKey = null;
+
+                            if (assotiationKey != null) {
+                                 newKey = assotiationKey + "." + key;
+                            } else {
+                                newKey = key;
+                            }
+
+                            System.out.println("--> new Key: " + newKey);
+
+                            ElasticSearchSpatialIndexerSupport.supportedSpatialMappings(
+                                    support,
+                                    (TGeometry) value,
+                                    entityType.types().iterator().next().getCanonicalName() + ":" + key,
+                                    newKey, // key,
+                                    true
+                            );
+
+                            JSONObject foo = null;
+                            try {
+                                foo = ElasticSearchSpatialIndexerSupport.indexSpatialType(
+                                        support,
+                                        (TGeometry) value,
+                                        entityType.types().iterator().next().getCanonicalName() + ":" + key,
+                                        key, // newKey, //    key,
+                                        json,
+                                        true
+                                );
+                            } catch(Exception _ex) {
+                                _ex.printStackTrace();
+                            }
+
+
+                            // json.put(key, new JSONObject().put("location", value));
+                            // json.put(key, foo);
+                           System.out.println("$$$$ " + json);
+                        }
+
                         else
                         {
                             String serialized = valueSerializer.serialize( new Options().withoutTypeInfo(), value );
@@ -243,12 +328,12 @@ public interface ElasticSearchIndexer
                             {
                                 if( newStates.containsKey( associated.identity() ) )
                                 {
-                                    value = new JSONObject( toJSON( newStates.get( associated.identity() ), newStates, uow ) );
+                                    value = new JSONObject( toJSON(key, newStates.get( associated.identity() ), newStates, uow ) );
                                 }
                                 else
                                 {
                                     EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( associated.identity() ) );
-                                    value = new JSONObject( toJSON( assocState, newStates, uow ) );
+                                    value = new JSONObject( toJSON(key, assocState, newStates, uow ) );
                                 }
                             }
                             else
@@ -274,12 +359,12 @@ public interface ElasticSearchIndexer
                             {
                                 if( newStates.containsKey( associated.identity() ) )
                                 {
-                                    array.put( new JSONObject( toJSON( newStates.get( associated.identity() ), newStates, uow ) ) );
+                                    array.put( new JSONObject( toJSON(key, newStates.get( associated.identity() ), newStates, uow ) ) );
                                 }
                                 else
                                 {
                                     EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( associated.identity() ) );
-                                    array.put( new JSONObject( toJSON( assocState, newStates, uow ) ) );
+                                    array.put( new JSONObject( toJSON(key, assocState, newStates, uow ) ) );
                                 }
                             }
                             else
@@ -306,14 +391,14 @@ public interface ElasticSearchIndexer
                                 String identity = associateds.get( name ).identity();
                                 if( newStates.containsKey( identity ) )
                                 {
-                                    JSONObject obj = new JSONObject( toJSON( newStates.get( identity ), newStates, uow ) );
+                                    JSONObject obj = new JSONObject( toJSON(key, newStates.get( identity ), newStates, uow ) );
                                     obj.put( "_named", name );
                                     array.put( obj );
                                 }
                                 else
                                 {
                                     EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( identity ) );
-                                    JSONObject obj = new JSONObject( toJSON( assocState, newStates, uow ) );
+                                    JSONObject obj = new JSONObject( toJSON(key, assocState, newStates, uow ) );
                                     obj.put( "_named", name );
                                     array.put( obj );
                                 }
@@ -329,7 +414,7 @@ public interface ElasticSearchIndexer
                         json.put( key, array );
                     }
                 }
-
+                iterations = 0;
                 return json.toString();
             }
             catch( JSONException e )

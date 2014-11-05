@@ -21,12 +21,13 @@ package org.qi4j.test.indexing;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.geometry.GeometryFactory;
+import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -106,6 +107,8 @@ class TestData
                 kualaLumpur.name().set( "Kuala Lumpur" );
                 kualaLumpur.country().set( "Malaysia" );
                 kualaLumpur.county().set( "Some Jaya" );
+                kualaLumpur.location().set((TPoint)module.findService(GeometryFactory.class).get()
+                        .as2DPoint(3.139003, 101.686854));
                 kualaLumpur = cityBuilder.newInstance();
                 NameableAssert.trace( kualaLumpur );
             }
@@ -152,6 +155,7 @@ class TestData
                 annDoe.placeOfBirth().set( kualaLumpur );
                 annDoe.yearOfBirth().set( 1975 );
                 annDoe.interests().add( 0, cooking );
+                annDoe.favoritePlaces().put("kualaLumpur", kualaLumpur);
                 annDoe.password().set( "passwordOfAnnDoe" );
                 annDoe.mainAccount().set( annsAccount );
                 annDoe.accounts().put( "anns", annsAccount );

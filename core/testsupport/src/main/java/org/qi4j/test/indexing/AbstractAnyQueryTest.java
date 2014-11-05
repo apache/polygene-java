@@ -17,6 +17,12 @@
  */
 package org.qi4j.test.indexing;
 
+import org.qi4j.api.geometry.GeometryFactory;
+import org.qi4j.api.geometry.TLineString;
+import org.qi4j.api.geometry.TPoint;
+import org.qi4j.api.geometry.TPolygon;
+import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -62,6 +68,17 @@ public class AbstractAnyQueryTest
                        File.class,
                        QueryParam.class );
 
+        // JJ TODO - There is a better way to enable the Geometry types ?
+
+        // Internal Types
+        module.values(
+                Coordinate.class,
+                TLinearRing.class);
+
+        // API values
+        module.values(TPoint.class,TLineString.class, TPolygon.class);
+        module.services(GeometryFactory.class);
+
         new EntityTestAssembler().assemble( module );
     }
 
@@ -70,7 +87,7 @@ public class AbstractAnyQueryTest
         throws Exception
     {
         super.setUp();
-        TestData.populate( module );
+       // TestData.populate( module );
 
         this.unitOfWork = this.module.newUnitOfWork();
     }

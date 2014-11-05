@@ -31,6 +31,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.query.grammar.AndSpecification;
@@ -56,11 +57,15 @@ import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
 import org.qi4j.api.query.grammar.PropertyNullSpecification;
 import org.qi4j.api.query.grammar.QuerySpecification;
+import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
+import org.qi4j.api.query.grammar.extensions.spatial.predicates.SpatialPredicatesSpecification;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
+import org.qi4j.index.elasticsearch.features.spatial.ElasticSearchSpatialFinderSupport;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
@@ -77,6 +82,7 @@ import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.wrapperQuery;
 import static org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.resolveVariable;
+import static org.qi4j.index.elasticsearch.features.spatial.ElasticSearchSpatialFinderSupport.*;
 
 @Mixins( ElasticSearchFinder.Mixin.class )
 public interface ElasticSearchFinder
@@ -88,8 +94,21 @@ public interface ElasticSearchFinder
         private static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchFinder.class );
         private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 0 );
 
+        private static final Map<Class<?>, SpatialQuerySpecSupport> SPATIAL_QUERY_SPEC_SUPPORT = new HashMap<>( 2 );
+
+
+        static
+        {
+            SpatialQuerySpecSupport spatialQuerySpecSupport = new ElasticSearchSpatialFinderSupport.SpatialSupport();
+            SPATIAL_QUERY_SPEC_SUPPORT.put( SpatialPredicatesSpecification.class, spatialQuerySpecSupport );
+            SPATIAL_QUERY_SPEC_SUPPORT.put( SpatialConvertSpecification.class, spatialQuerySpecSupport );
+        }
+
         @This
         private ElasticSearchSupport support;
+
+        @Structure
+        private Module module;
 
         @Override
         public Iterable<EntityReference> findEntities( Class<?> resultType,
@@ -130,6 +149,9 @@ public interface ElasticSearchFinder
             // Log
             LOGGER.debug( "Will search Entities: {}", request );
 
+            // System.out.println("Request " + request.toString());
+
+
             // Execute
             SearchResponse response = request.execute().actionGet();
 
@@ -162,8 +184,13 @@ public interface ElasticSearchFinder
             // Log
             LOGGER.debug( "Will search Entity: {}", request );
 
+            // System.out.println("request " + request.toString());
+
+
             // Execute
             SearchResponse response = request.execute().actionGet();
+
+            // System.out.println("response " + response.toString());
 
             if( response.getHits().totalHits() == 1 )
             {
@@ -292,6 +319,13 @@ public interface ElasticSearchFinder
 
                 NamedAssociationContainsNameSpecification<?> namedAssContNameSpec = (NamedAssociationContainsNameSpecification) spec;
                 processNamedAssociationContainsNameSpecification( filterBuilder, namedAssContNameSpec, variables );
+
+            }
+            else if( SPATIAL_QUERY_SPEC_SUPPORT.get( spec.getClass().getSuperclass() ) != null ) {
+
+                SpatialQuerySpecSupport spatialQuerySpecSupport = SPATIAL_QUERY_SPEC_SUPPORT.get( spec.getClass().getSuperclass() );
+                spatialQuerySpecSupport.setModule(module);
+                spatialQuerySpecSupport.processSpecification(filterBuilder, spec, variables);
 
             }
             else
