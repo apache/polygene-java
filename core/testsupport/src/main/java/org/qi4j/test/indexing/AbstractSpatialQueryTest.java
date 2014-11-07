@@ -21,6 +21,7 @@ import java.util.Map;
 
 import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
+import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_GeometryFromText;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Within;
 
 /**
@@ -76,6 +77,46 @@ public class AbstractSpatialQueryTest
 
     @Service
     GeometryFactory Geometry;
+
+
+    @Test
+    public void whenQueryUseConversion() throws Exception
+    {
+        // lat, long
+        ST_GeometryFromText("POINT(49.550881 10.712809)", 1);
+
+
+
+        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
+
+        Query<City> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Within
+                                        (
+                                                templateFor(City.class).location(),
+                                                ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
+                                                100
+                                        )
+                        ));
+
+
+        // System.out.println( "*** script01: " + query );
+        query.find();
+
+
+
+        System.out.println("Found Cities " + query.count());
+
+
+//        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+//        Person personTemplate = templateFor( Person.class );
+//        City placeOfBirth = personTemplate.placeOfBirth().get();
+//        Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ) );
+//        System.out.println( "*** script04: " + query );
+//       //  verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
+    }
+
 
     @Test
     public void script1()

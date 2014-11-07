@@ -104,6 +104,7 @@ public interface ElasticSearchFinder
             SPATIAL_QUERY_SPEC_SUPPORT.put( SpatialConvertSpecification.class, spatialQuerySpecSupport );
         }
 
+
         @This
         private ElasticSearchSupport support;
 

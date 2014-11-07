@@ -109,9 +109,9 @@ public class ElasticSearchSpatialClusterQueryTest
 
             Female annDoe;
             {
-                EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class, "anndoe" );
+                EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class, "anndoe2" );
                 annDoe = femaleBuilder.instance();
-                annDoe.name().set( "Ann Doe" );
+                annDoe.name().set( "Ann Doe 2" );
                 annDoe.title().set( Person.Title.MRS );
                 annDoe.placeOfBirth().set( kualaLumpur );
                 annDoe.favoritePlaces().put("kualaLumpur", kualaLumpur);
@@ -323,7 +323,7 @@ public class ElasticSearchSpatialClusterQueryTest
 
 
 
-        // System.out.println("Found Cities " + query.count());
+        System.out.println("Found Cities " + query.count());
 
 
 //        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );

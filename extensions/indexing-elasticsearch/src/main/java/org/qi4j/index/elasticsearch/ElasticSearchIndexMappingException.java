@@ -17,22 +17,18 @@
  */
 package org.qi4j.index.elasticsearch;
 
-import org.elasticsearch.client.Client;
-import org.qi4j.api.service.ServiceActivation;
-import org.qi4j.api.structure.Module;
-
-public interface ElasticSearchSupport
-        extends ServiceActivation
+public class ElasticSearchIndexMappingException
+        extends RuntimeException
 {
 
-    Client client();
+    public ElasticSearchIndexMappingException(String string)
+    {
+        super( string );
+    }
 
-    String index();
-
-    String entitiesType();
-
-    boolean indexNonAggregatedAssociations();
-
-    Module getModule();
+    public ElasticSearchIndexMappingException(String string, Throwable thrwbl)
+    {
+        super( string, thrwbl );
+    }
 
 }
