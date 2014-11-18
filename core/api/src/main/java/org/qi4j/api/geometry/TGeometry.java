@@ -1,6 +1,7 @@
 package org.qi4j.api.geometry;
 
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -14,11 +15,18 @@ public interface TGeometry extends TGeomRoot {
     Property<String> type();
 
     @Optional
-    Property<Integer> SRID();
+    @UseDefaults
+    Property<Integer> SRIDCode();
 
+    @Optional
+    @UseDefaults
+    Property<String> SRIDAuthority();
 
-    int getSRID();
-    void setSRID(int SRID);
+    String getSRID();
+    void setSRIDCode(int SRID);
+    void setSRIDAuthority(String authority);
+    void setSRID(String authority, Integer code);
+    String getSRIDWkt();
 
 
     public abstract class Mixin implements TGeometry
@@ -30,17 +38,26 @@ public interface TGeometry extends TGeomRoot {
         @This
         TGeometry self;
 
-        public int getSRID()
+        public String getSRID()
         {
-            return self.SRID().get();
+            return self.SRIDAuthority().get() + ":" + self.SRIDCode().get();
         }
 
-        public void setSRID(int SRID)
+        public void setSRIDCode(int SRID)
         {
-           self.SRID().set(SRID);
+           self.SRIDCode().set(SRID);
         }
 
+        public void setSRIDAuthority(String authority) { self.SRIDAuthority().set(authority);}
 
+        public void setSRID(String authority, Integer code) {
+            self.setSRIDAuthority(authority);
+            self.setSRIDCode(code);
+        }
+
+        public String getSRIDWkt() {
+            return self.SRIDAuthority() + ":" + self.SRIDCode();
+        }
 
     }
 

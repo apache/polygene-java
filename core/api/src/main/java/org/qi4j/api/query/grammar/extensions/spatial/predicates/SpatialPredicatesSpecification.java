@@ -41,6 +41,8 @@ public abstract class SpatialPredicatesSpecification<TGeometry>
     @Override
     public final boolean satisfiedBy( Composite item )
     {
+        System.out.println("SpatialPredicatesSpecification::satisfiedBy(" + item + ")");
+
         try
         {
             Property<TGeometry> prop = property.map( item );

@@ -28,14 +28,22 @@ public interface Coordinate extends Comparable, ValueComposite, TGeomRoot {
     Coordinate of(double... coordinates);
     double getOrdinate(int ordinateIndex);
     int compareTo(Object o);
+    double[] source();
+
+    Coordinate X(double x);
+    Coordinate Y(double y);
+    Coordinate Z(double z);
 
 
     public abstract class Mixin implements Coordinate
     {
+
+        List<Double> EMPTY = new ArrayList<Double>(X + Y + Z);
+
+
+
         @This
         Coordinate self;
-
-
 
         public Coordinate of(double... coordinates)
         {
@@ -53,6 +61,56 @@ public interface Coordinate extends Comparable, ValueComposite, TGeomRoot {
 
             return self;
         }
+
+
+        public Coordinate X(double x)
+        {
+
+            EMPTY.add(new Double(0.0));
+            EMPTY.add(new Double(0.0));
+            EMPTY.add(new Double(0.0));
+
+            if (self.coordinate().get() == null) self.coordinate().set(EMPTY);
+
+            if (!Double.isNaN(x) && !Double.isInfinite(x))
+            {
+                System.out.println(coordinate().get());
+                self.coordinate().get().set(X, x);
+            }
+            return self;
+        }
+
+        public Coordinate Y(double y)
+        {
+            EMPTY.add(new Double(0.0));
+            EMPTY.add(new Double(0.0));
+            EMPTY.add(new Double(0.0));
+
+            if (self.coordinate().get() == null) self.coordinate().set(EMPTY);
+
+            if (!Double.isNaN(y) && !Double.isInfinite(y))
+            {
+                self.coordinate().get().set(Y,y);
+            }
+            return self;
+        }
+
+        public Coordinate Z(double z)
+        {
+
+            EMPTY.add(new Double(0.0));
+            EMPTY.add(new Double(0.0));
+            EMPTY.add(new Double(0.0));
+
+            if (self.coordinate().get() == null) self.coordinate().set(EMPTY);
+
+            if (!Double.isNaN(z) && !Double.isInfinite(z))
+            {
+                self.coordinate().get().set(Z,z);
+            }
+            return self;
+        }
+
         public int compareTo(Object o)
         {
             Coordinate other = (Coordinate)o;
@@ -72,6 +130,16 @@ public interface Coordinate extends Comparable, ValueComposite, TGeomRoot {
                 case Z: return self.coordinate().get().get(Z);
             }
             throw new IllegalArgumentException("Invalid ordinate index: " + ordinateIndex);
+        }
+
+        public double[] source()
+        {
+            double [] values = new double[3];
+            values[X] = getOrdinate(X);
+            values[Y] = getOrdinate(Y);
+            values[Z] = getOrdinate(Z);
+
+            return values;
         }
     }
 }

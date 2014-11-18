@@ -7,16 +7,20 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.geometry.GeometryFactory;
 import org.qi4j.api.geometry.TFeature;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
@@ -24,11 +28,13 @@ import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractSpatialQueryTest;
 import org.qi4j.test.indexing.model.City;
+import org.qi4j.test.indexing.model.Person;
 import org.qi4j.test.util.DelTreeAfter;
 
 import java.io.File;
 
 import static org.qi4j.api.query.QueryExpressions.templateFor;
+import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_GeometryFromText;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Within;
 import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
@@ -176,6 +182,53 @@ public class ElasticSearchSpatialQueryTest
     @Test
     public void script00()
     {
+
+/**
+ {
+ "type": "MultiPolygon",
+ "coordinates": [
+ [
+ [
+ [
+ 10.626525878906,
+ 49.567977858927
+ ],
+ [
+ 10.748062133789,
+ 49.583561598774
+ ],
+ [
+ 10.78857421875,
+ 49.533230478524
+ ],
+ [
+ 10.72265625,
+ 49.484185749508
+ ],
+ [
+ 10.578460693359,
+ 49.493106630315
+ ],
+ [
+ 10.583267211914,
+ 49.541696861164
+ ],
+ [
+ 10.605239868164,
+ 49.555507284155
+ ],
+ [
+ 10.626525878906,
+ 49.567977858927
+ ]
+ ]
+ ]
+ ]
+ }
+
+ **/
+// http://blog.sallarp.com/geojson-google-maps-editor.html
+
 //        Query<Person> query = unitOfWork.newQuery( module.newQueryBuilder( Person.class ).
 //                where( eq( templateFor( Person.class ).money(),
 //                        Money.of( CurrencyUnit.USD, 100 ) ) ) );
@@ -201,6 +254,76 @@ public class ElasticSearchSpatialQueryTest
         query.find();
 
         System.out.println(query.count());
+
+
+//        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+//        Person personTemplate = templateFor( Person.class );
+//        City placeOfBirth = personTemplate.placeOfBirth().get();
+//        Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ) );
+//        System.out.println( "*** script04: " + query );
+//       //  verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
+    }
+
+
+    @Test
+    public void whenQueryUsePolygon() throws Exception
+    {
+
+        /**
+        // lat, long
+        ST_GeometryFromText("POINT(49.550881 10.712809)", 1);
+
+        ST_GeometryFromText("POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))", 1);
+
+        ST_GeometryFromText("POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))", 1);
+
+        // String polygon = "49.56797785892715 10.62652587890625," + ""
+
+
+        ST_GeometryFromText("POLYGON(" +
+  "49.56797785892715 10.62652587890625," +
+  "49.5835615987737 10.748062133789062," +
+  "49.533230478523684 10.78857421875," +
+  "49.484185749507716 10.72265625," +
+  "49.49310663031507 10.578460693359375," +
+  "49.5416968611641 10.583267211914062," +
+  "49.555507284155276 10.605239868164062," +
+  "49.56797785892715 10.62652587890625)", 1);
+*/
+
+
+
+        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
+
+        Query<City> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Within
+                                        (
+                                                templateFor(City.class).location(),
+
+                                                ST_GeometryFromText(
+                                                        "POLYGON((" +
+                                                        "49.56797785892715 10.62652587890625," +
+                                                        "49.5835615987737 10.748062133789062," +
+                                                        "49.533230478523684 10.78857421875," +
+                                                        "49.484185749507716 10.72265625," +
+                                                        "49.49310663031507 10.578460693359375," +
+                                                        "49.5416968611641 10.583267211914062," +
+                                                        "49.555507284155276 10.605239868164062," +
+                                                        "49.56797785892715 10.62652587890625))", 1),
+
+                                                100
+                                        )
+                        ));
+
+
+        // System.out.println( "*** script01: " + query );
+        query.find();
+
+
+
+        System.out.println("Found Cities " + query.count());
 
 
 //        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
@@ -286,6 +409,30 @@ public class ElasticSearchSpatialQueryTest
         feature = featureBuilder.newInstance();
 
         return feature;
+
+    }
+
+
+    @Test
+    public void whenQueryForPersonsInACity() {
+
+
+        QueryBuilder<Person> qb = this.module.newQueryBuilder(Person.class);
+
+        Query<Person> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Within(templateFor(Person.class).placeOfBirth().get().location(),
+                                        Geometry.asPoint(
+                                                Geometry.asCoordinate(3.139003),
+                                                Geometry.asCoordinate(101.686854)
+                                                //  Geometry.asCoordinate(10.6108),
+                                                //  Geometry.asCoordinate(49.5786)
+                                        ))));
+
+        query.find();
+
+        System.out.println("Found Persons " + query.count());
 
     }
 

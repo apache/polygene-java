@@ -152,7 +152,6 @@ class TestData
                 annDoe = femaleBuilder.instance();
                 annDoe.name().set( "Ann Doe" );
                 annDoe.title().set( Person.Title.MRS );
-                annDoe.placeOfBirth().set( kualaLumpur );
                 annDoe.yearOfBirth().set( 1975 );
                 annDoe.interests().add( 0, cooking );
                 annDoe.favoritePlaces().put("kualaLumpur", kualaLumpur);
@@ -172,6 +171,7 @@ class TestData
                 joeDoe.title().set( Person.Title.MR );
                 joeDoe.placeOfBirth().set( kualaLumpur );
                 joeDoe.yearOfBirth().set( 1990 );
+                joeDoe.placeOfBirth().set( kualaLumpur );
                 joeDoe.mother().set( annDoe );
                 joeDoe.interests().add( 0, programming );
                 joeDoe.interests().add( 0, gaming );

@@ -52,6 +52,7 @@ public interface TLineString extends TGeometry {
         }
 
         public TPoint getPointN(int n) {
+            System.out.println("points " + self.points().get().size());
             return self.points().get().get(n);
         }
 

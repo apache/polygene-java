@@ -7,11 +7,16 @@ import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.geometry.GeometryFactory;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.geometry.TPoint;
+import org.qi4j.api.geometry.TPolygon;
+import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.elasticsearch.assembly.ESClusterIndexQueryAssembler;
@@ -29,6 +34,7 @@ import org.qi4j.test.util.DelTreeAfter;
 import java.io.File;
 
 import static org.joda.time.DateTimeZone.UTC;
+import static org.junit.Assert.assertNotNull;
 import static org.qi4j.api.query.QueryExpressions.*;
 import static org.qi4j.api.query.QueryExpressions.lt;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Within;
@@ -320,6 +326,202 @@ public class ElasticSearchSpatialClusterQueryTest
 
             // System.out.println( "*** script01: " + query );
             query.find();
+
+
+
+        System.out.println("Found Cities " + query.count());
+
+
+//        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+//        Person personTemplate = templateFor( Person.class );
+//        City placeOfBirth = personTemplate.placeOfBirth().get();
+//        Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ) );
+//        System.out.println( "*** script04: " + query );
+//       //  verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
+    }
+
+    @Test
+    public void whenQueryUsePolygon() throws Exception
+    {
+
+        /**
+         // lat, long
+         ST_GeometryFromText("POINT(49.550881 10.712809)", 1);
+
+         ST_GeometryFromText("POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))", 1);
+
+         ST_GeometryFromText("POLYGON((0 0,4 0,4 4,0 4,0 0),(1 1, 2 1, 2 2, 1 2,1 1))", 1);
+
+         // String polygon = "49.56797785892715 10.62652587890625," + ""
+
+
+         ST_GeometryFromText("POLYGON(" +
+         "49.56797785892715 10.62652587890625," +
+         "49.5835615987737 10.748062133789062," +
+         "49.533230478523684 10.78857421875," +
+         "49.484185749507716 10.72265625," +
+         "49.49310663031507 10.578460693359375," +
+         "49.5416968611641 10.583267211914062," +
+         "49.555507284155276 10.605239868164062," +
+         "49.56797785892715 10.62652587890625)", 1);
+         */
+
+
+
+        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
+
+        Query<City> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Within
+                                        (
+                                                templateFor(City.class).location(),
+
+                                                ST_GeometryFromText(
+                                                        "POLYGON((" +
+                                                                "49.56797785892715 10.62652587890625," +
+                                                                "49.5835615987737 10.748062133789062," +
+                                                                "49.533230478523684 10.78857421875," +
+                                                                "49.484185749507716 10.72265625," +
+                                                                "49.49310663031507 10.578460693359375," +
+                                                                "49.5416968611641 10.583267211914062," +
+                                                                "49.555507284155276 10.605239868164062," +
+                                                                "49.56797785892715 10.62652587890625))", 1)
+                                        )
+                        ));
+
+
+        // System.out.println( "*** script01: " + query );
+        query.find();
+
+
+
+        System.out.println("Found Cities " + query.count());
+
+
+//        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+//        Person personTemplate = templateFor( Person.class );
+//        City placeOfBirth = personTemplate.placeOfBirth().get();
+//        Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ) );
+//        System.out.println( "*** script04: " + query );
+//       //  verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
+    }
+
+    @Test
+    public void directQuery() {
+
+        ValueBuilder<TPolygon> tPolygonShapeBuilder = module.newValueBuilder(TPolygon.class);
+        TPolygon tPolygonShape = tPolygonShapeBuilder.prototype().of
+                        (
+                                // shell
+                                module.newValueBuilder(TLinearRing.class).prototype().of
+                                        (
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(49.56797785892715),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(10.62652587890625)   //y
+                                                        )
+                                                ,
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(49.5835615987737),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(10.748062133789062)   //y
+                                                        )
+                                                ,
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(49.533230478523684),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(10.78857421875)   //y
+                                                        )
+                                                ,
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(49.484185749507716),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(10.72265625)   //y
+                                                        )
+                                                ,
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(49.49310663031507),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(10.578460693359375)   //y
+                                                        )
+
+                                                ,
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(49.5416968611641),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(10.583267211914062)   //y
+                                                        )
+                        ,
+                        module.newValueBuilder(TPoint.class).prototype().of
+                                (
+                                        module.newValueBuilder(Coordinate.class).prototype().of(49.555507284155276),  //x
+                                        module.newValueBuilder(Coordinate.class).prototype().of(10.605239868164062)   //y
+                                )
+                        ,
+                        module.newValueBuilder(TPoint.class).prototype().of
+                                (
+                                        module.newValueBuilder(Coordinate.class).prototype().of(49.56797785892715),  //x
+                                        module.newValueBuilder(Coordinate.class).prototype().of(10.62652587890625)   //y
+                                )
+
+
+
+
+                                // ,
+                                // no holes
+                                // null
+                        ));
+
+
+        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
+
+        Query<City> query = unitOfWork.newQuery(
+                qb
+
+                        .where(
+                                ST_Within(templateFor(City.class).location(),
+
+                                        tPolygonShape
+                                )));
+
+
+        // System.out.println( "*** script01: " + query );
+        query.find();
+
+
+
+        System.out.println("Found Cities 123 " + query.count());
+
+
+    }
+
+
+
+    @Test
+    public void whenQueryUseConversion2() throws Exception
+    {
+        // lat, long
+        ST_GeometryFromText("POINT(49.550881 10.712809)", 1);
+
+
+
+        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
+
+        Query<City> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Within
+                                        (
+                                                templateFor(City.class).location(),
+                                                ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
+                                                100
+                                        )
+                        ));
+
+
+        // System.out.println( "*** script01: " + query );
+        query.find();
 
 
 

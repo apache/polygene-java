@@ -22,10 +22,12 @@ import org.elasticsearch.common.geo.GeoDistance;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.GeoPolygonFilterBuilder;
 import org.elasticsearch.index.query.OrFilterBuilder;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.geometry.TPoint;
+import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.ST_GeomFromTextSpecification;
@@ -41,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static org.elasticsearch.index.query.FilterBuilders.geoDistanceFilter;
+import static org.elasticsearch.index.query.FilterBuilders.geoPolygonFilter;
 
 public final class ElasticSearchSpatialFinderSupport
 {
@@ -189,7 +192,48 @@ public final class ElasticSearchSpatialFinderSupport
 
 
                        filterBuilder);
+            } else
+            if (geometry instanceof TPolygon) {
+                System.out.println("## IS POLYGON ");
+
+                GeoPolygonFilterBuilder polygonFilterBuilder = geoPolygonFilter(name);
+
+                System.out.println("Size of Points " + ((TPolygon) geometry).shell().get().points().get().size());
+
+                for (int i = 0; i < ((TPolygon) geometry).shell().get().points().get().size(); i++) {
+                    TPoint point = ((TPolygon) geometry).shell().get().getPointN(i);
+                    System.out.println(point);
+                    polygonFilterBuilder.addPoint(
+                           //  point.coordinates().get().get(0).getOrdinate(Coordinate.X),
+                           // point.coordinates().get().get(1).getOrdinate(Coordinate.X)
+
+                              point.coordinates().get().get(0).getOrdinate(Coordinate.X),
+                              point.coordinates().get().get(1).getOrdinate(Coordinate.X)
+                    );
+                }
+
+                addFilter(polygonFilterBuilder, filterBuilder);
+
+                 //       ((TPolygon) geometry).shell().get().getPointN(i)
+                /**
+                addFilter(geoPolygonFilter(name)
+                                .addPoint(0, 0)
+                                .addPoint(0, 0)
+
+                                .lat(((TPoint) geometry).coordinates().get().get(0).getOrdinate(Coordinate.X))
+                                .lon(((TPoint) geometry).coordinates().get().get(1).getOrdinate(Coordinate.X))
+                                .distance(100, DistanceUnit.KILOMETERS)
+                                .geoDistance(GeoDistance.ARC),
+
+
+                        filterBuilder);
+                */
             }
+
+                if (geometry instanceof TGeometry) {
+                    // http://blog.sallarp.com/geojson-google-maps-editor.html
+                    // TODO Use polygon or Multipolygon
+                }
 
 //            String property = "foo";
 //            Double lat =  3.138722;  // 3.138722;// Double.parseDouble(query.nextToken());

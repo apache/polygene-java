@@ -150,7 +150,7 @@ public interface ElasticSearchFinder
             // Log
             LOGGER.debug( "Will search Entities: {}", request );
 
-            // System.out.println("Request " + request.toString());
+            System.out.println("Request " + request.toString());
 
 
             // Execute
@@ -185,7 +185,7 @@ public interface ElasticSearchFinder
             // Log
             LOGGER.debug( "Will search Entity: {}", request );
 
-            // System.out.println("request " + request.toString());
+            System.out.println("request " + request.toString());
 
 
             // Execute

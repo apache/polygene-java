@@ -1,6 +1,8 @@
 package org.qi4j.api.query.grammar.extensions.spatial;
 
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.LtSpecification;
@@ -23,10 +25,22 @@ public final class SpatialQueryExpressions extends QueryExpressions {
        return new ST_WithinSpecification<TGeometry>( property(geometry1), value);
     }
 
+    public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<TGeometry> geometry1, TPolygon value) // T value )
+    {
+        return new ST_WithinSpecification<TGeometry>( property(geometry1), (TGeometry)value);
+    }
+
     public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<TGeometry> geometry1, Specification<SpatialConvertSpecification> operator, long distance )
     {
         return new ST_WithinSpecification<TGeometry>( property(geometry1), operator, distance);
     }
+
+    public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<TGeometry> geometry1, Specification<SpatialConvertSpecification> operator)
+    {
+        return new ST_WithinSpecification<TGeometry>( property(geometry1), operator);
+    }
+
+
 
     public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within(  Specification<SpatialConvertSpecification> operator) // T value )
     {
@@ -57,10 +71,16 @@ public final class SpatialQueryExpressions extends QueryExpressions {
 //        // return null;
 //    }
 
-    public static Specification<SpatialConvertSpecification> ST_GeometryFromText(String WKT, int a) throws ParseException
+    public static Specification<SpatialConvertSpecification> ST_GeometryFromText(String WKT, int srid)
     {
         //  return new LtSpecification<>( property( property ), value );
-        return new ST_GeomFromTextSpecification( WKT, a);
+        return new ST_GeomFromTextSpecification( WKT, srid);
+    }
+
+    public static Specification<Composite> ST_GeometryFromText(String WKT, int srid, String foo)
+    {
+        //  return new LtSpecification<>( property( property ), value );
+        return new ST_GeomFromTextSpecification( WKT, srid);
     }
 
     /**

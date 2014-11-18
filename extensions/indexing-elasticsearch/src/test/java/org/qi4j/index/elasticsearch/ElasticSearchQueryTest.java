@@ -19,11 +19,15 @@ package org.qi4j.index.elasticsearch;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
@@ -32,8 +36,15 @@ import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractQueryTest;
+import org.qi4j.test.indexing.model.City;
+import org.qi4j.test.indexing.model.Person;
 import org.qi4j.test.util.DelTreeAfter;
 
+import static org.joda.time.DateTimeZone.UTC;
+import static org.qi4j.api.query.QueryExpressions.eq;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
+import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_GeometryFromText;
+import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Within;
 import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
 public class ElasticSearchQueryTest
@@ -103,5 +114,38 @@ public class ElasticSearchQueryTest
     public void script42_DateTime()
     {
         super.script42_DateTime();
+    }
+
+    @Test
+    public void script53_Spatial_ST_WithIn()
+    {
+        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
+        Query<City> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Within
+                                        (
+                                                templateFor(City.class).location(),
+                                                ST_GeometryFromText("POINT(3.139003 101.686854)", 1),
+                                                100
+                                        )
+                        ));
+        System.out.println( "*** script53_Spatial_ST_WithIn: " + query );
+
+        System.out.println("Query Count " + query.count());
+
+        // System.out.println( "*** script01: " + query );
+        query.find();
+    }
+
+    @Test
+    public void script53_Spatial_ST_WithIn2() {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder(Person.class);
+        Person person = templateFor(Person.class);
+        Query<Person> query = unitOfWork.newQuery(qb.where(
+                eq(person.dateTimeValue(), new DateTime("2010-03-04T13:24:35", UTC))));
+        System.out.println("*** script40_DateTime: " + query);
+
+        // verifyUnorderedResults(query, "Jack Doe");
     }
 }

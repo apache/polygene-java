@@ -1,0 +1,77 @@
+[[library-uid, UID Library]]
+= UID =
+
+[devstatus]
+--------------
+source=libraries/uid/dev-status.xml
+--------------
+
+This library provides Services to easily generate unique identifiers and sequences of numbers.
+
+include::../../build/docs/buildinfo/artifact.txt[]
+
+== Unique Identifiers ==
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=libraries/uid/src/test/java/org/qi4j/library/uid/DocumentationSupport.java
+tag=uuid-assembly
+----
+
+Usage is quite simple:
+
+[snippet,java]
+----
+source=libraries/uid/src/test/java/org/qi4j/library/uid/DocumentationSupport.java
+tag=uuid-usage
+----
+
+
+
+== Sequencing ==
+
+Sequencing is used to automatically generate a sequence of numbers.
+
+The algorithm is that `currentSequenceValue` is the number that was last returned in a `newSequenceValue` call, and will
+initially be zero. Persisting Sequencing services defines "initially" as the first run ever, as subsequent starts may
+retrieve the `currentSequenceValue` from an EntityStore.
+
+
+=== Transient Sequences ===
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=libraries/uid/src/test/java/org/qi4j/library/uid/DocumentationSupport.java
+tag=seq-assembly
+----
+
+Usage is quite simple:
+
+[snippet,java]
+----
+source=libraries/uid/src/test/java/org/qi4j/library/uid/DocumentationSupport.java
+tag=seq-usage
+----
+
+=== Persisted Sequences ===
+
+Assembly is done using the provided Assembler:
+
+[snippet,java]
+----
+source=libraries/uid/src/test/java/org/qi4j/library/uid/DocumentationSupport.java
+tag=perseq-assembly
+----
+
+Usage is quite simple:
+
+[snippet,java]
+----
+source=libraries/uid/src/test/java/org/qi4j/library/uid/DocumentationSupport.java
+tag=seq-usage
+----
+

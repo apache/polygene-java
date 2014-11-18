@@ -1,5 +1,6 @@
 package org.qi4j.api.query.grammar.extensions.spatial.predicates;
 
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.grammar.PropertyFunction;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.functional.Specification;
@@ -21,7 +22,13 @@ public class ST_WithinSpecification<TGeometry>
         super( property, operator );
     }
 
-    @Override
+    public ST_WithinSpecification(PropertyFunction<TGeometry> property, Specification<SpatialConvertSpecification> operator)
+    {
+        super( property, operator );
+    }
+
+
+   @Override
     protected boolean compare( TGeometry value )
     {
         return value.equals( this.value );
