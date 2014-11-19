@@ -58,14 +58,15 @@ import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
 import org.qi4j.api.query.grammar.PropertyNullSpecification;
 import org.qi4j.api.query.grammar.QuerySpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
-import org.qi4j.api.query.grammar.extensions.spatial.predicates.SpatialPredicatesSpecification;
+import org.qi4j.api.query.grammar.extensions.spatial.predicate.SpatialPredicatesSpecification;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
-import org.qi4j.index.elasticsearch.features.spatial.ElasticSearchSpatialFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.predicate.ElasticSearchSpatialPredicateFinderSupport;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
@@ -82,7 +83,7 @@ import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.wrapperQuery;
 import static org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.resolveVariable;
-import static org.qi4j.index.elasticsearch.features.spatial.ElasticSearchSpatialFinderSupport.*;
+import static org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinderSupport.*;
 
 @Mixins( ElasticSearchFinder.Mixin.class )
 public interface ElasticSearchFinder
@@ -100,7 +101,8 @@ public interface ElasticSearchFinder
         static
         {
             SpatialQuerySpecSupport spatialQuerySpecSupport = new ElasticSearchSpatialFinderSupport.SpatialSupport();
-            SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialPredicatesSpecification.class, spatialQuerySpecSupport);
+            // SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialPredicatesSpecification.class, spatialQuerySpecSupport);
+            SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialPredicatesSpecification.class, new ElasticSearchSpatialPredicateFinderSupport());
             SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialConvertSpecification.class, spatialQuerySpecSupport);
         }
 

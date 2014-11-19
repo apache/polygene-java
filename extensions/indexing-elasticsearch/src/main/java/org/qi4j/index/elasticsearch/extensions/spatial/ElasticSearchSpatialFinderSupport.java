@@ -1,4 +1,4 @@
-package org.qi4j.index.elasticsearch.features.spatial;
+package org.qi4j.index.elasticsearch.extensions.spatial;
 
 /*
  * Copyright 2014 Paul Merlin.
@@ -18,8 +18,6 @@ package org.qi4j.index.elasticsearch.features.spatial;
  * limitations under the License.
  */
 
-import com.spatial4j.core.shape.Shape;
-import org.elasticsearch.common.geo.GeoDistance;
 import org.elasticsearch.common.geo.ShapeRelation;
 import org.elasticsearch.common.geo.builders.CircleBuilder;
 import org.elasticsearch.common.geo.builders.PointBuilder;
@@ -35,18 +33,16 @@ import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.ST_GeomFromTextSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
-import org.qi4j.api.query.grammar.extensions.spatial.predicates.ST_WithinSpecification;
-import org.qi4j.api.query.grammar.extensions.spatial.predicates.SpatialPredicatesSpecification;
+import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_WithinSpecification;
+import org.qi4j.api.query.grammar.extensions.spatial.predicate.SpatialPredicatesSpecification;
 import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.elasticsearch.common.geo.ShapeRelation;
 
 import java.util.Map;
 
-import static org.elasticsearch.index.query.FilterBuilders.geoDistanceFilter;
 import static org.elasticsearch.index.query.FilterBuilders.geoPolygonFilter;
 import static org.elasticsearch.index.query.FilterBuilders.geoShapeFilter;
 
@@ -89,14 +85,14 @@ public final class ElasticSearchSpatialFinderSupport
 //
 //    }
 
-    interface ModuleHelper {
+    public interface ModuleHelper {
         void setModule(Module module);
     }
 
     public static interface SpatialQuerySpecSupport extends ModuleHelper
     {
         void processSpecification(FilterBuilder filterBuilder, Specification<Composite> spec, Map<String, Object> variables)  throws EntityFinderException;
-        void processSpatialPredicatesSpecification(FilterBuilder filterBuilder, SpatialPredicatesSpecification<?> spec, Map<String, Object> variables, Module module);
+       // void processSpatialPredicatesSpecification(FilterBuilder filterBuilder, SpatialPredicatesSpecification<?> spec, Map<String, Object> variables, Module module);
     }
 
 

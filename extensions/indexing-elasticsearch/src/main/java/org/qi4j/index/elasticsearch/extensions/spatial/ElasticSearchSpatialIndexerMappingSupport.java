@@ -1,4 +1,4 @@
-package org.qi4j.index.elasticsearch.features.spatial;
+package org.qi4j.index.elasticsearch.extensions.spatial;
 
 /*
  * Copyright 2014 Jiri Jetmar.
