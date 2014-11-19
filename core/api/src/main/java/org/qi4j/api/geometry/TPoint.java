@@ -27,6 +27,10 @@ public interface TPoint extends TGeometry {
     TPoint Y(double y);
     TPoint Z(double z);
 
+    double X();
+    double Y();
+    double Z();
+
     double[] source();
 
 
@@ -42,6 +46,7 @@ public interface TPoint extends TGeometry {
                 List<Coordinate> c = new ArrayList<Coordinate>();
                 c.add(module.newValueBuilder(Coordinate.class).prototype().X(0).Y(0).Z(0));
                 self.coordinates().set(c);
+                self.type().set("Point");
             }
         }
 
@@ -75,6 +80,19 @@ public interface TPoint extends TGeometry {
             self.coordinates().get().get(0).X(x);
 
             return self;
+        }
+
+        public double X() {
+
+            return self.coordinates().get().get(0).getOrdinate(Coordinate.X);
+        }
+
+        public double Y() {
+            return self.coordinates().get().get(0).getOrdinate(Coordinate.Y);
+        }
+
+        public double Z() {
+            return self.coordinates().get().get(0).getOrdinate(Coordinate.Z);
         }
 
         public TPoint Y(double y) {

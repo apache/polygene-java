@@ -234,13 +234,19 @@ public interface ElasticSearchIndexer
 
                             String newKey = null;
 
-                            if (assotiationKey != null) {
+                            if (assotiationKey != null)
+                            {
                                  newKey = assotiationKey + "." + key;
-                            } else {
+                            }
+                            else
+                            {
                                 newKey = key;
                             }
 
-                                 ElasticSearchSpatialIndexerSupport.toJSON(support,(TGeometry) value,key,newKey,json );
+
+                            ElasticSearchSpatialIndexerSupport.toJSON(support,(TGeometry) value,key,newKey,json );
+
+                            System.out.println("Spatial JSON " + json);
                         }
                         else
                         {

@@ -98,13 +98,14 @@ public class ST_GeomFromTextSpecification<TGeometry>
 
             ValueBuilder<TPoint> builder = module.newValueBuilder(TPoint.class);
 
-
+            builder.prototype().X(((Point) sNoDL).getX()).Y(((Point) sNoDL).getY());
+/**
             builder.prototype().of
                     (
                             module.newValueBuilder(Coordinate.class).prototype().of(((Point) sNoDL).getX()),  //x
                             module.newValueBuilder(Coordinate.class).prototype().of(((Point) sNoDL).getY())   //y
                     );
-
+*/
             return builder.newInstance();
 
 
@@ -148,11 +149,14 @@ public class ST_GeomFromTextSpecification<TGeometry>
         ValueBuilder<TPoint> builder = module.newValueBuilder(TPoint.class);
 
 
+        builder.prototype().X(((Point) sNoDL).getX()).Y(((Point) sNoDL).getY());
+        /**
         builder.prototype().of
                 (
                         module.newValueBuilder(Coordinate.class).prototype().of(((Point) sNoDL).getX()),  //x
                         module.newValueBuilder(Coordinate.class).prototype().of(((Point) sNoDL).getY())   //y
                 );
+        */
 
         return builder.newInstance();
     }

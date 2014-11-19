@@ -2,6 +2,7 @@ package org.qi4j.api.query.grammar.extensions.spatial.predicates;
 
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.grammar.PropertyFunction;
+import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.functional.Specification;
 
@@ -18,6 +19,11 @@ public class ST_WithinSpecification<TGeometry>
     }
 
     public ST_WithinSpecification(PropertyFunction<TGeometry> property, Specification<SpatialConvertSpecification> operator, long distance)
+    {
+        super( property, operator );
+    }
+
+    public ST_WithinSpecification(PropertyFunction<TGeometry> property, Specification<SpatialConvertSpecification> operator, Variable variable)
     {
         super( property, operator );
     }

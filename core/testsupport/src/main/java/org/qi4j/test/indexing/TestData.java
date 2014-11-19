@@ -108,7 +108,7 @@ class TestData
                 kualaLumpur.country().set( "Malaysia" );
                 kualaLumpur.county().set( "Some Jaya" );
                 kualaLumpur.location().set((TPoint)module.findService(GeometryFactory.class).get()
-                        .as2DPoint(3.139003, 101.686854));
+                        .as2DPoint(101.686854, 3.139003));
                 kualaLumpur = cityBuilder.newInstance();
                 NameableAssert.trace( kualaLumpur );
             }

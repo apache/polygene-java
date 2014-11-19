@@ -100,8 +100,8 @@ public interface ElasticSearchFinder
         static
         {
             SpatialQuerySpecSupport spatialQuerySpecSupport = new ElasticSearchSpatialFinderSupport.SpatialSupport();
-            SPATIAL_QUERY_SPEC_SUPPORT.put( SpatialPredicatesSpecification.class, spatialQuerySpecSupport );
-            SPATIAL_QUERY_SPEC_SUPPORT.put( SpatialConvertSpecification.class, spatialQuerySpecSupport );
+            SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialPredicatesSpecification.class, spatialQuerySpecSupport);
+            SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialConvertSpecification.class, spatialQuerySpecSupport);
         }
 
 

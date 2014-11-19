@@ -18,12 +18,15 @@ package org.qi4j.index.elasticsearch.features.spatial;
  * limitations under the License.
  */
 
+import com.spatial4j.core.shape.Shape;
 import org.elasticsearch.common.geo.GeoDistance;
+import org.elasticsearch.common.geo.ShapeRelation;
+import org.elasticsearch.common.geo.builders.CircleBuilder;
+import org.elasticsearch.common.geo.builders.PointBuilder;
+import org.elasticsearch.common.geo.builders.PolygonBuilder;
+import org.elasticsearch.common.geo.builders.ShapeBuilder;
 import org.elasticsearch.common.unit.DistanceUnit;
-import org.elasticsearch.index.query.AndFilterBuilder;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.GeoPolygonFilterBuilder;
-import org.elasticsearch.index.query.OrFilterBuilder;
+import org.elasticsearch.index.query.*;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.geometry.TPoint;
@@ -39,11 +42,13 @@ import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.elasticsearch.common.geo.ShapeRelation;
 
 import java.util.Map;
 
 import static org.elasticsearch.index.query.FilterBuilders.geoDistanceFilter;
 import static org.elasticsearch.index.query.FilterBuilders.geoPolygonFilter;
+import static org.elasticsearch.index.query.FilterBuilders.geoShapeFilter;
 
 public final class ElasticSearchSpatialFinderSupport
 {
@@ -183,6 +188,11 @@ public final class ElasticSearchSpatialFinderSupport
 
                 // // System.out.println("Lat " + ((TPoint) spec.value()).coordinates().get().get(0));
 
+                GeoShapeFilterBuilder geoShapeFilterBuilder  = createShapePointFilter(name, (TPoint) geometry);
+                addFilter(geoShapeFilterBuilder, filterBuilder);
+
+
+                /**
                addFilter(geoDistanceFilter(name)
 
                        .lat(((TPoint) geometry).coordinates().get().get(0).getOrdinate(Coordinate.X))
@@ -192,11 +202,16 @@ public final class ElasticSearchSpatialFinderSupport
 
 
                        filterBuilder);
+                 */
+
             } else
             if (geometry instanceof TPolygon) {
                 System.out.println("## IS POLYGON ");
 
+                GeoShapeFilterBuilder geoShapeFilterBuilder = createShapeFilter(name, (TPolygon) geometry);
+
                 GeoPolygonFilterBuilder polygonFilterBuilder = geoPolygonFilter(name);
+                //
 
                 System.out.println("Size of Points " + ((TPolygon) geometry).shell().get().points().get().size());
 
@@ -212,7 +227,8 @@ public final class ElasticSearchSpatialFinderSupport
                     );
                 }
 
-                addFilter(polygonFilterBuilder, filterBuilder);
+               // addFilter(polygonFilterBuilder, filterBuilder);
+                 addFilter(geoShapeFilterBuilder, filterBuilder);
 
                  //       ((TPolygon) geometry).shell().get().getPointN(i)
                 /**
@@ -256,6 +272,57 @@ public final class ElasticSearchSpatialFinderSupport
 //                    filterBuilder);
         }
 
+
+        private GeoShapeFilterBuilder createShapePointFilter(String name, TPoint point) {
+
+
+            PointBuilder pointBuilder = ShapeBuilder.newPoint(point.X(), point.Y());
+
+            CircleBuilder circleBuilder = ShapeBuilder.newCircleBuilder();
+            circleBuilder.center(point.X(), point.Y()).radius(10000, DistanceUnit.METERS);
+
+            // ShapeBuilder shapeBuilder = ShapeBuilder.newPolygon().point(99.0, -1.0).point(99.0, 3.0).point(103.0, 3.0).point(103.0, -1.0).point(99.0, -1.0);
+            // GeoShapeFilterBuilder shapeFilterBuilder = geoShapeFilter(name);
+/**
+            for (int i = 0; i < ((TPolygon) polygon).shell().get().points().get().size(); i++) {
+                TPoint point = ((TPolygon) polygon).shell().get().getPointN(i);
+                System.out.println(point);
+
+                polygonBuilder.point(
+                        point.coordinates().get().get(0).getOrdinate(Coordinate.X),
+                        point.coordinates().get().get(1).getOrdinate(Coordinate.X)
+                );
+            }
+*/
+
+            GeoShapeFilterBuilder filter = FilterBuilders.geoShapeFilter(name, circleBuilder, ShapeRelation.WITHIN);
+
+            return filter;
+        }
+
+        private GeoShapeFilterBuilder createShapeFilter(String name, TPolygon polygon) {
+
+
+            PolygonBuilder polygonBuilder = ShapeBuilder.newPolygon();
+
+            ShapeBuilder shapeBuilder = ShapeBuilder.newPolygon().point(99.0, -1.0).point(99.0, 3.0).point(103.0, 3.0).point(103.0, -1.0).point(99.0, -1.0);
+            // GeoShapeFilterBuilder shapeFilterBuilder = geoShapeFilter(name);
+
+            for (int i = 0; i < ((TPolygon) polygon).shell().get().points().get().size(); i++) {
+                TPoint point = ((TPolygon) polygon).shell().get().getPointN(i);
+                System.out.println(point);
+
+                polygonBuilder.point(
+                        point.coordinates().get().get(0).getOrdinate(Coordinate.X),
+                        point.coordinates().get().get(1).getOrdinate(Coordinate.X)
+                );
+            }
+
+
+            GeoShapeFilterBuilder filter = FilterBuilders.geoShapeFilter(name, polygonBuilder, ShapeRelation.WITHIN);
+
+            return filter;
+        }
 
         public void processSpatialConvertSpecification( FilterBuilder filterBuilder,
                                                            SpatialConvertSpecification<?> spec,

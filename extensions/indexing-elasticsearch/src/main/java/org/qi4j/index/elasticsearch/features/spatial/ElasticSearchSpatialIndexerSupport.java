@@ -18,26 +18,14 @@ package org.qi4j.index.elasticsearch.features.spatial;
  * limitations under the License.
  */
 
-import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsResponse;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.index.query.FilterBuilder;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.qi4j.api.geometry.TGeometry;
-import org.qi4j.api.geometry.TLineString;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
-import org.qi4j.api.query.grammar.ComparisonSpecification;
-import org.qi4j.api.query.grammar.ContainsAllSpecification;
-import org.qi4j.api.query.grammar.ContainsSpecification;
-import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.index.elasticsearch.ElasticSearchIndexException;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
-import static org.qi4j.index.elasticsearch.internal.ElasticSearchMappingsCache.MappingsCache;
-import static org.qi4j.index.elasticsearch.internal.ElasticSearchMappingsHelper.Mappings;
 
-import java.io.IOException;
 import java.util.*;
 
 public final class ElasticSearchSpatialIndexerSupport
@@ -48,12 +36,15 @@ public final class ElasticSearchSpatialIndexerSupport
     public static JSONObject toJSON(ElasticSearchSupport support, TGeometry geometry, String property, String propertyWithDepth, JSONObject json)
     {
 
-        ElasticSearchSpatialMappingSupport.verifyAndCacheMappings(support, geometry, propertyWithDepth);
+        ElasticSearchSpatialIndexerMappingSupport.verifyAndCacheMappings(support, geometry, propertyWithDepth);
 
         try {
 
             if (geometry instanceof TPoint) {
-                return createESGeoPointIndexValue(property, json, (TPoint) geometry);
+                return createESGeoPointIndexValueV2(property, json, (TPoint) geometry);
+            }
+            else if (geometry instanceof TPolygon) {
+                return createESGeoPolygonIndexValue(property, json, (TPolygon) geometry);
             }
 
         } catch(Exception _ex) {
@@ -85,6 +76,17 @@ public final class ElasticSearchSpatialIndexerSupport
         // jsonPoint.put("Location", pointDef);
         // jsonPoint.put(property, pointDef);
 
+
+        JSONArray coordinates = new JSONArray();
+        coordinates.put(point.coordinates().get().get(0).coordinate().get().get(0));
+        coordinates.put(point.coordinates().get().get(1).coordinate().get().get(0));
+
+        // jsonPoint.put("coordinates", coordinates);
+
+        // pointDef.put("coordinates",coordinates);
+        // pointDef.put("type", "point");
+
+
         json.put(property, pointDef);
 
 
@@ -93,8 +95,81 @@ public final class ElasticSearchSpatialIndexerSupport
         return jsonPoint;
     }
 
+    private static JSONObject createESGeoPointIndexValueV2(String property, JSONObject json, TPoint tPoint) throws Exception
+    {
+        JSONObject jsonPoint = new JSONObject();
+
+        // jsonPoint.put("coordinates", )
+
+        Map pointDef = new HashMap();
+
+        pointDef.put("type", "point");
 
 
+
+/**
+        JSONArray shell = new JSONArray();
+        for (int i = 0; i < tPolygon.shell().get().getNumPoints(); i++) {
+            JSONArray p = new  JSONArray();
+
+            p.put(tPolygon.shell().get().getPointN(i).X());
+            p.put(tPolygon.shell().get().getPointN(i).Y());
+
+            shell.put(p);
+        }
+*/
+        JSONArray coordinates = new JSONArray();
+
+        // coordinates.put(shell);
+        // coordinates.put(2d);
+        coordinates.put(tPoint.coordinates().get().get(0).coordinate().get().get(0));
+        coordinates.put(tPoint.coordinates().get().get(1).coordinate().get().get(0));
+
+        pointDef.put("coordinates", coordinates);
+
+        // jsonPoint.put(property, pointDef);
+
+        json.put(property, pointDef);
+
+
+        return null;
+    }
+
+
+    private static JSONObject createESGeoPolygonIndexValue(String property, JSONObject json, TPolygon tPolygon) throws Exception
+    {
+        JSONObject jsonPoint = new JSONObject();
+
+        // jsonPoint.put("coordinates", )
+
+        Map pointDef = new HashMap();
+
+        pointDef.put("type", "polygon");
+
+        JSONArray shell = new JSONArray();
+        for (int i = 0; i < tPolygon.shell().get().getNumPoints(); i++) {
+            JSONArray p = new  JSONArray();
+
+            p.put(tPolygon.shell().get().getPointN(i).X());
+            p.put(tPolygon.shell().get().getPointN(i).Y());
+
+            shell.put(p);
+        }
+
+        JSONArray coordinates = new JSONArray();
+
+        coordinates.put(shell);
+        // coordinates.put(2d);
+
+        pointDef.put("coordinates", coordinates);
+
+        // jsonPoint.put(property, pointDef);
+
+        json.put(property, pointDef);
+
+
+        return null;
+    }
 
 
 

@@ -32,6 +32,7 @@ import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.util.DelTreeAfter;
 
 import java.io.File;
+import java.util.Iterator;
 
 import static org.joda.time.DateTimeZone.UTC;
 import static org.junit.Assert.assertNotNull;
@@ -98,17 +99,39 @@ public class ElasticSearchSpatialClusterQueryTest
             // Latitude    3.139003
             // Longitude 101.686854
 
-            City kualaLumpur;
+            ValueBuilder<TPolygon> builder = module.newValueBuilder(TPolygon.class);
+
+             TPolygon area =  builder.prototype().of
+                            (
+                                    // shell
+                                    module.newValueBuilder(TLinearRing.class).prototype().of
+                                            (
+                                                    module.newValueBuilder(TPoint.class).prototype().X(49.56797785892715).Y(10.62652587890625),
+                                                    module.newValueBuilder(TPoint.class).prototype().X(49.5835615987737).Y(10.748062133789062),
+                                                    module.newValueBuilder(TPoint.class).prototype().X(49.533230478523684).Y(10.78857421875),
+                                                    module.newValueBuilder(TPoint.class).prototype().X(49.484185749507716).Y(10.72265625),
+                                                    module.newValueBuilder(TPoint.class).prototype().X(49.49310663031507).Y(10.578460693359375),
+                                                    module.newValueBuilder(TPoint.class).prototype().X(49.5416968611641).Y(10.583267211914062),
+                                                    module.newValueBuilder(TPoint.class).prototype().X(49.555507284155276).Y(10.605239868164062),
+                                                    module.newValueBuilder(TPoint.class).prototype().X(49.56797785892715).Y(10.62652587890625)
+                                                    )
+                            );
+
+
+            System.out.println("Area " + area);
+
+            City Emskirchen;
             {
                 EntityBuilder<City> cityBuilder = unitOfWork.newEntityBuilder( City.class );
-                kualaLumpur = cityBuilder.instance();
-                kualaLumpur.name().set( "Kuala Lumpur" );
-                kualaLumpur.country().set( "Malaysia" );
-                kualaLumpur.county().set( "Some Jaya" );
-                kualaLumpur.location().set((TPoint)module.findService(GeometryFactory.class).get()
+                Emskirchen = cityBuilder.instance();
+                Emskirchen.name().set( "Emskirchen" );
+                Emskirchen.country().set( "Germany" );
+                Emskirchen.county().set( "Bavaria" );
+                Emskirchen.location().set((TPoint)module.findService(GeometryFactory.class).get()
                         .as2DPoint(49.550881, 10.712809));
-                kualaLumpur = cityBuilder.newInstance();
+                Emskirchen = cityBuilder.newInstance();
                 // NameableAssert.trace( kualaLumpur );
+                Emskirchen.area().set(area);
 
             }
 
@@ -119,8 +142,8 @@ public class ElasticSearchSpatialClusterQueryTest
                 annDoe = femaleBuilder.instance();
                 annDoe.name().set( "Ann Doe 2" );
                 annDoe.title().set( Person.Title.MRS );
-                annDoe.placeOfBirth().set( kualaLumpur );
-                annDoe.favoritePlaces().put("kualaLumpur", kualaLumpur);
+                annDoe.placeOfBirth().set( Emskirchen );
+                annDoe.favoritePlaces().put("Emskirchen", Emskirchen);
                 annDoe.yearOfBirth().set( 1975 );
                 annDoe.password().set( "passwordOfAnnDoe" );
 
@@ -375,7 +398,7 @@ public class ElasticSearchSpatialClusterQueryTest
                         .where(
                                 ST_Within
                                         (
-                                                templateFor(City.class).location(),
+                                                templateFor(City.class).area(),
 
                                                 ST_GeometryFromText(
                                                         "POLYGON((" +
@@ -520,22 +543,103 @@ public class ElasticSearchSpatialClusterQueryTest
                         ));
 
 
-        // System.out.println( "*** script01: " + query );
         query.find();
-
-
 
         System.out.println("Found Cities " + query.count());
 
+        Iterator<City> cities = query.iterator();
 
-//        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
-//        Person personTemplate = templateFor( Person.class );
-//        City placeOfBirth = personTemplate.placeOfBirth().get();
-//        Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ) );
-//        System.out.println( "*** script04: " + query );
-//       //  verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
+        while(cities.hasNext()) {
+            System.out.println("Cities " + cities.next().name() );
+        }
+
     }
 
+
+    @Test
+    public void whenSpatialQueryWithNot() throws Exception
+    {
+
+        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
+
+        Query<City> query = unitOfWork.newQuery(
+                qb
+                        .where(not(
+                                ST_Within
+                                        (
+                                                templateFor(City.class).location(),
+                                                ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
+                                                100
+                                        )
+                                )
+                        ));
+
+
+        query.find();
+
+        System.out.println("Found Cities " + query.count());
+
+        Iterator<City> cities = query.iterator();
+
+        while(cities.hasNext()) {
+            System.out.println("Cities " + cities.next().name() );
+        }
+    }
+
+    /**
+     *
+
+     QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+     Person person = templateFor( Person.class );
+     Query<Person> query = unitOfWork.newQuery( qb.where( ge( person.yearOfBirth(), 1973 ) ) );
+     System.out.println( "*** script06: " + query );
+     verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
+
+
+     * @throws Exception
+     */
+
+    //                         .where(ge(templateFor(City.class).location(), "123")));
+
+
+    @Test
+    public void whenSpatialQueryWithLEInvalid() throws Exception
+    {
+/**
+        QueryBuilder<Person> qbPerson = this.module.newQueryBuilder( Person.class );
+        Person person = templateFor( Person.class );
+        Query<Person> query = unitOfWork.newQuery( qbPerson.where( ge(person.yearOfBirth(), 1973) ) );
+*/
+
+        QueryBuilder<City> qbCity = this.module.newQueryBuilder(City.class);
+        City city = templateFor( City.class );
+        Query<City> queryCity = unitOfWork.newQuery( qbCity.where(ge( city.location(),
+
+                Geometry.asPoint(
+                        Geometry.asCoordinate(3.139003),
+                        Geometry.asCoordinate(101.686854)
+                        //  Geometry.asCoordinate(10.6108),
+                        //  Geometry.asCoordinate(49.5786)
+                )
+
+                ) ) );
+
+
+
+
+        queryCity.find();
+
+        System.out.println("Found Cities " + queryCity.count());
+
+        Iterator<City> cities = queryCity.iterator();
+
+        //         Query<Nameable> query = qb.where(
+        // ge( person.yearOfBirth(), 1900 ).and( eq( person.placeOfBirth().get().name(), "Penang" ) )
+
+        while(cities.hasNext()) {
+            System.out.println("Cities " + cities.next().name() );
+        }
+    }
 
 
     @Test
