@@ -18,28 +18,17 @@ package org.qi4j.index.elasticsearch.extensions.spatial;
  * limitations under the License.
  */
 
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.json.JSONObject;
 import org.qi4j.api.geometry.TGeometry;
-import org.qi4j.api.geometry.TLineString;
 import org.qi4j.api.geometry.TPoint;
-import org.qi4j.api.geometry.TPolygon;
-import org.qi4j.api.query.grammar.ComparisonSpecification;
-import org.qi4j.api.query.grammar.ContainsAllSpecification;
-import org.qi4j.api.query.grammar.ContainsSpecification;
-import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.StringTokenizer;
 
-import static org.qi4j.index.elasticsearch.internal.ElasticSearchMappingsCache.MappingsCache;
-import static org.qi4j.index.elasticsearch.internal.ElasticSearchMappingsHelper.Mappings;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mapping.ElasticSearchMappingsCache.MappingsCache;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mapping.ElasticSearchMappingsHelper.Mappings;
 
 public final class ElasticSearchSpatialIndexerMappingSupport {
 

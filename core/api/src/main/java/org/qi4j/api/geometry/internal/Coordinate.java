@@ -25,68 +25,86 @@ public interface Coordinate extends Comparable, ValueComposite, TGeomRoot {
     @Optional
     Property<List<Double>> coordinate();
 
+    Coordinate of();
+    Coordinate of(double x, double y, double z);
     Coordinate of(double... coordinates);
+
+
+
+    Coordinate x(double x);
+    Coordinate y(double y);
+    Coordinate z(double z);
+
+    double x();
+    double y();
+    double z();
+
     double getOrdinate(int ordinateIndex);
     int compareTo(Object o);
     double[] source();
 
-    Coordinate X(double x);
-    Coordinate Y(double y);
-    Coordinate Z(double z);
+
+
 
 
     public abstract class Mixin implements Coordinate
     {
 
-        List<Double> EMPTY = new ArrayList<Double>(X + Y + Z);
+        List<Double> EMPTY = new ArrayList<>(X + Y + Z);
 
+        private void init()
+        {
+            if (isEmpty())
+            {
+                EMPTY.add(new Double(0.0));
+                EMPTY.add(new Double(0.0));
+                EMPTY.add(new Double(0.0));
 
+                self.coordinate().set(EMPTY);
+            }
+        }
+
+        private boolean isEmpty()
+        {
+            return (self.coordinate() == null) || (self.coordinate().get() == null) || (self.coordinate().get().isEmpty()) ? true : false;
+        }
 
         @This
         Coordinate self;
 
-        public Coordinate of(double... coordinates)
+        public Coordinate of()
         {
-
-            List<Double> l = new ArrayList<Double>(coordinates.length);
-
-            for (double xyzn : coordinates)
-            {
-                // only values that makes "sense"
-                if (!Double.isNaN(xyzn) && !Double.isInfinite(xyzn))
-                    l.add(new Double(xyzn));
-            }
-
-            self.coordinate().set(l);
-
+            return self.of(0.0d, 0.0d, 0.0d);
+        }
+        public Coordinate of(double x, double y, double z)
+        {
+            init();
+            self.x(x); self.y(y); self.z(z);
             return self;
         }
 
 
-        public Coordinate X(double x)
+
+
+        public double x() { return getOrdinate(X);}
+        public double y() { return getOrdinate(Y);}
+        public double z() { return getOrdinate(Z);}
+
+        public Coordinate x(double x)
         {
-
-            EMPTY.add(new Double(0.0));
-            EMPTY.add(new Double(0.0));
-            EMPTY.add(new Double(0.0));
-
-            if (self.coordinate().get() == null) self.coordinate().set(EMPTY);
+            init();
 
             if (!Double.isNaN(x) && !Double.isInfinite(x))
             {
-                System.out.println(coordinate().get());
                 self.coordinate().get().set(X, x);
             }
             return self;
         }
 
-        public Coordinate Y(double y)
+        public Coordinate y(double y)
         {
-            EMPTY.add(new Double(0.0));
-            EMPTY.add(new Double(0.0));
-            EMPTY.add(new Double(0.0));
 
-            if (self.coordinate().get() == null) self.coordinate().set(EMPTY);
+            init();
 
             if (!Double.isNaN(y) && !Double.isInfinite(y))
             {
@@ -95,14 +113,10 @@ public interface Coordinate extends Comparable, ValueComposite, TGeomRoot {
             return self;
         }
 
-        public Coordinate Z(double z)
+        public Coordinate z(double z)
         {
 
-            EMPTY.add(new Double(0.0));
-            EMPTY.add(new Double(0.0));
-            EMPTY.add(new Double(0.0));
-
-            if (self.coordinate().get() == null) self.coordinate().set(EMPTY);
+          init();
 
             if (!Double.isNaN(z) && !Double.isInfinite(z))
             {
@@ -134,12 +148,33 @@ public interface Coordinate extends Comparable, ValueComposite, TGeomRoot {
 
         public double[] source()
         {
-            double [] values = new double[3];
-            values[X] = getOrdinate(X);
-            values[Y] = getOrdinate(Y);
-            values[Z] = getOrdinate(Z);
+            double [] source = new double[X + Y + Z];
+            source[X] = getOrdinate(X);
+            source[Y] = getOrdinate(Y);
+            source[Z] = getOrdinate(Z);
 
-            return values;
+            return source;
         }
+
+
+
+        public Coordinate of(double... coordinates)
+        {
+
+            List<Double> l = new ArrayList<Double>(coordinates.length);
+
+            for (double xyzn : coordinates)
+            {
+                // only values that makes "sense"
+                if (!Double.isNaN(xyzn) && !Double.isInfinite(xyzn))
+                    l.add(new Double(xyzn));
+            }
+
+            self.coordinate().set(l);
+
+            return self;
+        }
+
+
     }
 }

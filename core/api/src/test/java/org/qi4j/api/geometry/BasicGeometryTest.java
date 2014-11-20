@@ -24,6 +24,7 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * JAVADOC
@@ -45,27 +46,100 @@ public class BasicGeometryTest
     }
 
     @Test
-    public void testWhenCreatedCoordinateNotNull()
+    public void testWhenCoordinatedCreated()
     {
         ValueBuilder<Coordinate> builder = module.newValueBuilder(Coordinate.class);
-        Coordinate coordinate = builder.prototype().of(1d,2d,3d);
-        assertNotNull(coordinate);
+        Coordinate coordinate1 = builder.prototype().of(1d,2d,3d);
+
+        assertNotNull(coordinate1);
+        assertEquals(1d, coordinate1.x(), 0.0d);
+        assertEquals(2d, coordinate1.y(), 0.0d);
+        assertEquals(3d, coordinate1.z(), 0.0d);
+        assertTrue(coordinate1.compareTo(module.newValueBuilder(Coordinate.class).prototype().x(1d).y(2d).z(3d)) == 0);
+        assertTrue(coordinate1.compareTo(module.newValueBuilder(Coordinate.class).prototype().x(1d).y(1d).z(1d)) != 0);
+
     }
 
     @Test
-    public void testWhenCreatedTGeomPointNotNull()
+    public void testWhenPointCreated()
     {
-        ValueBuilder<TPoint> builder = module.newValueBuilder(TPoint.class);
+        ValueBuilder<TPoint> builder1 = module.newValueBuilder(TPoint.class);
 
-        assertNotNull(
-            builder.prototype().of
-            (
-                    module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
-                    module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
-            )
-        );
+        TPoint point1 = builder1.prototype().x(1d).y(2d).z(3d);
+        assertEquals(1d, point1.x(), 0.0d);
+        assertEquals(2d, point1.y(), 0.0d);
+        assertEquals(3d, point1.z(), 0.0d);
+
+       // assertTrue(point1.isEmpty() == false);
+
+        ValueBuilder<TPoint> builder2 = module.newValueBuilder(TPoint.class);
+
+        TPoint point2 = builder2.prototype().of(1d,2d,3d);
+        assertEquals(1d, point2.x(), 0.0d);
+        assertEquals(2d, point2.y(), 0.0d);
+        assertEquals(3d, point2.z(), 0.0d);
+
+
+        ValueBuilder<TPoint> builder3 = module.newValueBuilder(TPoint.class);
+
+        TPoint point3 = builder3.prototype().x(1d).of().y(2d).of().z(3d).of(); // check dsl
+        assertEquals(1d, point3.x(), 0.0d);
+        assertEquals(2d, point3.y(), 0.0d);
+        assertEquals(3d, point3.z(), 0.0d);
+
+        ValueBuilder<TPoint> builder4 = module.newValueBuilder(TPoint.class);
+
+        TPoint point4 = builder4.prototype().x(10d).y(20d).z(30d).of(1d,2d,3d); // check dsl
+        assertEquals(1d, point4.x(), 0.0d);
+        assertEquals(2d, point4.y(), 0.0d);
+        assertEquals(3d, point4.z(), 0.0d);
+
     }
 
+
+    @Test
+    public void testWhenLineStringCreated()
+    {
+        ValueBuilder<TLineString> builder = module.newValueBuilder(TLineString.class);
+
+        TLineString lineString1 = builder.prototype().of(
+                module.newValueBuilder(TPoint.class).prototype().x(0d).y(0d).z(0d),
+                module.newValueBuilder(TPoint.class).prototype().x(0d).y(1d).z(0),
+                module.newValueBuilder(TPoint.class).prototype().x(2d).y(2d).z(0)
+        );
+
+        assertTrue(lineString1.isEmpty() == false);
+        assertTrue(lineString1.getNumPoints() == 3);
+
+        assertEquals(0d, lineString1.getPointN(0).x(), 0.0d);
+        assertEquals(0d, lineString1.getPointN(0).y(), 0.0d);
+        assertEquals(0d, lineString1.getPointN(0).z(), 0.0d);
+
+        assertEquals(0d, lineString1.getPointN(1).x(), 0.0d);
+        assertEquals(1d, lineString1.getPointN(1).y(), 0.0d);
+        assertEquals(0d, lineString1.getPointN(1).z(), 0.0d);
+
+        assertEquals(0d, lineString1.getStartPoint().x(), 0.0d);
+        assertEquals(2d, lineString1.getEndPoint().x(), 0.0d);
+    }
+
+
+    @Test
+    public void testWhenLinearRingCreated()
+    {
+        ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
+
+        TLinearRing linearRing = builder.prototype().of(
+                module.newValueBuilder(TPoint.class).prototype().x(0d).y(0d).z(0d),
+                module.newValueBuilder(TPoint.class).prototype().x(0d).y(1d).z(0d),
+                module.newValueBuilder(TPoint.class).prototype().x(1d).y(0d).z(0d),
+                module.newValueBuilder(TPoint.class).prototype().x(1d).y(1d).z(0d),
+                module.newValueBuilder(TPoint.class).prototype().x(0d).y(0d).z(-1d)
+        );
+
+        assertTrue(linearRing.isValid()); // ring closed, z-dimension is ignored
+
+    }
 
 
     @Test

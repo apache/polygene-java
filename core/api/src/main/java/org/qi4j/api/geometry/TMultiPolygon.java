@@ -1,5 +1,6 @@
 package org.qi4j.api.geometry;
 
+import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -45,6 +46,11 @@ public interface TMultiPolygon extends TGeometry {
             }
 
             return self;
+        }
+
+        public Coordinate[] getCoordinates()
+        {
+            return null;
         }
 
     }

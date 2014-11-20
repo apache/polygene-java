@@ -1,5 +1,6 @@
 package org.qi4j.api.geometry;
 
+import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
@@ -39,20 +40,19 @@ public interface TLineString extends TGeometry {
             }
 
             self.points().set(l);
-            self.type().set("LineString");
+            self.type().set(TGEOMETRY.LINESTRING);
             return self;
         }
 
         public boolean isEmpty() {
-            return self.points().get().size() == 0;
+            return (self.points() == null) || (self.points().get() == null) || (self.points().get().isEmpty()) ? true : false;
         }
 
         public int getNumPoints() {
-            return self.points().get().size();
+            return isEmpty() ? 0 : self.points().get().size();
         }
 
         public TPoint getPointN(int n) {
-            System.out.println("points " + self.points().get().size());
             return self.points().get().get(n);
         }
 
@@ -68,6 +68,11 @@ public interface TLineString extends TGeometry {
                 return null;
             }
             return getPointN(getNumPoints() - 1);
+        }
+
+        public Coordinate[] getCoordinates()
+        {
+            return null;
         }
     }
 

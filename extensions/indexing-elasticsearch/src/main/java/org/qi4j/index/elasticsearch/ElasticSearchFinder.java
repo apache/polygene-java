@@ -66,7 +66,8 @@ import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinderSupport;
-import org.qi4j.index.elasticsearch.extensions.spatial.predicate.ElasticSearchSpatialPredicateFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.functions.convert.ElasticSearchSpatialConvertFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates.ElasticSearchSpatialPredicateFinderSupport;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
@@ -95,7 +96,7 @@ public interface ElasticSearchFinder
         private static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchFinder.class );
         private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 0 );
 
-        private static final Map<Class<?>, SpatialQuerySpecSupport> SPATIAL_QUERY_SPEC_SUPPORT = new HashMap<>( 2 );
+        public static final Map<Class<?>, SpatialQuerySpecSupport> SPATIAL_QUERY_SPEC_SUPPORT = new HashMap<>( 2 );
 
 
         static
@@ -103,8 +104,9 @@ public interface ElasticSearchFinder
             SpatialQuerySpecSupport spatialQuerySpecSupport = new ElasticSearchSpatialFinderSupport.SpatialSupport();
             // SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialPredicatesSpecification.class, spatialQuerySpecSupport);
             SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialPredicatesSpecification.class, new ElasticSearchSpatialPredicateFinderSupport());
-            SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialConvertSpecification.class, spatialQuerySpecSupport);
+            SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialConvertSpecification.class, new ElasticSearchSpatialConvertFinderSupport());
         }
+
 
 
         @This

@@ -38,6 +38,7 @@ import static org.joda.time.DateTimeZone.UTC;
 import static org.junit.Assert.assertNotNull;
 import static org.qi4j.api.query.QueryExpressions.*;
 import static org.qi4j.api.query.QueryExpressions.lt;
+import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Disjoin;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Within;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_GeometryFromText;
 import static org.qi4j.test.indexing.NameableAssert.verifyUnorderedResults;
@@ -302,10 +303,8 @@ public class ElasticSearchSpatialClusterQueryTest
                 qb
                         .where(
                                 ST_Within(templateFor(City.class).location(),
-                                        Geometry.asPoint(
-                                                Geometry.asCoordinate(49.550881),
-                                                Geometry.asCoordinate(10.712809)
-                                        ))));
+                                        module.newValueBuilder(TPoint.class).prototype().X(49.550881).Y(10.712809)
+                                )));
 
         //  GeoJSON.asPoint()
 
@@ -572,6 +571,37 @@ public class ElasticSearchSpatialClusterQueryTest
                                                 100
                                         )
                                 )
+                        ));
+
+
+        query.find();
+
+        System.out.println("Found Cities " + query.count());
+
+        Iterator<City> cities = query.iterator();
+
+        while(cities.hasNext()) {
+            System.out.println("Cities " + cities.next().name() );
+        }
+    }
+
+
+    @Test
+    public void whenST_DisjoinThen() throws Exception
+    {
+
+        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
+
+        Query<City> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                        ST_Disjoin(
+                                                (
+                                                        templateFor(City.class).area()) ,
+                                                        ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
+                                                        100
+                                                )
+
                         ));
 
 

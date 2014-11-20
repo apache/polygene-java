@@ -91,7 +91,7 @@ public final class ElasticSearchSpatialFinderSupport
 
     public static interface SpatialQuerySpecSupport extends ModuleHelper
     {
-        void processSpecification(FilterBuilder filterBuilder, Specification<Composite> spec, Map<String, Object> variables)  throws EntityFinderException;
+        TGeometry processSpecification(FilterBuilder filterBuilder, Specification<?> spec, Map<String, Object> variables)  throws EntityFinderException;
        // void processSpatialPredicatesSpecification(FilterBuilder filterBuilder, SpatialPredicatesSpecification<?> spec, Map<String, Object> variables, Module module);
     }
 
@@ -100,14 +100,22 @@ public final class ElasticSearchSpatialFinderSupport
     public static class SpatialSupport
                 implements  SpatialQuerySpecSupport {
 
+
+
+
+
         Module module;
 
         public void setModule(Module module) {
             this.module = module;
         }
 
-        public void processSpecification( FilterBuilder filterBuilder,
-                                                    Specification<Composite> spec,
+
+
+
+
+        public TGeometry processSpecification( FilterBuilder filterBuilder,
+                                                   Specification<?> spec,
                                                     Map<String, Object> variables )
                 throws EntityFinderException
         {
@@ -129,6 +137,7 @@ public final class ElasticSearchSpatialFinderSupport
                         + "(New Query API support missing?): "
                         + spec.getClass() + ": " + spec );
             }
+            return null;
         }
 
         public void processSpatialPredicatesSpecification( FilterBuilder filterBuilder,

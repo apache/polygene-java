@@ -1,18 +1,14 @@
 package org.qi4j.api.query.grammar.extensions.spatial;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryExpressions;
-import org.qi4j.api.query.grammar.LtSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.ST_GeomFromTextSpecification;
-import org.qi4j.api.query.grammar.extensions.spatial.convert.ST_PointFromTextSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
-import org.qi4j.api.query.grammar.extensions.spatial.predicates.ST_WithinSpecification;
+import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_DisjointSpecification;
+import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_WithinSpecification;
 import org.qi4j.functional.Specification;
-
-import java.text.ParseException;
 
 /**
  * Created by jakes on 2/8/14.
@@ -46,6 +42,12 @@ public final class SpatialQueryExpressions extends QueryExpressions {
     {
         // return new ST_WithinSpecification<TGeometry>( property(geometry1), operator);
         return null;
+    }
+
+
+    public static <TGeometry> ST_DisjointSpecification<TGeometry> ST_Disjoin( Property<TGeometry> geometry1, Specification<SpatialConvertSpecification> operator, long distance )
+    {
+        return new ST_DisjointSpecification<TGeometry>( property(geometry1), operator, distance);
     }
 
     /**

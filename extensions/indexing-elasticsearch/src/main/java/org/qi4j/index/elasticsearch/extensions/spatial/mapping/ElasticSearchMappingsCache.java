@@ -1,4 +1,4 @@
-package org.qi4j.index.elasticsearch.internal;
+package org.qi4j.index.elasticsearch.extensions.spatial.mapping;
 
 import java.util.HashSet;
 import java.util.Set;

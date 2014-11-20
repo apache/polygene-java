@@ -11,7 +11,10 @@ public interface TGeomRoot extends ValueComposite {
 
     public static enum TGEOM_2D {POINT,POLYGON, GEOMETRY, FEATURE, FEATURECOLLECTION}
 
-   //  public GeoType getGeoType();
+    public static enum TGEOMETRY {POINT, LINESTRING, POLYGON, MULTIPOLYGON, FEATURE, FEATURECOLLECTION}
+
+
+    //  public GeoType getGeoType();
 
     // @Name("Point");
 }

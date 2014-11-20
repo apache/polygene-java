@@ -1,6 +1,7 @@
 package org.qi4j.api.geometry;
 
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -48,8 +49,24 @@ public interface TPolygon extends TGeometry {
                     self.holes().get().add(hole);
             }
 
-            self.type().set("Polygon");
+            self.type().set(TGEOMETRY.POLYGON);
             return self;
+        }
+
+        public Coordinate[] getCoordinates()
+        {
+            return null;
+        }
+
+        public int getNumPoints() {
+            /**
+            int numPoints = shell.getNumPoints();
+            for (int i = 0; i < holes.length; i++) {
+                numPoints += holes[i].getNumPoints();
+            }
+            return numPoints;
+             */
+            return 1;
         }
 
     }

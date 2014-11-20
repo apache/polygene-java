@@ -2,6 +2,7 @@ package org.qi4j.api.geometry;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -12,7 +13,10 @@ import org.qi4j.api.structure.Module;
 public interface TGeometry extends TGeomRoot {
 
     // @Optional
-    Property<String> type();
+    Property<TGEOMETRY> type();
+
+    // Property<TGEOM_TYPE> type1();
+
 
     @Optional
     @UseDefaults
@@ -27,6 +31,11 @@ public interface TGeometry extends TGeomRoot {
     void setSRIDAuthority(String authority);
     void setSRID(String authority, Integer code);
     String getSRIDWkt();
+
+
+    abstract Coordinate[] getCoordinates();
+    abstract int getNumPoints();
+    // abstract boolean isEmpty();
 
 
     public abstract class Mixin implements TGeometry

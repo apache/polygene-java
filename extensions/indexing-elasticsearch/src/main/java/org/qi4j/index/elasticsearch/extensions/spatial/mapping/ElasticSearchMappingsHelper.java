@@ -1,13 +1,10 @@
-package org.qi4j.index.elasticsearch.internal;
+package org.qi4j.index.elasticsearch.extensions.spatial.mapping;
 
 import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.qi4j.index.elasticsearch.internal.ElasticSearchMappingsCache.MappingsCache;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mapping.ElasticSearchMappingsCache.MappingsCache;
 
 /**
  * Created by jj on 06.11.14.

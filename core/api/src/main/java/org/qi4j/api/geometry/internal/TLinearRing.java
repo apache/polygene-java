@@ -40,10 +40,15 @@ public interface TLinearRing extends TLineString {
         }
 
 
+        public Coordinate[] getCoordinates()
+        {
+            return null;
+        }
+
+
         public boolean isValid()
         {
-          // JJ TODO
-          return true;
+             return self.getStartPoint().compareTo(self.getEndPoint()) == 0 ? true : false;
         }
     }
 
