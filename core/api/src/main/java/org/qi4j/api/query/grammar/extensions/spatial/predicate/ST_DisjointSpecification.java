@@ -1,6 +1,5 @@
-package org.qi4j.api.query.grammar.extensions.spatial.predicates;
+package org.qi4j.api.query.grammar.extensions.spatial.predicate;
 
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.query.grammar.PropertyFunction;
 import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
@@ -9,26 +8,26 @@ import org.qi4j.functional.Specification;
 /**
  * ST_Within Specification.
  */
-public class ST_WithinSpecification<TGeometry>
+public class ST_DisjointSpecification<TGeometry>
     extends SpatialPredicatesSpecification<TGeometry>
 {
 
-    public ST_WithinSpecification(PropertyFunction<TGeometry> property, TGeometry value)
+    public ST_DisjointSpecification(PropertyFunction<TGeometry> property, TGeometry value)
     {
         super( property, value );
     }
 
-    public ST_WithinSpecification(PropertyFunction<TGeometry> property, Specification<SpatialConvertSpecification> operator, long distance)
+    public ST_DisjointSpecification(PropertyFunction<TGeometry> property, Specification<SpatialConvertSpecification> operator, long distance)
     {
         super( property, operator );
     }
 
-    public ST_WithinSpecification(PropertyFunction<TGeometry> property, Specification<SpatialConvertSpecification> operator, Variable variable)
+    public ST_DisjointSpecification(PropertyFunction<TGeometry> property, Specification<SpatialConvertSpecification> operator, Variable variable)
     {
         super( property, operator );
     }
 
-    public ST_WithinSpecification(PropertyFunction<TGeometry> property, Specification<SpatialConvertSpecification> operator)
+    public ST_DisjointSpecification(PropertyFunction<TGeometry> property, Specification<SpatialConvertSpecification> operator)
     {
         super( property, operator );
     }
