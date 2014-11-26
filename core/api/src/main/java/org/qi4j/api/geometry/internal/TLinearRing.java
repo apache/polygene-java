@@ -12,6 +12,7 @@ public interface TLinearRing extends TLineString {
 
     TLinearRing of(TPoint... points);
     TLinearRing of(List<TPoint> points);
+    TLinearRing xy(double x, double y);
     boolean isValid();
 
     public abstract class Mixin extends TLineString.Mixin implements TLinearRing
@@ -24,14 +25,9 @@ public interface TLinearRing extends TLineString {
         {
              super.of(points);
 
-            System.out.println("Number of Points " + super.getNumPoints());
-
-            if(!isValid()) {
-                System.out.println("Not valid..");
-            }
-
             return self;
         }
+
 
         public TLinearRing of(List<TPoint> points)
         {
@@ -39,15 +35,21 @@ public interface TLinearRing extends TLineString {
             return self;
         }
 
-
-        public Coordinate[] getCoordinates()
-        {
-            return null;
+        public TLinearRing xy(double x, double y) {
+            super.xy(x,y);
+            return self;
         }
+
+
+        // public Coordinate[] getCoordinates()
+      //  {
+        //    return null;
+        //}
 
 
         public boolean isValid()
         {
+             if (self.getStartPoint() == null || self.getEndPoint() == null) return  false;
              return self.getStartPoint().compareTo(self.getEndPoint()) == 0 ? true : false;
         }
     }

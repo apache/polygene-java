@@ -1,9 +1,11 @@
 package org.qi4j.api.geometry;
 
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.structure.Module;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,7 @@ public interface TLineString extends TGeometry {
 
     // Interactions
     TLineString of(TPoint... points);
+    TLineString xy(double x, double y);
 
     boolean isEmpty();
     int getNumPoints();
@@ -24,23 +27,39 @@ public interface TLineString extends TGeometry {
     TPoint getStartPoint();
     TPoint getEndPoint();
 
+
     public abstract class Mixin implements TLineString
     {
         @This
         TLineString self;
 
+        @Structure
+        Module module;
+
+
         public TLineString of(TPoint... points)
         {
 
-            List<TPoint> l = new ArrayList<TPoint>();
+            List<TPoint> l = new ArrayList<>();
 
             for (TPoint p : points)
             {
                 l.add(p);
             }
 
-            self.points().set(l);
+
+            if (self.isEmpty())
+                self.points().set(l);
+            else
+                self.points().get().addAll(l);
+
             self.type().set(TGEOMETRY.LINESTRING);
+
+            return self;
+        }
+
+        public TLineString xy(double x, double y) {
+            of(module.newValueBuilder(TPoint.class).prototype().x(x).y(y));
             return self;
         }
 
@@ -72,7 +91,17 @@ public interface TLineString extends TGeometry {
 
         public Coordinate[] getCoordinates()
         {
-            return null;
+            int k = -1;
+            Coordinate[] coordinates = new Coordinate[getNumPoints()];
+          for (int i = 0; i < getNumPoints(); i++) {
+              Coordinate[] childCoordinates = getPointN(i).getCoordinates();
+              for (int j = 0; j < childCoordinates.length; j++) {
+                  k++;
+                  coordinates[k] = childCoordinates[j];
+              }
+          }
+
+            return coordinates;
         }
     }
 

@@ -49,7 +49,7 @@ public abstract class AbstractElasticSearchSpatialFunction {
         if (geometry instanceof TPoint)
         {
             CircleBuilder circleBuilder = ShapeBuilder.newCircleBuilder();
-            circleBuilder.center(((TPoint) geometry).X(), ((TPoint)geometry).Y()).radius(10000, DistanceUnit.METERS);
+            circleBuilder.center(((TPoint) geometry).x(), ((TPoint)geometry).y()).radius(10000, DistanceUnit.METERS);
             return FilterBuilders.geoShapeFilter(name, circleBuilder, relation);
         }
         else if (geometry instanceof TPolygon)
@@ -61,8 +61,9 @@ public abstract class AbstractElasticSearchSpatialFunction {
                 System.out.println(point);
 
                 polygonBuilder.point(
-                        point.coordinates().get().get(0).getOrdinate(Coordinate.X),
-                        point.coordinates().get().get(1).getOrdinate(Coordinate.X)
+                       // point.coordinates().get().get(0).getOrdinate(Coordinate.X),
+                       // point.coordinates().get().get(1).getOrdinate(Coordinate.X)
+                        point.x(), point.y()
                 );
             }
 

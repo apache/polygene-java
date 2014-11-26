@@ -164,7 +164,7 @@ public interface TPoint extends TGeometry {
         {
             List<Coordinate> coordinates = new ArrayList<>(); //.toArray()[1] = getCoordinate();
             coordinates.add(getCoordinate());
-            return (Coordinate[])coordinates.toArray();
+            return coordinates.toArray( new Coordinate[coordinates.size()] );
         }
 
         public Coordinate getCoordinate() {

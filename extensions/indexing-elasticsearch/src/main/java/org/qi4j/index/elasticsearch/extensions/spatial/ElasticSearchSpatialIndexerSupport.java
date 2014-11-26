@@ -150,8 +150,8 @@ public final class ElasticSearchSpatialIndexerSupport
         for (int i = 0; i < tPolygon.shell().get().getNumPoints(); i++) {
             JSONArray p = new  JSONArray();
 
-            p.put(tPolygon.shell().get().getPointN(i).X());
-            p.put(tPolygon.shell().get().getPointN(i).Y());
+            p.put(tPolygon.shell().get().getPointN(i).x());
+            p.put(tPolygon.shell().get().getPointN(i).y());
 
             shell.put(p);
         }

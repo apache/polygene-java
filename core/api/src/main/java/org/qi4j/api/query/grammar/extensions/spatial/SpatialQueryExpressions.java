@@ -20,12 +20,12 @@ public final class SpatialQueryExpressions extends QueryExpressions {
     {
        return new ST_WithinSpecification<TGeometry>( property(geometry1), value);
     }
-
+/**
     public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<TGeometry> geometry1, TPolygon value) // T value )
     {
         return new ST_WithinSpecification<TGeometry>( property(geometry1), (TGeometry)value);
     }
-
+*/
     public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<TGeometry> geometry1, Specification<SpatialConvertSpecification> operator, long distance )
     {
         return new ST_WithinSpecification<TGeometry>( property(geometry1), operator, distance);

@@ -59,10 +59,16 @@ public class AbstractSpatialQueryTest
         module.entities(MapFeatureEntity.class);
 
         // internal values
-        module.values( Coordinate.class, TLinearRing.class, TGeometry.class);
+        module.values(Coordinate.class, TLinearRing.class);
 
         // API values
-        module.values(TPoint.class,TLineString.class, TPolygon.class, TFeature.class);
+        module.values(TPoint.class, TLineString.class, TPolygon.class, TGeometry.class);
+
+        // internal values
+        // module.values( Coordinate.class, TLinearRing.class,TGeometry.class);
+
+        // API values
+        // module.values(TPoint.class,TLineString.class, TPolygon.class); // , TFeature.class);
 
         module.services(GeometryFactory.class);
 

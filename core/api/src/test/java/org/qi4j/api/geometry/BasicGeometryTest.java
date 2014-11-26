@@ -24,7 +24,7 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * JAVADOC
@@ -123,9 +123,25 @@ public class BasicGeometryTest
         assertEquals(2d, lineString1.getEndPoint().x(), 0.0d);
     }
 
-
     @Test
-    public void testWhenLinearRingCreated()
+    public void testWhenLineStringCreatedV2() {
+        ValueBuilder<TLineString> builder = module.newValueBuilder(TLineString.class);
+
+        TLineString lineString = builder.prototype().of()
+
+                .xy(0d, 0d)
+                .xy(0d, 1d)
+                .xy(1d, 0d)
+                .xy(1d, 1d)
+                .xy(0d, 0d);
+
+        assertTrue(lineString.getStartPoint().x() == 0d);
+
+    }
+
+
+        @Test
+    public void testWhenValidLinearRingIsCreated()
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
 
@@ -137,8 +153,60 @@ public class BasicGeometryTest
                 module.newValueBuilder(TPoint.class).prototype().x(0d).y(0d).z(-1d)
         );
 
-        assertTrue(linearRing.isValid()); // ring closed, z-dimension is ignored
+        assertTrue(linearRing.isValid()); // ring closed ?, z-dimension is ignored
+    }
 
+    @Test
+    public void testWhenInvalidLinearRingIsCreated()
+    {
+        ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
+
+        TLinearRing linearRing = builder.prototype().of(
+                module.newValueBuilder(TPoint.class).prototype().x(0d).y(0d).z(0d),
+                module.newValueBuilder(TPoint.class).prototype().x(0d).y(1d).z(0d),
+                module.newValueBuilder(TPoint.class).prototype().x(1d).y(0d).z(0d),
+                module.newValueBuilder(TPoint.class).prototype().x(1d).y(1d).z(0d),
+                module.newValueBuilder(TPoint.class).prototype().x(0d).y(-1d).z(-1d)
+        );
+
+        assertFalse(linearRing.isValid()); // ring closed ?, z-dimension is ignored
+    }
+
+    @Test
+    public void testWhenInvalidLinearRingIsCreatedV2()
+    {
+        ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
+
+        TLinearRing shell = builder.prototype().of()
+
+                .xy(0d, 0d)
+                .xy(0d, 1d)
+                .xy(1d, 0d)
+                .xy(1d, 1d)
+                .xy(0d, 0d);
+
+
+        assertTrue(shell.isValid()); // ring closed ?, z-dimension is ignored
+        assertTrue(shell.getNumPoints() == 5);
+    }
+
+
+    @Test
+    public void testWhenPolygonIsCreated()
+    {
+        ValueBuilder<TPolygon> builder = module.newValueBuilder(TPolygon.class);
+
+        builder.prototype().of(
+                module.newValueBuilder(TLinearRing.class).prototype().of()
+                        .xy(0d,  0d)
+                        .xy(0d, 10d)
+                        .xy(10d, 0d)
+                        .xy(1d, 10d)
+                        .xy(0d, 0d)
+        );
+
+        //builder.prototype().of(
+        //        module.newValueBuilder(TLinearRing.class).prototype().
     }
 
 

@@ -281,10 +281,10 @@ public final class ElasticSearchSpatialFinderSupport
         private GeoShapeFilterBuilder createShapePointFilter(String name, TPoint point) {
 
 
-            PointBuilder pointBuilder = ShapeBuilder.newPoint(point.X(), point.Y());
+            PointBuilder pointBuilder = ShapeBuilder.newPoint(point.x(), point.y());
 
             CircleBuilder circleBuilder = ShapeBuilder.newCircleBuilder();
-            circleBuilder.center(point.X(), point.Y()).radius(10000, DistanceUnit.METERS);
+            circleBuilder.center(point.x(), point.y()).radius(10000, DistanceUnit.METERS);
 
             // ShapeBuilder shapeBuilder = ShapeBuilder.newPolygon().point(99.0, -1.0).point(99.0, 3.0).point(103.0, 3.0).point(103.0, -1.0).point(99.0, -1.0);
             // GeoShapeFilterBuilder shapeFilterBuilder = geoShapeFilter(name);

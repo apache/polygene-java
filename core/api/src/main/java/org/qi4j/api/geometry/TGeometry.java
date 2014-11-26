@@ -68,6 +68,15 @@ public interface TGeometry extends TGeomRoot {
             return self.SRIDAuthority() + ":" + self.SRIDCode();
         }
 
+        public int getNumPoints() {
+            return 0;
+        }
+
+        public Coordinate[] getCoordinates()
+        {
+            return null;
+        }
+
     }
 
 }
