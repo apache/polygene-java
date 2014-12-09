@@ -1,6 +1,8 @@
 package org.qi4j.api.geometry;
 
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.HasNoArea;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -12,7 +14,7 @@ import java.util.List;
 
 
 @Mixins( TPoint.Mixin.class )
-public interface TPoint extends TGeometry {
+public interface TPoint extends HasNoArea,TGeometry {
 
 
      public static final int _2D = 2;
@@ -52,7 +54,7 @@ public interface TPoint extends TGeometry {
                 List<Coordinate> c = new ArrayList<Coordinate>();
                 c.add(module.newValueBuilder(Coordinate.class).prototype().x(0).y(0).z(0));
                 self.coordinates().set(c);
-                self.type().set(TGEOMETRY.POINT);
+                self.geometryType().set(TGEOMETRY.POINT);
             }
         }
 
@@ -62,7 +64,8 @@ public interface TPoint extends TGeometry {
         @This
         TPoint self;
 
-        private boolean isEmpty()
+        @Override
+        public boolean isEmpty()
         {
             return (self.coordinates() == null) || (self.coordinates().get() == null) || (self.coordinates().get().isEmpty()) ? true : false;
 
@@ -79,6 +82,7 @@ public interface TPoint extends TGeometry {
 
         public TPoint of(double x, double y, double z)
         {
+            self.geometryType().set(TGEOMETRY.POINT);
             init();
             self.x(x); self.y(y); self.z(z);
             return self;
@@ -95,15 +99,13 @@ public interface TPoint extends TGeometry {
             }
 
             self.coordinates().set(c);
-            self.type().set(TGEOMETRY.POINT);
+            self.geometryType().set(TGEOMETRY.POINT);
 
             return self;
         }
 
         public TPoint x(double x) {
             init();
-
-           // self.coordinates().get().get(0).module.newValueBuilder(Coordinate.class).prototype().X(x));
 
             self.coordinates().get().get(0).x(x);
 
@@ -160,6 +162,7 @@ public interface TPoint extends TGeometry {
             // return null;
         }
 
+        @Override
         public Coordinate[] getCoordinates()
         {
             List<Coordinate> coordinates = new ArrayList<>(); //.toArray()[1] = getCoordinate();

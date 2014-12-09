@@ -17,23 +17,30 @@
  */
 package org.qi4j.index.elasticsearch;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.geo.GeoDistance;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.GeoDistanceSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.geometry.TPoint;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.query.grammar.AndSpecification;
 import org.qi4j.api.query.grammar.AssociationNotNullSpecification;
 import org.qi4j.api.query.grammar.AssociationNullSpecification;
@@ -60,6 +67,8 @@ import org.qi4j.api.query.grammar.QuerySpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.SpatialPredicatesSpecification;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.ValueType;
+import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
@@ -94,17 +103,16 @@ public interface ElasticSearchFinder
         implements EntityFinder
     {
         private static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchFinder.class );
-        private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 0 );
+        private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_CATALOG = new HashMap<>( 0 );
 
-        public static final Map<Class<?>, SpatialQuerySpecSupport> SPATIAL_QUERY_SPEC_SUPPORT = new HashMap<>( 2 );
-
+        public static final Map<Class<?>, SpatialQuerySpecSupport> EXTENDED_QUERY_EXPRESSIONS_CATALOG = new HashMap<>( 2 );
 
         static
         {
-            SpatialQuerySpecSupport spatialQuerySpecSupport = new ElasticSearchSpatialFinderSupport.SpatialSupport();
+            // SpatialQuerySpecSupport spatialQuerySpecSupport = new ElasticSearchSpatialFinderSupport.SpatialSupport();
             // SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialPredicatesSpecification.class, spatialQuerySpecSupport);
-            SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialPredicatesSpecification.class, new ElasticSearchSpatialPredicateFinderSupport());
-            SPATIAL_QUERY_SPEC_SUPPORT.put(SpatialConvertSpecification.class, new ElasticSearchSpatialConvertFinderSupport());
+            EXTENDED_QUERY_EXPRESSIONS_CATALOG.put(SpatialPredicatesSpecification.class, new ElasticSearchSpatialPredicateFinderSupport());
+            EXTENDED_QUERY_EXPRESSIONS_CATALOG.put(SpatialConvertSpecification.class, new ElasticSearchSpatialConvertFinderSupport());
         }
 
 
@@ -144,10 +152,54 @@ public interface ElasticSearchFinder
             }
             if( orderBySegments != null )
             {
+                try {
                 for( OrderBy order : orderBySegments )
                 {
-                    request.addSort( order.property().toString(),
-                                     order.order() == OrderBy.Order.ASCENDING ? SortOrder.ASC : SortOrder.DESC );
+
+                    System.out.println("OrderBy " + order);
+                    System.out.println("Name " + order.property().toString()); // getClass().getTypeName());
+
+
+                   //  order.property().accessor().
+
+                            String typeName = Classes.typeOf(order.property().accessor()).getTypeName();
+                    System.out.println(typeName);
+
+                    Type returnType = Classes.typeOf(order.property().accessor());
+                    Type propertyTypeAsType = GenericPropertyInfo.toPropertyType(returnType);
+
+
+                    System.out.println(propertyTypeAsType.getTypeName());
+
+
+                        Class clazz = Class.forName(propertyTypeAsType.getTypeName());
+                        // if (clazz instanceof TGeometry)
+
+                        if (TGeometry.class.isAssignableFrom(clazz))
+                        {
+                            System.out.println("Spatial Type");
+
+                            if (!TPoint.class.isAssignableFrom(clazz))
+                                throw new RuntimeException("OrderBy can only be done on properties of type TPoint.");
+
+                            GeoDistanceSortBuilder geoDistanceSortBuilder = new GeoDistanceSortBuilder(order.property().toString()); // "point"); // (order.property().toString());
+                            geoDistanceSortBuilder.point(order.getCentre().x(), order.getCentre().y());
+                           // geoDistanceSortBuilder.point(48.13905780941111, 11.57958981111);
+                            geoDistanceSortBuilder.order(order.order() == OrderBy.Order.ASCENDING ? SortOrder.ASC : SortOrder.DESC);
+                            //                 .addSort(geoDistanceSortBuilder.sortMode("min").order(SortOrder.ASC).geoDistance(GeoDistance.PLANE).unit(DistanceUnit.KILOMETERS))
+
+                            // geoDistanceSortBuilder.sortMode("min").geoDistance(GeoDistance.ARC).unit(DistanceUnit.KILOMETERS)
+
+                            request.addSort(geoDistanceSortBuilder.sortMode("max").geoDistance(GeoDistance.ARC).order( SortOrder.DESC));
+                        }
+
+                    else {
+                        request.addSort(order.property().toString(),
+                                order.order() == OrderBy.Order.ASCENDING ? SortOrder.ASC : SortOrder.DESC);
+                    }
+                }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -326,9 +378,9 @@ public interface ElasticSearchFinder
                 processNamedAssociationContainsNameSpecification( filterBuilder, namedAssContNameSpec, variables );
 
             }
-            else if( SPATIAL_QUERY_SPEC_SUPPORT.get( spec.getClass().getSuperclass() ) != null ) {
+            else if( EXTENDED_QUERY_EXPRESSIONS_CATALOG.get( spec.getClass().getSuperclass() ) != null ) {
 
-                SpatialQuerySpecSupport spatialQuerySpecSupport = SPATIAL_QUERY_SPEC_SUPPORT.get( spec.getClass().getSuperclass() );
+                SpatialQuerySpecSupport spatialQuerySpecSupport = EXTENDED_QUERY_EXPRESSIONS_CATALOG.get( spec.getClass().getSuperclass() );
                 spatialQuerySpecSupport.setModule(module);
                 spatialQuerySpecSupport.processSpecification(filterBuilder, spec, variables);
 
@@ -413,10 +465,10 @@ public interface ElasticSearchFinder
                 throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
                                                          + "queries, ie. queries by 'example value'." );
             }
-            else if( COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() ) != null )
+            else if( COMPLEX_TYPE_CATALOG.get( spec.value().getClass() ) != null )
             {
                 // Query on complex type property
-                ComplexTypeSupport support = COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() );
+                ComplexTypeSupport support = COMPLEX_TYPE_CATALOG.get( spec.value().getClass() );
                 addFilter( support.comparison( spec, variables ), filterBuilder );
             }
             else
@@ -471,9 +523,9 @@ public interface ElasticSearchFinder
                 throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
                                                          + "queries, ie. queries by 'example value'." );
             }
-            else if( COMPLEX_TYPE_SUPPORTS.get( firstValue.getClass() ) != null )
+            else if( COMPLEX_TYPE_CATALOG.get( firstValue.getClass() ) != null )
             {
-                ComplexTypeSupport support = COMPLEX_TYPE_SUPPORTS.get( firstValue.getClass() );
+                ComplexTypeSupport support = COMPLEX_TYPE_CATALOG.get( firstValue.getClass() );
                 addFilter( support.containsAll( spec, variables ), filterBuilder );
             }
             else
@@ -500,9 +552,9 @@ public interface ElasticSearchFinder
                 throw new UnsupportedOperationException( "ElasticSearch Index/Query does not support complex "
                                                          + "queries, ie. queries by 'example value'." );
             }
-            else if( COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() ) != null )
+            else if( COMPLEX_TYPE_CATALOG.get( spec.value().getClass() ) != null )
             {
-                ComplexTypeSupport support = COMPLEX_TYPE_SUPPORTS.get( spec.value().getClass() );
+                ComplexTypeSupport support = COMPLEX_TYPE_CATALOG.get( spec.value().getClass() );
                 addFilter( support.contains( spec, variables ), filterBuilder );
             }
             else

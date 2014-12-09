@@ -1,4 +1,4 @@
-package org.qi4j.api.geometry;
+package org.qi4j.api.geometry.internal;
 
 import org.qi4j.api.value.ValueComposite;
 
@@ -11,7 +11,7 @@ public interface TGeomRoot extends ValueComposite {
 
     public static enum TGEOM_2D {POINT,POLYGON, GEOMETRY, FEATURE, FEATURECOLLECTION}
 
-    public static enum TGEOMETRY {POINT, LINESTRING, POLYGON, MULTIPOLYGON, FEATURE, FEATURECOLLECTION}
+    public static enum TGEOMETRY {POINT, MULTIPOINT, LINESTRING, MULTILINESTRING, POLYGON, MULTIPOLYGON, FEATURE, FEATURECOLLECTION}
 
 
     //  public GeoType getGeoType();

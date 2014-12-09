@@ -1,28 +1,27 @@
 package org.qi4j.api.geometry;
 
-import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.GeometryCollections;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Mixins( TMultiPolygon.Mixin.class )
-public interface TMultiPolygon extends TGeometry {
+public interface TMultiPolygon extends GeometryCollections {
 
 
-    // Data
-    Property<List<TPolygon>> polygons();
 
     // Interaction
     TMultiPolygon of(TPolygon... polygons);
+    TMultiPolygon of(List<TPolygon> polygons);
 
 
 
-    public abstract class Mixin implements TMultiPolygon
+    public abstract class Mixin extends GeometryCollections.Mixin implements TMultiPolygon
     {
         @Structure
         Module module;
@@ -31,26 +30,31 @@ public interface TMultiPolygon extends TGeometry {
         TMultiPolygon self;
 
 
-        public TMultiPolygon of(TPolygon... polygons)
+        public TMultiPolygon of(List<TPolygon> polygons)
         {
-            if (polygons != null) {
-
-                List<TPolygon> l = new ArrayList<TPolygon>();
-
-                for (TPolygon p : polygons)
-                {
-                    l.add(p);
-                }
-
-                self.polygons().set(l);
-            }
-
+            of(polygons.toArray(new TPolygon[polygons.size()]));
             return self;
         }
 
-        public Coordinate[] getCoordinates()
+
+
+        public TMultiPolygon of(TPolygon... polygons)
         {
-            return null;
+            self.geometryType().set(TGEOMETRY.MULTIPOLYGON);
+            init();
+            List<TGeometry> l = new ArrayList<>();
+
+            for (TPolygon p : polygons)
+            {
+                l.add(p);
+            }
+
+            if (self.isEmpty())
+                self.geometries().set(l); // points().set(l);
+            else
+                self.geometries().get().addAll(l);
+
+            return self;
         }
 
     }

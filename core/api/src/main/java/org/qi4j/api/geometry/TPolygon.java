@@ -2,6 +2,8 @@ package org.qi4j.api.geometry;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.HasShape;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixins( TPolygon.Mixin.class )
-public interface TPolygon extends TGeometry {
+public interface TPolygon extends HasShape, TGeometry {
 
 
     Property<TLinearRing> shell();
@@ -46,7 +48,7 @@ public interface TPolygon extends TGeometry {
 
                 List<TLinearRing> ring = new ArrayList<>();
                 self.holes().set(ring);
-                self.type().set(TGEOMETRY.POINT);
+                self.geometryType().set(TGEOMETRY.POINT);
             }
         }
 
@@ -64,7 +66,7 @@ public interface TPolygon extends TGeometry {
             }
 
             withHoles(holes);
-            self.type().set(TGEOMETRY.POLYGON);
+            self.geometryType().set(TGEOMETRY.POLYGON);
             return self;
         }
 
@@ -83,6 +85,7 @@ public interface TPolygon extends TGeometry {
             return self;
         }
 
+        @Override
         public Coordinate[] getCoordinates()
         {
             if (isEmpty()) {

@@ -1,7 +1,10 @@
 package org.qi4j.api.query.grammar.extensions.spatial;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.geometry.TPolygon;
+import org.qi4j.api.geometry.TPoint;
+import org.qi4j.api.geometry.TUnit;
+import org.qi4j.api.geometry.internal.HasShape;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.ST_GeomFromTextSpecification;
@@ -15,39 +18,44 @@ import org.qi4j.functional.Specification;
  */
 public final class SpatialQueryExpressions extends QueryExpressions {
 
-
-    public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<TGeometry> geometry1, TGeometry value) // T value )
+    // valid for TPoint values
+    public static <T extends TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<T> geometry1, TPoint value, double distance, TUnit unit) // T value )
     {
-       return new ST_WithinSpecification<TGeometry>( property(geometry1), value);
+        return new ST_WithinSpecification( property(geometry1), value, distance, unit);
+    }
+
+    public static <T extends TGeometry>  ST_WithinSpecification<TGeometry> ST_Within( Property<T> geometry1, HasShape value)
+    {
+       return new ST_WithinSpecification( property(geometry1), value);
+    }
+
+    public static <T extends TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<T> geometry1, Specification<SpatialConvertSpecification> operator, double distance, TUnit unit )
+    {
+        return new ST_WithinSpecification( property(geometry1), operator, distance, unit);
     }
 /**
-    public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<TGeometry> geometry1, TPolygon value) // T value )
+    public static <T extends TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<T> geometry1, Specification<SpatialConvertSpecification> operator)
     {
-        return new ST_WithinSpecification<TGeometry>( property(geometry1), (TGeometry)value);
+        return new ST_WithinSpecification( property(geometry1), operator;
     }
 */
-    public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<TGeometry> geometry1, Specification<SpatialConvertSpecification> operator, long distance )
+    public static <T extends TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<T> geometry1, Specification<SpatialConvertSpecification> operator)
     {
-        return new ST_WithinSpecification<TGeometry>( property(geometry1), operator, distance);
-    }
-
-    public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within( Property<TGeometry> geometry1, Specification<SpatialConvertSpecification> operator)
-    {
-        return new ST_WithinSpecification<TGeometry>( property(geometry1), operator);
+        return new ST_WithinSpecification( property(geometry1), operator);
     }
 
 
 
-    public static <TGeometry> ST_WithinSpecification<TGeometry> ST_Within(  Specification<SpatialConvertSpecification> operator) // T value )
+    public static <T extends TGeometry> ST_WithinSpecification<TGeometry> ST_Within(  Specification<SpatialConvertSpecification> operator) // T value )
     {
         // return new ST_WithinSpecification<TGeometry>( property(geometry1), operator);
         return null;
     }
 
 
-    public static <TGeometry> ST_DisjointSpecification<TGeometry> ST_Disjoin( Property<TGeometry> geometry1, Specification<SpatialConvertSpecification> operator, long distance )
+    public static <T extends TGeometry> ST_DisjointSpecification<TGeometry> ST_Disjoin( Property<T> geometry1, Specification<SpatialConvertSpecification> operator, long distance )
     {
-        return new ST_DisjointSpecification<TGeometry>( property(geometry1), operator, distance);
+        return new ST_DisjointSpecification( property(geometry1), operator, distance);
     }
 
     /**

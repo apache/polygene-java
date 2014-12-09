@@ -61,7 +61,7 @@ public class ElasticSearchMappingsHelper {
             return false;
     }
 
-    public void addFieldMappings(String propertyWithDepth, String mappingJSON) {
+    public boolean addFieldMappings(String propertyWithDepth, String mappingJSON) {
 
         System.out.println("addFieldMappings " + propertyWithDepth + " json " + mappingJSON);
 
@@ -70,7 +70,11 @@ public class ElasticSearchMappingsHelper {
                 .setSource(mappingJSON)
                 .execute().actionGet();
 
-        MappingsCache().put(propertyWithDepth);
+        if (ESSpatialMappingPUTResponse.isAcknowledged()) {
+            MappingsCache().put(propertyWithDepth);
+            return true;
+        } else
+            return false;
 
 
 

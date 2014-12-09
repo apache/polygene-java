@@ -1,16 +1,14 @@
 package org.qi4j.library.spatial.projections;
 
 import org.cts.IllegalCoordinateException;
-import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationFactory;
-import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.TPoint;
-import org.qi4j.library.spatial.SpatialRefSysManager;
+import org.qi4j.library.spatial.v2.projections.ProjectionsRegistry;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +19,7 @@ public class ProjectionsTransformation {
 
     public  TGeometry transform(TGeometry geometry, CoordinateReferenceSystem targetCRS) throws IllegalCoordinateException, Exception
     {
+        /**
         System.out.println("Transforming");
 
         CoordinateReferenceSystem sourceCRS = new ProjectionsRegistry().getCRS(geometry.getSRIDWkt());
@@ -33,8 +32,13 @@ public class ProjectionsTransformation {
 
         System.out.println("transformed points : " + Arrays.toString(pointSource));
 
-        point.X(pointSource[0]);
-        point.Y(pointSource[1]);
+        // TPoint point = TPOINT(module).x(1d).y(2d).z(3d).geometry();
+
+        point.x(pointSource[0]).y(pointSource[1]);
+
+
+        // point.X(pointSource[0]);
+        // point.Y(pointSource[1]);
         point.setSRID(targetCRS.getAuthorityName(), Integer.parseInt(targetCRS.getAuthorityKey()));
 
 
@@ -44,11 +48,14 @@ public class ProjectionsTransformation {
       //  point.coordinates().
 
         return point;
+         */
+        return null;
     }
 
 // http://code.google.com/p/cloning
     public  TPoint transform(TPoint point, CoordinateReferenceSystem targetCRS) throws IllegalCoordinateException, Exception
     {
+        /**
         System.out.println("Transforming");
 
         CoordinateReferenceSystem sourceCRS = new ProjectionsRegistry().getCRS(point.getSRIDWkt());
@@ -61,8 +68,10 @@ public class ProjectionsTransformation {
 
         System.out.println("transformed points : " + Arrays.toString(pointSource));
 
-        point.X(pointSource[0]);
-        point.Y(pointSource[1]);
+        point.x(pointSource[0]).y(pointSource[1]);
+
+        // point.X(pointSource[0]);
+        // point.Y(pointSource[1]);
 
 
         // CoordinateReferenceSystem sourceCRS = SpatialRefSysManager.getCRS(point.getSRIDWkt());
@@ -70,6 +79,8 @@ public class ProjectionsTransformation {
         //  point.coordinates().
 
         return point;
+         */
+        return null;
     }
 
 //    public TGeometry transform(TGeometry geometry, CoordinateReferenceSystem targetCRS) throws IllegalCoordinateException {

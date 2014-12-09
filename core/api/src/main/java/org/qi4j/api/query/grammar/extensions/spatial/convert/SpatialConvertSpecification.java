@@ -1,7 +1,7 @@
 package org.qi4j.api.query.grammar.extensions.spatial.convert;
 
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.query.grammar.ExpressionSpecification;
 import org.qi4j.api.structure.Module;
 

@@ -1,5 +1,6 @@
 package org.qi4j.api.query.grammar.extensions.spatial.predicate;
 
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.query.grammar.PropertyFunction;
 import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
@@ -8,7 +9,7 @@ import org.qi4j.functional.Specification;
 /**
  * ST_Within Specification.
  */
-public class ST_DisjointSpecification<TGeometry>
+public class ST_DisjointSpecification<T extends TGeometry>
     extends SpatialPredicatesSpecification<TGeometry>
 {
 

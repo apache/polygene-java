@@ -1,7 +1,7 @@
 package org.qi4j.api.query.grammar.extensions.spatial;
 
 import org.junit.Test;
-import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.ST_GeomFromTextSpecification;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;

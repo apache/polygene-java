@@ -17,9 +17,9 @@ import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.geometry.internal.TLinearRing;
-import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueBuilder;
+import static org.qi4j.api.geometry.TGEOM.*;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class ST_GeomFromTextSpecification<TGeometry>
 
 
     @Override
-    public org.qi4j.api.geometry.TGeometry convert(Module module) throws ParseException
+    public org.qi4j.api.geometry.internal.TGeometry convert(Module module) throws ParseException
     {
 
 
@@ -179,14 +179,19 @@ public class ST_GeomFromTextSpecification<TGeometry>
 
         List<TPoint> points = new ArrayList<>();
         for (int i = 0; i < coordinates.length; i++) {
-
+/**
             TPoint point = module.newValueBuilder(TPoint.class).prototype().of
                     (
                             module.newValueBuilder(Coordinate.class).prototype().of( coordinates[i].x),  //x
                             module.newValueBuilder(Coordinate.class).prototype().of( coordinates[i].y)   //y
-                    );
+                    );*/
+            points.add
+            (
+            TPOINT(module)
 
-            points.add(point);
+                    .x(coordinates[i].x)
+                    .y(coordinates[i].y).geometry()
+            );
         }
         tLinearRingBuilder.prototype().of(points);
 

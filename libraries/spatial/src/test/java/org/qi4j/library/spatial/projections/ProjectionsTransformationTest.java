@@ -3,6 +3,7 @@ package org.qi4j.library.spatial.projections;
 import org.junit.Test;
 import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
@@ -29,8 +30,7 @@ public class ProjectionsTransformationTest extends AbstractQi4jTest {
         module.values(TPoint.class,TLineString.class, TPolygon.class);
         // module.services(GeometryFactory.class);
 
-        module.forMixin(TGeometry.class).declareDefaults().SRIDCode().set(4326);
-        module.forMixin(TGeometry.class).declareDefaults().SRIDAuthority().set("EPSG");
+
 
         // module.forMixin( SomeType.class ).declareDefaults().someValue().set( "&lt;unknown&gt;" );
     }
@@ -48,7 +48,7 @@ public class ProjectionsTransformationTest extends AbstractQi4jTest {
                         module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
                 );
 
-        System.out.println(pointABC.getSRID());
+
 
         // ProjectionsTransformation.transform("", pointABC);
 

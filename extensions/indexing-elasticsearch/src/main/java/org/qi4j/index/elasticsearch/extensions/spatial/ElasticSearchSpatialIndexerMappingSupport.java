@@ -20,7 +20,7 @@ package org.qi4j.index.elasticsearch.extensions.spatial;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 
@@ -58,6 +58,7 @@ public final class ElasticSearchSpatialIndexerMappingSupport {
                     if (geometry instanceof TPoint) // || spatialValueType.type().get().equalsIgnoreCase("point"))
                     {
                         _smJson = createESGeoPointMapping(propertyWithDepth);
+                        System.out.println("Mapping Point Type " + _smJson);
                     } else if (geometry instanceof TGeometry) {
                         // JJ TODO
                         _smJson = createESGeoShapeMapping(propertyWithDepth);
@@ -77,7 +78,9 @@ public final class ElasticSearchSpatialIndexerMappingSupport {
 
                      **/
 
-                    Mappings(support).onIndex(support.index()).andType(support.entitiesType()).addFieldMappings(propertyWithDepth, _smJson);
+                    if (!Mappings(support).onIndex(support.index()).andType(support.entitiesType()).addFieldMappings(propertyWithDepth, _smJson))
+                        throw new RuntimeException("Spatial Mapping can not be done TODO");
+
                     System.out.println("#### Adding new spatial mappings to the Index : " + propertyWithDepth);
 
                 }
@@ -106,10 +109,12 @@ public final class ElasticSearchSpatialIndexerMappingSupport {
         }
 
 
-        qi4jRootType.field("type", "geo_shape") // geo_point
+        qi4jRootType.field("type", "geo_point") // geo_point
                 // .field("lat_lon", true)
                         // .field("geohash", DEFAULT_GEOHASH_SUPPORT)
-                .field("precision", DEFAULT_PRECISION);
+                .field("precision", DEFAULT_PRECISION)
+                .field("lat_lon", true);
+
                 // .field("validate_lat", "true")
                 //.field("validate_lon", "true");
 

@@ -2,6 +2,8 @@ package org.qi4j.api.geometry;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TGeomRoot;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
@@ -73,7 +75,7 @@ public interface GeometryFactory
         }
 
         public TLinearRing asLinearRing(TPoint... points) {
-            return module.newValueBuilder(TLinearRing.class).prototype().of(points);
+            return (TLinearRing)module.newValueBuilder(TLinearRing.class).prototype().of(points);
         }
 
         public TLineString asLinearString(TPoint... points) {

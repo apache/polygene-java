@@ -5,6 +5,7 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.property.Property;
@@ -102,7 +103,8 @@ public class AbstractSpatialQueryTest
                                         (
                                                 templateFor(City.class).location(),
                                                 ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
-                                                100
+                                                100,
+                                                TUnit.METER
                                         )
                         ));
 
@@ -140,7 +142,9 @@ public class AbstractSpatialQueryTest
                 qb
                         .where(
                                 ST_Within(templateFor(City.class).location(),
-                                        Geometry.as2DPoint(3.173425, 101.675720)
+                                        Geometry.as2DPoint(3.173425, 101.675720),
+                                        1000,
+                                        TUnit.METER
                         )));
 
        //  GeoJSON.asPoint()

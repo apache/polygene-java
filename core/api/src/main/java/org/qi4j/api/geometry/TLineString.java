@@ -1,6 +1,7 @@
 package org.qi4j.api.geometry;
 
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -19,6 +20,10 @@ public interface TLineString extends TGeometry {
 
     // Interactions
     TLineString of(TPoint... points);
+    TLineString of(List<TPoint> points);
+    TLineString of();
+
+
     TLineString xy(double x, double y);
 
     boolean isEmpty();
@@ -26,6 +31,9 @@ public interface TLineString extends TGeometry {
     TPoint getPointN(int n);
     TPoint getStartPoint();
     TPoint getEndPoint();
+    boolean isClosed();
+    boolean isRing();
+    int compareTo(TLineString line);
 
 
     public abstract class Mixin implements TLineString
@@ -35,6 +43,12 @@ public interface TLineString extends TGeometry {
 
         @Structure
         Module module;
+
+        public TLineString of(List<TPoint> points)
+        {
+            of(points.toArray(new TPoint[points.size()]));
+            return self;
+        }
 
 
         public TLineString of(TPoint... points)
@@ -47,14 +61,17 @@ public interface TLineString extends TGeometry {
                 l.add(p);
             }
 
-
             if (self.isEmpty())
                 self.points().set(l);
             else
                 self.points().get().addAll(l);
 
-            self.type().set(TGEOMETRY.LINESTRING);
+            self.geometryType().set(TGEOMETRY.LINESTRING);
 
+            return self;
+        }
+
+        public TLineString of() {
             return self;
         }
 
@@ -103,6 +120,40 @@ public interface TLineString extends TGeometry {
 
             return coordinates;
         }
+
+        public boolean isClosed() {
+            if (isEmpty()) {
+                return false;
+            }
+            return getStartPoint().compareTo(getEndPoint()) == 0 ? true : false;
+        }
+
+        public boolean isRing() {
+            return isClosed();
+        }
+
+        public int compareTo(TLineString line)
+        {
+
+            int i = 0;
+            int j = 0;
+            while (i < self.getNumPoints() && j < line.getNumPoints()) {
+                int comparison = self.getPointN(i).compareTo(line.getPointN(j));
+                if (comparison != 0) {
+                    return comparison;
+                }
+                i++;
+                j++;
+            }
+            if (i < self.getNumPoints()) {
+                return 1;
+            }
+            if (j < line.getNumPoints()) {
+                return -1;
+            }
+            return 0;
+        }
+
     }
 
 

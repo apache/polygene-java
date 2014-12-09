@@ -21,6 +21,8 @@
 package org.qi4j.api.query;
 
 import java.io.Serializable;
+
+import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.grammar.OrderBy;
 
@@ -59,6 +61,18 @@ public interface Query<T>
      * @return the Query
      */
     Query<T> orderBy( final Property<?> property, final OrderBy.Order order );
+
+
+    /**
+     * Append an ordering rule to the existing segments.
+     *
+     * @param property the property to order by
+     * @param centre order from a spatial centre
+     * @param order the order to apply
+     *
+     * @return the Query
+     */
+    Query<T> orderBy( final Property<?> property, TPoint centre, final OrderBy.Order order );
 
     /**
      * Append an ascending ordering rule to the existing segments.

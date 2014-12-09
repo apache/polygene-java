@@ -48,6 +48,7 @@ import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
 
 import static org.joda.time.DateTimeZone.UTC;
+import static org.qi4j.api.geometry.TGEOM.TPOINT;
 
 /**
  * Utility class to populate Index/Query tests data.
@@ -107,8 +108,7 @@ class TestData
                 kualaLumpur.name().set( "Kuala Lumpur" );
                 kualaLumpur.country().set( "Malaysia" );
                 kualaLumpur.county().set( "Some Jaya" );
-                kualaLumpur.location().set((TPoint)module.findService(GeometryFactory.class).get()
-                        .as2DPoint(101.686854, 3.139003));
+                kualaLumpur.location().set(TPOINT(module).x(101.686854).y(3.139003).geometry());
                 kualaLumpur = cityBuilder.newInstance();
                 NameableAssert.trace( kualaLumpur );
             }

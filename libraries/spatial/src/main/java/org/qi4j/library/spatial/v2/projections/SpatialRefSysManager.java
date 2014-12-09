@@ -1,11 +1,10 @@
-package org.qi4j.library.spatial;
+package org.qi4j.library.spatial.v2.projections;
 
 // https://joinup.ec.europa.eu/svn/gearscape/versions/0.1/platform/gdms/src/test/java/org/gdms/source/crs/TransformTest.java
 
 import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
-import org.qi4j.api.geometry.TGeometry;
-import org.qi4j.library.spatial.projections.ProjectionsRegistry;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.library.spatial.projections.ProjectionsTransformation;
 
 /**

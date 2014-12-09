@@ -44,7 +44,7 @@ public class ST_PointFromTextSpecification<TGeometry>
 
 
     @Override
-    public org.qi4j.api.geometry.TGeometry convert(Module module) throws ParseException
+    public org.qi4j.api.geometry.internal.TGeometry convert(Module module) throws ParseException
     {
        // return value.equals( this.value );
         Shape sNoDL = ctx.readShapeFromWkt((property()));

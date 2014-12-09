@@ -27,7 +27,14 @@ public class TPolygonBuilder {
 
     public TPolygonBuilder shell(double[][] shell)
     {
+        System.out.println("Shell " + new TLinearRingBuilder(module).ring(shell).geometry());
+
         geometry.of( new TLinearRingBuilder(module).ring(shell).geometry()); return this;
+    }
+
+    public TPolygonBuilder shell2(double[]... shell)
+    {
+        return null;
     }
 
     public TPolygonBuilder withHoles(TLinearRing... holes)
@@ -35,13 +42,15 @@ public class TPolygonBuilder {
         geometry.withHoles(holes); return this;
     }
 
+
     public TPolygon geometry()
     {
         return geometry;
     }
 
-    public TPolygon geometry(int srid)
+    public TPolygon geometry(String CRS)
     {
+        geometry().setCRS(CRS);
         return geometry();
     }
 }

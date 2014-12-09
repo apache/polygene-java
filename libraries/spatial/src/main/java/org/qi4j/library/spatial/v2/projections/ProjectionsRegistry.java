@@ -1,4 +1,4 @@
-package org.qi4j.library.spatial.projections;
+package org.qi4j.library.spatial.v2.projections;
 
 import org.cts.CRSFactory;
 import org.cts.crs.CRSException;
@@ -42,8 +42,14 @@ public class ProjectionsRegistry {
         return cRSFactory.getRegistryManager().getRegistryNames();
     }
 
-    public CoordinateReferenceSystem getCRS(String wkt) throws CRSException {
-        return cRSFactory.getCRS(wkt);
+    public CoordinateReferenceSystem getCRS(String wkt)  {
+        try {
+            return cRSFactory.getCRS(wkt);
+        } catch(CRSException _ex)
+        {
+            _ex.printStackTrace();
+            return null;
+        }
     }
 
 

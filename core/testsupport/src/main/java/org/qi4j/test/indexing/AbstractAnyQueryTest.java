@@ -17,11 +17,9 @@
  */
 package org.qi4j.test.indexing;
 
-import org.qi4j.api.geometry.GeometryFactory;
-import org.qi4j.api.geometry.TLineString;
-import org.qi4j.api.geometry.TPoint;
-import org.qi4j.api.geometry.TPolygon;
+import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
@@ -50,6 +48,9 @@ public class AbstractAnyQueryTest
 {
     protected UnitOfWork unitOfWork;
 
+    private final String CRS_EPSG_4326 = "EPSG:4326";
+
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -70,14 +71,14 @@ public class AbstractAnyQueryTest
 
         // JJ TODO - There is a better way to enable the Geometry types ?
 
-        // Internal Types
-        module.values(
-                Coordinate.class,
-                TLinearRing.class);
+        // internal values
+        module.values(Coordinate.class, TLinearRing.class, TGeometry.class);
 
         // API values
-        module.values(TPoint.class,TLineString.class, TPolygon.class);
+        module.values(TPoint.class, TMultiPoint.class, TLineString.class, TPolygon.class, TMultiPolygon.class, TFeature.class, TFeatureCollection.class);
         module.services(GeometryFactory.class);
+        TGeometry tGeometry = module.forMixin(TGeometry.class).declareDefaults();
+        tGeometry.CRS().set(CRS_EPSG_4326);
 
         new EntityTestAssembler().assemble( module );
     }
@@ -87,7 +88,7 @@ public class AbstractAnyQueryTest
         throws Exception
     {
         super.setUp();
-        TestData.populate( module );
+        // TestData.populate( module );
 
         this.unitOfWork = this.module.newUnitOfWork();
     }

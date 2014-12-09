@@ -42,8 +42,9 @@ public class TPointBuilder {
         return geometry;
     }
 
-    public TPoint geometry(int srid)
+    public TPoint geometry(String CRS)
     {
+        geometry().setCRS(CRS);
         return geometry();
     }
 }

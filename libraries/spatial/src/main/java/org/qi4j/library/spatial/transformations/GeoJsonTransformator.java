@@ -1,10 +1,12 @@
-package org.qi4j.library.spatial.transformator;
+package org.qi4j.library.spatial.transformations;
 
 import org.geojson.*;
 import org.qi4j.api.geometry.GeometryFactory;
 import org.qi4j.api.geometry.TFeature;
 import org.qi4j.api.geometry.TPoint;
+import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.geometry.internal.TLinearRing;
+import org.qi4j.api.value.ValueBuilder;
 
 import java.util.*;
 
@@ -52,11 +54,14 @@ public class GeoJsonTransformator {
         else if (feature.getGeometry() instanceof Polygon)
         {
 
+
             TLinearRing shell = toLinearRing( toPoints(((Polygon)feature.getGeometry()).getExteriorRing()));
 
             Set<TLinearRing> holes = new HashSet<>();
 //
 //                   TLinearRing shell = Geometry.asLinearRing(points.toArray(new TPoint[0]));
+
+
 //
             for (int i = 0; i < ((Polygon)feature.getGeometry()).getInteriorRings().size(); i++)
             {
@@ -67,6 +72,8 @@ public class GeoJsonTransformator {
                 // toPoints(((Polygon)feature.getGeometry()).getInteriorRing(i))
                 // );
             }
+
+
 //
 //
 //                   if (holes.size()> 0) {
@@ -75,6 +82,8 @@ public class GeoJsonTransformator {
 //                   {
 //                       Geometry.asPolygon(shell); // , holes.toArray(new TLinearRing[0]));
 //                   }
+
+
         }
         else if (feature.getGeometry() instanceof MultiPolygon)
         {
@@ -92,7 +101,7 @@ public class GeoJsonTransformator {
 
         if (tFeature != null) {
             tFeature.id().set(feature.getId());
-            tFeature.properties().set(feature.getProperties());
+            // tFeature.properties().set(feature.getProperties());
 
             //  System.out.println(count);
 

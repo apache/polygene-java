@@ -7,9 +7,9 @@ import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.geometry.GeometryFactory;
-import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
+import org.qi4j.api.geometry.TUnit;
 import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Service;
@@ -43,7 +43,6 @@ import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressi
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_GeometryFromText;
 import static org.qi4j.test.indexing.NameableAssert.verifyUnorderedResults;
 import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
-import static org.junit.Assert.*;
 import static org.qi4j.api.geometry.TGEOM.*;
 
 /**
@@ -102,7 +101,7 @@ public class ElasticSearchSpatialClusterQueryTest
             TPolygon area = builder.prototype().of
                     (
                             // shell
-                            module.newValueBuilder(TLinearRing.class).prototype().of
+                            (TLinearRing)module.newValueBuilder(TLinearRing.class).prototype().of
                                     (
                                             module.newValueBuilder(TPoint.class).prototype().x(49.56797785892715).y(10.62652587890625),
                                             module.newValueBuilder(TPoint.class).prototype().x(49.5835615987737).y(10.748062133789062),
@@ -161,156 +160,11 @@ public class ElasticSearchSpatialClusterQueryTest
     @Service
     GeometryFactory Geometry;
 
-    @Test
-    public void script00() {
-//        Query<Person> query = unitOfWork.newQuery( module.newQueryBuilder( Person.class ).
-//                where( eq( templateFor( Person.class ).money(),
-//                        Money.of( CurrencyUnit.USD, 100 ) ) ) );
-//
-//        verifyUnorderedResults( query, "Joe Doe" );
-        //  setup();
-
-        QueryBuilder<MapFeature> qb = this.module.newQueryBuilder(MapFeature.class);
-
-        Query<MapFeature> query = unitOfWork.newQuery(
-                qb
-                        .where(
-                                ST_Within(templateFor(MapFeature.class).geometry1(),
-                                        Geometry.asPoint(
-                                                Geometry.asCoordinate(10.6108),
-                                                Geometry.asCoordinate(49.5786)
-                                        ))));
-
-        //  GeoJSON.asPoint()
 
 
-        System.out.println("*** script01: " + query);
-        query.find();
-
-        System.out.println(query.count());
 
 
-//        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
-//        Person personTemplate = templateFor( Person.class );
-//        City placeOfBirth = personTemplate.placeOfBirth().get();
-//        Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ) );
-//        System.out.println( "*** script04: " + query );
-//       //  verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
-    }
 
-    @Test
-    public void script01() {
-
-        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
-
-        Query<City> query = unitOfWork.newQuery(
-                qb
-                        .where(
-                                ST_Within(templateFor(City.class).location(),
-                                        Geometry.asPoint(
-                                                Geometry.asCoordinate(3.139003),
-                                                Geometry.asCoordinate(101.686854)
-                                                //  Geometry.asCoordinate(10.6108),
-                                                //  Geometry.asCoordinate(49.5786)
-                                        ))));
-
-        //  GeoJSON.asPoint()
-
-
-        System.out.println("*** script01: " + query);
-        City city = query.find();
-
-        System.out.println("Found Cities " + query.count());
-
-
-        System.out.println(city.location());
-
-
-//        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
-//        Person personTemplate = templateFor( Person.class );
-//        City placeOfBirth = personTemplate.placeOfBirth().get();
-//        Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ) );
-//        System.out.println( "*** script04: " + query );
-//       //  verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
-    }
-
-
-    @Test
-    public void whenQueryForPersonsInACity() {
-
-
-        QueryBuilder<Person> qb = this.module.newQueryBuilder(Person.class);
-
-        Query<Person> query = unitOfWork.newQuery(
-                qb
-                        .where(
-                                ST_Within(templateFor(Person.class).placeOfBirth().get().location(),
-                                        Geometry.asPoint(
-                                                Geometry.asCoordinate(3.139003),
-                                                Geometry.asCoordinate(101.686854)
-                                                //  Geometry.asCoordinate(10.6108),
-                                                //  Geometry.asCoordinate(49.5786)
-                                        ))));
-
-        query.find();
-
-        System.out.println("Found Persons " + query.count());
-
-    }
-
-
-    @Test
-    public void whenQueryForPersonsThatLikesALocation() {
-
-
-        QueryBuilder<Person> qb = this.module.newQueryBuilder(Person.class);
-
-        Query<Person> query = unitOfWork.newQuery(
-                qb
-                        .where(
-                                ST_Within(templateFor(Person.class).placeOfBirth().get().location(),
-                                        Geometry.asPoint(
-                                                Geometry.asCoordinate(3.139003),
-                                                Geometry.asCoordinate(101.686854)
-                                                //  Geometry.asCoordinate(10.6108),
-                                                //  Geometry.asCoordinate(49.5786)
-                                        ))));
-
-        query.find();
-
-        System.out.println("Found Persons " + query.count());
-
-    }
-
-
-    @Test
-    public void script01JustQuery() {
-
-        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
-
-        Query<City> query = unitOfWork.newQuery(
-                qb
-                        .where(
-                                ST_Within(templateFor(City.class).location(),
-                                        module.newValueBuilder(TPoint.class).prototype().x(49.550881).y(10.712809)
-                                )));
-
-        //  GeoJSON.asPoint()
-
-
-        System.out.println("*** script01: " + query);
-        query.find();
-
-        System.out.println("Found Cities " + query.count());
-
-
-//        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
-//        Person personTemplate = templateFor( Person.class );
-//        City placeOfBirth = personTemplate.placeOfBirth().get();
-//        Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ) );
-//        System.out.println( "*** script04: " + query );
-//       //  verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
-    }
 
 
     @Test
@@ -328,7 +182,8 @@ public class ElasticSearchSpatialClusterQueryTest
                                         (
                                                 templateFor(City.class).location(),
                                                 ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
-                                                100
+                                                100,
+                                                TUnit.METER
                                         )
                         ));
 
@@ -437,7 +292,7 @@ public class ElasticSearchSpatialClusterQueryTest
         TPolygon tPolygonShape = tPolygonShapeBuilder.prototype().of
                 (
                         // shell
-                        module.newValueBuilder(TLinearRing.class).prototype().of
+                        (TLinearRing)module.newValueBuilder(TLinearRing.class).prototype().of
                                 (
                                         module.newValueBuilder(TPoint.class).prototype().of
                                                 (
@@ -533,7 +388,8 @@ public class ElasticSearchSpatialClusterQueryTest
                                         (
                                                 templateFor(City.class).location(),
                                                 ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
-                                                100
+                                                100,
+                                                TUnit.METER
                                         )
                         ));
 
@@ -563,7 +419,8 @@ public class ElasticSearchSpatialClusterQueryTest
                                                 (
                                                         templateFor(City.class).location(),
                                                         ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
-                                                        100
+                                                        100,
+                                                        TUnit.METER
                                                 )
                                 )
                         ));

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryExecutionException;
@@ -66,6 +67,11 @@ import org.qi4j.spi.query.QuerySource;
     private Map<String, Object> variables;
 
     /**
+     * Ordering from a spatial centre.
+     */
+    private TPoint centre;
+
+    /**
      * Constructor.
      *
      * @param resultType  type of queried entities; cannot be null
@@ -104,6 +110,24 @@ import org.qi4j.spi.query.QuerySource;
         else
         {
             orderBySegments = Iterables.append( new OrderBy( QueryExpressions.property( property ), order ), orderBySegments );
+        }
+        return this;
+    }
+
+    @Override
+    public Query<T> orderBy( final Property<?> property, TPoint centre, final OrderBy.Order order )
+    {
+
+        OrderBy orderBy = new OrderBy( QueryExpressions.property( property ), order );
+        orderBy.setCentre(centre);
+
+        if( orderBySegments == null )
+        {
+            orderBySegments = Iterables.iterable( orderBy );
+        }
+        else
+        {
+            orderBySegments = Iterables.append( orderBy, orderBySegments );
         }
         return this;
     }
@@ -153,6 +177,8 @@ import org.qi4j.spi.query.QuerySource;
 
         return this;
     }
+
+
 
     /**
      * @see org.qi4j.api.query.Query#getVariable(String)

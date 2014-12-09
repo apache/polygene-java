@@ -16,14 +16,14 @@ package org.qi4j.api.geometry;
 
 import org.junit.Test;
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
 /**
@@ -39,13 +39,22 @@ public class BasicGeometryTest
         // do not need to be added delicately ?
 
         // internal values
-        module.values( Coordinate.class, TLinearRing.class);
+        module.values(Coordinate.class, TLinearRing.class, TGeometry.class);
 
         // API values
-        module.values(TPoint.class,TLineString.class, TPolygon.class);
+        module.values(TCRS.class, TPoint.class, TMultiPoint.class, TLineString.class, TPolygon.class, TMultiPolygon.class, TFeature.class, TFeatureCollection.class);
     }
 
     @Test
+    public void testWhenCRSIsCreated()
+    {
+        String CRS = "urn:ogc:def:crs:OGC:1.3:CRS84";
+        ValueBuilder<TCRS> builder = module.newValueBuilder(TCRS.class);
+        TCRS crs = builder.prototype().of(CRS);
+        assertThat(crs.crs(), equalTo( CRS ));
+    }
+
+        @Test
     public void testWhenCoordinatedCreated()
     {
         ValueBuilder<Coordinate> builder = module.newValueBuilder(Coordinate.class);
@@ -145,7 +154,7 @@ public class BasicGeometryTest
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
 
-        TLinearRing linearRing = builder.prototype().of(
+        TLinearRing linearRing = (TLinearRing)builder.prototype().of(
                 module.newValueBuilder(TPoint.class).prototype().x(0d).y(0d).z(0d),
                 module.newValueBuilder(TPoint.class).prototype().x(0d).y(1d).z(0d),
                 module.newValueBuilder(TPoint.class).prototype().x(1d).y(0d).z(0d),
@@ -161,7 +170,7 @@ public class BasicGeometryTest
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
 
-        TLinearRing linearRing = builder.prototype().of(
+        TLinearRing linearRing = (TLinearRing)builder.prototype().of(
                 module.newValueBuilder(TPoint.class).prototype().x(0d).y(0d).z(0d),
                 module.newValueBuilder(TPoint.class).prototype().x(0d).y(1d).z(0d),
                 module.newValueBuilder(TPoint.class).prototype().x(1d).y(0d).z(0d),
@@ -177,7 +186,7 @@ public class BasicGeometryTest
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
 
-        TLinearRing shell = builder.prototype().of()
+        TLinearRing shell = (TLinearRing)builder.prototype().of()
 
                 .xy(0d, 0d)
                 .xy(0d, 1d)
@@ -186,7 +195,7 @@ public class BasicGeometryTest
                 .xy(0d, 0d);
 
 
-        assertTrue(shell.isValid()); // ring closed ?, z-dimension is ignored
+        assertTrue(shell.isValid()); // ring closed ?, z-point-dimension is ignored
         assertTrue(shell.getNumPoints() == 5);
     }
 
@@ -195,16 +204,16 @@ public class BasicGeometryTest
     public void testWhenPolygonIsCreated()
     {
         ValueBuilder<TPolygon> builder = module.newValueBuilder(TPolygon.class);
-
+/**
         builder.prototype().of(
-                module.newValueBuilder(TLinearRing.class).prototype().of()
+                module.newValueBuilder((TLinearRing.class).prototype().of()
                         .xy(0d,  0d)
                         .xy(0d, 10d)
                         .xy(10d, 0d)
                         .xy(1d, 10d)
                         .xy(0d, 0d)
         );
-
+*/
         //builder.prototype().of(
         //        module.newValueBuilder(TLinearRing.class).prototype().
     }
@@ -266,7 +275,7 @@ public class BasicGeometryTest
         builder.prototype().of
                 (
                         // shell
-                        module.newValueBuilder(TLinearRing.class).prototype().of
+                        (TLinearRing)module.newValueBuilder(TLinearRing.class).prototype().of
                                 (
                                         module.newValueBuilder(TPoint.class).prototype().of
                                                 (

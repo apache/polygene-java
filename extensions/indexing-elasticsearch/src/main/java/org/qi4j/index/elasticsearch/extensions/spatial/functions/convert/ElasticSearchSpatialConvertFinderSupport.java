@@ -1,8 +1,7 @@
 package org.qi4j.index.elasticsearch.extensions.spatial.functions.convert;
 
 import org.elasticsearch.index.query.FilterBuilder;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.ST_GeomFromTextSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.api.structure.Module;
@@ -29,7 +28,7 @@ public class ElasticSearchSpatialConvertFinderSupport implements  ElasticSearchS
 
     static
     {
-        SPATIAL_CONVERT_OPERATIONS.put(ST_GeomFromTextSpecification.class, new ST_GeometryFromTextFunction());
+        SPATIAL_CONVERT_OPERATIONS.put(ST_GeomFromTextSpecification.class, new ST_GeometryFromText());
     }
 
     Module module;

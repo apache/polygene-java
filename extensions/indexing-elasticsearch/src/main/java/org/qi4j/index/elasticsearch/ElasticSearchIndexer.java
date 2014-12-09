@@ -20,6 +20,8 @@ package org.qi4j.index.elasticsearch;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
+
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.json.JSONArray;
@@ -29,7 +31,7 @@ import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
@@ -195,6 +197,7 @@ public interface ElasticSearchIndexer
         }
 
 
+        Stack<String> stack = new Stack<>();
         int iterations = 0;
 
         private String toJSON(String assotiationKey, EntityState state, Map<String, EntityState> newStates, EntityStoreUnitOfWork uow )
@@ -242,7 +245,7 @@ public interface ElasticSearchIndexer
                             }
 
 
-                            ElasticSearchSpatialIndexerSupport.toJSON(support,(TGeometry) value,key,newKey,json );
+                            ElasticSearchSpatialIndexerSupport.toJSON(support,(TGeometry) value,key,newKey,json, module );
 
                             System.out.println("Spatial JSON " + json);
                         }

@@ -1,8 +1,7 @@
 package org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates;
 
 import org.elasticsearch.index.query.FilterBuilder;
-import org.qi4j.api.composite.Composite;
-import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_DisjointSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_WithinSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.SpatialPredicatesSpecification;
@@ -30,8 +29,8 @@ public class ElasticSearchSpatialPredicateFinderSupport implements ElasticSearch
 
     static
     {
-        SPATIAL_PREDICATE_OPERATIONS.put(ST_WithinSpecification.class, new ST_WithinFunction());
-        SPATIAL_PREDICATE_OPERATIONS.put(ST_DisjointSpecification.class, new ST_DisjointFunction());
+        SPATIAL_PREDICATE_OPERATIONS.put(ST_WithinSpecification.class, new ST_Within());
+        SPATIAL_PREDICATE_OPERATIONS.put(ST_DisjointSpecification.class, new ST_Disjoint());
     }
 
 

@@ -30,13 +30,27 @@ public class TLinearRingBuilder {
         return this;
     }
 
+    public TLinearRingBuilder of(TPoint...points)
+    {
+        geometry().of(points);
+        return this;
+    }
+
+/**
+    public TLinearRingBuilder of()
+    {
+        geometry().of();
+        return this;
+    }
+*/
+
 
     public TLinearRing geometry()
     {
         System.out.println(geometry + " " + geometry.isValid() );
 
-        if (!geometry.isValid()) return null;
-            else
+        // if (!geometry.isValid()) throw new RuntimeException("Ring not valid");
+        //    else
         return geometry;
     }
 

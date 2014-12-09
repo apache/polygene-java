@@ -26,6 +26,7 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.geometry.TUnit;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.bootstrap.AssemblyException;
@@ -127,7 +128,8 @@ public class ElasticSearchQueryTest
                                         (
                                                 templateFor(City.class).location(),
                                                 ST_GeometryFromText("POINT(3.139003 101.686854)", 1),
-                                                100
+                                                100,
+                                                TUnit.METER
                                         )
                         ));
         System.out.println( "*** script53_Spatial_ST_WithIn: " + query );

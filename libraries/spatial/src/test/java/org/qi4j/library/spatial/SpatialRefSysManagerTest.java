@@ -1,7 +1,7 @@
 package org.qi4j.library.spatial;
 
 import org.junit.Test;
-import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.TLineString;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
@@ -10,12 +10,14 @@ import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.spatial.projections.ProjectionsRegistry;
+import org.qi4j.library.spatial.v2.projections.ProjectionsRegistry;
+import org.qi4j.library.spatial.v2.projections.SpatialRefSysManager;
 import org.qi4j.test.AbstractQi4jTest;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
+import static org.qi4j.api.geometry.TGEOM.TPOINT;
 
 /**
  * Created by jj on 18.11.14.
@@ -35,8 +37,6 @@ public class SpatialRefSysManagerTest extends AbstractQi4jTest {
         module.values(TPoint.class,TLineString.class, TPolygon.class);
         // module.services(GeometryFactory.class);
 
-        module.forMixin(TGeometry.class).declareDefaults().SRIDCode().set(4326);
-        module.forMixin(TGeometry.class).declareDefaults().SRIDAuthority().set("EPSG");
 
         // module.forMixin( SomeType.class ).declareDefaults().someValue().set( "&lt;unknown&gt;" );
     }
@@ -56,7 +56,10 @@ public class SpatialRefSysManagerTest extends AbstractQi4jTest {
 
         // TPoint pointAs_EPSG_4326_1 = builder.prototype().X(10.712809).Y(49.550881);
 
-        TPoint pointAs_EPSG_4326_1 = module.newValueBuilder(TPoint.class).prototype().X(10.712809).Y(49.550881);
+        // TPoint pointAs_EPSG_4326_1 = module.newValueBuilder(TPoint.class).prototype().X(10.712809).Y(49.550881);
+
+        TPoint pointAs_EPSG_4326_1 = TPOINT(module).x(10.712809).y(49.550881).geometry();
+
 /**
         TPoint point = builder.prototype().of
             (

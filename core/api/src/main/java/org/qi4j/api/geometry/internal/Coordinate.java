@@ -1,7 +1,6 @@
 package org.qi4j.api.geometry.internal;
 
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.geometry.TGeomRoot;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
