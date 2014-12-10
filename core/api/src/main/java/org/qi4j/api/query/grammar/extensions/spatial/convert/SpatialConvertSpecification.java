@@ -15,8 +15,9 @@ import java.text.ParseException;
 public abstract class SpatialConvertSpecification<T>
     extends ExpressionSpecification
 {
-    protected final String WKT;
-    protected final int srid;
+    protected  String WKT;
+    protected  int srid;
+    protected  String crs;
 
     public SpatialConvertSpecification(String WKT, int srid)
     {
@@ -24,9 +25,22 @@ public abstract class SpatialConvertSpecification<T>
         this.srid = srid;
     }
 
+    public SpatialConvertSpecification(String WKT, String crs)
+    {
+        this.WKT = WKT;
+        this.crs = crs;
+    }
+
+
+
     public String property()
     {
         return WKT;
+    }
+
+    public String getCrs()
+    {
+        return crs;
     }
 
     @Override

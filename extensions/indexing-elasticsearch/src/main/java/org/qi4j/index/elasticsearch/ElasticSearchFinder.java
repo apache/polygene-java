@@ -156,20 +156,20 @@ public interface ElasticSearchFinder
                 for( OrderBy order : orderBySegments )
                 {
 
-                    System.out.println("OrderBy " + order);
-                    System.out.println("Name " + order.property().toString()); // getClass().getTypeName());
+                    // System.out.println("OrderBy " + order);
+                    // System.out.println("Name " + order.property().toString()); // getClass().getTypeName());
 
 
                    //  order.property().accessor().
 
                             String typeName = Classes.typeOf(order.property().accessor()).getTypeName();
-                    System.out.println(typeName);
+                    //System.out.println(typeName);
 
                     Type returnType = Classes.typeOf(order.property().accessor());
                     Type propertyTypeAsType = GenericPropertyInfo.toPropertyType(returnType);
 
 
-                    System.out.println(propertyTypeAsType.getTypeName());
+                    //System.out.println(propertyTypeAsType.getTypeName());
 
 
                         Class clazz = Class.forName(propertyTypeAsType.getTypeName());
@@ -177,7 +177,7 @@ public interface ElasticSearchFinder
 
                         if (TGeometry.class.isAssignableFrom(clazz))
                         {
-                            System.out.println("Spatial Type");
+                            //System.out.println("Spatial Type");
 
                             if (!TPoint.class.isAssignableFrom(clazz))
                                 throw new RuntimeException("OrderBy can only be done on properties of type TPoint.");
@@ -206,7 +206,7 @@ public interface ElasticSearchFinder
             // Log
             LOGGER.debug( "Will search Entities: {}", request );
 
-            System.out.println("Request " + request.toString());
+            // System.out.println("Request " + request.toString());
 
 
             // Execute
@@ -241,7 +241,7 @@ public interface ElasticSearchFinder
             // Log
             LOGGER.debug( "Will search Entity: {}", request );
 
-            System.out.println("request " + request.toString());
+            // System.out.println("request " + request.toString());
 
 
             // Execute

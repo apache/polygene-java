@@ -8,6 +8,7 @@ import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -18,15 +19,15 @@ public interface TFeature extends TGeometry  {
     Property<String> id();
     Property<TGeometry> geometry();
     @Optional
-    Property<Map<String, String>> properties();
+    Property<Map<String, List<String>>> properties();
 
 
 
     TFeature of(TGeometry geometry);
-    TFeature withProperties(Map<String, String> properties);
+    TFeature withProperties(Map<String, List<String>> properties);
 
     TGeometry asGeometry();
-    Map<String, String> asProperties();
+    Map<String, List<String>> asProperties();
 
 
 
@@ -48,8 +49,9 @@ public interface TFeature extends TGeometry  {
             return self;
         }
 
-        public TFeature withProperties(Map<String, String> properties)
+        public TFeature withProperties(Map<String, List<String>> properties)
         {
+            self.properties().set(properties);
             return self;
         }
 
@@ -67,7 +69,7 @@ public interface TFeature extends TGeometry  {
             return self.geometry().get();
         }
 
-        public Map<String, String> asProperties()
+        public Map<String, List<String>> asProperties()
         {
             return self.properties().get();
         }

@@ -32,6 +32,8 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.*;
 
+import static org.qi4j.library.spatial.v2.conversions.TConversions.Convert;
+
 /**
  * Created by jakes on 2/7/14.
  */
@@ -128,18 +130,33 @@ public class SimpleGeoJSONParser extends AbstractQi4jTest {
 
                     // System.out.println(node.get("geometry").get("type").asText());
 
+                    System.out.println("== > " + node.get("id"));
 
+                    //  System.out.println(node.get("categories").get("osm").ar);
 
+                    JsonNode osm = node.get("categories").get("osm");
+
+                    if (osm.isArray()) {
+                        for (final JsonNode property : osm) {
+                            System.out.println(property);
+                        }
+                    }
 
                     if ("Point".equals(node.get("geometry").get("type").asText())) {
                         Point point = new ObjectMapper().readValue(node.get("geometry").toString(), Point.class);
+                        TPoint tPoint = (TPoint)Convert(module).from(point).toTGeometry();
+                        // System.out.println(tPoint);
                     }
                     else if ("LineString".equals(node.get("geometry").get("type").asText())) {
                         LineString lineString = new ObjectMapper().readValue(node.get("geometry").toString(), LineString.class);
+                        TLineString tLineString = (TLineString)Convert(module).from(lineString).toTGeometry();
+                        // System.out.println(tLineString);
+
                     }
                     else if ("Polygon".equals(node.get("geometry").get("type").asText())) {
                         Polygon polygon = new ObjectMapper().readValue(node.get("geometry").toString(), Polygon.class);
-                        TPolygon tPolygon = (TPolygon)GeoJSONParserV2.transform(module).from(polygon).transform();
+                        TPolygon tPolygon = (TPolygon)Convert(module).from(polygon).toTGeometry();
+                        // System.out.println(tPolygon);
                         // System.out.println(tPolygon);
                         // System.out.println(tPolygon.shell().get().isValid());
                     }

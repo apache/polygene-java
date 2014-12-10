@@ -43,12 +43,17 @@ public class ST_GeomFromTextSpecification<TGeometry>
     }
 
 
+
+
     public ST_GeomFromTextSpecification(String WKT, int srid)
     {
         super( WKT, srid );
 
-       // Shape sNoDL = ctx.readShapeFromWkt("POINT(-71.064544 42.28787)");
+    }
 
+    public ST_GeomFromTextSpecification(String WKT, String crs)
+    {
+        super( WKT, crs );
     }
 
     // @Structure

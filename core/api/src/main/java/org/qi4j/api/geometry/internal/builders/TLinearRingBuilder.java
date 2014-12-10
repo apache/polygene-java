@@ -47,7 +47,7 @@ public class TLinearRingBuilder {
 
     public TLinearRing geometry()
     {
-        System.out.println(geometry + " " + geometry.isValid() );
+        // System.out.println(geometry + " " + geometry.isValid() );
 
         // if (!geometry.isValid()) throw new RuntimeException("Ring not valid");
         //    else

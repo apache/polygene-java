@@ -8,6 +8,8 @@ import org.qi4j.spi.query.EntityFinderException;
 
 import java.util.Map;
 
+import static org.qi4j.library.spatial.v2.conversions.TConversions.Convert;
+
 /**
  * Created by jj on 20.11.14.
  */
@@ -20,7 +22,10 @@ public class ST_GeometryFromText extends AbstractElasticSearchSpatialFunction im
         System.out.println("ST_GeometryFromTextFunction()");
 
 try {
-    return spec.convert(module);
+
+    return Convert(module).from(spec.property()).toTGeometry();
+
+    // return spec.convert(module);
 } catch(Exception _ex) {
     _ex.printStackTrace();
 }

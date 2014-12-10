@@ -247,7 +247,7 @@ public interface ElasticSearchIndexer
 
                             ElasticSearchSpatialIndexerSupport.toJSON(support,(TGeometry) value,key,newKey,json, module );
 
-                            System.out.println("Spatial JSON " + json);
+                           // System.out.println("Spatial JSON " + json);
                         }
                         else
                         {

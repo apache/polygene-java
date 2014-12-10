@@ -87,6 +87,12 @@ public final class SpatialQueryExpressions extends QueryExpressions {
         return new ST_GeomFromTextSpecification( WKT, srid);
     }
 
+    public static Specification<SpatialConvertSpecification> ST_GeometryFromText(String WKT, String crs)
+    {
+        //  return new LtSpecification<>( property( property ), value );
+        return new ST_GeomFromTextSpecification( WKT, crs);
+    }
+
     public static Specification<Composite> ST_GeometryFromText(String WKT, int srid, String foo)
     {
         //  return new LtSpecification<>( property( property ), value );
