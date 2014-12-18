@@ -2,7 +2,6 @@ package org.qi4j.sample.spatial.domain.openstreetmap.model.test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.qi4j.api.geometry.TLineString;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.geometry.internal.TGeometry;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExpressions;
@@ -21,23 +19,18 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.riak.RiakHttpMapEntityStoreAssembler;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.assembly.ESClusterIndexQueryAssembler;
-import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
-import org.qi4j.index.elasticsearch.extension.spatial.model.VerifyStatialTypes;
 import org.qi4j.index.elasticsearch.extension.spatial.model.entity.SpatialEntity;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
-import org.qi4j.sample.spatial.domain.openstreetmap.model.FeatureEntity;
 import org.qi4j.sample.spatial.domain.openstreetmap.model.assembly.OpenStreetMapDomainModelAssembler;
 import org.qi4j.sample.spatial.domain.openstreetmap.model.v2.FeatureEntityV2;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
-import org.qi4j.test.indexing.model.City;
 import org.qi4j.test.util.DelTreeAfter;
 import org.geojson.*;
 import org.qi4j.library.spatial.transformations.geojson.GeoJSONParserV2;
-import org.qi4j.library.spatial.transformations.geojson.internal.ParserBuilder;
 
-import static org.qi4j.api.geometry.TGEOM.*;
+import static org.qi4j.api.geometry.TGeometryFactory.*;
 import static org.qi4j.api.query.QueryExpressions.*;
 
 
@@ -55,36 +48,10 @@ import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.geojson.*;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.geometry.*;
-import org.qi4j.api.geometry.internal.Coordinate;
-import org.qi4j.api.geometry.internal.TGeometry;
-import org.qi4j.api.geometry.internal.TLinearRing;
-import org.qi4j.api.injection.scope.Service;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueSerialization;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.spatial.topo.GeoJSONSwissLakes2013;
-import org.qi4j.library.spatial.transformations.GeoJsonTransformator;
-import org.qi4j.library.spatial.transformations.geojson.GeoJSONParserV2;
-import org.qi4j.library.spatial.transformations.geojson.internal.ParserBuilder;
-import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.qi4j.sample.spatial.domain.openstreetmap.model.v2.structure.OSM;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.util.*;
 
 import static org.qi4j.library.spatial.v2.conversions.TConversions.Convert;
@@ -258,7 +225,7 @@ public class TestOSMModel extends AbstractQi4jTest {
             }
 
             if (tGeometry != null) {
-                TFeature osmFeature = TFEATURE(module).of(tGeometry).geometry().withProperties(properties);
+                TFeature osmFeature = TFeature(module).of(tGeometry).geometry().withProperties(properties);
                 // System.out.println(osmFeature);
                 OSM.Repository.$(module).createFeature(osmFeature);
             }
@@ -285,7 +252,7 @@ public class TestOSMModel extends AbstractQi4jTest {
                                 ST_Within
                                         (
                                                 templateFor(FeatureEntityV2.class).osmpoint(),
-                                                TPOINT(module).x(50.0599101).y(11.1522125).geometry(),
+                                                TPoint(module).x(50.0599101).y(11.1522125).geometry(),
                                                 100000,
                                                 TUnit.KILOMETER
                                         )
@@ -314,7 +281,7 @@ public class TestOSMModel extends AbstractQi4jTest {
     public void whenThirstyThenFindDrinkingWaterInMuenichV2() throws Exception
     {
 
-        TPoint muenich = TPOINT(module).x(48.1169263).y(11.5763754).geometry();
+        TPoint muenich = TPoint(module).x(48.1169263).y(11.5763754).geometry();
 
         QueryBuilder<FeatureEntityV2> qb = this.module.newQueryBuilder(FeatureEntityV2.class);
 
@@ -370,7 +337,7 @@ public class TestOSMModel extends AbstractQi4jTest {
     public void whenThirstyThenFindDrinkingWaterInMuenich() throws Exception
     {
 
-        TPoint muenich = TPOINT(module).x(48.1169263).y(11.5763754).geometry();
+        TPoint muenich = TPoint(module).x(48.1169263).y(11.5763754).geometry();
 
         QueryBuilder<FeatureEntityV2> qb = this.module.newQueryBuilder(FeatureEntityV2.class);
 

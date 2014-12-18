@@ -22,17 +22,19 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.TGeometry;
-import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.structure.Module;
+import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.ElasticSearchIndexException;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.mappings.ElasticSearchSpatialIndexerMappings;
 import org.qi4j.library.spatial.v2.projections.ProjectionsRegistry;
 
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.ElasticSearchMappingsHelper.Mappings;
 import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
 
 import java.util.*;
 
-public final class ElasticSearchSpatialIndexerSupport
+public final class ElasticSearchSpatialExtensionIndexerSupport
 {
 
     private static final String EPSG_4326 = "EPSG:4326";
@@ -52,12 +54,21 @@ public final class ElasticSearchSpatialIndexerSupport
         {
             _ex.printStackTrace();
         }
-        ElasticSearchSpatialIndexerMappingSupport.verifyAndCacheMappings(support, geometry, propertyWithDepth);
+        ElasticSearchSpatialIndexerMappings.verifyAndCacheMappings(support, geometry, propertyWithDepth);
 
         try {
 
             if (geometry instanceof TPoint) {
-                createESGeoPointIndexAsGeoPointValue(property, json, (TPoint) geometry);
+                // JJ TODO - Verify the mappings that has been done
+                if (Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoPoint(propertyWithDepth))
+                // (support.indexPointMappingMethod() == ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT)
+                {
+                    createESGeoPointIndexAsGeoPointValue(property, json, (TPoint) geometry);
+                }
+                else
+                {
+                    createESGeoPointIndexAsShapeValue(property, json, (TPoint) geometry);
+                }
             }
             else if (geometry instanceof TMultiPoint) {
                 createESGeoMultiPointAsShapeIndexValue(property, json, (TMultiPoint) geometry);
@@ -159,6 +170,17 @@ public final class ElasticSearchSpatialIndexerSupport
         Map tPointMap = new HashMap();
         tPointMap.put("lat", tPoint.x());
         tPointMap.put("lon", tPoint.y());
+
+        json.put(property, tPointMap);
+    }
+
+    private static void createESGeoPointIndexAsShapeValue(String property, JSONObject json, TPoint tPoint) throws Exception
+    {
+        Map tPointMap = new HashMap();
+
+        tPointMap.put("type", "point");
+        tPointMap.put("coordinates", new JSONArray().put(tPoint.x()).put(tPoint.y()));
+
         json.put(property, tPointMap);
     }
 
@@ -192,7 +214,6 @@ public final class ElasticSearchSpatialIndexerSupport
 
          // wholes
         {
-
             for (int i = 0; i < tPolygon.holes().get().size(); i++) {
                 JSONArray whole = new JSONArray();
                 // TLinearRing whole = tPolygon.holes().get().get(i);
@@ -219,7 +240,7 @@ public final class ElasticSearchSpatialIndexerSupport
 
 
 
-    private ElasticSearchSpatialIndexerSupport()
+    private ElasticSearchSpatialExtensionIndexerSupport()
     {
     }
 

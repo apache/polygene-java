@@ -16,20 +16,21 @@ import static org.qi4j.library.spatial.v2.conversions.TConversions.Convert;
 public class ST_GeometryFromText extends AbstractElasticSearchSpatialFunction implements ElasticSearchSpatialConvertFinderSupport.ConvertSpecification {
 
 
-    public TGeometry processSpecification(FilterBuilder filterBuilder, SpatialConvertSpecification<?> spec, Map<String, Object> variables)  throws EntityFinderException
+    public void processSpecification(FilterBuilder filterBuilder, SpatialConvertSpecification<?> spec, Map<String, Object> variables)  throws EntityFinderException
     {
 
         System.out.println("ST_GeometryFromTextFunction()");
 
 try {
+    spec.setGeometry(Convert(module).from(spec.property()).toTGeometry());
 
-    return Convert(module).from(spec.property()).toTGeometry();
+    // return Convert(module).from(spec.property()).toTGeometry();
 
     // return spec.convert(module);
 } catch(Exception _ex) {
     _ex.printStackTrace();
 }
 
-        return null;
+       //  return null;
     }
 }

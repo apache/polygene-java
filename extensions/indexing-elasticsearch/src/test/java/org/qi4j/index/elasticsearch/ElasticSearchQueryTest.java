@@ -127,7 +127,7 @@ public class ElasticSearchQueryTest
                                 ST_Within
                                         (
                                                 templateFor(City.class).location(),
-                                                ST_GeometryFromText("POINT(3.139003 101.686854)", 1),
+                                                ST_GeometryFromText("POINT(3.139003 101.686854)"),
                                                 100,
                                                 TUnit.METER
                                         )

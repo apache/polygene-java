@@ -1,11 +1,8 @@
 package org.qi4j.library.spatial.v2.conversions.to;
 
 import org.geojson.GeoJsonObject;
-import org.geojson.Point;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.spatial.v2.conversions.to.geojson.GeoJsonToConverter;
-import org.qi4j.library.spatial.v2.conversions.to.geometry.TGeometryToConverter;
 
 import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
 
@@ -22,8 +19,6 @@ public class ToHelper<T extends TGeometry> {
         this.module = module;
         this.intermediate = intermediate;
     }
-
-    private ToHelper() {}
 
     public TGeometry toTGeometry()
     {
@@ -45,5 +40,5 @@ public class ToHelper<T extends TGeometry> {
         return new GeoJsonToConverter(module).convert(intermediate);
     }
 
-
+    private ToHelper() {}
 }

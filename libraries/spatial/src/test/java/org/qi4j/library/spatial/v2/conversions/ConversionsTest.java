@@ -7,17 +7,15 @@ import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
-import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
-import static org.junit.Assert.*;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import static org.qi4j.api.geometry.TGEOM.TMULTIPOINT;
-import static org.qi4j.api.geometry.TGEOM.TPOINT;
+import static org.qi4j.api.geometry.TGeometryFactory.TMultiPoint;
+import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
 import static org.qi4j.library.spatial.v2.conversions.TConversions.*;
 
 import java.util.Arrays;
@@ -50,7 +48,7 @@ public class ConversionsTest extends AbstractQi4jTest {
     @Test
     public void WhenConvertFromTGeometryToTGeometry() throws Exception
     {
-        TPoint tPoint1 = TPOINT(module).x(11.57958981111).y(48.13905780941111).geometry();
+        TPoint tPoint1 = TPoint(module).x(11.57958981111).y(48.13905780941111).geometry();
         for (int i = 0;i < 1000000; i++) {
             TPoint tPoint2 = (TPoint) Convert(module).from(tPoint1).toTGeometry(CRS_EPSG_27572);
             TPoint tPoint3 = (TPoint) Convert(module).from(tPoint1).toTGeometry(CRS_EPSG_4326_);
@@ -63,7 +61,7 @@ public class ConversionsTest extends AbstractQi4jTest {
     @Test
     public void WhenConvertPointFromGeoJsonToTGeometry()
     {
-        TPoint tPoint1          = TPOINT(module).y(100).x(0).geometry();
+        TPoint tPoint1          = TPoint(module).y(100).x(0).geometry();
         Point  geoJsonPoint1    = new Point(100, 0);
         TPoint tPoint2 = (TPoint)Convert(module).from(geoJsonPoint1).toTGeometry();
         assertTrue(tPoint1.compareTo(tPoint2) == 0);
@@ -72,7 +70,7 @@ public class ConversionsTest extends AbstractQi4jTest {
     @Test
     public void WhenConvertMultiPointFromGeoJsonToTGeometry()
     {
-        TMultiPoint tMultiPoint1 = TMULTIPOINT(module).points(new double[][]
+        TMultiPoint tMultiPoint1 = TMultiPoint(module).points(new double[][]
                 {
                         {100d, 0d},
                         {101d, 1d},

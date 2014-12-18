@@ -25,7 +25,7 @@ import org.qi4j.api.query.grammar.ContainsSpecification;
 import org.qi4j.api.query.grammar.Variable;
 
 
-/* package */ final class ElasticSearchFinderSupport
+public final class ElasticSearchFinderSupport
 {
 
     /* package */ static Object resolveVariable( Object value, Map<String, Object> variables )
@@ -47,7 +47,7 @@ import org.qi4j.api.query.grammar.Variable;
         return value;
     }
 
-    /* package */ static interface ComplexTypeSupport
+    public static interface ComplexTypeSupport
     {
 
         FilterBuilder comparison( ComparisonSpecification<?> spec, Map<String, Object> variables );

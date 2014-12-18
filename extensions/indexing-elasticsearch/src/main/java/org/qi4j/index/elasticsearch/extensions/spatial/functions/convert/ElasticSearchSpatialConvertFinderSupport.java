@@ -6,7 +6,8 @@ import org.qi4j.api.query.grammar.extensions.spatial.convert.ST_GeomFromTextSpec
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Specification;
-import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinderSupport;
+import org.qi4j.index.elasticsearch.ElasticSearchSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialExtensionFinderSupport;
 import org.qi4j.spi.query.EntityFinderException;
 
 import java.util.HashMap;
@@ -15,31 +16,34 @@ import java.util.Map;
 /**
  * Created by jj on 20.11.14.
  */
-public class ElasticSearchSpatialConvertFinderSupport implements  ElasticSearchSpatialFinderSupport.SpatialQuerySpecSupport {
+public class ElasticSearchSpatialConvertFinderSupport implements  ElasticSearchSpatialExtensionFinderSupport.SpatialQuerySpecSupport {
 
     private static final Map<Class<?>, ElasticSearchSpatialConvertFinderSupport.ConvertSpecification> SPATIAL_CONVERT_OPERATIONS = new HashMap<>( 2 );
-
-
-    public static interface ConvertSpecification extends ElasticSearchSpatialFinderSupport.ModuleHelper
-    {
-
-        TGeometry processSpecification(FilterBuilder filterBuilder, SpatialConvertSpecification<?> spec, Map<String, Object> variables)  throws EntityFinderException;
-    }
 
     static
     {
         SPATIAL_CONVERT_OPERATIONS.put(ST_GeomFromTextSpecification.class, new ST_GeometryFromText());
     }
 
-    Module module;
-
-    public void setModule(Module module) {
-        this.module = module;
+    public static interface ConvertSpecification extends ElasticSearchSpatialExtensionFinderSupport.ModuleHelper
+    {
+        void processSpecification(FilterBuilder filterBuilder, SpatialConvertSpecification<?> spec, Map<String, Object> variables)  throws EntityFinderException;
     }
 
 
 
-    public TGeometry processSpecification( FilterBuilder filterBuilder,
+    Module module;
+    ElasticSearchSupport support;
+
+    public void setModule(Module module, ElasticSearchSupport support) {
+
+        this.module = module;
+        this.support = support;
+    }
+
+
+
+    public void processSpecification( FilterBuilder filterBuilder,
                                       // SpatialPredicatesSpecification<?>  spec,
                                       Specification<?> spec,
                                       Map<String, Object> variables )
@@ -51,8 +55,8 @@ public class ElasticSearchSpatialConvertFinderSupport implements  ElasticSearchS
         if( SPATIAL_CONVERT_OPERATIONS.get( spec.getClass() ) != null ) {
 
             ConvertSpecification ConvertSpecification = SPATIAL_CONVERT_OPERATIONS.get( spec.getClass());
-            ConvertSpecification.setModule(module);
-            return ConvertSpecification.processSpecification(filterBuilder, (SpatialConvertSpecification)spec, variables);
+            ConvertSpecification.setModule(module, support);
+            ConvertSpecification.processSpecification(filterBuilder, (SpatialConvertSpecification)spec, variables);
 
         } else {
             throw new UnsupportedOperationException( "Spatial predicates specification unsupported by Elastic Search "
@@ -60,7 +64,7 @@ public class ElasticSearchSpatialConvertFinderSupport implements  ElasticSearchS
                     + spec.getClass() + ": " + spec );
 
         }
-        // return null;
+
     }
 
 }

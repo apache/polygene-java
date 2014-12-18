@@ -1,17 +1,15 @@
 package org.qi4j.sample.spatial.domain.openstreetmap.model.v2.structure;
 
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.geometry.TFeature;
 import org.qi4j.api.geometry.TPoint;
-import org.qi4j.api.geometry.internal.TGeomRoot;
+import org.qi4j.api.geometry.internal.TGeometryRoot;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 
 import java.util.List;
-import java.util.Map;
 
 @Mixins({
         Feature.Mixin.class,
@@ -65,7 +63,7 @@ public interface Feature
 
         public void created(TFeature feature)
         {
-            if (feature.asGeometry().getType() == TGeomRoot.TGEOMETRY.POINT)
+            if (feature.asGeometry().getType() == TGeometryRoot.TGEOMETRY_TYPE.POINT)
             {
                 state.osmpoint().set((TPoint)feature.asGeometry());
             } else

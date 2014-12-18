@@ -1,4 +1,4 @@
-package org.qi4j.library.spatial.v2.conversions.from.wkt;
+package org.qi4j.library.spatial.v2.conversions.from;
 
 import com.spatial4j.core.context.SpatialContext;
 import com.spatial4j.core.context.jts.JtsSpatialContextFactory;
@@ -13,7 +13,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
-import org.geojson.GeoJsonObject;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.geometry.internal.TGeometry;
@@ -25,7 +24,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.qi4j.api.geometry.TGEOM.TPOINT;
+import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
 
 /**
  * Created by jj on 04.12.14.
@@ -178,7 +177,7 @@ public class WKTFromConverter {
  );*/
             points.add
                     (
-                            TPOINT(module)
+                            TPoint(module)
 
                                     .x(coordinates[i].x)
                                     .y(coordinates[i].y).geometry()

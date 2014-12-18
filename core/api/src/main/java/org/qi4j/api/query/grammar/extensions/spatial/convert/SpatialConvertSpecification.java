@@ -15,32 +15,32 @@ import java.text.ParseException;
 public abstract class SpatialConvertSpecification<T>
     extends ExpressionSpecification
 {
-    protected  String WKT;
-    protected  int srid;
-    protected  String crs;
+    protected  String    geometryAsWKT;
+    protected  TGeometry geometry;
+    protected  String    crs;
 
-    public SpatialConvertSpecification(String WKT, int srid)
-    {
-        this.WKT = WKT;
-        this.srid = srid;
-    }
 
-    public SpatialConvertSpecification(String WKT, String crs)
+    public SpatialConvertSpecification(String wkt, String crs)
     {
-        this.WKT = WKT;
-        this.crs = crs;
+        this.geometryAsWKT  = wkt;
+        this.crs            = crs;
     }
 
 
 
     public String property()
     {
-        return WKT;
+        return geometryAsWKT;
     }
 
-    public String getCrs()
+    public void setGeometry(TGeometry geometry)
     {
-        return crs;
+        this.geometry = geometry;
+    }
+
+    public TGeometry getGeometry()
+    {
+        return this.geometry;
     }
 
     @Override
@@ -70,7 +70,7 @@ public abstract class SpatialConvertSpecification<T>
         return true;
     }
 
-    public abstract TGeometry convert(Module module) throws ParseException;
+
 
 //    public TGeometry value()
 //    {

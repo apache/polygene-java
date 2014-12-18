@@ -1,7 +1,6 @@
 package org.qi4j.library.spatial.v2.conversions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.geojson.*;
 import org.junit.Test;
 import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.Coordinate;
@@ -11,12 +10,9 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.qi4j.api.geometry.TGEOM.TMULTIPOINT;
-import static org.qi4j.api.geometry.TGEOM.TPOINT;
+import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
 import static org.qi4j.library.spatial.v2.conversions.TConversions.Convert;
 
 
@@ -51,7 +47,7 @@ public class ConversionsWithProjectionsTest extends AbstractQi4jTest {
     @Test
     public void WhenConvertFromTGeometryToTGeometryConvertProjections() throws Exception
     {
-        TPoint tPoint1 = TPOINT(module).x(11.57958981111).y(48.13905780941111).geometry();
+        TPoint tPoint1 = TPoint(module).x(11.57958981111).y(48.13905780941111).geometry();
         TPoint tPoint2 = (TPoint)Convert(module).from(tPoint1).toTGeometry(CRS1);
         assertTrue(tPoint1.compareTo(tPoint2) == 0);
     }

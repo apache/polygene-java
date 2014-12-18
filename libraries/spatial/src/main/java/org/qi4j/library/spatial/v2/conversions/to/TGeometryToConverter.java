@@ -1,4 +1,4 @@
-package org.qi4j.library.spatial.v2.conversions.to.geometry;
+package org.qi4j.library.spatial.v2.conversions.to;
 
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
@@ -7,7 +7,6 @@ import org.qi4j.api.structure.Module;
  * Created by jj on 04.12.14.
  */
 public class TGeometryToConverter<T extends TGeometry> {
-
 
     private Module module;
 

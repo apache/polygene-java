@@ -1,7 +1,6 @@
 package org.qi4j.library.spatial.v2.conversions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.geojson.*;
 import org.junit.Test;
 import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.Coordinate;
@@ -11,12 +10,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.qi4j.api.geometry.TGEOM.TMULTIPOINT;
-import static org.qi4j.api.geometry.TGEOM.TPOINT;
 import static org.qi4j.library.spatial.v2.conversions.TConversions.Convert;
 
 

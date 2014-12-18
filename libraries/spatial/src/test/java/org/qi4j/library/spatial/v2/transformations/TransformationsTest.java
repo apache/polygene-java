@@ -1,7 +1,6 @@
 package org.qi4j.library.spatial.v2.transformations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.geojson.*;
 import org.junit.Test;
 import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.Coordinate;
@@ -11,13 +10,11 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.qi4j.api.geometry.TGEOM.TMULTIPOINT;
-import static org.qi4j.api.geometry.TGEOM.TPOINT;
-import static org.qi4j.api.geometry.TGEOM.TPOLYGON;
+import static org.qi4j.api.geometry.TGeometryFactory.TMultiPoint;
+import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
+import static org.qi4j.api.geometry.TGeometryFactory.TPolygon;
 import static org.qi4j.library.spatial.v2.conversions.TConversions.Convert;
 import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
 
@@ -51,8 +48,8 @@ public class TransformationsTest extends AbstractQi4jTest {
     @Test
     public void WhenTransformTPoint() throws Exception
     {
-        TPoint tPoint  = TPOINT(module).x(11.57958981111).y(48.13905780941111).geometry(CRS_EPSG_4326);
-        TPoint tPoint1  = TPOINT(module).x(11.57958981111).y(48.13905780941111).geometry(CRS_EPSG_4326);
+        TPoint tPoint  = TPoint(module).x(11.57958981111).y(48.13905780941111).geometry(CRS_EPSG_4326);
+        TPoint tPoint1  = TPoint(module).x(11.57958981111).y(48.13905780941111).geometry(CRS_EPSG_4326);
 
         Transform(module).from(tPoint).to("EPSG:27572");
 
@@ -63,7 +60,7 @@ public class TransformationsTest extends AbstractQi4jTest {
     @Test
     public void WhenTransformTMultiPoint() throws Exception
     {
-        TMultiPoint multiPoint = TMULTIPOINT(module).points(new double[][]
+        TMultiPoint multiPoint = TMultiPoint(module).points(new double[][]
                 {
                         {11.57958981111, 48.13905780941111},
                         {11.57958985111, 48.13905780951111},
@@ -77,7 +74,7 @@ public class TransformationsTest extends AbstractQi4jTest {
     @Test
     public void WhenTransformPolygon() throws Exception
     {
-      TPolygon polygon =   TPOLYGON(module)
+      TPolygon polygon =   TPolygon(module)
                         .shell
                                 (
                                         new double[][]
@@ -99,7 +96,7 @@ public class TransformationsTest extends AbstractQi4jTest {
     @Test
     public void WhenConvertFromTGeometryToTGeometry()
     {
-        TPoint tPoint1 = TPOINT(module).x(11.57958981111).y(48.13905780941111).geometry();
+        TPoint tPoint1 = TPoint(module).x(11.57958981111).y(48.13905780941111).geometry();
         TPoint tPoint2 = (TPoint)Convert(module).from(tPoint1).toTGeometry();
         assertTrue(tPoint1.compareTo(tPoint2) == 0);
     }

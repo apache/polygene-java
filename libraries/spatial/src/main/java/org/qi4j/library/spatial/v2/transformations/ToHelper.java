@@ -1,18 +1,13 @@
 package org.qi4j.library.spatial.v2.transformations;
 
 import org.cts.IllegalCoordinateException;
-import org.cts.crs.CRSException;
-import org.cts.crs.CoordinateReferenceSystem;
 import org.cts.crs.GeodeticCRS;
 import org.cts.op.CoordinateOperation;
 import org.cts.op.CoordinateOperationFactory;
-import org.geojson.GeoJsonObject;
 import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.spatial.v2.conversions.to.geojson.GeoJsonToConverter;
-import org.qi4j.library.spatial.v2.conversions.to.geometry.TGeometryToConverter;
 import org.qi4j.library.spatial.v2.projections.SpatialRefSysManager;
 
 import java.util.List;
@@ -109,7 +104,7 @@ public class ToHelper {
 
             for (Coordinate coordinate : coordinates)
             {
-                double[] c = ops.get(0).transform(new double[]{coordinate.x(), coordinate.y() /** z */} ); //   new double[]{pointSource[0], pointSource[1], pointSource[2]});
+                double[] c = ops.get(0).transform(new double[]{coordinate.x(), coordinate.y() /** z */} );
                 coordinate.x(c[0]).y(c[1]);
             }
 

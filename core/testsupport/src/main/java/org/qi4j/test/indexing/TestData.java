@@ -26,8 +26,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.geometry.GeometryFactory;
-import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -48,7 +46,7 @@ import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
 
 import static org.joda.time.DateTimeZone.UTC;
-import static org.qi4j.api.geometry.TGEOM.TPOINT;
+import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
 
 /**
  * Utility class to populate Index/Query tests data.
@@ -108,7 +106,7 @@ class TestData
                 kualaLumpur.name().set( "Kuala Lumpur" );
                 kualaLumpur.country().set( "Malaysia" );
                 kualaLumpur.county().set( "Some Jaya" );
-                kualaLumpur.location().set(TPOINT(module).x(101.686854).y(3.139003).geometry());
+                kualaLumpur.location().set(TPoint(module).x(101.686854).y(3.139003).geometry());
                 kualaLumpur = cityBuilder.newInstance();
                 NameableAssert.trace( kualaLumpur );
             }

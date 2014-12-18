@@ -1,10 +1,8 @@
 package org.qi4j.library.spatial.v2.transformations;
 
-import org.geojson.GeoJsonObject;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.spatial.v2.conversions.from.geojson.GeoJsonFromConverter;
-import org.qi4j.library.spatial.v2.conversions.from.geometry.TGeometryFromConverter;
+import org.qi4j.library.spatial.v2.conversions.from.TGeometryFromConverter;
 
 /**
  * Created by jj on 04.12.14.

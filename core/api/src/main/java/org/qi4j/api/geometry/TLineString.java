@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2014, Jiri Jetmar. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.qi4j.api.geometry;
 
 import org.qi4j.api.geometry.internal.Coordinate;
@@ -12,17 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Mixins( TLineString.Mixin.class )
+@Mixins(TLineString.Mixin.class)
 public interface TLineString extends TGeometry {
 
-    // Data
     Property<List<TPoint>> points();
 
-    // Interactions
     TLineString of(TPoint... points);
     TLineString of(List<TPoint> points);
     TLineString of();
-
 
     TLineString xy(double x, double y);
 
@@ -35,29 +46,24 @@ public interface TLineString extends TGeometry {
     boolean isRing();
     int compareTo(TLineString line);
 
-
-    public abstract class Mixin implements TLineString
-    {
+    public abstract class Mixin implements TLineString {
         @This
         TLineString self;
 
         @Structure
         Module module;
 
-        public TLineString of(List<TPoint> points)
-        {
+        public TLineString of(List<TPoint> points) {
             of(points.toArray(new TPoint[points.size()]));
             return self;
         }
 
 
-        public TLineString of(TPoint... points)
-        {
+        public TLineString of(TPoint... points) {
 
             List<TPoint> l = new ArrayList<>();
 
-            for (TPoint p : points)
-            {
+            for (TPoint p : points) {
                 l.add(p);
             }
 
@@ -66,7 +72,7 @@ public interface TLineString extends TGeometry {
             else
                 self.points().get().addAll(l);
 
-            self.geometryType().set(TGEOMETRY.LINESTRING);
+            self.geometryType().set(TGEOMETRY_TYPE.LINESTRING);
 
             return self;
         }
@@ -106,18 +112,16 @@ public interface TLineString extends TGeometry {
             return getPointN(getNumPoints() - 1);
         }
 
-        public Coordinate[] getCoordinates()
-        {
+        public Coordinate[] getCoordinates() {
             int k = -1;
             Coordinate[] coordinates = new Coordinate[getNumPoints()];
-          for (int i = 0; i < getNumPoints(); i++) {
-              Coordinate[] childCoordinates = getPointN(i).getCoordinates();
-              for (int j = 0; j < childCoordinates.length; j++) {
-                  k++;
-                  coordinates[k] = childCoordinates[j];
-              }
-          }
-
+            for (int i = 0; i < getNumPoints(); i++) {
+                Coordinate[] childCoordinates = getPointN(i).getCoordinates();
+                for (int j = 0; j < childCoordinates.length; j++) {
+                    k++;
+                    coordinates[k] = childCoordinates[j];
+                }
+            }
             return coordinates;
         }
 
@@ -132,8 +136,7 @@ public interface TLineString extends TGeometry {
             return isClosed();
         }
 
-        public int compareTo(TLineString line)
-        {
+        public int compareTo(TLineString line) {
 
             int i = 0;
             int j = 0;
@@ -155,6 +158,5 @@ public interface TLineString extends TGeometry {
         }
 
     }
-
 
 }

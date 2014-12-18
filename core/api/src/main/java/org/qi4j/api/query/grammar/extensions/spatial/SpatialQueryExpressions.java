@@ -10,6 +10,7 @@ import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.ST_GeomFromTextSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_DisjointSpecification;
+import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_IntersectsSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_WithinSpecification;
 import org.qi4j.functional.Specification;
 
@@ -53,10 +54,40 @@ public final class SpatialQueryExpressions extends QueryExpressions {
     }
 
 
-    public static <T extends TGeometry> ST_DisjointSpecification<TGeometry> ST_Disjoin( Property<T> geometry1, Specification<SpatialConvertSpecification> operator, long distance )
+    public static <T extends TGeometry> ST_DisjointSpecification<TGeometry> ST_Disjoint( Property<T> geometry1, Specification<SpatialConvertSpecification> operator, long distance )
     {
         return new ST_DisjointSpecification( property(geometry1), operator, distance);
     }
+
+    public static <T extends TGeometry> ST_DisjointSpecification<TGeometry> ST_Disjoint( Property<T> geometry1, TPoint value, double distance, TUnit unit) // T value )
+    {
+        return new ST_DisjointSpecification( property(geometry1), value, distance, unit);
+    }
+
+    public static <T extends TGeometry>  ST_DisjointSpecification<TGeometry> ST_Disjoint( Property<T> geometry1, HasShape value)
+    {
+        // return new ST_WithinSpecification( property(geometry1), value);
+        return new ST_DisjointSpecification(property(geometry1), value);
+    }
+
+
+    public static <T extends TGeometry> ST_IntersectsSpecification<TGeometry> ST_Intersects( Property<T> geometry1, Specification<SpatialConvertSpecification> operator, long distance )
+    {
+        return new ST_IntersectsSpecification( property(geometry1), operator, distance);
+    }
+
+    public static <T extends TGeometry> ST_IntersectsSpecification<TGeometry> ST_Intersects( Property<T> geometry1, TPoint value, double distance, TUnit unit) // T value )
+    {
+        return new ST_IntersectsSpecification( property(geometry1), value, distance, unit);
+    }
+
+    public static <T extends TGeometry>  ST_IntersectsSpecification<TGeometry> ST_Intersects( Property<T> geometry1, HasShape value)
+    {
+        // return new ST_WithinSpecification( property(geometry1), value);
+        return new ST_IntersectsSpecification(property(geometry1), value);
+    }
+
+
 
     /**
     public static <TGeometry> ST_GeomFromTextSpecification<TGeometry> ST_GeomFromText( Property<TGeometry> geometry1, Specification<SpatialConvertSpecification> operator) // T value )
@@ -81,23 +112,17 @@ public final class SpatialQueryExpressions extends QueryExpressions {
 //        // return null;
 //    }
 
-    public static Specification<SpatialConvertSpecification> ST_GeometryFromText(String WKT, int srid)
+
+    public static Specification<SpatialConvertSpecification> ST_GeometryFromText(String WKT)
     {
-        //  return new LtSpecification<>( property( property ), value );
-        return new ST_GeomFromTextSpecification( WKT, srid);
+        return ST_GeometryFromText( WKT, null);
     }
 
     public static Specification<SpatialConvertSpecification> ST_GeometryFromText(String WKT, String crs)
     {
-        //  return new LtSpecification<>( property( property ), value );
         return new ST_GeomFromTextSpecification( WKT, crs);
     }
 
-    public static Specification<Composite> ST_GeometryFromText(String WKT, int srid, String foo)
-    {
-        //  return new LtSpecification<>( property( property ), value );
-        return new ST_GeomFromTextSpecification( WKT, srid);
-    }
 
     /**
     public static  ST_GeomFromTextSpecification<TGeometry> ST_GeomFromText(String WKT, int a) throws ParseException

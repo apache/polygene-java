@@ -24,6 +24,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.index.elasticsearch.ElasticSearchClusterConfiguration;
+import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.internal.AbstractElasticSearchSupport;
 
 public class ESClusterSupport
@@ -43,6 +44,11 @@ public class ESClusterSupport
         String clusterName = config.clusterName().get() == null ? DEFAULT_CLUSTER_NAME : config.clusterName().get();
         index = config.index().get() == null ? DEFAULT_INDEX_NAME : config.index().get();
         indexNonAggregatedAssociations = config.indexNonAggregatedAssociations().get();
+
+        indexPointMappingMethod = config.indexPointMappingMethod() == null ?
+                ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT : config.indexPointMappingMethod().get();
+
+        // indexPointMappingMethod = ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT;
 
         String[] nodes = config.nodes().get() == null ? new String[]{ "localhost:9300" } : config.nodes().get().split( "," );
         boolean clusterSniff = config.clusterSniff().get();

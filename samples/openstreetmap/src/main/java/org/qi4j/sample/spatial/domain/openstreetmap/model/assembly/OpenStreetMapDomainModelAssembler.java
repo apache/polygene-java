@@ -35,7 +35,6 @@ public class OpenStreetMapDomainModelAssembler implements Assembler {
         // API values
         module.values(TPoint.class, TMultiPoint.class, TLineString.class, TPolygon.class, TMultiPolygon.class, TFeature.class, TFeatureCollection.class);
 
-        module.services(GeometryFactory.class);
 
         TGeometry tGeometry = module.forMixin(TGeometry.class).declareDefaults();
         tGeometry.CRS().set(CRS_EPSG_4326);

@@ -8,7 +8,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.geometry.GeometryFactory;
 import org.qi4j.api.geometry.TFeature;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.injection.scope.Service;
@@ -82,9 +81,6 @@ public class ElasticSearchSpatialQueryTest
         module.services( FileConfigurationService.class ).
                 setMetaInfo( override );
     }
-
-    @Service
-    GeometryFactory Geometry;
 
 /**
     // @Before
@@ -200,7 +196,7 @@ public class ElasticSearchSpatialQueryTest
                                                         "49.49310663031507 10.578460693359375," +
                                                         "49.5416968611641 10.583267211914062," +
                                                         "49.555507284155276 10.605239868164062," +
-                                                        "49.56797785892715 10.62652587890625))", 1)
+                                                        "49.56797785892715 10.62652587890625))")
                                         )
                         ));
 

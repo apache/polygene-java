@@ -3,9 +3,6 @@ package org.qi4j.library.spatial.v2.conversions.from;
 import org.geojson.GeoJsonObject;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.spatial.v2.conversions.from.geojson.GeoJsonFromConverter;
-import org.qi4j.library.spatial.v2.conversions.from.geometry.TGeometryFromConverter;
-import org.qi4j.library.spatial.v2.conversions.from.wkt.WKTFromConverter;
 import org.qi4j.library.spatial.v2.conversions.to.ToHelper;
 
 /**
@@ -19,8 +16,6 @@ public class FromHelper {
     {
         this.module = module;
     }
-
-    private FromHelper() {}
 
     public ToHelper from(TGeometry tGeometry)
     {
@@ -43,4 +38,5 @@ public class FromHelper {
         return new ToHelper(module, new WKTFromConverter(module).convert(wkt, crs));
     }
 
+    private FromHelper() {}
 }

@@ -11,6 +11,9 @@ import org.qi4j.api.property.Property;
 public interface VerifyStatialTypes {
 
     @Optional
+    Property<String> foo();
+
+    @Optional
     Property<TPoint> point();
 
     @Optional

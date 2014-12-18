@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2014, Jiri Jetmar. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.qi4j.api.geometry;
 
 import org.qi4j.api.geometry.internal.Coordinate;
@@ -12,17 +26,13 @@ import org.qi4j.api.structure.Module;
 import java.util.ArrayList;
 import java.util.List;
 
-
-@Mixins( TPoint.Mixin.class )
-public interface TPoint extends HasNoArea,TGeometry {
-
-
-     public static final int _2D = 2;
-     public static final int _3D = 3;
-
+/**
+ * Lat = Y Long = X
+ */
+@Mixins(TPoint.Mixin.class)
+public interface TPoint extends HasNoArea, TGeometry {
 
     Property<List<Coordinate>> coordinates();
-
 
     TPoint of(Coordinate... coordinates);
     TPoint of(double x, double y, double z);
@@ -37,78 +47,63 @@ public interface TPoint extends HasNoArea,TGeometry {
     double z();
 
     Coordinate getCoordinate();
-
-    double[] source();
     int compareTo(Object o);
 
 
+    public abstract class Mixin implements TPoint {
 
-    public abstract class Mixin implements TPoint
-    {
+        @Structure
+        Module module;
+        @This
+        TPoint self;
 
-        private void init()
-        {
+        private void init() {
 
             if (self.coordinates().get() == null) {
 
                 List<Coordinate> c = new ArrayList<Coordinate>();
                 c.add(module.newValueBuilder(Coordinate.class).prototype().x(0).y(0).z(0));
                 self.coordinates().set(c);
-                self.geometryType().set(TGEOMETRY.POINT);
+                self.geometryType().set(TGEOMETRY_TYPE.POINT);
             }
         }
 
-        @Structure
-        Module module;
-
-        @This
-        TPoint self;
-
         @Override
-        public boolean isEmpty()
-        {
+        public boolean isEmpty() {
             return (self.coordinates() == null) || (self.coordinates().get() == null) || (self.coordinates().get().isEmpty()) ? true : false;
-
         }
 
 
-        public TPoint of()
-        {
-            if (isEmpty() )
+        public TPoint of() {
+            if (isEmpty())
                 return self.of(0.0d, 0.0d, 0.0d);
             else
                 return self;
         }
 
-        public TPoint of(double x, double y, double z)
-        {
-            self.geometryType().set(TGEOMETRY.POINT);
+        public TPoint of(double x, double y, double z) {
+            self.geometryType().set(TGEOMETRY_TYPE.POINT);
             init();
-            self.x(x); self.y(y); self.z(z);
+            self.x(x); // JJ TODO use fluent DSL
+            self.y(y);
+            self.z(z);
             return self;
         }
 
-        public TPoint of(Coordinate... coordinates)
-        {
-
+        public TPoint of(Coordinate... coordinates) {
             List<Coordinate> c = new ArrayList<Coordinate>();
 
-            for (Coordinate xyzn : coordinates)
-            {
+            for (Coordinate xyzn : coordinates) {
                 c.add(xyzn);
             }
-
             self.coordinates().set(c);
-            self.geometryType().set(TGEOMETRY.POINT);
-
+            self.geometryType().set(TGEOMETRY_TYPE.POINT);
             return self;
         }
 
         public TPoint x(double x) {
             init();
-
             self.coordinates().get().get(0).x(x);
-
             return self;
         }
 
@@ -117,13 +112,6 @@ public interface TPoint extends HasNoArea,TGeometry {
             return self.coordinates().get().get(0).getOrdinate(Coordinate.X);
         }
 
-        public double y() {
-            return self.coordinates().get().get(0).getOrdinate(Coordinate.Y);
-        }
-
-        public double z() {
-            return self.coordinates().get().get(0).getOrdinate(Coordinate.Z);
-        }
 
         public TPoint y(double y) {
             init();
@@ -132,6 +120,14 @@ public interface TPoint extends HasNoArea,TGeometry {
             return self;
         }
 
+        public double y() {
+            return self.coordinates().get().get(0).getOrdinate(Coordinate.Y);
+        }
+        public double z() {
+            return self.coordinates().get().get(0).getOrdinate(Coordinate.Z);
+        }
+
+
         public TPoint z(double z) {
             init();
             self.coordinates().get().get(0).z(z);
@@ -139,8 +135,7 @@ public interface TPoint extends HasNoArea,TGeometry {
             return self;
         }
 
-        public TPoint of(List<Double> coordinates)
-        {
+        public TPoint of(List<Double> coordinates) {
 
             List<Coordinate> c = new ArrayList<Coordinate>();
 
@@ -150,24 +145,11 @@ public interface TPoint extends HasNoArea,TGeometry {
             return null;
         }
 
-        public double[] source()
-        {
-            // List<Double> c = new ArrayList<Double>();
-
-            // for (int i = 0; i < self.coordinates().get().size(); i++) {
-                return self.coordinates().get().get(0).source();
-            // }
-
-            // double [] values = new double[3];
-            // return null;
-        }
-
         @Override
-        public Coordinate[] getCoordinates()
-        {
-            List<Coordinate> coordinates = new ArrayList<>(); //.toArray()[1] = getCoordinate();
+        public Coordinate[] getCoordinates() {
+            List<Coordinate> coordinates = new ArrayList<>();
             coordinates.add(getCoordinate());
-            return coordinates.toArray( new Coordinate[coordinates.size()] );
+            return coordinates.toArray(new Coordinate[coordinates.size()]);
         }
 
         public Coordinate getCoordinate() {
@@ -178,9 +160,8 @@ public interface TPoint extends HasNoArea,TGeometry {
             return isEmpty() ? 0 : 1;
         }
 
-        public int compareTo(Object other)
-        {
-            TPoint point = (TPoint)other;
+        public int compareTo(Object other) {
+            TPoint point = (TPoint) other;
             return getCoordinate().compareTo(point.getCoordinate());
         }
 

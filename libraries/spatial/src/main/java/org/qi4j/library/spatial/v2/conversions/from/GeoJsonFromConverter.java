@@ -1,8 +1,7 @@
-package org.qi4j.library.spatial.v2.conversions.from.geojson;
+package org.qi4j.library.spatial.v2.conversions.from;
 
 import org.geojson.*;
 import org.qi4j.api.geometry.TLineString;
-import org.qi4j.api.geometry.TMultiPoint;
 import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
@@ -11,8 +10,8 @@ import org.qi4j.api.structure.Module;
 import java.util.List;
 import java.util.ListIterator;
 
-import static org.qi4j.api.geometry.TGEOM.*;
-import static org.qi4j.api.geometry.TGEOM.TLINEARRING;
+import static org.qi4j.api.geometry.TGeometryFactory.*;
+import static org.qi4j.api.geometry.TGeometryFactory.TLinearRing;
 
 /**
  * Created by jj on 04.12.14.
@@ -39,13 +38,13 @@ public class GeoJsonFromConverter {
         if (geojson instanceof Feature)
         {
             Feature feature = (Feature)geojson;
-            return TFEATURE(module).of(new GeoJsonFromConverter(module).transform(feature.getGeometry())).geometry();
+            return TFeature(module).of(new GeoJsonFromConverter(module).transform(feature.getGeometry())).geometry();
         }
 
         else if (geojson instanceof Point) {
             Point point = (Point) geojson;
 
-            return TPOINT(module)
+            return TPoint(module)
                     .x(point.getCoordinates().getLatitude())
                     .y(point.getCoordinates().getLongitude())
                     .z(point.getCoordinates().getAltitude())
@@ -59,11 +58,11 @@ public class GeoJsonFromConverter {
 
             LineString lineString = (LineString)geojson;
 
-            TLineString tLineString = TLINESTRING(module).of().geometry();
+            TLineString tLineString = TlineString(module).of().geometry();
 
             for (LngLatAlt xyz : lineString.getCoordinates() ) {
                 tLineString.of(
-                        TPOINT(module)
+                        TPoint(module)
                                 .x(xyz.getLatitude())
                                 .y(xyz.getLongitude())
                                 .z(xyz.getAltitude())
@@ -103,7 +102,7 @@ public class GeoJsonFromConverter {
             TLinearRing ring = getRing(((Polygon) geojson).getExteriorRing());
 
             if (ring.isValid())
-                tPolygon = TPOLYGON(module).shell(ring).geometry();
+                tPolygon = TPolygon(module).shell(ring).geometry();
             else
                 throw  new RuntimeException("Polygon shell not valid");
 
@@ -145,7 +144,7 @@ public class GeoJsonFromConverter {
     private TLinearRing getRing(List<LngLatAlt> coordinates)
     {
 
-        TLinearRing tLinearRing = TLINEARRING(module).of().geometry();
+        TLinearRing tLinearRing = TLinearRing(module).of().geometry();
         for (LngLatAlt xyz :coordinates ) {
             tLinearRing.xy(xyz.getLatitude(), xyz.getLongitude());
         }

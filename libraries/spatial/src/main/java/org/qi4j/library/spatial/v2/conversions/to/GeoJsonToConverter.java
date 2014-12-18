@@ -1,11 +1,8 @@
-package org.qi4j.library.spatial.v2.conversions.to.geojson;
+package org.qi4j.library.spatial.v2.conversions.to;
 
-import org.geojson.Feature;
 import org.geojson.GeoJsonObject;
-import org.geojson.LineString;
 import org.geojson.Point;
 import org.qi4j.api.geometry.TPoint;
-import org.qi4j.api.geometry.internal.TGeomRoot;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
 
@@ -32,13 +29,13 @@ public class GeoJsonToConverter<T> {
 
         switch(intemediate.getType())
         {
-            case POINT       : return buildPoint((TPoint)intemediate);
-            case MULTIPOINT  : return null;
-            case LINESTRING       : return null;
-            case MULTILINESTRING  : return null;
-            case POLYGON       : return null;
-            case MULTIPOLYGON  : return null;
-            case FEATURE       : return null;
+            case POINT              : return buildPoint((TPoint)intemediate);
+            case MULTIPOINT         : return null;
+            case LINESTRING         : return null;
+            case MULTILINESTRING    : return null;
+            case POLYGON            : return null;
+            case MULTIPOLYGON       : return null;
+            case FEATURE            : return null;
             case FEATURECOLLECTION  : return null;
             default : throw new RuntimeException("Unknown TGeometry Type.");
         }

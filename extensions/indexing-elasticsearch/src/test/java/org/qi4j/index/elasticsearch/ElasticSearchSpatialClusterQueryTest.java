@@ -6,7 +6,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.geometry.GeometryFactory;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.geometry.TUnit;
@@ -38,12 +37,12 @@ import static org.joda.time.DateTimeZone.UTC;
 import static org.junit.Assert.assertNotNull;
 import static org.qi4j.api.query.QueryExpressions.*;
 import static org.qi4j.api.query.QueryExpressions.lt;
-import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Disjoin;
+import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Disjoint;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Within;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_GeometryFromText;
 import static org.qi4j.test.indexing.NameableAssert.verifyUnorderedResults;
 import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
-import static org.qi4j.api.geometry.TGEOM.*;
+import static org.qi4j.api.geometry.TGeometryFactory.*;
 
 /**
  * Created by jakes on 2/8/14.
@@ -124,8 +123,7 @@ public class ElasticSearchSpatialClusterQueryTest
                 Emskirchen.name().set("Emskirchen");
                 Emskirchen.country().set("Germany");
                 Emskirchen.county().set("Bavaria");
-                Emskirchen.location().set((TPoint) module.findService(GeometryFactory.class).get()
-                        .as2DPoint(49.550881, 10.712809));
+                Emskirchen.location().set(TPoint(module).x (49.550881).y(10.712809).geometry());
                 Emskirchen = cityBuilder.newInstance();
                 // NameableAssert.trace( kualaLumpur );
                 Emskirchen.area().set(area);
@@ -156,21 +154,10 @@ public class ElasticSearchSpatialClusterQueryTest
 
     }
 
-
-    @Service
-    GeometryFactory Geometry;
-
-
-
-
-
-
-
-
     @Test
     public void whenQueryUseConversion() throws Exception {
         // lat, long
-        ST_GeometryFromText("POINT(49.550881 10.712809)", 1);
+        ST_GeometryFromText("POINT(49.550881 10.712809)");
 
 
         QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
@@ -181,7 +168,7 @@ public class ElasticSearchSpatialClusterQueryTest
                                 ST_Within
                                         (
                                                 templateFor(City.class).location(),
-                                                ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
+                                                ST_GeometryFromText("POINT(49.550881 10.712809)"),
                                                 100,
                                                 TUnit.METER
                                         )
@@ -225,7 +212,7 @@ public class ElasticSearchSpatialClusterQueryTest
                                                                 "49.49310663031507 10.578460693359375," +
                                                                 "49.5416968611641 10.583267211914062," +
                                                                 "49.555507284155276 10.605239868164062," +
-                                                                "49.56797785892715 10.62652587890625))", 1)
+                                                                "49.56797785892715 10.62652587890625))")
                                         )
                         ));
 
@@ -259,7 +246,7 @@ public class ElasticSearchSpatialClusterQueryTest
                                         (
                                                 templateFor(City.class).area(),
 
-                                                TPOLYGON(module)
+                                                TPolygon(module)
                                                         .shell
                                                                 (
                                                                         new double[][]
@@ -376,7 +363,7 @@ public class ElasticSearchSpatialClusterQueryTest
     @Test
     public void whenQueryUseConversion2() throws Exception {
         // lat, long
-        ST_GeometryFromText("POINT(49.550881 10.712809)", 1);
+        ST_GeometryFromText("POINT(49.550881 10.712809)");
 
 
         QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
@@ -387,7 +374,7 @@ public class ElasticSearchSpatialClusterQueryTest
                                 ST_Within
                                         (
                                                 templateFor(City.class).location(),
-                                                ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
+                                                ST_GeometryFromText("POINT(49.550881 10.712809)"),
                                                 100,
                                                 TUnit.METER
                                         )
@@ -418,7 +405,7 @@ public class ElasticSearchSpatialClusterQueryTest
                                         ST_Within
                                                 (
                                                         templateFor(City.class).location(),
-                                                        ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
+                                                        ST_GeometryFromText("POINT(49.550881 10.712809)"),
                                                         100,
                                                         TUnit.METER
                                                 )
@@ -446,10 +433,10 @@ public class ElasticSearchSpatialClusterQueryTest
         Query<City> query = unitOfWork.newQuery(
                 qb
                         .where(
-                                ST_Disjoin(
+                                ST_Disjoint(
                                         (
                                                 templateFor(City.class).area()),
-                                        ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
+                                        ST_GeometryFromText("POINT(49.550881 10.712809)"),
                                         100
                                 )
 
@@ -478,41 +465,7 @@ public class ElasticSearchSpatialClusterQueryTest
      */
 
     //                         .where(ge(templateFor(City.class).location(), "123")));
-    @Test
-    public void whenSpatialQueryWithLEInvalid() throws Exception {
-/**
- QueryBuilder<Person> qbPerson = this.module.newQueryBuilder( Person.class );
- Person person = templateFor( Person.class );
- Query<Person> query = unitOfWork.newQuery( qbPerson.where( ge(person.yearOfBirth(), 1973) ) );
- */
 
-        QueryBuilder<City> qbCity = this.module.newQueryBuilder(City.class);
-        City city = templateFor(City.class);
-        Query<City> queryCity = unitOfWork.newQuery(qbCity.where(ge(city.location(),
-
-                Geometry.asPoint(
-                        Geometry.asCoordinate(3.139003),
-                        Geometry.asCoordinate(101.686854)
-                        //  Geometry.asCoordinate(10.6108),
-                        //  Geometry.asCoordinate(49.5786)
-                )
-
-        )));
-
-
-        queryCity.find();
-
-        System.out.println("Found Cities " + queryCity.count());
-
-        Iterator<City> cities = queryCity.iterator();
-
-        //         Query<Nameable> query = qb.where(
-        // ge( person.yearOfBirth(), 1900 ).and( eq( person.placeOfBirth().get().name(), "Penang" ) )
-
-        while (cities.hasNext()) {
-            System.out.println("Cities " + cities.next().name());
-        }
-    }
 
 
     @Test

@@ -9,12 +9,12 @@ import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
-import static org.junit.Assert.*;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
-import static org.qi4j.api.geometry.TGEOM.TPOINT;
+import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
 import static org.qi4j.library.spatial.v2.conversions.TConversions.Convert;
 
 /**
@@ -53,7 +53,7 @@ public class ConvertFromGeoJsonToTGeometry  extends AbstractQi4jTest {
     @Test
     public void WhenConvertingPoint2()
     {
-        TPoint tPoint1 = TPOINT(module).x(11.57958981111).y(48.13905780941111).geometry();
+        TPoint tPoint1 = TPoint(module).x(11.57958981111).y(48.13905780941111).geometry();
         Point point1  = new Point(1,2 );
         Point point2  = (Point)Convert(module).from(point1).toGeoJson();
         System.out.println(point2.getCoordinates().getLatitude());

@@ -1,4 +1,4 @@
-package org.qi4j.library.spatial.v2.conversions.from.geometry;
+package org.qi4j.library.spatial.v2.conversions.from;
 
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;

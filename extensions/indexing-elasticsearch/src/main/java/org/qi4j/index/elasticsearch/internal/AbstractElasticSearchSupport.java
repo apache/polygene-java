@@ -25,6 +25,7 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.structure.Module;
+import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,9 @@ public abstract class AbstractElasticSearchSupport
     protected String index;
 
     protected boolean indexNonAggregatedAssociations;
+
+    protected ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD indexPointMappingMethod;
+
 
     @Structure
     Module module;
@@ -88,78 +92,8 @@ public abstract class AbstractElasticSearchSupport
             LOGGER.info( "Index '{}' created.", index );
         }
 
-        // getKnownMappings();
-
         LOGGER.info( "Index/Query connected to Elastic Search" );
     }
-
-    private void getKnownMappings() throws Exception {
-/**
-        GetMappingsRequest getMappingsRequest = new GetMappingsRequest().indices(DEFAULT_INDEX_NAME);
-        client.admin().indices().getMappings(getMappingsRequest).actionGet();
-*/
-
-        GetMappingsResponse mappingsResponse = client().admin().indices().prepareGetMappings(DEFAULT_INDEX_NAME).execute().get();
-        // GetFieldMappingsResponse response = client().admin().indices().prepareGetFieldMappings(DEFAULT_INDEX_NAME).get();
-
-        GetFieldMappingsResponse mappingsResponse1 = client().admin().indices().prepareGetFieldMappings(DEFAULT_INDEX_NAME).setTypes(ENTITIES_TYPE).execute().get();
-        // System.out.println("Known mappings.. " + mappingsResponse1. getMappings().size() );
-
-        GetMappingsResponse a = client().admin().indices().prepareGetMappings(DEFAULT_INDEX_NAME).execute().get();
-
-        GetMappingsResponse response1 = client().admin().indices().prepareGetMappings().execute().actionGet();
-/**
-        System.out.println("response1 " + response1.mappings().get(DEFAULT_INDEX_NAME).get(ENTITIES_TYPE).sourceAsMap().size());
-
-        Map mappings = response1.mappings().get(DEFAULT_INDEX_NAME).get(ENTITIES_TYPE). sourceAsMap();
-
-        System.out.println(response1.mappings().get(DEFAULT_INDEX_NAME).get(ENTITIES_TYPE).source().string());
-
-
-        // GetFieldMappingsResponse response = client().admin().indices().prepareGetFieldMappings(DEFAULT_INDEX_NAME).setTypes(ENTITIES_TYPE).execute().get();
-
-        // GetFieldMappingsResponse.FieldMappingMetaData fields = response.fieldMappings(DEFAULT_INDEX_NAME, ENTITIES_TYPE, "location");
-
-        GetFieldMappingsResponse response = client().admin().indices().prepareGetFieldMappings(DEFAULT_INDEX_NAME).setTypes(ENTITIES_TYPE).setFields("location", "placeOfBirth.location").get();
-        System.out.println("ABC " + response.fieldMappings(DEFAULT_INDEX_NAME, ENTITIES_TYPE, "location").fullName() );
-
-
-        // response1.mappings().get(DEFAULT_INDEX_NAME).get(ENTITIES_TYPE
-
-                System.out.println("Known mappings1 " + mappingsResponse1.mappings().size());
-        System.out.println("Known mappings " + mappingsResponse.mappings().size());
-        // System.out.println(response);
-
-        List<Object> list = getValues(mappings);
-
-        System.out.println(list.size());
-*/
-    }
-
-
-    // http://stackoverflow.com/questions/17136138/how-to-make-elasticsearch-add-the-timestamp-field-to-every-document-in-all-indic
-
-
-    public List<Object> getValues(Map<String, Object> map) {
-
-        List<Object> retVal = new ArrayList<Object>();
-
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            Object value = entry.getValue();
-            String key = entry.getKey();
-
-            if (value instanceof Map) {
-                retVal.addAll(getValues((Map) value));
-            } else {
-                System.out.println(key + ":" + value);
-                retVal.add(value);
-            }
-        }
-
-        return retVal;
-    }
-
-
 
     protected abstract void activateElasticSearch()
             throws Exception;
@@ -204,6 +138,9 @@ public abstract class AbstractElasticSearchSupport
     {
         return indexNonAggregatedAssociations;
     }
+
+    @Override
+    public final ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD indexPointMappingMethod() { return indexPointMappingMethod; }
 
     @Override
     public final  Module getModule() { return module;}

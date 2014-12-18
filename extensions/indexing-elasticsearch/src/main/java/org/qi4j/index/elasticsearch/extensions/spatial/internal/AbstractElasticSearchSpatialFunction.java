@@ -6,7 +6,6 @@ import org.elasticsearch.common.geo.builders.PolygonBuilder;
 import org.elasticsearch.common.geo.builders.ShapeBuilder;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.*;
-import org.elasticsearch.index.search.geo.GeoDistanceFilter;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.geometry.TUnit;
 import org.qi4j.api.geometry.internal.TGeometry;
@@ -20,12 +19,15 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchFinder;
-import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinderSupport;
+import org.qi4j.index.elasticsearch.ElasticSearchSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialExtensionFinderSupport;
 import org.qi4j.library.spatial.v2.projections.ProjectionsRegistry;
+import org.qi4j.spi.query.EntityFinderException;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.ElasticSearchMappingsHelper.Mappings;
 import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
 
 /**
@@ -38,9 +40,12 @@ public abstract class AbstractElasticSearchSpatialFunction {
     private static final double DefaultProjectionConversionPrecisionInMeters = 2.00;
 
     protected Module module;
+    protected ElasticSearchSupport support;
 
-    public void setModule(Module module) {
+    public void setModule(Module module, ElasticSearchSupport support)
+    {
         this.module = module;
+        this.support = support;
     }
 
     protected void addFilter( FilterBuilder filter, FilterBuilder into )
@@ -70,7 +75,32 @@ public abstract class AbstractElasticSearchSpatialFunction {
         return tGeometry; // ATTENTION - we are transforming as per "Reference"
     }
 
-    protected boolean isPropertyTypeTPoint(PropertyFunction propertyFunction) throws Exception
+    protected boolean isPropertyOfType(Class type, PropertyFunction propertyFunction)
+    {
+        Type returnType = Classes.typeOf(propertyFunction.accessor());
+        Type propertyTypeAsType = GenericPropertyInfo.toPropertyType(returnType);
+
+
+        System.out.println("---- > " + propertyTypeAsType.getTypeName());
+
+        Class clazz;
+
+        try
+        {
+            clazz = Class.forName(propertyTypeAsType.getTypeName());
+        } catch(Exception _ex)
+        {
+            throw new RuntimeException(_ex);
+        }
+        // if (clazz instanceof TGeometry)
+
+        if (type.isAssignableFrom(clazz))
+            return true;
+        else
+            return false;
+    }
+
+    protected boolean isPropertyOfTypeTPoint(PropertyFunction propertyFunction)
     {
         // String typeName = Classes.typeOf(propertyFunction.accessor()).getTypeName();
         // System.out.println(typeName);
@@ -81,14 +111,31 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
         System.out.println("---- > " + propertyTypeAsType.getTypeName());
 
+        Class clazz;
 
-        Class clazz = Class.forName(propertyTypeAsType.getTypeName());
+        try
+        {
+            clazz = Class.forName(propertyTypeAsType.getTypeName());
+        } catch(Exception _ex)
+        {
+            throw new RuntimeException(_ex);
+        }
         // if (clazz instanceof TGeometry)
 
         if (TPoint.class.isAssignableFrom(clazz))
             return true;
         else
             return false;
+    }
+
+    protected boolean isMappedAsGeoPoint(PropertyFunction property)
+    {
+        return Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoPoint(property.toString());
+    }
+
+    protected boolean isMappedAsGeoShape(PropertyFunction property)
+    {
+        return Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoShape(property.toString());
     }
 
 
@@ -113,14 +160,14 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
     private DistanceUnit convertDistanceUnit(TUnit tUnit)
     {
-        switch (tUnit) {
-            case METER      : return DistanceUnit.METERS;
+        switch (tUnit)
+        {
             case MILLIMETER : return DistanceUnit.MILLIMETERS;
             case CENTIMETER : return DistanceUnit.CENTIMETERS;
+            case METER      : return DistanceUnit.METERS;
             case KILOMETER  :return DistanceUnit.KILOMETERS;
             default : throw new RuntimeException("Can not convert Units");
         }
-
     }
 
 
@@ -156,7 +203,7 @@ public abstract class AbstractElasticSearchSpatialFunction {
     }
 
 
-    protected TGeometry resolveGeometry( FilterBuilder filterBuilder, Specification<Composite> spec, Module module) throws Exception
+    protected TGeometry resolveGeometry( FilterBuilder filterBuilder, Specification<Composite> spec, Module module) throws  EntityFinderException
     {
 
         if (spec instanceof SpatialPredicatesSpecification)
@@ -170,8 +217,10 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
                 if (((SpatialPredicatesSpecification) spec).operator() instanceof SpatialConvertSpecification)
                 {
-                    // return ((SpatialConvertSpecification) ((SpatialPredicatesSpecification) spec).operator()).convert(module);
-                    return executeSpecification(filterBuilder, (SpatialPredicatesSpecification)spec, null);
+                    executeSpecification(filterBuilder, (SpatialPredicatesSpecification)spec, null);
+                    System.out.println("Converted Geometry " + ((SpatialConvertSpecification) ((SpatialPredicatesSpecification) spec).operator()).getGeometry());
+                    return ((SpatialConvertSpecification) ((SpatialPredicatesSpecification) spec).operator()).getGeometry();
+                    // return executeSpecification(filterBuilder, (SpatialPredicatesSpecification)spec, null);
                 }
 
                 return null;
@@ -181,9 +230,9 @@ public abstract class AbstractElasticSearchSpatialFunction {
         return null;
     }
 
-    private TGeometry executeSpecification( FilterBuilder filterBuilder,
+    private void executeSpecification( FilterBuilder filterBuilder,
                                             SpatialPredicatesSpecification<?> spec,
-                                            Map<String, Object> variables ) throws Exception
+                                            Map<String, Object> variables ) throws EntityFinderException
     {
 
 
@@ -194,9 +243,10 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
             if (ElasticSearchFinder.Mixin.EXTENDED_QUERY_EXPRESSIONS_CATALOG.get(spec.operator().getClass().getSuperclass()) != null) {
 
-                ElasticSearchSpatialFinderSupport.SpatialQuerySpecSupport spatialQuerySpecSupport = ElasticSearchFinder.Mixin.EXTENDED_QUERY_EXPRESSIONS_CATALOG.get(spec.operator().getClass().getSuperclass());
-                spatialQuerySpecSupport.setModule(module);
-                return spatialQuerySpecSupport.processSpecification(filterBuilder, spec.operator(), variables);
+                ElasticSearchSpatialExtensionFinderSupport.SpatialQuerySpecSupport spatialQuerySpecSupport = ElasticSearchFinder.Mixin.EXTENDED_QUERY_EXPRESSIONS_CATALOG.get(spec.operator().getClass().getSuperclass());
+                spatialQuerySpecSupport.setModule(module, support);
+                // return spatialQuerySpecSupport.processSpecification(filterBuilder, spec.operator(), variables);
+                spatialQuerySpecSupport.processSpecification(filterBuilder, spec.operator(), variables);
 
             } else {
                 throw new UnsupportedOperationException("Query specification unsupported by Elastic Search "
@@ -204,11 +254,7 @@ public abstract class AbstractElasticSearchSpatialFunction {
                         + spec.getClass() + ": " + spec);
             }
         }
-
-        return null;
     }
-
-
 
 
 

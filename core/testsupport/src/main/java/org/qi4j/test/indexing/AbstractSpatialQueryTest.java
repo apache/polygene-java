@@ -71,26 +71,18 @@ public class AbstractSpatialQueryTest
         // API values
         // module.values(TPoint.class,TLineString.class, TPolygon.class); // , TFeature.class);
 
-        module.services(GeometryFactory.class);
+
 
 
     }
 
 
 
-
-
-
-
-    @Service
-    GeometryFactory Geometry;
-
-
-    @Test
+    // @Test
     public void whenQueryUseConversion() throws Exception
     {
         // lat, long
-        ST_GeometryFromText("POINT(49.550881 10.712809)", 1);
+        ST_GeometryFromText("POINT(49.550881 10.712809)");
 
 
 
@@ -102,7 +94,7 @@ public class AbstractSpatialQueryTest
                                 ST_Within
                                         (
                                                 templateFor(City.class).location(),
-                                                ST_GeometryFromText("POINT(49.550881 10.712809)", 1),
+                                                ST_GeometryFromText("POINT(49.550881 10.712809)"),
                                                 100,
                                                 TUnit.METER
                                         )
@@ -125,44 +117,6 @@ public class AbstractSpatialQueryTest
 //       //  verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
     }
 
-
-    @Test
-    public void script1()
-    {
-//        Query<Person> query = unitOfWork.newQuery( module.newQueryBuilder( Person.class ).
-//                where( eq( templateFor( Person.class ).money(),
-//                        Money.of( CurrencyUnit.USD, 100 ) ) ) );
-//
-//        verifyUnorderedResults( query, "Joe Doe" );
-
-
-        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
-
-        Query<City> query = unitOfWork.newQuery(
-                qb
-                        .where(
-                                ST_Within(templateFor(City.class).location(),
-                                        Geometry.as2DPoint(3.173425, 101.675720),
-                                        1000,
-                                        TUnit.METER
-                        )));
-
-       //  GeoJSON.asPoint()
-
-
-        System.out.println( "*** script01: " + query );
-        query.find();
-
-        System.out.println(query.count());
-         
-
-//        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
-//        Person personTemplate = templateFor( Person.class );
-//        City placeOfBirth = personTemplate.placeOfBirth().get();
-//        Query<Person> query = unitOfWork.newQuery( qb.where( eq( placeOfBirth.name(), "Kuala Lumpur" ) ) );
-//        System.out.println( "*** script04: " + query );
-//       //  verifyUnorderedResults( query, "Joe Doe", "Ann Doe" );
-    }
 
 
     // @Test

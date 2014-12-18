@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2014, Jiri Jetmar. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.qi4j.api.geometry;
 
 import org.qi4j.api.common.Optional;
@@ -14,16 +28,14 @@ import org.qi4j.api.structure.Module;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mixins( TPolygon.Mixin.class )
+@Mixins(TPolygon.Mixin.class)
 public interface TPolygon extends HasShape, TGeometry {
-
 
     Property<TLinearRing> shell();
 
     @Optional
     Property<List<TLinearRing>> holes();
 
-    // Interaction
     TPolygon of(TLinearRing shell);
     TPolygon of(TLinearRing shell, @Optional TLinearRing... holes);
 
@@ -32,33 +44,28 @@ public interface TPolygon extends HasShape, TGeometry {
 
     boolean isEmpty();
 
-
-    public abstract class Mixin implements TPolygon
-    {
+    public abstract class Mixin implements TPolygon {
         @Structure
         Module module;
 
         @This
         TPolygon self;
 
-        private void init()
-        {
+        private void init() {
 
             if (self.holes().get() == null) {
 
                 List<TLinearRing> ring = new ArrayList<>();
                 self.holes().set(ring);
-                self.geometryType().set(TGEOMETRY.POINT);
+                self.geometryType().set(TGEOMETRY_TYPE.POINT);
             }
         }
 
-        public TPolygon of(TLinearRing shell)
-        {
-           return of(shell, null);
+        public TPolygon of(TLinearRing shell) {
+            return of(shell, null);
         }
 
-        public TPolygon of(TLinearRing shell, TLinearRing... holes)
-        {
+        public TPolygon of(TLinearRing shell, TLinearRing... holes) {
             init();
 
             if (shell != null) {
@@ -66,19 +73,17 @@ public interface TPolygon extends HasShape, TGeometry {
             }
 
             withHoles(holes);
-            self.geometryType().set(TGEOMETRY.POLYGON);
+            self.geometryType().set(TGEOMETRY_TYPE.POLYGON);
             return self;
         }
 
-        public TPolygon withHole(TLinearRing hole)
-        {
+        public TPolygon withHole(TLinearRing hole) {
             if (hole != null) self.holes().get().add(hole);
             return self;
         }
 
-        public TPolygon withHoles(TLinearRing... holes)
-        {
-            if (holes != null && holes.length !=0) {
+        public TPolygon withHoles(TLinearRing... holes) {
+            if (holes != null && holes.length != 0) {
                 for (TLinearRing hole : holes)
                     withHole(hole);
             }
@@ -86,8 +91,7 @@ public interface TPolygon extends HasShape, TGeometry {
         }
 
         @Override
-        public Coordinate[] getCoordinates()
-        {
+        public Coordinate[] getCoordinates() {
             if (isEmpty()) {
                 return new Coordinate[]{};
             }

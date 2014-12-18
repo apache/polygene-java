@@ -74,7 +74,6 @@ public class SimpleSpatialRepositoryTest extends AbstractQi4jTest {
         // API values
         module.values(TPoint.class,TLineString.class, TPolygon.class, TFeature.class);
 
-        module.services(GeometryFactory.class);
 
     }
 
@@ -82,8 +81,7 @@ public class SimpleSpatialRepositoryTest extends AbstractQi4jTest {
     @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;
 
-    @Service
-    GeometryFactory Geometry;
+
 
    @Test
    public void foo()  throws Exception {
@@ -112,7 +110,7 @@ public class SimpleSpatialRepositoryTest extends AbstractQi4jTest {
 
                Feature feature = features.next();
 
-               TFeature tFeature =  GeoJsonTransformator.withGeometryFactory(Geometry).transformGeoFeature(feature);
+              // TFeature tFeature =  GeoJsonTransformator.withGeometryFactory(Geometry).transformGeoFeature(feature);
 
 
 
@@ -135,36 +133,7 @@ public class SimpleSpatialRepositoryTest extends AbstractQi4jTest {
 
    }
 
-    private Set<TPoint> toPoints(List<LngLatAlt> coordinates)
-    {
-        // get the shell
-        Iterator<LngLatAlt> shellPoints = coordinates.iterator();
 
-        Set<TPoint> points = new HashSet<>();
-        while(shellPoints.hasNext())
-        {
-            LngLatAlt p = shellPoints.next();
-            // Geometry.asCoordinate(c.getLatitude(),c.getLongitude(), c.getAltitude() );
-            TPoint tpoint = Geometry.asPoint(
-                    Geometry.asCoordinate(
-                            p.getLatitude(),
-                            p.getLongitude(),
-                            p.getAltitude()
-                    )
-            );
-
-            points.add(tpoint);
-
-            // Geometry.asLinearRing(null).
-            // Geometry.
-        }
-        return points;
-    }
-
-    private TLinearRing toLinearRing(Set<TPoint> points)
-    {
-        return Geometry.asLinearRing(points.toArray(new TPoint[0]));
-    }
 
 
 

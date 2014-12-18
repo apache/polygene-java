@@ -12,28 +12,17 @@
  *
  */
 
-package org.qi4j.api.geometry.internal.builders;
+package org.qi4j.api.geometry.internal;
 
-import org.qi4j.api.geometry.TCRS;
-import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueComposite;
 
 /**
- * Created by jj on 26.11.14.
+ * Created by jakes on 2/7/14.
  */
-public class TCRSBuilder {
+public interface TGeometryRoot extends ValueComposite {
 
-    private Module module;
-    private TCRS geometry;
-
-
-    public TCRSBuilder(Module module) {
-        this.module = module;
-        geometry = module.newValueBuilder(TCRS.class).prototype();
-    }
-
-    public TCRS crs(String crs) {
-        return geometry.of(crs);
-    }
-
+    public static enum TGEOMETRY_TYPE {POINT, MULTIPOINT, LINESTRING, MULTILINESTRING, POLYGON, MULTIPOLYGON, FEATURE, FEATURECOLLECTION}
 
 }
+
+

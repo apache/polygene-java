@@ -6,8 +6,11 @@ import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.geometry.*;
+import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.internal.TGeometryRoot;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
+import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
@@ -18,8 +21,11 @@ import org.qi4j.index.elasticsearch.extension.spatial.model.VerifyStatialTypes;
 import org.qi4j.index.elasticsearch.extension.spatial.model.entity.SpatialEntity;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
+import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractSpatialQueryTest;
+import org.qi4j.test.indexing.model.Domain;
+import org.qi4j.test.indexing.model.Nameable;
 import org.qi4j.test.util.DelTreeAfter;
 
 import static org.junit.Assert.assertEquals;
@@ -28,13 +34,13 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 
-import static org.qi4j.api.geometry.TGEOM.*;
+import static org.qi4j.api.geometry.TGeometryFactory.*;
 import static org.qi4j.api.query.QueryExpressions.ge;
 import static org.qi4j.api.query.QueryExpressions.gt;
 import static org.qi4j.api.query.QueryExpressions.lt;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.*;
-import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
+import static org.qi4j.test.indexing.NameableAssert.verifyUnorderedResults;
 import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
 /**
@@ -90,24 +96,24 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
             throws Exception {
         super.setUp();
 
-        _tPoint = TPOINT(module).x(11.57958984375).y(48.13905780942574).geometry();
+        _tPoint = TPoint(module).x(11.57958984375).y(48.13905780942574).geometry();
 
-        _tMultiPoint = TMULTIPOINT(module).points(new double[][]
+        _tMultiPoint = TMultiPoint(module).points(new double[][]
                 {
                         {11.57958984375, 48.13905780942574},
                         {11.599502563476562, 48.14913756559802},
                 }).geometry();
-        _tLineString = TLINESTRING(module).points(new double[][]
+        _tLineString = TlineString(module).points(new double[][]
                 {
                         {11.550750732421875, 48.109035906197036},
                         {11.552810668945312, 48.16608541901253},
                 }).geometry();
 
-        _tPolygon = TPOLYGON(module)
+        _tPolygon = TPolygon(module)
 
                 .shell
                         (
-                                TLINEARRING(module).ring(new double[][]
+                                TLinearRing(module).ring(new double[][]
                                         {
                                                 {11.475906372070312, 48.14478518644042},
                                                 {11.572723388671875, 48.18760570101003},
@@ -123,7 +129,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
 
                 .withHoles
                         (
-                                TLINEARRING(module).ring(new double[][]
+                                TLinearRing(module).ring(new double[][]
                                         {
                                                 {11.53839111328125, 48.13837048124154},
                                                 {11.614952087402344, 48.15028286718964},
@@ -193,7 +199,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
                                 ST_Within
                                         (
                                                 templateFor(VerifyStatialTypes.class).point(),
-                                                TPOINT(module).x(11.57958981111).y(48.13905780941111).geometry(),
+                                                TPoint(module).x(11.57958981111).y(48.13905780941111).geometry(),
                                                 999,
                                                 TUnit.METER
                                         )
@@ -217,7 +223,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
                                 ST_Within
                                         (
                                                 templateFor(VerifyStatialTypes.class).point(),
-                                                TPOINT(module).x(1286436.5975464052).y(2389280.7514562616).geometry("EPSG:27572"),
+                                                TPoint(module).x(1286436.5975464052).y(2389280.7514562616).geometry("EPSG:27572"),
                                                 999,
                                                 TUnit.METER
                                         )
@@ -244,7 +250,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
                                 ST_Within
                                         (
                                                 templateFor(VerifyStatialTypes.class).point(),
-                                                TPOINT(module).x(11.57958981111).y(48.13905780941111).geometry(),
+                                                TPoint(module).x(11.57958981111).y(48.13905780941111).geometry(),
                                                 999,
                                                 TUnit.METER
                                         )
@@ -260,6 +266,133 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
         assertTrue(tPoint.compareTo(_tPoint) == 0);
     }
 
+
+    @Test
+    public void script02()
+            throws EntityFinderException
+    {
+        final QueryBuilder<Domain> qb = this.module.newQueryBuilder( Domain.class );
+        final Nameable nameable = templateFor( Nameable.class );
+        final Query<Domain> query = unitOfWork.newQuery( qb.where( eq( nameable.name(), "Gaming" ) ) );
+        System.out.println( "*** script02: " + query );
+        verifyUnorderedResults( query, "Gaming" );
+    }
+
+
+    @Test
+    public void WhenST_DisjointForAPointThenOrderAndCompareResults() {
+        QueryBuilder<VerifyStatialTypes> qb = this.module.newQueryBuilder(VerifyStatialTypes.class);
+
+        Query<VerifyStatialTypes> query = unitOfWork.newQuery(
+                qb
+                        .where(// and(
+                                ST_Disjoint
+                                        (
+                                                templateFor(VerifyStatialTypes.class).point(),
+                                                TPoint(module).x(10.57958981111).y(47.13905780941111).geometry(),
+                                                1,
+                                                TUnit.METER
+                                        )
+                                       //  eq( templateFor(VerifyStatialTypes.class).point().get(), "Gaming" )
+                                        // ,QueryExpressions.eq(templateFor(VerifyStatialTypes.class).foo(), "foo")
+                                // )
+                        ))
+
+
+                        .orderBy(templateFor(VerifyStatialTypes.class).point(), _tPoint, OrderBy.Order.ASCENDING);
+
+
+        query.find();
+        assertEquals(3, query.count());
+        // TGeometry tGeometry = query.iterator().next().point().get();
+
+        VerifyStatialTypes result = query.iterator().next();
+
+/**
+        if (tGeometry.getType() == TGeometry.TGEOMETRY_TYPE.POLYGON)
+        {
+            System.out.println("is polygon");
+        }
+ */
+        // assertTrue(tPoint.compareTo(_tPoint) == 0);
+
+    }
+
+
+    @Test
+    public void WhenST_IntersectsForAPointThenOrderAndCompareResults() {
+        QueryBuilder<VerifyStatialTypes> qb = this.module.newQueryBuilder(VerifyStatialTypes.class);
+
+        Query<VerifyStatialTypes> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Intersects
+                                        (
+                                                templateFor(VerifyStatialTypes.class).point(),
+                                                TPoint(module).x(11.57958981111).y(48.13905780941111).geometry(),
+                                                999,
+                                                TUnit.METER
+                                        )
+                        ))
+
+
+                .orderBy(templateFor(VerifyStatialTypes.class).point(), _tPoint, OrderBy.Order.ASCENDING);
+
+
+        query.find();
+        assertEquals(3, query.count());
+        // TGeometry tGeometry = query.iterator().next().point().get();
+
+        VerifyStatialTypes result = query.iterator().next();
+
+/**
+ if (tGeometry.getType() == TGeometry.TGEOMETRY_TYPE.POLYGON)
+ {
+ System.out.println("is polygon");
+ }
+ */
+        // assertTrue(tPoint.compareTo(_tPoint) == 0);
+
+    }
+
+    @Test
+    public void WhenST_DisjointForAPointUsingPolygonAreaThenOrderAndCompareResults() {
+        QueryBuilder<VerifyStatialTypes> qb = this.module.newQueryBuilder(VerifyStatialTypes.class);
+
+        Query<VerifyStatialTypes> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Disjoint
+                                        (
+                                                templateFor(VerifyStatialTypes.class).point(),
+                                                TPolygon(module)
+                                                        .shell
+                                                                (
+                                                                        new double[][]
+                                                                                {
+                                                                                        {11.32965087890625, 48.122101028190805},
+                                                                                        {11.394195556640625, 48.28593438872724},
+                                                                                        {11.9366455078125, 48.232906106325146},
+                                                                                        {11.852874755859375, 47.95038564051011},
+                                                                                        {11.36810302734375, 47.94486657921015},
+                                                                                        {11.32965087890625, 48.122101028190805}
+                                                                                }
+                                                                ).geometry()
+                                        )
+                        ))
+
+                .orderBy(templateFor(VerifyStatialTypes.class).point(), _tPoint, OrderBy.Order.ASCENDING);
+
+
+        query.find();
+        // assertEquals(query.count(), 1);
+        // TPoint tPoint = query.iterator().next().point().get();
+        VerifyStatialTypes types = query.iterator().next();
+        System.out.println("Result " + types.polygon().get());
+        // assertTrue(tPoint.compareTo(_tPoint) == 0);
+    }
+
+
     @Test
     public void WhenQueryForAPointUsingPolygonAreaThenOrderAndCompareResults() {
         QueryBuilder<VerifyStatialTypes> qb = this.module.newQueryBuilder(VerifyStatialTypes.class);
@@ -270,7 +403,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
                                 ST_Within
                                         (
                                                 templateFor(VerifyStatialTypes.class).point(),
-                                                TPOLYGON(module)
+                                                TPolygon(module)
                                                         .shell
                                                                 (
                                                                         new double[][]
@@ -295,6 +428,118 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
         assertTrue(tPoint.compareTo(_tPoint) == 0);
     }
 
+    @Test
+    public void WhenQueryForALineUsingPolygonAreaThenOrderAndCompareResults() {
+        QueryBuilder<VerifyStatialTypes> qb = this.module.newQueryBuilder(VerifyStatialTypes.class);
+
+        Query<VerifyStatialTypes> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Within
+                                        (
+                                                templateFor(VerifyStatialTypes.class).line(),
+                                                TPolygon(module)
+                                                        .shell
+                                                                (
+                                                                        new double[][]
+                                                                                {
+                                                                                        {11.32965087890625, 48.122101028190805},
+                                                                                        {11.394195556640625, 48.28593438872724},
+                                                                                        {11.9366455078125, 48.232906106325146},
+                                                                                        {11.852874755859375, 47.95038564051011},
+                                                                                        {11.36810302734375, 47.94486657921015},
+                                                                                        {11.32965087890625, 48.122101028190805}
+                                                                                }
+                                                                ).geometry()
+                                        )
+                        ));
+
+                // .orderBy(templateFor(VerifyStatialTypes.class).point(), _tPoint, OrderBy.Order.ASCENDING);
+
+
+        query.find();
+        assertEquals(1, query.count());
+        TLineString tLineString = query.iterator().next().line().get();
+        System.out.println(tLineString);
+        // TPoint tPoint = query.iterator().next().point().get();
+        // assertTrue(tPoint.compareTo(_tPoint) == 0);
+    }
+
+
+    @Test
+    public void WhenQueryForALineUsingPolygonAreaThenOrderAndCompareResultsV2() {
+        QueryBuilder<VerifyStatialTypes> qb = this.module.newQueryBuilder(VerifyStatialTypes.class);
+
+        Query<VerifyStatialTypes> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Within
+                                        (
+                                                templateFor(VerifyStatialTypes.class).point(),
+                                                TPolygon(module)
+                                                        .shell
+                                                                (
+                                                                        new double[][]
+                                                                                {
+                                                                                        {11.32965087890625, 48.122101028190805},
+                                                                                        {11.394195556640625, 48.28593438872724},
+                                                                                        {11.9366455078125, 48.232906106325146},
+                                                                                        {11.852874755859375, 47.95038564051011},
+                                                                                        {11.36810302734375, 47.94486657921015},
+                                                                                        {11.32965087890625, 48.122101028190805}
+                                                                                }
+                                                                ).geometry()
+                                        )
+                        ));
+
+        // .orderBy(templateFor(VerifyStatialTypes.class).point(), _tPoint, OrderBy.Order.ASCENDING);
+
+
+        query.find();
+        assertEquals(1, query.count());
+        TLineString tLineString = query.iterator().next().line().get();
+        System.out.println(tLineString);
+        // TPoint tPoint = query.iterator().next().point().get();
+        // assertTrue(tPoint.compareTo(_tPoint) == 0);
+    }
+
+
+    @Test
+    public void WhenST_Intersects_ForALineUsingPolygonAreaThenOrderAndCompareResults() {
+        QueryBuilder<VerifyStatialTypes> qb = this.module.newQueryBuilder(VerifyStatialTypes.class);
+
+        Query<VerifyStatialTypes> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Intersects
+                                        (
+                                                templateFor(VerifyStatialTypes.class).line(),
+                                                TPolygon(module)
+                                                        .shell
+                                                                (
+                                                                        new double[][]
+                                                                                {
+                                                                                        {11.32965087890625, 48.122101028190805},
+                                                                                        {11.394195556640625, 48.28593438872724},
+                                                                                        {11.9366455078125, 48.232906106325146},
+                                                                                        {11.852874755859375, 47.95038564051011},
+                                                                                        {11.36810302734375, 47.94486657921015},
+                                                                                        {11.32965087890625, 48.122101028190805}
+                                                                                }
+                                                                ).geometry()
+                                        )
+                        ));
+
+        // .orderBy(templateFor(VerifyStatialTypes.class).point(), _tPoint, OrderBy.Order.ASCENDING);
+
+
+        query.find();
+        assertEquals(1, query.count());
+        TLineString tLineString = query.iterator().next().line().get();
+        System.out.println(tLineString);
+        // TPoint tPoint = query.iterator().next().point().get();
+        // assertTrue(tPoint.compareTo(_tPoint) == 0);
+    }
 
 
     @Test
@@ -308,7 +553,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
                                 ST_Within
                                         (
                                                 templateFor(VerifyStatialTypes.class).point(),
-                                                ST_GeometryFromText("POINT(11.57958981111 48.13905780941111 )", 1),
+                                                ST_GeometryFromText("POINT(11.57958981111 48.13905780941111 )"),
                                                 999,
                                                 TUnit.METER
                                         )
@@ -355,7 +600,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
                                         (
                                                 templateFor(VerifyStatialTypes.class).polygon(),
 
-                                                TPOLYGON(module)
+                                                TPolygon(module)
                                                         .shell
                                                                 (
                                                                         new double[][]

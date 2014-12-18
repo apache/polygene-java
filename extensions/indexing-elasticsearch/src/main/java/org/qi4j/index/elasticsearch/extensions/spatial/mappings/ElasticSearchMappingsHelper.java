@@ -1,10 +1,10 @@
-package org.qi4j.index.elasticsearch.extensions.spatial.mapping;
+package org.qi4j.index.elasticsearch.extensions.spatial.mappings;
 
 import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 
-import static org.qi4j.index.elasticsearch.extensions.spatial.mapping.ElasticSearchMappingsCache.MappingsCache;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.ElasticSearchMappingsCache.MappingsCache;
 
 /**
  * Created by jj on 06.11.14.
@@ -53,6 +53,9 @@ public class ElasticSearchMappingsHelper {
             return null;
     }
 
+
+
+
     public boolean existsFieldMapping(String field) {
 
         if (getFieldMappings(field) != null)
@@ -71,14 +74,31 @@ public class ElasticSearchMappingsHelper {
                 .execute().actionGet();
 
         if (ESSpatialMappingPUTResponse.isAcknowledged()) {
-            MappingsCache().put(propertyWithDepth);
+            MappingsCache().put(propertyWithDepth, getFieldMappings(propertyWithDepth).sourceAsMap());
             return true;
         } else
             return false;
 
-
-
     }
+
+    public boolean isGeoShape(String property)
+    {
+        if (!MappingsCache().exists(property)) // <- No mappings yet, as no data in the index ?
+            return true;
+
+        return MappingsCache().get(property).get(property).toString().indexOf("type=geo_shape") > -1 ? true : false;
+    }
+
+    public boolean isGeoPoint(String property)
+    {
+        if (!MappingsCache().exists(property)) // <- No mappings yet, as no data in the index ?
+            return true;
+
+        return MappingsCache().get(property).get(property).toString().indexOf("type=geo_point") > -1 ? true : false;
+    }
+
+
+
 
 
 }

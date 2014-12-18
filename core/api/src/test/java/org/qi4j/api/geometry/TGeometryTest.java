@@ -29,20 +29,24 @@ import static org.junit.Assert.*;
 /**
  * JAVADOC
  */
-public class BasicGeometryTest
+public class TGeometryTest
     extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        // JJ TODO - What about to add this Geometry types to the "core" Qi4j, so that they
-        // do not need to be added delicately ?
-
         // internal values
         module.values(Coordinate.class, TLinearRing.class, TGeometry.class);
-
         // API values
-        module.values(TCRS.class, TPoint.class, TMultiPoint.class, TLineString.class, TPolygon.class, TMultiPolygon.class, TFeature.class, TFeatureCollection.class);
+        module.values(
+                TCRS.class,
+                TPoint.class,
+                TMultiPoint.class,
+                TLineString.class,
+                TPolygon.class,
+                TMultiPolygon.class,
+                TFeature.class,
+                TFeatureCollection.class);
     }
 
     @Test

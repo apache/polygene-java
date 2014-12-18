@@ -46,7 +46,7 @@ import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.api.value.ValueSerializer.Options;
 import org.qi4j.functional.Iterables;
-import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialIndexerSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialExtensionIndexerSupport;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -130,7 +130,7 @@ public interface ElasticSearchIndexer
                         case NEW:
                             LOGGER.trace( "Creating Entity State in Index: {}", changedState );
                             String newJson = toJSON(changedState, newStates, uow );
-                            // System.out.println("#Will index: {}  : " + newJson);
+                            System.out.println("#Will index: {}  : " + newJson);
                             LOGGER.trace( "Will index: {}", newJson );
                             index( bulkBuilder, changedState.identity().identity(), newJson );
                             break;
@@ -245,7 +245,7 @@ public interface ElasticSearchIndexer
                             }
 
 
-                            ElasticSearchSpatialIndexerSupport.toJSON(support,(TGeometry) value,key,newKey,json, module );
+                            ElasticSearchSpatialExtensionIndexerSupport.toJSON(support, (TGeometry) value, key, newKey, json, module);
 
                            // System.out.println("Spatial JSON " + json);
                         }

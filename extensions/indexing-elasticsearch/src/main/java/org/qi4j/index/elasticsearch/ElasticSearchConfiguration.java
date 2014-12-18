@@ -46,5 +46,11 @@ public interface ElasticSearchConfiguration
      */
     @UseDefaults Property<Boolean> indexNonAggregatedAssociations();
 
+
+    public static enum INDEX_MAPPING_POINT_METHOD {GEO_POINT, GEO_SHAPE}
+
+
+    @Optional Property<INDEX_MAPPING_POINT_METHOD> indexPointMappingMethod();
+
 }
 // END SNIPPET: config
