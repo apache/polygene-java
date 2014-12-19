@@ -1,10 +1,10 @@
-package org.qi4j.index.elasticsearch.extensions.spatial.mappings;
+package org.qi4j.index.elasticsearch.extensions.spatial.mappings.old;
 
 import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.ElasticSearchMappingsCache.MappingsCache;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.old.ElasticSearchMappingsCache.MappingsCache;
 
 /**
  * Created by jj on 06.11.14.
@@ -38,6 +38,9 @@ public class ElasticSearchMappingsHelper {
     }
 
     public GetFieldMappingsResponse.FieldMappingMetaData getFieldMappings(String field) {
+
+        if ( (index == null) || ( type == null) ) throw new RuntimeException("ElasticSearch Index or Type not defined");
+
         GetFieldMappingsResponse response = support.client().admin().indices()
                 .prepareGetFieldMappings(index)
                 .setTypes(type)
@@ -58,10 +61,22 @@ public class ElasticSearchMappingsHelper {
 
     public boolean existsFieldMapping(String field) {
 
-        if (getFieldMappings(field) != null)
+        GetFieldMappingsResponse.FieldMappingMetaData fieldMappingMetaData = getFieldMappings(field);
+
+        if (fieldMappingMetaData != null)
+        {
+            MappingsCache(support).put(field, fieldMappingMetaData.sourceAsMap().toString() );
             return true;
+        }
+
         else
             return false;
+    }
+
+    // JJ TODO make sure that the cache has always latest/valid status. Idea - use the ttl to invalidate the cache.
+    public boolean existsMapping(String property)
+    {
+        return MappingsCache(support).exists(property);
     }
 
     public boolean addFieldMappings(String propertyWithDepth, String mappingJSON) {
@@ -74,7 +89,7 @@ public class ElasticSearchMappingsHelper {
                 .execute().actionGet();
 
         if (ESSpatialMappingPUTResponse.isAcknowledged()) {
-            MappingsCache().put(propertyWithDepth, getFieldMappings(propertyWithDepth).sourceAsMap());
+            MappingsCache(support).put(propertyWithDepth, getFieldMappings(propertyWithDepth).sourceAsMap().toString());
             return true;
         } else
             return false;
@@ -83,18 +98,18 @@ public class ElasticSearchMappingsHelper {
 
     public boolean isGeoShape(String property)
     {
-        if (!MappingsCache().exists(property)) // <- No mappings yet, as no data in the index ?
+        if (!MappingsCache(support).exists(property)) // <- No mappings yet, as no data in the index ?
             return true;
 
-        return MappingsCache().get(property).get(property).toString().indexOf("type=geo_shape") > -1 ? true : false;
+        return MappingsCache(support).get(property).toString().indexOf("type=geo_shape") > -1 ? true : false;
     }
 
     public boolean isGeoPoint(String property)
     {
-        if (!MappingsCache().exists(property)) // <- No mappings yet, as no data in the index ?
+        if (!MappingsCache(support).exists(property)) // <- No mappings yet, as no data in the index ?
             return true;
 
-        return MappingsCache().get(property).get(property).toString().indexOf("type=geo_point") > -1 ? true : false;
+        return MappingsCache(support).get(property).toString().indexOf("type=geo_point") > -1 ? true : false;
     }
 
 

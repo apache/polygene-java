@@ -19,7 +19,6 @@ package org.qi4j.index.elasticsearch.extensions.spatial;
  */
 
 import org.elasticsearch.index.query.*;
-import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.query.grammar.ComparisonSpecification;
 import org.qi4j.api.query.grammar.ContainsAllSpecification;
 import org.qi4j.api.query.grammar.ContainsSpecification;
@@ -28,8 +27,8 @@ import org.qi4j.api.query.grammar.extensions.spatial.predicate.SpatialPredicates
 import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
-import org.qi4j.index.elasticsearch.extensions.spatial.functions.convert.ElasticSearchSpatialConvertFinderSupport;
-import org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates.ElasticSearchSpatialPredicateFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.functions.convert.ConvertFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates.PredicateFinderSupport;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,17 +40,17 @@ import static org.elasticsearch.index.query.FilterBuilders.geoShapeFilter;
 
 import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport;
 
-public final class ElasticSearchSpatialExtensionFinderSupport
+public final class ElasticSearchSpatialFinder
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticSearchSpatialExtensionFinderSupport.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticSearchSpatialFinder.class);
 
     private static final Map<Class<?>, SpatialQuerySpecSupport> SPATIAL_QUERY_EXPRESSIONS_CATALOG = new HashMap<>( 2 );
 
     static
     {
-        SPATIAL_QUERY_EXPRESSIONS_CATALOG.put(SpatialPredicatesSpecification.class, new ElasticSearchSpatialPredicateFinderSupport());
-        SPATIAL_QUERY_EXPRESSIONS_CATALOG.put(SpatialConvertSpecification.class, new ElasticSearchSpatialConvertFinderSupport());
+        SPATIAL_QUERY_EXPRESSIONS_CATALOG.put(SpatialPredicatesSpecification.class, new PredicateFinderSupport());
+        SPATIAL_QUERY_EXPRESSIONS_CATALOG.put(SpatialConvertSpecification.class, new ConvertFinderSupport());
     }
 
 
@@ -123,7 +122,7 @@ public final class ElasticSearchSpatialExtensionFinderSupport
 
 
 
-        private ElasticSearchSpatialExtensionFinderSupport()
+        private ElasticSearchSpatialFinder()
     {
     }
 

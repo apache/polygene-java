@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by jj on 04.12.14.
  */
-public class ST_Intersects extends AbstractElasticSearchSpatialFunction implements ElasticSearchSpatialPredicateFinderSupport.PredicateSpecification
+public class ST_Intersects extends AbstractElasticSearchSpatialFunction implements PredicateFinderSupport.PredicateSpecification
 {
 
     public void processSpecification(FilterBuilder filterBuilder,

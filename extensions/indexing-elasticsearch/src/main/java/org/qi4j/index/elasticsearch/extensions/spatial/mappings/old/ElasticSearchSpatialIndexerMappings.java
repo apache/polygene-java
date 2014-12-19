@@ -1,4 +1,4 @@
-package org.qi4j.index.elasticsearch.extensions.spatial.mappings;
+package org.qi4j.index.elasticsearch.extensions.spatial.mappings.old;
 
 /*
  * Copyright 2014 Jiri Jetmar.
@@ -21,7 +21,6 @@ package org.qi4j.index.elasticsearch.extensions.spatial.mappings;
 import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsResponse;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.index.mapper.MapperBuilders;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
@@ -30,8 +29,8 @@ import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.ElasticSearchMappingsCache.MappingsCache;
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.ElasticSearchMappingsHelper.Mappings;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.old.ElasticSearchMappingsCache.MappingsCache;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.old.ElasticSearchMappingsHelper.Mappings;
 
 public final class ElasticSearchSpatialIndexerMappings {
 
@@ -45,11 +44,14 @@ public final class ElasticSearchSpatialIndexerMappings {
 
         try {
 
-            if (!MappingsCache().exists(propertyWithDepth)) {
+            if (!MappingsCache(support).exists(propertyWithDepth)) {
 
                 if (Mappings(support).onIndex(support.index()).andType(support.entitiesType()).existsFieldMapping(propertyWithDepth)) {
                     // if (Mappings(support).onIndex(support.index()).andType(support.entitiesType()).existsFieldMapping (propertyWithDepth)) {
-                    MappingsCache().put(propertyWithDepth, Mappings(support).onIndex(support.index()).andType(support.entitiesType()).getFieldMappings(propertyWithDepth).sourceAsMap());
+                    MappingsCache(support).put(propertyWithDepth, Mappings(support).onIndex(support.index()).andType(support.entitiesType()).getFieldMappings(propertyWithDepth).sourceAsMap().toString());
+
+                    // MappingsCache().put(propertyWithDepth, Mappings(support).onIndex(support.index()).andType(support.entitiesType()).getFieldMappings(propertyWithDepth).sourceAsMap().toString();
+
                     System.out.println("#### Added a mapping available on the Server but not yet in the in-memory cache : " + propertyWithDepth);
 
                     GetFieldMappingsResponse.FieldMappingMetaData fieldMappingMetaData = Mappings(support).onIndex(support.index()).andType(support.entitiesType()).getFieldMappings(propertyWithDepth);

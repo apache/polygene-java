@@ -73,9 +73,9 @@ import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
-import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialExtensionFinderSupport;
-import org.qi4j.index.elasticsearch.extensions.spatial.functions.convert.ElasticSearchSpatialConvertFinderSupport;
-import org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates.ElasticSearchSpatialPredicateFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinder;
+import org.qi4j.index.elasticsearch.extensions.spatial.functions.convert.ConvertFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates.PredicateFinderSupport;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
@@ -92,8 +92,8 @@ import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.wrapperQuery;
 import static org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.resolveVariable;
-import static org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialExtensionFinderSupport.*;
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.ElasticSearchMappingsHelper.Mappings;
+import static org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinder.*;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.old.ElasticSearchMappingsHelper.Mappings;
 
 @Mixins( ElasticSearchFinder.Mixin.class )
 public interface ElasticSearchFinder
@@ -112,8 +112,8 @@ public interface ElasticSearchFinder
         static
         {
 
-            EXTENDED_QUERY_EXPRESSIONS_CATALOG.put(SpatialPredicatesSpecification.class, new ElasticSearchSpatialPredicateFinderSupport());
-            EXTENDED_QUERY_EXPRESSIONS_CATALOG.put(SpatialConvertSpecification.class, new ElasticSearchSpatialConvertFinderSupport());
+            EXTENDED_QUERY_EXPRESSIONS_CATALOG.put(SpatialPredicatesSpecification.class, new PredicateFinderSupport());
+            EXTENDED_QUERY_EXPRESSIONS_CATALOG.put(SpatialConvertSpecification.class, new ConvertFinderSupport());
         }
 
         // Spec Support
@@ -126,7 +126,7 @@ public interface ElasticSearchFinder
         // Type Support
         static
         {
-            ComplexTypeSupport spatialTypeSupport = new ElasticSearchSpatialExtensionFinderSupport.SpatialTypeSupport();
+            ComplexTypeSupport spatialTypeSupport = new ElasticSearchSpatialFinder.SpatialTypeSupport();
             COMPLEX_TYPE_SUPPORTS.put( TGeometry.class, spatialTypeSupport );
             COMPLEX_TYPE_SUPPORTS.put( TPoint.class, spatialTypeSupport );
             COMPLEX_TYPE_SUPPORTS.put( TMultiPoint.class, spatialTypeSupport );

@@ -30,35 +30,52 @@ public class ToHelper {
     private ToHelper() {}
 
 
-    public  void to(String CRS, double maxPrecisionMeanConversionError) throws Exception
+    public  void to(String CRS, double maxPrecisionMeanConversionError) throws RuntimeException
     {
         this.maxPrecisionMeanConversionError = maxPrecisionMeanConversionError;
         to(CRS);
     }
 
-    public  void to(String CRS) throws Exception
+    public  void to(String CRS) throws RuntimeException
     {
+    try {
+        GeodeticCRS sourceCRS = (GeodeticCRS) SpatialRefSysManager.getCRS(intermediate.getCRS());
+        GeodeticCRS targetCRS = (GeodeticCRS) SpatialRefSysManager.getCRS(CRS);
 
-        GeodeticCRS sourceCRS = (GeodeticCRS)SpatialRefSysManager.getCRS(intermediate.getCRS());
-        GeodeticCRS targetCRS = (GeodeticCRS)SpatialRefSysManager.getCRS(CRS);
-
-       if (sourceCRS.equals(targetCRS)) {
+        if (sourceCRS.equals(targetCRS)) {
             return;
-       }
-        switch(intermediate.getType())
-        {
-            case POINT              :  transform(sourceCRS, targetCRS, new Coordinate[]{((TPoint)intermediate).getCoordinate()}); break;
-            case MULTIPOINT         :  transform(sourceCRS, targetCRS, ((TMultiPoint) intermediate).getCoordinates()); break;
-            case LINESTRING         :  transform(sourceCRS, targetCRS, ((TLineString) intermediate).getCoordinates()); break;
-           // case MULTILINESTRING    : transform(sourceCRS, targetCRS, (() intermediate).getCoordinates()); break; break;
-            case POLYGON            : transform(sourceCRS, targetCRS, ((TPolygon) intermediate).getCoordinates()); break;
-            case MULTIPOLYGON       : transform(sourceCRS, targetCRS, ((TMultiPolygon) intermediate).getCoordinates()); break;
-            case FEATURE            : transform(sourceCRS, targetCRS, ((TFeature) intermediate).getCoordinates()); break;
-            case FEATURECOLLECTION  : transform(sourceCRS, targetCRS, ((TFeatureCollection) intermediate).getCoordinates()); break;
+        }
+        switch (intermediate.getType()) {
+            case POINT:
+                transform(sourceCRS, targetCRS, new Coordinate[]{((TPoint) intermediate).getCoordinate()});
+                break;
+            case MULTIPOINT:
+                transform(sourceCRS, targetCRS, ((TMultiPoint) intermediate).getCoordinates());
+                break;
+            case LINESTRING:
+                transform(sourceCRS, targetCRS, ((TLineString) intermediate).getCoordinates());
+                break;
+            // case MULTILINESTRING    : transform(sourceCRS, targetCRS, (() intermediate).getCoordinates()); break; break;
+            case POLYGON:
+                transform(sourceCRS, targetCRS, ((TPolygon) intermediate).getCoordinates());
+                break;
+            case MULTIPOLYGON:
+                transform(sourceCRS, targetCRS, ((TMultiPolygon) intermediate).getCoordinates());
+                break;
+            case FEATURE:
+                transform(sourceCRS, targetCRS, ((TFeature) intermediate).getCoordinates());
+                break;
+            case FEATURECOLLECTION:
+                transform(sourceCRS, targetCRS, ((TFeatureCollection) intermediate).getCoordinates());
+                break;
         }
 
         // JJ TODO - Set nested TGeometries CRSs as well
         intermediate.setCRS(targetCRS.getCode());
+    } catch(Exception _ex)
+    {
+        throw new RuntimeException(_ex);
+    }
     }
 
 

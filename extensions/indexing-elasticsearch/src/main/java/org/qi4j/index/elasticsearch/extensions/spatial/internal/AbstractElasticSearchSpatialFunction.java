@@ -20,15 +20,16 @@ import org.qi4j.api.util.Classes;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchFinder;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
-import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialExtensionFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinder;
 import org.qi4j.library.spatial.v2.projections.ProjectionsRegistry;
 import org.qi4j.spi.query.EntityFinderException;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.ElasticSearchMappingsHelper.Mappings;
 import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.MappingCache;
+
 
 /**
  * Created by jj on 20.11.14.
@@ -130,13 +131,26 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
     protected boolean isMappedAsGeoPoint(PropertyFunction property)
     {
-        return Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoPoint(property.toString());
+        // return Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoPoint(property.toString());
+        return MappingCache.isMappedAsGeoPoint(support.index(),support.entitiesType(), property.toString());
     }
 
     protected boolean isMappedAsGeoShape(PropertyFunction property)
     {
-        return Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoShape(property.toString());
+        // return Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoShape(property.toString());
+        return MappingCache.isMappedAsGeoShape(support.index(), support.entitiesType(), property.toString());
     }
+
+    protected boolean isMapped(PropertyFunction property)
+    {
+        return MappingCache.mappingExists(support.index(),support.entitiesType(), property.toString());
+    }
+
+    protected boolean isSpatial(PropertyFunction property)
+    {
+        return false;
+    }
+
 
 
     protected GeoShapeFilterBuilder createShapeFilter(String name, TPoint point, ShapeRelation relation, double distance, TUnit unit)
@@ -243,7 +257,7 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
             if (ElasticSearchFinder.Mixin.EXTENDED_QUERY_EXPRESSIONS_CATALOG.get(spec.operator().getClass().getSuperclass()) != null) {
 
-                ElasticSearchSpatialExtensionFinderSupport.SpatialQuerySpecSupport spatialQuerySpecSupport = ElasticSearchFinder.Mixin.EXTENDED_QUERY_EXPRESSIONS_CATALOG.get(spec.operator().getClass().getSuperclass());
+                ElasticSearchSpatialFinder.SpatialQuerySpecSupport spatialQuerySpecSupport = ElasticSearchFinder.Mixin.EXTENDED_QUERY_EXPRESSIONS_CATALOG.get(spec.operator().getClass().getSuperclass());
                 spatialQuerySpecSupport.setModule(module, support);
                 // return spatialQuerySpecSupport.processSpecification(filterBuilder, spec.operator(), variables);
                 spatialQuerySpecSupport.processSpecification(filterBuilder, spec.operator(), variables);

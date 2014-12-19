@@ -48,7 +48,7 @@ public class ESClusterSupport
         indexPointMappingMethod = config.indexPointMappingMethod() == null ?
                 ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT : config.indexPointMappingMethod().get();
 
-        // indexPointMappingMethod = ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT;
+        indexPointMappingMethod = ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT;
 
         String[] nodes = config.nodes().get() == null ? new String[]{ "localhost:9300" } : config.nodes().get().split( "," );
         boolean clusterSniff = config.clusterSniff().get();

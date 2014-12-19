@@ -46,7 +46,7 @@ import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.api.value.ValueSerializer.Options;
 import org.qi4j.functional.Iterables;
-import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialExtensionIndexerSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialIndexer;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
@@ -245,7 +245,7 @@ public interface ElasticSearchIndexer
                             }
 
 
-                            ElasticSearchSpatialExtensionIndexerSupport.toJSON(support, (TGeometry) value, key, newKey, json, module);
+                            ElasticSearchSpatialIndexer.toJSON(support, (TGeometry) value, key, newKey, json, module);
 
                            // System.out.println("Spatial JSON " + json);
                         }

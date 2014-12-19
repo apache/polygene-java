@@ -1,13 +1,12 @@
 package org.qi4j.index.elasticsearch.extensions.spatial.functions.convert;
 
 import org.elasticsearch.index.query.FilterBuilder;
-import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.ST_GeomFromTextSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
-import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialExtensionFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinder;
 import org.qi4j.spi.query.EntityFinderException;
 
 import java.util.HashMap;
@@ -16,16 +15,16 @@ import java.util.Map;
 /**
  * Created by jj on 20.11.14.
  */
-public class ElasticSearchSpatialConvertFinderSupport implements  ElasticSearchSpatialExtensionFinderSupport.SpatialQuerySpecSupport {
+public class ConvertFinderSupport implements  ElasticSearchSpatialFinder.SpatialQuerySpecSupport {
 
-    private static final Map<Class<?>, ElasticSearchSpatialConvertFinderSupport.ConvertSpecification> SPATIAL_CONVERT_OPERATIONS = new HashMap<>( 2 );
+    private static final Map<Class<?>, ConvertFinderSupport.ConvertSpecification> SPATIAL_CONVERT_OPERATIONS = new HashMap<>( 2 );
 
     static
     {
         SPATIAL_CONVERT_OPERATIONS.put(ST_GeomFromTextSpecification.class, new ST_GeometryFromText());
     }
 
-    public static interface ConvertSpecification extends ElasticSearchSpatialExtensionFinderSupport.ModuleHelper
+    public static interface ConvertSpecification extends ElasticSearchSpatialFinder.ModuleHelper
     {
         void processSpecification(FilterBuilder filterBuilder, SpatialConvertSpecification<?> spec, Map<String, Object> variables)  throws EntityFinderException;
     }

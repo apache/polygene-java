@@ -14,12 +14,12 @@ import java.util.Map;
 
 import static org.elasticsearch.index.query.FilterBuilders.termFilter;
 import static org.elasticsearch.index.query.FilterBuilders.notFilter;
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.ElasticSearchMappingsHelper.Mappings;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.old.ElasticSearchMappingsHelper.Mappings;
 
 /**
  * Created by jj on 19.11.14.
  */
-public class ST_Disjoint extends AbstractElasticSearchSpatialFunction implements ElasticSearchSpatialPredicateFinderSupport.PredicateSpecification {
+public class ST_Disjoint extends AbstractElasticSearchSpatialFunction implements PredicateFinderSupport.PredicateSpecification {
 
 
     public void processSpecification( FilterBuilder filterBuilder,

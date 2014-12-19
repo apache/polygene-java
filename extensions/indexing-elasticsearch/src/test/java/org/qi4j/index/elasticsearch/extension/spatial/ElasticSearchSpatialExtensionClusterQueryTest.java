@@ -91,7 +91,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
                 setMetaInfo(override);
     }
 
-    @Override
+    // @Override
     public void setUp()
             throws Exception {
         super.setUp();
@@ -490,9 +490,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
                                                                                 }
                                                                 ).geometry()
                                         )
-                        ));
-
-        // .orderBy(templateFor(VerifyStatialTypes.class).point(), _tPoint, OrderBy.Order.ASCENDING);
+                        )).orderBy(templateFor(VerifyStatialTypes.class).point(), _tPoint, OrderBy.Order.ASCENDING);
 
 
         query.find();
@@ -513,7 +511,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
                         .where(
                                 ST_Intersects
                                         (
-                                                templateFor(VerifyStatialTypes.class).line(),
+                                                templateFor(VerifyStatialTypes.class).point(),
                                                 TPolygon(module)
                                                         .shell
                                                                 (
