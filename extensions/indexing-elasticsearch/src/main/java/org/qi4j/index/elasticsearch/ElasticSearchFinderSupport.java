@@ -23,6 +23,7 @@ import org.qi4j.api.query.grammar.ComparisonSpecification;
 import org.qi4j.api.query.grammar.ContainsAllSpecification;
 import org.qi4j.api.query.grammar.ContainsSpecification;
 import org.qi4j.api.query.grammar.Variable;
+import org.qi4j.spi.query.EntityFinderException;
 
 
 public final class ElasticSearchFinderSupport

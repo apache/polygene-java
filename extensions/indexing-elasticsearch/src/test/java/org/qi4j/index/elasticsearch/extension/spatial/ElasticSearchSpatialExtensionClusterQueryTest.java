@@ -199,7 +199,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
                                 ST_Within
                                         (
                                                 templateFor(VerifyStatialTypes.class).point(),
-                                                TPoint(module).x(11.57958981111).y(48.13905780941111).geometry(),
+                                                TPoint(module).y(48.13905780941111).x(11.57958981111).geometry(),
                                                 999,
                                                 TUnit.METER
                                         )
@@ -207,7 +207,7 @@ public class ElasticSearchSpatialExtensionClusterQueryTest
 
 
         query.find();
-        assertEquals(query.count(), 1);
+        assertEquals(1, query.count());
         TPoint tPoint = query.iterator().next().point().get();
         assertTrue(tPoint.compareTo(_tPoint) == 0);
     }

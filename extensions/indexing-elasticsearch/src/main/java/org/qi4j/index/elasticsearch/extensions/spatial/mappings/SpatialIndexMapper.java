@@ -18,19 +18,24 @@ public class SpatialIndexMapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpatialIndexMapper.class);
 
 
-    public static void createIfNotExist(ElasticSearchSupport support, TGeometry geometry, String property) {
-
-        if (!MappingsCachesTable.getMappingCache(support).exists(property)) {
+    public static void createIfNotExist(ElasticSearchSupport support, TGeometry geometry, String property)
+    {
+        System.out.println("Property " + property);
+        if (!MappingsCachesTable.getMappingCache(support).exists(property))
+        {
             String mappingsOnServer = MappingQuery(support).get(property);
             System.out.println("Found " + mappingsOnServer);
 
-            if (mappingsOnServer != null) {
+            if (mappingsOnServer != null)
+            {
                 MappingsCachesTable.getMappingCache(support).put(property, mappingsOnServer);
-            } else {
-
-                if (TPoint(support.getModule()).isPoint(geometry) ) {
-
-                    switch (support.indexPointMappingMethod()) {
+            }
+            else
+            {
+                if (TPoint(support.getModule()).isPoint(geometry) )
+                {
+                    switch (support.indexPointMappingMethod())
+                    {
                         case GEO_POINT:
                             GeoPointMapping(support).create(property);
                             break;
@@ -40,7 +45,8 @@ public class SpatialIndexMapper {
                         default:
                             throw new RuntimeException("Unknown Point Maping Type.");
                     }
-                } else
+                }
+                else
                 {
                             GeoShapeMapping(support).create(property);
                 }
@@ -52,20 +58,24 @@ public class SpatialIndexMapper {
     /**
      * Dedicated Cache Operations. No mutable operations on server-side mappings.
      */
-    public static class MappingCache
+    public static class IndexMappingCache
 
     {
 
         public static boolean isMappedAsGeoShape(String index, String type, String property) {
             if (!MappingsCachesTable.getMappingCache(index, type).exists(property)) // <- No mappings yet, as no data in the index ?
-                return true;
+                return false;
+
+            System.out.println("GEOSHAPE " + MappingsCachesTable.getMappingCache(index, type).get(property).toString());
 
             return MappingsCachesTable.getMappingCache(index, type).get(property).toString().indexOf("type=geo_shape") > -1 ? true : false;
         }
 
         public static boolean isMappedAsGeoPoint(String index, String type, String property) {
             if (!MappingsCachesTable.getMappingCache(index, type).exists(property)) // <- No mappings yet, as no data in the index ?
-                return true;
+                return false;
+
+            System.out.println("GEOPOINT " +  MappingsCachesTable.getMappingCache(index, type).get(property).toString());
 
             return MappingsCachesTable.getMappingCache(index, type).get(property).toString().indexOf("type=geo_point") > -1 ? true : false;
         }

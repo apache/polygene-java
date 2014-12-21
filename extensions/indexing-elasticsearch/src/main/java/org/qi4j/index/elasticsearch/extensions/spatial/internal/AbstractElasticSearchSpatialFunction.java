@@ -28,7 +28,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.MappingCache;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.IndexMappingCache;
 
 
 /**
@@ -132,18 +132,18 @@ public abstract class AbstractElasticSearchSpatialFunction {
     protected boolean isMappedAsGeoPoint(PropertyFunction property)
     {
         // return Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoPoint(property.toString());
-        return MappingCache.isMappedAsGeoPoint(support.index(),support.entitiesType(), property.toString());
+        return IndexMappingCache.isMappedAsGeoPoint(support.index(), support.entitiesType(), property.toString());
     }
 
     protected boolean isMappedAsGeoShape(PropertyFunction property)
     {
         // return Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoShape(property.toString());
-        return MappingCache.isMappedAsGeoShape(support.index(), support.entitiesType(), property.toString());
+        return IndexMappingCache.isMappedAsGeoShape(support.index(), support.entitiesType(), property.toString());
     }
 
     protected boolean isMapped(PropertyFunction property)
     {
-        return MappingCache.mappingExists(support.index(),support.entitiesType(), property.toString());
+        return IndexMappingCache.mappingExists(support.index(), support.entitiesType(), property.toString());
     }
 
     protected boolean isSpatial(PropertyFunction property)
@@ -165,10 +165,11 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
     protected GeoDistanceFilterBuilder createGeoDistanceFilter(String name, TPoint tPoint, double distance, TUnit unit)
     {
+        // Lat = Y Long = X
       return  FilterBuilders.geoDistanceFilter(name)
-                .lat(tPoint.x())
-                .lon(tPoint.y())
-                .distance(distance, convertDistanceUnit(unit));
+              .lat(tPoint.y())
+              .lon(tPoint.x())
+              .distance(distance, convertDistanceUnit(unit));
     }
 
 

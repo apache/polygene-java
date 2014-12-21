@@ -24,9 +24,6 @@ import org.qi4j.api.structure.Module;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jj on 28.11.14.
- */
 
 @Mixins(TMultiPoint.Mixin.class)
 public interface TMultiPoint extends GeometryCollections {
@@ -35,7 +32,7 @@ public interface TMultiPoint extends GeometryCollections {
     TMultiPoint of(TPoint... points);
     TMultiPoint of(List<TPoint> points);
 
-    TMultiPoint xy(double x, double y);
+    TMultiPoint yx(double y, double x);
 
     public abstract class Mixin extends GeometryCollections.Mixin implements TMultiPoint {
 
@@ -50,7 +47,7 @@ public interface TMultiPoint extends GeometryCollections {
             return self;
         }
 
-        public TMultiPoint xy(double x, double y) {
+        public TMultiPoint yx(double y, double x) {
             of(module.newValueBuilder(TPoint.class).prototype().x(x).y(y));
             return self;
         }

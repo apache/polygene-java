@@ -32,7 +32,7 @@ import org.qi4j.library.spatial.v2.projections.ProjectionsRegistry;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.MappingCache;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.IndexMappingCache;
 import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
 
 public final class ElasticSearchSpatialIndexer {
@@ -46,37 +46,47 @@ public final class ElasticSearchSpatialIndexer {
         // Spatial Mappings
         {
             SpatialIndexMapper.createIfNotExist(support, geometry, propertyWithDepth);
-
         }
 
         // Spatial Transformations
         {
             if (new ProjectionsRegistry().getCRS(geometry.getCRS()) == null)
                 throw new ElasticSearchIndexException("Project with the CRS Identity " + geometry.getCRS() + " is unknown. Supported projections are JJ TODO");
-            Transform(module).from(geometry).to(DefaultProjection, DefaultProjectionConversionPrecisionInMeters);
+            // Transform(module).from(geometry).to(DefaultProjection, DefaultProjectionConversionPrecisionInMeters);
         }
 
 
         try {
 
-            if (geometry instanceof TPoint) {
-                if (MappingCache.isMappedAsGeoPoint(support.index(), support.entitiesType(), propertyWithDepth))
+            if (geometry instanceof TPoint)
+            {
+                if (IndexMappingCache.isMappedAsGeoPoint(support.index(), support.entitiesType(), propertyWithDepth))
                 {
                     createESGeoPointIndexAsGeoPointValue(property, json, (TPoint) geometry);
-                } else {
+                }
+                else if (IndexMappingCache.isMappedAsGeoShape(support.index(), support.entitiesType(), propertyWithDepth))
+                {
                     createESGeoPointIndexAsShapeValue(property, json, (TPoint) geometry);
                 }
-            } else if (geometry instanceof TMultiPoint) {
+                else new ElasticSearchIndexException("No spatial mapping for property " + propertyWithDepth + " available.");
+
+            } else if (geometry instanceof TMultiPoint)
+            {
                 createESGeoMultiPointAsShapeIndexValue(property, json, (TMultiPoint) geometry);
-            } else if (geometry instanceof TLineString) {
+            } else if (geometry instanceof TLineString)
+            {
                 createESGeoLineStringIndexValue(property, json, (TLineString) geometry);
-            } else if (geometry instanceof TPolygon) {
+            } else if (geometry instanceof TPolygon)
+            {
                 createESGeoPolygonAsShapeIndexValue(property, json, (TPolygon) geometry);
-            } else if (geometry instanceof TMultiPolygon) {
+            } else if (geometry instanceof TMultiPolygon)
+            {
                 throw new ElasticSearchIndexException("JJ TODO");
-            } else if (geometry instanceof TFeature) {
+            } else if (geometry instanceof TFeature)
+            {
                 throw new ElasticSearchIndexException("JJ TODO");
-            } else if (geometry instanceof TFeatureCollection) {
+            } else if (geometry instanceof TFeatureCollection)
+            {
                 throw new ElasticSearchIndexException("JJ TODO");
             } else new ElasticSearchIndexException("Unsupported Geometry : " + geometry.getClass());
 
@@ -94,7 +104,7 @@ public final class ElasticSearchSpatialIndexer {
             JSONArray points = new JSONArray();
             for (int i = 0; i < tMultiPoint.getNumPoints(); i++) {
                 TPoint point = (TPoint) tMultiPoint.getGeometryN(i);
-                points.put(new JSONArray().put(point.x()).put(point.y()));
+                points.put(new JSONArray().put(point.y()).put(point.x()));
             }
 
             tMultiPointMap.put("coordinates", points);
@@ -110,7 +120,7 @@ public final class ElasticSearchSpatialIndexer {
             JSONArray points = new JSONArray();
             for (int i = 0; i < tLineString.getNumPoints(); i++) {
                 TPoint point = (TPoint) tLineString.getPointN(i);
-                points.put(new JSONArray().put(point.x()).put(point.y()));
+                points.put(new JSONArray().put(point.y()).put(point.y()));
             }
 
             tLineStringMap.put("coordinates", points);
@@ -151,15 +161,15 @@ public final class ElasticSearchSpatialIndexer {
      * @param tPoint
      * @throws Exception
      */
-    private static void createESGeoPointIndexAsGeoPointValue(String property, JSONObject json, TPoint tPoint) throws JSONException {
-
+    private static void createESGeoPointIndexAsGeoPointValue(String property, JSONObject json, TPoint tPoint) throws JSONException
+    {
+        System.out.println("...........................lat " +  tPoint.y());
 
             Map tPointMap = new HashMap();
-            tPointMap.put("lat", tPoint.x());
-            tPointMap.put("lon", tPoint.y());
+            tPointMap.put("lat", tPoint.y());
+            tPointMap.put("lon", tPoint.x());
 
             json.put(property, tPointMap);
-
     }
 
     private static void createESGeoPointIndexAsShapeValue(String property, JSONObject json, TPoint tPoint) throws JSONException {
@@ -191,8 +201,8 @@ public final class ElasticSearchSpatialIndexer {
                 for (int i = 0; i < tPolygon.shell().get().getNumPoints(); i++) {
                     JSONArray p = new JSONArray();
 
-                    p.put(tPolygon.shell().get().getPointN(i).x());
                     p.put(tPolygon.shell().get().getPointN(i).y());
+                    p.put(tPolygon.shell().get().getPointN(i).x());
 
                     shell.put(p);
                 }
@@ -211,8 +221,8 @@ public final class ElasticSearchSpatialIndexer {
 
                         JSONArray p = new JSONArray();
 
-                        p.put(tPolygon.holes().get().get(i).getPointN(j).x());
                         p.put(tPolygon.holes().get().get(i).getPointN(j).y());
+                        p.put(tPolygon.holes().get().get(i).getPointN(j).x());
 
                         whole.put(p);
                     }

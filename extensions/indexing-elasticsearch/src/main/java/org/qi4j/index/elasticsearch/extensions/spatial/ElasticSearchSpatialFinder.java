@@ -105,17 +105,18 @@ public final class ElasticSearchSpatialFinder
 
         public FilterBuilder comparison( ComparisonSpecification<?> spec, Map<String, Object> variables )
         {
-            return null;
+            throw new RuntimeException("Unsupported operation");
         }
 
         public FilterBuilder contains( ContainsSpecification<?> spec, Map<String, Object> variables )
         {
-            return null;
+            throw new RuntimeException("Unsupported operation");
+
         }
 
         public FilterBuilder containsAll( ContainsAllSpecification<?> spec, Map<String, Object> variables )
         {
-            return null;
+            throw new RuntimeException("Unsupported operation");
         }
     }
 

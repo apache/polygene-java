@@ -52,7 +52,8 @@ public class AbstractBuilder {
 
         if (ESSpatialMappingPUTResponse.isAcknowledged())
         {
-            MappingsCachesTable.getMappingCache(support.index(), support.entitiesType()).put(field, mappingJson);
+            // we are reading the mapping back from server to assure that the server-side mappings always "wins"
+            MappingsCachesTable.getMappingCache(support.index(), support.entitiesType()).put(field, get(field));
             return true;
         } else
             return false;

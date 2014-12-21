@@ -116,7 +116,7 @@ public class TGeometryFactoryTest
         assertEquals(1d, ((TPoint) multiPoint.getGeometryN(1)).y(), ZERO);
 
         // test DSL
-        multiPoint.xy(2d, 2d);
+        multiPoint.yx(2d, 2d);
 
         assertTrue(multiPoint.getNumGeometries() == 3);
         assertEquals(2d, ((TPoint) multiPoint.getGeometryN(2)).x(), ZERO);

@@ -34,9 +34,9 @@ import org.elasticsearch.search.sort.GeoDistanceSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.geometry.TMultiPoint;
-import org.qi4j.api.geometry.TPoint;
+import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -104,7 +104,7 @@ public interface ElasticSearchFinder
     {
         private static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchFinder.class );
 
-        private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 0 );
+        private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 9 );
         public static final Map<Class<?>, SpatialQuerySpecSupport> EXTENDED_SPEC_SUPPORTS = new HashMap<>( 2 );
 
         public static final Map<Class<?>, SpatialQuerySpecSupport> EXTENDED_QUERY_EXPRESSIONS_CATALOG = new HashMap<>( 2 );
@@ -130,6 +130,12 @@ public interface ElasticSearchFinder
             COMPLEX_TYPE_SUPPORTS.put( TGeometry.class, spatialTypeSupport );
             COMPLEX_TYPE_SUPPORTS.put( TPoint.class, spatialTypeSupport );
             COMPLEX_TYPE_SUPPORTS.put( TMultiPoint.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TLineString.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TLinearRing.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TPolygon.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TMultiPolygon.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TFeature.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TFeatureCollection.class, spatialTypeSupport );
         }
 
 
