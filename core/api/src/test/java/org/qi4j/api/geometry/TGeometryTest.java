@@ -142,11 +142,11 @@ public class TGeometryTest
 
         TLineString lineString = builder.prototype().of()
 
-                .xy(0d, 0d)
-                .xy(0d, 1d)
-                .xy(1d, 0d)
-                .xy(1d, 1d)
-                .xy(0d, 0d);
+                .yx(0d, 0d)
+                .yx(0d, 1d)
+                .yx(1d, 0d)
+                .yx(1d, 1d)
+                .yx(0d, 0d);
 
         assertTrue(lineString.getStartPoint().x() == 0d);
 
@@ -192,11 +192,11 @@ public class TGeometryTest
 
         TLinearRing shell = (TLinearRing)builder.prototype().of()
 
-                .xy(0d, 0d)
-                .xy(0d, 1d)
-                .xy(1d, 0d)
-                .xy(1d, 1d)
-                .xy(0d, 0d);
+                .yx(0d, 0d)
+                .yx(0d, 1d)
+                .yx(1d, 0d)
+                .yx(1d, 1d)
+                .yx(0d, 0d);
 
 
         assertTrue(shell.isValid()); // ring closed ?, z-point-dimension is ignored

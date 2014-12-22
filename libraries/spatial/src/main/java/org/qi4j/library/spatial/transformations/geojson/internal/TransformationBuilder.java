@@ -127,7 +127,7 @@ public class TransformationBuilder {
 
         TLinearRing tLinearRing = TLinearRing(module).of().geometry();
         for (LngLatAlt xyz :coordinates ) {
-            tLinearRing.xy(xyz.getLatitude(), xyz.getLongitude());
+            tLinearRing.yx(xyz.getLatitude(), xyz.getLongitude());
         }
 
         if (!tLinearRing.isClosed())

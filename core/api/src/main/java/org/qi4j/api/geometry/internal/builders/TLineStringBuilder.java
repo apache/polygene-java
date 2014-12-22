@@ -34,9 +34,9 @@ public class TLineStringBuilder {
 
 
     public TLineStringBuilder points(double[][] points) {
-        for (double xy[] : points) {
-            if (xy.length < 2) return null;
-            geometry.xy(xy[0], xy[1]);
+        for (double yx[] : points) {
+            if (yx.length < 2) return null;
+            geometry.yx(yx[0], yx[1]);
         }
         return this;
     }

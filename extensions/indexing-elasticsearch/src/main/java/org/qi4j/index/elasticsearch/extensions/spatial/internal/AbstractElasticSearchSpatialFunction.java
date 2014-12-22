@@ -82,6 +82,7 @@ public abstract class AbstractElasticSearchSpatialFunction {
         Type propertyTypeAsType = GenericPropertyInfo.toPropertyType(returnType);
 
 
+
         System.out.println("---- > " + propertyTypeAsType.getTypeName());
 
         Class clazz;

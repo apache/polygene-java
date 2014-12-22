@@ -35,7 +35,7 @@ import org.qi4j.spi.query.QuerySource;
 /**
  * Default implementation of {@link org.qi4j.api.query.Query}.
  */
-/* package */ class QueryImpl<T>
+/* package */ public class QueryImpl<T>
     implements Query<T>
 {
     private static final long serialVersionUID = 1L;
@@ -66,10 +66,6 @@ import org.qi4j.spi.query.QuerySource;
      */
     private Map<String, Object> variables;
 
-    /**
-     * Ordering from a spatial centre.
-     */
-    private TPoint centre;
 
     /**
      * Constructor.
@@ -221,6 +217,16 @@ import org.qi4j.spi.query.QuerySource;
     public Iterator<T> iterator()
     {
         return querySource.iterator( resultType, whereClause, orderBySegments, firstResult, maxResults, variables );
+    }
+
+    public Specification<Composite> getWhereClause()
+    {
+        return whereClause;
+    }
+
+    public Iterable<OrderBy> getOrderBySegments()
+    {
+        return orderBySegments;
     }
 
     @Override

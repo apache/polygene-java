@@ -9,6 +9,7 @@ import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_WithinSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.SpatialPredicatesSpecification;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialFunctionsSupportMatrix;
 import org.qi4j.index.elasticsearch.extensions.spatial.internal.AbstractElasticSearchSpatialFunction;
 import org.qi4j.spi.query.EntityFinderException;
 
@@ -34,6 +35,11 @@ public class ST_WithinV2 extends AbstractElasticSearchSpatialFunction implements
 
         TGeometry filterGeometry = resolveGeometry(filterBuilder,spec, module);
 
+        SpatialFunctionsSupportMatrix.isSupported(
+                this.getClass(),
+                isPropertyOfType(TPoint.class, spec.property()) ? TPoint.class : TGeometry.class,
+                filterGeometry.getClass(),
+                isMappedAsGeoPoint(spec.property()) ? SpatialFunctionsSupportMatrix.INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT : SpatialFunctionsSupportMatrix.INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOSHAPE);
 
         if (!isMapped(spec.property()))
         {
@@ -95,7 +101,7 @@ public class ST_WithinV2 extends AbstractElasticSearchSpatialFunction implements
 
                     for (int i = 0; i < polygonFilter.shell().get().getNumPoints(); i++) {
                         TPoint point = polygonFilter.shell().get().getPointN(i);
-                        geoPolygonFilterBuilder.addPoint(point.x(), point.y());
+                        geoPolygonFilterBuilder.addPoint(point.y(), point.x());
                     }
                     addFilter(geoPolygonFilterBuilder, filterBuilder);
                 } else

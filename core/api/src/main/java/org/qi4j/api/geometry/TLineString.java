@@ -35,7 +35,7 @@ public interface TLineString extends TGeometry {
     TLineString of(List<TPoint> points);
     TLineString of();
 
-    TLineString xy(double x, double y);
+    TLineString yx(double y, double x);
 
     boolean isEmpty();
     int getNumPoints();
@@ -81,7 +81,7 @@ public interface TLineString extends TGeometry {
             return self;
         }
 
-        public TLineString xy(double x, double y) {
+        public TLineString yx(double y, double x) {
             of(module.newValueBuilder(TPoint.class).prototype().x(x).y(y));
             return self;
         }

@@ -36,7 +36,7 @@ public class TLinearRingBuilder {
     public TLinearRingBuilder ring(double[][] ring) {
         for (double xy[] : ring) {
             if (xy.length < 2) return null;
-            geometry.xy(xy[0], xy[1]);
+            geometry.yx(xy[0], xy[1]);
         }
         return this;
     }

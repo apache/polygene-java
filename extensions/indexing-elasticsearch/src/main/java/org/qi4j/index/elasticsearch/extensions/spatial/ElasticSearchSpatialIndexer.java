@@ -120,7 +120,7 @@ public final class ElasticSearchSpatialIndexer {
             JSONArray points = new JSONArray();
             for (int i = 0; i < tLineString.getNumPoints(); i++) {
                 TPoint point = (TPoint) tLineString.getPointN(i);
-                points.put(new JSONArray().put(point.y()).put(point.y()));
+                points.put(new JSONArray().put(point.y()).put(point.x()));
             }
 
             tLineStringMap.put("coordinates", points);
@@ -163,8 +163,6 @@ public final class ElasticSearchSpatialIndexer {
      */
     private static void createESGeoPointIndexAsGeoPointValue(String property, JSONObject json, TPoint tPoint) throws JSONException
     {
-        System.out.println("...........................lat " +  tPoint.y());
-
             Map tPointMap = new HashMap();
             tPointMap.put("lat", tPoint.y());
             tPointMap.put("lon", tPoint.x());
@@ -174,7 +172,7 @@ public final class ElasticSearchSpatialIndexer {
 
     private static void createESGeoPointIndexAsShapeValue(String property, JSONObject json, TPoint tPoint) throws JSONException {
             Map tPointMap = new HashMap();
-
+            // Lat = Y Long = X
             tPointMap.put("type", "point");
             tPointMap.put("coordinates", new JSONArray().put(tPoint.x()).put(tPoint.y()));
 
@@ -201,8 +199,8 @@ public final class ElasticSearchSpatialIndexer {
                 for (int i = 0; i < tPolygon.shell().get().getNumPoints(); i++) {
                     JSONArray p = new JSONArray();
 
-                    p.put(tPolygon.shell().get().getPointN(i).y());
                     p.put(tPolygon.shell().get().getPointN(i).x());
+                    p.put(tPolygon.shell().get().getPointN(i).y());
 
                     shell.put(p);
                 }
@@ -221,8 +219,8 @@ public final class ElasticSearchSpatialIndexer {
 
                         JSONArray p = new JSONArray();
 
-                        p.put(tPolygon.holes().get().get(i).getPointN(j).y());
                         p.put(tPolygon.holes().get().get(i).getPointN(j).x());
+                        p.put(tPolygon.holes().get().get(i).getPointN(j).y());
 
                         whole.put(p);
                     }
