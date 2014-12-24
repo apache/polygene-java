@@ -72,11 +72,16 @@ public class SpatialFunctionsSupportMatrix
 
         public boolean isSupported( Class<? extends  TGeometry> geometryOfProperty, Class<? extends  TGeometry> geometryOfFilter, Boolean orderBy)
         {
-           if (supportsProperty(geometryOfProperty) && supportsFilter(geometryOfFilter))
-                if (orderBy && (this.orderBy == orderBy)) // <- when we validate against orderBy, the it has to match. Otherwise ignore.
-                    return true;
-                else
+            System.out.println("geometryOfProperty " + geometryOfProperty);
+            System.out.println("geometryOfFilter " + geometryOfFilter);
+            System.out.println("Boolean " + orderBy);
+
+
+            if (supportsProperty(geometryOfProperty) && supportsFilter(geometryOfFilter))
+                if (orderBy && (this.orderBy != orderBy)) // <- when we validate against orderBy, the it has to match. Otherwise ignore.
                     return false;
+                else
+                    return true;
             else
                return false;
         }

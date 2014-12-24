@@ -12,6 +12,7 @@ import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
 import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialFunctionsSupportMatrix;
 import org.qi4j.index.elasticsearch.extensions.spatial.internal.InternalUtils;
+import org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.spatial.v2.assembly.TGeometryAssembler;
@@ -40,6 +41,12 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
         assumeNoIbmJdk();
     }
 
+    protected boolean isExpressionSupported(Query<?> expression)
+    {
+        return true;
+    }
+
+/**
     protected boolean isExpressionSupported(Query<?> expression)
     {
         QueryImpl queryImpl = (QueryImpl)expression;
@@ -77,6 +84,7 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
                         SpatialFunctionsSupportMatrix.INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT
                 );
     }
+ */
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -106,5 +114,8 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
                 withTemporary( new File( DATA_DIR, "qi4j-temp" ) );
         module.services( FileConfigurationService.class ).
                 setMetaInfo( override );
+
+        // clear index mapping caches during junit testcases
+        // SpatialIndexMapper.IndexMappingCache.clear();
     }
 }

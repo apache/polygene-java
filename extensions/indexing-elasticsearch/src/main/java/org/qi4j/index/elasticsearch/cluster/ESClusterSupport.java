@@ -25,6 +25,7 @@ import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.index.elasticsearch.ElasticSearchClusterConfiguration;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
+import org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper;
 import org.qi4j.index.elasticsearch.internal.AbstractElasticSearchSupport;
 
 public class ESClusterSupport
@@ -72,6 +73,13 @@ public class ESClusterSupport
         }
 
         client = transportClient;
+    }
+
+    @Override
+    public void passivateElasticSearch()
+            throws Exception
+    {
+        SpatialIndexMapper.IndexMappingCache.clear();
     }
 
 }

@@ -54,8 +54,8 @@ public class ST_Disjoint extends AbstractElasticSearchSpatialFunction implements
          * When the template property is of type TPoint then the filter property has to have an area.
          * Currently only filter geometries of type TPolygon are supported. E.g.
          *
-         * TPolygon filterGeometry = TPolygon(module).shell(..)
-         * ST_Within (templafeFor(x.class).propertyOfTypeTPoint(), filterGeometry);
+         * TPolygon polygon = TPolygon(module).shell(..)
+         * ST_Within (templateFor(x.class).propertyOfTypeTPoint(), polygon);
          *
          *
          */
@@ -89,7 +89,7 @@ public class ST_Disjoint extends AbstractElasticSearchSpatialFunction implements
                 addFilter(notFilter(geoPolygonFilterBuilder), filterBuilder); // TODO NOT
             }
             else
-                throw new EntityFinderException("Invalid ST_Disjoint expression. Unsupported type " +  filterGeometry.getClass().getSimpleName() +
+                throw new EntityFinderException("Invalid ST_Disjoint expression. Unsupported type " +  filterGeometry.getType() +
                         " On properties of type " +  TPoint.class.getSimpleName() +
                         " only filters of type distance or polygon are supported.");
         }

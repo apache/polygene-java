@@ -4,6 +4,7 @@ import org.cts.crs.CRSException;
 import org.cts.crs.CoordinateReferenceSystem;
 import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TCircle;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.value.ValueSerialization;
@@ -31,7 +32,7 @@ public class TGeometryAssembler
             throws AssemblyException
     {
         // internal values
-        module.values(Coordinate.class, TLinearRing.class, TGeometry.class);
+        module.values(Coordinate.class, TLinearRing.class, TCircle.class, TGeometry.class);
         // API values
         module.values(
                 TCRS.class,

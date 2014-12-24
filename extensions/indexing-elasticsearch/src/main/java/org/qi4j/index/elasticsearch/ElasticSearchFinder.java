@@ -666,17 +666,21 @@ public interface ElasticSearchFinder
         private void processSpatialPredicatesSpecification( FilterBuilder filterBuilder,
                                                             SpatialPredicatesSpecification<?> spec,
                                                             Map<String, Object> variables )
+                throws EntityFinderException
         {
             LOGGER.trace("Processing SpatialPredicatesSpecification {}", spec);
             SpatialQuerySpecSupport spatialQuerySpecSupport = EXTENDED_SPEC_SUPPORTS.get( spec.getClass().getSuperclass() );
             spatialQuerySpecSupport.setModule(module, support);
+
+
+
             try
             {
                 spatialQuerySpecSupport.processSpecification(filterBuilder, spec, variables);
 
             } catch(Exception _ex)
             {
-                _ex.printStackTrace();
+                throw new EntityFinderException(_ex);
             }
         }
 

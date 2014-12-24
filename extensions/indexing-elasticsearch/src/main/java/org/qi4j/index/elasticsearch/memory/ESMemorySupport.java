@@ -27,6 +27,7 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
+import org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper;
 import org.qi4j.index.elasticsearch.internal.AbstractElasticSearchSupport;
 import org.qi4j.library.fileconfig.FileConfiguration;
 
@@ -87,6 +88,7 @@ public class ESMemorySupport
     public void passivateElasticSearch()
             throws Exception
     {
+        SpatialIndexMapper.IndexMappingCache.clear();
         node.close();
         node = null;
     }

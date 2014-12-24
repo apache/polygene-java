@@ -47,6 +47,26 @@ public class TPointBuilder {
         return this;
     }
 
+
+    public TPointBuilder lat(double lat) {
+        geometry.y(lat);
+        return this;
+    }
+
+    public TPointBuilder lon(double lon) {
+        geometry.x(lon);
+        return this;
+    }
+
+    public TPointBuilder alt(double alt) {
+        geometry.z(alt);
+        return this;
+    }
+
+
+
+
+
     public boolean isPoint(TGeometry tGeometry)
     {
         return tGeometry instanceof TPoint ?  true :  false;

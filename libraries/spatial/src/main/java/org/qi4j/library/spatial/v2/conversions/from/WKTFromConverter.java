@@ -42,6 +42,7 @@ public class WKTFromConverter {
     }
 
 
+
     private Module module;
 
     public WKTFromConverter(Module module)
@@ -83,6 +84,8 @@ public class WKTFromConverter {
 
     if (sNoDL instanceof Point)
     {
+
+        // ctx.makeCircle(0,0,0).getBoundingBox().
         // System.out.println("Shape is point ");
 
         ValueBuilder<TPoint> builder = module.newValueBuilder(TPoint.class);

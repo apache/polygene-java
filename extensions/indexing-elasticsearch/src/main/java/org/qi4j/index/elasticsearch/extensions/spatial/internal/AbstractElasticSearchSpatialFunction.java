@@ -7,6 +7,7 @@ import org.elasticsearch.common.geo.builders.ShapeBuilder;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.*;
 import org.qi4j.api.composite.Composite;
+import org.qi4j.api.geometry.TGeometryFactory;
 import org.qi4j.api.geometry.TUnit;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.TPoint;
@@ -21,8 +22,10 @@ import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchFinder;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinder;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialFunctionsSupportMatrix;
 import org.qi4j.library.spatial.v2.projections.ProjectionsRegistry;
 import org.qi4j.spi.query.EntityFinderException;
+import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -48,6 +51,29 @@ public abstract class AbstractElasticSearchSpatialFunction {
         this.module = module;
         this.support = support;
     }
+
+
+    protected boolean isSupported(SpatialPredicatesSpecification<?> spec, TGeometry geometryOfFilter) throws EntityFinderException
+    {
+        return SpatialFunctionsSupportMatrix.isSupported
+                (
+                        spec.getClass(),
+                        isPropertyOfType(TPoint.class, spec.property()) ? TPoint.class : TGeometry.class,
+                        InternalUtils.classOfGeometry(geometryOfFilter),
+                        isMappedAsGeoPoint(spec.property()) ? SpatialFunctionsSupportMatrix.INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT : SpatialFunctionsSupportMatrix.INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOSHAPE
+                );
+
+    }
+
+    protected boolean isValid(SpatialPredicatesSpecification<?> spec) throws EntityFinderException
+    {
+        if ((spec.value() == null && spec.operator() == null))
+            return false;
+        else
+            return true;
+
+    }
+
 
     protected void addFilter( FilterBuilder filter, FilterBuilder into )
     {
@@ -132,13 +158,18 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
     protected boolean isMappedAsGeoPoint(PropertyFunction property)
     {
-        // return Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoPoint(property.toString());
         return IndexMappingCache.isMappedAsGeoPoint(support.index(), support.entitiesType(), property.toString());
+    }
+
+
+
+    protected boolean isTPoint(TGeometry filterGeometry)
+    {
+        return TPoint(module).isPoint(filterGeometry);
     }
 
     protected boolean isMappedAsGeoShape(PropertyFunction property)
     {
-        // return Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoShape(property.toString());
         return IndexMappingCache.isMappedAsGeoShape(support.index(), support.entitiesType(), property.toString());
     }
 
@@ -186,6 +217,18 @@ public abstract class AbstractElasticSearchSpatialFunction {
         }
     }
 
+    protected double convertDistanceToMeters(double source, TUnit sourceUnit)
+    {
+        switch (sourceUnit)
+        {
+            case MILLIMETER : return source / 1000;
+            case CENTIMETER : return source / 100;
+            case METER      : return source;
+            case KILOMETER  : return source * 1000;
+            default : throw new RuntimeException("Can not convert Units");
+        }
+    }
+
 
     private GeoShapeFilterBuilder createShapeFilter(String name, TGeometry geometry, ShapeRelation relation, double distance, DistanceUnit unit  )
     {
@@ -201,7 +244,7 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
             for (int i = 0; i < ((TPolygon) geometry).shell().get().points().get().size(); i++) {
                 TPoint point = ((TPolygon) geometry).shell().get().getPointN(i);
-                System.out.println(point);
+                // System.out.println(point);
 
                 polygonBuilder.point(
                         point.x(), point.y()

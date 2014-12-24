@@ -81,7 +81,9 @@ public final class ElasticSearchSpatialFinder
 
         public void processSpecification(FilterBuilder filterBuilder,
                                               Specification<?> spec,
-                                              Map<String, Object> variables) {
+                                              Map<String, Object> variables)
+                throws EntityFinderException
+        {
 
             SpatialQuerySpecSupport spatialQuerySpecSupport = SPATIAL_QUERY_EXPRESSIONS_CATALOG.get(spec.getClass().getSuperclass());
             spatialQuerySpecSupport.setModule(module, support);
@@ -90,7 +92,7 @@ public final class ElasticSearchSpatialFinder
                 spatialQuerySpecSupport.processSpecification(filterBuilder, spec, variables);
 
             } catch (Exception _ex) {
-                _ex.printStackTrace();
+                throw new EntityFinderException(_ex);
             }
 
 

@@ -27,7 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Lat = Y Long = X
+ * Lat = Y Lon = X
+ *
+ * For type "Point", each element in the coordinates array is a number representing the point coordinate in one
+ * dimension. There must be at least two elements, and may be more. The order of elements must follow x, y, z order
+ * (or longitude, latitude, altitude for coordinates in a geographic coordinate reference system). Any number of
+ * additional dimensions are allowed, and interpretation and meaning of these coordinates is beyond the scope of
+ * this specification.
  */
 @Mixins(TPoint.Mixin.class)
 public interface TPoint extends HasNoArea, TGeometry {

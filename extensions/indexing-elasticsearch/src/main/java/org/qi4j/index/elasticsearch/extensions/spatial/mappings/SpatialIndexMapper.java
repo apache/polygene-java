@@ -84,6 +84,11 @@ public class SpatialIndexMapper {
             return MappingsCachesTable.getMappingCache(index, type).exists(property);
         }
 
+        public static void clear()
+        {
+            MappingsCachesTable.clear();
+        }
+
     }
 
 

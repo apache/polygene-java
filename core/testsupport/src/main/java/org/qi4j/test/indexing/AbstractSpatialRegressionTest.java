@@ -31,7 +31,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.qi4j.api.geometry.TGeometryFactory.*;
 import static org.qi4j.api.geometry.TGeometryFactory.TLinearRing;
+import static org.qi4j.api.query.QueryExpressions.and;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
+import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Disjoint;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_GeometryFromText;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Within;
 import static org.junit.Assume.*;
@@ -58,7 +60,7 @@ public abstract class AbstractSpatialRegressionTest
         @Optional Property<TFeatureCollection>  featurecollection();
     }
 
-    private TPoint      _TPoint;
+    private TPoint      _TPoint,_TPoint2, _TPoint3;
     private TMultiPoint _TMultiPoint;
     private TLineString _TLineString;
     private TPolygon    _TPolygon;
@@ -67,7 +69,15 @@ public abstract class AbstractSpatialRegressionTest
     public void setUp() throws Exception {
         super.setUp();
 
-        _TPoint = TPoint(module).y(48.13905780942574).x(11.57958984375)
+        System.out.println("########### Populating Values ############");
+
+        _TPoint = TPoint(module).lat(48.13905780942574).lon(11.57958984375)
+                .geometry();
+
+        _TPoint2 = TPoint(module).lat(48.145748).lon(11.567976)
+                .geometry();
+
+        _TPoint3 = TPoint(module).lat(52.518571).lon(13.404586)
                 .geometry();
 
         _TMultiPoint = TMultiPoint(module).points(new double[][]
@@ -124,6 +134,15 @@ public abstract class AbstractSpatialRegressionTest
                 EntityBuilder<SpatialRegressionEntity> pointBuilder = unitOfWork.newEntityBuilder(SpatialRegressionEntity.class, "Point");
                 pointBuilder.instance().point().set(_TPoint);
                 pointBuilder.newInstance();
+
+                EntityBuilder<SpatialRegressionEntity> pointBuilder2 = unitOfWork.newEntityBuilder(SpatialRegressionEntity.class, "Point2");
+                pointBuilder2.instance().point().set(_TPoint2);
+                pointBuilder2.newInstance();
+
+                EntityBuilder<SpatialRegressionEntity> pointBuilder3 = unitOfWork.newEntityBuilder(SpatialRegressionEntity.class, "Point3");
+                pointBuilder3.instance().point().set(_TPoint3);
+                pointBuilder3.newInstance();
+
             }
 
             // TMultiPoint
@@ -163,29 +182,8 @@ public abstract class AbstractSpatialRegressionTest
         module.entities(SpatialRegressionEntity.class);
     }
 
-    @Test
-    public void scriptTest()
-            throws EntityFinderException
-    {
-        QueryBuilder<SpatialRegressionsValues> qb = this.module.newQueryBuilder(SpatialRegressionsValues.class);
 
-        Query<SpatialRegressionsValues> query = unitOfWork.newQuery(
-                qb
-                        .where(
-                                ST_Within
-                                        (
-                                         templateFor(SpatialRegressionsValues.class).point(),
-                                         TPoint(module).y(48.13905780942574).x(11.57958984375).geometry(),
-                                         10,TUnit.METER
-                                        )
-                        ));
-        assumeTrue(isExpressionSupported(query));
-        query.find();
-        assertEquals(1, query.count());
-        TPoint tPoint = query.iterator().next().point().get();
-        assertTrue(tPoint.compareTo(_TPoint) == 0);
-    }
-
+    // ST_Within()
 
     @Test
     public void script01()
@@ -300,15 +298,17 @@ public abstract class AbstractSpatialRegressionTest
                                          .shell
                                                  (
                                                  new double[][]
-                                                         {{ 48.14255158541622 , 11.575984954833984 },
-                                                          { 48.14177839318570 , 11.586370468139648 },
-                                                          { 48.13416039532121 , 11.587958335876465 },
-                                                          { 48.12994996417526 , 11.584053039550781 },
-                                                          { 48.12900471789726 , 11.570577621459961 },
-                                                          { 48.13519146869094 , 11.563453674316406 },
-                                                          { 48.14063290180734 , 11.565470695495605 },
-                                                          { 48.14189294091770 , 11.570920944213867 },
-                                                          { 48.14255158541622 , 11.575984954833984 }}
+                                                         {
+                                                            { 48.14255158541622 , 11.575984954833984 },
+                                                            { 48.14177839318570 , 11.586370468139648 },
+                                                            { 48.13416039532121 , 11.587958335876465 },
+                                                            { 48.12994996417526 , 11.584053039550781 },
+                                                            { 48.12900471789726 , 11.570577621459961 },
+                                                            { 48.13519146869094 , 11.563453674316406 },
+                                                            { 48.14063290180734 , 11.565470695495605 },
+                                                            { 48.14189294091770 , 11.570920944213867 },
+                                                            { 48.14255158541622 , 11.575984954833984 }
+                                                         }
                                                   )
                                                  .geometry()
                                         )
@@ -333,9 +333,9 @@ public abstract class AbstractSpatialRegressionTest
                         .where(
                                 ST_Within
                                         (
-                                                templateFor(SpatialRegressionsValues.class).line(),
-                                                TPolygon(module)
-                                                        .shell
+                                        templateFor(SpatialRegressionsValues.class).line(),
+                                        TPolygon(module)
+                                         .shell
                                                                 (
                                                                         new double[][]
                                                                                 {{ 48.17341248658083 , 11.499938964843750  },
@@ -360,4 +360,196 @@ public abstract class AbstractSpatialRegressionTest
         System.out.println(tLineString);
     }
 
+
+
+    @Test
+    public void script07()
+    {
+        QueryBuilder<SpatialRegressionsValues> qb = this.module.newQueryBuilder(SpatialRegressionsValues.class);
+
+        Query<SpatialRegressionsValues> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Within
+                                        (
+                                        templateFor(SpatialRegressionsValues.class).polygon(),
+
+                                         TPolygon(module)
+                                              .shell
+                                                   (
+                                                   new double[][]
+                                                          {
+                                                                          { 48.122101028190805 , 11.329650878906250 },
+                                                                          { 48.285934388727240 , 11.394195556640625 },
+                                                                          { 48.232906106325146 , 11.936645507812500 },
+                                                                          { 47.950385640510110 , 11.852874755859375 },
+                                                                          { 47.944866579210150 , 11.368103027343750 },
+                                                                          { 48.122101028190805 , 11.329650878906250 }
+                                                          }
+                                                                ).geometry()
+                                        )
+                        ));
+
+
+        query.find();
+
+        assertEquals(query.count(), 1);
+        TPolygon tPolygon = query.iterator().next().polygon().get();
+        assertTrue(tPolygon.holes().get().size() == 1);
+        assertTrue(tPolygon.shell().get().compareTo(_TPolygon.shell().get()) == 0);
+        assertFalse(tPolygon.holes().get().get(0).compareTo(_TPolygon.shell().get()) == 0);
+        assertTrue(tPolygon.holes().get().get(0).compareTo(_TPolygon.holes().get().get(0)) == 0);
+    }
+
+    // ST_Disjoint()
+
+    @Test
+    public void script08()
+            throws EntityFinderException
+    {
+        QueryBuilder<SpatialRegressionsValues> qb = this.module.newQueryBuilder(SpatialRegressionsValues.class);
+
+        Query<SpatialRegressionsValues> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Disjoint
+                                        (
+                                                templateFor(SpatialRegressionsValues.class).point(),
+                                                TPoint(module).y(48.13905780942574).x(11.57958984375).geometry(),
+                                                10,TUnit.METER
+                                        )
+                        ));
+        assumeTrue(isExpressionSupported(query));
+        query.find();
+        assertEquals(4, query.count());
+        TPoint tPoint = query.iterator().next().point().get();
+        assertTrue(tPoint.compareTo(_TPoint) == 0);
+        // assertSame
+    }
+
+    @Test
+    public void script09()
+            throws EntityFinderException
+    {
+        QueryBuilder<SpatialRegressionsValues> qb = this.module.newQueryBuilder(SpatialRegressionsValues.class);
+
+        Query<SpatialRegressionsValues> query = unitOfWork.newQuery(
+                qb
+                        .where(
+                                ST_Disjoint
+                                        (
+                                                templateFor(SpatialRegressionsValues.class).point(),
+                                                TPoint(module).y(48.13905780942574).x(11.57958984375).geometry(),
+                                                // TPoint(module).y(45.13905780942574).x(10.57958984375).geometry(),
+                                                10,TUnit.KILOMETER
+                                        )
+                        ));
+        assumeTrue(isExpressionSupported(query));
+        query.find();
+
+        System.out.println("Count " + query.count());
+
+        assertEquals(1, query.count());
+        TPoint tPoint = query.iterator().next().point().get();
+        assertTrue(tPoint.compareTo(_TPoint3) == 0);
+        // assertSame
+    }
+
+
+    @Test
+    public void script10()
+            throws EntityFinderException
+    {
+        QueryBuilder<SpatialRegressionsValues> qb = this.module.newQueryBuilder(SpatialRegressionsValues.class);
+
+        Query<SpatialRegressionsValues> query = unitOfWork.newQuery(
+                qb
+                        .where(and(
+                                ST_Disjoint
+                                        (
+                                                templateFor(SpatialRegressionsValues.class).point(),
+                                                TPoint(module).y(48.13905780942574).x(11.57958984375).geometry(),
+                                                10, TUnit.METER
+                                        ),
+                                ST_Within
+                                        (
+                                                 templateFor(SpatialRegressionsValues.class).point(),
+                                                 TPoint(module).y(48.13905780942574).x(11.57958984375).geometry(),
+                                                 10,TUnit.KILOMETER
+                                         )
+                                )
+                        ));
+        assumeTrue(isExpressionSupported(query));
+        query.find();
+
+        assertEquals(1, query.count());
+        TPoint tPoint = query.iterator().next().point().get();
+        assertTrue(tPoint.compareTo(_TPoint2) == 0);
+    }
+
+    @Test
+    public void script11()
+            throws EntityFinderException
+    {
+        QueryBuilder<SpatialRegressionsValues> qb = this.module.newQueryBuilder(SpatialRegressionsValues.class);
+
+        Query<SpatialRegressionsValues> query = unitOfWork.newQuery(
+                qb
+                        .where(and(
+                                        ST_Disjoint
+                                                (
+                                                        templateFor(SpatialRegressionsValues.class).point(),
+                                                        TPoint(module).y(2389280.7514562616).x(1286436.5975464052).geometry("EPSG:27572"),
+                                                        10, TUnit.METER
+                                                ),
+                                        ST_Within
+                                                (
+                                                        templateFor(SpatialRegressionsValues.class).point(),
+                                                        TPoint(module).y(48.13905780942574).x(11.57958984375).geometry(),
+                                                        100,TUnit.KILOMETER
+                                                )
+                                )
+                        ));
+        assumeTrue(isExpressionSupported(query));
+        query.find();
+
+        assertEquals(1, query.count());
+        TPoint tPoint = query.iterator().next().point().get();
+        assertTrue(tPoint.compareTo(_TPoint2) == 0);
+        // assertSame
+    }
+
+    @Test
+    public void script12()
+            throws EntityFinderException
+    {
+        QueryBuilder<SpatialRegressionsValues> qb = this.module.newQueryBuilder(SpatialRegressionsValues.class);
+
+        Query<SpatialRegressionsValues> query = unitOfWork.newQuery(
+                qb
+                        .where(and(
+                                        ST_Disjoint
+                                                (
+                                                        templateFor(SpatialRegressionsValues.class).point(),
+                                                        TPoint(module).y(2389280.7514562616).x(1286436.5975464052).geometry("EPSG:27572"),
+                                                        10, TUnit.METER
+                                                ),
+                                        ST_Within
+                                                (
+                                                        templateFor(SpatialRegressionsValues.class).point(),
+                                                        TPoint(module).y(2389280.7514562616).x(1286436.5975464052).geometry("EPSG:27572"),
+                                                        1000,TUnit.KILOMETER
+                                                )
+                                )
+                        ));
+        assumeTrue(isExpressionSupported(query));
+        query.find();
+
+        assertEquals(2, query.count());
+    }
+
+
 }
+
+
+

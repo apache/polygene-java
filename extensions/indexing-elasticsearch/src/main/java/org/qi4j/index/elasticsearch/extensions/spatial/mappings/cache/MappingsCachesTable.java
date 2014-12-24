@@ -23,4 +23,11 @@ public class MappingsCachesTable {
         }
         return CACHES_TABLE.get(support.index(), support.entitiesType());
     }
+
+    public static void clear()
+    {
+        CACHES_TABLE.clear();
+    }
+
+
 }

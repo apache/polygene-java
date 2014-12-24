@@ -16,6 +16,7 @@ package org.qi4j.api.geometry;
 
 import org.junit.Test;
 import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TCircle;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.value.ValueBuilder;
@@ -36,7 +37,7 @@ public class TGeometryTest
         throws AssemblyException
     {
         // internal values
-        module.values(Coordinate.class, TLinearRing.class, TGeometry.class);
+        module.values(Coordinate.class, TLinearRing.class, TCircle.class, TGeometry.class);
         // API values
         module.values(
                 TCRS.class,
@@ -326,6 +327,20 @@ public class TGeometryTest
         // JJ TODO - add test polygon and holes
     }
 
+    @Test
+    public void testWhenCreatedTCircleThenPolygonize()
+    {
+        ValueBuilder<TCircle> builder = module.newValueBuilder(TCircle.class);
+
+        // 48.13905780942574).x(11.57958984375
+
+        TCircle tCircle = builder.prototype().of(48.13905780942574, 11.57958984375, 100);
+        TPolygon tPolygon = tCircle.polygonize(360);
+        assertTrue(tPolygon.shell().get().isValid());
+        assertTrue(tPolygon.shell().get().getNumPoints() == 360 + 1);
+
+        System.out.println(tPolygon);
+    }
 
 
 }

@@ -32,7 +32,7 @@ public class TMultiPointBuilder {
         geometry = module.newValueBuilder(TMultiPoint.class).prototype();
     }
 
-
+    // Format { lat, lon }
     public TMultiPointBuilder points(double[][] points) {
         for (double yx[] : points) {
             if (yx.length < 2) return null;

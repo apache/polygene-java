@@ -1,55 +1,69 @@
 package org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates;
 
+import com.spatial4j.core.distance.DistanceUtils;
 import org.elasticsearch.common.geo.ShapeRelation;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.GeoPolygonFilterBuilder;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
+import org.qi4j.api.geometry.internal.TCircle;
 import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_DisjointSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_WithinSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.SpatialPredicatesSpecification;
 import org.qi4j.index.elasticsearch.extensions.spatial.internal.AbstractElasticSearchSpatialFunction;
 import org.qi4j.spi.query.EntityFinderException;
 
 import java.util.Map;
-import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.old.ElasticSearchMappingsHelper.Mappings;
 
-/**
- * Created by jj on 19.11.14.
- */
-public class ST_Within extends AbstractElasticSearchSpatialFunction implements PredicateFinderSupport.PredicateSpecification {
 
-    public void processSpecification( FilterBuilder filterBuilder,
-                                      SpatialPredicatesSpecification<?> spec,
-                                      Map<String, Object> variables )
-                                                           throws EntityFinderException
+
+public class ST_Within extends AbstractElasticSearchSpatialFunction implements PredicateFinderSupport.PredicateSpecification
+{
+
+
+    public void processSpecification(FilterBuilder filterBuilder,
+                                     SpatialPredicatesSpecification<?> spec,
+                                     Map<String, Object> variables)
+            throws EntityFinderException
     {
-        if ((spec.value() == null && spec.operator() == null))
-                    throw new EntityFinderException("Insufficient data provided. ST_Within specification requires " +
-                            "valid filter geometry of type " + TGeometry.class.getSimpleName());
+        TGeometry geomOfFilterProperty = resolveGeometry(filterBuilder, spec, module);
 
-        TGeometry filterGeometry = resolveGeometry(filterBuilder,spec, module);
+        if (!isValid(spec))
+            throw new EntityFinderException(spec.getClass() + " expression invalid.");
+
+        if (!isMapped(spec.property()))
+            throw new EntityFinderException(spec.getClass() + " expression invalid. No spatial mapping available for property " + spec.property());
+
+        if (!isSupported(spec, geomOfFilterProperty))
+            throw new EntityFinderException(spec.getClass() + " expression unsupported by ElasticSearch. Pls specify a supported expression.");
+
+        System.out.println("Ismapped As Piont " +isMappedAsGeoPoint(spec.property()));
+        System.out.println("Ismapped As Shape " + isMappedAsGeoShape(spec.property()));
 
         /**
          * When the geometry used in the ST_Within expression is of type TPoint and a distance is specified, e.g.
          *
-         * TPoint filterGeometry = TPoint(module).x(..).y(..);
-         * ST_Within (templateFor(x.class).propertyOfTypeTPoint(), filterGeometry, 1, TUnit.METER)
+         * TPoint point = TPoint(module).x(..).y(..);
+         * ST_Within (templateFor(x.class).propertyOfTypeTPoint(), point, 1, TUnit.METER)
          *
          * then a ES GeoDistanceFilter is used.
          *
          */
         if (
-                TPoint(module).isPoint(filterGeometry) &&
-                ((ST_WithinSpecification)spec).getDistance() > 0 &&
-                Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoPoint(spec.property().toString())
+                isTPoint(geomOfFilterProperty) &&
+                isMappedAsGeoPoint(spec.property()) &&
+                ((ST_WithinSpecification) spec).getDistance() > 0
            )
         {
-            addFilter(createGeoDistanceFilter(
-                            spec.property().toString(),
-                            (TPoint)verifyProjection(filterGeometry),
-                            ((ST_WithinSpecification)spec).getDistance(),
-                            ((ST_WithinSpecification)spec).getUnit()),
+            addFilter(createGeoDistanceFilter
+                            (
+                                    spec.property().toString(),
+                                    (TPoint) verifyProjection(geomOfFilterProperty),
+                                    ((ST_WithinSpecification) spec).getDistance(),
+                                    ((ST_WithinSpecification) spec).getUnit()
+                            ),
                     filterBuilder
             );
         }
@@ -57,123 +71,72 @@ public class ST_Within extends AbstractElasticSearchSpatialFunction implements P
          * When the template property is of type TPoint then the filter property has to have an area.
          * Currently only filter geometries of type TPolygon are supported. E.g.
          *
-         * TPolygon filterGeometry = TPolygon(module).shell(..)
-         * ST_Within (templafeFor(x.class).propertyOfTypeTPoint(), filterGeometry);
-         *
+         * TPolygon polygon = TPolygon(module).shell(..)
+         * ST_Within (templafeFor(x.class).propertyOfTypeTPoint(), polygon);
          *
          */
-        else if (isPropertyOfType(TPoint.class, spec.property()) && isMappedAsGeoPoint(spec.property()))
+        else if (isPropertyOfType(TPoint.class, spec.property()))
         {
 
-            if (filterGeometry instanceof TPolygon)
+            if (isMappedAsGeoPoint(spec.property()))
             {
-                /**
-                 * This must not happen, but in case the expression is defined using WTK like :
-                 *
-                 * ST_Within (templateFor(x.class).propertyOfTypeTPoint(),
-                 *              POLYGON((0 0,10 0,10 10,0 10,0 0),(5 5,7 5,7 7,5 7, 5 5)),
-                 *              1, TUnit.METER) // <- This is invalid !!
-                 *
-                 * we have to check it here.
-                 *
-                 */
-                if (((ST_WithinSpecification)spec).getDistance() > 0)
-                    throw new EntityFinderException("Invalid ST_Within expression. A " + TPolygon.class.getSimpleName() + " can " +
-                            "not be combined with distance.");
 
-                TPolygon polygonFilter = (TPolygon)verifyProjection(filterGeometry);
+                if (geomOfFilterProperty instanceof TPolygon)
+                {
+                    /**
+                     * This must not happen, but in case the expression is defined using WTK like :
+                     *
+                     * ST_Within (templateFor(x.class).propertyOfTypeTPoint(),
+                     *              POLYGON((0 0,10 0,10 10,0 10,0 0),(5 5,7 5,7 7,5 7, 5 5)),
+                     *              1, TUnit.METER) // <- This is invalid !!
+                     *
+                     * we have to check it here.
+                     *
+                     */
+                    if (((ST_WithinSpecification) spec).getDistance() > 0)
+                        throw new EntityFinderException("Invalid ST_Within expression. A " + TPolygon.class.getSimpleName() + " can " +
+                                "not be combined with distance.");
 
-                GeoPolygonFilterBuilder geoPolygonFilterBuilder = FilterBuilders.geoPolygonFilter(spec.property().toString());
+                    TPolygon polygonFilter = (TPolygon) verifyProjection(geomOfFilterProperty);
 
-                for (int i = 0; i < polygonFilter.shell().get().getNumPoints(); i++) {
-                    TPoint point = polygonFilter.shell().get().getPointN(i);
-                    geoPolygonFilterBuilder.addPoint(point.x(), point.y());
-                }
-                addFilter(geoPolygonFilterBuilder, filterBuilder);
+                    GeoPolygonFilterBuilder geoPolygonFilterBuilder = FilterBuilders.geoPolygonFilter(spec.property().toString());
+
+                    for (int i = 0; i < polygonFilter.shell().get().getNumPoints(); i++)
+                    {
+                        TPoint point = polygonFilter.shell().get().getPointN(i);
+                        geoPolygonFilterBuilder.addPoint(point.y(), point.x());
+                    }
+                    addFilter(geoPolygonFilterBuilder, filterBuilder);
+                } else
+                    throw new EntityFinderException("Invalid ST_Within expression. Unsupported type " + geomOfFilterProperty.getClass().getSimpleName() +
+                            " On properties of type " + TPoint.class.getSimpleName() +
+                            " only filters of type distance or polygon are supported.");
             }
-            else
-                throw new EntityFinderException("Invalid ST_Within expression. Unsupported type " +  filterGeometry.getClass().getSimpleName() +
-                        " On properties of type " +  TPoint.class.getSimpleName() +
-                        " only filters of type distance or polygon are supported.");
+            else if (isMappedAsGeoShape(spec.property()) )
+            {
+                if (geomOfFilterProperty instanceof TPolygon)
+                {
+                    addFilter(createShapeFilter(spec.property().toString(), geomOfFilterProperty, ShapeRelation.WITHIN), filterBuilder);
+                }
+
+                else if (((ST_WithinSpecification) spec).getDistance() > 0) {
+                    double distanceMeters = convertDistanceToMeters(((ST_WithinSpecification) spec).getDistance(), ((ST_WithinSpecification) spec).getUnit());
+                    System.out.println("Distance in Meters " + distanceMeters);
+                    double distanceDegrees = DistanceUtils.dist2Degrees(distanceMeters, DistanceUtils.EARTH_MEAN_RADIUS_KM * 1000);
+                    // This is a special case. We are using polygon substitution to support a circle. ATTENTION - this is just a approximation !!
+                    TPoint circlePoint = (TPoint)verifyProjection(geomOfFilterProperty);
+                    TCircle tCircle = module.newValueBuilder(TCircle.class).prototype().of(circlePoint, distanceDegrees);
+                    TPolygon polygonizedCircleFilter = tCircle.polygonize(360);
+                    addFilter(createShapeFilter(spec.property().toString(), polygonizedCircleFilter, ShapeRelation.WITHIN), filterBuilder);
+                }
+            }
         }
         else
         {
             /**
              * In all other cases we are using a shape filter.
              */
-            addFilter(createShapeFilter(spec.property().toString(), filterGeometry, ShapeRelation.WITHIN), filterBuilder);
-        }
-
-    }
-
-
-
-        public void _processSpecification( FilterBuilder filterBuilder,
-                                      SpatialPredicatesSpecification<?> spec,
-                                      Map<String, Object> variables )
-            throws EntityFinderException
-    {
-        if (spec.value() == null && spec.operator() == null && !(spec instanceof ST_WithinSpecification))
-            throw new UnsupportedOperationException("ST_Within specification ...todo :"
-                    + spec.getClass() + ": " + spec);
-
-        try {
-
-
-            TGeometry filterGeometry = resolveGeometry(filterBuilder,spec, module);
-
-            // TPoint are managed in a different way.. JJ TODO
-            if ((filterGeometry instanceof TPoint) && ((ST_WithinSpecification)spec).getDistance() > 0)
-            {
-
-                addFilter(createGeoDistanceFilter(
-                        spec.property().toString(),
-                        (TPoint)verifyProjection(filterGeometry),
-                        ((ST_WithinSpecification)spec).getDistance(),
-                        ((ST_WithinSpecification)spec).getUnit()),
-                        filterBuilder
-                );
-
-            }
-            else if (isPropertyOfTypeTPoint(spec.property())) // property is of type TPoint
-            {
-                // TODO MULTIPOINT, LINE, etc ?
-                if (filterGeometry instanceof TPolygon) {
-                    TPolygon polygonFilter = (TPolygon)verifyProjection(filterGeometry);
-
-                    GeoPolygonFilterBuilder geoPolygonFilterBuilder = FilterBuilders.geoPolygonFilter(spec.property().toString());
-
-                    for (int i = 0; i < polygonFilter.shell().get().getNumPoints(); i++) {
-                        TPoint point = polygonFilter.shell().get().getPointN(i);
-                        geoPolygonFilterBuilder.addPoint(point.x(), point.y());
-                    }
-                    addFilter(geoPolygonFilterBuilder, filterBuilder);
-                }
-                else
-                    throw new RuntimeException("JJ TODO - on TPoints we are just supporting TPolygon");
-            }
-            else
-            {
-                addFilter(createShapeFilter(spec.property().toString(), filterGeometry, ShapeRelation.WITHIN), filterBuilder);
-            }
-
-            /**
-            TGeometry geometry = resolveGeometry(filterBuilder,spec, module);
-
-            if (geometry instanceof TPoint)
-            {
-                addFilter(createShapeFilter(spec.property().toString(), (TPoint)geometry, ShapeRelation.WITHIN, ((ST_WithinSpecification)spec).getDistance(), ((ST_WithinSpecification)spec).getUnit()), filterBuilder);
-            }
-            else if (geometry instanceof TPolygon) {
-                addFilter(createShapeFilter(spec.property().toString(), geometry, ShapeRelation.WITHIN), filterBuilder);
-            }
-            else
-                throw new UnsupportedOperationException("ST_Within specification - TPoint or TPolygon");
-
-             */
-        } catch(Exception _ex) {
-            _ex.printStackTrace();
+            addFilter(createShapeFilter(spec.property().toString(), geomOfFilterProperty, ShapeRelation.WITHIN), filterBuilder);
         }
     }
-
 }
