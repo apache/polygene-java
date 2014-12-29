@@ -60,7 +60,7 @@ public abstract class AbstractElasticSearchSpatialFunction {
                         spec.getClass(),
                         isPropertyOfType(TPoint.class, spec.property()) ? TPoint.class : TGeometry.class,
                         InternalUtils.classOfGeometry(geometryOfFilter),
-                        isMappedAsGeoPoint(spec.property()) ? SpatialFunctionsSupportMatrix.INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT : SpatialFunctionsSupportMatrix.INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOSHAPE
+                        isMappedAsGeoPoint(spec.property()) ? SpatialConfiguration.INDEXING_METHOD.USE_GEO_POINT : SpatialConfiguration.INDEXING_METHOD.USE_GEO_SHAPE
                 );
 
     }
