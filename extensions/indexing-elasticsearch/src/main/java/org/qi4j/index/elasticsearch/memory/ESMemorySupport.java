@@ -17,7 +17,6 @@
  */
 package org.qi4j.index.elasticsearch.memory;
 
-import java.io.File;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
@@ -30,6 +29,8 @@ import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper;
 import org.qi4j.index.elasticsearch.internal.AbstractElasticSearchSupport;
 import org.qi4j.library.fileconfig.FileConfiguration;
+
+import java.io.File;
 
 public class ESMemorySupport
         extends AbstractElasticSearchSupport
@@ -61,6 +62,9 @@ public class ESMemorySupport
                 ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT : config.indexPointMappingMethod().get();
 
         indexPointMappingMethod = ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT;
+
+        System.out.println("---- TEST ---- " + config.spatial());
+
 
         String identity = hasIdentity.identity().get();
         Settings settings = ImmutableSettings.settingsBuilder().

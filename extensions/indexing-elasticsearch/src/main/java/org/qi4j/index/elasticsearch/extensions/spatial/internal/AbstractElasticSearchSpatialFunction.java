@@ -7,11 +7,10 @@ import org.elasticsearch.common.geo.builders.ShapeBuilder;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.*;
 import org.qi4j.api.composite.Composite;
-import org.qi4j.api.geometry.TGeometryFactory;
-import org.qi4j.api.geometry.TUnit;
-import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
+import org.qi4j.api.geometry.TUnit;
+import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.query.grammar.PropertyFunction;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
@@ -22,16 +21,17 @@ import org.qi4j.functional.Specification;
 import org.qi4j.index.elasticsearch.ElasticSearchFinder;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinder;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialFunctionsSupportMatrix;
 import org.qi4j.library.spatial.v2.projections.ProjectionsRegistry;
 import org.qi4j.spi.query.EntityFinderException;
-import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
 
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.IndexMappingCache;
+import static org.qi4j.api.geometry.TGeometryFactory.*;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.*;
+import static org.qi4j.library.spatial.v2.transformations.TTransformations.*;
 
 
 /**
@@ -40,7 +40,7 @@ import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIn
 public abstract class AbstractElasticSearchSpatialFunction {
 
     private static final String EPSG_4326 = "EPSG:4326";
-    private static final String DefaultProjection = EPSG_4326;
+    private static final String DefaultSupportedProjection = EPSG_4326;
     private static final double DefaultProjectionConversionPrecisionInMeters = 2.00;
 
     protected Module module;
@@ -93,7 +93,12 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
 
         try {
-            Transform(module).from(tGeometry).to(DefaultProjection, DefaultProjectionConversionPrecisionInMeters);
+            if (!tGeometry.getCRS().equalsIgnoreCase(DefaultSupportedProjection)) {
+                if (SpatialConfiguration.isFinderProjectionConversionEnabled(support.spatialConfiguration()))
+                {
+                    Transform(module).from(tGeometry).to(DefaultSupportedProjection, DefaultProjectionConversionPrecisionInMeters);
+                }  else throw new Exception("Filter Projection has a unsupported Projection and conversion is disabled");
+            }
         } catch (Exception _ex)
         {
             _ex.printStackTrace();

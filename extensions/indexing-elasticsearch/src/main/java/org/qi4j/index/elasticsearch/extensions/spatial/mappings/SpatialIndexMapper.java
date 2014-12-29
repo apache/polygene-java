@@ -2,6 +2,7 @@ package org.qi4j.index.elasticsearch.extensions.spatial.mappings;
 
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.index.elasticsearch.extensions.spatial.mappings.cache.MappingsCachesTable;
 
 import org.slf4j.Logger;
@@ -28,22 +29,20 @@ public class SpatialIndexMapper {
 
             if (mappingsOnServer != null)
             {
+                // TODO JJ check mappings : configuration versus server-side settings
                 MappingsCachesTable.getMappingCache(support).put(property, mappingsOnServer);
             }
             else
             {
+
+
                 if (TPoint(support.getModule()).isPoint(geometry) )
                 {
-                    switch (support.indexPointMappingMethod())
+                    switch(SpatialConfiguration.getMethod(support.spatialConfiguration()) )
                     {
-                        case GEO_POINT:
-                            GeoPointMapping(support).create(property);
-                            break;
-                        case GEO_SHAPE:
-                            GeoShapeMapping(support).create(property);
-                            break;
-                        default:
-                            throw new RuntimeException("Unknown Point Maping Type.");
+                        case USE_GEO_POINT : GeoPointMapping(support).create(property); break;
+                        case USE_GEO_SHAPE : GeoShapeMapping(support).create(property); break;
+                        default            : throw new RuntimeException("Unknown Point Maping Type.");
                     }
                 }
                 else

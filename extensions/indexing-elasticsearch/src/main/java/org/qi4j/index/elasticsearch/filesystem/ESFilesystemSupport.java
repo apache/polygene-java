@@ -17,7 +17,6 @@
  */
 package org.qi4j.index.elasticsearch.filesystem;
 
-import java.io.File;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
@@ -30,6 +29,8 @@ import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper;
 import org.qi4j.index.elasticsearch.internal.AbstractElasticSearchSupport;
 import org.qi4j.library.fileconfig.FileConfiguration;
+
+import java.io.File;
 
 public class ESFilesystemSupport
         extends AbstractElasticSearchSupport
@@ -61,6 +62,21 @@ public class ESFilesystemSupport
                 ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT : config.indexPointMappingMethod().get();
 
         indexPointMappingMethod = ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT;
+
+
+        System.out.println("---- TEST FileSystemSupport ---- " + config.spatial());
+        System.out.println("---- TEST FileSystemSupport enabled ---- " + config.spatial().get().Enabled());
+        System.out.println("---- TEST FileSystemSupport Method ---- " + config.spatial().get().Indexer().get().Method());
+        System.out.println("---- TEST FileSystemSupport Projection enabled ---- " + config.spatial().get().Indexer().get().Projection().get().ConversionEnabled() );
+        System.out.println("---- TEST FileSystemSupport Projection Accuracy ---- " + config.spatial().get().Indexer().get().Projection().get().ConversionEnabled() );
+
+
+        System.out.println("---- TEST FileSystemSupport Finder Enabled ---- " + config.spatial().get().Finder().get().Projection().get().ConversionEnabled() );
+        System.out.println("---- TEST FileSystemSupport Finder Accuracy ---- " + config.spatial().get().Finder().get().Projection().get().ConversionAccuracy() );
+
+        spatialConfiguration = config.spatial().get();
+
+
 
         String identity = hasIdentity.identity().get();
         Settings settings = ImmutableSettings.settingsBuilder().

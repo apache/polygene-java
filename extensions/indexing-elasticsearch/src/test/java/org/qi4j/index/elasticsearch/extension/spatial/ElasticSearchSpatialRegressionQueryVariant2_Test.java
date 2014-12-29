@@ -8,7 +8,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
-import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.spatial.v2.assembly.TGeometryAssembler;
@@ -23,7 +22,7 @@ import static org.qi4j.test.util.Assume.*;
 /**
  * Created by jj on 21.12.14.
  */
-public class ElasticSearchSpatialRegressionQueryVariant1Test
+public class ElasticSearchSpatialRegressionQueryVariant2_Test
         extends AbstractSpatialRegressionTest
 {
     private static final File DATA_DIR = new File( "build/tmp/es-spatial-query-test" );
@@ -41,7 +40,7 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
         return true;
     }
 
-/**
+    /**
     protected boolean isExpressionSupported(Query<?> expression)
     {
         QueryImpl queryImpl = (QueryImpl)expression;
@@ -76,11 +75,10 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
                         geometryOfProperty,
                         InternalUtils.classOfGeometry(geometryOfFilter),
                         hasOrderBySegments,
-                        SpatialFunctionsSupportMatrix.INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT
+                        SpatialFunctionsSupportMatrix.INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOSHAPE
                 );
     }
- */
-
+*/
     @Override
     public void assemble( ModuleAssembly module )
             throws AssemblyException
@@ -90,28 +88,17 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
         // Geometry support
         new TGeometryAssembler().assemble(module);
 
-
-
         // Config module
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
 
-        config.values(SpatialConfiguration.Configuration.class,
-                SpatialConfiguration.FinderConfiguration.class,
-                SpatialConfiguration.IndexerConfiguration.class,
-                SpatialConfiguration.ProjectionSupport.class).
-                visibleIn(Visibility.application);
-
         // Index/Query
         new ESFilesystemIndexQueryAssembler().
                 withConfig(config,Visibility.layer ).
-                identifiedBy("ElasticSearchConfigurationVariant1").
-                assemble(module);
-
+                assemble( module );
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
-        esConfig.indexPointMappingMethod().set(ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT);
-
+        esConfig.indexPointMappingMethod().set(ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_SHAPE);
 
         // FileConfig
         FileConfigurationOverride override = new FileConfigurationOverride().
@@ -120,12 +107,6 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
                 withTemporary( new File( DATA_DIR, "qi4j-temp" ) );
         module.services( FileConfigurationService.class ).
                 setMetaInfo( override );
-
-
-        config.services(FileConfigurationService.class)
-                // .identifiedBy("ElasticSearchConfigurationVariant1")
-                .setMetaInfo(override)
-                .visibleIn(Visibility.application);
 
         // clear index mapping caches during junit testcases
         // SpatialIndexMapper.IndexMappingCache.clear();

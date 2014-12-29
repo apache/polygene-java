@@ -21,7 +21,7 @@ public class SpatialFunctionsSupportMatrix
 {
 
     private static Boolean OrderBy = true;
-    private static Class<? extends TGeometry> AnyGeometries = TGeometry.class;
+    private static Class<? extends TGeometry> AnyGeometry = TGeometry.class;
     public static Class WKT = ST_GeomFromTextSpecification.class;
 
     public static enum INDEX_MAPPING_TPOINT_METHOD {TPOINT_AS_GEOPOINT, TPOINT_AS_GEOSHAPE}
@@ -32,24 +32,24 @@ public class SpatialFunctionsSupportMatrix
     static
     {
         // ST_Within
-        supports(enable(ST_WithinSpecification.class), propertyOf(AnyGeometries), filterOf(TPoint.class, TPolygon.class), enable(OrderBy),  INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT);
-        supports(enable(ST_WithinSpecification.class), propertyOf(AnyGeometries), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOSHAPE);
+        supports(enable(ST_WithinSpecification.class), propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), enable(OrderBy),  INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT);
+        supports(enable(ST_WithinSpecification.class), propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOSHAPE);
 
-        // supports(ST_WithinV2.class, propertyOf(AnyGeometries), filterOf(TPoint.class, TPolygon.class), OrderBy, INDEX_MAPPING_POINT_METHOD.TPOINT_AS_GEOPOINT);
-        //supports(ST_WithinV2.class, propertyOf(AnyGeometries), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), INDEX_MAPPING_POINT_METHOD.TPOINT_AS_GEOSHAPE);
-
-        // ST_Disjoint
-        supports(disable(ST_DisjointSpecification.class), propertyOf(AnyGeometries), filterOf(AnyGeometries), disable(OrderBy), INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT);
-        supports(enable(ST_DisjointSpecification.class),  propertyOf(AnyGeometries), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOSHAPE);
-
+        // supports(ST_WithinV2.class, propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), OrderBy, INDEXING_METHOD.TPOINT_AS_GEOPOINT);
+        //supports(ST_WithinV2.class, propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), INDEXING_METHOD.TPOINT_AS_GEOSHAPE);
 
         // ST_Disjoint
-        // supports(not(ST_Disjoint.class), AnyGeometries, AnyGeometries, OrderBy, INDEX_MAPPING_POINT_METHOD.TPOINT_AS_GEOPOINT);
-        // supports(ST_Disjoint.class, TGeometry.class, TGeometry.class, not(OrderBy), INDEX_MAPPING_POINT_METHOD.TPOINT_AS_GEOSHAPE);
+        supports(disable(ST_DisjointSpecification.class), propertyOf(AnyGeometry), filterOf(AnyGeometry), disable(OrderBy), INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT);
+        supports(enable(ST_DisjointSpecification.class),  propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOSHAPE);
+
+
+        // ST_Disjoint
+        // supports(not(ST_Disjoint.class), AnyGeometry, AnyGeometry, OrderBy, INDEXING_METHOD.TPOINT_AS_GEOPOINT);
+        // supports(ST_Disjoint.class, TGeometry.class, TGeometry.class, not(OrderBy), INDEXING_METHOD.TPOINT_AS_GEOSHAPE);
 
         // ST_Intersects
-        // supports(not(ST_Intersects.class), AnyGeometries, AnyGeometries, OrderBy, INDEX_MAPPING_POINT_METHOD.TPOINT_AS_GEOPOINT);
-        // supports(not(ST_Intersects.class), TGeometry.class, TGeometry.class, not(OrderBy), INDEX_MAPPING_POINT_METHOD.TPOINT_AS_GEOSHAPE);
+        // supports(not(ST_Intersects.class), AnyGeometry, AnyGeometry, OrderBy, INDEXING_METHOD.TPOINT_AS_GEOPOINT);
+        // supports(not(ST_Intersects.class), TGeometry.class, TGeometry.class, not(OrderBy), INDEXING_METHOD.TPOINT_AS_GEOSHAPE);
     }
 
 
@@ -112,7 +112,7 @@ public class SpatialFunctionsSupportMatrix
     {
         System.out.println(SPATIAL_SUPPORT_MATRIX.toString());
 
-        System.out.println("isSupported " +expression + " " +  geometryOfProperty + " " +  geometryOfFilter + " method " + method);
+        System.out.println("isSupported " +expression + " " +  geometryOfProperty + " " +  geometryOfFilter + " Method " + method);
         System.out.println("Contains " + SPATIAL_SUPPORT_MATRIX.contains(expression.getName(), method) );
         if (SPATIAL_SUPPORT_MATRIX.contains(expression.getName(), method))
             return SPATIAL_SUPPORT_MATRIX.get(expression.getName(), method).isSupported(geometryOfProperty, geometryOfFilter, orderBy);

@@ -51,6 +51,8 @@ public class ESClusterSupport
 
         indexPointMappingMethod = ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT;
 
+        System.out.println("---- TEST ---- " + config.spatial());
+
         String[] nodes = config.nodes().get() == null ? new String[]{ "localhost:9300" } : config.nodes().get().split( "," );
         boolean clusterSniff = config.clusterSniff().get();
         boolean ignoreClusterName = true; // config.ignoreClusterName().get();

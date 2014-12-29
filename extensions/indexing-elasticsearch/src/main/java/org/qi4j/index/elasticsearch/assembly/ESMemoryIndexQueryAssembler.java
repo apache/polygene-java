@@ -21,6 +21,7 @@ import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.index.elasticsearch.internal.AbstractElasticSearchAssembler;
 import org.qi4j.index.elasticsearch.memory.ESMemoryIndexQueryService;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
@@ -39,6 +40,11 @@ public class ESMemoryIndexQueryAssembler
 
         module.services( OrgJsonValueSerializationService.class ).
             taggedWith( ValueSerialization.Formats.JSON );
+
+        module.values(SpatialConfiguration.Configuration.class,
+                SpatialConfiguration.FinderConfiguration.class,
+                SpatialConfiguration.IndexerConfiguration.class).
+                visibleIn( visibility() );
 
         if( hasConfig() )
         {
