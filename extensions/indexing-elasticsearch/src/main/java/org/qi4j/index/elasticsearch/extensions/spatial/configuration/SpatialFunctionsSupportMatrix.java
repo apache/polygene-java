@@ -37,16 +37,16 @@ public class SpatialFunctionsSupportMatrix
         // supports(enable(ST_WithinSpecification.class), propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), enable(OrderBy),  INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT);
         // supports(enable(ST_WithinSpecification.class), propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOSHAPE);
 
-        supports(enable(ST_WithinSpecification.class), propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), enable(OrderBy), SpatialConfiguration.INDEXING_METHOD.USE_GEO_POINT);
-        supports(enable(ST_WithinSpecification.class), propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), SpatialConfiguration.INDEXING_METHOD.USE_GEO_SHAPE);
+        supports(enable(ST_WithinSpecification.class), propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), enable(OrderBy), SpatialConfiguration.INDEXING_METHOD.GEO_POINT);
+        supports(enable(ST_WithinSpecification.class), propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), SpatialConfiguration.INDEXING_METHOD.GEO_SHAPE);
 
 
         // supports(ST_WithinV2.class, propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), OrderBy, INDEXING_METHOD.TPOINT_AS_GEOPOINT);
         //supports(ST_WithinV2.class, propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), INDEXING_METHOD.TPOINT_AS_GEOSHAPE);
 
         // ST_Disjoint
-        supports(disable(ST_DisjointSpecification.class), propertyOf(AnyGeometry), filterOf(AnyGeometry), disable(OrderBy), SpatialConfiguration.INDEXING_METHOD.USE_GEO_POINT);
-        supports(enable(ST_DisjointSpecification.class),  propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), SpatialConfiguration.INDEXING_METHOD.USE_GEO_SHAPE);
+        supports(disable(ST_DisjointSpecification.class), propertyOf(AnyGeometry), filterOf(AnyGeometry), disable(OrderBy), SpatialConfiguration.INDEXING_METHOD.GEO_POINT);
+        supports(enable(ST_DisjointSpecification.class),  propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), SpatialConfiguration.INDEXING_METHOD.GEO_SHAPE);
 
 
         // ST_Disjoint
@@ -136,7 +136,7 @@ public class SpatialFunctionsSupportMatrix
     {
         System.out.println(SPATIAL_SUPPORT_MATRIX.toString());
 
-        System.out.println("isSupported " +expression + " " +  geometryOfProperty + " " +  geometryOfFilter + " Method " + method);
+        System.out.println("isSupported " +expression + " " +  geometryOfProperty + " " +  geometryOfFilter + " Type " + method);
         System.out.println("Contains " + SPATIAL_SUPPORT_MATRIX.contains(expression.getName(), method) );
         if (SPATIAL_SUPPORT_MATRIX.contains(expression.getName(), method))
             return SPATIAL_SUPPORT_MATRIX.get(expression.getName(), method).isSupported(geometryOfProperty, geometryOfFilter, orderBy, verifyOrderBy);

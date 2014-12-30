@@ -1,29 +1,40 @@
 package org.qi4j.index.elasticsearch.extension.spatial;
 
+import com.spatial4j.core.distance.DistanceUtils;
 import org.junit.BeforeClass;
 import org.junit.Rule;
+import org.junit.Test;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.sql.assembly.DerbySQLEntityStoreAssembler;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.qi4j.index.elasticsearch.extension.spatial.utils.RandomPoint;
 import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.spatial.v2.assembly.TGeometryAssembler;
+import org.qi4j.library.sql.assembly.DataSourceAssembler;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractSpatialRegressionTest;
 import org.qi4j.test.util.DelTreeAfter;
+import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 import java.io.File;
 
+import static org.qi4j.api.geometry.TGeometryFactory.*;
 import static org.qi4j.test.util.Assume.*;
 
 /**
  * Created by jj on 21.12.14.
  */
-public class ElasticSearchSpatialRegressionQueryVariant1Test
+public class ElasticSearchSpatialBench
         extends AbstractSpatialRegressionTest
 {
     private static final File DATA_DIR = new File( "build/tmp/es-spatial-query-test" );
@@ -93,10 +104,10 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
 
 
         // Config module
-        ModuleAssembly config = module.layer().module( "config" );
-        new EntityTestAssembler().assemble( config );
+        ModuleAssembly configIndex = module.layer().module( "configIndex" );
+        new EntityTestAssembler().assemble( configIndex );
 
-        config.values(SpatialConfiguration.Configuration.class,
+        configIndex.values(SpatialConfiguration.Configuration.class,
                 SpatialConfiguration.FinderConfiguration.class,
                 SpatialConfiguration.IndexerConfiguration.class,
                 SpatialConfiguration.IndexingMethod.class,
@@ -105,11 +116,11 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
 
         // Index/Query
         new ESFilesystemIndexQueryAssembler().
-                withConfig(config,Visibility.layer ).
-                identifiedBy("ElasticSearchConfigurationVariant1").
+                withConfig(configIndex,Visibility.layer ).
+                identifiedBy("ElasticSearchConfigurationVariant2").
                 assemble(module);
 
-        ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
+        ElasticSearchConfiguration esConfig = configIndex.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
         esConfig.indexPointMappingMethod().set(ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT);
 
@@ -123,12 +134,114 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
                 setMetaInfo( override );
 
 
-        config.services(FileConfigurationService.class)
+        configIndex.services(FileConfigurationService.class)
                 // .identifiedBy("ElasticSearchConfigurationVariant1")
                 .setMetaInfo(override)
                 .visibleIn(Visibility.application);
 
         // clear index mapping caches during junit testcases
         // SpatialIndexMapper.IndexMappingCache.clear();
+
+        ModuleAssembly configStore = module.layer().module( "configStore" );
+        new EntityTestAssembler().assemble( configStore );
+        new OrgJsonValueSerializationAssembler().assemble( module );
+
+        // START SNIPPET: assembly
+        // DataSourceService
+        new DBCPDataSourceServiceAssembler().
+                identifiedBy( "derby-datasource-service" ).
+                visibleIn( Visibility.module ).
+                withConfig( configStore, Visibility.layer ).
+                assemble( module );
+
+        // DataSource
+        new DataSourceAssembler().
+                withDataSourceServiceIdentity( "derby-datasource-service" ).
+                identifiedBy( "derby-datasource" ).
+                visibleIn( Visibility.module ).
+                withCircuitBreaker().
+                assemble( module );
+
+        // SQL EntityStore
+        new DerbySQLEntityStoreAssembler().
+                visibleIn( Visibility.application ).
+                withConfig( configStore, Visibility.layer ).
+                assemble( module );
+    }
+
+    @Test
+    public void test() throws Exception
+    {
+
+        try (UnitOfWork unitOfWork = module.newUnitOfWork())
+        {
+            unitOfWork.complete();
+
+        }
+        // double[] xy = nextSpherePt2D();
+
+        // System.out.println("spherical " + xy[0] + " " + xy[1] );
+        long start = System.currentTimeMillis();
+
+        module.newUnitOfWork();
+        for (int i = 0; i < 10000; i++) {
+
+            double[] xy = nextSpherePt2D();
+            System.out.println("Degrees " + DistanceUtils.toDegrees(xy[0]) + "," + DistanceUtils.toDegrees(xy[1]));
+
+            TPoint(module).lat(xy[0]).lon(xy[1]).geometry();
+        }
+        module.currentUnitOfWork().complete();
+
+        long end = System.currentTimeMillis();
+
+        System.out.println("Duration  " + (end - start));
+    }
+
+    @Test
+    public void test1() throws Exception
+    {
+
+        try (UnitOfWork unitOfWork = module.newUnitOfWork())
+        {
+            unitOfWork.complete();
+
+        }
+        // double[] xy = nextSpherePt2D();
+
+        // System.out.println("spherical " + xy[0] + " " + xy[1] );
+        long start = System.currentTimeMillis();
+        for (int j = 0; j < 1000; j++) {
+
+            System.out.println("--> " + j);
+            UnitOfWork unitOfWork = module.newUnitOfWork();
+
+
+            for (int i = 0; i < 5000; i++) {
+                double[] xy = nextSpherePt2D();
+                //System.out.println("Degrees " + DistanceUtils.toDegrees(xy[0]) + "," + DistanceUtils.toDegrees(xy[1]));
+
+                TPoint point = TPoint(module).lat(DistanceUtils.toDegrees(xy[0])).lon(DistanceUtils.toDegrees(xy[1])).geometry();
+                EntityBuilder<SpatialRegressionEntity> pointBuilder = unitOfWork.newEntityBuilder(SpatialRegressionEntity.class);
+                pointBuilder.instance().point().set(point);
+                pointBuilder.newInstance();
+            }
+
+            unitOfWork.complete();
+        }
+        long end = System.currentTimeMillis();
+
+
+
+        System.out.println("Duration  " + (end - start));
+    }
+
+     static long seed = 1;
+    static RandomPoint randomPoint = new RandomPoint();
+
+    public double[] nextSpherePt2D()
+    {
+        // return new RandomPoint(seed++).nextSpherePt(2);
+        return randomPoint.nextSpherePt(2);
     }
 }

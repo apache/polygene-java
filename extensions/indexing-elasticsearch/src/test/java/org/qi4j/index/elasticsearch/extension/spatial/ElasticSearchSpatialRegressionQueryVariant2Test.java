@@ -58,7 +58,7 @@ public class ElasticSearchSpatialRegressionQueryVariant2Test
         {
             hasOrderBySegments = true;
         }
-        // public static boolean isSupported(Class expression, Class<? extends  TGeometry> geometryOfProperty,Class<? extends  TGeometry> geometryOfFilter, Boolean orderBy, INDEXING_METHOD Method )
+        // public static boolean isSupported(Class expression, Class<? extends  TGeometry> geometryOfProperty,Class<? extends  TGeometry> geometryOfFilter, Boolean orderBy, INDEXING_METHOD Type )
 
         Class geometryOfProperty = InternalUtils.classOfPropertyType(((SpatialPredicatesSpecification)queryImpl.getWhereClause()).property());
         TGeometry geometryOfFilter   = ((SpatialPredicatesSpecification)queryImpl.getWhereClause()).value();
@@ -99,6 +99,7 @@ public class ElasticSearchSpatialRegressionQueryVariant2Test
         config.values(SpatialConfiguration.Configuration.class,
                 SpatialConfiguration.FinderConfiguration.class,
                 SpatialConfiguration.IndexerConfiguration.class,
+                SpatialConfiguration.IndexingMethod.class,
                 SpatialConfiguration.ProjectionSupport.class).
                 visibleIn(Visibility.application);
 

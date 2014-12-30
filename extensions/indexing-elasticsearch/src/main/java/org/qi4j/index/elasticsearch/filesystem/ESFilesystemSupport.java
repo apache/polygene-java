@@ -66,7 +66,7 @@ public class ESFilesystemSupport
 
         System.out.println("---- TEST FileSystemSupport ---- " + config.spatial());
         System.out.println("---- TEST FileSystemSupport enabled ---- " + config.spatial().get().Enabled());
-        System.out.println("---- TEST FileSystemSupport Method ---- " + config.spatial().get().Indexer().get().Method());
+        System.out.println("---- TEST FileSystemSupport Type ---- " + config.spatial().get().Indexer().get().Method());
         System.out.println("---- TEST FileSystemSupport Projection enabled ---- " + config.spatial().get().Indexer().get().Projection().get().ConversionEnabled() );
         System.out.println("---- TEST FileSystemSupport Projection Accuracy ---- " + config.spatial().get().Indexer().get().Projection().get().ConversionEnabled() );
 

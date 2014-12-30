@@ -43,8 +43,9 @@ public class ESMemoryIndexQueryAssembler
 
         module.values(SpatialConfiguration.Configuration.class,
                 SpatialConfiguration.FinderConfiguration.class,
-                SpatialConfiguration.IndexerConfiguration.class).
-                visibleIn( visibility() );
+                SpatialConfiguration.IndexingMethod.class,
+                SpatialConfiguration.IndexerConfiguration.class
+        ).visibleIn( visibility() );
 
         if( hasConfig() )
         {

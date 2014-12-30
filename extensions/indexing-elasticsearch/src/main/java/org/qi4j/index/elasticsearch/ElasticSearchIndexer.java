@@ -17,11 +17,6 @@
  */
 package org.qi4j.index.elasticsearch;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.json.JSONArray;
@@ -56,6 +51,11 @@ import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * Listen to Entity state changes and index them in ElasticSearch.
@@ -130,7 +130,7 @@ public interface ElasticSearchIndexer
                         case NEW:
                             LOGGER.trace( "Creating Entity State in Index: {}", changedState );
                             String newJson = toJSON(changedState, newStates, uow );
-                            System.out.println("#Will index: {}  : " + newJson);
+                            // System.out.println("#Will index: {}  : " + newJson);
                             LOGGER.trace( "Will index: {}", newJson );
                             index( bulkBuilder, changedState.identity().identity(), newJson );
                             break;
@@ -247,7 +247,7 @@ public interface ElasticSearchIndexer
 
                             ElasticSearchSpatialIndexer.toJSON(support, (TGeometry) value, key, newKey, json, module);
 
-                           System.out.println("Spatial JSON " + json);
+                           //System.out.println("Spatial JSON " + json);
                         }
                         else
                         {

@@ -10,20 +10,19 @@ import org.qi4j.api.value.ValueComposite;
 public class SpatialConfiguration
 {
 
-    public static enum INDEXING_METHOD {USE_GEO_POINT, USE_GEO_SHAPE}
+    public static enum INDEXING_METHOD {GEO_POINT, GEO_SHAPE}
 
     public interface Configuration extends ValueComposite
     {
         @Optional Property<Boolean> Enabled();
         @Optional Property<IndexerConfiguration> Indexer();
         @Optional Property<FinderConfiguration>  Finder ();
-
-
     }
 
     public interface IndexerConfiguration extends ValueComposite
     {
-        Property<INDEXING_METHOD> Method();
+        // Property<INDEXING_METHOD> Type();
+        @Optional Property<IndexingMethod> Method();
         @Optional Property<ProjectionSupport> Projection();
     }
 
@@ -32,6 +31,11 @@ public class SpatialConfiguration
         @Optional Property<ProjectionSupport> Projection();
     }
 
+    public interface IndexingMethod extends ValueComposite
+    {
+        @Optional Property<INDEXING_METHOD> Type();
+        @Optional Property<String> Precision();
+    }
 
     public interface ProjectionSupport extends ValueComposite
     {
@@ -47,17 +51,24 @@ public class SpatialConfiguration
 
     public static INDEXING_METHOD getMethod(Configuration config)
     {
-        return config.Indexer().get().Method().get();
+        return config.Indexer().get().Method().get().Type().get();
     }
 
     public static boolean isMethodGeoPoint(Configuration config)
     {
-        return config.Indexer().get().Method().get() == INDEXING_METHOD.USE_GEO_POINT ? true : false;
+        return config.Indexer().get().Method().get().Type().get() == INDEXING_METHOD.GEO_POINT ? true : false;
+        // return config.Indexer().get().Type().get() == INDEXING_METHOD.GEO_POINT ? true : false;
     }
 
     public static boolean isMethodGeoShape(Configuration config)
     {
-        return config.Indexer().get().Method().get() == INDEXING_METHOD.USE_GEO_SHAPE ? true : false;
+        return config.Indexer().get().Method().get().Type().get() == INDEXING_METHOD.GEO_SHAPE ? true : false;
+        //return config.Indexer().get().Type().get() == INDEXING_METHOD.GEO_SHAPE ? true : false;
+    }
+
+    public String getMethodAccuracy(Configuration config)
+    {
+        return config.Indexer().get().Method().get().Precision().get();
     }
 
     public static boolean isIndexerProjectionConversionEnabled(Configuration config)
