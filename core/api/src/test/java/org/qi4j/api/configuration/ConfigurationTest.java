@@ -68,7 +68,6 @@ public class ConfigurationTest extends AbstractQi4jTest
     {
         Property<String> name();
         Property<Address> address();
-
     }
 
     public interface Address extends ValueComposite

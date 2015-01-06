@@ -54,7 +54,8 @@ public class GeoShapeBuilder extends AbstractBuilder {
                 // .field("geohash", DEFAULT_GEOHASH_SUPPORT)
                 .field("precision", DEFAULT_PRECISION)
                 .field("tree", "quadtree")
-                .field("tree_levels",  "20");
+                //.field("tree_levels",  "10");
+        ;
         //.field("validate_lat", "true")
         //.field("validate_lon", "true");
 

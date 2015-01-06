@@ -1,14 +1,17 @@
 package org.qi4j.sample.spatial.domain.openstreetmap.model.test;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.geojson.LineString;
+import org.geojson.Point;
+import org.geojson.Polygon;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.geometry.TLineString;
-import org.qi4j.api.geometry.TPoint;
-import org.qi4j.api.geometry.TPolygon;
+import org.qi4j.api.geometry.*;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
@@ -16,45 +19,30 @@ import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.api.query.grammar.OrderBy;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.riak.RiakHttpMapEntityStoreAssembler;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.assembly.ESClusterIndexQueryAssembler;
 import org.qi4j.index.elasticsearch.extension.spatial.model.entity.SpatialEntity;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
+import org.qi4j.library.spatial.transformations.geojson.GeoJSONParserV2;
 import org.qi4j.sample.spatial.domain.openstreetmap.model.assembly.OpenStreetMapDomainModelAssembler;
 import org.qi4j.sample.spatial.domain.openstreetmap.model.v2.FeatureEntityV2;
+import org.qi4j.sample.spatial.domain.openstreetmap.model.v2.structure.OSM;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.util.DelTreeAfter;
-import org.geojson.*;
-import org.qi4j.library.spatial.transformations.geojson.GeoJSONParserV2;
-
-import static org.qi4j.api.geometry.TGeometryFactory.*;
-import static org.qi4j.api.query.QueryExpressions.*;
-
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.qi4j.api.query.QueryExpressions.and;
-import static org.qi4j.api.query.QueryExpressions.templateFor;
-import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_GeometryFromText;
-import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Within;
-import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import org.qi4j.api.geometry.*;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
-import org.qi4j.sample.spatial.domain.openstreetmap.model.v2.structure.OSM;
-
 import java.util.*;
 
-import static org.qi4j.library.spatial.v2.conversions.TConversions.Convert;
+import static org.qi4j.api.geometry.TGeometryFactory.*;
+import static org.qi4j.api.query.QueryExpressions.and;
+import static org.qi4j.api.query.QueryExpressions.or;
+import static org.qi4j.api.query.QueryExpressions.templateFor;
+import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.*;
+import static org.qi4j.library.spatial.v2.conversions.TConversions.*;
+import static org.qi4j.test.util.Assume.*;
 
 /**
  * Created by jj on 28.11.14.
@@ -129,16 +117,16 @@ public class TestOSMModel extends AbstractQi4jTest {
                 setMetaInfo(override);
 
         // In-Memory Entity Store
-        // new EntityTestAssembler().assemble( module );
+         new EntityTestAssembler().assemble( module );
+
 
         /** RIAK */
-        ModuleAssembly configRiak = module.layer().module( "configRiak" );
-        new EntityTestAssembler().assemble( configRiak );
-        new OrgJsonValueSerializationAssembler().assemble( module );
+//        ModuleAssembly configRiak = module.layer().module( "configRiak" );
+//        new EntityTestAssembler().assemble( configRiak );
+//        new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
-        new RiakHttpMapEntityStoreAssembler().withConfig( configRiak, Visibility.layer ).assemble( module );
+//        new RiakHttpMapEntityStoreAssembler().withConfig( configRiak, Visibility.layer ).assemble( module );
         /** +++ */
-
 
 
         new OpenStreetMapDomainModelAssembler().assemble(module);
@@ -156,7 +144,7 @@ public class TestOSMModel extends AbstractQi4jTest {
         Map<String, List<String>> properties;
         TGeometry tGeometry = null;
 
-        JsonParser parser = GeoJSONParserV2.source(new BufferedInputStream(this.getClass().getClassLoader().getResource("data/bavaria/osm-pois").openStream())).build();
+        JsonParser parser = GeoJSONParserV2.source(new BufferedInputStream(this.getClass().getClassLoader().getResource("data/germany/bavaria/muenich/xxxx").openStream())).build();
 
         JsonToken token;
 

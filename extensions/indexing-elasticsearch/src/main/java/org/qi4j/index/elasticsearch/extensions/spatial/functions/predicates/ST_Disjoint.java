@@ -1,7 +1,9 @@
 package org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates;
 
 import org.elasticsearch.common.geo.ShapeRelation;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.FilterBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.GeoPolygonFilterBuilder;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.geometry.internal.TGeometry;
@@ -12,9 +14,7 @@ import org.qi4j.spi.query.EntityFinderException;
 
 import java.util.Map;
 
-import static org.elasticsearch.index.query.FilterBuilders.termFilter;
-import static org.elasticsearch.index.query.FilterBuilders.notFilter;
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.old.ElasticSearchMappingsHelper.Mappings;
+import static org.elasticsearch.index.query.FilterBuilders.*;
 
 /**
  * Created by jj on 19.11.14.
@@ -45,9 +45,11 @@ public class ST_Disjoint extends AbstractElasticSearchSpatialFunction implements
          *
          */
 
+        if (isMappedAsGeoPoint(spec.property()))
+            throw new EntityFinderException("ST_Disjoint can not be used on values with geo_point mappings. Pls use geo_shape mappings.");
 
-           if (Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoPoint(spec.property().toString()))
-                    throw new EntityFinderException("ST_Disjoint can not be used on values with geo_point mappings. Pls use geo_shape mappings.");
+           // if (Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoPoint(spec.property().toString()))
+           //         throw new EntityFinderException("ST_Disjoint can not be used on values with geo_point mappings. Pls use geo_shape mappings.");
 
 
         /**

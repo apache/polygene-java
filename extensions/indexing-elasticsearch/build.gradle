@@ -7,6 +7,10 @@ dependencies {
   compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
   compile project(":org.qi4j.libraries:org.qi4j.library.fileconfig")
   compile project(":org.qi4j.libraries:org.qi4j.library.spatial")
+  compile project(":org.qi4j.libraries:org.qi4j.library.sql")
+  compile project(":org.qi4j.extensions:org.qi4j.extension.entitystore-sql")
+
+
   compile libraries.elasticsearch
   compile libraries.guava
 

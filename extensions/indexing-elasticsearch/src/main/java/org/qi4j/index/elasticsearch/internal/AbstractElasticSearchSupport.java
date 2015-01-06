@@ -17,9 +17,6 @@
  */
 package org.qi4j.index.elasticsearch.internal;
 
-import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsResponse;
-import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
-import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -27,13 +24,9 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.structure.Module;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractElasticSearchSupport
         implements ElasticSearchSupport
@@ -54,6 +47,8 @@ public abstract class AbstractElasticSearchSupport
     protected boolean indexNonAggregatedAssociations;
 
     protected ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD indexPointMappingMethod;
+
+    protected SpatialConfiguration.Configuration spatialConfiguration;
 
 
     @Structure
@@ -141,6 +136,13 @@ public abstract class AbstractElasticSearchSupport
 
     @Override
     public final ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD indexPointMappingMethod() { return indexPointMappingMethod; }
+
+    @Override
+    public final SpatialConfiguration.Configuration spatialConfiguration()
+    {
+        return spatialConfiguration;
+    }
+
 
     @Override
     public final  Module getModule() { return module;}

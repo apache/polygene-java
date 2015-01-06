@@ -20,6 +20,7 @@ package org.qi4j.index.elasticsearch;
 import org.elasticsearch.client.Client;
 import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.structure.Module;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 
 public interface ElasticSearchSupport
         extends ServiceActivation
@@ -34,6 +35,8 @@ public interface ElasticSearchSupport
     boolean indexNonAggregatedAssociations();
 
     ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD indexPointMappingMethod();
+
+    SpatialConfiguration.Configuration spatialConfiguration();
 
     Module getModule();
 

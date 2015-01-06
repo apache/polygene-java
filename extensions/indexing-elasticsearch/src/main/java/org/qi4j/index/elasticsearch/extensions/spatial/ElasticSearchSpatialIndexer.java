@@ -26,33 +26,42 @@ import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
 import org.qi4j.index.elasticsearch.ElasticSearchIndexException;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper;
 import org.qi4j.library.spatial.v2.projections.ProjectionsRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.IndexMappingCache;
-import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.*;
+import static org.qi4j.library.spatial.v2.transformations.TTransformations.*;
 
 public final class ElasticSearchSpatialIndexer {
 
     private static final String EPSG_4326 = "EPSG:4326";
-    private static final String DefaultProjection = EPSG_4326;
+    private static final String DefaultSupportedProjection = EPSG_4326;
     private static final double DefaultProjectionConversionPrecisionInMeters = 2.00;
 
     public static void toJSON(ElasticSearchSupport support, TGeometry geometry, String property, String propertyWithDepth, JSONObject json, Module module) throws ElasticSearchIndexException {
 
         // Spatial Mappings
         {
-            SpatialIndexMapper.createIfNotExist(support, geometry, propertyWithDepth);
+            if (SpatialConfiguration.isEnabled(support.spatialConfiguration()))
+            {
+                SpatialIndexMapper.createIfNotExist(support, geometry, propertyWithDepth);
+            }
+            else throw new  ElasticSearchIndexException("Spatial support is disabled. No spatial indexing available");
         }
 
         // Spatial Transformations
         {
+
             if (new ProjectionsRegistry().getCRS(geometry.getCRS()) == null)
                 throw new ElasticSearchIndexException("Project with the CRS Identity " + geometry.getCRS() + " is unknown. Supported projections are JJ TODO");
-            // Transform(module).from(geometry).to(DefaultProjection, DefaultProjectionConversionPrecisionInMeters);
+            if (SpatialConfiguration.isIndexerProjectionConversionEnabled(support.spatialConfiguration()))
+            {
+                Transform(module).from(geometry).to(DefaultSupportedProjection, SpatialConfiguration.getIndexerProjectionConversionAccuracy(support.spatialConfiguration()));
+            }
         }
 
 
@@ -206,7 +215,6 @@ public final class ElasticSearchSpatialIndexer {
                 }
                 coordinates.put(shell);
             }
-
 
             // wholes
             {
