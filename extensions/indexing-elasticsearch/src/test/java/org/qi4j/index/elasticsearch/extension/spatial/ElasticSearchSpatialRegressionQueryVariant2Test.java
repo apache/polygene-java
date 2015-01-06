@@ -127,8 +127,5 @@ public class ElasticSearchSpatialRegressionQueryVariant2Test
                 // .identifiedBy("ElasticSearchConfigurationVariant1")
                 .setMetaInfo(override)
                 .visibleIn(Visibility.application);
-
-        // clear index mapping caches during junit testcases
-        // SpatialIndexMapper.IndexMappingCache.clear();
     }
 }

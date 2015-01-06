@@ -88,11 +88,11 @@ public interface TPoint extends HasNoArea, TGeometry {
         }
 
         public TPoint of(double x, double y, double z) {
-            self.geometryType().set(TGEOMETRY_TYPE.POINT);
             init();
             self.x(x); // JJ TODO use fluent DSL
             self.y(y);
             self.z(z);
+            self.geometryType().set(TGEOMETRY_TYPE.POINT);
             return self;
         }
 

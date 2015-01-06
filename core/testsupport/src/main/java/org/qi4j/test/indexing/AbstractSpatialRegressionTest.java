@@ -1,29 +1,21 @@
 package org.qi4j.test.indexing;
 
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.geometry.*;
-import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
-import org.qi4j.api.query.grammar.ExpressionSpecification;
 import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_WithinSpecification;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinderException;
-import org.qi4j.test.EntityTestAssembler;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,11 +24,11 @@ import static org.junit.Assume.assumeTrue;
 import static org.qi4j.api.geometry.TGeometryFactory.*;
 import static org.qi4j.api.geometry.TGeometryFactory.TLinearRing;
 import static org.qi4j.api.query.QueryExpressions.and;
+import static org.qi4j.api.query.QueryExpressions.not;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Disjoint;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_GeometryFromText;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Within;
-import static org.junit.Assume.*;
 
 /**
  * Created by jj on 21.12.14.
@@ -60,7 +52,7 @@ public abstract class AbstractSpatialRegressionTest
         @Optional Property<TFeatureCollection>  featurecollection();
     }
 
-    private TPoint      _TPoint,_TPoint2, _TPoint3;
+    private TPoint _TPoint1,_TPoint2, _TPoint3;
     private TMultiPoint _TMultiPoint;
     private TLineString _TLineString;
     private TPolygon    _TPolygon;
@@ -71,7 +63,7 @@ public abstract class AbstractSpatialRegressionTest
 
         System.out.println("########### Populating Values ############");
 
-        _TPoint = TPoint(module).lat(48.13905780942574).lon(11.57958984375)
+        _TPoint1 = TPoint(module).lat(48.13905780942574).lon(11.57958984375)
                 .geometry();
 
         _TPoint2 = TPoint(module).lat(48.145748).lon(11.567976)
@@ -131,8 +123,8 @@ public abstract class AbstractSpatialRegressionTest
 
             // TPoint
             {
-                EntityBuilder<SpatialRegressionEntity> pointBuilder = unitOfWork.newEntityBuilder(SpatialRegressionEntity.class, "Point");
-                pointBuilder.instance().point().set(_TPoint);
+                EntityBuilder<SpatialRegressionEntity> pointBuilder = unitOfWork.newEntityBuilder(SpatialRegressionEntity.class, "Point1");
+                pointBuilder.instance().point().set(_TPoint1);
                 pointBuilder.newInstance();
 
                 EntityBuilder<SpatialRegressionEntity> pointBuilder2 = unitOfWork.newEntityBuilder(SpatialRegressionEntity.class, "Point2");
@@ -205,7 +197,7 @@ public abstract class AbstractSpatialRegressionTest
         query.find();
         assertEquals(1, query.count());
         TPoint tPoint = query.iterator().next().point().get();
-        assertTrue(tPoint.compareTo(_TPoint) == 0);
+        assertTrue(tPoint.compareTo(_TPoint1) == 0);
         // assertSame
     }
 
@@ -229,7 +221,7 @@ public abstract class AbstractSpatialRegressionTest
         query.find();
         assertEquals(1, query.count());
         TPoint tPoint = query.iterator().next().point().get();
-        assertTrue(tPoint.compareTo(_TPoint) == 0);
+        assertTrue(tPoint.compareTo(_TPoint1) == 0);
 
         // Transform(module).from(tPoint).to("EPSG:4326");
     }
@@ -249,14 +241,123 @@ public abstract class AbstractSpatialRegressionTest
                                          10, TUnit.METER
                                         )
                         ))
-                .orderBy(templateFor(SpatialRegressionsValues.class).point(), _TPoint, OrderBy.Order.ASCENDING);
+                .orderBy(templateFor(SpatialRegressionsValues.class).point(), _TPoint1, OrderBy.Order.ASCENDING);
 
         assumeTrue(isExpressionSupported(query));
         query.find();
         assertEquals(query.count(), 1);
         TPoint tPoint = query.iterator().next().point().get();
-        assertTrue(tPoint.compareTo(_TPoint) == 0);
+        assertTrue(tPoint.compareTo(_TPoint1) == 0);
     }
+
+    @Test
+    public void script03a()
+    {
+        QueryBuilder<SpatialRegressionsValues> qb = this.module.newQueryBuilder(SpatialRegressionsValues.class);
+
+        Query<SpatialRegressionsValues> query = unitOfWork.newQuery(
+                qb
+                        .where(and(
+                                ST_Within
+                                        (
+                                                templateFor(SpatialRegressionsValues.class).point(),
+                                                TPoint(module).y(48.13905780941111).x(11.57958981111).geometry(),
+                                                10, TUnit.METER
+                                        )
+                                        ,
+                                ST_Within
+                                         (
+                                                templateFor(SpatialRegressionsValues.class).point(),
+                                                TPoint(module).y(48.13905780941111).x(11.57958981111).geometry(),
+                                                 5, TUnit.METER
+                                                )
+                                ))
+                        )
+                .orderBy(templateFor(SpatialRegressionsValues.class).point(), _TPoint1, OrderBy.Order.ASCENDING);
+
+        assumeTrue(isExpressionSupported(query));
+        query.find();
+        assertEquals(query.count(), 1);
+        TPoint tPoint = query.iterator().next().point().get();
+        assertTrue(tPoint.compareTo(_TPoint1) == 0);
+    }
+
+    @Test
+    public void script03b() {
+        QueryBuilder<SpatialRegressionsValues> qb = this.module.newQueryBuilder(SpatialRegressionsValues.class);
+
+        Query<SpatialRegressionsValues> query = unitOfWork.newQuery(
+                qb
+                        .where(and(
+                                ST_Within
+                                        (
+                                                templateFor(SpatialRegressionsValues.class).point(),
+                                                TPoint(module).y(48.13905780941111).x(11.57958981111).geometry(),
+                                                1000, TUnit.KILOMETER
+                                        )
+                                ,
+                                not(ST_Within
+                                        (
+                                                templateFor(SpatialRegressionsValues.class).point(),
+                                                TPoint(module).y(48.13905780941111).x(11.57958981111).geometry(),
+                                                1, TUnit.METER
+                                        ))
+                        ))
+        )
+        .orderBy(templateFor(SpatialRegressionsValues.class).point(), _TPoint1, OrderBy.Order.ASCENDING);
+
+        assumeTrue(isExpressionSupported(query));
+        query.find();
+        assertEquals(query.count(), 2);
+
+        Iterator<SpatialRegressionsValues> results = query.iterator();
+
+        // sorted ascending by distance
+        TPoint tPoint2 = results.next().point().get();
+        TPoint tPoint3 = results.next().point().get();
+
+        assertTrue(tPoint2.compareTo(_TPoint2) == 0);
+        assertTrue(tPoint3.compareTo(_TPoint3) == 0);
+    }
+
+    @Test
+    public void script03c() {
+        QueryBuilder<SpatialRegressionsValues> qb = this.module.newQueryBuilder(SpatialRegressionsValues.class);
+
+        Query<SpatialRegressionsValues> query = unitOfWork.newQuery(
+                qb
+                        .where(and(
+                                ST_Within
+                                        (
+                                                templateFor(SpatialRegressionsValues.class).point(),
+                                                TPoint(module).y(48.13905780941111).x(11.57958981111).geometry(),
+                                                1000, TUnit.KILOMETER
+                                        )
+                                ,
+                                not(ST_Within
+                                        (
+                                                templateFor(SpatialRegressionsValues.class).point(),
+                                                TPoint(module).y(48.13905780941111).x(11.57958981111).geometry(),
+                                                1, TUnit.METER
+                                        ))
+                        ))
+        )
+                .orderBy(templateFor(SpatialRegressionsValues.class).point(), _TPoint1, OrderBy.Order.DESCENDING);
+
+        assumeTrue(isExpressionSupported(query));
+        query.find();
+        assertEquals(query.count(), 2);
+
+        Iterator<SpatialRegressionsValues> results = query.iterator();
+
+        // sorted descending by distance
+        TPoint tPoint3 = results.next().point().get();
+        TPoint tPoint2 = results.next().point().get();
+
+        assertTrue(tPoint2.compareTo(_TPoint2) == 0);
+        assertTrue(tPoint3.compareTo(_TPoint3) == 0);
+    }
+
 
     @Ignore
     @Test
@@ -274,13 +375,13 @@ public abstract class AbstractSpatialRegressionTest
                                          10,TUnit.METER
                                         )
                         ))
-                .orderBy(templateFor(SpatialRegressionsValues.class).point(), _TPoint, OrderBy.Order.ASCENDING);
+                .orderBy(templateFor(SpatialRegressionsValues.class).point(), _TPoint1, OrderBy.Order.ASCENDING);
 
         // assumeTrue(isExpressionSupported(query));
         query.find();
         assertEquals(query.count(), 1);
         TPoint tPoint = query.iterator().next().point().get();
-        assertTrue(tPoint.compareTo(_TPoint) == 0);
+        assertTrue(tPoint.compareTo(_TPoint1) == 0);
     }
 
     @Test
@@ -320,7 +421,7 @@ public abstract class AbstractSpatialRegressionTest
         assertEquals(1, query.count());
         assertEquals(query.count(), 1);
         TPoint tPoint = query.iterator().next().point().get();
-        assertTrue(tPoint.compareTo(_TPoint) == 0);
+        assertTrue(tPoint.compareTo(_TPoint1) == 0);
     }
 
     @Test
@@ -423,7 +524,7 @@ public abstract class AbstractSpatialRegressionTest
         query.find();
         assertEquals(4, query.count());
         TPoint tPoint = query.iterator().next().point().get();
-        assertTrue(tPoint.compareTo(_TPoint) == 0);
+        assertTrue(tPoint.compareTo(_TPoint1) == 0);
         // assertSame
     }
 

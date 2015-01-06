@@ -51,6 +51,7 @@ import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.*;
 import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinder;
 import org.qi4j.index.elasticsearch.extensions.spatial.functions.convert.ConvertFinderSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates.PredicateFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.internal.InternalUtils;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
@@ -145,60 +146,16 @@ public interface ElasticSearchFinder
             }
             if( orderBySegments != null )
             {
-                try {
-                for( OrderBy order : orderBySegments )
-                {
+                for( OrderBy orderBySegment : orderBySegments ) {
 
-                    // System.out.println("OrderBy " + order);
-                    // System.out.println("Name " + order.property().toString()); // getClass().getTypeName());
-
-
-                   //  order.property().accessor().
-
-                            String typeName = Classes.typeOf(order.property().accessor()).getTypeName();
-                    //System.out.println(typeName);
-
-                    Type returnType = Classes.typeOf(order.property().accessor());
-                    Type propertyTypeAsType = GenericPropertyInfo.toPropertyType(returnType);
-
-
-                    //System.out.println(propertyTypeAsType.getTypeName());
-
-
-                        Class clazz = Class.forName(propertyTypeAsType.getTypeName());
-                        // if (clazz instanceof TGeometry)
-
-                        if (TGeometry.class.isAssignableFrom(clazz))
-                        {
-                            //System.out.println("Spatial Type");
-
-                            System.out.println("Order Type " + order.property().toString());
-
-                            // if (
-                            //    !TPoint.class.isAssignableFrom(clazz) ||
-                            //    !Mappings(support).onIndex(support.index()).andType(support.entitiesType()).isGeoPoint(order.property().toString())
-                            //   )
-                            //    throw new RuntimeException("OrderBy can only be done on properties of type TPoint.");
-
-                            GeoDistanceSortBuilder geoDistanceSortBuilder = new GeoDistanceSortBuilder(order.property().toString()); // "point"); // (order.property().toString());
-                            geoDistanceSortBuilder.point(order.getCentre().x(), order.getCentre().y());
-                           // geoDistanceSortBuilder.point(48.13905780941111, 11.57958981111);
-                            geoDistanceSortBuilder.order(order.order() == OrderBy.Order.ASCENDING ? SortOrder.ASC : SortOrder.DESC);
-                            //                 .addSort(geoDistanceSortBuilder.sortMode("min").order(SortOrder.ASC).geoDistance(GeoDistance.PLANE).unit(DistanceUnit.KILOMETERS))
-
-                            // geoDistanceSortBuilder.sortMode("min").geoDistance(GeoDistance.ARC).unit(DistanceUnit.KILOMETERS)
-
-                            request.addSort(geoDistanceSortBuilder.sortMode("max").geoDistance(GeoDistance.ARC).order( SortOrder.DESC));
-                        }
-
-                    else {
-                        request.addSort(order.property().toString(),
-                                order.order() == OrderBy.Order.ASCENDING ? SortOrder.ASC : SortOrder.DESC);
+                    if (COMPLEX_TYPE_SUPPORTS.get(InternalUtils.classOfPropertyType(orderBySegment.property())) != null) {
+                        COMPLEX_TYPE_SUPPORTS.get(InternalUtils.classOfPropertyType(orderBySegment.property())).support(module, support).orderBy(request, whereClause, orderBySegment, variables);
+                    } else {
+                        request.addSort(orderBySegment.property().toString(),
+                                orderBySegment.order() == OrderBy.Order.ASCENDING ? SortOrder.ASC : SortOrder.DESC);
                     }
                 }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+
             }
 
             // Log

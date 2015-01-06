@@ -32,6 +32,8 @@ public class AbstractSpatialQueryTest
                 extends AbstractAnyQueryTest
 {
 
+    private final String CRS_EPSG_4326 = "EPSG:4326";
+
     public interface MapFeature
 
     {
@@ -60,19 +62,12 @@ public class AbstractSpatialQueryTest
         module.entities(MapFeatureEntity.class);
 
         // internal values
-        module.values(Coordinate.class, TLinearRing.class);
+        module.values(Coordinate.class, TLinearRing.class, TGeometry.class);
 
         // API values
-        module.values(TPoint.class, TLineString.class, TPolygon.class, TGeometry.class);
-
-        // internal values
-        // module.values( Coordinate.class, TLinearRing.class,TGeometry.class);
-
-        // API values
-        // module.values(TPoint.class,TLineString.class, TPolygon.class); // , TFeature.class);
-
-
-
+        module.values(TPoint.class, TMultiPoint.class, TLineString.class, TPolygon.class, TMultiPolygon.class, TFeature.class, TFeatureCollection.class);
+        TGeometry tGeometry = module.forMixin(TGeometry.class).declareDefaults();
+        tGeometry.CRS().set(CRS_EPSG_4326);
 
     }
 

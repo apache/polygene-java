@@ -45,7 +45,7 @@ public class SpatialFunctionsSupportMatrix
         //supports(ST_WithinV2.class, propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), INDEXING_METHOD.TPOINT_AS_GEOSHAPE);
 
         // ST_Disjoint
-        supports(disable(ST_DisjointSpecification.class), propertyOf(AnyGeometry), filterOf(AnyGeometry), disable(OrderBy), SpatialConfiguration.INDEXING_METHOD.GEO_POINT);
+        supports(enable(ST_DisjointSpecification.class), propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), enable(OrderBy), SpatialConfiguration.INDEXING_METHOD.GEO_POINT);
         supports(enable(ST_DisjointSpecification.class),  propertyOf(AnyGeometry), filterOf(TPoint.class, TPolygon.class), disable(OrderBy), SpatialConfiguration.INDEXING_METHOD.GEO_SHAPE);
 
 

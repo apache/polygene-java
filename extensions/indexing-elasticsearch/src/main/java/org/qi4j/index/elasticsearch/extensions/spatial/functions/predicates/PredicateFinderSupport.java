@@ -31,7 +31,7 @@ public class PredicateFinderSupport implements ElasticSearchSpatialFinder.Spatia
     static
     {
         SPATIAL_PREDICATE_OPERATIONS.put(ST_WithinSpecification.class, new ST_Within());
-        SPATIAL_PREDICATE_OPERATIONS.put(ST_DisjointSpecification.class, new ST_DisjointV2());
+        SPATIAL_PREDICATE_OPERATIONS.put(ST_DisjointSpecification.class, new ST_DisjointV3());
         SPATIAL_PREDICATE_OPERATIONS.put(ST_IntersectsSpecification.class, new ST_Intersects());
     }
 
