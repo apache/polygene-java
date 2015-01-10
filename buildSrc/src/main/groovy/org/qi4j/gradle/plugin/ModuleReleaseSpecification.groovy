@@ -30,8 +30,8 @@ class ModuleReleaseSpecification
     def docs = module.status.documentation.text()
     def tests = module.status.unittests.text()
     def satisfied = ( codebase == 'none' && docs == 'complete' && tests != 'complete' )
-    satisfied |= ( codebase != 'early' && docs == 'good' && tests == 'good' )
-    satisfied |= ( codebase != 'beta' && docs == 'brief' && tests == 'some' )
+    satisfied |= ( codebase == 'early' && ( docs == 'complete' || docs == 'good') && (tests == 'complete' || tests == 'good' ) )
+    satisfied |= ( codebase == 'beta' && (docs == 'complete' || docs == 'good' || docs == 'brief') && (tests == 'complete' || tests == 'good' || tests == 'some') )
     satisfied |= ( codebase == 'stable' )
     satisfied |= ( codebase == 'mature' )
     println "$project.name($satisfied) -> $codebase, $docs, $tests"
