@@ -25,7 +25,7 @@ Example
 
 That means that the HelloWorldSpeaker.groovy file may be co-located with the 
 class files in the same package. It is currently not supported to place 
-the Javascript implementation of the mixin in a different package than the 
+the Groovy implementation of the mixin in a different package than the 
 interface it implements.
 
 To use Groovy to implement the Mixin functionality for a given interface, 
