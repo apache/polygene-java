@@ -51,6 +51,7 @@ public class JavaScriptMixin
 
     @Structure private TransientBuilderFactory factory;
     private Scriptable instanceScope;
+    
     static
     {
         Context cx = Context.enter();

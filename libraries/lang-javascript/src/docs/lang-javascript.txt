@@ -6,8 +6,20 @@
 source=libraries/lang-javascript/dev-status.xml
 --------------
 
-Javascript Scripting Library
-
-NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+The Javascript Scripting Library allows Mixin methods to be implemented in Javascript and loaded dynamically on first use.
 
 include::../../build/docs/buildinfo/artifact.txt[]
+
+The Javascript Scripting Library is a Generic mixin class that implements Composite interfaces by delegating to JavaScript functions using Rhino. Each method in an interface is declared as a JS function in a file located in classpath with the name "<interface>.<method>.js", where the interface name includes the package, and has "." replaced with "/".
+
+Example: org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
+
+That means that the HelloWorldSpeaker.say.js file may be co-located with the class files in the same package. It is currently not supported to place the Javascript implementation of the mixin in a different package than the interface it implements.
+
+To use Javascript to implement the Mixin functionality for a given interface, simply declare the +JavaScriptMixin+ like any other mixin, either in the interface or at assembly time.
+
+[snippet,java]
+----
+source=libraries/lang-javascript/src/test/java/org/qi4j/library/lang/javascript/DocumentationSupport.java
+tag=mixin
+----

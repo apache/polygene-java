@@ -11,25 +11,19 @@
 */
 package org.qi4j.lang.javascript;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.api.mixin.Mixins;
 
-public class JavaScriptMixinTest
-    extends AbstractQi4jTest
+// START SNIPPET: mixin
+import org.qi4j.lang.javascript.JavaScriptMixin;
+// END SNIPPET: mixin
+
+public interface DocumentationSupport
 {
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
+    // START SNIPPET: mixin
+    @Mixins(JavaScriptMixin.class)
+    public interface HelloSpeaker
     {
-        module.transients( DomainType.class ).withMixins( JavaScriptMixin.class );
+	void sayHello();
     }
-
-    @Test
-    public void testInvoke() throws Throwable
-    {
-        DomainType domain = module.newTransient( DomainType.class );
-        Assert.assertEquals( "do1 script \" and ' for many cases is harder.", domain.do1() );
-    }
+    // END SNIPPET: mixin
 }
