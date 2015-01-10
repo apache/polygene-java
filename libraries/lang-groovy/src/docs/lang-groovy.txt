@@ -11,3 +11,29 @@ Groovy Scripting Library
 NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
 
 include::../../build/docs/buildinfo/artifact.txt[]
+
+The Groovy Scripting Library is a Generic mixin that implements interfaces 
+by delegating to Groovy functions using Groovy. Each method in an interface 
+is declared by a Groovy method in a file located in classpath with the name
+"<interface>.groovy", where the interface name includes the package, and has 
+"." replaced with "/".
+
+Example
+
+    org/qi4j/samples/hello/domain/HelloWorldSpeaker.groovy
+    org/qi4j/samples/hello/domain/HelloWorldSpeaker.sayAgain.groovy
+
+That means that the HelloWorldSpeaker.groovy file may be co-located with the 
+class files in the same package. It is currently not supported to place 
+the Javascript implementation of the mixin in a different package than the 
+interface it implements.
+
+To use Groovy to implement the Mixin functionality for a given interface, 
+simply declare the +GroovyMixin+ like any other mixin, either in the interface 
+or at assembly time.
+
+[snippet,java]
+----
+source=libraries/lang-groovy/src/test/java/org/qi4j/lang/groovy/HelloSpeaker.java
+tag=mixin
+----

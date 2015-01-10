@@ -250,7 +250,7 @@ allprojects {
       systemProperties = testProperties
       systemProperties['user.dir'] = workingDir // GRADLE-2859
       ignoreFailures = true
-      testReport = true
+      reports.html.enabled(true)
       afterSuite { descriptor, result ->
         if( result.resultType == TestResult.ResultType.FAILURE )
         {

@@ -17,7 +17,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 There is currently no provided Assembler, and one has to declare the use explicitly. Note that we recommend
 [snippet,java]
 ----
-source=extensions/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/SimpleNeoStoreTest.java
+source=extensions/entitystore-neo4j/src/test/java/org/qi4j/entitystore/neo4j/test/SimpleNeoStoreTest.java
 tag=assembly
 ----
 

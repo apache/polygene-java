@@ -9,21 +9,16 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.lang.javascript;
+package org.qi4j.lang.jruby;
 
 import org.qi4j.api.mixin.Mixins;
 
 // START SNIPPET: mixin
-import org.qi4j.lang.javascript.JavaScriptMixin;
-// END SNIPPET: mixin
+import org.qi4j.lang.jruby.JRubyMixin;
 
-public interface DocumentationSupport
+@Mixins(JRubyMixin.class)
+public interface HelloSpeaker
 {
-    // START SNIPPET: mixin
-    @Mixins(JavaScriptMixin.class)
-    public interface HelloSpeaker
-    {
-	void sayHello();
-    }
-    // END SNIPPET: mixin
+    void sayHello();
 }
+// END SNIPPET: mixin
