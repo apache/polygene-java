@@ -13,21 +13,24 @@ import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 public class SimpleNeoStoreTest
     extends AbstractEntityStoreTest
 {
-
+// START SNIPPET: assembly
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+// END SNIPPET: assembly
         module.layer().application().setName( "SimpleNeoTest" );
 
         super.assemble( module );
+// START SNIPPET: assembly
         module.services( FileConfigurationService.class );
 
         module.services( NeoEntityStoreService.class );
 
         ModuleAssembly configModule = module.layer().module( "config" );
         configModule.entities( NeoConfiguration.class ).visibleIn( Visibility.layer );
-        new EntityTestAssembler().assemble( configModule );
         new OrgJsonValueSerializationAssembler().assemble( module );
+// END SNIPPET: assembly
+        new EntityTestAssembler().assemble( configModule );
     }
 
     @Override
