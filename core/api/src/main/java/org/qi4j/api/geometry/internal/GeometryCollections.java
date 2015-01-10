@@ -26,9 +26,8 @@ import java.util.List;
 public interface GeometryCollections extends TGeometry {
 
     Property<List<TGeometry>> geometries();
-
-
     TGeometry getGeometryN(int n);
+
 
     int getNumGeometries();
 
@@ -42,17 +41,18 @@ public interface GeometryCollections extends TGeometry {
 
         protected void init() {
 
-            if (self.geometries().get() == null) {
-
+            if (self.geometries().get() == null)
+            {
                 List<TGeometry> geometries = new ArrayList<>();
                 self.geometries().set(geometries);
-                // self.type().set(TGeomRoot.TGEOMETRY.POINT);
             }
         }
 
         public boolean isEmpty() {
-            for (int i = 0; i < self.geometries().get().size(); i++) {
-                if (!self.geometries().get().get(i).isEmpty()) {
+            for (int i = 0; i < self.geometries().get().size(); i++)
+            {
+                if (!self.geometries().get().get(i).isEmpty())
+                {
                     return false;
                 }
             }

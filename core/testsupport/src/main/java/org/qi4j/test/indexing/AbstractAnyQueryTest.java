@@ -87,7 +87,7 @@ public class AbstractAnyQueryTest
         throws Exception
     {
         super.setUp();
-        // TestData.populate( module );
+        TestData.populate( module );
 
         this.unitOfWork = this.module.newUnitOfWork();
     }

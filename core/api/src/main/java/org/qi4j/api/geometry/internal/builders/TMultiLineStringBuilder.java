@@ -14,40 +14,51 @@
 
 package org.qi4j.api.geometry.internal.builders;
 
-import org.qi4j.api.geometry.TFeature;
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TLineString;
+import org.qi4j.api.geometry.TMultiLineString;
 import org.qi4j.api.structure.Module;
+
+import java.util.List;
 
 /**
  * Created by jj on 26.11.14.
  */
-public class TFeatureBuilder {
+public class TMultiLineStringBuilder {
 
     private Module module;
-    private TFeature geometry;
+    private TMultiLineString geometry;
 
 
-    public TFeatureBuilder(Module module) {
+    public TMultiLineStringBuilder(Module module) {
         this.module = module;
-        geometry = module.newValueBuilder(TFeature.class).prototype();
+        geometry = module.newValueBuilder(TMultiLineString.class).prototype();
     }
 
 
-    public TFeatureBuilder of(TGeometry feature) {
-        geometry.of(feature);
+    public TMultiLineStringBuilder points(double[][][] points) {
+        for (double xy[][] : points) {
+            if (xy.length < 2) return null;
+            // geometry.xy(xy[0], xy[1]);
+        }
         return this;
     }
 
-    public TFeatureBuilder addProperty(String name, String value)
-    {
-        geometry.addProperty(name, value);
+    public TMultiLineStringBuilder of(List<TLineString> lines) {
+        geometry.of(lines);
         return this;
     }
 
-    public TFeature geometry() {
+    public TMultiLineStringBuilder of(TLineString... lines) {
+        geometry.of(lines);
+        return this;
+    }
+
+
+    public TMultiLineString geometry() {
         return geometry;
     }
-    public TFeature geometry(int srid) {
+
+    public TMultiLineString geometry(int srid) {
         return geometry();
     }
 }

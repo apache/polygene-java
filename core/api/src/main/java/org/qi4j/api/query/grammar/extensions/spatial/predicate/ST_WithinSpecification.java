@@ -8,9 +8,7 @@ import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.functional.Specification;
 
-/**
- * ST_Within Specification.
- */
+
 public class ST_WithinSpecification<T extends TGeometry>
     extends SpatialPredicatesSpecification<T>
 {
@@ -18,14 +16,14 @@ public class ST_WithinSpecification<T extends TGeometry>
     private double distance;
     private TUnit unit;
 
-    public ST_WithinSpecification(PropertyFunction<T> property, TGeometry value)
+    public ST_WithinSpecification(PropertyFunction<T> property, TGeometry param)
     {
-        super( property, value );
+        super( property, param );
     }
 
-    public ST_WithinSpecification(PropertyFunction<T> property, TPoint value, double distance, TUnit unit)
+    public ST_WithinSpecification(PropertyFunction<T> property, TPoint param, double distance, TUnit unit)
     {
-        super( property, value );
+        super( property, param );
         this.distance   = distance;
         this.unit       = unit;
     }
@@ -37,10 +35,6 @@ public class ST_WithinSpecification<T extends TGeometry>
         this.unit       = unit;
     }
 
-    public ST_WithinSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator, Variable variable)
-    {
-        super( property, operator );
-    }
 
     public ST_WithinSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator)
     {
@@ -52,14 +46,24 @@ public class ST_WithinSpecification<T extends TGeometry>
 
 
    @Override
-    protected boolean compare( TGeometry value )
+    protected boolean compare( TGeometry param )
     {
-        return value.equals( this.value );
+        return param.equals( this.param );
     }
 
     @Override
     public String toString()
     {
-        return "ST_WithinSpecification"; // property.toString() + " is within " + value.toString();
+        StringBuffer spec = new StringBuffer();
+        spec.append("ST_WITHIN").append("( ").append(property.toString()).append(" IS WITHIN ");
+        spec.append(param.toString());
+
+        if (distance > 0)
+        {
+            spec.append(" WITH RADIUS ").append(distance).append(" ").append(unit);
+        }
+
+        spec.append(" ) ");
+        return spec.toString();
     }
 }

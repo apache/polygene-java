@@ -16,7 +16,7 @@ package org.qi4j.api.geometry;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.geometry.internal.Coordinate;
-import org.qi4j.api.geometry.internal.HasShape;
+import org.qi4j.api.geometry.internal.TShape;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Structure;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixins(TPolygon.Mixin.class)
-public interface TPolygon extends HasShape, TGeometry {
+public interface TPolygon extends TShape, TGeometry {
 
     Property<TLinearRing> shell();
 

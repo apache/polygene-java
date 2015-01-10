@@ -58,13 +58,7 @@ public class ESMemorySupport
         index = config.index().get() == null ? DEFAULT_INDEX_NAME : config.index().get();
         indexNonAggregatedAssociations = config.indexNonAggregatedAssociations().get();
 
-        indexPointMappingMethod = config.indexPointMappingMethod() == null ?
-                ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT : config.indexPointMappingMethod().get();
-
-        indexPointMappingMethod = ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT;
-
-        System.out.println("---- TEST ---- " + config.spatial());
-
+        defaultSpatialConfiguration(config);
 
         String identity = hasIdentity.identity().get();
         Settings settings = ImmutableSettings.settingsBuilder().

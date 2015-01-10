@@ -17,13 +17,13 @@ public abstract class SpatialPredicatesSpecification<T extends TGeometry>
     extends ExpressionSpecification
 {
     protected final PropertyFunction<T> property;
-    protected final TGeometry value;
+    protected final TGeometry param;
     protected final Specification<SpatialConvertSpecification> operator;
 
-    public SpatialPredicatesSpecification(PropertyFunction<T> property, TGeometry value)
+    public SpatialPredicatesSpecification(PropertyFunction<T> property, TGeometry param)
     {
         this.property = property;
-        this.value = value;
+        this.param = param;
         this.operator = null;
     }
 
@@ -31,7 +31,7 @@ public abstract class SpatialPredicatesSpecification<T extends TGeometry>
     {
         this.property = property;
         this.operator = operator;
-        this.value    = null;
+        this.param    = null;
     }
 
     public PropertyFunction<T> property()
@@ -42,8 +42,6 @@ public abstract class SpatialPredicatesSpecification<T extends TGeometry>
     @Override
     public final boolean satisfiedBy( Composite item )
     {
-        System.out.println("SpatialPredicatesSpecification::satisfiedBy(" + item + ")");
-
         try
         {
             Property<T> prop = property.map( item );
@@ -69,9 +67,9 @@ public abstract class SpatialPredicatesSpecification<T extends TGeometry>
 
     protected abstract boolean compare( TGeometry value );
 
-    public TGeometry value()
+    public TGeometry param()
     {
-        return value;
+        return param;
     }
 
     public Specification<SpatialConvertSpecification> operator()

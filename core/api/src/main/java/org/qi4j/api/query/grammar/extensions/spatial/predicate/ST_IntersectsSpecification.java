@@ -16,9 +16,9 @@ public class ST_IntersectsSpecification<T extends TGeometry>
     private double distance;
     private TUnit unit;
 
-    public ST_IntersectsSpecification(PropertyFunction<T> property, TGeometry value)
+    public ST_IntersectsSpecification(PropertyFunction<T> property, TGeometry param)
     {
-        super( property, value );
+        super( property, param );
     }
 
     public ST_IntersectsSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator, long distance)
@@ -26,36 +26,28 @@ public class ST_IntersectsSpecification<T extends TGeometry>
         super( property, operator );
     }
 
-    public ST_IntersectsSpecification(PropertyFunction<T> property, TPoint value, double distance, TUnit unit)
+    public ST_IntersectsSpecification(PropertyFunction<T> property, TPoint param, double distance, TUnit unit)
     {
-        super( property, value );
+        super( property, param );
         this.distance   = distance;
         this.unit       = unit;
     }
 
-    public ST_IntersectsSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator, Variable variable)
-    {
-        super( property, operator );
-    }
 
-    public ST_IntersectsSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator)
-    {
-        super( property, operator );
-    }
 
     public double getDistance() { return distance; }
     public TUnit  getUnit() { return unit; }
 
 
    @Override
-    protected boolean compare( TGeometry value )
+    protected boolean compare( TGeometry param )
     {
-        return value.equals( this.value );
+        return param.equals( this.param );
     }
 
     @Override
     public String toString()
     {
-        return "ST_DisjointSpecification"; // property.toString() + " is within " + value.toString();
+        return "ST_IntersectsSpecification"; // property.toString() + " is within " + value.toString();
     }
 }

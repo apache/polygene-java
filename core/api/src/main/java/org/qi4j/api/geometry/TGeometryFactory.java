@@ -39,14 +39,17 @@ public class TGeometryFactory {
         return new TLinearRingBuilder(module);
     }
 
-    public static TLineStringBuilder TlineString(Module module) {
+    public static TLineStringBuilder TLineString(Module module) {
         return new TLineStringBuilder(module);
     }
 
+    public static TMultiLineStringBuilder TMultiLineString(Module module)
+    {
+        return new TMultiLineStringBuilder(module);
+    }
     public static TPolygonBuilder TPolygon(Module module) {
         return new TPolygonBuilder(module);
     }
-
     public static TMultiPolygonsBuilder TMultiPolygon(Module module) {
         return new TMultiPolygonsBuilder(module);
     }

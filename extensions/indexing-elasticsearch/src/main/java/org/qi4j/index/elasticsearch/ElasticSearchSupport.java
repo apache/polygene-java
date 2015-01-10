@@ -34,8 +34,6 @@ public interface ElasticSearchSupport
 
     boolean indexNonAggregatedAssociations();
 
-    ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD indexPointMappingMethod();
-
     SpatialConfiguration.Configuration spatialConfiguration();
 
     Module getModule();

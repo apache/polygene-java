@@ -39,6 +39,7 @@ public class TGeometryAssembler
                 TPoint.class,
                 TMultiPoint.class,
                 TLineString.class,
+                TMultiLineString.class,
                 TPolygon.class,
                 TMultiPolygon.class,
                 TFeature.class,

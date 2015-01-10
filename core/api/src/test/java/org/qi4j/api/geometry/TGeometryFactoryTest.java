@@ -33,9 +33,7 @@ import static org.qi4j.api.geometry.TGeometryFactory.TMultiPolygon;
 import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
 import static org.qi4j.api.geometry.TGeometryFactory.TPolygon;
 
-/**
- * JAVADOC
- */
+
 public class TGeometryFactoryTest
         extends AbstractQi4jTest {
 
@@ -54,6 +52,7 @@ public class TGeometryFactoryTest
                                 TPoint.class,
                                 TMultiPoint.class,
                                 TLineString.class,
+                                TMultiLineString.class,
                                 TPolygon.class,
                                 TMultiPolygon.class,
                                 TFeature.class,
@@ -64,7 +63,7 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void testWhenCRSIsCreated()
+    public void script01()
     {
         String CRS_EPSG_4326 = "EPSG:4326";
         TCRS crs = TCrs(module).crs(CRS_EPSG_4326);
@@ -72,7 +71,7 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void testWhenPointIsCreated()
+    public void script02()
     {
         TPoint point_2D = TPoint(module).x(1d).y(2d).geometry();
         assertEquals(1d, point_2D.x(), ZERO);
@@ -90,7 +89,7 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void testWhenMultiPointIsCreatedVerifyTypesAndValues()
+    public void script03()
     {
 
         TMultiPoint multiPoint = TMultiPoint(module).points(new double[][]
@@ -129,10 +128,10 @@ public class TGeometryFactoryTest
 
 
     @Test
-    public void testWhenLineStringCreated()
+    public void script04()
     {
 
-        TLineString line = TlineString(module).points(new double[][]
+        TLineString line = TLineString(module).points(new double[][]
                 {
                                                 {0, 0},
                                                 {1, 0},
@@ -151,7 +150,29 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void testWhenLinearRingCreated()
+    public void script05()
+    {
+        TMultiLineString mLine = TMultiLineString(module).of
+                (
+                        TLineString(module).points(new double[][]
+                                {
+                                        {0, 0},
+                                        {1, 0},
+                                        {1, 1},
+                                        {0, 1},
+                                        {0, 1}
+
+                                }).geometry()
+                ).geometry();
+
+        assertThat(mLine.getCRS(), equalTo(CRS_EPSG_27572));
+        assertEquals(5, mLine.getNumPoints());
+        assertTrue(mLine.getGeometryN(0).isLineString());
+    }
+
+
+        @Test
+    public void script06()
     {
 
         TLinearRing ring = TLinearRing(module).ring(new double[][]
@@ -171,13 +192,13 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void testWhenLinearRingIsCleatedDSL()
+    public void script07()
     {
         TLinearRing tLinearRing = TLinearRing(module).of().geometry();
     }
 
     @Test
-    public void testWhenPolygonIsCreated()
+    public void script08()
     {
         TPolygon polygon = TPolygon(module)
 
@@ -213,7 +234,7 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void testWhenPolygonIsCreatedWithoutHoles()
+    public void script09()
     {
         TPolygon polygon = TPolygon(module)
 
@@ -246,7 +267,7 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void testWhenPolygonIsCreatedWitHoles()
+    public void script11()
     {
         TPolygon polygon = TPolygon(module)
 
@@ -292,7 +313,7 @@ public class TGeometryFactoryTest
 
 
     @Test
-    public void testWhenMultiPolygonIsCreated() {
+    public void script12() {
 
         TPolygon polygon1 = TPolygon(module)
 
@@ -383,7 +404,7 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void testWhenFeatureCreated() {
+    public void script13() {
 
         TFeature featureOfAPoint = TFeature(module).of(TPoint(module).x(1d).y(2d).z(3d).geometry()).geometry();
         assertEquals(featureOfAPoint.getType(), TGeometryRoot.TGEOMETRY_TYPE.FEATURE);
@@ -394,7 +415,7 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void testWhenFeatureOfPolygonIsCreated() {
+    public void script14() {
 
         TFeature featureOfAPolygon = TFeature(module).of(
 
@@ -420,7 +441,7 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void testWhenFeatureCollectionIsCreated() {
+    public void script15() {
         TFeature featureOfAPolygon = TFeature(module).of(
 
                 TPolygon(module)

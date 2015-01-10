@@ -1,9 +1,25 @@
+/*
+ * Copyright (c) 2014, Jiri Jetmar. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.qi4j.index.elasticsearch.extension.spatial;
 
 import org.junit.BeforeClass;
 import org.junit.Rule;
+import org.junit.Test;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.query.Query;
+import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
@@ -12,6 +28,7 @@ import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConf
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.spatial.v2.assembly.TGeometryAssembler;
+import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.test.indexing.AbstractSpatialRegressionTest;
 import org.qi4j.test.util.DelTreeAfter;
@@ -20,10 +37,8 @@ import java.io.File;
 
 import static org.qi4j.test.util.Assume.*;
 
-/**
- * Created by jj on 21.12.14.
- */
-public class ElasticSearchSpatialRegressionQueryVariant1Test
+
+public class ElasticSearchSpatialQueryTestUsingGeoShapeIndexing
         extends AbstractSpatialRegressionTest
 {
     private static final File DATA_DIR = new File( "build/tmp/es-spatial-query-test" );
@@ -36,50 +51,6 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
         assumeNoIbmJdk();
     }
 
-    protected boolean isExpressionSupported(Query<?> expression)
-    {
-        return true;
-    }
-
-/**
-    protected boolean isExpressionSupported(Query<?> expression)
-    {
-        QueryImpl queryImpl = (QueryImpl)expression;
-        System.out.println("### " + expression.getClass());
-
-        System.out.println(queryImpl.resultType());
-
-        System.out.println("getWhereClause " + queryImpl.getWhereClause().getClass().getSimpleName());
-
-        System.out.println(((SpatialPredicatesSpecification)queryImpl.getWhereClause()).value());
-
-        boolean hasOrderBySegments = false;
-        if (queryImpl.getOrderBySegments() != null && queryImpl.getOrderBySegments().iterator().hasNext())
-        {
-            hasOrderBySegments = true;
-        }
-        // public static boolean isSupported(Class expression, Class<? extends  TGeometry> geometryOfProperty,Class<? extends  TGeometry> geometryOfFilter, Boolean orderBy, INDEXING_METHOD Type )
-
-        Class geometryOfProperty = InternalUtils.classOfPropertyType(((SpatialPredicatesSpecification)queryImpl.getWhereClause()).property());
-        TGeometry geometryOfFilter   = ((SpatialPredicatesSpecification)queryImpl.getWhereClause()).value();
-
-        // System.out.println("Operator " + ((SpatialPredicatesSpecification)queryImpl.getWhereClause()).operator().getClass());
-
-        System.out.println("geometryOfProperty " + geometryOfProperty);
-        System.out.println("geometryOfFilter   " + InternalUtils.classOfGeometry(geometryOfFilter));
-
-        System.out.println("Exression " + expression.getClass());
-
-        return SpatialFunctionsSupportMatrix.isSupported
-                (
-                        queryImpl.getWhereClause().getClass(),
-                        geometryOfProperty,
-                        InternalUtils.classOfGeometry(geometryOfFilter),
-                        hasOrderBySegments,
-                        SpatialFunctionsSupportMatrix.INDEX_MAPPING_TPOINT_METHOD.TPOINT_AS_GEOPOINT
-                );
-    }
- */
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -89,8 +60,6 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
 
         // Geometry support
         new TGeometryAssembler().assemble(module);
-
-
 
         // Config module
         ModuleAssembly config = module.layer().module( "config" );
@@ -106,12 +75,11 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
         // Index/Query
         new ESFilesystemIndexQueryAssembler().
                 withConfig(config,Visibility.layer ).
-                identifiedBy("ElasticSearchConfigurationVariant1").
+                identifiedBy("ElasticSearchGeoShapeIndexing").
                 assemble(module);
 
         ElasticSearchConfiguration esConfig = config.forMixin( ElasticSearchConfiguration.class ).declareDefaults();
         esConfig.indexNonAggregatedAssociations().set( Boolean.TRUE );
-        esConfig.indexPointMappingMethod().set(ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT);
 
 
         // FileConfig
@@ -124,8 +92,49 @@ public class ElasticSearchSpatialRegressionQueryVariant1Test
 
 
         config.services(FileConfigurationService.class)
-                // .identifiedBy("ElasticSearchConfigurationVariant1")
                 .setMetaInfo(override)
                 .visibleIn(Visibility.application);
     }
+
+
+    @Test(expected=QueryExecutionException.class)
+    @Override
+    public void script01c()
+            throws EntityFinderException
+    {
+       super.script01c(); // <- no orderBy() support for GeoShapes
+    }
+
+    @Test(expected=QueryExecutionException.class)
+    @Override
+    public void script01d()
+            throws EntityFinderException
+    {
+        super.script01d(); // <- no orderBy() support for GeoShapes
+    }
+
+    @Test(expected=QueryExecutionException.class)
+    @Override
+    public void script01e()
+            throws EntityFinderException
+    {
+        super.script01e(); // <- no orderBy() support for GeoShapes
+    }
+
+    @Test(expected=QueryExecutionException.class)
+    @Override
+    public void script01f()
+            throws EntityFinderException
+    {
+        super.script01f(); // <- no orderBy() support for GeoShapes
+    }
+
+    @Test(expected=QueryExecutionException.class)
+    @Override
+    public void script03c()
+            throws EntityFinderException
+    {
+        super.script03c(); // <- no orderBy() support for GeoShapes
+    }
+
 }

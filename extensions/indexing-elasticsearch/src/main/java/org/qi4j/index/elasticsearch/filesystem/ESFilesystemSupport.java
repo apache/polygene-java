@@ -58,25 +58,7 @@ public class ESFilesystemSupport
         index = config.index().get() == null ? DEFAULT_INDEX_NAME : config.index().get();
         indexNonAggregatedAssociations = config.indexNonAggregatedAssociations().get();
 
-        indexPointMappingMethod = config.indexPointMappingMethod() == null ?
-                ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT : config.indexPointMappingMethod().get();
-
-        indexPointMappingMethod = ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT;
-
-
-        System.out.println("---- TEST FileSystemSupport ---- " + config.spatial());
-        System.out.println("---- TEST FileSystemSupport enabled ---- " + config.spatial().get().Enabled());
-        System.out.println("---- TEST FileSystemSupport Type ---- " + config.spatial().get().Indexer().get().Method());
-        System.out.println("---- TEST FileSystemSupport Projection enabled ---- " + config.spatial().get().Indexer().get().Projection().get().ConversionEnabled() );
-        System.out.println("---- TEST FileSystemSupport Projection Accuracy ---- " + config.spatial().get().Indexer().get().Projection().get().ConversionEnabled() );
-
-
-        System.out.println("---- TEST FileSystemSupport Finder Enabled ---- " + config.spatial().get().Finder().get().Projection().get().ConversionEnabled() );
-        System.out.println("---- TEST FileSystemSupport Finder Accuracy ---- " + config.spatial().get().Finder().get().Projection().get().ConversionAccuracy() );
-
-        spatialConfiguration = config.spatial().get();
-
-
+        defaultSpatialConfiguration(config);
 
         String identity = hasIdentity.identity().get();
         Settings settings = ImmutableSettings.settingsBuilder().

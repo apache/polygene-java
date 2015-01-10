@@ -23,7 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.association.AssociationDescriptor;
-import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.geometry.internal.TGeometry;
@@ -52,10 +51,7 @@ import org.qi4j.spi.entitystore.StateChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Listen to Entity state changes and index them in ElasticSearch.
@@ -81,6 +77,9 @@ public interface ElasticSearchIndexer
         private ValueSerializer valueSerializer;
         @This
         private ElasticSearchSupport support;
+
+        Stack<String> deepSpatialMappingKeyStack = new Stack<>();
+
 
         public void emptyIndex()
         {
@@ -195,15 +194,8 @@ public interface ElasticSearchIndexer
         {
             return toJSON(null, state, newStates, uow);
         }
-
-
-        Stack<String> stack = new Stack<>();
-        int iterations = 0;
-
-        private String toJSON(String assotiationKey, EntityState state, Map<String, EntityState> newStates, EntityStoreUnitOfWork uow )
+        private String toJSON(String mKey, EntityState state, Map<String, EntityState> newStates, EntityStoreUnitOfWork uow )
         {
-
-            // System.out.println("# --- > Iterations " + iterations++);
 
             try
             {
@@ -218,36 +210,32 @@ public interface ElasticSearchIndexer
                 for( PropertyDescriptor propDesc : entityType.state().properties() )
                 {
 
-                    AssociationStateDescriptor associationStateDescriptor = entityType.state();
-
                     if( propDesc.queryable() )
                     {
                         String key = propDesc.qualifiedName().name();
                         Object value = state.propertyValueOf( propDesc.qualifiedName() );
                         if( value == null || ValueType.isPrimitiveValue( value ) )
                         {
-                            json.put( key, value );
+                            json.put(key, value);
                         }
-
                         else
-                        if (ValueType.isGeometryValue(value) )
+                        // For spatial types is is required to generate a "deep mapping key" that is used during indexing as
+                        // mapping name. The mapping name has to be "deep" and is also used for spatial queries :
+                        //    "geo_distance" : {
+                        //     "city.location" : [ 11.57958984375, 48.13905780942574 ],
+                        //     "distance" : "10.0km"
+                        if (ValueType.isGeometricValue(value) )
                         {
-
-                            String newKey = null;
-
-                            if (assotiationKey != null)
+                            if (mKey != null)
                             {
-                                 newKey = assotiationKey + "." + key;
+                                deepSpatialMappingKeyStack.add(mKey);
+                                deepSpatialMappingKeyStack.add(key);
                             }
-                            else
-                            {
-                                newKey = key;
-                            }
+                            else { deepSpatialMappingKeyStack.add(key);}
 
-
-                            ElasticSearchSpatialIndexer.toJSON(support, (TGeometry) value, key, newKey, json, module);
-
-                           //System.out.println("Spatial JSON " + json);
+                            String deepKey = ElasticSearchSpatialIndexer.spatialMappingPropertyName(deepSpatialMappingKeyStack);
+                            ElasticSearchSpatialIndexer.toJSON(support, (TGeometry) value, key, deepKey, json, module);
+                            deepSpatialMappingKeyStack.clear();
                         }
                         else
                         {
@@ -373,7 +361,6 @@ public interface ElasticSearchIndexer
                         json.put( key, array );
                     }
                 }
-                iterations = 0;
                 return json.toString();
             }
             catch( JSONException e )

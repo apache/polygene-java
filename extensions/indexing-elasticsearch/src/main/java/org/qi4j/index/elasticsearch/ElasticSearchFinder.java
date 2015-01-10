@@ -78,15 +78,6 @@ public interface ElasticSearchFinder
         private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 9 );
         public static final Map<Class<?>, SpatialQuerySpecSupport> EXTENDED_SPEC_SUPPORTS = new HashMap<>( 2 );
 
-        public static final Map<Class<?>, SpatialQuerySpecSupport> EXTENDED_QUERY_EXPRESSIONS_CATALOG = new HashMap<>( 2 );
-
-        static
-        {
-
-            EXTENDED_QUERY_EXPRESSIONS_CATALOG.put(SpatialPredicatesSpecification.class, new PredicateFinderSupport());
-            EXTENDED_QUERY_EXPRESSIONS_CATALOG.put(SpatialConvertSpecification.class, new ConvertFinderSupport());
-        }
-
         // Spec Support
         static
         {
@@ -198,11 +189,8 @@ public interface ElasticSearchFinder
 
             System.out.println("request " + request.toString());
 
-
             // Execute
             SearchResponse response = request.execute().actionGet();
-
-            // System.out.println("response " + response.toString());
 
             if( response.getHits().totalHits() == 1 )
             {
@@ -596,38 +584,16 @@ public interface ElasticSearchFinder
                 throws EntityFinderException
         {
             LOGGER.trace("Processing SpatialPredicatesSpecification {}", spec);
-            SpatialQuerySpecSupport spatialQuerySpecSupport = EXTENDED_SPEC_SUPPORTS.get( spec.getClass().getSuperclass() );
-            spatialQuerySpecSupport.setModule(module, support);
-
-
-
-            try
-            {
-                spatialQuerySpecSupport.processSpecification(filterBuilder, spec, variables);
-
-            } catch(Exception _ex)
-            {
-                throw new EntityFinderException(_ex);
-            }
+            EXTENDED_SPEC_SUPPORTS.get( spec.getClass().getSuperclass() ).support(module, support).processSpecification(filterBuilder, spec, variables);
         }
 
         private void processSpatialConvertSpecification( FilterBuilder filterBuilder,
                                                          SpatialConvertSpecification<?> spec,
                                                          Map<String, Object> variables )
+                throws EntityFinderException
         {
             LOGGER.trace("Processing SpatialConvertSpecification {}", spec);
-
-            SpatialQuerySpecSupport spatialQuerySpecSupport = EXTENDED_SPEC_SUPPORTS.get( spec.getClass().getSuperclass() );
-            spatialQuerySpecSupport.setModule(module, support);
-
-            try
-            {
-                spatialQuerySpecSupport.processSpecification(filterBuilder, spec, variables);
-
-            } catch(Exception _ex)
-            {
-                _ex.printStackTrace();
-            }
+            EXTENDED_SPEC_SUPPORTS.get( spec.getClass().getSuperclass() ).support(module, support).processSpecification(filterBuilder, spec, variables);
         }
     }
 

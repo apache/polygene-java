@@ -1,4 +1,3 @@
-package org.qi4j.index.elasticsearch.extensions.spatial;
 
 /*
  * Copyright 2014 Jiri Jetmar.
@@ -17,11 +16,13 @@ package org.qi4j.index.elasticsearch.extensions.spatial;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.qi4j.index.elasticsearch.extensions.spatial;
+
 
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.common.geo.GeoDistance;
 import org.elasticsearch.common.unit.DistanceUnit;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.search.sort.GeoDistanceSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.qi4j.api.composite.Composite;
@@ -34,6 +35,7 @@ import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpeci
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.SpatialPredicatesSpecification;
 import org.qi4j.api.structure.Module;
 import org.qi4j.functional.Specification;
+import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.functions.convert.ConvertFinderSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates.PredicateFinderSupport;
@@ -46,111 +48,83 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.elasticsearch.index.query.FilterBuilders.geoShapeFilter;
-
-import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport;
-
-public final class ElasticSearchSpatialFinder
-{
+public final class ElasticSearchSpatialFinder {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ElasticSearchSpatialFinder.class);
 
-    private static final Map<Class<?>, SpatialQuerySpecSupport> SPATIAL_QUERY_EXPRESSIONS_CATALOG = new HashMap<>( 2 );
+    private static final Map<Class<?>, SpatialQuerySpecSupport> SPATIAL_QUERY_EXPRESSIONS_CATALOG = new HashMap<>(2);
 
-    static
-    {
+    static {
         SPATIAL_QUERY_EXPRESSIONS_CATALOG.put(SpatialPredicatesSpecification.class, new PredicateFinderSupport());
         SPATIAL_QUERY_EXPRESSIONS_CATALOG.put(SpatialConvertSpecification.class, new ConvertFinderSupport());
     }
 
 
-
-    public interface ModuleHelper {
-        void setModule(Module module, ElasticSearchSupport support);
+    private ElasticSearchSpatialFinder() {
     }
 
-    public static interface SpatialQuerySpecSupport extends ModuleHelper
-    {
-        void processSpecification(FilterBuilder filterBuilder, Specification<?> spec, Map<String, Object> variables)  throws EntityFinderException;
+    public interface Support {
+        SpatialQuerySpecSupport support(Module module, ElasticSearchSupport support);
     }
 
 
+    public static interface SpatialQuerySpecSupport extends Support {
+        void processSpecification(FilterBuilder filterBuilder, Specification<?> spec, Map<String, Object> variables) throws EntityFinderException;
+    }
 
     public static class SpatialSpecSupport
-                implements  SpatialQuerySpecSupport {
+            implements SpatialQuerySpecSupport {
+        private Module module;
+        private ElasticSearchSupport support;
 
-        Module module;
-        ElasticSearchSupport support;
-
-        public void setModule(Module module, ElasticSearchSupport support)
-        {
-            this.module  = module;
+        public SpatialQuerySpecSupport support(Module module, ElasticSearchSupport support) {
+            this.module = module;
             this.support = support;
+            return this;
         }
 
 
         public void processSpecification(FilterBuilder filterBuilder,
-                                              Specification<?> spec,
-                                              Map<String, Object> variables)
-                throws EntityFinderException
-        {
-
-            SpatialQuerySpecSupport spatialQuerySpecSupport = SPATIAL_QUERY_EXPRESSIONS_CATALOG.get(spec.getClass().getSuperclass());
-            spatialQuerySpecSupport.setModule(module, support);
-
-            try {
-                spatialQuerySpecSupport.processSpecification(filterBuilder, spec, variables);
-
-            } catch (Exception _ex) {
-                throw new EntityFinderException(_ex);
-            }
-
-
+                                         Specification<?> spec,
+                                         Map<String, Object> variables)
+                throws EntityFinderException {
+            SPATIAL_QUERY_EXPRESSIONS_CATALOG.get(spec.getClass().getSuperclass()).support(module, support).processSpecification(filterBuilder, spec, variables);
         }
 
     }
 
-
     public static class SpatialTypeSupport
-            implements ElasticSearchFinderSupport.ComplexTypeSupport
-    {
+            implements ElasticSearchFinderSupport.ComplexTypeSupport {
 
         private Module module;
         private ElasticSearchSupport support;
 
-        public ElasticSearchFinderSupport.ComplexTypeSupport support(Module module, ElasticSearchSupport support)
-        {
-            this.module  = module;
+        public ElasticSearchFinderSupport.ComplexTypeSupport support(Module module, ElasticSearchSupport support) {
+            this.module = module;
             this.support = support;
 
             return this;
         }
 
 
-        public FilterBuilder comparison( ComparisonSpecification<?> spec, Map<String, Object> variables )
-        {
+        public FilterBuilder comparison(ComparisonSpecification<?> spec, Map<String, Object> variables) {
             throw new RuntimeException("Unsupported operation");
         }
 
-        public FilterBuilder contains( ContainsSpecification<?> spec, Map<String, Object> variables )
-        {
+        public FilterBuilder contains(ContainsSpecification<?> spec, Map<String, Object> variables) {
             throw new RuntimeException("Unsupported operation");
         }
 
-        public FilterBuilder containsAll( ContainsAllSpecification<?> spec, Map<String, Object> variables )
-        {
+        public FilterBuilder containsAll(ContainsAllSpecification<?> spec, Map<String, Object> variables) {
             throw new RuntimeException("Unsupported operation");
         }
 
-        public void orderBy(SearchRequestBuilder request,  Specification<Composite> whereClause, OrderBy orderBySegment, Map<String, Object> variables ) throws EntityFinderException
-        {
-            if (!TPoint.class.isAssignableFrom(InternalUtils.classOfPropertyType(orderBySegment.property())))
-            {
+        public void orderBy(SearchRequestBuilder request, Specification<Composite> whereClause, OrderBy orderBySegment, Map<String, Object> variables) throws EntityFinderException {
+            if (!TPoint.class.isAssignableFrom(InternalUtils.classOfPropertyType(orderBySegment.property()))) {
                 throw new EntityFinderException("Ordering can only be done on TPoints.. TODO");
             }
 
-            if (!SpatialIndexMapper.IndexMappingCache.isMappedAsGeoPoint(support.index(), support.entitiesType(), orderBySegment.property().toString()))
-            {
+            if (!SpatialIndexMapper.IndexMappingCache.isMappedAsGeoPoint(support.index(), support.entitiesType(), orderBySegment.property().toString())) {
                 throw new EntityFinderException("OrderBy is only supported when GEO_POINT indexing is used");
             }
 
@@ -160,13 +134,6 @@ public final class ElasticSearchSpatialFinder
             geoDistanceSortBuilder.order(orderBySegment.order() == OrderBy.Order.ASCENDING ? SortOrder.ASC : SortOrder.DESC);
             request.addSort(geoDistanceSortBuilder.geoDistance(GeoDistance.SLOPPY_ARC).sortMode("avg").unit(DistanceUnit.METERS));
         }
-    }
-
-
-
-
-     private ElasticSearchSpatialFinder()
-    {
     }
 
 }

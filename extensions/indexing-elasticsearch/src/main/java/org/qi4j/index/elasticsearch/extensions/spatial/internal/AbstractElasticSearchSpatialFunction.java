@@ -1,5 +1,20 @@
+/*
+ * Copyright (c) 2014, Jiri Jetmar. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.qi4j.index.elasticsearch.extensions.spatial.internal;
 
+import com.spatial4j.core.distance.DistanceUtils;
 import org.elasticsearch.common.geo.ShapeRelation;
 import org.elasticsearch.common.geo.builders.CircleBuilder;
 import org.elasticsearch.common.geo.builders.PolygonBuilder;
@@ -10,6 +25,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.geometry.TUnit;
+import org.qi4j.api.geometry.internal.TCircle;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.query.grammar.PropertyFunction;
@@ -29,9 +45,9 @@ import org.qi4j.spi.query.EntityFinderException;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import static org.qi4j.api.geometry.TGeometryFactory.*;
-import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.*;
-import static org.qi4j.library.spatial.v2.transformations.TTransformations.*;
+import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
+import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.IndexMappingCache;
+import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
 
 
 /**
@@ -46,15 +62,7 @@ public abstract class AbstractElasticSearchSpatialFunction {
     protected Module module;
     protected ElasticSearchSupport support;
 
-    public void setModule(Module module, ElasticSearchSupport support)
-    {
-        this.module = module;
-        this.support = support;
-    }
-
-
-    protected boolean isSupported(SpatialPredicatesSpecification<?> spec, TGeometry geometryOfFilter) throws EntityFinderException
-    {
+    protected boolean isSupported(SpatialPredicatesSpecification<?> spec, TGeometry geometryOfFilter) throws EntityFinderException {
         return SpatialFunctionsSupportMatrix.isSupported
                 (
                         spec.getClass(),
@@ -62,70 +70,55 @@ public abstract class AbstractElasticSearchSpatialFunction {
                         InternalUtils.classOfGeometry(geometryOfFilter),
                         isMappedAsGeoPoint(spec.property()) ? SpatialConfiguration.INDEXING_METHOD.GEO_POINT : SpatialConfiguration.INDEXING_METHOD.GEO_SHAPE
                 );
-
     }
 
-    protected boolean isValid(SpatialPredicatesSpecification<?> spec) throws EntityFinderException
-    {
-        if ((spec.value() == null && spec.operator() == null))
+    protected boolean isValid(SpatialPredicatesSpecification<?> spec) throws EntityFinderException {
+        if ((spec.param() == null && spec.operator() == null))
             return false;
         else
             return true;
-
     }
 
 
-    protected void addFilter( FilterBuilder filter, FilterBuilder into )
-    {
-        if ( into instanceof AndFilterBuilder) {
-            ( (AndFilterBuilder) into ).add( filter );
-        } else if ( into instanceof OrFilterBuilder) {
-            ( (OrFilterBuilder) into ).add( filter );
+    protected void addFilter(FilterBuilder filter, FilterBuilder into) {
+        if (into instanceof AndFilterBuilder) {
+            ((AndFilterBuilder) into).add(filter);
+        } else if (into instanceof OrFilterBuilder) {
+            ((OrFilterBuilder) into).add(filter);
         } else {
-            throw new UnsupportedOperationException( "FilterBuilder is nor an AndFB nor an OrFB, cannot continue." );
+            throw new UnsupportedOperationException("FilterBuilder is nor an AndFB nor an OrFB, cannot continue.");
         }
     }
 
-    protected TGeometry verifyProjection(TGeometry tGeometry)
-    {
+    protected TGeometry verifyProjection(TGeometry tGeometry) {
         if (new ProjectionsRegistry().getCRS(tGeometry.getCRS()) == null)
-            throw new RuntimeException("Project with the CRS Identity " + tGeometry.getCRS() + " is unknown. Supported projections are JJ TODO" );
+            throw new RuntimeException("Project with the CRS Identity " + tGeometry.getCRS() + " is unknown. Supported projections are JJ TODO");
 
 
         try {
             if (!tGeometry.getCRS().equalsIgnoreCase(DefaultSupportedProjection)) {
-                if (SpatialConfiguration.isFinderProjectionConversionEnabled(support.spatialConfiguration()))
-                {
+                if (SpatialConfiguration.isFinderProjectionConversionEnabled(support.spatialConfiguration())) {
                     Transform(module).from(tGeometry).to(DefaultSupportedProjection, DefaultProjectionConversionPrecisionInMeters);
-                }  else throw new Exception("Filter Projection has a unsupported Projection and conversion is disabled");
+                } else throw new Exception("Filter Projection has a unsupported Projection and conversion is disabled");
             }
-        } catch (Exception _ex)
-        {
+        } catch (Exception _ex) {
             _ex.printStackTrace();
         }
 
         return tGeometry; // ATTENTION - we are transforming as per "Reference"
     }
 
-    protected boolean isPropertyOfType(Class type, PropertyFunction propertyFunction)
-    {
+    protected boolean isPropertyOfType(Class type, PropertyFunction propertyFunction) {
         Type returnType = Classes.typeOf(propertyFunction.accessor());
         Type propertyTypeAsType = GenericPropertyInfo.toPropertyType(returnType);
 
-
-
-        System.out.println("---- > " + propertyTypeAsType.getTypeName());
-
         Class clazz;
 
-        try
-        {
+        try {
             clazz = Class.forName(propertyTypeAsType.getTypeName());
-        } catch(Exception _ex)
-        {
+        } catch (Exception _ex) {
             throw new RuntimeException(_ex);
         }
-        // if (clazz instanceof TGeometry)
 
         if (type.isAssignableFrom(clazz))
             return true;
@@ -133,8 +126,7 @@ public abstract class AbstractElasticSearchSpatialFunction {
             return false;
     }
 
-    protected boolean isPropertyOfTypeTPoint(PropertyFunction propertyFunction)
-    {
+    protected boolean isPropertyOfTypeTPoint(PropertyFunction propertyFunction) {
         // String typeName = Classes.typeOf(propertyFunction.accessor()).getTypeName();
         // System.out.println(typeName);
 
@@ -146,11 +138,9 @@ public abstract class AbstractElasticSearchSpatialFunction {
 
         Class clazz;
 
-        try
-        {
+        try {
             clazz = Class.forName(propertyTypeAsType.getTypeName());
-        } catch(Exception _ex)
-        {
+        } catch (Exception _ex) {
             throw new RuntimeException(_ex);
         }
         // if (clazz instanceof TGeometry)
@@ -161,90 +151,88 @@ public abstract class AbstractElasticSearchSpatialFunction {
             return false;
     }
 
-    protected boolean isMappedAsGeoPoint(PropertyFunction property)
-    {
+    protected boolean isMappedAsGeoPoint(PropertyFunction property) {
         return IndexMappingCache.isMappedAsGeoPoint(support.index(), support.entitiesType(), property.toString());
     }
 
 
-
-    protected boolean isTPoint(TGeometry filterGeometry)
-    {
+    protected boolean isTPoint(TGeometry filterGeometry) {
         return TPoint(module).isPoint(filterGeometry);
     }
 
-    protected boolean isMappedAsGeoShape(PropertyFunction property)
-    {
+    protected boolean isMappedAsGeoShape(PropertyFunction property) {
         return IndexMappingCache.isMappedAsGeoShape(support.index(), support.entitiesType(), property.toString());
     }
 
-    protected boolean isMapped(PropertyFunction property)
-    {
+    protected boolean isMapped(PropertyFunction property) {
         return IndexMappingCache.mappingExists(support.index(), support.entitiesType(), property.toString());
     }
 
-    protected boolean isSpatial(PropertyFunction property)
-    {
+    protected boolean isSpatial(PropertyFunction property) {
         return false;
     }
 
 
-
-    protected GeoShapeFilterBuilder createShapeFilter(String name, TPoint point, ShapeRelation relation, double distance, TUnit unit)
-    {
+    protected GeoShapeFilterBuilder createShapeFilter(String name, TPoint point, ShapeRelation relation, double distance, TUnit unit) {
         return createShapeFilter(name, point, relation, distance, convertDistanceUnit(unit));
     }
 
-    protected GeoShapeFilterBuilder createShapeFilter(String name, TGeometry geometry, ShapeRelation relation)
-    {
+    protected GeoShapeFilterBuilder createShapeFilter(String name, TGeometry geometry, ShapeRelation relation) {
         return createShapeFilter(name, geometry, relation, 0, null);
     }
 
-    protected GeoDistanceFilterBuilder createGeoDistanceFilter(String name, TPoint tPoint, double distance, TUnit unit)
-    {
+    protected GeoDistanceFilterBuilder createGeoDistanceFilter(String name, TPoint tPoint, double distance, TUnit unit) {
         // Lat = Y Long = X
-      return  FilterBuilders.geoDistanceFilter(name)
-              .lat(tPoint.y())
-              .lon(tPoint.x())
-              .distance(distance, convertDistanceUnit(unit));
+        return FilterBuilders.geoDistanceFilter(name)
+                .lat(tPoint.y())
+                .lon(tPoint.x())
+                .distance(distance, convertDistanceUnit(unit));
+    }
+
+    protected TPolygon polygonizeCircle(TPoint centre, double radiusInMeters) {
+        double radiusInDegrees = DistanceUtils.dist2Degrees(radiusInMeters, DistanceUtils.EARTH_MEAN_RADIUS_KM * 1000);
+        TCircle tCircle = module.newValueBuilder(TCircle.class).prototype().of(centre, radiusInDegrees);
+        return tCircle.polygonize(360);
     }
 
 
-    private DistanceUnit convertDistanceUnit(TUnit tUnit)
-    {
-        switch (tUnit)
-        {
-            case MILLIMETER : return DistanceUnit.MILLIMETERS;
-            case CENTIMETER : return DistanceUnit.CENTIMETERS;
-            case METER      : return DistanceUnit.METERS;
-            case KILOMETER  :return DistanceUnit.KILOMETERS;
-            default : throw new RuntimeException("Can not convert Units");
+    private DistanceUnit convertDistanceUnit(TUnit tUnit) {
+        switch (tUnit) {
+            case MILLIMETER:
+                return DistanceUnit.MILLIMETERS;
+            case CENTIMETER:
+                return DistanceUnit.CENTIMETERS;
+            case METER:
+                return DistanceUnit.METERS;
+            case KILOMETER:
+                return DistanceUnit.KILOMETERS;
+            default:
+                throw new RuntimeException("Can not convert Units");
         }
     }
 
-    protected double convertDistanceToMeters(double source, TUnit sourceUnit)
-    {
-        switch (sourceUnit)
-        {
-            case MILLIMETER : return source / 1000;
-            case CENTIMETER : return source / 100;
-            case METER      : return source;
-            case KILOMETER  : return source * 1000;
-            default : throw new RuntimeException("Can not convert Units");
+    protected double convertDistanceToMeters(double source, TUnit sourceUnit) {
+        switch (sourceUnit) {
+            case MILLIMETER:
+                return source / 1000;
+            case CENTIMETER:
+                return source / 100;
+            case METER:
+                return source;
+            case KILOMETER:
+                return source * 1000;
+            default:
+                throw new RuntimeException("Can not convert Units");
         }
     }
 
 
-    private GeoShapeFilterBuilder createShapeFilter(String name, TGeometry geometry, ShapeRelation relation, double distance, DistanceUnit unit  )
-    {
-        if (geometry instanceof TPoint)
-        {
+    private GeoShapeFilterBuilder createShapeFilter(String name, TGeometry geometry, ShapeRelation relation, double distance, DistanceUnit unit) {
+        if (geometry instanceof TPoint) {
             CircleBuilder circleBuilder = ShapeBuilder.newCircleBuilder();
-            circleBuilder.center(((TPoint) geometry).x(), ((TPoint)geometry).y()).radius(distance, unit);
+            circleBuilder.center(((TPoint) geometry).x(), ((TPoint) geometry).y()).radius(distance, unit);
             return FilterBuilders.geoShapeFilter(name, circleBuilder, relation);
-        }
-        else if (geometry instanceof TPolygon)
-        {
+        } else if (geometry instanceof TPolygon) {
             PolygonBuilder polygonBuilder = ShapeBuilder.newPolygon();
 
             for (int i = 0; i < ((TPolygon) geometry).shell().get().points().get().size(); i++) {
@@ -256,10 +244,8 @@ public abstract class AbstractElasticSearchSpatialFunction {
                 );
             }
 
-            return  FilterBuilders.geoShapeFilter(name, polygonBuilder, relation);
-        }
-        else
-        {
+            return FilterBuilders.geoShapeFilter(name, polygonBuilder, relation);
+        } else {
 
         }
 
@@ -267,21 +253,15 @@ public abstract class AbstractElasticSearchSpatialFunction {
     }
 
 
-    protected TGeometry resolveGeometry( FilterBuilder filterBuilder, Specification<Composite> spec, Module module) throws  EntityFinderException
-    {
+    protected TGeometry resolveGeometry(FilterBuilder filterBuilder, Specification<Composite> spec, Module module) throws EntityFinderException {
 
-        if (spec instanceof SpatialPredicatesSpecification)
-        {
-            if (((SpatialPredicatesSpecification)spec).value() != null)
-            {
-                return ((SpatialPredicatesSpecification)spec).value();
-            }
-            else if (((SpatialPredicatesSpecification)spec).operator() != null)
-            {
+        if (spec instanceof SpatialPredicatesSpecification) {
+            if (((SpatialPredicatesSpecification) spec).param() != null) {
+                return ((SpatialPredicatesSpecification) spec).param();
+            } else if (((SpatialPredicatesSpecification) spec).operator() != null) {
 
-                if (((SpatialPredicatesSpecification) spec).operator() instanceof SpatialConvertSpecification)
-                {
-                    executeSpecification(filterBuilder, (SpatialPredicatesSpecification)spec, null);
+                if (((SpatialPredicatesSpecification) spec).operator() instanceof SpatialConvertSpecification) {
+                    executeSpecification(filterBuilder, (SpatialPredicatesSpecification) spec, null);
                     System.out.println("Converted Geometry " + ((SpatialConvertSpecification) ((SpatialPredicatesSpecification) spec).operator()).getGeometry());
                     return ((SpatialConvertSpecification) ((SpatialPredicatesSpecification) spec).operator()).getGeometry();
                     // return executeSpecification(filterBuilder, (SpatialPredicatesSpecification)spec, null);
@@ -294,22 +274,18 @@ public abstract class AbstractElasticSearchSpatialFunction {
         return null;
     }
 
-    private void executeSpecification( FilterBuilder filterBuilder,
-                                            SpatialPredicatesSpecification<?> spec,
-                                            Map<String, Object> variables ) throws EntityFinderException
-    {
+    private void executeSpecification(FilterBuilder filterBuilder,
+                                      SpatialPredicatesSpecification<?> spec,
+                                      Map<String, Object> variables) throws EntityFinderException {
 
 
         if (((SpatialPredicatesSpecification) spec).operator() instanceof SpatialConvertSpecification) {
-            // return ((SpatialConvertSpecification) ((SpatialPredicatesSpecification) spec).operator()).convert(module);
 
-            System.out.println("####### " + spec.operator().getClass().getSuperclass());
 
-            if (ElasticSearchFinder.Mixin.EXTENDED_QUERY_EXPRESSIONS_CATALOG.get(spec.operator().getClass().getSuperclass()) != null) {
+            if (ElasticSearchFinder.Mixin.EXTENDED_SPEC_SUPPORTS.get(spec.operator().getClass().getSuperclass()) != null) {
 
-                ElasticSearchSpatialFinder.SpatialQuerySpecSupport spatialQuerySpecSupport = ElasticSearchFinder.Mixin.EXTENDED_QUERY_EXPRESSIONS_CATALOG.get(spec.operator().getClass().getSuperclass());
-                spatialQuerySpecSupport.setModule(module, support);
-                // return spatialQuerySpecSupport.processSpecification(filterBuilder, spec.operator(), variables);
+                ElasticSearchSpatialFinder.SpatialQuerySpecSupport spatialQuerySpecSupport = ElasticSearchFinder.Mixin.EXTENDED_SPEC_SUPPORTS
+                        .get(spec.operator().getClass().getSuperclass()).support(module, support);
                 spatialQuerySpecSupport.processSpecification(filterBuilder, spec.operator(), variables);
 
             } else {
@@ -319,7 +295,6 @@ public abstract class AbstractElasticSearchSpatialFunction {
             }
         }
     }
-
 
 
 }

@@ -16,9 +16,9 @@ public class ST_DisjointSpecification<T extends TGeometry>
     private double distance;
     private TUnit unit;
 
-    public ST_DisjointSpecification(PropertyFunction<T> property, TGeometry value)
+    public ST_DisjointSpecification(PropertyFunction<T> property, TGeometry param)
     {
-        super( property, value );
+        super( property, param );
     }
 
     public ST_DisjointSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator, long distance)
@@ -33,24 +33,15 @@ public class ST_DisjointSpecification<T extends TGeometry>
         this.unit       = unit;
     }
 
-    public ST_DisjointSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator, Variable variable)
-    {
-        super( property, operator );
-    }
-
-    public ST_DisjointSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator)
-    {
-        super( property, operator );
-    }
 
     public double getDistance() { return distance; }
     public TUnit  getUnit() { return unit; }
 
 
    @Override
-    protected boolean compare( TGeometry value )
+    protected boolean compare( TGeometry param )
     {
-        return value.equals( this.value );
+        return param.equals( this.param );
     }
 
     @Override

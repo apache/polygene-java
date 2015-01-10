@@ -26,6 +26,7 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * JAVADOC
@@ -44,6 +45,7 @@ public class TGeometryTest
                 TPoint.class,
                 TMultiPoint.class,
                 TLineString.class,
+                TMultiLineString.class,
                 TPolygon.class,
                 TMultiPolygon.class,
                 TFeature.class,
@@ -51,7 +53,7 @@ public class TGeometryTest
     }
 
     @Test
-    public void testWhenCRSIsCreated()
+    public void script01()
     {
         String CRS = "urn:ogc:def:crs:OGC:1.3:CRS84";
         ValueBuilder<TCRS> builder = module.newValueBuilder(TCRS.class);
@@ -60,7 +62,7 @@ public class TGeometryTest
     }
 
         @Test
-    public void testWhenCoordinatedCreated()
+    public void script02()
     {
         ValueBuilder<Coordinate> builder = module.newValueBuilder(Coordinate.class);
         Coordinate coordinate1 = builder.prototype().of(1d,2d,3d);
@@ -75,7 +77,7 @@ public class TGeometryTest
     }
 
     @Test
-    public void testWhenPointCreated()
+    public void script03()
     {
         ValueBuilder<TPoint> builder1 = module.newValueBuilder(TPoint.class);
 
@@ -112,7 +114,7 @@ public class TGeometryTest
 
 
     @Test
-    public void testWhenLineStringCreated()
+    public void script04()
     {
         ValueBuilder<TLineString> builder = module.newValueBuilder(TLineString.class);
 
@@ -138,7 +140,7 @@ public class TGeometryTest
     }
 
     @Test
-    public void testWhenLineStringCreatedV2() {
+    public void script05() {
         ValueBuilder<TLineString> builder = module.newValueBuilder(TLineString.class);
 
         TLineString lineString = builder.prototype().of()
@@ -150,12 +152,28 @@ public class TGeometryTest
                 .yx(0d, 0d);
 
         assertTrue(lineString.getStartPoint().x() == 0d);
+    }
 
+    @Test
+    public void script06() {
+        ValueBuilder<TMultiLineString> builder = module.newValueBuilder(TMultiLineString.class);
+
+        TMultiLineString multiLineString = builder.prototype().of(
+                module.newValueBuilder(TLineString.class).prototype().of()
+
+                        .yx(0d, 0d)
+                        .yx(0d, 1d)
+                        .yx(1d, 0d)
+                        .yx(1d, 1d)
+                        .yx(0d, 0d) );
+
+        assertEquals(5, multiLineString.getNumPoints());
+        assertTrue(multiLineString.getGeometryN(0).isLineString());
     }
 
 
         @Test
-    public void testWhenValidLinearRingIsCreated()
+    public void script07()
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
 
@@ -171,7 +189,7 @@ public class TGeometryTest
     }
 
     @Test
-    public void testWhenInvalidLinearRingIsCreated()
+    public void script08()
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
 
@@ -187,7 +205,7 @@ public class TGeometryTest
     }
 
     @Test
-    public void testWhenInvalidLinearRingIsCreatedV2()
+    public void script09()
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
 
@@ -206,7 +224,7 @@ public class TGeometryTest
 
 
     @Test
-    public void testWhenPolygonIsCreated()
+    public void script10()
     {
         ValueBuilder<TPolygon> builder = module.newValueBuilder(TPolygon.class);
 /**
@@ -225,7 +243,7 @@ public class TGeometryTest
 
 
     @Test
-    public void testWhenCreatedTGeomLineStringNotNull()
+    public void script11()
     {
         ValueBuilder<TLineString> builder = module.newValueBuilder(TLineString.class);
         assertNotNull(
@@ -249,7 +267,7 @@ public class TGeometryTest
     }
 
     @Test
-    public void testWhenCreatedLinearRingNotNull()
+    public void script12()
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
         assertNotNull(
@@ -273,7 +291,7 @@ public class TGeometryTest
     }
 
     @Test
-    public void testWhenCreatedTGeomPolygonWithNoHolesNotNull()
+    public void script13()
     {
         ValueBuilder<TPolygon> builder = module.newValueBuilder(TPolygon.class);
         assertNotNull(
@@ -322,24 +340,20 @@ public class TGeometryTest
     }
 
     @Test
-    public void testWhenCreatedTGeomPolygonWithWithHolesNotNull()
+    public void script14()
     {
-        // JJ TODO - add test polygon and holes
+        // JJ TODO - add test polygon with holes
     }
 
     @Test
-    public void testWhenCreatedTCircleThenPolygonize()
+    public void script15()
     {
         ValueBuilder<TCircle> builder = module.newValueBuilder(TCircle.class);
-
-        // 48.13905780942574).x(11.57958984375
 
         TCircle tCircle = builder.prototype().of(48.13905780942574, 11.57958984375, 100);
         TPolygon tPolygon = tCircle.polygonize(360);
         assertTrue(tPolygon.shell().get().isValid());
-        assertTrue(tPolygon.shell().get().getNumPoints() == 360 + 1);
-
-        System.out.println(tPolygon);
+        assertTrue(tPolygon.shell().get().getNumPoints() == (360 + 1) );
     }
 
 

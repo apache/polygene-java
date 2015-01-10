@@ -58,7 +58,7 @@ public class GeoJsonFromConverter {
 
             LineString lineString = (LineString)geojson;
 
-            TLineString tLineString = TlineString(module).of().geometry();
+            TLineString tLineString = TLineString(module).of().geometry();
 
             for (LngLatAlt xyz : lineString.getCoordinates() ) {
                 tLineString.of(

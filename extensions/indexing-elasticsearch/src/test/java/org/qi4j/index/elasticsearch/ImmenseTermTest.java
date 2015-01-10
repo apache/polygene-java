@@ -31,6 +31,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.test.AbstractQi4jTest;
@@ -87,6 +88,12 @@ public class ImmenseTermTest
     {
         // Config module
         ModuleAssembly config = module.layer().module( "config" );
+        config.values(SpatialConfiguration.Configuration.class,
+                SpatialConfiguration.FinderConfiguration.class,
+                SpatialConfiguration.IndexerConfiguration.class,
+                SpatialConfiguration.IndexingMethod.class,
+                SpatialConfiguration.ProjectionSupport.class).
+                visibleIn(Visibility.application);
         new EntityTestAssembler().assemble( config );
 
         // EntityStore

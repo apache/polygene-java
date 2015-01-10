@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2014, Jiri Jetmar. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates;
 
 import org.elasticsearch.index.query.FilterBuilder;
@@ -14,60 +28,47 @@ import org.qi4j.spi.query.EntityFinderException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by jj on 19.11.14.
- */
+
 public class PredicateFinderSupport implements ElasticSearchSpatialFinder.SpatialQuerySpecSupport {
 
+    private static final Map<Class<?>, PredicateFinderSupport.PredicateSpecification> SPATIAL_PREDICATE_OPERATIONS = new HashMap<>(3);
 
-    private static final Map<Class<?>, PredicateFinderSupport.PredicateSpecification> SPATIAL_PREDICATE_OPERATIONS = new HashMap<>( 3 );
+    private Module module;
+    private ElasticSearchSupport support;
 
-
-    public static interface PredicateSpecification extends ElasticSearchSpatialFinder.ModuleHelper
-    {
-        void processSpecification(FilterBuilder filterBuilder, SpatialPredicatesSpecification<?>  spec, Map<String, Object> variables)  throws EntityFinderException;
-    }
-
-    static
-    {
-        SPATIAL_PREDICATE_OPERATIONS.put(ST_WithinSpecification.class, new ST_Within());
-        SPATIAL_PREDICATE_OPERATIONS.put(ST_DisjointSpecification.class, new ST_DisjointV3());
-        SPATIAL_PREDICATE_OPERATIONS.put(ST_IntersectsSpecification.class, new ST_Intersects());
-    }
-
-
-    Module module;
-    ElasticSearchSupport support;
-
-    public void setModule(Module module, ElasticSearchSupport support)
-    {
+    public ElasticSearchSpatialFinder.SpatialQuerySpecSupport support(Module module, ElasticSearchSupport support) {
         this.module = module;
         this.support = support;
+
+        return this;
+    }
+
+    public void processSpecification(FilterBuilder filterBuilder,
+                                     Specification<?> spec,
+                                     Map<String, Object> variables)
+            throws EntityFinderException {
+
+        if (SPATIAL_PREDICATE_OPERATIONS.get(spec.getClass()) != null) {
+            SPATIAL_PREDICATE_OPERATIONS.get(spec.getClass()).support(module, support).processSpecification(filterBuilder, (SpatialPredicatesSpecification) spec, variables);
+        } else {
+            throw new UnsupportedOperationException("Spatial predicates specification unsupported by Elastic Search "
+                    + "(New Query API support missing?): "
+                    + spec.getClass() + ": " + spec);
+        }
+    }
+
+    public interface Support {
+        PredicateSpecification support(Module module, ElasticSearchSupport support);
     }
 
 
-
-    public void processSpecification( FilterBuilder filterBuilder,
-                                      // SpatialPredicatesSpecification<?>  spec,
-                                      Specification<?> spec,
-                                      Map<String, Object> variables )
-            throws EntityFinderException
-    {
-        System.out.println("ElasticSearchSpatialPredicateFinderSupport::processSpecification() " + spec.getClass() );
-
-
-        if( SPATIAL_PREDICATE_OPERATIONS.get( spec.getClass() ) != null ) {
-
-            PredicateSpecification PredicateSpecification = SPATIAL_PREDICATE_OPERATIONS.get( spec.getClass());
-            PredicateSpecification.setModule(module, support);
-            PredicateSpecification.processSpecification(filterBuilder, (SpatialPredicatesSpecification)spec, variables);
-
-        } else {
-            throw new UnsupportedOperationException( "Spatial predicates specification unsupported by Elastic Search "
-                    + "(New Query API support missing?): "
-                    + spec.getClass() + ": " + spec );
-
-        }
+    public static interface PredicateSpecification extends Support {
+        void processSpecification(FilterBuilder filterBuilder, SpatialPredicatesSpecification<?> spec, Map<String, Object> variables) throws EntityFinderException;
+    }
+    static {
+        SPATIAL_PREDICATE_OPERATIONS.put(ST_WithinSpecification.class, new ST_Within());
+        SPATIAL_PREDICATE_OPERATIONS.put(ST_DisjointSpecification.class, new ST_Disjoint());
+        SPATIAL_PREDICATE_OPERATIONS.put(ST_IntersectsSpecification.class, new ST_Intersects());
     }
 
 }

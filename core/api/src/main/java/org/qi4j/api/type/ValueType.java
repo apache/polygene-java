@@ -108,19 +108,13 @@ public class ValueType
         }
         return false;
     }
-    public static boolean isGeometryValue(Object object)
+    public static boolean isGeometricValue(Object object)
     {
         NullArgumentException.validateNotNull( "object", object );
         if( object instanceof TGeometry)
         {
             return true;
         }
-        return false;
-    }
-
-    public static boolean isGeometryValue(Class<?> type)
-    {
-
         return false;
     }
 

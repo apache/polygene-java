@@ -106,7 +106,6 @@ class TestData
                 kualaLumpur.name().set( "Kuala Lumpur" );
                 kualaLumpur.country().set( "Malaysia" );
                 kualaLumpur.county().set( "Some Jaya" );
-                kualaLumpur.location().set(TPoint(module).x(101.686854).y(3.139003).geometry());
                 kualaLumpur = cityBuilder.newInstance();
                 NameableAssert.trace( kualaLumpur );
             }

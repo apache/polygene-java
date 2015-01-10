@@ -32,6 +32,7 @@ import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.spi.query.EntityFinderException;
@@ -70,6 +71,12 @@ public class ElasticSearchQueryTest
 
         // Config module
         ModuleAssembly config = module.layer().module( "config" );
+        config.values(SpatialConfiguration.Configuration.class,
+                SpatialConfiguration.FinderConfiguration.class,
+                SpatialConfiguration.IndexerConfiguration.class,
+                SpatialConfiguration.IndexingMethod.class,
+                SpatialConfiguration.ProjectionSupport.class).
+                visibleIn(Visibility.application);
         new EntityTestAssembler().assemble( config );
 
         // Index/Query
@@ -115,39 +122,5 @@ public class ElasticSearchQueryTest
     public void script42_DateTime()
     {
         super.script42_DateTime();
-    }
-
-    @Test
-    public void script53_Spatial_ST_WithIn()
-    {
-        QueryBuilder<City> qb = this.module.newQueryBuilder(City.class);
-        Query<City> query = unitOfWork.newQuery(
-                qb
-                        .where(
-                                ST_Within
-                                        (
-                                                templateFor(City.class).location(),
-                                                ST_GeometryFromText("POINT(3.139003 101.686854)"),
-                                                100,
-                                                TUnit.METER
-                                        )
-                        ));
-        System.out.println( "*** script53_Spatial_ST_WithIn: " + query );
-
-        System.out.println("Query Count " + query.count());
-
-        // System.out.println( "*** script01: " + query );
-        query.find();
-    }
-
-    @Test
-    public void script53_Spatial_ST_WithIn2() {
-        QueryBuilder<Person> qb = this.module.newQueryBuilder(Person.class);
-        Person person = templateFor(Person.class);
-        Query<Person> query = unitOfWork.newQuery(qb.where(
-                eq(person.dateTimeValue(), new DateTime("2010-03-04T13:24:35", UTC))));
-        System.out.println("*** script40_DateTime: " + query);
-
-        // verifyUnorderedResults(query, "Jack Doe");
     }
 }

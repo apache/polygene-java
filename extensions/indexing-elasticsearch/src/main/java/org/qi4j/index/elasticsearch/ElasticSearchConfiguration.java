@@ -22,7 +22,6 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
-import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialExceptionConfiguration;
 import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 
 // START SNIPPET: config
@@ -49,11 +48,6 @@ public interface ElasticSearchConfiguration
      */
     @UseDefaults Property<Boolean> indexNonAggregatedAssociations();
 
-
-    public static enum INDEX_MAPPING_POINT_METHOD {GEO_POINT, GEO_SHAPE}
-
-
-    @Optional Property<INDEX_MAPPING_POINT_METHOD> indexPointMappingMethod();
 
     @Optional
     Property<SpatialConfiguration.Configuration> spatial();

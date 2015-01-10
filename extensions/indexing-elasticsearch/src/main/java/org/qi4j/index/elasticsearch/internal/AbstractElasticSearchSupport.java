@@ -20,8 +20,10 @@ package org.qi4j.index.elasticsearch.internal;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
@@ -45,8 +47,6 @@ public abstract class AbstractElasticSearchSupport
     protected String index;
 
     protected boolean indexNonAggregatedAssociations;
-
-    protected ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD indexPointMappingMethod;
 
     protected SpatialConfiguration.Configuration spatialConfiguration;
 
@@ -110,6 +110,54 @@ public abstract class AbstractElasticSearchSupport
         // NOOP
     }
 
+    protected void defaultSpatialConfiguration(ElasticSearchConfiguration configuration)
+    {
+
+        if (  (configuration.spatial().get() == null) )
+        {
+            SpatialConfiguration.Configuration cConfig = module.newValueBuilder(SpatialConfiguration.Configuration.class).prototype();
+
+            SpatialConfiguration.IndexerConfiguration cIndexer = module.newValueBuilder(SpatialConfiguration.IndexerConfiguration.class).prototype();
+            SpatialConfiguration.IndexingMethod cIndexingMethod = module.newValueBuilder(SpatialConfiguration.IndexingMethod.class).prototype();
+            SpatialConfiguration.ProjectionSupport cProjectionIndexerSupport = module.newValueBuilder(SpatialConfiguration.ProjectionSupport.class).prototype();
+
+            SpatialConfiguration.FinderConfiguration cFinder = module.newValueBuilder(SpatialConfiguration.FinderConfiguration.class).prototype();
+            SpatialConfiguration.ProjectionSupport cProjectionFinderSupport = module.newValueBuilder(SpatialConfiguration.ProjectionSupport.class).prototype();
+
+
+
+            cIndexingMethod.Type().set(SpatialConfiguration.INDEXING_METHOD.GEO_POINT);
+            cIndexingMethod.Precision().set("2m");
+
+            cProjectionIndexerSupport.ConversionEnabled().set(true);
+            cProjectionIndexerSupport.ConversionAccuracy().set("2m");
+
+            // Setup Indexer
+            cIndexer.Method().set(cIndexingMethod);
+            cIndexer.Projection().set(cProjectionIndexerSupport);
+
+
+            cProjectionFinderSupport.ConversionEnabled().set(true);
+            cProjectionFinderSupport.ConversionAccuracy().set("2m");
+
+            // Setup Finder
+            cFinder.Projection().set(cProjectionFinderSupport);
+
+            // Setup Configuration
+            cConfig.Enabled().set(true);
+            cConfig.Indexer().set(cIndexer);
+            cConfig.Finder().set(cFinder);
+
+            spatialConfiguration = cConfig;
+
+        } else
+        {
+            // config available
+            spatialConfiguration = configuration.spatial().get();
+        }
+
+    }
+
     @Override
     public final Client client()
     {
@@ -133,9 +181,6 @@ public abstract class AbstractElasticSearchSupport
     {
         return indexNonAggregatedAssociations;
     }
-
-    @Override
-    public final ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD indexPointMappingMethod() { return indexPointMappingMethod; }
 
     @Override
     public final SpatialConfiguration.Configuration spatialConfiguration()

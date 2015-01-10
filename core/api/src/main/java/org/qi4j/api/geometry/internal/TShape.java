@@ -14,15 +14,5 @@
 
 package org.qi4j.api.geometry.internal;
 
-import org.qi4j.api.value.ValueComposite;
-
-/**
- * Created by jakes on 2/7/14.
- */
-public interface TGeometryRoot extends ValueComposite {
-
-    public static enum TGEOMETRY_TYPE {POINT, MULTIPOINT, LINESTRING, MULTILINESTRING, POLYGON, MULTIPOLYGON, FEATURE, FEATURECOLLECTION, INVALID}
-
+public interface TShape extends TGeometry {
 }
-
-

@@ -16,14 +16,14 @@ package org.qi4j.api.geometry;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Mixins(TFeature.Mixin.class)
@@ -42,6 +42,7 @@ public interface TFeature extends TGeometry {
     TFeature of(TGeometry geometry);
 
     TFeature withProperties(Map<String, List<String>> properties);
+    TFeature addProperty(String name, String value);
 
     TGeometry asGeometry();
 
@@ -56,7 +57,6 @@ public interface TFeature extends TGeometry {
         @This
         TFeature self;
 
-
         public TFeature of(TGeometry geometry) {
             self.geometryType().set(TGEOMETRY_TYPE.FEATURE);
             self.geometry().set(geometry);
@@ -64,10 +64,27 @@ public interface TFeature extends TGeometry {
             return self;
         }
 
-        public TFeature withProperties(Map<String, List<String>> properties) {
+        public TFeature withProperties(Map<String, List<String>> properties)
+        {
             self.properties().set(properties);
             return self;
         }
+
+        public TFeature addProperty(String name, String value)
+        {
+            if (self.properties() == null || self.properties().get() == null || !self.properties().get().containsKey(name))
+            {
+                Map<String, List<String>> properties = new HashMap<>();
+                properties.put(name, Arrays.asList(value) );
+                self.properties().set(properties);
+            }
+            else
+            {
+                self.properties().get().get(name).add(value);
+            }
+            return self;
+        }
+
 
         public boolean isEmpty() {
             return (self.geometry() == null) || (self.geometry().get() == null) || (self.geometry().get().isEmpty()) ? true : false;

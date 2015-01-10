@@ -61,9 +61,9 @@ public class TransformationBuilder {
 
             LineString lineString = (LineString)geojson;
 
-            TLineString tLineString = TlineString(module).of().geometry();
+            TLineString tLineString = TLineString(module).of().geometry();
             for (LngLatAlt xyz : lineString.getCoordinates() ) {
-                tLineString = TlineString(module).of(
+                tLineString = TLineString(module).of(
                         TPoint(module)
                                 .x(xyz.getLatitude())
                                 .y(xyz.getLongitude())

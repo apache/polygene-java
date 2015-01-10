@@ -72,7 +72,6 @@ public class ElasticSearchSpatialRegressionQueryClusterTest
                 assemble(module);
         ElasticSearchConfiguration esConfig = config.forMixin(ElasticSearchConfiguration.class).declareDefaults();
         esConfig.indexNonAggregatedAssociations().set(Boolean.TRUE);
-        esConfig.indexPointMappingMethod().set(ElasticSearchConfiguration.INDEX_MAPPING_POINT_METHOD.GEO_POINT);
 
 
         // FileConfig
