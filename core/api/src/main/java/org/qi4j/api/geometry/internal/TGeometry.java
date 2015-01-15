@@ -93,7 +93,7 @@ public interface TGeometry extends TGeometryRoot {
         }
 
         public Coordinate[] getCoordinates() {
-            return null;
+            throw new RuntimeException("Should never be called");
         }
 
         public boolean isEmpty() {

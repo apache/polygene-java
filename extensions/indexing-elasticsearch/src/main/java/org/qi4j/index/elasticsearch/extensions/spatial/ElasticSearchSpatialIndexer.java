@@ -28,7 +28,7 @@ import org.qi4j.index.elasticsearch.ElasticSearchIndexException;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper;
-import org.qi4j.library.spatial.v2.projections.ProjectionsRegistry;
+import org.qi4j.library.spatial.projection.ProjectionsRegistry;
 
 import java.util.HashMap;
 import java.util.ListIterator;
@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.IndexMappingCache;
-import static org.qi4j.library.spatial.v2.transformations.TTransformations.Transform;
+import static org.qi4j.library.spatial.projection.transformations.TTransformations.Transform;
 
 public final class ElasticSearchSpatialIndexer {
 

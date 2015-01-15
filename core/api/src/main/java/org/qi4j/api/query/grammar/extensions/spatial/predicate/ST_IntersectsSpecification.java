@@ -48,6 +48,16 @@ public class ST_IntersectsSpecification<T extends TGeometry>
     @Override
     public String toString()
     {
-        return "ST_IntersectsSpecification"; // property.toString() + " is within " + value.toString();
+        StringBuffer spec = new StringBuffer();
+        spec.append("ST_INTERSECTS").append("( ").append(property.toString()).append(" INTERSECTS ");
+        spec.append(param.toString());
+
+        if (distance > 0)
+        {
+            spec.append(" WITH RADIUS ").append(distance).append(" ").append(unit);
+        }
+
+        spec.append(" ) ");
+        return spec.toString();
     }
 }

@@ -79,7 +79,7 @@ public class AbstractAnyQueryTest
         TGeometry tGeometry = module.forMixin(TGeometry.class).declareDefaults();
         tGeometry.CRS().set(CRS_EPSG_4326);
 
-        new EntityTestAssembler().assemble( module );
+        // new EntityTestAssembler().assemble( module );
     }
 
     @Override

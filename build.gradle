@@ -175,7 +175,7 @@ allprojects {
   if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() ||
       ext.testJavaDir.isDirectory() || ext.testScalaDir.isDirectory() )
   {
-    apply plugin: 'jacoco'
+    // apply plugin: 'jacoco'
     apply plugin: 'osgi'
     apply plugin: VersionClass
     apply plugin: AsciidocBuildInfo
@@ -340,10 +340,10 @@ test {
 
 // Jacoco
 configurations {
-  jacoco
+  //jacoco
 }
 dependencies {
-  jacoco 'org.jacoco:org.jacoco.ant:0.7.1.201405082137'
+  // jacoco 'org.jacoco:org.jacoco.ant:0.7.1.201405082137'
 }
 // Generate a global code codeverage report
 task coverageReport {
@@ -356,6 +356,7 @@ task coverageReport {
   def toolsProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.tool' ) }
   def tutoProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.tuto' ) }
   def samplesProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.sample' ) }
+  /**
   ant {
     taskdef name:'jacocoreport', classname: 'org.jacoco.ant.ReportTask', classpath: configurations.jacoco.asPath
     mkdir dir: outputPath
@@ -396,7 +397,9 @@ task coverageReport {
   }
   inputs.dir coveredProjects.collect { p -> "${p.buildDir.path}/jacoco" }
   outputs.dir outputPath
+   */
 }
+
 
 
 // Build the whole SDK public Javadoc

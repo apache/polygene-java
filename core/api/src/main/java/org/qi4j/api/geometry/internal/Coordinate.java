@@ -39,22 +39,16 @@ public interface Coordinate extends Comparable, ValueComposite, TGeometryRoot {
     Property<List<Double>> coordinate();
 
     Coordinate of();
-
     Coordinate of(double x, double y, double z);
-
     Coordinate of(double... coordinates);
 
 
     Coordinate x(double x);
-
     Coordinate y(double y);
-
     Coordinate z(double z);
 
     double x();
-
     double y();
-
     double z();
 
     double getOrdinate(int ordinateIndex);

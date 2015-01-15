@@ -23,7 +23,7 @@ import org.qi4j.spi.query.EntityFinderException;
 
 import java.util.Map;
 
-import static org.qi4j.library.spatial.v2.conversions.TConversions.Convert;
+import static org.qi4j.library.spatial.conversions.TConversions.Convert;
 
 
 public class ST_GeometryFromText extends AbstractElasticSearchSpatialFunction implements ConvertFinderSupport.ConvertSpecification {

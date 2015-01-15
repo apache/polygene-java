@@ -9,7 +9,8 @@ dependencies {
   compile project(":org.qi4j.libraries:org.qi4j.library.spatial")
   compile project(":org.qi4j.libraries:org.qi4j.library.sql")
   compile project(":org.qi4j.extensions:org.qi4j.extension.entitystore-sql")
-  compile(project(":org.qi4j.extensions:org.qi4j.extension.entitystore-riak"))
+  compile project(":org.qi4j.extensions:org.qi4j.extension.entitystore-riak")
+  compile project(":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson")
 
 
 
@@ -23,3 +24,8 @@ dependencies {
 
 }
 
+// test {
+//  jacoco {
+//    enabled = false
+//  }
+// }

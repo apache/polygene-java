@@ -41,7 +41,6 @@ import static org.qi4j.api.query.QueryExpressions.and;
 import static org.qi4j.api.query.QueryExpressions.or;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
 import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.*;
-import static org.qi4j.library.spatial.v2.conversions.TConversions.*;
 import static org.qi4j.test.util.Assume.*;
 
 /**

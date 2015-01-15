@@ -1,38 +1,33 @@
 package org.qi4j.index.elasticsearch.extension.spatial;
 
-import com.spatial4j.core.distance.DistanceUtils;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.qi4j.api.common.Visibility;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.geometry.TPoint;
-import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.api.query.QueryExecutionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.riak.RiakHttpMapEntityStoreAssembler;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
 import org.qi4j.index.elasticsearch.assembly.ESClusterIndexQueryAssembler;
-import org.qi4j.index.elasticsearch.extension.spatial.utils.RandomPoint;
 import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.library.fileconfig.FileConfigurationOverride;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.spatial.assembly.TGeometryAssembler;
+import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.test.EntityTestAssembler;
-import org.qi4j.test.indexing.AbstractAnyQueryTest;
 import org.qi4j.test.indexing.AbstractSpatialRegressionTest;
 import org.qi4j.test.util.DelTreeAfter;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 import java.io.File;
 
-import static org.qi4j.api.geometry.TGeometryFactory.*;
-import static org.qi4j.test.util.Assume.*;
+import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
 /**
  * Created by jj on 21.12.14.
  */
-public class ElasticSearchSpatialBench
+public class ElasticSearchSpatialClusterQueryTest
         extends AbstractSpatialRegressionTest
 {
     private static final File DATA_DIR = new File( "build/tmp/es-spatial-query-test" );
@@ -55,6 +50,8 @@ public class ElasticSearchSpatialBench
         // Geometry support
         new TGeometryAssembler().assemble(module);
 
+
+
         // Config module
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
@@ -65,6 +62,7 @@ public class ElasticSearchSpatialBench
                 SpatialConfiguration.IndexingMethod.class,
                 SpatialConfiguration.ProjectionSupport.class).
                 visibleIn(Visibility.application);
+
 
         // Index/Query
         new ESClusterIndexQueryAssembler().
@@ -91,80 +89,44 @@ public class ElasticSearchSpatialBench
         new EntityTestAssembler().assemble( configRiak );
         new OrgJsonValueSerializationAssembler().assemble( module );
         // START SNIPPET: assembly
-        new RiakHttpMapEntityStoreAssembler().identifiedBy("RIAKBenchmark").withConfig(configRiak, Visibility.layer ).assemble( module );
+        new RiakHttpMapEntityStoreAssembler().withConfig( configRiak, Visibility.layer ).assemble( module );
         /** +++ */
     }
 
-    // @Test
-    public void test() throws Exception
+
+    @Test(expected=QueryExecutionException.class)
+    public void script01c()
+            throws EntityFinderException
     {
-
-        try (UnitOfWork unitOfWork = module.newUnitOfWork())
-        {
-            unitOfWork.complete();
-
-        }
-        // double[] xy = nextSpherePt2D();
-
-        // System.out.println("spherical " + xy[0] + " " + xy[1] );
-        long start = System.currentTimeMillis();
-
-        module.newUnitOfWork();
-        for (int i = 0; i < 10000; i++) {
-
-            double[] xy = nextSpherePt2D();
-            System.out.println("Degrees " + DistanceUtils.toDegrees(xy[0]) + "," + DistanceUtils.toDegrees(xy[1]));
-
-            TPoint(module).lat(xy[0]).lon(xy[1]).geometry();
-        }
-        module.currentUnitOfWork().complete();
-
-        long end = System.currentTimeMillis();
-
-        System.out.println("Duration  " + (end - start));
+       super.script01c(); // <- no orderBy() support for GeoShapes
     }
 
-    @Test
-    public void test1() throws Exception
+    @Test(expected=QueryExecutionException.class)
+    public void script01d()
+            throws EntityFinderException
     {
-
-        try (UnitOfWork unitOfWork = module.newUnitOfWork())
-        {
-            unitOfWork.complete();
-
-        }
-        // double[] xy = nextSpherePt2D();
-
-        // System.out.println("spherical " + xy[0] + " " + xy[1] );
-        long start = System.currentTimeMillis();
-        for (int j = 0; j < 1000; j++)
-        {
-            System.out.println("--> " + j);
-            UnitOfWork unitOfWork = module.newUnitOfWork();
-
-
-            for (int i = 0; i < 10000; i++) {
-                double[] xy = nextSpherePt2D();
-                //System.out.println("Degrees " + DistanceUtils.toDegrees(xy[0]) + "," + DistanceUtils.toDegrees(xy[1]));
-
-                TPoint point = TPoint(module).lat(DistanceUtils.toDegrees(xy[0])).lon(DistanceUtils.toDegrees(xy[1])).geometry();
-                EntityBuilder<SpatialAEntity> pointBuilder = unitOfWork.newEntityBuilder(SpatialAEntity.class);
-                pointBuilder.instance().point().set(point);
-                pointBuilder.newInstance();
-            }
-
-            unitOfWork.complete();
-        }
-        long end = System.currentTimeMillis();
-
-        System.out.println("Duration  " + (end - start));
+        super.script01d(); // <- no orderBy() support for GeoShapes
     }
 
-     static long seed = 1;
-    static RandomPoint randomPoint = new RandomPoint();
-
-    public double[] nextSpherePt2D()
+    @Test(expected=QueryExecutionException.class)
+    public void script01e()
+            throws EntityFinderException
     {
-        return randomPoint.nextSpherePt(2);
+        super.script01e(); // <- no orderBy() support for GeoShapes
     }
+
+    @Test(expected=QueryExecutionException.class)
+    public void script01f()
+            throws EntityFinderException
+    {
+        super.script01f(); // <- no orderBy() support for GeoShapes
+    }
+
+    @Test(expected=QueryExecutionException.class)
+    public void script03c()
+            throws EntityFinderException
+    {
+        super.script03c(); // <- no orderBy() support for GeoShapes
+    }
+
 }

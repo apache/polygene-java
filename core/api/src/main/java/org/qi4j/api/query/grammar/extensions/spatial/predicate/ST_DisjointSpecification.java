@@ -47,6 +47,16 @@ public class ST_DisjointSpecification<T extends TGeometry>
     @Override
     public String toString()
     {
-        return "ST_DisjointSpecification"; // property.toString() + " is within " + value.toString();
+        StringBuffer spec = new StringBuffer();
+        spec.append("ST_DISJOINT").append("( ").append(property.toString()).append(" IS NOT WITHIN ");
+        spec.append(param.toString());
+
+        if (distance > 0)
+        {
+            spec.append(" WITH RADIUS ").append(distance).append(" ").append(unit);
+        }
+
+        spec.append(" ) ");
+        return spec.toString();
     }
 }

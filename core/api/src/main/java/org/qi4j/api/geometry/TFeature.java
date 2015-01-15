@@ -15,6 +15,7 @@
 package org.qi4j.api.geometry;
 
 import org.qi4j.api.common.Optional;
+import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Structure;
@@ -90,6 +91,11 @@ public interface TFeature extends TGeometry {
             return (self.geometry() == null) || (self.geometry().get() == null) || (self.geometry().get().isEmpty()) ? true : false;
         }
 
+
+        public Coordinate[] getCoordinates()
+        {
+            return self.geometry().get().getCoordinates();
+        }
         public int getNumPoints() {
             return isEmpty() ? 0 : self.geometry().get().getNumPoints();
         }

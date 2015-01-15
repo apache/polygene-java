@@ -72,9 +72,9 @@ public interface GeometryCollections extends TGeometry {
             int k = -1;
             for (int i = 0; i < self.getNumGeometries(); i++) {
                 Coordinate[] childCoordinates = self.geometries().get().get(i).getCoordinates();
-                for (int j = 0; j < childCoordinates.length; j++) {
-                    k++;
-                    coordinates[k] = childCoordinates[j];
+                    for (int j = 0; j < childCoordinates.length; j++) {
+                        k++;
+                        coordinates[k] = childCoordinates[j];
                 }
             }
             return coordinates;
