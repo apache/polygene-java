@@ -137,13 +137,13 @@ public class ElasticSearchSpatialBench
 
         // System.out.println("spherical " + xy[0] + " " + xy[1] );
         long start = System.currentTimeMillis();
-        for (int j = 0; j < 1000; j++)
+        for (int j = 0; j < 10000; j++)
         {
             System.out.println("--> " + j);
             UnitOfWork unitOfWork = module.newUnitOfWork();
 
 
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 1000; i++) {
                 double[] xy = nextSpherePt2D();
                 //System.out.println("Degrees " + DistanceUtils.toDegrees(xy[0]) + "," + DistanceUtils.toDegrees(xy[1]));
 
