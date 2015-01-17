@@ -25,29 +25,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixins(TFeatureCollection.Mixin.class)
-public interface TFeatureCollection extends GeometryCollections {
+public interface TFeatureCollection extends GeometryCollections
+{
 
     TFeatureCollection of(TFeature... features);
     TFeatureCollection of(List<TFeature> features);
 
-    public abstract class Mixin extends GeometryCollections.Mixin implements TFeatureCollection {
+    public abstract class Mixin extends GeometryCollections.Mixin implements TFeatureCollection
+    {
         @Structure
         Module module;
 
         @This
         TFeatureCollection self;
 
-        public TFeatureCollection of(List<TFeature> features) {
+        public TFeatureCollection of(List<TFeature> features)
+        {
             of(features.toArray(new TFeature[features.size()]));
             return self;
         }
 
-        public TFeatureCollection of(TFeature... features) {
+        public TFeatureCollection of(TFeature... features)
+        {
             self.geometryType().set(TGEOMETRY_TYPE.FEATURECOLLECTION);
             init();
             List<TGeometry> l = new ArrayList<>();
 
-            for (TFeature f : features) {
+            for (TFeature f : features)
+            {
                 l.add(f);
             }
 
@@ -58,8 +63,5 @@ public interface TFeatureCollection extends GeometryCollections {
 
             return self;
         }
-
-
     }
-
 }

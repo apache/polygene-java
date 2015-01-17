@@ -23,20 +23,24 @@ import org.qi4j.spi.query.EntityFinderException;
 
 import java.util.Map;
 
-import static org.qi4j.library.spatial.conversions.TConversions.Convert;
+import static org.qi4j.library.spatial.formats.conversions.TConversions.Convert;
 
 
-public class ST_GeometryFromText extends AbstractElasticSearchSpatialFunction implements ConvertFinderSupport.ConvertSpecification {
-    public void processSpecification(FilterBuilder filterBuilder, SpatialConvertSpecification<?> spec, Map<String, Object> variables) throws EntityFinderException {
+public class ST_GeometryFromText extends AbstractElasticSearchSpatialFunction implements ConvertFinderSupport.ConvertSpecification
+{
+    public void processSpecification(FilterBuilder filterBuilder, SpatialConvertSpecification<?> spec, Map<String, Object> variables) throws EntityFinderException
+    {
         try
         {
             spec.setGeometry(Convert(module).from(spec.property()).toTGeometry());
-        } catch (Exception _ex) {
+        } catch (Exception _ex)
+        {
             throw new EntityFinderException(_ex);
         }
     }
 
-    public ConvertFinderSupport.ConvertSpecification support(Module module, ElasticSearchSupport support) {
+    public ConvertFinderSupport.ConvertSpecification support(Module module, ElasticSearchSupport support)
+    {
         this.module = module;
         this.support = support;
         return this;

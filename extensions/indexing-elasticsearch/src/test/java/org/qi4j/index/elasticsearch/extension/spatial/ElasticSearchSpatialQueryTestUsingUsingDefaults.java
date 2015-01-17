@@ -36,9 +36,7 @@ import java.io.File;
 
 import static org.qi4j.test.util.Assume.assumeNoIbmJdk;
 
-/**
- * Created by jj on 21.12.14.
- */
+
 public class ElasticSearchSpatialQueryTestUsingUsingDefaults
         extends AbstractSpatialRegressionTest
 {
@@ -61,8 +59,6 @@ public class ElasticSearchSpatialQueryTestUsingUsingDefaults
 
         // Geometry support
         new TGeometryAssembler().assemble(module);
-
-
 
         // Config module
         ModuleAssembly config = module.layer().module( "config" );

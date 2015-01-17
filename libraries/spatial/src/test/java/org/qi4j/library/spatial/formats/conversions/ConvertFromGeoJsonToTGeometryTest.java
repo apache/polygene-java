@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.spatial.conversions;
+package org.qi4j.library.spatial.formats.conversions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.geojson.*;
@@ -35,7 +35,8 @@ import static org.junit.Assert.assertTrue;
 import static org.qi4j.api.geometry.TGeometryFactory.*;
 
 
-public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest {
+public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest
+{
 
     private final String CRS_EPSG_4326_ = "EPSG:4326";
     private final String CRS_EPSG_27572 = "EPSG:27572";
@@ -43,23 +44,26 @@ public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest {
 
     @Override
     public void assemble(ModuleAssembly module)
-            throws AssemblyException {
+            throws AssemblyException
+    {
         new TGeometryAssembler().assemble(module);
     }
 
     @Ignore("Benchmarking is not in scope for this test.")
     @Test
-    public void whenConvertFromTGeometryToTGeometry() throws Exception {
+    public void whenConvertFromTGeometryToTGeometry() throws Exception
+    {
         TPoint tPoint1 = TPoint(module).x(11.57958981111).y(48.13905780941111).geometry();
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 1000000; i++)
+        {
             TPoint tPoint2 = (TPoint) TConversions.Convert(module).from(tPoint1).toTGeometry(CRS_EPSG_27572);
             TPoint tPoint3 = (TPoint) TConversions.Convert(module).from(tPoint1).toTGeometry(CRS_EPSG_4326_);
-
         }
     }
 
     @Test
-    public void whenConvertPointFromGeoJsonToTGeometry() {
+    public void whenConvertPointFromGeoJsonToTGeometry()
+    {
         TPoint tPoint = TPoint(module).y(100).x(0).geometry();
         Point gPoint = new Point(100, 0);
         TPoint convTPoint = (TPoint) TConversions.Convert(module).from(gPoint).toTGeometry();
@@ -67,7 +71,8 @@ public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest {
     }
 
     @Test
-    public void whenConvertMultiPointFromGeoJsonToTGeometry() {
+    public void whenConvertMultiPointFromGeoJsonToTGeometry()
+    {
         TMultiPoint tMultiPoint = TMultiPoint(module).of
                 (
                         TPoint(module).y(1).x(1).geometry(),
@@ -80,7 +85,8 @@ public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest {
 
 
     @Test
-    public void whenConvertLineStringFromGeoJsonToTGeometry() throws Exception {
+    public void whenConvertLineStringFromGeoJsonToTGeometry() throws Exception
+    {
         LineString lineString = geoJsonMapper.readValue("{\"type\":\"LineString\",\"coordinates\":[[100.0,0.0],[101.0,1.0]]}",
                 LineString.class);
         TLineString convTLineString = (TLineString) TConversions.Convert(module).from(lineString).toTGeometry();
@@ -88,7 +94,8 @@ public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest {
     }
 
     @Test
-    public void whenConvertMultiLineStringFromGeoJsonToTGeometry() throws Exception {
+    public void whenConvertMultiLineStringFromGeoJsonToTGeometry() throws Exception
+    {
         MultiLineString multiLineString = new MultiLineString();
         multiLineString.add(Arrays.asList(new LngLatAlt(100, 0), new LngLatAlt(101, 1)));
         TMultiLineString convTMultiLineString = (TMultiLineString) TConversions.Convert(module).from(multiLineString).toTGeometry();
@@ -104,7 +111,8 @@ public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest {
     }
 
     @Test
-    public void whenConvertPolygonFromGeoJsonToTGeometry() throws Exception {
+    public void whenConvertPolygonFromGeoJsonToTGeometry() throws Exception
+    {
         Polygon polygon = geoJsonMapper.readValue("{\"type\":\"Polygon\",\"coordinates\":"
                 + "[[[100.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]],"
                 + "[[100.2,0.2],[100.8,0.2],[100.8,0.8],[100.2,0.8],[100.2,0.2]]]}", Polygon.class);
@@ -140,7 +148,8 @@ public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest {
     }
 
     @Test
-    public void whenConvertMultiPolygonFromGeoJsonToTGeometry() throws Exception {
+    public void whenConvertMultiPolygonFromGeoJsonToTGeometry() throws Exception
+    {
         MultiPolygon multiPolygon = geoJsonMapper.readValue("{\"type\":\"MultiPolygon\",\"coordinates\":[[[[102.0,2.0],[103.0,2.0],[103.0,3.0],[102.0,3.0],[102.0,2.0]]],"
                 + "[[[100.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]],"
                 + "[[100.2,0.2],[100.8,0.2],[100.8,0.8],[100.2,0.8],[100.2,0.2]]]]}", MultiPolygon.class);
@@ -149,7 +158,8 @@ public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest {
     }
 
     @Test
-    public void whenConvertFeatureFromGeoJsonToTGeometry() throws Exception {
+    public void whenConvertFeatureFromGeoJsonToTGeometry() throws Exception
+    {
         Feature feature = new Feature();
         feature.setGeometry(new Point(100, 0));
         TFeature convTFeature = (TFeature) TConversions.Convert(module).from(feature).toTGeometry();
@@ -158,7 +168,8 @@ public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest {
     }
 
     @Test
-    public void whenConvertFeatureCollectionFromGeoJsonToTGeometry() throws Exception {
+    public void whenConvertFeatureCollectionFromGeoJsonToTGeometry() throws Exception
+    {
         Feature f1 = new Feature();
         f1.setGeometry(geoJsonMapper.readValue("{\"type\":\"MultiPolygon\",\"coordinates\":[[[[102.0,2.0],[103.0,2.0],[103.0,3.0],[102.0,3.0],[102.0,2.0]]],"
                 + "[[[100.0,0.0],[101.0,0.0],[101.0,1.0],[100.0,1.0],[100.0,0.0]],"
@@ -173,7 +184,6 @@ public class ConvertFromGeoJsonToTGeometryTest extends AbstractQi4jTest {
         featureCollection.add(f2);
 
         TFeatureCollection convTFeatureCollection = (TFeatureCollection) TConversions.Convert(module).from(featureCollection).toTGeometry();
-        System.out.println(convTFeatureCollection);
     }
 
 }

@@ -16,23 +16,17 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.spatial.conversions.from;
+package org.qi4j.library.spatial.projections.transformations;
 
-import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
+import org.qi4j.library.spatial.projections.transformations.fromto.FromHelper;
 
 
-public class TGeometryFromConverter {
+public class TTransformations
+{
 
-    private Module module;
-
-    public TGeometryFromConverter(Module module)
+    public static FromHelper Transform(Module module)
     {
-        this.module = module;
-    }
-
-    public TGeometry convert(TGeometry tGeometry)
-    {
-        return tGeometry;
+        return new FromHelper(module);
     }
 }

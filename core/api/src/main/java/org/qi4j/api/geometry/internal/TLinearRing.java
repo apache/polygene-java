@@ -19,7 +19,8 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 
 @Mixins(TLinearRing.Mixin.class)
-public interface TLinearRing extends TLineString {
+public interface TLinearRing extends TLineString
+{
 
     boolean isValid();
 
@@ -29,7 +30,8 @@ public interface TLinearRing extends TLineString {
         TLinearRing self;
 
         @Override
-        public boolean isValid() {
+        public boolean isValid()
+        {
             if (self.getStartPoint() == null || self.getEndPoint() == null) return false;
             return self.getStartPoint().compareTo(self.getEndPoint()) == 0 ? true : false;
         }

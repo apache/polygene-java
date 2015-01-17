@@ -4,13 +4,12 @@ import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TUnit;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.query.grammar.PropertyFunction;
-import org.qi4j.api.query.grammar.Variable;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.functional.Specification;
 
 
 public class ST_WithinSpecification<T extends TGeometry>
-    extends SpatialPredicatesSpecification<T>
+        extends SpatialPredicatesSpecification<T>
 {
 
     private double distance;
@@ -18,37 +17,44 @@ public class ST_WithinSpecification<T extends TGeometry>
 
     public ST_WithinSpecification(PropertyFunction<T> property, TGeometry param)
     {
-        super( property, param );
+        super(property, param);
     }
 
     public ST_WithinSpecification(PropertyFunction<T> property, TPoint param, double distance, TUnit unit)
     {
-        super( property, param );
-        this.distance   = distance;
-        this.unit       = unit;
+        super(property, param);
+        this.distance = distance;
+        this.unit = unit;
     }
 
     public ST_WithinSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator, double distance, TUnit unit)
     {
-        super( property, operator );
-        this.distance   = distance;
-        this.unit       = unit;
+        super(property, operator);
+        this.distance = distance;
+        this.unit = unit;
     }
 
 
     public ST_WithinSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator)
     {
-        super( property, operator );
+        super(property, operator);
     }
 
-    public double getDistance() { return distance; }
-    public TUnit  getUnit() { return unit; }
-
-
-   @Override
-    protected boolean compare( TGeometry param )
+    public double getDistance()
     {
-        return param.equals( this.param );
+        return distance;
+    }
+
+    public TUnit getUnit()
+    {
+        return unit;
+    }
+
+
+    @Override
+    protected boolean compare(TGeometry param)
+    {
+        return param.equals(this.param);
     }
 
     @Override

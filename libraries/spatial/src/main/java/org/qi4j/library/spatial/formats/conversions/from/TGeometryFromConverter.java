@@ -16,31 +16,24 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.spatial.conversions.to;
+package org.qi4j.library.spatial.formats.conversions.from;
 
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
 
-/**
- * Created by jj on 04.12.14.
- */
-public class TGeometryToConverter {
+
+public class TGeometryFromConverter
+{
 
     private Module module;
 
-    public TGeometryToConverter(Module module)
+    public TGeometryFromConverter(Module module)
     {
         this.module = module;
     }
 
-    public TGeometry convert (TGeometry tGeometry, String CRS)
+    public TGeometry convert(TGeometry tGeometry)
     {
         return tGeometry;
     }
-
-    public TGeometry convert(TGeometry tGeometry)
-    {
-        return convert(tGeometry, tGeometry.getCRS());
-    }
-
 }

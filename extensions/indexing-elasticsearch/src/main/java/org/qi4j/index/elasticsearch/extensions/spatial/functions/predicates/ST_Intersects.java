@@ -34,15 +34,15 @@ import java.util.Map;
 import static org.elasticsearch.index.query.FilterBuilders.notFilter;
 
 
-public class ST_Intersects extends AbstractElasticSearchSpatialFunction implements PredicateFinderSupport.PredicateSpecification {
+public class ST_Intersects extends AbstractElasticSearchSpatialFunction implements PredicateFinderSupport.PredicateSpecification
+{
 
     public void processSpecification(FilterBuilder filterBuilder,
                                      SpatialPredicatesSpecification<?> spec,
                                      Map<String, Object> variables)
-            throws EntityFinderException {
+            throws EntityFinderException
+    {
         TGeometry geomOfFilterProperty = resolveGeometry(filterBuilder, spec, module);
-
-        System.out.println("Spec " + spec);
 
         if (!isValid(spec))
             throw new EntityFinderException(spec.getClass() + " expression invalid.");
@@ -54,8 +54,10 @@ public class ST_Intersects extends AbstractElasticSearchSpatialFunction implemen
             throw new EntityFinderException(spec.getClass() + " expression unsupported by ElasticSearch. Pls specify a supported expression.");
 
 
-        if (isPropertyOfType(TPoint.class, spec.property())) {
-            if (geomOfFilterProperty instanceof TPolygon) {
+        if (isPropertyOfType(TPoint.class, spec.property()))
+        {
+            if (geomOfFilterProperty instanceof TPolygon)
+            {
 
                 if (((ST_DisjointSpecification) spec).getDistance() > 0)
                     throw new EntityFinderException("Invalid ST_Disjoint expression. A " + TPolygon.class.getSimpleName() + " can " +
@@ -65,24 +67,28 @@ public class ST_Intersects extends AbstractElasticSearchSpatialFunction implemen
 
                 GeoPolygonFilterBuilder geoPolygonFilterBuilder = FilterBuilders.geoPolygonFilter(spec.property().toString());
 
-                for (int i = 0; i < polygonFilter.shell().get().getNumPoints(); i++) {
+                for (int i = 0; i < polygonFilter.shell().get().getNumPoints(); i++)
+                {
                     TPoint point = polygonFilter.shell().get().getPointN(i);
                     geoPolygonFilterBuilder.addPoint(point.x(), point.y());
                 }
                 addFilter(notFilter(geoPolygonFilterBuilder), filterBuilder);
-            } else if (geomOfFilterProperty instanceof TPoint && ((ST_IntersectsSpecification) spec).getDistance() > 0) {
+            } else if (geomOfFilterProperty instanceof TPoint && ((ST_IntersectsSpecification) spec).getDistance() > 0)
+            {
                 double radiusInMeters = convertDistanceToMeters(((ST_IntersectsSpecification) spec).getDistance(), ((ST_IntersectsSpecification) spec).getUnit());
                 TPolygon polygonizedCircleFilter = polygonizeCircle((TPoint) verifyProjection(geomOfFilterProperty), radiusInMeters);
                 addFilter(createShapeFilter(spec.property().toString(), polygonizedCircleFilter, ShapeRelation.INTERSECTS), filterBuilder);
             }
-        } else {
+        } else
+        {
 
             addFilter(createShapeFilter(spec.property().toString(), geomOfFilterProperty, ShapeRelation.INTERSECTS), filterBuilder);
         }
 
     }
 
-    public PredicateFinderSupport.PredicateSpecification support(Module module, ElasticSearchSupport support) {
+    public PredicateFinderSupport.PredicateSpecification support(Module module, ElasticSearchSupport support)
+    {
         this.module = module;
         this.support = support;
 

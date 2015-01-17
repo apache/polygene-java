@@ -16,9 +16,9 @@ package org.qi4j.api.geometry;
 
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.geometry.internal.Coordinate;
-import org.qi4j.api.geometry.internal.TShape;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.geometry.internal.TLinearRing;
+import org.qi4j.api.geometry.internal.TShape;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
@@ -29,7 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixins(TPolygon.Mixin.class)
-public interface TPolygon extends TShape, TGeometry {
+public interface TPolygon extends TShape, TGeometry
+{
 
     Property<TLinearRing> shell();
 
@@ -38,52 +39,54 @@ public interface TPolygon extends TShape, TGeometry {
 
     TPolygon of(TLinearRing shell);
     TPolygon of(TLinearRing shell, @Optional TLinearRing... holes);
-
     TPolygon withHole(TLinearRing hole);
     TPolygon withHoles(@Optional TLinearRing... holes);
-
     boolean isEmpty();
 
-    public abstract class Mixin implements TPolygon {
+    public abstract class Mixin implements TPolygon
+    {
         @Structure
         Module module;
 
         @This
         TPolygon self;
 
-        private void init() {
-
-            if (self.holes().get() == null) {
-
+        private void init()
+        {
+            if (self.holes().get() == null)
+            {
                 List<TLinearRing> ring = new ArrayList<>();
                 self.holes().set(ring);
                 self.geometryType().set(TGEOMETRY_TYPE.POINT);
             }
         }
 
-        public TPolygon of(TLinearRing shell) {
+        public TPolygon of(TLinearRing shell)
+        {
             return of(shell, null);
         }
 
-        public TPolygon of(TLinearRing shell, TLinearRing... holes) {
+        public TPolygon of(TLinearRing shell, TLinearRing... holes)
+        {
             init();
-
-            if (shell != null) {
+            if (shell != null)
+            {
                 self.shell().set(shell);
             }
-
             withHoles(holes);
             self.geometryType().set(TGEOMETRY_TYPE.POLYGON);
             return self;
         }
 
-        public TPolygon withHole(TLinearRing hole) {
+        public TPolygon withHole(TLinearRing hole)
+        {
             if (hole != null) self.holes().get().add(hole);
             return self;
         }
-
-        public TPolygon withHoles(TLinearRing... holes) {
-            if (holes != null && holes.length != 0) {
+        public TPolygon withHoles(TLinearRing... holes)
+        {
+            if (holes != null && holes.length != 0)
+            {
                 for (TLinearRing hole : holes)
                     withHole(hole);
             }
@@ -91,22 +94,25 @@ public interface TPolygon extends TShape, TGeometry {
         }
 
         @Override
-        public Coordinate[] getCoordinates() {
-            if (isEmpty()) {
+        public Coordinate[] getCoordinates()
+        {
+            if (isEmpty())
+            {
                 return new Coordinate[]{};
             }
-
             Coordinate[] coordinates = new Coordinate[getNumPoints()];
-
             int k = -1;
             Coordinate[] shellCoordinates = self.shell().get().getCoordinates();
-            for (int x = 0; x < shellCoordinates.length; x++) {
+            for (int x = 0; x < shellCoordinates.length; x++)
+            {
                 k++;
                 coordinates[k] = shellCoordinates[x];
             }
-            for (int i = 0; i < self.holes().get().size(); i++) {
+            for (int i = 0; i < self.holes().get().size(); i++)
+            {
                 Coordinate[] childCoordinates = self.holes().get().get(i).getCoordinates();
-                for (int j = 0; j < childCoordinates.length; j++) {
+                for (int j = 0; j < childCoordinates.length; j++)
+                {
                     k++;
                     coordinates[k] = childCoordinates[j];
                 }
@@ -114,18 +120,20 @@ public interface TPolygon extends TShape, TGeometry {
             return coordinates;
         }
 
-        public boolean isEmpty() {
+        public boolean isEmpty()
+        {
             return (self.shell() == null) || (self.shell().get() == null) || (self.shell().get().isEmpty()) ? true : false;
         }
 
-        public int getNumPoints() {
+        public int getNumPoints()
+        {
 
             int numPoints = self.shell().get().getNumPoints();
-            for (int i = 0; i < self.holes().get().size(); i++) {
+            for (int i = 0; i < self.holes().get().size(); i++)
+            {
                 numPoints += self.holes().get().get(i).getNumPoints();
             }
             return numPoints;
         }
-
     }
 }

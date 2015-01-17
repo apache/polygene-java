@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.spatial.conversions.to;
+package org.qi4j.library.spatial.formats.conversions.to;
 
 import com.spatial4j.core.context.SpatialContext;
 import com.spatial4j.core.context.jts.JtsSpatialContext;
@@ -35,10 +35,18 @@ import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
 
 
-public class Spatial4JToConverter {
+public class Spatial4JToConverter
+{
 
-    // http://code.google.com/p/shape-metrics/source/browse/trunk/src/main/java/edu/psu/geovista/ian/utils/Circle.java?r=2
 
+    public static final double DATELINE = 180;
+    public static final JtsSpatialContext SPATIAL_CONTEXT = JtsSpatialContext.GEO;
+    public static final GeometryFactory FACTORY = SPATIAL_CONTEXT.getGeometryFactory();
+    public static final GeometricShapeFactory SHAPE_FACTORY = new GeometricShapeFactory();
+    protected final boolean multiPolygonMayOverlap = false;
+    protected final boolean autoValidateJtsGeometry = true;
+    protected final boolean autoIndexJtsGeometry = true;
+    protected final boolean wrapdateline = SPATIAL_CONTEXT.isGeo();
     final SpatialContext ctx;
     {
         JtsSpatialContextFactory factory = new JtsSpatialContextFactory();
@@ -47,19 +55,6 @@ public class Spatial4JToConverter {
         factory.wktShapeParserClass = JtsWKTReaderShapeParser.class;
         ctx = factory.newSpatialContext();
     }
-
-    public static final double DATELINE = 180;
-    public static final JtsSpatialContext SPATIAL_CONTEXT = JtsSpatialContext.GEO;
-    public static final GeometryFactory FACTORY = SPATIAL_CONTEXT.getGeometryFactory();
-    public static final GeometricShapeFactory SHAPE_FACTORY = new GeometricShapeFactory();
-
-    protected final boolean multiPolygonMayOverlap = false;
-    protected final boolean autoValidateJtsGeometry = true;
-    protected final boolean autoIndexJtsGeometry = true;
-
-    protected final boolean wrapdateline = SPATIAL_CONTEXT.isGeo();
-
-
     private Module module;
 
     public Spatial4JToConverter(Module module)
@@ -76,23 +71,30 @@ public class Spatial4JToConverter {
     private Shape transform(TGeometry intermediate)
     {
 
-        switch(intermediate.getType())
+        switch (intermediate.getType())
         {
-            case POINT              : return null; // return newPoint((TPoint) intemediate);
-            case MULTIPOINT         : return null;
-            case LINESTRING         : return null;
-            case MULTILINESTRING    : return null;
-            case POLYGON            : return null;
-            case MULTIPOLYGON       : return null;
-            case FEATURE            : return null;
-            case FEATURECOLLECTION  : return null;
+            case POINT:
+                return null; // return newPoint((TPoint) intemediate);
+            case MULTIPOINT:
+                return null;
+            case LINESTRING:
+                return null;
+            case MULTILINESTRING:
+                return null;
+            case POLYGON:
+                return null;
+            case MULTIPOLYGON:
+                return null;
+            case FEATURE:
+                return null;
+            case FEATURECOLLECTION:
+                return null;
         }
 
         if (intermediate instanceof TCircle)
         {
-            return newCircle((TCircle)intermediate);
-        }
-        else
+            return newCircle((TCircle) intermediate);
+        } else
             return null;
 
 
@@ -100,12 +102,7 @@ public class Spatial4JToConverter {
 
     private Point newPoint(TPoint point)
     {
-        // SPATIAL_CONTEXT.makeCircle(0,0,0).
 
-        // SHAPE_FACTORY.set
-
-        System.out.println("point.x() " + point.x());
-        System.out.println("point.y() " + point.y());
         return new Point(point.x(), point.y());
     }
 

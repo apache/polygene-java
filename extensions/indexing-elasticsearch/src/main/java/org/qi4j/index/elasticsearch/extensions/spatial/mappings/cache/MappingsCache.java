@@ -23,10 +23,9 @@ import java.util.concurrent.TimeUnit;
 
 import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.builders.SpatialMappingFactory.MappingQuery;
 
-/**
- * Created by jj on 19.12.14.
- */
-public class MappingsCache {
+
+public class MappingsCache
+{
 
     private static final int TTL_SECONDS = 1 * 60; // <- JJ TODO make it configurable
     private static final int CONCURENCY_LEVEL = 50;
@@ -42,54 +41,59 @@ public class MappingsCache {
                         .expireAfterAccess(TTL_SECONDS, TimeUnit.SECONDS)
                         .concurrencyLevel(CONCURENCY_LEVEL) // valid ?
                         .build(
-                                new CacheLoader<String, String>() {
-                                    public String load(String key) {
-                                        if (valid()) {
+                                new CacheLoader<String, String>()
+                                {
+                                    public String load(String key)
+                                    {
+                                        if (valid())
+                                        {
                                             return reloadStrategy(key);
                                         } else
                                             return "";
                                     }
                                 }
                         );
-
     }
 
 
-    public MappingsCache(ElasticSearchSupport support) {
+    public MappingsCache(ElasticSearchSupport support)
+    {
         this.support = support;
     }
 
-    private String reloadStrategy(String key) {
-
-        System.out.println("Reload Cache for " + key);
-
+    private String reloadStrategy(String key)
+    {
         String result = MappingQuery(support).get(key);
-        System.out.println("Reload Result " + result);
         return (result == null || result.length() == 0) ? "" : result;
     }
 
-    private boolean valid() {
+    private boolean valid()
+    {
         return (support != null) && (support.index() != null) && (support.entitiesType() != null) ? true : false;
     }
 
 
-    public boolean exists(String key) {
+    public boolean exists(String key)
+    {
         return (ES_MAPPINGS_CACHE.getUnchecked(key) == null) || ES_MAPPINGS_CACHE.getUnchecked(key).length() == 0 ? false : true;
     }
 
-    public String get(String key) {
+    public String get(String key)
+    {
         return ES_MAPPINGS_CACHE.getUnchecked(key);
     }
 
 
-    public void put(String key, String mappings) {
-        System.out.println("Cache PUT key " + key + " mappings " + mappings);
+    public void put(String key, String mappings)
+    {
         if (mappings != null)
             ES_MAPPINGS_CACHE.put(key, mappings);
     }
 
-    public boolean putIfNotExist(String key, String mappings) {
-        if (!exists(key)) {
+    public boolean putIfNotExist(String key, String mappings)
+    {
+        if (!exists(key))
+        {
             put(key, mappings);
             return false;
         } else

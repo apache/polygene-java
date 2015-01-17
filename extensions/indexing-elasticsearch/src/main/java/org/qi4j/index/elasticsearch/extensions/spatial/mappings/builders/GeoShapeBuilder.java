@@ -25,13 +25,16 @@ import java.util.StringTokenizer;
 /**
  * Created by jj on 19.12.14.
  */
-public class GeoShapeBuilder extends AbstractBuilder {
+public class GeoShapeBuilder extends AbstractBuilder
+{
 
-    public GeoShapeBuilder(ElasticSearchSupport support) {
+    public GeoShapeBuilder(ElasticSearchSupport support)
+    {
         this.support = support;
     }
 
-    private  String createESGeoShapeMapping(String property) throws IOException {
+    private String createESGeoShapeMapping(String property) throws IOException
+    {
 
         XContentBuilder qi4jRootType = XContentFactory.jsonBuilder().startObject().startObject(support.entitiesType());
 
@@ -60,13 +63,15 @@ public class GeoShapeBuilder extends AbstractBuilder {
         return qi4jRootType.string();
     }
 
-    public boolean create(String field) {
-        try {
+    public boolean create(String field)
+    {
+        try
+        {
             return put(field, createESGeoShapeMapping(field));
-        } catch (Exception _ex) {
-            _ex.printStackTrace();
+        } catch (IOException _ex)
+        {
+             throw new RuntimeException(_ex);
         }
-        return false;
     }
 
 }

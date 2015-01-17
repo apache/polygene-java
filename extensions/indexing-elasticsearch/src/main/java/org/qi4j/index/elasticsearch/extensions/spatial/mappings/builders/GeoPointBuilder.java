@@ -25,13 +25,15 @@ import java.util.StringTokenizer;
 /**
  * Created by jj on 19.12.14.
  */
-public class GeoPointBuilder extends AbstractBuilder {
+public class GeoPointBuilder extends AbstractBuilder
+{
 
-    public GeoPointBuilder(ElasticSearchSupport support) {
+    public GeoPointBuilder(ElasticSearchSupport support)
+    {
         this.support = support;
     }
 
-    private  String createGeoPointMapping(String field) throws IOException
+    private String createGeoPointMapping(String field) throws IOException
     {
         XContentBuilder qi4jRootType = XContentFactory.jsonBuilder().startObject().startObject(support.entitiesType());
         StringTokenizer t1 = new StringTokenizer(field, ".");
@@ -41,10 +43,10 @@ public class GeoPointBuilder extends AbstractBuilder {
             propertyLevel1 = t1.nextToken();
             qi4jRootType.startObject("properties").startObject(propertyLevel1);
         }
-                qi4jRootType
-                        .field("type", "geo_point") // geo_point
-                        .field("precision", SpatialConfiguration.getIndexerPrecision(support.spatialConfiguration()))
-                        .field("lat_lon", true);
+        qi4jRootType
+                .field("type", "geo_point")
+                .field("precision", SpatialConfiguration.getIndexerPrecision(support.spatialConfiguration()))
+                .field("lat_lon", true);
 
         StringTokenizer t2 = new StringTokenizer(field, ".");
         while (t2.hasMoreTokens())
@@ -57,13 +59,14 @@ public class GeoPointBuilder extends AbstractBuilder {
         return qi4jRootType.string();
     }
 
-    public boolean create(String field) {
-        try {
+    public boolean create(String field)
+    {
+        try
+        {
             return put(field, createGeoPointMapping(field));
-        } catch (Exception _ex) {
-            _ex.printStackTrace();
+        } catch (IOException _ex)
+        {
+            throw new RuntimeException(_ex);
         }
-        return false;
     }
-
 }

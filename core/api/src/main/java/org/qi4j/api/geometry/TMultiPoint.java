@@ -26,42 +26,38 @@ import java.util.List;
 
 
 @Mixins(TMultiPoint.Mixin.class)
-public interface TMultiPoint extends GeometryCollections {
-
-
+public interface TMultiPoint extends GeometryCollections
+{
     TMultiPoint of(TPoint... points);
     TMultiPoint of(List<TPoint> points);
-
     TMultiPoint yx(double y, double x);
 
-    public abstract class Mixin extends GeometryCollections.Mixin implements TMultiPoint {
-
+    public abstract class Mixin extends GeometryCollections.Mixin implements TMultiPoint
+    {
         @This
         TMultiPoint self;
-
         @Structure
         Module module;
 
-        public TMultiPoint of(List<TPoint> points) {
+        public TMultiPoint of(List<TPoint> points)
+        {
             of(points.toArray(new TPoint[points.size()]));
             return self;
         }
-
-        public TMultiPoint yx(double y, double x) {
+        public TMultiPoint yx(double y, double x)
+        {
             of(module.newValueBuilder(TPoint.class).prototype().x(x).y(y));
             return self;
         }
-
-
-        public TMultiPoint of(TPoint... points) {
+        public TMultiPoint of(TPoint... points)
+        {
             self.geometryType().set(TGEOMETRY_TYPE.MULTIPOINT);
             init();
             List<TGeometry> l = new ArrayList<>();
-
-            for (TPoint p : points) {
+            for (TPoint p : points)
+            {
                 l.add(p);
             }
-
             if (self.isEmpty())
                 self.geometries().set(l); // points().set(l);
             else
@@ -69,7 +65,5 @@ public interface TMultiPoint extends GeometryCollections {
 
             return self;
         }
-
-
     }
 }

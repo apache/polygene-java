@@ -18,55 +18,68 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.value.ValueComposite;
 
-/**
- * Created by jj on 22.12.14.
- */
-public class SpatialConfiguration {
 
-    public static boolean isEnabled(Configuration config) {
+public class SpatialConfiguration
+{
+
+    public static boolean isEnabled(Configuration config)
+    {
         return config.Enabled().get().booleanValue();
     }
 
-    public static INDEXING_METHOD getMethod(Configuration config) {
+    public static INDEXING_METHOD getMethod(Configuration config)
+    {
         return config.Indexer().get().Method().get().Type().get();
     }
 
-    public static boolean isMethodGeoPoint(Configuration config) {
+    public static boolean isMethodGeoPoint(Configuration config)
+    {
         return config.Indexer().get().Method().get().Type().get() == INDEXING_METHOD.GEO_POINT ? true : false;
     }
 
-    public static boolean isMethodGeoShape(Configuration config) {
+    public static boolean isMethodGeoShape(Configuration config)
+    {
         return config.Indexer().get().Method().get().Type().get() == INDEXING_METHOD.GEO_SHAPE ? true : false;
     }
 
-    public static boolean isIndexerProjectionConversionEnabled(Configuration config) {
+    public static boolean isIndexerProjectionConversionEnabled(Configuration config)
+    {
         return config.Indexer().get().Projection().get().ConversionEnabled().get().booleanValue();
     }
 
-    public static double getIndexerProjectionConversionAccuracy(Configuration config) {
+    public static double getIndexerProjectionConversionAccuracy(Configuration config)
+    {
         // return config.Indexer().get().Projection().get().
         return 2;
     }
 
-    public static String getIndexerPrecision(Configuration config) {
+    public static String getIndexerPrecision(Configuration config)
+    {
         return config.Indexer().get().Method().get().Precision().get();
     }
 
-    public static boolean isFinderProjectionConversionEnabled(Configuration config) {
+    public static boolean isFinderProjectionConversionEnabled(Configuration config)
+    {
         return config.Finder().get().Projection().get().ConversionEnabled().get().booleanValue();
     }
 
-    public static double getFinderProjectionConversionAccuracy(Configuration config) {
+    public static double getFinderProjectionConversionAccuracy(Configuration config)
+    {
         return 2;
     }
 
-    public String getMethodAccuracy(Configuration config) {
+    public String getMethodAccuracy(Configuration config)
+    {
         return config.Indexer().get().Method().get().Precision().get();
     }
 
-    public static enum INDEXING_METHOD {GEO_POINT, GEO_SHAPE}
+    public static enum INDEXING_METHOD
+    {
+        GEO_POINT, GEO_SHAPE
+    }
 
-    public interface Configuration extends ValueComposite {
+    public interface Configuration extends ValueComposite
+    {
         @Optional
         Property<Boolean> Enabled();
 
@@ -77,7 +90,8 @@ public class SpatialConfiguration {
         Property<FinderConfiguration> Finder();
     }
 
-    public interface IndexerConfiguration extends ValueComposite {
+    public interface IndexerConfiguration extends ValueComposite
+    {
         @Optional
         Property<IndexingMethod> Method();
 
@@ -85,12 +99,14 @@ public class SpatialConfiguration {
         Property<ProjectionSupport> Projection();
     }
 
-    public interface FinderConfiguration extends ValueComposite {
+    public interface FinderConfiguration extends ValueComposite
+    {
         @Optional
         Property<ProjectionSupport> Projection();
     }
 
-    public interface IndexingMethod extends ValueComposite {
+    public interface IndexingMethod extends ValueComposite
+    {
         @Optional
         Property<INDEXING_METHOD> Type();
 
@@ -98,7 +114,8 @@ public class SpatialConfiguration {
         Property<String> Precision();
     }
 
-    public interface ProjectionSupport extends ValueComposite {
+    public interface ProjectionSupport extends ValueComposite
+    {
         @Optional
         Property<Boolean> ConversionEnabled();
 

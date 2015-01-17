@@ -14,10 +14,8 @@
 
 package org.qi4j.api.geometry;
 
-/**
- * Created by jj on 02.12.14.
- */
-public enum TUnit {
+public enum TUnit
+{
 
     RADIAN,
     DEGREE,

@@ -28,7 +28,7 @@ import org.qi4j.index.elasticsearch.ElasticSearchIndexException;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper;
-import org.qi4j.library.spatial.projection.ProjectionsRegistry;
+import org.qi4j.library.spatial.projections.ProjectionsRegistry;
 
 import java.util.HashMap;
 import java.util.ListIterator;
@@ -36,23 +36,27 @@ import java.util.Map;
 import java.util.Stack;
 
 import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper.IndexMappingCache;
-import static org.qi4j.library.spatial.projection.transformations.TTransformations.Transform;
+import static org.qi4j.library.spatial.projections.transformations.TTransformations.Transform;
 
-public final class ElasticSearchSpatialIndexer {
+public final class ElasticSearchSpatialIndexer
+{
 
     private static final String EPSG_4326 = "EPSG:4326";
     private static final String DefaultSupportedProjection = EPSG_4326;
     private static final double DefaultProjectionConversionPrecisionInMeters = 2.00;
     private Module module;
 
-    private ElasticSearchSpatialIndexer() {
+    private ElasticSearchSpatialIndexer()
+    {
     }
 
-    public static void toJSON(ElasticSearchSupport support, TGeometry geometry, String property, String deepProperty, JSONObject json, Module module) throws ElasticSearchIndexException {
+    public static void toJSON(ElasticSearchSupport support, TGeometry geometry, String property, String deepProperty, JSONObject json, Module module) throws ElasticSearchIndexException
+    {
 
         // Spatial Mappings
         {
-            if (SpatialConfiguration.isEnabled(support.spatialConfiguration())) {
+            if (SpatialConfiguration.isEnabled(support.spatialConfiguration()))
+            {
                 SpatialIndexMapper.createIfNotExist(support, geometry, deepProperty);
             } else throw new ElasticSearchIndexException("Spatial support is disabled. No spatial indexing available");
         }
@@ -61,50 +65,65 @@ public final class ElasticSearchSpatialIndexer {
         {
             if (new ProjectionsRegistry().getCRS(geometry.getCRS()) == null)
                 throw new ElasticSearchIndexException("Project with the CRS Identity " + geometry.getCRS() + " is unknown. Supported projections are JJ TODO");
-            if (SpatialConfiguration.isIndexerProjectionConversionEnabled(support.spatialConfiguration())) {
+            if (SpatialConfiguration.isIndexerProjectionConversionEnabled(support.spatialConfiguration()))
+            {
                 Transform(module).from(geometry).to(DefaultSupportedProjection, SpatialConfiguration.getIndexerProjectionConversionAccuracy(support.spatialConfiguration()));
             } else if (!geometry.getCRS().equalsIgnoreCase(DefaultSupportedProjection))
                 throw new ElasticSearchIndexException("Project with the CRS Identity " + geometry.getCRS() + " is not supported by ElasticSearch and projection conversion is " +
                         "disabled in the configuration.");
         }
 
-        try {
+        try
+        {
 
-            if (geometry.isPoint()) {
-                if (IndexMappingCache.isMappedAsGeoPoint(support.index(), support.entitiesType(), deepProperty)) {
+            if (geometry.isPoint())
+            {
+                if (IndexMappingCache.isMappedAsGeoPoint(support.index(), support.entitiesType(), deepProperty))
+                {
                     createIndexPointAsGeoPointType(property, json, (TPoint) geometry);
-                } else if (IndexMappingCache.isMappedAsGeoShape(support.index(), support.entitiesType(), deepProperty)) {
+                } else if (IndexMappingCache.isMappedAsGeoShape(support.index(), support.entitiesType(), deepProperty))
+                {
                     createIndexPointAsGeoShapeType(property, json, (TPoint) geometry);
                 } else
                     new ElasticSearchIndexException("No spatial mapping for property " + deepProperty + " available.");
-            } else if (geometry.isMultiPoint()) {
+            } else if (geometry.isMultiPoint())
+            {
                 createIndexMultiPoint(property, json, (TMultiPoint) geometry);
-            } else if (geometry.isLineString()) {
+            } else if (geometry.isLineString())
+            {
                 createIndexLineString(property, json, (TLineString) geometry);
-            } else if (geometry.isMultiLineString()) {
+            } else if (geometry.isMultiLineString())
+            {
                 createIndexMultiLineString(property, json, (TMultiLineString) geometry);
-            } else if (geometry.isPolygon()) {
+            } else if (geometry.isPolygon())
+            {
                 createIndexPolygon(property, json, (TPolygon) geometry);
-            } else if (geometry.isMultiPolygon()) {
+            } else if (geometry.isMultiPolygon())
+            {
                 createIndexMultiPolygon(property, json, (TMultiPolygon) geometry);
-            } else if (geometry.isFeature()) {
+            } else if (geometry.isFeature())
+            {
                 createIndexFeature(property, json, (TFeature) geometry);
-            } else if (geometry.isFeatureCollection()) {
+            } else if (geometry.isFeatureCollection())
+            {
                 createIndexFeatureCollection(property, json, (TFeatureCollection) geometry);
             } else new ElasticSearchIndexException("Unsupported Geometry : " + geometry.getClass());
 
-        } catch (JSONException _ex) {
+        } catch (JSONException _ex)
+        {
             throw new ElasticSearchIndexException("", _ex);
         }
     }
 
-    private static void createIndexMultiPoint(String property, JSONObject json, TMultiPoint tMultiPoint) throws JSONException {
+    private static void createIndexMultiPoint(String property, JSONObject json, TMultiPoint tMultiPoint) throws JSONException
+    {
 
         Map tMultiPointMap = new HashMap();
         tMultiPointMap.put("type", "multipoint");
 
         JSONArray points = new JSONArray();
-        for (int i = 0; i < tMultiPoint.getNumPoints(); i++) {
+        for (int i = 0; i < tMultiPoint.getNumPoints(); i++)
+        {
             TPoint point = (TPoint) tMultiPoint.getGeometryN(i);
             points.put(new JSONArray().put(point.y()).put(point.x()));
         }
@@ -114,12 +133,14 @@ public final class ElasticSearchSpatialIndexer {
 
     }
 
-    private static void createIndexLineString(String property, JSONObject json, TLineString tLineString) throws JSONException {
+    private static void createIndexLineString(String property, JSONObject json, TLineString tLineString) throws JSONException
+    {
         Map tLineStringMap = new HashMap();
         tLineStringMap.put("type", "linestring");
 
         JSONArray points = new JSONArray();
-        for (int i = 0; i < tLineString.getNumPoints(); i++) {
+        for (int i = 0; i < tLineString.getNumPoints(); i++)
+        {
             TPoint point = (TPoint) tLineString.getPointN(i);
             points.put(new JSONArray().put(point.y()).put(point.x()));
         }
@@ -160,7 +181,8 @@ public final class ElasticSearchSpatialIndexer {
      * @param tPoint
      * @throws Exception
      */
-    private static void createIndexPointAsGeoPointType(String property, JSONObject json, TPoint tPoint) throws JSONException {
+    private static void createIndexPointAsGeoPointType(String property, JSONObject json, TPoint tPoint) throws JSONException
+    {
         Map tPointMap = new HashMap();
         tPointMap.put("lat", tPoint.y());
         tPointMap.put("lon", tPoint.x());
@@ -168,7 +190,8 @@ public final class ElasticSearchSpatialIndexer {
         json.put(property, tPointMap);
     }
 
-    private static void createIndexPointAsGeoShapeType(String property, JSONObject json, TPoint tPoint) throws JSONException {
+    private static void createIndexPointAsGeoShapeType(String property, JSONObject json, TPoint tPoint) throws JSONException
+    {
         Map tPointMap = new HashMap();
         tPointMap.put("type", "point");
         tPointMap.put("coordinates", new JSONArray().put(tPoint.x()).put(tPoint.y()));
@@ -176,18 +199,21 @@ public final class ElasticSearchSpatialIndexer {
         json.put(property, tPointMap);
     }
 
-    private static void createIndexMultiLineString(String property, JSONObject json, TMultiLineString tMultiLineString) throws JSONException {
+    private static void createIndexMultiLineString(String property, JSONObject json, TMultiLineString tMultiLineString) throws JSONException
+    {
         Map tMultiLineStringMap = new HashMap();
         tMultiLineStringMap.put("type", "multilinestring");
 
         JSONArray coordinates = new JSONArray();
 
-        for (int i = 0; i < tMultiLineString.geometries().get().size(); i++) {
+        for (int i = 0; i < tMultiLineString.geometries().get().size(); i++)
+        {
             JSONArray p = new JSONArray();
             int nPoints = ((TLineString) tMultiLineString.getGeometryN(i)).getNumPoints();
 
             JSONArray line = new JSONArray();
-            for (int j = 0; j < nPoints; j++) {
+            for (int j = 0; j < nPoints; j++)
+            {
                 JSONArray xy = new JSONArray();
                 xy.put(((TLineString) tMultiLineString.getGeometryN(i)).getPointN(j).x());
                 xy.put(((TLineString) tMultiLineString.getGeometryN(i)).getPointN(j).y());
@@ -199,7 +225,8 @@ public final class ElasticSearchSpatialIndexer {
         json.put(property, tMultiLineStringMap);
     }
 
-    private static void createIndexPolygon(String property, JSONObject json, TPolygon tPolygon) throws JSONException {
+    private static void createIndexPolygon(String property, JSONObject json, TPolygon tPolygon) throws JSONException
+    {
         if (!tPolygon.shell().get().isValid())
             throw new ElasticSearchIndexException("Polygon shell has to be closed - first and last point must match. ");
 
@@ -211,7 +238,8 @@ public final class ElasticSearchSpatialIndexer {
         // shell
         {
             JSONArray shell = new JSONArray();
-            for (int i = 0; i < tPolygon.shell().get().getNumPoints(); i++) {
+            for (int i = 0; i < tPolygon.shell().get().getNumPoints(); i++)
+            {
                 JSONArray p = new JSONArray();
 
                 p.put(tPolygon.shell().get().getPointN(i).x());
@@ -224,10 +252,12 @@ public final class ElasticSearchSpatialIndexer {
 
         // wholes
         {
-            for (int i = 0; i < tPolygon.holes().get().size(); i++) {
+            for (int i = 0; i < tPolygon.holes().get().size(); i++)
+            {
                 JSONArray whole = new JSONArray();
                 // TLinearRing whole = tPolygon.holes().get().get(i);
-                for (int j = 0; j < tPolygon.holes().get().get(i).getNumPoints(); j++) {
+                for (int j = 0; j < tPolygon.holes().get().get(i).getNumPoints(); j++)
+                {
                     if (!tPolygon.holes().get().get(i).isValid())
                         throw new ElasticSearchIndexException("Polygon whole has to be closed - first and last point must match. ");
 
@@ -246,12 +276,14 @@ public final class ElasticSearchSpatialIndexer {
         json.put(property, tPolygonMap);
     }
 
-    private static void createIndexMultiPolygon(String property, JSONObject json, TMultiPolygon tMultiPolygon) throws JSONException {
+    private static void createIndexMultiPolygon(String property, JSONObject json, TMultiPolygon tMultiPolygon) throws JSONException
+    {
         Map tMultiPolygonMap = new HashMap();
         tMultiPolygonMap.put("type", "multipolygon");
         JSONArray coordinates = new JSONArray();
 
-        for (int i = 0; i < tMultiPolygon.geometries().get().size(); i++) {
+        for (int i = 0; i < tMultiPolygon.geometries().get().size(); i++)
+        {
             JSONObject _json = new JSONObject();
             createIndexPolygon(property, _json, (TPolygon) tMultiPolygon.getGeometryN(i));
             coordinates.put(((JSONObject) _json.get(property)).get("coordinates"));
@@ -260,16 +292,19 @@ public final class ElasticSearchSpatialIndexer {
         json.put(property, tMultiPolygonMap);
     }
 
-    private static void createIndexFeatureCollection(String property, JSONObject json, TFeatureCollection tFeatureCollection) throws JSONException {
+    private static void createIndexFeatureCollection(String property, JSONObject json, TFeatureCollection tFeatureCollection) throws JSONException
+    {
         Map tFeatureMap = new HashMap();
         tFeatureMap.put("type", "geometrycollection");
 
         JSONArray geometries = new JSONArray();
         JSONObject _json = new JSONObject();
 
-        for (TGeometry tGeometry : tFeatureCollection.geometries().get()) {
+        for (TGeometry tGeometry : tFeatureCollection.geometries().get())
+        {
             TFeature tFeature = (TFeature) tGeometry;
-            switch (tFeature.asGeometry().getType()) {
+            switch (tFeature.asGeometry().getType())
+            {
                 case POINT:
                     createIndexPointAsGeoShapeType(property, _json, (TPoint) tFeature.asGeometry());
                     break;
@@ -296,14 +331,16 @@ public final class ElasticSearchSpatialIndexer {
         json.put(property, tFeatureMap);
     }
 
-    private static void createIndexFeature(String property, JSONObject json, TFeature tFeature) throws JSONException {
+    private static void createIndexFeature(String property, JSONObject json, TFeature tFeature) throws JSONException
+    {
         Map tFeatureMap = new HashMap();
         tFeatureMap.put("type", "geometrycollection");
 
         JSONArray geometries = new JSONArray();
         JSONObject _json = new JSONObject();
 
-        switch (tFeature.asGeometry().getType()) {
+        switch (tFeature.asGeometry().getType())
+        {
             case POINT:
                 createIndexPointAsGeoShapeType(property, _json, (TPoint) tFeature.asGeometry());
                 break;
@@ -330,11 +367,13 @@ public final class ElasticSearchSpatialIndexer {
         json.put(property, tFeatureMap);
     }
 
-    public static String spatialMappingPropertyName(Stack<String> stack) {
+    public static String spatialMappingPropertyName(Stack<String> stack)
+    {
         ListIterator<String> it = stack.listIterator();
         if (!it.hasNext()) return "";
         StringBuilder sb = new StringBuilder();
-        for (; ; ) {
+        for (; ; )
+        {
             String s = it.next();
             sb.append(s);
             if (!it.hasNext())

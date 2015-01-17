@@ -17,48 +17,51 @@ package org.qi4j.api.geometry;
 import org.qi4j.api.geometry.internal.builders.*;
 import org.qi4j.api.structure.Module;
 
-/**
- * Created by jj on 26.11.14.
- */
-public class TGeometryFactory {
+
+public class TGeometryFactory
+{
 
 
-    public static TCRSBuilder TCrs(Module module) {
+    public static TCRSBuilder TCrs(Module module)
+    {
         return new TCRSBuilder(module);
     }
-
-    public static TPointBuilder TPoint(Module module) {
+    public static TPointBuilder TPoint(Module module)
+    {
         return new TPointBuilder(module);
     }
 
-    public static TMultiPointBuilder TMultiPoint(Module module) {
+    public static TMultiPointBuilder TMultiPoint(Module module)
+    {
         return new TMultiPointBuilder(module);
     }
-
-    public static TLinearRingBuilder TLinearRing(Module module) {
+    public static TLinearRingBuilder TLinearRing(Module module)
+    {
         return new TLinearRingBuilder(module);
     }
-
-    public static TLineStringBuilder TLineString(Module module) {
+    public static TLineStringBuilder TLineString(Module module)
+    {
         return new TLineStringBuilder(module);
     }
-
     public static TMultiLineStringBuilder TMultiLineString(Module module)
     {
         return new TMultiLineStringBuilder(module);
     }
-    public static TPolygonBuilder TPolygon(Module module) {
+
+    public static TPolygonBuilder TPolygon(Module module)
+    {
         return new TPolygonBuilder(module);
     }
-    public static TMultiPolygonsBuilder TMultiPolygon(Module module) {
+    public static TMultiPolygonsBuilder TMultiPolygon(Module module)
+    {
         return new TMultiPolygonsBuilder(module);
     }
-
-    public static TFeatureBuilder TFeature(Module module) {
+    public static TFeatureBuilder TFeature(Module module)
+    {
         return new TFeatureBuilder(module);
     }
-
-    public static TFeatureCollectionBuilder TFeatureCollection(Module module) {
+    public static TFeatureCollectionBuilder TFeatureCollection(Module module)
+    {
         return new TFeatureCollectionBuilder(module);
     }
 }

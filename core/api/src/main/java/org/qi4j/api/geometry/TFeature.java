@@ -17,18 +17,21 @@ package org.qi4j.api.geometry;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.geometry.internal.TGeometry;
-import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Mixins(TFeature.Mixin.class)
-public interface TFeature extends TGeometry {
+public interface TFeature extends TGeometry
+{
 
 
     @Optional
@@ -43,6 +46,7 @@ public interface TFeature extends TGeometry {
     TFeature of(TGeometry geometry);
 
     TFeature withProperties(Map<String, List<String>> properties);
+
     TFeature addProperty(String name, String value);
 
     TGeometry asGeometry();
@@ -50,7 +54,8 @@ public interface TFeature extends TGeometry {
     Map<String, List<String>> asProperties();
 
 
-    public abstract class Mixin implements TFeature {
+    public abstract class Mixin implements TFeature
+    {
 
         @Structure
         Module module;
@@ -58,7 +63,8 @@ public interface TFeature extends TGeometry {
         @This
         TFeature self;
 
-        public TFeature of(TGeometry geometry) {
+        public TFeature of(TGeometry geometry)
+        {
             self.geometryType().set(TGEOMETRY_TYPE.FEATURE);
             self.geometry().set(geometry);
 
@@ -76,10 +82,9 @@ public interface TFeature extends TGeometry {
             if (self.properties() == null || self.properties().get() == null || !self.properties().get().containsKey(name))
             {
                 Map<String, List<String>> properties = new HashMap<>();
-                properties.put(name, Arrays.asList(value) );
+                properties.put(name, Arrays.asList(value));
                 self.properties().set(properties);
-            }
-            else
+            } else
             {
                 self.properties().get().get(name).add(value);
             }
@@ -87,7 +92,8 @@ public interface TFeature extends TGeometry {
         }
 
 
-        public boolean isEmpty() {
+        public boolean isEmpty()
+        {
             return (self.geometry() == null) || (self.geometry().get() == null) || (self.geometry().get().isEmpty()) ? true : false;
         }
 
@@ -96,16 +102,20 @@ public interface TFeature extends TGeometry {
         {
             return self.geometry().get().getCoordinates();
         }
-        public int getNumPoints() {
+
+        public int getNumPoints()
+        {
             return isEmpty() ? 0 : self.geometry().get().getNumPoints();
         }
 
 
-        public TGeometry asGeometry() {
+        public TGeometry asGeometry()
+        {
             return self.geometry().get();
         }
 
-        public Map<String, List<String>> asProperties() {
+        public Map<String, List<String>> asProperties()
+        {
             return self.properties().get();
         }
 

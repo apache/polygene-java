@@ -28,13 +28,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by jj on 22.12.14.
- */
-public class SpatialFunctionsSupportMatrix {
+public class SpatialFunctionsSupportMatrix
+{
+    private static final Table<String, SpatialConfiguration.INDEXING_METHOD, ConfigurationEntry> SPATIAL_SUPPORT_MATRIX = HashBasedTable.create();
     private static Boolean OrderBy = true;
     private static Class<? extends TGeometry> AnyGeometry = TGeometry.class;
-    private static final Table<String, SpatialConfiguration.INDEXING_METHOD, ConfigurationEntry> SPATIAL_SUPPORT_MATRIX = HashBasedTable.create();
 
     static
     {
@@ -53,22 +51,22 @@ public class SpatialFunctionsSupportMatrix {
     }
 
 
-    public static boolean isSupported(Class expression, Class<? extends TGeometry> geometryOfProperty, Class<? extends TGeometry> geometryOfFilter, Boolean orderBy, SpatialConfiguration.INDEXING_METHOD method, Boolean verifyOrderBy) {
-        System.out.println(SPATIAL_SUPPORT_MATRIX.toString());
+    public static boolean isSupported(Class expression, Class<? extends TGeometry> geometryOfProperty, Class<? extends TGeometry> geometryOfFilter, Boolean orderBy, SpatialConfiguration.INDEXING_METHOD method, Boolean verifyOrderBy)
+    {
 
-        System.out.println("isSupported " + expression + " " + geometryOfProperty + " " + geometryOfFilter + " Type " + method);
-        System.out.println("Contains " + SPATIAL_SUPPORT_MATRIX.contains(expression.getName(), method));
         if (SPATIAL_SUPPORT_MATRIX.contains(expression.getName(), method))
             return SPATIAL_SUPPORT_MATRIX.get(expression.getName(), method).isSupported(geometryOfProperty, geometryOfFilter, orderBy, verifyOrderBy);
         else
             return false;
     }
 
-    public static boolean isSupported(Class expression, Class<? extends TGeometry> geometryOfProperty, Class<? extends TGeometry> geometryOfFilter, SpatialConfiguration.INDEXING_METHOD method) {
+    public static boolean isSupported(Class expression, Class<? extends TGeometry> geometryOfProperty, Class<? extends TGeometry> geometryOfFilter, SpatialConfiguration.INDEXING_METHOD method)
+    {
         return isSupported(expression, geometryOfProperty, geometryOfFilter, false, method, false);
     }
 
-    private static void supports(Class expression, Class<? extends TGeometry> geometryOfProperty, Class<? extends TGeometry> geometryOfFilter, Boolean orderBy, SpatialConfiguration.INDEXING_METHOD method) {
+    private static void supports(Class expression, Class<? extends TGeometry> geometryOfProperty, Class<? extends TGeometry> geometryOfFilter, Boolean orderBy, SpatialConfiguration.INDEXING_METHOD method)
+    {
         supports
                 (
                         expression,
@@ -78,54 +76,63 @@ public class SpatialFunctionsSupportMatrix {
                 );
     }
 
-    private static void supports(Class expression, Class<? extends TGeometry>[] geometriesOfProperty, Class<? extends TGeometry>[] geometriesOfFilter, Boolean orderBy, SpatialConfiguration.INDEXING_METHOD method) {
+    private static void supports(Class expression, Class<? extends TGeometry>[] geometriesOfProperty, Class<? extends TGeometry>[] geometriesOfFilter, Boolean orderBy, SpatialConfiguration.INDEXING_METHOD method)
+    {
         SPATIAL_SUPPORT_MATRIX.put(expression.getName(), method, new ConfigurationEntry(geometriesOfProperty, geometriesOfFilter, orderBy, method));
     }
 
-    private static Class disable(Class clazz) {
+    private static Class disable(Class clazz)
+    {
         return Object.class;
     }
 
-    private static Class enable(Class clazz) {
+    private static Class enable(Class clazz)
+    {
         return clazz;
     }
 
-    private static Boolean disable(Boolean bool) {
+    private static Boolean disable(Boolean bool)
+    {
         return false;
     }
 
-    private static Boolean enable(Boolean bool) {
+    private static Boolean enable(Boolean bool)
+    {
         return true;
     }
 
-    private static Class<? extends TGeometry>[] filterOf(Class<? extends TGeometry>... geometryOfFilters) {
+    private static Class<? extends TGeometry>[] filterOf(Class<? extends TGeometry>... geometryOfFilters)
+    {
         return geometryOfFilters;
     }
 
-    private static Class<? extends TGeometry>[] propertyOf(Class<? extends TGeometry>... geometryOfProperty) {
+    private static Class<? extends TGeometry>[] propertyOf(Class<? extends TGeometry>... geometryOfProperty)
+    {
         return geometryOfProperty;
     }
 
-    private static class ConfigurationEntry {
+    private static class ConfigurationEntry
+    {
         private SpatialConfiguration.INDEXING_METHOD method;
         private Boolean orderBy;
         private List<Class<? extends TGeometry>> supportedPropertyGeometries = new LinkedList<>();
         private List<Class<? extends TGeometry>> supportedFilterGeometries = new LinkedList<>();
 
-        public ConfigurationEntry(Class<? extends TGeometry>[] geometriesOfProperty, Class<? extends TGeometry>[] geometriesOfFilter, Boolean orderBy, SpatialConfiguration.INDEXING_METHOD method) {
+        public ConfigurationEntry(Class<? extends TGeometry>[] geometriesOfProperty, Class<? extends TGeometry>[] geometriesOfFilter, Boolean orderBy, SpatialConfiguration.INDEXING_METHOD method)
+        {
             this.supportedPropertyGeometries = Arrays.asList(geometriesOfProperty);
             this.supportedFilterGeometries = Arrays.asList(geometriesOfFilter);
             this.orderBy = orderBy;
             this.method = method;
         }
 
-        public boolean isSupported(Class<? extends TGeometry> geometryOfProperty, Class<? extends TGeometry> geometryOfFilter, Boolean orderBy, Boolean verifyOrderBy) {
-            System.out.println("geometryOfProperty " + geometryOfProperty);
-            System.out.println("geometryOfFilter " + geometryOfFilter);
-            System.out.println("OrderBy " + orderBy);
+        public boolean isSupported(Class<? extends TGeometry> geometryOfProperty, Class<? extends TGeometry> geometryOfFilter, Boolean orderBy, Boolean verifyOrderBy)
+        {
 
-            if (supportsProperty(geometryOfProperty) && supportsFilter(geometryOfFilter)) {
-                if (verifyOrderBy) {
+            if (supportsProperty(geometryOfProperty) && supportsFilter(geometryOfFilter))
+            {
+                if (verifyOrderBy)
+                {
                     if (this.orderBy && orderBy) return true;
                     if (this.orderBy && !orderBy) return true;
                     if (!this.orderBy && !orderBy) return true;
@@ -135,7 +142,8 @@ public class SpatialFunctionsSupportMatrix {
             return false;
         }
 
-        private boolean supportsProperty(Class<? extends TGeometry> geometryOfProperty) {
+        private boolean supportsProperty(Class<? extends TGeometry> geometryOfProperty)
+        {
             if (supportedPropertyGeometries.contains(TGeometry.class))
                 return true;
             else if (supportedPropertyGeometries.contains(geometryOfProperty))
@@ -144,7 +152,8 @@ public class SpatialFunctionsSupportMatrix {
                 return false;
         }
 
-        private boolean supportsFilter(Class<? extends TGeometry> geometryOfFilter) {
+        private boolean supportsFilter(Class<? extends TGeometry> geometryOfFilter)
+        {
             if (supportedFilterGeometries.contains(TGeometry.class))
                 return true;
             else if (supportedFilterGeometries.contains(geometryOfFilter))

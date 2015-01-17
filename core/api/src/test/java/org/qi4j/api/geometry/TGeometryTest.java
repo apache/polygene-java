@@ -26,16 +26,15 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * JAVADOC
  */
 public class TGeometryTest
-    extends AbstractQi4jTest
+        extends AbstractQi4jTest
 {
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
+    public void assemble(ModuleAssembly module)
+            throws AssemblyException
     {
         // internal values
         module.values(Coordinate.class, TLinearRing.class, TCircle.class, TGeometry.class);
@@ -58,14 +57,14 @@ public class TGeometryTest
         String CRS = "urn:ogc:def:crs:OGC:1.3:CRS84";
         ValueBuilder<TCRS> builder = module.newValueBuilder(TCRS.class);
         TCRS crs = builder.prototype().of(CRS);
-        assertThat(crs.crs(), equalTo( CRS ));
+        assertThat(crs.crs(), equalTo(CRS));
     }
 
-        @Test
+    @Test
     public void script02()
     {
         ValueBuilder<Coordinate> builder = module.newValueBuilder(Coordinate.class);
-        Coordinate coordinate1 = builder.prototype().of(1d,2d,3d);
+        Coordinate coordinate1 = builder.prototype().of(1d, 2d, 3d);
 
         assertNotNull(coordinate1);
         assertEquals(1d, coordinate1.x(), 0.0d);
@@ -86,11 +85,11 @@ public class TGeometryTest
         assertEquals(2d, point1.y(), 0.0d);
         assertEquals(3d, point1.z(), 0.0d);
 
-       // assertTrue(point1.isEmpty() == false);
+        // assertTrue(point1.isEmpty() == false);
 
         ValueBuilder<TPoint> builder2 = module.newValueBuilder(TPoint.class);
 
-        TPoint point2 = builder2.prototype().of(1d,2d,3d);
+        TPoint point2 = builder2.prototype().of(1d, 2d, 3d);
         assertEquals(1d, point2.x(), 0.0d);
         assertEquals(2d, point2.y(), 0.0d);
         assertEquals(3d, point2.z(), 0.0d);
@@ -105,7 +104,7 @@ public class TGeometryTest
 
         ValueBuilder<TPoint> builder4 = module.newValueBuilder(TPoint.class);
 
-        TPoint point4 = builder4.prototype().x(10d).y(20d).z(30d).of(1d,2d,3d); // check dsl
+        TPoint point4 = builder4.prototype().x(10d).y(20d).z(30d).of(1d, 2d, 3d); // check dsl
         assertEquals(1d, point4.x(), 0.0d);
         assertEquals(2d, point4.y(), 0.0d);
         assertEquals(3d, point4.z(), 0.0d);
@@ -140,7 +139,8 @@ public class TGeometryTest
     }
 
     @Test
-    public void script05() {
+    public void script05()
+    {
         ValueBuilder<TLineString> builder = module.newValueBuilder(TLineString.class);
 
         TLineString lineString = builder.prototype().of()
@@ -155,7 +155,8 @@ public class TGeometryTest
     }
 
     @Test
-    public void script06() {
+    public void script06()
+    {
         ValueBuilder<TMultiLineString> builder = module.newValueBuilder(TMultiLineString.class);
 
         TMultiLineString multiLineString = builder.prototype().of(
@@ -165,19 +166,19 @@ public class TGeometryTest
                         .yx(0d, 1d)
                         .yx(1d, 0d)
                         .yx(1d, 1d)
-                        .yx(0d, 0d) );
+                        .yx(0d, 0d));
 
         assertEquals(5, multiLineString.getNumPoints());
         assertTrue(multiLineString.getGeometryN(0).isLineString());
     }
 
 
-        @Test
+    @Test
     public void script07()
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
 
-        TLinearRing linearRing = (TLinearRing)builder.prototype().of(
+        TLinearRing linearRing = (TLinearRing) builder.prototype().of(
                 module.newValueBuilder(TPoint.class).prototype().x(0d).y(0d).z(0d),
                 module.newValueBuilder(TPoint.class).prototype().x(0d).y(1d).z(0d),
                 module.newValueBuilder(TPoint.class).prototype().x(1d).y(0d).z(0d),
@@ -193,7 +194,7 @@ public class TGeometryTest
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
 
-        TLinearRing linearRing = (TLinearRing)builder.prototype().of(
+        TLinearRing linearRing = (TLinearRing) builder.prototype().of(
                 module.newValueBuilder(TPoint.class).prototype().x(0d).y(0d).z(0d),
                 module.newValueBuilder(TPoint.class).prototype().x(0d).y(1d).z(0d),
                 module.newValueBuilder(TPoint.class).prototype().x(1d).y(0d).z(0d),
@@ -209,7 +210,7 @@ public class TGeometryTest
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
 
-        TLinearRing shell = (TLinearRing)builder.prototype().of()
+        TLinearRing shell = (TLinearRing) builder.prototype().of()
 
                 .yx(0d, 0d)
                 .yx(0d, 1d)
@@ -228,15 +229,15 @@ public class TGeometryTest
     {
         ValueBuilder<TPolygon> builder = module.newValueBuilder(TPolygon.class);
 /**
-        builder.prototype().of(
-                module.newValueBuilder((TLinearRing.class).prototype().of()
-                        .xy(0d,  0d)
-                        .xy(0d, 10d)
-                        .xy(10d, 0d)
-                        .xy(1d, 10d)
-                        .xy(0d, 0d)
-        );
-*/
+ builder.prototype().of(
+ module.newValueBuilder((TLinearRing.class).prototype().of()
+ .xy(0d,  0d)
+ .xy(0d, 10d)
+ .xy(10d, 0d)
+ .xy(1d, 10d)
+ .xy(0d, 0d)
+ );
+ */
         //builder.prototype().of(
         //        module.newValueBuilder(TLinearRing.class).prototype().
     }
@@ -247,21 +248,21 @@ public class TGeometryTest
     {
         ValueBuilder<TLineString> builder = module.newValueBuilder(TLineString.class);
         assertNotNull(
-        builder.prototype().of
-                (
-                    module.newValueBuilder(TPoint.class).prototype().of
-                    (
-                        module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
-                        module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
-                    )
-                 ,
-                    module.newValueBuilder(TPoint.class).prototype().of
-                    (
-                        module.newValueBuilder(Coordinate.class).prototype().of(2d),  //x
-                        module.newValueBuilder(Coordinate.class).prototype().of(2d)   //y
-                    )
+                builder.prototype().of
+                        (
+                                module.newValueBuilder(TPoint.class).prototype().of
+                                        (
+                                                module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
+                                                module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
+                                        )
+                                ,
+                                module.newValueBuilder(TPoint.class).prototype().of
+                                        (
+                                                module.newValueBuilder(Coordinate.class).prototype().of(2d),  //x
+                                                module.newValueBuilder(Coordinate.class).prototype().of(2d)   //y
+                                        )
 
-                )
+                        )
         );
 
     }
@@ -271,21 +272,21 @@ public class TGeometryTest
     {
         ValueBuilder<TLinearRing> builder = module.newValueBuilder(TLinearRing.class);
         assertNotNull(
-        builder.prototype().of
-                (
-                        module.newValueBuilder(TPoint.class).prototype().of
-                                (
-                                        module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
-                                        module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
-                                )
-                        ,
-                        module.newValueBuilder(TPoint.class).prototype().of
-                                (
-                                        module.newValueBuilder(Coordinate.class).prototype().of(2d),  //x
-                                        module.newValueBuilder(Coordinate.class).prototype().of(2d)   //y
-                                )
+                builder.prototype().of
+                        (
+                                module.newValueBuilder(TPoint.class).prototype().of
+                                        (
+                                                module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
+                                                module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
+                                        )
+                                ,
+                                module.newValueBuilder(TPoint.class).prototype().of
+                                        (
+                                                module.newValueBuilder(Coordinate.class).prototype().of(2d),  //x
+                                                module.newValueBuilder(Coordinate.class).prototype().of(2d)   //y
+                                        )
 
-                )
+                        )
         );
 
     }
@@ -295,46 +296,46 @@ public class TGeometryTest
     {
         ValueBuilder<TPolygon> builder = module.newValueBuilder(TPolygon.class);
         assertNotNull(
-        builder.prototype().of
-                (
-                        // shell
-                        (TLinearRing)module.newValueBuilder(TLinearRing.class).prototype().of
-                                (
-                                        module.newValueBuilder(TPoint.class).prototype().of
-                                                (
-                                                        module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
-                                                        module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
-                                                )
-                                        ,
-                                        module.newValueBuilder(TPoint.class).prototype().of
-                                                (
-                                                        module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
-                                                        module.newValueBuilder(Coordinate.class).prototype().of(2d)   //y
-                                                )
-                                        ,
-                                        module.newValueBuilder(TPoint.class).prototype().of
-                                                (
-                                                        module.newValueBuilder(Coordinate.class).prototype().of(2d),  //x
-                                                        module.newValueBuilder(Coordinate.class).prototype().of(2d)   //y
-                                                )
-                                        ,
-                                        module.newValueBuilder(TPoint.class).prototype().of
-                                                (
-                                                        module.newValueBuilder(Coordinate.class).prototype().of(2d),  //x
-                                                        module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
-                                                )
-                                        ,
-                                        module.newValueBuilder(TPoint.class).prototype().of
-                                                (
-                                                        module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
-                                                        module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
-                                                )
+                builder.prototype().of
+                        (
+                                // shell
+                                (TLinearRing) module.newValueBuilder(TLinearRing.class).prototype().of
+                                        (
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
+                                                        )
+                                                ,
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(2d)   //y
+                                                        )
+                                                ,
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(2d),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(2d)   //y
+                                                        )
+                                                ,
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(2d),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
+                                                        )
+                                                ,
+                                                module.newValueBuilder(TPoint.class).prototype().of
+                                                        (
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(1d),  //x
+                                                                module.newValueBuilder(Coordinate.class).prototype().of(1d)   //y
+                                                        )
 
-                                )
-                      ,
-                       // no holes
-                       null
-                )
+                                        )
+                                ,
+                                // no holes
+                                null
+                        )
         );
 
     }
@@ -353,7 +354,7 @@ public class TGeometryTest
         TCircle tCircle = builder.prototype().of(48.13905780942574, 11.57958984375, 100);
         TPolygon tPolygon = tCircle.polygonize(360);
         assertTrue(tPolygon.shell().get().isValid());
-        assertTrue(tPolygon.shell().get().getNumPoints() == (360 + 1) );
+        assertTrue(tPolygon.shell().get().getNumPoints() == (360 + 1));
     }
 
 
