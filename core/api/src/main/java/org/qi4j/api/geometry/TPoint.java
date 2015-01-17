@@ -27,7 +27,7 @@ import java.util.List;
 
 /**
  * Lat = Y Lon = X
- * <p/>
+ *
  * For type "Point", each element in the coordinates array is a number representing the point coordinate in one
  * dimension. There must be at least two elements, and may be more. The order of elements must follow x, y, z order
  * (or longitude, latitude, altitude for coordinates in a geographic coordinate reference system). Any number of

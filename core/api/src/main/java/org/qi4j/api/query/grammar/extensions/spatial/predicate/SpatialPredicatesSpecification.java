@@ -8,11 +8,7 @@ import org.qi4j.api.query.grammar.PropertyFunction;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.functional.Specification;
 
-/**
- * Base Spatial Predicates Specification.
- * <p/>
- * ST_Equals, ST_Disjoint, ST_Intersects, ST_Touches, ST_Crosses, ST_Within, ST_Contains, ST_Overlaps and ST_Relate
- */
+
 public abstract class SpatialPredicatesSpecification<T extends TGeometry>
         extends ExpressionSpecification
 {
