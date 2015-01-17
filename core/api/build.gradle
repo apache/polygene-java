@@ -4,8 +4,6 @@ dependencies {
 
   compile project( ':org.qi4j.core:org.qi4j.core.io' )
   compile libraries.jodatime
-  compile libraries.spatial4j
-  compile libraries.jts
 
   testCompile project( ':org.qi4j.core:org.qi4j.core.testsupport' )
   testCompile project( ':org.qi4j.libraries:org.qi4j.library.constraints' )
