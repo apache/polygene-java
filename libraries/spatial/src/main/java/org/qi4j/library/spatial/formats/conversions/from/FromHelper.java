@@ -16,21 +16,26 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.spatial.conversions.from;
+package org.qi4j.library.spatial.formats.conversions.from;
 
 import org.geojson.GeoJsonObject;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
-import org.qi4j.library.spatial.conversions.to.ToHelper;
+import org.qi4j.library.spatial.formats.conversions.to.ToHelper;
 
 
-public class FromHelper {
+public class FromHelper
+{
 
     private Module module;
 
     public FromHelper(Module module)
     {
         this.module = module;
+    }
+
+    private FromHelper()
+    {
     }
 
     public ToHelper from(TGeometry tGeometry)
@@ -53,6 +58,4 @@ public class FromHelper {
     {
         return new ToHelper(module, new WKTFromConverter(module).convert(wkt, crs));
     }
-
-    private FromHelper() {}
 }

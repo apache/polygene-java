@@ -102,7 +102,7 @@ public class ElasticSearchSpatialQueryTestUsingGeoPointIndexing
     public void script02a()
             throws EntityFinderException
     {
-        super.script02a();
+        super.script02a();  // <- no ST_Disjoint when GEOSHAPE indexing for TPoints
     }
 
     @Test (expected=QueryExecutionException.class)
@@ -110,7 +110,7 @@ public class ElasticSearchSpatialQueryTestUsingGeoPointIndexing
     public void script02b()
             throws EntityFinderException
     {
-        super.script02b();
+        super.script02b(); // <- no ST_Disjoint when GEOSHAPE indexing for TPoints
     }
 
     @Test (expected=QueryExecutionException.class)
@@ -118,7 +118,7 @@ public class ElasticSearchSpatialQueryTestUsingGeoPointIndexing
     public void script02c()
             throws EntityFinderException
     {
-        super.script02c();
+        super.script02c(); // <- no ST_Disjoint when GEOSHAPE indexing for TPoints
     }
 
     @Test (expected=QueryExecutionException.class)
@@ -126,7 +126,7 @@ public class ElasticSearchSpatialQueryTestUsingGeoPointIndexing
     public void script02d()
             throws EntityFinderException
     {
-        super.script02d();
+        super.script02d(); // <- no ST_Disjoint when GEOSHAPE indexing for TPoints
     }
 
     @Test (expected=QueryExecutionException.class)
@@ -134,7 +134,7 @@ public class ElasticSearchSpatialQueryTestUsingGeoPointIndexing
     public void script02e()
             throws EntityFinderException
     {
-        super.script02e();
+        super.script02e(); // <- no ST_Disjoint when GEOSHAPE indexing for TPoints
     }
 
     @Test (expected=QueryExecutionException.class)
@@ -142,7 +142,7 @@ public class ElasticSearchSpatialQueryTestUsingGeoPointIndexing
     public void script02f()
             throws EntityFinderException
     {
-        super.script02f();
+        super.script02f(); // <- no ST_Disjoint when GEOSHAPE indexing for TPoints
     }
 
     @Test (expected=QueryExecutionException.class)
@@ -150,7 +150,7 @@ public class ElasticSearchSpatialQueryTestUsingGeoPointIndexing
     public void script03a()
             throws EntityFinderException
     {
-        super.script03a();
+        super.script03a(); // <- no ST_Disjoint when GEOSHAPE indexing for TPoints
     }
 
 

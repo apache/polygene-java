@@ -127,10 +127,9 @@ public interface ElasticSearchIndexer
                             index( bulkBuilder, changedState.identity().identity(), updatedJson );
                             break;
                         case NEW:
-                            // LOGGER.trace( "Creating Entity State in Index: {}", changedState );
+                            LOGGER.trace( "Creating Entity State in Index: {}", changedState );
                             String newJson = toJSON(changedState, newStates, uow );
-                            // System.out.println("#Will index: {} : " + newJson);
-                            // LOGGER.trace( "Will index: {}", newJson );
+                            LOGGER.trace( "Will index: {}", newJson );
                             index( bulkBuilder, changedState.identity().identity(), newJson );
                             break;
                         case LOADED:

@@ -27,16 +27,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ConvertFinderSupport implements ElasticSearchSpatialFinder.SpatialQuerySpecSupport {
+public class ConvertFinderSupport implements ElasticSearchSpatialFinder.SpatialQuerySpecSupport
+{
 
     private static final Map<Class<?>, ConvertFinderSupport.ConvertSpecification> SPATIAL_CONVERT_OPERATIONS = new HashMap<>(2);
-    static {
+
+    static
+    {
         SPATIAL_CONVERT_OPERATIONS.put(ST_GeomFromTextSpecification.class, new ST_GeometryFromText());
     }
+
     private Module module;
     private ElasticSearchSupport support;
 
-    public ElasticSearchSpatialFinder.SpatialQuerySpecSupport support(Module module, ElasticSearchSupport support) {
+    public ElasticSearchSpatialFinder.SpatialQuerySpecSupport support(Module module, ElasticSearchSupport support)
+    {
         this.module = module;
         this.support = support;
 
@@ -46,11 +51,14 @@ public class ConvertFinderSupport implements ElasticSearchSpatialFinder.SpatialQ
     public void processSpecification(FilterBuilder filterBuilder,
                                      Specification<?> spec,
                                      Map<String, Object> variables)
-            throws EntityFinderException {
+            throws EntityFinderException
+    {
 
-        if (SPATIAL_CONVERT_OPERATIONS.get(spec.getClass()) != null) {
+        if (SPATIAL_CONVERT_OPERATIONS.get(spec.getClass()) != null)
+        {
             SPATIAL_CONVERT_OPERATIONS.get(spec.getClass()).support(module, support).processSpecification(filterBuilder, (SpatialConvertSpecification) spec, variables);
-        } else {
+        } else
+        {
             throw new UnsupportedOperationException("Spatial predicates specification unsupported by Elastic Search "
                     + "(New Query API support missing?): "
                     + spec.getClass() + ": " + spec);
@@ -59,11 +67,13 @@ public class ConvertFinderSupport implements ElasticSearchSpatialFinder.SpatialQ
 
     }
 
-    public interface Support {
+    public interface Support
+    {
         ConvertSpecification support(Module module, ElasticSearchSupport support);
     }
 
-    public static interface ConvertSpecification extends Support {
+    public static interface ConvertSpecification extends Support
+    {
         void processSpecification(FilterBuilder filterBuilder, SpatialConvertSpecification<?> spec, Map<String, Object> variables) throws EntityFinderException;
     }
 

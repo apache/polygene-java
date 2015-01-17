@@ -18,14 +18,13 @@ import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.mappings.cache.MappingsCachesTable;
 
-/**
- * Created by jj on 19.12.14.
- */
-public class AbstractBuilder {
+public class AbstractBuilder
+{
 
     protected ElasticSearchSupport support;
 
-    public String get(String field) {
+    public String get(String field)
+    {
         if (!isValid()) throw new RuntimeException("ElasticSearch Index or Type not defined");
 
         String index = support.index();
@@ -39,7 +38,8 @@ public class AbstractBuilder {
         if (response != null &&
                 response.fieldMappings(index, type, field) != null &&
                 !response.fieldMappings(index, type, field).isNull() &&
-                response.fieldMappings(index, type, field).fullName().equals(field)) {
+                response.fieldMappings(index, type, field).fullName().equals(field))
+        {
 
             return response.fieldMappings(index, type, field).sourceAsMap().toString();
         } else
@@ -47,11 +47,13 @@ public class AbstractBuilder {
     }
 
 
-    protected boolean isValid() {
+    protected boolean isValid()
+    {
         return (support != null) && (support.index() != null) && (support.entitiesType() != null) ? true : false;
     }
 
-    protected boolean put(String field, String mappingJson) {
+    protected boolean put(String field, String mappingJson)
+    {
         if (!isValid()) throw new RuntimeException("ElasticSearch Index or Type not defined");
 
         String index = support.index();
@@ -62,7 +64,8 @@ public class AbstractBuilder {
                 .setSource(mappingJson)
                 .execute().actionGet();
 
-        if (ESSpatialMappingPUTResponse.isAcknowledged()) {
+        if (ESSpatialMappingPUTResponse.isAcknowledged())
+        {
             // we are reading the mapping back from server to assure that the server-side mappings always "wins"
             MappingsCachesTable.getMappingCache(support.index(), support.entitiesType()).put(field, get(field));
             return true;

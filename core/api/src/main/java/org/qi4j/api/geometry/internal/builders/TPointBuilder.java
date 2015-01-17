@@ -18,65 +18,70 @@ import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.internal.TGeometry;
 import org.qi4j.api.structure.Module;
 
-/**
- * Created by jj on 26.11.14.
- */
-public class TPointBuilder {
+
+public class TPointBuilder
+{
 
     private Module module;
     private TPoint geometry;
 
 
-    public TPointBuilder(Module module) {
+    public TPointBuilder(Module module)
+    {
         this.module = module;
         geometry = module.newValueBuilder(TPoint.class).prototype();
     }
 
-    public TPointBuilder x(double x) {
+    public TPointBuilder x(double x)
+    {
         geometry.x(x);
         return this;
     }
 
-    public TPointBuilder y(double y) {
+    public TPointBuilder y(double y)
+    {
         geometry.y(y);
         return this;
     }
 
-    public TPointBuilder z(double u) {
+    public TPointBuilder z(double u)
+    {
         geometry.z(u);
         return this;
     }
 
 
-    public TPointBuilder lat(double lat) {
+    public TPointBuilder lat(double lat)
+    {
         geometry.y(lat);
         return this;
     }
 
-    public TPointBuilder lon(double lon) {
+    public TPointBuilder lon(double lon)
+    {
         geometry.x(lon);
         return this;
     }
 
-    public TPointBuilder alt(double alt) {
+    public TPointBuilder alt(double alt)
+    {
         geometry.z(alt);
         return this;
     }
 
 
-
-
-
     public boolean isPoint(TGeometry tGeometry)
     {
-        return tGeometry instanceof TPoint ?  true :  false;
+        return tGeometry instanceof TPoint ? true : false;
     }
 
-    public TPoint geometry() {
+    public TPoint geometry()
+    {
         return geometry;
     }
 
-    public TPoint geometry(String CRS) {
+    public TPoint geometry(String CRS)
+    {
         geometry().setCRS(CRS);
         return geometry();
     }

@@ -267,9 +267,9 @@ public abstract class AbstractSpatialRegressionTest
                         .where(
                                 ST_Within
                                         (
-                                         templateFor(A.class).point(),
-                                         TPoint(module).y(2389280.7514562616).x(1286436.5975464052).geometry("EPSG:27572"),
-                                         10,TUnit.METER
+                                                templateFor(A.class).point(),
+                                                TPoint(module).y(1286436.5975464052).x(2389280.7514562616).geometry("EPSG:27572"),
+                                                10, TUnit.METER
                                         )
                         ));
         System.out.println(query);
@@ -511,7 +511,6 @@ public abstract class AbstractSpatialRegressionTest
         query.find();
         assertEquals(1, query.count());
         TLineString tLineString = query.iterator().next().line().get();
-        System.out.println(tLineString);
     }
 
 
@@ -567,7 +566,7 @@ public abstract class AbstractSpatialRegressionTest
                         .where(
                                 ST_Within
                                         (
-                                                templateFor(A.class).nested().get().point(), // <- "nested.point" : [ 11.57958984375, 48.13905780942574 ]
+                                                templateFor(A.class).nested().get().point(), // <- "nested.point"
                                                 TPoint(module).y(48.13905780942574).x(11.57958984375).geometry(),
                                                 10,TUnit.METER
                                         )
@@ -697,13 +696,13 @@ public abstract class AbstractSpatialRegressionTest
                                         ST_Disjoint
                                                 (
                                                         templateFor(A.class).point(),
-                                                        TPoint(module).y(2389280.7514562616).x(1286436.5975464052).geometry("EPSG:27572"),
+                                                        TPoint(module).y(1286436.5975464052).x(2389280.7514562616).geometry("EPSG:27572"),
                                                         10, TUnit.METER
                                                 ),
                                         ST_Within
                                                 (
                                                         templateFor(A.class).point(),
-                                                        TPoint(module).y(2389280.7514562616).x(1286436.5975464052).geometry("EPSG:27572"),
+                                                        TPoint(module).y(1286436.5975464052).x(2389280.7514562616).geometry("EPSG:27572"),
                                                         1000,TUnit.KILOMETER
                                                 )
                                 )

@@ -25,28 +25,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixins(TMultiLineString.Mixin.class)
-public interface TMultiLineString extends GeometryCollections {
+public interface TMultiLineString extends GeometryCollections
+{
 
     TMultiLineString of(TLineString... lines);
+
     TMultiLineString of(List<TLineString> lines);
 
-    public abstract class Mixin extends GeometryCollections.Mixin implements TMultiLineString {
+    public abstract class Mixin extends GeometryCollections.Mixin implements TMultiLineString
+    {
         @Structure
         Module module;
 
         @This
         TMultiLineString self;
 
-        public TMultiLineString of(List<TLineString> lines) {
+        public TMultiLineString of(List<TLineString> lines)
+        {
             of(lines.toArray(new TLineString[lines.size()]));
             return self;
         }
-        public TMultiLineString of(TLineString... lines) {
+
+        public TMultiLineString of(TLineString... lines)
+        {
             self.geometryType().set(TGEOMETRY_TYPE.MULTILINESTRING);
             init();
             List<TGeometry> l = new ArrayList<>();
 
-            for (TLineString p : lines) {
+            for (TLineString p : lines)
+            {
                 l.add(p);
             }
             if (self.isEmpty())

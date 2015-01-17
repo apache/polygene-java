@@ -25,28 +25,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixins(TMultiPolygon.Mixin.class)
-public interface TMultiPolygon extends GeometryCollections {
+public interface TMultiPolygon extends GeometryCollections
+{
 
     TMultiPolygon of(TPolygon... polygons);
+
     TMultiPolygon of(List<TPolygon> polygons);
 
-    public abstract class Mixin extends GeometryCollections.Mixin implements TMultiPolygon {
+    public abstract class Mixin extends GeometryCollections.Mixin implements TMultiPolygon
+    {
         @Structure
         Module module;
 
         @This
         TMultiPolygon self;
 
-        public TMultiPolygon of(List<TPolygon> polygons) {
+        public TMultiPolygon of(List<TPolygon> polygons)
+        {
             of(polygons.toArray(new TPolygon[polygons.size()]));
             return self;
         }
-        public TMultiPolygon of(TPolygon... polygons) {
-            self.geometryType().set(TGEOMETRY_TYPE.MULTIPOLYGON);
+
+        public TMultiPolygon of(TPolygon... polygons)
+        {
             init();
+            self.geometryType().set(TGEOMETRY_TYPE.MULTIPOLYGON);
             List<TGeometry> l = new ArrayList<>();
 
-            for (TPolygon p : polygons) {
+            for (TPolygon p : polygons)
+            {
                 l.add(p);
             }
             if (self.isEmpty())

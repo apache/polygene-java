@@ -8,14 +8,12 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.value.ValueBuilder;
-
-import java.util.List;
 
 @Mixins(TCircle.Mixin.class)
-    public interface TCircle extends TGeometry
+public interface TCircle extends TGeometry
 {
     Property<TPoint> point();
+
     Property<Double> radius();
 
     TCircle of(TPoint point, double radius);
@@ -25,8 +23,8 @@ import java.util.List;
 
     TCircle yx(double y, double x);
     TCircle yx(double y, double x, double radius);
-    TCircle radius(double r);
 
+    TCircle radius(double r);
     TPoint getCentre();
     TPolygon polygonize(int numOfPoints);
 
@@ -93,8 +91,6 @@ import java.util.List;
             double centreX = self.getCentre().x();
             double centreY = self.getCentre().y();
 
-           // ValueBuilder<TPoint> pB = module.newValueBuilder(TPoint.class);
-
             TPoint[] pts = new TPoint[numOfPoints + 1];
             int pt = 0;
             for (int i = 0; i < numOfPoints; i++)
@@ -106,17 +102,14 @@ import java.util.List;
             }
 
             pts[pt++] = module.newValueBuilder(TPoint.class).prototype().of(pts[0].getCoordinates());
-
-            TLinearRing tLinearRing = (TLinearRing)module.newValueBuilder(TLinearRing.class).prototype().of(pts);
-           // System.out.println(tLinearRing);
+            TLinearRing tLinearRing = (TLinearRing) module.newValueBuilder(TLinearRing.class).prototype().of(pts);
 
             if (tLinearRing.isValid())
             {
                 TPolygon tPolygon = module.newValueBuilder(TPolygon.class).prototype().of(tLinearRing);
                 tPolygon.setCRS(self.getCRS());
                 return module.newValueBuilder(TPolygon.class).prototype().of(tLinearRing);
-            }
-            else
+            } else
                 return null;
         }
     }

@@ -14,37 +14,35 @@
 
 package org.qi4j.api.geometry;
 
-import org.qi4j.api.geometry.internal.TGeometryRoot;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.value.ValueComposite;
 
 @Mixins(TCRS.Mixin.class)
-public interface TCRS extends TGeometryRoot {
-
-
+public interface TCRS extends ValueComposite
+{
     Property<String> definition();
-
     TCRS of(String crs);
-
     String crs();
 
-
-    public abstract class Mixin implements TCRS {
+    public abstract class Mixin implements TCRS
+    {
         @Structure
         Module module;
-
         @This
         TCRS self;
 
-        public TCRS of(String crs) {
+        public TCRS of(String crs)
+        {
             self.definition().set(crs);
             return self;
         }
 
-        public String crs() {
+        public String crs()
+        {
             return self.definition().get();
         }
     }

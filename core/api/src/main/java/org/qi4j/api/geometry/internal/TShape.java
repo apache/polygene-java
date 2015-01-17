@@ -14,5 +14,7 @@
 
 package org.qi4j.api.geometry.internal;
 
-public interface TShape extends TGeometry {
+public interface TShape extends TGeometry
+{
+    // marking interface
 }

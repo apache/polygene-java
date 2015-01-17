@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.qi4j.library.spatial.projection;
+package org.qi4j.library.spatial.projections;
 
 import org.cts.CRSFactory;
 import org.cts.crs.CRSException;
@@ -26,12 +26,13 @@ import org.cts.registry.*;
 import java.util.Set;
 
 
-public class ProjectionsRegistry {
+public class ProjectionsRegistry
+{
 
     protected static CRSFactory cRSFactory = new CRSFactory();
 
-
-    static {
+    static
+    {
         RegistryManager registryManager = cRSFactory.getRegistryManager();
         registryManager.addRegistry(new IGNFRegistry());
         registryManager.addRegistry(new EPSGRegistry());
@@ -48,26 +49,29 @@ public class ProjectionsRegistry {
     }
 
     // EPSG, IGNF, ESRI
-    public Set<String> getSupportedRegistryCodes(String registryName) throws RegistryException {
+    public Set<String> getSupportedRegistryCodes(String registryName) throws RegistryException
+    {
         return cRSFactory.getRegistryManager().getRegistry(registryName).getSupportedCodes();
     }
 
-    public String[] dumpRegistries() {
+    public String[] dumpRegistries()
+    {
         return cRSFactory.getRegistryManager().getRegistryNames();
     }
 
-    public CoordinateReferenceSystem getCRS(String wkt)  {
-        try {
-            return cRSFactory.getCRS(wkt);
-        } catch(CRSException _ex)
+    public CoordinateReferenceSystem getCRS(String wkt)
+    {
+        try
         {
-            _ex.printStackTrace();
-            return null;
+            return cRSFactory.getCRS(wkt);
+        } catch (CRSException _ex)
+        {
+            throw new RuntimeException(_ex);
         }
     }
 
 
-        public CoordinateReferenceSystem getReferenceSystem(String csName) throws CRSException
+    public CoordinateReferenceSystem getReferenceSystem(String csName) throws CRSException
     {
         return cRSFactory.getCRS(csName);
     }

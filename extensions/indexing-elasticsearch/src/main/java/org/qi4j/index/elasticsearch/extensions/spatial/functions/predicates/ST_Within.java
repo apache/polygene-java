@@ -31,13 +31,15 @@ import org.qi4j.spi.query.EntityFinderException;
 import java.util.Map;
 
 
-public class ST_Within extends AbstractElasticSearchSpatialFunction implements PredicateFinderSupport.PredicateSpecification {
+public class ST_Within extends AbstractElasticSearchSpatialFunction implements PredicateFinderSupport.PredicateSpecification
+{
 
 
     public void processSpecification(FilterBuilder filterBuilder,
                                      SpatialPredicatesSpecification<?> spec,
                                      Map<String, Object> variables)
-            throws EntityFinderException {
+            throws EntityFinderException
+    {
         TGeometry geomOfFilterProperty = resolveGeometry(filterBuilder, spec, module);
 
         if (!isValid(spec))
@@ -63,7 +65,8 @@ public class ST_Within extends AbstractElasticSearchSpatialFunction implements P
                 isTPoint(geomOfFilterProperty) &&
                         isMappedAsGeoPoint(spec.property()) &&
                         ((ST_WithinSpecification) spec).getDistance() > 0
-                ) {
+                )
+        {
             addFilter(createGeoDistanceFilter
                             (
                                     spec.property().toString(),
@@ -82,11 +85,14 @@ public class ST_Within extends AbstractElasticSearchSpatialFunction implements P
          * ST_Within (templafeFor(x.class).propertyOfTypeTPoint(), polygon);
          *
          */
-        else if (isPropertyOfType(TPoint.class, spec.property())) {
+        else if (isPropertyOfType(TPoint.class, spec.property()))
+        {
 
-            if (isMappedAsGeoPoint(spec.property())) {
+            if (isMappedAsGeoPoint(spec.property()))
+            {
 
-                if (geomOfFilterProperty instanceof TPolygon) {
+                if (geomOfFilterProperty instanceof TPolygon)
+                {
                     /**
                      * This must not happen, but in case the expression is defined using WTK like :
                      *
@@ -105,7 +111,8 @@ public class ST_Within extends AbstractElasticSearchSpatialFunction implements P
 
                     GeoPolygonFilterBuilder geoPolygonFilterBuilder = FilterBuilders.geoPolygonFilter(spec.property().toString());
 
-                    for (int i = 0; i < polygonFilter.shell().get().getNumPoints(); i++) {
+                    for (int i = 0; i < polygonFilter.shell().get().getNumPoints(); i++)
+                    {
                         TPoint point = polygonFilter.shell().get().getPointN(i);
                         geoPolygonFilterBuilder.addPoint(point.y(), point.x());
                     }
@@ -114,23 +121,27 @@ public class ST_Within extends AbstractElasticSearchSpatialFunction implements P
                     throw new EntityFinderException("Invalid ST_Within expression. Unsupported type " + geomOfFilterProperty.getClass().getSimpleName() +
                             " On properties of type " + TPoint.class.getSimpleName() +
                             " only filters of type distance or polygon are supported.");
-            } else if (isMappedAsGeoShape(spec.property())) {
-                if (geomOfFilterProperty instanceof TPolygon) {
+            } else if (isMappedAsGeoShape(spec.property()))
+            {
+                if (geomOfFilterProperty instanceof TPolygon)
+                {
                     addFilter(createShapeFilter(spec.property().toString(), geomOfFilterProperty, ShapeRelation.WITHIN), filterBuilder);
-                } else if (((ST_WithinSpecification) spec).getDistance() > 0) {
+                } else if (((ST_WithinSpecification) spec).getDistance() > 0)
+                {
                     double radiusInMeters = convertDistanceToMeters(((ST_WithinSpecification) spec).getDistance(), ((ST_WithinSpecification) spec).getUnit());
                     TPolygon polygonizedCircleFilter = polygonizeCircle((TPoint) verifyProjection(geomOfFilterProperty), radiusInMeters);
                     addFilter(createShapeFilter(spec.property().toString(), polygonizedCircleFilter, ShapeRelation.WITHIN), filterBuilder);
                 }
             }
-        } else {
-
+        } else
+        {
             addFilter(createShapeFilter(spec.property().toString(), geomOfFilterProperty, ShapeRelation.WITHIN), filterBuilder);
         }
     }
 
 
-    public PredicateFinderSupport.PredicateSpecification support(Module module, ElasticSearchSupport support) {
+    public PredicateFinderSupport.PredicateSpecification support(Module module, ElasticSearchSupport support)
+    {
         this.module = module;
         this.support = support;
 

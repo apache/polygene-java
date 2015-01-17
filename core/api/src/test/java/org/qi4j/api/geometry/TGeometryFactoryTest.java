@@ -17,7 +17,6 @@ package org.qi4j.api.geometry;
 import org.junit.Test;
 import org.qi4j.api.geometry.internal.Coordinate;
 import org.qi4j.api.geometry.internal.TGeometry;
-import org.qi4j.api.geometry.internal.TGeometryRoot;
 import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -25,9 +24,11 @@ import org.qi4j.test.AbstractQi4jTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
+import static org.qi4j.api.geometry.TGeometryFactory.*;
 import static org.qi4j.api.geometry.TGeometryFactory.TFeature;
 import static org.qi4j.api.geometry.TGeometryFactory.TFeatureCollection;
-import static org.qi4j.api.geometry.TGeometryFactory.*;
+import static org.qi4j.api.geometry.TGeometryFactory.TLineString;
+import static org.qi4j.api.geometry.TGeometryFactory.TMultiLineString;
 import static org.qi4j.api.geometry.TGeometryFactory.TMultiPoint;
 import static org.qi4j.api.geometry.TGeometryFactory.TMultiPolygon;
 import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
@@ -35,7 +36,8 @@ import static org.qi4j.api.geometry.TGeometryFactory.TPolygon;
 
 
 public class TGeometryFactoryTest
-        extends AbstractQi4jTest {
+        extends AbstractQi4jTest
+{
 
     private final double ZERO = 0d;
     private final String CRS_EPSG_27572 = "EPSG:27572";
@@ -48,15 +50,15 @@ public class TGeometryFactoryTest
         module.values(Coordinate.class, TLinearRing.class, TGeometry.class);
         // API values
         module.values(
-                                TCRS.class,
-                                TPoint.class,
-                                TMultiPoint.class,
-                                TLineString.class,
-                                TMultiLineString.class,
-                                TPolygon.class,
-                                TMultiPolygon.class,
-                                TFeature.class,
-                                TFeatureCollection.class);
+                TCRS.class,
+                TPoint.class,
+                TMultiPoint.class,
+                TLineString.class,
+                TMultiLineString.class,
+                TPolygon.class,
+                TMultiPolygon.class,
+                TFeature.class,
+                TFeatureCollection.class);
 
         TGeometry tGeometry = module.forMixin(TGeometry.class).declareDefaults();
         tGeometry.CRS().set(CRS_EPSG_27572);
@@ -100,8 +102,8 @@ public class TGeometryFactoryTest
                 }).geometry();
 
         assertTrue(multiPoint.getNumGeometries() == 2);
-        assertEquals(multiPoint.getType(), TGeometryRoot.TGEOMETRY_TYPE.MULTIPOINT);
-        assertEquals(multiPoint.getGeometryN(0).getType(), TGeometryRoot.TGEOMETRY_TYPE.POINT);
+        assertEquals(multiPoint.getType(), TGeometry.TGEOMETRY_TYPE.MULTIPOINT);
+        assertEquals(multiPoint.getGeometryN(0).getType(), TGeometry.TGEOMETRY_TYPE.POINT);
         assertTrue(multiPoint.getCoordinates().length == 2);
         assertThat(multiPoint.getCRS(), equalTo(CRS_EPSG_27572));
 
@@ -133,11 +135,11 @@ public class TGeometryFactoryTest
 
         TLineString line = TLineString(module).points(new double[][]
                 {
-                                                {0, 0},
-                                                {1, 0},
-                                                {1, 1},
-                                                {0, 1},
-                                                {0, 1}
+                        {0, 0},
+                        {1, 0},
+                        {1, 1},
+                        {0, 1},
+                        {0, 1}
 
                 }).geometry();
 
@@ -171,17 +173,17 @@ public class TGeometryFactoryTest
     }
 
 
-        @Test
+    @Test
     public void script06()
     {
 
         TLinearRing ring = TLinearRing(module).ring(new double[][]
                 {
-                                                {0, 0},
-                                                {1, 0},
-                                                {1, 1},
-                                                {0, 1},
-                                                {0, 0}
+                        {0, 0},
+                        {1, 0},
+                        {1, 1},
+                        {0, 1},
+                        {0, 0}
                 }).geometry();
 
         assertThat(ring.getCRS(), equalTo(CRS_EPSG_27572));
@@ -275,32 +277,32 @@ public class TGeometryFactoryTest
                         (
                                 new double[][]
                                         {
-                                                    {0, 0},
-                                                    {3, 0},
-                                                    {1, 3},
-                                                    {0, 3},
-                                                    {0, 0}
+                                                {0, 0},
+                                                {3, 0},
+                                                {1, 3},
+                                                {0, 3},
+                                                {0, 0}
                                         }
                         )
                 .withHoles(
 
                         TLinearRing(module).ring(new double[][]
                                 {
-                                                    {0, 0},
-                                                    {1, 0},
-                                                    {1, 1},
-                                                    {0, 1},
-                                                    {0, 0}
+                                        {0, 0},
+                                        {1, 0},
+                                        {1, 1},
+                                        {0, 1},
+                                        {0, 0}
 
                                 }).geometry()
 
                         , TLinearRing(module).ring(new double[][]
                                 {
-                                                    {0, 0},
-                                                    {2, 0},
-                                                    {2, 2},
-                                                    {0, 2},
-                                                    {0, 0}
+                                        {0, 0},
+                                        {2, 0},
+                                        {2, 2},
+                                        {0, 2},
+                                        {0, 0}
 
                                 }).geometry()
                 )
@@ -313,7 +315,8 @@ public class TGeometryFactoryTest
 
 
     @Test
-    public void script12() {
+    public void script12()
+    {
 
         TPolygon polygon1 = TPolygon(module)
 
@@ -321,11 +324,11 @@ public class TGeometryFactoryTest
                         (
                                 new double[][]
                                         {
-                                                    {0, 0},
-                                                    {4, 0},
-                                                    {0, 4},
-                                                    {0, 4},
-                                                    {0, 0}
+                                                {0, 0},
+                                                {4, 0},
+                                                {0, 4},
+                                                {0, 4},
+                                                {0, 0}
                                         }
 
 
@@ -334,21 +337,21 @@ public class TGeometryFactoryTest
 
                         TLinearRing(module).ring(new double[][]
                                 {
-                                                    {0, 0},
-                                                    {1, 0},
-                                                    {1, 1},
-                                                    {0, 1},
-                                                    {0, 0}
+                                        {0, 0},
+                                        {1, 0},
+                                        {1, 1},
+                                        {0, 1},
+                                        {0, 0}
 
                                 }).geometry()
 
                         , TLinearRing(module).ring(new double[][]
                                 {
-                                                    {0, 0},
-                                                    {2, 0},
-                                                    {2, 2},
-                                                    {0, 2},
-                                                    {0, 0}
+                                        {0, 0},
+                                        {2, 0},
+                                        {2, 2},
+                                        {0, 2},
+                                        {0, 0}
 
                                 }).geometry()
 
@@ -362,11 +365,11 @@ public class TGeometryFactoryTest
                         (
                                 new double[][]
                                         {
-                                                    {0, 0},
-                                                    {3, 0},
-                                                    {1, 3},
-                                                    {0, 3},
-                                                    {0, 0}
+                                                {0, 0},
+                                                {3, 0},
+                                                {1, 3},
+                                                {0, 3},
+                                                {0, 0}
                                         }
 
 
@@ -375,21 +378,21 @@ public class TGeometryFactoryTest
 
                         TLinearRing(module).ring(new double[][]
                                 {
-                                                    {0, 0},
-                                                    {1, 0},
-                                                    {1, 1},
-                                                    {0, 1},
-                                                    {0, 0}
+                                        {0, 0},
+                                        {1, 0},
+                                        {1, 1},
+                                        {0, 1},
+                                        {0, 0}
 
                                 }).geometry()
 
                         , TLinearRing(module).ring(new double[][]
                                 {
-                                                    {0, 0},
-                                                    {2, 0},
-                                                    {2, 2},
-                                                    {0, 2},
-                                                    {0, 0}
+                                        {0, 0},
+                                        {2, 0},
+                                        {2, 2},
+                                        {0, 2},
+                                        {0, 0}
 
                                 }).geometry()
 
@@ -404,10 +407,11 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void script13() {
+    public void script13()
+    {
 
         TFeature featureOfAPoint = TFeature(module).of(TPoint(module).x(1d).y(2d).z(3d).geometry()).geometry();
-        assertEquals(featureOfAPoint.getType(), TGeometryRoot.TGEOMETRY_TYPE.FEATURE);
+        assertEquals(featureOfAPoint.getType(), TGeometry.TGEOMETRY_TYPE.FEATURE);
         assertFalse(featureOfAPoint.isEmpty());
         assertEquals(featureOfAPoint.getNumPoints(), 1);
         assertThat(featureOfAPoint.getCRS(), equalTo(CRS_EPSG_27572));
@@ -415,7 +419,8 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void script14() {
+    public void script14()
+    {
 
         TFeature featureOfAPolygon = TFeature(module).of(
 
@@ -441,7 +446,8 @@ public class TGeometryFactoryTest
     }
 
     @Test
-    public void script15() {
+    public void script15()
+    {
         TFeature featureOfAPolygon = TFeature(module).of(
 
                 TPolygon(module)

@@ -21,36 +21,43 @@ import org.qi4j.api.structure.Module;
 /**
  * Created by jj on 26.11.14.
  */
-public class TMultiPointBuilder {
+public class TMultiPointBuilder
+{
 
     private Module module;
     private TMultiPoint geometry;
 
 
-    public TMultiPointBuilder(Module module) {
+    public TMultiPointBuilder(Module module)
+    {
         this.module = module;
         geometry = module.newValueBuilder(TMultiPoint.class).prototype();
     }
 
     // Format { lat, lon }
-    public TMultiPointBuilder points(double[][] points) {
-        for (double yx[] : points) {
+    public TMultiPointBuilder points(double[][] points)
+    {
+        for (double yx[] : points)
+        {
             if (yx.length < 2) return null;
             geometry.yx(yx[0], yx[1]);
         }
         return this;
     }
 
-    public TMultiPointBuilder of(TPoint... points) {
+    public TMultiPointBuilder of(TPoint... points)
+    {
         geometry().of(points);
         return this;
     }
 
-    public TMultiPoint geometry() {
+    public TMultiPoint geometry()
+    {
         return geometry;
     }
 
-    public TMultiPoint geometry(String CRS) {
+    public TMultiPoint geometry(String CRS)
+    {
         geometry().setCRS(CRS);
         return geometry();
     }

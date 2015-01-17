@@ -24,22 +24,28 @@ import org.slf4j.LoggerFactory;
 import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
 import static org.qi4j.index.elasticsearch.extensions.spatial.mappings.builders.SpatialMappingFactory.*;
 
-public class SpatialIndexMapper {
+public class SpatialIndexMapper
+{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpatialIndexMapper.class);
 
 
-    public static void createIfNotExist(ElasticSearchSupport support, TGeometry geometry, String property) {
-        if (!MappingsCachesTable.getMappingCache(support).exists(property)) {
+    public static void createIfNotExist(ElasticSearchSupport support, TGeometry geometry, String property)
+    {
+        if (!MappingsCachesTable.getMappingCache(support).exists(property))
+        {
             String mappingsOnServer = MappingQuery(support).get(property);
-            System.out.println("Found " + mappingsOnServer);
 
-            if (mappingsOnServer != null) {
+            if (mappingsOnServer != null)
+            {
                 // TODO JJ check mappings : configuration versus server-side settings
                 MappingsCachesTable.getMappingCache(support).put(property, mappingsOnServer);
-            } else {
-                if (TPoint(support.getModule()).isPoint(geometry)) {
-                    switch (SpatialConfiguration.getMethod(support.spatialConfiguration())) {
+            } else
+            {
+                if (TPoint(support.getModule()).isPoint(geometry))
+                {
+                    switch (SpatialConfiguration.getMethod(support.spatialConfiguration()))
+                    {
                         case GEO_POINT:
                             GeoPointMapping(support).create(property);
                             break;
@@ -49,7 +55,8 @@ public class SpatialIndexMapper {
                         default:
                             throw new RuntimeException("Unknown Point Maping Type.");
                     }
-                } else {
+                } else
+                {
                     GeoShapeMapping(support).create(property);
                 }
             }
@@ -64,23 +71,27 @@ public class SpatialIndexMapper {
 
     {
 
-        public static boolean isMappedAsGeoShape(String index, String type, String property) {
+        public static boolean isMappedAsGeoShape(String index, String type, String property)
+        {
             if (!MappingsCachesTable.getMappingCache(index, type).exists(property)) // <- No mappings yet, as no data in the index ?
                 return false;
             return MappingsCachesTable.getMappingCache(index, type).get(property).toString().indexOf("type=geo_shape") > -1 ? true : false;
         }
 
-        public static boolean isMappedAsGeoPoint(String index, String type, String property) {
+        public static boolean isMappedAsGeoPoint(String index, String type, String property)
+        {
             if (!MappingsCachesTable.getMappingCache(index, type).exists(property)) // <- No mappings yet, as no data in the index ?
                 return false;
             return MappingsCachesTable.getMappingCache(index, type).get(property).toString().indexOf("type=geo_point") > -1 ? true : false;
         }
 
-        public static boolean mappingExists(String index, String type, String property) {
+        public static boolean mappingExists(String index, String type, String property)
+        {
             return MappingsCachesTable.getMappingCache(index, type).exists(property);
         }
 
-        public static void clear() {
+        public static void clear()
+        {
             MappingsCachesTable.clear();
         }
 

@@ -10,11 +10,11 @@ import org.qi4j.functional.Specification;
 
 /**
  * Base Spatial Predicates Specification.
- *
+ * <p/>
  * ST_Equals, ST_Disjoint, ST_Intersects, ST_Touches, ST_Crosses, ST_Within, ST_Contains, ST_Overlaps and ST_Relate
  */
 public abstract class SpatialPredicatesSpecification<T extends TGeometry>
-    extends ExpressionSpecification
+        extends ExpressionSpecification
 {
     protected final PropertyFunction<T> property;
     protected final TGeometry param;
@@ -31,7 +31,7 @@ public abstract class SpatialPredicatesSpecification<T extends TGeometry>
     {
         this.property = property;
         this.operator = operator;
-        this.param    = null;
+        this.param = null;
     }
 
     public PropertyFunction<T> property()
@@ -40,32 +40,31 @@ public abstract class SpatialPredicatesSpecification<T extends TGeometry>
     }
 
     @Override
-    public final boolean satisfiedBy( Composite item )
+    public final boolean satisfiedBy(Composite item)
     {
         try
         {
-            Property<T> prop = property.map( item );
+            Property<T> prop = property.map(item);
 
-            if( prop == null )
+            if (prop == null)
             {
                 return false;
             }
 
             TGeometry propValue = prop.get();
-            if( propValue == null )
+            if (propValue == null)
             {
                 return false;
             }
 
-            return compare( propValue );
-        }
-        catch( IllegalArgumentException e )
+            return compare(propValue);
+        } catch (IllegalArgumentException e)
         {
             return false;
         }
     }
 
-    protected abstract boolean compare( TGeometry value );
+    protected abstract boolean compare(TGeometry value);
 
     public TGeometry param()
     {

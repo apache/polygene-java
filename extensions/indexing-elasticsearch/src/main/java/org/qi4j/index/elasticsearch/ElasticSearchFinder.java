@@ -152,9 +152,6 @@ public interface ElasticSearchFinder
             // Log
             LOGGER.debug( "Will search Entities: {}", request );
 
-            System.out.println("Request " + request.toString());
-
-
             // Execute
             SearchResponse response = request.execute().actionGet();
 
@@ -186,8 +183,6 @@ public interface ElasticSearchFinder
 
             // Log
             LOGGER.debug( "Will search Entity: {}", request );
-
-            System.out.println("request " + request.toString());
 
             // Execute
             SearchResponse response = request.execute().actionGet();

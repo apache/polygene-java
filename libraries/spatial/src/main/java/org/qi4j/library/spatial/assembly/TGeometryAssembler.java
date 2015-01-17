@@ -28,17 +28,17 @@ import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.spatial.projection.ProjectionsRegistry;
+import org.qi4j.library.spatial.projections.ProjectionsRegistry;
 
 public class TGeometryAssembler
         extends Assemblers.VisibilityIdentity<TGeometryAssembler>
 {
-    private static final String CRS_EPSG_4326   = "EPSG:4326";
-    private static String DEFAULT_CRS           = CRS_EPSG_4326;
+    private static final String CRS_EPSG_4326 = "EPSG:4326";
+    private static String DEFAULT_CRS = CRS_EPSG_4326;
 
 
     @Override
-    public void assemble( ModuleAssembly module )
+    public void assemble(ModuleAssembly module)
             throws AssemblyException
     {
         // internal values
@@ -69,7 +69,7 @@ public class TGeometryAssembler
                 throw new AssemblyException("Projection CRS " + crs + " invalid.");
             }
 
-        } catch(CRSException _ex)
+        } catch (CRSException _ex)
         {
             throw new AssemblyException("Projection CRS " + crs + " invalid.", _ex);
         }

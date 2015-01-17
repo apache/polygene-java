@@ -25,22 +25,28 @@ import java.lang.reflect.Type;
 /**
  * Ugly - not proud on this... How to make it better ?
  */
-public class InternalUtils {
+public class InternalUtils
+{
 
-    public static Class classOfPropertyType(PropertyFunction propertyFunction) {
+    public static Class classOfPropertyType(PropertyFunction propertyFunction)
+    {
         Type typeOfProperty = GenericPropertyInfo.toPropertyType(Classes.typeOf(propertyFunction.accessor()));
         Class classOfProperty = null;
-        try {
+        try
+        {
             classOfProperty = Class.forName(typeOfProperty.getTypeName());
-        } catch (Exception _ex) {
+        } catch (Exception _ex)
+        {
             // must not happen
             // TODO, logger
-        } finally {
+        } finally
+        {
             return classOfProperty;
         }
     }
 
-    public static Class<? extends TGeometry> classOfGeometry(TGeometry geometry) {
+    public static Class<? extends TGeometry> classOfGeometry(TGeometry geometry)
+    {
         if (geometry instanceof TPoint) return TPoint.class;
         if (geometry instanceof TMultiPoint) return TMultiPoint.class;
         if (geometry instanceof TLineString) return TLineString.class;
