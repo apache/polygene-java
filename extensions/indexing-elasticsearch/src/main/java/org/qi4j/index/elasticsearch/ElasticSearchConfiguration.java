@@ -17,10 +17,12 @@
  */
 package org.qi4j.index.elasticsearch;
 
+import org.qi4j.api.association.Association;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
+import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 
 // START SNIPPET: config
 public interface ElasticSearchConfiguration
@@ -45,6 +47,11 @@ public interface ElasticSearchConfiguration
      * Defaults to 'FALSE'.
      */
     @UseDefaults Property<Boolean> indexNonAggregatedAssociations();
+
+
+    @Optional
+    Property<SpatialConfiguration.Configuration> spatial();
+
 
 }
 // END SNIPPET: config

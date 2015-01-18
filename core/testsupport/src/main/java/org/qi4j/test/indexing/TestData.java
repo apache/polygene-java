@@ -21,7 +21,6 @@ package org.qi4j.test.indexing;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -47,6 +46,7 @@ import org.qi4j.test.indexing.model.entities.FemaleEntity;
 import org.qi4j.test.indexing.model.entities.MaleEntity;
 
 import static org.joda.time.DateTimeZone.UTC;
+import static org.qi4j.api.geometry.TGeometryFactory.TPoint;
 
 /**
  * Utility class to populate Index/Query tests data.
@@ -149,9 +149,9 @@ class TestData
                 annDoe = femaleBuilder.instance();
                 annDoe.name().set( "Ann Doe" );
                 annDoe.title().set( Person.Title.MRS );
-                annDoe.placeOfBirth().set( kualaLumpur );
                 annDoe.yearOfBirth().set( 1975 );
                 annDoe.interests().add( 0, cooking );
+                annDoe.favoritePlaces().put("kualaLumpur", kualaLumpur);
                 annDoe.password().set( "passwordOfAnnDoe" );
                 annDoe.mainAccount().set( annsAccount );
                 annDoe.accounts().put( "anns", annsAccount );
@@ -168,6 +168,7 @@ class TestData
                 joeDoe.title().set( Person.Title.MR );
                 joeDoe.placeOfBirth().set( kualaLumpur );
                 joeDoe.yearOfBirth().set( 1990 );
+                joeDoe.placeOfBirth().set( kualaLumpur );
                 joeDoe.mother().set( annDoe );
                 joeDoe.interests().add( 0, programming );
                 joeDoe.interests().add( 0, gaming );

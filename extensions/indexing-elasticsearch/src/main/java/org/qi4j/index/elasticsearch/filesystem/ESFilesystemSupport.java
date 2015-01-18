@@ -17,7 +17,6 @@
  */
 package org.qi4j.index.elasticsearch.filesystem;
 
-import java.io.File;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
@@ -27,8 +26,11 @@ import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
+import org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper;
 import org.qi4j.index.elasticsearch.internal.AbstractElasticSearchSupport;
 import org.qi4j.library.fileconfig.FileConfiguration;
+
+import java.io.File;
 
 public class ESFilesystemSupport
         extends AbstractElasticSearchSupport
@@ -56,6 +58,8 @@ public class ESFilesystemSupport
         index = config.index().get() == null ? DEFAULT_INDEX_NAME : config.index().get();
         indexNonAggregatedAssociations = config.indexNonAggregatedAssociations().get();
 
+        defaultSpatialConfiguration(config);
+
         String identity = hasIdentity.identity().get();
         Settings settings = ImmutableSettings.settingsBuilder().
                 put( "path.work", new File( fileConfig.temporaryDirectory(), identity ).getAbsolutePath() ).
@@ -81,6 +85,7 @@ public class ESFilesystemSupport
     public void passivateElasticSearch()
             throws Exception
     {
+        SpatialIndexMapper.IndexMappingCache.clear();
         node.close();
         node = null;
     }

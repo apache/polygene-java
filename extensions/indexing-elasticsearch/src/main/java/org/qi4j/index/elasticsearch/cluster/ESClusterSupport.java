@@ -24,6 +24,8 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.qi4j.api.configuration.Configuration;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.index.elasticsearch.ElasticSearchClusterConfiguration;
+import org.qi4j.index.elasticsearch.ElasticSearchConfiguration;
+import org.qi4j.index.elasticsearch.extensions.spatial.mappings.SpatialIndexMapper;
 import org.qi4j.index.elasticsearch.internal.AbstractElasticSearchSupport;
 
 public class ESClusterSupport
@@ -44,9 +46,12 @@ public class ESClusterSupport
         index = config.index().get() == null ? DEFAULT_INDEX_NAME : config.index().get();
         indexNonAggregatedAssociations = config.indexNonAggregatedAssociations().get();
 
+        defaultSpatialConfiguration(config);
+
+
         String[] nodes = config.nodes().get() == null ? new String[]{ "localhost:9300" } : config.nodes().get().split( "," );
         boolean clusterSniff = config.clusterSniff().get();
-        boolean ignoreClusterName = config.ignoreClusterName().get();
+        boolean ignoreClusterName = true; // config.ignoreClusterName().get();
         String pingTimeout = config.pingTimeout().get() == null ? "5s" : config.pingTimeout().get();
         String samplerInterval = config.samplerInterval().get() == null ? "5s" : config.samplerInterval().get();
 
@@ -66,6 +71,13 @@ public class ESClusterSupport
         }
 
         client = transportClient;
+    }
+
+    @Override
+    public void passivateElasticSearch()
+            throws Exception
+    {
+        SpatialIndexMapper.IndexMappingCache.clear();
     }
 
 }

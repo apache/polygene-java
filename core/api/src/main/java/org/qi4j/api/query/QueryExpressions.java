@@ -72,7 +72,7 @@ import static org.qi4j.functional.Iterables.prepend;
 /**
  * Static factory methods for query expressions and operators.
  */
-public final class QueryExpressions
+public class QueryExpressions
 {
     // This is used for eq(Association,Composite)
     private static final Method IDENTITY_METHOD;
@@ -938,7 +938,7 @@ public final class QueryExpressions
         return array;
     }
 
-    private QueryExpressions()
+    protected QueryExpressions()
     {
     }
 }

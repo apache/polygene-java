@@ -17,6 +17,10 @@
  */
 package org.qi4j.test.indexing;
 
+import org.qi4j.api.geometry.*;
+import org.qi4j.api.geometry.internal.Coordinate;
+import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -44,6 +48,9 @@ public class AbstractAnyQueryTest
 {
     protected UnitOfWork unitOfWork;
 
+    private final String CRS_EPSG_4326 = "EPSG:4326";
+
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -61,6 +68,16 @@ public class AbstractAnyQueryTest
                        Port.class,
                        File.class,
                        QueryParam.class );
+
+        // JJ TODO - There is a better way to enable the Geometry types ?
+
+        // internal values
+        module.values(Coordinate.class, TLinearRing.class, TGeometry.class);
+
+        // API values
+        module.values(TPoint.class, TMultiPoint.class, TLineString.class, TPolygon.class, TMultiPolygon.class, TFeature.class, TFeatureCollection.class);
+        TGeometry tGeometry = module.forMixin(TGeometry.class).declareDefaults();
+        tGeometry.CRS().set(CRS_EPSG_4326);
 
         new EntityTestAssembler().assemble( module );
     }

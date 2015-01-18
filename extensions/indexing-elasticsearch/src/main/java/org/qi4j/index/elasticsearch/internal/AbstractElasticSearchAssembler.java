@@ -22,8 +22,11 @@ import org.qi4j.bootstrap.Assemblers;
 public abstract class AbstractElasticSearchAssembler<AssemblerType>
     extends Assemblers.VisibilityIdentityConfig<AssemblerType>
 {
+
+    public static final String DEFAULT_ENTITYINDEX_IDENTITY = "es-indexing";
+
     public AbstractElasticSearchAssembler()
     {
-        identifiedBy( "es-indexing" );
+        identifiedBy( hasIdentity() ? identity() : DEFAULT_ENTITYINDEX_IDENTITY );
     }
 }

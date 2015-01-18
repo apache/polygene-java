@@ -66,6 +66,8 @@ import static org.qi4j.api.query.QueryExpressions.oneOf;
 import static org.qi4j.api.query.QueryExpressions.or;
 import static org.qi4j.api.query.QueryExpressions.orderBy;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
+import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_GeometryFromText;
+import static org.qi4j.api.query.grammar.extensions.spatial.SpatialQueryExpressions.ST_Within;
 import static org.qi4j.test.indexing.NameableAssert.verifyOrderedResults;
 import static org.qi4j.test.indexing.NameableAssert.verifyUnorderedResults;
 
@@ -820,14 +822,13 @@ public abstract class AbstractQueryTest
     }
 
     @Test
-    public void script52_BigDecimal()
-    {
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
-        Person person = templateFor( Person.class );
-        Query<Person> query = unitOfWork.newQuery( qb.where(
-            ge( person.bigDecimal(), new BigDecimal( "2342.76931348623157e+307" ) ) ) );
-        System.out.println( "*** script52_BigDecimal: " + query );
+    public void script52_BigDecimal() {
+        QueryBuilder<Person> qb = this.module.newQueryBuilder(Person.class);
+        Person person = templateFor(Person.class);
+        Query<Person> query = unitOfWork.newQuery(qb.where(
+                ge(person.bigDecimal(), new BigDecimal("2342.76931348623157e+307"))));
+        System.out.println("*** script52_BigDecimal: " + query);
 
-        verifyUnorderedResults( query, "Jack Doe", "Joe Doe" );
+        verifyUnorderedResults(query, "Jack Doe", "Joe Doe");
     }
 }

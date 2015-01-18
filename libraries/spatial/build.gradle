@@ -1,0 +1,14 @@
+description = "Qi4j Spatial Library contains various spatial related services and tools."
+
+jar { manifest { name = "Qi4j Library - Spatial" } }
+
+dependencies {
+    compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+    compile libraries.geojackson
+    compile libraries.ctsVersion
+
+    testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+    testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+    testRuntime(libraries.logback)
+}

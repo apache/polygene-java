@@ -6,7 +6,11 @@ dependencies {
 
   compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
   compile project(":org.qi4j.libraries:org.qi4j.library.fileconfig")
+  compile project(":org.qi4j.libraries:org.qi4j.library.spatial")
+  compile project(":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson")
+
   compile libraries.elasticsearch
+  compile libraries.guava
 
   testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
 
@@ -14,4 +18,3 @@ dependencies {
   testRuntime libraries.logback
 
 }
-

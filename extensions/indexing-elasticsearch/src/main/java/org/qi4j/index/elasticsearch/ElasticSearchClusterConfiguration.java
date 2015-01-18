@@ -58,5 +58,6 @@ public interface ElasticSearchClusterConfiguration
      */
     @Optional Property<String> samplerInterval();
 
+
 }
 // END SNIPPET: config

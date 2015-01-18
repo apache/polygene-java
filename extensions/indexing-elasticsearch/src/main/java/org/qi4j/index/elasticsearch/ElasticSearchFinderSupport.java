@@ -18,14 +18,17 @@
 package org.qi4j.index.elasticsearch;
 
 import java.util.Map;
+
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
-import org.qi4j.api.query.grammar.ComparisonSpecification;
-import org.qi4j.api.query.grammar.ContainsAllSpecification;
-import org.qi4j.api.query.grammar.ContainsSpecification;
-import org.qi4j.api.query.grammar.Variable;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.query.grammar.*;
+import org.qi4j.api.structure.Module;
+import org.qi4j.functional.Specification;
+import org.qi4j.spi.query.EntityFinderException;
 
 
-/* package */ final class ElasticSearchFinderSupport
+public final class ElasticSearchFinderSupport
 {
 
     /* package */ static Object resolveVariable( Object value, Map<String, Object> variables )
@@ -47,8 +50,9 @@ import org.qi4j.api.query.grammar.Variable;
         return value;
     }
 
-    /* package */ static interface ComplexTypeSupport
+    public static interface ComplexTypeSupport
     {
+        ComplexTypeSupport support(Module module, ElasticSearchSupport support);
 
         FilterBuilder comparison( ComparisonSpecification<?> spec, Map<String, Object> variables );
 
@@ -56,6 +60,7 @@ import org.qi4j.api.query.grammar.Variable;
 
         FilterBuilder containsAll( ContainsAllSpecification<?> spec, Map<String, Object> variables );
 
+        void orderBy(SearchRequestBuilder request,  Specification<Composite> whereClause, OrderBy orderBySegment, Map<String, Object> variables ) throws EntityFinderException;
     }
 
     private ElasticSearchFinderSupport()

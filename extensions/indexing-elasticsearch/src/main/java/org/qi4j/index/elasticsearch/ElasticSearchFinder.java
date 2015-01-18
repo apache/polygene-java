@@ -17,66 +17,54 @@
  */
 package org.qi4j.index.elasticsearch;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.geo.GeoDistance;
 import org.elasticsearch.index.query.AndFilterBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.OrFilterBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.GeoDistanceSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.geometry.*;
+import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.internal.TLinearRing;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.query.grammar.AndSpecification;
-import org.qi4j.api.query.grammar.AssociationNotNullSpecification;
-import org.qi4j.api.query.grammar.AssociationNullSpecification;
-import org.qi4j.api.query.grammar.BinarySpecification;
-import org.qi4j.api.query.grammar.ComparisonSpecification;
-import org.qi4j.api.query.grammar.ContainsAllSpecification;
-import org.qi4j.api.query.grammar.ContainsSpecification;
-import org.qi4j.api.query.grammar.EqSpecification;
-import org.qi4j.api.query.grammar.GeSpecification;
-import org.qi4j.api.query.grammar.GtSpecification;
-import org.qi4j.api.query.grammar.LeSpecification;
-import org.qi4j.api.query.grammar.LtSpecification;
-import org.qi4j.api.query.grammar.ManyAssociationContainsSpecification;
-import org.qi4j.api.query.grammar.MatchesSpecification;
-import org.qi4j.api.query.grammar.NamedAssociationContainsNameSpecification;
-import org.qi4j.api.query.grammar.NamedAssociationContainsSpecification;
-import org.qi4j.api.query.grammar.NeSpecification;
-import org.qi4j.api.query.grammar.NotSpecification;
-import org.qi4j.api.query.grammar.OrSpecification;
-import org.qi4j.api.query.grammar.OrderBy;
-import org.qi4j.api.query.grammar.PropertyNotNullSpecification;
-import org.qi4j.api.query.grammar.PropertyNullSpecification;
-import org.qi4j.api.query.grammar.QuerySpecification;
+import org.qi4j.api.property.GenericPropertyInfo;
+import org.qi4j.api.query.grammar.*;
+import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
+import org.qi4j.api.query.grammar.extensions.spatial.predicate.SpatialPredicatesSpecification;
+import org.qi4j.api.structure.Module;
+import org.qi4j.api.util.Classes;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
-import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
+import org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.*;
+import org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinder;
+import org.qi4j.index.elasticsearch.extensions.spatial.functions.convert.ConvertFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.functions.predicates.PredicateFinderSupport;
+import org.qi4j.index.elasticsearch.extensions.spatial.internal.InternalUtils;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.elasticsearch.index.query.FilterBuilders.andFilter;
-import static org.elasticsearch.index.query.FilterBuilders.existsFilter;
-import static org.elasticsearch.index.query.FilterBuilders.missingFilter;
-import static org.elasticsearch.index.query.FilterBuilders.notFilter;
-import static org.elasticsearch.index.query.FilterBuilders.rangeFilter;
-import static org.elasticsearch.index.query.FilterBuilders.regexpFilter;
-import static org.elasticsearch.index.query.FilterBuilders.termFilter;
-import static org.elasticsearch.index.query.QueryBuilders.filteredQuery;
-import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
-import static org.elasticsearch.index.query.QueryBuilders.wrapperQuery;
-import static org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.resolveVariable;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.elasticsearch.index.query.FilterBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.qi4j.index.elasticsearch.ElasticSearchFinderSupport.*;
+import static org.qi4j.index.elasticsearch.extensions.spatial.ElasticSearchSpatialFinder.*;
 
 @Mixins( ElasticSearchFinder.Mixin.class )
 public interface ElasticSearchFinder
@@ -86,10 +74,39 @@ public interface ElasticSearchFinder
         implements EntityFinder
     {
         private static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchFinder.class );
-        private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 0 );
+
+        private static final Map<Class<?>, ComplexTypeSupport> COMPLEX_TYPE_SUPPORTS = new HashMap<>( 9 );
+        public static final Map<Class<?>, SpatialQuerySpecSupport> EXTENDED_SPEC_SUPPORTS = new HashMap<>( 2 );
+
+        // Spec Support
+        static
+        {
+            SpatialQuerySpecSupport spatialSpecSupport = new SpatialSpecSupport();
+            EXTENDED_SPEC_SUPPORTS.put(SpatialPredicatesSpecification.class, spatialSpecSupport);
+            EXTENDED_SPEC_SUPPORTS.put(SpatialConvertSpecification.class, spatialSpecSupport);
+        }
+        // Type Support
+        static
+        {
+            ComplexTypeSupport spatialTypeSupport = new ElasticSearchSpatialFinder.SpatialTypeSupport();
+            COMPLEX_TYPE_SUPPORTS.put( TGeometry.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TPoint.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TMultiPoint.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TLineString.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TLinearRing.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TPolygon.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TMultiPolygon.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TFeature.class, spatialTypeSupport );
+            COMPLEX_TYPE_SUPPORTS.put( TFeatureCollection.class, spatialTypeSupport );
+        }
+
+
 
         @This
         private ElasticSearchSupport support;
+
+        @Structure
+        private Module module;
 
         @Override
         public Iterable<EntityReference> findEntities( Class<?> resultType,
@@ -120,11 +137,16 @@ public interface ElasticSearchFinder
             }
             if( orderBySegments != null )
             {
-                for( OrderBy order : orderBySegments )
-                {
-                    request.addSort( order.property().toString(),
-                                     order.order() == OrderBy.Order.ASCENDING ? SortOrder.ASC : SortOrder.DESC );
+                for( OrderBy orderBySegment : orderBySegments ) {
+
+                    if (COMPLEX_TYPE_SUPPORTS.get(InternalUtils.classOfPropertyType(orderBySegment.property())) != null) {
+                        COMPLEX_TYPE_SUPPORTS.get(InternalUtils.classOfPropertyType(orderBySegment.property())).support(module, support).orderBy(request, whereClause, orderBySegment, variables);
+                    } else {
+                        request.addSort(orderBySegment.property().toString(),
+                                orderBySegment.order() == OrderBy.Order.ASCENDING ? SortOrder.ASC : SortOrder.DESC);
+                    }
                 }
+
             }
 
             // Log
@@ -293,6 +315,16 @@ public interface ElasticSearchFinder
                 NamedAssociationContainsNameSpecification<?> namedAssContNameSpec = (NamedAssociationContainsNameSpecification) spec;
                 processNamedAssociationContainsNameSpecification( filterBuilder, namedAssContNameSpec, variables );
 
+            }
+            else if( spec instanceof SpatialPredicatesSpecification )
+            {
+                SpatialPredicatesSpecification<?> spatialPredicatesSpec = (SpatialPredicatesSpecification)spec;
+                processSpatialPredicatesSpecification(filterBuilder, spatialPredicatesSpec, variables );
+            }
+            else if( spec instanceof SpatialConvertSpecification )
+            {
+                SpatialConvertSpecification<?> spatialConvertSpec = (SpatialConvertSpecification)spec;
+                processSpatialConvertSpecification(filterBuilder, spatialConvertSpec, variables);
             }
             else
             {
@@ -539,6 +571,24 @@ public interface ElasticSearchFinder
             String name = spec.namedAssociation().toString() + "._named";
             Object value = resolveVariable( spec.name(), variables );
             addFilter( termFilter( name, value ), filterBuilder );
+        }
+
+        private void processSpatialPredicatesSpecification( FilterBuilder filterBuilder,
+                                                            SpatialPredicatesSpecification<?> spec,
+                                                            Map<String, Object> variables )
+                throws EntityFinderException
+        {
+            LOGGER.trace("Processing SpatialPredicatesSpecification {}", spec);
+            EXTENDED_SPEC_SUPPORTS.get( spec.getClass().getSuperclass() ).support(module, support).processSpecification(filterBuilder, spec, variables);
+        }
+
+        private void processSpatialConvertSpecification( FilterBuilder filterBuilder,
+                                                         SpatialConvertSpecification<?> spec,
+                                                         Map<String, Object> variables )
+                throws EntityFinderException
+        {
+            LOGGER.trace("Processing SpatialConvertSpecification {}", spec);
+            EXTENDED_SPEC_SUPPORTS.get( spec.getClass().getSuperclass() ).support(module, support).processSpecification(filterBuilder, spec, variables);
         }
     }
 

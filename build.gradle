@@ -49,11 +49,11 @@ idea.project.ipr {
 // Needed as Gradle forbid access to declared repositories URLs by design
 // Releasable submodules should not declare repositories in their own build files
 def repos_urls = [
-  mavenCentral: "http://repo1.maven.org/maven2/",
-  ops4j: "http://repository.ops4j.org/maven2/",
-  restlet: 'http://maven.restlet.org',
-  javanet: "http://download.java.net/maven/2",
-  clojars: "http://clojars.org/repo/",
+        mavenCentral: "http://repo1.maven.org/maven2/",
+        ops4j: "http://repository.ops4j.org/maven2/",
+        restlet: 'http://maven.restlet.org',
+        javanet: "http://download.java.net/maven/2",
+        clojars: "http://clojars.org/repo/",
 ]
 
 allprojects {
@@ -71,7 +71,7 @@ allprojects {
 
   group = name.substring( 0, name.lastIndexOf( '.' ) )
   version = System.properties.version ?: "0"
-  
+
   // UTF-8 For all compilations and javadocs
   // Deprecation warnings for all compilations
   // Unchecked warnings for non-test core compilations
@@ -81,7 +81,7 @@ allprojects {
   }
   if("core".equals(group)) {
     tasks.matching({ task -> task instanceof Compile && !task.name.contains('test') }).
-        each({ task -> task.options.compilerArgs << "-Xlint:unchecked" })
+            each({ task -> task.options.compilerArgs << "-Xlint:unchecked" })
   }
   tasks.withType(Javadoc) {
     options.encoding = 'UTF-8'
@@ -148,11 +148,11 @@ allprojects {
 
   test.onlyIf { !project.hasProperty( 'skipTests' ) }
   test {
-      testLogging {
-          info {
-              exceptionFormat "full"
-          }
+    testLogging {
+      info {
+        exceptionFormat "full"
       }
+    }
   }
 
   sourceSets {
@@ -173,7 +173,7 @@ allprojects {
 
   // Actual code projects BEGIN -------------------------------------------
   if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() ||
-      ext.testJavaDir.isDirectory() || ext.testScalaDir.isDirectory() )
+          ext.testJavaDir.isDirectory() || ext.testScalaDir.isDirectory() )
   {
     apply plugin: 'jacoco'
     apply plugin: 'osgi'
@@ -272,7 +272,7 @@ allprojects {
     // Dependency Report generate only the runtime configuration
     // The report is packaged in the SDK distributions
     dependencyReport {
-        configurations = [ project.configurations.runtime ]
+      configurations = [ project.configurations.runtime ]
     }
 
     task minBuild {
@@ -408,9 +408,9 @@ task javadocs( type: Javadoc ) {
   title = "${rootProject.title} ${version}"
   def apiSources = releaseApprovedProjects.findAll( { project ->
     ( project.name.startsWith( 'org.qi4j.core' ) && !project.name.startsWith( 'org.qi4j.core.runtime' ) ) ||
-    project.name.startsWith( 'org.qi4j.library' ) ||
-    project.name.startsWith( 'org.qi4j.extension' ) ||
-    project.name.startsWith( 'org.qi4j.tool' )
+            project.name.startsWith( 'org.qi4j.library' ) ||
+            project.name.startsWith( 'org.qi4j.extension' ) ||
+            project.name.startsWith( 'org.qi4j.tool' )
   } )
   source apiSources.collect { project ->
     project.sourceSets.main.allJava
@@ -422,13 +422,13 @@ task javadocs( type: Javadoc ) {
   } )
   options.links( "http://docs.oracle.com/javase/7/docs/api/" )
   options.group( [ "Core API": [ "org.qi4j.api", "org.qi4j.api.*", "org.qi4j.io", "org.qi4j.functional" ],
-                         "Core Bootstrap": [ "org.qi4j.bootstrap", "org.qi4j.bootstrap.*" ],
-                         "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
-                         "Libraries": [ "org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.lang.*" ],
-                         "Extensions": [ "org.qi4j.valueserialization.*", "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
-                         "Tools": [ "org.qi4j.tools.*", "org.qi4j.envisage", "org.qi4j.envisage.*", "org.qi4j.library.swing.entityviewer" ],
-                         "Test Support": [ "org.qi4j.test", "org.qi4j.test.*" ]
-                 ] )
+                   "Core Bootstrap": [ "org.qi4j.bootstrap", "org.qi4j.bootstrap.*" ],
+                   "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
+                   "Libraries": [ "org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.lang.*" ],
+                   "Extensions": [ "org.qi4j.valueserialization.*", "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
+                   "Tools": [ "org.qi4j.tools.*", "org.qi4j.envisage", "org.qi4j.envisage.*", "org.qi4j.library.swing.entityviewer" ],
+                   "Test Support": [ "org.qi4j.test", "org.qi4j.test.*" ]
+  ] )
 
 }
 
@@ -449,36 +449,36 @@ task archiveJavadocs(type: Copy ) {
 
 // Build All
 task buildAll( dependsOn: [
-    archiveJavadocs,
-    test,
-    jar,
-    subprojects*.dependencyReport,
-    subprojects*.assemble,
-    ':org.qi4j.manual:website'
+        archiveJavadocs,
+        test,
+        jar,
+        subprojects*.dependencyReport,
+        subprojects*.assemble,
+        ':org.qi4j.manual:website'
 ] ) { }
 
 // Prepare runtime dependencies download facility (metalink)
 buildAll.doLast {
-    def runtimeDepsMetalink = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">\n"
-    runtimeDepsMetalink = runtimeDepsMetalink + " <identity>qi4j-sdk-runtime-deps</identity>\n"
-    runtimeDepsMetalink = runtimeDepsMetalink + " <version>${version}</version>\n"
-    def handledGavPaths = []
-    releaseApprovedProjects.each { p ->
-      p.configurations.runtime.allDependencies.each { dep ->
-        def gavpath = dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar"
-        if( !dep.group.startsWith("org.qi4j") && !handledGavPaths.contains( gavpath ) ) {
-          runtimeDepsMetalink = runtimeDepsMetalink + "  <file name=\"${dep.group}-${dep.name}-${dep.version}.jar\">\n"
-          repos_urls.each { repo_url ->
-            runtimeDepsMetalink = runtimeDepsMetalink + "    <url>" + repo_url.value + dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar" + "</url>\n"
-          }
-          runtimeDepsMetalink = runtimeDepsMetalink + "  </file>\n\n"
-          handledGavPaths << gavpath
+  def runtimeDepsMetalink = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">\n"
+  runtimeDepsMetalink = runtimeDepsMetalink + " <identity>qi4j-sdk-runtime-deps</identity>\n"
+  runtimeDepsMetalink = runtimeDepsMetalink + " <version>${version}</version>\n"
+  def handledGavPaths = []
+  releaseApprovedProjects.each { p ->
+    p.configurations.runtime.allDependencies.each { dep ->
+      def gavpath = dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar"
+      if( !dep.group.startsWith("org.qi4j") && !handledGavPaths.contains( gavpath ) ) {
+        runtimeDepsMetalink = runtimeDepsMetalink + "  <file name=\"${dep.group}-${dep.name}-${dep.version}.jar\">\n"
+        repos_urls.each { repo_url ->
+          runtimeDepsMetalink = runtimeDepsMetalink + "    <url>" + repo_url.value + dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar" + "</url>\n"
         }
+        runtimeDepsMetalink = runtimeDepsMetalink + "  </file>\n\n"
+        handledGavPaths << gavpath
       }
     }
-    runtimeDepsMetalink = runtimeDepsMetalink + "</metalink>\n"
-    new File( buildDir.toString(), "reports" ).mkdirs()
-    new File( buildDir.toString(), "reports/qi4j-sdk-runtime-deps.metalink" ).text = runtimeDepsMetalink
+  }
+  runtimeDepsMetalink = runtimeDepsMetalink + "</metalink>\n"
+  new File( buildDir.toString(), "reports" ).mkdirs()
+  new File( buildDir.toString(), "reports/qi4j-sdk-runtime-deps.metalink" ).text = runtimeDepsMetalink
 }
 
 def srcDistImage = copySpec {
@@ -608,7 +608,7 @@ task checkReleaseSpec {
     def notReleasable = [:]
     releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({ it instanceof ProjectDependency }).each { dep ->
       def depNotReleaseApproved = releaseApprovedProjects.findAll { rp ->
-        rp.group == dep.dependencyProject.group && rp.name == dep.dependencyProject.name 
+        rp.group == dep.dependencyProject.group && rp.name == dep.dependencyProject.name
       }.isEmpty()
       if( depNotReleaseApproved )
       {
