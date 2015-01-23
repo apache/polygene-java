@@ -44,4 +44,5 @@ and aborting the UnitOfWork is handled by the transaction boundary, often in the
 <<core-api-layer>>)
 
 Since it is very common to have all, or nearly all, methods in the _transaction boundary_ to handle the creation and
-completion, possibly with retry, in the same class, module or even layer, Qi4j provides
+completion, possibly with retry, in the same class, module or even layer, Qi4j provides annotations to easily declare
+UnitOfWork concern: @UnitOfWorkPropagation, @UnitOfWorkDiscardOn and @UnitOfWorkRetry
