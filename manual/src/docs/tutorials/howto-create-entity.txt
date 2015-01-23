@@ -230,3 +230,4 @@ sitting on top. That could be a web application creating and completing a UoW pe
 doing long-running UnitOfWorks.
 
 There are of course a lot more details to get all this completed, but that is beyond the scope of this HowTo.
+See <<core-api-unitofwork>> in Core API.
