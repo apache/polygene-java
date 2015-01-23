@@ -151,11 +151,11 @@ source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactor
 tag=carFactoryMixin1
 -----------
 
-And doing that, first of all we need to request Qi4j runtime to give us the UnitOfWorkFactory associated with the Module
+And doing that, first of all we need to request Qi4j runtime to give us the Module
 that our code belongs to, and the UnitOfWork current context the execution is happening in.
 
 Injections that are related to the Visibility rules are handled by the @Structure annotation. And the easiest way for us
-to obtain a UnitOfWorkFactory is simply to;
+to obtain a Module is simply to;
 
 [snippet,java]
 -----------
@@ -163,7 +163,7 @@ source=manual/src/main/java/org/qi4j/manual/recipes/createEntity/CarEntityFactor
 tag=carFactoryMixin2
 -----------
 
-Here Qi4j will inject the member uowf with the correct UnitOfWorkFactory. In case we only need the UnitOfWorkFactory
+Here Qi4j will inject the member module with the correct Module. In case we only need the Module
 during the construction, we can also request it in the same manner as constructor argument.
 
 [snippet,java]
@@ -222,7 +222,7 @@ tag=assembler2
 
 == The UnitOfWork ==
 
-If you notice, there is a couple of calls to UnitOfWorkFactory.currentUnitOfWork(), but what is current UnitOfWork, and
+If you notice, there is a couple of calls to Module.currentUnitOfWork(), but what is current UnitOfWork, and
 who is setting that up?
 
 Well, the domain layer should not worry about UoW, it is probably the responsibility of the application/service layer
