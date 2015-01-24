@@ -30,7 +30,7 @@ import org.qi4j.library.scripting.ScriptReloadable;
 /**
  * Generic mixin that implements interfaces by delegating to JavaScript functions
  * using Rhino. Each method in an interface is declared as a JS function
- * in a file located in classpath with the name "<interface>.<method>.js",
+ * in a file located in classpath with the name "&lt;interface&gt;.&lt;method&gt;.js",
  * where the interface name includes the package, and has "." replaced with "/".
  * <p>
  * Example:

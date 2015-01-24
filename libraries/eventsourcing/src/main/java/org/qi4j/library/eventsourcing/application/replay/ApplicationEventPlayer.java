@@ -28,10 +28,9 @@ public interface ApplicationEventPlayer
      * be the original object, but could also be a service that wants
      * to be invoked to handle the event.
      *
-     * @param applicationEvent
-     * @param object
-     * @throws ApplicationEventReplayException
-     *
+     * @param applicationEvent Application event
+     * @param object target
+     * @throws ApplicationEventReplayException if unable to play event
      */
     public void playEvent( ApplicationEvent applicationEvent, Object object )
             throws ApplicationEventReplayException;

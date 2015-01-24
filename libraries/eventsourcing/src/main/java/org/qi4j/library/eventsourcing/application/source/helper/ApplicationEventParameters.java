@@ -51,7 +51,6 @@ public class ApplicationEventParameters
      * @param event event with parameters
      * @param idx   index of parameter
      * @return the parameter with the given index or null
-     * @throws org.json.JSONException
      */
     public static String getParameter( ApplicationEvent event, int idx )
     {

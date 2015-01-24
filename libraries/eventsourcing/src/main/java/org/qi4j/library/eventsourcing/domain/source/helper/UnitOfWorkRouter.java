@@ -26,7 +26,7 @@ import org.qi4j.io.Sender;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 
 /**
- * UnitOfWork handling router. Add specification->receiver routes. When a UnitOfWorkEDomainEventsValue comes in
+ * UnitOfWork handling router. Add specification-&gt;receiver routes. When a UnitOfWorkEDomainEventsValue comes in
  * the router will ask each specification if it matches, and if so, delegate to the
  * receiver. If no routes match, delegate to the default receiver.
  */

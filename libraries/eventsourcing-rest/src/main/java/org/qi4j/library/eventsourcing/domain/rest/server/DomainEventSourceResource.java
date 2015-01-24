@@ -53,7 +53,7 @@ import static org.qi4j.functional.Iterables.iterable;
  * / = current set of most recent events (event range: count-pagesize to count)
  * /n,m = events from index n to index m. These are archive pages.
  * /n = working set page, where n is the first event index to be presented
- * </code></pre>>
+ * </code></pre>
  */
 public class DomainEventSourceResource
         extends Restlet

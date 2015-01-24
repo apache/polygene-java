@@ -40,7 +40,7 @@ import org.qi4j.io.Outputs;
 /**
  * Generic mixin that implements interfaces by delegating to Groovy functions
  * using Groovy. Each method in an interface is declared by a Groovy method
- * in a file located in classpath with the name "<interface>.groovy",
+ * in a file located in classpath with the name "&lt;interface&gt;.groovy",
  * where the interface name includes the package, and has "." replaced with "/".
  * <p>
  * Example:

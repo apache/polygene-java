@@ -32,7 +32,7 @@ public class SpringImporter
      *
      * @param serviceDescriptor The service descriptor.
      * @return a service instance
-     * @throws ServiceImporterException
+     * @throws ServiceImporterException if unable to import the service
      */
     @Override
     public Object importService( ImportedServiceDescriptor serviceDescriptor ) throws ServiceImporterException

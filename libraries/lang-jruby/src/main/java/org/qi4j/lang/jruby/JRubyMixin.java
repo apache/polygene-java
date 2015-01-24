@@ -39,7 +39,7 @@ import org.qi4j.library.scripting.ScriptReloadable;
 /**
  * Generic mixin that implements interfaces by delegating to Ruby functions
  * using JRuby. Each method in an interface is declared by a Ruby method
- * in a file located in classpath with the name "<interface>.rb",
+ * in a file located in classpath with the name "&lt;interface&gt;.rb",
  * where the interface name includes the package, and has "." replaced with "/".
  * <p>
  * Example:

@@ -52,7 +52,6 @@ public class EventParameters
      * @param eventValue eventValue with parameters
      * @param idx   index of parameter
      * @return the parameter with the given index or null
-     * @throws JSONException
      */
     public static String getParameter( DomainEventValue eventValue, int idx )
     {

@@ -34,6 +34,7 @@ public interface EventSource
      *
      * @param offset where in the list of events to start
      * @param limit maximum number of events returned
+     * @return list of UnitOfWorkDomainEventsValue after the given offset
      */
     Input<UnitOfWorkDomainEventsValue, IOException> events( long offset, long limit );
 
