@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  *
  * 1. Data Parser in {@link ParseHandlingEventData}
  * 2. Event Registrar in {@link RegisterHandlingEvent}
- * 3. Delivery Inspector in {@link com.marcgrue.dcisample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus}
+ * 3. Delivery Inspector in {@link org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus}
  *
  * For now we simply (synchronously) invoke each subfunction use case with a method call. But
  * we could also implement this asynchronously with JMS or other similar solutions and have

@@ -33,32 +33,31 @@ import org.springframework.context.ApplicationContextAware;
  * <li>Assemble qi4j application by implementing #assemble method.</li>
  * <li>Sets the identity of bean factory service. This identity is the spring
  * bean name.</li>
- * <li>Declare qi4j bootstrap in spring xml application context. </li>
- * 
+ * <li>Declare qi4j bootstrap in spring xml application context.
  * <pre><code>
- * &lt?xml version="1.0" encoding="UTF-8"?&gt
+ * &lt;?xml version="1.0" encoding="UTF-8"?&gt;
  *
  * &lt;beans xmlns="http://www.springframework.org/schema/beans"
  * xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  * xmlns:qi4j="http://www.qi4j.org/schema/qi4j/spring"
  * xsi:schemaLocation="
  * http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
- * http://www.qi4j.org/schema/qi4j/spring http://www.qi4j.org/schema/qi4j/spring/spring-0.5.xsd"&gt
+ * http://www.qi4j.org/schema/qi4j/spring http://www.qi4j.org/schema/qi4j/spring/spring-0.5.xsd"&gt;
  *
- * &lt!-- class that implements Qi4jApplicationBootstrap --&gt
+ * &lt;!-- class that implements Qi4jApplicationBootstrap --&gt;
  *
- * &lt;qi4j:bootstrap class="org.qi4j.library.spring.bootstrap.Qi4jTestBootstrap"/&gt
+ * &lt;qi4j:bootstrap class="org.qi4j.library.spring.bootstrap.Qi4jTestBootstrap"/&gt;
  *
- * &lt;bean id="commentServiceHolder" class="org.qi4j.library.spring.bootstrap.CommentServiceHolder"&gt
+ * &lt;bean id="commentServiceHolder" class="org.qi4j.library.spring.bootstrap.CommentServiceHolder"&gt;
  *
- * &lt;constructor-arg ref="commentService"/&gt &lt;!-- Reference qi4j comment service --&gt
+ * &lt;constructor-arg ref="commentService"/&gt; &lt;!-- Reference qi4j comment service --&gt;
  *
  * &lt;/bean&gt;
  * </code></pre>
  * </li>
  * </ul>
  * <p>
- * <b>Importing Spring beans as services</b><br/>
+ * <b>Importing Spring beans as services</b><br>
  * </p>
  * <ol>
  * <li>Application bootstrap class must implement interface

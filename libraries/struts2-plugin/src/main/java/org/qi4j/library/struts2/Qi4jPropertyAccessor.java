@@ -42,7 +42,7 @@ import static org.qi4j.library.struts2.ConstraintViolationInterceptor.CONTEXT_CO
  *
  * <p>NOTE: We can't do this as a regular converter because Qi4j composites doesn't (nor should it be) following the
  * JavaBean standard.  We might be able to only override the getProperty() method here and have regular converters for
- * Property, Association and SetAssociation but I haven't tried that yet so it may not work as expected.</>
+ * Property, Association and SetAssociation but I haven't tried that yet so it may not work as expected.</p>
  *
  * <p>TODO: Doesn't yet handle ManyAssociations, but these shouldn't be too hard to add</p>
  */
