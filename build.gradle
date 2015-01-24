@@ -258,6 +258,9 @@ allprojects {
         }
       }
     }
+    jacoco {
+      toolVersion = '0.7.2.201409121644'
+    }
 
 //    // Create checkstyle report
 //    task checkstyleReport( type: Xslt, dependsOn: check ) {
@@ -343,7 +346,7 @@ configurations {
   jacoco
 }
 dependencies {
-  jacoco 'org.jacoco:org.jacoco.ant:0.7.1.201405082137'
+  jacoco 'org.jacoco:org.jacoco.ant:0.7.2.201409121644'
 }
 // Generate a global code codeverage report
 task coverageReport {
