@@ -22,6 +22,9 @@ import org.qi4j.api.composite.ConstructorDescriptor;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
+/**
+ * Constructor Detail Descriptor.
+ */
 public final class ConstructorDetailDescriptor
 {
     private final ConstructorDescriptor descriptor;

@@ -24,6 +24,7 @@ import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.TransientDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ValueDetailDescriptor;
 
 import static org.qi4j.functional.Iterables.first;
@@ -86,8 +87,7 @@ class ServiceConfigurationFinder
                 break;
             }
 
-            // findInTransients
-            obj = findInTypes( descriptor.composites(), configType );
+            obj = findInTypes( descriptor.transients(), configType );
             if( obj != null )
             {
                 configDescriptor = obj;
@@ -135,6 +135,10 @@ class ServiceConfigurationFinder
             else if( obj instanceof ObjectDetailDescriptor )
             {
                 descriptor = ( (ObjectDetailDescriptor) obj ).descriptor();
+            }
+            else if( obj instanceof TransientDetailDescriptor )
+            {
+                descriptor = ( (TransientDetailDescriptor) obj ).descriptor();
             }
             else
             {

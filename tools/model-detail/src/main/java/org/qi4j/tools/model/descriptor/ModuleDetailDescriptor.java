@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
- * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2014-2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -21,11 +21,18 @@ package org.qi4j.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import org.qi4j.api.structure.ModuleDescriptor;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
+/**
+ * Module Detail Descriptor.
+ * <p>
+ * Visitable hierarchy with Activators and Composites children.
+ */
 public final class ModuleDetailDescriptor
-    implements ActivateeDetailDescriptor
+    implements ActivateeDetailDescriptor, VisitableHierarchy<Object, Object>
 {
     private final ModuleDescriptor descriptor;
     private LayerDetailDescriptor layer;
@@ -33,7 +40,7 @@ public final class ModuleDetailDescriptor
     private final List<ServiceDetailDescriptor> services = new LinkedList<>();
     private final List<ImportedServiceDetailDescriptor> importedServices = new LinkedList<>();
     private final List<EntityDetailDescriptor> entities = new LinkedList<>();
-    private final List<CompositeDetailDescriptor> composites = new LinkedList<>();
+    private final List<TransientDetailDescriptor> transients = new LinkedList<>();
     private final List<ValueDetailDescriptor> values = new LinkedList<>();
     private final List<ObjectDetailDescriptor> objects = new LinkedList<>();
 
@@ -91,11 +98,11 @@ public final class ModuleDetailDescriptor
     }
 
     /**
-     * @return Composites of this {@code ModuleDetailDescriptor}. Never return {@code null}.
+     * @return Transients of this {@code ModuleDetailDescriptor}. Never return {@code null}.
      */
-    public final Iterable<CompositeDetailDescriptor> composites()
+    public final Iterable<TransientDetailDescriptor> transients()
     {
-        return composites;
+        return transients;
     }
 
     /**
@@ -156,11 +163,11 @@ public final class ModuleDetailDescriptor
         values.add( descriptor );
     }
 
-    final void addComposite( CompositeDetailDescriptor descriptor )
+    final void addTransient( TransientDetailDescriptor descriptor )
     {
-        validateNotNull( "CompositeDetailDescriptor", descriptor );
+        validateNotNull( "TransientDetailDescriptor", descriptor );
         descriptor.setModule( this );
-        composites.add( descriptor );
+        transients.add( descriptor );
     }
 
     final void addObject( ObjectDetailDescriptor descriptor )
@@ -171,9 +178,67 @@ public final class ModuleDetailDescriptor
     }
 
     @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
+    {
+        if( visitor.visitEnter( this ) )
+        {
+            for( ActivatorDetailDescriptor activator : activators )
+            {
+                if( !activator.accept( visitor ) )
+                {
+                    break;
+                }
+            }
+            for( ServiceDetailDescriptor service : services )
+            {
+                if( !service.accept( visitor ) )
+                {
+                    break;
+                }
+            }
+            for( ImportedServiceDetailDescriptor importedService : importedServices )
+            {
+                if( !importedService.accept( visitor ) )
+                {
+                    break;
+                }
+            }
+            for( EntityDetailDescriptor entity : entities )
+            {
+                if( !entity.accept( visitor ) )
+                {
+                    break;
+                }
+            }
+            for( ValueDetailDescriptor value : values )
+            {
+                if( !value.accept( visitor ) )
+                {
+                    break;
+                }
+            }
+            for( TransientDetailDescriptor composite : transients )
+            {
+                if( !composite.accept( visitor ) )
+                {
+                    break;
+                }
+            }
+            for( ObjectDetailDescriptor object : objects )
+            {
+                if( !object.accept( visitor ) )
+                {
+                    break;
+                }
+            }
+        }
+        return visitor.visitLeave( this );
+    }
+
+    @Override
     public final String toString()
     {
         return descriptor.name();
     }
-
 }

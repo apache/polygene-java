@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
+ * Copyright (c) 2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -20,11 +21,16 @@ package org.qi4j.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import org.qi4j.api.object.ObjectDescriptor;
+import org.qi4j.functional.Visitable;
+import org.qi4j.functional.Visitor;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
+/**
+ * Object Detail Descriptor.
+ */
 public final class ObjectDetailDescriptor
-    implements InjectableDetailDescriptor
+    implements InjectableDetailDescriptor, Visitable<ObjectDetailDescriptor>
 {
     private final ObjectDescriptor descriptor;
     private ModuleDetailDescriptor module;
@@ -106,6 +112,13 @@ public final class ObjectDetailDescriptor
         validateNotNull( "InjectedFieldDetailDescriptor", descriptor );
         descriptor.setObject( this );
         injectedFields.add( descriptor );
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super ObjectDetailDescriptor, ThrowableType> visitor )
+        throws ThrowableType
+    {
+        return visitor.visit( this );
     }
 
     @Override

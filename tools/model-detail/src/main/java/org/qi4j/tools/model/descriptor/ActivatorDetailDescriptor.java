@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2014-2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -20,6 +20,8 @@ package org.qi4j.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import org.qi4j.api.activation.ActivatorDescriptor;
+import org.qi4j.functional.Visitable;
+import org.qi4j.functional.Visitor;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
@@ -27,9 +29,8 @@ import static org.qi4j.api.util.NullArgumentException.validateNotNull;
  * Activator Detail Descriptor.
  */
 public class ActivatorDetailDescriptor
-    implements InjectableDetailDescriptor
+    implements InjectableDetailDescriptor, Visitable<ActivatorDetailDescriptor>
 {
-
     private final ActivatorDescriptor descriptor;
     private final List<ConstructorDetailDescriptor> constructors;
     private final List<InjectedMethodDetailDescriptor> injectedMethods;
@@ -161,9 +162,15 @@ public class ActivatorDetailDescriptor
     }
 
     @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super ActivatorDetailDescriptor, ThrowableType> visitor )
+        throws ThrowableType
+    {
+        return visitor.visit( this );
+    }
+
+    @Override
     public String toString()
     {
         return descriptor.toString();
     }
-
 }

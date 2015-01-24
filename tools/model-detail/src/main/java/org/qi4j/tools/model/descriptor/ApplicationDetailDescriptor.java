@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
- * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2014-2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -21,11 +21,18 @@ package org.qi4j.tools.model.descriptor;
 import java.util.LinkedList;
 import java.util.List;
 import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
+/**
+ * Application Detail Descriptor.
+ * <p>
+ * Visitable hierarchy with Activators and Layers children.
+ */
 public final class ApplicationDetailDescriptor
-    implements ActivateeDetailDescriptor
+    implements ActivateeDetailDescriptor, VisitableHierarchy<Object, Object>
 {
     private final ApplicationDescriptor descriptor;
     private final List<ActivatorDetailDescriptor> activators = new LinkedList<>();
@@ -80,4 +87,27 @@ public final class ApplicationDetailDescriptor
         return descriptor.name();
     }
 
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
+    {
+        if( visitor.visitEnter( this ) )
+        {
+            for( ActivatorDetailDescriptor activator : activators )
+            {
+                if( !activator.accept( visitor ) )
+                {
+                    break;
+                }
+            }
+            for( LayerDetailDescriptor layer : layers )
+            {
+                if( !layer.accept( visitor ) )
+                {
+                    break;
+                }
+            }
+        }
+        return visitor.visitLeave( this );
+    }
 }

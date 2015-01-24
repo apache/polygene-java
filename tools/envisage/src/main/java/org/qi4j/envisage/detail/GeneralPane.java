@@ -32,12 +32,12 @@ import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.envisage.util.TableRow;
-import org.qi4j.tools.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.tools.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ImportedServiceCompositeDescriptor;
 import org.qi4j.tools.model.descriptor.ImportedServiceDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.TransientDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ValueDetailDescriptor;
 
 import static org.qi4j.functional.Iterables.first;
@@ -200,15 +200,15 @@ import static org.qi4j.functional.Iterables.first;
                 rows.add( new TableRow( 2, moduleRow, ( (ObjectDetailDescriptor) objectDesciptor ).module() ) );
                 rows.add( new TableRow( 2, layerRow, ( (ObjectDetailDescriptor) objectDesciptor ).module().layer() ) );
             }
-            else if( objectDesciptor instanceof CompositeDetailDescriptor )
+            else if( objectDesciptor instanceof TransientDetailDescriptor )
             {
-                CompositeDescriptor descriptor = ( (CompositeDetailDescriptor) objectDesciptor ).descriptor();
+                CompositeDescriptor descriptor = ( (TransientDetailDescriptor) objectDesciptor ).descriptor();
                 Class<?> type = first( descriptor.types() );
                 rows.add( new TableRow( 2, nameRow, type.getSimpleName() ) );
                 rows.add( new TableRow( 2, classRow, type.getName() ) );
                 rows.add( new TableRow( 2, visibilityRow, descriptor.visibility().toString() ) );
-                rows.add( new TableRow( 2, moduleRow, ( (CompositeDetailDescriptor) objectDesciptor ).module() ) );
-                rows.add( new TableRow( 2, layerRow, ( (CompositeDetailDescriptor) objectDesciptor ).module().layer() ) );
+                rows.add( new TableRow( 2, moduleRow, ( (TransientDetailDescriptor) objectDesciptor ).module() ) );
+                rows.add( new TableRow( 2, layerRow, ( (TransientDetailDescriptor) objectDesciptor ).module().layer() ) );
             }
 
             fireTableDataChanged();

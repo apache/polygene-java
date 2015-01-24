@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
- * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2014-2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -22,12 +22,19 @@ import java.util.LinkedList;
 import java.util.List;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.functional.HierarchicalVisitor;
+import org.qi4j.functional.VisitableHierarchy;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
+/**
+ * Service Detail Descriptor.
+ * <p>
+ * Visitable hierarchy with Activators children.
+ */
 public final class ServiceDetailDescriptor
     extends CompositeDetailDescriptor<ServiceDescriptor>
-    implements ActivateeDetailDescriptor
+    implements ActivateeDetailDescriptor, VisitableHierarchy<Object, Object>
 {
     private final List<ActivatorDetailDescriptor> activators = new LinkedList<>();
 
@@ -71,5 +78,22 @@ public final class ServiceDetailDescriptor
         validateNotNull( "ActivatorDetailDescriptor", descriptor );
         descriptor.setService( this );
         activators.add( descriptor );
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( HierarchicalVisitor<? super Object, ? super Object, ThrowableType> visitor )
+        throws ThrowableType
+    {
+        if( visitor.visitEnter( this ) )
+        {
+            for( ActivatorDetailDescriptor activator : activators )
+            {
+                if( !activator.accept( visitor ) )
+                {
+                    break;
+                }
+            }
+        }
+        return visitor.visitLeave( this );
     }
 }

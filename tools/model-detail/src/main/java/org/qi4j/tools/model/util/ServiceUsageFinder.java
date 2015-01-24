@@ -1,16 +1,16 @@
-/*  
- * Copyright 2009 Tonny Kohar.
- * Copyright 2012 Paul Merlin.
+/*
+ * Copyright (c) 2009, Tonny Kohar. All Rights Reserved.
+ * Copyright (c) 2012-2015, Paul Merlin. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
  * implied.
  *
  * See the License for the specific language governing permissions and
@@ -25,7 +25,6 @@ import org.qi4j.api.composite.DependencyDescriptor;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.tools.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.tools.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.tools.model.descriptor.InjectedFieldDetailDescriptor;
 import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
@@ -34,6 +33,7 @@ import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ServiceUsage;
+import org.qi4j.tools.model.descriptor.TransientDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ValueDetailDescriptor;
 
 import static org.qi4j.functional.Iterables.first;
@@ -45,7 +45,7 @@ import static org.qi4j.functional.Iterables.first;
 
     public List<ServiceUsage> findServiceUsage( ServiceDetailDescriptor descriptor )
     {
-        usages = new ArrayList<ServiceUsage>();
+        usages = new ArrayList<>();
 
         this.descriptor = descriptor;
 
@@ -71,7 +71,7 @@ import static org.qi4j.functional.Iterables.first;
             collectInServices( descriptor.services() );
             collectInEntities( descriptor.entities() );
             collectInValues( descriptor.values() );
-            collectInTransients( descriptor.composites() );
+            collectInTransients( descriptor.transients() );
             collectInObjects( descriptor.objects() );
         }
     }
@@ -104,9 +104,9 @@ import static org.qi4j.functional.Iterables.first;
         }
     }
 
-    private void collectInTransients( Iterable<CompositeDetailDescriptor> iter )
+    private void collectInTransients( Iterable<TransientDetailDescriptor> iter )
     {
-        for( CompositeDetailDescriptor descriptor : iter )
+        for( TransientDetailDescriptor descriptor : iter )
         {
             collectInMixin( descriptor.mixins() );
         }
@@ -139,7 +139,7 @@ import static org.qi4j.functional.Iterables.first;
             if( Uses.class.equals( clazz ) || Service.class.equals( clazz ) )
             {
                 boolean used = false;
-                if( dependencyDescriptor.injectionType().equals( first( this.descriptor.descriptor().types() )) )
+                if( dependencyDescriptor.injectionType().equals( first( this.descriptor.descriptor().types() ) ) )
                 {
                     ServiceUsage usage;
                     if( ownerDescriptor instanceof MixinDetailDescriptor )

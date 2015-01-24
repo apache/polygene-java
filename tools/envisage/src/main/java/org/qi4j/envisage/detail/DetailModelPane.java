@@ -26,13 +26,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import org.qi4j.envisage.event.LinkEvent;
 import org.qi4j.envisage.event.LinkListener;
-import org.qi4j.tools.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.tools.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ImportedServiceDetailDescriptor;
 import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.TransientDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ValueDetailDescriptor;
 
 public final class DetailModelPane
@@ -163,7 +163,7 @@ public final class DetailModelPane
             tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );
             tabPane.add( bundle.getString( "CTL_MethodTab.Text" ), methodPane );
         }
-        else if( objectDescriptor instanceof CompositeDetailDescriptor ) // this is transient
+        else if( objectDescriptor instanceof TransientDetailDescriptor )
         {
             tabPane.add( bundle.getString( "CTL_GeneralTab.Text" ), generalPane );
             tabPane.add( bundle.getString( "CTL_DependencyTab.Text" ), dependencyPane );

@@ -105,7 +105,7 @@ import org.qi4j.tools.model.descriptor.*;
         {
             icon = valueIcon;
         }
-        else if( userObject instanceof CompositeDetailDescriptor )
+        else if( userObject instanceof TransientDetailDescriptor )
         {
             icon = transientIcon;
         }

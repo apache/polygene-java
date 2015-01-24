@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.tools.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.tools.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ImportedServiceDetailDescriptor;
 import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.TransientDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ValueDetailDescriptor;
 import org.qi4j.tools.model.util.DescriptorNameComparator;
 import prefuse.data.Edge;
@@ -143,7 +143,7 @@ import prefuse.data.Table;
             buildServicesNode( childNode, descriptor.services() );
             buildImportedServicesNode( childNode, descriptor.importedServices() );
             buildEntitiesNode( childNode, descriptor.entities() );
-            buildTransientsNode( childNode, descriptor.composites() );
+            buildTransientsNode( childNode, descriptor.transients() );
             buildValuesNode( childNode, descriptor.values() );
             buildObjectsNode( childNode, descriptor.objects() );
         }
@@ -214,14 +214,14 @@ import prefuse.data.Table;
         }
     }
 
-    private void buildTransientsNode( Node parent, Iterable<CompositeDetailDescriptor> iter )
+    private void buildTransientsNode( Node parent, Iterable<TransientDetailDescriptor> iter )
     {
         sortTypeChildren( iter );
 
         boolean first = true;
         for( Object obj : childList )
         {
-            CompositeDetailDescriptor descriptor = (CompositeDetailDescriptor) obj;
+            TransientDetailDescriptor descriptor = (TransientDetailDescriptor) obj;
             if( first )
             {
                 String name = "Transients";
