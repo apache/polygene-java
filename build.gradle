@@ -397,7 +397,7 @@ task coverageReport {
       html destdir:  outputPath, encoding: "UTF-8", locale: "en", footer: "Qi4j SDK"
     }
   }
-  inputs.dir coveredProjects.collect { p -> "${p.buildDir.path}/jacoco" }
+  inputs.dir subprojects.collect { p -> "${p.buildDir.path}/jacoco" }
   outputs.dir outputPath
 }
 
