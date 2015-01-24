@@ -19,8 +19,8 @@ source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/I
 tag=allClass
 -----------
 
-The InventoryConcern is implemented as an abstract class, since we are not interested in the many other methods in the
-Order interface. Extending the ConcernOf is a convenience mechanism, instead of an explicit @ConcernFor annotation on
+Note that we could have implemented the InventoryConcern as an abstract class if we were not interested in __all__ the methods in the Order interface.
+Extending the ConcernOf is a convenience mechanism, instead of an explicit @ConcernFor annotation on
 a private field, which can be used in rare occasions when you are not able to extend. This base class defines the next
 field, which is set up by the Qi4j runtime and points to the next fragment in the call stack. We can also see that the
 InventoryService is provided to the concern, which is done with dependency injection. Qi4j also supports dependency
