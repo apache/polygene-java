@@ -149,7 +149,7 @@ public class ValueToEntityMixin
     @Override
     public <T> T create( Class<T> entityType, Object value )
     {
-        return create( entityType, null, value );
+        return createInstance( doConversion( entityType, null, value ) );
     }
 
     @Override
@@ -161,7 +161,9 @@ public class ValueToEntityMixin
     @Override
     public <T> T create( Class<T> entityType, Object value, Function<T, T> prototypeOpportunity )
     {
-        return create( entityType, null, value, prototypeOpportunity );
+        EntityBuilder<?> builder = doConversion( entityType, null, value );
+        prototypeOpportunity.map( (T) builder.instance() );
+        return createInstance( builder );
     }
 
     @Override
