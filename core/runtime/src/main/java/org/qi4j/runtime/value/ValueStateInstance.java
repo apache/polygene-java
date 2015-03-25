@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2008-2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2012, Kent Sølvsten. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -34,6 +35,7 @@ import org.qi4j.runtime.association.ManyAssociationInstance;
 import org.qi4j.runtime.association.ManyAssociationModel;
 import org.qi4j.runtime.association.NamedAssociationInstance;
 import org.qi4j.runtime.association.NamedAssociationModel;
+import org.qi4j.runtime.composite.StateResolver;
 import org.qi4j.runtime.property.PropertyInfo;
 import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.property.PropertyModel;
@@ -65,7 +67,7 @@ public final class ValueStateInstance
 
     public ValueStateInstance( ModelModule<ValueModel> compositeModelModule,
                                ModuleInstance currentModule,
-                               ValueStateModel.StateResolver stateResolver )
+                               StateResolver stateResolver )
     {
         ValueModel valueModel = compositeModelModule.model();
         this.properties = new LinkedHashMap<>();

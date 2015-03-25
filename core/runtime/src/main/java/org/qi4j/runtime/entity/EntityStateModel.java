@@ -129,7 +129,7 @@ public final class EntityStateModel
     }
 
     @Override
-    public Iterable<? extends AssociationDescriptor> namedAssociations()
+    public Iterable<NamedAssociationModel> namedAssociations()
     {
         return namedAssociationsModel.namedAssociations();
     }

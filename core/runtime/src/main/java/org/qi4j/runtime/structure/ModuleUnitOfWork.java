@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2013, Niclas Hedhman. All Rights Reserved.
- * Copyright (c) 2013, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2013-2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,16 @@ package org.qi4j.runtime.structure;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExecutionException;
@@ -37,12 +41,18 @@ import org.qi4j.api.unitofwork.UnitOfWorkCallback;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.api.util.NullArgumentException;
+import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
+import org.qi4j.runtime.composite.FunctionStateResolver;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
+import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.composite.StateResolver;
+import org.qi4j.runtime.value.ValueStateModel;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.query.EntityFinder;
@@ -59,20 +69,20 @@ import static org.qi4j.functional.Iterables.first;
 public class ModuleUnitOfWork
     implements UnitOfWork
 {
-//    private static final QualifiedName IDENTITY_STATE_NAME;
-//
-//    static
-//    {
-//        try
-//        {
-//            IDENTITY_STATE_NAME = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
-//        }
-//        catch( NoSuchMethodException e )
-//        {
-//            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
-//        }
-//    }
-//
+    private static final QualifiedName IDENTITY_STATE_NAME;
+
+    static
+    {
+        try
+        {
+            IDENTITY_STATE_NAME = QualifiedName.fromAccessor( Identity.class.getMethod( "identity" ) );
+        }
+        catch( NoSuchMethodException e )
+        {
+            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
+        }
+    }
+
     private final UnitOfWorkInstance uow;
     private final ModuleInstance moduleInstance;
 
@@ -182,6 +192,75 @@ public class ModuleUnitOfWork
                                                uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
                                                identity );
         return builder;
+    }
+
+    @Override
+    public <T> EntityBuilder<T> newEntityBuilderWithState(
+        Class<T> type,
+        Function<PropertyDescriptor, Object> propertyFunction,
+        Function<AssociationDescriptor, EntityReference> associationFunction,
+        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
+        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
+    )
+        throws EntityTypeNotFoundException
+    {
+        return newEntityBuilderWithState( type, null,
+                                          propertyFunction,
+                                          associationFunction,
+                                          manyAssociationFunction,
+                                          namedAssociationFunction );
+    }
+
+    @Override
+    public <T> EntityBuilder<T> newEntityBuilderWithState(
+        Class<T> type, String identity,
+        Function<PropertyDescriptor, Object> propertyFunction,
+        Function<AssociationDescriptor, EntityReference> associationFunction,
+        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
+        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
+    )
+        throws EntityTypeNotFoundException
+    {
+        NullArgumentException.validateNotNull( "propertyFunction", propertyFunction );
+        NullArgumentException.validateNotNull( "associationFunction", associationFunction );
+        NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
+        NullArgumentException.validateNotNull( "namedAssociationFunction", namedAssociationFunction );
+
+        ModelModule<EntityModel> model = moduleInstance.typeLookup().lookupEntityModel( type );
+
+        if( model == null )
+        {
+            throw new EntityTypeNotFoundException( type.getName() );
+        }
+
+        EntityStore entityStore = model.module().entityStore();
+
+        StateResolver stateResolver = new FunctionStateResolver(
+            propertyFunction, associationFunction, manyAssociationFunction, namedAssociationFunction
+        );
+
+        if( identity == null )
+        {
+            // Use identity from StateResolver if available
+            PropertyModel identityModel = model.model().state().findPropertyModelByQualifiedName( IDENTITY_STATE_NAME );
+            identity = (String) stateResolver.getPropertyState( identityModel );
+            if( identity == null )
+            {
+                // Generate identity
+                IdentityGenerator idGen = model.module().identityGenerator();
+                if( idGen == null )
+                {
+                    throw new NoSuchServiceException( IdentityGenerator.class.getName(), model.module().name() );
+                }
+                identity = idGen.generate( first( model.model().types() ) );
+            }
+        }
+
+        return new EntityBuilderInstance<>( model,
+                                            this,
+                                            uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
+                                            identity,
+                                            stateResolver );
     }
 
     @Override

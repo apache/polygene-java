@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2008-2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2008-2011, Rickard Öberg.
+ * Copyright (c) 2012, Kent Sølvsten.
+ * Copyright (c) 2014-2015, Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -17,13 +19,9 @@
  */
 package org.qi4j.runtime.value;
 
-import java.util.List;
-import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateDescriptor;
 import org.qi4j.api.common.QualifiedName;
-import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.association.AssociationModel;
@@ -129,19 +127,6 @@ public final class ValueStateModel
                 }
             }
         }
-
         return visitor.visitLeave( this );
     }
-
-    public interface StateResolver
-    {
-        public Object getPropertyState( PropertyDescriptor propertyDescriptor );
-
-        public EntityReference getAssociationState( AssociationDescriptor associationDescriptor );
-
-        public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor );
-
-        public Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor );
-    }
-
 }

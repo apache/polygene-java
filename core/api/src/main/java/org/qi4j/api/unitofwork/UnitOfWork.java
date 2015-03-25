@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2007-2011, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
- * Copyright (c) 2013-2014, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2013-2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,18 @@
  */
 package org.qi4j.api.unitofwork;
 
+import java.util.Map;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.structure.MetaInfoHolder;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.functional.Function;
 
 /**
  * All operations on entities goes through an UnitOfWork.
@@ -175,6 +180,59 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @throws AmbiguousTypeException      If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
+        throws EntityTypeNotFoundException, AmbiguousTypeException;
+
+    /**
+     * Create a new EntityBuilder for an EntityComposite wich implements the given mixin type starting with the given
+     * state.
+     * <p>
+     * An EntityComposite will be chosen according to what has been registered and the visibility rules for Modules and
+     * Layers will be considered.
+     *
+     * @param <T>                      Entity type
+     * @param type                     Entity type
+     * @param propertyFunction         a function providing the state of properties
+     * @param associationFunction      a function providing the state of associations
+     * @param manyAssociationFunction  a function providing the state of many associations
+     * @param namedAssociationFunction a function providing the state of named associations
+     *
+     * @return a new EntityBuilder starting with the given state
+     *
+     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws AmbiguousTypeException      If several mixins implement the given type
+     */
+    <T> EntityBuilder<T> newEntityBuilderWithState( Class<T> type,
+                                                    Function<PropertyDescriptor, Object> propertyFunction,
+                                                    Function<AssociationDescriptor, EntityReference> associationFunction,
+                                                    Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
+                                                    Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
+        throws EntityTypeNotFoundException, AmbiguousTypeException;
+
+    /**
+     * Create a new EntityBuilder for an EntityComposite wich implements the given mixin type starting with the given
+     * state.
+     * <p>
+     * An EntityComposite will be chosen according to what has been registered and the visibility rules for Modules and
+     * Layers will be considered.
+     *
+     * @param <T>                      Entity type
+     * @param type                     Entity type
+     * @param identity                 the identity of the new Entity
+     * @param propertyFunction         a function providing the state of properties
+     * @param associationFunction      a function providing the state of associations
+     * @param manyAssociationFunction  a function providing the state of many associations
+     * @param namedAssociationFunction a function providing the state of named associations
+     *
+     * @return a new EntityBuilder starting with the given state
+     *
+     * @throws EntityTypeNotFoundException If no mixins implements the given type
+     * @throws AmbiguousTypeException      If several mixins implement the given type
+     */
+    <T> EntityBuilder<T> newEntityBuilderWithState( Class<T> type, String identity,
+                                                    Function<PropertyDescriptor, Object> propertyFunction,
+                                                    Function<AssociationDescriptor, EntityReference> associationFunction,
+                                                    Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
+                                                    Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
         throws EntityTypeNotFoundException, AmbiguousTypeException;
 
     /**

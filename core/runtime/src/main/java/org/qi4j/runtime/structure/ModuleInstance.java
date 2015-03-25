@@ -1,7 +1,8 @@
 /*
  * Copyright (c) 2008-2012, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2012, Kent Sølvsten. All Rights Reserved.
  * Copyright (c) 2008-2013, Niclas Hedhman. All Rights Reserved.
- * Copyright (c) 2012-2014, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2012-2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +68,7 @@ import org.qi4j.functional.Function2;
 import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.activation.ActivationDelegate;
+import org.qi4j.runtime.composite.FunctionStateResolver;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.TransientStateInstance;
@@ -86,12 +88,12 @@ import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesInstance;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.runtime.composite.StateResolver;
 import org.qi4j.runtime.value.ValueBuilderInstance;
 import org.qi4j.runtime.value.ValueBuilderWithPrototype;
 import org.qi4j.runtime.value.ValueBuilderWithState;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.runtime.value.ValueModel;
-import org.qi4j.runtime.value.ValueStateModel;
 import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
@@ -113,7 +115,6 @@ import static org.qi4j.functional.Iterables.toList;
 public class ModuleInstance
     implements Module, Activation
 {
-
     // Constructor parameters
     private final ModuleModel model;
     private final LayerInstance layer;
@@ -350,7 +351,7 @@ public class ModuleInstance
             throw new NoSuchValueException( mixinType.getName(), name() );
         }
 
-        ValueStateModel.StateResolver stateResolver = new InitialStateResolver( compositeModelModule.module() );
+        StateResolver stateResolver = new InitialStateResolver( compositeModelModule.module() );
         return new ValueBuilderInstance<>( compositeModelModule, this, stateResolver );
     }
 
@@ -373,14 +374,15 @@ public class ModuleInstance
             throw new NoSuchValueException( mixinType.getName(), name() );
         }
 
-        ValueStateModel.StateResolver stateResolver = new FunctionStateResolver( propertyFunction, associationFunction, manyAssociationFunction, namedAssociationFunction );
+        StateResolver stateResolver = new FunctionStateResolver(
+            propertyFunction, associationFunction, manyAssociationFunction, namedAssociationFunction
+        );
         return new ValueBuilderWithState<>( compositeModelModule, this, stateResolver );
     }
 
     private static class InitialStateResolver
-        implements ValueStateModel.StateResolver
+        implements StateResolver
     {
-
         private final ModuleInstance module;
 
         private InitialStateResolver( ModuleInstance module )
@@ -411,53 +413,6 @@ public class ModuleInstance
         {
             return new HashMap<>();
         }
-        
-    }
-
-    private static class FunctionStateResolver
-        implements ValueStateModel.StateResolver
-    {
-
-        private final Function<PropertyDescriptor, Object> propertyFunction;
-        private final Function<AssociationDescriptor, EntityReference> associationFunction;
-        private final Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction;
-        private final Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction;
-
-        private FunctionStateResolver( Function<PropertyDescriptor, Object> propertyFunction,
-                                       Function<AssociationDescriptor, EntityReference> associationFunction,
-                                       Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
-                                       Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
-        {
-            this.propertyFunction = propertyFunction;
-            this.associationFunction = associationFunction;
-            this.manyAssociationFunction = manyAssociationFunction;
-            this.namedAssociationFunction = namedAssociationFunction;
-        }
-
-        @Override
-        public Object getPropertyState( PropertyDescriptor propertyDescriptor )
-        {
-            return propertyFunction.map( propertyDescriptor );
-        }
-
-        @Override
-        public EntityReference getAssociationState( AssociationDescriptor associationDescriptor )
-        {
-            return associationFunction.map( associationDescriptor );
-        }
-
-        @Override
-        public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
-        {
-            return toList( manyAssociationFunction.map( associationDescriptor ) );
-        }
-
-        @Override
-        public Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor )
-        {
-            return namedAssociationFunction.map( associationDescriptor );
-        }
-
     }
 
     @Override
@@ -792,8 +747,12 @@ public class ModuleInstance
                         if( iter.hasNext() )
                         {
                             // Ambiguous exception
-                            throw new ClassNotFoundException( name, new AmbiguousTypeException(
-                                "More than one model matches the classname " + name + ":" + toList( moduleModels ) ) );
+                            throw new ClassNotFoundException(
+                                name,
+                                new AmbiguousTypeException(
+                                    "More than one model matches the classname " + name + ":" + toList( moduleModels )
+                                )
+                            );
                         }
                     }
                 }
@@ -819,8 +778,11 @@ public class ModuleInstance
                         if( iter.hasNext() )
                         {
                             // Ambiguous exception
-                            throw new ClassNotFoundException( name, new AmbiguousTypeException(
-                                "More than one model matches the classname " + name + ":" + toList( layerModels ) ) );
+                            throw new ClassNotFoundException(
+                                name,
+                                new AmbiguousTypeException(
+                                    "More than one model matches the classname " + name + ":" + toList( layerModels ) )
+                            );
                         }
                     }
                 }
@@ -842,8 +804,12 @@ public class ModuleInstance
                         if( iter.hasNext() )
                         {
                             // Ambiguous exception
-                            throw new ClassNotFoundException( name, new AmbiguousTypeException(
-                                "More than one model matches the classname " + name + ":" + toList( usedLayersModels ) ) );
+                            throw new ClassNotFoundException(
+                                name,
+                                new AmbiguousTypeException(
+                                    "More than one model matches the classname " + name + ":" + toList( usedLayersModels )
+                                )
+                            );
                         }
                     }
                 }
@@ -858,5 +824,4 @@ public class ModuleInstance
             return clazz;
         }
     }
-
 }
