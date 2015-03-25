@@ -1,5 +1,7 @@
 /*
- * Copyright 2010 Niclas Hedhman.
+ * Copyright 2010-2012 Niclas Hedhman.
+ * Copyright 2011 Rickard Öberg.
+ * Copyright 2013-2015 Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,36 +19,30 @@
  */
 package org.qi4j.library.conversion.values;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
 import org.junit.Test;
-import org.qi4j.api.association.Association;
-import org.qi4j.api.association.ManyAssociation;
-import org.qi4j.api.common.Optional;
 import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.entity.EntityBuilder;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Property;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Function;
+import org.qi4j.library.conversion.values.TestModel.PersonEntity;
+import org.qi4j.library.conversion.values.TestModel.PersonValue;
+import org.qi4j.library.conversion.values.TestModel.PersonValue2;
+import org.qi4j.library.conversion.values.TestModel.PersonValue3;
+import org.qi4j.library.conversion.values.TestModel.PersonValue4;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
+import static org.qi4j.library.conversion.values.TestModel.createBirthDate;
+import static org.qi4j.library.conversion.values.TestModel.createPerson;
 
 public class EntityToValueTest
     extends AbstractQi4jTest
 {
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -191,7 +187,7 @@ public class EntityToValueTest
         }
     }
 
-    private PersonEntity setupPersonEntities( UnitOfWork uow )
+    private static PersonEntity setupPersonEntities( UnitOfWork uow )
     {
         PersonEntity niclas = createNiclas( uow );
         PersonEntity lis = createLis( uow );
@@ -209,7 +205,7 @@ public class EntityToValueTest
         return niclas;
     }
 
-    private PersonEntity createNiclas( UnitOfWork uow )
+    private static PersonEntity createNiclas( UnitOfWork uow )
     {
         String firstName = "Niclas";
         String lastName = "Hedhman";
@@ -217,7 +213,7 @@ public class EntityToValueTest
         return createPerson( uow, firstName, lastName, birthTime );
     }
 
-    private PersonEntity createLis( UnitOfWork uow )
+    private static PersonEntity createLis( UnitOfWork uow )
     {
         String firstName = "Lis";
         String lastName = "Gazi";
@@ -225,169 +221,11 @@ public class EntityToValueTest
         return createPerson( uow, firstName, lastName, birthTime );
     }
 
-    private PersonEntity createEric( UnitOfWork uow )
+    private static PersonEntity createEric( UnitOfWork uow )
     {
         String firstName = "Eric";
         String lastName = "Hedman";
         Date birthTime = createBirthDate( 2004, 4, 8 );
         return createPerson( uow, firstName, lastName, birthTime );
     }
-
-    private PersonEntity createPerson( UnitOfWork uow, String firstName, String lastName, Date birthTime )
-    {
-        EntityBuilder<PersonEntity> builder = uow.newEntityBuilder( PersonEntity.class, "id:" + firstName );
-        PersonState state = builder.instanceFor( PersonState.class );
-        state.firstName().set( firstName );
-        state.lastName().set( lastName );
-        state.dateOfBirth().set( birthTime );
-        return builder.newInstance();
-    }
-
-    private Date createBirthDate( int year, int month, int day )
-    {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
-        calendar.set( year, month - 1, day, 12, 0, 0 );
-        return calendar.getTime();
-    }
-
-    // START SNIPPET: state
-    public interface PersonState
-    {
-
-        Property<String> firstName();
-
-        Property<String> lastName();
-
-        Property<Date> dateOfBirth();
-
-    }
-    // END SNIPPET: state
-
-    // START SNIPPET: value
-    public interface PersonValue
-        extends PersonState, ValueComposite
-    {
-
-        @Optional
-        Property<String> spouse();
-
-        @Optional
-        Property<List<String>> children();
-
-    }
-    // END SNIPPET: value
-
-    // START SNIPPET: entity
-    @Mixins( PersonMixin.class )
-    public interface PersonEntity
-        extends EntityComposite
-    {
-
-        String firstName();
-
-        String lastName();
-
-        Integer age();
-
-        @Optional
-        Association<PersonEntity> spouse();
-
-        ManyAssociation<PersonEntity> children();
-
-    }
-    // END SNIPPET: entity
-
-    // START SNIPPET: entity
-    public static abstract class PersonMixin
-        implements PersonEntity
-    {
-
-        @This
-        private PersonState state;
-        // END SNIPPET: entity
-
-        @Override
-        public String firstName()
-        {
-            return state.firstName().get();
-        }
-
-        @Override
-        public String lastName()
-        {
-            return state.lastName().get();
-        }
-
-        @Override
-        public Integer age()
-        {
-            long now = System.currentTimeMillis();
-            long birthdate = state.dateOfBirth().get().getTime();
-            return (int) ( ( now - birthdate ) / 1000 / 3600 / 24 / 365.25 );
-        }
-
-        // START SNIPPET: entity
-    }
-    // END SNIPPET: entity
-
-    // START SNIPPET: unqualified
-    @Unqualified
-    public interface PersonValue2
-        extends ValueComposite
-    {
-
-        Property<String> firstName();
-
-        Property<String> lastName();
-
-        Property<Date> dateOfBirth();
-
-        @Optional
-        Property<String> spouse();
-
-        @Optional
-        Property<List<String>> children();
-
-    }
-    // END SNIPPET: unqualified
-
-    @Unqualified( true )
-    public interface PersonValue3
-        extends ValueComposite
-    {
-
-        Property<String> firstName();
-
-        Property<String> lastName();
-
-        Property<Date> dateOfBirth();
-
-        @Optional
-        Property<String> spouse();
-
-        @Optional
-        Property<List<String>> children();
-
-    }
-
-    @Unqualified( false )
-    public interface PersonValue4
-        extends ValueComposite
-    {
-
-        Property<String> firstName();
-
-        Property<String> lastName();
-
-        Property<Date> dateOfBirth();
-
-        @Optional
-        Property<String> spouse();
-
-        @Optional
-        Property<List<String>> children();
-
-    }
-
 }
