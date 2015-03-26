@@ -24,7 +24,7 @@ import org.qi4j.bootstrap.ServiceDeclaration;
  * ValueToEntity Service Assembler.
  */
 public class ValueToEntityAssembler
-    extends Assemblers.VisibilityIdentity<EntityToValueAssembler>
+    extends Assemblers.VisibilityIdentity<ValueToEntityAssembler>
 {
     @Override
     public void assemble( ModuleAssembly module )
