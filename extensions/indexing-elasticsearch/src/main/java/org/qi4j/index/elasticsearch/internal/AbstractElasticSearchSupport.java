@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Paul Merlin.
+ * Copyright 2012-2015 Paul Merlin.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -48,9 +48,6 @@ public abstract class AbstractElasticSearchSupport
     {
         activateElasticSearch();
 
-        // Wait for yellow status: the primary shard is allocated but replicas are not
-        client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
-
         if ( !client.admin().indices().prepareExists( index ).setIndices( index ).execute().actionGet().isExists() ) {
             // Create empty index
             LOGGER.info( "Will create '{}' index as it does not exists.", index );
@@ -74,6 +71,12 @@ public abstract class AbstractElasticSearchSupport
                     actionGet();
             LOGGER.info( "Index '{}' created.", index );
         }
+
+        // Ensure index is fresh
+        client.admin().indices().prepareRefresh( index ).execute().actionGet();
+
+        // Wait for yellow status: the primary shard is allocated but replicas may not be yet
+        client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 
         LOGGER.info( "Index/Query connected to Elastic Search" );
     }
