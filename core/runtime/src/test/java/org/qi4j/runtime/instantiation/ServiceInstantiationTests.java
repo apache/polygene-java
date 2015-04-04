@@ -20,11 +20,9 @@ package org.qi4j.runtime.instantiation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.configuration.Configuration;
-import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -35,11 +33,12 @@ public class ServiceInstantiationTests
     extends AbstractQi4jTest
 {
 
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.entities( MyConfigurationEntity.class );
-        module.services( MyService.class );
+        module.entities( MyConfiguration.class );
+        module.services( My.class );
         new EntityTestAssembler().assemble( module );
     }
 
@@ -52,19 +51,9 @@ public class ServiceInstantiationTests
     }
 
     @Mixins( MyMixin.class )
-    private interface MyService
-        extends My, ServiceComposite
-    {
-    }
-
     public interface My
     {
         String doSomething();
-    }
-
-    public interface MyConfigurationEntity
-        extends MyConfiguration, ConfigurationComposite
-    {
     }
 
     public interface MyConfiguration
@@ -78,6 +67,7 @@ public class ServiceInstantiationTests
         @This
         Configuration<MyConfiguration> config;
 
+        @Override
         public String doSomething()
         {
             return config.get().data().get();

@@ -208,7 +208,7 @@ public class TransientBuilderFactoryTest
         AnyData data;
     }
 
-    interface AnyData
+    public interface AnyData
     {
         @UseDefaults
         Property<String> foo();
