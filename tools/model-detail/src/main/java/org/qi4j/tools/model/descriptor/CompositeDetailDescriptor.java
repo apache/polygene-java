@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
+ * Copyright (c) 2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -25,7 +26,12 @@ import org.qi4j.api.composite.MethodDescriptor;
 
 import static org.qi4j.api.util.NullArgumentException.validateNotNull;
 
-public class CompositeDetailDescriptor<T extends CompositeDescriptor>
+/**
+ * Composite Detail Descriptor.
+ *
+ * @param <T> CompositeDescriptor type
+ */
+public abstract class CompositeDetailDescriptor<T extends CompositeDescriptor>
 {
     protected final T descriptor;
     protected ModuleDetailDescriptor module;
@@ -37,8 +43,8 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
         validateNotNull( "aDescriptor", aDescriptor );
 
         descriptor = aDescriptor;
-        methods = new LinkedList<CompositeMethodDetailDescriptor>();
-        mixins = new LinkedList<MixinDetailDescriptor>();
+        methods = new LinkedList<>();
+        mixins = new LinkedList<>();
     }
 
     /**
@@ -130,6 +136,7 @@ public class CompositeDetailDescriptor<T extends CompositeDescriptor>
         mixins.add( aDescriptor );
     }
 
+    @Override
     public String toString()
     {
         return descriptor.toString();

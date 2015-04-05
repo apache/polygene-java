@@ -27,7 +27,7 @@ import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 
 /**
- * Event handling router. Add specification->receiver routes. When an event comes in
+ * Event handling router. Add specification-&gt;receiver routes. When an event comes in
  * the router will ask each specification if it matches, and if so, delegate to the
  * receiver and return whether it successfully handled it or not. If no routes match,
  * delegate to the default receiver

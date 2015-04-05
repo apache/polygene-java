@@ -165,7 +165,7 @@ public class DateTextFieldWithPicker extends DateTextField
      * href="http://developer.yahoo.com/yui/calendar/">the widget's documentation</a> for the
      * available options. If you want to override/ remove properties, you should call
      * super.configure(properties) first. If you don't call that, be aware that you will have to
-     * call {@link #localize(Map)} manually if you like localized strings to be added.
+     * call {@literal #localize(Map)} manually if you like localized strings to be added.
      *
      * @param widgetProperties the current widget properties
      */

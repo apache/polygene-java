@@ -64,7 +64,7 @@ import org.qi4j.tools.model.util.DescriptorNameComparator;
             buildServicesNode( node, descriptor.services() );
             buildImportedServicesNode( node, descriptor.importedServices() );
             buildEntitiesNode( node, descriptor.entities() );
-            buildTransientsNode( node, descriptor.composites() );  // This is transient type
+            buildTransientsNode( node, descriptor.transients() );
             buildValuesNode( node, descriptor.values() );
             buildObjectsNode( node, descriptor.objects() );
             parent.add( node );
@@ -117,10 +117,10 @@ import org.qi4j.tools.model.util.DescriptorNameComparator;
         addTypeChildren( parent, tempList );
     }
 
-    private void buildTransientsNode( DefaultMutableTreeNode parent, Iterable<CompositeDetailDescriptor> iter )
+    private void buildTransientsNode( DefaultMutableTreeNode parent, Iterable<TransientDetailDescriptor> iter )
     {
         tempList.clear();
-        for( CompositeDetailDescriptor descriptor : iter )
+        for( TransientDetailDescriptor descriptor : iter )
         {
             tempList.add( descriptor );
         }

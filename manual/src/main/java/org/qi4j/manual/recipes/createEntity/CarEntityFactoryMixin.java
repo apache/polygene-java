@@ -2,8 +2,8 @@ package org.qi4j.manual.recipes.createEntity;
 
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 
 // START SNIPPET: carFactoryMixin2
 // START SNIPPET: carFactoryMixin1
@@ -13,10 +13,10 @@ public class CarEntityFactoryMixin
 
 // END SNIPPET: carFactoryMixin1
     @Structure
-    UnitOfWorkFactory uowf;
+    Module module;
 // END SNIPPET: carFactoryMixin2
 // START SNIPPET: carFactoryMixin3
-    public CarEntityFactoryMixin( @Structure UnitOfWorkFactory uowf )
+    public CarEntityFactoryMixin( @Structure Module module )
     {
     }
 
@@ -24,7 +24,7 @@ public class CarEntityFactoryMixin
 // START SNIPPET: createCar
     public Car create(Manufacturer manufacturer, String model)
     {
-        UnitOfWork uow = uowf.currentUnitOfWork();
+        UnitOfWork uow = module.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
 
         Car prototype = builder.instance();

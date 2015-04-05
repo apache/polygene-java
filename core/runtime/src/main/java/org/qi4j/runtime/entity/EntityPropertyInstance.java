@@ -30,7 +30,7 @@ public class EntityPropertyInstance<T>
      * Construct an instance of {@code PropertyInstance} with the specified arguments.
      *
      * @param aPropertyInfo The property info. This argument must not be {@code null}.
-     * @param entityState
+     * @param entityState EntityState
      */
     @SuppressWarnings( "unchecked" )
     public EntityPropertyInstance( PropertyInfo aPropertyInfo, EntityState entityState )

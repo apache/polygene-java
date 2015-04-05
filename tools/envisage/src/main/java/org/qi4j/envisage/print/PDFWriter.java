@@ -210,7 +210,7 @@ public class PDFWriter
             writeServicesPage( descriptor.services() );
             writeImportedServicesPage( descriptor.importedServices() );
             writeEntitiesPage( descriptor.entities() );
-            writeTransientsPage( descriptor.composites() );
+            writeTransientsPage( descriptor.transients() );
             writeValuesPage( descriptor.values() );
             writeObjectsPage( descriptor.objects() );
         }
@@ -257,9 +257,9 @@ public class PDFWriter
         }
     }
 
-    private void writeTransientsPage( Iterable<CompositeDetailDescriptor> iter )
+    private void writeTransientsPage( Iterable<TransientDetailDescriptor> iter )
     {
-        for( CompositeDetailDescriptor descriptor : iter )
+        for( TransientDetailDescriptor descriptor : iter )
         {
             setFont( header4Font, header4FontSize );
             writeString( descriptor.toString(), headerLineSpace );

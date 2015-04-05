@@ -75,12 +75,12 @@ allprojects {
   // UTF-8 For all compilations and javadocs
   // Deprecation warnings for all compilations
   // Unchecked warnings for non-test core compilations
-  tasks.withType(Compile) {
+  tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:deprecation"
   }
   if("core".equals(group)) {
-    tasks.matching({ task -> task instanceof Compile && !task.name.contains('test') }).
+    tasks.matching({ task -> task instanceof JavaCompile && !task.name.contains('test') }).
         each({ task -> task.options.compilerArgs << "-Xlint:unchecked" })
   }
   tasks.withType(Javadoc) {
@@ -258,6 +258,9 @@ allprojects {
         }
       }
     }
+    jacoco {
+      toolVersion = '0.7.2.201409121644'
+    }
 
 //    // Create checkstyle report
 //    task checkstyleReport( type: Xslt, dependsOn: check ) {
@@ -335,7 +338,7 @@ task globalTestReport( type: TestReport ) {
 
 test {
   dependsOn subprojects*.test, globalTestReport
-  testReport = false
+  reports.html.enabled = false
 }
 
 // Jacoco
@@ -343,7 +346,7 @@ configurations {
   jacoco
 }
 dependencies {
-  jacoco 'org.jacoco:org.jacoco.ant:0.7.1.201405082137'
+  jacoco 'org.jacoco:org.jacoco.ant:0.7.2.201409121644'
 }
 // Generate a global code codeverage report
 task coverageReport {
@@ -394,7 +397,7 @@ task coverageReport {
       html destdir:  outputPath, encoding: "UTF-8", locale: "en", footer: "Qi4j SDK"
     }
   }
-  inputs.dir coveredProjects.collect { p -> "${p.buildDir.path}/jacoco" }
+  inputs.dir subprojects.collect { p -> "${p.buildDir.path}/jacoco" }
   outputs.dir outputPath
 }
 
@@ -650,5 +653,5 @@ task release {
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
 task wrapper( type: Wrapper ) {
-  gradleVersion = '1.12'
+  gradleVersion = '2.2.1'
 }

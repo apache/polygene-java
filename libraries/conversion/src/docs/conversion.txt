@@ -24,7 +24,7 @@ Let's say we have an interface defining state:
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/TestModel.java
 tag=state
 ----
 
@@ -32,7 +32,7 @@ An EntityComposite using the state as a Private Mixin:
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/TestModel.java
 tag=entity
 ----
 
@@ -40,7 +40,7 @@ And a ValueComposite extending this very same state;
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/TestModel.java
 tag=value
 ----
 
@@ -52,7 +52,38 @@ source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/Ent
 tag=conversion
 ----
 
-Associations are converted to Identity strings.
+
+== Values to Entities ==
+
+Using the ValueToEntity service one can create new Entities or update existing ones from Values.
+It is easy assembled:
+
+[snippet,java]
+----
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/ValueToEntityTest.java
+tag=assembly
+----
+
+Let's say we have the exact same model as described above.
+
+Here is how to create an EntityComposite from a ValueComposite:
+
+[snippet,java]
+----
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/ValueToEntityTest.java
+tag=creation
+----
+
+Here is how to update an EntityComposite from a ValueComposite:
+
+[snippet,java]
+----
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/ValueToEntityTest.java
+tag=update
+----
+
+
+== Associations are converted to Identity strings ==
 
 If your Entities and Values cannot use the same state type, you can annotate the Value that is the target of the
 conversion with the `@Unqualified` annotation. Then, the lookup of the Value Property will be performed using the
@@ -63,7 +94,7 @@ Here is an example:
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/TestModel.java
 tag=unqualified
 ----
 

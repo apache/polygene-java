@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2007, Niclas Hedhman. All Rights Reserved.
- * Copyright (c) 2013, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2007-2011, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2007-2012, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2013-2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,23 @@
  */
 package org.qi4j.api.unitofwork;
 
+import java.util.Map;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.structure.MetaInfoHolder;
 import org.qi4j.api.usecase.Usecase;
+import org.qi4j.functional.Function;
 
 /**
  * All operations on entities goes through an UnitOfWork.
- * <p>A UnitOfWork allows you to access
+ * <p>
+ * A UnitOfWork allows you to access
  * Entities and work with them. All modifications to Entities are recorded by the UnitOfWork,
  * and at the end they may be sent to the underlying EntityStore by calling complete(). If the
  * UoW was read-only you may instead simply discard() it.
@@ -73,7 +80,8 @@ import org.qi4j.api.usecase.Usecase;
  *         uow.complete();
  *     }
  * </pre>
- * <p>It has the very same effect than the template above but is shorter.</p>
+ * <p>
+ * It has the very same effect than the template above but is shorter.</p>
  */
 public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
 {
@@ -116,13 +124,12 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @return a new Entity
      *
-     * @throws NoSuchEntityException       if no EntityComposite type of the given mixin type has been registered
-     * @throws org.qi4j.api.entity.LifecycleException
-     *                                     if the entity cannot be created
-     * @throws EntityTypeNotFoundException
+     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws AmbiguousTypeException      If several mixins implement the given type
+     * @throws LifecycleException          if the entity cannot be created
      */
     <T> T newEntity( Class<T> type )
-        throws EntityTypeNotFoundException, LifecycleException;
+        throws EntityTypeNotFoundException, AmbiguousTypeException, LifecycleException;
 
     /**
      * Create a new Entity which implements the given mixin type. An EntityComposite
@@ -135,12 +142,12 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @return a new Entity
      *
-     * @throws NoSuchEntityException       if no EntityComposite type of the given mixin type has been registered
+     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws AmbiguousTypeException      If several mixins implement the given type
      * @throws LifecycleException          if the entity cannot be created
-     * @throws EntityTypeNotFoundException
      */
     <T> T newEntity( Class<T> type, String identity )
-        throws EntityTypeNotFoundException, LifecycleException;
+        throws EntityTypeNotFoundException, AmbiguousTypeException, LifecycleException;
 
     /**
      * Create a new EntityBuilder for an EntityComposite which implements the given mixin type. An EntityComposite
@@ -150,14 +157,13 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *
      * @param type the mixin type that the EntityComposite must implement
      *
-     * @return a new Entity
+     * @return a new EntityBuilder
      *
-     * @throws NoSuchEntityException       if no EntityComposite type of the given mixin type has been registered
-     * @throws LifecycleException
-     * @throws EntityTypeNotFoundException
+     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws AmbiguousTypeException      If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilder( Class<T> type )
-        throws EntityTypeNotFoundException;
+        throws EntityTypeNotFoundException, AmbiguousTypeException;
 
     /**
      * Create a new EntityBuilder for an EntityComposite which implements the given mixin type. An EntityComposite
@@ -168,14 +174,66 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @param type     the mixin type that the EntityComposite must implement
      * @param identity the identity of the new Entity
      *
-     * @return a new Entity
+     * @return a new EntityBuilder
      *
-     * @throws NoSuchEntityException       if no EntityComposite type of the given mixin type has been registered
-     * @throws LifecycleException
-     * @throws EntityTypeNotFoundException
+     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws AmbiguousTypeException      If several mixins implement the given type
      */
     <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
-        throws EntityTypeNotFoundException;
+        throws EntityTypeNotFoundException, AmbiguousTypeException;
+
+    /**
+     * Create a new EntityBuilder for an EntityComposite wich implements the given mixin type starting with the given
+     * state.
+     * <p>
+     * An EntityComposite will be chosen according to what has been registered and the visibility rules for Modules and
+     * Layers will be considered.
+     *
+     * @param <T>                      Entity type
+     * @param type                     Entity type
+     * @param propertyFunction         a function providing the state of properties
+     * @param associationFunction      a function providing the state of associations
+     * @param manyAssociationFunction  a function providing the state of many associations
+     * @param namedAssociationFunction a function providing the state of named associations
+     *
+     * @return a new EntityBuilder starting with the given state
+     *
+     * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
+     * @throws AmbiguousTypeException      If several mixins implement the given type
+     */
+    <T> EntityBuilder<T> newEntityBuilderWithState( Class<T> type,
+                                                    Function<PropertyDescriptor, Object> propertyFunction,
+                                                    Function<AssociationDescriptor, EntityReference> associationFunction,
+                                                    Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
+                                                    Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
+        throws EntityTypeNotFoundException, AmbiguousTypeException;
+
+    /**
+     * Create a new EntityBuilder for an EntityComposite wich implements the given mixin type starting with the given
+     * state.
+     * <p>
+     * An EntityComposite will be chosen according to what has been registered and the visibility rules for Modules and
+     * Layers will be considered.
+     *
+     * @param <T>                      Entity type
+     * @param type                     Entity type
+     * @param identity                 the identity of the new Entity
+     * @param propertyFunction         a function providing the state of properties
+     * @param associationFunction      a function providing the state of associations
+     * @param manyAssociationFunction  a function providing the state of many associations
+     * @param namedAssociationFunction a function providing the state of named associations
+     *
+     * @return a new EntityBuilder starting with the given state
+     *
+     * @throws EntityTypeNotFoundException If no mixins implements the given type
+     * @throws AmbiguousTypeException      If several mixins implement the given type
+     */
+    <T> EntityBuilder<T> newEntityBuilderWithState( Class<T> type, String identity,
+                                                    Function<PropertyDescriptor, Object> propertyFunction,
+                                                    Function<AssociationDescriptor, EntityReference> associationFunction,
+                                                    Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
+                                                    Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
+        throws EntityTypeNotFoundException, AmbiguousTypeException;
 
     /**
      * Find an Entity of the given mixin type with the give identity. This
@@ -187,7 +245,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @return the entity
      *
      * @throws EntityTypeNotFoundException if no entity type could be found
-     * @throws NoSuchEntityException
+     * @throws NoSuchEntityException       if the entity could not be found
      */
     <T> T get( Class<T> type, String identity )
         throws EntityTypeNotFoundException, NoSuchEntityException;
@@ -220,9 +278,8 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * Complete this UnitOfWork. This will send all the changes down to the underlying
      * EntityStore's.
      *
-     * @throws UnitOfWorkCompletionException if the UnitOfWork could not be completed
-     * @throws ConcurrentEntityModificationException
-     *                                       if entities have been modified by others
+     * @throws UnitOfWorkCompletionException         if the UnitOfWork could not be completed
+     * @throws ConcurrentEntityModificationException if entities have been modified by others
      */
     void complete()
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException;
@@ -243,7 +300,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      */
     @Override
     public void close();
-    
+
     /**
      * Check if the UnitOfWork is open. It is closed after either complete() or discard()
      * methods have been called successfully.

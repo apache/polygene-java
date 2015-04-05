@@ -33,9 +33,9 @@ public interface DomainEventPlayer
      * be the original object, but could also be a service that wants
      * to be invoked to handle the event.
      *
-     * @param domainEventValue
-     * @param object
-     * @throws EventReplayException
+     * @param domainEventValue Domain event value
+     * @param object target
+     * @throws EventReplayException if unable to play event
      */
     public void playEvent( DomainEventValue domainEventValue, Object object )
             throws EventReplayException;

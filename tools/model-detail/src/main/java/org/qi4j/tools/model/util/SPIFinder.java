@@ -1,25 +1,25 @@
-/*  Copyright 2009 Tonny Kohar.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-* implied.
-*
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+/*
+ * Copyright (c) 2009, Tonny Kohar. All Rights Reserved.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.qi4j.tools.model.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.qi4j.tools.model.descriptor.ApplicationDetailDescriptor;
-import org.qi4j.tools.model.descriptor.CompositeDetailDescriptor;
 import org.qi4j.tools.model.descriptor.EntityDetailDescriptor;
 import org.qi4j.tools.model.descriptor.InjectedFieldDetailDescriptor;
 import org.qi4j.tools.model.descriptor.LayerDetailDescriptor;
@@ -27,27 +27,26 @@ import org.qi4j.tools.model.descriptor.MixinDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ModuleDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ObjectDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ServiceDetailDescriptor;
+import org.qi4j.tools.model.descriptor.TransientDetailDescriptor;
 import org.qi4j.tools.model.descriptor.ValueDetailDescriptor;
 
 /**
- * SPI would be defined as "All service dependencies which
- * are not satisfied from within the module or Layer".
+ * SPI would be defined as "All service dependencies which are not satisfied from within the module or Layer".
  */
 class SPIFinder
 {
-
     private ApplicationDetailDescriptor appDetailDescriptor;
 
     public List<ServiceDetailDescriptor> findModule( ModuleDetailDescriptor descriptor )
     {
         appDetailDescriptor = descriptor.layer().application();
 
-        ArrayList<ServiceDetailDescriptor> list = new ArrayList<ServiceDetailDescriptor>();
+        ArrayList<ServiceDetailDescriptor> list = new ArrayList<>();
 
         findInServices( descriptor.services(), list );
         findInEntities( descriptor.entities(), list );
         findInValues( descriptor.values(), list );
-        findInTransients( descriptor.composites(), list );
+        findInTransients( descriptor.transients(), list );
         findInObjects( descriptor.objects(), list );
 
         return list;
@@ -55,7 +54,7 @@ class SPIFinder
 
     public List<ServiceDetailDescriptor> findLayerSPI( LayerDetailDescriptor descriptor )
     {
-        ArrayList<ServiceDetailDescriptor> list = new ArrayList<ServiceDetailDescriptor>();
+        List<ServiceDetailDescriptor> list = new ArrayList<>();
 
         for( ModuleDetailDescriptor moduleDetailDescriptor : descriptor.modules() )
         {
@@ -124,9 +123,9 @@ class SPIFinder
         }
     }
 
-    private void findInTransients( Iterable<CompositeDetailDescriptor> iter, ArrayList<ServiceDetailDescriptor> list )
+    private void findInTransients( Iterable<TransientDetailDescriptor> iter, ArrayList<ServiceDetailDescriptor> list )
     {
-        for( CompositeDetailDescriptor descriptor : iter )
+        for( TransientDetailDescriptor descriptor : iter )
         {
             findInMixin( descriptor.mixins(), list );
         }
@@ -165,7 +164,6 @@ class SPIFinder
                 break;
             }
         }
-
         return serviceDetailDescriptor;
     }
 }

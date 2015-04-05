@@ -135,12 +135,12 @@ public class CompositeModelResolverTest
         }
     }
 
-    private static interface TestComposite1
+    public static interface TestComposite1
         extends TransientComposite, TestA, TestB
     {
     }
 
-    private static interface TestComposite2
+    public static interface TestComposite2
         extends Composite, TestC, TestD
     {
     }

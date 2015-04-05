@@ -33,7 +33,7 @@ import org.qi4j.tools.model.util.DescriptorNameComparator;
     private final List<ServiceDetailDescriptor> serviceList = new ArrayList<>();
     private final List<ImportedServiceDetailDescriptor> importedServiceList = new ArrayList<>();
     private final List<EntityDetailDescriptor> entityList = new ArrayList<>();
-    private final List<CompositeDetailDescriptor> transientList = new ArrayList<>();
+    private final List<TransientDetailDescriptor> transientList = new ArrayList<>();
     private final List<ValueDetailDescriptor> valueList = new ArrayList<>();
     private final List<ObjectDetailDescriptor> objectList = new ArrayList<>();
 
@@ -131,7 +131,7 @@ import org.qi4j.tools.model.util.DescriptorNameComparator;
             }
 
             // Transient
-            for( CompositeDetailDescriptor child : descriptor.composites() )
+            for( TransientDetailDescriptor child : descriptor.transients() )
             {
                 transientList.add( child );
             }

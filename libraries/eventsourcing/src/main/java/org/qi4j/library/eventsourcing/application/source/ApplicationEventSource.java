@@ -29,11 +29,12 @@ public interface ApplicationEventSource
      * Get list of event transactions after the given timestamp.
      * <p>
      * If they are on the exact same timestamp, they will not be included.
-     * </p>
      * <p>
      * The method uses the visitor pattern, so a visitor is sent in which is given each transaction, one at a time.
-     * </p>
+     *
      * @param afterTimestamp timestamp of transactions
+     * @param maxTransactions maximum transactions
+     * @return list of event transactions
      */
     Input<TransactionApplicationEvents, IOException> transactionsAfter( long afterTimestamp, long maxTransactions );
 
@@ -41,14 +42,14 @@ public interface ApplicationEventSource
      * Get list of event transactions before the given timestamp.
      * <p>
      * If they are on the exact same timestamp, they will not be included.
-     * </p>
      * <p>
      * The method uses the visitor pattern, so a visitor is sent in which is given each transaction, one at a time.
-     * </p>
      * <p>
      * The transactions are sent to the visitor with the latest transaction first, i.e. walking backwards in the stream.
-     * </p>
+     *
      * @param beforeTimestamp timestamp of transactions
+     * @param maxTransactions maximum transactions
+     * @return list of event transactions
      */
     Input<TransactionApplicationEvents, IOException> transactionsBefore( long beforeTimestamp, long maxTransactions );
 }

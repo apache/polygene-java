@@ -2,7 +2,7 @@
  * Copyright (c) 2008, Rickard Öberg. All Rights Reserved.
  * Copyright (c) 2008, Sonny Gill. All Rights Reserved.
  * Copyright (c) 2008, Niclas Hedhman. All Rights Reserved.
- * Copyright (c) 2014, Paul Merlin. All Rights Reserved.
+ * Copyright (c) 2014-2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -208,8 +208,9 @@ public final class ApplicationDetailDescriptorBuilder
             }
             else if( visited instanceof TransientDescriptor )
             {
-                currCompositeDescriptor = new CompositeDetailDescriptor<>( (TransientDescriptor) visited );
-                currModuleDescriptor.addComposite( currCompositeDescriptor );
+                TransientDetailDescriptor descriptor = new TransientDetailDescriptor( (TransientDescriptor) visited );
+                currModuleDescriptor.addTransient( descriptor );
+                currCompositeDescriptor = descriptor;
             }
             else if( visited instanceof MethodDescriptor )
             {

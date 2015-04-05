@@ -18,6 +18,7 @@ import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.runtime.composite.StateResolver;
 import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 
@@ -33,7 +34,7 @@ public final class ValueBuilderInstance<T>
     private final ModuleInstance currentModule;
     private final ValueInstance prototypeInstance;
 
-    public ValueBuilderInstance( ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, ValueStateModel.StateResolver stateResolver )
+    public ValueBuilderInstance( ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, StateResolver stateResolver )
     {
         ValueStateInstance state = new ValueStateInstance( compositeModelModule, currentModule, stateResolver );
         prototypeInstance = compositeModelModule.model().newValueInstance( compositeModelModule.module(), state );

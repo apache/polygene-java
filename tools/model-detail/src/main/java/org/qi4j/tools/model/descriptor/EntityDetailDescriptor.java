@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2008, Edward Yakop. All Rights Reserved.
+ * Copyright (c) 2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed  under the  Apache License,  Version 2.0  (the "License");
  * you may not use  this file  except in  compliance with the License.
@@ -18,12 +19,25 @@
 package org.qi4j.tools.model.descriptor;
 
 import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.functional.Visitable;
+import org.qi4j.functional.Visitor;
 
+/**
+ * Entity Detail Descriptor.
+ */
 public final class EntityDetailDescriptor
     extends CompositeDetailDescriptor<EntityDescriptor>
+    implements Visitable<EntityDetailDescriptor>
 {
     EntityDetailDescriptor( EntityDescriptor aDescriptor )
     {
         super( aDescriptor );
+    }
+
+    @Override
+    public <ThrowableType extends Throwable> boolean accept( Visitor<? super EntityDetailDescriptor, ThrowableType> visitor )
+        throws ThrowableType
+    {
+        return visitor.visit( this );
     }
 }

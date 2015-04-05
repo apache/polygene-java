@@ -1,7 +1,7 @@
 /*
- * Copyright 2010 Niclas Hedhman.
+ * Copyright 2010-2012 Niclas Hedhman.
  * Copyright 2011 Rickard Öberg.
- * Copyright 2013-2014 Paul Merlin.
+ * Copyright 2013-2015 Paul Merlin.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,6 @@ import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.type.CollectionType;
-import org.qi4j.api.type.MapType;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueDescriptor;
@@ -48,10 +46,13 @@ import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.spi.Qi4jSPI;
 
+import static org.qi4j.library.conversion.values.Shared.STRING_COLLECTION_TYPE_SPEC;
+import static org.qi4j.library.conversion.values.Shared.STRING_MAP_TYPE_SPEC;
+import static org.qi4j.library.conversion.values.Shared.STRING_TYPE_SPEC;
+
 @Mixins( EntityToValue.EntityToValueMixin.class )
 public interface EntityToValue
 {
-
     /**
      * Convert an entity to a value.
      *
@@ -178,7 +179,7 @@ public interface EntityToValue
                         {
                             AssociationStateDescriptor entityState = entityDescriptor.state();
                             String associationName = descriptor.qualifiedName().name();
-                            if( descriptor.valueType().mainType().equals( String.class ) )
+                            if( STRING_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
                             {
                                 // Find Association and convert to string
                                 AssociationDescriptor associationDescriptor;
@@ -201,10 +202,7 @@ public interface EntityToValue
                                     return null;
                                 }
                             }
-                            else if( descriptor.valueType() instanceof CollectionType
-                                     && ( (CollectionType) descriptor.valueType() ).collectedType()
-                                .mainType()
-                                .equals( String.class ) )
+                            else if( STRING_COLLECTION_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
                             {
                                 AssociationDescriptor associationDescriptor;
                                 try
@@ -224,9 +222,7 @@ public interface EntityToValue
                                 }
                                 return entities;
                             }
-                            else if( descriptor.valueType() instanceof MapType
-                                     && ( (MapType) descriptor.valueType() ).keyType().mainType().equals( String.class )
-                                     && ( (MapType) descriptor.valueType() ).valueType().mainType().equals( String.class ) )
+                            else if( STRING_MAP_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
                             {
                                 AssociationDescriptor associationDescriptor;
                                 try
@@ -291,8 +287,7 @@ public interface EntityToValue
             }
             else
             {
-                builder = module.newValueBuilderWithState(
-                    valueType,
+                builder = module.newValueBuilderWithState(valueType,
                     new Function<PropertyDescriptor, Object>()
                 {
                     @Override
@@ -307,7 +302,7 @@ public interface EntityToValue
                         }
                         catch( IllegalArgumentException e )
                         {
-                            if( descriptor.valueType().mainType().equals( String.class ) )
+                            if( STRING_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
                             {
                                 // Find Association and convert to string
                                 AssociationDescriptor associationDescriptor;
@@ -331,8 +326,7 @@ public interface EntityToValue
                                     return null;
                                 }
                             }
-                            else if( descriptor.valueType() instanceof CollectionType
-                                     && ( (CollectionType) descriptor.valueType() ).collectedType().mainType().equals( String.class ) )
+                            else if( STRING_COLLECTION_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
                             {
                                 AssociationDescriptor associationDescriptor;
                                 try
@@ -353,9 +347,7 @@ public interface EntityToValue
                                 }
                                 return entities;
                             }
-                            else if( descriptor.valueType() instanceof MapType
-                                     && ( (MapType) descriptor.valueType() ).keyType().mainType().equals( String.class )
-                                     && ( (MapType) descriptor.valueType() ).valueType().mainType().equals( String.class ) )
+                            else if( STRING_MAP_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
                             {
                                 AssociationDescriptor associationDescriptor;
                                 try
