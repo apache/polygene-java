@@ -210,7 +210,7 @@ public class FragmentClassLoader
                     cmv.visitVarInsn(opcode, idx++);
                 }
 
-                cmv.visitMethodInsn(INVOKESPECIAL, baseClassSlash, "<init>", desc);
+                cmv.visitMethodInsn(INVOKESPECIAL, baseClassSlash, "<init>", desc, false);
                 cmv.visitInsn(RETURN);
                 cmv.visitMaxs(idx, idx);
                 cmv.visitEnd();
@@ -299,7 +299,7 @@ public class FragmentClassLoader
                             // Call method
                             mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/api/composite/CompositeInvoker",
                                                 "invokeComposite",
-                                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+                                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
 
                             // Return value
                             if( !method.getReturnType().equals( Void.TYPE ) )
@@ -371,7 +371,7 @@ public class FragmentClassLoader
                         }
 
                         // Call method
-                        mv.visitMethodInsn( INVOKESPECIAL, baseClassSlash, method.getName(), desc );
+                        mv.visitMethodInsn( INVOKESPECIAL, baseClassSlash, method.getName(), desc, false );
 
                         // Return value
                         if( !method.getReturnType().equals( Void.TYPE ) )
@@ -442,7 +442,7 @@ public class FragmentClassLoader
                         }
 
                         mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
-                                            "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+                                            "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
                         mv.visitFieldInsn( PUTSTATIC, classSlash, "m" + midx, "Ljava/lang/reflect/Method;" );
                     }
                 }
@@ -454,7 +454,7 @@ public class FragmentClassLoader
                 mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/NoSuchMethodException" } );
                 mv.visitVarInsn( ASTORE, 0 );
                 mv.visitVarInsn( ALOAD, 0 );
-                mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/NoSuchMethodException", "printStackTrace", "()V" );
+                mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/NoSuchMethodException", "printStackTrace", "()V", false );
                 mv.visitLabel( l3 );
                 mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
                 mv.visitInsn( RETURN );
@@ -604,44 +604,44 @@ public class FragmentClassLoader
         if( aClass.equals( Integer.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false );
         }
         else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitVarInsn( LLOAD, idx );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false );
             idx++; // Extra jump
         }
         else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;", false );
         }
         else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;", false );
         }
         else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitVarInsn( DLOAD, idx );
             idx++; // Extra jump
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false );
         }
         else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitVarInsn( FLOAD, idx );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false );
         }
         else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false );
         }
         else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitVarInsn( ILOAD, idx );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false );
         }
         else
         {
@@ -656,56 +656,56 @@ public class FragmentClassLoader
         if( aClass.equals( Integer.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Integer" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I", false );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
         }
         else if( aClass.equals( Long.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Long" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J", false );
             mv.visitLabel( label );
             mv.visitInsn( LRETURN );
         }
         else if( aClass.equals( Short.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Short" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S", false );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
         }
         else if( aClass.equals( Byte.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Byte" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B", false );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
         }
         else if( aClass.equals( Double.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Double" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D", false );
             mv.visitLabel( label );
             mv.visitInsn( DRETURN );
         }
         else if( aClass.equals( Float.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Float" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F", false );
             mv.visitLabel( label );
             mv.visitInsn( FRETURN );
         }
         else if( aClass.equals( Boolean.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Boolean" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z", false );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
         }
         else if( aClass.equals( Character.TYPE ) )
         {
             mv.visitTypeInsn( CHECKCAST, "java/lang/Character" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C", false );
             mv.visitLabel( label );
             mv.visitInsn( IRETURN );
         }
