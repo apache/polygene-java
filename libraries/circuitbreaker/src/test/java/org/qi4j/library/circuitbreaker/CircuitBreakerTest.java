@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.jayway.awaitility.Awaitility.await;
-import static com.jayway.awaitility.Duration.FIVE_HUNDRED_MILLISECONDS;
+import static com.jayway.awaitility.Duration.ONE_SECOND;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -131,7 +131,7 @@ public class CircuitBreakerTest
         // END SNIPPET: direct
         assertThat( cb.status(), CoreMatchers.equalTo( CircuitBreaker.Status.off ) );
         System.out.println( "Wait..." );
-        await().atMost( FIVE_HUNDRED_MILLISECONDS ).until( circuitBreakerStatus(), is( CircuitBreaker.Status.on ) );
+        await().atMost( ONE_SECOND ).until( circuitBreakerStatus(), is( CircuitBreaker.Status.on ) );
 
         // START SNIPPET: direct
         // CircuitBreaker is back on
