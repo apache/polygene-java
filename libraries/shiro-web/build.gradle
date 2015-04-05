@@ -10,6 +10,7 @@ dependencies {
   compile project( ':org.qi4j.libraries:org.qi4j.library.http' )
   compile libraries.shiro_web
   compile libraries.servlet_api
+  compile libraries.slf4j_api
 
   testCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
   testCompile project( ":org.qi4j.libraries:org.qi4j.library.shiro-web" )

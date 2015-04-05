@@ -1,17 +1,16 @@
-
 description = "Qi4j Preferences EntityStore Extension"
 
-jar { manifest { name = "Qi4j Extension - EntityStore - Preferences" }}
+jar { manifest { name = "Qi4j Extension - EntityStore - Preferences" } }
 
 dependencies {
-    
-    compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
 
-    testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-    testCompile(project(":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson"))
+  compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
+  compile libraries.slf4j_api
 
-    testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-    testRuntime(libraries.logback)
+  testCompile( project( ":org.qi4j.core:org.qi4j.core.testsupport" ) )
+  testCompile( project( ":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson" ) )
 
+  testRuntime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
+  testRuntime( libraries.logback )
 }
 

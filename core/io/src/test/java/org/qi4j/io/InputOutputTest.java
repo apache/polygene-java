@@ -33,12 +33,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Visitor;
-import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 import static org.qi4j.functional.Iterables.iterable;
@@ -145,7 +145,7 @@ public class InputOutputTest
         File source = sourceFile();
 
         text( source ).transferTo(
-            Transforms.map( new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}" ),
+            Transforms.map( new Transforms.Log<String>( Logger.getLogger( getClass().getName() ), "Line: {0}" ),
                             Outputs.<String>noop() ) );
     }
 
@@ -159,7 +159,7 @@ public class InputOutputTest
         Inputs.iterable( iterable( data ) ).transferTo(
             Transforms.map(
                 new Transforms.ProgressLog<Integer>(
-                    LoggerFactory.getLogger( InputOutputTest.class ), "Data transferred: {0}", 10 ),
+                    Logger.getLogger( InputOutputTest.class.getName() ), "Data transferred: {0}", 10 ),
                 Outputs.<Integer>noop() ) );
     }
 
@@ -282,7 +282,7 @@ public class InputOutputTest
 
         input.transferTo(
             Transforms.map(
-                new Transforms.Log<String>( LoggerFactory.getLogger( getClass() ), "Line: {0}" ),
+                new Transforms.Log<String>( Logger.getLogger( getClass().getName() ), "Line: {0}" ),
                 Outputs.systemOut()
             )
         );

@@ -11,8 +11,6 @@ import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.spi.Qi4jSPI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractQi4jBaseTest
 {
@@ -22,8 +20,6 @@ public abstract class AbstractQi4jBaseTest
     protected Energy4Java qi4j;
     protected ApplicationDescriptor applicationModel;
     protected Application application;
-
-    private Logger log;
 
     @Before
     public void setUp()
@@ -110,15 +106,5 @@ public abstract class AbstractQi4jBaseTest
         {
             application.passivate();
         }
-    }
-
-    protected Logger getLog()
-    {
-        if( this.log == null )
-        {
-            this.log = LoggerFactory.getLogger( this.getClass() );
-        }
-
-        return this.log;
     }
 }

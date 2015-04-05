@@ -8,6 +8,7 @@ dependencies {
     compile project( ":org.qi4j.libraries:org.qi4j.library.rdf" )
     compile libraries.sesame
     compile libraries.commons_lang
+    compile libraries.slf4j_api
 
     testCompile project( ':org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson' )
     testCompile project( ':org.qi4j.extensions:org.qi4j.extension.entitystore-preferences' )
