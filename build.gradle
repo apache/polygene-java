@@ -558,8 +558,15 @@ def tutorialsImage = copySpec {
   exclude '**/*.iml'
 }
 
+def shellImage = copySpec {
+  from( "$projectDir/tools/shell/src/main/dist" )
+  into( "." )
+  include '**'
+}
+
 def binDistImage = copySpec {
   into "qi4j-sdk-$version"
+  with shellImage
   with docsImage
   with reportsDistImage
   with runtimeDependenciesListImage

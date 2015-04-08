@@ -246,7 +246,7 @@ public abstract class CompositeModel
 //        if (!matchesAny( isAssignableFrom( mixinType ), types ))
         if( !mixinsModel.isImplemented( mixinType ) )
         {
-            throw new IllegalArgumentException( "Composite does not implement type " + mixinType.getName() );
+            throw new IllegalArgumentException( "Composite " + types().iterator().next() + " does not implement type " + mixinType.getName() );
         }
 
         // Instantiate proxy for given mixin interface
