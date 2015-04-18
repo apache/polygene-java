@@ -70,13 +70,13 @@ $( document ).ready( function($){
             $( "div.logo" ).append( switcher_html );
             var toURL = function( displayName )
             {
-                if( window.location.hostname == "qi4j.org" || window.location.hostname == "www.qi4j.org" )
+                if( window.location.hostname == "zest.apache.org" )
                 {
                     return "../" + versions[ displayName ];
                 }
                 else
                 {
-                    return "http://qi4j.org/" + versions[ displayName ];
+                    return "https://zest.apache.org/qi4j/" + versions[ displayName ];
                 }
             }
             $( "div.logo select" ).change( function()
