@@ -196,7 +196,7 @@ public class ASMTest
             mv = cw.visitMethod( ACC_PUBLIC, "<init>", "()V", null, null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKESPECIAL, "org/qi4j/satisfiedBy/SomeMixin", "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, "org/qi4j/satisfiedBy/SomeMixin", "<init>", "()V", false );
             mv.visitInsn( RETURN );
             mv.visitMaxs( 1, 1 );
             mv.visitEnd();
@@ -206,7 +206,7 @@ public class ASMTest
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKESPECIAL, "org/qi4j/satisfiedBy/SomeMixin", "<init>", "(Ljava/lang/String;)V" );
+            mv.visitMethodInsn( INVOKESPECIAL, "org/qi4j/satisfiedBy/SomeMixin", "<init>", "(Ljava/lang/String;)V", false );
             mv.visitInsn( RETURN );
             mv.visitMaxs( 2, 2 );
             mv.visitEnd();
@@ -225,7 +225,7 @@ public class ASMTest
             mv.visitFieldInsn( GETSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m1", "Ljava/lang/reflect/Method;" );
             mv.visitInsn( ACONST_NULL );
             mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite",
-                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
             mv.visitTypeInsn( CHECKCAST, "java/lang/String" );
             mv.visitLabel( l1 );
             mv.visitInsn( ARETURN );
@@ -236,7 +236,7 @@ public class ASMTest
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>",
-                                "(Ljava/lang/Throwable;)V" );
+                                "(Ljava/lang/Throwable;)V", false );
             mv.visitInsn( ATHROW );
             mv.visitMaxs( 3, 2 );
             mv.visitEnd();
@@ -265,10 +265,10 @@ public class ASMTest
             mv.visitInsn( DUP );
             mv.visitInsn( ICONST_1 );
             mv.visitVarInsn( ILOAD, 2 );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false );
             mv.visitInsn( AASTORE );
             mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite",
-                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
             mv.visitTypeInsn( CHECKCAST, "java/lang/String" );
             mv.visitLabel( l1 );
             mv.visitInsn( ARETURN );
@@ -284,7 +284,7 @@ public class ASMTest
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 3 );
             mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>",
-                                "(Ljava/lang/Throwable;)V" );
+                                "(Ljava/lang/Throwable;)V", false );
             mv.visitInsn( ATHROW );
             mv.visitMaxs( 6, 4 );
             mv.visitEnd();
@@ -306,42 +306,42 @@ public class ASMTest
             mv.visitInsn( DUP );
             mv.visitInsn( ICONST_0 );
             mv.visitVarInsn( DLOAD, 1 );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false );
             mv.visitInsn( AASTORE );
             mv.visitInsn( DUP );
             mv.visitInsn( ICONST_1 );
             mv.visitVarInsn( ILOAD, 3 );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false );
             mv.visitInsn( AASTORE );
             mv.visitInsn( DUP );
             mv.visitInsn( ICONST_2 );
             mv.visitVarInsn( FLOAD, 4 );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false );
             mv.visitInsn( AASTORE );
             mv.visitInsn( DUP );
             mv.visitInsn( ICONST_3 );
             mv.visitVarInsn( ILOAD, 5 );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false );
             mv.visitInsn( AASTORE );
             mv.visitInsn( DUP );
             mv.visitInsn( ICONST_4 );
             mv.visitVarInsn( ILOAD, 6 );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false );
             mv.visitInsn( AASTORE );
             mv.visitInsn( DUP );
             mv.visitInsn( ICONST_5 );
             mv.visitVarInsn( LLOAD, 7 );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false );
             mv.visitInsn( AASTORE );
             mv.visitInsn( DUP );
             mv.visitIntInsn( BIPUSH, 6 );
             mv.visitVarInsn( ILOAD, 9 );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;", false );
             mv.visitInsn( AASTORE );
             mv.visitInsn( DUP );
             mv.visitIntInsn( BIPUSH, 7 );
             mv.visitVarInsn( ILOAD, 10 );
-            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;" );
+            mv.visitMethodInsn( INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;", false );
             mv.visitInsn( AASTORE );
             mv.visitInsn( DUP );
             mv.visitIntInsn( BIPUSH, 8 );
@@ -356,7 +356,7 @@ public class ASMTest
             mv.visitVarInsn( ALOAD, 13 );
             mv.visitInsn( AASTORE );
             mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite",
-                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
             mv.visitInsn( POP );
             mv.visitLabel( l1 );
             Label l3 = new Label();
@@ -368,7 +368,7 @@ public class ASMTest
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 14 );
             mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>",
-                                "(Ljava/lang/Throwable;)V" );
+                                "(Ljava/lang/Throwable;)V", false );
             mv.visitInsn( ATHROW );
             mv.visitLabel( l3 );
             mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
@@ -400,7 +400,7 @@ public class ASMTest
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitInsn( AASTORE );
             mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite",
-                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
             mv.visitInsn( POP );
             mv.visitLabel( l1 );
             Label l5 = new Label();
@@ -422,7 +422,7 @@ public class ASMTest
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>",
-                                "(Ljava/lang/Throwable;)V" );
+                                "(Ljava/lang/Throwable;)V", false );
             mv.visitInsn( ATHROW );
             mv.visitLabel( l5 );
             mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
@@ -444,9 +444,9 @@ public class ASMTest
             mv.visitFieldInsn( GETSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m5", "Ljava/lang/reflect/Method;" );
             mv.visitInsn( ACONST_NULL );
             mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/spi/composite/CompositeInvoker", "invokeComposite",
-                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;" );
+                                "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
             mv.visitTypeInsn( CHECKCAST, "java/lang/Integer" );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I", false );
             mv.visitLabel( l1 );
             mv.visitInsn( IRETURN );
             mv.visitLabel( l2 );
@@ -456,7 +456,7 @@ public class ASMTest
             mv.visitInsn( DUP );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitMethodInsn( INVOKESPECIAL, "java/lang/reflect/UndeclaredThrowableException", "<init>",
-                                "(Ljava/lang/Throwable;)V" );
+                                "(Ljava/lang/Throwable;)V", false );
             mv.visitInsn( ATHROW );
             mv.visitMaxs( 3, 2 );
             mv.visitEnd();
@@ -474,7 +474,7 @@ public class ASMTest
             mv.visitInsn( ICONST_0 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
-                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
             mv.visitFieldInsn( PUTSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m1", "Ljava/lang/reflect/Method;" );
             mv.visitLdcInsn( Type.getType( "Lorg/qi4j/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "foo" );
@@ -489,7 +489,7 @@ public class ASMTest
             mv.visitFieldInsn( GETSTATIC, "java/lang/Integer", "TYPE", "Ljava/lang/Class;" );
             mv.visitInsn( AASTORE );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
-                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
             mv.visitFieldInsn( PUTSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m2", "Ljava/lang/reflect/Method;" );
             mv.visitLdcInsn( Type.getType( "Lorg/qi4j/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "bar" );
@@ -540,7 +540,7 @@ public class ASMTest
             mv.visitLdcInsn( Type.getType( "[I" ) );
             mv.visitInsn( AASTORE );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
-                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
             mv.visitFieldInsn( PUTSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m3", "Ljava/lang/reflect/Method;" );
             mv.visitLdcInsn( Type.getType( "Lorg/qi4j/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "multiEx" );
@@ -551,14 +551,14 @@ public class ASMTest
             mv.visitLdcInsn( Type.getType( "Ljava/lang/String;" ) );
             mv.visitInsn( AASTORE );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
-                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
             mv.visitFieldInsn( PUTSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m4", "Ljava/lang/reflect/Method;" );
             mv.visitLdcInsn( Type.getType( "Lorg/qi4j/satisfiedBy/Other;" ) );
             mv.visitLdcInsn( "unwrapResult" );
             mv.visitInsn( ICONST_0 );
             mv.visitTypeInsn( ANEWARRAY, "java/lang/Class" );
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/Class", "getMethod",
-                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;" );
+                                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;", false );
             mv.visitFieldInsn( PUTSTATIC, "org/qi4j/satisfiedBy/SomeMixin_Stub", "m5", "Ljava/lang/reflect/Method;" );
             mv.visitLabel( l1 );
             Label l3 = new Label();
@@ -567,7 +567,7 @@ public class ASMTest
             mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[]{ "java/lang/NoSuchMethodException" } );
             mv.visitVarInsn( ASTORE, 0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/NoSuchMethodException", "printStackTrace", "()V" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/NoSuchMethodException", "printStackTrace", "()V", false );
             mv.visitLabel( l3 );
             mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
             mv.visitInsn( RETURN );

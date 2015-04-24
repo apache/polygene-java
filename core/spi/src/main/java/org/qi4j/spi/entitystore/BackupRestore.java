@@ -27,12 +27,14 @@ public interface BackupRestore
     /**
      * Input that allows data from the entity store to be backed up.
      *
-     * @return
+     * @return An Input instance containing the data to back up.
      */
     Input<String, IOException> backup();
 
     /**
      * Output that allows data to be restored from a backup.
+     *
+     * @return An Output instance to receive the restored data.
      */
     Output<String, IOException> restore();
 }

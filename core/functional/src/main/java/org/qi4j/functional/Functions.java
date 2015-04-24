@@ -37,10 +37,10 @@ public final class Functions
     /**
      * compose(F1(M,T),F2(F,M)) = F1(F2(F)) -&gt; T
      *
-     * @param outer
-     * @param inner
+     * @param outer The outer/encapsulating function
+     * @param inner The inner/encapsulated function
      *
-     * @return
+     * @return A function that is a composition of an outer and inner function.
      */
     public static <FROM, MIDDLE, TO> Function<FROM, TO> compose( final Function<? super MIDDLE, TO> outer,
                                                                  final Function<FROM, MIDDLE> inner
@@ -135,10 +135,10 @@ public final class Functions
      * Sample usage: last( map( count( in( "X" ) ), iterable( "X","Y","X","X","Y" ) ) )
      * Returns: 3
      *
-     * @param specification
-     * @param <T>
+     * @param specification The items that adhere to the Specification is counted.
+     * @param <T> The type of the items.
      *
-     * @return
+     * @return A Function that can count items adhering to a Specification.
      */
     public static <T> Function<T, Integer> count( final Specification<T> specification )
     {
@@ -163,10 +163,11 @@ public final class Functions
      * Find out the index of an item matching a given specification in an iterable.
      * Returns -1 if it is not found.
      *
-     * @param specification
-     * @param <T>
+     * @param specification The Specification that specifies what to look for.
+     * @param <T> The type of the items.
      *
-     * @return
+     * @return A Function that will provide the 'index' where the Specifcation is fulfilled. The Function will
+     * return -1 if the current item doesn't fulfill the Specification.
      */
     public static <T> Function<T, Integer> indexOf( final Specification<T> specification )
     {
@@ -193,11 +194,11 @@ public final class Functions
     /**
      * Find out the index of an item in an iterable.
      *
-     * @param item
-     * @param iterable
-     * @param <T>
+     * @param item The item to look for.
+     * @param iterable The Iterable to search.
+     * @param <T> The type of the items.
      *
-     * @return
+     * @return The index in the Iterable where the item is located.
      */
     @SuppressWarnings( "unchecked" )
     public static <T> int indexOf( T item, Iterable<T> iterable )
@@ -209,11 +210,11 @@ public final class Functions
     /**
      * Only apply given function on objects that satisfies the given specification.
      *
-     * @param specification
-     * @param function
-     * @param <T>
+     * @param specification A Specification that specifies what should be included in the filtered result.
+     * @param function The function to be applied to items that fulfills the Specification
+     * @param <T> The type of the items.
      *
-     * @return
+     * @return A Function that performs the filter operation when applied to Iterables.
      */
     public static <T> Function<T, T> filteredMap( final Specification<T> specification, final Function<T, T> function )
     {
@@ -234,10 +235,10 @@ public final class Functions
      * This should be used if the function to generate the sort key from an object is expensive, so
      * that it is not done many times for each item in a list.
      *
-     * @param comparableFunction
-     * @param <T>
+     * @param comparableFunction The Function that the Comparator will delegate to.
+     * @param <T>                The generic type to be used.
      *
-     * @return
+     * @return A comparator that uses a Function for the compare operation.
      */
     @SuppressWarnings( "raw" )
     public static <T> Comparator<T> comparator( final Function<T, Comparable> comparableFunction )

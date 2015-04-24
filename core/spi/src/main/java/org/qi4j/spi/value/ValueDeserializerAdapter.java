@@ -126,7 +126,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         deserializers.put( type, (Function<Object, Object>) deserializer );
     }
 
-    @SuppressWarnings( "unchecked" )
+    @SuppressWarnings( { "UnusedDeclaration", "unchecked" } )
     protected final <T> void registerComplexDeserializer( Class<T> type,
                                                           ComplexDeserializer<T, InputType, InputNodeType> deserializer )
     {
@@ -169,6 +169,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         } );
         registerDeserializer( Boolean.class, new Function<Object, Boolean>()
         {
+            @SuppressWarnings( "UnnecessaryUnboxing" )
             @Override
             public Boolean map( Object input )
             {
@@ -590,7 +591,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     {
         ValueCompositeType valueCompositeType = (ValueCompositeType) valueType;
         Class<?> valueBuilderType = first( valueCompositeType.types() );
-        String typeInfo = this.<String>getObjectFieldValue(
+        String typeInfo = this.getObjectFieldValue(
             inputNode,
             "_type",
             this.<String>buildDeserializeInputNodeFunction( new ValueType( String.class ) ) );
@@ -744,7 +745,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         else // Explicit ValueComposite
         if( ValueCompositeType.class.isAssignableFrom( valueType.getClass() ) )
         {
-            return (T) deserializeNodeValueComposite( (ValueCompositeType) valueType, inputNode );
+            return (T) deserializeNodeValueComposite( valueType, inputNode );
         }
         else // Explicit Collections
         if( CollectionType.class.isAssignableFrom( valueType.getClass() ) )
@@ -859,7 +860,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private <K, V> Map<K, V> deserializeNodeMap( MapType mapType, InputNodeType inputNode )
         throws Exception
     {
-        Map<K, V> map = new HashMap<K, V>();
+        Map<K, V> map = new HashMap<>();
         putArrayNodeInMap( inputNode,
                            this.<K>buildDeserializeInputNodeFunction( mapType.keyType() ),
                            this.<V>buildDeserializeInputNodeFunction( mapType.valueType() ),
@@ -877,7 +878,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             ValueCompositeType valueCompositeType;
             if( objectHasField( inputNode, "_type" ) ) // with _type info
             {
-                String typeInfo = this.<String>getObjectFieldValue(
+                String typeInfo = this.getObjectFieldValue(
                     inputNode,
                     "_type",
                     this.<String>buildDeserializeInputNodeFunction( new ValueType( String.class ) ) );
@@ -941,6 +942,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      * @param input Input
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
+    @SuppressWarnings( "UnusedParameters" )
     protected void onDeserializationStart( ValueType valueType, InputType input )
         throws Exception
     {
@@ -1052,7 +1054,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      * @param inputNode Input Node
      * @param key Object key
      * @param valueDeserializer Deserialization function
-     * @return 
+     * @return The value of the field.
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
     protected abstract <T> T getObjectFieldValue( InputNodeType inputNode,

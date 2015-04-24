@@ -109,6 +109,7 @@ import static org.qi4j.functional.Iterables.first;
  * </code></pre>
  *
  */
+@SuppressWarnings( "JavadocReference" )
 @Mixins( Configuration.ConfigurationMixin.class )
 public interface Configuration<T>
 {
@@ -174,7 +175,7 @@ public interface Configuration<T>
                 uow = module.newUnitOfWork( usecase );
                 try
                 {
-                    configuration = this.<T>findConfigurationInstanceFor( me, uow );
+                    configuration = this.findConfigurationInstanceFor( me, uow );
                 }
                 catch( InstantiationException e )
                 {
@@ -217,39 +218,38 @@ public interface Configuration<T>
         }
 
         @SuppressWarnings( "unchecked" )
-        public <T> T findConfigurationInstanceFor( ServiceComposite serviceComposite, UnitOfWork uow )
+        public <V> V findConfigurationInstanceFor( ServiceComposite serviceComposite, UnitOfWork uow )
             throws InstantiationException
         {
             ServiceDescriptor serviceModel = api.serviceDescriptorFor( serviceComposite );
 
             String identity = serviceComposite.identity().get();
-            T configuration;
+            V configuration;
             try
             {
-                configuration = uow.get( serviceModel.<T>configurationType(), identity );
+                configuration = uow.get( serviceModel.<V>configurationType(), identity );
                 uow.pause();
             }
             catch( NoSuchEntityException | EntityTypeNotFoundException e )
             {
-                return (T) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
+                return (V) initializeConfigurationInstance( serviceComposite, uow, serviceModel, identity );
             }
             return configuration;
         }
 
         @SuppressWarnings( "unchecked" )
-        private <T> T initializeConfigurationInstance( ServiceComposite serviceComposite,
+        private <V> V initializeConfigurationInstance( ServiceComposite serviceComposite,
                                                        UnitOfWork uow,
                                                        ServiceDescriptor serviceModel,
                                                        String identity
         )
             throws InstantiationException
         {
-            T configuration;
             Module module = api.moduleOf( serviceComposite );
             Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
             UnitOfWork buildUow = module.newUnitOfWork( usecase );
 
-            EntityBuilder<T> configBuilder = buildUow.newEntityBuilder( serviceModel.<T>configurationType(), identity );
+            EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( serviceModel.<V>configurationType(), identity );
 
             // Check for defaults
             String s = identity + ".properties";
@@ -277,11 +277,11 @@ public interface Configuration<T>
 
             try
             {
-                configuration = configBuilder.newInstance();
+                configBuilder.newInstance();
                 buildUow.complete();
 
                 // Try again
-                return (T) findConfigurationInstanceFor( serviceComposite, uow );
+                return (V) findConfigurationInstanceFor( serviceComposite, uow );
             }
             catch( Exception e1 )
             {
