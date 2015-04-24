@@ -57,8 +57,8 @@ public class Inputs
                 output.receiveFrom( new Sender<String, RuntimeException>()
                 {
                     @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, RuntimeException
+                    public <Receiver2ThrowableType extends Throwable> void sendTo( Receiver<? super String, Receiver2ThrowableType> receiver )
+                        throws Receiver2ThrowableType, RuntimeException
                     {
                         Scanner scanner = new Scanner( source );
                         while( scanner.hasNextLine() )
@@ -93,8 +93,8 @@ public class Inputs
                 output.receiveFrom( new Sender<String, RuntimeException>()
                 {
                     @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, RuntimeException
+                    public <Receiver2ThrowableType extends Throwable> void sendTo( Receiver<? super String, Receiver2ThrowableType> receiver )
+                        throws Receiver2ThrowableType, RuntimeException
                     {
                         Scanner scanner = new Scanner( source );
                         while( scanner.hasNextLine() )
@@ -153,13 +153,13 @@ public class Inputs
                     stream = new GZIPInputStream( stream );
                 }
 
-                try( BufferedReader reader = new BufferedReader( new InputStreamReader( stream, encoding ) ) )
+                try (BufferedReader reader = new BufferedReader( new InputStreamReader( stream, encoding ) ))
                 {
                     output.receiveFrom( new Sender<String, IOException>()
                     {
                         @Override
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
+                        public <Receiver2ThrowableType extends Throwable> void sendTo( Receiver<? super String, Receiver2ThrowableType> receiver )
+                            throws Receiver2ThrowableType, IOException
                         {
                             String line;
                             while( ( line = reader.readLine() ) != null )
@@ -208,18 +208,18 @@ public class Inputs
                 // Figure out charset given content-type
                 String contentType = urlConnection.getContentType();
                 String charSet = "UTF-8";
-                if( contentType.indexOf( "charset=" ) != -1 )
+                if( contentType.contains( "charset=" ) )
                 {
                     charSet = contentType.substring( contentType.indexOf( "charset=" ) + "charset=".length() );
                 }
 
-                try( BufferedReader reader = new BufferedReader( new InputStreamReader( stream, charSet ) ) )
+                try (BufferedReader reader = new BufferedReader( new InputStreamReader( stream, charSet ) ))
                 {
                     output.receiveFrom( new Sender<String, IOException>()
                     {
                         @Override
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
+                        public <Receiver2ThrowableType extends Throwable> void sendTo( Receiver<? super String, Receiver2ThrowableType> receiver )
+                            throws Receiver2ThrowableType, IOException
                         {
                             String line;
                             while( ( line = reader.readLine() ) != null )
@@ -238,10 +238,10 @@ public class Inputs
     /**
      * Read a file using ByteBuffer of a given size. Useful for transferring raw data.
      *
-     * @param source
-     * @param bufferSize
+     * @param source The file to be read.
+     * @param bufferSize The size of the byte array.
      *
-     * @return
+     * @return An Input instance to be applied to streaming operations.
      */
     public static Input<ByteBuffer, IOException> byteBuffer( final File source, final int bufferSize )
     // END SNIPPET: method
@@ -262,8 +262,8 @@ public class Inputs
                     output.receiveFrom( new Sender<ByteBuffer, IOException>()
                     {
                         @Override
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super ByteBuffer, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
+                        public <Receiver2ThrowableType extends Throwable> void sendTo( Receiver<? super ByteBuffer, Receiver2ThrowableType> receiver )
+                            throws Receiver2ThrowableType, IOException
                         {
                             while( fci.read( buffer ) != -1 )
                             {
@@ -287,10 +287,10 @@ public class Inputs
     /**
      * Read an inputstream using ByteBuffer of a given size.
      *
-     * @param source
-     * @param bufferSize
+     * @param source The InputStream to be read.
+     * @param bufferSize The size of the byte array.
      *
-     * @return
+     * @return An Input instance to be applied to streaming operations.
      */
     public static Input<ByteBuffer, IOException> byteBuffer( final InputStream source, final int bufferSize )
     // END SNIPPET: method
@@ -306,8 +306,8 @@ public class Inputs
                     output.receiveFrom( new Sender<ByteBuffer, IOException>()
                     {
                         @Override
-                        public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super ByteBuffer, ReceiverThrowableType> receiver )
-                            throws ReceiverThrowableType, IOException
+                        public <Receiver2ThrowableType extends Throwable> void sendTo( Receiver<? super ByteBuffer, Receiver2ThrowableType> receiver )
+                            throws Receiver2ThrowableType, IOException
                         {
                             byte[] buffer = new byte[ bufferSize ];
 
@@ -334,11 +334,11 @@ public class Inputs
      * Combine many Input into one single Input. When a transfer is initiated from it all items from all inputs will be transferred
      * to the given Output.
      *
-     * @param inputs
-     * @param <T>
-     * @param <SenderThrowableType>
+     * @param inputs An Iterable of Input instances to be combined.
+     * @param <T> The item type of the Input
+     * @param <SenderThrowableType> The Throwable that might be thrown by the Inputs.
      *
-     * @return
+     * @return A combined Input, allowing for easy aggregation of many Input sources.
      */
     public static <T, SenderThrowableType extends Throwable> Input<T, SenderThrowableType> combine( final Iterable<Input<T, SenderThrowableType>> inputs )
     // END SNIPPET: method
@@ -346,8 +346,8 @@ public class Inputs
         return new Input<T, SenderThrowableType>()
         {
             @Override
-            public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super T, ReceiverThrowableType> output )
-                throws SenderThrowableType, ReceiverThrowableType
+            public <Receiver2ThrowableType extends Throwable> void transferTo( Output<? super T, Receiver2ThrowableType> output )
+                throws SenderThrowableType, Receiver2ThrowableType
             {
                 output.receiveFrom( new Sender<T, SenderThrowableType>()
                 {
@@ -360,8 +360,8 @@ public class Inputs
                             input.transferTo( new Output<T, ReceiverThrowableType>()
                             {
                                 @Override
-                                public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends T, SenderThrowableType> sender )
-                                    throws ReceiverThrowableType, SenderThrowableType
+                                public <Sender2ThrowableType extends Throwable> void receiveFrom( Sender<? extends T, Sender2ThrowableType> sender )
+                                    throws ReceiverThrowableType, Sender2ThrowableType
                                 {
                                     sender.sendTo( new Receiver<T, ReceiverThrowableType>()
                                     {
@@ -386,10 +386,10 @@ public class Inputs
     /**
      * Create an Input that takes its items from the given Iterable.
      *
-     * @param iterable
-     * @param <T>
+     * @param iterable The Iterable to be used as an Input.
+     * @param <T> The item type of the Input
      *
-     * @return
+     * @return An Input instance that is backed by the Iterable.
      */
     public static <T> Input<T, RuntimeException> iterable( final Iterable<T> iterable )
     // END SNIPPET: method
@@ -403,8 +403,8 @@ public class Inputs
                 output.receiveFrom( new Sender<T, RuntimeException>()
                 {
                     @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super T, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, RuntimeException
+                    public <Receiver2ThrowableType extends Throwable> void sendTo( Receiver<? super T, Receiver2ThrowableType> receiver )
+                        throws Receiver2ThrowableType, RuntimeException
                     {
                         for( T item : iterable )
                         {
@@ -423,10 +423,10 @@ public class Inputs
      * data has been gathered it will send this in chunks of the given size to the Output it is transferred to. The Visitor does not have to call
      * close() on the OutputStream, but should ensure that any wrapper streams or writers are flushed so that all data is sent.
      *
-     * @param outputVisitor
-     * @param bufferSize
+     * @param outputVisitor The OutputStream Visitor that will be backing the Input ByteBuffer.
+     * @param bufferSize The buffering size.
      *
-     * @return
+     * @return An Input instance of ByteBuffer, that is backed by an Visitor to an OutputStream.
      */
     public static Input<ByteBuffer, IOException> output( final Visitor<OutputStream, IOException> outputVisitor,
                                                          final int bufferSize
@@ -443,10 +443,10 @@ public class Inputs
                 {
                     @Override
                     @SuppressWarnings( "unchecked" )
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super ByteBuffer, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
+                    public <Receiver2ThrowableType extends Throwable> void sendTo( final Receiver<? super ByteBuffer, Receiver2ThrowableType> receiver )
+                        throws Receiver2ThrowableType, IOException
                     {
-                        try( OutputStream out = new BufferedOutputStream( new OutputStream()
+                        try (OutputStream out = new BufferedOutputStream( new OutputStream()
                         {
                             @Override
                             public void write( int b )
@@ -455,6 +455,7 @@ public class Inputs
                                 // Ignore
                             }
 
+                            @SuppressWarnings( "NullableProblems" )
                             @Override
                             public void write( byte[] b, int off, int len )
                                 throws IOException
@@ -469,13 +470,13 @@ public class Inputs
                                     throw new IOException( ex );
                                 }
                             }
-                        }, bufferSize ) )
+                        }, bufferSize ))
                         {
                             outputVisitor.visit( out );
                         }
                         catch( IOException ex )
                         {
-                            throw (ReceiverThrowableType) ex.getCause();
+                            throw (Receiver2ThrowableType) ex.getCause();
                         }
                     }
                 } );

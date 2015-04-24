@@ -99,21 +99,32 @@ public class Outputs
                     // Replace file with temporary file
                     if( !file.exists() || file.delete() )
                     {
-                        tmpFile.renameTo( file );
+                        if( ! tmpFile.renameTo( file ) )
+                        {
+                            // TODO: What?? Throw an Exception?
+                            System.err.println( "Unable to rename file: " + tmpFile + " to " + file );
+                        }
                     }
                 }
                 catch( IOException e )
                 {
                     // We failed writing - close and delete
                     writer.close();
-                    tmpFile.delete();
+                    if( ! tmpFile.delete() )
+                    {
+                        System.err.println("Unable to delete temporary file." );
+                        tmpFile.deleteOnExit();
+                    }
                 }
                 catch( Throwable senderThrowableType )
                 {
                     // We failed writing - close and delete
                     writer.close();
-                    tmpFile.delete();
-
+                    if( ! tmpFile.delete() )
+                    {
+                        System.err.println("Unable to delete temporary file." );
+                        tmpFile.deleteOnExit();
+                    }
                     throw (SenderThrowableType) senderThrowableType;
                 }
             }
@@ -193,12 +204,11 @@ public class Outputs
     /**
      * Write ByteBuffer data to a file. If the writing or sending of data fails the file will be deleted.
      *
-     * @param file
-     * @param <T>
+     * @param file The destination file.
      *
-     * @return
+     * @return The Output ByteBuffer instance backed by a File.
      */
-    public static <T> Output<ByteBuffer, IOException> byteBuffer( final File file )
+    public static Output<ByteBuffer, IOException> byteBuffer( final File file )
     // END SNIPPET: method
     {
         return new Output<ByteBuffer, IOException>()
@@ -228,21 +238,33 @@ public class Outputs
                     // Replace file with temporary file
                     if( !file.exists() || file.delete() )
                     {
-                        tmpFile.renameTo( file );
+                        if( ! tmpFile.renameTo( file ) )
+                        {
+                            // TODO: What can be done in this case?
+                            System.err.println( "Unable to rename file: " + tmpFile + " to " + file );
+                        }
                     }
                 }
                 catch( IOException e )
                 {
                     // We failed writing - close and delete
                     stream.close();
-                    tmpFile.delete();
+                    if( ! tmpFile.delete() )
+                    {
+                        System.err.println("Unable to delete temporary file." );
+                        tmpFile.deleteOnExit();
+                    }
+
                 }
                 catch( Throwable senderThrowableType )
                 {
                     // We failed writing - close and delete
                     stream.close();
-                    tmpFile.delete();
-
+                    if( ! tmpFile.delete() )
+                    {
+                        System.err.println("Unable to delete temporary file." );
+                        tmpFile.deleteOnExit();
+                    }
                     throw (SenderThrowableType) senderThrowableType;
                 }
             }
@@ -254,12 +276,11 @@ public class Outputs
     /**
      * Write ByteBuffer data to an OutputStream.
      *
-     * @param stream
-     * @param <T>
+     * @param stream Destination OutputStream
      *
-     * @return
+     * @return The Output of ByteBuffer that will be backed by the OutputStream.
      */
-    public static <T> Output<ByteBuffer, IOException> byteBuffer( final OutputStream stream )
+    public static Output<ByteBuffer, IOException> byteBuffer( final OutputStream stream )
     // END SNIPPET: method
     {
         return new Output<ByteBuffer, IOException>()
@@ -303,13 +324,12 @@ public class Outputs
     /**
      * Write byte array data to a file. If the writing or sending of data fails the file will be deleted.
      *
-     * @param file
-     * @param bufferSize
-     * @param <T>
+     * @param file The File to be written to.
+     * @param bufferSize The size of the ByteBuffer.
      *
-     * @return
+     * @return An Output instance that will write to the given File.
      */
-    public static <T> Output<byte[], IOException> bytes( final File file, final int bufferSize )
+    public static Output<byte[], IOException> bytes( final File file, final int bufferSize )
     // END SNIPPET: method
     {
         return new Output<byte[], IOException>()
@@ -338,21 +358,32 @@ public class Outputs
                     // Replace file with temporary file
                     if( !file.exists() || file.delete() )
                     {
-                        tmpFile.renameTo( file );
+                        if( ! tmpFile.renameTo( file ) )
+                        {
+                            // TODO: WHAT???
+                            System.err.println( "Unable to rename " + tmpFile + " to " + file );
+                        }
                     }
                 }
                 catch( IOException e )
                 {
                     // We failed writing - close and delete
                     stream.close();
-                    file.delete();
+                    if( ! tmpFile.delete() )
+                    {
+                        System.err.println("Unable to delete temporary file." );
+                        tmpFile.deleteOnExit();
+                    }
                 }
                 catch( Throwable senderThrowableType )
                 {
                     // We failed writing - close and delete
                     stream.close();
-                    file.delete();
-
+                    if( ! tmpFile.delete() )
+                    {
+                        System.err.println("Unable to delete temporary file." );
+                        tmpFile.deleteOnExit();
+                    }
                     throw (SenderThrowableType) senderThrowableType;
                 }
             }
@@ -364,9 +395,9 @@ public class Outputs
     /**
      * Do nothing. Use this if you have all logic in filters and/or specifications
      *
-     * @param <T>
+     * @param <T> The item type.
      *
-     * @return
+     * @return An Output instance that ignores all data.
      */
     public static <T> Output<T, RuntimeException> noop()
     // END SNIPPET: method
@@ -388,10 +419,10 @@ public class Outputs
      * Use given receiver as Output. Use this if there is no need to create a "transaction" for each transfer, and no need
      * to do batch writes or similar.
      *
-     * @param <T>
+     * @param <T> The item type
      * @param receiver receiver for this Output
      *
-     * @return
+     * @return An Output instance backed by a Receiver of items.
      */
     public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> withReceiver( final Receiver<T, ReceiverThrowableType> receiver )
     // END SNIPPET: method
@@ -412,7 +443,7 @@ public class Outputs
     /**
      * Write objects to System.out.println.
      *
-     * @return
+     * @return An Output instance that is backed by System.out
      */
     public static Output<Object, RuntimeException> systemOut()
     // END SNIPPET: method
@@ -420,7 +451,7 @@ public class Outputs
         return new Output<Object, RuntimeException>()
         {
             @Override
-            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends Object, SenderThrowableType> sender )
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<?, SenderThrowableType> sender )
                 throws RuntimeException, SenderThrowableType
             {
                 sender.sendTo( new Receiver<Object, RuntimeException>()
@@ -439,14 +470,17 @@ public class Outputs
 
     /**
      * Write objects to System.err.println.
+     *
+     * @return An Output instance backed by System.in
      */
+    @SuppressWarnings( "UnusedDeclaration" )
     public static Output<Object, RuntimeException> systemErr()
     // END SNIPPET: method
     {
         return new Output<Object, RuntimeException>()
         {
             @Override
-            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends Object, SenderThrowableType> sender )
+            public <SenderThrowableType extends Throwable> void receiveFrom( Sender<?, SenderThrowableType> sender )
                 throws RuntimeException, SenderThrowableType
             {
                 sender.sendTo( new Receiver<Object, RuntimeException>()

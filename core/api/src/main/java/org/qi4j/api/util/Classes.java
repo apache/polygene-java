@@ -97,6 +97,7 @@ public final class Classes
      * Return the same class if it's not a wrapper class. This can therefore safely be used on all types
      * to ensure that they are primitives if possible.
      */
+    @SuppressWarnings( "UnusedDeclaration" )
     private static final Function<Type, Type> PRIMITIVE_CLASS = new Function<Type, Type>()
     {
         @Override
@@ -411,6 +412,7 @@ public final class Classes
         }
     }
 
+    @SuppressWarnings( "UnusedDeclaration" )
     public static <AnnotationType extends Annotation>
         AnnotationType findAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type, Class<AnnotationType> annotationClass )
     {
@@ -443,11 +445,11 @@ public final class Classes
      * Given a type variable, find what it resolves to given the declaring class where type
      * variable was found and a top class that extends the declaring class.
      *
-     * @param name
-     * @param declaringClass
-     * @param topClass
+     * @param name The TypeVariable name.
+     * @param declaringClass The class where the TypeVariable is declared.
+     * @param topClass The top class that extends the declaringClass
      *
-     * @return
+     * @return The Type instance of the given TypeVariable
      */
     @SuppressWarnings( "raw" )
     public static Type resolveTypeVariable( TypeVariable name, Class declaringClass, Class topClass )

@@ -69,6 +69,7 @@ import java.lang.annotation.Target;
  * }
  * </code></pre>
  */
+@SuppressWarnings( "JavadocReference" )
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { ElementType.METHOD, ElementType.FIELD } )
 @Documented

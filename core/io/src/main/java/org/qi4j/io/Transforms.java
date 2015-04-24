@@ -31,22 +31,22 @@ public class Transforms
     /**
      * Filter items in a transfer by applying the given Specification to each item.
      *
-     * @param specification
-     * @param output
-     * @param <T>
-     * @param <ReceiverThrowableType>
+     * @param specification            The Specification defining the items to not filter away.
+     * @param output                   The Output instance to receive to result.
+     * @param <T>                      The item type
+     * @param <Receiver2ThrowableType> Exception type that might be thrown by the Receiver.
      *
-     * @return
+     * @return And Output encapsulation the filter operation.
      */
-    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filter( final Specification<? super T> specification,
-                                                                                                        final Output<T, ReceiverThrowableType> output
+    public static <T, Receiver2ThrowableType extends Throwable> Output<T, Receiver2ThrowableType> filter( final Specification<? super T> specification,
+                                                                                                          final Output<T, Receiver2ThrowableType> output
     )
     {
-        return new Output<T, ReceiverThrowableType>()
+        return new Output<T, Receiver2ThrowableType>()
         {
             @Override
             public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<? extends T, SenderThrowableType> sender )
-                throws ReceiverThrowableType, SenderThrowableType
+                throws Receiver2ThrowableType, SenderThrowableType
             {
                 output.receiveFrom( new Sender<T, SenderThrowableType>()
                 {
@@ -75,23 +75,23 @@ public class Transforms
     /**
      * Map items in a transfer from one type to another by applying the given function.
      *
-     * @param function
-     * @param output
-     * @param <From>
-     * @param <To>
-     * @param <ReceiverThrowableType>
+     * @param function                 The transformation function to apply to the streaming items.
+     * @param output                   The output to receive the transformed items.
+     * @param <From>                   The type of the incoming items.
+     * @param <To>                     The type of the transformed items.
+     * @param <Receiver2ThrowableType> The exception type that the Receiver might throw.
      *
-     * @return
+     * @return An Output instance that encapsulates the map transformation.
      */
-    public static <From, To, ReceiverThrowableType extends Throwable> Output<From, ReceiverThrowableType> map( final Function<? super From, ? extends To> function,
-                                                                                                               final Output<To, ReceiverThrowableType> output
+    public static <From, To, Receiver2ThrowableType extends Throwable> Output<From, Receiver2ThrowableType> map( final Function<? super From, ? extends To> function,
+                                                                                                                 final Output<To, Receiver2ThrowableType> output
     )
     {
-        return new Output<From, ReceiverThrowableType>()
+        return new Output<From, Receiver2ThrowableType>()
         {
             @Override
             public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<? extends From, SenderThrowableType> sender )
-                throws ReceiverThrowableType, SenderThrowableType
+                throws Receiver2ThrowableType, SenderThrowableType
             {
                 output.receiveFrom( new Sender<To, SenderThrowableType>()
                 {
@@ -118,24 +118,24 @@ public class Transforms
      * Apply the given function to items in the transfer that match the given specification. Other items will pass
      * through directly.
      *
-     * @param specification
-     * @param function
-     * @param output
-     * @param <T>
-     * @param <ReceiverThrowableType>
+     * @param specification            The Specification defining which items should be transformed.
+     * @param function                 The transformation function.
+     * @param output                   The Output that will receive the resulting items.
+     * @param <T>                      The item type. Items can not be transformed to a new type.
+     * @param <Receiver2ThrowableType> The exception that the Receiver might throw.
      *
-     * @return
+     * @return An Output instance that encapsulates the operation.
      */
-    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> filteredMap( final Specification<? super T> specification,
-                                                                                                             final Function<? super T, ? extends T> function,
-                                                                                                             final Output<T, ReceiverThrowableType> output
+    public static <T, Receiver2ThrowableType extends Throwable> Output<T, Receiver2ThrowableType> filteredMap( final Specification<? super T> specification,
+                                                                                                               final Function<? super T, ? extends T> function,
+                                                                                                               final Output<T, Receiver2ThrowableType> output
     )
     {
-        return new Output<T, ReceiverThrowableType>()
+        return new Output<T, Receiver2ThrowableType>()
         {
             @Override
             public <SenderThrowableType extends Throwable> void receiveFrom( final Sender<? extends T, SenderThrowableType> sender )
-                throws ReceiverThrowableType, SenderThrowableType
+                throws Receiver2ThrowableType, SenderThrowableType
             {
                 output.receiveFrom( new Sender<T, SenderThrowableType>()
                 {
@@ -172,20 +172,20 @@ public class Transforms
      *
      * @param lock                    the lock to be used for transfers
      * @param output                  output to be wrapped
-     * @param <T>
-     * @param <ReceiverThrowableType>
+     * @param <T>                     The Item type
+     * @param <Receiver2ThrowableType> The Exception type that the Receiver might throw.
      *
      * @return Output wrapper that uses the given lock during transfers.
      */
-    public static <T, ReceiverThrowableType extends Throwable> Output<T, ReceiverThrowableType> lock( final Lock lock,
-                                                                                                      final Output<T, ReceiverThrowableType> output
+    public static <T, Receiver2ThrowableType extends Throwable> Output<T, Receiver2ThrowableType> lock( final Lock lock,
+                                                                                                      final Output<T, Receiver2ThrowableType> output
     )
     {
-        return new Output<T, ReceiverThrowableType>()
+        return new Output<T, Receiver2ThrowableType>()
         {
             @Override
             public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends T, SenderThrowableType> sender )
-                throws ReceiverThrowableType, SenderThrowableType
+                throws Receiver2ThrowableType, SenderThrowableType
             {
                 /**
                  * Fix for this bug:
@@ -195,6 +195,7 @@ public class Transforms
                 {
                     try
                     {
+                        //noinspection StatementWithEmptyBody
                         while( !lock.tryLock( 1000, TimeUnit.MILLISECONDS ) )
                         {
                             // On timeout, try again
@@ -225,8 +226,8 @@ public class Transforms
      *
      * @param lock                  the lock to be used for transfers
      * @param input                 input to be wrapped
-     * @param <T>
-     * @param <SenderThrowableType>
+     * @param <T>                   The item type.
+     * @param <SenderThrowableType> The Exception type that the Sender might throw.
      *
      * @return Input wrapper that uses the given lock during transfers.
      */
@@ -248,6 +249,7 @@ public class Transforms
                 {
                     try
                     {
+                        //noinspection StatementWithEmptyBody
                         while( !( lock.tryLock() || lock.tryLock( 1000, TimeUnit.MILLISECONDS ) ) )
                         {
                             // On timeout, try again
@@ -300,6 +302,7 @@ public class Transforms
     /**
      * Convert strings to bytes using the given CharSet
      */
+    @SuppressWarnings( "UnusedDeclaration" )
     public static class String2Bytes
         implements Function<String, byte[]>
     {
@@ -340,6 +343,7 @@ public class Transforms
     /**
      * Convert objects to Strings using .toString()
      */
+    @SuppressWarnings( "UnusedDeclaration" )
     public static class ObjectToString
         implements Function<Object, String>
     {
@@ -396,15 +400,15 @@ public class Transforms
             this.interval = interval;
             if( logger != null && format != null )
             {
-                log = new Log<String>( logger, format );
+                log = new Log<>( logger, format );
             }
-            counter = new Counter<T>();
+            counter = new Counter<>();
         }
 
         public ProgressLog( long interval )
         {
             this.interval = interval;
-            counter = new Counter<T>();
+            counter = new Counter<>();
         }
 
         @Override
