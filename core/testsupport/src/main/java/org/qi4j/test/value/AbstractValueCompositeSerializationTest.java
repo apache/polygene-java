@@ -49,8 +49,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -69,7 +67,6 @@ public abstract class AbstractValueCompositeSerializationTest
     @Rule
     @SuppressWarnings( "PublicField" )
     public TestName testName = new TestName();
-    private Logger log;
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -84,7 +81,6 @@ public abstract class AbstractValueCompositeSerializationTest
     @Before
     public void before()
     {
-        log = LoggerFactory.getLogger( testName.getMethodName() );
         module.injectTo( this );
     }
     @Service
@@ -105,8 +101,6 @@ public abstract class AbstractValueCompositeSerializationTest
             valueSerialization.serialize( some, output );
             String stateString = output.toString( "UTF-8" );
 
-            log.info( "Complex ValueComposite state:\n\n{}\n", stateString );
-
             // Deserialize using Module API
             SomeValue some2 = module.newValueFromSerializedState( SomeValue.class, stateString );
 
@@ -122,7 +116,6 @@ public abstract class AbstractValueCompositeSerializationTest
         }
         catch( Exception ex )
         {
-            log.error( ex.getMessage(), ex );
             throw ex;
         }
         finally

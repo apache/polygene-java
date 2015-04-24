@@ -28,8 +28,6 @@ import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.spi.Qi4jSPI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Base class for Qi4j scenario tests. This will create one Qi4j application per class instead of per test.
@@ -47,8 +45,6 @@ public abstract class AbstractQi4jScenarioTest
     static protected Module module;
 
     static protected Assembler assembler; // Initialize this in static block of subclass
-
-    static private Logger log;
 
     @BeforeClass
     public static void setUp()
@@ -143,15 +139,5 @@ public abstract class AbstractQi4jScenarioTest
         {
             application.passivate();
         }
-    }
-
-    protected Logger getLog()
-    {
-        if( this.log == null )
-        {
-            this.log = LoggerFactory.getLogger( this.getClass() );
-        }
-
-        return this.log;
     }
 }

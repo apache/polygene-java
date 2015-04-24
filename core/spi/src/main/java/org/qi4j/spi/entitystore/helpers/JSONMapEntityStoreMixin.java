@@ -62,8 +62,6 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -106,8 +104,6 @@ public class JSONMapEntityStoreMixin
     protected String uuid;
     private int count;
 
-    private Logger logger;
-
     public JSONMapEntityStoreMixin()
     {
     }
@@ -116,8 +112,6 @@ public class JSONMapEntityStoreMixin
     public void setUpJSONMapES()
         throws Exception
     {
-        logger = LoggerFactory.getLogger( descriptor.identity() );
-
         uuid = descriptor.identity() + "-" + UUID.randomUUID().toString();
         if( caching != null )
         {
@@ -318,7 +312,14 @@ public class JSONMapEntityStoreMixin
                                                 // Synch back 100 at a time
                                                 if( migrated.size() > 100 )
                                                 {
-                                                    synchMigratedEntities( migrated );
+                                                    try
+                                                    {
+                                                        synchMigratedEntities( migrated );
+                                                    }
+                                                    catch( IOException e )
+                                                    {
+                                                        throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
+                                                    }
                                                 }
                                             }
                                             receiver.receive( entity );
@@ -328,7 +329,14 @@ public class JSONMapEntityStoreMixin
                                     // Synch any remaining migrated entities
                                     if( !migrated.isEmpty() )
                                     {
-                                        synchMigratedEntities( migrated );
+                                        try
+                                        {
+                                            synchMigratedEntities( migrated );
+                                        }
+                                        catch( IOException e )
+                                        {
+                                            throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
+                                        }
                                     }
                                 }
                             } );
@@ -344,31 +352,25 @@ public class JSONMapEntityStoreMixin
     }
 
     private void synchMigratedEntities( final List<EntityState> migratedEntities )
+        throws IOException
     {
-        try
+        mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
         {
-            mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
+            @Override
+            public void visitMap( MapEntityStore.MapChanger changer )
+                throws IOException
             {
-                @Override
-                public void visitMap( MapEntityStore.MapChanger changer )
-                    throws IOException
+                for( EntityState migratedEntity : migratedEntities )
                 {
-                    for( EntityState migratedEntity : migratedEntities )
+                    JSONEntityState state = (JSONEntityState) migratedEntity;
+                    try( Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ) )
                     {
-                        JSONEntityState state = (JSONEntityState) migratedEntity;
-                        try( Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ) )
-                        {
-                            writeEntityState( state, writer, state.version(), state.lastModified() );
-                        }
+                        writeEntityState( state, writer, state.version(), state.lastModified() );
                     }
                 }
-            } );
-            migratedEntities.clear();
-        }
-        catch( IOException e )
-        {
-            logger.warn( "Could not store migrated entites", e );
-        }
+            }
+        } );
+        migratedEntities.clear();
     }
 
     protected String newUnitOfWorkId()
@@ -424,11 +426,6 @@ public class JSONMapEntityStoreMixin
                     // Do nothing - set version to be correct
                     jsonObject.put( JSONKeys.APPLICATION_VERSION, application.version() );
                 }
-
-                LoggerFactory.getLogger( getClass() ).debug( "Updated version nr on " + identity
-                                                             + " from " + currentAppVersion
-                                                             + " to " + application.version() );
-
                 // State changed
                 status = EntityStatus.UPDATED;
             }

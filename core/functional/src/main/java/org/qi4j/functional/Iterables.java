@@ -26,16 +26,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Utility methods for working with Iterables. See test for examples of how to use.
  */
 public final class Iterables
 {
-    private static Logger debugLogger = LoggerFactory.getLogger( Iterables.class );
-
     @SuppressWarnings( "raw" )
     private static final Iterable EMPTY = new Iterable()
     {
@@ -580,21 +576,15 @@ public final class Iterables
             @Override
             public T map( T t )
             {
-                if( functions.length == 0 )
-                {
-                    debugLogger.info( msgFormat.format( new Object[]{ t } ) );
-                }
-                else
+                if( functions.length != 0 )
                 {
                     String[] mapped = new String[ functions.length ];
                     for( int i = 0; i < functions.length; i++ )
                     {
                         Function<T, String> function = functions[i];
                         mapped[i] = function.map( t );
-                        debugLogger.info( msgFormat.format( mapped ) );
                     }
                 }
-
                 return t;
             }
         }, iterable );

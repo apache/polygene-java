@@ -12,6 +12,4 @@ dependencies {
   testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
   testCompile project(":org.qi4j.libraries:org.qi4j.library.constraints")
 
-  testRuntime libraries.slf4j_simple
-
 }

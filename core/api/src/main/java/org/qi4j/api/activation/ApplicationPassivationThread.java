@@ -18,8 +18,9 @@
 package org.qi4j.api.activation;
 
 import java.io.PrintStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.qi4j.api.structure.Application;
-import org.slf4j.Logger;
 
 /**
  * Application Passivation Thread to use as a Shutdown Hook.
@@ -92,7 +93,7 @@ public final class ApplicationPassivationThread
                 String message = application.name() + " " + ex.getMessage();
                 if( logger != null )
                 {
-                    logger.error( message, ex );
+                    logger.log( Level.SEVERE, message, ex );
                 }
                 else if( output != null )
                 {

@@ -48,8 +48,6 @@ import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -94,7 +92,6 @@ public abstract class ValueSerializerAdapter<OutputType>
             throws Exception;
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger( ValueSerializerAdapter.class );
     private static final String UTF_8 = "UTF-8";
 
     private static <TO, FROM extends TO> Function2<Options, FROM, TO> identitySerializer()
@@ -364,13 +361,11 @@ public abstract class ValueSerializerAdapter<OutputType>
         // Null
         if( object == null )
         {
-            LOG.trace( "Null object -> onValue( null )" );
             onValue( output, null );
         }
         else // Registered serializer
         if( serializers.get( object.getClass() ) != null )
         {
-            LOG.trace( "Registered serializer matches -> onValue( serialized )" );
             onValue( output, serializers.get( object.getClass() ).map( options, object ) );
         }
         else if( complexSerializers.get( object.getClass() ) != null )
@@ -380,42 +375,35 @@ public abstract class ValueSerializerAdapter<OutputType>
         else // ValueComposite
         if( ValueComposite.class.isAssignableFrom( object.getClass() ) )
         {
-            LOG.trace( "ValueComposite assignable -> serializeValueComposite( object )" );
             serializeValueComposite( options, object, output, rootPass );
         }
         else // EntityComposite
         if( EntityComposite.class.isAssignableFrom( object.getClass() ) )
         {
-            LOG.trace( "EntityComposite assignable -> serializeEntityComposite( object )" );
             serializeEntityComposite( object, output );
         }
         else // Collection - Iterable
         if( Iterable.class.isAssignableFrom( object.getClass() ) )
         {
-            LOG.trace( "Iterable assignable -> serializeIterable( object )" );
             serializeIterable( options, object, output );
         }
         else // Array - QUID Remove this and use java serialization for arrays?
         if( object.getClass().isArray() )
         {
-            LOG.trace( "Object isArray -> serializeBase64Serializable( object )" );
             serializeBase64Serializable( object, output );
         }
         else // Map
         if( Map.class.isAssignableFrom( object.getClass() ) )
         {
-            LOG.trace( "Map assignable -> serializeMap( object )" );
             serializeMap( options, object, output );
         }
         else // Enum
         if( object.getClass().isEnum() )
         {
-            LOG.trace( "Object is an enum -> onValue( object.toString() )" );
             onValue( output, object.toString() );
         }
         else // Fallback to Base64 encoded Java Serialization
         {
-            LOG.trace( "Unknown object type -> serializeBase64Serializable( object )" );
             serializeBase64Serializable( object, output );
         }
     }
