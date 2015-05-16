@@ -26,6 +26,7 @@ import org.qi4j.api.entity.LifecycleException;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.runtime.association.ManyAssociationModel;
 import org.qi4j.runtime.association.NamedAssociationModel;
+import org.qi4j.runtime.composite.FunctionStateResolver;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModelModule;
@@ -91,30 +92,7 @@ public final class EntityBuilderInstance<T>
         model.model().initState( model.module(), entityState );
         if( stateResolver != null )
         {
-            for( PropertyDescriptor propDesc : model.model().state().properties() )
-            {
-                Object value = stateResolver.getPropertyState( propDesc );
-                entityState.setPropertyValue( propDesc.qualifiedName(), value );
-            }
-            for( AssociationDescriptor assDesc : model.model().state().associations() )
-            {
-                EntityReference ref = stateResolver.getAssociationState( assDesc );
-                entityState.setAssociationValue( assDesc.qualifiedName(), ref );
-            }
-            for( ManyAssociationModel manyAssDesc : model.model().state().manyAssociations() )
-            {
-                for( EntityReference ref : stateResolver.getManyAssociationState( manyAssDesc ) )
-                {
-                    entityState.manyAssociationValueOf( manyAssDesc.qualifiedName() ).add( 0, ref );
-                }
-            }
-            for( NamedAssociationModel namedAssDesc : model.model().state().namedAssociations() )
-            {
-                for( Map.Entry<String, EntityReference> entry : stateResolver.getNamedAssociationState( namedAssDesc ).entrySet() )
-                {
-                    entityState.namedAssociationValueOf( namedAssDesc.qualifiedName() ).put( entry.getKey(), entry.getValue() );
-                }
-            }
+            (( FunctionStateResolver) stateResolver).populateState( model.model(), entityState );
         }
         entityState.setPropertyValue( IDENTITY_STATE_NAME, identity );
         prototypeInstance = model.model().newInstance( uow, model.module(), entityState );

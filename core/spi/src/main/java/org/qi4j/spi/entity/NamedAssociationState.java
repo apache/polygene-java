@@ -40,5 +40,4 @@ public interface NamedAssociationState
     EntityReference get( String name );
 
     String nameOf( EntityReference entityReference );
-
 }

@@ -14,10 +14,15 @@
 
 package org.qi4j.spi;
 
+import java.util.Map;
 import org.qi4j.api.Qi4j;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.spi.entity.EntityState;
@@ -36,4 +41,29 @@ public interface Qi4jSPI
 
     // Entities
     EntityState entityStateOf( EntityComposite composite );
+
+    /**
+     * Fetches the EntityReference without loading the referenced entity.
+     *
+     * @param assoc The Association for which we want to obtain the EntityReference
+     * @return The EntityReference of the given Association.
+     */
+    EntityReference entityReferenceOf( Association assoc );
+
+    /**
+     * Fetches the EntityReferences without loading the referenced entities.
+     *
+     * @param assoc The ManyAssociation for which we want to obtain the EntityReferences.
+     * @return An Iteranble of all the EntityReferences of the given ManyAssociation.
+     */
+    Iterable<EntityReference> entityReferenceOf( ManyAssociation assoc );
+
+    /**
+     * Fetches the EntityReferences without loading the referenced entities.
+     *
+     * @param assoc The NamedAssociation for which we want to obtain the EntityReference
+     * @return An Iteranble of Map.Entry with the name and EntityReference of the given NamedAssociation.
+     */
+    Iterable<Map.Entry<String,EntityReference>> entityReferenceOf( NamedAssociation assoc );
+
 }

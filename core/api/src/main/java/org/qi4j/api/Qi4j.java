@@ -25,6 +25,7 @@ import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
@@ -42,8 +43,9 @@ public interface Qi4j
      * then that reference must be dereferenced using this method
      * before handing it out for others to use.
      *
-     * @param <T> Parameterized type of the Composite
+     * @param <T>       Parameterized type of the Composite
      * @param composite instance reference injected in Modified using @This
+     *
      * @return the dereferenced Composite
      */
     <T> T dereference( T composite );
@@ -53,6 +55,7 @@ public interface Qi4j
      *
      * @param compositeOrUow The Composite (Service, Value, Entity or Transient) or UnitOfWork to lookup the Module it
      *                       belongs to.
+     *
      * @return The Module instance where the Composite or UnitOfWork belongs to.
      */
     Module moduleOf( Object compositeOrUow );
@@ -62,6 +65,7 @@ public interface Qi4j
      *
      * @param compositeOrServiceReference The Composite (Service, Value, Entity or Transient) for which to lookup the
      *                                    ModelDescriptor
+     *
      * @return The ModelDescriptor of the Composite
      */
     ModelDescriptor modelDescriptorFor( Object compositeOrServiceReference );
@@ -71,6 +75,7 @@ public interface Qi4j
      *
      * @param compositeOrServiceReference The Composite (Service, Value, Entity or Transient) for which to lookup the
      *                                    CompositeDescriptor
+     *
      * @return The CompositeDescriptor of the Composite
      */
     CompositeDescriptor compositeDescriptorFor( Object compositeOrServiceReference );
@@ -79,6 +84,7 @@ public interface Qi4j
      * Returns the TransientDescriptor of the TransientComposite.
      *
      * @param transsient The TransientComposite for which to lookup the TransientDescriptor
+     *
      * @return The TransientDescriptor of the TransientComposite
      */
     TransientDescriptor transientDescriptorFor( Object transsient );
@@ -87,6 +93,7 @@ public interface Qi4j
      * Returns the EntityDescriptor of the EntityComposite.
      *
      * @param entity The EntityComposite for which to lookup the EntityDescriptor
+     *
      * @return The EntityDescriptor of the EntityComposite
      */
     EntityDescriptor entityDescriptorFor( Object entity );
@@ -95,6 +102,7 @@ public interface Qi4j
      * Returns the ValueDescriptor of the ValueComposite.
      *
      * @param value The ValueComposite for which to lookup the ValueDescriptor
+     *
      * @return The ValueDescriptor of the ValueComposite
      */
     ValueDescriptor valueDescriptorFor( Object value );
@@ -103,6 +111,7 @@ public interface Qi4j
      * Returns the ServiceDescriptor of the ServiceComposite.
      *
      * @param service The ServiceComposite for which to lookup the ServiceDescriptor
+     *
      * @return The ServiceDescriptor of the ServiceComposite
      */
     ServiceDescriptor serviceDescriptorFor( Object service );
@@ -111,6 +120,7 @@ public interface Qi4j
      * Returns the PropertyDescriptor of the Property.
      *
      * @param property The Property for which to lookup the PropertyDescriptor
+     *
      * @return The PropertyDescriptor of the Property
      */
     PropertyDescriptor propertyDescriptorFor( Property<?> property );
@@ -119,9 +129,81 @@ public interface Qi4j
      * Returns the AssociationDescriptor of the Association.
      *
      * @param association The Association for which to lookup the AssociationDescriptor
+     *
      * @return The AssociationDescriptor of the Association
      */
     AssociationDescriptor associationDescriptorFor( AbstractAssociation association );
+
+    /**
+     * Converts the provided Entity to a Value of the same type.
+     * This is a convenience method to convert an EntityComposite to a ValueComposite.
+     * <p/>
+     * All Property values are transferred across as-is, and the Association, ManyAssociation
+     * and NamedAssociatino values are kept in the ValueComposite as EntityReferences
+     * until they are dereferenced (get() and other methods), and IF a UnitOfWork is
+     * present at dereferencing the corresponding EntityCompoiste is retrieved from the
+     * EntityStore. If there is not an UnitOfWork present, an exception is thrown.
+     * <p/>
+     * For this to work, the Composites (both Entity and Value) must not declare the
+     * EntityComposite and ValueComposite super types, but rely on the declaration in
+     * the assembly, and also extend the Identity supertype.
+     *
+     * Example;
+     * <pre><code>
+     *     public interface Person extends Identity { ... };
+     *     public class MyAssembler
+     *     {
+     *         public void assemble( ModuleAssembly module )
+     *         {
+     *             module.values( Person.class );
+     *             module.entities( Person.class );
+     *         }
+     *     }
+     * </code></pre>
+     *
+     * @param primaryType The shared type for which the properties and associations will
+     *                    be converted. Properties outside this type will be ignored.
+     * @param entityComposite The entity to be convered.
+     */
+    <T extends Identity> T toValue( Class<T> primaryType, T entityComposite );
+
+    /**
+     * Converts the provided Value to an Entity of the same type.
+     * This is a convenience method to convert a ValueComposite to an EntityComposite.
+     * <p/>
+     * All Property values are transferred across as-is (no deep copy in case mutable
+     * types (DISCOURAGED!) are used), and the Association, ManyAssociation
+     * and NamedAssociatino that were in the ValueComposite as EntityReferences are
+     * transferred into the EntityComposite correctly, and can be dereferenced.
+     * <p/>
+     * This method MUST be called within a UnitOfWork.
+     * <p/>
+     * If an Entity with the Identity in the ValueComposite already exists, then that
+     * Entity is updated with the values from the ValueComposite. If an Entity of
+     * that Identity doesn't exist and new one is created.
+     * <p/>
+     * For this to work, the Composites (both Entity and Value) must not declare the
+     * EntityComposite and ValueComposite super types, but rely on the declaration in
+     * the assembly, and also extend the Identity supertype.
+     *
+     * Example;
+     * <pre><code>
+     *     public interface Person extends Identity { ... };
+     *     public class MyAssembler
+     *     {
+     *         public void assemble( ModuleAssembly module )
+     *         {
+     *             module.values( Person.class );
+     *             module.entities( Person.class );
+     *         }
+     *     }
+     * </code></pre>
+     *
+     * @param primaryType The shared type for which the properties and associations will
+     *                    be converted. Properties outside this type will be ignored.
+     * @param valueComposite The Value to be convered into an Entity.
+     */
+    <T extends Identity> T toEntity( Class<T> primaryType, T valueComposite );
 
     /**
      * Function that returns the CompositeDescriptor of a Composite.

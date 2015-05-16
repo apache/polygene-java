@@ -24,7 +24,9 @@ import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
+import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.entity.NamedAssociationState;
 
@@ -98,6 +100,55 @@ public class NamedAssociationInstance<T>
             map.put( name, getEntity( namedAssociationState.get( name ) ) );
         }
         return map;
+    }
+
+    public Iterable<Map.Entry<String,EntityReference>> getEntityReferences()
+    {
+        return Iterables.map( new Function<String, Map.Entry<String,EntityReference>>()
+        {
+            @Override
+            public Map.Entry<String, EntityReference> map( final String key )
+            {
+                final EntityReference value = namedAssociationState.get( key );
+                return new Map.Entry<String, EntityReference>()
+                {
+                    @Override
+                    public String getKey()
+                    {
+                        return key;
+                    }
+
+                    @Override
+                    public EntityReference getValue()
+                    {
+                        return value;
+                    }
+
+                    @Override
+                    public EntityReference setValue( EntityReference value )
+                    {
+                        throw new UnsupportedOperationException( "Immutable Map" );
+                    }
+
+                    @Override
+                    public boolean equals( Object o )
+                    {
+                        if( o instanceof Map.Entry)
+                        {
+                            Map.Entry other = (Map.Entry) o;
+                            return key.equals(other.getKey());
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public int hashCode()
+                    {
+                        return 997 * key.hashCode() + 981813497;
+                    }
+                };
+            }
+        }, namedAssociationState );
     }
 
 }
