@@ -202,7 +202,9 @@ public class TransientInstance
         }
         if( first )
         {
-            return "TransientInstance{" +
+            String modelTypeName = compositeModel.getClass().getSimpleName();
+            String metaTypeModel = modelTypeName.substring( 0, modelTypeName.length() - 5 );
+            return metaTypeModel + "Instance{" +
                    "mixins=" + ( mixins == null ? null : Arrays.asList( mixins ) ) +
                    ", state=" + state +
                    ", compositeModel=" + compositeModel +
