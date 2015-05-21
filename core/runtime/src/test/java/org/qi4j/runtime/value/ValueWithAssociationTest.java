@@ -31,7 +31,7 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.entities( SimpleEntity.class );
+        module.entities( SimpleName.class );
         module.entities( DualFaced.class );
         module.values( DualFaced.class );
         module.services( MemoryEntityStoreService.class );
@@ -39,7 +39,7 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
     }
 
-    @Test  @Ignore
+    @Test
     public void givenEntityInStoreWhenFetchEntityReferenceExpectSuccess()
         throws UnitOfWorkCompletionException
     {
@@ -48,9 +48,9 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
         DualFaced value;
         try (UnitOfWork uow = module.newUnitOfWork())
         {
-            EntityBuilder<SimpleEntity> builder1 = uow.newEntityBuilder( SimpleEntity.class );
+            EntityBuilder<SimpleName> builder1 = uow.newEntityBuilder( SimpleName.class );
             builder1.instance().name().set( "Niclas" );
-            SimpleEntity simpleEntity = builder1.newInstance();
+            SimpleName simpleEntity = builder1.newInstance();
             identity1 = simpleEntity.identity().get();
 
             EntityBuilder<DualFaced> builder2 = uow.newEntityBuilder( DualFaced.class );
@@ -114,7 +114,43 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
         }
     }
 
-    public interface SimpleEntity extends Identity
+    @Test
+    public void givenEntityInStoreWhenConvertingValueExpectEntityToBeUpdated()
+        throws UnitOfWorkCompletionException
+    {
+        String identity1;
+        String identity2;
+        DualFaced value;
+        try (UnitOfWork uow = module.newUnitOfWork())
+        {
+            EntityBuilder<SimpleName> builder1 = uow.newEntityBuilder( SimpleName.class );
+            builder1.instance().name().set( "Niclas" );
+            SimpleName simpleEntity = builder1.newInstance();
+            identity1 = simpleEntity.identity().get();
+
+            EntityBuilder<DualFaced> builder2 = uow.newEntityBuilder( DualFaced.class );
+            DualFaced proto = builder2.instance();
+            proto.name().set( "Hedhman" );
+            proto.simple().set( simpleEntity );
+            proto.simples().add( simpleEntity );
+            proto.namedSimples().put( "niclas", simpleEntity );
+            DualFaced entity = builder2.newInstance();
+            value = spi.toValue( DualFaced.class, entity );
+            uow.complete();
+        }
+
+        SimpleName simple = value.simple().get();
+
+//        ValueBuilder<DualFaced> builder = module.newValueBuilder( DualFaced.class );
+//        DualFaced prototype = builder.prototype();
+//        prototype.name().set( "Paul" );
+//        DualFaced value = builder.newInstance();
+//        try (UnitOfWork uow = module.newUnitOfWork())
+//        {
+//        }
+    }
+
+    public interface SimpleName extends Identity
     {
         Property<String> name();
     }
@@ -123,10 +159,10 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
     {
         Property<String> name();
 
-        Association<SimpleEntity> simple();
+        Association<SimpleName> simple();
 
-        ManyAssociation<SimpleEntity> simples();
+        ManyAssociation<SimpleName> simples();
 
-        NamedAssociation<SimpleEntity> namedSimples();
+        NamedAssociation<SimpleName> namedSimples();
     }
 }
