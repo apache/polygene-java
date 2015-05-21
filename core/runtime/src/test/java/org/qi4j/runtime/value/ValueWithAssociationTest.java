@@ -1,11 +1,11 @@
 package org.qi4j.runtime.value;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.association.NamedAssociation;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -114,42 +114,6 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
         }
     }
 
-    @Test
-    public void givenEntityInStoreWhenConvertingValueExpectEntityToBeUpdated()
-        throws UnitOfWorkCompletionException
-    {
-        String identity1;
-        String identity2;
-        DualFaced value;
-        try (UnitOfWork uow = module.newUnitOfWork())
-        {
-            EntityBuilder<SimpleName> builder1 = uow.newEntityBuilder( SimpleName.class );
-            builder1.instance().name().set( "Niclas" );
-            SimpleName simpleEntity = builder1.newInstance();
-            identity1 = simpleEntity.identity().get();
-
-            EntityBuilder<DualFaced> builder2 = uow.newEntityBuilder( DualFaced.class );
-            DualFaced proto = builder2.instance();
-            proto.name().set( "Hedhman" );
-            proto.simple().set( simpleEntity );
-            proto.simples().add( simpleEntity );
-            proto.namedSimples().put( "niclas", simpleEntity );
-            DualFaced entity = builder2.newInstance();
-            value = spi.toValue( DualFaced.class, entity );
-            uow.complete();
-        }
-
-        SimpleName simple = value.simple().get();
-
-//        ValueBuilder<DualFaced> builder = module.newValueBuilder( DualFaced.class );
-//        DualFaced prototype = builder.prototype();
-//        prototype.name().set( "Paul" );
-//        DualFaced value = builder.newInstance();
-//        try (UnitOfWork uow = module.newUnitOfWork())
-//        {
-//        }
-    }
-
     public interface SimpleName extends Identity
     {
         Property<String> name();
@@ -159,6 +123,7 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
     {
         Property<String> name();
 
+        @Optional
         Association<SimpleName> simple();
 
         ManyAssociation<SimpleName> simples();

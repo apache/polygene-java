@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.association.NamedAssociation;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
@@ -49,6 +51,7 @@ public class ValueSerializationRegressionTest extends AbstractQi4jTest
     {
         Property<String> name();
 
+        @Optional
         Association<SimpleEntity> simple();
 
         ManyAssociation<SimpleEntity> simples();
