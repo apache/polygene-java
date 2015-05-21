@@ -66,6 +66,8 @@ public interface ModuleAssembly
      */
     String name();
 
+    ModuleAssembly setMetaInfo( Object info );
+
     /**
      * Set the module activators. Activators are executed in order around the
      * Module activation and passivation.
