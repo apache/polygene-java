@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.logging.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -687,7 +686,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 Object value = getObjectFieldValue(
                     inputNode,
                     namedAssociationName,
-                    buildDeserializeInputNodeFunction( MapType.of( String.class, EntityReference.class ) ) );
+                    buildDeserializeInputNodeFunction( MapType.of( String.class, EntityReference.class, MapType.Variant.object ) ) );
                 stateMap.put( namedAssociationName, value );
             }
         }
@@ -755,7 +754,15 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         else // Explicit Map
         if( MapType.class.isAssignableFrom( valueType.getClass() ) )
         {
-            return (T) deserializeNodeMap( (MapType) valueType, inputNode );
+            MapType mapType = (MapType) valueType;
+            if( mapType.variant().equals( MapType.Variant.entry ) )
+            {
+                return (T) deserializeNodeEntryMap( (MapType) valueType, inputNode );
+            }
+            else
+            {
+                return (T) deserializeNodeObjectMap( (MapType) valueType, inputNode );
+            }
         }
         else // Enum
         if( EnumType.class.isAssignableFrom( valueType.getClass() ) || type.isEnum() )
@@ -857,7 +864,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         return collection;
     }
 
-    private <K, V> Map<K, V> deserializeNodeMap( MapType mapType, InputNodeType inputNode )
+    private <K, V> Map<K, V> deserializeNodeEntryMap( MapType mapType, InputNodeType inputNode )
         throws Exception
     {
         Map<K, V> map = new HashMap<>();
@@ -865,6 +872,16 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                            this.<K>buildDeserializeInputNodeFunction( mapType.keyType() ),
                            this.<V>buildDeserializeInputNodeFunction( mapType.valueType() ),
                            map );
+        return map;
+    }
+
+    private <V> Map<String, V> deserializeNodeObjectMap( MapType mapType, InputNodeType inputNode )
+        throws Exception
+    {
+        Map<String, V> map = new HashMap<>();
+        putObjectNodeInMap( inputNode,
+                            this.<V>buildDeserializeInputNodeFunction( mapType.valueType() ),
+                            map );
         return map;
     }
 
@@ -1070,6 +1087,13 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     protected abstract <K, V> void putArrayNodeInMap( InputNodeType inputNode,
                                                       Function<InputNodeType, K> keyDeserializer,
                                                       Function<InputNodeType, V> valueDeserializer,
-                                                      Map<K, V> map )
+                                                      Map<K, V> map
+    )
+        throws Exception;
+
+    protected abstract <V> void putObjectNodeInMap( InputNodeType inputNode,
+                                                    Function<InputNodeType, V> valueDeserializer,
+                                                    Map<String, V> map
+    )
         throws Exception;
 }

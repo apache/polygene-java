@@ -101,6 +101,7 @@ public class AssociationTest
 
     public interface Friend<T>
     {
+        @Optional
         Association<T> friend();
     }
 

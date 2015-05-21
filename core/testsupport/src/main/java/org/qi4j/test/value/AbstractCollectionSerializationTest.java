@@ -69,6 +69,7 @@ public class AbstractCollectionSerializationTest
     {
         module.injectTo( this );
     }
+
     @Service
     @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;

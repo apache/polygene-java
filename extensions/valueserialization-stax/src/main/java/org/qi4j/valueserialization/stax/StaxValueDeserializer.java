@@ -404,6 +404,29 @@ public class StaxValueDeserializer
         }
     }
 
+    @Override
+    protected <V> void putObjectNodeInMap( Node inputNode,
+                                           Function<Node, V> valueDeserializer,
+                                           Map<String, V> map )
+        throws Exception
+    {
+        if( inputNode == null )
+        {
+            return;
+        }
+        NodeList entriesNodes = inputNode.getChildNodes();
+        for( int idx = 0; idx < entriesNodes.getLength(); idx++ )
+        {
+            Node entryNode = entriesNodes.item( idx );
+            String key  = ((Element) entryNode).getTagName();
+            V value = getObjectFieldValue( entryNode, "value", valueDeserializer );
+            if( key != null )
+            {
+                map.put( key, value );
+            }
+        }
+    }
+
     @SuppressWarnings( "AssignmentToMethodParameter" )
     private Object detectAndConvertStringValue( String stringValue )
     {

@@ -473,7 +473,7 @@ public abstract class ValueSerializerAdapter<OutputType>
             NamedAssociation<?> namedAssociation = state.namedAssociationFor( associationDescriptor.accessor() );
             onFieldStart( output, associationDescriptor.qualifiedName().name() );
             onValueStart( output );
-            onArrayStart( output );
+            onObjectStart( output );
             for( String name : namedAssociation )
             {
                 onFieldStart( output, name );
@@ -482,7 +482,7 @@ public abstract class ValueSerializerAdapter<OutputType>
                 onValueEnd( output );
                 onFieldEnd( output );
             }
-            onArrayEnd( output );
+            onObjectEnd( output );
             onValueEnd( output );
             onFieldEnd( output );
         }
