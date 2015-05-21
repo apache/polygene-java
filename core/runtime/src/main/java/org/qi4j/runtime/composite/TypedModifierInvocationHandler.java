@@ -27,14 +27,6 @@ public final class TypedModifierInvocationHandler
     {
         try
         {
-/*
-            // Remove this, and run InvocationInjectionTest to verify
-            if( !method.isAccessible() )
-            {
-                method.setAccessible( true );       // TODO: This is a massive Performance Killer. Needs to be taken care of.
-            }
-*/
-
             return this.method.invoke( fragment, args );
         }
         catch( InvocationTargetException e )
