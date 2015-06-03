@@ -85,10 +85,6 @@ public class GraphDAO
             voyages.add( new TransitPath( transitEdges ) );
         }
 
-        // Output for testing...
-//        for (int i = 0; i < voyages.size(); i++)
-//            System.out.println( i + " " + voyages.get( i ).print() );
-
         return voyages;
     }
 

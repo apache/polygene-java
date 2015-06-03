@@ -1486,7 +1486,6 @@ public abstract class AbstractSQLStartup
         if( !newQNames.contains( qName ) && !qName.name().equals( Identity.class.getName() ) )
         {
             newQNames.add( qName );
-            // System.out.println("QName: " + qName + ", hc: " + qName.hashCode());
             QNameInfo info = qNameInfos.get( qName );
             if( info == null )
             {

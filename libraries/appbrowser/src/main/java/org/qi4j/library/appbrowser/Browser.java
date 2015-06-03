@@ -36,7 +36,6 @@ public class Browser
                 }
                 try
                 {
-                    System.out.println(visited.getClass().getName());
                     formatter.enter( visited );
                 }
                 catch( JSONException e )

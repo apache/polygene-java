@@ -160,7 +160,6 @@ public class SchedulerMixin
                 {
                     return;
                 }
-                System.out.println( "Next run at: " + new DateTime( nextRun ) );
                 timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
                 if( scheduleHandler == null )
                 {
@@ -175,7 +174,6 @@ public class SchedulerMixin
                 {
                     return;
                 }
-                System.out.println( "Next run at: " + new DateTime( nextRun ) );
                 timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
                 ScheduleTime newFirst = timingQueue.first();
                 if( !first.equals( newFirst ) )
@@ -323,7 +321,6 @@ public class SchedulerMixin
         @Override
         public void run()
         {
-            System.out.println( "Running Schedule" );
             Usecase usecase = UsecaseBuilder.newUsecase( "ScheduleRunner" );
             UnitOfWork uow = module.newUnitOfWork( usecase );
             try

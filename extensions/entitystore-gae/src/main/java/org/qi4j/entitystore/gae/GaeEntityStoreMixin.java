@@ -47,7 +47,6 @@ public class GaeEntityStoreMixin
    public GaeEntityStoreMixin( @Service IdentityGenerator uuid,
                                @Service @Tagged( ValueSerialization.Formats.JSON ) ValueSerialization valueSerialization )
    {
-      System.out.println("Initializing GAE EntityStore.");
       this.uuid = uuid.generate(Identity.class) + ":";
       this.valueSerialization = valueSerialization;
       counter = 0L;

@@ -41,7 +41,6 @@ public class AppBrowserTest extends AbstractQi4jTest
         FormatterFactory jsonFactory = new JsonFormatterFactory( output );
         Browser browser = new Browser( applicationModel, jsonFactory );
         browser.toJson();
-        System.out.println( output.toString() );
     }
 
     @Mixins( Person.Mixin.class )

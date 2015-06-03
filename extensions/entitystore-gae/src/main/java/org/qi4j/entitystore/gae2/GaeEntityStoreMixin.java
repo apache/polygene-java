@@ -75,15 +75,6 @@ public class GaeEntityStoreMixin
                 .deadline( conf.deadline().get() );
         datastore = DatastoreServiceFactory.getDatastoreService( configuration );
         entityKind = conf.entityKind().get();
-        System.out.println( "\nActivating Google App Engine Store" +
-                            "\n----------------------------------" +
-                            "\n      Read Policy: " + conf.readPolicy().get() +
-                            "\n         Deadline: " + conf.deadline().get() +
-                            "\n      Entity Kind: " + entityKind +
-                            "\n        Datastore: " + datastore +
-                            "\n    Configuration: " + configuration +
-                            "\n"
-        );
     }
 
     @Override

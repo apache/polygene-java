@@ -32,7 +32,6 @@ public class Main
         throws ClassNotFoundException, IllegalAccessException, InstantiationException, AssemblyException
     {
         String applicationAssemblerName = args[0];
-        System.out.println( "Assembler:" + applicationAssemblerName );
         Class applicationAssemblerClass = Class.forName( applicationAssemblerName );
         ApplicationAssembler assembler = (ApplicationAssembler) applicationAssemblerClass.newInstance();
 

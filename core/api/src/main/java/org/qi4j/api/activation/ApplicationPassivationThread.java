@@ -102,8 +102,7 @@ public final class ApplicationPassivationThread
                 }
                 else
                 {
-                    System.err.println( message );
-                    ex.printStackTrace( System.err );
+                    ex.printStackTrace();
                 }
             }
         }

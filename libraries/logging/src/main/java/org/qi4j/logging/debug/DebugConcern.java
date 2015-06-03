@@ -33,11 +33,6 @@ public class DebugConcern
     @Optional @Service private DebuggingService loggingService;
     @This private Composite composite;
 
-    public DebugConcern()
-    {
-        System.out.println( "DebugConcern created." );
-    }
-
     @Override
     public Integer debugLevel()
     {
@@ -51,7 +46,6 @@ public class DebugConcern
     @Override
     public void debug( int priority, String message )
     {
-        System.out.println( "L:" + composite );
         if( loggingService == null )
         {
             return;

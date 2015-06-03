@@ -89,12 +89,6 @@ public final class NamedAssociationsModel
         {
             throw new IllegalArgumentException( "No named-association found with name:" + ( (Member) accessor ).getName() );
         }
-        System.out.println( "######################################################################" );
-        System.out.println( "GET NAMED ASSOCIATION" );
-        System.out.println( "\tupon: " + mapAccessorAssociationModel );
-        System.out.println( "\tfor:  " + accessor );
-        System.out.println( "\treturn: "+namedAssociationModel );
-        System.out.println( "######################################################################" );
         return namedAssociationModel;
     }
 

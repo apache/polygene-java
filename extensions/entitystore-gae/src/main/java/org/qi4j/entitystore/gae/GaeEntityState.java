@@ -62,7 +62,6 @@ public class GaeEntityState
                            EntityDescriptor descriptor,
                            Module module )
     {
-        System.out.println( "GaeEntityState( " + unitOfWork + ", " + key + ", " + descriptor + " )" );
         this.module = module;
         this.unitOfWork = unitOfWork;
         this.valueSerialization = valueSerialization;
@@ -71,11 +70,6 @@ public class GaeEntityState
         entity.setProperty( "$version", unitOfWork.identity() );
         Class type = first( descriptor.types() );
         String name = type.getName();
-        System.out.println( "New Entity\n" +
-                            "    descriptor:" + descriptor + "\n  " +
-                            "    entityType:" + name + "\n  " +
-                            "    name:" + name + "\n  "
-        );
         entity.setUnindexedProperty( PROPERTY_TYPE, name );
         status = EntityStatus.NEW;
         valueTypes = initializeValueTypes( descriptor );
@@ -86,7 +80,6 @@ public class GaeEntityState
                            Entity entity,
                            Module module )
     {
-        System.out.println( "GaeEntityState( " + unitOfWork + ", " + entity + " )" );
         if( entity == null )
         {
             throw new NullPointerException();
@@ -100,7 +93,6 @@ public class GaeEntityState
         this.valueSerialization = valueSerialization;
         this.entity = entity;
         String typeName = (String) entity.getProperty( GaeEntityState.PROPERTY_TYPE );
-        System.out.println( "LOADING [" + typeName + "]" );
         descriptor = module.entityDescriptor( typeName );
         status = EntityStatus.LOADED;
         valueTypes = initializeValueTypes( descriptor );
@@ -122,7 +114,6 @@ public class GaeEntityState
 
     Entity entity()
     {
-        System.out.println( "entity()  -->  " + entity );
         return entity;
     }
 
@@ -130,7 +121,6 @@ public class GaeEntityState
     public EntityReference identity()
     {
         EntityReference ref = new EntityReference( entity.getKey().getName() );
-        System.out.println( "identity()  -->  " + ref );
         return ref;
     }
 
@@ -138,7 +128,6 @@ public class GaeEntityState
     public String version()
     {
         String version = (String) entity.getProperty( "$version" );
-        System.out.println( "version()  -->  " + version );
         return version;
     }
 
@@ -146,35 +135,30 @@ public class GaeEntityState
     public long lastModified()
     {
         Long lastModified = (Long) entity.getProperty( "$lastModified" );
-        System.out.println( "lastModified()  -->  " + lastModified );
         return lastModified;
     }
 
     @Override
     public void remove()
     {
-        System.out.println( "remove()" );
         status = EntityStatus.REMOVED;
     }
 
     @Override
     public EntityStatus status()
     {
-        System.out.println( "status()  -->  " + status );
         return status;
     }
 
     @Override
     public boolean isAssignableTo( Class<?> type )
     {
-        System.out.println( "isAssignableTo( " + type + " )  -->  false" );
         return false;
     }
 
     @Override
     public EntityDescriptor entityDescriptor()
     {
-        System.out.println( "entityDescriptor()  -->  " + descriptor );
         return descriptor;
     }
 
@@ -207,14 +191,12 @@ public class GaeEntityState
                 throw error;
             }
         }
-        System.out.println( "getProperty( " + stateName + " )  -->  " + uri + "=" + value );
         return value;
     }
 
     @Override
     public void setPropertyValue( QualifiedName stateName, Object newValue )
     {
-        System.out.println( "setProperty( " + stateName + ", " + newValue + " )" );
         Object value = null;
         if( newValue == null || ValueType.isPrimitiveValue( newValue ) )
         {
@@ -250,7 +232,6 @@ public class GaeEntityState
     {
         String uri = stateName.toURI();
         String identity = (String) entity.getProperty( uri );
-        System.out.println( "association( " + stateName + " )  -->  " + uri + " = " + identity );
         EntityReference ref = new EntityReference( identity );
         return ref;
     }
@@ -258,7 +239,6 @@ public class GaeEntityState
     @Override
     public void setAssociationValue( QualifiedName stateName, EntityReference newEntity )
     {
-        System.out.println( "setAssociation( " + stateName + ", " + newEntity + " )" );
         String uri = stateName.toURI();
         String id = null;
         if( newEntity != null )
@@ -286,7 +266,6 @@ public class GaeEntityState
 
     public void hasBeenApplied()
     {
-        System.out.println( "hasBeenApplied()" );
         status = EntityStatus.LOADED;
     }
 
@@ -324,10 +303,7 @@ public class GaeEntityState
         @Override
         public boolean add( int index, EntityReference entityReference )
         {
-            System.out.println( "NICLAS::" + entityReference );
             String identity = entityReference.identity();
-            System.out.println( "NICLAS::" + identity );
-            System.out.println( "NICLAS::" + assocs );
             if( assocs.contains( identity ) )
             {
                 return false;

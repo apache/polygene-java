@@ -176,7 +176,6 @@ public final class TreeModelPane
             return;
         }
 
-        //System.out.println(obj.toString());
         TreeNode node = findNode( structureTree, obj );
         if( node != null )
         {

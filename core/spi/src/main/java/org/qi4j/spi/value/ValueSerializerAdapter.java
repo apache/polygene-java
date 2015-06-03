@@ -328,7 +328,6 @@ public abstract class ValueSerializerAdapter<OutputType>
     {
         if( object != null )
         {
-            // System.out.println( ">>>>>>>>>>>> " + ( object == null ? "null" : object.getClass() ) );
             if( serializers.get( object.getClass() ) != null )
             {
                 // Plain Value

@@ -678,7 +678,6 @@ public class PDFWriter
         // check for page size, if necessary create new page
         if( ( curY - lineSpace ) <= startY )
         {
-            //System.out.println("new line: " + curY + " - " + lineSpace + " = " + (curY-lineSpace) );
             createNewPage();
         }
 
@@ -725,7 +724,6 @@ public class PDFWriter
             curContentStream = new PDPageContentStream( doc, page );
 
             curPageSize = page.getArtBox();
-            //System.out.println("pSize: " + pdRect.getWidth() + "," + pdRect.getHeight());
 
             curContentStream.beginText();
             curY = curPageSize.getHeight() - startY;
