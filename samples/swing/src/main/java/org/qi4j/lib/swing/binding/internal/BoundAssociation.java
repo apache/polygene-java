@@ -18,6 +18,7 @@
 package org.qi4j.lib.swing.binding.internal;
 
 import org.qi4j.api.association.Association;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
@@ -81,5 +82,11 @@ public final class BoundAssociation<T> extends AbstractBinding<T>
     public void to( JComponent component )
     {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public EntityReference reference()
+    {
+        return actual.reference();
     }
 }

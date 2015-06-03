@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
@@ -56,6 +57,12 @@ public class BoundManyAssociation<T> extends AbstractBinding<T>
     public Set<T> toSet()
     {
         return actualAssociations.toSet();
+    }
+
+    @Override
+    public Iterable<EntityReference> references()
+    {
+        return actualAssociations.references();
     }
 
     @Override

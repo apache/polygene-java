@@ -16,12 +16,17 @@ package org.qi4j.api.association;
 
 import java.util.List;
 import java.util.Set;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * Association to a collection of entities.
  */
 public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
 {
+    /**
+     * Returns the number of references in this association.
+     * @return the number of references in this association.
+     */
     int count();
 
     boolean contains( T entity );
@@ -37,4 +42,10 @@ public interface ManyAssociation<T> extends Iterable<T>, AbstractAssociation
     List<T> toList();
 
     Set<T> toSet();
+
+    /**
+     * Returns an unmodifiable Iterable of the references to the associated entities.
+     * @return the references to the associated entities.
+     */
+    Iterable<EntityReference> references();
 }

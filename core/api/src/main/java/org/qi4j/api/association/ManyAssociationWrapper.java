@@ -3,6 +3,7 @@ package org.qi4j.api.association;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * If you want to catch calls to ManyAssociations, then create a GenericConcern
@@ -70,6 +71,12 @@ public class ManyAssociationWrapper
     public Set<Object> toSet()
     {
         return next.toSet();
+    }
+
+    @Override
+    public Iterable<EntityReference> references()
+    {
+        return next.references();
     }
 
     @Override

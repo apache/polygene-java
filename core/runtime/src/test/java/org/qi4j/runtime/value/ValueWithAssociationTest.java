@@ -33,6 +33,7 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
     {
         module.entities( SimpleName.class );
         module.entities( DualFaced.class );
+        module.values( SimpleName.class );
         module.values( DualFaced.class );
         module.services( MemoryEntityStoreService.class );
         module.services( UuidIdentityGeneratorService.class );
@@ -61,7 +62,7 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
             proto.namedSimples().put( "niclas", simpleEntity );
             DualFaced faced = builder2.newInstance();
             identity2 = faced.identity().get();
-            value = spi.toValue( DualFaced.class, faced );
+            value = uow.toValue( DualFaced.class, faced );
             assertThat( value.identity().get(), equalTo( identity2 ) );
             uow.complete();
         }
@@ -83,7 +84,7 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
                             .next()
                             .getValue(), equalTo( EntityReference.parseEntityReference( identity1 ) ) );
 
-            DualFaced resurrected = spi.toEntity( DualFaced.class, value );
+            DualFaced resurrected = uow.toEntity( DualFaced.class, value );
             assertThat( resurrected.simple(), equalTo( entity.simple() ) );
             assertThat( resurrected.simples(), equalTo( entity.simples() ) );
             assertThat( resurrected.namedSimples(), equalTo( entity.namedSimples() ) );
@@ -101,7 +102,7 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
 
         try (UnitOfWork uow = module.newUnitOfWork())
         {
-            spi.toEntity( DualFaced.class, value );
+            uow.toEntity( DualFaced.class, value );
             uow.complete();
         }
 
@@ -111,6 +112,52 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
             assertThat( entity.identity().get(), equalTo( "1234" ) );
             assertThat( entity.name().get(), equalTo( "Hedhman" ) );
             uow.complete();
+        }
+    }
+
+    @Test
+    public void givenValueWithIdentityAlreadyInStoreWhenConvertingToEntityExpectExistingEntityToBeUpdated()
+        throws UnitOfWorkCompletionException
+    {
+        String identity1;
+        String identity2;
+        DualFaced value;
+        try (UnitOfWork uow = module.newUnitOfWork())
+        {
+            EntityBuilder<SimpleName> builder1 = uow.newEntityBuilder( SimpleName.class );
+            builder1.instance().name().set( "Niclas" );
+            SimpleName simpleEntity = builder1.newInstance();
+            identity1 = simpleEntity.identity().get();
+
+            EntityBuilder<DualFaced> builder2 = uow.newEntityBuilder( DualFaced.class );
+            DualFaced proto = builder2.instance();
+            proto.name().set( "Hedhman" );
+            proto.simple().set( simpleEntity );
+            proto.simples().add( simpleEntity );
+            proto.namedSimples().put( "niclas", simpleEntity );
+            DualFaced faced = builder2.newInstance();
+            identity2 = faced.identity().get();
+            uow.complete();
+        }
+        ValueBuilder<SimpleName> vb1 = module.newValueBuilder( SimpleName.class );
+        vb1.prototype().identity().set( identity1 );
+        vb1.prototype().name().set( "Paul" );
+        SimpleName simpleValue = vb1.newInstance();
+
+        ValueBuilder<DualFaced> vb2 = module.newValueBuilder( DualFaced.class );
+        vb2.prototype().identity().set(identity2);
+        vb2.prototype().name().set("Merlin");
+        vb2.prototype().simple().set( simpleValue );
+        vb2.prototype().simples().add( simpleValue );
+        vb2.prototype().namedSimples().put( "paul", simpleValue );
+        DualFaced dualValue = vb2.newInstance();
+
+        try (UnitOfWork uow = module.newUnitOfWork())
+        {
+            DualFaced dualEntity = uow.toEntity( DualFaced.class, dualValue );
+            assertThat( dualEntity.name().get(), equalTo( "Merlin"));
+            assertThat( dualEntity.simple().get().name().get(), equalTo( "Niclas"));
+            assertThat( dualEntity.simple().get().name().get(), equalTo( "Paul"));
         }
     }
 

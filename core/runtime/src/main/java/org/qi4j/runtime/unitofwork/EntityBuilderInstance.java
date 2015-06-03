@@ -16,23 +16,16 @@
  */
 package org.qi4j.runtime.unitofwork;
 
-import java.util.Map;
-import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.LifecycleException;
-import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.runtime.association.ManyAssociationModel;
-import org.qi4j.runtime.association.NamedAssociationModel;
 import org.qi4j.runtime.composite.FunctionStateResolver;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.runtime.composite.StateResolver;
-import org.qi4j.runtime.value.ValueStateModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
@@ -80,7 +73,7 @@ public final class EntityBuilderInstance<T>
         ModuleUnitOfWork uow,
         EntityStoreUnitOfWork store,
         String identity,
-        StateResolver stateResolver
+        FunctionStateResolver stateResolver
     )
     {
         this.model = model;
@@ -92,7 +85,7 @@ public final class EntityBuilderInstance<T>
         model.model().initState( model.module(), entityState );
         if( stateResolver != null )
         {
-            (( FunctionStateResolver) stateResolver).populateState( model.model(), entityState );
+            stateResolver.populateState( model.model(), entityState );
         }
         entityState.setPropertyValue( IDENTITY_STATE_NAME, identity );
         prototypeInstance = model.model().newInstance( uow, model.module(), entityState );

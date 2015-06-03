@@ -14,6 +14,8 @@
 
 package org.qi4j.api.association;
 
+import org.qi4j.api.entity.EntityReference;
+
 /**
  * Association to a single EntityComposite.
  */
@@ -36,4 +38,9 @@ public interface Association<T> extends AbstractAssociation
      */
     void set( T associated )
         throws IllegalArgumentException, IllegalStateException;
+
+    /**
+     * @return the the reference of the associated entity.
+     */
+    EntityReference reference();
 }

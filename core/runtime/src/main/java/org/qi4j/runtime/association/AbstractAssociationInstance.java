@@ -1,14 +1,10 @@
 package org.qi4j.runtime.association;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import org.qi4j.api.association.AbstractAssociation;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.functional.Function2;
-import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.entity.EntityInstance;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -55,32 +51,17 @@ public abstract class AbstractAssociationInstance<T>
             return null;
         }
 
-        InvocationHandler handler = Proxy.getInvocationHandler( composite );
-        if( handler instanceof ProxyReferenceInvocationHandler )
-        {
-            handler = Proxy.getInvocationHandler( ( (ProxyReferenceInvocationHandler) handler ).proxy() );
-        }
-        EntityInstance instance = (EntityInstance) handler;
-        return instance.identity();
+        return new EntityReference( ( (Identity) composite ).identity().get() );
     }
 
     protected void checkType( Object instance )
     {
-        if( instance != null )
-        {
-            if( !( instance instanceof EntityComposite ) )
-            {
-                if( instance instanceof Proxy )
-                {
-                    if( Proxy.getInvocationHandler( instance ) instanceof EntityInstance )
-                    {
-                        return; // It's fine
-                    }
-                }
 
-                throw new IllegalArgumentException( "Object must be an EntityComposite" );
-            }
+        if( instance instanceof Identity || instance == null )
+        {
+            return;
         }
+        throw new IllegalArgumentException( "Object must be a subtype of org.qi4j.api.identity.Identity" );
     }
 
     protected void checkImmutable()

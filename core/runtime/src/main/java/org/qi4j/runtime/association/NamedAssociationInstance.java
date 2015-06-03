@@ -24,11 +24,14 @@ import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
 import org.qi4j.functional.Iterables;
-import org.qi4j.runtime.composite.ConstraintsCheck;
 import org.qi4j.spi.entity.NamedAssociationState;
+
+import static org.qi4j.functional.Iterables.map;
 
 public class NamedAssociationInstance<T>
     extends AbstractAssociationInstance<T>
@@ -39,7 +42,8 @@ public class NamedAssociationInstance<T>
 
     public NamedAssociationInstance( AssociationInfo associationInfo,
                                      Function2<EntityReference, Type, Object> associationFunction,
-                                     NamedAssociationState namedAssociationState )
+                                     NamedAssociationState namedAssociationState
+    )
     {
         super( associationInfo, associationFunction );
         this.namedAssociationState = namedAssociationState;
@@ -66,10 +70,11 @@ public class NamedAssociationInstance<T>
     @Override
     public boolean put( String name, T entity )
     {
+        NullArgumentException.validateNotNull( "entity", entity );
         checkImmutable();
         checkType( entity );
-        ( (ConstraintsCheck) associationInfo ).checkConstraints( entity );
-        return namedAssociationState.put( name, getEntityReference( entity ) );
+        associationInfo.checkConstraints( entity );
+        return namedAssociationState.put( name, new EntityReference( ( (Identity) entity ).identity().get() ) );
     }
 
     @Override
@@ -102,9 +107,22 @@ public class NamedAssociationInstance<T>
         return map;
     }
 
-    public Iterable<Map.Entry<String,EntityReference>> getEntityReferences()
+    @Override
+    public Iterable<EntityReference> references()
     {
-        return Iterables.map( new Function<String, Map.Entry<String,EntityReference>>()
+        return map( new Function<String, EntityReference>()
+        {
+            @Override
+            public EntityReference map( String name )
+            {
+                return namedAssociationState.get( name );
+            }
+        }, namedAssociationState );
+    }
+
+    public Iterable<Map.Entry<String, EntityReference>> getEntityReferences()
+    {
+        return map( new Function<String, Map.Entry<String, EntityReference>>()
         {
             @Override
             public Map.Entry<String, EntityReference> map( final String key )
@@ -133,10 +151,10 @@ public class NamedAssociationInstance<T>
                     @Override
                     public boolean equals( Object o )
                     {
-                        if( o instanceof Map.Entry)
+                        if( o instanceof Map.Entry )
                         {
                             Map.Entry other = (Map.Entry) o;
-                            return key.equals(other.getKey());
+                            return key.equals( other.getKey() );
                         }
                         return false;
                     }
@@ -150,5 +168,4 @@ public class NamedAssociationInstance<T>
             }
         }, namedAssociationState );
     }
-
 }

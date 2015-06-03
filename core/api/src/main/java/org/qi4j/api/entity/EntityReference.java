@@ -55,6 +55,13 @@ public final class EntityReference
         return new EntityReference( (EntityComposite) object );
     }
 
+    public static EntityReference create( Identity identity )
+    {
+        if( identity == null )
+            return null;
+        return new EntityReference( identity.identity().get() );
+    }
+
     private static final long serialVersionUID = 1L;
 
     private String identity;

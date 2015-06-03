@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.api.association.NamedAssociation;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
@@ -72,6 +73,12 @@ public class BoundNamedAssociation<T>
     public Map<String, T> toMap()
     {
         return actualAssociations.toMap();
+    }
+
+    @Override
+    public Iterable<EntityReference> references()
+    {
+        return actualAssociations.references();
     }
 
     @Override

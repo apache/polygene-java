@@ -20,6 +20,7 @@ package org.qi4j.api.association;
 
 import java.util.Iterator;
 import java.util.Map;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * If you want to catch calls to NamedAssociations, then create a GenericConcern
@@ -87,6 +88,12 @@ public class NamedAssociationWrapper
     public Map<String, Object> toMap()
     {
         return next.toMap();
+    }
+
+    @Override
+    public Iterable<EntityReference> references()
+    {
+        return next.references();
     }
 
     @Override

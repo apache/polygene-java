@@ -10,8 +10,10 @@ import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.association.ManyAssociationWrapper;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.functional.Function2;
-import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.functional.Iterables;
 import org.qi4j.spi.entity.ManyAssociationState;
 
 /**
@@ -47,10 +49,11 @@ public class ManyAssociationInstance<T>
     @Override
     public boolean add( int i, T entity )
     {
+        NullArgumentException.validateNotNull( "entity", entity );
         checkImmutable();
         checkType( entity );
-        ( (ConstraintsCheck) associationInfo ).checkConstraints( entity );
-        return manyAssociationState.add( i, getEntityReference( entity ) );
+        associationInfo.checkConstraints( entity );
+        return manyAssociationState.add( i, new EntityReference( ( (Identity) entity ).identity().get() ) );
     }
 
     @Override
@@ -62,10 +65,11 @@ public class ManyAssociationInstance<T>
     @Override
     public boolean remove( T entity )
     {
+        NullArgumentException.validateNotNull( "entity", entity );
         checkImmutable();
         checkType( entity );
 
-        return manyAssociationState.remove( getEntityReference( entity ) );
+        return manyAssociationState.remove( new EntityReference( ( (Identity) entity ).identity().get() ) );
     }
 
     @Override
@@ -77,7 +81,7 @@ public class ManyAssociationInstance<T>
     @Override
     public List<T> toList()
     {
-        ArrayList<T> list = new ArrayList<T>();
+        ArrayList<T> list = new ArrayList<>();
         for( EntityReference entityReference : manyAssociationState )
         {
             list.add( getEntity( entityReference ) );
@@ -89,13 +93,19 @@ public class ManyAssociationInstance<T>
     @Override
     public Set<T> toSet()
     {
-        Set<T> set = new HashSet<T>();
+        Set<T> set = new HashSet<>();
         for( EntityReference entityReference : manyAssociationState )
         {
             set.add( getEntity( entityReference ) );
         }
 
         return set;
+    }
+
+    @Override
+    public Iterable<EntityReference> references()
+    {
+        return Iterables.toList( manyAssociationState );
     }
 
     @Override
@@ -193,16 +203,5 @@ public class ManyAssociationInstance<T>
             checkImmutable();
             idIterator.remove();
         }
-    }
-
-    @Override
-    protected void checkType( Object instance )
-    {
-        if( instance == null )
-        {
-            throw new NullPointerException( "Associated object may not be null" );
-        }
-
-        super.checkType( instance );
     }
 }

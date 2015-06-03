@@ -19,6 +19,7 @@ import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationWrapper;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.property.Property;
 import org.qi4j.functional.Function2;
 
@@ -57,7 +58,13 @@ public final class AssociationInstance<T>
         associationInfo.checkConstraints( newValue );
 
         // Change association
-        associationState.set( getEntityReference( newValue ) );
+        associationState.set( EntityReference.create( (Identity) newValue ));
+    }
+
+    @Override
+    public EntityReference reference()
+    {
+        return associationState.get();
     }
 
     public Property<EntityReference> getAssociationState()
@@ -81,10 +88,10 @@ public final class AssociationInstance<T>
     @Override
     public int hashCode()
     {
-        int hash = associationInfo.hashCode() * 61; // Descriptor
+        int hash = associationInfo.hashCode() * 39; // Descriptor
         if( associationState.get() != null )
         {
-            hash += associationState.get().hashCode() * 3; // State
+            hash = hash * 997 + associationState.get().hashCode(); // State
         }
         return hash;
     }

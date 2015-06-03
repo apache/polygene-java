@@ -48,6 +48,7 @@ import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
+import org.qi4j.spi.Qi4jSPI;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -55,29 +56,29 @@ import static org.qi4j.functional.Iterables.first;
  * Adapter for pull-parsing capable ValueSerializers.
  *
  * <p>
- *     Among Plain values (see {@link ValueSerializer}) some are considered primitives to underlying serialization
- *     mechanisms and by so handed/come without conversion to/from implementations. Primitive values can be one of:
+ * Among Plain values (see {@link ValueSerializer}) some are considered primitives to underlying serialization
+ * mechanisms and by so handed/come without conversion to/from implementations. Primitive values can be one of:
  * </p>
  * <ul>
- *     <li>String,</li>
- *     <li>Character or char,</li>
- *     <li>Boolean or boolean,</li>
- *     <li>Integer or int,</li>
- *     <li>Long or long,</li>
- *     <li>Short or short,</li>
- *     <li>Byte or byte,</li>
- *     <li>Float or float,</li>
- *     <li>Double or double.</li>
+ * <li>String,</li>
+ * <li>Character or char,</li>
+ * <li>Boolean or boolean,</li>
+ * <li>Integer or int,</li>
+ * <li>Long or long,</li>
+ * <li>Short or short,</li>
+ * <li>Byte or byte,</li>
+ * <li>Float or float,</li>
+ * <li>Double or double.</li>
  * </ul>
  * <p>
- *     Some other Plain values are transformed before being handed to implementations:
+ * Some other Plain values are transformed before being handed to implementations:
  * </p>
  * <ul>
- *     <li>BigInteger and BigDecimal depends on ValueSerializer.{@link Options};</li>
- *     <li>Date as a ISO-8601 UTC String;</li>
- *     <li>DateTime (JodaTime) as a ISO-8601 String with timezone offset or Z for UTC;</li>
- *     <li>LocalDateTime (JodaTime) as a ISO-8601 String with no timezone offset;</li>
- *     <li>LocalDate (JodaTime) as a ISO-8601 String with no time info;</li>
+ * <li>BigInteger and BigDecimal depends on ValueSerializer.{@link Options};</li>
+ * <li>Date as a ISO-8601 UTC String;</li>
+ * <li>DateTime (JodaTime) as a ISO-8601 String with timezone offset or Z for UTC;</li>
+ * <li>LocalDateTime (JodaTime) as a ISO-8601 String with no timezone offset;</li>
+ * <li>LocalDate (JodaTime) as a ISO-8601 String with no time info;</li>
  * </ul>
  *
  * @param <OutputType> Implementor output type
@@ -112,8 +113,8 @@ public abstract class ValueSerializerAdapter<OutputType>
     /**
      * Register a Plain Value type serialization Function.
      *
-     * @param <T> Plain Value parametrized Type
-     * @param type Plain Value Type
+     * @param <T>        Plain Value parametrized Type
+     * @param type       Plain Value Type
      * @param serializer Serialization Function
      */
     @SuppressWarnings( "unchecked" )
@@ -125,8 +126,8 @@ public abstract class ValueSerializerAdapter<OutputType>
     /**
      * Register a Complex Value type serialization Function.
      *
-     * @param <T> Complex Value parametrized Type
-     * @param type Complex Value Type
+     * @param <T>        Complex Value parametrized Type
+     * @param type       Complex Value Type
      * @param serializer Serialization Function
      */
     @SuppressWarnings( "unchecked" )
@@ -364,48 +365,48 @@ public abstract class ValueSerializerAdapter<OutputType>
             onValue( output, null );
         }
         else // Registered serializer
-        if( serializers.get( object.getClass() ) != null )
-        {
-            onValue( output, serializers.get( object.getClass() ).map( options, object ) );
-        }
-        else if( complexSerializers.get( object.getClass() ) != null )
-        {
-            complexSerializers.get( object.getClass() ).serialize( options, object, output );
-        }
-        else // ValueComposite
-        if( ValueComposite.class.isAssignableFrom( object.getClass() ) )
-        {
-            serializeValueComposite( options, object, output, rootPass );
-        }
-        else // EntityComposite
-        if( EntityComposite.class.isAssignableFrom( object.getClass() ) )
-        {
-            serializeEntityComposite( object, output );
-        }
-        else // Collection - Iterable
-        if( Iterable.class.isAssignableFrom( object.getClass() ) )
-        {
-            serializeIterable( options, object, output );
-        }
-        else // Array - QUID Remove this and use java serialization for arrays?
-        if( object.getClass().isArray() )
-        {
-            serializeBase64Serializable( object, output );
-        }
-        else // Map
-        if( Map.class.isAssignableFrom( object.getClass() ) )
-        {
-            serializeMap( options, object, output );
-        }
-        else // Enum
-        if( object.getClass().isEnum() )
-        {
-            onValue( output, object.toString() );
-        }
-        else // Fallback to Base64 encoded Java Serialization
-        {
-            serializeBase64Serializable( object, output );
-        }
+            if( serializers.get( object.getClass() ) != null )
+            {
+                onValue( output, serializers.get( object.getClass() ).map( options, object ) );
+            }
+            else if( complexSerializers.get( object.getClass() ) != null )
+            {
+                complexSerializers.get( object.getClass() ).serialize( options, object, output );
+            }
+            else // ValueComposite
+                if( ValueComposite.class.isAssignableFrom( object.getClass() ) )
+                {
+                    serializeValueComposite( options, object, output, rootPass );
+                }
+                else // EntityComposite
+                    if( EntityComposite.class.isAssignableFrom( object.getClass() ) )
+                    {
+                        serializeEntityComposite( object, output );
+                    }
+                    else // Collection - Iterable
+                        if( Iterable.class.isAssignableFrom( object.getClass() ) )
+                        {
+                            serializeIterable( options, object, output );
+                        }
+                        else // Array - QUID Remove this and use java serialization for arrays?
+                            if( object.getClass().isArray() )
+                            {
+                                serializeBase64Serializable( object, output );
+                            }
+                            else // Map
+                                if( Map.class.isAssignableFrom( object.getClass() ) )
+                                {
+                                    serializeMap( options, object, output );
+                                }
+                                else // Enum
+                                    if( object.getClass().isEnum() )
+                                    {
+                                        onValue( output, object.toString() );
+                                    }
+                                    else // Fallback to Base64 encoded Java Serialization
+                                    {
+                                        serializeBase64Serializable( object, output );
+                                    }
     }
 
     private void serializeValueComposite( Options options, Object object, OutputType output, boolean rootPass )
@@ -548,7 +549,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         throws Exception
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
+        try (ObjectOutputStream out = new ObjectOutputStream( bout ))
         {
             out.writeUnshared( object );
         }

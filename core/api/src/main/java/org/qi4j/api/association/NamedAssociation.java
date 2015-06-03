@@ -19,6 +19,7 @@
 package org.qi4j.api.association;
 
 import java.util.Map;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * Association to named Entities.
@@ -75,4 +76,9 @@ public interface NamedAssociation<T>
      */
     Map<String, T> toMap();
 
+    /**
+     * Returns an unmodifiable Iterable of the references to the associated entities.
+     * @return the references to the associated entities.
+     */
+    Iterable<EntityReference> references();
 }
