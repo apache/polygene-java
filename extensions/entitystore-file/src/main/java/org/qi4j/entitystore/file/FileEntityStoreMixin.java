@@ -44,6 +44,7 @@ import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
 import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.spi.entitystore.BackupRestore;
+import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
@@ -216,6 +217,10 @@ public class FileEntityStoreMixin
                             super.close();
                             byte[] stateArray = this.toString().getBytes( "UTF-8" );
                             File dataFile = getDataFile( ref );
+                            if( dataFile.exists() )
+                            {
+                                throw new EntityAlreadyExistsException(ref);
+                            }
                             store( dataFile, stateArray );
                         }
                     };
