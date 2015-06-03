@@ -12,50 +12,34 @@
  *
  */
 
-package org.qi4j.api.geometry.internal.builders;
+package org.qi4j.library.geometry.builders;
 
-import org.qi4j.api.geometry.TPoint;
-import org.qi4j.api.geometry.internal.TLinearRing;
+import java.util.List;
+import org.qi4j.api.geometry.TFeature;
+import org.qi4j.api.geometry.TFeatureCollection;
 import org.qi4j.api.structure.Module;
+import org.qi4j.library.geometry.TGeometryBuilder;
 
-
-public class TLinearRingBuilder
+public class TFeatureCollectionBuilder extends TGeometryBuilder<TFeatureCollection>
 {
-
-    private Module module;
-    private TLinearRing geometry;
-
-
-    public TLinearRingBuilder(Module module)
+    public TFeatureCollectionBuilder()
     {
-        this.module = module;
-        geometry = module.newValueBuilder(TLinearRing.class).prototype();
+        super(TFeatureCollection.class);
     }
 
-
-    public TLinearRingBuilder ring(double[][] ring)
+    public TFeatureCollectionBuilder of( List<TFeature> features )
     {
-        for (double xy[] : ring)
-        {
-            if (xy.length < 2) return null;
-            geometry.yx(xy[0], xy[1]);
-        }
+        geometry().of( features );
         return this;
     }
 
-    public TLinearRingBuilder of(TPoint... points)
+    public TFeatureCollectionBuilder of( TFeature... features )
     {
-        geometry().of(points);
+        geometry().of( features );
         return this;
     }
 
-    public TLinearRing geometry()
-    {
-
-        return geometry;
-    }
-
-    public TLinearRing geometry(int srid)
+    public TFeatureCollection geometry( int srid )
     {
         return geometry();
     }

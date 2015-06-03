@@ -16,7 +16,7 @@ package org.qi4j.api.type;
 
 import java.util.Collections;
 
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;

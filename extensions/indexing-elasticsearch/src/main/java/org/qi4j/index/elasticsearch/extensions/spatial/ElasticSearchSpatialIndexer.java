@@ -22,7 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.qi4j.api.geometry.*;
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.structure.Module;
 import org.qi4j.index.elasticsearch.ElasticSearchIndexException;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;

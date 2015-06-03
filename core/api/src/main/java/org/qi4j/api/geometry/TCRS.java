@@ -21,11 +21,13 @@ import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
 
-@Mixins(TCRS.Mixin.class)
+@Mixins( TCRS.Mixin.class )
 public interface TCRS extends ValueComposite
 {
     Property<String> definition();
-    TCRS of(String crs);
+
+    TCRS of( String crs );
+
     String crs();
 
     public abstract class Mixin implements TCRS
@@ -35,9 +37,9 @@ public interface TCRS extends ValueComposite
         @This
         TCRS self;
 
-        public TCRS of(String crs)
+        public TCRS of( String crs )
         {
-            self.definition().set(crs);
+            self.definition().set( crs );
             return self;
         }
 

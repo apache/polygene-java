@@ -148,11 +148,8 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        Query<Person> query = unitOfWork.newQuery( qb.where( eq( person.mother()
-            .get()
-            .placeOfBirth()
-            .get()
-            .name(), "Kuala Lumpur" ) )
+        Query<Person> query = unitOfWork.newQuery(
+            qb.where( eq( person.mother().get().placeOfBirth().get().name(), "Kuala Lumpur" ) )
         );
         System.out.println( "*** script05: " + query );
         verifyUnorderedResults( query, "Joe Doe" );

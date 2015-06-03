@@ -12,9 +12,20 @@
  *
  */
 
-package org.qi4j.api.geometry.internal;
+package org.qi4j.library.geometry.builders;
 
-public interface TShape extends TGeometry
+import org.qi4j.api.geometry.TCRS;
+import org.qi4j.library.geometry.TGeometryBuilder;
+
+public class TCRSBuilder extends TGeometryBuilder<TCRS>
 {
-    // marking interface
+    public TCRSBuilder()
+    {
+        super( TCRS.class );
+    }
+
+    public TCRS crs( String crs )
+    {
+        return geometry().of( crs );
+    }
 }

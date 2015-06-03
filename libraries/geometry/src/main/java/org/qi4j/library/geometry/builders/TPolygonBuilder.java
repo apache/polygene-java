@@ -12,58 +12,45 @@
  *
  */
 
-package org.qi4j.api.geometry.internal.builders;
+package org.qi4j.library.geometry.builders;
 
-import org.qi4j.api.geometry.TMultiPolygon;
 import org.qi4j.api.geometry.TPolygon;
+import org.qi4j.api.geometry.TLinearRing;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.structure.Module;
+import org.qi4j.library.geometry.TGeometryBuilder;
 
-import java.util.List;
-
-
-public class TMultiPolygonsBuilder
+public class TPolygonBuilder extends TGeometryBuilder<TPolygon>
 {
-
+    @Structure
     private Module module;
-    private TMultiPolygon geometry;
 
-
-    public TMultiPolygonsBuilder(Module module)
+    public TPolygonBuilder()
     {
-        this.module = module;
-        geometry = module.newValueBuilder(TMultiPolygon.class).prototype();
+        super( TPolygon.class );
     }
 
-
-    public TMultiPolygonsBuilder points(double[][][] points)
+    public TPolygonBuilder shell( TLinearRing shell )
     {
-        for (double xy[][] : points)
-        {
-            if (xy.length < 2) return null;
-        }
+        geometry().of( shell );
         return this;
     }
 
-    public TMultiPolygonsBuilder of(List<TPolygon> polygons)
+    public TPolygonBuilder shell( double[][] shell )
     {
-        geometry.of(polygons);
+        geometry().of( module.newObject( TLinearRingBuilder.class ).ring( shell ).geometry() );
         return this;
     }
 
-    public TMultiPolygonsBuilder of(TPolygon... polygons)
+    public TPolygonBuilder withHoles( TLinearRing... holes )
     {
-        geometry.of(polygons);
+        geometry().withHoles( holes );
         return this;
     }
 
-
-    public TMultiPolygon geometry()
+    public TPolygon geometry( String CRS )
     {
-        return geometry;
-    }
-
-    public TMultiPolygon geometry(int srid)
-    {
+        geometry().setCRS( CRS );
         return geometry();
     }
 }

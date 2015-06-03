@@ -20,8 +20,8 @@ package org.qi4j.library.spatial.formats.conversions.from;
 
 import org.geojson.*;
 import org.qi4j.api.geometry.*;
-import org.qi4j.api.geometry.internal.TGeometry;
-import org.qi4j.api.geometry.internal.TLinearRing;
+import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.TLinearRing;
 import org.qi4j.api.structure.Module;
 
 import java.util.List;

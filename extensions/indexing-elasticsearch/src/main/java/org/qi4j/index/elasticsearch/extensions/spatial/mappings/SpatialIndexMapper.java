@@ -14,7 +14,7 @@
 
 package org.qi4j.index.elasticsearch.extensions.spatial.mappings;
 
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.index.elasticsearch.ElasticSearchSupport;
 import org.qi4j.index.elasticsearch.extensions.spatial.configuration.SpatialConfiguration;
 import org.qi4j.index.elasticsearch.extensions.spatial.mappings.cache.MappingsCachesTable;

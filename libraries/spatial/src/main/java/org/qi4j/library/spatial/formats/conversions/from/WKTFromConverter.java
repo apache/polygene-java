@@ -32,8 +32,8 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
-import org.qi4j.api.geometry.internal.TGeometry;
-import org.qi4j.api.geometry.internal.TLinearRing;
+import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.TLinearRing;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueBuilder;
 

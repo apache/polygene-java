@@ -2,42 +2,44 @@ package org.qi4j.api.query.grammar.extensions.spatial.predicate;
 
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TUnit;
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.query.grammar.PropertyFunction;
 import org.qi4j.api.query.grammar.extensions.spatial.convert.SpatialConvertSpecification;
 import org.qi4j.functional.Specification;
 
-
 public class ST_WithinSpecification<T extends TGeometry>
-        extends SpatialPredicatesSpecification<T>
+    extends SpatialPredicatesSpecification<T>
 {
 
     private double distance;
     private TUnit unit;
 
-    public ST_WithinSpecification(PropertyFunction<T> property, TGeometry param)
+    public ST_WithinSpecification( PropertyFunction<T> property, TGeometry param )
     {
-        super(property, param);
+        super( property, param );
     }
 
-    public ST_WithinSpecification(PropertyFunction<T> property, TPoint param, double distance, TUnit unit)
+    public ST_WithinSpecification( PropertyFunction<T> property, TPoint param, double distance, TUnit unit )
     {
-        super(property, param);
+        super( property, param );
         this.distance = distance;
         this.unit = unit;
     }
 
-    public ST_WithinSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator, double distance, TUnit unit)
+    public ST_WithinSpecification( PropertyFunction<T> property,
+                                   Specification<SpatialConvertSpecification> operator,
+                                   double distance,
+                                   TUnit unit
+    )
     {
-        super(property, operator);
+        super( property, operator );
         this.distance = distance;
         this.unit = unit;
     }
 
-
-    public ST_WithinSpecification(PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator)
+    public ST_WithinSpecification( PropertyFunction<T> property, Specification<SpatialConvertSpecification> operator )
     {
-        super(property, operator);
+        super( property, operator );
     }
 
     public double getDistance()
@@ -50,26 +52,31 @@ public class ST_WithinSpecification<T extends TGeometry>
         return unit;
     }
 
-
     @Override
-    protected boolean compare(TGeometry param)
+    protected boolean compare( TGeometry param )
     {
-        return param.equals(this.param);
+        return param.equals( this.param );
     }
 
     @Override
     public String toString()
     {
-        StringBuffer spec = new StringBuffer();
-        spec.append("ST_WITHIN").append("( ").append(property.toString()).append(" IS WITHIN ");
-        spec.append(param.toString());
+        StringBuilder spec = new StringBuilder();
+        spec.append( "ST_WITHIN" );
+        spec.append( "( " );
+        spec.append( property.toString() );
+        spec.append( " IS WITHIN " );
+        spec.append( param.toString() );
 
-        if (distance > 0)
+        if( distance > 0 )
         {
-            spec.append(" WITH RADIUS ").append(distance).append(" ").append(unit);
+            spec.append( " WITH RADIUS " );
+            spec.append( distance );
+            spec.append( " " );
+            spec.append( unit );
         }
 
-        spec.append(" ) ");
+        spec.append( " ) " );
         return spec.toString();
     }
 }

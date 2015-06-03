@@ -14,23 +14,21 @@
 
 package org.qi4j.api.geometry;
 
-import org.qi4j.api.geometry.internal.GeometryCollections;
-import org.qi4j.api.geometry.internal.TGeometry;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.structure.Module;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-@Mixins(TMultiPoint.Mixin.class)
+@Mixins( TMultiPoint.Mixin.class )
 public interface TMultiPoint extends GeometryCollections
 {
-    TMultiPoint of(TPoint... points);
-    TMultiPoint of(List<TPoint> points);
-    TMultiPoint yx(double y, double x);
+    TMultiPoint of( TPoint... points );
+
+    TMultiPoint of( List<TPoint> points );
+
+    TMultiPoint yx( double y, double x );
 
     public abstract class Mixin extends GeometryCollections.Mixin implements TMultiPoint
     {
@@ -39,29 +37,35 @@ public interface TMultiPoint extends GeometryCollections
         @Structure
         Module module;
 
-        public TMultiPoint of(List<TPoint> points)
+        public TMultiPoint of( List<TPoint> points )
         {
-            of(points.toArray(new TPoint[points.size()]));
+            of( points.toArray( new TPoint[ points.size() ] ) );
             return self;
         }
-        public TMultiPoint yx(double y, double x)
+
+        public TMultiPoint yx( double y, double x )
         {
-            of(module.newValueBuilder(TPoint.class).prototype().x(x).y(y));
+            of( module.newValueBuilder( TPoint.class ).prototype().x( x ).y( y ) );
             return self;
         }
-        public TMultiPoint of(TPoint... points)
+
+        public TMultiPoint of( TPoint... points )
         {
-            self.geometryType().set(TGEOMETRY_TYPE.MULTIPOINT);
+            self.geometryType().set( TGEOMETRY_TYPE.MULTIPOINT );
             init();
             List<TGeometry> l = new ArrayList<>();
-            for (TPoint p : points)
+            for( TPoint p : points )
             {
-                l.add(p);
+                l.add( p );
             }
-            if (self.isEmpty())
-                self.geometries().set(l); // points().set(l);
+            if( self.isEmpty() )
+            {
+                self.geometries().set( l ); // points().set(l);
+            }
             else
-                self.geometries().get().addAll(l);
+            {
+                self.geometries().get().addAll( l );
+            }
 
             return self;
         }

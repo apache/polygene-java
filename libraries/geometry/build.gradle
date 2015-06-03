@@ -1,0 +1,13 @@
+description = "Qi4j library for add-ons to the GeoSpatial support in Qi4j Core."
+
+jar { manifest { name = "Qi4j Library - GeoSpatial" }}
+
+dependencies {
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(libraries.logback)
+}

@@ -15,10 +15,6 @@
 package org.qi4j.api.geometry;
 
 import org.junit.Test;
-import org.qi4j.api.geometry.internal.Coordinate;
-import org.qi4j.api.geometry.internal.TCircle;
-import org.qi4j.api.geometry.internal.TGeometry;
-import org.qi4j.api.geometry.internal.TLinearRing;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;

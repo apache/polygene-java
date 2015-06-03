@@ -14,16 +14,14 @@
 
 package org.qi4j.api.geometry;
 
-import org.qi4j.api.geometry.internal.Coordinate;
-import org.qi4j.api.geometry.internal.TGeometry;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.structure.Module;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Lat = Y Lon = X
@@ -34,23 +32,23 @@ import java.util.List;
  * additional dimensions are allowed, and interpretation and meaning of these coordinates is beyond the scope of
  * this specification.
  */
-@Mixins(TPoint.Mixin.class)
+@Mixins( TPoint.Mixin.class )
 public interface TPoint extends TGeometry
 {
 
     Property<List<Coordinate>> coordinates();
 
-    TPoint of(Coordinate... coordinates);
+    TPoint of( Coordinate... coordinates );
 
-    TPoint of(double x, double y, double z);
+    TPoint of( double x, double y, double z );
 
     TPoint of();
 
-    TPoint x(double x);
+    TPoint x( double x );
 
-    TPoint y(double y);
+    TPoint y( double y );
 
-    TPoint z(double z);
+    TPoint z( double z );
 
     double x();
 
@@ -60,102 +58,108 @@ public interface TPoint extends TGeometry
 
     Coordinate getCoordinate();
 
-    int compareTo(Object o);
-
+    int compareTo( Object o );
 
     public abstract class Mixin implements TPoint
     {
 
         @Structure
-        Module module;
+        private Module module;
+
         @This
-        TPoint self;
+        private TPoint self;
 
         private void init()
         {
-            if (self.coordinates().get() == null)
+            if( self.coordinates().get() == null )
             {
-
                 List<Coordinate> c = new ArrayList<Coordinate>();
-                c.add(module.newValueBuilder(Coordinate.class).prototype().x(0).y(0).z(0));
-                self.coordinates().set(c);
-                self.geometryType().set(TGEOMETRY_TYPE.POINT);
+                c.add( module.newValueBuilder( Coordinate.class ).prototype().x( 0 ).y( 0 ).z( 0 ) );
+                self.coordinates().set( c );
+                self.geometryType().set( TGEOMETRY_TYPE.POINT );
             }
         }
 
         @Override
         public boolean isEmpty()
         {
-            return (self.coordinates() == null) || (self.coordinates().get() == null) || (self.coordinates().get().isEmpty()) ? true : false;
+            return ( self.coordinates() == null ) ||
+                   ( self.coordinates().get() == null ) ||
+                   ( self.coordinates().get().isEmpty() );
         }
-
 
         public TPoint of()
         {
-            if (isEmpty())
-                return self.of(0.0d, 0.0d, 0.0d);
+            if( isEmpty() )
+            {
+                return self.of( 0.0d, 0.0d, 0.0d );
+            }
             else
+            {
                 return self;
+            }
         }
-        public TPoint of(double x, double y, double z)
+
+        public TPoint of( double x, double y, double z )
         {
             init();
-            self.x(x).y(y).z(z);
-            self.geometryType().set(TGEOMETRY_TYPE.POINT);
+            self.x( x ).y( y ).z( z );
+            self.geometryType().set( TGEOMETRY_TYPE.POINT );
             return self;
         }
 
-        public TPoint of(Coordinate... coordinates)
+        public TPoint of( Coordinate... coordinates )
         {
             List<Coordinate> c = new ArrayList<Coordinate>();
-
-            for (Coordinate xyzn : coordinates)
-            {
-                c.add(xyzn);
-            }
-            self.coordinates().set(c);
-            self.geometryType().set(TGEOMETRY_TYPE.POINT);
+            Collections.addAll( c, coordinates );
+            self.coordinates().set( c );
+            self.geometryType().set( TGEOMETRY_TYPE.POINT );
             return self;
         }
 
-        public TPoint x(double x)
+        public TPoint x( double x )
         {
             init();
-            self.coordinates().get().get(0).x(x);
+            self.coordinates().get().get( 0 ).x( x );
             return self;
         }
 
         public double x()
         {
-            return self.coordinates().get().get(0).getOrdinate(Coordinate.X);
+            return self.coordinates().get().get( 0 ).getOrdinate( Coordinate.X );
         }
-        public TPoint y(double y)
+
+        public TPoint y( double y )
         {
             init();
-            self.coordinates().get().get(0).y(y);
-            return self;
-        }
-        public double y()
-        {
-            return self.coordinates().get().get(0).getOrdinate(Coordinate.Y);
-        }
-        public double z()
-        {
-            return self.coordinates().get().get(0).getOrdinate(Coordinate.Z);
-        }
-        public TPoint z(double z)
-        {
-            init();
-            self.coordinates().get().get(0).z(z);
+            self.coordinates().get().get( 0 ).y( y );
             return self;
         }
 
-        public TPoint of(List<Double> coordinates)
+        public double y()
         {
+            return self.coordinates().get().get( 0 ).getOrdinate( Coordinate.Y );
+        }
+
+        public double z()
+        {
+            return self.coordinates().get().get( 0 ).getOrdinate( Coordinate.Z );
+        }
+
+        public TPoint z( double z )
+        {
+            init();
+            self.coordinates().get().get( 0 ).z( z );
+            return self;
+        }
+
+        public TPoint of( List<Double> coordinates )
+        {
+            // TODO; [niclas] Must be something wrong here...
             List<Coordinate> c = new ArrayList<Coordinate>();
-            for (Double xyzn : coordinates)
+            for( Double xyzn : coordinates )
             {
-                c.add(module.newValueBuilder(Coordinate.class).prototype().of(xyzn));
+                c.add( module.newValueBuilder( Coordinate.class ).prototype().of( xyzn ) );
             }
             return null;
         }
@@ -164,13 +168,13 @@ public interface TPoint extends TGeometry
         public Coordinate[] getCoordinates()
         {
             List<Coordinate> coordinates = new ArrayList<>();
-            coordinates.add(getCoordinate());
-            return coordinates.toArray(new Coordinate[coordinates.size()]);
+            coordinates.add( getCoordinate() );
+            return coordinates.toArray( new Coordinate[ coordinates.size() ] );
         }
 
         public Coordinate getCoordinate()
         {
-            return self.coordinates().get().size() != 0 ? self.coordinates().get().get(0) : null;
+            return self.coordinates().get().size() != 0 ? self.coordinates().get().get( 0 ) : null;
         }
 
         public int getNumPoints()
@@ -178,12 +182,10 @@ public interface TPoint extends TGeometry
             return isEmpty() ? 0 : 1;
         }
 
-        public int compareTo(Object other)
+        public int compareTo( Object other )
         {
             TPoint point = (TPoint) other;
-            return getCoordinate().compareTo(point.getCoordinate());
+            return getCoordinate().compareTo( point.getCoordinate() );
         }
-
     }
-
 }

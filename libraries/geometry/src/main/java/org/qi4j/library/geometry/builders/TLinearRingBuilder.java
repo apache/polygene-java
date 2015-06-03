@@ -12,45 +12,39 @@
  *
  */
 
-package org.qi4j.api.geometry.internal.builders;
+package org.qi4j.library.geometry.builders;
 
-import org.qi4j.api.geometry.TFeature;
-import org.qi4j.api.geometry.internal.TGeometry;
-import org.qi4j.api.structure.Module;
+import org.qi4j.api.geometry.TPoint;
+import org.qi4j.api.geometry.TLinearRing;
+import org.qi4j.library.geometry.TGeometryBuilder;
 
-
-public class TFeatureBuilder
+public class TLinearRingBuilder extends TGeometryBuilder<TLinearRing>
 {
-
-    private Module module;
-    private TFeature geometry;
-
-
-    public TFeatureBuilder(Module module)
+    public TLinearRingBuilder()
     {
-        this.module = module;
-        geometry = module.newValueBuilder(TFeature.class).prototype();
+        super( TLinearRing.class );
     }
 
-
-    public TFeatureBuilder of(TGeometry feature)
+    public TLinearRingBuilder ring( double[][] ring )
     {
-        geometry.of(feature);
+        for( double xy[] : ring )
+        {
+            if( xy.length < 2 )
+            {
+                return null;
+            }
+            geometry().yx( xy[ 0 ], xy[ 1 ] );
+        }
         return this;
     }
 
-    public TFeatureBuilder addProperty(String name, String value)
+    public TLinearRingBuilder of( TPoint... points )
     {
-        geometry.addProperty(name, value);
+        geometry().of( points );
         return this;
     }
 
-    public TFeature geometry()
-    {
-        return geometry;
-    }
-
-    public TFeature geometry(int srid)
+    public TLinearRing geometry( int srid )
     {
         return geometry();
     }

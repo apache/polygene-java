@@ -12,28 +12,34 @@
  *
  */
 
-package org.qi4j.api.geometry.internal.builders;
+package org.qi4j.library.geometry.builders;
 
-import org.qi4j.api.geometry.TCRS;
-import org.qi4j.api.structure.Module;
+import org.qi4j.api.geometry.TFeature;
+import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.library.geometry.TGeometryBuilder;
 
-public class TCRSBuilder
+public class TFeatureBuilder  extends TGeometryBuilder<TFeature>
 {
-
-    private Module module;
-    private TCRS geometry;
-
-
-    public TCRSBuilder(Module module)
+    public TFeatureBuilder()
     {
-        this.module = module;
-        geometry = module.newValueBuilder(TCRS.class).prototype();
+        super( TFeature.class );
     }
 
-    public TCRS crs(String crs)
+    public TFeatureBuilder of( TGeometry feature )
     {
-        return geometry.of(crs);
+        geometry().of( feature );
+        return this;
+    }
+
+    public TFeatureBuilder addProperty( String name, String value )
+    {
+        geometry().addProperty( name, value );
+        return this;
     }
 
 
+    public TFeature geometry( int srid )
+    {
+        return geometry();
+    }
 }

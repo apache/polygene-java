@@ -14,23 +14,20 @@
 
 package org.qi4j.api.geometry;
 
-import org.qi4j.api.geometry.internal.GeometryCollections;
-import org.qi4j.api.geometry.internal.TGeometry;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.structure.Module;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Mixins(TMultiPolygon.Mixin.class)
+@Mixins( TMultiPolygon.Mixin.class )
 public interface TMultiPolygon extends GeometryCollections
 {
 
-    TMultiPolygon of(TPolygon... polygons);
+    TMultiPolygon of( TPolygon... polygons );
 
-    TMultiPolygon of(List<TPolygon> polygons);
+    TMultiPolygon of( List<TPolygon> polygons );
 
     public abstract class Mixin extends GeometryCollections.Mixin implements TMultiPolygon
     {
@@ -40,28 +37,31 @@ public interface TMultiPolygon extends GeometryCollections
         @This
         TMultiPolygon self;
 
-        public TMultiPolygon of(List<TPolygon> polygons)
+        public TMultiPolygon of( List<TPolygon> polygons )
         {
-            of(polygons.toArray(new TPolygon[polygons.size()]));
+            of( polygons.toArray( new TPolygon[ polygons.size() ] ) );
             return self;
         }
 
-        public TMultiPolygon of(TPolygon... polygons)
+        public TMultiPolygon of( TPolygon... polygons )
         {
             init();
-            self.geometryType().set(TGEOMETRY_TYPE.MULTIPOLYGON);
+            self.geometryType().set( TGEOMETRY_TYPE.MULTIPOLYGON );
             List<TGeometry> l = new ArrayList<>();
 
-            for (TPolygon p : polygons)
+            for( TPolygon p : polygons )
             {
-                l.add(p);
+                l.add( p );
             }
-            if (self.isEmpty())
-                self.geometries().set(l);
+            if( self.isEmpty() )
+            {
+                self.geometries().set( l );
+            }
             else
-                self.geometries().get().addAll(l);
+            {
+                self.geometries().get().addAll( l );
+            }
             return self;
         }
-
     }
 }

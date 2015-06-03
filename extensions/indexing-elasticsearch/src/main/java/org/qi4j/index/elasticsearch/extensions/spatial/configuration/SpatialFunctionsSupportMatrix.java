@@ -18,7 +18,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import org.qi4j.api.geometry.TPoint;
 import org.qi4j.api.geometry.TPolygon;
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_DisjointSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_IntersectsSpecification;
 import org.qi4j.api.query.grammar.extensions.spatial.predicate.ST_WithinSpecification;

@@ -21,7 +21,7 @@ package org.qi4j.library.spatial.formats.conversions.to;
 import org.geojson.GeoJsonObject;
 import org.geojson.Point;
 import org.qi4j.api.geometry.TPoint;
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.structure.Module;
 
 

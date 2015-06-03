@@ -12,13 +12,12 @@
  *
  */
 
-package org.qi4j.api.geometry.internal;
+package org.qi4j.api.geometry;
 
-import org.qi4j.api.geometry.TLineString;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 
-@Mixins(TLinearRing.Mixin.class)
+@Mixins( TLinearRing.Mixin.class )
 public interface TLinearRing extends TLineString
 {
 
@@ -32,9 +31,11 @@ public interface TLinearRing extends TLineString
         @Override
         public boolean isValid()
         {
-            if (self.getStartPoint() == null || self.getEndPoint() == null) return false;
-            return self.getStartPoint().compareTo(self.getEndPoint()) == 0 ? true : false;
+            if( self.getStartPoint() == null || self.getEndPoint() == null )
+            {
+                return false;
+            }
+            return self.getStartPoint().compareTo( self.getEndPoint() ) == 0 ? true : false;
         }
     }
-
 }

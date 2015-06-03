@@ -19,7 +19,7 @@
 package org.qi4j.library.spatial.formats.conversions.from;
 
 import org.geojson.GeoJsonObject;
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.structure.Module;
 import org.qi4j.library.spatial.formats.conversions.to.ToHelper;
 

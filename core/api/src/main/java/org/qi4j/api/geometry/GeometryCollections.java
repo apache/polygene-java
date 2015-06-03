@@ -12,21 +12,19 @@
  *
  */
 
-package org.qi4j.api.geometry.internal;
-
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.property.Property;
+package org.qi4j.api.geometry;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.property.Property;
 
 public interface GeometryCollections extends TGeometry
 {
 
     Property<List<TGeometry>> geometries();
-    TGeometry getGeometryN(int n);
 
+    TGeometry getGeometryN( int n );
 
     int getNumGeometries();
 
@@ -38,21 +36,20 @@ public interface GeometryCollections extends TGeometry
         @This
         GeometryCollections self;
 
-
         protected void init()
         {
-            if (self.geometries().get() == null)
+            if( self.geometries().get() == null )
             {
                 List<TGeometry> geometries = new ArrayList<>();
-                self.geometries().set(geometries);
+                self.geometries().set( geometries );
             }
         }
 
         public boolean isEmpty()
         {
-            for (int i = 0; i < self.geometries().get().size(); i++)
+            for( int i = 0; i < self.geometries().get().size(); i++ )
             {
-                if (!self.geometries().get().get(i).isEmpty())
+                if( !self.geometries().get().get( i ).isEmpty() )
                 {
                     return false;
                 }
@@ -65,21 +62,22 @@ public interface GeometryCollections extends TGeometry
             return self.geometries().get().size();
         }
 
-        public TGeometry getGeometryN(int n)
+        public TGeometry getGeometryN( int n )
         {
-            return self.geometries().get().get(n);
+            return self.geometries().get().get( n );
         }
+
         public Coordinate[] getCoordinates()
         {
-            Coordinate[] coordinates = new Coordinate[self.getNumPoints()];
+            Coordinate[] coordinates = new Coordinate[ self.getNumPoints() ];
             int k = -1;
-            for (int i = 0; i < self.getNumGeometries(); i++)
+            for( int i = 0; i < self.getNumGeometries(); i++ )
             {
-                Coordinate[] childCoordinates = self.geometries().get().get(i).getCoordinates();
-                for (int j = 0; j < childCoordinates.length; j++)
+                Coordinate[] childCoordinates = self.geometries().get().get( i ).getCoordinates();
+                for( int j = 0; j < childCoordinates.length; j++ )
                 {
                     k++;
-                    coordinates[k] = childCoordinates[j];
+                    coordinates[ k ] = childCoordinates[ j ];
                 }
             }
             return coordinates;
@@ -88,13 +86,11 @@ public interface GeometryCollections extends TGeometry
         public int getNumPoints()
         {
             int numPoints = 0;
-            for (int i = 0; i < self.geometries().get().size(); i++)
+            for( int i = 0; i < self.geometries().get().size(); i++ )
             {
-                numPoints += self.geometries().get().get(i).getNumPoints();
+                numPoints += self.geometries().get().get( i ).getNumPoints();
             }
             return numPoints;
         }
-
     }
-
 }

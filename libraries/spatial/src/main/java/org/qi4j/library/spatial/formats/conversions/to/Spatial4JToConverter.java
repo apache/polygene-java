@@ -30,8 +30,8 @@ import com.vividsolutions.jts.util.GeometricShapeFactory;
 import org.geojson.GeoJsonObject;
 import org.geojson.Point;
 import org.qi4j.api.geometry.TPoint;
-import org.qi4j.api.geometry.internal.TCircle;
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TCircle;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.structure.Module;
 
 

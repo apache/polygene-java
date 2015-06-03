@@ -14,23 +14,7 @@
 
 package org.qi4j.api.geometry;
 
-public enum TUnit
+public interface TShape extends TGeometry
 {
-
-    RADIAN,
-    DEGREE,
-    ARC_MINUTE,
-    ARC_SECOND,
-    GRAD,
-
-    MILLIMETER,
-    CENTIMETER,
-    METER,
-    KILOMETER,
-
-    FOOT,
-    USFOOT,
-    YARD,
-    UNIT,
-    SECOND
+    // marking interface
 }

@@ -14,23 +14,20 @@
 
 package org.qi4j.api.geometry;
 
-import org.qi4j.api.geometry.internal.GeometryCollections;
-import org.qi4j.api.geometry.internal.TGeometry;
+import java.util.ArrayList;
+import java.util.List;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.structure.Module;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Mixins(TMultiLineString.Mixin.class)
+@Mixins( TMultiLineString.Mixin.class )
 public interface TMultiLineString extends GeometryCollections
 {
 
-    TMultiLineString of(TLineString... lines);
+    TMultiLineString of( TLineString... lines );
 
-    TMultiLineString of(List<TLineString> lines);
+    TMultiLineString of( List<TLineString> lines );
 
     public abstract class Mixin extends GeometryCollections.Mixin implements TMultiLineString
     {
@@ -40,26 +37,30 @@ public interface TMultiLineString extends GeometryCollections
         @This
         TMultiLineString self;
 
-        public TMultiLineString of(List<TLineString> lines)
+        public TMultiLineString of( List<TLineString> lines )
         {
-            of(lines.toArray(new TLineString[lines.size()]));
+            of( lines.toArray( new TLineString[ lines.size() ] ) );
             return self;
         }
 
-        public TMultiLineString of(TLineString... lines)
+        public TMultiLineString of( TLineString... lines )
         {
-            self.geometryType().set(TGEOMETRY_TYPE.MULTILINESTRING);
+            self.geometryType().set( TGEOMETRY_TYPE.MULTILINESTRING );
             init();
             List<TGeometry> l = new ArrayList<>();
 
-            for (TLineString p : lines)
+            for( TLineString p : lines )
             {
-                l.add(p);
+                l.add( p );
             }
-            if (self.isEmpty())
-                self.geometries().set(l);
+            if( self.isEmpty() )
+            {
+                self.geometries().set( l );
+            }
             else
-                self.geometries().get().addAll(l);
+            {
+                self.geometries().get().addAll( l );
+            }
             return self;
         }
     }

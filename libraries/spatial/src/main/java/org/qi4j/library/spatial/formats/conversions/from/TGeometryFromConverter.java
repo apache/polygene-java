@@ -18,7 +18,7 @@
 
 package org.qi4j.library.spatial.formats.conversions.from;
 
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.structure.Module;
 
 

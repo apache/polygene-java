@@ -12,56 +12,46 @@
  *
  */
 
-package org.qi4j.api.geometry.internal.builders;
+package org.qi4j.library.geometry.builders;
 
-import org.qi4j.api.geometry.TLineString;
-import org.qi4j.api.geometry.TPoint;
+import java.util.List;
+import org.qi4j.api.geometry.TMultiPolygon;
+import org.qi4j.api.geometry.TPolygon;
 import org.qi4j.api.structure.Module;
+import org.qi4j.library.geometry.TGeometryBuilder;
 
-
-public class TLineStringBuilder
+public class TMultiPolygonsBuilder extends TGeometryBuilder<TMultiPolygon>
 {
-
-    private Module module;
-    private TLineString geometry;
-
-
-    public TLineStringBuilder(Module module)
+    public TMultiPolygonsBuilder(  )
     {
-        this.module = module;
-        geometry = module.newValueBuilder(TLineString.class).prototype();
+        super(TMultiPolygon.class);
     }
 
-
-    public TLineStringBuilder points(double[][] points)
+    public TMultiPolygonsBuilder points( double[][][] points )
     {
-        for (double yx[] : points)
+        for( double xy[][] : points )
         {
-            if (yx.length < 2) return null;
-            geometry.yx(yx[0], yx[1]);
+            if( xy.length < 2 )
+            {
+                return null;
+            }
         }
         return this;
     }
 
-    public TLineStringBuilder of(TPoint... points)
+    public TMultiPolygonsBuilder of( List<TPolygon> polygons )
     {
-        geometry().of(points);
+        geometry().of( polygons );
         return this;
     }
 
-    public TLineStringBuilder of()
+    public TMultiPolygonsBuilder of( TPolygon... polygons )
     {
-        geometry().of();
+        geometry().of( polygons );
         return this;
     }
 
-
-    public TLineString geometry()
-    {
-        return geometry;
-    }
-
-    public TLineString geometry(int srid)
+    public TMultiPolygon geometry( int srid )
     {
         return geometry();
     }

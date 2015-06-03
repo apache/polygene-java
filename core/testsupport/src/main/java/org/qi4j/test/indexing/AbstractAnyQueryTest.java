@@ -18,9 +18,9 @@
 package org.qi4j.test.indexing;
 
 import org.qi4j.api.geometry.*;
-import org.qi4j.api.geometry.internal.Coordinate;
-import org.qi4j.api.geometry.internal.TGeometry;
-import org.qi4j.api.geometry.internal.TLinearRing;
+import org.qi4j.api.geometry.Coordinate;
+import org.qi4j.api.geometry.TGeometry;
+import org.qi4j.api.geometry.TLinearRing;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;

@@ -15,7 +15,7 @@
 package org.qi4j.index.elasticsearch.extensions.spatial.internal;
 
 import org.qi4j.api.geometry.*;
-import org.qi4j.api.geometry.internal.TGeometry;
+import org.qi4j.api.geometry.TGeometry;
 import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.query.grammar.PropertyFunction;
 import org.qi4j.api.util.Classes;
