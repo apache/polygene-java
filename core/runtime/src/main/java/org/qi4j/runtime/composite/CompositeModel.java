@@ -108,7 +108,7 @@ public abstract class CompositeModel
     }
 
     @Override
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     public Class<?> primaryType()
     {
         Class primaryType = null;
@@ -159,7 +159,7 @@ public abstract class CompositeModel
         return visitor.visitLeave( this );
     }
 
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     private void createProxyClass()
     {
         Class<?> mainType = first( types );
@@ -246,7 +246,8 @@ public abstract class CompositeModel
 //        if (!matchesAny( isAssignableFrom( mixinType ), types ))
         if( !mixinsModel.isImplemented( mixinType ) )
         {
-            throw new IllegalArgumentException( "Composite does not implement type " + mixinType.getName() );
+            String message = "Composite " + primaryType().getName() + " does not implement type " + mixinType.getName();
+            throw new IllegalArgumentException( message );
         }
 
         // Instantiate proxy for given mixin interface
