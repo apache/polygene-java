@@ -181,17 +181,7 @@ public interface ValueSerializer
          */
         public Options()
         {
-            options.put( INCLUDE_TYPE_INFO, "true" );
-        }
-
-        /**
-         * Create new ValueSerializer Options from given Map.
-         * @param options Options to copy in the new Options instance
-         */
-        public Options( Map<String, String> options )
-        {
-            this();
-            options.putAll( options );
+            this.options.put( INCLUDE_TYPE_INFO, "true" );
         }
 
         /**
@@ -318,5 +308,4 @@ public interface ValueSerializer
             return new HashMap<>( options );
         }
     }
-
 }
