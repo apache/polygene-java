@@ -27,6 +27,49 @@ project.ext {
 
 def releaseApprovedProjects = allprojects.findAll( { project ->  rootProject.ext.releaseSpec.satisfiedBy( project ) } )
 
+apply from: 'gradle/apache-rat.gradle'
+rat {
+    excludes = [
+        '**/.DS_Store/**',
+        'bin/**',
+        // Git Files
+        '**/.git/**',
+        '**/.gitignore',
+        // Gradle Wrapper
+        'gradle/wrapper/**',
+        'gradlew',
+        'gradlew.bat',
+        '**/.gradle/**',
+        // Build Output
+        '**/build/**',
+        // IDE Files
+        '**/.idea/**',
+        '**/*.iml',
+        '**/*.ipr',
+        '**/*.iws',
+        '**/.settings/**',
+        '**/.classpath',
+        '**/.project',
+        '**/.nb-gradle-properties',
+        '**/.gradletasknamecache',
+        '**/.nb-gradle/**',
+        '**/private/cache/**',
+        // Graphic Resources
+        '**/*.svg',
+        '**/*.gif',
+        '**/*.png',
+        '**/*.jpg',
+        '**/*.psd',
+        // Syntax Highlighter - MIT
+        'manual/**/sh*.css',
+        'manual/**/sh*.js',
+        // jQuery & plugins - MIT
+        'manual/**/jquery*.js',
+        // Keystores
+        '**/*.jceks',
+    ]
+}
+
 buildscript {
   repositories {
     mavenCentral()
