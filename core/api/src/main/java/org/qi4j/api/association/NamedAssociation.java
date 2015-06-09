@@ -81,4 +81,11 @@ public interface NamedAssociation<T>
      * @return the references to the associated entities.
      */
     Iterable<EntityReference> references();
+
+    /** Returns the EntityReference for the Association with the given name.
+     *
+     * @param name The name of the association to return the EntityReference for
+     * @return The EntityReference of the association.
+     */
+    EntityReference referenceOf( String name );
 }

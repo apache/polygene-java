@@ -29,6 +29,7 @@ import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 
 /**
  * Model for ValueComposites
@@ -64,22 +65,28 @@ public final class ValueModel
         return (ValueStateModel) super.state();
     }
 
-    public void checkConstraints( ValueStateInstance state )
+    // This method is ONLY called by ValueBuilders
+    void checkConstraints( ValueStateInstance state )
         throws ConstraintViolationException
     {
         for( PropertyModel propertyModel : stateModel.properties() )
         {
-            propertyModel.checkConstraints( state.<Object>propertyFor( propertyModel.accessor() ).get() );
+            propertyModel.checkConstraints( state.propertyFor( propertyModel.accessor() ).get() );
         }
 
+        // IF no UnitOfWork is active, then the Association checks shouldn't be done.
+        if( UnitOfWorkInstance.getCurrent().empty() )
+        {
+            return;
+        }
         for( AssociationModel associationModel : ( (ValueStateModel) stateModel ).associations() )
         {
-            associationModel.checkConstraints( state.<Object>associationFor( associationModel.accessor() ).get() );
+            associationModel.checkConstraints( state.associationFor( associationModel.accessor() ).get() );
         }
 
         for( ManyAssociationModel associationModel : ( (ValueStateModel) stateModel ).manyAssociations() )
         {
-            associationModel.checkAssociationConstraints( state.<Object>manyAssociationFor( associationModel.accessor() ) );
+            associationModel.checkAssociationConstraints( state.manyAssociationFor( associationModel.accessor() ) );
         }
     }
 

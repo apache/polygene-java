@@ -717,9 +717,9 @@ public class ModuleUnitOfWork
 
         private final T value;
 
-        public ToEntityManyAssociationMappingFunction( T value )
+        public ToEntityManyAssociationMappingFunction( T valueComposite )
         {
-            this.value = value;
+            this.value = valueComposite;
         }
 
         @Override
@@ -737,9 +737,9 @@ public class ModuleUnitOfWork
     {
         private final T value;
 
-        public ToEntityNameAssociationMappingFunction( T value )
+        public ToEntityNameAssociationMappingFunction( T valueComposite )
         {
-            this.value = value;
+            this.value = valueComposite;
         }
 
         @Override

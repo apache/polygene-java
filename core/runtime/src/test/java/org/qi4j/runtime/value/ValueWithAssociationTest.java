@@ -121,7 +121,6 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
     {
         String identity1;
         String identity2;
-        DualFaced value;
         try (UnitOfWork uow = module.newUnitOfWork())
         {
             EntityBuilder<SimpleName> builder1 = uow.newEntityBuilder( SimpleName.class );
@@ -145,8 +144,8 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
         SimpleName simpleValue = vb1.newInstance();
 
         ValueBuilder<DualFaced> vb2 = module.newValueBuilder( DualFaced.class );
-        vb2.prototype().identity().set(identity2);
-        vb2.prototype().name().set("Merlin");
+        vb2.prototype().identity().set( identity2 );
+        vb2.prototype().name().set( "Merlin" );
         vb2.prototype().simple().set( simpleValue );
         vb2.prototype().simples().add( simpleValue );
         vb2.prototype().namedSimples().put( "paul", simpleValue );
@@ -155,9 +154,14 @@ public class ValueWithAssociationTest extends AbstractQi4jTest
         try (UnitOfWork uow = module.newUnitOfWork())
         {
             DualFaced dualEntity = uow.toEntity( DualFaced.class, dualValue );
-            assertThat( dualEntity.name().get(), equalTo( "Merlin"));
-            assertThat( dualEntity.simple().get().name().get(), equalTo( "Niclas"));
-            assertThat( dualEntity.simple().get().name().get(), equalTo( "Paul"));
+            // The root entity is expected to have changed value,
+            assertThat( dualEntity.name().get(), equalTo( "Merlin" ) );
+            // But the referenced entity is not updated, only using the EntityReference, which still points to "Niclas",
+            // even though the value contains "Paul" for that entity. That entity needds to be updated separately
+            assertThat( dualEntity.simple().get().name().get(), equalTo( "Niclas" ) );
+            assertThat( dualEntity.simples().get(0).name().get(), equalTo( "Niclas" ) );
+            assertThat( dualEntity.namedSimples().get("paul").name().get(), equalTo( "Niclas" ) );
+            assertThat( dualEntity.namedSimples().get("niclas"), equalTo( null ) );
         }
     }
 

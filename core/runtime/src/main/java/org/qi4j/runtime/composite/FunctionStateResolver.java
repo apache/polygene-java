@@ -20,12 +20,15 @@ import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.functional.ForEach;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.association.ManyAssociationModel;
 import org.qi4j.runtime.association.NamedAssociationModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.entity.ManyAssociationState;
+import org.qi4j.spi.entity.NamedAssociationState;
 
 /**
  * Function based StateResolver.
@@ -87,18 +90,31 @@ public class FunctionStateResolver
         }
         for( ManyAssociationModel manyAssDesc : model.state().manyAssociations() )
         {
+            ManyAssociationState associationState = state.manyAssociationValueOf( manyAssDesc.qualifiedName() );
+            // First clear existing ones
+            for( EntityReference ref : associationState )
+            {
+                associationState.remove( ref );
+            }
+            // then add the new ones.
             for( EntityReference ref : getManyAssociationState( manyAssDesc ) )
             {
-                state.manyAssociationValueOf( manyAssDesc.qualifiedName() ).add( 0, ref );
+                associationState.add( 0, ref );
             }
         }
         for( NamedAssociationModel namedAssDesc : model.state().namedAssociations() )
         {
+            NamedAssociationState associationState = state.namedAssociationValueOf( namedAssDesc.qualifiedName() );
+            // First clear existing ones
+            for( String name : associationState )
+            {
+                associationState.remove( name );
+            }
+            // then add the new ones.
             for( Map.Entry<String, EntityReference> entry : getNamedAssociationState( namedAssDesc ).entrySet() )
             {
-                state.namedAssociationValueOf( namedAssDesc.qualifiedName() ).put( entry.getKey(), entry.getValue() );
+                associationState.put( entry.getKey(), entry.getValue() );
             }
         }
     }
-
 }

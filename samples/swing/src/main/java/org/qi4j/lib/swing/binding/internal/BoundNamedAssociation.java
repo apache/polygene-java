@@ -82,6 +82,12 @@ public class BoundNamedAssociation<T>
     }
 
     @Override
+    public EntityReference referenceOf( String name )
+    {
+        return actualAssociations.referenceOf( name );
+    }
+
+    @Override
     public Iterator<String> iterator()
     {
         return actualAssociations.iterator();

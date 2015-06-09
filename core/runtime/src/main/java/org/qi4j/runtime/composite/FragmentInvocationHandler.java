@@ -63,6 +63,7 @@ abstract class FragmentInvocationHandler
             StackTraceElement stackTraceElement = trace[ i ];
             if( !isApplicationClass( stackTraceElement.getClassName() ) )
             {
+                // TODO: Should find stack entry outside Runtime, and compact beyond that
                 trace[ i ] = null;
                 count++;
             }

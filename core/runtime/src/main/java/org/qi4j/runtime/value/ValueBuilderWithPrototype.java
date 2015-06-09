@@ -20,12 +20,23 @@
  */
 package org.qi4j.runtime.value;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.common.ConstructionException;
+import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.api.value.ValueSerialization;
-import org.qi4j.api.value.ValueSerializationException;
+import org.qi4j.functional.Function;
+import org.qi4j.runtime.composite.FunctionStateResolver;
+import org.qi4j.runtime.composite.MixinModel;
+import org.qi4j.runtime.composite.MixinsModel;
+import org.qi4j.runtime.composite.StateResolver;
+import org.qi4j.runtime.composite.UsesInstance;
+import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 
@@ -38,24 +49,53 @@ public class ValueBuilderWithPrototype<T>
     private ValueInstance prototypeInstance;
     private final ValueModel valueModel;
 
-    public ValueBuilderWithPrototype(ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, T prototype)
+    public ValueBuilderWithPrototype( ModelModule<ValueModel> compositeModelModule,
+                                      ModuleInstance currentModule,
+                                      T prototype
+    )
     {
         valueModel = compositeModelModule.model();
-        // Use serialization-deserialization to make a copy of the prototype
-        final Object value;
-        try
+        // Only shallow clone, as all generic types of the ValueComposites are expected to be Immutable.
+
+        MixinsModel mixinsModel = valueModel.mixinsModel();
+        Object[] mixins = mixinsModel.newMixinHolder();
+        final ValueStateInstance prototypeState = ValueInstance.valueInstanceOf( (ValueComposite) prototype ).state();
+        StateResolver resolver = new FunctionStateResolver(
+            new PropertyDescriptorFunction( prototypeState ),
+            new AssociationDescriptorEntityReferenceFunction( prototypeState ),
+            new AssociationDescriptorIterableFunction( prototypeState ),
+            new AssociationDescriptorMapFunction( prototypeState )
+        );
+        ValueStateInstance state = new ValueStateInstance( compositeModelModule, currentModule, resolver );
+        ValueInstance valueInstance = new ValueInstance(
+            valueModel,
+            currentModule,
+            mixins,
+            state
+        );
+
+        int i = 0;
+        InjectionContext injectionContext = new InjectionContext( valueInstance, UsesInstance.EMPTY_USES, state );
+        for( MixinModel mixinModel : mixinsModel.mixinModels() )
         {
-            // @TODO there is probably a more efficient way to do this
-            ValueSerialization valueSerialization = currentModule.valueSerialization();
-            String serialized = valueSerialization.serialize( prototype );
-            value = valueSerialization.deserialize( valueModel.valueType(), serialized);
-        }
-        catch( ValueSerializationException e )
-        {
-            throw new IllegalStateException( "Could not serialize-copy Value", e );
+            mixins[ i++ ] = mixinModel.newInstance( injectionContext );
         }
 
-        ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) value );
+//        // Use serialization-deserialization to make a copy of the prototype
+//        final Object value;
+//        try
+//        {
+//            // @TODO there is probably a more efficient way to do this
+//            ValueSerialization valueSerialization = currentModule.valueSerialization();
+//            String serialized = valueSerialization.serialize( prototype );
+//            value = valueSerialization.deserialize( valueModel.valueType(), serialized);
+//        }
+//        catch( ValueSerializationException e )
+//        {
+//            throw new IllegalStateException( "Could not serialize-copy Value", e );
+//        }
+
+//        ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) value );
         valueInstance.prepareToBuild();
         this.prototypeInstance = valueInstance;
     }
@@ -112,4 +152,77 @@ public class ValueBuilderWithPrototype<T>
         }
     }
 
+    private static class PropertyDescriptorFunction
+        implements Function<PropertyDescriptor, Object>
+    {
+        private final ValueStateInstance prototypeState;
+
+        public PropertyDescriptorFunction( ValueStateInstance prototypeState )
+        {
+            this.prototypeState = prototypeState;
+        }
+
+        @Override
+        public Object map( PropertyDescriptor descriptor )
+        {
+            return prototypeState.propertyFor( descriptor.accessor() ).get();
+        }
+    }
+
+    private static class AssociationDescriptorEntityReferenceFunction
+        implements Function<AssociationDescriptor, EntityReference>
+    {
+        private final ValueStateInstance prototypeState;
+
+        public AssociationDescriptorEntityReferenceFunction( ValueStateInstance prototypeState )
+        {
+            this.prototypeState = prototypeState;
+        }
+
+        @Override
+        public EntityReference map( AssociationDescriptor descriptor )
+        {
+            return prototypeState.associationFor( descriptor.accessor() ).reference();
+        }
+    }
+
+    private static class AssociationDescriptorIterableFunction
+        implements Function<AssociationDescriptor, Iterable<EntityReference>>
+    {
+        private final ValueStateInstance prototypeState;
+
+        public AssociationDescriptorIterableFunction( ValueStateInstance prototypeState )
+        {
+            this.prototypeState = prototypeState;
+        }
+
+        @Override
+        public Iterable<EntityReference> map( AssociationDescriptor descriptor )
+        {
+            return prototypeState.manyAssociationFor( descriptor.accessor() ).references();
+        }
+    }
+
+    private static class AssociationDescriptorMapFunction
+        implements Function<AssociationDescriptor, Map<String, EntityReference>>
+    {
+        private final ValueStateInstance prototypeState;
+
+        public AssociationDescriptorMapFunction( ValueStateInstance prototypeState )
+        {
+            this.prototypeState = prototypeState;
+        }
+
+        @Override
+        public Map<String, EntityReference> map( AssociationDescriptor descriptor )
+        {
+            Map<String, EntityReference> result = new HashMap<>();
+            NamedAssociation<?> namedAssociation = prototypeState.namedAssociationFor( descriptor.accessor() );
+            for( String name : namedAssociation )
+            {
+                result.put( name, namedAssociation.referenceOf( name ) );
+            }
+            return result;
+        }
+    }
 }

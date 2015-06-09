@@ -120,6 +120,12 @@ public class NamedAssociationInstance<T>
         }, namedAssociationState );
     }
 
+    @Override
+    public EntityReference referenceOf( String name )
+    {
+        return namedAssociationState.get( name );
+    }
+
     public Iterable<Map.Entry<String, EntityReference>> getEntityReferences()
     {
         return map( new Function<String, Map.Entry<String, EntityReference>>()

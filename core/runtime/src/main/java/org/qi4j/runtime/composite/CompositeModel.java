@@ -107,6 +107,11 @@ public abstract class CompositeModel
         return false;
     }
 
+    public MixinsModel mixinsModel()
+    {
+        return mixinsModel;
+    }
+
     @Override
     @SuppressWarnings( { "raw", "unchecked" } )
     public Class<?> primaryType()

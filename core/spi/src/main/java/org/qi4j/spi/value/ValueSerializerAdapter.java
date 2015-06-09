@@ -438,16 +438,16 @@ public abstract class ValueSerializerAdapter<OutputType>
         for( AssociationDescriptor associationDescriptor : descriptor.valueType().associations() )
         {
             Association<?> association = state.associationFor( associationDescriptor.accessor() );
-            Object instance = association.get();
             onFieldStart( output, associationDescriptor.qualifiedName().name() );
             onValueStart( output );
-            if( instance == null )
+            EntityReference ref = association.reference();
+            if( ref == null )
             {
                 onValue( output, null );
             }
             else
             {
-                onValue( output, ( (Identity) instance ).identity().get() );
+                onValue( output, ref.identity() );
             }
             onValueEnd( output );
             onFieldEnd( output );
@@ -458,10 +458,10 @@ public abstract class ValueSerializerAdapter<OutputType>
             onFieldStart( output, associationDescriptor.qualifiedName().name() );
             onValueStart( output );
             onArrayStart( output );
-            for( Object instance : manyAssociation )
+            for( EntityReference ref : manyAssociation.references() )
             {
                 onValueStart( output );
-                onValue( output, ( (Identity) instance ).identity().get() );
+                onValue( output, ref.identity() );
                 onValueEnd( output );
             }
             onArrayEnd( output );
@@ -478,6 +478,7 @@ public abstract class ValueSerializerAdapter<OutputType>
             {
                 onFieldStart( output, name );
                 onValueStart( output );
+                EntityReference ref = namedAssociation.referenceOf( name );
                 onValue( output, ( (Identity) namedAssociation.get( name ) ).identity().get() );
                 onValueEnd( output );
                 onFieldEnd( output );

@@ -240,9 +240,11 @@ public class ValueCompositeTest
             unitOfWork.discard();
         }
 
+        // Should allow the toString() to print the entityRefs.
+        System.out.println( associationValue.toString() );
         try
         {
-            System.out.println( associationValue.toString() );
+            associationValue.some().get();
             fail( "Should have thrown an exception" );
         }
         catch( Exception e )

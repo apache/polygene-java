@@ -99,7 +99,7 @@ public final class JSONNamedAssociationState
         }
         catch( JSONException ex )
         {
-            throw new EntityStoreException( ex );
+            return null;
         }
     }
 

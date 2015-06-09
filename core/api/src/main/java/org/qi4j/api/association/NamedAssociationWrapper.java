@@ -97,6 +97,12 @@ public class NamedAssociationWrapper
     }
 
     @Override
+    public EntityReference referenceOf( String name )
+    {
+        return next.referenceOf( name );
+    }
+
+    @Override
     public int hashCode()
     {
         return next.hashCode();
@@ -113,5 +119,4 @@ public class NamedAssociationWrapper
     {
         return next.toString();
     }
-
 }
