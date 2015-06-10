@@ -39,7 +39,7 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
 /**
  * Inspect Claimed Cargo (subfunction use case)
  *
- * This is one the variations of the {@link com.marcgrue.dcisample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus} use case.
+ * This is one the variations of the {@link org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus} use case.
  *
  * NOTE: We don't throw any misrouted/misdirected exceptions even though the cargo might not have
  * followed the original itinerary. The cargo has been delivered at destination and claimed by

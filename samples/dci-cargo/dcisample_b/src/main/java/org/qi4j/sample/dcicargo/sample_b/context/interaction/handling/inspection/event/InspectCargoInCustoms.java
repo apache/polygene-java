@@ -41,7 +41,7 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
 /**
  * Inspect Cargo In Customs (subfunction use case)
  *
- * This is one the variations of the {@link com.marcgrue.dcisample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus} use case.
+ * This is one the variations of the {@link org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus} use case.
  *
  * Can the cargo get handled by customs only in the current port location?! Nothing now prevents
  * an unexpected cargo in customs in some random location. A domain expert is needed to explain

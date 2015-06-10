@@ -18,16 +18,39 @@ package org.qi4j.api.metrics;
 
 /**
  * Metrics Provider SPI.
+ * <p>
+ * The Qi4j Runtime will automatically ook for a service that implements the MetricsProvider interdace
+ * and use it for internal Runtime metrics, such as the UnitOfWork measuring the time from creation to close.
+ * </p>
+ * <p>
+ * The Metrics Library is available to add metric functionality to applications in the same way, and
+ * will use the same MetricsProvider.
+ * </p>
+ * <p>
+ * Note that the usual visibitlity rules applies, so you might have more than one MetricsProvider server,
+ * perhaps per layer.
+ * </p>
  */
 public interface MetricsProvider
 {
     /**
      * Creates a new factory instance.
      *
+     * The instanctiation is done by providing a Metric type, which is one of
+     * <ul>
+     * <li>{@link MetricsCounter}</li>
+     * <li>{@link MetricsGauge}</li>
+     * <li>{@link MetricsHealthCheck}</li>
+     * <li>{@link MetricsHistogram}</li>
+     * <li>{@link MetricsMeter}</li>
+     * <li>{@link MetricsTimer}</li>
+     * </ul>
+     *
      * @param factoryType The class of the metric type needed.
      * @param <T>         The metric type requested.
      *
      * @return A factory instance
+     *
      * @throws MetricsNotSupportedException when the MetricsProvider is not supporting the factory type requested.
      */
     <T extends MetricsFactory> T createFactory( Class<T> factoryType )

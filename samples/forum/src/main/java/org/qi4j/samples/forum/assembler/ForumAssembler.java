@@ -13,9 +13,8 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ClassScanner;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.file.assembly.FileEntityStoreAssembler;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.entitystore.neo4j.NeoConfiguration;
-import org.qi4j.entitystore.neo4j.NeoEntityStoreService;
 import org.qi4j.functional.Function;
 import org.qi4j.library.fileconfig.FileConfigurationService;
 import org.qi4j.library.rest.common.ValueAssembler;
@@ -55,10 +54,10 @@ public class ForumAssembler
 
         assembly.setName( "Forum" );
 
+        ModuleAssembly configModule;
         LayerAssembly configuration = assembly.layer( "Configuration" );
         {
-            ModuleAssembly configModule = configuration.module( "Configuration" );
-            configModule.entities( NeoConfiguration.class ).visibleIn( Visibility.application );
+            configModule = configuration.module( "Configuration" );
             configModule.services( MemoryEntityStoreService.class );
             configModule.services( UuidIdentityGeneratorService.class );
             new OrgJsonValueSerializationAssembler().assemble( configModule );
@@ -68,7 +67,7 @@ public class ForumAssembler
         {
             ModuleAssembly entityStore = infrastructure.module( "EntityStore" );
             entityStore.services( FileConfigurationService.class );
-            entityStore.services( NeoEntityStoreService.class ).visibleIn( Visibility.application );
+            new FileEntityStoreAssembler().withConfig( configModule, Visibility.application ).assemble( entityStore );
             entityStore.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
             new OrgJsonValueSerializationAssembler().
                 visibleIn( Visibility.application ).

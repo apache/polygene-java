@@ -46,7 +46,7 @@ import static org.qi4j.sample.dcicargo.sample_b.data.structure.handling.Handling
 /**
  * Inspect Unloaded Cargo (subfunction use case)
  *
- * This is one the variations of the {@link com.marcgrue.dcisample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus} use case.
+ * This is one the variations of the {@link org.qi4j.sample.dcicargo.sample_b.context.interaction.handling.inspection.InspectCargoDeliveryStatus} use case.
  */
 public class InspectUnloadedCargo extends Context
 {

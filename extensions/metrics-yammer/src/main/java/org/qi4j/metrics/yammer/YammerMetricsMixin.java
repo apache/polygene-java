@@ -137,7 +137,7 @@ public class YammerMetricsMixin extends MetricsProviderAdapter
                         return gauge.value();
                     }
                 } );
-                return new YammerGauge<T>( yammer );
+                return new YammerGauge<>( yammer );
             }
 
             @Override
