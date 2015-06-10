@@ -353,17 +353,18 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
     /**
      * Converts the provided Entity to a Value of the same type.
      * This is a convenience method to convert an EntityComposite to a ValueComposite.
-     * <p/>
+     * <p>
      * All Property values are transferred across as-is, and the Association, ManyAssociation
      * and NamedAssociatino values are kept in the ValueComposite as EntityReferences
      * until they are dereferenced (get() and other methods), and IF a UnitOfWork is
      * present at dereferencing the corresponding EntityCompoiste is retrieved from the
      * EntityStore. If there is not an UnitOfWork present, an exception is thrown.
-     * <p/>
+     * </p>
+     * <p>
      * For this to work, the Composites (both Entity and Value) must not declare the
      * EntityComposite and ValueComposite super types, but rely on the declaration in
      * the assembly, and also extend the Identity supertype.
-     *
+     * </p>
      * Example;
      * <pre><code>
      *     public interface Person extends Identity { ... };
@@ -386,22 +387,25 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
     /**
      * Converts the provided Value to an Entity of the same type.
      * This is a convenience method to convert a ValueComposite to an EntityComposite.
-     * <p/>
+     * <p>
      * All Property values are transferred across as-is (no deep copy in case mutable
      * types (DISCOURAGED!) are used), and the Association, ManyAssociation
      * and NamedAssociatino that were in the ValueComposite as EntityReferences are
      * transferred into the EntityComposite correctly, and can be dereferenced.
-     * <p/>
+     * </p>
+     * <p>
      * This method MUST be called within a UnitOfWork.
-     * <p/>
+     * </p>
+     * <p>
      * If an Entity with the Identity in the ValueComposite already exists, then that
      * Entity is updated with the values from the ValueComposite. If an Entity of
      * that Identity doesn't exist and new one is created.
-     * <p/>
+     * </p>
+     * <p>
      * For this to work, the Composites (both Entity and Value) must not declare the
      * EntityComposite and ValueComposite super types, but rely on the declaration in
      * the assembly, and also extend the Identity supertype.
-     *
+     * </p>
      * Example;
      * <pre><code>
      *     public interface Person extends Identity { ... };

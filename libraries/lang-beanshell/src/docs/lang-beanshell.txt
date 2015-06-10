@@ -11,3 +11,27 @@ Beanshell Scripting Library
 NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
 
 include::../../build/docs/buildinfo/artifact.txt[]
+
+
+The Beanshell Scripting Library is a Generic mixin that implements interfaces
+by delegating to Beanshell method.  Each method in an interface is declared by a
+BeanShell method in a file located in classpath with the name _INTEFRACE_FQDN_.bsh,
+where the INTEFRACE_FQDN includes the package, and has "." replaced with "/".
+
+    Example:
+    org/qi4j/samples/hello/domain/HelloWorldSpeaker.bsh
+
+That means that the HelloWorldSpeaker.bsh file may be co-located with the
+class files in the same package. It is currently not supported to place
+the BeanShell implementation of the mixin in a different package than the
+interface it implements.
+
+To use BeanShell to implement the Mixin functionality for a given interface,
+simply declare the +BeanShellMixin+ like any other mixin, either in the interface
+or at assembly time.
+
+[snippet,java]
+----
+source=libraries/lang-beanshell/src/test/java/org/qi4j/lang/beanshell/HelloSpeaker.java
+tag=mixin
+----

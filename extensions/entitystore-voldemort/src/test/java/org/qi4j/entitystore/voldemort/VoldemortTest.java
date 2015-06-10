@@ -64,19 +64,23 @@ public class VoldemortTest
         }
     }
 
+    // START SNIPPET: assembly
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        // END SNIPPET: assembly
         super.assemble( module );
         ModuleAssembly config = module.layer().module( "config" );
         new EntityTestAssembler().assemble( config );
         new OrgJsonValueSerializationAssembler().assemble( module );
 
+        // START SNIPPET: assembly
         new VoldemortAssembler().
             visibleIn( Visibility.layer ).
             withConfig( config, Visibility.layer ).
             assemble( module );
+        // END SNIPPET: assembly
     }
 
     private File setupVoldemortHome()

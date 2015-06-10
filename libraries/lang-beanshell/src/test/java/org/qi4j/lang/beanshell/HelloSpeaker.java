@@ -9,15 +9,14 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
 */
-package org.qi4j.lang.groovy;
+package org.qi4j.lang.beanshell;
 
 import org.qi4j.api.mixin.Mixins;
 
 // START SNIPPET: mixin
-import org.qi4j.lang.groovy.GroovyMixin;
+import org.qi4j.lang.beanshell.BeanShellMixin;
 
-
-@Mixins(GroovyMixin.class)
+@Mixins(BeanShellMixin.class)
 public interface HelloSpeaker
 {
     void sayHello();

@@ -6,8 +6,26 @@
 source=extensions/entitystore-voldemort/dev-status.xml
 --------------
 
-Voldemort EntityStore
-
-NOTE: This Extension has no documentation yet. Learn how to contribute in <<community-docs>>.
+EntityStore service backed by http://www.project-voldemort.com/voldemort/[Voldemort].
 
 include::../../build/docs/buildinfo/artifact.txt[]
+
+== Assembly ==
+
+Assembly is done using the provided Assembler.
+
+[snippet,java]
+----
+source=extensions/entitystore-voldemort/src/test/java/org/qi4j/entitystore/voldemort/VoldemortTest.java
+tag=assembly
+----
+
+== Configuration ==
+
+Most of the configuration of Voldemort is available in the Qi4j Configuration Entity.
+
+[snippet,java]
+----
+source=extensions/entitystore-voldemort/src/main/java/org/qi4j/entitystore/voldemort/VoldemortConfiguration.java
+tag=config
+----

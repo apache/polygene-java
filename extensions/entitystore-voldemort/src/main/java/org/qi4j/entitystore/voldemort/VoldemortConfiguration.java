@@ -23,17 +23,37 @@ import org.qi4j.api.common.Optional;
 import org.qi4j.api.configuration.ConfigurationComposite;
 import org.qi4j.api.property.Property;
 
+/**
+ * The configuration entity for the Voldemort EntityStore.
+ * <p>
+ *     Most of these properties are used to call the corresponding setters in the
+ *     {@code voldemort.client.ClientConfig} object passed to Voldemort runtime upon start.
+ *     The {@code voldemort.client.ClientConfig} is instantiated by the default constructor.
+ *
+ * </p>
+ */
 public interface VoldemortConfiguration extends ConfigurationComposite
 {
     @Optional
     Property<String> storeName();
 
-//    @Optional
+    //    @Optional
 //    Property<Integer> clientZoneId();
 //
     @Optional
     Property<Integer> connectionTimeout();
 
+    /**
+     * The Bootstrap URL for Voldemort runtime to use.
+     * <p>
+     * The configuration property is optional. Default: "tcp://localhost:8581"
+     * </p>
+     * <p>
+     * This value is used to call voldemort.client.ClientConfig#setBootstrapUrls(java.util.List)
+     * </p>
+     *
+     * @return The property containing the bootstrap URL configuration.
+     */
     @Optional
     Property<List<String>> bootstrapUrl();
 
@@ -82,9 +102,21 @@ public interface VoldemortConfiguration extends ConfigurationComposite
     @Optional
     Property<Integer> maxTotalConnections();
 
+    /** Voldemort has avolved the format over time, and this property sets which request format to use.
+     * See {@code voldemort.client.protocol.RequestFormatType} in Voldemort for further details.
+     *
+     * @return The configuration property that contains the request type formet used in Voldemort.
+     */
     @Optional
     Property<String> requestFormatType();
 
+    /** Sets the routing tier of this Voldemort runtime.
+     * <p>
+     *     Possible values are 'client' and 'server'. See {@code voldemort.client.RoutingTier} in
+     *     Voldemort for details.
+     * </p>
+     * @return the confirguration property that contains the Routing Tier setting for Voldemort.
+     */
     @Optional
     Property<String> routingTier();
 
@@ -105,5 +137,4 @@ public interface VoldemortConfiguration extends ConfigurationComposite
 
     @Optional
     Property<Integer> threadIdleTime();
-
 }

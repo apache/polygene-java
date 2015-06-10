@@ -52,7 +52,7 @@ import static org.qi4j.functional.Iterables.first;
  * <p>
  * If a new Configuration instance is created then it will be populated with properties
  * from the properties file whose filesystem name is the same as the identity (e.g. "MyService.properties").
- * If a service is not given a name via the {@link org.qi4j.bootstrap.ServiceDeclaration#identifiedBy(String)}, the
+ * If a service is not given a name via the {@code org.qi4j.bootstrap.ServiceDeclaration#identifiedBy(String)}, the
  * name will default to the FQCN of the ServiceComposite type.
  * </p>
  * <p>
@@ -129,7 +129,7 @@ public interface Configuration<T>
 
     /**
      * Updates the values of the managed user ConfigurationComposite instance from the underlying
-     * {@link org.qi4j.spi.entitystore.EntityStore}.  Any modified values in the current user configuration that
+     * {@code org.qi4j.spi.entitystore.EntityStore}.  Any modified values in the current user configuration that
      * has not been saved, via {@link #save()} method, will be lost.
      */
     void refresh();
