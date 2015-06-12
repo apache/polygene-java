@@ -1,6 +1,5 @@
 // Versions of Dependencies;
 def asmVersion = '5.0.3'
-def beanshellVersion = '2.0b4'
 def bonecpVersion = '0.8.0.RELEASE'
 def bouncyVersion = '1.50'
 def c3p0Version = '0.9.1.2'
@@ -31,7 +30,6 @@ def jettyVersion = '9.2.1.v20140609'
 def jgoodiesLooksVersion = '2.5.3'
 def jodaMoneyVersion = '0.9.1'
 def jodaTimeVersion = '2.3'
-def jrubyVersion = '1.7.8' // 1.7.12 - Fails to run!
 def jtaVersion = '1.1'
 def leveldbVersion = '0.7'
 def leveldbJniVersion = '1.8'
@@ -181,14 +179,6 @@ rootProject.ext {
           // Scripting
           groovy: "org.codehaus.groovy:groovy-all:$groovyVersion",
 
-          jruby: "org.jruby:jruby:$jrubyVersion",
-
-          beanshell: [ "org.beanshell:bsh-core:$beanshellVersion",
-                  "org.beanshell:bsh-classpath:$beanshellVersion",
-                  "org.beanshell:bsh-classgen:$beanshellVersion",
-                  "org.beanshell:bsh-reflect:$beanshellVersion"
-
-          ],
           javascript: "org.mozilla:rhino:$javascriptVersion",
 
           // Wicket
