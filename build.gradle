@@ -685,7 +685,7 @@ task release {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
   }
-  dependsOn checkReleaseSpec, archiveJavadocs, ':org.qi4j.manual:copyWebsite', allprojects*.uploadArchives, dist
+  dependsOn checkReleaseSpec, rat, archiveJavadocs, ':org.qi4j.manual:copyWebsite', allprojects*.uploadArchives, dist
 }
 
 //
