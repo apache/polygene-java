@@ -547,7 +547,7 @@ def srcDistImage = copySpec {
   exclude '**/.gradle/'             // Gradle management files
   exclude '**/gradle.properties'    // Gradle properties
   exclude '**/.gradletasknamecache' // Gradle cache
-  into "qi4j-sdk-$version/src/"
+  into "qi4j-sdk-$version/"
 }
 
 def reportsDistImage = copySpec {
