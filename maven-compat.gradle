@@ -1,27 +1,61 @@
 apply plugin: 'maven'
 
+// See http://maven.apache.org/pom/asf/
+
 pom {
 
   project {
-    url 'http://www.qi4j.org'
+    url 'https://zest.apache.org/'
     organization {
-      name 'Qi4j Community'
-      url 'http://www.qi4j.org'
+      name 'The Apache Software Foundation'
+      url 'https://apache.org/'
     }
     inceptionYear '2007'
     issueManagement {
       system 'jira'
-      url 'http://team.ops4j.org/browse/QI'
+      url 'https://issues.apache.org/jira/browse/ZEST'
     }
     scm {
-      url "http://github.com/Qi4j/qi4j-sdk"
-      connection "scm:git:http://github.com/Qi4j/qi4j-sdk.git"
-      developerConnection "scm:git:git@github.com:Qi4j/qi4j-sdk.git"
+      url "https://github.com/apache/zest-qi4j"
+      connection "scm:git:https://git-wip-us.apache.org/repos/asf/zest-qi4j.git"
+      developerConnection "scm:git:https://git-wip-us.apache.org/repos/asf/zest-qi4j.git"
     }
     licenses {
       license {
-        name 'Apache License version 2.0'
+        name 'Apache License, version 2.0.'
         url 'http://www.apache.org/licenses/LICENSE-2.0'
+      }
+    }
+    mailingLists {
+      mailingList {
+        name 'Users List'
+        subscribe 'users-subscribe@zest.apache.org'
+        unsubscribe 'users-unsubscribe@zest.apache.org'
+        post 'users@zest.apache.org'
+        archive 'https://mail-archives.apache.org/mod_mbox/zest-users/'
+        otherArchives {
+          otherArchive 'https://www.apache.org/foundation/mailinglists.html#archives'
+        }
+      }
+      mailingList {
+        name 'Development List'
+        subscribe 'dev-subscribe@zest.apache.org'
+        unsubscribe 'dev-unsubscribe@zest.apache.org'
+        post 'dev@zest.apache.org'
+        archive 'https://mail-archives.apache.org/mod_mbox/zest-dev/'
+        otherArchives {
+          otherArchive 'https://www.apache.org/foundation/mailinglists.html#archives'
+        }
+      }
+      mailingList {
+        name 'Commits List'
+        subscribe 'commits-subscribe@zest.apache.org'
+        unsubscribe 'commits-unsubscribe@zest.apache.org'
+        post 'commits@zest.apache.org'
+        archive 'https://mail-archives.apache.org/mod_mbox/zest-commits/'
+        otherArchives {
+          otherArchive 'https://www.apache.org/foundation/mailinglists.html#archives'
+        }
       }
     }
     developers {
