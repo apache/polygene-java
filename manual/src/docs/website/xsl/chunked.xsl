@@ -53,7 +53,16 @@
   <xsl:param name="generate.toc" select="''"/>
 
   <xsl:template name="footer.navigation">
-    <div class="footer">(c) 2012 The Qi4j Community</div>
+    <div class="footer">
+      <p>
+        Copyright © 2015 The Apache Software Foundation, Licensed under the <a href="http://www.apache.org/licenses/" target="_blank">Apache License, Version 2.0</a>.
+        <br/>
+        <small>
+            Apache Zest, Zest, Apache, the Apache feather logo, and the Apache Zest project logo are trademarks of The Apache Software Foundation.<br/>
+            All other marks mentioned may be trademarks or registered trademarks of their respective owners.
+        </small>
+      </p>
+    </div>
   </xsl:template>
 
   <xsl:template name="header.navigation">

@@ -233,6 +233,9 @@ body > div.section
     color: #9a9a9a;
     font-size: 80%;
 }
+.footer p {
+    text-shadow: none;    
+}
 
 div.informaltable
 {
