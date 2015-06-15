@@ -47,10 +47,17 @@ public class Assume
      */
     public static void assumeDisplayPresent()
     {
-        assumeFalse( GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() );
-        String display = System.getenv( "DISPLAY" );
-        assumeThat( display, is( notNullValue() ) );
-        assumeTrue( display.length() > 0 );
+        try
+        {
+            assumeFalse( GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() );
+            String display = System.getenv( "DISPLAY" );
+            assumeThat( display, is( notNullValue() ) );
+            assumeTrue( display.length() > 0 );
+        } catch( UnsatisfiedLinkError e )
+        {
+            // assuming that this is caused due to missing video subsystem, or similar
+            assumeNoException( "Grahics system is missing?", e );
+        }
     }
 
     /**
