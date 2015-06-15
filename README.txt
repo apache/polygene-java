@@ -26,6 +26,11 @@ Joda-Time (Apache Licence).
 
 Dependencies not included
 -------------------------
+The source distributions contains Qi4j sources only to keep the download
+size small. The Gradle build automatically downloads needed dependencies.
+If you need to go offline type `./gradlew gooffline` to ensure all needed
+dependencies are cached by Gradle.
+
 The binary distributions contains Qi4j artifacts only to keep the download
 size small. Each Qi4j artifact comes with a file prefixed ..-runtime-deps.txt
 that contains the list of its dependencies. Moreover, at the SDK root you'll

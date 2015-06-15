@@ -36,6 +36,13 @@ A quick way to check that nothing broke.
 
 Here are some of theses global tasks we defined:
 
+gooffline::
++
+--
+Resolve, download and cache all needed dependencies.
+Useful to go offline.
+--
+
 clean::
 +
 --

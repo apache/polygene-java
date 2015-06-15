@@ -381,6 +381,14 @@ allprojects {
   }
 } // allprojects END -------------------------------------------------------
 
+// Allow easy download of all dependencies to go offline
+// ./gradlew gooffline
+task gooffline {
+  doLast {
+    allprojects.configurations.flatten()*.resolvedConfiguration
+  }
+}
+
 gradle.taskGraph.whenReady {taskGraph ->
   taskGraph.allTasks.last().doLast {
     if( rootProject.ext.testFailures )
