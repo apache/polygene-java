@@ -54,10 +54,6 @@ include::../../../../extensions/entitystore-file/src/docs/es-file.txt[]
 
 :leveloffset: 2
 
-include::../../../../extensions/entitystore-gae/src/docs/es-gae.txt[]
-
-:leveloffset: 2
-
 include::../../../../extensions/entitystore-hazelcast/src/docs/es-hazelcast.txt[]
 
 :leveloffset: 2
@@ -75,10 +71,6 @@ include::../../../../extensions/entitystore-leveldb/src/docs/es-leveldb.txt[]
 :leveloffset: 2
 
 include::../../../../extensions/entitystore-mongodb/src/docs/es-mongodb.txt[]
-
-:leveloffset: 2
-
-include::../../../../extensions/entitystore-neo4j/src/docs/es-neo4j.txt[]
 
 :leveloffset: 2
 

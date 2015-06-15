@@ -33,7 +33,7 @@ https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/dci-cargo[Browse Source]
 == Forum Sample ==
 
 Sample of how to build a web forum using <<library-rest-server>>,
-<<extension-es-neo4j>> and <<library-fileconfig>>.
+<<extension-es-file>> and <<library-fileconfig>>.
 
 https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/forum[Browse Source]
 

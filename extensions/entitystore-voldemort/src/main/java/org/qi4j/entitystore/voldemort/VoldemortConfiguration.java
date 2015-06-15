@@ -34,12 +34,15 @@ import org.qi4j.api.property.Property;
  */
 public interface VoldemortConfiguration extends ConfigurationComposite
 {
+    // START SNIPPET: config
     @Optional
     Property<String> storeName();
 
+    // END SNIPPET: config
     //    @Optional
 //    Property<Integer> clientZoneId();
 //
+    // START SNIPPET: config
     @Optional
     Property<Integer> connectionTimeout();
 
@@ -60,9 +63,11 @@ public interface VoldemortConfiguration extends ConfigurationComposite
     @Optional
     Property<Boolean> enableJmx();
 
+    // END SNIPPET: config
 //    @Optional
 //    Property<Boolean> enablePipelineRoutedStore();
 
+    // START SNIPPET: config
     @Optional
     Property<Long> failureDetectorAsyncRecoveryInterval();
 
@@ -123,9 +128,11 @@ public interface VoldemortConfiguration extends ConfigurationComposite
     @Optional
     Property<Integer> routingTimeout();
 
+    // END SNIPPET: config
 //    @Optional
 //    Property<Integer> selectors();
 
+    // START SNIPPET: config
     @Optional
     Property<Integer> socketBufferSize();
 

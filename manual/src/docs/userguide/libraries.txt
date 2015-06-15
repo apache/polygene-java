@@ -29,10 +29,6 @@ include::../../../../libraries/conversion/src/docs/conversion.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/cxf/src/docs/cxf.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/eventsourcing/src/docs/eventsourcing.txt[]
 
 :leveloffset: 2
@@ -69,10 +65,6 @@ include::../../../../libraries/logging/src/docs/logging.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/neo4j/src/docs/neo4j.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/osgi/src/docs/osgi.txt[]
 
 :leveloffset: 2
@@ -101,19 +93,11 @@ include::../../../../libraries/scheduler/src/docs/scheduler.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/lang-beanshell/src/docs/lang-beanshell.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/lang-groovy/src/docs/lang-groovy.txt[]
 
 :leveloffset: 2
 
 include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-jruby/src/docs/lang-jruby.txt[]
 
 :leveloffset: 2
 
