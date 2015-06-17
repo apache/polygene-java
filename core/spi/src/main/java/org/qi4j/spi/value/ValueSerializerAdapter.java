@@ -48,7 +48,6 @@ import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
-import org.qi4j.spi.Qi4jSPI;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -417,6 +416,7 @@ public abstract class ValueSerializerAdapter<OutputType>
 
         onObjectStart( output );
 
+        //noinspection ConstantConditions
         if( options.getBoolean( Options.INCLUDE_TYPE_INFO ) && !rootPass )
         {
             onFieldStart( output, "_type" );
@@ -517,26 +517,42 @@ public abstract class ValueSerializerAdapter<OutputType>
     {
         @SuppressWarnings( "unchecked" )
         Map<Object, Object> map = (Map<Object, Object>) object;
-        onArrayStart( output );
-        for( Map.Entry<Object, Object> entry : map.entrySet() )
+        if( options.getBoolean( Options.MAP_ENTRIES_AS_OBJECTS ) )
         {
             onObjectStart( output );
-
-            onFieldStart( output, "key" );
-            onValueStart( output );
-            onValue( output, entry.getKey().toString() );
-            onValueEnd( output );
-            onFieldEnd( output );
-
-            onFieldStart( output, "value" );
-            onValueStart( output );
-            doSerialize( options, entry.getValue(), output, false );
-            onValueEnd( output );
-            onFieldEnd( output );
-
+            for( Map.Entry<Object, Object> entry : map.entrySet() )
+            {
+                onFieldStart( output, entry.getKey().toString() );
+                onValueStart( output );
+                doSerialize( options, entry.getValue(), output, false );
+                onValueEnd( output );
+                onFieldEnd( output );
+            }
             onObjectEnd( output );
         }
-        onArrayEnd( output );
+        else
+        {
+            onArrayStart( output );
+            for( Map.Entry<Object, Object> entry : map.entrySet() )
+            {
+                onObjectStart( output );
+
+                onFieldStart( output, "key" );
+                onValueStart( output );
+                onValue( output, entry.getKey().toString() );
+                onValueEnd( output );
+                onFieldEnd( output );
+
+                onFieldStart( output, "value" );
+                onValueStart( output );
+                doSerialize( options, entry.getValue(), output, false );
+                onValueEnd( output );
+                onFieldEnd( output );
+
+                onObjectEnd( output );
+            }
+            onArrayEnd( output );
+        }
     }
 
     private void serializeBase64Serializable( Object object, OutputType output )
