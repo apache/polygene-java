@@ -30,7 +30,8 @@ to a module and visibility rules define default behaviors, enforcement of archit
 The _assembly_ is preceeded by the creation of the _Qi4j Runtime_. The _assembly_ can be declared fully by defining
 all modules and layers, and how the layers are sitting on top of each other, OR one can utilize one of the two
 convenience assemblies, one for a _pancake_ pattern, where all layers are top on each other, or one with a single module
-in a single layer, useful for small applications, spikes and tests.
+in a single layer, useful for small applications, spikes and tests. The +bootstrap+ system has several ways to acheive
+this, and they are listed below in <<core-bootstrap-assembly-layered>>.
 
 During _assembly_, the application (JVM level) architecture and the application model is defined. You define which
 layers exist and how they relate to each other. For each layer, you define which modules it contains. And for each
@@ -125,15 +126,6 @@ tag=properties-defaults
 == Setting meta information on assembled types ==
 
 
-== Facilities ==
-
-=== Assembly Specifications ===
-
-=== Class Scanner ===
-
-=== Application Builder ===
-
-
 == Using Assemblers ==
 Many <<libraries,libraries>> and <<extensions,extensions>> provides a cookie-cutter _Assembler_, to simplify the set up
 of such component. Often these are suitable, but sometimes they won't fit the application in hand, in which case the
@@ -173,6 +165,44 @@ tag=UsingAssembler
 --------------
 
 
+[[core-bootstrap-assembly-layered,Layered Application Assembler]]
+== Layered Application Assembler (RECOMMENDED!) ==
+
+In 2.1, a new way to instantiate Qi4j applications was introduced. It starts with subclassing the
++LayeredApplicationAssembler+, and implementing the +assembleLayers()+ method.
+
+In the +assembleLayers()+ method, one is epected to either call the +createLayer()+ method in the super class
+with the Class of the LayerAssembler,
+
+[source,java]
+----
+    LayerAssembly domainLayer = createLayer( DomainLayer.class );
+----
+
+OR manually instantiate and call the LayerAssembler.
+
+[source,java]
+----
+    LayerAssembly infraLayer = new InfrastructureLayer( configModule ).assemble( assembly.layer( InfrastructureLayer.NAME  ));
+----
+
+This is to make the normal case as simple as possible, yet allow the special needs that occssionally surfaces.
+
+Each LayerAssembler implementation may optionally extend the +LayeredLayerAssembler+, to get access to the
++createModule()+ method, which again simplifies the creation of modules in the +assemble()+ method.
+
+[source,java]
+----
+    createModule( layer, InvoicingModule.class );
+----
+
++ModuleAssembler+ implementations typically use +Assembler+ classes to put together, or call the +entities()+,
++values()+ methods described elsewhere on this page. There is no superclass to use.
+
++ModuleAssembler+ implementations should have a name ending with "Module" and the naming will insert a human-readable
+space within the module name, e.g. +InvoicingModule+ will be named "Invoicing Module".
+
+For example code, see the tutorial <<howto-assemble-application>>.
 
 
 == Singleton Assembler ==
@@ -193,7 +223,39 @@ Once the SingletonAssembler constructor returns, the Qi4j application is up and 
 The SingletonAssembler also makes common system resources available from the bootstrap code, such as
 Module, UnitOfWorkFactory and others. This is possible since there is only one Module.
 
+== Application Builder ==
+Some applications has no need for runtime determination of the exact application structure, and no need for
+advanced alterations to a staright-forward layered application structure. By using the +ApplicationBuilder+
+it is possible to define the application structure from a JSON document, AND call the provided +main()+ class,
+taking the JSON document as input on +System.in+.
 
+The format of the JSON document, directly reflects the application structure, such as
+[source,json]
+----
+{
+    "name": "Build from JSON test.",
+    "layers": [
+        { "name": "service", "uses": [ "domain", "config"] },
+        { "name": "donfig" },
+        {
+            "name": "domain",
+            "modules" : [
+                {
+                    "name" : "Invoicing",
+                    "assemblers" : [
+                        "org.hedhman.niclas.bootstrap.InvoicingAssembler"
+                    ]
+                }
+            ]
+        }
+    ]
+}
+----
+
+At the moment, the JSON format only support +Assembler+ classes to do the work.
+
+Another way to use the +ApplicationBuilder+ is to subclass it, optionally use the +configureFromJSON()+ method,
+and then programmatically enhance the structure before calling +newApplication()+.
 
 == Pancake Assembly ==
 There is one case that stands out as a common case, and forms a reasonable middle-ground. It is where each layer sits
@@ -209,8 +271,6 @@ Let's look at an example;
 source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
 tag=pancake
 --------------
-
-
 
 == Full Assembly ==
 Full Assembly means that you have the opportunity to create any layer/module hierarchy that are within the rules of the
