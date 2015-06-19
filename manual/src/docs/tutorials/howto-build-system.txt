@@ -209,10 +209,10 @@ Signing can be turned on or off by setting the `uploadSigned` property to false.
 By default RELEASES must satisfy ReleaseSpecification, SNAPSHOT don't.
 ReleaseSpecification usage can be turned on or off by setting the `uploadReleaseSpec` property to false.
 
-By default RELEASES and SNAPHOTS are uploaded using WEBDAV.
+By default RELEASES and SNAPHOTS are uploaded using HTTP.
 Used Wagon can be overriden by setting the `uploadWagon` property.
 
-By default RELEASES and SNAPSHOTS are uploaded to Cloudbees.
+By default RELEASES and SNAPSHOTS are uploaded to the Apache Nexus.
 Target repository can be overriden by setting the `uploadRepository` property.
 
 No username/password is provided by default.
