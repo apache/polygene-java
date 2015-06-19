@@ -27,6 +27,15 @@ project.ext {
   groovycMain_maxPermSize = "256m"
 }
 
+buildscript {
+  repositories {
+    maven { url "https://plugins.gradle.org/m2/" }
+  }
+  dependencies {
+    classpath 'gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.1.1'
+  }
+}
+
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -35,6 +44,7 @@ apply plugin: 'maven'
 apply from: 'maven-compat.gradle'
 apply plugin: 'project-report'
 apply from: 'libraries.gradle'
+apply plugin: 'org.nosphere.apache.rat'
 
 targetCompatibility = "1.7"
 sourceCompatibility = "1.7"
@@ -46,7 +56,6 @@ project.ext {
 
 def releaseApprovedProjects = allprojects.findAll( { project ->  rootProject.ext.releaseSpec.satisfiedBy( project ) } )
 
-apply from: 'gradle/apache-rat.gradle'
 rat {
     excludes = [
         '**/.DS_Store/**',
