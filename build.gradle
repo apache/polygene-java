@@ -61,8 +61,7 @@ def releaseApprovedProjects = allprojects.findAll( { project ->  rootProject.ext
 
 rat {
     excludes = [
-        '**/.DS_Store/**',
-        'bin/**',
+        '**/.DS_Store/**', '**/._*',
         // Git Files
         '**/.git/**', '**/.gitignore',
         // Gradle Files
