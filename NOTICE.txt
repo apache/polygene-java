@@ -1,12 +1,5 @@
-Qi4j SDK
-Copyright 2007-2009, The Qi4j Development Team of individuals.
+Apache Zest Qi4j SDK
+Copyright 2015 The Apache Software Foundation.
 
-See http://www.qi4j.org/contributors.html for list of of individuals.
-Also see each file for additional information of Copyright claims.
-
-Qi4j is a community aggregated works under Copyright law.
-All parts of the original works at Qi4j is licensed under the
-Apache License ver 2.0 http://www.apache.org/licenses
-
-See NOTICE files in core/, libraries/ and extensions/ for further
-notices.
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
