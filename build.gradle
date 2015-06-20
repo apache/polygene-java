@@ -64,40 +64,32 @@ rat {
         '**/.DS_Store/**',
         'bin/**',
         // Git Files
-        '**/.git/**',
-        '**/.gitignore',
-        // Gradle Wrapper
-        'gradle/wrapper/**',
-        'gradlew',
-        'gradlew.bat',
-        '**/.gradle/**',
+        '**/.git/**', '**/.gitignore',
+        // Gradle Files
+        'gradle/wrapper/**', 'gradlew', 'gradlew.bat', '**/.gradle/**',
         // Build Output
-        '**/build/**',
+        '**/build/**', '**/derby.log',
         // IDE Files
-        '**/.idea/**',
-        '**/*.iml',
-        '**/*.ipr',
-        '**/*.iws',
-        '**/.settings/**',
-        '**/.classpath',
-        '**/.project',
-        '**/.nb-gradle-properties',
-        '**/.gradletasknamecache',
-        '**/.nb-gradle/**',
-        '**/private/cache/**',
+        '**/.idea/**', '**/*.iml', '**/*.ipr', '**/*.iws',
+        '**/.settings/**', '**/.classpath', '**/.project',
+        '**/.gradletasknamecache', '**/private/cache/**',
+        '**/.nb-gradle-properties', '**/.nb-gradle/**',
+        // Various Text Resources
+        '**/README.*','**/README*.*', '**/TODO',
+        '**/src/main/resources/**/*.txt',
+        '**/src/test/resources/**/*.txt',
+        'libraries/rest-server/src/main/resources/**/*.htm',
+        'libraries/rest-server/src/main/resources/**/*.atom',
+        'tools/qidea/src/main/resources/**/*.ft',
+        'tools/qidea/src/main/resources/**/*.template',
         // Graphic Resources
-        '**/*.svg',
-        '**/*.gif',
-        '**/*.png',
-        '**/*.jpg',
-        '**/*.psd',
-        // Syntax Highlighter - MIT
-        'manual/**/sh*.css',
-        'manual/**/sh*.js',
-        // jQuery & plugins - MIT
-        'manual/**/jquery*.js',
+        '**/*.svg', '**/*.gif', '**/*.png', '**/*.jpg', '**/*.psd',
         // Keystores
         '**/*.jceks',
+        // Syntax Highlighter - MIT
+        'manual/**/sh*.css', 'manual/**/sh*.js',
+        // jQuery & plugins - MIT
+        'manual/**/jquery*.js',
     ]
 }
 
