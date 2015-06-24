@@ -265,6 +265,15 @@ public class SchedulerMixin
     public void passivateService()
         throws Exception
     {
+        managementExecutor.shutdown();
+        taskExecutor.shutdown();
+
+        managementExecutor.awaitTermination( 5, TimeUnit.SECONDS );
+        managementExecutor.shutdownNow();
+
+        taskExecutor.awaitTermination( 5, TimeUnit.SECONDS );
+        taskExecutor.shutdownNow();
+
         LOGGER.debug( "Passivated" );
     }
 
