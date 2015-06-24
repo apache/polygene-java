@@ -33,7 +33,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.1.1'
+    classpath 'gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.1.2'
     classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
   }
 }
@@ -120,7 +120,7 @@ idea.project.ipr {
 def repos_urls = [
   mavenCentral: "http://repo1.maven.org/maven2/",
   ops4j: "http://repository.ops4j.org/maven2/",
-  restlet: 'http://maven.restlet.org',
+  restlet: 'http://maven.restlet.org/',
   javanet: "http://download.java.net/maven/2",
   clojars: "http://clojars.org/repo/",
 ]
@@ -134,7 +134,6 @@ allprojects {
 //  apply plugin: 'checkstyle'
   apply plugin: 'project-report'
   apply plugin: 'maven'
-  apply plugin: 'maven-publish-auth'
 
 
   defaultTasks 'classes', 'test'
@@ -292,7 +291,7 @@ allprojects {
     }
 
     signing {
-      required { uploadSigned }
+      required { rootProject.version != '0' && uploadSigned }
       sign configurations.archives
     }
 
@@ -387,6 +386,7 @@ allprojects {
       }
     }
   }
+  apply plugin: 'maven-publish-auth' // Bug in maven-publish-auth require apply after uploadArchives setup
 
   idea.module.iml {
     whenMerged { module ->
@@ -396,8 +396,8 @@ allprojects {
 } // allprojects END -------------------------------------------------------
 
 // Allow easy download of all dependencies to go offline
-// ./gradlew gooffline
-task gooffline {
+// ./gradlew goOffline
+task goOffline {
   doLast {
     allprojects.configurations.flatten()*.resolvedConfiguration
   }
@@ -544,34 +544,77 @@ task buildAll( dependsOn: [
     ':org.qi4j.manual:website'
 ] ) { }
 
-// Prepare runtime dependencies download facility (metalink)
-buildAll.doLast {
-    def runtimeDepsMetalink = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<metalink xmlns=\"urn:ietf:params:xml:ns:metalink\">\n"
-    runtimeDepsMetalink = runtimeDepsMetalink + " <identity>qi4j-sdk-runtime-deps</identity>\n"
-    runtimeDepsMetalink = runtimeDepsMetalink + " <version>${version}</version>\n"
-    def handledGavPaths = []
+task generateBinDistGoOfflineHelpers {
+  def goOfflineGradleFile = file( 'build/go-offline-helpers/go-offline.gradle' )
+  def goOfflinePomFile = file( 'build/go-offline-helpers/go-offline.pom')
+  outputs.files goOfflineGradleFile
+  outputs.files goOfflinePomFile
+  doLast {
+    
+    def goOfflineGradle = '// This gradle build file has the sole purpose of downloading all dependencies in this directory.\n'
+    goOfflineGradle += '// Use the following command: gradle -b go-offline.gradle download\n'
+    goOfflineGradle += 'apply plugin: \'java\'\nconfigurations { download }\nrepositories {\n'
+    def goOfflinePom = '<project>\n  <modelVersion>4.0.0</modelVersion>\n'
+    goOfflinePom += "  <groupId>org.qi4j</groupId>\n  <artifactId>go-offline-helper</artifactId>\n  <version>$version</version>\n"
+    goOfflinePom += '  <packaging>pom</packaging>\n'
+    goOfflinePom += '  <!--\n  This pom has the sole purpose of downloading all dependencies in this directory.\n'
+    goOfflinePom += '  Use the following command:\n\n  mvn -f go-offline.pom validate\n  -->\n  <repositories>\n'
+    
+    def repoCount = 1
+    repos_urls.each { repo_url ->
+      goOfflineGradle += "  maven { url '${repo_url.value}' }\n"
+      goOfflinePom += "    <repository><id>go-offline-repo-$repoCount</id><url>${repo_url.value}</url></repository>\n"
+      repoCount++
+    }
+    
+    goOfflineGradle += '}\ndependencies {\n'
+    goOfflinePom += '  </repositories>\n  <dependencies>\n'
+
+    def handledDeps = []
     releaseApprovedProjects.each { p ->
       p.configurations.runtime.allDependencies.each { dep ->
-        def gavpath = dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar"
-        if( !dep.group.startsWith("org.qi4j") && !handledGavPaths.contains( gavpath ) ) {
-          runtimeDepsMetalink = runtimeDepsMetalink + "  <file name=\"${dep.group}-${dep.name}-${dep.version}.jar\">\n"
-          repos_urls.each { repo_url ->
-            runtimeDepsMetalink = runtimeDepsMetalink + "    <url>" + repo_url.value + dep.group.replace(".","/") + "/" + dep.name + "/" + dep.version + "/" + dep.name + "-" + dep.version + ".jar" + "</url>\n"
-          }
-          runtimeDepsMetalink = runtimeDepsMetalink + "  </file>\n\n"
-          handledGavPaths << gavpath
+        def depCoords = "${dep.group}:${dep.name}:${dep.version}"
+        if( !dep.group.startsWith( 'org.qi4j' ) && !handledDeps.contains( depCoords ) ) {
+
+          goOfflineGradle += "  download '$depCoords'\n"
+          goOfflineGradle += "  // download '$depCoords:sources'\n"
+          goOfflineGradle += "  // download '$depCoords:javadoc'\n"
+
+          def gav = "<groupId>${dep.group}</groupId><artifactId>${dep.name}</artifactId><version>${dep.version}</version>"
+          goOfflinePom += """    <dependency>$gav</dependency>
+          <!-- <dependency>$gav<classifier>sources</classifier></dependency> -->
+          <!-- <dependency>$gav<classifier>javadoc</classifier></dependency> -->\n"""
+
+          handledDeps << depCoords
         }
       }
     }
-    runtimeDepsMetalink = runtimeDepsMetalink + "</metalink>\n"
-    new File( buildDir.toString(), "reports" ).mkdirs()
-    new File( buildDir.toString(), "reports/qi4j-sdk-runtime-deps.metalink" ).text = runtimeDepsMetalink
+
+    goOfflineGradle += '}\ntask download( type: Copy ) {\n  from configurations.download\n  into file( \'dependencies/\' )\n}\n'
+    goOfflinePom += """  </dependencies>\n  <build><plugins><plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-dependency-plugin</artifactId>
+    <version>2.10</version>
+    <executions><execution>
+      <id>go-offline</id><phase>validate</phase>
+      <goals><goal>copy-dependencies</goal></goals>
+      <configuration><outputDirectory>\${project.basedir}/dependencies</outputDirectory></configuration>
+    </execution></executions>
+  </plugin></plugins></build>
+</project>
+"""
+
+    goOfflineGradleFile.parentFile.mkdirs()
+    goOfflinePomFile.parentFile.mkdirs()
+
+    goOfflineGradleFile.text = goOfflineGradle
+    goOfflinePomFile.text = goOfflinePom
+  }
 }
 
 def srcDistImage = copySpec {
   from '.'
   exclude '**/build/'               // Build output
-  exclude '**/bin/'                 // Helper scripts
   exclude 'derby.log'               // Derby test garbage
   exclude '**/*.iml'                // IDEA files
   exclude '**/*.ipr'                // IDEA files
@@ -606,12 +649,11 @@ def runtimeDependenciesListImage = copySpec {
   releaseApprovedProjects.collect { p ->
     into( "libs/" ) {
       from "$p.buildDir/reports/project/dependencies.txt"
-      rename 'dependencies.txt', p.name + '-' + p.version + '-runtime-deps.txt'
+      rename 'dependencies.txt', "${p.name}-${p.version}-runtime-deps.txt"
     }
   }
-  into( "libs/" ) {
-    from "build/reports/qi4j-sdk-runtime-deps.metalink"
-    rename 'qi4j-sdk-runtime-deps.metalink', 'qi4j-sdk-' + version + '-runtime-deps.metalink'
+  into( '.' ) {
+    from generateBinDistGoOfflineHelpers.outputs
   }
 }
 
@@ -626,52 +668,41 @@ def libsImage = copySpec {
   }
 }
 
-def samplesImage = copySpec {
-  from( "$projectDir/samples" )
-  from( "$projectDir/samples/*/build/docs/javadoc" )
-  into( "samples" )
-  exclude '**/*.iml'
-  exclude '**/build/'     // build output
-}
-
-def tutorialsImage = copySpec {
-  from( "$projectDir/tutorials" )
-  exclude '**/build/'
-  into( "tutorials" )
-  from( "$projectDir/tutorials/*/build/docs/javadoc" )
-  exclude '**/*.iml'
+def binDistNoticesImage = copySpec {
+  from( "$projectDir/LICENSE.txt")
+  from( "$projectDir/src/bin-dist" )
+  into( "." )
 }
 
 def binDistImage = copySpec {
   into "qi4j-sdk-$version"
+  with binDistNoticesImage
   with docsImage
   with reportsDistImage
   with runtimeDependenciesListImage
   with libsImage
-  with samplesImage
-  with tutorialsImage
 }
 
-task zipSources( type: Zip, dependsOn: [ buildAll ] ) {
+task zipSources( type: Zip, dependsOn: buildAll ) {
   baseName = 'qi4j-sdk'
   with srcDistImage
   classifier = 'src'
 }
 
-task tarSources( type: Tar, dependsOn: [ buildAll ] ) {
+task tarSources( type: Tar, dependsOn: buildAll ) {
   baseName = 'qi4j-sdk'
   with srcDistImage
   compression = Compression.GZIP
   classifier = 'src'
 }
 
-task zipBinaries( type: Zip, dependsOn: [ buildAll ] ) {
+task zipBinaries( type: Zip, dependsOn: buildAll ) {
   baseName = 'qi4j-sdk'
   classifier = 'bin'
   with binDistImage
 }
 
-task tarBinaries( type: Tar, dependsOn: [ buildAll ] ) {
+task tarBinaries( type: Tar, dependsOn: buildAll ) {
   baseName = 'qi4j-sdk'
   classifier = 'bin'
   compression = Compression.GZIP
@@ -685,6 +716,72 @@ artifacts {
 task dist( type: Copy, dependsOn: install ) {
   with binDistImage
   into "$buildDir/dist"
+}
+
+// Tasks for source and binary distributions checks
+// - Run the check task of this very build inside the source distribution
+// - Rat the binary distribution (not pulled by checkDists as it takes ages to complete)
+// - Use the dependencies download facility of the binary distribution to "go offline"
+def unpackedSrcDistDir = file( "build/unpacked-distributions/src/qi4j-sdk-$version" )
+def unpackedBinDistDir = file( "build/unpacked-distributions/bin/qi4j-sdk-$version" )
+task unpackSrcDist( type: Copy ) {
+  with srcDistImage
+  into 'build/unpacked-distributions/src'
+}
+task checkSrcDist( type: GradleBuild, dependsOn: unpackSrcDist ) {
+  buildFile = "$unpackedSrcDistDir/build.gradle"
+  tasks = [ 'check' ] // TODO check
+}
+task unpackBinDist( type: Copy, dependsOn: buildAll ) {
+  with binDistImage
+  into 'build/unpacked-distributions/bin'
+}
+task checkBinDist_rat( type: org.apache.rat.gradle.RatTask, dependsOn: unpackBinDist ) {
+  inputDir = unpackedBinDistDir
+  reportDir = file( 'build/reports/rat-bin-dist' )
+  excludes = []
+}
+task checkBinDist_goOfflineGradle( type: GradleBuild, dependsOn: unpackBinDist ) {
+  def dependenciesDir = new File( unpackedBinDistDir, 'dependencies' )
+  doFirst { dependenciesDir.deleteDir() }
+  buildFile = "$unpackedBinDistDir/go-offline.gradle"
+  tasks = [ 'download' ]
+  doLast {
+    releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({it.name}).each { dep ->
+      def jarArtifactId = dep.name instanceof String ? dep.name : dep.name.last()
+      def jarVersion = dep.version instanceof String ? dep.version : dep.version.last()
+      if( !jarArtifactId.startsWith( 'org.qi4j' ) ) {
+        def jarName = "${jarArtifactId}-${jarVersion}.jar"
+        if( !new File( dependenciesDir, jarName ).exists() ) {
+          throw new GradleException( "Binary distribution go-offline.gradle failed! Missing: $jarName" );
+        }
+      }
+    }
+  }
+}
+task checkBinDist_goOfflineMaven( type: Exec, dependsOn: unpackBinDist ) {
+  def dependenciesDir = new File( unpackedBinDistDir, 'dependencies' )
+  doFirst { dependenciesDir.deleteDir() }
+  workingDir unpackedBinDistDir
+  commandLine 'mvn', '-f', 'go-offline.pom', 'validate'
+  doLast {
+    releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({it.name}).each { dep ->
+      def jarArtifactId = dep.name instanceof String ? dep.name : dep.name.last()
+      def jarVersion = dep.version instanceof String ? dep.version : dep.version.last()
+      if( !jarArtifactId.startsWith( 'org.qi4j' ) ) {
+        def jarName = "${jarArtifactId}-${jarVersion}.jar"
+        if( !new File( dependenciesDir, jarName ).exists() ) {
+          throw new GradleException( "Binary distribution go-offline.pom failed! Missing: $jarName" );
+        }
+      }
+    }
+  }
+}
+task checkBinDist {
+  dependsOn /*checkBinDist_rat,*/ checkBinDist_goOfflineGradle, checkBinDist_goOfflineMaven
+}
+task checkDists {
+  dependsOn checkSrcDist, checkBinDist
 }
 
 task checkReleaseSpec {
