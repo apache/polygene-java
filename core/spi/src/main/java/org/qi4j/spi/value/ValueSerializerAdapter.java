@@ -73,7 +73,7 @@ import static org.qi4j.functional.Iterables.first;
  * Some other Plain values are transformed before being handed to implementations:
  * </p>
  * <ul>
- * <li>BigInteger and BigDecimal depends on ValueSerializer.{@link Options};</li>
+ * <li>BigInteger and BigDecimal depends on ValueSerializer.{@link org.qi4j.api.value.ValueSerializer.Options};</li>
  * <li>Date as a ISO-8601 UTC String;</li>
  * <li>DateTime (JodaTime) as a ISO-8601 String with timezone offset or Z for UTC;</li>
  * <li>LocalDateTime (JodaTime) as a ISO-8601 String with no timezone offset;</li>

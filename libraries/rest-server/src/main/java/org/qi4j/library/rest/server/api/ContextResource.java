@@ -449,14 +449,17 @@ public class ContextResource
 
     /**
      * Transform a Java name to a human readable string by replacing uppercase characters
-     * with space+toLowerCase(char)
+     * with space+toLowerCase(char).
+     * <p>
      * Example:
+     * <pre><code>
      * changeDescription -> Change description
      * doStuffNow -> Do stuff now
+     * </code></pre>
      *
-     * @param name
+     * @param name Java name
      *
-     * @return
+     * @return Human readable name
      */
     private String humanReadable( String name )
     {
