@@ -21,6 +21,7 @@ package org.qi4j.runtime.injection.provider;
 import java.lang.reflect.Constructor;
 import org.qi4j.api.composite.NoSuchTransientException;
 import org.qi4j.api.object.NoSuchObjectException;
+import org.qi4j.api.structure.Module;
 import org.qi4j.bootstrap.InvalidInjectionException;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.DependencyModel;
@@ -71,7 +72,7 @@ public final class UsesInjectionProviderFactory
             {
                 // No @Uses object provided
                 // Try instantiating a Transient or Object for the given type
-                ModuleInstance moduleInstance = context.module();
+                Module moduleInstance = context.module();
 
                 try
                 {

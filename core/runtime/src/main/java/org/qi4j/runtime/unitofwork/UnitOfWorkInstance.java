@@ -42,7 +42,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkOptions;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.structure.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
@@ -53,9 +52,12 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.metrics.DefaultMetric;
+import org.qi4j.spi.module.ModelModule;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
+import static org.qi4j.functional.Iterables.map;
 
 public final class UnitOfWorkInstance
 {
@@ -136,7 +138,7 @@ public final class UnitOfWorkInstance
             // Check if this is a root UoW, or if no parent UoW knows about this entity
             EntityState entityState = null;
             EntityModel model = null;
-            ModuleInstance module = null;
+            ModuleSpi module = null;
             // Figure out what EntityStore to use
             for( ModelModule<EntityModel> potentialModel : potentialModels )
             {
@@ -166,7 +168,11 @@ public final class UnitOfWorkInstance
                 }
                 else
                 {
-                    throw new EntityTypeNotFoundException( mixinType.getName() );
+                    throw new EntityTypeNotFoundException( mixinType.getName(),
+                                                           module.name(),
+                                                           map( ModelModule.toStringFunction,
+                                                                module.findVisibleEntityTypes()
+                                                           ) );
                 }
             }
 

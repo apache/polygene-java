@@ -51,6 +51,7 @@ import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.cache.Cache;
 import org.qi4j.spi.cache.CachePool;
 import org.qi4j.spi.cache.NullCache;
@@ -62,8 +63,11 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.module.ModelModule;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -81,6 +85,9 @@ public class JSONMapEntityStoreMixin
 
     @This
     private EntityStoreSPI entityStoreSpi;
+
+    @Structure
+    private Qi4jSPI spi;
 
     @Structure
     private Application application;
@@ -399,7 +406,7 @@ public class JSONMapEntityStoreMixin
     {
         try
         {
-            Module module = unitOfWork.module();
+            ModuleSpi module = (ModuleSpi) unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
@@ -435,7 +442,11 @@ public class JSONMapEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new EntityTypeNotFoundException( type );
+                throw new EntityTypeNotFoundException( type,
+                                                       module.name(),
+                                                       map( ModelModule.toStringFunction,
+                                                            module.findVisibleEntityTypes()
+                                                       ) );
             }
 
             return new JSONEntityState( unitOfWork,

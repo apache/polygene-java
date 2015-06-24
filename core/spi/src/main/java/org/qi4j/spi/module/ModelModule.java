@@ -16,17 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.qi4j.runtime.structure;
+package org.qi4j.spi.module;
 
 import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.functional.Function;
+import org.qi4j.spi.Qi4jSPI;
+
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * TODO
  */
 public class ModelModule<T extends ModelDescriptor>
 {
-    public static <T extends ModelDescriptor> Function<T, ModelModule<T>> modelModuleFunction( final ModuleInstance module )
+
+    public static Function<?, String> toStringFunction = new Function<ModelModule<?>, String>()
+    {
+        @Override
+        public String map( ModelModule item )
+        {
+            return item.model()
+                       .types()
+                       .iterator()
+                       .next()
+                       .getName() + "[" + item.module().name() + "]";
+        }
+    };
+
+    public static <T extends ModelDescriptor> Function<T, ModelModule<T>> modelModuleFunction( final ModuleSpi module )
     {
         return new Function<T, ModelModule<T>>()
         {
@@ -50,16 +67,16 @@ public class ModelModule<T extends ModelDescriptor>
         };
     }
 
-    private final ModuleInstance module;
+    private final ModuleSpi module;
     private final T model;
 
-    public ModelModule( ModuleInstance module, T model )
+    public ModelModule( ModuleSpi module, T model )
     {
         this.module = module;
         this.model = model;
     }
 
-    public ModuleInstance module()
+    public ModuleSpi module()
     {
         return module;
     }

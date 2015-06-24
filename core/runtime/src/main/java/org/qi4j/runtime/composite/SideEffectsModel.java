@@ -25,7 +25,7 @@ import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * JAVADOC
@@ -49,7 +49,7 @@ public final class SideEffectsModel
     }
 
     // Context
-    public SideEffectsInstance newInstance( Method method, ModuleInstance moduleInstance, InvocationHandler invoker )
+    public SideEffectsInstance newInstance( Method method, ModuleSpi moduleInstance, InvocationHandler invoker )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         SideEffectInvocationHandlerResult result = new SideEffectInvocationHandlerResult();

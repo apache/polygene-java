@@ -61,10 +61,12 @@ import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.value.ValueInstance;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.NamedAssociationState;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.module.ModelModule;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.QueryBuilderSPI;
@@ -72,6 +74,7 @@ import org.qi4j.spi.query.QuerySource;
 
 import static org.qi4j.api.entity.EntityReference.parseEntityReference;
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * JAVADOC
@@ -94,17 +97,17 @@ public class ModuleUnitOfWork
     }
 
     private final UnitOfWorkInstance uow;
-    private final ModuleInstance moduleInstance;
+    private final ModuleInstance module;
 
-    ModuleUnitOfWork( ModuleInstance moduleInstance, UnitOfWorkInstance uow )
+    ModuleUnitOfWork( ModuleInstance module, UnitOfWorkInstance uow )
     {
-        this.moduleInstance = moduleInstance;
+        this.module = module;
         this.uow = uow;
     }
 
     public ModuleInstance module()
     {
-        return moduleInstance;
+        return module;
     }
 
     public UnitOfWorkInstance instance()
@@ -115,7 +118,7 @@ public class ModuleUnitOfWork
     @Override
     public UnitOfWorkFactory unitOfWorkFactory()
     {
-        return moduleInstance;
+        return module;
     }
 
     @Override
@@ -176,11 +179,15 @@ public class ModuleUnitOfWork
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
         throws EntityTypeNotFoundException
     {
-        ModelModule<EntityModel> model = moduleInstance.typeLookup().lookupEntityModel( type );
+        ModelModule<EntityModel> model = module.typeLookup().lookupEntityModel( type );
 
         if( model == null )
         {
-            throw new EntityTypeNotFoundException( type.getName() );
+            throw new EntityTypeNotFoundException( type.getName(),
+                                                   module.name(),
+                                                   map( ModelModule.toStringFunction,
+                                                        module.findVisibleEntityTypes()
+                                                   ) );
         }
 
         EntityStore entityStore = model.module().entityStore();
@@ -199,7 +206,7 @@ public class ModuleUnitOfWork
 
         builder = new EntityBuilderInstance<>( model,
                                                this,
-                                               uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
+                                               uow.getEntityStoreUnitOfWork( entityStore, module ),
                                                identity );
         return builder;
     }
@@ -236,11 +243,15 @@ public class ModuleUnitOfWork
         NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
         NullArgumentException.validateNotNull( "namedAssociationFunction", namedAssociationFunction );
 
-        ModelModule<EntityModel> model = moduleInstance.typeLookup().lookupEntityModel( type );
+        ModelModule<EntityModel> model = module.typeLookup().lookupEntityModel( type );
 
         if( model == null )
         {
-            throw new EntityTypeNotFoundException( type.getName() );
+            throw new EntityTypeNotFoundException( type.getName(),
+                                                   module.name(),
+                                                   map( ModelModule.toStringFunction,
+                                                        module.findVisibleEntityTypes()
+                                                   ) );
         }
 
         EntityStore entityStore = model.module().entityStore();
@@ -268,7 +279,7 @@ public class ModuleUnitOfWork
 
         return new EntityBuilderInstance<>( model,
                                             this,
-                                            uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
+                                            uow.getEntityStoreUnitOfWork( entityStore, module ),
                                             identity,
                                             stateResolver );
     }
@@ -277,11 +288,15 @@ public class ModuleUnitOfWork
     public <T> T get( Class<T> type, String identity )
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
-        Iterable<ModelModule<EntityModel>> models = moduleInstance.typeLookup().lookupEntityModels( type );
+        Iterable<ModelModule<EntityModel>> models = module.typeLookup().lookupEntityModels( type );
 
         if( !models.iterator().hasNext() )
         {
-            throw new EntityTypeNotFoundException( type.getName() );
+            throw new EntityTypeNotFoundException( type.getName(),
+                                                   module.name(),
+                                                   map( ModelModule.toStringFunction,
+                                                        module.findVisibleEntityTypes()
+                                                   ) );
         }
 
         return uow.get( parseEntityReference( identity ), this, models, type );

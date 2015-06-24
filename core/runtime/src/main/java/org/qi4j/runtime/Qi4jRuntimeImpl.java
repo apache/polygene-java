@@ -15,7 +15,6 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AbstractAssociation;
@@ -33,11 +32,10 @@ import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.composite.TransientDescriptor;
-import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.entity.Identity;
+import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.PropertyWrapper;
@@ -46,35 +44,31 @@ import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
-import org.qi4j.api.unitofwork.NoSuchEntityException;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationModelFactory;
 import org.qi4j.bootstrap.Qi4jRuntime;
-import org.qi4j.functional.Function;
 import org.qi4j.runtime.association.AbstractAssociationInstance;
 import org.qi4j.runtime.association.AssociationInstance;
 import org.qi4j.runtime.association.ManyAssociationInstance;
 import org.qi4j.runtime.association.NamedAssociationInstance;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
-import org.qi4j.runtime.composite.FunctionStateResolver;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.entity.EntityInstance;
-import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceInstance;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
+import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.entity.NamedAssociationState;
+import org.qi4j.spi.module.ModelModule;
 
 import static java.lang.reflect.Proxy.getInvocationHandler;
 import static org.qi4j.runtime.composite.TransientInstance.compositeInstanceOf;
@@ -364,5 +358,4 @@ public final class Qi4jRuntimeImpl
     {
         return ( (NamedAssociationInstance) assoc ).getEntityReferences();
     }
-
 }

@@ -57,6 +57,7 @@ import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -65,8 +66,11 @@ import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
+import org.qi4j.spi.module.ModelModule;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -84,6 +88,9 @@ public class MapEntityStoreMixin
 
     @This
     private EntityStoreSPI entityStoreSpi;
+
+    @Structure
+    private Qi4jSPI spi;
 
     @Structure
     private Application application;
@@ -157,14 +164,14 @@ public class MapEntityStoreMixin
                                 DefaultEntityState state = (DefaultEntityState) entityState;
                                 if( state.status().equals( EntityStatus.NEW ) )
                                 {
-                                    try( Writer writer = changer.newEntity( state.identity(), state.entityDescriptor() ) )
+                                    try (Writer writer = changer.newEntity( state.identity(), state.entityDescriptor() ))
                                     {
                                         writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
                                     }
                                 }
                                 else if( state.status().equals( EntityStatus.UPDATED ) )
                                 {
-                                    try( Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ) )
+                                    try (Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ))
                                     {
                                         writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
                                     }
@@ -292,7 +299,7 @@ public class MapEntityStoreMixin
                 for( EntityState migratedEntity : migratedEntities )
                 {
                     DefaultEntityState state = (DefaultEntityState) migratedEntity;
-                    try( Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ) )
+                    try (Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ))
                     {
                         writeEntityState( state, writer, state.version(), state.lastModified() );
                     }
@@ -348,7 +355,8 @@ public class MapEntityStoreMixin
             }
 
             JSONWriter associations = properties.endObject().key( JSONKeys.ASSOCIATIONS ).object();
-            for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations().entrySet() )
+            for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations()
+                .entrySet() )
             {
                 EntityReference value = stateNameEntityReferenceEntry.getValue();
                 associations.key( stateNameEntityReferenceEntry.getKey().name() ).
@@ -356,7 +364,8 @@ public class MapEntityStoreMixin
             }
 
             JSONWriter manyAssociations = associations.endObject().key( JSONKeys.MANY_ASSOCIATIONS ).object();
-            for( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations().entrySet() )
+            for( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations()
+                .entrySet() )
             {
                 JSONWriter assocs = manyAssociations.key( stateNameListEntry.getKey().name() ).array();
                 for( EntityReference entityReference : stateNameListEntry.getValue() )
@@ -367,7 +376,8 @@ public class MapEntityStoreMixin
             }
 
             JSONWriter namedAssociations = manyAssociations.endObject().key( JSONKeys.NAMED_ASSOCIATIONS ).object();
-            for( Map.Entry<QualifiedName, Map<String, EntityReference>> stateNameMapEntry : state.namedAssociations().entrySet() )
+            for( Map.Entry<QualifiedName, Map<String, EntityReference>> stateNameMapEntry : state.namedAssociations()
+                .entrySet() )
             {
                 JSONWriter assocs = namedAssociations.key( stateNameMapEntry.getKey().name() ).object();
                 for( Map.Entry<String, EntityReference> namedRef : stateNameMapEntry.getValue().entrySet() )
@@ -389,7 +399,7 @@ public class MapEntityStoreMixin
     {
         try
         {
-            Module module = unitOfWork.module();
+            ModuleSpi module = (ModuleSpi) unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
@@ -419,7 +429,11 @@ public class MapEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new EntityTypeNotFoundException( type );
+                throw new EntityTypeNotFoundException( type,
+                                                       module.name(),
+                                                       map( ModelModule.toStringFunction,
+                                                            module.findVisibleEntityTypes()
+                                                       ) );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();
@@ -548,7 +562,7 @@ public class MapEntityStoreMixin
         throws IOException
     {
         JSONObject jsonObject;
-        try( Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) ) )
+        try (Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) ))
         {
             jsonObject = new JSONObject( new JSONTokener( reader ) );
         }

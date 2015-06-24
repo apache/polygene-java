@@ -17,7 +17,7 @@ import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.ConstructionException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.runtime.composite.StateResolver;
-import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.spi.module.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 public class ValueBuilderWithState<T> implements ValueBuilder<T>

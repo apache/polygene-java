@@ -19,7 +19,7 @@ import org.qi4j.api.composite.Composite;
 import org.qi4j.api.value.NoSuchValueException;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.runtime.composite.StateResolver;
-import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.spi.module.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 import static org.qi4j.functional.Iterables.first;

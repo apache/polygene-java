@@ -28,8 +28,8 @@ import org.qi4j.runtime.composite.MixinsModel;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * Model for ValueComposites
@@ -90,7 +90,7 @@ public final class ValueModel
         }
     }
 
-    public ValueInstance newValueInstance( ModuleInstance moduleInstance,
+    public ValueInstance newValueInstance( ModuleSpi moduleInstance,
                                            ValueStateInstance state
     )
     {

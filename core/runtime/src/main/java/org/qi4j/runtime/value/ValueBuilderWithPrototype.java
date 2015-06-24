@@ -37,7 +37,7 @@ import org.qi4j.runtime.composite.MixinsModel;
 import org.qi4j.runtime.composite.StateResolver;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.spi.module.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**

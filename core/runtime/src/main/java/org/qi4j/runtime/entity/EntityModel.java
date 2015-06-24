@@ -33,12 +33,12 @@ import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Iterables.first;
@@ -96,7 +96,7 @@ public final class EntityModel
         return (EntityStateModel) super.state();
     }
 
-    public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, EntityState state )
+    public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleSpi moduleInstance, EntityState state )
     {
         EntityInstance instance = new EntityInstance( uow, moduleInstance, this, state );
         return instance;
@@ -140,7 +140,7 @@ public final class EntityModel
         }
     }
 
-    public void initState( ModuleInstance module, EntityState entityState )
+    public void initState( ModuleSpi module, EntityState entityState )
     {
         // Set new properties to default value
         for( PropertyModel propertyDescriptor : state().properties() )

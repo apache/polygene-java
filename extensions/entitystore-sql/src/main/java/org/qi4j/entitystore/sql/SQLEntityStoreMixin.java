@@ -64,6 +64,7 @@ import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
 import org.qi4j.library.sql.common.SQLUtil;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -77,10 +78,13 @@ import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.entitystore.helpers.JSONKeys;
 import org.qi4j.spi.entitystore.helpers.Migration;
 import org.qi4j.spi.entitystore.helpers.StateStore;
+import org.qi4j.spi.module.ModelModule;
+import org.qi4j.spi.module.ModuleSpi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * SQL EntityStore core Mixin.
@@ -101,6 +105,9 @@ public class SQLEntityStoreMixin
 
     @This
     private EntityStoreSPI entityStoreSPI;
+
+    @Structure
+    private Qi4jSPI spi;
 
     @Structure
     private Application application;
@@ -343,7 +350,7 @@ public class SQLEntityStoreMixin
     {
         try
         {
-            Module module = unitOfWork.module();
+            ModuleSpi module = (ModuleSpi) unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
@@ -377,7 +384,11 @@ public class SQLEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new EntityTypeNotFoundException( type );
+                throw new EntityTypeNotFoundException( type,
+                                                       module.name(),
+                                                       map( ModelModule.toStringFunction,
+                                                            module.findVisibleEntityTypes()
+                                                       ) );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();

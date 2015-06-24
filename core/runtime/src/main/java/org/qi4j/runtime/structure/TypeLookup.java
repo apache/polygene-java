@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.AmbiguousTypeException;
 import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.service.NoSuchServiceException;
@@ -39,7 +38,11 @@ import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.spi.module.ModelModule;
 
+import static org.qi4j.api.common.Visibility.application;
+import static org.qi4j.api.common.Visibility.layer;
+import static org.qi4j.api.common.Visibility.module;
 import static org.qi4j.api.util.Classes.RAW_CLASS;
 import static org.qi4j.api.util.Classes.interfacesOf;
 import static org.qi4j.functional.Iterables.cast;
@@ -99,8 +102,9 @@ public class TypeLookup
      *
      * <p>Type lookup is done lazily and cached.</p>
      *
-     * @param type  Looked up Type
-     * @return      First matching Object Model
+     * @param type Looked up Type
+     *
+     * @return First matching Object Model
      */
     @SuppressWarnings( { "raw", "unchecked" } )
     /* package */ ModelModule<ObjectModel> lookupObjectModel( final Class type )
@@ -113,16 +117,20 @@ public class TypeLookup
             Iterable<ModelModule<ObjectModel>> flatten = flatten(
                 ambiguousTypeCheck( type,
                                     findModels( new ExactTypeLookupSpecification( type ),
-                                                moduleInstance.visibleObjects( Visibility.module ),
-                                                moduleInstance.layerInstance().visibleObjects( Visibility.layer ),
-                                                moduleInstance.layerInstance().visibleObjects( Visibility.application ),
-                                                moduleInstance.layerInstance().usedLayersInstance().visibleObjects() ) ),
+                                                moduleInstance.visibleObjects( module ),
+                                                moduleInstance.layerInstance().visibleObjects( layer ),
+                                                moduleInstance.layerInstance().visibleObjects( application ),
+                                                moduleInstance.layerInstance()
+                                                    .usedLayersInstance()
+                                                    .visibleObjects() ) ),
                 ambiguousTypeCheck( type,
                                     findModels( new AssignableTypeLookupSpecification( type ),
-                                                moduleInstance.visibleObjects( Visibility.module ),
-                                                moduleInstance.layerInstance().visibleObjects( Visibility.layer ),
-                                                moduleInstance.layerInstance().visibleObjects( Visibility.application ),
-                                                moduleInstance.layerInstance().usedLayersInstance().visibleObjects() ) ) );
+                                                moduleInstance.visibleObjects( module ),
+                                                moduleInstance.layerInstance().visibleObjects( layer ),
+                                                moduleInstance.layerInstance().visibleObjects( application ),
+                                                moduleInstance.layerInstance()
+                                                    .usedLayersInstance()
+                                                    .visibleObjects() ) ) );
 
             model = first( flatten );
 
@@ -146,8 +154,9 @@ public class TypeLookup
      *
      * <p>Type lookup is done lazily and cached.</p>
      *
-     * @param type  Looked up Type
-     * @return      First matching Transient Model
+     * @param type Looked up Type
+     *
+     * @return First matching Transient Model
      */
     @SuppressWarnings( { "raw", "unchecked" } )
     /* package */ ModelModule<TransientModel> lookupTransientModel( final Class type )
@@ -160,16 +169,22 @@ public class TypeLookup
             Iterable<ModelModule<TransientModel>> allModels = flatten(
                 ambiguousTypeCheck( type,
                                     findModels( new ExactTypeLookupSpecification( type ),
-                                                moduleInstance.visibleTransients( Visibility.module ),
-                                                moduleInstance.layerInstance().visibleTransients( Visibility.layer ),
-                                                moduleInstance.layerInstance().visibleTransients( Visibility.application ),
-                                                moduleInstance.layerInstance().usedLayersInstance().visibleTransients() ) ),
+                                                moduleInstance.visibleTransients( module ),
+                                                moduleInstance.layerInstance().visibleTransients( layer ),
+                                                moduleInstance.layerInstance().visibleTransients( application ),
+                                                moduleInstance.layerInstance().usedLayersInstance().visibleTransients()
+                                    )
+                ),
+
                 ambiguousTypeCheck( type,
                                     findModels( new AssignableTypeLookupSpecification( type ),
-                                                moduleInstance.visibleTransients( Visibility.module ),
-                                                moduleInstance.layerInstance().visibleTransients( Visibility.layer ),
-                                                moduleInstance.layerInstance().visibleTransients( Visibility.application ),
-                                                moduleInstance.layerInstance().usedLayersInstance().visibleTransients() ) ) );
+                                                moduleInstance.visibleTransients( module ),
+                                                moduleInstance.layerInstance().visibleTransients( layer ),
+                                                moduleInstance.layerInstance().visibleTransients( application ),
+                                                moduleInstance.layerInstance().usedLayersInstance().visibleTransients()
+                                    )
+                )
+            );
             model = first( allModels );
 
             if( model != null )
@@ -192,8 +207,9 @@ public class TypeLookup
      *
      * <p>Type lookup is done lazily and cached.</p>
      *
-     * @param type  Looked up Type
-     * @return      First matching Value Model
+     * @param type Looked up Type
+     *
+     * @return First matching Value Model
      */
     @SuppressWarnings( { "raw", "unchecked" } )
     public ModelModule<ValueModel> lookupValueModel( final Class type )
@@ -206,16 +222,19 @@ public class TypeLookup
             Iterable<ModelModule<ValueModel>> flatten = flatten(
                 ambiguousTypeCheck( type,
                                     findModels( new ExactTypeLookupSpecification( type ),
-                                                moduleInstance.visibleValues( Visibility.module ),
-                                                moduleInstance.layerInstance().visibleValues( Visibility.layer ),
-                                                moduleInstance.layerInstance().visibleValues( Visibility.application ),
+                                                moduleInstance.visibleValues( module ),
+                                                moduleInstance.layerInstance().visibleValues( layer ),
+                                                moduleInstance.layerInstance().visibleValues( application ),
                                                 moduleInstance.layerInstance().usedLayersInstance().visibleValues() ) ),
                 ambiguousTypeCheck( type,
                                     findModels( new AssignableTypeLookupSpecification( type ),
-                                                moduleInstance.visibleValues( Visibility.module ),
-                                                moduleInstance.layerInstance().visibleValues( Visibility.layer ),
-                                                moduleInstance.layerInstance().visibleValues( Visibility.application ),
-                                                moduleInstance.layerInstance().usedLayersInstance().visibleValues() ) ) );
+                                                moduleInstance.visibleValues( module ),
+                                                moduleInstance.layerInstance().visibleValues( layer ),
+                                                moduleInstance.layerInstance().visibleValues( application ),
+                                                moduleInstance.layerInstance().usedLayersInstance().visibleValues()
+                                    )
+                )
+            );
 
             model = first( flatten );
 
@@ -242,8 +261,9 @@ public class TypeLookup
      * <p><b>Should be used for creational use cases only.</b> For non-creational use cases see
      * {@link #lookupEntityModels(java.lang.Class)}.</p>
      *
-     * @param type  Looked up Type
-     * @return      First matching Entity Model
+     * @param type Looked up Type
+     *
+     * @return First matching Entity Model
      */
     @SuppressWarnings( { "raw", "unchecked" } )
     /* package */ ModelModule<EntityModel> lookupEntityModel( final Class type )
@@ -256,16 +276,21 @@ public class TypeLookup
             Iterable<ModelModule<EntityModel>> allModels = flatten(
                 ambiguousTypeCheck( type,
                                     findModels( new ExactTypeLookupSpecification( type ),
-                                                moduleInstance.visibleEntities( Visibility.module ),
-                                                moduleInstance.layerInstance().visibleEntities( Visibility.layer ),
-                                                moduleInstance.layerInstance().visibleEntities( Visibility.application ),
-                                                moduleInstance.layerInstance().usedLayersInstance().visibleEntities() ) ),
+                                                moduleInstance.visibleEntities( module ),
+                                                moduleInstance.layerInstance().visibleEntities( layer ),
+                                                moduleInstance.layerInstance().visibleEntities( application ),
+                                                moduleInstance.layerInstance()
+                                                    .usedLayersInstance()
+                                                    .visibleEntities() ) ),
                 ambiguousTypeCheck( type,
                                     findModels( new AssignableTypeLookupSpecification( type ),
-                                                moduleInstance.visibleEntities( Visibility.module ),
-                                                moduleInstance.layerInstance().visibleEntities( Visibility.layer ),
-                                                moduleInstance.layerInstance().visibleEntities( Visibility.application ),
-                                                moduleInstance.layerInstance().usedLayersInstance().visibleEntities() ) ) );
+                                                moduleInstance.visibleEntities( module ),
+                                                moduleInstance.layerInstance().visibleEntities( layer ),
+                                                moduleInstance.layerInstance().visibleEntities( application ),
+                                                moduleInstance.layerInstance().usedLayersInstance().visibleEntities()
+                                    )
+                )
+            );
 
             model = first( allModels );
 
@@ -284,8 +309,8 @@ public class TypeLookup
      * <p>Returned Iterable contains, in order, Entity Models that: </p>
      *
      * <ul>
-     *  <li>exactly match the given type, in Visibility then Assembly order ;</li>
-     *  <li>match a type assignable to the given type, in Visibility then Assembly order.</li>
+     * <li>exactly match the given type, in Visibility then Assembly order ;</li>
+     * <li>match a type assignable to the given type, in Visibility then Assembly order.</li>
      * </ul>
      *
      * <p>Multiple <b>exact</b> matches with the same Visibility are <b>forbidden</b> and result in an AmbiguousTypeException.</p>
@@ -296,8 +321,9 @@ public class TypeLookup
      * <p><b>Should be used for non-creational use cases only.</b> For creational use cases see
      * {@link #lookupEntityModel(java.lang.Class)}.</p>
      *
-     * @param type  Looked up Type
-     * @return      All matching Entity Models
+     * @param type Looked up Type
+     *
+     * @return All matching Entity Models
      */
     @SuppressWarnings( { "raw", "unchecked" } )
     /* package */ Iterable<ModelModule<EntityModel>> lookupEntityModels( final Class type )
@@ -309,14 +335,16 @@ public class TypeLookup
             Iterable<ModelModule<EntityModel>> matchingEntityModels = flatten(
                 ambiguousTypeCheck( type,
                                     findModels( new ExactTypeLookupSpecification( type ),
-                                                moduleInstance.visibleEntities( Visibility.module ),
-                                                moduleInstance.layerInstance().visibleEntities( Visibility.layer ),
-                                                moduleInstance.layerInstance().visibleEntities( Visibility.application ),
-                                                moduleInstance.layerInstance().usedLayersInstance().visibleEntities() ) ),
+                                                moduleInstance.visibleEntities( module ),
+                                                moduleInstance.layerInstance().visibleEntities( layer ),
+                                                moduleInstance.layerInstance().visibleEntities( application ),
+                                                moduleInstance.layerInstance().usedLayersInstance().visibleEntities()
+                                    )
+                ),
                 findModels( new AssignableTypeLookupSpecification( type ),
-                            moduleInstance.visibleEntities( Visibility.module ),
-                            moduleInstance.layerInstance().visibleEntities( Visibility.layer ),
-                            moduleInstance.layerInstance().visibleEntities( Visibility.application ),
+                            moduleInstance.visibleEntities( module ),
+                            moduleInstance.layerInstance().visibleEntities( layer ),
+                            moduleInstance.layerInstance().visibleEntities( application ),
                             moduleInstance.layerInstance().usedLayersInstance().visibleEntities() ) );
 
             // Don't return the same EntityModel multiple times
@@ -335,9 +363,10 @@ public class TypeLookup
      *
      * <p>See {@link #lookupServiceReferences(java.lang.reflect.Type)}.</p>
      *
-     * @param <T>           Service Type
-     * @param serviceType   Looked up Type
-     * @return              First matching ServiceReference
+     * @param <T>         Service Type
+     * @param serviceType Looked up Type
+     *
+     * @return First matching ServiceReference
      */
     /* package */
     @SuppressWarnings( "unchecked" )
@@ -368,8 +397,8 @@ public class TypeLookup
      * <p>Returned Iterable contains, in order, ServiceReferences that: </p>
      *
      * <ul>
-     *  <li>exactly match the given type, in Visibility then Assembly order ;</li>
-     *  <li>match a type assignable to the given type, in Visibility then Assembly order.</li>
+     * <li>exactly match the given type, in Visibility then Assembly order ;</li>
+     * <li>match a type assignable to the given type, in Visibility then Assembly order.</li>
      * </ul>
      *
      * <p>Multiple <b>exact</b> matches with the same Visibility are <b>allowed</b> to enable polymorphic lookup/injection.</p>
@@ -377,9 +406,10 @@ public class TypeLookup
      *
      * <p>Type lookup is done lazily and cached.</p>
      *
-     * @param <T>           Service Type
-     * @param serviceType   Looked up Type
-     * @return              All matching ServiceReferences
+     * @param <T>         Service Type
+     * @param serviceType Looked up Type
+     *
+     * @return All matching ServiceReferences
      */
     @SuppressWarnings( "unchecked" )
     /* package */ <T> Iterable<ServiceReference<T>> lookupServiceReferences( final Type serviceType )
@@ -390,14 +420,14 @@ public class TypeLookup
             // Lazily resolve ServicesReferences
             Iterable<ServiceReference<?>> matchingServices = flatten(
                 findServiceReferences( new ExactTypeLookupSpecification( serviceType ),
-                                       moduleInstance.visibleServices( Visibility.module ),
-                                       moduleInstance.layerInstance().visibleServices( Visibility.layer ),
-                                       moduleInstance.layerInstance().visibleServices( Visibility.application ),
+                                       moduleInstance.visibleServices( module ),
+                                       moduleInstance.layerInstance().visibleServices( layer ),
+                                       moduleInstance.layerInstance().visibleServices( application ),
                                        moduleInstance.layerInstance().usedLayersInstance().visibleServices() ),
                 findServiceReferences( new AssignableTypeLookupSpecification( serviceType ),
-                                       moduleInstance.visibleServices( Visibility.module ),
-                                       moduleInstance.layerInstance().visibleServices( Visibility.layer ),
-                                       moduleInstance.layerInstance().visibleServices( Visibility.application ),
+                                       moduleInstance.visibleServices( module ),
+                                       moduleInstance.layerInstance().visibleServices( layer ),
+                                       moduleInstance.layerInstance().visibleServices( application ),
                                        moduleInstance.layerInstance().usedLayersInstance().visibleServices() ) );
 
             // Don't return the same ServiceReference multiple times
@@ -412,7 +442,8 @@ public class TypeLookup
 
     @SuppressWarnings( { "raw", "unchecked" } )
     private static <T extends ModelDescriptor> Iterable<ModelModule<T>> findModels( Specification<Iterable<Class<?>>> specification,
-                                                                                    Iterable<ModelModule<T>>... models )
+                                                                                    Iterable<ModelModule<T>>... models
+    )
     {
         Specification<ModelModule<T>> spec = Specifications.translate( new ModelModuleTypesFunction(), specification );
         Iterable<ModelModule<T>> flattened = flattenIterables( iterable( models ) );
@@ -421,7 +452,8 @@ public class TypeLookup
 
     @SuppressWarnings( { "raw", "unchecked" } )
     private static Iterable<ServiceReference<?>> findServiceReferences( Specification<Iterable<Class<?>>> specification,
-                                                                        Iterable<ServiceReference<?>>... references )
+                                                                        Iterable<ServiceReference<?>>... references
+    )
     {
         Specification<ServiceReference<?>> spec = Specifications.translate( new ServiceReferenceTypesFunction(), specification );
         Iterable<ServiceReference<?>> flattened = flattenIterables( iterable( references ) );
@@ -434,7 +466,8 @@ public class TypeLookup
      */
     @SuppressWarnings( "raw" )
     private static <T extends ModelDescriptor> Iterable<ModelModule<T>> ambiguousTypeCheck( final Class type,
-                                                                                            final Iterable<ModelModule<T>> models )
+                                                                                            final Iterable<ModelModule<T>> models
+    )
     {
         return new Iterable<ModelModule<T>>()
         {
@@ -473,7 +506,6 @@ public class TypeLookup
                 // Ambiguity check done, and no ambiguities found. Return results
                 return results.iterator();
             }
-
         };
     }
 
@@ -486,7 +518,6 @@ public class TypeLookup
         {
             return modelModule.model().types();
         }
-
     }
 
     private static class ServiceReferenceTypesFunction
@@ -498,7 +529,6 @@ public class TypeLookup
         {
             return serviceReference.types();
         }
-
     }
 
     private static abstract class AbstractTypeLookupSpecification
@@ -563,7 +593,6 @@ public class TypeLookup
         }
 
         protected abstract boolean checkClassMatch( Class<?> candidate, Class<?> lookedUpType );
-
     }
 
     private static final class ExactTypeLookupSpecification
@@ -580,7 +609,6 @@ public class TypeLookup
         {
             return candidate.equals( lookedUpType );
         }
-
     }
 
     private static final class AssignableTypeLookupSpecification
@@ -597,7 +625,5 @@ public class TypeLookup
         {
             return !candidate.equals( lookedUpType ) && lookedUpType.isAssignableFrom( candidate );
         }
-
     }
-
 }

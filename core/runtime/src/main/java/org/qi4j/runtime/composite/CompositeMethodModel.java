@@ -29,7 +29,7 @@ import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Iterables.flattenIterables;
@@ -101,7 +101,7 @@ public final class CompositeMethodModel
     }
 
     // Context
-    public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleInstance moduleInstance )
+    public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleSpi moduleInstance )
         throws Throwable
     {
         constraintsInstance.checkValid( composite, method, params );
@@ -117,7 +117,7 @@ public final class CompositeMethodModel
         }
     }
 
-    private CompositeMethodInstance getInstance( ModuleInstance moduleInstance )
+    private CompositeMethodInstance getInstance( ModuleSpi moduleInstance )
     {
         CompositeMethodInstance methodInstance = instancePool.obtainInstance();
         if( methodInstance == null )
@@ -128,7 +128,7 @@ public final class CompositeMethodModel
         return methodInstance;
     }
 
-    private CompositeMethodInstance newCompositeMethodInstance( ModuleInstance moduleInstance )
+    private CompositeMethodInstance newCompositeMethodInstance( ModuleSpi moduleInstance )
         throws ConstructionException
     {
         FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler( method );
@@ -197,7 +197,7 @@ public final class CompositeMethodModel
 
     public Iterable<Method> invocationsFor( Class<?> mixinClass )
     {
-        return mixins.invocationsFor(mixinClass);
+        return mixins.invocationsFor( mixinClass );
     }
 
     public class CompositeMethodAnnotatedElement

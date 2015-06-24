@@ -25,12 +25,14 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.composite.InvalidCompositeException;
+import org.qi4j.api.structure.Module;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.qi4j.functional.Iterables.first;
@@ -204,7 +206,7 @@ public abstract class CompositeModel
                                 Object proxy,
                                 Method method,
                                 Object[] args,
-                                ModuleInstance moduleInstance
+                                ModuleSpi moduleInstance
     )
         throws Throwable
     {

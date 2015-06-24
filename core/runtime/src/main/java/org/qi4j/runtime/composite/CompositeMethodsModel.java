@@ -22,7 +22,7 @@ import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.functional.Iterables.map;
 
@@ -51,7 +51,7 @@ public final class CompositeMethodsModel
                           Object proxy,
                           Method method,
                           Object[] args,
-                          ModuleInstance moduleInstance
+                          ModuleSpi moduleInstance
     )
         throws Throwable
     {

@@ -15,6 +15,10 @@
  */
 package org.qi4j.api.unitofwork;
 
+import org.qi4j.functional.Function;
+
+import static org.qi4j.functional.Iterables.fold;
+
 /**
  * Qi4j exception to be thrown in case that an entity composite
  * was not found during a lookup call.
@@ -24,10 +28,30 @@ public class EntityTypeNotFoundException
 {
     private final String compositeType;
 
-    public EntityTypeNotFoundException( String entityType )
+    public EntityTypeNotFoundException( String entityType, String moduleName, Iterable<String> visibility )
     {
-        super("Could not find an EntityComposite of type " + entityType);
+        super( "Could not find an EntityComposite of type " + entityType + " in module [" + moduleName + "].\n" +
+               "\tThe following entity types are visible:\n" + join(visibility) );
         this.compositeType = entityType;
+    }
+
+    private static String join( Iterable<String> visibility )
+    {
+        return fold( new Function<String, String>()
+        {
+            StringBuilder result;
+            {
+                result = new StringBuilder();
+            }
+
+            @Override
+            public String map( String type )
+            {
+                result.append( type );
+                result.append( "\n" );
+                return result.toString();
+            }
+        }, visibility );
     }
 
     public String compositeType()

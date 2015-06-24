@@ -24,7 +24,10 @@ import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.property.StateHolder;
+import org.qi4j.api.structure.Layer;
+import org.qi4j.api.structure.Module;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * InvocationHandler for proxy objects.
@@ -42,10 +45,10 @@ public class TransientInstance
     protected final Object[] mixins;
     protected StateHolder state;
     protected final CompositeModel compositeModel;
-    private final ModuleInstance moduleInstance;
+    private final ModuleSpi moduleInstance;
 
     public TransientInstance( CompositeModel compositeModel,
-                              ModuleInstance moduleInstance,
+                              ModuleSpi moduleInstance,
                               Object[] mixins,
                               StateHolder state
     )
@@ -105,9 +108,14 @@ public class TransientInstance
     }
 
     @Override
-    public ModuleInstance module()
+    public Module module()
     {
         return moduleInstance;
+    }
+
+    public Layer layer()
+    {
+        return ( (ModuleInstance) moduleInstance ).layerInstance();
     }
 
     @Override

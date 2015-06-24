@@ -287,16 +287,15 @@ public final class DependencyModel
                 ex = ex.getCause();
             }
 
-            String message = "[Module " + context.module()
-                .name() + "] InjectionProvider unable to resolve @" + injectionAnnotation.annotationType()
-                .getSimpleName() + " " + injectionType.toString();
+            String message = "[Module " + context.module().name() + "] InjectionProvider unable to resolve @" +
+                             injectionAnnotation.annotationType().getSimpleName() + " " + injectionType.toString();
             throw new ConstructionException( message, ex );
         }
         if( injectedValue == null && !optional )
         {
-            String message = "[Module " + context.module()
-                .name() + "] Non-optional @" + injectionAnnotation.annotationType()
-                .getSimpleName() + " " + injectionType.toString() + " was null in " + injectedClass.getName();
+            String message = "[Module " + context.module().name() + "] Non-optional @" +
+                             injectionAnnotation.annotationType().getSimpleName() + " " + injectionType.toString() +
+                             " was null in " + injectedClass.getName();
             throw new ConstructionException( message );
         }
         return getInjectedValue( injectedValue );

@@ -20,7 +20,7 @@ import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * Model for Transient Composites
@@ -39,7 +39,7 @@ public class TransientModel
         super( types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
-    public TransientInstance newInstance( ModuleInstance moduleInstance,
+    public TransientInstance newInstance( ModuleSpi moduleInstance,
                                           UsesInstance uses,
                                           TransientStateInstance state
     )
