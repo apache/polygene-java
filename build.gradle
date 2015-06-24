@@ -396,8 +396,8 @@ allprojects {
 } // allprojects END -------------------------------------------------------
 
 // Allow easy download of all dependencies to go offline
-// ./gradlew gooffline
-task gooffline {
+// ./gradlew goOffline
+task goOffline {
   doLast {
     allprojects.configurations.flatten()*.resolvedConfiguration
   }
