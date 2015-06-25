@@ -48,7 +48,6 @@ import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
@@ -73,6 +72,7 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.entitystore.helpers.JSONKeys;
@@ -237,31 +237,34 @@ public class SQLEntityStoreMixin
     }
 
     @Override
-    public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef )
+    public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleSpi module, EntityReference entityRef )
     {
         EntityValueResult valueResult = getValue( entityRef );
-        return new DefaultSQLEntityState( readEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork,
-                                                           valueResult.getReader() ),
-                                          valueResult.getEntityPK(),
-                                          valueResult.getEntityOptimisticLock() );
+        DefaultEntityState state = readEntityState( module, valueResult.getReader() );
+        return new DefaultSQLEntityState( state, valueResult.getEntityPK(), valueResult.getEntityOptimisticLock() );
     }
 
     @Override
-    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef, EntityDescriptor entityDescriptor )
+    public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                       ModuleSpi module,
+                                       EntityReference entityRef,
+                                       EntityDescriptor entityDescriptor
+    )
     {
-        return new DefaultSQLEntityState( new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork,
-                                                                  entityRef,
-                                                                  entityDescriptor ) );
+        return new DefaultSQLEntityState( new DefaultEntityState( unitOfWork.currentTime(), entityRef, entityDescriptor ) );
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSpi module, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), module, usecase, currentTime );
+        EntityStoreUnitOfWork storeUnitOfWork =
+            new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), usecase, currentTime );
+        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
+        return storeUnitOfWork;
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final Module module )
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSpi module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -298,16 +301,15 @@ public class SQLEntityStoreMixin
         };
     }
 
-    private void queryAllEntities( Module module, EntityStatesVisitor entityStatesVisitor )
+    private void queryAllEntities( ModuleSpi module, EntityStatesVisitor entityStatesVisitor )
     {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.sql.visit" );
         Usecase usecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
-        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork( entityStoreSPI,
-                                                                                   newUnitOfWorkId(), module, usecase,
-                                                                                   System.currentTimeMillis() );
+        final ModuleEntityStoreUnitOfWork uow =
+            (ModuleEntityStoreUnitOfWork) newUnitOfWork( usecase, module, System.currentTimeMillis() );
         try
         {
             connection = database.getConnection();
@@ -316,7 +318,7 @@ public class SQLEntityStoreMixin
             rs = ps.executeQuery();
             while( rs.next() )
             {
-                DefaultEntityState entityState = readEntityState( uow, database.getEntityValue( rs ).getReader() );
+                DefaultEntityState entityState = readEntityState( module, database.getEntityValue( rs ).getReader() );
                 if( !entityStatesVisitor.visit( entityState ) )
                 {
                     return;
@@ -345,12 +347,11 @@ public class SQLEntityStoreMixin
         return uuid + Integer.toHexString( count.incrementAndGet() );
     }
 
-    protected DefaultEntityState readEntityState( DefaultEntityStoreUnitOfWork unitOfWork, Reader entityState )
+    protected DefaultEntityState readEntityState( ModuleSpi module, Reader entityState )
         throws EntityStoreException
     {
         try
         {
-            ModuleSpi module = (ModuleSpi) unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
@@ -491,7 +492,7 @@ public class SQLEntityStoreMixin
                 }
             }
 
-            return new DefaultEntityState( unitOfWork, version, modified,
+            return new DefaultEntityState( version, modified,
                                            EntityReference.parseEntityReference( identity ), status, entityDescriptor,
                                            properties, associations, manyAssociations, namedAssociations );
         }
@@ -506,7 +507,7 @@ public class SQLEntityStoreMixin
         throws IOException
     {
         JSONObject jsonObject;
-        try( Reader reader = getValue( EntityReference.parseEntityReference( id ) ).getReader() )
+        try (Reader reader = getValue( EntityReference.parseEntityReference( id ) ).getReader())
         {
             jsonObject = new JSONObject( new JSONTokener( reader ) );
         }
@@ -532,10 +533,7 @@ public class SQLEntityStoreMixin
             {
                 throw new EntityNotFoundException( ref );
             }
-
-            EntityValueResult result = database.getEntityValue( rs );
-
-            return result;
+            return database.getEntityValue( rs );
         }
         catch( SQLException sqle )
         {
@@ -590,7 +588,8 @@ public class SQLEntityStoreMixin
             }
 
             JSONWriter associations = properties.endObject().key( JSONKeys.ASSOCIATIONS ).object();
-            for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations().entrySet() )
+            for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations()
+                .entrySet() )
             {
                 EntityReference value = stateNameEntityReferenceEntry.getValue();
                 associations.key( stateNameEntityReferenceEntry.getKey().name() ).
@@ -598,7 +597,8 @@ public class SQLEntityStoreMixin
             }
 
             JSONWriter manyAssociations = associations.endObject().key( JSONKeys.MANY_ASSOCIATIONS ).object();
-            for( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations().entrySet() )
+            for( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations()
+                .entrySet() )
             {
                 JSONWriter assocs = manyAssociations.key( stateNameListEntry.getKey().name() ).array();
                 for( EntityReference entityReference : stateNameListEntry.getValue() )
@@ -609,7 +609,8 @@ public class SQLEntityStoreMixin
             }
 
             JSONWriter namedAssociations = manyAssociations.endObject().key( JSONKeys.NAMED_ASSOCIATIONS ).object();
-            for( Map.Entry<QualifiedName, Map<String, EntityReference>> stateNameMapEntry : state.namedAssociations().entrySet() )
+            for( Map.Entry<QualifiedName, Map<String, EntityReference>> stateNameMapEntry : state.namedAssociations()
+                .entrySet() )
             {
                 JSONWriter assocs = namedAssociations.key( stateNameMapEntry.getKey().name() ).object();
                 for( Map.Entry<String, EntityReference> entry : stateNameMapEntry.getValue().entrySet() )
@@ -625,5 +626,4 @@ public class SQLEntityStoreMixin
             throw new EntityStoreException( "Could not store EntityState", e );
         }
     }
-
 }

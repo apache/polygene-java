@@ -25,16 +25,17 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.library.rdf.DcRdf;
 import org.qi4j.library.rdf.Rdfs;
 import org.qi4j.library.rdf.serializer.RdfXmlSerializer;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
@@ -45,10 +46,13 @@ import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 public class EntitySerializerTest
     extends AbstractQi4jTest
 {
-    @Service EntityStore entityStore;
-    @Uses EntityStateSerializer serializer;
+    @Service
+    EntityStore entityStore;
+    @Uses
+    EntityStateSerializer serializer;
 
-    public void assemble( ModuleAssembly module ) throws AssemblyException
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
         new OrgJsonValueSerializationAssembler().assemble( module );
@@ -58,8 +62,10 @@ public class EntitySerializerTest
         module.objects( EntityStateSerializer.class, EntitySerializerTest.class );
     }
 
-    @Override @Before
-    public void setUp() throws Exception
+    @Override
+    @Before
+    public void setUp()
+        throws Exception
     {
         super.setUp();
 
@@ -69,21 +75,25 @@ public class EntitySerializerTest
     }
 
     @Test
-    public void testEntitySerializer() throws RDFHandlerException
+    public void testEntitySerializer()
+        throws RDFHandlerException
     {
         EntityReference entityReference = new EntityReference( "test2" );
-        EntityState entityState = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Test" ), module, System.currentTimeMillis() ).entityStateOf( entityReference );
+        Usecase usecase = UsecaseBuilder.newUsecase( "Test" );
+        long currentTime = System.currentTimeMillis();
+        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, module, currentTime );
+        EntityState entityState = unitOfWork.entityStateOf( module, entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
 
         String[] prefixes = new String[]{ "rdf", "dc", " vc" };
         String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.NAMESPACE, "http://www.w3.org/2001/vcard-rdf/3.0#" };
 
-
         new RdfXmlSerializer().serialize( graph, new PrintWriter( System.out ), prefixes, namespaces );
     }
 
-    void createDummyData() throws UnitOfWorkCompletionException
+    void createDummyData()
+        throws UnitOfWorkCompletionException
     {
         UnitOfWork unitOfWork = module.newUnitOfWork();
         try

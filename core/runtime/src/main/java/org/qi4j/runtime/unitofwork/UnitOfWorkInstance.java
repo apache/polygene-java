@@ -31,7 +31,6 @@ import org.qi4j.api.metrics.MetricsCounterFactory;
 import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.api.metrics.MetricsTimer;
 import org.qi4j.api.metrics.MetricsTimerFactory;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
@@ -42,7 +41,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkOptions;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -111,7 +109,7 @@ public final class UnitOfWorkInstance
         return currentTime;
     }
 
-    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store, Module module )
+    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store, ModuleSpi module )
     {
         EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );
         if( uow == null )
@@ -146,7 +144,7 @@ public final class UnitOfWorkInstance
                 EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModel.module() );
                 try
                 {
-                    entityState = storeUow.entityStateOf( identity );
+                    entityState = storeUow.entityStateOf( potentialModel.module(), identity );
                 }
                 catch( EntityNotFoundException e )
                 {

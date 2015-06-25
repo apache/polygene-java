@@ -21,10 +21,10 @@ import java.util.WeakHashMap;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * Entity versions state.
@@ -36,7 +36,7 @@ public interface EntityStateVersions
 
     void rememberVersion( EntityReference identity, String version );
 
-    void checkForConcurrentModification( Iterable<EntityState> loaded, Module module, long currentTime )
+    void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSpi module, long currentTime )
         throws ConcurrentEntityStateModificationException;
 
     /**
@@ -48,7 +48,7 @@ public interface EntityStateVersions
         @This
         private EntityStore store;
 
-        private final Map<EntityReference, String> versions = new WeakHashMap<EntityReference, String>();
+        private final Map<EntityReference, String> versions = new WeakHashMap<>();
 
         @Override
         public synchronized void forgetVersions( Iterable<EntityState> states )
@@ -67,7 +67,7 @@ public interface EntityStateVersions
 
         @Override
         public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded,
-                                                                 Module module,
+                                                                 ModuleSpi module,
                                                                  long currentTime
         )
             throws ConcurrentEntityStateModificationException
@@ -84,7 +84,7 @@ public interface EntityStateVersions
                 if( storeVersion == null )
                 {
                     EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( Usecase.DEFAULT, module, currentTime );
-                    EntityState state = unitOfWork.entityStateOf( entityState.identity() );
+                    EntityState state = unitOfWork.entityStateOf( module, entityState.identity() );
                     storeVersion = state.version();
                     unitOfWork.discard();
                 }
@@ -93,7 +93,7 @@ public interface EntityStateVersions
                 {
                     if( changed == null )
                     {
-                        changed = new ArrayList<EntityReference>();
+                        changed = new ArrayList<>();
                     }
                     changed.add( entityState.identity() );
                 }

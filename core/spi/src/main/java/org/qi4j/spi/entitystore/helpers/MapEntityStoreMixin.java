@@ -34,7 +34,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.json.JSONWriter;
 import org.qi4j.api.association.AssociationDescriptor;
-import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
@@ -47,11 +46,9 @@ import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
@@ -65,6 +62,7 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.module.ModelModule;
 import org.qi4j.spi.module.ModuleSpi;
@@ -118,27 +116,33 @@ public class MapEntityStoreMixin
 
     // EntityStore
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSpi module, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo, currentTime );
+        EntityStoreUnitOfWork storeUnitOfWork =
+            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
+        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
+        return storeUnitOfWork;
     }
 
     // EntityStoreSPI
     @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                       ModuleSpi module,
                                        EntityReference identity,
                                        EntityDescriptor entityDescriptor
     )
     {
-        return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
+        return new DefaultEntityState( unitOfWork.currentTime(), identity, entityDescriptor );
     }
 
     @Override
-    public synchronized EntityState entityStateOf( EntityStoreUnitOfWork unitofwork, EntityReference identity )
+    public synchronized EntityState entityStateOf( EntityStoreUnitOfWork unitofwork,
+                                                   ModuleSpi module,
+                                                   EntityReference identity
+    )
     {
-        DefaultEntityStoreUnitOfWork unitOfWork = (DefaultEntityStoreUnitOfWork) unitofwork;
         Reader in = mapEntityStore.get( identity );
-        return readEntityState( unitOfWork, in );
+        return readEntityState( module, in );
     }
 
     @Override
@@ -198,7 +202,7 @@ public class MapEntityStoreMixin
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final Module module )
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSpi module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -212,20 +216,7 @@ public class MapEntityStoreMixin
                     public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, EntityStoreException
                     {
-                        Usecase usecase = UsecaseBuilder
-                            .buildUsecase( "qi4j.entitystore.entitystates" )
-                            .withMetaInfo( CacheOptions.NEVER )
-                            .newUsecase();
-
-                        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork(
-                            entityStoreSpi,
-                            newUnitOfWorkId(),
-                            module,
-                            usecase,
-                            System.currentTimeMillis() );
-
                         final List<EntityState> migrated = new ArrayList<>();
-
                         try
                         {
                             mapEntityStore.entityStates().transferTo( new Output<Reader, ReceiverThrowableType>()
@@ -240,7 +231,7 @@ public class MapEntityStoreMixin
                                         public void receive( Reader item )
                                             throws ReceiverThrowableType
                                         {
-                                            final EntityState entity = readEntityState( uow, item );
+                                            final EntityState entity = readEntityState( module, item );
                                             if( entity.status() == EntityStatus.UPDATED )
                                             {
                                                 migrated.add( entity );
@@ -394,12 +385,11 @@ public class MapEntityStoreMixin
         }
     }
 
-    protected EntityState readEntityState( DefaultEntityStoreUnitOfWork unitOfWork, Reader entityState )
+    protected EntityState readEntityState( ModuleSpi module, Reader entityState )
         throws EntityStoreException
     {
         try
         {
-            ModuleSpi module = (ModuleSpi) unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
@@ -539,8 +529,7 @@ public class MapEntityStoreMixin
                 }
             }
 
-            return new DefaultEntityState( unitOfWork,
-                                           version,
+            return new DefaultEntityState( version,
                                            modified,
                                            EntityReference.parseEntityReference( identity ),
                                            status,

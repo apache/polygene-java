@@ -45,7 +45,6 @@ public class JSONManyAssociationStateTest
         state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
         state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
         JSONEntityState entityState = new JSONEntityState( null,
-                                                           null,
                                                            "0",
                                                            System.currentTimeMillis(),
                                                            EntityReference.parseEntityReference( "123" ),
@@ -71,7 +70,6 @@ public class JSONManyAssociationStateTest
         state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
         state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
         JSONEntityState entityState = new JSONEntityState( null,
-                                                           null,
                                                            "0",
                                                            System.currentTimeMillis(),
                                                            EntityReference.parseEntityReference( "123" ),

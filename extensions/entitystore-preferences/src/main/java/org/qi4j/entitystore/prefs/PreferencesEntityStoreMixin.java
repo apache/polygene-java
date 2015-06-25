@@ -43,7 +43,6 @@ import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.CollectionType;
 import org.qi4j.api.type.EnumType;
 import org.qi4j.api.type.MapType;
@@ -67,6 +66,7 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
 import org.qi4j.spi.module.ModelModule;
@@ -174,13 +174,15 @@ public class PreferencesEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSpi module, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, currentTime );
+        EntityStoreUnitOfWork storeUnitOfWork = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecase, currentTime );
+        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
+        return storeUnitOfWork;
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final Module module )
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSpi module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -196,18 +198,16 @@ public class PreferencesEntityStoreMixin
                     {
                         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.preferences.visit" );
                         Usecase visitUsecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
-                        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork(
-                            entityStoreSpi,
-                            newUnitOfWorkId(),
-                            module,
-                            visitUsecase,
-                            System.currentTimeMillis() );
+                        final EntityStoreUnitOfWork uow =
+                            newUnitOfWork( visitUsecase, module, System.currentTimeMillis() );
+
                         try
                         {
                             String[] identities = root.childrenNames();
                             for( String identity : identities )
                             {
-                                EntityState entityState = uow.entityStateOf( EntityReference.parseEntityReference( identity ) );
+                                EntityReference reference = EntityReference.parseEntityReference( identity );
+                                EntityState entityState = uow.entityStateOf( module, reference );
                                 receiver.receive( entityState );
                             }
                         }
@@ -223,22 +223,19 @@ public class PreferencesEntityStoreMixin
 
     @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                       ModuleSpi module,
                                        EntityReference identity,
                                        EntityDescriptor entityDescriptor
     )
     {
-        return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
+        return new DefaultEntityState( unitOfWork.currentTime(), identity, entityDescriptor );
     }
 
     @Override
-    public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
+    public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleSpi module, EntityReference identity )
     {
         try
         {
-            DefaultEntityStoreUnitOfWork desuw = (DefaultEntityStoreUnitOfWork) unitOfWork;
-
-            ModuleSpi module = (ModuleSpi) desuw.module();
-
             if( !root.nodeExists( identity.identity() ) )
             {
                 throw new NoSuchEntityException( identity, UnknownType.class );
@@ -443,8 +440,7 @@ public class PreferencesEntityStoreMixin
                 }
             }
 
-            return new DefaultEntityState( desuw,
-                                           entityPrefs.get( "version", "" ),
+            return new DefaultEntityState( entityPrefs.get( "version", "" ),
                                            entityPrefs.getLong( "modified", unitOfWork.currentTime() ),
                                            identity,
                                            status,
@@ -466,6 +462,7 @@ public class PreferencesEntityStoreMixin
     {
         return new StateCommitter()
         {
+            @SuppressWarnings( "SynchronizeOnNonFinalField" )
             @Override
             public void commit()
             {

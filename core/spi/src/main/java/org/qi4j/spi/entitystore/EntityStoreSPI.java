@@ -17,6 +17,7 @@ package org.qi4j.spi.entitystore;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * EntityStore SPI.
@@ -24,10 +25,11 @@ import org.qi4j.spi.entity.EntityState;
 public interface EntityStoreSPI
 {
     EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                ModuleSpi module,
                                 EntityReference identity, EntityDescriptor entityDescriptor
     );
 
-    EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity );
+    EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleSpi module, EntityReference identity );
 
     StateCommitter applyChanges( EntityStoreUnitOfWork unitOfWork, Iterable<EntityState> state
     );

@@ -14,9 +14,12 @@
 
 package org.qi4j.spi.entitystore;
 
+import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * EntityStore UnitOfWork.
@@ -40,7 +43,7 @@ public interface EntityStoreUnitOfWork
      *
      * @throws EntityStoreException Thrown if creational fails.
      */
-    EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
+    EntityState newEntityState( ModuleSpi module, EntityReference anIdentity, EntityDescriptor entityDescriptor )
         throws EntityStoreException;
 
     /**
@@ -54,11 +57,13 @@ public interface EntityStoreUnitOfWork
      * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException if requested entity does not exist
      */
-    EntityState entityStateOf( EntityReference anIdentity )
+    EntityState entityStateOf( ModuleSpi module, EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException;
 
     StateCommitter applyChanges()
         throws EntityStoreException;
 
     void discard();
+
+    Usecase usecase();
 }

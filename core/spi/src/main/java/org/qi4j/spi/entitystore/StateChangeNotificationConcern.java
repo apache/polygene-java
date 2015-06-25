@@ -17,6 +17,7 @@ package org.qi4j.spi.entitystore;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.spi.entity.EntityState;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * State change notification Concern.

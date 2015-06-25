@@ -34,7 +34,6 @@ import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.qualifier.Tagged;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.util.Classes;
@@ -49,6 +48,7 @@ import org.qi4j.spi.entity.NamedAssociationState;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateChangeListener;
+import org.qi4j.spi.module.ModuleSpi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,13 +67,17 @@ public interface ElasticSearchIndexer
     {
 
         private static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchIndexer.class );
+
         @Structure
-        private Module module;
+        private ModuleSpi module;
+
         @Service
         private EntityStore entityStore;
+
         @Service
         @Tagged( ValueSerialization.Formats.JSON )
         private ValueSerializer valueSerializer;
+
         @This
         private ElasticSearchSupport support;
 
@@ -111,27 +115,27 @@ public interface ElasticSearchIndexer
                 {
                     switch( changedState.status() )
                     {
-                        case REMOVED:
-                            LOGGER.trace( "Removing Entity State from Index: {}", changedState );
-                            remove( bulkBuilder, changedState.identity().identity() );
-                            break;
-                        case UPDATED:
-                            LOGGER.trace( "Updating Entity State in Index: {}", changedState );
-                            remove( bulkBuilder, changedState.identity().identity() );
-                            String updatedJson = toJSON( changedState, newStates, uow );
-                            LOGGER.trace( "Will index: {}", updatedJson );
-                            index( bulkBuilder, changedState.identity().identity(), updatedJson );
-                            break;
-                        case NEW:
-                            LOGGER.trace( "Creating Entity State in Index: {}", changedState );
-                            String newJson = toJSON( changedState, newStates, uow );
-                            LOGGER.trace( "Will index: {}", newJson );
-                            index( bulkBuilder, changedState.identity().identity(), newJson );
-                            break;
-                        case LOADED:
-                        default:
-                            // Ignored
-                            break;
+                    case REMOVED:
+                        LOGGER.trace( "Removing Entity State from Index: {}", changedState );
+                        remove( bulkBuilder, changedState.identity().identity() );
+                        break;
+                    case UPDATED:
+                        LOGGER.trace( "Updating Entity State in Index: {}", changedState );
+                        remove( bulkBuilder, changedState.identity().identity() );
+                        String updatedJson = toJSON( changedState, newStates, uow );
+                        LOGGER.trace( "Will index: {}", updatedJson );
+                        index( bulkBuilder, changedState.identity().identity(), updatedJson );
+                        break;
+                    case NEW:
+                        LOGGER.trace( "Creating Entity State in Index: {}", changedState );
+                        String newJson = toJSON( changedState, newStates, uow );
+                        LOGGER.trace( "Will index: {}", newJson );
+                        index( bulkBuilder, changedState.identity().identity(), newJson );
+                        break;
+                    case LOADED:
+                    default:
+                        // Ignored
+                        break;
                     }
                 }
             }
@@ -154,7 +158,6 @@ public interface ElasticSearchIndexer
 
                 // Refresh index
                 support.client().admin().indices().prepareRefresh( support.index() ).execute().actionGet();
-
             }
         }
 
@@ -190,7 +193,8 @@ public interface ElasticSearchIndexer
                 JSONObject json = new JSONObject();
 
                 json.put( "_identity", state.identity().identity() );
-                json.put( "_types", Iterables.toList( Iterables.map( Classes.toClassName(), state.entityDescriptor().mixinTypes() ) ) );
+                json.put( "_types", Iterables.toList( Iterables.map( Classes.toClassName(), state.entityDescriptor()
+                    .mixinTypes() ) ) );
 
                 EntityDescriptor entityType = state.entityDescriptor();
 
@@ -247,7 +251,8 @@ public interface ElasticSearchIndexer
                                 }
                                 else
                                 {
-                                    EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( associated.identity() ) );
+                                    EntityReference reference = EntityReference.parseEntityReference( associated.identity() );
+                                    EntityState assocState = uow.entityStateOf( module, reference );
                                     value = new JSONObject( toJSON( assocState, newStates, uow ) );
                                 }
                             }
@@ -278,7 +283,8 @@ public interface ElasticSearchIndexer
                                 }
                                 else
                                 {
-                                    EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( associated.identity() ) );
+                                    EntityReference reference = EntityReference.parseEntityReference( associated.identity() );
+                                    EntityState assocState = uow.entityStateOf( module, reference );
                                     array.put( new JSONObject( toJSON( assocState, newStates, uow ) ) );
                                 }
                             }
@@ -312,7 +318,8 @@ public interface ElasticSearchIndexer
                                 }
                                 else
                                 {
-                                    EntityState assocState = uow.entityStateOf( EntityReference.parseEntityReference( identity ) );
+                                    EntityReference reference = EntityReference.parseEntityReference( identity );
+                                    EntityState assocState = uow.entityStateOf( module, reference );
                                     JSONObject obj = new JSONObject( toJSON( assocState, newStates, uow ) );
                                     obj.put( "_named", name );
                                     array.put( obj );
@@ -338,5 +345,4 @@ public interface ElasticSearchIndexer
             }
         }
     }
-
 }

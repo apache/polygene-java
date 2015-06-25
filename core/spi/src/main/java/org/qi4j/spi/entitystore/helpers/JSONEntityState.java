@@ -33,7 +33,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.NamedAssociationState;
-import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.EntityStoreException;
 
 /**
@@ -44,15 +43,14 @@ public final class JSONEntityState
 {
     private static final String[] EMPTY_NAMES = new String[ 0 ];
     private static final String[] CLONE_NAMES =
-    {
-        JSONKeys.IDENTITY,
-        JSONKeys.APPLICATION_VERSION,
-        JSONKeys.TYPE,
-        JSONKeys.VERSION,
-        JSONKeys.MODIFIED
-    };
+        {
+            JSONKeys.IDENTITY,
+            JSONKeys.APPLICATION_VERSION,
+            JSONKeys.TYPE,
+            JSONKeys.VERSION,
+            JSONKeys.MODIFIED
+        };
 
-    private final DefaultEntityStoreUnitOfWork unitOfWork;
     private final ValueSerialization valueSerialization;
     private final String version;
     private final EntityReference identity;
@@ -62,24 +60,23 @@ public final class JSONEntityState
     private long lastModified;
     private JSONObject state;
 
-    /* package */ JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+    /* package */ JSONEntityState( long time,
                                    ValueSerialization valueSerialization,
                                    EntityReference identity,
                                    EntityDescriptor entityDescriptor,
-                                   JSONObject initialState )
+                                   JSONObject initialState
+    )
     {
-        this( unitOfWork,
-              valueSerialization,
+        this( valueSerialization,
               "",
-              unitOfWork.currentTime(),
+              time,
               identity,
               EntityStatus.NEW,
               entityDescriptor,
               initialState );
     }
 
-    /* package */ JSONEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
-                                   ValueSerialization valueSerialization,
+    /* package */ JSONEntityState( ValueSerialization valueSerialization,
                                    String version,
                                    long lastModified,
                                    EntityReference identity,
@@ -88,7 +85,6 @@ public final class JSONEntityState
                                    JSONObject state
     )
     {
-        this.unitOfWork = unitOfWork;
         this.valueSerialization = valueSerialization;
         this.version = version;
         this.lastModified = lastModified;

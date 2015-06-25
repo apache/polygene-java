@@ -137,6 +137,11 @@ To sum up, cron expressions used here have a precision of one second. The follow
 - @annualy or @yearly
 
 
+== Durability ==
+Schedules can either be ethereal or durable, passed as an argument to the +Scheduler+. If it is a durable
+schedule, then the Task must be an Entity Composite.
+
+When the
 == Observing the Timeline ==
 
 Timeline allow to browse in past and future Task runs. This feature is available only if you activate

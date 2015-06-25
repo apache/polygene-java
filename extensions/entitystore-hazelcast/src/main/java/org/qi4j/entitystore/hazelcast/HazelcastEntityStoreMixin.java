@@ -157,8 +157,8 @@ public class HazelcastEntityStoreMixin
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
                     @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
+                    public <RTT extends Throwable> void sendTo( Receiver<? super Reader, RTT> receiver )
+                        throws RTT, IOException
                     {
                         for( Map.Entry<String, String> eachEntry : stringMap.entrySet() )
                         {

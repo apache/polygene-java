@@ -32,7 +32,6 @@ import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.ManyAssociationState;
 import org.qi4j.spi.entity.NamedAssociationState;
-import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 
 /**
  * Standard implementation of EntityState.
@@ -40,8 +39,6 @@ import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
 public final class DefaultEntityState
     implements EntityState
 {
-    private DefaultEntityStoreUnitOfWork unitOfWork;
-
     private EntityStatus status;
 
     private String version;
@@ -54,13 +51,13 @@ public final class DefaultEntityState
     private final Map<QualifiedName, List<EntityReference>> manyAssociations;
     private final Map<QualifiedName, Map<String, EntityReference>> namedAssociations;
 
-    public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
+    public DefaultEntityState( long currentTime,
                                EntityReference identity,
                                EntityDescriptor entityDescriptor
     )
     {
-        this( unitOfWork, "",
-              unitOfWork.currentTime(),
+        this( "",
+              currentTime,
               identity,
               EntityStatus.NEW,
               entityDescriptor,
@@ -70,8 +67,7 @@ public final class DefaultEntityState
               new HashMap<QualifiedName, Map<String, EntityReference>>() );
     }
 
-    public DefaultEntityState( DefaultEntityStoreUnitOfWork unitOfWork,
-                               String version,
+    public DefaultEntityState( String version,
                                long lastModified,
                                EntityReference identity,
                                EntityStatus status,
@@ -82,7 +78,6 @@ public final class DefaultEntityState
                                Map<QualifiedName, Map<String, EntityReference>> namedAssociations
     )
     {
-        this.unitOfWork = unitOfWork;
         this.version = version;
         this.lastModified = lastModified;
         this.identity = identity;

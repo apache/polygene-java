@@ -116,13 +116,13 @@ public final class EntityModel
         return ( (EntityMixinsModel) mixinsModel ).newMixin( entityInstance, entityState, mixins, method );
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference identity )
+    public EntityState newEntityState( EntityStoreUnitOfWork store, ModuleSpi module, EntityReference identity )
         throws ConstraintViolationException, EntityStoreException
     {
         try
         {
             // New EntityState
-            EntityState entityState = store.newEntityState( identity, this );
+            EntityState entityState = store.newEntityState( module, identity, this );
 
             // Set identity property
             PropertyDescriptor persistentPropertyDescriptor = state().propertyModelFor( IDENTITY_METHOD );

@@ -42,10 +42,8 @@ import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
@@ -62,6 +60,7 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.module.ModelModule;
 import org.qi4j.spi.module.ModuleSpi;
@@ -144,15 +143,18 @@ public class JSONMapEntityStoreMixin
     // EntityStore
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSpi module, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo, currentTime );
+        EntityStoreUnitOfWork storeUnitOfWork = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
+        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
+        return storeUnitOfWork;
     }
 
     // EntityStoreSPI
 
     @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                       ModuleSpi module,
                                        EntityReference identity,
                                        EntityDescriptor entityDescriptor
     )
@@ -169,7 +171,7 @@ public class JSONMapEntityStoreMixin
             state.put( JSONKeys.ASSOCIATIONS, new JSONObject() );
             state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
             state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
-            return new JSONEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, valueSerialization,
+            return new JSONEntityState( unitOfWork.currentTime(), valueSerialization,
                                         identity, entityDescriptor, state );
         }
         catch( JSONException e )
@@ -179,17 +181,20 @@ public class JSONMapEntityStoreMixin
     }
 
     @Override
-    public synchronized EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
+    public synchronized EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork,
+                                                   ModuleSpi module,
+                                                   EntityReference identity
+    )
     {
-        EntityState state = fetchCachedState( identity, (DefaultEntityStoreUnitOfWork) unitOfWork );
+        EntityState state = fetchCachedState( identity, module, unitOfWork.currentTime() );
         if( state != null )
         {
             return state;
         }
         // Get state
         Reader in = mapEntityStore.get( identity );
-        JSONEntityState loadedState = readEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, in );
-        if( doCacheOnRead( (DefaultEntityStoreUnitOfWork) unitOfWork ) )
+        JSONEntityState loadedState = readEntityState( module, in );
+        if( doCacheOnRead( unitOfWork ) )
         {
             cache.put( identity.identity(), new CacheState( loadedState.state() ) );
         }
@@ -197,7 +202,8 @@ public class JSONMapEntityStoreMixin
     }
 
     @Override
-    public StateCommitter applyChanges( final EntityStoreUnitOfWork unitOfWork, final Iterable<EntityState> state
+    public StateCommitter applyChanges( final EntityStoreUnitOfWork unitOfWork,
+                                        final Iterable<EntityState> state
     )
         throws EntityStoreException
     {
@@ -214,8 +220,7 @@ public class JSONMapEntityStoreMixin
                         public void visitMap( MapEntityStore.MapChanger changer )
                             throws IOException
                         {
-                            DefaultEntityStoreUnitOfWork uow = (DefaultEntityStoreUnitOfWork) unitOfWork;
-                            CacheOptions options = uow.usecase().metaInfo( CacheOptions.class );
+                            CacheOptions options = unitOfWork.usecase().metaInfo( CacheOptions.class );
                             if( options == null )
                             {
                                 options = CacheOptions.ALWAYS;
@@ -226,7 +231,7 @@ public class JSONMapEntityStoreMixin
                                 JSONEntityState state = (JSONEntityState) entityState;
                                 if( state.status().equals( EntityStatus.NEW ) )
                                 {
-                                    try( Writer writer = changer.newEntity( state.identity(), state.entityDescriptor() ) )
+                                    try (Writer writer = changer.newEntity( state.identity(), state.entityDescriptor() ))
                                     {
                                         writeEntityState( state, writer, unitOfWork.identity(), unitOfWork.currentTime() );
                                     }
@@ -237,7 +242,7 @@ public class JSONMapEntityStoreMixin
                                 }
                                 else if( state.status().equals( EntityStatus.UPDATED ) )
                                 {
-                                    try( Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ) )
+                                    try (Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ))
                                     {
                                         writeEntityState( state, writer, unitOfWork.identity(), unitOfWork.currentTime() );
                                     }
@@ -269,7 +274,7 @@ public class JSONMapEntityStoreMixin
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final Module module )
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSpi module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -283,20 +288,7 @@ public class JSONMapEntityStoreMixin
                     public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, EntityStoreException
                     {
-                        Usecase usecase = UsecaseBuilder
-                            .buildUsecase( "qi4j.entitystore.entitystates" )
-                            .withMetaInfo( CacheOptions.NEVER )
-                            .newUsecase();
-
-                        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork(
-                            entityStoreSpi,
-                            newUnitOfWorkId(),
-                            module,
-                            usecase,
-                            System.currentTimeMillis() );
-
                         final List<EntityState> migrated = new ArrayList<>();
-
                         try
                         {
                             mapEntityStore.entityStates().transferTo( new Output<Reader, ReceiverThrowableType>()
@@ -311,7 +303,7 @@ public class JSONMapEntityStoreMixin
                                         public void receive( Reader item )
                                             throws ReceiverThrowableType
                                         {
-                                            final EntityState entity = readEntityState( uow, item );
+                                            final EntityState entity = readEntityState( module, item );
                                             if( entity.status() == EntityStatus.UPDATED )
                                             {
                                                 migrated.add( entity );
@@ -370,7 +362,7 @@ public class JSONMapEntityStoreMixin
                 for( EntityState migratedEntity : migratedEntities )
                 {
                     JSONEntityState state = (JSONEntityState) migratedEntity;
-                    try( Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ) )
+                    try (Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ))
                     {
                         writeEntityState( state, writer, state.version(), state.lastModified() );
                     }
@@ -401,12 +393,11 @@ public class JSONMapEntityStoreMixin
         }
     }
 
-    protected JSONEntityState readEntityState( DefaultEntityStoreUnitOfWork unitOfWork, Reader entityState )
+    protected JSONEntityState readEntityState( ModuleSpi module, Reader entityState )
         throws EntityStoreException
     {
         try
         {
-            ModuleSpi module = (ModuleSpi) unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
@@ -449,8 +440,7 @@ public class JSONMapEntityStoreMixin
                                                        ) );
             }
 
-            return new JSONEntityState( unitOfWork,
-                                        valueSerialization,
+            return new JSONEntityState( valueSerialization,
                                         version,
                                         modified,
                                         EntityReference.parseEntityReference( identity ),
@@ -469,7 +459,7 @@ public class JSONMapEntityStoreMixin
     public JSONObject jsonStateOf( String id )
         throws IOException
     {
-        try( Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) ) )
+        try (Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) ))
         {
             return new JSONObject( new JSONTokener( reader ) );
         }
@@ -479,7 +469,7 @@ public class JSONMapEntityStoreMixin
         }
     }
 
-    private EntityState fetchCachedState( EntityReference identity, DefaultEntityStoreUnitOfWork unitOfWork )
+    private EntityState fetchCachedState( EntityReference identity, ModuleSpi module, long currentTime )
     {
         CacheState cacheState = cache.get( identity.identity() );
         if( cacheState != null )
@@ -488,8 +478,8 @@ public class JSONMapEntityStoreMixin
             try
             {
                 String type = data.getString( JSONKeys.TYPE );
-                EntityDescriptor entityDescriptor = unitOfWork.module().entityDescriptor( type );
-                return new JSONEntityState( unitOfWork, valueSerialization, identity, entityDescriptor, data );
+                EntityDescriptor entityDescriptor = module.entityDescriptor( type );
+                return new JSONEntityState( currentTime, valueSerialization, identity, entityDescriptor, data );
             }
             catch( JSONException e )
             {
@@ -500,18 +490,18 @@ public class JSONMapEntityStoreMixin
         return null;
     }
 
-    private boolean doCacheOnRead( DefaultEntityStoreUnitOfWork unitOfWork )
+    private boolean doCacheOnRead( EntityStoreUnitOfWork unitOfWork )
     {
         CacheOptions cacheOptions = unitOfWork.usecase().metaInfo( CacheOptions.class );
         return cacheOptions == null || cacheOptions.cacheOnRead();
     }
 
-    private static class CacheState
+    public static class CacheState
         implements Externalizable
     {
         public JSONObject json;
 
-        private CacheState()
+        public CacheState()
         {
         }
 
@@ -541,5 +531,4 @@ public class JSONMapEntityStoreMixin
             }
         }
     }
-
 }
