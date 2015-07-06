@@ -1,4 +1,4 @@
-Apache Zest Qi4j SDK Binary Distribution
+Apache Zest™ (Java Edition) SDK Binary Distribution
 Copyright 2015 The Apache Software Foundation.
 
 This product includes software developed at
