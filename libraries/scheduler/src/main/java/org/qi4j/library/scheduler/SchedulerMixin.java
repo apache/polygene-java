@@ -223,7 +223,7 @@ public class SchedulerMixin
         // or if corePoolSize greater than workersCount.
         taskExecutor = new ThreadPoolExecutor( corePoolSize, workersCount,
                                                0, TimeUnit.MILLISECONDS,
-                                               new LinkedBlockingQueue<>( workQueueSize ),
+                                               new LinkedBlockingQueue<Runnable>( workQueueSize ),
                                                threadFactory, rejectionHandler );
         taskExecutor.prestartAllCoreThreads();
         managementExecutor = new ScheduledThreadPoolExecutor( 2, threadFactory, rejectionHandler );
