@@ -13,6 +13,7 @@
  */
 package org.qi4j.entitystore.sql;
 
+import java.io.File;
 import org.apache.derby.iapi.services.io.FileUtil;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.bootstrap.AssemblyException;
@@ -68,7 +69,7 @@ public class H2SQLEntityStoreTest
     {
         try
         {
-            FileUtil.removeDirectory( "target/qi4j-data" );
+            FileUtil.removeDirectory( new File( "target/qi4j-data" ) );
         }
         finally
         {

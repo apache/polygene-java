@@ -14,6 +14,7 @@
  */
 package org.qi4j.entitystore.sql;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.sql.DataSource;
@@ -92,7 +93,7 @@ public class DerbySQLEntityStoreTest
                 stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
                 connection.commit();
             }
-            FileUtil.removeDirectory( "target/qi4j-data" );
+            FileUtil.removeDirectory( new File( "target/qi4j-data" ) );
         }
         finally
         {
