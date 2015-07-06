@@ -31,7 +31,7 @@ dependencies {
 
     runtime project(":org.qi4j.core:org.qi4j.core.runtime")
     runtime libraries.postgres
-    runtime libraries.logback
+    runtime libraries.slf4j_simple
 
 }
 

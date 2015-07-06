@@ -24,7 +24,7 @@ dependencies {
   compile( project( ":org.qi4j.libraries:org.qi4j.library.constraints" ) )
   compile( project( ":org.qi4j.libraries:org.qi4j.library.logging" ) )
   runtime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
-  runtime( libraries.logback )
+  runtime( libraries.slf4j_simple )
 }
 
 
