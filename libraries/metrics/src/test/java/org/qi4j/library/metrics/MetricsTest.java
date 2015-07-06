@@ -133,6 +133,7 @@ public class MetricsTest extends AbstractQi4jTest
         return result.toString();
     }
 
+// START SNIPPET: complex-capture
     public interface Country extends TransientComposite
     {
         @Optional
@@ -183,7 +184,6 @@ public class MetricsTest extends AbstractQi4jTest
     public static abstract class Country3Mixin
         implements Country3
     {
-
         @Override
         @TimingCapture
         public void updateName( String newName )
@@ -191,4 +191,5 @@ public class MetricsTest extends AbstractQi4jTest
             name().set( newName );
         }
     }
+// END SNIPPET: complex-capture
 }
