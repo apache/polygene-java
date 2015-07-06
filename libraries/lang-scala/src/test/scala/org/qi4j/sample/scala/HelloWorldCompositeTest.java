@@ -11,12 +11,10 @@
 */
 package org.qi4j.sample.scala;
 
-import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -35,6 +33,7 @@ public class HelloWorldCompositeTest
 {
     @Test
     public void testComposite()
+        throws Exception
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -67,7 +66,7 @@ public class HelloWorldCompositeTest
 
     @Test
     public void testEntity()
-        throws UnitOfWorkCompletionException, IOException
+        throws Exception
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {

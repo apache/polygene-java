@@ -21,6 +21,8 @@ description = "Qi4j BeanShell Library allows for Mixins to be implemented in Bea
 
 jar { manifest { name = "Qi4j Library - Scripting - BeanShell" }}
 
+apply plugin: 'scala'
+
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile(libraries.scala)
@@ -29,5 +31,5 @@ dependencies {
   testCompile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
 
   testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.logback)
+  testRuntime(libraries.slf4j_simple)
 }
