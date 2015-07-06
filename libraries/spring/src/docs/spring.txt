@@ -31,15 +31,15 @@ include::../../build/docs/buildinfo/artifact.txt[]
 Zest supports that Spring Application Context is imported into the Zest runtime, and the declared Spring
 beans will be available as Zest services. The most important things to remember are;
 
-    1 Only Spring Singletons are currently supported.
-    1 One ApplicationContext per Zest Module.
-    1 The Zest service will be given the same name as the Spring Bean name.
-    1 Zest Configuration is not reacbable from the Spring bean (kind of obvious).
+    1. Only Spring Singletons are currently supported.
+    2. One ApplicationContext per Zest Module.
+    3. The Zest service will be given the same name as the Spring Bean name.
+    4. Zest Configuration is not reacbable from the Spring bean (kind of obvious).
 
 [snippet,java]
 ----
 source=libraries/spring/src/test/java/org/qi4j/library/spring/importer/Qi4jImportServiceTest.java
-tag=importer
+tag=import
 ----
 
 == Using Apache Zest in Spring Framework ==
@@ -47,12 +47,12 @@ It is also possible to run a Zest Application as a Spring Bean and export its Se
 
 Steps to export Qi4j service:
 
-    1 Create spring BeanFactory service of qi4j services to export.
-    1 Create a class that extends Qi4jApplicationBootstrap.
-    1 Sets the layer and module that register BeanFactory service.
-    1 Assemble qi4j application by implementing #assemble method.
-    1 Sets the identity of bean factory service. This identity is the spring bean name.
-    1 Declare qi4j bootstrap in spring xml application context.
+    1. Create spring BeanFactory service of qi4j services to export.
+    2. Create a class that extends Qi4jApplicationBootstrap.
+    3. Sets the layer and module that register BeanFactory service.
+    4. Assemble qi4j application by implementing #assemble method.
+    5. Sets the identity of bean factory service. This identity is the spring bean name.
+    6. Declare qi4j bootstrap in spring xml application context.
 
 To bootstrap the Zest runtime in Spring, you should have a bootstrap bean that extends the
 +org.qi4j.library.spring.bootstrap.Qi4jApplicationBootstrap+ and implement the
@@ -87,5 +87,5 @@ Example application context;
 [snippet,java]
 ----
 source=libraries/spring/src/test/java/org/qi4j/library/spring/MyZestBootstrapper.java
-tag=importer
+tag=code
 ----
