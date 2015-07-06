@@ -62,6 +62,8 @@ A new bean will appear in the application context, called +"qi4jApplication"+ wh
 intended for internal use of this library.
 
 Example application context;
+[source,xml]
+----
  <?xml version="1.0" encoding="UTF-8"?>
 
  <beans xmlns="http://www.springframework.org/schema/beans"
@@ -73,11 +75,17 @@ Example application context;
 
   <!-- class that implements Qi4jApplicationBootstrap -->
 
-  <qi4j:bootstrap class="org.qi4j.library.spring.bootstrap.Qi4jTestBootstrap"/>
+  <qi4j:bootstrap class="org.hedhman.niclas.MyZestBootstrapper"/>
 
-  <bean id="commentServiceHolder" class="org.qi4j.library.spring.bootstrap.CommentServiceHolder">
+  <bean id="someService" class="org.hedhman.niclas.SomeService">
 
-  <constructor-arg ref="commentService"/> <!-- Reference qi4j comment service -->
+  <constructor-arg ref="someService"/> <!-- Reference qi4j comment service -->
 
  </bean>
+----
 
+[snippet,java]
+----
+source=libraries/spring/src/test/java/org/qi4j/library/spring/MyZestBootstrapper.java
+tag=importer
+----
