@@ -34,6 +34,7 @@ buildscript {
   }
   dependencies {
     classpath 'gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.1.2'
+    classpath 'gradle.plugin.org.nosphere.honker:honker-gradle:0.2.1'
     classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
   }
 }
@@ -94,12 +95,6 @@ rat {
     ]
 }
 
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-}
-
 
 // External tools BEGIN ---------------------------------------------------
 
@@ -132,6 +127,7 @@ allprojects {
 //  apply plugin: 'checkstyle'
   apply plugin: 'project-report'
   apply plugin: 'maven'
+  apply plugin: 'org.nosphere.honker'
 
 
   defaultTasks 'classes', 'test'
@@ -229,12 +225,39 @@ allprojects {
   }
 
   sourceSets {
+    main {
+      output.dir( honkerGenDependencies.outputDir, builtBy: honkerGenDependencies )
+      output.dir( honkerGenLicense.outputDir, builtBy: honkerGenLicense )
+      output.dir( honkerGenNotice.outputDir, builtBy: honkerGenNotice )
+    }
     docs {
       resources {
         srcDir 'src/docs'
       }
     }
   }
+
+  honker {
+    // Project License, applied to all submodules
+    license 'Apache 2'
+    // Dependencies (transitive or not) with no license information, overriding them
+    licenseOverride { candidate ->
+      if( candidate.group == 'asm' || candidate.module == 'prefuse-core' ) {
+        candidate.license = 'BSD 3-Clause'
+      }
+      if( candidate.group == 'org.apache.httpcomponents'
+          || candidate.group == 'jdbm'
+          || candidate.group == 'org.osgi'
+          || candidate.group.startsWith( 'org.restlet' ) ) {
+        candidate.license = 'Apache 2'
+      }
+    }
+  }
+  honkerGenNotice {
+    header = 'Apache Zest'
+    footer = 'This product includes software developed at\nThe Apache Software Foundation (http://www.apache.org/).\n'
+  }
+  check.dependsOn honkerCheck
 
   project.ext {
     javaDir = new File( "$projectDir/src/main/java" )
