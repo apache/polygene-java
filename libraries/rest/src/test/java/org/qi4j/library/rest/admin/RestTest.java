@@ -187,7 +187,7 @@ public class RestTest
         throws Exception
     {
         final RestTester restTester = module.newObject( RestTester.class );
-        final String result = restTester.getEntities();
+        final String result = restTester.getEntities().replace( "\r", "" );
         assertThat(
             "Returned RDF", result,
             anyOf(
