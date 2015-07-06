@@ -34,9 +34,9 @@ import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.jmx.JMXAssembler;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.assembly.DataSourceJMXAssembler;
-import org.qi4j.library.sql.bonecp.BoneCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.common.Databases;
 import org.qi4j.library.sql.datasource.DataSources;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.liquibase.LiquibaseConfiguration;
 import org.qi4j.library.sql.liquibase.LiquibaseService;
 import org.qi4j.test.EntityTestAssembler;
@@ -80,7 +80,7 @@ public class DataSourceConfigurationManagerServiceTest
                 new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module );
 
                 // Set up DataSource service that will manage the connection pools
-                new BoneCPDataSourceServiceAssembler().identifiedBy( "datasource-service" ).visibleIn( Visibility.layer ).assemble( module );
+                new DBCPDataSourceServiceAssembler().identifiedBy( "datasource-service" ).visibleIn( Visibility.layer ).assemble( module );
 
                 {
                     ModuleAssembly testModule = module.layer().module( "TestDS" );

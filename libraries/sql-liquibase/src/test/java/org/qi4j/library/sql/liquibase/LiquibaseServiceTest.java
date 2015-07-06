@@ -37,8 +37,8 @@ import org.qi4j.functional.Function;
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
-import org.qi4j.library.sql.bonecp.BoneCPDataSourceServiceAssembler;
 import org.qi4j.library.sql.common.Databases;
+import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.qi4j.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -66,7 +66,7 @@ public class LiquibaseServiceTest
                 // Create in-memory store for configurations
                 new EntityTestAssembler().assemble( configModule );
 
-                new BoneCPDataSourceServiceAssembler().
+                new DBCPDataSourceServiceAssembler().
                     identifiedBy( "datasource-service" ).
                     withConfig( configModule, Visibility.layer ).
                     assemble( module );
