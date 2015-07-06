@@ -29,7 +29,7 @@ The HTTP library provides a Jetty based embedded HTTP service with support for e
 filters assembly as Services.
 
 It's an easy way to embedd a servlet container and reuse everything that can be run in it (JAX-*, Restlet, Wicket,
-Vaadin, GWT etc..). If instead you want to run a Qi4j Application in a servlet container, see <<library-servlet>>.
+Vaadin, GWT etc..). If instead you want to run a Zest™ Application in a servlet container, see <<library-servlet>>.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
@@ -90,7 +90,7 @@ tag=jmx
 
 === Configuration ===
 
-Underlying Jetty engine configuration is exposed as a Qi4j Service Configuration.
+Underlying Jetty engine configuration is exposed as a Zest™ Service Configuration.
 The only one that is mandatory is the port.
 
 See org.qi4j.library.http.JettyConfiguration for a reference of all available

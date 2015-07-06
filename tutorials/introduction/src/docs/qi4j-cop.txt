@@ -17,6 +17,6 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[qi4j-cop,COP with Java and Qi4j]]
-= COP with Java and Qi4j =
+[[qi4j-cop,COP with Java and Zest™]]
+= COP with Java and Zest™ =
 

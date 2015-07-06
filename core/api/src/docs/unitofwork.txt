@@ -19,7 +19,7 @@ A UnitOfWork is a bounded group of operations performed, typically on entities, 
 to other threads until the UnitOfWork is completed. It is also possible to discard these operations, as if they were
 never executed.
 
-NOTE: UnitOfWork has many similarities with the Transaction concept used with RDBMSes. But since Qi4j introduced several deviations to the common definitions of Transactions, we chose to use a different term.
+NOTE: UnitOfWork has many similarities with the Transaction concept used with RDBMSes. But since Zest™ introduced several deviations to the common definitions of Transactions, we chose to use a different term.
 
 There are several key characteristics of UnitOfWork;
 
@@ -44,5 +44,5 @@ and aborting the UnitOfWork is handled by the transaction boundary, often in the
 <<core-api-layer>>)
 
 Since it is very common to have all, or nearly all, methods in the _transaction boundary_ to handle the creation and
-completion, possibly with retry, in the same class, module or even layer, Qi4j provides annotations to easily declare
+completion, possibly with retry, in the same class, module or even layer, Zest™ provides annotations to easily declare
 UnitOfWork concern: @UnitOfWorkPropagation, @UnitOfWorkDiscardOn and @UnitOfWorkRetry

@@ -25,16 +25,16 @@
 source=libraries/servlet/dev-status.xml
 --------------
 
-This library provide the necessary boilerplate code to bootstrap a Qi4j Application in a Servlet container plus some
+This library provide the necessary boilerplate code to bootstrap a Zest™ Application in a Servlet container plus some
 facilities. It aims at a very simple need and is provided as an example integration.
 
-If instead you want to run a servlet container inside a Qi4j Application, see <<library-http>>.
+If instead you want to run a servlet container inside a Zest™ Application, see <<library-http>>.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Application Bootstrap ==
 
-Extends `AbstractQi4jServletBootstrap` to easily bind a Qi4j `Application` activation/passivation to your webapp
+Extends `AbstractQi4jServletBootstrap` to easily bind a Zest™ `Application` activation/passivation to your webapp
 lifecycle.
 
 Use `Qi4jServletSupport#application(javax.servlet.ServletContext)` to get a handle on the `Application` from the

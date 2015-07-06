@@ -18,7 +18,7 @@
 ///////////////////////////////////////////////////////////////
 
 [[community-docs,Writing Documentation]]
-= Writing Qi4j Documentation =
+= Writing Zest™ Documentation =
 
 The documents use the asciidoc format, see:
 

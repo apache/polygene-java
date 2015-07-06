@@ -17,18 +17,18 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[ten-minutes-intro,Qi4j in 10 minutes]]
-= Qi4j in 10 minutes =
+[[ten-minutes-intro,Zest™ in 10 minutes]]
+= Zest™ in 10 minutes =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-http://qi4j.org/downloads.html[Qi4j SDK sources]. You should start your favorite editor and find the code related to
+http://qi4j.org/downloads.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
 
-    * Qi4j does not introduce any new programming language, no additional compilers needed and all your existing tools
+    * Zest™ does not introduce any new programming language, no additional compilers needed and all your existing tools
       work just like before. It is pure Java.
-    * Qi4j works with Composites.
-    * The equivalent of an Object instance in OOP, is a Composite instance in Qi4j.
+    * Zest™ works with Composites.
+    * The equivalent of an Object instance in OOP, is a Composite instance in Zest™.
     * Composites are constructed from Fragments.
     * Fragments are Mixins, Concerns, Constraints and SideEffects.
     * Only Mixins carry Composite state. The others are shared between Composite instances.
@@ -62,14 +62,14 @@ tag=allClass
 
 Extending the ConcernOf is a convenience mechanism, instead of an explicit @ConcernFor annotation on a private field,
 which can be used in rare occasions when you are not able to extend. This base class defines the `next` field, which is
-set up by the Qi4j runtime and points to the next fragment in the call stack.
+set up by the Zest™ runtime and points to the next fragment in the call stack.
 
-We can also see that the InventoryService is provided to the concern, which is done with dependency injection. Qi4j
+We can also see that the InventoryService is provided to the concern, which is done with dependency injection. Zest™
 also supports dependency injection via constructors and methods.
 
-The above example is obviously doing persistence, and we have no code handling this. But Qi4j supports persistence
-directly in its Core, and it is taken care of by Qi4j, since it is declared as an EntityComposite.
-Nothing else is needed, provided that the Qi4j Runtime has been setup with one or more persisted EntityStores. But
+The above example is obviously doing persistence, and we have no code handling this. But Zest™ supports persistence
+directly in its Core, and it is taken care of by Zest™, since it is declared as an EntityComposite.
+Nothing else is needed, provided that the Zest™ Runtime has been setup with one or more persisted EntityStores. But
 we have a naming convention that EntityComposites have "Entity" as the suffix in its name.
 
 There are other built-in Composite subtypes as well, such as ValueComposite and ServiceComposite. This distinction helps
@@ -93,10 +93,10 @@ tag=allClass
 -----------
 The MailService is dependency injected, as we have seen before.
 
-@This is telling Qi4j that the SideEffect needs a reference to the Composite instance that it belongs to.
+@This is telling Zest™ that the SideEffect needs a reference to the Composite instance that it belongs to.
 
 By asking for both the HasCustomer and the HasLineItems types, we get type-safety and don't need to bother with casts.
-In fact, Qi4j will ensure that you can't even cast the `hasCustomer` instance to the HasLineItems type.
+In fact, Zest™ will ensure that you can't even cast the `hasCustomer` instance to the HasLineItems type.
 
 By not referencing the aggregated interface OrderEntity, we reduce the coupling of this SideEffect and it can be used
 in any other Composite where the HasCustomer and HasLineItems combination is used, for instance in an InvoiceEntity.
@@ -105,5 +105,5 @@ So, build the report, send it via the MailService.
 
 == Conclusion ==
 
-In this short introduction, we have covered the essence of Qi4j. We have looked at what is a Composite, seen some of the
+In this short introduction, we have covered the essence of Zest™. We have looked at what is a Composite, seen some of the
 Fragments in action, and how simple it is to turn a Composite into a persisted Composite, known as an EntityComposite.

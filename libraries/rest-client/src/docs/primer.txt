@@ -20,7 +20,7 @@
 [[library-rest-client-primer, HATEOAS Primer]]
 = ReST - HATEOAS Primer
 
-The Qi4j ReST Client implements HATEOAS (Hypermedia As The Engine Of Application State) to the full extent intended
+The Zest™ ReST Client implements HATEOAS (Hypermedia As The Engine Of Application State) to the full extent intended
 by Roy Fielding. The ReST Client Library enables the creation of HATEOAS applications that are NOT using the URL space,
 and it is NOT about doing RPC calls over HTTP using a common exchange format (like JSON).
 
@@ -79,7 +79,7 @@ case, such as doing a signup for the website, login, redirects to other servers,
 It becomes possible to blend general application and error handling logic with use case specific handlers.
 
 That's basically it. This is where I want to go with support for REST, as a way to truly leverage the REST ideas and
-make it very easy to do REST applications *and* clients based on Qi4j, by keeping the application logic on the server.
+make it very easy to do REST applications *and* clients based on Zest, by keeping the application logic on the server.
 In the long run there would also be a JavaScript version of the client, with the same characteristics, so that you can
-easily build a jQuery UI for Qi4j REST apps.
+easily build a jQuery UI for Zest™ REST apps.
 

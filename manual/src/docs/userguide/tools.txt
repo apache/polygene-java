@@ -24,11 +24,11 @@
 
 == Overview ==
 
-The Qi4j SDK comes with usefull development tools. Theses tools can come in
+The Zest™ SDK comes with usefull development tools. Theses tools can come in
 handy when assembled into your <<def-application>> in development
 <<def-application-mode>>.
 
-The tools are available in the +tools/+ directory of the Qi4j SDK.
+The tools are available in the +tools/+ directory of the Zest™ SDK.
 
 :leveloffset: 2
 

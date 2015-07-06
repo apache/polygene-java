@@ -75,7 +75,7 @@ Tasks have a mandatory name property and an optional tags property. Theses prope
 each TimelineRecord created when the Timeline feature is activated.
 
 The run() method of Tasks is wrapped in a UnitOfWork when called by the Scheduler.
-Thanks to the UnitOfWork handling in Qi4j, you can split the work done in your Tasks in
+Thanks to the UnitOfWork handling in Zest, you can split the work done in your Tasks in
 several UnitOfWorks, the one around the Task#run() invocation will then be paused.
 
 Here is a simple example:
