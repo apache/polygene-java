@@ -197,10 +197,10 @@ public abstract class LayeredApplicationAssembler
      * <p>
      * This method must be implemented, and is typically a list of LayerAssmebler instantitations, followed
      * by {@link LayerAssembly#uses(LayerAssembly...)} declarations.
+     * </p>
      * <pre><code>
      *
      * </code></pre>
-     * </p>
      */
     protected abstract void assembleLayers( ApplicationAssembly assembly )
         throws AssemblyException;

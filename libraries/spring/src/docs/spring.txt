@@ -25,8 +25,59 @@
 source=libraries/spring/dev-status.xml
 --------------
 
-Spring Integration Library
-
-NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
-
 include::../../build/docs/buildinfo/artifact.txt[]
+
+== Using Spring Framework in Apache Zest ==
+Zest supports that Spring Application Context is imported into the Zest runtime, and the declared Spring
+beans will be available as Zest services. The most important things to remember are;
+
+    1 Only Spring Singletons are currently supported.
+    1 One ApplicationContext per Zest Module.
+    1 The Zest service will be given the same name as the Spring Bean name.
+    1 Zest Configuration is not reacbable from the Spring bean (kind of obvious).
+
+[snippet,java]
+----
+source=libraries/spring/src/test/java/org/qi4j/library/spring/importer/Qi4jImportServiceTest.java
+tag=importer
+----
+
+== Using Apache Zest in Spring Framework ==
+It is also possible to run a Zest Application as a Spring Bean and export its Services to Spring.
+
+Steps to export Qi4j service:
+
+    1 Create spring BeanFactory service of qi4j services to export.
+    1 Create a class that extends Qi4jApplicationBootstrap.
+    1 Sets the layer and module that register BeanFactory service.
+    1 Assemble qi4j application by implementing #assemble method.
+    1 Sets the identity of bean factory service. This identity is the spring bean name.
+    1 Declare qi4j bootstrap in spring xml application context.
+
+To bootstrap the Zest runtime in Spring, you should have a bootstrap bean that extends the
++org.qi4j.library.spring.bootstrap.Qi4jApplicationBootstrap+ and implement the
++org.springframework.context.ApplicationContextAware+.
+
+A new bean will appear in the application context, called +"qi4jApplication"+ which is only
+intended for internal use of this library.
+
+Example application context;
+ <?xml version="1.0" encoding="UTF-8"?>
+
+ <beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:qi4j="http://www.qi4j.org/schema/qi4j/spring"
+  xsi:schemaLocation="
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+  http://www.qi4j.org/schema/qi4j/spring http://www.qi4j.org/schema/qi4j/spring/spring-0.5.xsd">
+
+  <!-- class that implements Qi4jApplicationBootstrap -->
+
+  <qi4j:bootstrap class="org.qi4j.library.spring.bootstrap.Qi4jTestBootstrap"/>
+
+  <bean id="commentServiceHolder" class="org.qi4j.library.spring.bootstrap.CommentServiceHolder">
+
+  <constructor-arg ref="commentService"/> <!-- Reference qi4j comment service -->
+
+ </bean>
+
