@@ -26,7 +26,6 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.circuitbreaker.CircuitBreaker;
 import org.qi4j.library.sql.assembly.DataSourceAssembler;
 import org.qi4j.library.sql.bonecp.BoneCPDataSourceServiceAssembler;
-import org.qi4j.library.sql.c3p0.C3P0DataSourceServiceAssembler;
 import org.qi4j.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 
 import static org.qi4j.library.sql.DocumentationSupport.Constants.DS_ID;
@@ -87,15 +86,6 @@ class DocumentationSupport
                 withConfig( config, Visibility.layer ).
                 assemble( module );
             // END SNIPPET: bonecp
-
-            // START SNIPPET: c3p0
-            // Assemble the C3P0 based Service Importer
-            new C3P0DataSourceServiceAssembler().
-                identifiedBy( DS_SERVICE_ID ).
-                visibleIn( Visibility.module ).
-                withConfig( config, Visibility.layer ).
-                assemble( module );
-            // END SNIPPET: c3p0
 
             // START SNIPPET: dbcp
             // Assemble the Apache DBCP based Service Importer

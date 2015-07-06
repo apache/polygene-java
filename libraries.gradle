@@ -21,7 +21,6 @@
 def asmVersion = '5.0.4'
 def bonecpVersion = '0.8.0.RELEASE'
 def bouncyVersion = '1.52'
-def c3p0Version = '0.9.1.2'
 def commonsCodecVersion = '1.10'
 def commonsDbcpVersion = '1.4' // Should be moved to commons-dbcp2
 def commonsIoVersion = '2.4'
@@ -238,7 +237,6 @@ rootProject.ext {
           shiro: "org.apache.shiro:shiro-core:$shiroVersion",
           shiro_web: "org.apache.shiro:shiro-web:$shiroVersion",
           bonecp: "com.jolbox:bonecp:$bonecpVersion",
-          c3p0: "c3p0:c3p0:$c3p0Version",
           liquibase: "org.liquibase:liquibase-core:$liquibaseVersion",
           sked: "org.codeartisans:sked:$skedVersion",
           yammer_metrics: "com.yammer.metrics:metrics-core:$yammerMetricsVersion",
