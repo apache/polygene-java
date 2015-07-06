@@ -144,18 +144,6 @@ include::../../../../libraries/sql/src/docs/sql.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/struts2-codebehind/src/docs/struts-codebehind.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/struts2-convention/src/docs/struts-convention.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/struts2-plugin/src/docs/struts-plugin.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/uid/src/docs/uid.txt[]
 
 :leveloffset: 2

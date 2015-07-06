@@ -101,13 +101,6 @@ user@host $
 
 A gradle task `runSample` is defined in this module as a shortcut to run the example. See <<build-system>>.
 
-[[sample-struts2,Struts2 Sample]]
-== Struts2 Sample ==
-
-Sample of how to use the Struts2 integration.
-
-https://github.com/Qi4j/qi4j-sdk/tree/develop/samples/struts2Hello[Browse Source]
-
 [[sample-swing,Swing Bindings Sample]]
 == Swing Bindings Sample ==
 

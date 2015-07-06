@@ -17,7 +17,7 @@
  * under the License.
  */
 
-description = "Sample of how to use the Struts2 integration."
+description = "Sample of how to use the Swing bindings."
 
 jar { manifest { name = "Qi4j Sample - Swing Bindings" }}
 

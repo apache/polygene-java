@@ -89,8 +89,6 @@ rat {
         'manual/**/sh*.css', 'manual/**/sh*.js',
         // jQuery & plugins - MIT
         'manual/**/jquery*.js',
-        // A CSS Framework by Mike Stenhouse - BSD 3-Clauses
-        'samples/struts2Hello/**/styles/*.css',
         // W3C XML Schemas - W3C Software License
         'samples/rental/src/main/resources/*.xsd',
     ]

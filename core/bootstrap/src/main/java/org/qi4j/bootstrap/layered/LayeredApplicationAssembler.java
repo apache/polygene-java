@@ -56,6 +56,11 @@ public abstract class LayeredApplicationAssembler
         instantiateApplication( qi4j, model );
     }
 
+    public ApplicationAssembly assembly()
+    {
+        return assembly;
+    }
+
     /**
      * This method is called from the constructor to instantiate the Qi4j application from the application model.
      *

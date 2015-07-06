@@ -108,9 +108,4 @@ This module uses Spring Framework, software developed at
 http://www.springsource.org, under Apache License 2.0. See LICENSE.
 
 
-libraries/struts-* NOTICE
-This module uses Apache Struts, developed at Apache Software Foundation
-(http://struts.apache.org), under Apache License 2.0. See LICENSE.
-
-
 END OF NOTICE
