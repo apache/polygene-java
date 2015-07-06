@@ -71,7 +71,7 @@ public interface Schedule
      *
      * @param from The starting time when to look for the next time it will run.
      *
-     * @return The exact absolute time when this Schedule is to be run next time.
+     * @return The exact absolute time when this Schedule is to be run next time, or -1 if never
      */
     long nextRun( long from );
 

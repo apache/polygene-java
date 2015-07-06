@@ -78,13 +78,15 @@ public interface CronSchedule
         @Override
         public long nextRun( long from )
         {
+            long actualFrom = from;
             long firstRun = start().get().getMillis();
             if( firstRun > from )
             {
-                from = firstRun;
+                actualFrom = firstRun;
             }
-            Long nextRun = new org.codeartisans.sked.cron.CronSchedule( cronExpression().get() ).firstRunAfter( from );
-            LOGGER.info( "Schedule.firstRunAfter({}) CronSchedule result is {}", from, firstRun );
+            Long nextRun = new org.codeartisans.sked.cron.CronSchedule( cronExpression().get() )
+                .firstRunAfter( actualFrom );
+            LOGGER.info( "CronSchedule::nextRun({}) is {}", from, firstRun );
             return nextRun;
         }
     }

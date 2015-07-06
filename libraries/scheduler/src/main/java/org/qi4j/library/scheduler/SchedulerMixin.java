@@ -218,10 +218,12 @@ public class SchedulerMixin
         {
             corePoolSize = workersCount / 4;
         }
-        // Throws IllegalArgument if corePoolSize or keepAliveTime less than zero, or if workersCount less than or equal to zero, or if corePoolSize greater than workersCount.
+        // Throws IllegalArgument if corePoolSize or keepAliveTime less than zero,
+        // or if workersCount less than or equal to zero,
+        // or if corePoolSize greater than workersCount.
         taskExecutor = new ThreadPoolExecutor( corePoolSize, workersCount,
                                                0, TimeUnit.MILLISECONDS,
-                                               new LinkedBlockingQueue<Runnable>( workQueueSize ),
+                                               new LinkedBlockingQueue<>( workQueueSize ),
                                                threadFactory, rejectionHandler );
         taskExecutor.prestartAllCoreThreads();
         managementExecutor = new ScheduledThreadPoolExecutor( 2, threadFactory, rejectionHandler );
@@ -284,7 +286,6 @@ public class SchedulerMixin
     class ScheduleHandler
         implements Runnable
     {
-        private ScheduleRunner scheduleRunner;
         private ScheduledFuture<?> future;
 
         @Override
@@ -294,7 +295,7 @@ public class SchedulerMixin
             {
                 ScheduleTime scheduleTime = timingQueue.first();
                 timingQueue.remove( scheduleTime );
-                scheduleRunner = new ScheduleRunner( scheduleTime, SchedulerMixin.this, module );
+                ScheduleRunner scheduleRunner = new ScheduleRunner( scheduleTime, SchedulerMixin.this, module );
                 taskExecutor.submit( scheduleRunner );
                 if( timingQueue.size() == 0 )
                 {
