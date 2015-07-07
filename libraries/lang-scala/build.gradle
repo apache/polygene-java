@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j BeanShell Library allows for Mixins to be implemented in BeanShell (Java) scripts instead of directly in compiled Java."
+description = "Qi4j Scala Library allows for Mixins to be implemented in Scala."
 
-jar { manifest { name = "Qi4j Library - Scripting - BeanShell" }}
+jar { manifest { name = "Qi4j Library - Scripting - Scala" }}
 
 apply plugin: 'scala'
 
