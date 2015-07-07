@@ -54,11 +54,11 @@ task archiveWebsite( type: Copy ) {
   dependsOn website
   if( rootProject.version == '0' || rootProject.version.contains( "SNAPSHOT" ) )
   {
-    into( "$rootProject.projectDir/../zest-svn/site/content/qi4j/develop" )
+    into( "$rootProject.projectDir/../zest-svn/site/content/java/develop" )
   }
   else
   {
-    into( "$rootProject.projectDir/../zest-svn/site/content/qi4j/$version" )
+    into( "$rootProject.projectDir/../zest-svn/site/content/java/$version" )
   }
   from( 'build/docs/website/' )
 }
@@ -67,8 +67,8 @@ task copyWebsite( type: Copy ) {
   dependsOn archiveWebsite
   if( rootProject.version != '0' && !rootProject.version.contains( "SNAPSHOT" ) )
   {
-    from( "$rootProject.projectDir/../zest-svn/site/content/qi4j/$version/" )
-    into( "$rootProject.projectDir/../zest-svn/site/content/qi4j/latest/" )
+    from( "$rootProject.projectDir/../zest-svn/site/content/java/$version/" )
+    into( "$rootProject.projectDir/../zest-svn/site/content/java/latest/" )
   }
 }
 
