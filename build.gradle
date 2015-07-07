@@ -148,6 +148,7 @@ allprojects {
   }
   tasks.withType(Javadoc) {
     options.encoding = 'UTF-8'
+    options.noTimestamp = true
   }
 
   repositories {
