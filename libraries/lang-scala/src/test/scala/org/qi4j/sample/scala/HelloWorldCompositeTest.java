@@ -41,9 +41,11 @@ public class HelloWorldCompositeTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
+                // START SNIPPET: composite
                 module.transients( HelloWorldComposite.class, HelloWorldComposite2.class ).
                     withMixins( ScalaTraitMixin.class ).
                     withConcerns( ExclamationGenericConcern.class );
+                // END SNIPPET: composite
             }
         };
 
@@ -74,8 +76,12 @@ public class HelloWorldCompositeTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
+                // START SNIPPET: entity
                 module.entities( TestEntity.class ).withMixins( ScalaTraitMixin.class );
+                // END SNIPPET: entity
+                // START SNIPPET: service
                 module.services( TestService.class ).withMixins( ScalaTraitMixin.class );
+                // END SNIPPET: service
 
                 new EntityTestAssembler().assemble( module );
                 new RdfMemoryStoreAssembler().assemble( module );

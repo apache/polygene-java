@@ -13,7 +13,9 @@ package org.qi4j.sample.scala
 
 import org.qi4j.library.constraints.annotation.MaxLength
 
+// START SNIPPET: mixin
 trait HelloWorldMixin2
 {
   def sayHello(@MaxLength(10) name: String ): String = "Hello " + name
 }
+// END SNIPPET: mixin

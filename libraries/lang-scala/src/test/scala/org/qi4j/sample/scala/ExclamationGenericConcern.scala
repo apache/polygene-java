@@ -18,7 +18,7 @@ import org.qi4j.api.common.{AppliesToFilter, AppliesTo}
 /**
  * Add an exclamation mark to the returned string
  */
-
+// START SNIPPET: genericconcern
 @AppliesTo(Array(classOf[ StringFilter ]))
 class ExclamationGenericConcern
   extends GenericConcern
@@ -33,3 +33,4 @@ class StringFilter
     .getReturnType
     .equals(classOf[ String ])
 }
+// END SNIPPET: genericconcern
