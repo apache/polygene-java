@@ -18,9 +18,9 @@
  */
 
 
-description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Qi4j."
+description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Apache Zest™."
 
-jar { manifest { name = "Qi4j Sample - DCI" }}
+jar { manifest { name = "Apache Zest™ Sample - DCI" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

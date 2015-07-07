@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Redis EntityStore Extension"
+description = "Apache Zest™ Redis EntityStore Extension"
 
-jar { manifest { name = "Qi4j Extension - EntityStore - Redis" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - Redis" }}
 
 dependencies {
     

@@ -18,8 +18,8 @@
  */
 
 project.ext {
-  title = "Apache Zest Qi4j SDK"
-  description = "Apache Zest Qi4j™ is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
+  title = "Apache Zest™ (Java Edition) SDK"
+  description = "Apache Zest™ (Java Edition) is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
   testFailures = [ ]
   mainClassName = 'org.qi4j.container.Main'
   groovycMain_mx = "700m"
@@ -281,9 +281,9 @@ allprojects {
     jar {
       manifest {
         license = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-        docURL = 'http://www.qi4j.org'
-        description = project.description ?: 'Qi4j is a platform for Composite Oriented Programming'
-        vendor = 'Qi4j Community, http://www.qi4j.org'
+        docURL = 'https://zest.apache.org'
+        description = project.description ?: 'Apache Zest™ (Java Edition) is a platform for Composite Oriented Programming'
+        vendor = 'The Apache Software Foundation, https://www.apache.org'
         instruction '-debug', 'true'
       }
     }
@@ -448,7 +448,7 @@ task coverageReport {
       executiondata {
         coveredProjects.collect { p -> fileset( dir: "${p.buildDir.path}/jacoco" ) { include( name: '*.exec' ) } }
       }
-      structure( name: "Qi4j SDK" ) {
+      structure( name: "Apache Zest™ (Java Edition) SDK" ) {
         group( name: "Core" ) {
           classfiles { coreProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
           sourcefiles { coreProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
@@ -476,7 +476,7 @@ task coverageReport {
       }
       csv  destfile: "${outputPath}/jacoco.csv", encoding: "UTF-8"
       xml  destfile: "${outputPath}/jacoco.xml", encoding: "UTF-8"
-      html destdir:  outputPath, encoding: "UTF-8", locale: "en", footer: "Qi4j SDK"
+      html destdir:  outputPath, encoding: "UTF-8", locale: "en", footer: "Apache Zest™ (Java Edition) SDK"
     }
   }
   inputs.dir subprojects.collect { p -> "${p.buildDir.path}/jacoco" }

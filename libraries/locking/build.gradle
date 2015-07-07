@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Locking Library provides lock management for methods."
+description = "Apache Zest™ Locking Library provides lock management for methods."
 
-jar { manifest { name = "Qi4j Library - Locking" }}
+jar { manifest { name = "Apache Zest™ Library - Locking" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))

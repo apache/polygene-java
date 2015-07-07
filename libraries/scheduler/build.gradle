@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Schduler Library for long term timing functionalities."
+description = "Apache Zest™ Schduler Library for long term timing functionalities."
 
-jar { manifest { name = "Qi4j Library - Scheduler" }}
+jar { manifest { name = "Apache Zest™ Library - Scheduler" }}
 
 
 dependencies {

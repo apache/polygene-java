@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j RDF Library provides commonalities of various RDF based services in Qi4j, such as RDF Indexing."
+description = "Apache Zest™ RDF Library provides commonalities of various RDF based services in Apache Zest™, such as RDF Indexing."
 
-jar { manifest { name = "Qi4j Library - RDF" }}
+jar { manifest { name = "Apache Zest™ Library - RDF" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))

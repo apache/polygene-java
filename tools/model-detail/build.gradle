@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Detailled Model of a Qi4j Application Structure."
+description = "Detailled Model of a Apache Zest™ Application Structure."
 
-jar { manifest { name = "Qi4j Model Detail" }}
+jar { manifest { name = "Apache Zest™ Model Detail" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

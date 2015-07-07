@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Hazelcast EntityStore Extension"
+description = "Apache Zest™ Hazelcast EntityStore Extension"
 
-jar { manifest { name = "Qi4j Extension - EntityStore - Hazelcast" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - Hazelcast" }}
 
 dependencies {
 

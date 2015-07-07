@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Performance Test Suite."
+description = "Apache Zest™ Performance Test Suite."
 
-jar { manifest { name = "Qi4j Tests - Performance" }}
+jar { manifest { name = "Apache Zest™ Tests - Performance" }}
 
 sourceSets {
     perf

@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Event Sourcing Library."
+description = "Apache Zest™ Event Sourcing Library."
 
-jar { manifest { name = "Qi4j Library - Event Sourcing" }}
+jar { manifest { name = "Apache Zest™ Library - Event Sourcing" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

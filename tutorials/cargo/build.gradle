@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Tutorial on how to convert existing application into a Qi4j one, step-by-step."
+description = "Tutorial on how to convert existing application into a Apache Zest™ one, step-by-step."
 
-jar { manifest { name = "Qi4j Tutorial - Cargo" }}
+jar { manifest { name = "Apache Zest™ Tutorial - Cargo" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

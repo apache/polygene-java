@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j ElasticSearch Index/Query Extension"
+description = "Apache Zest™ ElasticSearch Index/Query Extension"
 
-jar { manifest { name = "Qi4j Extension - Index/Query - ElasticSearch" } }
+jar { manifest { name = "Apache Zest™ Extension - Index/Query - ElasticSearch" } }
 
 dependencies {
 

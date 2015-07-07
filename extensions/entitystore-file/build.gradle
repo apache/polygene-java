@@ -17,7 +17,7 @@
  * under the License.
  */
 
-jar { manifest { name = "Qi4j Extension - EntityStore - File system" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - File system" }}
 
 dependencies {
 

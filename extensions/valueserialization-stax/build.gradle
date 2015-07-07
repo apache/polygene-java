@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j StaX ValueSerialization Extension"
+description = "Apache Zest™ StaX ValueSerialization Extension"
 
-jar { manifest { name = "Qi4j Extension - ValueSerialization - StaX" } }
+jar { manifest { name = "Apache Zest™ Extension - ValueSerialization - StaX" } }
 
 dependencies {
 

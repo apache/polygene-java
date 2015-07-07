@@ -27,7 +27,7 @@ apply plugin: 'jetty'
 // And then go to:
 //      http://localhost:8080/org.qi4j.sample.rental/rental/main
 
-jar { manifest { name = "Qi4j Sample - Car Rental" }}
+jar { manifest { name = "Apache Zest™ Sample - Car Rental" }}
 
 dependencies {
 

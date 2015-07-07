@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j SQL Liquibase Library provides Liquibase support."
+description = "Apache Zest™ SQL Liquibase Library provides Liquibase support."
 
-jar { manifest { name = "Qi4j Library - SQL Liquibase" }}
+jar { manifest { name = "Apache Zest™ Library - SQL Liquibase" }}
 
 dependencies {
   compile(project(":org.qi4j.libraries:org.qi4j.library.sql"))

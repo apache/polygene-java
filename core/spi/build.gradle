@@ -17,7 +17,7 @@
  * under the License.
  */
 
-jar { manifest { name = "Qi4j Core SPI"}}
+jar { manifest { name = "Apache Zest™ Core SPI"}}
 
 dependencies {
 

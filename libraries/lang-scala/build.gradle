@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j BeanShell Library allows for Mixins to be implemented in BeanShell (Java) scripts instead of directly in compiled Java."
+description = "Apache Zest™ Scala Library allows for Mixins to be implemented in Scala."
 
-jar { manifest { name = "Qi4j Library - Scripting - BeanShell" }}
+jar { manifest { name = "Apache Zest™ Library - Scripting - Scala" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

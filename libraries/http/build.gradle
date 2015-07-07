@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Http Library provides embedded Jetty for Qi4j application use."
+description = "Apache Zest™ Http Library provides embedded Jetty for Apache Zest™ application use."
 
-jar { manifest { name = "Qi4j Library - Http" }}
+jar { manifest { name = "Apache Zest™ Library - Http" }}
 
 test {
   systemProperties 'networkaddress.cache.ttl': '0'

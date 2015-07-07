@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j REST Client Library provides a client library for the Qi4j REST Server library"
+description = "Apache Zest™ REST Client Library provides a client library for the Apache Zest™ REST Server library"
 
-jar { manifest { name = "Qi4j Library - REST Client" }}
+jar { manifest { name = "Apache Zest™ Library - REST Client" }}
 
 dependencies {
 

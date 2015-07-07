@@ -17,7 +17,7 @@
  * under the License.
  */
 
-jar { manifest { name = "Qi4j Functional"}}
+jar { manifest { name = "Apache Zest™ Functional"}}
 
 dependencies {
 

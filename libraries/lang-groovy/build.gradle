@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Groovy Library allows for Mixins to be implemented in Groovy scripts instead of directly in compiled Java."
+description = "Apache Zest™ Groovy Library allows for Mixins to be implemented in Groovy scripts instead of directly in compiled Java."
 
-jar { manifest { name = "Qi4j Library - Scripting - Groovy" }}
+jar { manifest { name = "Apache Zest™ Library - Scripting - Groovy" }}
 
 
 dependencies {

@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Visualizer of a Qi4j Application Structure."
+description = "Visualizer of a Apache Zest™ Application Structure."
 
-jar { manifest { name = "Qi4j Envisage" }}
+jar { manifest { name = "Apache Zest™ Envisage" }}
 
 dependencies {
 

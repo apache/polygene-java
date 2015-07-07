@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Qi4j, for Eric Evans DDD sample."
+description = "Sample of how DCI (Data, Context & Interaction) pattern is implemented with Apache Zest™, for Eric Evans DDD sample."
 
-jar { manifest { name = "Qi4j Sample DCI Cargo - Sample A" }}
+jar { manifest { name = "Apache Zest™ Sample DCI Cargo - Sample A" }}
 
 dependencies {
 

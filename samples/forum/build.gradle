@@ -19,7 +19,7 @@
 
 description = "Sample of how to build a web forum"
 
-jar { manifest { name = "Qi4j Sample - Forum" }}
+jar { manifest { name = "Apache Zest™ Sample - Forum" }}
 
 dependencies {
 

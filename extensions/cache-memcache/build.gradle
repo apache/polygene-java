@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Memcache Cache Extension"
+description = "Apache Zest™ Memcache Cache Extension"
 
-jar { manifest { name = "Qi4j Extension - Cache - Memcache"}}
+jar { manifest { name = "Apache Zest™ Extension - Cache - Memcache"}}
 
 dependencies {
 

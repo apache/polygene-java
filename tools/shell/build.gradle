@@ -19,10 +19,10 @@
 
 apply plugin: 'application'
 
-description = "Command line tools for building Qi4j applications."
+description = "Command line tools for building Apache Zest™ applications."
 mainClassName = "org.qi4j.tools.shell.Main"
 
-jar { manifest { name = "Qi4j Command Line" } }
+jar { manifest { name = "Apache Zest™ Command Line" } }
 
 dependencies {
   compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )

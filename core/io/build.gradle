@@ -17,7 +17,7 @@
  * under the License.
  */
 
-jar { manifest { name = "Qi4j I/O"}}
+jar { manifest { name = "Apache Zest™ I/O"}}
 
 dependencies {
 

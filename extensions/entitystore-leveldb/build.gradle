@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j LevelDB EntityStore Extension"
+description = "Apache Zest™ LevelDB EntityStore Extension"
 
-jar { manifest { name = "Qi4j Extension - EntityStore - LevelDB" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - LevelDB" }}
 
 dependencies {
 

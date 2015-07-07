@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Servlet Library provides integration of Qi4j into web applications."
+description = "Apache Zest™ Servlet Library provides integration of Apache Zest™ into web applications."
 
-jar { manifest { name = "Qi4j Library - Servlet" }}
+jar { manifest { name = "Apache Zest™ Library - Servlet" }}
 
 dependencies {
   compile( project(":org.qi4j.core:org.qi4j.core.bootstrap") )

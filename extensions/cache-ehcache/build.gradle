@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Ehcache Cache Extension"
+description = "Apache Zest™ Ehcache Cache Extension"
 
-jar { manifest { name = "Qi4j Extension: EhCache"}}
+jar { manifest { name = "Apache Zest™ Extension: EhCache"}}
 
 dependencies {
 
