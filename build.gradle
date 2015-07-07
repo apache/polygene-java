@@ -545,11 +545,11 @@ task archiveJavadocs(type: Copy ) {
 
   if( rootProject.version == '0' || rootProject.version.contains( "SNAPSHOT" ) )
   {
-    into( "$rootProject.projectDir/../qi4j.github.com/develop/javadocs/" )
+    into( "$rootProject.projectDir/../zest-svn/site/content/qi4j/develop/javadocs/" )
   }
   else
   {
-    into( "$rootProject.projectDir/../qi4j.github.com/$version/javadocs/" )
+    into( "$rootProject.projectDir/../zest-svn/site/content/qi4j/$version/javadocs/" )
   }
   from( 'build/docs/javadoc/' )
 }
