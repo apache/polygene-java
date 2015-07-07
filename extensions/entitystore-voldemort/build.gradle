@@ -21,11 +21,6 @@ description = "Qi4j Voldemort EntityStore Extension"
 
 jar { manifest { name = "Qi4j Extension - EntityStore - Voldemort" }}
 
-repositories {
-    maven { name 'clojars-repo'; url 'http://clojars.org/repo' }
-    maven { name 'oracle-repo'; url 'http://download.oracle.com/maven' }
-}
-
 dependencies {
 
     compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
