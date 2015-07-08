@@ -19,6 +19,7 @@ import org.qi4j.api.property.Property
 /**
  * Test entity
  */
+ // START SNIPPET: entity
 trait TestEntity
   extends EntityComposite with Commands with Events with Data
 
@@ -58,3 +59,4 @@ trait Events
     foo = newValue
   }
 }
+// END SNIPPET: entity

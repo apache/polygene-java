@@ -16,8 +16,10 @@ import org.qi4j.api.service.ServiceComposite
 /**
  * Test service that repeats given string
  */
+ // START SNIPPET: service
 trait TestService
   extends ServiceComposite
 {
   def repeat(input: String ): String = input + input
 }
+// END SNIPPET: service
