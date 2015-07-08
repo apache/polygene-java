@@ -59,27 +59,29 @@ public class InvocationInjectionTest
 
     @Mixins( MyMixin.class )
     @Concerns( MyConcern.class )
+// START SNIPPET: declaration
     public interface MyComposite
         extends TransientComposite
     {
         @Foo( "1" )
         void doStuff();
-
+// END SNIPPET: declaration
         void doStuff2();
 
         @Foo( "X" )
         void doStuff3();
     }
 
+// START SNIPPET: use1
     public abstract static class MyConcern
         extends ConcernOf<MyComposite>
         implements MyComposite
     {
         @Invocation
-        Method method;
-
-        @Invocation
         Foo foo;
+// END SNIPPET: use1
+        @Invocation
+        Method method;
 
         @Invocation
         AnnotatedElement ae;
@@ -129,10 +131,11 @@ public class InvocationInjectionTest
         {
         }
     }
-
+// START SNIPPET: annotation
     @Retention( RUNTIME )
     @interface Foo
     {
         String value();
     }
+// END SNIPPET: annotation
 }
