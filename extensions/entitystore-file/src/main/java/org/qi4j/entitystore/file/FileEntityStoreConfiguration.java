@@ -34,8 +34,22 @@ public interface FileEntityStoreConfiguration
     /**
      * The directory where the File Entity Store will be keep its persisted state.
      * <p>
-     * Default: System.getProperty( "user.dir" ) + "/qi4j/filestore";
+     *     If no configuration is provided at all, then the default location is
+     *     {@code System.getProperty( "user.dir" ) + "/qi4j/filestore"; }.
+     *     If a configuration is given, the entity store will be placed in the
+     *     DATA directory, which is operating system specific.
      * </p>
+     * <table>
+     *     <tr><th>OS</th><th>Location</th></tr>
+     *     <tr><td>Linux/Unix</td><td>{user}/.{application}/data</td></tr>
+     *     <tr><td>OSX</td><td>{user}/Library/Application Support/{application}</td></tr>
+     *     <tr><td>Windows</td><td>{user}/Application Data/{application}/data</td></tr>
+     * </table>
+     * <pre><code>
+     * where;
+     *   {user} = Current User's home directory
+     *   {application} = Application's name, as set in assembly.
+     * </code></pre>
      * <p>
      * Ignored if the FileConfiguration service is found.
      * </p>
