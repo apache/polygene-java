@@ -25,7 +25,7 @@ import org.qi4j.api.entity.EntityReference;
 
 /**
  * If you want to catch calls to ManyAssociations, then create a GenericConcern
- * that wraps the Qi4j-supplied ManyAssociation instance with ManyAssociationWrappers. Override
+ * that wraps the Zest-supplied ManyAssociation instance with ManyAssociationWrappers. Override
  * methods to perform your custom code.
  */
 public class ManyAssociationWrapper

@@ -27,7 +27,7 @@ import org.qi4j.functional.Specification;
 import org.qi4j.spi.query.EntityFinderException;
 
 /**
- * This interface provides parsing support from Qi4j queries to SQL queries. The idea is that this interface produces
+ * This interface provides parsing support from Zest queries to SQL queries. The idea is that this interface produces
  * SQL which can be used when creating a {@link PreparedStatement}.
  *
  * @author Stanislav Muhametsin
@@ -35,13 +35,13 @@ import org.qi4j.spi.query.EntityFinderException;
 public interface SQLQuerying
 {
     /**
-     * This method will be called when parsing needs to be done from Qi4j query to SQL query. This method is supposed to
+     * This method will be called when parsing needs to be done from Zest query to SQL query. This method is supposed to
      * return one single SQL query, which can be used with {@link PreparedStatement}.
      *
-     * @param resultType The result type of Qi4j query.
-     * @param whereClause The where clause of Qi4j query.
-     * @param orderBySegments The order by segments of Qi4j query.
-     * @param firstResult The first result index of Qi4j query.
+     * @param resultType The result type of Zest query.
+     * @param whereClause The where clause of Zest query.
+     * @param orderBySegments The order by segments of Zest query.
+     * @param firstResult The first result index of Zest query.
      * @param maxResults The max amount of returned results.
      * @param values Values to put into {@link PreparedStatement}, in the order of the list. This List is created from
      *            the outside and this method is supposed to fill it with necessary values, if any.

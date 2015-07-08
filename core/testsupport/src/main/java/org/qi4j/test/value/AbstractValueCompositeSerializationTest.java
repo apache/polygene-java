@@ -152,7 +152,7 @@ public abstract class AbstractValueCompositeSerializationTest
         AnotherValue anotherValue = valueBuilder.newInstance();
 
         // FIXME Some Control Chars are not supported in JSON nor in XML, what should we do about it?
-        // Should Qi4j Core ensure the chars used in strings are supported by the whole stack?
+        // Should Zest Core ensure the chars used in strings are supported by the whole stack?
         // proto.string().set( "Foo\"Bar\"\nTest\f\t\b" );
         proto.string().set( "Foo\"Bar\"\nTest\t" );
         proto.string2().set( "/Foo/bar" );

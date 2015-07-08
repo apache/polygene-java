@@ -263,7 +263,7 @@ public final class ModuleAssemblyImpl
         {
             if( objectType.isInterface() )
             {
-                throw new AssemblyException( "Interfaces can not be Qi4j Objects." );
+                throw new AssemblyException( "Interfaces can not be Zest Objects." );
             }
             if( objectAssemblies.containsKey( objectType ) )
             {

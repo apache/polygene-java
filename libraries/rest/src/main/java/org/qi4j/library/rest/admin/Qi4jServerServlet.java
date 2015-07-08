@@ -21,7 +21,7 @@ import org.restlet.Context;
 import org.restlet.ext.servlet.ServerServlet;
 
 /**
- * Integration with Qi4j. Register an object extending Application to use.
+ * Integration with Zest. Register an object extending Application to use.
  */
 public class Qi4jServerServlet
     extends ServerServlet

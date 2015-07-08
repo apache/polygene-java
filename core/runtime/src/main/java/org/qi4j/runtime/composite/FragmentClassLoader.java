@@ -147,7 +147,7 @@ public class FragmentClassLoader
             return defineClass( name, b, 0, b.length, baseClass.getProtectionDomain() );
         }
 
-        // Try the classloader of this classloader -> get classes in Qi4j such as CompositeInvoker
+        // Try the classloader of this classloader -> get classes in Zest such as CompositeInvoker
         return getClass().getClassLoader().loadClass( name );
     }
 
@@ -484,7 +484,7 @@ public class FragmentClassLoader
             //noinspection RedundantIfStatement
             if( isInternalQi4jMethod( method, baseClass ) )
             {
-                return false; // Skip methods in Qi4j-internal interfaces
+                return false; // Skip methods in Zest-internal interfaces
             }
             else
             {

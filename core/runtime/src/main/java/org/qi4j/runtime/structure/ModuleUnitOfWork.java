@@ -92,7 +92,7 @@ public class ModuleUnitOfWork
         }
         catch( NoSuchMethodException e )
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
+            throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: ModuleUnitOfWork" );
         }
     }
 

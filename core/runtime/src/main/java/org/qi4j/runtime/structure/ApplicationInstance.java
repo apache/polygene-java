@@ -28,7 +28,7 @@ import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.activation.ActivationDelegate;
 
 /**
- * Instance of a Qi4j application. Contains a list of layers which are managed by this application
+ * Instance of a Zest application. Contains a list of layers which are managed by this application
  */
 public class ApplicationInstance
     implements Application

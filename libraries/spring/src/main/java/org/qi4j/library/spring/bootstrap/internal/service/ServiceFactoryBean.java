@@ -40,7 +40,7 @@ public final class ServiceFactoryBean
 
         if( serviceReference == null )
         {
-            throw new IllegalArgumentException( "Qi4j service with id [" + aServiceId + "] is not found." );
+            throw new IllegalArgumentException( "Zest service with id [" + aServiceId + "] is not found." );
         }
     }
 

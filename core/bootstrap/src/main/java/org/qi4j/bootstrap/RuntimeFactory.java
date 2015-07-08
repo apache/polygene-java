@@ -19,14 +19,14 @@
 package org.qi4j.bootstrap;
 
 /**
- * Qi4j runtime factory.
+ * Zest runtime factory.
  */
 public interface RuntimeFactory
 {
     Qi4jRuntime createRuntime();
 
     /**
-     * Standalone application Qi4j runtime factory.
+     * Standalone application Zest runtime factory.
      */
     public final class StandaloneApplicationRuntimeFactory
         implements RuntimeFactory
@@ -42,11 +42,11 @@ public interface RuntimeFactory
             }
             catch( ClassNotFoundException e )
             {
-                System.err.println( "Qi4j Runtime jar is not present in the classpath." );
+                System.err.println( "Zest Runtime jar is not present in the classpath." );
             }
             catch( InstantiationException | IllegalAccessException e )
             {
-                System.err.println( "Invalid Qi4j Runtime class. If you are providing your own Qi4j Runtime, please " +
+                System.err.println( "Invalid Zest Runtime class. If you are providing your own Zest Runtime, please " +
                                     "contact qi4j-dev at Google Groups for assistance." );
             }
             return null;

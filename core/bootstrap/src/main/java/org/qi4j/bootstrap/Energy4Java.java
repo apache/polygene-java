@@ -24,7 +24,7 @@ import org.qi4j.api.structure.ApplicationDescriptor;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
- * Main bootstrap class for starting Qi4j and creating new applications.
+ * Main bootstrap class for starting Zest and creating new applications.
  * <p>
  * Instantiate this and call one of the factory methods to get started.
  * </p>
@@ -51,7 +51,7 @@ public final class Energy4Java
     {
         if( runtime == null )
         {
-            throw new BootstrapException( "Can not create Qi4j without a Qi4j Runtime." );
+            throw new BootstrapException( "Can not create Zest without a Zest Runtime." );
         }
         this.runtime = runtime;
     }

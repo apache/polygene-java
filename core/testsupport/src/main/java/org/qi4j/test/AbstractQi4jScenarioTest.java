@@ -30,7 +30,7 @@ import org.qi4j.bootstrap.Energy4Java;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
- * Base class for Qi4j scenario tests. This will create one Qi4j application per class instead of per test.
+ * Base class for Zest scenario tests. This will create one Zest application per class instead of per test.
  */
 public abstract class AbstractQi4jScenarioTest
     implements Assembler
@@ -92,7 +92,7 @@ public abstract class AbstractQi4jScenarioTest
     }
 
     /**
-     * This method is called when there was an AssemblyException in the creation of the Qi4j application model.
+     * This method is called when there was an AssemblyException in the creation of the Zest application model.
      * <p>
      * Override this method to catch valid failures to place into satisfiedBy suites.
      * </p>

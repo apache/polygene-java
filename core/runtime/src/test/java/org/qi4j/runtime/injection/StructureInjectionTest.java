@@ -96,13 +96,13 @@ public class StructureInjectionTest
     }
 
     /**
-     * Tests injected mixin for a Qi4j annotated with {@link @org.qi4j.composite.scope.Structure}.
+     * Tests injected mixin for a Zest annotated with {@link @org.qi4j.composite.scope.Structure}.
      */
     @Test
     public void injectedStructureForQi4j()
     {
         StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
-        assertThat( "Injected Qi4j", sic.getQi4j(), is( notNullValue() ) );
+        assertThat( "Injected Zest", sic.getQi4j(), is( notNullValue() ) );
     }
 
     /**

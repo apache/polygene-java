@@ -15,7 +15,7 @@
 package org.qi4j.api.activation;
 
 /**
- * ActivationEvents are fired during activation and passivation of instances in Qi4j.
+ * ActivationEvents are fired during activation and passivation of instances in Zest.
  */
 public final class ActivationEvent
 {

@@ -44,7 +44,7 @@ public class Main
     {
         if( !contains( args, "-q" ) )
         {
-            System.out.println( "Qi4j - Classes are Dead. Long Live Interfaces!" );
+            System.out.println( "Zest - Classes are Dead. Long Live Interfaces!" );
             System.out.println( "----------------------------------------------\n" );
         }
         if( args.length == 0 )

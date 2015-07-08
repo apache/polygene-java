@@ -28,7 +28,7 @@ public final class Qi4jServletSupport
      */
     public static Application application( ServletContext servletContext )
     {
-        return ( Application ) servletContext.getAttribute( APP_IN_CTX ); // TODO try/catch and find a suitable Qi4j exception
+        return ( Application ) servletContext.getAttribute( APP_IN_CTX ); // TODO try/catch and find a suitable Zest exception
     }
 
     private Qi4jServletSupport()

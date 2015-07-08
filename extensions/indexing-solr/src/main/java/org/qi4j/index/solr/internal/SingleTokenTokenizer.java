@@ -20,6 +20,7 @@ package org.qi4j.index.solr.internal;
 
 import org.apache.lucene.analysis.WhitespaceTokenizer;
 import org.apache.lucene.util.AttributeSource;
+import org.apache.lucene.util.AttributeSource.AttributeFactory;  // required by Javadocs!!!
 
 import java.io.Reader;
 

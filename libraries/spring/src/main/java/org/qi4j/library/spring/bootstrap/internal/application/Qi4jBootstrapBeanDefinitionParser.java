@@ -60,7 +60,7 @@ public final class Qi4jBootstrapBeanDefinitionParser
             bootstrapClass = forName( bootstrapClassString, getClass().getClassLoader() );
         } catch ( ClassNotFoundException e )
         {
-            readerContext.error( "Qi4j bootstrap class [" + bootstrapClassString + "] is not found.", anElement );
+            readerContext.error( "Zest bootstrap class [" + bootstrapClassString + "] is not found.", anElement );
             return null;
         }
 

@@ -35,7 +35,7 @@ import org.qi4j.functional.Iterables;
 import static org.qi4j.api.util.Classes.interfacesOf;
 
 /**
- * Export Qi4j services to an OSGi Bundle.
+ * Export Zest services to an OSGi Bundle.
  */
 @Mixins( OSGiServiceExporter.OSGiServiceExporterMixin.class )
 @Activators( OSGiServiceExporter.Activator.class )

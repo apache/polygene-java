@@ -20,7 +20,7 @@ import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 
 /**
- * Helper for working with Qi4j MBeans.
+ * Helper for working with Zest MBeans.
  */
 public class Qi4jMBeans
 {
@@ -36,7 +36,7 @@ public class Qi4jMBeans
                 return item.getKeyPropertyList().size() == 5;
             }
 
-        }, server.queryNames( new ObjectName( "Qi4j:application=" + applicationName + ",*,service=" + serviceId ), null ) ) );
+        }, server.queryNames( new ObjectName( "Zest:application=" + applicationName + ",*,service=" + serviceId ), null ) ) );
     }
 
 }

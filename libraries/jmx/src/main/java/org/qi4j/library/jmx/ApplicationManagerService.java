@@ -45,17 +45,17 @@ import org.qi4j.functional.Iterables;
 import static org.qi4j.functional.Iterables.first;
 
 /**
- * Expose the Qi4j app as a "tree" of MBeans.
+ * Expose the Zest app as a "tree" of MBeans.
  *
  * Other services should reuse the object names and create
  * nodes under the ones created here. For example:
  * <pre>
- * Qi4j:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService
+ * Zest:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService
  * </pre>
  * is exported by this service, so another exporter showing some aspect related to this service should
  * use this as base for the ObjectName, and add their own properties. Example:
  * <pre>
- * Qi4j:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService,name=Configuration
+ * Zest:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService,name=Configuration
  * </pre>
  * Use the following snippet to find the ObjectName of a service with a given identity:
  * <pre>
@@ -125,7 +125,7 @@ public interface ApplicationManagerService
                         layer = application.findLayer( layerDescriptor.name() );
 
                         LayerBean layerBean = new LayerBean( layer, layerDescriptor );
-                        ObjectName objectName = new ObjectName( "Qi4j:application=" + application.name() + ",layer=" + layer
+                        ObjectName objectName = new ObjectName( "Zest:application=" + application.name() + ",layer=" + layer
                             .name() );
                         names.push( objectName );
 

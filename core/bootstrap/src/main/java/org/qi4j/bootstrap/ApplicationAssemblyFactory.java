@@ -19,7 +19,7 @@
 package org.qi4j.bootstrap;
 
 /**
- * Factory for creating new Qi4j application assemblies. Typically
+ * Factory for creating new Zest application assemblies. Typically
  * you will implement one or more Assemblers, wrap them in an ApplicationAssembler,
  * which then uses this factory to assemble and create applications.
  */

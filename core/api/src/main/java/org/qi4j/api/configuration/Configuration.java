@@ -62,7 +62,7 @@ import static org.qi4j.functional.Iterables.first;
  * a request.
  * </p>
  * <p>
- * The Configuration will be automatically refreshed when the Service is activated by the Qi4j runtime.
+ * The Configuration will be automatically refreshed when the Service is activated by the Zest runtime.
  * Any refreshes at other points will have to be done manually or triggered through some other
  * mechanism.
  * </p>
@@ -116,7 +116,7 @@ public interface Configuration<T>
     /**
      * Retrieves the user configuration instance managed by this Configuration.
      * <p>
-     * Even if the user configuration is initialized from properties file, the consistency rules of Qi4j composites
+     * Even if the user configuration is initialized from properties file, the consistency rules of Zest composites
      * still applies. If the the properties file is missing a value, then the initialization will fail with a
      * RuntimeException. If Constraints has been defined, those will need to be satisfied as well. The user
      * configuration instance returned will fulfill the constraints and consistency normal to all composites, and
@@ -142,7 +142,7 @@ public interface Configuration<T>
     /**
      * Implementation of Configuration.
      * <p>
-     * This is effectively an internal class in Qi4j and should never be used directly by user code.
+     * This is effectively an internal class in Zest and should never be used directly by user code.
      * </p>
      *
      * @param <T>

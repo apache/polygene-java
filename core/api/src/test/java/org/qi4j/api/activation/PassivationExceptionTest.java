@@ -113,7 +113,7 @@ public class PassivationExceptionTest
         {
             Module moduleA = app.findModule( "Layer 1", "Module A" );
             TestService service = moduleA.findService( TestService.class ).get();
-            assertThat( service.hello(), equalTo( "Hello Qi4j!" ) );
+            assertThat( service.hello(), equalTo( "Hello Zest!" ) );
         }
         finally
         {
@@ -158,7 +158,7 @@ public class PassivationExceptionTest
             public String hello()
             {
                 module.name();
-                return "Hello Qi4j!";
+                return "Hello Zest!";
             }
         }
 

@@ -145,7 +145,7 @@ import static org.qi4j.api.util.Classes.interfacesOf;
             return defineClass( name, b, 0, b.length, baseClass.getProtectionDomain() );
         }
 
-        // Try the classloader of this classloader -> get classes in Qi4j such as CompositeInvoker
+        // Try the classloader of this classloader -> get classes in Zest such as CompositeInvoker
         return getClass().getClassLoader().loadClass( name );
     }
 

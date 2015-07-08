@@ -54,7 +54,7 @@ import static org.qi4j.test.util.Assume.assumeConnectivity;
 
 /**
  * Reads Qi4j Github commits on develop ATOM feed and prints out all title and detail url for each entry.
- * This is an example of how to use the RSS client for something more generic that was not produced by Qi4j REST server
+ * This is an example of how to use the RSS client for something more generic that was not produced by Zest REST server
  * library.
  */
 public class RssReaderTest

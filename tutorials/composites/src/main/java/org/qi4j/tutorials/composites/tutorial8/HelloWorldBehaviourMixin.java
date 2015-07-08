@@ -26,7 +26,7 @@ import org.qi4j.api.injection.scope.This;
  * This is the implementation of the HelloWorld
  * behaviour interface.
  * <p>
- * This version access the state using Qi4j Properties.
+ * This version access the state using Zest Properties.
  * </p>
  */
 public class HelloWorldBehaviourMixin

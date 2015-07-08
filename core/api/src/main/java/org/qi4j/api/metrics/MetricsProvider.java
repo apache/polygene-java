@@ -19,7 +19,7 @@ package org.qi4j.api.metrics;
 /**
  * Metrics Provider SPI.
  * <p>
- * The Qi4j Runtime will automatically ook for a service that implements the MetricsProvider interdace
+ * The Zest Runtime will automatically ook for a service that implements the MetricsProvider interdace
  * and use it for internal Runtime metrics, such as the UnitOfWork measuring the time from creation to close.
  * </p>
  * <p>

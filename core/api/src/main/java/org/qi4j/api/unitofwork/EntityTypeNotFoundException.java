@@ -20,7 +20,7 @@ import org.qi4j.functional.Function;
 import static org.qi4j.functional.Iterables.fold;
 
 /**
- * Qi4j exception to be thrown in case that an entity composite
+ * Zest exception to be thrown in case that an entity composite
  * was not found during a lookup call.
  */
 public class EntityTypeNotFoundException

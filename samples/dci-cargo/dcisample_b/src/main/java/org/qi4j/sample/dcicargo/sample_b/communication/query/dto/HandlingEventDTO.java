@@ -29,7 +29,7 @@ import org.qi4j.sample.dcicargo.sample_b.infrastructure.conversion.DTO;
 /**
  * HandlingEvent DTO
  *
- * Qi4j-comment:
+ * Zest-comment:
  * We need the @Unqualified annotation since the HandlingEventDTO interface has other properties than
  * {@link HandlingEvent} so that properties can not be directly mapped when we convert from entity to
  * immutable value DTO. With the annotation, property access methods are compared by name instead.

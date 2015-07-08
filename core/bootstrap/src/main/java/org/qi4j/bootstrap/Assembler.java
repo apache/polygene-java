@@ -18,7 +18,7 @@ package org.qi4j.bootstrap;
  * ModuleAssemblies are configured by Assemblers. This
  * is the interface you would implement in order to provide
  * all configuration and additional metainfo that is needed
- * to instantiate a Qi4j application.
+ * to instantiate a Zest application.
  */
 public interface Assembler
 {

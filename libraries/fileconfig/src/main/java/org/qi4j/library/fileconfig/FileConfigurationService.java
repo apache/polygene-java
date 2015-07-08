@@ -129,7 +129,7 @@ public interface FileConfigurationService
 
             data.user().set( new File( user ) );
 
-            // Set application name. This is taken from the Qi4j application but can be overriden by a system property
+            // Set application name. This is taken from the Zest application but can be overriden by a system property
             String application = System.getProperty( "application", app.name() );
 
             if ( !app.mode().equals( Application.Mode.production ) ) {

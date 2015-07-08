@@ -47,7 +47,6 @@ import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueDescriptor;
-import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
 import org.qi4j.index.sql.support.api.SQLIndexing;
@@ -368,7 +367,7 @@ public abstract class AbstractSQLIndexing
                                  Lazy<PreparedStatement, SQLException> queryPKPS )
         throws SQLException
     {
-        // TODO build cache: Qi4j Identity -> PK
+        // TODO build cache: Zest Identity -> PK
         Long entityPK = null;
         PreparedStatement ps = queryPKPS.getValue();
         ps.setString( 1, state.identity().identity() );

@@ -34,7 +34,7 @@ import static org.qi4j.functional.Iterables.flattenIterables;
 import static org.qi4j.functional.Iterables.map;
 
 /**
- * Instance of a Qi4j application layer. Contains a list of modules which are managed by this layer.
+ * Instance of a Zest application layer. Contains a list of modules which are managed by this layer.
  */
 public class LayerInstance
     implements Layer

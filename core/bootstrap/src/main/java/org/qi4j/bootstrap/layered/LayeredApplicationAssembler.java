@@ -62,16 +62,16 @@ public abstract class LayeredApplicationAssembler
     }
 
     /**
-     * This method is called from the constructor to instantiate the Qi4j application from the application model.
+     * This method is called from the constructor to instantiate the Zest application from the application model.
      *
      * <p>
      * The default implementation simply calls;
+     * </p>
      * <pre><code>
      *   application = model.newInstance( qi4j.spi() );
      * </code></pre>
-     * </p>
      *
-     * @param qi4j  The Qi4j runtime engine.
+     * @param qi4j  The Zest runtime engine.
      * @param model The application model descriptor.
      */
     protected void instantiateApplication( Energy4Java qi4j, ApplicationDescriptor model )
@@ -80,7 +80,7 @@ public abstract class LayeredApplicationAssembler
     }
 
     /**
-     * This method is called after the Application Model has been created, before the instantiation of the Qi4j
+     * This method is called after the Application Model has been created, before the instantiation of the Zest
      * application.
      *
      * <p>

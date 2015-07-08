@@ -51,7 +51,7 @@ public class ReindexerMixin
         }
         catch( NoSuchMethodException e )
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ReindexerMixin" );
+            throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: ReindexerMixin" );
         }
     }
 

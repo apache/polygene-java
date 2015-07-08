@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base Wicket Web Application containing the Qi4j application.
+ * Base Wicket Web Application containing the Zest application.
  */
 public class WicketQi4jApplication
     extends WebApplication
@@ -75,10 +75,10 @@ public class WicketQi4jApplication
     protected EntityToDTOService valueConverter;
 
     /**
-     * Qi4j Assembler
+     * Zest Assembler
      *
      * To let the custom application class (DCISampleApplication_x) focus on starting up the
-     * Wicket environment, I made a convention of having Qi4j Assembler files in an 'assembly'
+     * Wicket environment, I made a convention of having Zest Assembler files in an 'assembly'
      * folder beside the custom application class.
      *
      * There's always only one application file, but we could split the assemblage into several
@@ -104,7 +104,7 @@ public class WicketQi4jApplication
         }
         catch( ClassNotFoundException e )
         {
-            throw new Exception( "Couldn't find Qi4j assembler in path '" + assemblerPath + "'" );
+            throw new Exception( "Couldn't find Zest assembler in path '" + assemblerPath + "'" );
         }
     }
 
@@ -141,21 +141,21 @@ public class WicketQi4jApplication
     {
         try
         {
-            logger.info( "Starting Qi4j application" );
+            logger.info( "Starting Zest application" );
             Energy4Java qi4j = new Energy4Java();
             qi4jApp = qi4j.newApplication( getAssembler() );
             qi4jApp.activate();
             qi4jModule = qi4jApp.findModule( defaultLayerName(), defaultModuleName() );
 
-            // Qi4j injects @Structure and @Service elements into this application instance
+            // Zest injects @Structure and @Service elements into this application instance
             //qi4jModule.newObject( WicketQi4jApplication.class );
             qi4jModule.injectTo( this );
 
-            logger.info( "Started Qi4j application" );
+            logger.info( "Started Zest application" );
         }
         catch( Exception e )
         {
-            logger.error( "Could not start Qi4j application." );
+            logger.error( "Could not start Zest application." );
             e.printStackTrace();
             System.exit( 100 );
         }
@@ -220,7 +220,7 @@ public class WicketQi4jApplication
         } );
     }
 
-    // Since Qi4j can only add concrete classes in the assembly, we need to implement a (dummy) getHomePage()
+    // Since Zest can only add concrete classes in the assembly, we need to implement a (dummy) getHomePage()
     // method here. Override in wicket application class with a real returned page class.
     @Override
     public Class<? extends Page> getHomePage()
@@ -238,7 +238,7 @@ public class WicketQi4jApplication
 
         try
         {
-            logger.info( "Passivating Qi4j application" );
+            logger.info( "Passivating Zest application" );
             qi4jApp.passivate();
         }
         catch( Exception e )

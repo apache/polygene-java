@@ -30,7 +30,7 @@ import java.lang.reflect.Type;
  * should be included</li>
  * </ol>
  * <p>
- * Both native Qi4j services and imported services are considered, with preference to native services.
+ * Both native Zest services and imported services are considered, with preference to native services.
  * </p>
  */
 public interface ServiceFinder

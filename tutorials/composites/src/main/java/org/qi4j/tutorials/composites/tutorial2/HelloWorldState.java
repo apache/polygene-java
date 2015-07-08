@@ -23,7 +23,7 @@ package org.qi4j.tutorials.composites.tutorial2;
 /**
  * This interface contains only the state
  * of the HelloWorld object.
- * The exceptions will be thrown by Qi4j automatically if
+ * The exceptions will be thrown by Zest automatically if
  * null is sent in as values. The parameters would have to be declared
  * as @Optional if null is allowed.
  */

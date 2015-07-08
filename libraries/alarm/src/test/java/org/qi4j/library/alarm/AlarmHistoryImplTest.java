@@ -254,7 +254,7 @@ public class AlarmHistoryImplTest
         int maxsize = hist.maxSize().get();
         assertEquals( 30, maxsize );
 
-        hist.maxSize().set( 3 );    // The Qi4j version doesn't intercept the maxSize().set() method and purge the old
+        hist.maxSize().set( 3 );    // The Zest version doesn't intercept the maxSize().set() method and purge the old
         underTest.trigger( AlarmPoint.TRIGGER_ACTIVATE ); // so we do another event to purge.
         assertEquals( 3, hist.allAlarmEvents().get().size() );
 

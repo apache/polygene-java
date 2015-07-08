@@ -35,7 +35,6 @@ import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.PropertyWrapper;
@@ -63,18 +62,16 @@ import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.service.ImportedServiceReferenceInstance;
 import org.qi4j.runtime.service.ServiceInstance;
 import org.qi4j.runtime.service.ServiceReferenceInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.runtime.value.ValueInstance;
 import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.module.ModelModule;
 
 import static java.lang.reflect.Proxy.getInvocationHandler;
 import static org.qi4j.runtime.composite.TransientInstance.compositeInstanceOf;
 
 /**
- * Incarnation of Qi4j.
+ * Incarnation of Zest.
  */
 public final class Qi4jRuntimeImpl
     implements Qi4jSPI, Qi4jRuntime

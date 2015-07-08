@@ -34,7 +34,7 @@ import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
 
 /**
- * Encapsulation of the Qi4j API.
+ * Encapsulation of the Zest API.
  */
 public interface Qi4j
 {

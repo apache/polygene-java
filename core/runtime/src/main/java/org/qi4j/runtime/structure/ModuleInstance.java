@@ -116,7 +116,7 @@ import static org.qi4j.functional.Iterables.map;
 import static org.qi4j.functional.Iterables.toList;
 
 /**
- * Instance of a Qi4j Module. Contains the various composites for this Module.
+ * Instance of a Zest Module. Contains the various composites for this Module.
  */
 public class ModuleInstance
     implements Module, ModuleSpi, Activation

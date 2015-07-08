@@ -70,13 +70,13 @@ import static org.qi4j.api.common.Visibility.application;
 import static org.qi4j.api.structure.Application.Mode.development;
 
 /**
- * Qi4j assembly of the DCI Sample application (version A)
+ * Zest assembly of the DCI Sample application (version A)
  *
- * A Qi4j application structure is declared by an assembly that defines which layers and modules
+ * A Zest application structure is declared by an assembly that defines which layers and modules
  * the application has and how they are allowed to depend on each other. Each layer could have it's
  * own assembly file in larger applications (read more at http://qi4j.org/latest/core-bootstrap-assembly.html).
  *
- * The Qi4j assembly doesn't follow a strict 1-1 correlation between the directory hierarchy and
+ * The Zest assembly doesn't follow a strict 1-1 correlation between the directory hierarchy and
  * the assembly structures. An example is the Entities:
  *
  * Entities can be promoted to Role Players when they are needed to play a Role in a Context.
@@ -88,7 +88,7 @@ import static org.qi4j.api.structure.Application.Mode.development;
  * Context layer. Note that there are still no "physical" upward dependencies from the Entities to
  * layers above.
  *
- * So dependency structure layers (ie. as shown by Structure101) are not the same as Qi4j layers.
+ * So dependency structure layers (ie. as shown by Structure101) are not the same as Zest layers.
  * See more at http://qi4j.org/latest/core-bootstrap-assembly.html
  *
  * TRY THIS: Run VisualizeApplicationStructure to see a cool visualization of the assembly below!

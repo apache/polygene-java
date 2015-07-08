@@ -30,7 +30,7 @@ import org.qi4j.api.service.ServiceImporterException;
 import org.qi4j.api.service.ServiceUnavailableException;
 
 /**
- * Import OSGi services in a Qi4j Module.
+ * Import OSGi services in a Zest Module.
  */
 public class OSGiServiceImporter
     implements ServiceImporter

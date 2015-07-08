@@ -20,7 +20,7 @@ package org.qi4j.api.property;
 
 /**
  * If you want to catch getting and setting properties, then create a GenericConcern
- * that wraps the Qi4j-supplied Property instance with PropertyWrappers. Override
+ * that wraps the Zest-supplied Property instance with PropertyWrappers. Override
  * get() and/or set() to perform your custom code.
  */
 public class PropertyWrapper

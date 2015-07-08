@@ -15,7 +15,7 @@
 package org.qi4j.bootstrap;
 
 /**
- * Thrown by the Qi4j runtime if a dependency can not be injected.
+ * Thrown by the Zest runtime if a dependency can not be injected.
  */
 public class InjectionException
     extends RuntimeException

@@ -33,8 +33,8 @@ public class Main
     public static void main( String[] args )
             throws Exception
     {
-        // Bootstrap Qi4j Runtime
-        // Create a Qi4j Runtime
+        // Bootstrap Zest Runtime
+        // Create a Zest Runtime
         qi4j = new Energy4Java();
 
         // Instantiate the Application Model.

@@ -21,21 +21,14 @@ import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
-import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.property.StateHolder;
-import org.qi4j.api.service.ServiceDescriptor;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueComposite;
-import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.spi.entity.EntityState;
-import org.qi4j.spi.module.ModelModule;
 
 /**
- * Encapsulation of the Qi4j SPI. This is implemented by the runtime.
+ * Encapsulation of the Zest SPI. This is implemented by the runtime.
  */
 public interface Qi4jSPI
     extends Qi4j

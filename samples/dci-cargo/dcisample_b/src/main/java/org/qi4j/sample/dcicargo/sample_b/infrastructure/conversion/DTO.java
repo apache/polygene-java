@@ -25,7 +25,7 @@ import org.qi4j.api.value.ValueComposite;
  *
  * Base class for DTOs
  *
- * Qi4j-comment:
+ * Zest-comment:
  * ValueComposites that extend DTO are candidates to have association types converted and
  * assigned in the EntityToDTOService.
  */

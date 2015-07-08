@@ -70,7 +70,7 @@ public class ValueToEntityMixin
         }
         catch( NoSuchMethodException e )
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ValueToEntityMixin" );
+            throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: ValueToEntityMixin" );
         }
         MANY_ASSOC_TO_ENTITY_REF_ITERABLE = new Function<ManyAssociation<?>, Iterable<EntityReference>>()
         {

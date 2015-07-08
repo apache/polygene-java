@@ -97,7 +97,7 @@ public abstract class AbstractQi4jBaseTest
     }
 
     /**
-     * This method is called when there was an AssemblyException in the creation of the Qi4j application model.
+     * This method is called when there was an AssemblyException in the creation of the Zest application model.
      * <p>
      * Override this method to catch valid failures to place into satisfiedBy suites.
      * </p>

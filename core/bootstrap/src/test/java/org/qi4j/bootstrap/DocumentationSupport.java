@@ -327,7 +327,7 @@ public class DocumentationSupport
         public static void main( String[] args )
                 throws Exception
         {
-            // Create a Qi4j Runtime
+            // Create a Zest Runtime
             qi4j = new Energy4Java();
             application = qi4j.newApplication( new ApplicationAssembler()
             {

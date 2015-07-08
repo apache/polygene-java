@@ -100,8 +100,8 @@ public class SQLEntityFinder
                                                    Map<String, Object> variables )
         throws EntityFinderException
     {
-        // TODO what is Qi4j's policy on negative firstResult and/or maxResults? JDBC has its own way of interpreting
-        // these values - does it match with Qi4j's way?
+        // TODO what is Zest's policy on negative firstResult and/or maxResults? JDBC has its own way of interpreting
+        // these values - does it match with Zest's way?
         Iterable<EntityReference> result;
         if( maxResults == null || maxResults > 0 )
         {

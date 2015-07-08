@@ -23,7 +23,7 @@ import org.qi4j.api.activation.Activator;
 import org.qi4j.api.common.Visibility;
 
 /**
- * Fluent API for declaring services hosted in Qi4j. Instances
+ * Fluent API for declaring services hosted in Zest. Instances
  * of this API are acquired by calling {@link ModuleAssembly#services(Class[])}.
  */
 public interface ServiceDeclaration

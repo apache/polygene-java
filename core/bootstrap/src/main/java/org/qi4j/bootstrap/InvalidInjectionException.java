@@ -19,7 +19,7 @@
 package org.qi4j.bootstrap;
 
 /**
- * Thrown by the Qi4j runtime if a dependency injection declaration is invalid.
+ * Thrown by the Zest runtime if a dependency injection declaration is invalid.
  */
 public class InvalidInjectionException
     extends Exception
