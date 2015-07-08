@@ -83,11 +83,11 @@ irrelevant to the domain model, introduced by the underlying framework, from the
 
 image:classes-are-dead.gif[]
 
-Qi4j™ is trying to address the flaws of OOP and introduce Composite Oriented Programming to the world, without
+Zest™ is trying to address the flaws of OOP and introduce Composite Oriented Programming to the world, without
 introducing new programming languages, or awkward constructs. Heck, we don't even use any XML.
 
-Qi4j™ is not a framework. It is a new way to write code. Other people might create frameworks using Qi4j™, or create a
-framework optimized for Qi4j™, but here at Qi4j™ we concentrate to make Qi4j™ behave well in existing frameworks,
+Zest™ is not a framework. It is a new way to write code. Other people might create frameworks using Zest™, or create a
+framework optimized for Zest™, but here at Zest™ we concentrate to make Zest™ behave well in existing frameworks,
 application servers, platforms and environments.
 
 You are to embark on a new journey. Enjoy!

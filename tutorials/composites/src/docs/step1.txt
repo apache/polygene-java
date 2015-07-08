@@ -22,7 +22,7 @@
 
 == Initial Hello World ==
 
-This whole tutorial describes how to step-by-step modify a typical HelloWorld "application" into a full-fledged Qi4j 
+This whole tutorial describes how to step-by-step modify a typical HelloWorld "application" into a full-fledged Zest™
 Composite Oriented application. Here is the initial code of HelloWorld.
 
 [snippet,java]
@@ -36,7 +36,7 @@ tag=initial
 In this step we start with a basic Java class, which when invoked will concatenate the two properties "phrase" 
 and "name". If invoked with the properties set to "Hello" and "World" respectively it will hence return "Hello World".
 
-Qi4j relies heavily on the use of interfaces. This makes it possible for an object to externally implement a number of 
+Zest™ relies heavily on the use of interfaces. This makes it possible for an object to externally implement a number of
 interfaces which internally is backed by a number of Mixins, some of which you may have written yourself, and some of 
 which may have been reused. This also makes it easy to introduce Modifiers (aka "interceptors", aka "advice"), which 
 are Fragments which execute before and/or after the method on the Mixin is invoked.

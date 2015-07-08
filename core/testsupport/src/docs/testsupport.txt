@@ -21,15 +21,15 @@
 source=core/testsupport/dev-status.xml
 --------------
 
-Qi4j comes with classes to help with testing. For general development, only a couple of classes are of interest as the
+Zest™ comes with classes to help with testing. For general development, only a couple of classes are of interest as the
 others are mostly for EntityStore and Index/Query SPI implementations. There is also some mocking support, to allow
-some of Qi4j's unique aspects to be mocked, but since Qi4j is so flexible at a fine-granular level, we have found that
+some of Zest's unique aspects to be mocked, but since Zest™ is so flexible at a fine-granular level, we have found that
 mocking is seldom, if ever, needed.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Your First Testcase ==
-In most cases, you will probably use the AbstractQi4jTest class to simplify starting a Qi4j test instance.
+In most cases, you will probably use the AbstractQi4jTest class to simplify starting a Zest™ test instance.
 
 [snippet,java]
 --------------
@@ -37,7 +37,7 @@ source=tutorials/hello/src/test/java/org/qi4j/tutorials/hello/HelloTest.java
 tag=step1
 --------------
 
-This will do all the initialization of a Qi4j runtime instance and create a single layer with a single module in it.
+This will do all the initialization of a Zest™ runtime instance and create a single layer with a single module in it.
 What goes into that module is declared in the assembly() method;
 
 [snippet,java]

@@ -17,8 +17,8 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[howto-depend-on-qi4j,Depend on Qi4j in your build]]
-= Depend on Qi4j in your build =
+[[howto-depend-on-qi4j,Depend on Zest™ in your build]]
+= Depend on Zest™ in your build =
 
 NOTE: Some of the <<libraries>> and <<extensions>> depend on artifacts that are not deployed in central, you'll need to
 add other repositories to your build scripts accordingly.
@@ -41,7 +41,7 @@ http://qi4j.org/downloads.html[download] the SDK distribution.
 
 == Using Maven ==
 
-First you need to register the Qi4j repositories:
+First you need to register the Zest™ repositories:
 
 [source,xml]
 ----
@@ -59,7 +59,7 @@ First you need to register the Qi4j repositories:
 </repositories>
 ----
 
-After that you can declare dependencies on Qi4j artifacts:
+After that you can declare dependencies on Zest™ artifacts:
 
 [source,xml]
 ----
@@ -84,11 +84,11 @@ After that you can declare dependencies on Qi4j artifacts:
 </dependencies>
 ----
 
-Where `QI4J_VERSION` is the Qi4j version you want to use.
+Where `QI4J_VERSION` is the Zest™ version you want to use.
 
 == Using Gradle ==
 
-First you need to register the Qi4j repositories:
+First you need to register the Zest™ repositories:
 
 [source,groovy]
 ----
@@ -98,7 +98,7 @@ repositories {
 }
 ----
 
-After that you can declare dependencies on Qi4j artifacts:
+After that you can declare dependencies on Zest™ artifacts:
 
 [source,groovy]
 ----
@@ -109,11 +109,11 @@ dependencies {
 }
 ----
 
-Where `QI4J_VERSION` is the Qi4j version you want to use.
+Where `QI4J_VERSION` is the Zest™ version you want to use.
 
 == Using Buildr ==
 
-First you need to register the Qi4j repositories:
+First you need to register the Zest™ repositories:
 
 [source,ruby]
 ----
@@ -121,7 +121,7 @@ repositories.remote << 'https://repository-qi4j.forge.cloudbees.com/release/'
 repositories.remote << 'https://repository-qi4j.forge.cloudbees.com/snapshot/'
 ----
 
-After that you can declare dependencies on Qi4j artifacts:
+After that you can declare dependencies on Zest™ artifacts:
 
 [source,ruby]
 ----
@@ -130,11 +130,11 @@ package(:war).with :libs => 'org.qi4j.core:org.qi4j.core.runtime:QI4J_VERSION'
 test.with 'org.qi4j.core:org.qi4j.core.testsupport:QI4J_VERSION'
 ----
 
-Where `QI4J_VERSION` is the Qi4j version you want to use.
+Where `QI4J_VERSION` is the Zest™ version you want to use.
 
 == Using SBT ==
 
-First you need to register the Qi4j repositories:
+First you need to register the Zest™ repositories:
 
 [source,scala]
 ----
@@ -143,7 +143,7 @@ resolvers += "qi4j-releases" at "https://repository-qi4j.forge.cloudbees.com/rel
 resolvers += "qi4j-snapshots" at "https://repository-qi4j.forge.cloudbees.com/snapshot/"
 ----
 
-After that you can declare dependencies on Qi4j artifacts:
+After that you can declare dependencies on Zest™ artifacts:
 
 [source,scala]
 ----
@@ -158,11 +158,11 @@ libraryDependencies += \
     withSources() withJavadoc()
 ----
 
-Where `QI4J_VERSION` is the Qi4j version you want to use.
+Where `QI4J_VERSION` is the Zest™ version you want to use.
 
 == Using Ivy ==
 
-First you need to register the Qi4j repositories in a `ivysettings.xml` file:
+First you need to register the Zest™ repositories in a `ivysettings.xml` file:
 
 [source,xml]
 ----
@@ -179,7 +179,7 @@ First you need to register the Qi4j repositories in a `ivysettings.xml` file:
 </ivysettings>
 ----
 
-After that you can declare dependencies on Qi4j artifacts:
+After that you can declare dependencies on Zest™ artifacts:
 
 [source,xml]
 ----
@@ -195,5 +195,5 @@ After that you can declare dependencies on Qi4j artifacts:
 </ivy-module>
 ----
 
-Where `QI4J_VERSION` is the Qi4j version you want to use.
+Where `QI4J_VERSION` is the Zest™ version you want to use.
 

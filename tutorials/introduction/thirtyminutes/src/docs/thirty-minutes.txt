@@ -17,16 +17,16 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[thirty-minutes-intro,Qi4j in 30 minutes]]
-= Qi4j in 30 minutes =
+[[thirty-minutes-intro,Zest™ in 30 minutes]]
+= Zest™ in 30 minutes =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-http://qi4j.org/downloads.html[Qi4j SDK sources]. You should start your favorite editor and find the code related to
+http://qi4j.org/downloads.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
 
-This introduction will deepen your understanding of Qi4j, as we touches on a couple of the common features of Qi4j. It
-is expected that you have gone through and understood the "Qi4j in 10 minutes" introduction.
+This introduction will deepen your understanding of Zest™, as we touches on a couple of the common features of Zest™. It
+is expected that you have gone through and understood the "Zest™ in 10 minutes" introduction.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
 on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
@@ -56,8 +56,8 @@ source=tutorials/introduction/thirtyminutes/src/main/java/org/qi4j/demo/thirtymi
 tag=2
 -----------
 
-Quite a lot of Qi4j features are leveraged above;
-[1] Property is a first class citizen in Qi4j, instead of getters/setters naming convention to declare properties.
+Quite a lot of Zest™ features are leveraged above;
+[1] Property is a first class citizen in Zest™, instead of getters/setters naming convention to declare properties.
 [2] ValueComposite for Action means that it is among other things Immutable.
 [3] The Action extends a Property. We call that Property subtyping and highly recommended.
 [4] The CompositeBuilder creates Immutable Action instances.
@@ -87,7 +87,7 @@ tag=4
 
 The above construct is called a Generic Concern, since it implements java.lang.reflect.InvocationHandler instead of the
 interface of the domain model. The ConcernOf baseclass will also need to be of InvocationHandler type, and the
-Qi4j Runtime will handle the chaining between domain model style and this generic style of interceptor call chain.
+Zest™ Runtime will handle the chaining between domain model style and this generic style of interceptor call chain.
 
 Finally, we need to declare the Concern in the OrderEntity;
 
@@ -109,7 +109,7 @@ Glad you asked. It is done via the Query API. It is important to understand that
 the persistence concern of storage and retrieval. This enables many performance optimization opportunities as well as a
 more flexible Indexing strategy. The other thing to understand is that the Query API is using the domain model, in Java,
 and not some String based query language. We have made this choice to ensure refactoring safety. In rare cases, the
-Query API is not capable enough, in which case Qi4j still provides the ability to look up and execute native queries.
+Query API is not capable enough, in which case Zest™ still provides the ability to look up and execute native queries.
 
 Let's say that we want to find a particular Order from its SequenceNumber.
 
@@ -152,13 +152,13 @@ This covers the most basic Query capabilities and how to use it. For Querying to
 assembled during bootstrap. At the time of this writing, only an RDF indexing subsystem exist, and is added most easily
 by assembly.addAssembler( new RdfNativeSesameStoreAssembler() ).
 
-It can be a bit confusing to see Qi4j use Java itself as a Query language, but since we have practically killed the
+It can be a bit confusing to see Zest™ use Java itself as a Query language, but since we have practically killed the
 classes and only operate with interfaces, it is possible to do a lot of seemingly magic stuff. Just keep in mind that
 it is pure Java, albeit heavy use of dynamic proxies to capture the intent of the query.
 
 == Conclusion ==
 
-We have now explored a couple more intricate features of Qi4j, hopefully without being overwhelmed with details on how
-to create applications from scratch, how to structure applications, and how the entire Qi4j Extension system works.
+We have now explored a couple more intricate features of Zest™, hopefully without being overwhelmed with details on how
+to create applications from scratch, how to structure applications, and how the entire Zest™ Extension system works.
 We have looked at how to add a Concern that uses a private Mixin, we have touched a bit on Generic Concerns, and
 finally a short introduction to the Query API.

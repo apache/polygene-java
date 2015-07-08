@@ -15,7 +15,7 @@
 
 [[core-api-metrics, Metrics API]]
 = Metrics API =
-The Qi4j platform defines an advanced Metrics SPI to capture runtime metrics of Qi4j's internals as well be used by
+The Zest™ platform defines an advanced Metrics SPI to capture runtime metrics of Zest's internals as well be used by
 application code (via this API) to provide production metrics for operations personnel, ensuring healthy state of
 the applications.
 
@@ -25,7 +25,7 @@ There are quite a lot of different Metrics components available, which are insta
 factory for each component type, to allow for additional components to be created in the future without breaking
 compatibility in the existing implementations.
 
-The MetricsProvider is a standard Qi4j Service and simply acquired via the @Service annotation on a field or
+The MetricsProvider is a standard Zest™ Service and simply acquired via the @Service annotation on a field or
 constructor argument.
 
 [snippet,java]

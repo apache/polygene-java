@@ -21,7 +21,7 @@
 source=core/api/dev-status.xml
 --------------
 
-The Qi4j Core API is the primary interface for client application code during the main execution phase, i.e. after the
+The Zest™ Core API is the primary interface for client application code during the main execution phase, i.e. after the
 application has been activated.
 
 include::../../build/docs/buildinfo/artifact.txt[]

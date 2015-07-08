@@ -178,9 +178,9 @@
 
 =======================================================================
 
-Apache Zest Qi4j subcomponents:
+Apache Zest™ subcomponents:
 
-The Apache Zest Qi4j project contains subcomponents with separate copyright
+The Apache Zest™ project contains subcomponents with separate copyright
 notices and license terms. Your use of the source code for the these
 subcomponents is subject to the terms and conditions of the following
 licenses.
@@ -189,7 +189,7 @@ licenses.
  The MIT License
 -----------------------------------------------------------------------
 
-The Apache Zest Qi4j project bundles the following files under the MIT License:
+The Apache Zest™ project bundles the following files under the MIT License:
 
 - jQuery v1.6.4 (https://jquery.com/)
   Bundled in the documentation minisite.
@@ -225,14 +225,14 @@ THE SOFTWARE.
  The BSD 3-Clauses License
 -----------------------------------------------------------------------
 
-The Apache Zest Qi4j project bundles the following files under the BSD
+The Apache Zest™ project bundles the following files under the BSD
 3-Clauses License:
 
 -----------------------------------------------------------------------
  The W3C Software License
 -----------------------------------------------------------------------
 
-The Apache Zest Qi4j project bundles the following files under the W3C Software
+The Apache Zest™ project bundles the following files under the W3C Software
 License:
 
 - The "xml:" Namespace (http://www.w3.org/XML/1998/namespace)

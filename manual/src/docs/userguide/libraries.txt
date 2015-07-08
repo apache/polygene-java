@@ -24,7 +24,7 @@
 
 == Overview ==
 
-The Qi4j Libraries are of varying maturity level and we try to maintain a STATUS (dev-status.xml) file indicating
+The Zest™ Libraries are of varying maturity level and we try to maintain a STATUS (dev-status.xml) file indicating
 how good the codebase, documentation and unit tests are for each of the libraries. This is highly subjective and
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.
