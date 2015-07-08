@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j SQL DBCP Library provides DBCP support."
+description = "Apache Zest™ SQL DBCP Library provides DBCP support."
 
-jar { manifest { name = "Qi4j Library - SQL DBCP" }}
+jar { manifest { name = "Apache Zest™ Library - SQL DBCP" }}
 
 dependencies {
   compile(project(":org.qi4j.libraries:org.qi4j.library.sql"))

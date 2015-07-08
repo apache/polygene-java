@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Riak EntityStore Extension"
+description = "Apache Zest™ Riak EntityStore Extension"
 
-jar { manifest { name = "Qi4j Extension - EntityStore - Riak" } }
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - Riak" } }
 
 dependencies {
 

@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j UID Library contains various Identity generation services."
+description = "Apache Zest™ UID Library contains various Identity generation services."
 
-jar { manifest { name = "Qi4j Library - UID" }}
+jar { manifest { name = "Apache Zest™ Library - UID" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

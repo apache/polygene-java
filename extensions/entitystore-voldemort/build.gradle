@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Voldemort EntityStore Extension"
+description = "Apache Zest™ Voldemort EntityStore Extension"
 
-jar { manifest { name = "Qi4j Extension - EntityStore - Voldemort" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - Voldemort" }}
 
 dependencies {
 

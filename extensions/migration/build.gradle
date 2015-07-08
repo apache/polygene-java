@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Migration Extension"
+description = "Apache Zest™ Migration Extension"
 
-jar { manifest { name = "Qi4j Extension - Migration" }}
+jar { manifest { name = "Apache Zest™ Extension - Migration" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))

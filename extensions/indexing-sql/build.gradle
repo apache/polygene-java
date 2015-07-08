@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j SQL Indexing Extension"
+description = "Apache Zest™ SQL Indexing Extension"
 
-jar {manifest {name = "Qi4j Extension - Indexing - SQL"}}
+jar {manifest {name = "Apache Zest™ Extension - Indexing - SQL"}}
 
 dependencies {
 

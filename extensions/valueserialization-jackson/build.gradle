@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Jackson ValueSerialization Extension"
+description = "Apache Zest™ Jackson ValueSerialization Extension"
 
-jar { manifest { name = "Qi4j Extension - ValueSerialization - Jackson" } }
+jar { manifest { name = "Apache Zest™ Extension - ValueSerialization - Jackson" } }
 
 dependencies {
 

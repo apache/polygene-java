@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j SQL EntityStore Extension"
+description = "Apache Zest™ SQL EntityStore Extension"
 
-jar { manifest { name = "Qi4j Extension - EntityStore - SQL" }}
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - SQL" }}
 
 dependencies {
 

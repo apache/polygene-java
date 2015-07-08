@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Scala Library allows for Mixins to be implemented in Scala."
+description = "Apache Zest™ Scala Library allows for Mixins to be implemented in Scala."
 
-jar { manifest { name = "Qi4j Library - Scripting - Scala" }}
+jar { manifest { name = "Apache Zest™ Library - Scripting - Scala" }}
 
 apply plugin: 'scala'
 

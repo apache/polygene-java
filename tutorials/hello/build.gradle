@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-description = "Basic tutorial on how to covert a simple 'Hello World' application to Qi4j, using more and more features for each step."
+description = "Basic tutorial on how to covert a simple 'Hello World' application to Apache Zest™, using more and more features for each step."
 
-jar { manifest { name = "Qi4j Tutorial - Composites" }}
+jar { manifest { name = "Apache Zest™ Tutorial - Composites" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

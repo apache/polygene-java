@@ -17,7 +17,7 @@
  * under the License.
  */
 
-jar { manifest { description = "Qi4j Reindexer Extension" }}
+jar { manifest { description = "Apache Zest™ Reindexer Extension" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.spi"))

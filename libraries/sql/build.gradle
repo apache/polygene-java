@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j SQL Library provides SQL support."
+description = "Apache Zest™ SQL Library provides SQL support."
 
-jar { manifest { name = "Qi4j Library - SQL" }}
+jar { manifest { name = "Apache Zest™ Library - SQL" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

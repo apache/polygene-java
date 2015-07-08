@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j JavaScript Library allows for Mixins to be implemented in JavaScript instead of directly in compiled Java."
+description = "Apache Zest™ JavaScript Library allows for Mixins to be implemented in JavaScript instead of directly in compiled Java."
 
-jar { manifest { name = "Qi4j Library - Scripting - JavaScript" }}
+jar { manifest { name = "Apache Zest™ Library - Scripting - JavaScript" }}
 
 
 dependencies {

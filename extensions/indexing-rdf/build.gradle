@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j RDF Index/Query Extension"
+description = "Apache Zest™ RDF Index/Query Extension"
 
-jar { manifest { name = "Qi4j Extension - Index/Query - RDF" } }
+jar { manifest { name = "Apache Zest™ Extension - Index/Query - RDF" } }
 
 dependencies {
 

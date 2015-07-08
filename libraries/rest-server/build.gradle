@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j REST Server Library provides a server component for building REST API's based on usecases"
+description = "Apache Zest™ REST Server Library provides a server component for building REST API's based on usecases"
 
-jar { manifest { name = "Qi4j Library - REST server" }}
+jar { manifest { name = "Apache Zest™ Library - REST server" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.api"))

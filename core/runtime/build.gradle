@@ -17,7 +17,7 @@
  * under the License.
  */
 
-jar { manifest { name = "Qi4j Core Runtime" } }
+jar { manifest { name = "Apache Zest™ Core Runtime" } }
 
 dependencies {
 

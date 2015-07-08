@@ -17,7 +17,7 @@
  * under the License.
  */
 
-jar { manifest { name = "Qi4j Core Bootstrap"}}
+jar { manifest { name = "Apache Zest™ Core Bootstrap"}}
 
 dependencies {
 

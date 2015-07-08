@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Solr Indexing Extension"
+description = "Apache Zest™ Solr Indexing Extension"
 
-jar { manifest {name = "Qi4j Extension - Indexing - Solr" }}
+jar { manifest {name = "Apache Zest™ Extension - Indexing - Solr" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

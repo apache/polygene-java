@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-description = "Qi4j Locking Library provides lock management for methods."
+description = "Apache Zest™ Metrics Library."
 
-jar { manifest { name = "Qi4j Library - Locking" }}
+jar { manifest { name = "Apache Zest™ Library - Metrics" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

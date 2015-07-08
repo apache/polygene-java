@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j REST Library provides various Restlet resources that can be used to expose Qi4j entities and indexes. Mostly for debugging."
+description = "Apache Zest™ REST Library provides various Restlet resources that can be used to expose Apache Zest™ entities and indexes. Mostly for debugging."
 
-jar { manifest { name = "Qi4j Library - REST" }}
+jar { manifest { name = "Apache Zest™ Library - REST" }}
 
 dependencies {
 

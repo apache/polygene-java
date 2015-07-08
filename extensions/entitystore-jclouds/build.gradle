@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j JClouds EntityStore Extension"
+description = "Apache Zest™ JClouds EntityStore Extension"
 
-jar { manifest { name = "Qi4j Extension - EntityStore - JClouds" } }
+jar { manifest { name = "Apache Zest™ Extension - EntityStore - JClouds" } }
 
 dependencies {
 

@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j org.json ValueSerialization Extension"
+description = "Apache Zest™ org.json ValueSerialization Extension"
 
-jar { manifest { name = "Qi4j Extension - ValueSerialization - org.json" } }
+jar { manifest { name = "Apache Zest™ Extension - ValueSerialization - org.json" } }
 
 dependencies {
 

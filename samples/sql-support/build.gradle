@@ -19,7 +19,7 @@
 
 description = "SQL Support Sample."
 
-jar { manifest { name = "Qi4j Sample - SQL Support" }}
+jar { manifest { name = "Apache Zest™ Sample - SQL Support" }}
 
 dependencies {
 

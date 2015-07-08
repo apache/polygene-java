@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Qi4j Shiro Library integrates Apache Shiro security framework into Qi4j."
+description = "Apache Zest™ Shiro Library integrates Apache Shiro security framework into Apache Zest™."
 
-jar { manifest { name = "Qi4j Library - Shiro Core" }}
+jar { manifest { name = "Apache Zest™ Library - Shiro Core" }}
 
 dependencies {
 

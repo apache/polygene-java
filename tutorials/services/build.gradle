@@ -17,9 +17,9 @@
  * under the License.
  */
 
-description = "Tutorial on how to use Qi4j service concept."
+description = "Tutorial on how to use Apache Zest™ service concept."
 
-jar { manifest { name = "Qi4j Tutorial - Services" }}
+jar { manifest { name = "Apache Zest™ Tutorial - Services" }}
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
