@@ -684,7 +684,6 @@ def libsImage = copySpec {
     into( "libs/" ) {
       from proj.configurations.archives.artifacts.files
       exclude '**-testsources.jar'
-      exclude '**-javadoc.jar'
       exclude '**/*.asc'
     }
   }
