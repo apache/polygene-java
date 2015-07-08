@@ -138,6 +138,10 @@ include::../tutorials/howto-configure-service.txt[]
 
 :leveloffset: 2
 
+include::../tutorials/howto-invocation-annotation.txt[]
+
+:leveloffset: 2
+
 include::../tutorials/howto-use-io.txt[]
 
 :leveloffset: 2
