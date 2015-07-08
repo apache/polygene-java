@@ -24,10 +24,10 @@
     <codebase>beta</codebase>
 
     <!-- none, brief, good, complete -->
-    <documentation>brief</documentation>
+    <documentation>good</documentation>
 
     <!-- none, some, good, complete -->
-    <unittests>some</unittests>
+    <unittests>good</unittests>
   </status>
   <licenses>
     <license>ALv2</license>

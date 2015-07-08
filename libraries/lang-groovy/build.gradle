@@ -21,6 +21,7 @@ description = "Apache Zest™ Groovy Library allows for Mixins to be implemented
 
 jar { manifest { name = "Apache Zest™ Library - Scripting - Groovy" }}
 
+apply plugin: 'groovy'
 
 dependencies {
   compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))

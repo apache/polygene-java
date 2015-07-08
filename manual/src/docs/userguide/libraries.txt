@@ -31,6 +31,18 @@ for our users.
 
 :leveloffset: 2
 
+include::../../../../libraries/lang-groovy/src/docs/lang-groovy.txt[]
+
+:leveloffset: 2
+
+include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
+
+:leveloffset: 2
+
+include::../../../../libraries/lang-scala/src/docs/lang-scala.txt[]
+
+:leveloffset: 2
+
 include::../../../../libraries/alarm/src/docs/alarm.txt[]
 
 :leveloffset: 2
@@ -108,18 +120,6 @@ include::../../../../libraries/rest-server/src/docs/rest-server.txt[]
 :leveloffset: 2
 
 include::../../../../libraries/scheduler/src/docs/scheduler.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-groovy/src/docs/lang-groovy.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-scala/src/docs/lang-scala.txt[]
 
 :leveloffset: 2
 

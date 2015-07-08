@@ -29,28 +29,81 @@ Groovy Scripting Library
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
-The Groovy Scripting Library is a Generic mixin that implements interfaces 
-by delegating to Groovy functions using Groovy. Each method in an interface 
-is declared by a Groovy method in a file located in classpath with the name
-"<interface>.groovy", where the interface name includes the package, and has 
-"." replaced with "/".
+The Groovy Scripting Library is a Generic mixin that implements interfaces by delegating to Groovy code from classpath resources.
 
-Example
+But before looking at how to use the Scripting library we'll see that *you don't need this library at all if you simply need to use Groovy classes as Fragments*.
+Then we'll see how to use Groovy class scripts and method scripts.
 
-    org/qi4j/samples/hello/domain/HelloWorldSpeaker.groovy
-    org/qi4j/samples/hello/domain/HelloWorldSpeaker.sayAgain.groovy
-
-That means that the HelloWorldSpeaker.groovy file may be co-located with the 
-class files in the same package. It is currently not supported to place 
-the Groovy implementation of the mixin in a different package than the 
-interface it implements.
-
-To use Groovy to implement the Mixin functionality for a given interface, 
-simply declare the +GroovyMixin+ like any other mixin, either in the interface 
-or at assembly time.
+All examples below are based on this type:
 
 [snippet,java]
 ----
-source=libraries/lang-groovy/src/test/java/org/qi4j/lang/groovy/HelloSpeaker.java
-tag=mixin
+source=libraries/lang-groovy/src/test/groovy/org/qi4j/lang/groovy/HelloSpeaker.java
+tag=speaker
 ----
+
+
+== Using compiled Groovy classes ==
+
+To directly use compiled Groovy classes as Fragments you don't need this library at all.
+
+Having this Groovy class compiled ;
+
+.HelloSpeakerMixin.groovy
+[snippet,groovy]
+----
+source=libraries/lang-groovy/src/test/groovy/org/qi4j/lang/groovy/HelloSpeakerMixin.groovy
+tag=direct
+----
+
+assemble it directly:
+
+[snippet,java]
+----
+source=libraries/lang-groovy/src/test/groovy/org/qi4j/lang/groovy/HelloSpeakerTest.java
+tag=direct
+----
+
+
+== Using Groovy class scripts ==
+
+Declare a Groovy class in a classpath resource file located in the same package as the implemented type with the name +<type>.groovy+:
+
+.HelloSpeaker.groovy
+[snippet,groovy]
+----
+source=libraries/lang-groovy/src/test/resources/org/qi4j/lang/groovy/HelloSpeaker.groovy
+tag=script
+----
+
+Then assemble it with the +GroovyMixin+:
+
+[snippet,java]
+----
+source=libraries/lang-groovy/src/test/groovy/org/qi4j/lang/groovy/HelloSpeakerTest.java
+tag=script
+----
+
+Groovy class scripts get +@This+ injection in a +This+ property if present.
+
+
+== Using Groovy method scripts ==
+
+Implement single composites methods, each in a classpath resource file located in the same package as the implemented type with the name +<type>.<method>.groovy+:
+
+.HelloSpeaker.sayHello.groovy
+[snippet,groovy]
+----
+source=libraries/lang-groovy/src/test/resources/org/qi4j/lang/groovy/HelloSpeaker.sayHello.groovy
+tag=script
+----
+
+Then assemble it with the +GroovyMixin+:
+
+[snippet,java]
+----
+source=libraries/lang-groovy/src/test/groovy/org/qi4j/lang/groovy/HelloSpeakerTest.java
+tag=script
+----
+
+Groovy method scripts get +@This+ injection as +This+ property and the methods arguments array as +args+.
