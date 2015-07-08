@@ -148,7 +148,10 @@ allprojects {
   }
   tasks.withType(Javadoc) {
     options.encoding = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+    options.charSet = 'UTF-8'
     options.noTimestamp = true
+    // exclude '**/internal/**'
   }
 
   repositories {
