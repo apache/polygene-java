@@ -20,13 +20,13 @@
 [[tut-services-step3,Step 3 - Reading the Service Configuration]]
 = Step 3 - Reading the Service Configuration =
 
-Services typically have configuration. Configurations are directly supported in Zest™. A
+Services typically have configuration. Configurations are directly supported in Zestâ„¢. A
 ConfigurationComposite is a subtype of EntityComposite. That is because
 configurations are stored in EntityStores, can be modified in runtime by client code and has
 the same semantics as regular entities.
 
-Zest™ also handles the bootstrapping of configuration for the services. If the ConfigurationComposite is
-not found in the configured entity store, then Zest™ will automatically locate a properties file for each
+Zestâ„¢ also handles the bootstrapping of configuration for the services. If the ConfigurationComposite is
+not found in the configured entity store, then Zestâ„¢ will automatically locate a properties file for each
 service instance, read those properties into a ConfigurationComposite instance, save that to the
 entity store and provide the values to the service. The properties file must be with the same name as
 the service instance with the extension "properties" in the same package as the service.

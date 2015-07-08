@@ -41,7 +41,7 @@ tag=assembly
 
 == Configuration ==
 
-Most of the configuration of Voldemort is available in the Zest™ Configuration Entity.
+Most of the configuration of Voldemort is available in the Zestâ„¢ Configuration Entity.
 
 [snippet,java]
 ----

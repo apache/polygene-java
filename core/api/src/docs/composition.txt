@@ -47,12 +47,12 @@ these, so the right meta type is used for the right purpose.
     * Service - Service is injectable to other composites and java objects. They are not persistable, but if
       referenced from an Entity or Value, a new reference to the Service will be injected when the Entity/Value is
       deserialized. Services are singletons. There are 'hosted' and 'imported' Services. The 'hosted' Service has
-      Configuration and its life cycle controlled by the Zest™ runtime, whereas the 'imported' Services are external
+      Configuration and its life cycle controlled by the Zestâ„¢ runtime, whereas the 'imported' Services are external
       references.
     * Transient - Short-lived composites that are not persistable. Equals/hashCode/toString are forwarded to the
       Mixin Type declaring those methods explicitly.
 
-In versions of Zest™ prior to 2.0 (then Qi4j), composite types had to extend one of these 4 meta types, but in 2.0 and later, the
+In versions of Zestâ„¢ prior to 2.0 (then Qi4j), composite types had to extend one of these 4 meta types, but in 2.0 and later, the
 meta type interface is added dynamically during <<core-bootstrap-assembly>>.
 We can therefor get rid of a lot of additional types, and use Zest-free interfaces directly;
 

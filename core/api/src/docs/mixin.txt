@@ -122,16 +122,16 @@ source=core/api/src/test/java/org/qi4j/api/mixin/partial/SpeedMixin.java
 tag=partial
 -----------
 
-Above the SpeedMixin only implements the accelerate() method, and Zest™ will only map that method to this mixin. The
+Above the SpeedMixin only implements the accelerate() method, and Zestâ„¢ will only map that method to this mixin. The
 other method of the SpeedLocation interface is not satisfied as the example is written and will generate a runtime
 exception.
 
 == Private Mixins ==
-Public mixins expose their methods in the composite interface, and this is not always desirable. Zest™ supports
+Public mixins expose their methods in the composite interface, and this is not always desirable. Zestâ„¢ supports
 _Private Mixins_, which are only visible within the composite itself. That means that other fragments in the composite
 can see/use it, but it is not visible to the clients of the composite.
 
-Private Mixins are handled automatically. When Zest™ detects a +@This+ annotation referring to a type that is not defined
+Private Mixins are handled automatically. When Zestâ„¢ detects a +@This+ annotation referring to a type that is not defined
 in the Composite interface, then that is a Private Mixin. The Mixin implementation class, however, must exist in the
 list of Mixins in the @Mixins annotation. But often, the Private Mixin only list internal Property methods in the Mixin
 Type, which will be satisfied by the standard PropertyMixin and hence always available.
@@ -172,7 +172,7 @@ Typically, AppliesTo annotation is used to filter the methods that such Generic 
 and sometimes Generic Mixin implementations are "last resort".
 
 Experience shows that Generic Mixin implementations are rare, and should only be used in extreme cases. They are
-less frequent than Generic Concern or Generic SideEffect implementations, but inside the Zest™ API are a couple of
+less frequent than Generic Concern or Generic SideEffect implementations, but inside the Zestâ„¢ API are a couple of
 Generic Mixin implementations that are always present to make the life of the developer easier, such as PropertyMixin,
 AssociationMixin, ManyAssociationMixin, NoopMixin. The first 3 are declared on the Composite and EntityComposite
 interfaces and automatically included if needed. They also serve as excellent example of what they can be used for.
@@ -193,6 +193,6 @@ which seems to indicate that Generic Mixin implementations are likely to be used
 
 Typed Mixin implementations are much preferred in general business logic, as they will be first-class citizens of
 the IDE as well, for navigation, find usage, refactoring and many other common tasks. This is one of the main
-advantages of the Zest™ way of doing AOP compared to AspectJ et al, where "weaving" is something bolted onto an
+advantages of the Zestâ„¢ way of doing AOP compared to AspectJ et al, where "weaving" is something bolted onto an
 application's classes via regular expressions and known naming conventions, which can change in an instance by a
 developer being unaware of which PointCuts applies to his code.

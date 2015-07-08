@@ -21,7 +21,7 @@ immutable and can be compared by value instead of memory reference. Concurrency 
 the value exists or it doesn't, no need for synchronization. Values are typically very easy to test and very robust to
 refactoring.
 
-Zest™ defines values as a primary meta type through the ValueComposite, as we think the benefits of values are great.
+Zestâ„¢ defines values as a primary meta type through the ValueComposite, as we think the benefits of values are great.
 The ValueComposite is very light-weight compared to the EntityComposite, and its value can still be persisted as part
 of an EntityComposite via a Property.
 

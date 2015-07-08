@@ -14,10 +14,10 @@
 //////////////////////
 
 [[ref-core-api, Core API]]
-= Zest™ Core API =
+= Zestâ„¢ Core API =
 
-The Zest™ Core API is main API that Zest™ developers interact with. In fact, if you need to use classes/interfaces
-in the Zest™ Core SPI or Zest™ Core Runtime, then please contact the Zest™ Community and explain your use-case.
+The Zestâ„¢ Core API is main API that Zestâ„¢ developers interact with. In fact, if you need to use classes/interfaces
+in the Zestâ„¢ Core SPI or Zestâ„¢ Core Runtime, then please contact the Zestâ„¢ Community and explain your use-case.
 
 The Core API is strictly layered, with no _spaghetti_ cross packages. The package list is fairly long, and
 we will look at each one in detail further down.

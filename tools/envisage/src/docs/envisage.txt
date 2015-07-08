@@ -20,7 +20,7 @@
 [[tools-envisage,Envisage Tool]]
 = Envisage =
 
-Envisage is a Swing based visualization tool for the Zest™ Application model.
+Envisage is a Swing based visualization tool for the Zestâ„¢ Application model.
 Visualizations can be printed to PDFs.
 
 == Usage ==

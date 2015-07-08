@@ -27,7 +27,7 @@ source=libraries/fileconfig/dev-status.xml
 
 The FileConfig library provide a service for accessing application-specific directories.
 
-A lot of the Zest™ Libraries and Extensions make use of this library to locate files.
+A lot of the Zestâ„¢ Libraries and Extensions make use of this library to locate files.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 

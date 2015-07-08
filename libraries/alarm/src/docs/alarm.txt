@@ -78,7 +78,7 @@ tag=documentation
 --------------
 
 == Alarm Models ==
-The Zest™ Alarm library comes with 3 _Alarm Models_ which should be sufficient for most uses. These are based on decades
+The Zestâ„¢ Alarm library comes with 3 _Alarm Models_ which should be sufficient for most uses. These are based on decades
 of experience from the industrial automation industry and user feedback.
 
 == Simple Alarm Model ==

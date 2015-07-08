@@ -20,24 +20,24 @@
 [[build-system,Build System]]
 = Build System =
 
-This tutorial is intended for developpers who want to build the Zest™ SDK themselves.
-It describe the Zest™ SDK Build System from compilation to publication of artifacts for consumption by other
+This tutorial is intended for developpers who want to build the Zestâ„¢ SDK themselves.
+It describe the Zestâ„¢ SDK Build System from compilation to publication of artifacts for consumption by other
 applications.
 
-If instead you want to setup your project build system to depend on modules of the Zest™ SDK see the
+If instead you want to setup your project build system to depend on modules of the Zestâ„¢ SDK see the
 <<howto-depend-on-qi4j,dedicated tutorial>>.
 
 
 == Gradle ==
 
 NOTE: All major Java IDEs have great Gradle support.
-Visit the http://www.gradle.org/tooling[Gradle Tooling] page to learn how to import the Zest™ SDK build into your
+Visit the http://www.gradle.org/tooling[Gradle Tooling] page to learn how to import the Zestâ„¢ SDK build into your
 favorite IDE.
 
-Zest™ community migrated away from Maven after several years of frustration, especially around release management,
+Zestâ„¢ community migrated away from Maven after several years of frustration, especially around release management,
 versioning and cross-module dependency resolution issues, in Feb 2011.
 The tool of choice is now Gradle, and it doesn't require any installation, there are +gradlew+ and +gradlew.bat+ in
-the root folder of the Zest™ SDK that will bootstrap Gradle if not done so already.
+the root folder of the Zestâ„¢ SDK that will bootstrap Gradle if not done so already.
 
 If you are new to Gradle, you should keep the http://www.gradle.org/documentation[documentation] at hands.
 
@@ -48,7 +48,7 @@ http://gradle.org/docs/current/userguide/tutorial_this_and_that.html#sec:gradle_
 
 == Root project tasks ==
 
-The Zest™ SDK root project has tasks that work with the whole SDK.
+The Zestâ„¢ SDK root project has tasks that work with the whole SDK.
 The default build, triggered when running gradle without any command line arguments, compiles the code and run the
 tests, but nothing else.
 A quick way to check that nothing broke.
@@ -109,7 +109,7 @@ To see all available tasks on a submodule issue the following command:
 ----
 
 This example will output all gradle tasks available in the +tests/performance+ module where you should find
-the +testPerf+ task that run the Zest™ performance test suite.
+the +testPerf+ task that run the Zestâ„¢ performance test suite.
 
 
 == Versions ==
@@ -131,7 +131,7 @@ If a +version+ property is not defined, the build system will refuse to make a r
 
 == Tests ==
 
-NOTE: See the http://qi4j.org/community/ci.html[Zest™ Continuous Integration] for current tests results
+NOTE: See the http://qi4j.org/community/ci.html[Zestâ„¢ Continuous Integration] for current tests results
 
 // TODO
 
@@ -144,7 +144,7 @@ They are not part of the default build.
 
 === Performance tests ===
 
-Performance tests provide performance mesurements for typical Zest™ use cases.
+Performance tests provide performance mesurements for typical Zestâ„¢ use cases.
 They are not part of the default build.
 
 // TODO
@@ -179,12 +179,12 @@ We'll list here services that the unit tests will use if available.
 - MySQL for +extensions/entitystore-sql+ (need setup, see test source)
 
 
-== Releasing the Zest™ SDK ==
+== Releasing the Zestâ„¢ SDK ==
 
 IMPORTANT: Remember that if a +version+ property is not defined, the build system will refuse to make a release and upload.
 
-The Zest™ SDK build system is setup for an easy release process.
-This is very useful to the Zest™ Core Team but can also be useful to third parties that want to cut a in-house release.
+The Zestâ„¢ SDK build system is setup for an easy release process.
+This is very useful to the Zestâ„¢ Core Team but can also be useful to third parties that want to cut a in-house release.
 In this regard, we try to make every aspect of the release process usable for such cases.
 
 The following sections describe various aspects of the release process.
@@ -193,12 +193,12 @@ By default you need to have a proper PGP setup, see below.
 
 === Release Criteria ===
 
-The Zest™ SDK modules are of varying maturity level and we try to maintain a STATUS (+dev-status.xml+) file indicating
+The Zestâ„¢ SDK modules are of varying maturity level and we try to maintain a STATUS (+dev-status.xml+) file indicating
 how good the codebase, documentation and unit tests are for each of the modules. This is highly subjective and
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.
 
-The Zest™ SDK build system use the values from the +dev-status.xml+ files to filter out non-releasable modules out for
+The Zestâ„¢ SDK build system use the values from the +dev-status.xml+ files to filter out non-releasable modules out for
 the +javadocs+ and +uploadArchives+ root project tasks.
 Moreover, the +release+ task ensure that no releasable module depends on module(s) that don't fit the release criteria
 and throw a detailed exception if need be.

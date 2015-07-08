@@ -21,7 +21,7 @@
 source=libraries/logging/dev-status.xml
 --------------
 
-First of all, Zest™ is taking a fresh look at all things that we take for granted. Logging is one such thing.
+First of all, Zestâ„¢ is taking a fresh look at all things that we take for granted. Logging is one such thing.
 
 It should (but is not) obvious that Logging are used for three very distinct purposes, and in our opinion the concepts
 are not related and should not be abstracted in the same fashion, as has been the norm in Log4j, JDK logging, Commons

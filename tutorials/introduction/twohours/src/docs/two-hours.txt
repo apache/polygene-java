@@ -17,12 +17,12 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[two-hours-intro,Zest™ in 2 hours]]
-= Zest™ in 2 hours =
+[[two-hours-intro,Zestâ„¢ in 2 hours]]
+= Zestâ„¢ in 2 hours =
 
 NOTE: This tutorial is not written yet. Learn how to contribute in <<community-docs>>.
 
-This introduction assumes that the "Zest™ in 10 minutes" and "Zest™ in 30 minutes" introductions has been read and
+This introduction assumes that the "Zestâ„¢ in 10 minutes" and "Zestâ„¢ in 30 minutes" introductions has been read and
 understood.
 
 In this introduction we will touch on the core concepts of UnitOfWork, Application structure and Bootstrap API.
@@ -34,7 +34,7 @@ interact with the underlying persistence system. This is done via EntitySessions
 
 - Application Structure -
 
-    * There are one Application per Zest™ instance.
+    * There are one Application per Zestâ„¢ instance.
 
     * An Application consists of one or more Layers.
 

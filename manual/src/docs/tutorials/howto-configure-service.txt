@@ -15,10 +15,10 @@
 
 [[howto-configure-service,Configure a Service]]
 = Configure a Service =
-Zest™ supports a Configuration system for services. The configuration instance itself is an Entity and is therefor
+Zestâ„¢ supports a Configuration system for services. The configuration instance itself is an Entity and is therefor
 readable, writeable and queryable, just like other Entities. This should make Configuration management much simpler,
 since you can easily build GUI tools to allow editing of these in runtime. However, to simplify the initial values of
-the Configuration instance, Zest™ also does the initial bootstrapping of the Configuration entity for you. This HowTo is
+the Configuration instance, Zestâ„¢ also does the initial bootstrapping of the Configuration entity for you. This HowTo is
 going to show how.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Bootstrap artifact:
@@ -139,7 +139,7 @@ tag=params
 File: org/qi4j/manual/travel/OrbitzService.properties
 
 == Changing Configuration in runtime ==
-Unlike most frameworks, the Configuration in Zest™ is an active Entity, and once the properties file has been read once
+Unlike most frameworks, the Configuration in Zestâ„¢ is an active Entity, and once the properties file has been read once
 at the first(!) startup, it no longer serves any purpose. The Configuration will always be retrieved from the
 EntityStore. Changes to the properties file are not taken into consideration if the Configuration entity is found in the
 entity store.

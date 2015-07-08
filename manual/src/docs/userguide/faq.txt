@@ -21,6 +21,6 @@
 = Frequently Asked Questions =
 
 Is it possible to use Scala with Zest?::
-        Short Answer: Yes. Scala traits can be used as Zest™ fragments, and Zest™ composites can be used in Scala.
+        Short Answer: Yes. Scala traits can be used as Zestâ„¢ fragments, and Zestâ„¢ composites can be used in Scala.
 
 

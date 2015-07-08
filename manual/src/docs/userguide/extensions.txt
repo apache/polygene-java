@@ -24,7 +24,7 @@
 
 == Overview ==
 
-We try to keep the Zest™ Core Runtime as lean as possible, and a lot of the power to the Zest™ Platform comes via its
+We try to keep the Zestâ„¢ Core Runtime as lean as possible, and a lot of the power to the Zestâ„¢ Platform comes via its
 Extension SPI, which defines clear ways to extend the platform. There are currently the following Extensions types,
 each with possibly more than one implementation;
 
@@ -37,7 +37,7 @@ each with possibly more than one implementation;
    * Migration
 
 This section will go through each of the available extensions.
-The Zest™ Extensions are of varying maturity level and we try to maintain a STATUS (dev-status.xml) file indicating
+The Zestâ„¢ Extensions are of varying maturity level and we try to maintain a STATUS (dev-status.xml) file indicating
 how good the codebase, documentation and unit tests are for each of the libraries. This is highly subjective and
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.

@@ -17,7 +17,7 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-= Zest™ v{revnumber} User Guide =
+= Zestâ„¢ v{revnumber} User Guide =
 
 :qi4j-version: {revnumber}
 :qi4j-buildnumber: {revnumber}

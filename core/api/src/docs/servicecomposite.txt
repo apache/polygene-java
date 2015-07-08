@@ -24,8 +24,8 @@ to encapsulate all the behavior together with the object's state, programmers le
 decoupling and re-use was to make the objects into data containers and deploy services that acted upon those data
 containers. Very much what functions did on structs back in the C and Pascal days.
 
-Zest™ will bring a lot of the behavior back to the Composite itself, but we still need Services for cross-composite
-functionality. The Zest™ Service model is fairly simple, yet powerful and flexible enough to accommodate most
+Zestâ„¢ will bring a lot of the behavior back to the Composite itself, but we still need Services for cross-composite
+functionality. The Zestâ„¢ Service model is fairly simple, yet powerful and flexible enough to accommodate most
 service-oriented patterns and ability to integrate well with external systems whether they are in-JVM or remote,
 such as Spring, OSGi, WS-*, Rest and others.
 
@@ -37,7 +37,7 @@ The characteristics of a ServiceComposite compared to other Composite meta types
     * It has an optional Configuration.
 
 
-_Services_ in Zest™ are _singletons_, one instance per definition. That means that there may exist multiple instances
+_Services_ in Zestâ„¢ are _singletons_, one instance per definition. That means that there may exist multiple instances
 of the same service type, but they can not be created on the fly in runtime, but has to be explicitly defined during
 <<core-bootstrap-assembly>>.
 

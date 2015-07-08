@@ -15,7 +15,7 @@
 
 [[core-api-service-configuration,Service Configuration]]
 = Service Configuration =
-Configuration in Zest™ is for Zest™ <<core-api-service>> only. The Configuration is stored in a visible Entity
+Configuration in Zestâ„¢ is for Zestâ„¢ <<core-api-service>> only. The Configuration is stored in a visible Entity
 Store and is therefor runtime modifiable and not static in properties or XML files as in most other dependency
 injection frameworks.
 

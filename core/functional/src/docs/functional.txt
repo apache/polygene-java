@@ -21,9 +21,9 @@
 source=core/functional/dev-status.xml
 --------------
 
-The Zest™ Core Functional API is a generic package to work with Iterables in a "functional programming language" style.
+The Zestâ„¢ Core Functional API is a generic package to work with Iterables in a "functional programming language" style.
 
-This package is completely independent of everything else in Zest™ and may be used on its own in any kind of environment
+This package is completely independent of everything else in Zestâ„¢ and may be used on its own in any kind of environment
 such as Spring or Java EE applications.
 
 include::../../build/docs/buildinfo/artifact.txt[]
@@ -38,7 +38,7 @@ source=core/functional/src/test/java/org/qi4j/functional/docsupport/FunctionalDo
 tag=func1
 -----------
 
-With the Zest™ Core Functional API, you go about it in a different way. The code ends up looking like this;
+With the Zestâ„¢ Core Functional API, you go about it in a different way. The code ends up looking like this;
 
 [snippet,java]
 -----------
@@ -50,11 +50,11 @@ And this is just the tip of the iceberg.
 
 == The Big Picture ==
 
-The Zest™ Core Functional API are divided a handful of powerful concepts, especially when used together;
+The Zestâ„¢ Core Functional API are divided a handful of powerful concepts, especially when used together;
 
    * *Iterables* - many methods to deal with Iterable data, so that the loops in your programs can largely be removed.
 
-   * *Functions* - f(x) and f(x,y) are well-know from mathematics and used in functional programming languages. Zest™ is
+   * *Functions* - f(x) and f(x,y) are well-know from mathematics and used in functional programming languages. Zestâ„¢ is
      not capable of introducing lambda calculus due to limitations in Java itself, but we can simulate a lot to allow
      people to create more readable code.
 

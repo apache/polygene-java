@@ -22,7 +22,7 @@
 
 == Overview ==
 
-The Zest™ Core Runtime use ValueSerialization to provide string representation of ValueComposites via their `toString()`
+The Zestâ„¢ Core Runtime use ValueSerialization to provide string representation of ValueComposites via their `toString()`
 method, and, their instanciation from the very same representation via the `newValueFromSerializedState(..)` method of
 the ValueBuilderFactory API.
 

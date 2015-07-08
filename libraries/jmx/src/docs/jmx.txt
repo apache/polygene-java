@@ -25,7 +25,7 @@
 source=libraries/jmx/dev-status.xml
 --------------
 
-The JMX library provides a service that exposes a Zest™ app in
+The JMX library provides a service that exposes a Zestâ„¢ app in
 JMX automatically, giving you an opportunity to inspect the app much as
 you would with the <<tools-envisage>> tool.
 
