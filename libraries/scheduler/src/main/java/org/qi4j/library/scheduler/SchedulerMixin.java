@@ -180,7 +180,10 @@ public class SchedulerMixin
                 {
                     // We need to restart the managementThread, which is currently waiting for a 'later' event to
                     // occur than the one that was just scheduled.
-                    scheduleHandler.future.cancel( true );
+                    if( scheduleHandler != null && scheduleHandler.future != null )
+                    {
+                        scheduleHandler.future.cancel( true );
+                    }
                     dispatchHandler();
                 }
             }
@@ -220,9 +223,9 @@ public class SchedulerMixin
         }
         // Throws IllegalArgument if corePoolSize or keepAliveTime less than zero, or if workersCount less than or equal to zero, or if corePoolSize greater than workersCount.
         taskExecutor = new ThreadPoolExecutor( corePoolSize, workersCount,
-                                               0, TimeUnit.MILLISECONDS,
-                                               new LinkedBlockingQueue<Runnable>( workQueueSize ),
-                                               threadFactory, rejectionHandler );
+            0, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>( workQueueSize ),
+            threadFactory, rejectionHandler );
         taskExecutor.prestartAllCoreThreads();
         managementExecutor = new ScheduledThreadPoolExecutor( 2, threadFactory, rejectionHandler );
         loadSchedules();
