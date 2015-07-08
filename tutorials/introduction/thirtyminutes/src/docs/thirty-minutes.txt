@@ -21,7 +21,7 @@
 = Zest™ in 30 minutes =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-http://qi4j.org/downloads.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
+https://zest.apache.org/download.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
 
@@ -36,7 +36,7 @@ include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 Moreover, you'll need an EntityStore for persistence and an Indexing engine for querying. Choose among the available
 implementations listed in the <<extensions>> section.
 
-See the <<howto-depend-on-qi4j>> tutorial for details.
+See the <<howto-depend-on-zest>> tutorial for details.
 
 We will go back to the OrderEntity example;
 [snippet,java]

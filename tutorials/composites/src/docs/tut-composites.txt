@@ -21,7 +21,7 @@
 = Transient Composites Tutorial =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-http://qi4j.org/downloads.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
+https://zest.apache.org/download.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
 Throughout this set of tutorials it will be shown how to create and work with Composites, which
@@ -52,7 +52,7 @@ on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
 
 include::../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 
-See the <<howto-depend-on-qi4j>> tutorial for details.
+See the <<howto-depend-on-zest>> tutorial for details.
 
 :leveloffset: 3
 

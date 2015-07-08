@@ -87,7 +87,7 @@ possibly with transformations and filtering along the way.
 //*<<core-spi,Core Extension SPI>>*
 === Core Extension SPI ===
 //____
-The Zest™ Core Runtime has a number of extension points, which we call the _Qi4j Core Extension SPI_. These are defined
+The Zest™ Core Runtime has a number of extension points, which we call the _Zest™ Core Extension SPI_. These are defined
 interfaces used *only* by the Core Runtime and *never* directly by application code. <<extensions>> are assembled in
 applications during the bootstrap phase.
 
@@ -98,7 +98,7 @@ applications during the bootstrap phase.
 === Core Runtime ===
 //____
 Your code should *never*, *ever*, have a dependency on Zest™ Core Runtime. If you think you need this, you should
-probably contact qi4j-dev forum at Google Groups and see if your usecase can either be solved in a existing way or
+probably contact dev@zest.apache.org and see if your usecase can either be solved in a existing way or
 perhaps that a new Core Extension SPI is needed.
 
 <<core-runtime,Learn more>>

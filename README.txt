@@ -38,7 +38,7 @@ If you need to go offline type `./gradlew gooffline` to ensure all needed
 dependencies are cached by Gradle.
 
 If you prefer to use a dependency management system, go to:
-https://zest.apache.org/qi4j/latest/howto-depend-on-qi4j.html
+https://zest.apache.org/java/latest/howto-depend-on-zest.html
 
 
 Building Apache Zest
@@ -47,7 +47,7 @@ To build Zest™ from sources you only need to have a valid Java JDK >= 7
 installation.
 
 This document the Zest™ build system and its usage:
-https://zest.apache.org/qi4j/latest/build-system.html
+https://zest.apache.org/java/latest/build-system.html
 
 
 Thank you for trying out Apache Zest™ and Composite Oriented Programming.

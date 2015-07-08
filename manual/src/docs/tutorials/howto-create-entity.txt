@@ -26,7 +26,7 @@ include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
 Moreover, you'll need an EntityStore for persistence and an Indexing engine for querying. Choose among the available
 implementations listed in the <<extensions>> section.
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
 
 == Basics First ==
 

@@ -24,23 +24,37 @@
 
 == JavaDocs ==
 
+In this section you will find links to JavaDocs corresponding to this Apache Zest™ (Java Edition) version ({revnumber}), to some alias versions, and finally, to previous releases.
+
+=== Apache Zest™ (Java Edition) {revnumber} ===
+
+// JavaDocs for Apache Zest™ (Java Edition) {revnumber}:
+
+* link:javadocs/index.html[Release {revnumber}]
+
+
 === Alias Versions ===
 
-* link:../latest/javadocs/index.html[Latest Release == Master Branch]
-* link:../develop/javadocs/index.html[Develop Branch]
+Links to _"alias versions"_ JavaDocs:
 
-=== Releases ===
+* https://zest.apache.org/java/latest/javadocs/[Latest Release (`master` branch)]
+* https://zest.apache.org/java/develop/javadocs/[Development (`develop` branch)]
 
-* link:../2.0/javadocs/index.html[Release 2.0]
-* link:../1.4.1/javadocs/index.html[Release 1.4.1]
-* link:../1.4/javadocs/index.html[Release 1.4]
-* link:../1.3/javadocs/index.html[Release 1.3]
+
+=== Previous Releases ===
+
+Archived JavaDocs of previous releases:
+
+* https://zest.apache.org/java/2.0/javadocs/[Release 2.0]
+* https://zest.apache.org/java/1.4.1/javadocs/[Release 1.4.1]
+* https://zest.apache.org/java/1.4/javadocs/[Release 1.4]
+* https://zest.apache.org/java/1.3/javadocs/[Release 1.3]
 * Release 1.2
-** link:../1.2/javadocs/api[Core API]
-** link:../1.2/javadocs/bootstrap[Core Bootstrap]
-** link:../1.2/javadocs/spi[Core SPI]
+** https://zest.apache.org/java/1.2/javadocs/api[Core API]
+** https://zest.apache.org/java/1.2/javadocs/bootstrap[Core Bootstrap]
+** https://zest.apache.org/java/1.2/javadocs/spi[Core SPI]
 * Release 1.0
-** link:../1.0/javadocs/api[Core API]
-** link:../1.0/javadocs/bootstrap[Core Bootstrap]
-** link:../1.0/javadocs/spi[Core SPI]
+** https://zest.apache.org/java/1.0/javadocs/api[Core API]
+** https://zest.apache.org/java/1.0/javadocs/bootstrap[Core Bootstrap]
+** https://zest.apache.org/java/1.0/javadocs/spi[Core SPI]
 

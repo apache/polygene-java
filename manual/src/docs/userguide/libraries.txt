@@ -29,7 +29,6 @@ how good the codebase, documentation and unit tests are for each of the librarie
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.
 
-
 :leveloffset: 2
 
 include::../../../../libraries/alarm/src/docs/alarm.txt[]

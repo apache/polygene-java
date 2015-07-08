@@ -25,7 +25,7 @@ It describe the Zest™ SDK Build System from compilation to publication of arti
 applications.
 
 If instead you want to setup your project build system to depend on modules of the Zest™ SDK see the
-<<howto-depend-on-qi4j,dedicated tutorial>>.
+<<howto-depend-on-zest,dedicated tutorial>>.
 
 
 == Gradle ==
@@ -72,7 +72,7 @@ check::
 +
 --
 Run the tests and other checks like checkstyle.
-Reports are generated in +qi4j-sdk/build/reports+.
+Reports are generated in +build/reports+.
 --
 
 install::
@@ -87,14 +87,14 @@ buildAll::
 +
 --
 Produces all the archives, javadocs, manuals and website content.
-The output is generated to +qi4j-sdk/build+.
+The output is generated to +build+.
 --
 
 release::
 +
 --
 Uploads the release artifacts to the distribution servers and creates the release output into the
-+qi4j-sdk/build/distributions+ directory.
++build/distributions+ directory.
 --
 
 
@@ -131,7 +131,7 @@ If a +version+ property is not defined, the build system will refuse to make a r
 
 == Tests ==
 
-NOTE: See the http://qi4j.org/community/ci.html[Zest™ Continuous Integration] for current tests results
+NOTE: See the https://builds.apache.org/view/S-Z/view/Zest/[Zest™ Continuous Integration] for current tests results
 
 // TODO
 

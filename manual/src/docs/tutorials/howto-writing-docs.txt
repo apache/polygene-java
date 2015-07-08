@@ -40,7 +40,7 @@ source code in the documentation, since any refactoring will be reflected in the
 The above files are all consumed by the build of the manual (by adding them as dependencies).
 To get content included in the manual, it has to be explicitly included by a document in the manual as well.
 
-The whole documentation set is generated from the _*manual*_ module in the +qi4j-sdk+, and we are currently only creating the website.
+The whole documentation set is generated from the _*manual*_ module in the SDK, and we are currently only creating the website.
 The User Guide and Reference Manual are future projects.
 
 == Headings and document structure ==
@@ -124,28 +124,28 @@ External links are added like this:
 
 [source]
 ----
-http://www.qi4j.org/[Link text here]
+https://zest.apache.org/[Link text here]
 ----
 
-Which renders like: http://www.qi4j.org/[Link text here]
+Which renders like: https://zest.apache.org/[Link text here]
 
 For short links it may be better not to add a link text, just do:
 
 [source]
 ----
-http://www.qi4j.org/
+https://zest.apache.org/
 ----
 
-Which renders like: http://www.qi4j.org/
+Which renders like: https://zest.apache.org/
 
 It's ok to have a dot right after the URL, it won't be part of the link.
 
 [source]
 ----
-http://www.qi4j.org/.
+https://zest.apache.org/.
 ----
 
-Which renders like: http://www.qi4j.org/.
+Which renders like: https://zest.apache.org/.
 
 == Text Formatting ==
 
@@ -228,7 +228,7 @@ Most source code that is included in the documentation should be extract via +SN
  -----------
 ----
 
-The source file is relative to the +qi4j-sdk+ root, and the 'tag' is defined in the source file.
+The source file is relative to the SDK root, and the 'tag' is defined in the source file.
 The above could be bringing in content that looks like;
 
 [source]

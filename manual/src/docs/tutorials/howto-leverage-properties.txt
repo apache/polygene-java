@@ -24,7 +24,7 @@ If you want to reproduce what's explained in this tutorial, remember to depend o
 
 include::../../../../core/api/build/docs/buildinfo/artifact.txt[]
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
 
 So in Zest, instead of writing;
 
