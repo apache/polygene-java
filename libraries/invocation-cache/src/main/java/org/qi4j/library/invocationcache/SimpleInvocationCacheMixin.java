@@ -21,9 +21,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Default implementation of InvocationCache.
+ * Simple implementation of InvocationCache.
+ * <p>
+ * This {@link InvocationCache} should typically not be used at all, and only serves as an
+ * example. The @{code cachedValues} member is never emptied, so it constitutes a memory leak
+ * if the method arguments keep changing.
+ * </p>
+ * <p>
+ * <b>IMPORTANT: Only use this is you know that only a small set of arguments are used into your
+ * method(s).</b>
+ * </p>
  */
-public class InvocationCacheMixin
+public class SimpleInvocationCacheMixin
     implements InvocationCache
 {
     private final Map<String, Object> cachedValues = new ConcurrentHashMap<>();
