@@ -46,7 +46,7 @@
     </description>
     <bug-database rdf:resource="http://issues.apache.org/jira/browse/ZEST" />
     <mailing-list rdf:resource="http://zest.apache.org/community/get_help.html" />
-    <download-page rdf:resource="http://zest.apache.org/downloads.html" />
+    <download-page rdf:resource="http://zest.apache.org/download.html" />
 
     <programming-language>Java</programming-language>
     <programming-language>C#</programming-language>

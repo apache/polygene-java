@@ -40,7 +40,7 @@ distribution's root, you'll find both Maven (go-offline.pom) and Gradle
 needed dependencies jars. Instructions are given into theses files.
 
 If you prefer to use a dependency management system, go to:
-https://zest.apache.org/qi4j/latest/howto-depend-on-qi4j.html
+https://zest.apache.org/java/latest/howto-depend-on-zest.html
 
 
 Thank you for trying out Apache Zest™ and Composite Oriented Programming.

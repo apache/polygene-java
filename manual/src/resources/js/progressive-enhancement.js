@@ -23,6 +23,8 @@
  */
 $( document ).ready( function($){
 
+    var atHome = window.location.hostname == "zest.apache.org"
+
     /**
      * Glossary.
      */
@@ -88,13 +90,13 @@ $( document ).ready( function($){
             $( "div.logo" ).append( switcher_html );
             var toURL = function( displayName )
             {
-                if( window.location.hostname == "zest.apache.org" )
+                if( atHome )
                 {
                     return "../" + versions[ displayName ];
                 }
                 else
                 {
-                    return "https://zest.apache.org/qi4j/" + versions[ displayName ];
+                    return "https://zest.apache.org/java/" + versions[ displayName ];
                 }
             }
             $( "div.logo select" ).change( function()
@@ -108,20 +110,37 @@ $( document ).ready( function($){
         }
     } );
 
-    // Add separator space between tutorials series
+    // Enhance left nav
     $( "div.sub-nav div.toc dt" ).each( function( idx, dt ) {
         var $dt = $( dt );
         var item = $dt.find( "span.section:first-child" ).text().trim();
         switch( item )
         {
-            case "Qi4j in 2 minutes":
-                $dt.attr( "style", "margin-top: 24px" );
-                break;
-            case "Qi4j in 2 hours":
+            // Overview everywhere
+            case "Overview":
+                $dt.attr( "style", "margin-bottom: 24px" );
+            // Tutorials
+            case "Zest\u2122 in 2 hours":
             case "Leverage Properties":
             case "Use I/O API":
                 $dt.attr( "style", "margin-bottom: 24px" );
                 break;
+            // JavaDocs
+            case "JavaDocs":
+                $dt.hide();
+                break;
+            // Libraries
+            case "Alarms":
+                $dt.attr( "style", "margin-top: 24px" );
+                break;            
+            // Extensions
+            case "Ehcache Cache":
+            case "Memory EntityStore":
+            case "ElasticSearch Index/Query":
+            case "Yammer Metrics":
+            case "Migration":
+                $dt.attr( "style", "margin-top: 24px" );
+                break;            
         }
     } );
 

@@ -11,15 +11,9 @@
 */
 package org.qi4j.lang.groovy;
 
-import org.qi4j.api.mixin.Mixins;
-
-// START SNIPPET: mixin
-import org.qi4j.lang.groovy.GroovyMixin;
-
-
-@Mixins(GroovyMixin.class)
+// START SNIPPET: speaker
 public interface HelloSpeaker
 {
-    void sayHello();
+    String sayHello( String name );
 }
-// END SNIPPET: mixin
+// END SNIPPET: speaker

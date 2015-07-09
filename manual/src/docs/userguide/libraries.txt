@@ -29,6 +29,17 @@ how good the codebase, documentation and unit tests are for each of the librarie
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.
 
+:leveloffset: 2
+
+include::../../../../libraries/lang-groovy/src/docs/lang-groovy.txt[]
+
+:leveloffset: 2
+
+include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
+
+:leveloffset: 2
+
+include::../../../../libraries/lang-scala/src/docs/lang-scala.txt[]
 
 :leveloffset: 2
 
@@ -113,18 +124,6 @@ include::../../../../libraries/rest-server/src/docs/rest-server.txt[]
 :leveloffset: 2
 
 include::../../../../libraries/scheduler/src/docs/scheduler.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-groovy/src/docs/lang-groovy.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-scala/src/docs/lang-scala.txt[]
 
 :leveloffset: 2
 

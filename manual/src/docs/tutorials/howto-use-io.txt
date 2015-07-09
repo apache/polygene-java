@@ -80,7 +80,7 @@ on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
 
 include::../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 
-See the <<howto-depend-on-qi4j>> tutorial for details.
+See the <<howto-depend-on-zest>> tutorial for details.
 
 Once theses parts were identified it was mostly just a matter of putting interfaces on these pieces, and making sure
 they can be easily used in many different situations. The result is as follows.

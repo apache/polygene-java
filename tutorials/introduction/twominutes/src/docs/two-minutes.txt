@@ -21,7 +21,7 @@
 = Zest™ in 2 minutes =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-http://qi4j.org/downloads.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
+https://zest.apache.org/download.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
 To show that Zest™ is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the
@@ -32,7 +32,7 @@ on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
 
 include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 
-See the <<howto-depend-on-qi4j>> tutorial for details.
+See the <<howto-depend-on-zest>> tutorial for details.
 
 Ready, Set, Go!
 
