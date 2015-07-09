@@ -23,8 +23,8 @@ project.ext {
   testFailures = [ ]
   mainClassName = 'org.qi4j.container.Main'
   groovycMain_mx = "700m"
-  groovycMain_permSize = "256m"
-  groovycMain_maxPermSize = "256m"
+  groovycMain_permSize = "512m"
+  groovycMain_maxPermSize = "512m"
 }
 
 buildscript {
