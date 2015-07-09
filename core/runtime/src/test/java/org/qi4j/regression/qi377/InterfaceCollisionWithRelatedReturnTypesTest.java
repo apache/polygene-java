@@ -36,7 +36,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-@Ignore( "This test exhibit QI-377" )
+//@Ignore( "This test exhibit QI-377" )
 public class InterfaceCollisionWithRelatedReturnTypesTest
     extends AbstractQi4jTest
 {
