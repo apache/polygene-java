@@ -131,7 +131,3 @@ See org.qi4j.library.http.SecureJettyConfiguration for a reference of all availa
 configuration properties.
 
 
-== Logging ==
-
-The SLF4J logger used by this library is named "org.qi4j.library.http".
-
