@@ -52,6 +52,8 @@ import static org.qi4j.library.conversion.values.Shared.STRING_TYPE_SPEC;
 
 /**
  * ValueToEntity Mixin.
+ *
+ * @deprecated Please use {@link org.qi4j.api.unitofwork.UnitOfWork#toEntity(Class, Identity)} instead.
  */
 public class ValueToEntityMixin
     implements ValueToEntity

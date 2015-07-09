@@ -23,6 +23,7 @@ import org.qi4j.functional.Function;
 
 /**
  * Create or update Entities from matching Values.
+ * @deprecated Please use {@link org.qi4j.api.unitofwork.UnitOfWork#toEntity(Class, Identity)} instead.
  */
 public interface ValueToEntity
 {
