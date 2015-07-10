@@ -69,7 +69,6 @@ import org.qi4j.functional.Function2;
  */
 public interface ValueDeserializer
 {
-
     /**
      * Factory method for a typed deserialize function.
      *

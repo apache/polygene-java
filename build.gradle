@@ -24,7 +24,7 @@ project.ext {
   mainClassName = 'org.qi4j.container.Main'
   groovycMain_mx = "700m"
   groovycMain_permSize = "512m"
-  groovycMain_maxPermSize = "512m"
+  groovycMain_maxPermSize = "1G"
 }
 
 buildscript {

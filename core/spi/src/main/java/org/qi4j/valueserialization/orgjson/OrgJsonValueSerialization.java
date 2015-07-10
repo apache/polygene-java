@@ -17,6 +17,7 @@ package org.qi4j.valueserialization.orgjson;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
@@ -43,7 +44,7 @@ public class OrgJsonValueSerialization
     private final OrgJsonValueSerializer serializer;
     private final OrgJsonValueDeserializer deserializer;
 
-    public OrgJsonValueSerialization( Application application, Module module, final Module valuesModule )
+    public OrgJsonValueSerialization( @Structure Application application, @Structure Module module, @Structure final Module valuesModule )
     {
         this.serializer = new OrgJsonValueSerializer();
         this.deserializer = new OrgJsonValueDeserializer( application, module, new Function<Application, Module>()
@@ -63,12 +64,6 @@ public class OrgJsonValueSerialization
     }
 
     @Override
-    public <T> Function<T, String> serialize( Options options )
-    {
-        return serializer.serialize( options );
-    }
-
-    @Override
     @Deprecated
     public <T> Function<T, String> serialize( boolean includeTypeInfo )
     {
@@ -80,13 +75,6 @@ public class OrgJsonValueSerialization
         throws ValueSerializationException
     {
         return serializer.serialize( object );
-    }
-
-    @Override
-    public String serialize( Options options, Object object )
-        throws ValueSerializationException
-    {
-        return serializer.serialize( options, object );
     }
 
     @Override
@@ -102,13 +90,6 @@ public class OrgJsonValueSerialization
         throws ValueSerializationException
     {
         serializer.serialize( object, output );
-    }
-
-    @Override
-    public void serialize( Options options, Object object, OutputStream output )
-        throws ValueSerializationException
-    {
-        serializer.serialize( options, object, output );
     }
 
     @Override

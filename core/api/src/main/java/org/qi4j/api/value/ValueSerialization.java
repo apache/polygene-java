@@ -23,7 +23,6 @@ package org.qi4j.api.value;
 public interface ValueSerialization
     extends ValueSerializer, ValueDeserializer
 {
-
     /**
      * Serialization format @Service tags.
      *
@@ -34,7 +33,6 @@ public interface ValueSerialization
      */
     interface Formats
     {
-
         /**
          * Tag a ValueSerialization service that support the JSON format.
          */
@@ -44,5 +42,4 @@ public interface ValueSerialization
          */
         String XML = "xml";
     }
-
 }

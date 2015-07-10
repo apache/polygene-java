@@ -34,6 +34,7 @@ import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.composite.CompositeDescriptor;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -45,6 +46,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.ServiceDeclaration;
@@ -66,7 +68,6 @@ import static org.junit.Assert.assertThat;
 public abstract class AbstractValueCompositeSerializationTest
     extends AbstractQi4jTest
 {
-
     @Rule
     @SuppressWarnings( "PublicField" )
     public TestName testName = new TestName();
@@ -87,14 +88,18 @@ public abstract class AbstractValueCompositeSerializationTest
     {
         module.injectTo( this );
     }
+
     @Service
     @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;
 
     @Test
-    public void givenValueCompositeWhenSerializingAndDeserializingExpectEquals()
+    public void givenValueCompositeAndOldMapFormatWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
+        CompositeDescriptor descriptor = spi.compositeDescriptorFor( valueSerialization );
+        ValueSerializer.Options options = descriptor.metaInfo( ValueSerializer.Options.class );
+        options.put( ValueSerializer.Options.MAP_ENTRIES_AS_OBJECTS, Boolean.FALSE );
         UnitOfWork uow = module.newUnitOfWork();
         try
         {
@@ -127,6 +132,47 @@ public abstract class AbstractValueCompositeSerializationTest
             uow.discard();
         }
     }
+
+    @Test
+    public void givenValueCompositeAndNewMapFormatWhenSerializingAndDeserializingExpectEquals()
+        throws Exception
+    {
+        CompositeDescriptor descriptor = spi.compositeDescriptorFor( valueSerialization );
+        ValueSerializer.Options options = descriptor.metaInfo( ValueSerializer.Options.class );
+        options.put( ValueSerializer.Options.MAP_ENTRIES_AS_OBJECTS, Boolean.TRUE );
+        UnitOfWork uow = module.newUnitOfWork();
+        try
+        {
+            SomeValue some = buildSomeValue();
+
+            // Serialize using injected service
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            valueSerialization.serialize( some, output );
+            String stateString = output.toString( "UTF-8" );
+
+            // Deserialize using Module API
+            SomeValue some2 = module.newValueFromSerializedState( SomeValue.class, stateString );
+
+            assertThat( "Same value toString", some.toString(), equalTo( some2.toString() ) );
+//            assertThat( "Same value", some, equalTo( some2 ) );
+            assertThat( "Same JSON value toString", stateString, equalTo( some2.toString() ) );
+            assertThat( "Same JSON value", some.customFoo().get() instanceof CustomFooValue, is( true ) );
+            assertThat( "Same JSON value explicit", some.customFooValue().get() instanceof CustomFooValue, is( true ) );
+
+            assertThat( "String Integer Map", some2.stringIntMap().get().get( "foo" ), equalTo( 42 ) );
+            assertThat( "String Value Map", some2.stringValueMap().get().get( "foo" ).internalVal(), equalTo( "Bar" ) );
+            assertThat( "Nested Entities", some2.barAssociation().get().cathedral().get(), equalTo( "bazar in barAssociation" ) );
+        }
+        catch( Exception ex )
+        {
+            throw ex;
+        }
+        finally
+        {
+            uow.discard();
+        }
+    }
+
 
     /**
      * @return a SomeValue ValueComposite whose state is populated with test data.

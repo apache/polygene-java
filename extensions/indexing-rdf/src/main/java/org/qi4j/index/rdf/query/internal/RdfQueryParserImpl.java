@@ -341,7 +341,7 @@ public class RdfQueryParserImpl
 
     private String createAndEscapeJSONString( Object value )
     {
-        return escapeJSONString( valueSerializer.serialize( new Options().withoutTypeInfo(), value ) );
+        return escapeJSONString( valueSerializer.serialize( value ) );
     }
 
     private String createRegexStringForContaining( String valueVariable, String containedString )

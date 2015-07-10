@@ -70,7 +70,6 @@ import org.qi4j.functional.Function;
  */
 public interface ValueSerializer
 {
-
     /**
      * Factory method for a serialize function.
      *
@@ -78,15 +77,6 @@ public interface ValueSerializer
      * @return a serialization function.
      */
     <T> Function<T, String> serialize();
-
-    /**
-     * Factory method for a serialize function.
-     *
-     * @param <T> the parametrized function input type
-     * @param options ValueSerializer Options
-     * @return a serialization function.
-     */
-    <T> Function<T, String> serialize( Options options );
 
     /**
      * Factory method for a serialize function.
@@ -111,17 +101,6 @@ public interface ValueSerializer
     /**
      * Serialize the state of a value.
      *
-     * @param options ValueSerializer Options
-     * @param object an Object to serialize
-     * @return the state
-     * @throws ValueSerializationException if the Value serialization failed
-     */
-    String serialize( Options options, Object object )
-        throws ValueSerializationException;
-
-    /**
-     * Serialize the state of a value.
-     *
      * @param object an Object to serialize
      * @param includeTypeInfo if type information should be included in the output
      * @return the state
@@ -139,17 +118,6 @@ public interface ValueSerializer
      * @throws ValueSerializationException if the Value serialization failed
      */
     void serialize( Object object, OutputStream output )
-        throws ValueSerializationException;
-
-    /**
-     * Serialize the state of a value.
-     *
-     * @param options ValueSerializer Options
-     * @param object an Object to serialize
-     * @param output that will be used as output
-     * @throws ValueSerializationException if the Value serialization failed
-     */
-    void serialize( Options options, Object object, OutputStream output )
         throws ValueSerializationException;
 
     /**
@@ -221,11 +189,12 @@ public interface ValueSerializer
          */
         public Boolean getBoolean( String option )
         {
-            if( !options.containsKey( option ) )
+            String value = options.get( option );
+            if( value == null )
             {
-                return null;
+                return false;
             }
-            return Boolean.valueOf( options.get( option ) );
+            return Boolean.valueOf( value );
         }
 
         /**

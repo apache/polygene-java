@@ -18,6 +18,7 @@ package org.qi4j.valueserialization.stax;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -30,10 +31,17 @@ public class StaxValueSerializationAssembler
     extends Assemblers.Visibility<StaxValueSerializationAssembler>
 {
     private Function<Application, Module> valuesModuleFinder;
+    private ValueSerializer.Options options = new ValueSerializer.Options();
 
     public StaxValueSerializationAssembler withValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
     {
         this.valuesModuleFinder = valuesModuleFinder;
+        return this;
+    }
+
+    public StaxValueSerializationAssembler withOptions( ValueSerializer.Options options )
+    {
+        this.options = options;
         return this;
     }
 
@@ -43,16 +51,20 @@ public class StaxValueSerializationAssembler
     {
         if( valuesModuleFinder == null )
         {
-            module.services( StaxValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.XML );
+            module.services( StaxValueSerializationService.class )
+                .visibleIn( visibility() )
+                .taggedWith( ValueSerialization.Formats.XML )
+                .setMetaInfo( options )
+            ;
         }
         else
         {
-            module.services( StaxValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.XML ).
-                setMetaInfo( valuesModuleFinder );
+            module.services( StaxValueSerializationService.class )
+                .visibleIn( visibility() )
+                .taggedWith( ValueSerialization.Formats.XML )
+                .setMetaInfo( valuesModuleFinder )
+                .setMetaInfo( options )
+            ;
         }
     }
 }

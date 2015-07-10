@@ -21,6 +21,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import org.json.JSONWriter;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.value.ValueSerializer;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.value.ValueSerializerAdapter;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializer.OrgJsonOutput;
 
@@ -30,7 +33,6 @@ import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializer.OrgJsonOutput;
 public class OrgJsonValueSerializer
     extends ValueSerializerAdapter<OrgJsonOutput>
 {
-
     /**
      * Helper to pass around the Writer alongside the JSONWriter so we can flush it onSerializationEnd.
      *

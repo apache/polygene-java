@@ -96,5 +96,4 @@ public interface ValueBuilderFactory
      * @throws ConstructionException if the value could not be instantiated
      */
     <T> T newValueFromSerializedState( Class<T> valueType, String serializedState );
-
 }

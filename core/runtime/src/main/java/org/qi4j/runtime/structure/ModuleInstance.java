@@ -657,6 +657,7 @@ public class ModuleInstance
                 }
                 catch( NoSuchServiceException e )
                 {
+//                    valueSerialization = newObject( OrgJsonValueSerialization.class );
                     valueSerialization = new OrgJsonValueSerialization( layer.applicationInstance(), this, this );
                 }
             }

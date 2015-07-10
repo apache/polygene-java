@@ -18,6 +18,7 @@ package org.qi4j.valueserialization.orgjson;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -30,6 +31,7 @@ public class OrgJsonValueSerializationAssembler
     extends Assemblers.Visibility<OrgJsonValueSerializationAssembler>
 {
     private Function<Application, Module> valuesModuleFinder;
+    private ValueSerializer.Options options = new ValueSerializer.Options();
 
     public OrgJsonValueSerializationAssembler withValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
     {
@@ -37,22 +39,33 @@ public class OrgJsonValueSerializationAssembler
         return this;
     }
 
+    public OrgJsonValueSerializationAssembler withOptions( ValueSerializer.Options options )
+    {
+        this.options = options;
+        return this;
+    }
+
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
         if( valuesModuleFinder == null )
         {
-            module.services( OrgJsonValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.JSON );
+            module.services( OrgJsonValueSerializationService.class )
+                .visibleIn( visibility() )
+                .taggedWith( ValueSerialization.Formats.JSON )
+                .setMetaInfo( options )
+            ;
         }
         else
         {
-            module.services( OrgJsonValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.JSON ).
-                setMetaInfo( valuesModuleFinder );
+            module.services( OrgJsonValueSerializationService.class )
+                .visibleIn( visibility() )
+                .taggedWith( ValueSerialization.Formats.JSON )
+                .setMetaInfo( valuesModuleFinder )
+                .setMetaInfo( options )
+            ;
         }
     }
 }

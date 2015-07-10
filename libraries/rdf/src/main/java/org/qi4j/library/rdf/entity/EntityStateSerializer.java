@@ -148,7 +148,7 @@ public class EntityStateSerializer
         }
         else
         {
-            String stringProperty = valueSerializer.serialize( new Options().withoutTypeInfo(), property );
+            String stringProperty = valueSerializer.serialize( property );
             final Literal object = valueFactory.createLiteral( stringProperty );
             graph.add( subject, predicate, object );
         }

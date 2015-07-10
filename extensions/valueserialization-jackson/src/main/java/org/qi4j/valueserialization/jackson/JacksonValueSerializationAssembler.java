@@ -18,6 +18,7 @@ package org.qi4j.valueserialization.jackson;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -30,10 +31,17 @@ public class JacksonValueSerializationAssembler
     extends Assemblers.Visibility<JacksonValueSerializationAssembler>
 {
     private Function<Application, Module> valuesModuleFinder;
+    private ValueSerializer.Options options = new ValueSerializer.Options();
 
     public JacksonValueSerializationAssembler withValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
     {
         this.valuesModuleFinder = valuesModuleFinder;
+        return this;
+    }
+
+    public JacksonValueSerializationAssembler withOptions( ValueSerializer.Options options )
+    {
+        this.options = options;
         return this;
     }
 
@@ -43,16 +51,20 @@ public class JacksonValueSerializationAssembler
     {
         if( valuesModuleFinder == null )
         {
-            module.services( JacksonValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.JSON );
+            module.services( JacksonValueSerializationService.class )
+                .visibleIn( visibility() )
+                .taggedWith( ValueSerialization.Formats.JSON )
+                .setMetaInfo( options )
+            ;
         }
         else
         {
-            module.services( JacksonValueSerializationService.class ).
-                visibleIn( visibility() ).
-                taggedWith( ValueSerialization.Formats.JSON ).
-                setMetaInfo( valuesModuleFinder );
+            module.services( JacksonValueSerializationService.class )
+                .visibleIn( visibility() )
+                .taggedWith( ValueSerialization.Formats.JSON )
+                .setMetaInfo( valuesModuleFinder )
+                .setMetaInfo( options )
+            ;
         }
     }
 }

@@ -54,6 +54,7 @@ import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.api.value.ValueDeserializer;
 import org.qi4j.api.value.ValueSerializationException;
+import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
 
@@ -1015,21 +1016,54 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
 
     /**
      * A Map&lt;K,V&gt; is serialized in an array of entries objects.
-     *
-     * <p>Here is an example in JSON:</p>
+     * <p>
+     *     If {@link ValueSerializer.Options#MAP_ENTRIES_AS_OBJECTS} is @{code false}, then the format is key/value
+     *     explicit, such as follows;
+     * </p>
      * <pre>
      * [
      *     { "key": "foo",       "value": "bar"   },
      *     { "key": "cathedral", "value": "bazar" }
      * ]
      * </pre>
-     * <p>And an empty Map:</p>
-     * <pre>[]</pre>
+     * <p>
+     *     An empty Map is an empty JSON array, i.e;
+     * </p>
+     * <pre>
+     * []
+     * </pre>
+     * <p>
+     *     <b>
+     *         NOTE: This was default in Qi4j ver 2.0 and Zest ver 2.1. In Zest 3.0 and later, the
+     *         {@link ValueSerializer.Options#MAP_ENTRIES_AS_OBJECTS} must be set to @{code false} explicitly in
+     *         the assmebly.
+     *     </b>
+     * </p>
      * <p>
      *     This allow to use any type as keys and values while keeping the Map order at the cost of having
      *     non-predictible order of key/value inside an entry object.
      * </p>
-     *
+     * <p>
+     * If the {@link ValueSerializer.Options#MAP_ENTRIES_AS_OBJECTS} is {@code true}, then the format is
+     * object-oriented, as in regular javascript objects, such as;
+     * </p>
+     * <pre>
+     * {
+     *     { "foo" : "bar"   },
+     *     { "cathedral" : "bazar" }
+     * }
+     * </pre>
+     * <p>
+     *     <b>
+     *         NOTE: This was NOT default in Qi4j ver 2.0 and Zest ver 2.1. In those versions, the
+     *         {@link ValueSerializer.Options#MAP_ENTRIES_AS_OBJECTS} must be set to @{code true} explicitly in
+     *         the assembly to enable this format.
+     *     </b>
+     * </p>
+     * <p>
+     * This has the advantage of smaller serialized format, and easier use in javascript, where the dot notation
+     * can be used directly.
+     * </p>
      * @param <K> Parameterized map key type
      * @param <V> Parameterized map value type
      * @param input Input

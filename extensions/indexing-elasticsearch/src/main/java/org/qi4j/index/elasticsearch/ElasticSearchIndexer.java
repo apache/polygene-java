@@ -211,7 +211,7 @@ public interface ElasticSearchIndexer
                         }
                         else
                         {
-                            String serialized = valueSerializer.serialize( new Options().withoutTypeInfo(), value );
+                            String serialized = valueSerializer.serialize( value );
                             // TODO Theses tests are pretty fragile, find a better way to fix this, Jackson API should behave better
                             if( serialized.startsWith( "{" ) )
                             {
