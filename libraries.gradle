@@ -272,6 +272,10 @@ allprojects {
     resolutionStrategy {
       dependencySubstitution {
         eachModule { ModuleDependencySubstitution details ->
+          // Always resolve SLF4J to the same version
+          if( details.requested.group == 'org.slf4j' ) {
+            details.useTarget group: details.requested.group, name: details.requested.module, version: slf4jVersion
+          }
           // woodstox:wstx-asl is broken (no pom), use org.codehaus.woodstox:wstx-asl instead
           if( details.requested.group == 'woodstox' && details.requested.module == 'wstx-asl' ) {
             details.useTarget group: 'org.codehaus.woodstox', name: 'wstx-asl', version: details.requested.version
