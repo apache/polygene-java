@@ -47,6 +47,9 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.bootstrap.ServiceDeclaration;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -74,7 +77,8 @@ public abstract class AbstractValueCompositeSerializationTest
     {
         module.values( SomeValue.class, AnotherValue.class, FooValue.class, CustomFooValue.class,
                        SpecificCollection.class /*, SpecificValue.class, GenericValue.class */ );
-        new EntityTestAssembler().assemble( module );
+        ServiceDeclaration service = module.services( MemoryEntityStoreService.class );
+        module.services( UuidIdentityGeneratorService.class );
         module.entities( BarEntity.class );
     }
 

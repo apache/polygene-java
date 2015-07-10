@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2010, Niclas Hehdman. All Rights Reserved.
+ * Copyright (c) 2010, Niclas Hednman. All Rights Reserved.
  * Copyright (c) 2012-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
