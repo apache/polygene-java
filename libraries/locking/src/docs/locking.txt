@@ -25,8 +25,43 @@
 source=libraries/locking/dev-status.xml
 --------------
 
-Locking Library
+The Locking Library is a simple way to mark method with Read or Write locks, and the details is handled by this
+library.
 
-NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+This library is heavily used in EntityStore implementations.
+
 
 include::../../build/docs/buildinfo/artifact.txt[]
+
+The library creates a +java.util.concurrent.ReentrantReadWriteLock+ which is shared for all methods within the
+composite. It then acquires the read or write lock in a concern that is applied to the methods of the composite, which
+have the corresponding annotations.
+
+== +@ReadLock+ ==
+This annotation will apply the +ReadLockConcern+ to the method, and acquire the +lock.readLock()+ on entry and relase
+it on exit of the method. See the +ReentrantReadWriteLock+ for details on how/when to use it and the exact semantics.
+
+== +@WriteLock+ ==
+This annotation will apply the +WriteLockConcern+ to the method, and acquire the +lock.writeLock()+ on entry and relase
+it on exit of the method. See the +ReentrantReadWriteLock+ for details on how/when to use it and the exact semantics.
+
+== +LockingAbstractComposite+ ==
+This composite type is the easiest way to use this library. Simple extend you composite type interface with this
+interface and start marking the methods with the above annotations. No other complex assembly is required.
+
+[source,java]
+----
+public interface SomeService
+    extends ServiceComposite, LockingAbstractComposite
+{
+}
+----
+
+or apply it during assembly, in case that is the only choice (such as existing/external interfaces)
+
+[snippet,java]
+----
+source=libraries/locking/src/test/java/org/qi4j/library/locking/DocumentationSupport.java
+tag=assembly
+----
+

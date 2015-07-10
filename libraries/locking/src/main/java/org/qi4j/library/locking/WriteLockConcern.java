@@ -44,7 +44,6 @@ public class WriteLockConcern
         throws Throwable
     {
         Lock writeLock = lock.writeLock();
-
         lock(writeLock);
         try
         {
@@ -52,14 +51,7 @@ public class WriteLockConcern
         }
         finally
         {
-            try
-            {
-                writeLock.unlock();
-            }
-            catch( Exception e )
-            {
-                e.printStackTrace();
-            }
+            writeLock.unlock();
         }
     }
 
@@ -73,7 +65,8 @@ public class WriteLockConcern
         {
             try
             {
-                while( !(lock.tryLock() || lock.tryLock( 1000, TimeUnit.MILLISECONDS )) )
+                //noinspection StatementWithEmptyBody
+                while( !lock.tryLock( 1000, TimeUnit.MILLISECONDS ) )
                 {
                     // On timeout, try again
                 }

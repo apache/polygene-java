@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import org.qi4j.api.common.AppliesTo;
+import org.qi4j.api.common.Optional;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.injection.scope.Invocation;
 import org.qi4j.api.injection.scope.This;
@@ -33,34 +34,29 @@ public class ReturnCachedValueConcern
     extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    @This
+    @This @Optional
     private InvocationCache cache;
-    @Invocation
-    private Method method;
 
     @Override
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        // Try cache
-        String cacheName = method.getName();
-        if( args != null )
+        boolean voidReturnType = method.getReturnType().equals( Void.TYPE );
+        if( cache != null || voidReturnType )
         {
-            cacheName += Arrays.asList( args );
-        }
-        Object result = cache.cachedValue( cacheName );
-        if( result != null )
-        {
-            if( result == Void.TYPE )
+            // Try cache
+            String cacheName = method.getName();
+            if( args != null )
             {
-                return null;
+                cacheName += Arrays.asList( args );
             }
-            else
+            Object result = cache.cachedValue( cacheName );
+            if( result != null )
             {
                 return result;
             }
         }
-        // No cached value found - call method
+        // No cached value found or no InvocationCache defined - call method
         return next.invoke( proxy, method, args );
     }
 }

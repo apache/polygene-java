@@ -17,6 +17,7 @@
  */
 package org.qi4j.library.conversion.values;
 
+import org.qi4j.api.entity.Identity;
 import org.qi4j.bootstrap.Assemblers;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
@@ -24,6 +25,7 @@ import org.qi4j.bootstrap.ServiceDeclaration;
 
 /**
  * EntityToValue Service Assembler.
+ * @deprecated Please use {@link org.qi4j.api.unitofwork.UnitOfWork#toValue(Class, Identity)} instead.
  */
 public class EntityToValueAssembler
     extends Assemblers.VisibilityIdentity<EntityToValueAssembler>

@@ -50,6 +50,9 @@ import static org.qi4j.library.conversion.values.Shared.STRING_COLLECTION_TYPE_S
 import static org.qi4j.library.conversion.values.Shared.STRING_MAP_TYPE_SPEC;
 import static org.qi4j.library.conversion.values.Shared.STRING_TYPE_SPEC;
 
+/**
+ * @deprecated Please use {@link org.qi4j.api.unitofwork.UnitOfWork#toValue(Class, Identity)} instead.
+ */
 @Mixins( EntityToValue.EntityToValueMixin.class )
 public interface EntityToValue
 {

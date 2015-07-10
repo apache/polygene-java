@@ -25,9 +25,72 @@
 source=libraries/invocation-cache/dev-status.xml
 --------------
 
-The Invocation Cache Library provides constructs to easily cache composite methods invocations.
-It has nothing to do with the <<core-spi-cache>>.
+The Invocation Cache Library provides constructs to easily cache the return value of
+method invocations on composites.
 
-NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+NOTE: It has nothing to do with the <<core-spi-cache>>.
 
 include::../../build/docs/buildinfo/artifact.txt[]
+
+
+By applying one of the <<def-concern,Concerns>> it is possible to cache the return values of method
+calls. The concern will in turn delegate to the +InvocationCache+ that is expected to be a
+<<def-private-mixin>> in the same composite.
+
+== +@Cached+ ==
+This annotation is used to mark the methods that should be considered for caching. Only if a
+caching concern has been defined and that an +InvocationCache+ implementation mixin has been provided
+will the caching actually take place.
+
+== +ReturnCachedValueConcern+ ==
+This generic mixin implementation will first look in the cache and see if the value is there, if so the value
+is unconditionally returned to the caller.
+
+This concern skip its function if there is no +InvocationCache+ mixin declared on the composite or if the method
+has a +void+ return type.
+
+== +ReturnCachedValueOnExceptionConcern+ ==
+This generic mixin implementation will first call the method, and if it fails with an Exception, it will try to
+return a value from the cache. If no value is present in the cache (i.e. null is returned from the cache) then
+the exception will be rethrown.
+
+This concern skip its function if there is no +InvocationCache+ mixin declared on the composite or if the method
+has a +void+ return type.
+
+== Example ==
+
+Let's say that we have some service that is very expensive to call.
+
+[snippet,java]
+----
+source=libraries/invocationcache/src/test/java/org/qi4j/library/invocationcache/DocumentationSupport.java
+tag=composite
+----
+
+And we know that the argument combinations into this method are relatively few, we can simply declare the
++SimpleInvocationCache+ mixin implementation to store the permutations and return them if already been
+provided.
+
+[snippet,java]
+----
+source=libraries/invocationcache/src/test/java/org/qi4j/library/invocationcache/DocumentationSupport.java
+tag=assembly
+----
+
+It is important to realize that the +SimpleInvocationCache+ implementation never drops the cached values,
+and it is not possible to instruct it to do so. So, in most cases it is required to implement the +InvocationCache+
+interface yourself, and choose a caching strategy that works for you.
+
+== Custom +InvocationCache+ implementation ==
+The interface to implement is very straight forward. It is important to realize that the implementation is a
+<<def-private-mixin>> of the composite where the caching is applied, and not a separate service. So, if
+the implementation is expecting to be part of an entity, it is possible to have
+
+[source,java]
+----
+@This
+private Identity myIdentity;
+----
+
+to get hold of the current entity's +Identity+. This approach makes the caching a lot simpler than if a separate
+service would have been used instead, but still possible to delegate to such.

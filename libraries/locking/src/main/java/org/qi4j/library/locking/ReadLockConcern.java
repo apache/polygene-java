@@ -66,7 +66,7 @@ public class ReadLockConcern
      * Fix for this bug:
      * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6822370
      *
-     * @param lock
+     * @param lock the lock to be acquired.
      */
     protected void lock( Lock lock )
     {
@@ -74,7 +74,8 @@ public class ReadLockConcern
         {
             try
             {
-                while( !(lock.tryLock() || lock.tryLock( 1000, TimeUnit.MILLISECONDS )) )
+                //noinspection StatementWithEmptyBody
+                while( !lock.tryLock( 1000, TimeUnit.MILLISECONDS ) )
                 {
                     // On timeout, try again
                 }

@@ -42,32 +42,29 @@ public class ReturnCachedValueOnExceptionConcern
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        try
+        boolean voidReturnType = method.getReturnType().equals( Void.TYPE );
+        if( cache != null || voidReturnType ) // Skip if void return type or no InvocationCache has been defined.
         {
-            // Invoke method
-            return next.invoke( proxy, method, args );
-        }
-        catch( Exception e )
-        {
-            // Try cache
             String cacheName = method.getName();
             if( args != null )
             {
                 cacheName += Arrays.asList( args );
             }
-            Object result = cache.cachedValue( cacheName );
-            if( result != null )
+            try
             {
-                if( result == Void.TYPE )
-                {
-                    return null;
-                }
-                else
-                {
-                    return result;
-                }
+                // Invoke method
+                Object result = next.invoke( proxy, method, args );
+                // update cache
+                cache.setCachedValue( cacheName, result );
+                return result;
             }
-            throw e;
+            catch( Exception e )
+            {
+                // Try cache
+                return cache.cachedValue( cacheName );
+            }
         }
+        // if no InvocationCache is present.
+        return next.invoke( proxy, method, args );
     }
 }
