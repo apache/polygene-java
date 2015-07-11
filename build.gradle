@@ -66,7 +66,7 @@ rat {
         // Git Files
         '**/.git/**', '**/.gitignore',
         // Gradle Files
-        'gradle/wrapper/**', 'gradlew', 'gradlew.bat', '**/.gradle/**',
+        'gradle/wrapper/**', '**/gradlew', '**/gradlew.bat', '**/.gradle/**',
         // Build Output
         '**/build/**', '**/derby.log',
         // IDE Files
@@ -80,6 +80,7 @@ rat {
         '**/src/test/resources/**/*.txt',
         'libraries/rest-server/src/main/resources/**/*.htm',
         'libraries/rest-server/src/main/resources/**/*.atom',
+        'out/**',
         'tools/qidea/src/main/resources/**/*.ft',
         'tools/qidea/src/main/resources/**/*.template',
         // Graphic Resources
