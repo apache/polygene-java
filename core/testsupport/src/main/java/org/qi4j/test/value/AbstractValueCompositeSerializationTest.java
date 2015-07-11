@@ -34,6 +34,7 @@ import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -47,7 +48,6 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.bootstrap.ServiceDeclaration;
 import org.qi4j.entitystore.memory.MemoryEntityStoreService;
 import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
@@ -60,15 +60,13 @@ import static org.junit.Assert.assertThat;
 /**
  * Assert that ValueSerialization behaviour on ValueComposites is correct.
  */
-// TODO Assert Association and ManyAssociation serialization behaviour!
+// TODO Assert Association, ManyAssociation and NamedAssociation serialization behaviour!
 // TODO Assert Arrays behaviour!
 // TODO Assert Generics behaviour!
 public abstract class AbstractValueCompositeSerializationTest
     extends AbstractQi4jTest
 {
-
     @Rule
-    @SuppressWarnings( "PublicField" )
     public TestName testName = new TestName();
 
     @Override
@@ -77,8 +75,8 @@ public abstract class AbstractValueCompositeSerializationTest
     {
         module.values( SomeValue.class, AnotherValue.class, FooValue.class, CustomFooValue.class,
                        SpecificCollection.class /*, SpecificValue.class, GenericValue.class */ );
-        ServiceDeclaration service = module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
+
+        new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module.layer().module( "persistence" ) );
         module.entities( BarEntity.class );
     }
 
@@ -87,8 +85,8 @@ public abstract class AbstractValueCompositeSerializationTest
     {
         module.injectTo( this );
     }
+
     @Service
-    @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;
 
     @Test
@@ -215,14 +213,12 @@ public abstract class AbstractValueCompositeSerializationTest
 
     public enum TestEnum
     {
-
         somevalue, anothervalue
     }
 
     public interface SomeValue
         extends ValueComposite
     {
-
         Property<String> string();
 
         Property<String> string2();
@@ -320,7 +316,6 @@ public abstract class AbstractValueCompositeSerializationTest
     public interface GenericCollection<TYPE>
         extends ValueComposite
     {
-
         @UseDefaults
         Property<List<TYPE>> genericList();
     }
@@ -333,7 +328,6 @@ public abstract class AbstractValueCompositeSerializationTest
     public interface GenericValue<TYPE>
         extends ValueComposite
     {
-
         @Optional
         Property<TYPE> item();
     }
@@ -342,7 +336,6 @@ public abstract class AbstractValueCompositeSerializationTest
     public interface AnotherValue
         extends ValueComposite
     {
-
         @UseDefaults
         Property<String> val1();
 
@@ -351,7 +344,6 @@ public abstract class AbstractValueCompositeSerializationTest
 
     public interface AnotherValueInternalState
     {
-
         @UseDefaults
         Property<String> val2();
     }
@@ -359,7 +351,6 @@ public abstract class AbstractValueCompositeSerializationTest
     public static abstract class AnotherValueMixin
         implements AnotherValue
     {
-
         @This
         private AnotherValueInternalState internalState;
 
@@ -372,7 +363,6 @@ public abstract class AbstractValueCompositeSerializationTest
 
     public interface Foo
     {
-
         @UseDefaults
         Property<String> bar();
     }
@@ -385,14 +375,12 @@ public abstract class AbstractValueCompositeSerializationTest
     public interface CustomFooValue
         extends FooValue
     {
-
         @UseDefaults
         Property<String> custom();
     }
 
     public interface Bar
     {
-
         @UseDefaults
         Property<String> cathedral();
     }
@@ -405,13 +393,11 @@ public abstract class AbstractValueCompositeSerializationTest
     public static class SerializableObject
         implements Serializable
     {
-
         private static final long serialVersionUID = 1L;
         private final String foo = "Foo";
         private final int val = 35;
 
         @Override
-        @SuppressWarnings( "AccessingNonPublicFieldOfAnotherObject" )
         public boolean equals( Object o )
         {
             if( this == o )
@@ -434,5 +420,4 @@ public abstract class AbstractValueCompositeSerializationTest
             return result;
         }
     }
-
 }
