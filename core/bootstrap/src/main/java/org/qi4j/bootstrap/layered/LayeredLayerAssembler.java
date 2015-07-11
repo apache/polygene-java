@@ -33,13 +33,9 @@ public abstract class LayeredLayerAssembler
         try
         {
             ModuleAssembler moduleAssembler = instantiateAssembler( layer, modulerAssemblerClass );
-            String classname = modulerAssemblerClass.getSimpleName();
-            if( classname.endsWith( "Module" ) )
-            {
-                classname = classname.substring( 0, classname.length() - 6 ) + " Module";
-            }
-            LayeredApplicationAssembler.setNameIfPresent( modulerAssemblerClass, classname );
-            ModuleAssembly module = layer.module( classname );
+            String moduleName = createModuleName( modulerAssemblerClass );
+            LayeredApplicationAssembler.setNameIfPresent( modulerAssemblerClass, moduleName );
+            ModuleAssembly module = layer.module( moduleName );
             assemblers.put( modulerAssemblerClass, moduleAssembler );
             ModuleAssembly assembly = moduleAssembler.assemble( layer, module );
             if( assembly == null )
@@ -52,6 +48,16 @@ public abstract class LayeredLayerAssembler
         {
             throw new IllegalArgumentException( "Unable to instantiate module with " + modulerAssemblerClass.getSimpleName(), e );
         }
+    }
+
+    protected String createModuleName( Class<? extends ModuleAssembler> modulerAssemblerClass )
+    {
+        String moduleName = modulerAssemblerClass.getSimpleName();
+        if( moduleName.endsWith( "Module" ) )
+        {
+            moduleName = moduleName.substring( 0, moduleName.length() - 6 ) + " Module";
+        }
+        return moduleName;
     }
 
     private ModuleAssembler instantiateAssembler( LayerAssembly layer,
