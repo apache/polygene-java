@@ -22,6 +22,7 @@ import org.apache.wicket.model.IModel;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.sample.dcicargo.sample_a.infrastructure.conversion.DTO;
 
 /**
@@ -69,7 +70,8 @@ public class EntityModel<T extends DTO, U extends EntityComposite>
         U entity = module.currentUnitOfWork().get( entityClass, identity );
         if( entity == null )
         {
-            throw new NoSuchEntityException( EntityReference.parseEntityReference( identity ), entityClass );
+            Usecase usecase = module.currentUnitOfWork().usecase();
+            throw new NoSuchEntityException( EntityReference.parseEntityReference( identity ), entityClass, usecase );
         }
         return entity;
     }

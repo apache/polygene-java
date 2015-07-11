@@ -238,7 +238,7 @@ public class PreferencesEntityStoreMixin
         {
             if( !root.nodeExists( identity.identity() ) )
             {
-                throw new NoSuchEntityException( identity, UnknownType.class );
+                throw new NoSuchEntityException( identity, UnknownType.class, unitOfWork.usecase() );
             }
 
             Preferences entityPrefs = root.node( identity.identity() );

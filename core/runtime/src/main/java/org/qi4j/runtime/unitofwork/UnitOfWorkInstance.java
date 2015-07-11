@@ -162,7 +162,7 @@ public final class UnitOfWorkInstance
                 // Check if state was found
                 if( entityState == null )
                 {
-                    throw new NoSuchEntityException( identity, mixinType );
+                    throw new NoSuchEntityException( identity, mixinType, usecase );
                 }
                 else
                 {
@@ -184,7 +184,7 @@ public final class UnitOfWorkInstance
             // Check if it has been removed
             if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new NoSuchEntityException( identity, mixinType );
+                throw new NoSuchEntityException( identity, mixinType, usecase );
             }
         }
 

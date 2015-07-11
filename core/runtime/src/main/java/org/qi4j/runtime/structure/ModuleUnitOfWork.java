@@ -61,7 +61,6 @@ import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
 import org.qi4j.runtime.value.ValueInstance;
-import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entity.NamedAssociationState;
@@ -335,7 +334,7 @@ public class ModuleUnitOfWork
         }
         else
         {
-            throw new NoSuchEntityException( compositeInstance.identity(), compositeInstance.types() );
+            throw new NoSuchEntityException( compositeInstance.identity(), compositeInstance.types(), usecase() );
         }
     }
 
