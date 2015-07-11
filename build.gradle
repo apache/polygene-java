@@ -561,7 +561,7 @@ task archiveJavadocs(type: Copy ) {
 
 // Build All
 task buildAll( dependsOn: [
-    archiveJavadocs,
+    javadocs,
     test,
     jar,
     subprojects*.dependencyReport,
