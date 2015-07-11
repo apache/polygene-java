@@ -791,7 +791,7 @@ task checkBinDist_goOfflineMaven( type: Exec, dependsOn: unpackBinDist ) {
   def dependenciesDir = new File( unpackedBinDistDir, 'dependencies' )
   doFirst { dependenciesDir.deleteDir() }
   workingDir unpackedBinDistDir
-  commandLine 'mvn', '-q', '-f', 'go-offline.pom', 'validate'
+  commandLine 'mvn', '-e', '-q', '-f', 'go-offline.pom', 'validate'
   doLast {
     releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({it.name}).each { dep ->
       def jarArtifactId = dep.name instanceof String ? dep.name : dep.name.last()
