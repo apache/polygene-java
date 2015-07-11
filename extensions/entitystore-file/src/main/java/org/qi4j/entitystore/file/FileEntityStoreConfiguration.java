@@ -39,7 +39,7 @@ public interface FileEntityStoreConfiguration
      *     If a configuration is given, the entity store will be placed in the
      *     DATA directory, which is operating system specific.
      * </p>
-     * <table>
+     * <table summary="Default locations">
      *     <tr><th>OS</th><th>Location</th></tr>
      *     <tr><td>Linux/Unix</td><td>{user}/.{application}/data</td></tr>
      *     <tr><td>OSX</td><td>{user}/Library/Application Support/{application}</td></tr>
