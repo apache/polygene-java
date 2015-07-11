@@ -27,6 +27,7 @@ import org.qi4j.library.scheduler.SchedulerService;
 import org.qi4j.library.scheduler.Task;
 import org.qi4j.library.scheduler.schedule.cron.CronSchedule;
 import org.qi4j.library.scheduler.schedule.once.OnceSchedule;
+import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +48,9 @@ public interface ScheduleFactory
 
         @Service
         private SchedulerService scheduler;
+
+        @Service
+        private UuidIdentityGeneratorService uuid;
 
         @Override
         public CronSchedule newCronSchedule( Task task, String cronExpression, DateTime start, boolean durable )
@@ -74,6 +78,7 @@ public interface ScheduleFactory
             CronSchedule prototype = builder.prototype();
             prototype.task().set( task );
             prototype.start().set( start );
+            prototype.identity().set( uuid.generate( CronSchedule.class ) );
             prototype.cronExpression().set( cronExpression );
             CronSchedule schedule = builder.newInstance();
             logger.info( "Schedule {} created: {}", schedule.presentationString(), schedule.identity().get() );
@@ -87,6 +92,7 @@ public interface ScheduleFactory
             CronSchedule builderInstance = builder.instance();
             builderInstance.task().set( task );
             builderInstance.start().set( start );
+            builderInstance.identity().set( uuid.generate( CronSchedule.class ) );
             builderInstance.cronExpression().set( cronExpression );
             CronSchedule schedule = builder.newInstance();
             logger.info( "Schedule {} created: {}", schedule.presentationString(), schedule.identity().get() );
@@ -99,6 +105,7 @@ public interface ScheduleFactory
             OnceSchedule builderInstance = builder.prototype();
             builderInstance.task().set( task );
             builderInstance.start().set( runAt );
+            builderInstance.identity().set( uuid.generate( CronSchedule.class ) );
             OnceSchedule schedule = builder.newInstance();
             logger.info( "Schedule {} created: {}", schedule.presentationString(), schedule.identity().get() );
             return schedule;
@@ -111,6 +118,7 @@ public interface ScheduleFactory
             OnceSchedule builderInstance = builder.instance();
             builderInstance.task().set( task );
             builderInstance.start().set( runAt );
+            builderInstance.identity().set( uuid.generate( CronSchedule.class ) );
             OnceSchedule schedule = builder.newInstance();
             logger.info( "Schedule {} created: {}", schedule.presentationString(), schedule.identity().get() );
             return schedule;
