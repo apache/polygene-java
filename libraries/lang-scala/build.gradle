@@ -23,13 +23,22 @@ jar { manifest { name = "Apache Zest™ Library - Scripting - Scala" }}
 
 apply plugin: 'scala'
 
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.useAnt = true
+    scalaCompileOptions.fork = true
+    configure( scalaCompileOptions.forkOptions ) {
+        memoryMaximumSize = '1g'
+        jvmArgs = [ '-XX:MaxPermSize=512m' ]
+    }
+}
+
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(libraries.scala)
+  compile project( ':org.qi4j.core:org.qi4j.core.bootstrap' )
+  compile libraries.scala
 
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testCompile(project(":org.qi4j.extensions:org.qi4j.extension.indexing-rdf"))
+  testCompile project( ':org.qi4j.core:org.qi4j.core.testsupport' )
+  testCompile project( ':org.qi4j.extensions:org.qi4j.extension.indexing-rdf' )
 
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
-  testRuntime(libraries.slf4j_simple)
+  testRuntime project( ':org.qi4j.core:org.qi4j.core.runtime' )
+  testRuntime libraries.slf4j_simple
 }
