@@ -45,9 +45,7 @@ $( document ).ready( function($){
                 var dt = target.parent();
                 var dd = dt.next();
                 // Scroll
-                $.scrollTo( dt, 200, {
-                    'offset': -96
-                });
+                $.scrollTo( dt, 200, { 'offset': -96 });
                 // Highlight
                 dd.fadeOut(50).fadeIn(200);
             }
@@ -109,6 +107,31 @@ $( document ).ready( function($){
             console.log( "Documentation loaded locally? No version switcher" );
         }
     } );
+
+    // Title links to their own anchor
+    $( "body > div.section .title" ).each( function( idx, title ) {
+        var $title = $( title );
+        var id = $title.find( 'a' ).attr( 'id' );
+        if( id ) {
+            $title.click( function() {
+                window.location.hash = id;
+            } );
+        }
+    } );
+
+    // Scroll down a bit on hash change so that target is not hidden under the floating top menu
+    function scrollToHash( hash ) {
+        if( hash ) {
+            var $target = $( hash );
+            if( $target ) {
+                setTimeout( function() { $.scrollTo( $target, 100, { 'offset': -96 }) }, 50 );
+            }
+        }
+    };
+    $( window ).bind( 'hashchange', function() {
+        scrollToHash( window.location.hash );
+    });
+    scrollToHash( window.location.hash );
 
     // Enhance left nav
     $( "div.sub-nav div.toc dt" ).each( function( idx, dt ) {
