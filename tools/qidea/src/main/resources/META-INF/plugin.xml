@@ -18,7 +18,7 @@
 <idea-plugin>
   <id>org.qi4j</id>
   <name>qidea</name>
-  <description>Qi4j idea plugin</description>
+  <description>Apache Zest™ idea plugin</description>
   <version>0.1</version>
   <vendor>codedragons</vendor>
   <idea-version since-build="8000"/>
@@ -34,14 +34,14 @@
   <actions>
     <action id="CreateConcernFromMixinTypeOrCompositeAction"
             class="org.qi4j.ide.plugin.idea.concerns.actions.create.CreateConcernFromMixinTypeOrCompositeAction"
-            text="New Concern" description="Create new Qi4j concern">
+            text="New Concern" description="Create new Zest™ concern">
       <add-to-group group-id="CodeMenu" anchor="last"/>
     </action>
 
-    <group id="Qi4j" class="org.qi4j.ide.plugin.idea.common.actions.Qi4jCreateActionGroup" text="Qi4j">
-      <action id="Qi4j.NewConcernOf"
+    <group id="Zest" class="org.qi4j.ide.plugin.idea.common.actions.Qi4jCreateActionGroup" text="Zest™">
+      <action id="Zest.NewConcernOf"
               class="org.qi4j.ide.plugin.idea.concerns.actions.create.inPackage.CreateConcernOfInPackageAction"
-              text="New Concern" description="Create new Qi4j concern">
+              text="New Concern" description="Create new Zest concern">
       </action>
       <add-to-group group-id="NewGroup" anchor="last"/>
     </group>
