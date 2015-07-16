@@ -516,7 +516,7 @@ task javadocs( type: Javadoc ) {
 
   options.docFilesSubDirs = true
   options.encoding = "UTF-8"
-  options.overview = "${rootProject.projectDir}/buildSrc/src/javadoc/overview.html"
+  options.overview = "${rootProject.projectDir}/src/javadoc/overview.html"
   title = "${rootProject.title} ${version}"
   def apiSources = releaseApprovedProjects.findAll( { project ->
     ( project.name.startsWith( 'org.qi4j.core' ) && !project.name.startsWith( 'org.qi4j.core.runtime' ) ) ||
@@ -780,7 +780,7 @@ task unpackSrcDist( type: Copy ) {
 }
 task checkSrcDist( type: GradleBuild, dependsOn: unpackSrcDist ) {
   buildFile = "$unpackedSrcDistDir/build.gradle"
-  tasks = [ 'check' ] // TODO check
+  tasks = [ 'check' ]
 }
 task unpackBinDist( type: Copy, dependsOn: buildAll ) {
   with binDistImage

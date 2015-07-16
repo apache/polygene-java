@@ -61,14 +61,14 @@ class Documentation extends DefaultTask
     new File(project.buildDir, "docs/$docName".toString()).mkdirs()
     new File(project.buildDir, "tmp/docs/$docName".toString()).mkdirs()
 
-    copyResources()
+    copySubProjectsResources()
     generateXDoc()
     generateChunkedHtml()
-    generateSingleHtml()
-    generatePdf()
+    // generateSingleHtml()
+    // generatePdf()
   }
 
-  def void copyResources()
+  def void copySubProjectsResources()
   {
     project.parent.subprojects.each { p ->
       p.copy {
@@ -153,26 +153,25 @@ class Documentation extends DefaultTask
 
   def void generatePdf()
   {
-// $ xsltproc --nonet ../docbook-xsl/fo.xsl article.xml > article.fo
+    // $ xsltproc --nonet ../docbook-xsl/fo.xsl article.xml > article.fo
     // $ fop article.fo article.pdf
-
-    //    project.exec {
-    //      String xsltFile = 'src/xsl/fo.xsl'
-    //      executable = 'xsltproc'
-    //      args = [
-    //              '--nonet',
-    //              '--output', "build/tmp/docs/$docName/$docName"+".fo",
-    //              xsltFile,
-    //              "build/tmp/docs/$docName/xdoc-temp.xml"
-    //      ]
-    //    }
-    //    project.exec {
-    //      executable = 'fop'
-    //      args = [
-    //              "build/tmp/docs/$docName/$docName"+".fo",
-    //              "build/docs/$docName/$docName" + ".pdf"
-    //      ]
-    //    }
+    project.exec {
+      String xsltFile = 'src/xsl/fo.xsl'
+      executable = 'xsltproc'
+      args = [
+        '--nonet',
+        '--output', "build/tmp/docs/$docName/$docName"+".fo",
+        xsltFile,
+        "build/tmp/docs/$docName/xdoc-temp.xml"
+      ]
+    }
+    project.exec {
+      executable = 'fop'
+      args = [
+        "build/tmp/docs/$docName/$docName"+".fo",
+        "build/docs/$docName/$docName" + ".pdf"
+      ]
+    }
   }
 
   String getDocName( )
