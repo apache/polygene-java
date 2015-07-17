@@ -215,7 +215,11 @@ public final class ValueStateInstance
         {
             return false;
         }
-        return manyAssociations.equals( state.manyAssociations );
+        if( !manyAssociations.equals( state.manyAssociations ) )
+        {
+            return false;
+        }
+        return namedAssociations.equals( state.namedAssociations );
     }
 
     @Override
@@ -224,6 +228,7 @@ public final class ValueStateInstance
         int result = properties.hashCode();
         result = 31 * result + associations.hashCode();
         result = 31 * result + manyAssociations.hashCode();
+        result = 31 * result + namedAssociations.hashCode();
         return result;
     }
 }
