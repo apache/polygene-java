@@ -37,9 +37,10 @@ class Documentation extends DefaultTask
   @InputDirectory def File getDocsDir() { project.file( 'src/docs') }
   @InputDirectory def File getSrcMainDir() { project.file( 'src/main') }
   @InputDirectory def File getXslDir() { project.file( 'src/xsl') }
+  @InputDirectory def File getBuildSrcDir() { project.rootProject.file( 'buildSrc/src' ) }
 
-  @InputFiles def getSubProjectsDocsDirs() { project.parent.subprojects.collect { p -> p.file( 'src/docs' ) } }
-  @InputFiles def getSubProjectsTestDirs() { project.parent.subprojects.collect { p -> p.file( 'src/test' ) } }
+  @InputFiles def getSubProjectsDocsDirs() { project.rootProject.subprojects.collect { p -> p.file( 'src/docs' ) } }
+  @InputFiles def getSubProjectsTestDirs() { project.rootProject.subprojects.collect { p -> p.file( 'src/test' ) } }
 
   @OutputDirectory def File getOutputDir() { project.file( "${project.buildDir}/docs/${docName}/" ) }
 
@@ -92,7 +93,7 @@ class Documentation extends DefaultTask
 
   def void copySubProjectsDocsResources()
   {
-    project.parent.subprojects.each { p ->
+    project.rootProject.subprojects.each { p ->
       p.copy {
         from p.file( 'src/docs/resources' )
         into outputDir
