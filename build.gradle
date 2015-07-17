@@ -516,7 +516,7 @@ task javadocs( type: Javadoc ) {
 
   options.docFilesSubDirs = true
   options.encoding = "UTF-8"
-  options.overview = "${rootProject.projectDir}/buildSrc/src/javadoc/overview.html"
+  options.overview = "${rootProject.projectDir}/src/javadoc/overview.html"
   title = "${rootProject.title} ${version}"
   def apiSources = releaseApprovedProjects.findAll( { project ->
     ( project.name.startsWith( 'org.qi4j.core' ) && !project.name.startsWith( 'org.qi4j.core.runtime' ) ) ||
@@ -602,29 +602,56 @@ task generateBinDistGoOfflineHelpers {
         if( !dep.group.startsWith( 'org.qi4j' ) && !handledDeps.contains( depCoords ) ) {
 
           goOfflineGradle += "  download '$depCoords'\n"
-          goOfflineGradle += "  // download '$depCoords:sources'\n"
-          goOfflineGradle += "  // download '$depCoords:javadoc'\n"
 
-          def gav = "<groupId>${dep.group}</groupId><artifactId>${dep.name}</artifactId><version>${dep.version}</version>"
-          goOfflinePom += """    <dependency>$gav</dependency>
-          <!-- <dependency>$gav<classifier>sources</classifier></dependency> -->
-          <!-- <dependency>$gav<classifier>javadoc</classifier></dependency> -->\n"""
+          goOfflinePom += "    <dependency><groupId>${dep.group}</groupId><artifactId>${dep.name}</artifactId><version>${dep.version}</version></dependency>\n"
 
           handledDeps << depCoords
         }
       }
     }
 
-    goOfflineGradle += '}\ntask download( type: Copy ) {\n  from configurations.download\n  into file( \'dependencies/\' )\n}\n'
+    goOfflineGradle += """}
+task download( type: Copy ) {
+  def sources = configurations.download.resolvedConfiguration.resolvedArtifacts.collect { artifact ->
+    project.dependencies.create( [ group: artifact.moduleVersion.id.group, name: artifact.moduleVersion.id.name, version: artifact.moduleVersion.id.version, classifier: 'sources' ] )
+  }
+  def javadocs = configurations.download.resolvedConfiguration.resolvedArtifacts.collect { artifact ->
+    project.dependencies.create( [ group: artifact.moduleVersion.id.group, name: artifact.moduleVersion.id.name, version: artifact.moduleVersion.id.version, classifier: 'javadoc' ] )
+  }
+  from configurations.download
+  from configurations.detachedConfiguration( sources as Dependency[] ).resolvedConfiguration.lenientConfiguration.getFiles( Specs.SATISFIES_ALL )
+  from configurations.detachedConfiguration( javadocs as Dependency[] ).resolvedConfiguration.lenientConfiguration.getFiles( Specs.SATISFIES_ALL )
+  into file( 'dependencies/' )
+}
+"""
+
     goOfflinePom += """  </dependencies>\n  <build><plugins><plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-dependency-plugin</artifactId>
     <version>2.10</version>
-    <executions><execution>
-      <id>go-offline</id><phase>validate</phase>
-      <goals><goal>copy-dependencies</goal></goals>
-      <configuration><outputDirectory>\${project.basedir}/dependencies</outputDirectory></configuration>
-    </execution></executions>
+    <executions>
+      <execution>
+        <id>go-offline-jars</id><phase>validate</phase>
+        <goals><goal>copy-dependencies</goal></goals>
+        <configuration><outputDirectory>\${project.basedir}/dependencies</outputDirectory></configuration>
+      </execution>
+      <execution>
+        <id>go-offline-sources</id><phase>validate</phase>
+        <goals><goal>copy-dependencies</goal></goals>
+        <configuration>
+          <classifier>sources</classifier><failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+          <outputDirectory>\${project.basedir}/dependencies</outputDirectory>
+        </configuration>
+      </execution>
+      <execution>
+        <id>go-offline-javadocs</id><phase>validate</phase>
+        <goals><goal>copy-dependencies</goal></goals>
+        <configuration>
+          <classifier>javadoc</classifier><failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+          <outputDirectory>\${project.basedir}/dependencies</outputDirectory>
+        </configuration>
+      </execution>
+    </executions>
   </plugin></plugins></build>
 </project>
 """
@@ -753,7 +780,7 @@ task unpackSrcDist( type: Copy ) {
 }
 task checkSrcDist( type: GradleBuild, dependsOn: unpackSrcDist ) {
   buildFile = "$unpackedSrcDistDir/build.gradle"
-  tasks = [ 'check' ] // TODO check
+  tasks = [ 'check' ]
 }
 task unpackBinDist( type: Copy, dependsOn: buildAll ) {
   with binDistImage
@@ -790,7 +817,7 @@ task checkBinDist_goOfflineMaven( type: Exec, dependsOn: unpackBinDist ) {
   def dependenciesDir = new File( unpackedBinDistDir, 'dependencies' )
   doFirst { dependenciesDir.deleteDir() }
   workingDir unpackedBinDistDir
-  commandLine 'mvn', '-e', '-q', '-f', 'go-offline.pom', 'validate'
+  commandLine 'mvn', '-e', '-f', 'go-offline.pom', 'validate'
   doLast {
     releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({it.name}).each { dep ->
       def jarArtifactId = dep.name instanceof String ? dep.name : dep.name.last()
