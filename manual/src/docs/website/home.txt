@@ -22,8 +22,12 @@
 [[home,Zest™ Home Page]]
 = Zest™ =
 
-IMPORTANT: This is the documentation for *Zest™ {revnumber}*. Use the version switcher on the left to browse other
+[IMPORTANT]
+.Zest™ {revnumber}
+====
+This is the documentation for *Zest™ {revnumber}*. Use the version switcher on the left to browse other
 versions documentation.
+====
 
 == What is Apache Zest™ ? ==
 The short answer is that Apache Zest™ is a framework for domain centric application development, including evolved
