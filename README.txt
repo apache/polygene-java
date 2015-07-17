@@ -46,6 +46,9 @@ Building Apache Zest
 To build Zest™ from sources you only need to have a valid Java JDK >= 7
 installation.
 
+If you want to build the Zest™ manual, then you also need a valid Asciidoc
+(http://www.methods.co.nz/asciidoc/) installation.
+
 This document the Zest™ build system and its usage:
 https://zest.apache.org/java/latest/build-system.html
 
