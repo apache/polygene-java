@@ -27,17 +27,7 @@ public final class MapType
 
     private ValueType keyType;
     private ValueType valueType;
-    private final Variant variant;
-
-    /** Two Variants are made distinct.
-     * <p>
-     * The {@code entry} type represents the explicit key=keyValue, value=valueValue.
-     * </p>
-     * <p>
-     * The {@code object} type represents the explicit keyValue=valueValue.
-     * </p>
-     */
-    public enum Variant { entry, object }
+    private final Serialization.Variant variant;
 
     public static boolean isMap( Type type )
     {
@@ -50,17 +40,17 @@ public final class MapType
         return new MapType( Map.class, ValueType.of( keyType ), ValueType.of( valueType ) );
     }
 
-    public static MapType of( Class<?> keyType, Class<?> valueType, Variant variant )
+    public static MapType of( Class<?> keyType, Class<?> valueType, Serialization.Variant variant )
     {
         return new MapType( Map.class, ValueType.of( keyType ), ValueType.of( valueType ), variant );
     }
 
     public MapType( Class<?> type, ValueType keyType, ValueType valueType )
     {
-        this( type, keyType, valueType, Variant.entry );
+        this( type, keyType, valueType, Serialization.Variant.entry );
     }
 
-    public MapType( Class<?> type, ValueType keyType, ValueType valueType, Variant variant )
+    public MapType( Class<?> type, ValueType keyType, ValueType valueType, Serialization.Variant variant )
     {
         super( type );
         this.keyType = keyType;
@@ -82,7 +72,7 @@ public final class MapType
         return valueType;
     }
 
-    public Variant variant()
+    public Serialization.Variant variant()
     {
         return variant;
     }
