@@ -829,6 +829,10 @@ artifacts {
   archives zipSources, tarSources, zipBinaries, tarBinaries
 }
 
+signing {
+  sign configurations.archives
+}
+
 task dist( type: Copy, dependsOn: install ) {
   with binDistImage
   into "$buildDir/dist"
