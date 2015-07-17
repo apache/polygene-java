@@ -56,9 +56,8 @@ sourceCompatibility = "1.7"
 // Collect the modules that fulfills the Release Criteria.
 project.ext {
   releaseSpec = new org.qi4j.gradle.plugin.ModuleReleaseSpecification()
+  releaseApprovedProjects = allprojects.findAll( { p -> rootProject.releaseSpec.satisfiedBy( p ) } )
 }
-
-def releaseApprovedProjects = allprojects.findAll( { project ->  rootProject.ext.releaseSpec.satisfiedBy( project ) } )
 
 rat {
     excludes = [
@@ -133,7 +132,9 @@ allprojects {
   defaultTasks 'classes', 'test'
 
   group = name == 'org.qi4j' ? 'org.qi4j' : name.substring( 0, name.lastIndexOf( '.' ) )
-  version = System.properties.version ?: "0"
+  if( version == 'unspecified' ) {
+    version = System.properties.version ?: "0"
+  }
   
   // UTF-8 For all compilations and javadocs
   // Deprecation warnings for all compilations
