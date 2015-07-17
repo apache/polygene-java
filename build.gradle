@@ -665,8 +665,28 @@ task download( type: Copy ) {
   }
 }
 
-def srcDistImage = copySpec {
+
+def srcDistFilesImages = copySpec {
   from '.'
+  include '*.txt'
+  include 'doap.rdf'
+  include '*.gradle'
+  include 'gradlew*'
+  include 'gradle/**'
+  include 'etc/**'
+  include 'buildSrc/**'
+  releaseApprovedProjects.each { p ->
+    def relPath = new File( project.projectDir.toURI().relativize( p.projectDir.toURI() ).toString() )
+    include "$relPath/**"
+  }
+  include 'manual/**'
+  include 'samples/**'
+  include 'tests/**'
+  include 'tutorials/**'
+  // Filtered, see below
+  exclude 'settings.gradle'
+  exclude 'gradle.properties'
+  // Excludes
   exclude '**/build/'               // Build output
   exclude 'derby.log'               // Derby test garbage
   exclude '**/*.iml'                // IDEA files
@@ -683,7 +703,52 @@ def srcDistImage = copySpec {
   exclude '**/.git*'                // Git files
   exclude '**/.gradle/'             // Gradle management files
   exclude '**/.gradletasknamecache' // Gradle cache
-  into "qi4j-sdk-$version/"
+  into '.'
+}
+
+task srcDistFilteredFiles() {
+  // Generates various files for the source distribution
+  // - settings.gradle
+  // - gradle.properties to set version !
+  def filteredDir = new File( "$project.buildDir/tmp/srcDistFilteredFiles")
+  outputs.file filteredDir
+  doLast {
+    // Settings
+    def settingsFile = new File( filteredDir,  'settings.gradle' )
+    settingsFile.parentFile.mkdirs()
+    def filteredSettings = ''
+    project.file( 'settings.gradle' ).readLines().each { line ->
+      if( line.contains( '\'libraries:' ) || line.contains( '\'extensions:' ) || line.contains( '\'tools:' ) ) {
+        def accepted = false
+        releaseApprovedProjects.collect{it.projectDir}.each { acceptedProjectDir ->
+          if( line.contains( "'${acceptedProjectDir.parentFile.name}:${acceptedProjectDir.name}'" ) ) {
+            accepted = true
+          }
+        }
+        if( accepted ) {
+          filteredSettings += "$line\n"
+        }
+      } else {
+        filteredSettings += "$line\n"
+      }
+    }
+    settingsFile.text = filteredSettings
+    // gradle.properties
+    def gradlePropsFile = new File( filteredDir, 'gradle.properties' )
+    gradlePropsFile.parentFile.mkdirs()
+    gradlePropsFile.text = project.file( 'gradle.properties' ).text + "\nversion=$version\n"
+  }
+}
+
+def srcDistFilteredFilesImage = copySpec {
+  from srcDistFilteredFiles
+  into '.'
+}
+
+def srcDistImage = copySpec {
+  into "qi4j-sdk-$version"
+  with srcDistFilesImages
+  with srcDistFilteredFilesImage
 }
 
 def reportsDistImage = copySpec {
@@ -734,13 +799,13 @@ def binDistImage = copySpec {
   with libsImage
 }
 
-task zipSources( type: Zip, dependsOn: buildAll ) {
+task zipSources( type: Zip ) {
   baseName = 'qi4j-sdk'
   with srcDistImage
   classifier = 'src'
 }
 
-task tarSources( type: Tar, dependsOn: buildAll ) {
+task tarSources( type: Tar ) {
   baseName = 'qi4j-sdk'
   with srcDistImage
   compression = Compression.GZIP
