@@ -17,7 +17,7 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[library-script-javascript, Javascript Scripting Library]]
+[[lang-javascript, Javascript Scripting Library]]
 = Javascript Scripting =
 
 [devstatus]

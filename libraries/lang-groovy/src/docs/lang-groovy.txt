@@ -17,7 +17,7 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-[[library-script-groovy, Groovy Scripting Library]]
+[[lang-groovy, Groovy Scripting Library]]
 = Groovy Scripting =
 
 [devstatus]

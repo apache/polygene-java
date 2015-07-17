@@ -17,13 +17,13 @@
  * under the License.
  */
 
-include "core:functional",
-        "core:io",
-        "core:api",
-        "core:spi",
-        "core:testsupport",
-        "core:bootstrap",
-        "core:runtime",
+include 'core:functional',
+        'core:io',
+        'core:api',
+        'core:spi',
+        'core:testsupport',
+        'core:bootstrap',
+        'core:runtime',
         'libraries:alarm',
         'libraries:circuitbreaker',
         'libraries:constraints',
