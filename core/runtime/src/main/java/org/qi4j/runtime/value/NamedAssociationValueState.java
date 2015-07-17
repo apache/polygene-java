@@ -82,4 +82,24 @@ public class NamedAssociationValueState
         return references.keySet().iterator();
     }
 
+    @Override
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+        NamedAssociationValueState strings = (NamedAssociationValueState) o;
+        return references.equals( strings.references );
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return references.hashCode();
+    }
 }
