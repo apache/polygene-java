@@ -21,9 +21,7 @@
 def asmVersion = '5.0.4'
 def bonecpVersion = '0.8.0.RELEASE'
 def bouncyVersion = '1.52'
-def commonsCodecVersion = '1.10'
 def commonsDbcpVersion = '1.4' // Should be moved to commons-dbcp2
-def commonsIoVersion = '2.4'
 def commonsLangVersion = '2.6' // Should be moved to commons-lang3
 def derbyVersion = '10.11.1.1'
 def dnsJavaVersion = '2.1.7'
@@ -31,7 +29,6 @@ def ehcacheVersion = '2.10.0'
 def elasticsearchVersion = '1.6.0'
 def freemarkerVersion = '2.3.22'
 def groovyVersion = '2.4.3'
-def guavaVersion = '18.0'
 def h2Version = '1.4.187'
 def hazelcastVersion = '3.5'
 def httpClientVersion = '4.2.2' // 4.3.4 exists
@@ -40,7 +37,6 @@ def javascriptVersion = '1.7.7'
 def javasqlgeneratorVersion = '0.3.2'
 def jcloudsVersion = '1.9.0'
 def jdbmVersion = '2.4'
-def jdomVersion = '2.0.2'
 def jedisVersion = '2.7.2'
 def jettyVersion = '9.2.11.v20150529' // 9.3.x Tests fail!
 def jgoodiesLooksVersion = '2.5.3'
@@ -50,7 +46,6 @@ def jtaVersion = '1.1'
 def leveldbVersion = '0.7'
 def leveldbJniVersion = '1.8'
 def liquibaseVersion = '3.4.0'
-def log4jVersion = '1.2.17'
 def logbackVersion = '1.1.3'
 def mongodbVersion = '2.13.2' // 3.0.x Fails to compile!
 def mysqlVersion = '5.1.35'
@@ -66,14 +61,12 @@ def scalaVersion = '2.11.6'
 def servletVersion = '3.1.0'
 def shiroVersion = '1.2.3'
 def skedVersion = '2.1'
-def sleepycatVersion = '5.0.73'
 def slf4jVersion = '1.7.12'
 def solrVersion = "1.4.1" // 4.8.1 Fails to compile!
 def springVersion = '4.1.7.RELEASE'
 def spymemcachedVersion = '2.12.0'
 def sqliteVersion = '3.8.10.1'
 def velocityVersion = '1.7'
-def voldemortVersion = '1.3.0'
 def wicketVersion = '1.5.8' // 6.15.0 Samples fails to compile!
 def wicketStatelessVersion = '1.5.0'
 def woodstoxVersion = '4.4.1'
@@ -111,7 +104,6 @@ rootProject.ext {
           // logging
           slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
           slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
-          log4j: 'log4j:log4j:' + log4jVersion,
           logback: 'ch.qos.logback:logback-classic:' + logbackVersion,
           jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
           jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
@@ -218,14 +210,8 @@ rootProject.ext {
           jta: "javax.transaction:jta:$jtaVersion",
           javaSqlGenerator: "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
           javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
-          voldemort: "org.immunogenomics.gl.voldemort:voldemort:$voldemortVersion",
-          guava: "com.google.guava:guava:$guavaVersion",
-          sleepycat: "com.sleepycat:je:$sleepycatVersion",
-          jdom: "org.jdom:jdom:$jdomVersion",
           velocity: "org.apache.velocity:velocity:$velocityVersion",
-          commons_codec: "commons-codec:commons-codec:$commonsCodecVersion",
           commons_dbcp: "commons-dbcp:commons-dbcp:$commonsDbcpVersion",
-          commons_io: "commons-io:commons-io:$commonsIoVersion",
           commons_lang: "commons-lang:commons-lang:$commonsLangVersion",
           servlet_api: "javax.servlet:javax.servlet-api:$servletVersion",
           http_client: "org.apache.httpcomponents:httpclient:$httpClientVersion",
