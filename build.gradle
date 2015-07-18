@@ -60,6 +60,7 @@ project.ext {
 }
 
 rat {
+    onlyIf { version != '0' }
     excludes = [
         '**/.DS_Store/**', '**/._*',
         // Git Files

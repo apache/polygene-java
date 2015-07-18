@@ -41,6 +41,7 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.io.Inputs;
 import org.qi4j.io.Outputs;
+import org.qi4j.library.fileconfig.FileConfigurationAssembler;
 import org.qi4j.library.uowfile.bootstrap.UoWFileAssembler;
 import org.qi4j.library.uowfile.internal.ConcurrentUoWFileModificationException;
 import org.qi4j.library.uowfile.plural.HasUoWFilesLifecycle;
@@ -183,6 +184,7 @@ public class HasUoWFilesTest
         // END SNIPPET: assembly
         module.services( TestService.class );
         new EntityTestAssembler().assemble( module );
+        new FileConfigurationAssembler().assemble( module );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly

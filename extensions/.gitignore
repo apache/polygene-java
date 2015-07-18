@@ -1,6 +1,0 @@
-*.iml
-build/
-out/
-derby.log
-entitystore-sql/derby.log
-entitystore-sql/target
