@@ -22,7 +22,11 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.ManyAssociationWrapper;
 import org.qi4j.api.association.NamedAssociation;
+import org.qi4j.api.association.NamedAssociationWrapper;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.util.NullArgumentException;
@@ -174,4 +178,63 @@ public class NamedAssociationInstance<T>
             }
         }, namedAssociationState );
     }
+
+
+    @Override
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+        NamedAssociation<?> that = (NamedAssociation) o;
+        // Unwrap if needed
+        while( that instanceof NamedAssociationWrapper )
+        {
+            that = ( (NamedAssociationWrapper) that ).next();
+        }
+        // Descriptor equality
+        NamedAssociationInstance<?> thatInstance = (NamedAssociationInstance) that;
+        AssociationDescriptor thatDescriptor = (AssociationDescriptor) thatInstance.associationInfo();
+        if( !associationInfo.equals( thatDescriptor ) )
+        {
+            return false;
+        }
+        // State equality
+        if( namedAssociationState.count() != thatInstance.namedAssociationState.count() )
+        {
+            return false;
+        }
+        for( String name : namedAssociationState )
+        {
+            if( !thatInstance.namedAssociationState.containsName( name ) )
+            {
+                return false;
+            }
+            EntityReference thisReference = namedAssociationState.get( name );
+            EntityReference thatReference = thatInstance.namedAssociationState.get( name );
+            if( !thisReference.equals( thatReference ) )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = associationInfo.hashCode() * 31; // Descriptor
+        for( String name : namedAssociationState )
+        {
+            hash += name.hashCode();
+            hash += namedAssociationState.get( name ).hashCode() * 7; // State
+        }
+        return hash;
+    }
+
 }

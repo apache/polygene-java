@@ -48,8 +48,6 @@ import org.qi4j.api.value.ValueComposite;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
@@ -143,15 +141,9 @@ public abstract class AbstractValueCompositeSerializationTest
         specificColProto.genericList().set( genericList );
         proto.specificCollection().set( specificColBuilder.newInstance() );
 
-        /*
-         ValueBuilder<SpecificValue> specificValue = module.newValueBuilder(SpecificValue.class);
-         specificValue.prototype().item().set("Foo");
-         proto.specificValue().set(specificValue.newInstance());
-         */
-        ValueBuilder<AnotherValue> valueBuilder = module.newValueBuilder( AnotherValue.class );
-        valueBuilder.prototype().val1().set( "Foo" );
-        valueBuilder.prototypeFor( AnotherValueInternalState.class ).val2().set( "Bar" );
-        AnotherValue anotherValue = valueBuilder.newInstance();
+        AnotherValue anotherValue1 = createAnotherValue( "Foo", "Bar" );
+        AnotherValue anotherValue2 = createAnotherValue( "Habba", "ZoutZout" );
+        AnotherValue anotherValue3 = createAnotherValue( "Niclas", "Hedhman" );
 
         // FIXME Some Control Chars are not supported in JSON nor in XML, what should we do about it?
         // Should Zest Core ensure the chars used in strings are supported by the whole stack?
@@ -174,8 +166,9 @@ public abstract class AbstractValueCompositeSerializationTest
         //
         // proto.stringIntMap().get().put( "bar", 67 );
 
-        proto.stringValueMap().get().put( "foo", anotherValue );
-        proto.another().set( anotherValue );
+        proto.stringValueMap().get().put( "foo", anotherValue1 );
+        proto.another().set( anotherValue1 );
+        proto.arrayOfValues().set( new AnotherValue[] { anotherValue1, anotherValue2, anotherValue3 } );
         proto.serializable().set( new SerializableObject() );
         proto.foo().set( module.newValue( FooValue.class ) );
         proto.fooValue().set( module.newValue( FooValue.class ) );
@@ -202,6 +195,14 @@ public abstract class AbstractValueCompositeSerializationTest
         proto.barEntityManyAssociation().add( buildBarEntity( "bazar TWO in barEntityManyAssociation" ) );
 
         return builder.newInstance();
+    }
+
+    private AnotherValue createAnotherValue( String val1, String val2 )
+    {
+        ValueBuilder<AnotherValue> valueBuilder = module.newValueBuilder( AnotherValue.class );
+        valueBuilder.prototype().val1().set( val1 );
+        valueBuilder.prototypeFor( AnotherValueInternalState.class ).val2().set( val2 );
+        return valueBuilder.newInstance();
     }
 
     private BarEntity buildBarEntity( String cathedral )
@@ -252,6 +253,8 @@ public abstract class AbstractValueCompositeSerializationTest
         Property<Map<String, AnotherValue>> stringValueMap();
 
         Property<AnotherValue> another();
+
+        Property<AnotherValue[]> arrayOfValues();
 
         @Optional
         Property<AnotherValue> anotherNull();

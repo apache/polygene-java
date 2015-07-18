@@ -56,9 +56,8 @@ sourceCompatibility = "1.7"
 // Collect the modules that fulfills the Release Criteria.
 project.ext {
   releaseSpec = new org.qi4j.gradle.plugin.ModuleReleaseSpecification()
+  releaseApprovedProjects = allprojects.findAll( { p -> rootProject.releaseSpec.satisfiedBy( p ) } )
 }
-
-def releaseApprovedProjects = allprojects.findAll( { project ->  rootProject.ext.releaseSpec.satisfiedBy( project ) } )
 
 rat {
     excludes = [
@@ -116,7 +115,6 @@ def repos_urls = [
   mavenCentral: "http://repo1.maven.org/maven2/",
   ops4j: "http://repository.ops4j.org/maven2/",
   restlet: 'http://maven.restlet.org/',
-  javanet: "http://download.java.net/maven/2",
   clojars: "http://clojars.org/repo/",
 ]
 
@@ -135,7 +133,9 @@ allprojects {
   defaultTasks 'classes', 'test'
 
   group = name == 'org.qi4j' ? 'org.qi4j' : name.substring( 0, name.lastIndexOf( '.' ) )
-  version = System.properties.version ?: "0"
+  if( version == 'unspecified' ) {
+    version = System.properties.version ?: "0"
+  }
   
   // UTF-8 For all compilations and javadocs
   // Deprecation warnings for all compilations
@@ -160,7 +160,6 @@ allprojects {
     mavenCentral()
     maven { name 'ops4j-repo'; url repos_urls.ops4j }
     maven { name 'restlet-repo'; url repos_urls.restlet }
-    maven { name 'maven2-repository.dev.java.net'; url repos_urls.javanet }
     maven { name 'clojars-repo'; url repos_urls.clojars }
   }
 
@@ -518,7 +517,7 @@ task javadocs( type: Javadoc ) {
 
   options.docFilesSubDirs = true
   options.encoding = "UTF-8"
-  options.overview = "${rootProject.projectDir}/buildSrc/src/javadoc/overview.html"
+  options.overview = "${rootProject.projectDir}/src/javadoc/overview.html"
   title = "${rootProject.title} ${version}"
   def apiSources = releaseApprovedProjects.findAll( { project ->
     ( project.name.startsWith( 'org.qi4j.core' ) && !project.name.startsWith( 'org.qi4j.core.runtime' ) ) ||
@@ -604,29 +603,56 @@ task generateBinDistGoOfflineHelpers {
         if( !dep.group.startsWith( 'org.qi4j' ) && !handledDeps.contains( depCoords ) ) {
 
           goOfflineGradle += "  download '$depCoords'\n"
-          goOfflineGradle += "  // download '$depCoords:sources'\n"
-          goOfflineGradle += "  // download '$depCoords:javadoc'\n"
 
-          def gav = "<groupId>${dep.group}</groupId><artifactId>${dep.name}</artifactId><version>${dep.version}</version>"
-          goOfflinePom += """    <dependency>$gav</dependency>
-          <!-- <dependency>$gav<classifier>sources</classifier></dependency> -->
-          <!-- <dependency>$gav<classifier>javadoc</classifier></dependency> -->\n"""
+          goOfflinePom += "    <dependency><groupId>${dep.group}</groupId><artifactId>${dep.name}</artifactId><version>${dep.version}</version></dependency>\n"
 
           handledDeps << depCoords
         }
       }
     }
 
-    goOfflineGradle += '}\ntask download( type: Copy ) {\n  from configurations.download\n  into file( \'dependencies/\' )\n}\n'
+    goOfflineGradle += """}
+task download( type: Copy ) {
+  def sources = configurations.download.resolvedConfiguration.resolvedArtifacts.collect { artifact ->
+    project.dependencies.create( [ group: artifact.moduleVersion.id.group, name: artifact.moduleVersion.id.name, version: artifact.moduleVersion.id.version, classifier: 'sources' ] )
+  }
+  def javadocs = configurations.download.resolvedConfiguration.resolvedArtifacts.collect { artifact ->
+    project.dependencies.create( [ group: artifact.moduleVersion.id.group, name: artifact.moduleVersion.id.name, version: artifact.moduleVersion.id.version, classifier: 'javadoc' ] )
+  }
+  from configurations.download
+  from configurations.detachedConfiguration( sources as Dependency[] ).resolvedConfiguration.lenientConfiguration.getFiles( Specs.SATISFIES_ALL )
+  from configurations.detachedConfiguration( javadocs as Dependency[] ).resolvedConfiguration.lenientConfiguration.getFiles( Specs.SATISFIES_ALL )
+  into file( 'dependencies/' )
+}
+"""
+
     goOfflinePom += """  </dependencies>\n  <build><plugins><plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-dependency-plugin</artifactId>
     <version>2.10</version>
-    <executions><execution>
-      <id>go-offline</id><phase>validate</phase>
-      <goals><goal>copy-dependencies</goal></goals>
-      <configuration><outputDirectory>\${project.basedir}/dependencies</outputDirectory></configuration>
-    </execution></executions>
+    <executions>
+      <execution>
+        <id>go-offline-jars</id><phase>validate</phase>
+        <goals><goal>copy-dependencies</goal></goals>
+        <configuration><outputDirectory>\${project.basedir}/dependencies</outputDirectory></configuration>
+      </execution>
+      <execution>
+        <id>go-offline-sources</id><phase>validate</phase>
+        <goals><goal>copy-dependencies</goal></goals>
+        <configuration>
+          <classifier>sources</classifier><failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+          <outputDirectory>\${project.basedir}/dependencies</outputDirectory>
+        </configuration>
+      </execution>
+      <execution>
+        <id>go-offline-javadocs</id><phase>validate</phase>
+        <goals><goal>copy-dependencies</goal></goals>
+        <configuration>
+          <classifier>javadoc</classifier><failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+          <outputDirectory>\${project.basedir}/dependencies</outputDirectory>
+        </configuration>
+      </execution>
+    </executions>
   </plugin></plugins></build>
 </project>
 """
@@ -639,8 +665,28 @@ task generateBinDistGoOfflineHelpers {
   }
 }
 
-def srcDistImage = copySpec {
+
+def srcDistFilesImages = copySpec {
   from '.'
+  include '*.txt'
+  include 'doap.rdf'
+  include '*.gradle'
+  include 'gradlew*'
+  include 'gradle/**'
+  include 'etc/**'
+  include 'buildSrc/**'
+  releaseApprovedProjects.each { p ->
+    def relPath = new File( project.projectDir.toURI().relativize( p.projectDir.toURI() ).toString() )
+    include "$relPath/**"
+  }
+  include 'manual/**'
+  include 'samples/**'
+  include 'tests/**'
+  include 'tutorials/**'
+  // Filtered, see below
+  exclude 'settings.gradle'
+  exclude 'gradle.properties'
+  // Excludes
   exclude '**/build/'               // Build output
   exclude 'derby.log'               // Derby test garbage
   exclude '**/*.iml'                // IDEA files
@@ -657,7 +703,52 @@ def srcDistImage = copySpec {
   exclude '**/.git*'                // Git files
   exclude '**/.gradle/'             // Gradle management files
   exclude '**/.gradletasknamecache' // Gradle cache
-  into "qi4j-sdk-$version/"
+  into '.'
+}
+
+task srcDistFilteredFiles() {
+  // Generates various files for the source distribution
+  // - settings.gradle
+  // - gradle.properties to set version !
+  def filteredDir = new File( "$project.buildDir/tmp/srcDistFilteredFiles")
+  outputs.file filteredDir
+  doLast {
+    // Settings
+    def settingsFile = new File( filteredDir,  'settings.gradle' )
+    settingsFile.parentFile.mkdirs()
+    def filteredSettings = ''
+    project.file( 'settings.gradle' ).readLines().each { line ->
+      if( line.contains( '\'libraries:' ) || line.contains( '\'extensions:' ) || line.contains( '\'tools:' ) ) {
+        def accepted = false
+        releaseApprovedProjects.collect{it.projectDir}.each { acceptedProjectDir ->
+          if( line.contains( "'${acceptedProjectDir.parentFile.name}:${acceptedProjectDir.name}'" ) ) {
+            accepted = true
+          }
+        }
+        if( accepted ) {
+          filteredSettings += "$line\n"
+        }
+      } else {
+        filteredSettings += "$line\n"
+      }
+    }
+    settingsFile.text = filteredSettings
+    // gradle.properties
+    def gradlePropsFile = new File( filteredDir, 'gradle.properties' )
+    gradlePropsFile.parentFile.mkdirs()
+    gradlePropsFile.text = project.file( 'gradle.properties' ).text + "\nversion=$version\n"
+  }
+}
+
+def srcDistFilteredFilesImage = copySpec {
+  from srcDistFilteredFiles
+  into '.'
+}
+
+def srcDistImage = copySpec {
+  into "qi4j-sdk-$version"
+  with srcDistFilesImages
+  with srcDistFilteredFilesImage
 }
 
 def reportsDistImage = copySpec {
@@ -708,13 +799,13 @@ def binDistImage = copySpec {
   with libsImage
 }
 
-task zipSources( type: Zip, dependsOn: buildAll ) {
+task zipSources( type: Zip ) {
   baseName = 'qi4j-sdk'
   with srcDistImage
   classifier = 'src'
 }
 
-task tarSources( type: Tar, dependsOn: buildAll ) {
+task tarSources( type: Tar ) {
   baseName = 'qi4j-sdk'
   with srcDistImage
   compression = Compression.GZIP
@@ -738,6 +829,10 @@ artifacts {
   archives zipSources, tarSources, zipBinaries, tarBinaries
 }
 
+signing {
+  sign configurations.archives
+}
+
 task dist( type: Copy, dependsOn: install ) {
   with binDistImage
   into "$buildDir/dist"
@@ -755,7 +850,7 @@ task unpackSrcDist( type: Copy ) {
 }
 task checkSrcDist( type: GradleBuild, dependsOn: unpackSrcDist ) {
   buildFile = "$unpackedSrcDistDir/build.gradle"
-  tasks = [ 'check' ] // TODO check
+  tasks = [ 'check' ]
 }
 task unpackBinDist( type: Copy, dependsOn: buildAll ) {
   with binDistImage
@@ -792,7 +887,7 @@ task checkBinDist_goOfflineMaven( type: Exec, dependsOn: unpackBinDist ) {
   def dependenciesDir = new File( unpackedBinDistDir, 'dependencies' )
   doFirst { dependenciesDir.deleteDir() }
   workingDir unpackedBinDistDir
-  commandLine 'mvn', '-e', '-q', '-f', 'go-offline.pom', 'validate'
+  commandLine 'mvn', '-e', '-f', 'go-offline.pom', 'validate'
   doLast {
     releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({it.name}).each { dep ->
       def jarArtifactId = dep.name instanceof String ? dep.name : dep.name.last()
@@ -863,5 +958,5 @@ task release {
 //  2) /gradlew.bat which is the windows bat script for for executing builds
 //  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
 task wrapper( type: Wrapper ) {
-  gradleVersion = '2.4'
+  gradleVersion = '2.5'
 }

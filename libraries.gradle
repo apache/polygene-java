@@ -264,31 +264,29 @@ rootProject.ext {
   ]
 }
 
-// Global transitive dependencies resolution rules
-// See https://docs.gradle.org/current/userguide/dependency_management.html#sec:dependency_resolve_rules
-// See https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.ResolutionStrategy.html
+// Global transitive dependencies substitution rules
+// See https://docs.gradle.org/current/userguide/dependency_management.html#dependency_substitution_rules
+// See https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.DependencySubstitutions.html
 allprojects {
   configurations.all {
-    resolutionStrategy {
-      dependencySubstitution {
-        eachModule { ModuleDependencySubstitution details ->
-          // Always resolve SLF4J to the same version
-          if( details.requested.group == 'org.slf4j' ) {
-            details.useTarget group: details.requested.group, name: details.requested.module, version: slf4jVersion
-          }
-          // woodstox:wstx-asl is broken (no pom), use org.codehaus.woodstox:wstx-asl instead
-          if( details.requested.group == 'woodstox' && details.requested.module == 'wstx-asl' ) {
-            details.useTarget group: 'org.codehaus.woodstox', name: 'wstx-asl', version: details.requested.version
-          }
-          // some bad citizens have SNAPSHOT parents ...
-          if( details.requested.module == 'commons-sandbox-parent' && details.requested.version == '3-SNAPSHOT') {
-            details.useTarget group: details.requested.group, name: details.requested.module, version: '3'
-          }
-          // Findbugs Annotation is LGPL, use https://github.com/stephenc/findbugs-annotations which is
-          // Apache 2 licensed instead
-          if( details.requested.group == 'net.sourceforge.findbugs' && details.requested.module == 'annotations' ) {
-            details.useTarget group: 'com.github.stephenc.findbugs', name: 'findbugs-annotations', version: '1.3.9-1'
-          }
+    resolutionStrategy.dependencySubstitution.all { DependencySubstitution dep ->
+      if( dep.requested instanceof ModuleComponentSelector ) {
+        // Always resolve SLF4J to the same version
+        if( dep.requested.group == 'org.slf4j' ) {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: slf4jVersion
+        }
+        // woodstox:wstx-asl is broken (no pom), use org.codehaus.woodstox:wstx-asl instead
+        if( dep.requested.group == 'woodstox' && dep.requested.module == 'wstx-asl' ) {
+          dep.useTarget group: 'org.codehaus.woodstox', name: 'wstx-asl', version: dep.requested.version
+        }
+        // some bad citizens have SNAPSHOT parents ...
+        if( dep.requested.module == 'commons-sandbox-parent' && dep.requested.version == '3-SNAPSHOT') {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: '3'
+        }
+        // Findbugs Annotation is LGPL, use https://github.com/stephenc/findbugs-annotations which is
+        // Apache 2 licensed instead
+        if( dep.requested.group == 'net.sourceforge.findbugs' && dep.requested.module == 'annotations' ) {
+          dep.useTarget group: 'com.github.stephenc.findbugs', name: 'findbugs-annotations', version: '1.3.9-1'
         }
       }
     }

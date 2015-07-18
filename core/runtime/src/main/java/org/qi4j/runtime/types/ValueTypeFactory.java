@@ -27,6 +27,7 @@ import org.qi4j.api.common.Visibility;
 import org.qi4j.api.type.CollectionType;
 import org.qi4j.api.type.EnumType;
 import org.qi4j.api.type.MapType;
+import org.qi4j.api.type.Serialization;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.util.Classes;
@@ -61,7 +62,8 @@ public class ValueTypeFactory
                                    Class declaringClass,
                                    Class compositeType,
                                    LayerModel layer,
-                                   ModuleModel module
+                                   ModuleModel module,
+                                   Serialization.Variant variant
     )
     {
         ValueType valueType = null;
@@ -76,13 +78,13 @@ public class ValueTypeFactory
                     TypeVariable collectionTypeVariable = (TypeVariable) collectionType;
                     collectionType = Classes.resolveTypeVariable( collectionTypeVariable, declaringClass, compositeType );
                 }
-                ValueType collectedType = newValueType( collectionType, declaringClass, compositeType, layer, module );
+                ValueType collectedType = newValueType( collectionType, declaringClass, compositeType, layer, module, variant );
                 valueType = new CollectionType( Classes.RAW_CLASS.map( type ), collectedType );
             }
             else
             {
-                valueType = new CollectionType( Classes.RAW_CLASS
-                                                    .map( type ), newValueType( Object.class, declaringClass, compositeType, layer, module ) );
+                ValueType collectedType = newValueType( Object.class, declaringClass, compositeType, layer, module, variant );
+                valueType = new CollectionType( Classes.RAW_CLASS.map( type ), collectedType );
             }
         }
         else if( MapType.isMap( type ) )
@@ -96,22 +98,21 @@ public class ValueTypeFactory
                     TypeVariable keyTypeVariable = (TypeVariable) keyType;
                     keyType = Classes.resolveTypeVariable( keyTypeVariable, declaringClass, compositeType );
                 }
-                ValueType keyedType = newValueType( keyType, declaringClass, compositeType, layer, module );
-
+                ValueType keyedType = newValueType( keyType, declaringClass, compositeType, layer, module, variant );
                 Type valType = pt.getActualTypeArguments()[ 1 ];
                 if( valType instanceof TypeVariable )
                 {
                     TypeVariable valueTypeVariable = (TypeVariable) valType;
                     valType = Classes.resolveTypeVariable( valueTypeVariable, declaringClass, compositeType );
                 }
-                ValueType valuedType = newValueType( valType, declaringClass, compositeType, layer, module );
-
-                valueType = new MapType( Classes.RAW_CLASS.map( type ), keyedType, valuedType );
+                ValueType valuedType = newValueType( valType, declaringClass, compositeType, layer, module, variant );
+                valueType = new MapType( Classes.RAW_CLASS.map( type ), keyedType, valuedType, variant );
             }
             else
             {
-                valueType = new MapType( Classes.RAW_CLASS
-                                             .map( type ), newValueType( Object.class, declaringClass, compositeType, layer, module ), newValueType( Object.class, declaringClass, compositeType, layer, module ) );
+                ValueType keyType = newValueType( Object.class, declaringClass, compositeType, layer, module, variant );
+                ValueType valuesType = newValueType( Object.class, declaringClass, compositeType, layer, module, variant );
+                valueType = new MapType( Classes.RAW_CLASS.map( type ), keyType, valuesType, variant );
             }
         }
         else if( ValueCompositeType.isValueComposite( type ) )

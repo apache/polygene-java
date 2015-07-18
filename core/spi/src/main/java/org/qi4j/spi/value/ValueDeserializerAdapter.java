@@ -48,6 +48,7 @@ import org.qi4j.api.type.EnumType;
 import org.qi4j.api.type.MapType;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.type.ValueType;
+import org.qi4j.api.type.Serialization;
 import org.qi4j.api.util.Base64Encoder;
 import org.qi4j.api.util.Dates;
 import org.qi4j.api.value.ValueBuilder;
@@ -686,7 +687,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 Object value = getObjectFieldValue(
                     inputNode,
                     namedAssociationName,
-                    buildDeserializeInputNodeFunction( MapType.of( String.class, EntityReference.class, MapType.Variant.object ) ) );
+                    buildDeserializeInputNodeFunction( MapType.of( String.class, EntityReference.class, Serialization.Variant.object ) ) );
                 stateMap.put( namedAssociationName, value );
             }
         }
@@ -755,7 +756,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         if( MapType.class.isAssignableFrom( valueType.getClass() ) )
         {
             MapType mapType = (MapType) valueType;
-            if( mapType.variant().equals( MapType.Variant.entry ) )
+            if( mapType.variant().equals( Serialization.Variant.entry ) )
             {
                 return (T) deserializeNodeEntryMap( (MapType) valueType, inputNode );
             }

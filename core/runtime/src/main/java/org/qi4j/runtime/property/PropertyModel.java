@@ -32,6 +32,7 @@ import org.qi4j.api.property.InvalidPropertyTypeException;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.Serialization;
 import org.qi4j.api.type.ValueCompositeType;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.util.Classes;
@@ -171,7 +172,7 @@ public class PropertyModel
         {
             if( valueType instanceof ValueCompositeType )
             {
-                return module.newValue( (Class<?>) first( valueType().types() ) );
+                return module.newValue( first( valueType().types() ) );
             }
             else
             {
@@ -189,14 +190,28 @@ public class PropertyModel
         ValueTypeFactory factory = ValueTypeFactory.instance();
         Class<?> declaringClass = ( (Member) accessor() ).getDeclaringClass();
         Class<?> mainType = first( resolution.model().types() );
-        valueType = factory.newValueType( type(), declaringClass, mainType, resolution.layer(), resolution.module() );
-
+        Serialization.Variant variant = findVariant();
+        valueType = factory.newValueType( type(), declaringClass, mainType, resolution.layer(), resolution.module(), variant );
         builderInfo = new BuilderPropertyInfo();
-
         if( type instanceof TypeVariable )
         {
             type = Classes.resolveTypeVariable( (TypeVariable) type, declaringClass, mainType );
         }
+    }
+
+    private Serialization.Variant findVariant()
+    {
+        Serialization serialization = metaInfo.get( Serialization.class );
+        Serialization.Variant variant = null;
+        if( serialization != null )
+        {
+            variant = serialization.value();
+        }
+        if( variant == null )
+        {
+            variant = Serialization.Variant.entry;
+        }
+        return variant;
     }
 
     @Override

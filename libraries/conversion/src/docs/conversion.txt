@@ -25,14 +25,19 @@
 source=libraries/conversion/dev-status.xml
 --------------
 
-DEPRECATED: This functionality is now present in <<def-unitofwork>> as
-the two methods toEntity() and toValue(). Since this library was written
-assocations of all kinds are now fully supported in Values.
-
-
 The Conversion Library provides support for converting composite types.
 
 include::../../build/docs/buildinfo/artifact.txt[]
+
+
+[WARNING]
+.DEPRECATED
+====
+This functionality is now present in <<def-unitofwork>> as
+the two methods toEntity() and toValue(). Since this library was written
+assocations of all kinds are now fully supported in Values.
+====
+
 
 == Entities to Values ==
 
