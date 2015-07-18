@@ -43,6 +43,10 @@ public interface ValueSerialization
          * Tag a ValueSerialization service that support the XML format.
          */
         String XML = "xml";
+        /**
+         * Tag a ValueSerialization service that support the YAML format.
+         */
+        String YAML = "yaml";
     }
 
 }

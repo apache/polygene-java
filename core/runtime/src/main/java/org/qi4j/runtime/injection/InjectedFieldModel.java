@@ -138,4 +138,10 @@ public final class InjectedFieldModel
             return emptyList();
         }
     }
+
+    @Override
+    public String toString()
+    {
+        return "InjectedFieldModel{" + ", injectedField=" + injectedField + '}';
+    }
 }

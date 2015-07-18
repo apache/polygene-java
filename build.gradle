@@ -74,6 +74,8 @@ rat {
         '**/.settings/**', '**/.classpath', '**/.project',
         '**/.gradletasknamecache', '**/private/cache/**',
         '**/.nb-gradle-properties', '**/.nb-gradle/**',
+        // JSON files are not allowed to have comments, according to http://www.json.org/ and http://www.ietf.org/rfc/rfc4627.txt
+        '**/*.json',
         // Various Text Resources
         '**/README.*','**/README*.*', '**/TODO',
         '**/src/main/resources/**/*.txt',

@@ -20,12 +20,17 @@ import java.io.InputStream;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
+import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.qualifier.ServiceTags;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
@@ -33,6 +38,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.api.value.ValueSerialization;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -107,7 +113,6 @@ import static org.qi4j.functional.Iterables.first;
  *     :
  * }
  * </code></pre>
- *
  */
 @SuppressWarnings( "JavadocReference" )
 @Mixins( Configuration.ConfigurationMixin.class )
@@ -161,6 +166,9 @@ public interface Configuration<T>
 
         @Structure
         private Module module;
+
+        @Service
+        private Iterable<ServiceReference<ValueSerialization>> valueSerialization;
 
         public ConfigurationMixin()
         {
@@ -238,10 +246,10 @@ public interface Configuration<T>
         }
 
         @SuppressWarnings( "unchecked" )
-        private <V> V initializeConfigurationInstance( ServiceComposite serviceComposite,
-                                                       UnitOfWork uow,
-                                                       ServiceDescriptor serviceModel,
-                                                       String identity
+        private <V extends Identity> V initializeConfigurationInstance( ServiceComposite serviceComposite,
+                                                                        UnitOfWork uow,
+                                                                        ServiceDescriptor serviceModel,
+                                                                        String identity
         )
             throws InstantiationException
         {
@@ -249,22 +257,68 @@ public interface Configuration<T>
             Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
             UnitOfWork buildUow = module.newUnitOfWork( usecase );
 
-            EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( serviceModel.<V>configurationType(), identity );
+            Class<?> type = first( api.serviceDescriptorFor( serviceComposite ).types() );
+            Class<V> configType = serviceModel.configurationType();
 
             // Check for defaults
-            String s = identity + ".properties";
-            Class<?> type = first( api.serviceDescriptorFor( serviceComposite ).types() );
-            // Load defaults from classpath root if available
-            if ( type.getResource( s ) == null && type.getResource( "/" + s ) != null )
+            V config = tryLoadPropertiesFile( buildUow, type, configType, identity );
+            if( config == null )
             {
-                s = "/" + s;
+                config = tryLoadJsonFile( buildUow, type, configType, identity );
+                if( config == null )
+                {
+                    config = tryLoadYamlFile( buildUow, type, configType, identity );
+                    if( config == null )
+                    {
+                        config = tryLoadXmlFile( buildUow, type, configType, identity );
+                        if( config == null )
+                        {
+                            try
+                            {
+                                EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( serviceModel.<V>configurationType(), identity );
+                                configBuilder.newInstance();
+                            }
+                            catch( ConstraintViolationException e )
+                            {
+                                throw new NoSuchConfigurationException( configType, identity, e );
+                            }
+                        }
+                    }
+                }
             }
-            InputStream asStream = type.getResourceAsStream( s );
+
+            try
+            {
+                buildUow.complete();
+
+                // Try again
+                return (V) findConfigurationInstanceFor( serviceComposite, uow );
+            }
+            catch( Exception e1 )
+            {
+                InstantiationException ex = new InstantiationException(
+                    "Could not instantiate configuration, and no configuration initialization file was found (" + identity + ")" );
+                ex.initCause( e1 );
+                throw ex;
+            }
+        }
+
+        private <C, V> V tryLoadPropertiesFile( UnitOfWork buildUow,
+                                                Class<C> compositeType,
+                                                Class<V> configType,
+                                                String identity
+        )
+            throws InstantiationException
+        {
+            EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( configType, identity );
+            String resourceName = identity + ".properties";
+            InputStream asStream = getResource( compositeType, resourceName );
             if( asStream != null )
             {
                 try
                 {
                     PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
+                    return configBuilder.newInstance();
                 }
                 catch( IOException e1 )
                 {
@@ -274,22 +328,69 @@ public interface Configuration<T>
                     throw exception;
                 }
             }
+            return null;
+        }
 
-            try
+        private InputStream getResource( Class<?> type, String resourceName )
+        {
+            // Load defaults from classpath root if available
+            if( type.getResource( resourceName ) == null && type.getResource( "/" + resourceName ) != null )
             {
-                configBuilder.newInstance();
-                buildUow.complete();
+                resourceName = "/" + resourceName;
+            }
+            return type.getResourceAsStream( resourceName );
+        }
 
-                // Try again
-                return (V) findConfigurationInstanceFor( serviceComposite, uow );
-            }
-            catch( Exception e1 )
+        private <C, V extends Identity> V tryLoadJsonFile( UnitOfWork uow,
+                                                           Class<C> compositeType,
+                                                           Class<V> configType,
+                                                           String identity
+        )
+        {
+            return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.JSON, ".json" );
+        }
+
+        private <C, V extends Identity> V tryLoadYamlFile( UnitOfWork uow,
+                                                           Class<C> compositeType,
+                                                           Class<V> configType,
+                                                           String identity
+        )
+        {
+            return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.YAML, ".yaml" );
+        }
+
+        private <C, V extends Identity> V tryLoadXmlFile( UnitOfWork uow,
+                                                          Class<C> compositeType,
+                                                          Class<V> configType,
+                                                          String identity
+        )
+        {
+            return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.XML, ".xml" );
+        }
+
+        private <C, V extends Identity> V readConfig( UnitOfWork uow,
+                                                      Class<C> compositeType,
+                                                      Class<V> configType,
+                                                      String identity,
+                                                      String format,
+                                                      String extension
+        )
+        {
+            for( ServiceReference<ValueSerialization> serializerRef : valueSerialization )
             {
-                InstantiationException ex = new InstantiationException(
-                    "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
-                ex.initCause( e1 );
-                throw ex;
+                ServiceTags serviceTags = serializerRef.metaInfo( ServiceTags.class );
+                if( serviceTags.hasTag( format ) )
+                {
+                    String resourceName = identity + extension;
+                    InputStream asStream = getResource( compositeType, resourceName );
+                    if( asStream != null )
+                    {
+                        V configObject = serializerRef.get().deserialize( configType, asStream );
+                        return uow.toEntity( configType, configObject );
+                    }
+                }
             }
+            return null;
         }
     }
 }
