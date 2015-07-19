@@ -58,11 +58,11 @@ public class DomainEventTest
                 .withDomainEvents()
                 .withCurrentUserFromUOWPrincipal()
                 .assemble(module);
-        // START SNIPPET: assemblyDE
+        // END SNIPPET: assemblyDE
 
         // START SNIPPET: storeDE
         module.services( MemoryEventStoreService.class );
-        // START SNIPPET: storeDE
+        // END SNIPPET: storeDE
 
         // START SNIPPET: concernDE
         module.entities( TestEntity.class ).withConcerns(DomainEventCreationConcern.class);

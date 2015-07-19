@@ -14,7 +14,8 @@ import org.qi4j.library.eventsourcing.domain.factory.DomainEventFactoryService;
 
 
 public class EventsourcingAssembler
-        extends Assemblers.Visibility<EventsourcingAssembler> {
+        extends Assemblers.Visibility<EventsourcingAssembler>
+{
 
 
     private boolean domainEvents;
@@ -22,36 +23,43 @@ public class EventsourcingAssembler
 
     private boolean uowPrincipal;
 
-    public EventsourcingAssembler withDomainEvents() {
+    public EventsourcingAssembler withDomainEvents()
+    {
         domainEvents = true;
         return this;
     }
 
-    public EventsourcingAssembler withApplicationEvents() {
+    public EventsourcingAssembler withApplicationEvents()
+    {
         applicationEvents = true;
         return this;
     }
 
-    public EventsourcingAssembler withCurrentUserFromUOWPrincipal() {
+    public EventsourcingAssembler withCurrentUserFromUOWPrincipal()
+    {
         uowPrincipal = true;
         return this;
     }
 
 
     @Override
-    public void assemble(ModuleAssembly module) throws AssemblyException {
+    public void assemble(ModuleAssembly module) throws AssemblyException
+    {
 
-        if (domainEvents) {
+        if (domainEvents)
+        {
             module.values(DomainEventValue.class, UnitOfWorkDomainEventsValue.class);
             module.services(DomainEventFactoryService.class).visibleIn(visibility());
         }
 
-        if (applicationEvents) {
+        if (applicationEvents)
+        {
             module.values(ApplicationEvent.class, TransactionApplicationEvents.class);
             module.services(ApplicationEventFactoryService.class).visibleIn(visibility());
         }
 
-        if (uowPrincipal) {
+        if (uowPrincipal)
+        {
             module.importedServices(CurrentUserUoWPrincipal.class).importedBy(ImportedServiceDeclaration.NEW_OBJECT);
             module.objects(CurrentUserUoWPrincipal.class);
         }

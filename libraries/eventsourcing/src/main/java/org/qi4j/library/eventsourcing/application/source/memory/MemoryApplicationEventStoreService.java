@@ -19,9 +19,10 @@ import java.util.*;
  * In-Memory ApplicationEventStore. Mainly used for testing.
  */
 @Mixins(MemoryApplicationEventStoreService.MemoryStoreMixin.class)
-@Activators( ApplicationEventStoreActivation.Activator.class )
+@Activators(ApplicationEventStoreActivation.Activator.class)
 public interface MemoryApplicationEventStoreService
-        extends ApplicationEventSource, ApplicationEventStore, ApplicationEventStream, ApplicationEventStoreActivation, ServiceComposite {
+        extends ApplicationEventSource, ApplicationEventStore, ApplicationEventStream, ApplicationEventStoreActivation, ServiceComposite
+{
 
     abstract class MemoryStoreMixin
             extends AbstractApplicationEventStoreMixin
@@ -32,35 +33,37 @@ public interface MemoryApplicationEventStoreService
         private LinkedList<TransactionApplicationEvents> store = new LinkedList<TransactionApplicationEvents>();
 
         @Override
-        public Input<TransactionApplicationEvents, IOException> transactionsAfter(final long afterTimestamp, final long maxTransactions) {
+        public Input<TransactionApplicationEvents, IOException> transactionsAfter(final long afterTimestamp, final long maxTransactions)
+        {
             return new Input<TransactionApplicationEvents, IOException>()
             {
                 @Override
-                public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super TransactionApplicationEvents, ReceiverThrowableType> output ) throws IOException, ReceiverThrowableType
+                public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super TransactionApplicationEvents, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
                 {
                     // Lock store first
                     lock.lock();
                     try
                     {
-                        output.receiveFrom( new Sender<TransactionApplicationEvents, IOException>()
+                        output.receiveFrom(new Sender<TransactionApplicationEvents, IOException>()
                         {
                             @Override
-                            public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super TransactionApplicationEvents, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, IOException
+                            public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super TransactionApplicationEvents, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
                             {
                                 Iterator<TransactionApplicationEvents> iterator = store.iterator();
 
                                 long count = 0;
 
-                                while( iterator.hasNext() && count < maxTransactions )
+                                while (iterator.hasNext() && count < maxTransactions)
                                 {
                                     TransactionApplicationEvents next = iterator.next();
-                                    if( next.timestamp().get() > afterTimestamp) {
+                                    if (next.timestamp().get() > afterTimestamp)
+                                    {
                                         receiver.receive(next);
                                         count++;
                                     }
                                 }
                             }
-                        } );
+                        });
                     } finally
                     {
                         lock.unlock();
@@ -71,40 +74,44 @@ public interface MemoryApplicationEventStoreService
         }
 
         @Override
-        public Input<TransactionApplicationEvents, IOException> transactionsBefore(final long beforeTimestamp, final long maxTransactions) {
+        public Input<TransactionApplicationEvents, IOException> transactionsBefore(final long beforeTimestamp, final long maxTransactions)
+        {
             return new Input<TransactionApplicationEvents, IOException>()
             {
                 @Override
-                public <ReceiverThrowableType extends Throwable> void transferTo( Output<? super TransactionApplicationEvents, ReceiverThrowableType> output ) throws IOException, ReceiverThrowableType
+                public <ReceiverThrowableType extends Throwable> void transferTo(Output<? super TransactionApplicationEvents, ReceiverThrowableType> output) throws IOException, ReceiverThrowableType
                 {
                     // Lock store first
                     lock.lock();
                     try
                     {
-                        output.receiveFrom( new Sender<TransactionApplicationEvents, IOException>()
+                        output.receiveFrom(new Sender<TransactionApplicationEvents, IOException>()
                         {
                             @Override
-                            public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super TransactionApplicationEvents, ReceiverThrowableType> receiver ) throws ReceiverThrowableType, IOException {
+                            public <ReceiverThrowableType extends Throwable> void sendTo(Receiver<? super TransactionApplicationEvents, ReceiverThrowableType> receiver) throws ReceiverThrowableType, IOException
+                            {
 
                                 ListIterator<TransactionApplicationEvents> iterator = store.listIterator();
 
-                                while (iterator.hasNext() ){
+                                while (iterator.hasNext())
+                                {
                                     TransactionApplicationEvents next = iterator.next();
-                                    if( next.timestamp().get() >= beforeTimestamp) {
+                                    if (next.timestamp().get() >= beforeTimestamp)
+                                    {
                                         break;
                                     }
                                 }
 
                                 long count = 0;
 
-                                while( iterator.hasPrevious() && count < maxTransactions )
+                                while (iterator.hasPrevious() && count < maxTransactions)
                                 {
                                     TransactionApplicationEvents next = iterator.previous();
                                     receiver.receive(next);
                                     count++;
                                 }
                             }
-                        } );
+                        });
                     } finally
                     {
                         lock.unlock();
@@ -115,7 +122,8 @@ public interface MemoryApplicationEventStoreService
         }
 
         @Override
-        protected void storeEvents(TransactionApplicationEvents transactionDomain) throws IOException {
+        protected void storeEvents(TransactionApplicationEvents transactionDomain) throws IOException
+        {
             store.add(transactionDomain);
         }
 

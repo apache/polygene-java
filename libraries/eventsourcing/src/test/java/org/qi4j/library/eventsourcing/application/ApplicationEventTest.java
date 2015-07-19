@@ -42,14 +42,17 @@ import static org.junit.Assert.assertEquals;
  * User signup usecase with optional mailing list subscription.
  * Subscription is not stored in domain model but is available via application events feed.
  */
-public class ApplicationEventTest extends AbstractQi4jTest {
+public class ApplicationEventTest
+        extends AbstractQi4jTest
+{
 
     @Service
     ApplicationEventSource eventSource;
 
 
     @Override
-    public void assemble(ModuleAssembly module) throws AssemblyException {
+    public void assemble(ModuleAssembly module) throws AssemblyException
+    {
 
         // START SNIPPET: assemblyAE
         new EventsourcingAssembler()
@@ -74,11 +77,14 @@ public class ApplicationEventTest extends AbstractQi4jTest {
 
 
     @Test
-    public void testApplicationEvent() throws UnitOfWorkCompletionException, IOException {
+    public void testApplicationEvent() throws UnitOfWorkCompletionException, IOException
+    {
         Users users = module.newTransient(Users.class);
 
-        Principal administratorPrincipal = new Principal() {
-            public String getName() {
+        Principal administratorPrincipal = new Principal()
+        {
+            public String getName()
+            {
                 return "administrator";
             }
         };
@@ -126,46 +132,57 @@ public class ApplicationEventTest extends AbstractQi4jTest {
 
     }
 
-    static class EventsInbox implements Output<TransactionApplicationEvents, RuntimeException> {
+    static class EventsInbox implements Output<TransactionApplicationEvents, RuntimeException>
+    {
 
         private List<TransactionApplicationEvents> events = new LinkedList<>();
 
         @Override
-        public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends TransactionApplicationEvents, SenderThrowableType> sender) throws RuntimeException, SenderThrowableType {
-            try {
-                sender.sendTo(new Receiver<TransactionApplicationEvents, Throwable>() {
+        public <SenderThrowableType extends Throwable> void receiveFrom(Sender<? extends TransactionApplicationEvents, SenderThrowableType> sender) throws RuntimeException, SenderThrowableType
+        {
+            try
+            {
+                sender.sendTo(new Receiver<TransactionApplicationEvents, Throwable>()
+                {
                     @Override
-                    public void receive(TransactionApplicationEvents item) throws Throwable {
+                    public void receive(TransactionApplicationEvents item) throws Throwable
+                    {
                         events.add(item);
                     }
                 });
 
-            } catch (Throwable throwable) {
+            } catch (Throwable throwable)
+            {
                 throwable.printStackTrace();
             }
 
         }
 
-        public List<TransactionApplicationEvents> getEvents() {
+        public List<TransactionApplicationEvents> getEvents()
+        {
             return events;
         }
     }
 
+    // START SNIPPET: methodAE
     @Mixins(Users.Mixin.class)
-    public interface Users extends TransientComposite {
+    public interface Users extends TransientComposite
+    {
 
-        // START SNIPPET: methodAE
         void signup(@Optional ApplicationEvent evt, String username, List<String> mailinglists);
-        // END SNIPPET: methodAR
+        // END SNIPPET: methodAE
 
-        abstract class Mixin implements Users {
+        abstract class Mixin implements Users
+        {
 
             @Structure
             UnitOfWorkFactory uowFactory;
 
             @Override
-            public void signup(ApplicationEvent evt, String username, List<String> mailinglists) {
-                if (evt == null) {
+            public void signup(ApplicationEvent evt, String username, List<String> mailinglists)
+            {
+                if (evt == null)
+                {
                     UnitOfWork uow = uowFactory.currentUnitOfWork();
 
                     EntityBuilder<UserEntity> builder = uow.newEntityBuilder(UserEntity.class);
@@ -178,7 +195,8 @@ public class ApplicationEventTest extends AbstractQi4jTest {
     }
 
     public interface UserEntity
-            extends EntityComposite {
+            extends EntityComposite
+    {
 
         @UseDefaults
         Property<String> username();
