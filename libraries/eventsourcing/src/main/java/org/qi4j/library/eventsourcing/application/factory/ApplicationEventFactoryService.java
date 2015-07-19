@@ -16,7 +16,6 @@
 
 package org.qi4j.library.eventsourcing.application.factory;
 
-import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -33,13 +32,14 @@ import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.library.eventsourcing.application.api.ApplicationEvent;
-import org.qi4j.library.eventsourcing.domain.factory.UnitOfWorkNotificationConcern;
 import org.qi4j.library.eventsourcing.domain.spi.CurrentUser;
+
+import java.util.Date;
 
 /**
  * DomainEventValue factory
  */
-@Concerns(UnitOfWorkNotificationConcern.class)
+@Concerns(TransactionNotificationConcern.class)
 @Mixins(ApplicationEventFactoryService.Mixin.class)
 public interface ApplicationEventFactoryService
         extends ApplicationEventFactory, ServiceComposite
