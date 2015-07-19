@@ -28,6 +28,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.functional.Function;
 import org.qi4j.io.Outputs;
 import org.qi4j.io.Transforms;
+import org.qi4j.library.eventsourcing.bootstrap.EventsourcingAssembler;
 import org.qi4j.library.eventsourcing.domain.api.DomainEvent;
 import org.qi4j.library.eventsourcing.domain.api.DomainEventValue;
 import org.qi4j.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
@@ -52,13 +53,20 @@ public class DomainEventTest
     {
         new EntityTestAssembler(  ).assemble( module );
 
-        module.values( DomainEventValue.class, UnitOfWorkDomainEventsValue.class );
-        module.services( MemoryEventStoreService.class );
-        module.services( DomainEventFactoryService.class );
-        module.importedServices( CurrentUserUoWPrincipal.class ).importedBy( ImportedServiceDeclaration.NEW_OBJECT );
-        module.objects( CurrentUserUoWPrincipal.class );
+        // START SNIPPET: assemblyDE
+        new EventsourcingAssembler()
+                .withDomainEvents()
+                .withCurrentUserFromUOWPrincipal()
+                .assemble(module);
+        // START SNIPPET: assemblyDE
 
+        // START SNIPPET: storeDE
+        module.services( MemoryEventStoreService.class );
+        // START SNIPPET: storeDE
+
+        // START SNIPPET: concernDE
         module.entities( TestEntity.class ).withConcerns(DomainEventCreationConcern.class);
+        // END SNIPPET: concernDE
     }
 
     @Test
@@ -93,6 +101,7 @@ public class DomainEventTest
                 }, Outputs.systemOut() ));
     }
 
+    // START SNIPPET: methodDE
     @Mixins( TestEntity.Mixin.class )
     public interface TestEntity
         extends EntityComposite
@@ -112,4 +121,5 @@ public class DomainEventTest
             }
         }
     }
+    // END SNIPPET: methodDE
 }
