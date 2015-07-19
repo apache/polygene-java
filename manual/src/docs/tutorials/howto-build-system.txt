@@ -131,10 +131,10 @@ If a +version+ property is not defined, the build system will refuse to make a r
 
 == Tests ==
 
+NOTE: See the https://builds.apache.org/view/S-Z/view/Zest/[Zest™ Continuous Integration] for current tests results
+
 Unit and integration tests are located near the code under test.
 You'll find theses tests across the whole SDK.
-
-NOTE: See the https://builds.apache.org/view/S-Z/view/Zest/[Zest™ Continuous Integration] for current tests results
 
 === Unit tests requiring external services ===
 
