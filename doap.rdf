@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -15,8 +16,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-
-<?xml-stylesheet type="text/xsl"?>
 <rdf:RDF xml:lang="en"
          xmlns="http://usefulinc.com/ns/doap#" 
          xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
@@ -34,29 +33,28 @@
     <created>2008-12-17</created>
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
     <name>Apache Zest</name>
-    <homepage rdf:resource="http://zest.apache.org/" />
-    <asfext:pmc rdf:resource="http://zest.apache.org/" />
-    <shortdesc>Apache Zest is an open source platform for composite oriented programming.</shortdesc>
-    <description>Apache Zest is an open source platform for composite oriented programming. Zest is home for Qi4j,
-    the composite oriented programming platform for Java, and Qi4Net a port to the .NET CLR.
-    Composite oriented programming allows developers to work with 'fragments', smaller than classes, and 'compose'
-    fragments into larger 'composites' which acts like the regular objects. Zest also tackles the enforcement
-    of application composition, i.e. composites are declared in modules, modules are contained in layers and access
-    between layers are controlled/enforced.
-    </description>
-    <bug-database rdf:resource="http://issues.apache.org/jira/browse/ZEST" />
-    <mailing-list rdf:resource="http://zest.apache.org/community/get_help.html" />
-    <download-page rdf:resource="http://zest.apache.org/download.html" />
-
+    <homepage rdf:resource="https://zest.apache.org/" />
+    <asfext:pmc rdf:resource="https://zest.apache.org" />
+    <shortdesc>Apache Zest is a community based effort exploring Composite Oriented Programming for domain centric application development.</shortdesc>
+    <description>Apache Zest is a community based effort exploring Composite Oriented Programming for domain centric application development. This includes evolved concepts from Aspect Oriented Programming, Dependency Injection and Domain Driven Design. Composite Oriented Programming allows developers to work with 'fragments', smaller than classes, and 'compose' fragments into larger 'composites' which acts like the regular objects. Zest also tackles the enforcement of application composition, i.e. composites are declared in modules, modules are contained in layers and access between layers are controlled/enforced. Apache Zest™ (Java Edition), first Apache Zest sub-project, is an implementation of Composite Oriented Programming, using the standard Java platform, without the use of any pre-processors or new language elements. Everything you know from Java still applies and you can leverage both your experience and toolkits to become more productive with Composite Oriented Programming today.</description>    
+    <bug-database rdf:resource="https://issues.apache.org/jira/browse/ZEST" />
+    <mailing-list rdf:resource="https://www.apache.org/foundation/mailinglists.html" />
+    <download-page rdf:resource="https://zest.apache.org/download.html" />
     <programming-language>Java</programming-language>
     <programming-language>C#</programming-language>
-    <programming-language>JavaScript</programming-language>
-    <programming-language>Ruby</programming-language>
     <programming-language>Scala</programming-language>
-    <category rdf:resource="http://projects.apache.org/category/osgi" />
+    <programming-language>Groovy</programming-language>
+    <programming-language>JavaScript</programming-language>
+    <category rdf:resource="http://projects.apache.org/category/library" />
+    <repository>
+      <SVNRepository>
+        <location rdf:resource="http://svn.apache.org/repos/asf/zest/"/>
+        <browse rdf:resource="http://svn.apache.org/viewcvs.cgi/zest/"/>
+      </SVNRepository>
+    </repository>
     <repository>
       <GitRepository>
-        <location rdf:resource="https://github.com/apache/zest-qi4j.git"/>
+        <location rdf:resource="https://git-wip-us.apache.org/repos/asf/zest-qi4j.git"/>
         <browse rdf:resource="https://github.com/apache/zest-qi4j"/>
       </GitRepository>
     </repository>
