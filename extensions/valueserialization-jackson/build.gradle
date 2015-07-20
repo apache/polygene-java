@@ -29,7 +29,7 @@ dependencies {
     testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
 
     testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
-    testRuntime libraries.logback
+    testRuntime libraries.slf4j_simple
 
 }
 
