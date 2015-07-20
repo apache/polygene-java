@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
@@ -152,7 +153,9 @@ public abstract class AbstractValueCompositeSerializationTest
         proto.string2().set( "/Foo/bar" );
         proto.number().set( 42L );
         proto.date().set( new Date() );
-        proto.dateTime().set( new DateTime() );
+        // We specify the TimeZone explicitely here so that serialized/deserialized is equals
+        // See https://github.com/JodaOrg/joda-time/issues/106
+        proto.dateTime().set( new DateTime( "2020-03-04T13:24:35", DateTimeZone.forOffsetHours( 1 ) ) );
         proto.localDate().set( new LocalDate() );
         proto.localDateTime().set( new LocalDateTime() );
         proto.entityReference().set( EntityReference.parseEntityReference( "12345" ) );
