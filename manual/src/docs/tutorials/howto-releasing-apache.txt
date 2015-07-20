@@ -1,0 +1,235 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[releasing-apache,Releasing Zest]]
+= Releasing Zest™
+
+This tutorial is intended for Apache Zest™ commiters who want to release a new version of Apache Zest™ (Java Edition) at The Apache Software Foundation.
+It describes the tools and processes of a typical release.
+
+It is intended to be a recommendation of best practices for the Apache Zest™ project.
+The instructions provided here are consistent with, but not a replacement for the https://www.apache.org/dev/release.html[ASF Release Guidelines].
+
+Before going further you obviously should have read the <<build-system, Build System>> tutorial and already built Zest™ from source, signing included.
+
+
+// Inspirations
+// https://commons.apache.org/releases/prepare.html
+// https://wiki.apache.org/logging/Log4j2ReleaseGuide
+// https://accumulo.apache.org/releasing.html
+
+
+== Preparing a release
+
+=== Select a Release Manager
+
+A Zest committer (normally one of the development team) should post an email to the development list proposing that a release be made and nominating a release manager.
+Typically, the proposer volunteers as the release manager and it passes by https://www.apache.org/foundation/glossary.html#LazyConsensus[lazy consensus].
+
+
+=== Ensure your setup is ready
+
+
+Clone/checkout all needed repositories, next to each other:
+
+    mkdir zest-repos
+    cd zest-repos
+    git clone .... zest-java
+    svn checkout https://... zest-svn
+    svn checkout https://... zest-dist-dev
+    svn checkout https://... zest-dist-release
+
+You should then get the following directory tree:
+
+    .
+    └── zest-repos
+        ├── zest-java
+        ├── zest-svn
+        ├── zest-dist-dev       # Release candidate distri
+        └── zest-dist-release
+
+Ensure you can test, build and sign Zest, including artifact signing, see the <<build-system, Build System>> tutorial.
+
+Moreover, you will need to have a valid http://jekyllrb.com/[Jekyll] installation as the Apache Zest™ https://zest.apache.org/[website] is baked with it.
+
+Ensure you can sign git tags.
+
+    TODO DOCUMENT!
+
+
+=== Update the `KEYS` file if needed.
+
+    TODO DOCUMENT!
+
+
+== Creating a Release Candidate
+
+=== Resolve JIRA issues
+
+Resolve all issues on that version!
+They can be resolved by:
+
+- fixing
+- marking them as `INVALID` or `WONTFIX`
+- changing their fix version to another unreleased version
+
+See the https://issues.apache.org/jira/browse/ZEST[ZEST] project on JIRA.
+
+
+=== Prepare Release Notes
+
+Apache Zest™ release notes are generated from JIRA issues.
+
+Open the target Zest™ version's release notes in https://issues.apache.org/jira/browse/ZEST/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel[JIRA] and review them.
+
+    TODO DO SOMETHING WITH RELEASE NOTES!!!!!
+
+
+=== Create a release branch
+
+    git flow release start <RELEASE-VERSION>-RC#
+
+
+=== Make a complete check
+
+Make a complete build:
+
+    ./gradlew -Dversion=<RELEASE-VERSION> clean check buildAll
+
+Review the release distributions in `build/distributions`.
+
+If any, make the required changes, commit them and iterate.
+
+=== Close the release branch
+
+    git flow release finish <RELEASE-VERSION>-RC#
+
+=== Checkout the release candidate tag
+
+This is necessary because built artifacts include git metadata.
+
+    git checkout <RELEASE-VERSION>-RC#
+
+=== Build artifacts and distributions
+
+    ./gradlew -Dversion=<RELEASE-VERSION> clean check buildAll
+
+=== Stage maven artifacts
+
+Stage artifacts to https://repository.apache.org/[repository.apache.org] :
+
+    ./gradlew -Dversion=<RELEASE-VERSION> release
+
+Close the staging Nexus repository:
+
+    TODO DOCUMENT!
+
+
+=== Upload distributions
+
+Upload source and binary distributions, checksums and signatures to https://dist.apache.org/repos/dist/dev/zest/[dist.apache.org/repos/dist/dev/zest]:
+
+    TODO DOCUMENT!
+
+
+== Run the vote
+
+Send a "VOTE" to the mailto:dev@zest.apache.org[developer mailing list] including links to release artifacts. A VOTE always contains two parts. Send an email to the developer mailing list with the subject line:
+
+    [VOTE] Release Zest (Java Edition) version <RELEASE-VERSION>
+
+After the vote is over, send a "RESULT" email to the list with the subject line:
+
+    [RESULT][VOTE] Release Zest (Java Edition) version <RELEASE-VERSION>
+
+Votes on whether a package is ready to be released use majority approval -- i.e., at least three PMC members must vote affirmatively for release, and there must be more positive than negative votes.
+
+
+== VOTE passes
+
+=== Seal the release
+
+Rename and sign the git tag
+
+    TODO DOCUMENT!
+
+Push all git changes:
+
+    cd zest-java
+    git checkout master
+    git push origin master
+    git checkout develop
+    git push origin master
+    git push --tags
+
+
+=== Publish
+
+Publish the Nexus repository.
+
+    TODO DOCUMENT!
+
+Move the release distributions, checksums and signatures from https://dist.apache.org/repos/dist/dev/zest/[dist.apache.org/repos/dist/dev/zest] to https://dist.apache.org/repos/dist/release/zest/[dist.apache.org/repos/dist/release/zest]
+
+    TODO DOCUMENT!
+    
+
+=== Wait 24 hours
+
+For mirrors to pick up the new bits.
+
+
+=== Update the download page
+
+Edit `zest-svn/site/src/_data/releases.yml` with the new release data.
+Upmost is the latest.
+
+Then rebuild the website:
+
+    cd zest-svn
+    jekyll build
+
+And publish it:
+
+    svn add --force
+    svn commit -m "zest: update website"
+
+=== Register the release
+
+Finally, register the new release at https://reporter.apache.org/[reporter.apache.org]
+
+
+=== Announce
+
+Send an announcement to mailto:dev@zest.apache.org[dev@] and mailto:users@zest.apache.org[users@] mailing lists. Email announcements should have the subject line:
+
+    [ANNOUNCE] Released Zest (Java Edition) version <RELEASE-VERSION>
+
+
+== VOTE fails
+
+Drop the Nexus staging repository.
+
+    TODO DOCUMENT!
+
+Drop distributions, checksums and signatures from https://dist.apache.org/repos/dist/dev/zest/[dist.apache.org/repos/dist/dev/zest]
+
+    TODO DOCUMENT!
+
+Drop your local `zest-java` clone and start over.

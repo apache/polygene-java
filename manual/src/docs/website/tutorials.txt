@@ -74,6 +74,7 @@ This last set of tutorials you'll learn how to build the Zest™ SDK from source
 
 - <<build-system>>
 - <<community-docs>>
+- <<releasing-apache>>
 
 
 :leveloffset: 2
@@ -151,5 +152,9 @@ include::../tutorials/howto-build-system.txt[]
 :leveloffset: 2
 
 include::../tutorials/howto-writing-docs.txt[]
+
+:leveloffset: 2
+
+include::../tutorials/howto-releasing-apache.txt[]
 
 :leveloffset: 2
