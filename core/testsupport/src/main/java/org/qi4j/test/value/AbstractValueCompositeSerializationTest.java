@@ -171,7 +171,7 @@ public abstract class AbstractValueCompositeSerializationTest
 
         proto.stringValueMap().get().put( "foo", anotherValue1 );
         proto.another().set( anotherValue1 );
-        proto.arrayOfValues().set( new AnotherValue[] { anotherValue1, anotherValue2, anotherValue3 } );
+        // proto.arrayOfValues().set( new AnotherValue[] { anotherValue1, anotherValue2, anotherValue3 } );
         proto.serializable().set( new SerializableObject() );
         proto.foo().set( module.newValue( FooValue.class ) );
         proto.fooValue().set( module.newValue( FooValue.class ) );
@@ -261,7 +261,7 @@ public abstract class AbstractValueCompositeSerializationTest
 
         Property<AnotherValue> another();
 
-        Property<AnotherValue[]> arrayOfValues();
+        // Property<AnotherValue[]> arrayOfValues();
 
         @Optional
         Property<AnotherValue> anotherNull();
