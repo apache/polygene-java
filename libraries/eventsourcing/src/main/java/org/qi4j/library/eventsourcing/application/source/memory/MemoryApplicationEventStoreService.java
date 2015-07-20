@@ -109,24 +109,18 @@ public interface MemoryApplicationEventStoreService
                             public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super TransactionApplicationEvents, ReceiverThrowableType> receiver )
                                 throws ReceiverThrowableType, IOException
                             {
-                                ListIterator<TransactionApplicationEvents> iterator = store.listIterator();
-
-                                while( iterator.hasNext() )
-                                {
-                                    TransactionApplicationEvents next = iterator.next();
-                                    if( next.timestamp().get() >= beforeTimestamp )
-                                    {
-                                        break;
-                                    }
-                                }
+                                Iterator<TransactionApplicationEvents> iterator = store.descendingIterator();
 
                                 long count = 0;
 
-                                while( iterator.hasPrevious() && count < maxTransactions )
+                                while( iterator.hasNext() && count < maxTransactions )
                                 {
-                                    TransactionApplicationEvents next = iterator.previous();
-                                    receiver.receive( next );
-                                    count++;
+                                    TransactionApplicationEvents next = iterator.next();
+                                    if( next.timestamp().get() < beforeTimestamp )
+                                    {
+                                        receiver.receive( next );
+                                        count++;
+                                    }
                                 }
                             }
                         });
@@ -142,7 +136,7 @@ public interface MemoryApplicationEventStoreService
         @Override
         protected void storeEvents( TransactionApplicationEvents transactionDomain ) throws IOException
         {
-            store.add(transactionDomain);
+            store.add( transactionDomain );
         }
     }
 }
