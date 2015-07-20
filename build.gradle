@@ -831,7 +831,7 @@ artifacts {
 }
 
 signing {
-  required { rootProject.version != '0' && !rootProject.contains( 'SNAPSHOT' ) }
+  required { rootProject.version != '0' && !rootProject.version.contains( 'SNAPSHOT' ) }
   sign configurations.archives
 }
 
