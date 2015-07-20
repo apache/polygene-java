@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
 import org.qi4j.api.common.Visibility;
@@ -58,7 +59,6 @@ import static org.junit.Assert.assertThat;
 /**
  * Assert that ValueSerialization behaviour on ValueComposites is correct.
  */
-// TODO Assert Association, ManyAssociation and NamedAssociation serialization behaviour!
 // TODO Assert Arrays behaviour!
 // TODO Assert Generics behaviour!
 public abstract class AbstractValueCompositeSerializationTest
@@ -105,7 +105,7 @@ public abstract class AbstractValueCompositeSerializationTest
             SomeValue some2 = module.newValueFromSerializedState( SomeValue.class, stateString );
 
             assertThat( "Same value toString", some.toString(), equalTo( some2.toString() ) );
-//            assertThat( "Same value", some, equalTo( some2 ) );
+            assertThat( "Same value", some, equalTo( some2 ) );
             assertThat( "Same JSON value toString", stateString, equalTo( some2.toString() ) );
             assertThat( "Same JSON value", some.customFoo().get() instanceof CustomFooValue, is( true ) );
             assertThat( "Same JSON value explicit", some.customFooValue().get() instanceof CustomFooValue, is( true ) );
@@ -193,6 +193,10 @@ public abstract class AbstractValueCompositeSerializationTest
         proto.barManyAssociation().add( buildBarEntity( "bazar TWO in barManyAssociation" ) );
         proto.barEntityManyAssociation().add( buildBarEntity( "bazar ONE in barEntityManyAssociation" ) );
         proto.barEntityManyAssociation().add( buildBarEntity( "bazar TWO in barEntityManyAssociation" ) );
+        proto.barNamedAssociation().put( "bazar", buildBarEntity( "bazar in barNamedAssociation" ) );
+        proto.barNamedAssociation().put( "cathedral", buildBarEntity( "cathedral in barNamedAssociation" ) );
+        proto.barEntityNamedAssociation().put( "bazar", buildBarEntity( "bazar in barEntityNamedAssociation" ) );
+        proto.barEntityNamedAssociation().put( "cathedral", buildBarEntity( "cathedral in barEntityNamedAssociation" ) );
 
         return builder.newInstance();
     }
@@ -309,6 +313,12 @@ public abstract class AbstractValueCompositeSerializationTest
         ManyAssociation<Bar> barManyAssociation();
 
         ManyAssociation<BarEntity> barEntityManyAssociation();
+
+        NamedAssociation<Bar> barNamedAssociationEmpty();
+
+        NamedAssociation<Bar> barNamedAssociation();
+
+        NamedAssociation<BarEntity> barEntityNamedAssociation();
     }
 
     public interface SpecificCollection

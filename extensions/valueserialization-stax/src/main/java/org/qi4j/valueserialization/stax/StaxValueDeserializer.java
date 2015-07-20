@@ -432,14 +432,18 @@ public class StaxValueDeserializer
         {
             return;
         }
-        NodeList entriesNodes = inputNode.getChildNodes();
-        for( int idx = 0; idx < entriesNodes.getLength(); idx++ )
+        if( !"object".equals( inputNode.getLocalName() ) )
         {
-            Node entryNode = entriesNodes.item( idx );
-            String key  = ((Element) entryNode).getTagName();
-            V value = getObjectFieldValue( entryNode, "value", valueDeserializer );
-            if( key != null )
+            throw new ValueSerializationException( "Expected an <object/> but got " + inputNode );
+        }
+        NodeList fieldsNodes = inputNode.getChildNodes();
+        for( int idx = 0; idx < fieldsNodes.getLength(); idx++ )
+        {
+            Node fieldNode = fieldsNodes.item( idx );
+            String key = getDirectChildNode( fieldNode, "name" ).getTextContent();
+            if( key != null && key.length() > 0 )
             {
+                V value = getObjectFieldValue( inputNode, key, valueDeserializer );
                 map.put( key, value );
             }
         }

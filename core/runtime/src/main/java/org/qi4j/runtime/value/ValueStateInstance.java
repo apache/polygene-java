@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
-import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.runtime.association.AssociationInfo;
@@ -181,7 +180,7 @@ public final class ValueStateInstance
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public <T> NamedAssociation<T> namedAssociationFor( AccessibleObject accessor )
+    public <T> NamedAssociationInstance<T> namedAssociationFor( AccessibleObject accessor )
     {
         NamedAssociationInstance<T> namedAssociation = (NamedAssociationInstance<T>) namedAssociations.get( accessor );
 
@@ -194,7 +193,7 @@ public final class ValueStateInstance
     }
 
     @Override
-    public Iterable<? extends NamedAssociation<?>> allNamedAssociations()
+    public Iterable<? extends NamedAssociationInstance<?>> allNamedAssociations()
     {
         return namedAssociations.values();
     }

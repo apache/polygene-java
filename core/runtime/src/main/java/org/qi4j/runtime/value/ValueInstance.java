@@ -21,6 +21,7 @@ import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.association.AssociationModel;
 import org.qi4j.runtime.association.ManyAssociationModel;
+import org.qi4j.runtime.association.NamedAssociationModel;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.property.PropertyInstance;
@@ -124,6 +125,12 @@ public final class ValueInstance
             state().manyAssociationFor( associationDescriptor.accessor() )
                 .setAssociationInfo( associationDescriptor.getBuilderInfo() );
         }
+
+        for( NamedAssociationModel associationDescriptor : descriptor().state().namedAssociations() )
+        {
+            state().namedAssociationFor( associationDescriptor.accessor() )
+                .setAssociationInfo( associationDescriptor.getBuilderInfo() );
+        }
     }
 
     /**
@@ -147,6 +154,11 @@ public final class ValueInstance
         for( ManyAssociationModel associationDescriptor : descriptor().state().manyAssociations() )
         {
             state().manyAssociationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
+        }
+
+        for( NamedAssociationModel associationDescriptor : descriptor().state().namedAssociations() )
+        {
+            state().namedAssociationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
         }
     }
 

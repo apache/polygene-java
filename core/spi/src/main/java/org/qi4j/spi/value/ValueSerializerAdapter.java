@@ -479,7 +479,7 @@ public abstract class ValueSerializerAdapter<OutputType>
                 onFieldStart( output, name );
                 onValueStart( output );
                 EntityReference ref = namedAssociation.referenceOf( name );
-                onValue( output, ( (Identity) namedAssociation.get( name ) ).identity().get() );
+                onValue( output, ref.identity() );
                 onValueEnd( output );
                 onFieldEnd( output );
             }
