@@ -268,14 +268,16 @@ allprojects {
   project.ext {
     javaDir = new File( "$projectDir/src/main/java" )
     scalaDir = new File( "$projectDir/src/main/scala" )
+    groovyDir = new File( "$projectDir/src/main/groovy")
     documentationDir = new File( "$projectDir/src/docs" )
     testJavaDir = new File( "$projectDir/src/tests/java" )
     testScalaDir = new File( "$projectDir/src/tests/scala" )
+    testGroovyDir = new File( "$projectDir/src/tests/groovy")
   }
 
   // Actual code projects BEGIN -------------------------------------------
-  if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() ||
-      ext.testJavaDir.isDirectory() || ext.testScalaDir.isDirectory() )
+  if( ext.javaDir.isDirectory() || ext.scalaDir.isDirectory() || ext.groovyDir.isDirectory() ||
+      ext.testJavaDir.isDirectory() || ext.testScalaDir.isDirectory() || ext.testGroovyDir.isDirectory() )
   {
     apply plugin: 'jacoco'
     apply plugin: 'osgi'
@@ -564,7 +566,7 @@ task archiveJavadocs(type: Copy ) {
 // Build All
 task buildAll( dependsOn: [
     javadocs,
-    test,
+    check,
     jar,
     subprojects*.dependencyReport,
     subprojects*.assemble,
@@ -836,6 +838,8 @@ signing {
 }
 
 task dist( type: Copy, dependsOn: install ) {
+  description "Unpack the binary distribution"
+  group = "distributions"
   with binDistImage
   into "$buildDir/dist"
 }
@@ -847,23 +851,33 @@ task dist( type: Copy, dependsOn: install ) {
 def unpackedSrcDistDir = file( "build/unpacked-distributions/src/qi4j-sdk-$version" )
 def unpackedBinDistDir = file( "build/unpacked-distributions/bin/qi4j-sdk-$version" )
 task unpackSrcDist( type: Copy ) {
+  description "Unpack the source distribution"
+  group = "distributions"
   with srcDistImage
   into 'build/unpacked-distributions/src'
 }
 task checkSrcDist( type: GradleBuild, dependsOn: unpackSrcDist ) {
+  description = "Check the source distribution by running the 'check' task inside"
+  group = "distributions"
   buildFile = "$unpackedSrcDistDir/build.gradle"
   tasks = [ 'check' ]
 }
 task unpackBinDist( type: Copy, dependsOn: buildAll ) {
+  description "Unpack the binary distribution"
+  group = "distributions"
   with binDistImage
   into 'build/unpacked-distributions/bin'
 }
 task checkBinDist_rat( type: org.apache.rat.gradle.RatTask, dependsOn: unpackBinDist ) {
+  description "Check the binary distribution using Apache RAT"
+  group = "distributions"
   inputDir = unpackedBinDistDir
   reportDir = file( 'build/reports/rat-bin-dist' )
   excludes = []
 }
 task checkBinDist_goOfflineGradle( type: GradleBuild, dependsOn: unpackBinDist ) {
+  description "Check the binary distribution Gradle go-offline helper"
+  group = "distributions"
   def dependenciesDir = new File( unpackedBinDistDir, 'dependencies' )
   doFirst { dependenciesDir.deleteDir() }
   buildFile = "$unpackedBinDistDir/go-offline.gradle"
@@ -882,6 +896,8 @@ task checkBinDist_goOfflineGradle( type: GradleBuild, dependsOn: unpackBinDist )
   }
 }
 task checkBinDist_goOfflineMaven( type: Exec, dependsOn: unpackBinDist ) {
+  description "Check the binary distribution Maven go-offline helper"
+  group = "distributions"
   onlyIf {
     def pathDirs = System.getenv( 'PATH' ).split( File.pathSeparator )
     pathDirs.collect( { new File( it, 'mvn') } ).flatten().findAll( { it.isFile() } )
@@ -904,9 +920,13 @@ task checkBinDist_goOfflineMaven( type: Exec, dependsOn: unpackBinDist ) {
   }
 }
 task checkBinDist {
+  description "Check the binary distribution"
+  group = "distributions"
   dependsOn /*checkBinDist_rat,*/ checkBinDist_goOfflineGradle, checkBinDist_goOfflineMaven
 }
 task checkDists {
+  description "Check the souce and binary distributions"
+  group = "distributions"
   dependsOn checkSrcDist, checkBinDist
 }
 
@@ -958,7 +978,7 @@ task release {
 // This task should be run by "build master" and the resulting ouput committed to source control.  Its outputs include:
 //  1) /gradlew which is the *NIX shell script for executing builds
 //  2) /gradlew.bat which is the windows bat script for for executing builds
-//  3) /wrapper which is a directory named by the "jarPath" config which contains other needed files.
+//  3) /gradle/wrapper which is a directory named by the "jarPath" config which contains other needed files.
 task wrapper( type: Wrapper ) {
   gradleVersion = '2.5'
 }
