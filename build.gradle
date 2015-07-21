@@ -828,6 +828,20 @@ task tarBinaries( type: Tar, dependsOn: buildAll ) {
   with binDistImage
 }
 
+// Checksum distributions
+tasks.withType( Zip ) { task ->
+  task.doLast {
+    ant.checksum file: task.archivePath, algorithm: 'MD5'
+    ant.checksum file: task.archivePath, algorithm: 'SHA-512'
+  }
+}
+tasks.withType( Tar ) { task ->
+  task.doLast {
+    ant.checksum file: task.archivePath, algorithm: 'MD5'
+    ant.checksum file: task.archivePath, algorithm: 'SHA-512'
+  }
+}
+
 artifacts {
   archives zipSources, tarSources, zipBinaries, tarBinaries
 }
