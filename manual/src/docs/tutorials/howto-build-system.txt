@@ -171,7 +171,7 @@ They can be run with the following Gradle command:
 Results will then be available in the test reports.
 
 
-== Releasing the Zest™ SDK ==
+== Build for releases ==
 
 IMPORTANT: Remember that if a +version+ property is not defined, the build system will refuse to make a release and upload.
 
@@ -201,7 +201,7 @@ This can be relaxed by adding +-x checkReleaseSpec+ arguments to gradle invocati
 === Signing ===
 
 Artifact signing is done using PGP.
-You need to provide Gradle the following properties
+You need to provide Gradle the following properties, `~/.gradle/gradle.properties` is a good place:
 
     signing.keyId=FB751943
     signing.password=foobar
@@ -233,7 +233,7 @@ For example here is how to deploy all artifacts as unsigned SNAPSHOTs to a given
 
 [source,bash]
 -----------
-./gradlew uploadArchives -Dversion=2.0-SNAPSHOT -PuploadReleaseSpec=false \
+./gradlew uploadArchives -Dversion=3.2.1-SNAPSHOT -PuploadReleaseSpec=false \
     -PuploadWagon=what:ever:wagon -PuploadRepository=http://what.ever.repository/url \
     -PuploadUsername=foo -PuploadPassword=bar
 -----------
@@ -242,7 +242,7 @@ And here is how to deploy a signed release to the local filesystem:
 
 [source,bash]
 -----------
-./gradlew uploadArchives -Dversion=2.0 -PuploadRepository=file:///path/to/local/repository
+./gradlew uploadArchives -Dversion=3.2.1 -PuploadRepository=file:///path/to/local/repository
 -----------
 
 See the http://www.gradle.org/docs/current/userguide/maven_plugin.html#wagonLibs[Gradle documentation] about
