@@ -749,7 +749,7 @@ def srcDistFilteredFilesImage = copySpec {
 }
 
 def srcDistImage = copySpec {
-  into "qi4j-sdk-$version"
+  into "apache-zest-java-$version-src"
   with srcDistFilesImages
   with srcDistFilteredFilesImage
 }
@@ -794,7 +794,7 @@ def binDistNoticesImage = copySpec {
 }
 
 def binDistImage = copySpec {
-  into "qi4j-sdk-$version"
+  into "apache-zest-java-$version-bin"
   with binDistNoticesImage
   with docsImage
   with reportsDistImage
@@ -803,26 +803,26 @@ def binDistImage = copySpec {
 }
 
 task zipSources( type: Zip ) {
-  baseName = 'qi4j-sdk'
+  baseName = 'apache-zest-java'
   with srcDistImage
   classifier = 'src'
 }
 
 task tarSources( type: Tar ) {
-  baseName = 'qi4j-sdk'
+  baseName = 'apache-zest-java'
   with srcDistImage
   compression = Compression.GZIP
   classifier = 'src'
 }
 
 task zipBinaries( type: Zip, dependsOn: buildAll ) {
-  baseName = 'qi4j-sdk'
+  baseName = 'apache-zest-java'
   classifier = 'bin'
   with binDistImage
 }
 
 task tarBinaries( type: Tar, dependsOn: buildAll ) {
-  baseName = 'qi4j-sdk'
+  baseName = 'apache-zest-java'
   classifier = 'bin'
   compression = Compression.GZIP
   with binDistImage
@@ -862,8 +862,8 @@ task dist( type: Copy, dependsOn: install ) {
 // - Run the check task of this very build inside the source distribution
 // - Rat the binary distribution (not pulled by checkDists as it takes ages to complete)
 // - Use the dependencies download facility of the binary distribution to "go offline"
-def unpackedSrcDistDir = file( "build/unpacked-distributions/src/qi4j-sdk-$version" )
-def unpackedBinDistDir = file( "build/unpacked-distributions/bin/qi4j-sdk-$version" )
+def unpackedSrcDistDir = file( "build/unpacked-distributions/src/apache-zest-java-$version-src" )
+def unpackedBinDistDir = file( "build/unpacked-distributions/bin/apache-zest-java-$version-bin" )
 task unpackSrcDist( type: Copy ) {
   description "Unpack the source distribution"
   group = "distributions"
