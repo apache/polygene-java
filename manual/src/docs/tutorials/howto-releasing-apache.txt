@@ -161,6 +161,7 @@ We will need these in several formats.
 Starting from the plain-text one we will generate the others.
 
 First save the text-plain release-notes in a file named `apache-zest-java-<RELEASE-VERSION>-release-notes.txt`.
+A good place for this file would be in the `zest-repos` directory created earlier, alongside all repositories.
 
 Convert to Asciidoc:
 
