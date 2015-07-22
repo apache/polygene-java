@@ -26,12 +26,16 @@ It describes the tools and processes of a typical release.
 It is intended to be a recommendation of best practices for the Apache Zest™ project.
 The instructions provided here are consistent with, but not a replacement for the https://www.apache.org/dev/release.html[ASF Release Guidelines].
 
-Before going further you obviously should have read the <<build-system, Build System>> tutorial and already built Zest™ from source, signing included.
-
+[WARNING]
+====
+You need a unix-like environment to actually perform the release process.
+This tutorial is known to work on Linux and Mac.
+====
 
 
 // TODOs
 // - review commands for managing dev/release dist uploads, they may be too greedy
+Before going further you obviously should have read the <<build-system, Build System>> tutorial and already built Zest™ from source, signing included.
 
 
 
