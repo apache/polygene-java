@@ -79,15 +79,18 @@ task manuals() {
 //  dependsOn recipes
 }
 
-// Skip if asciidoc is not present when building a 0 or SNAPSHOT version
+// Skip if asciidoc is not found in PATH when building a 0 or SNAPSHOT version,
+// or if skipAsciidocIfAbsent property is set and asciidoc is not found in PATH
 [ website, archiveWebsite, copyWebsite, manuals ]*.onlyIf {
-  if( version != '0' && !version.contains( 'SNAPSHOT' ) ) {
-    return true
-  }
+  def skipAsciidocIfAbsent = rootProject.hasProperty( 'skipAsciidocIfAbsent' ) ? rootProject.skipAsciidocIfAbsent : false
   def pathDirs = System.getenv( 'PATH' ).split( File.pathSeparator )
   def present = pathDirs.collect( { new File( it, 'asciidoc') } ).flatten().findAll( { it.isFile() } )
+  if( !skipAsciidocIfAbsent && version != '0' && !version.contains( 'SNAPSHOT' ) ) {
+    project.logger.debug 'Asciidoc tasks forced because version is no-0 and no-SNAPSHOT, hope you have Asciidoc installed'
+    return true
+  }
   if( !present ) {
-    project.logger.warn 'Asciidoc not found, manual tasks will skip, please install http://www.methods.co.nz/asciidoc/'
+    project.logger.warn 'Asciidoc not found in PATH, manual tasks will skip, please install http://www.methods.co.nz/asciidoc/'
   }
   present
 }

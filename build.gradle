@@ -749,7 +749,7 @@ task srcDistFilteredFiles() {
     // gradle.properties
     def gradlePropsFile = new File( filteredDir, 'gradle.properties' )
     gradlePropsFile.parentFile.mkdirs()
-    gradlePropsFile.text = project.file( 'gradle.properties' ).text + "\nskipSigning=true\n\nversion=$version\n"
+    gradlePropsFile.text = project.file( 'gradle.properties' ).text + "\nskipSigning=true\nskipAsciidocIfAbsent=true\n\nversion=$version\n"
   }
 }
 
