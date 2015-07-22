@@ -541,7 +541,7 @@ task javadocs( type: Javadoc ) {
   source apiSources.collect { project ->
     project.sourceSets.main.allJava
   }
-  destinationDir = new File( "" + buildDir + '/docs/javadoc' )
+  destinationDir = project.file( "$project.docsDir/javadocs" )
   // Might need a classpath
   classpath = files( apiSources.collect { project ->
     project.sourceSets.main.compileClasspath
