@@ -154,6 +154,12 @@ allprojects {
     options.docEncoding = 'UTF-8'
     options.charSet = 'UTF-8'
     options.noTimestamp = true
+    options.links = [
+      'http://docs.oracle.com/javase/7/docs/api/',
+      'http://www.joda.org/joda-time/apidocs/',
+      'http://www.json.org/javadoc/',
+      'http://junit.org/javadoc/latest/'
+    ]
     // exclude '**/internal/**'
   }
 
@@ -536,7 +542,6 @@ task javadocs( type: Javadoc ) {
   classpath = files( apiSources.collect { project ->
     project.sourceSets.main.compileClasspath
   } )
-  options.links( "http://docs.oracle.com/javase/7/docs/api/" )
   options.group( [ "Core API": [ "org.qi4j.api", "org.qi4j.api.*", "org.qi4j.io", "org.qi4j.functional" ],
                          "Core Bootstrap": [ "org.qi4j.bootstrap", "org.qi4j.bootstrap.*" ],
                          "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
