@@ -49,9 +49,9 @@ installation.
 If you want to build the Zest™ manual, then you also need a valid Asciidoc
 (http://www.methods.co.nz/asciidoc/) installation.
 
-Here is how to run a full build:
+Here is how to run a full build with checks:
 
-    ./gradlew buildAll
+    ./gradlew check assemble
 
 Read the Zest™ Build System tutorial for more details:
 https://zest.apache.org/java/latest/build-system.html

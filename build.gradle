@@ -870,9 +870,6 @@ task dist( type: Copy, dependsOn: install ) {
 }
 
 // Tasks for source and binary distributions checks
-// - Run the check task of this very build inside the source distribution
-// - Rat the binary distribution (not pulled by checkDists as it takes ages to complete)
-// - Use the dependencies download facility of the binary distribution to "go offline"
 def unpackedSrcDistDir = file( "build/unpacked-distributions/src/apache-zest-java-$version-src" )
 def unpackedBinDistDir = file( "build/unpacked-distributions/bin/apache-zest-java-$version-bin" )
 task unpackSrcDist( type: Copy ) {
@@ -882,10 +879,10 @@ task unpackSrcDist( type: Copy ) {
   into 'build/unpacked-distributions/src'
 }
 task checkSrcDist( type: GradleBuild, dependsOn: unpackSrcDist ) {
-  description = "Check the source distribution by running the 'check' task inside"
+  description = "Check the source distribution by running the 'check' and 'assemble' tasks inside"
   group = "distributions"
   buildFile = "$unpackedSrcDistDir/build.gradle"
-  tasks = [ 'check' ]
+  tasks = [ 'check', 'assemble' ]
 }
 task unpackBinDist( type: Copy, dependsOn: buildAll ) {
   description "Unpack the binary distribution"
