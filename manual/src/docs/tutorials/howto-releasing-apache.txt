@@ -431,9 +431,29 @@ open !$
 
 You can reuse the Markdown formatted announcement content.
 
+Add the new released version in `zest-svn/site/content/java/versions.json` below the `latest` entry:
+
+[source,json]
+----
+{
+    "develop": "develop",
+    "latest": "latest",
+    "<RELEASE-VERSION>", "<RELEASE-VERSION>",
+    "2.0": "2.0",
+    "<=1.4.x": "1.4"
+}
+----
 
 Finally, edit `zest-svn/site/src/_data/releases.yml` with the new release data.
-Upmost is the latest.
+Upmost is the latest:
+
+[source,yaml]
+----
+- version: <RELEASE-VERSION>
+  announcement: YYYY/MM/DD/apache-zest-java-<RELEASE-VERSION>
+  signer: John Doe
+  pgpId: FB751943
+----
 
 You can live-preview your changes to the Zest™ website:
 
