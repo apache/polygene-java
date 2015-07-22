@@ -687,6 +687,7 @@ def srcDistFilesImages = copySpec {
   include 'gradle/**'
   include 'etc/**'
   include 'buildSrc/**'
+  include 'src/**'
   releaseApprovedProjects.each { p ->
     def relPath = new File( project.projectDir.toURI().relativize( p.projectDir.toURI() ).toString() )
     include "$relPath/**"
