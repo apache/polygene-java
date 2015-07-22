@@ -59,6 +59,9 @@ project.ext {
   releaseApprovedProjects = allprojects.findAll( { p -> rootProject.releaseSpec.satisfiedBy( p ) } )
 }
 
+// Toggle signing, used by the source distribution by setting the skipSigning property in gradle.properties
+project.ext.skipSigning = rootProject.hasProperty( 'skipSigning' ) ? rootProject.skipSigning : false
+
 rat {
     onlyIf { version != '0' }
     excludes = [
@@ -329,6 +332,7 @@ allprojects {
       required { rootProject.version != '0' && uploadSigned }
       sign configurations.archives
     }
+    signArchives.onlyIf { !rootProject.skipSigning }
 
     task sourceJar( type: Jar ) {
       classifier = "sources"
@@ -744,7 +748,7 @@ task srcDistFilteredFiles() {
     // gradle.properties
     def gradlePropsFile = new File( filteredDir, 'gradle.properties' )
     gradlePropsFile.parentFile.mkdirs()
-    gradlePropsFile.text = project.file( 'gradle.properties' ).text + "\nversion=$version\n"
+    gradlePropsFile.text = project.file( 'gradle.properties' ).text + "\nskipSigning=true\n\nversion=$version\n"
   }
 }
 
@@ -855,6 +859,7 @@ signing {
   required { rootProject.version != '0' && !rootProject.version.contains( 'SNAPSHOT' ) }
   sign configurations.archives
 }
+signArchives.onlyIf { !rootProject.skipSigning }
 
 task dist( type: Copy, dependsOn: install ) {
   description "Unpack the binary distribution"
