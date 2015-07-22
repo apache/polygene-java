@@ -34,7 +34,7 @@ Dependencies not included
 -------------------------
 The source distribution contains Zest™ sources only to keep the download
 size small. The Gradle build automatically downloads needed dependencies.
-If you need to go offline type `./gradlew gooffline` to ensure all needed
+If you need to go offline type `./gradlew goOffline` to ensure all needed
 dependencies are cached by Gradle.
 
 If you prefer to use a dependency management system, go to:
@@ -49,7 +49,11 @@ installation.
 If you want to build the Zest™ manual, then you also need a valid Asciidoc
 (http://www.methods.co.nz/asciidoc/) installation.
 
-This document the Zest™ build system and its usage:
+Here is how to run a full build:
+
+    ./gradlew buildAll
+
+Read the Zest™ Build System tutorial for more details:
 https://zest.apache.org/java/latest/build-system.html
 
 
