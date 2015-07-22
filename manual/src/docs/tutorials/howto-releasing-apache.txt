@@ -32,9 +32,6 @@ You need a unix-like environment to actually perform the release process.
 This tutorial is known to work on Linux and Mac.
 ====
 
-
-// TODOs
-// - review commands for managing dev/release dist uploads, they may be too greedy
 Before going further you obviously should have read the <<build-system, Build System>> tutorial and already built Zest™ from source, signing included.
 
 
@@ -294,7 +291,8 @@ Upload source and binary distributions, checksums and signatures to https://dist
 
 [source,shell]
 ----
-cp zest-java/build/distributions/* zest-dist-dev/
+cp zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src* zest-dist-dev/
+cp zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin* zest-dist-dev/
 cd zest-dist-dev
 svn add * --force
 svn commit -m "zest: upload <RELEASE-VERSION> to dist/dev/zest"
@@ -385,7 +383,8 @@ Move the release distributions, checksums and signatures from https://dist.apach
 
 [source,shell]
 ----
-mv zest-dist-dev/*<RELEASE-VERSION>*.* zest-dist-release/
+mv zest-dist-dev/apache-zest-java-<RELEASE-VERSION>-src* zest-dist-release/
+mv zest-dist-dev/apache-zest-java-<RELEASE-VERSION>-bin* zest-dist-release/
 cd zest-dist-dev
 svn add * --force
 svn commit -m "zest: removing <RELEASE-VERSION> from dist/dev/zest as the VOTE passed"
