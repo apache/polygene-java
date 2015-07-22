@@ -78,3 +78,16 @@ task manuals() {
 //  dependsOn referenceManual
 //  dependsOn recipes
 }
+
+// Skip if asciidoc is not present when building a 0 or SNAPSHOT version
+[ website, archiveWebsite, copyWebsite, manuals ]*.onlyIf {
+  if( version != '0' && !version.contains( 'SNAPSHOT' ) ) {
+    return true
+  }
+  def pathDirs = System.getenv( 'PATH' ).split( File.pathSeparator )
+  def present = pathDirs.collect( { new File( it, 'asciidoc') } ).flatten().findAll( { it.isFile() } )
+  if( !present ) {
+    project.logger.warn 'Asciidoc not found, manual tasks will skip, please install http://www.methods.co.nz/asciidoc/'
+  }
+  present
+}
