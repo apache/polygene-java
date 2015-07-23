@@ -18,15 +18,16 @@
 
 package org.qi4j.valueserialization.stax;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.entity.AbstractConfigurationDeserializationTest;
 
+@Ignore( "Complex configurations are not yet support in Stax ValueSerialization, due to handling arrays with Java serialization.")
 public class StaxConfigurationDeserializationTest
     extends AbstractConfigurationDeserializationTest
 {
