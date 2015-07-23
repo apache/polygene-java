@@ -269,6 +269,10 @@ allprojects {
         if( dep.requested.module == 'commons-sandbox-parent' && dep.requested.version == '3-SNAPSHOT') {
           dep.useTarget group: dep.requested.group, name: dep.requested.module, version: '3'
         }
+        // GSON 2.3 POM is invalid, use 2.3.1 instead .. see https://github.com/google/gson/issues/588
+        if( dep.requested.group == 'com.google.code.gson' && dep.requested.module == 'gson' && dep.requested.version == '2.3' ) {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: '2.3.1'
+        }
         // Findbugs Annotation is LGPL, use https://github.com/stephenc/findbugs-annotations which is
         // Apache 2 licensed instead
         if( dep.requested.group == 'net.sourceforge.findbugs' && dep.requested.module == 'annotations' ) {

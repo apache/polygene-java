@@ -610,14 +610,11 @@ task generateBinDistGoOfflineHelpers {
 
     def handledDeps = []
     releaseApprovedProjects.each { p ->
-      p.configurations.runtime.allDependencies.each { dep ->
-        def depCoords = "${dep.group}:${dep.name}:${dep.version}"
-        if( !dep.group.startsWith( 'org.qi4j' ) && !handledDeps.contains( depCoords ) ) {
-
-          goOfflineGradle += "  download '$depCoords'\n"
-
-          goOfflinePom += "    <dependency><groupId>${dep.group}</groupId><artifactId>${dep.name}</artifactId><version>${dep.version}</version></dependency>\n"
-
+      p.configurations.runtime.incoming.resolutionResult.allComponents.each { comp ->
+        def depCoords = "${comp.moduleVersion.group}:${comp.moduleVersion.name}:${comp.moduleVersion.version}"
+        if( !comp.moduleVersion.group.startsWith( 'org.qi4j' ) && !handledDeps.contains( depCoords ) ) {
+          goOfflineGradle += "  download( '$depCoords' ) { transitive = false }\n"
+          goOfflinePom += "    <dependency><groupId>${comp.moduleVersion.group}</groupId><artifactId>${comp.moduleVersion.name}</artifactId><version>${comp.moduleVersion.version}</version></dependency>\n"
           handledDeps << depCoords
         }
       }
@@ -646,7 +643,10 @@ task download( type: Copy ) {
       <execution>
         <id>go-offline-jars</id><phase>validate</phase>
         <goals><goal>copy-dependencies</goal></goals>
-        <configuration><outputDirectory>\${project.basedir}/dependencies</outputDirectory></configuration>
+        <configuration>
+          <outputDirectory>\${project.basedir}/dependencies</outputDirectory>
+          <excludeTransitive>true</excludeTransitive>
+        </configuration>
       </execution>
       <execution>
         <id>go-offline-sources</id><phase>validate</phase>
@@ -654,6 +654,7 @@ task download( type: Copy ) {
         <configuration>
           <classifier>sources</classifier><failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
           <outputDirectory>\${project.basedir}/dependencies</outputDirectory>
+          <excludeTransitive>true</excludeTransitive>
         </configuration>
       </execution>
       <execution>
@@ -662,6 +663,7 @@ task download( type: Copy ) {
         <configuration>
           <classifier>javadoc</classifier><failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
           <outputDirectory>\${project.basedir}/dependencies</outputDirectory>
+          <excludeTransitive>true</excludeTransitive>
         </configuration>
       </execution>
     </executions>
