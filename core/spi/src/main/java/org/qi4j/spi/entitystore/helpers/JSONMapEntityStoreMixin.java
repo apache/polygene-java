@@ -479,7 +479,8 @@ public class JSONMapEntityStoreMixin
             {
                 String type = data.getString( JSONKeys.TYPE );
                 EntityDescriptor entityDescriptor = module.entityDescriptor( type );
-                return new JSONEntityState( currentTime, valueSerialization, identity, entityDescriptor, data );
+//                return new JSONEntityState( currentTime, valueSerialization, identity, entityDescriptor, data );
+                return new JSONEntityState( valueSerialization, data.getString( JSONKeys.VERSION ), data.getLong( JSONKeys.MODIFIED ), identity, EntityStatus.LOADED, entityDescriptor, data );
             }
             catch( JSONException e )
             {
