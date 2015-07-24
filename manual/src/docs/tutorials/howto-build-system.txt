@@ -171,6 +171,21 @@ They can be run with the following Gradle command:
 Results will then be available in the test reports.
 
 
+== Documentation generation ==
+
+The build generates a documentation minisite:
+
+[source,bash]
+-----------
+./gradlew -p manual website
+-----------
+
+Output is in `~/manual/build/docs/website`.
+
+You'll need Asciidoc and docbook-xsl installed.
+
+
+
 == Build for releases ==
 
 IMPORTANT: Remember that if a +version+ property is not defined, the build system will refuse to make a release and upload.
