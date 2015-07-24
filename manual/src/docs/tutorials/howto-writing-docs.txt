@@ -27,6 +27,9 @@ The documents use the asciidoc format, see:
 
 The cheatsheet is really useful!
 
+You need to install `asciidoc` and `docbook-xsl`.
+
+
 [[community-docs-overall-flow,Documentation Flow]]
 == Overall Flow ==
 
