@@ -53,7 +53,7 @@ Clone/checkout all needed repositories, next to each other:
 ----
 mkdir zest-repos
 cd zest-repos
-git clone https://git-wip-us.apache.org/repos/asf/zest-qi4j.git zest-java
+git clone https://git-wip-us.apache.org/repos/asf/zest-java.git zest-java
 svn checkout https://svn.apache.org/repos/asf/zest/ zest-svn
 svn checkout https://dist.apache.org/repos/dist/dev/zest/ zest-dist-dev
 svn checkout https://dist.apache.org/repos/dist/release/zest/ zest-dist-release
@@ -318,7 +318,7 @@ I am happy to start the VOTE thread for Apache Zest (Java Edition) <RELEASE-VERS
 
 The changelog for this release can be found here: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12316820&version=12332997
 
-Tag: https://git-wip-us.apache.org/repos/asf?p=zest-qi4j.git;a=tag;h=cc0f8211bf47b2df72a6239c9fdcd1d6906ea246
+Tag: https://git-wip-us.apache.org/repos/asf?p=zest-java.git;a=tag;h=cc0f8211bf47b2df72a6239c9fdcd1d6906ea246
 
 The artifacts to be voted on are located here: https://dist.apache.org/repos/dist/dev/zest/
 

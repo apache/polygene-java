@@ -54,8 +54,8 @@
     </repository>
     <repository>
       <GitRepository>
-        <location rdf:resource="https://git-wip-us.apache.org/repos/asf/zest-qi4j.git"/>
-        <browse rdf:resource="https://github.com/apache/zest-qi4j"/>
+        <location rdf:resource="https://git-wip-us.apache.org/repos/asf/zest-java.git"/>
+        <browse rdf:resource="https://github.com/apache/zest-java"/>
       </GitRepository>
     </repository>
     <maintainer>

@@ -35,7 +35,7 @@ The samples are available in the +samples/+ directory of the Zest™ SDK.
 Sample of how DCI (Data, Context & Interaction) pattern is implemented using
 Zest™ core only.
 
-https://github.com/apache/zest-qi4j/tree/develop/samples/dci[Browse Source]
+https://github.com/apache/zest-java/tree/develop/samples/dci[Browse Source]
 
 [[sample-dci-cargo,DCI Cargo Sample]]
 == DCI Cargo Sample ==
@@ -46,7 +46,7 @@ Zest™, for Eric Evans DDD sample.
 This sample, contributed by Marc Grue, is described in details on his
 website: http://marcgrue.com/
 
-https://github.com/apache/zest-qi4j/tree/develop/samples/dci-cargo[Browse Source]
+https://github.com/apache/zest-java/tree/develop/samples/dci-cargo[Browse Source]
 
 [[sample-forum,Forum Sample]]
 == Forum Sample ==
@@ -54,7 +54,7 @@ https://github.com/apache/zest-qi4j/tree/develop/samples/dci-cargo[Browse Source
 Sample of how to build a web forum using <<library-rest-server>>,
 <<extension-es-file>> and <<library-fileconfig>>.
 
-https://github.com/apache/zest-qi4j/tree/develop/samples/forum[Browse Source]
+https://github.com/apache/zest-java/tree/develop/samples/forum[Browse Source]
 
 [[sample-car-rental,Car Rental Sample]]
 == Car Rental Sample ==
@@ -62,14 +62,14 @@ https://github.com/apache/zest-qi4j/tree/develop/samples/forum[Browse Source]
 Sample of implementation of a Car Rental application implemented as a Servlet
 based Webapp packaged as a WAR.
 
-https://github.com/apache/zest-qi4j/tree/develop/samples/rental[Browse Source]
+https://github.com/apache/zest-java/tree/develop/samples/rental[Browse Source]
 
 // [[sample-scala,Scala Sample]]
 // == Scala Sample ==
 //
 // Sample of how to use Scala with Zest™.
 //
-// https://github.com/apache/zest-qi4j/tree/develop/samples/scala[Browse Source]
+// https://github.com/apache/zest-java/tree/develop/samples/scala[Browse Source]
 
 [[sample-sql-support,SQL Support Sample]]
 == SQL Support Sample ==
@@ -78,7 +78,7 @@ NOTE: This sample use PostgreSQL and drop all of its data once run in order to b
 
 Sample of how to fully use Zest™ SQL support : <<library-sql>>, <<extension-es-sql>> and <<extension-indexing-sql>>.
 
-https://github.com/apache/zest-qi4j/tree/develop/samples/sql-support[Browse Source]
+https://github.com/apache/zest-java/tree/develop/samples/sql-support[Browse Source]
 
 Here are the steps needed to setup the database using the `psql` utility command:
 
@@ -106,4 +106,4 @@ A gradle task `runSample` is defined in this module as a shortcut to run the exa
 
 Sample of how to write custom binders.
 
-https://github.com/apache/zest-qi4j/tree/develop/samples/swing[Browse Source]
+https://github.com/apache/zest-java/tree/develop/samples/swing[Browse Source]
