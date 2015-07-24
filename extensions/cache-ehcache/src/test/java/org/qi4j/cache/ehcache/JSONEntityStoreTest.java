@@ -68,7 +68,7 @@ public class JSONEntityStoreTest
     }
 
     @Test
-    public void cacheJSONGlobalStateTest()
+    public void cached_NEW_State()
             throws Exception
     {
 
@@ -78,22 +78,44 @@ public class JSONEntityStoreTest
         b.instance().name().set("account1");
         b.instance().balance().set( BigDecimal.ZERO );
 
-        Account account1 = b.newInstance();
+        String accountId = b.newInstance().identity().get();
 
         uow1.complete();
 
         UnitOfWork uow2 = assembler.module().newUnitOfWork();
-        Account account2 = uow2.get(account1);
+        Account account2 = uow2.get(Account.class, accountId);
+        account2.balance().set( BigDecimal.ONE);
+        uow2.complete();
+
+    }
+
+    @Test
+    public void globalStateClone()
+            throws Exception
+    {
+
+        UnitOfWork uow1 = assembler.module().newUnitOfWork();
+        EntityBuilder<Account> b = uow1.newEntityBuilder(Account.class);
+
+        b.instance().name().set("account1");
+        b.instance().balance().set( BigDecimal.ZERO );
+
+        String accountId = b.newInstance().identity().get();
+
+        uow1.complete();
+
+        UnitOfWork uow2 = assembler.module().newUnitOfWork();
+        Account account2 = uow2.get( Account.class, accountId);
         account2.balance().set( BigDecimal.ONE);
         uow2.complete();
 
         UnitOfWork uow3 = assembler.module().newUnitOfWork();
-        Account account3 = uow3.get(account1);
+        Account account3 = uow3.get( Account.class, accountId);
         account3.balance().set( BigDecimal.TEN);
         uow3.discard();
 
         UnitOfWork uow4 = assembler.module().newUnitOfWork();
-        Account account4 = uow4.get(account1);
+        Account account4 = uow4.get( Account.class, accountId);
 
         assertEquals( BigDecimal.ONE, account4.balance().get());
 
