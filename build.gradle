@@ -197,7 +197,7 @@ allprojects {
   // By default RELEASES and SNAPSHOTS are uploaded to Apache Nexus
   // Target repository can be overriden by setting the uploadRepository property
   def releasesRepositoryName = "apache.releases.https"
-  def releasesRepository = "https://repository.apache.org/content/repositories/releases"
+  def releasesRepository = "https://repository.apache.org/service/local/staging/deploy/maven2"
   def snapshotsRepositoryName = "apache.snapshots.https"
   def snapshotsRepository = "https://repository.apache.org/content/repositories/snapshots"
   def uploadRepositoryName = rootProject.hasProperty('uploadRepositoryName') \
