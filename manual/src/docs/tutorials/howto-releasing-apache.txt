@@ -370,9 +370,11 @@ The changelog for this release can be found here: https://issues.apache.org/jira
 
 Tag: https://git-wip-us.apache.org/repos/asf?p=zest-java.git;a=tag;h=cc0f8211bf47b2df72a6239c9fdcd1d6906ea246
 
-The artifacts to be voted on are located here: https://dist.apache.org/repos/dist/dev/zest/
+The distributions to be voted on are located here: https://dist.apache.org/repos/dist/dev/zest/
 
-Release artifacts are signed with the following key: https://dist.apache.org/repos/dist/dev/zest/KEYS
+Convenience artifacts in a maven repository are staged here: https://repository.apache.org/content/groups/staging/org/qi4j/
+
+Release distributions and convenience artifacts are signed with the following key: https://dist.apache.org/repos/dist/dev/zest/KEYS
 
 Please vote on releasing this package as Apache Zest (Java Edition) <RELEASE-VERSION>.
 
@@ -396,11 +398,29 @@ After the vote is over, send a "RESULT" email to the list with the subject line:
 [RESULT][VOTE] Release Zest (Java Edition) version <RELEASE-VERSION>
 ----
 
+Here is a sample template:
+
+[source,text]
+----
+To: "Zest Developers List" <dev@zest.apache.org>
+CC: "Zest Project Management Committee List" <private@zest.apache.org>
+Subject: [RESULT][VOTE] Release Zest (Java Edition) version <RELEASE-VERSION>
+
+Hi,
+
+The vote has passed|failed with the following result:
+
++1 (binding): <<list of names>>
++1 (non binding): <<list of names>>
+
+I will promote|drop the distributions and artifacts.
+----
+
 Votes on whether a package is ready to be released use majority approval -- i.e., at least three PMC members must vote affirmatively for release, and there must be more positive than negative votes.
 
 
-
 == VOTE passes
+
 
 === Seal the release
 
