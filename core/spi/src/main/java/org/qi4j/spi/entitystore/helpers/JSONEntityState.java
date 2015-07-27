@@ -308,14 +308,9 @@ public final class JSONEntityState
         }
     }
 
-    boolean isStateNotCloned()
-    {
-        return status == EntityStatus.LOADED;
-    }
-
     void cloneStateIfGlobalStateLoaded()
     {
-        if( isStateNotCloned() )
+        if( status != EntityStatus.LOADED )
         {
             return;
         }
