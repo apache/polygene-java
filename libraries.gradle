@@ -261,6 +261,18 @@ allprojects {
         if( dep.requested.group == 'org.slf4j' ) {
           dep.useTarget group: dep.requested.group, name: dep.requested.module, version: slf4jVersion
         }
+        // Always resolve ASM to the same version
+        if( dep.requested.group == 'org.ow2.asm' ) {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: asmVersion
+        }
+        // Always resolve OSGi to the same version
+        if( dep.requested.group == 'org.osgi' ) {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: osgiVersion
+        }
+        // Always resolve Jackson to the same version
+        if( dep.requested.group.startsWith( 'com.fasterxml.jackson' ) ) {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: jacksonVersion
+        }
         // woodstox:wstx-asl is broken (no pom), use org.codehaus.woodstox:wstx-asl instead
         if( dep.requested.group == 'woodstox' && dep.requested.module == 'wstx-asl' ) {
           dep.useTarget group: 'org.codehaus.woodstox', name: 'wstx-asl', version: dep.requested.version

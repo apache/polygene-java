@@ -632,15 +632,17 @@ task generateBinDistGoOfflineHelpers {
     goOfflineGradle += '}\ndependencies {\n'
     goOfflinePom += '  </repositories>\n  <dependencies>\n'
 
-    def handledDeps = []
-    releaseApprovedProjects.each { p ->
-      p.configurations.runtime.incoming.resolutionResult.allComponents.each { comp ->
-        def depCoords = "${comp.moduleVersion.group}:${comp.moduleVersion.name}:${comp.moduleVersion.version}"
-        if( !comp.moduleVersion.group.startsWith( 'org.qi4j' ) && !handledDeps.contains( depCoords ) ) {
-          goOfflineGradle += "  download( '$depCoords' ) { transitive = false }\n"
-          goOfflinePom += "    <dependency><groupId>${comp.moduleVersion.group}</groupId><artifactId>${comp.moduleVersion.name}</artifactId><version>${comp.moduleVersion.version}</version></dependency>\n"
-          handledDeps << depCoords
-        }
+    // Do the global dependency resolution here so there won't be any suprise when using the helpers
+    // This also allow to apply the resolution strategy defined in libraries.gradle
+    // WARN some of our modules depends on != versions of some artifacts, this resolution flatten this using the most up to date
+    def allRuntimeDeps = releaseApprovedProjects.collect{ it.configurations.runtime.allDependencies }.flatten()
+    rootProject.configurations.create( 'goOfflineHelpers' )
+    rootProject.dependencies { allRuntimeDeps.each{ goOfflineHelpers it } }
+    rootProject.configurations.goOfflineHelpers.incoming.resolutionResult.allComponents.each { comp ->
+      def depCoords = "${comp.moduleVersion.group}:${comp.moduleVersion.name}:${comp.moduleVersion.version}"
+      if( !comp.moduleVersion.group.startsWith( 'org.qi4j' ) ) {
+        goOfflineGradle += "  download( '$depCoords' ) { transitive = false }\n"
+        goOfflinePom += "    <dependency><groupId>${comp.moduleVersion.group}</groupId><artifactId>${comp.moduleVersion.name}</artifactId><version>${comp.moduleVersion.version}</version></dependency>\n"
       }
     }
 
