@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
@@ -32,8 +33,10 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.common.Visibility;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
@@ -49,8 +52,6 @@ import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -59,17 +60,13 @@ import static org.junit.Assert.assertThat;
 /**
  * Assert that ValueSerialization behaviour on ValueComposites is correct.
  */
-// TODO Assert Association and ManyAssociation serialization behaviour!
 // TODO Assert Arrays behaviour!
 // TODO Assert Generics behaviour!
 public abstract class AbstractValueCompositeSerializationTest
     extends AbstractQi4jTest
 {
-
     @Rule
-    @SuppressWarnings( "PublicField" )
     public TestName testName = new TestName();
-    private Logger log;
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -77,18 +74,18 @@ public abstract class AbstractValueCompositeSerializationTest
     {
         module.values( SomeValue.class, AnotherValue.class, FooValue.class, CustomFooValue.class,
                        SpecificCollection.class /*, SpecificValue.class, GenericValue.class */ );
-        new EntityTestAssembler().assemble( module );
+
+        new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module.layer().module( "persistence" ) );
         module.entities( BarEntity.class );
     }
 
     @Before
     public void before()
     {
-        log = LoggerFactory.getLogger( testName.getMethodName() );
         module.injectTo( this );
     }
+
     @Service
-    @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;
 
     @Test
@@ -105,8 +102,6 @@ public abstract class AbstractValueCompositeSerializationTest
             valueSerialization.serialize( some, output );
             String stateString = output.toString( "UTF-8" );
 
-            log.info( "Complex ValueComposite state:\n\n{}\n", stateString );
-
             // Deserialize using Module API
             SomeValue some2 = module.newValueFromSerializedState( SomeValue.class, stateString );
 
@@ -122,7 +117,6 @@ public abstract class AbstractValueCompositeSerializationTest
         }
         catch( Exception ex )
         {
-            log.error( ex.getMessage(), ex );
             throw ex;
         }
         finally
@@ -148,24 +142,20 @@ public abstract class AbstractValueCompositeSerializationTest
         specificColProto.genericList().set( genericList );
         proto.specificCollection().set( specificColBuilder.newInstance() );
 
-        /*
-         ValueBuilder<SpecificValue> specificValue = module.newValueBuilder(SpecificValue.class);
-         specificValue.prototype().item().set("Foo");
-         proto.specificValue().set(specificValue.newInstance());
-         */
-        ValueBuilder<AnotherValue> valueBuilder = module.newValueBuilder( AnotherValue.class );
-        valueBuilder.prototype().val1().set( "Foo" );
-        valueBuilder.prototypeFor( AnotherValueInternalState.class ).val2().set( "Bar" );
-        AnotherValue anotherValue = valueBuilder.newInstance();
+        AnotherValue anotherValue1 = createAnotherValue( "Foo", "Bar" );
+        AnotherValue anotherValue2 = createAnotherValue( "Habba", "ZoutZout" );
+        AnotherValue anotherValue3 = createAnotherValue( "Niclas", "Hedhman" );
 
         // FIXME Some Control Chars are not supported in JSON nor in XML, what should we do about it?
-        // Should Qi4j Core ensure the chars used in strings are supported by the whole stack?
+        // Should Zest Core ensure the chars used in strings are supported by the whole stack?
         // proto.string().set( "Foo\"Bar\"\nTest\f\t\b" );
         proto.string().set( "Foo\"Bar\"\nTest\t" );
         proto.string2().set( "/Foo/bar" );
         proto.number().set( 42L );
         proto.date().set( new Date() );
-        proto.dateTime().set( new DateTime() );
+        // We specify the TimeZone explicitely here so that serialized/deserialized is equals
+        // See https://github.com/JodaOrg/joda-time/issues/106
+        proto.dateTime().set( new DateTime( "2020-03-04T13:24:35", DateTimeZone.forOffsetHours( 1 ) ) );
         proto.localDate().set( new LocalDate() );
         proto.localDateTime().set( new LocalDateTime() );
         proto.entityReference().set( EntityReference.parseEntityReference( "12345" ) );
@@ -179,8 +169,9 @@ public abstract class AbstractValueCompositeSerializationTest
         //
         // proto.stringIntMap().get().put( "bar", 67 );
 
-        proto.stringValueMap().get().put( "foo", anotherValue );
-        proto.another().set( anotherValue );
+        proto.stringValueMap().get().put( "foo", anotherValue1 );
+        proto.another().set( anotherValue1 );
+        // proto.arrayOfValues().set( new AnotherValue[] { anotherValue1, anotherValue2, anotherValue3 } );
         proto.serializable().set( new SerializableObject() );
         proto.foo().set( module.newValue( FooValue.class ) );
         proto.fooValue().set( module.newValue( FooValue.class ) );
@@ -205,8 +196,20 @@ public abstract class AbstractValueCompositeSerializationTest
         proto.barManyAssociation().add( buildBarEntity( "bazar TWO in barManyAssociation" ) );
         proto.barEntityManyAssociation().add( buildBarEntity( "bazar ONE in barEntityManyAssociation" ) );
         proto.barEntityManyAssociation().add( buildBarEntity( "bazar TWO in barEntityManyAssociation" ) );
+        proto.barNamedAssociation().put( "bazar", buildBarEntity( "bazar in barNamedAssociation" ) );
+        proto.barNamedAssociation().put( "cathedral", buildBarEntity( "cathedral in barNamedAssociation" ) );
+        proto.barEntityNamedAssociation().put( "bazar", buildBarEntity( "bazar in barEntityNamedAssociation" ) );
+        proto.barEntityNamedAssociation().put( "cathedral", buildBarEntity( "cathedral in barEntityNamedAssociation" ) );
 
         return builder.newInstance();
+    }
+
+    private AnotherValue createAnotherValue( String val1, String val2 )
+    {
+        ValueBuilder<AnotherValue> valueBuilder = module.newValueBuilder( AnotherValue.class );
+        valueBuilder.prototype().val1().set( val1 );
+        valueBuilder.prototypeFor( AnotherValueInternalState.class ).val2().set( val2 );
+        return valueBuilder.newInstance();
     }
 
     private BarEntity buildBarEntity( String cathedral )
@@ -218,14 +221,12 @@ public abstract class AbstractValueCompositeSerializationTest
 
     public enum TestEnum
     {
-
         somevalue, anothervalue
     }
 
     public interface SomeValue
         extends ValueComposite
     {
-
         Property<String> string();
 
         Property<String> string2();
@@ -259,6 +260,8 @@ public abstract class AbstractValueCompositeSerializationTest
         Property<Map<String, AnotherValue>> stringValueMap();
 
         Property<AnotherValue> another();
+
+        // Property<AnotherValue[]> arrayOfValues();
 
         @Optional
         Property<AnotherValue> anotherNull();
@@ -313,6 +316,12 @@ public abstract class AbstractValueCompositeSerializationTest
         ManyAssociation<Bar> barManyAssociation();
 
         ManyAssociation<BarEntity> barEntityManyAssociation();
+
+        NamedAssociation<Bar> barNamedAssociationEmpty();
+
+        NamedAssociation<Bar> barNamedAssociation();
+
+        NamedAssociation<BarEntity> barEntityNamedAssociation();
     }
 
     public interface SpecificCollection
@@ -323,7 +332,6 @@ public abstract class AbstractValueCompositeSerializationTest
     public interface GenericCollection<TYPE>
         extends ValueComposite
     {
-
         @UseDefaults
         Property<List<TYPE>> genericList();
     }
@@ -336,7 +344,6 @@ public abstract class AbstractValueCompositeSerializationTest
     public interface GenericValue<TYPE>
         extends ValueComposite
     {
-
         @Optional
         Property<TYPE> item();
     }
@@ -345,7 +352,6 @@ public abstract class AbstractValueCompositeSerializationTest
     public interface AnotherValue
         extends ValueComposite
     {
-
         @UseDefaults
         Property<String> val1();
 
@@ -354,7 +360,6 @@ public abstract class AbstractValueCompositeSerializationTest
 
     public interface AnotherValueInternalState
     {
-
         @UseDefaults
         Property<String> val2();
     }
@@ -362,7 +367,6 @@ public abstract class AbstractValueCompositeSerializationTest
     public static abstract class AnotherValueMixin
         implements AnotherValue
     {
-
         @This
         private AnotherValueInternalState internalState;
 
@@ -375,7 +379,6 @@ public abstract class AbstractValueCompositeSerializationTest
 
     public interface Foo
     {
-
         @UseDefaults
         Property<String> bar();
     }
@@ -388,14 +391,12 @@ public abstract class AbstractValueCompositeSerializationTest
     public interface CustomFooValue
         extends FooValue
     {
-
         @UseDefaults
         Property<String> custom();
     }
 
     public interface Bar
     {
-
         @UseDefaults
         Property<String> cathedral();
     }
@@ -408,13 +409,11 @@ public abstract class AbstractValueCompositeSerializationTest
     public static class SerializableObject
         implements Serializable
     {
-
         private static final long serialVersionUID = 1L;
         private final String foo = "Foo";
         private final int val = 35;
 
         @Override
-        @SuppressWarnings( "AccessingNonPublicFieldOfAnotherObject" )
         public boolean equals( Object o )
         {
             if( this == o )
@@ -437,5 +436,4 @@ public abstract class AbstractValueCompositeSerializationTest
             return result;
         }
     }
-
 }

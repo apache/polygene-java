@@ -17,6 +17,7 @@
  */
 package org.qi4j.library.conversion.values;
 
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.service.ServiceComposite;
 
 /** The EntityToValueService converts Entities to matching Values.
@@ -45,6 +46,7 @@ import org.qi4j.api.service.ServiceComposite;
  * <p>
  * If a Property from the Entity is not found in the Value, then it is ignored.
  * </p>
+ * @deprecated Please use {@link org.qi4j.api.unitofwork.UnitOfWork#toValue(Class, Identity)} instead.
  */
 public interface EntityToValueService extends EntityToValue, ServiceComposite
 {

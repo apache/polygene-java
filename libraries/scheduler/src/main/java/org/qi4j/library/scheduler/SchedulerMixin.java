@@ -160,7 +160,6 @@ public class SchedulerMixin
                 {
                     return;
                 }
-                System.out.println( "Next run at: " + new DateTime( nextRun ) );
                 timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
                 if( scheduleHandler == null )
                 {
@@ -175,14 +174,16 @@ public class SchedulerMixin
                 {
                     return;
                 }
-                System.out.println( "Next run at: " + new DateTime( nextRun ) );
                 timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
                 ScheduleTime newFirst = timingQueue.first();
                 if( !first.equals( newFirst ) )
                 {
                     // We need to restart the managementThread, which is currently waiting for a 'later' event to
                     // occur than the one that was just scheduled.
-                    scheduleHandler.future.cancel( true );
+                    if( scheduleHandler != null && scheduleHandler.future != null )
+                    {
+                        scheduleHandler.future.cancel( true );
+                    }
                     dispatchHandler();
                 }
             }
@@ -220,11 +221,13 @@ public class SchedulerMixin
         {
             corePoolSize = workersCount / 4;
         }
-        // Throws IllegalArgument if corePoolSize or keepAliveTime less than zero, or if workersCount less than or equal to zero, or if corePoolSize greater than workersCount.
+        // Throws IllegalArgument if corePoolSize or keepAliveTime less than zero,
+        // or if workersCount less than or equal to zero,
+        // or if corePoolSize greater than workersCount.
         taskExecutor = new ThreadPoolExecutor( corePoolSize, workersCount,
-                                               0, TimeUnit.MILLISECONDS,
-                                               new LinkedBlockingQueue<Runnable>( workQueueSize ),
-                                               threadFactory, rejectionHandler );
+            0, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>( workQueueSize ),
+            threadFactory, rejectionHandler );
         taskExecutor.prestartAllCoreThreads();
         managementExecutor = new ScheduledThreadPoolExecutor( 2, threadFactory, rejectionHandler );
         loadSchedules();
@@ -267,6 +270,15 @@ public class SchedulerMixin
     public void passivateService()
         throws Exception
     {
+        managementExecutor.shutdown();
+        taskExecutor.shutdown();
+
+        managementExecutor.awaitTermination( 5, TimeUnit.SECONDS );
+        managementExecutor.shutdownNow();
+
+        taskExecutor.awaitTermination( 5, TimeUnit.SECONDS );
+        taskExecutor.shutdownNow();
+
         LOGGER.debug( "Passivated" );
     }
 
@@ -277,7 +289,6 @@ public class SchedulerMixin
     class ScheduleHandler
         implements Runnable
     {
-        private ScheduleRunner scheduleRunner;
         private ScheduledFuture<?> future;
 
         @Override
@@ -287,7 +298,7 @@ public class SchedulerMixin
             {
                 ScheduleTime scheduleTime = timingQueue.first();
                 timingQueue.remove( scheduleTime );
-                scheduleRunner = new ScheduleRunner( scheduleTime, SchedulerMixin.this, module );
+                ScheduleRunner scheduleRunner = new ScheduleRunner( scheduleTime, SchedulerMixin.this, module );
                 taskExecutor.submit( scheduleRunner );
                 if( timingQueue.size() == 0 )
                 {
@@ -323,7 +334,6 @@ public class SchedulerMixin
         @Override
         public void run()
         {
-            System.out.println( "Running Schedule" );
             Usecase usecase = UsecaseBuilder.newUsecase( "ScheduleRunner" );
             UnitOfWork uow = module.newUnitOfWork( usecase );
             try

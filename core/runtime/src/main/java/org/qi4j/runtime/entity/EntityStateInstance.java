@@ -248,7 +248,7 @@ public final class EntityStateInstance
             constraints.checkConstraints( association.get() );
         }
 
-        // TODO Should ManyAssociations be checked too?
+        // TODO Should ManyAssociations and NamedAssociations be checked too?
     }
 
     private Map<AccessibleObject, Object> state()

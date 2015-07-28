@@ -19,10 +19,10 @@ package org.qi4j.runtime.composite;
  *
  * <pre>
  * <b>off</b>       = Do not modify the stack trace.
- * <b>proxy</b>     = Remove all Qi4j internal classes and all JDK internal classes from
+ * <b>proxy</b>     = Remove all Zest internal classes and all JDK internal classes from
  *             the originating method call.
  * <b>semi</b>      = Remove all JDK internal classes on the entire stack.
- * <b>extensive</b> = Remove all Qi4j internal and JDK internal classes from the entire stack.
+ * <b>extensive</b> = Remove all Zest internal and JDK internal classes from the entire stack.
  * </pre>
  *
  * <p>

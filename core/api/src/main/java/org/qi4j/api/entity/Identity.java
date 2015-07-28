@@ -41,7 +41,7 @@ public interface Identity
     /**
      * Default Identity implementation.
      */
-    public class IdentityMixin
+    class IdentityMixin
         implements Identity
     {
         @State

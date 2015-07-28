@@ -22,7 +22,7 @@ Hibernate (4+ somewhat incompatible versions) and many other less known. This se
 creating objects that survives over long periods of time is a difficult one.
 
 Eric Evans points out in his book that Entities is a very definite and distinct concept that needs to be handled
-explicitly. Composite Oriented Programming in general, and Qi4j in particular, takes this point very seriously and
+explicitly. Composite Oriented Programming in general, and Zest™ in particular, takes this point very seriously and
 makes Entities a central part of the whole system. And likewise, we are convinced that it is not possible to develop
 domain-knowledge-rich applications without a conscious and well-defined strategy on Entities. So, instead of spending
 endless hours trying to get Hibernate mapping to do the right thing, we introduce a Composite meta type called

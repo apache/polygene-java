@@ -85,7 +85,7 @@ public final class QueryExpressions
         }
         catch( NoSuchMethodException e )
         {
-            throw new InternalError( "Qi4j Core API codebase is corrupted. Contact Qi4j team: QueryExpressions" );
+            throw new InternalError( "Zest Core API codebase is corrupted. Contact Zest team: QueryExpressions" );
         }
     }
 

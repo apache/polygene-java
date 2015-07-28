@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.qi4j.runtime.association;
 
 import java.lang.reflect.Type;
@@ -10,8 +28,10 @@ import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.association.ManyAssociationWrapper;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.util.NullArgumentException;
 import org.qi4j.functional.Function2;
-import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.functional.Iterables;
 import org.qi4j.spi.entity.ManyAssociationState;
 
 /**
@@ -47,10 +67,11 @@ public class ManyAssociationInstance<T>
     @Override
     public boolean add( int i, T entity )
     {
+        NullArgumentException.validateNotNull( "entity", entity );
         checkImmutable();
         checkType( entity );
-        ( (ConstraintsCheck) associationInfo ).checkConstraints( entity );
-        return manyAssociationState.add( i, getEntityReference( entity ) );
+        associationInfo.checkConstraints( entity );
+        return manyAssociationState.add( i, new EntityReference( ( (Identity) entity ).identity().get() ) );
     }
 
     @Override
@@ -62,10 +83,11 @@ public class ManyAssociationInstance<T>
     @Override
     public boolean remove( T entity )
     {
+        NullArgumentException.validateNotNull( "entity", entity );
         checkImmutable();
         checkType( entity );
 
-        return manyAssociationState.remove( getEntityReference( entity ) );
+        return manyAssociationState.remove( new EntityReference( ( (Identity) entity ).identity().get() ) );
     }
 
     @Override
@@ -77,7 +99,7 @@ public class ManyAssociationInstance<T>
     @Override
     public List<T> toList()
     {
-        ArrayList<T> list = new ArrayList<T>();
+        ArrayList<T> list = new ArrayList<>();
         for( EntityReference entityReference : manyAssociationState )
         {
             list.add( getEntity( entityReference ) );
@@ -89,13 +111,19 @@ public class ManyAssociationInstance<T>
     @Override
     public Set<T> toSet()
     {
-        Set<T> set = new HashSet<T>();
+        Set<T> set = new HashSet<>();
         for( EntityReference entityReference : manyAssociationState )
         {
             set.add( getEntity( entityReference ) );
         }
 
         return set;
+    }
+
+    @Override
+    public Iterable<EntityReference> references()
+    {
+        return Iterables.toList( manyAssociationState );
     }
 
     @Override
@@ -193,16 +221,5 @@ public class ManyAssociationInstance<T>
             checkImmutable();
             idIterator.remove();
         }
-    }
-
-    @Override
-    protected void checkType( Object instance )
-    {
-        if( instance == null )
-        {
-            throw new NullPointerException( "Associated object may not be null" );
-        }
-
-        super.checkType( instance );
     }
 }

@@ -23,7 +23,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.sample.dcicargo.sample_a.infrastructure.conversion.EntityToDTOService;
 
 /**
- * Abstract base model for Wicket model objects taking Qi4j objects.
+ * Abstract base model for Wicket model objects taking Zest objects.
  */
 public abstract class ReadOnlyModel<T>
     implements IModel<T>

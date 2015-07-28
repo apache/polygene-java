@@ -54,8 +54,9 @@ public final class Qi4jImportServiceTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.objects( Qi4jImportServiceTest.class );
-
+                // START SNIPPET: import
                 new SpringImporterAssembler( appContext ).assemble( module );
+                // END SNIPPET: import
             }
         };
 

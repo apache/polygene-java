@@ -47,10 +47,17 @@ public class Assume
      */
     public static void assumeDisplayPresent()
     {
-        assumeFalse( GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() );
-        String display = System.getenv( "DISPLAY" );
-        assumeThat( display, is( notNullValue() ) );
-        assumeTrue( display.length() > 0 );
+        try
+        {
+            assumeFalse( GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance() );
+            String display = System.getenv( "DISPLAY" );
+            assumeThat( display, is( notNullValue() ) );
+            assumeTrue( display.length() > 0 );
+        } catch( UnsatisfiedLinkError e )
+        {
+            // assuming that this is caused due to missing video subsystem, or similar
+            assumeNoException( "Grahics system is missing?", e );
+        }
     }
 
     /**
@@ -66,11 +73,12 @@ public class Assume
         }
         catch( SocketException ex )
         {
-            assumeFalse( true );
+            assumeNoException( ex );
         }
     }
 
     /**
+     * // TODO: qi4j.org will soon go down.
      * If called on a runtime with no access to qi4j.org on port 80, the test will halt and be ignored.
      */
     public static void assumeConnectivity()
@@ -92,7 +100,7 @@ public class Assume
         }
         catch( IOException ex )
         {
-            assumeFalse( true );
+            assumeNoException( ex );
         }
     }
 

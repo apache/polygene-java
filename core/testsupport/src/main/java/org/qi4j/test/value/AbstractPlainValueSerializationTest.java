@@ -190,6 +190,8 @@ public abstract class AbstractPlainValueSerializationTest
     @Test
     public void givenDateTimeValueWhenSerializingAndDeserializingExpectEquals()
     {
+        // We specify the TimeZone explicitely here so that serialized/deserialized is equals
+        // See https://github.com/JodaOrg/joda-time/issues/106
         String serialized = valueSerialization.serialize( new DateTime( "2020-03-04T13:24:35", forOffsetHours( 1 ) ) );
         assertThat( serialized, equalTo( "2020-03-04T13:24:35.000+01:00" ) );
         DateTime deserialized = valueSerialization.deserialize( DateTime.class, serialized );

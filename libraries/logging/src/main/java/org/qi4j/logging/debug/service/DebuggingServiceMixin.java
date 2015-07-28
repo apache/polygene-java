@@ -175,6 +175,6 @@ public class DebuggingServiceMixin
 
     private String getCompositeName( Composite composite )
     {
-        return first(Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
+        return first( Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
     }
 }

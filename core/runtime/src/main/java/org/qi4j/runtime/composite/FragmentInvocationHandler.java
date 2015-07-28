@@ -51,8 +51,8 @@ abstract class FragmentInvocationHandler
 
         StackTraceElement[] trace = throwable.getStackTrace();
 
-        // Check if exception originated within Qi4j or JDK - if so then skip compaction
-        if( !isApplicationClass( trace[ 0 ].getClassName() ) )
+        // Check if exception originated within Zest or JDK - if so then skip compaction
+        if( trace.length == 0 || !isApplicationClass( trace[ 0 ].getClassName() ) )
         {
             return throwable;
         }
@@ -63,6 +63,7 @@ abstract class FragmentInvocationHandler
             StackTraceElement stackTraceElement = trace[ i ];
             if( !isApplicationClass( stackTraceElement.getClassName() ) )
             {
+                // TODO: Should find stack entry outside Runtime, and compact beyond that
                 trace[ i ] = null;
                 count++;
             }

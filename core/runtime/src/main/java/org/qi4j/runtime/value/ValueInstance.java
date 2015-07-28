@@ -21,11 +21,12 @@ import org.qi4j.api.composite.CompositeInstance;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.runtime.association.AssociationModel;
 import org.qi4j.runtime.association.ManyAssociationModel;
+import org.qi4j.runtime.association.NamedAssociationModel;
 import org.qi4j.runtime.composite.MixinsInstance;
 import org.qi4j.runtime.composite.TransientInstance;
 import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * ValueComposite instance
@@ -40,9 +41,10 @@ public final class ValueInstance
     }
 
     public ValueInstance( ValueModel compositeModel,
-                          ModuleInstance moduleInstance,
+                          ModuleSpi moduleInstance,
                           Object[] mixins,
-                          ValueStateInstance state )
+                          ValueStateInstance state
+    )
     {
         super( compositeModel, moduleInstance, mixins, state );
     }
@@ -50,11 +52,12 @@ public final class ValueInstance
     /**
      * Perform equals with {@code o} argument.
      * <p>
-     *     The definition of equals() for the Value is that if both the state and descriptor are equal,
-     *     then the values are equal.
+     * The definition of equals() for the Value is that if both the state and descriptor are equal,
+     * then the values are equal.
      * </p>
      *
      * @param o The other object to compare.
+     *
      * @return Returns a {@code boolean} indicator whether this object is equals the other.
      */
     @Override
@@ -106,7 +109,7 @@ public final class ValueInstance
         for( PropertyModel propertyDescriptor : descriptor().state().properties() )
         {
             PropertyInstance<Object> propertyInstance =
-                                     (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
+                (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
 
             propertyInstance.prepareToBuild( propertyDescriptor );
         }
@@ -122,6 +125,12 @@ public final class ValueInstance
             state().manyAssociationFor( associationDescriptor.accessor() )
                 .setAssociationInfo( associationDescriptor.getBuilderInfo() );
         }
+
+        for( NamedAssociationModel associationDescriptor : descriptor().state().namedAssociations() )
+        {
+            state().namedAssociationFor( associationDescriptor.accessor() )
+                .setAssociationInfo( associationDescriptor.getBuilderInfo() );
+        }
     }
 
     /**
@@ -133,7 +142,7 @@ public final class ValueInstance
         for( PropertyModel propertyDescriptor : descriptor().state().properties() )
         {
             PropertyInstance<Object> propertyInstance =
-                                     (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
+                (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
             propertyInstance.prepareBuilderState( propertyDescriptor );
         }
 
@@ -145,6 +154,11 @@ public final class ValueInstance
         for( ManyAssociationModel associationDescriptor : descriptor().state().manyAssociations() )
         {
             state().manyAssociationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
+        }
+
+        for( NamedAssociationModel associationDescriptor : descriptor().state().namedAssociations() )
+        {
+            state().namedAssociationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
         }
     }
 
@@ -163,6 +177,6 @@ public final class ValueInstance
     @Override
     public String toString()
     {
-        return module().valueSerialization().serialize( this.<ValueComposite>proxy() );
+        return ( (ModuleSpi) module() ).valueSerialization().serialize( this.<ValueComposite>proxy() );
     }
 }

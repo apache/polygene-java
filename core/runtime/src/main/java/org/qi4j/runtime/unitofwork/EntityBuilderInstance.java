@@ -16,22 +16,16 @@
  */
 package org.qi4j.runtime.unitofwork;
 
-import java.util.Map;
-import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityBuilder;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.LifecycleException;
-import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.runtime.association.ManyAssociationModel;
-import org.qi4j.runtime.association.NamedAssociationModel;
+import org.qi4j.runtime.composite.FunctionStateResolver;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.spi.module.ModelModule;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
-import org.qi4j.runtime.composite.StateResolver;
-import org.qi4j.runtime.value.ValueStateModel;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 
@@ -60,7 +54,7 @@ public final class EntityBuilderInstance<T>
         }
         catch( NoSuchMethodException e )
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: EntityBuilderInstance" );
+            throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: EntityBuilderInstance" );
         }
     }
 
@@ -79,7 +73,7 @@ public final class EntityBuilderInstance<T>
         ModuleUnitOfWork uow,
         EntityStoreUnitOfWork store,
         String identity,
-        StateResolver stateResolver
+        FunctionStateResolver stateResolver
     )
     {
         this.model = model;
@@ -91,30 +85,7 @@ public final class EntityBuilderInstance<T>
         model.model().initState( model.module(), entityState );
         if( stateResolver != null )
         {
-            for( PropertyDescriptor propDesc : model.model().state().properties() )
-            {
-                Object value = stateResolver.getPropertyState( propDesc );
-                entityState.setPropertyValue( propDesc.qualifiedName(), value );
-            }
-            for( AssociationDescriptor assDesc : model.model().state().associations() )
-            {
-                EntityReference ref = stateResolver.getAssociationState( assDesc );
-                entityState.setAssociationValue( assDesc.qualifiedName(), ref );
-            }
-            for( ManyAssociationModel manyAssDesc : model.model().state().manyAssociations() )
-            {
-                for( EntityReference ref : stateResolver.getManyAssociationState( manyAssDesc ) )
-                {
-                    entityState.manyAssociationValueOf( manyAssDesc.qualifiedName() ).add( 0, ref );
-                }
-            }
-            for( NamedAssociationModel namedAssDesc : model.model().state().namedAssociations() )
-            {
-                for( Map.Entry<String, EntityReference> entry : stateResolver.getNamedAssociationState( namedAssDesc ).entrySet() )
-                {
-                    entityState.namedAssociationValueOf( namedAssDesc.qualifiedName() ).put( entry.getKey(), entry.getValue() );
-                }
-            }
+            stateResolver.populateState( model.model(), entityState );
         }
         entityState.setPropertyValue( IDENTITY_STATE_NAME, identity );
         prototypeInstance = model.model().newInstance( uow, model.module(), entityState );
@@ -146,7 +117,7 @@ public final class EntityBuilderInstance<T>
 
         // Figure out whether to use given or generated identity
         identity = (String) entityState.propertyValueOf( IDENTITY_STATE_NAME );
-        EntityState newEntityState = model.model().newEntityState( store,
+        EntityState newEntityState = model.model().newEntityState( store, uow.module(),
                                                                    EntityReference.parseEntityReference( identity ) );
 
         prototypeInstance.invokeCreate();

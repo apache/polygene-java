@@ -19,7 +19,7 @@ import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEventListenerRegistration;
 
 /**
- * The Layer represents a single layer in a Qi4j application.
+ * The Layer represents a single layer in a Zest application.
  */
 public interface Layer
     extends ActivationEventListenerRegistration, Activation, MetaInfoHolder

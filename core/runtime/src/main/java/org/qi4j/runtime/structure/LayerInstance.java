@@ -20,20 +20,21 @@ import org.qi4j.api.activation.ActivationEventListener;
 import org.qi4j.api.activation.ActivationException;
 import org.qi4j.api.activation.PassivationException;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Layer;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
 import org.qi4j.runtime.activation.ActivationDelegate;
-import org.qi4j.runtime.composite.TransientModel;
-import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.object.ObjectModel;
-import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.spi.module.ModelModule;
 
 import static org.qi4j.functional.Iterables.flattenIterables;
 import static org.qi4j.functional.Iterables.map;
 
 /**
- * Instance of a Qi4j application layer. Contains a list of modules which are managed by this layer.
+ * Instance of a Zest application layer. Contains a list of modules which are managed by this layer.
  */
 public class LayerInstance
     implements Layer
@@ -49,7 +50,8 @@ public class LayerInstance
 
     public LayerInstance( LayerModel model,
                           ApplicationInstance applicationInstance,
-                          UsedLayersInstance usedLayersInstance )
+                          UsedLayersInstance usedLayersInstance
+    )
     {
         // Constructor parameters
         this.layerModel = model;
@@ -130,59 +132,55 @@ public class LayerInstance
         return usedLayersInstance;
     }
 
-    /* package */ Iterable<ModelModule<ObjectModel>> visibleObjects( final Visibility visibility )
+    /* package */ Iterable<ModelModule<ObjectDescriptor>> visibleObjects( final Visibility visibility )
     {
-        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<ObjectModel>>>()
+        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<ObjectDescriptor>>>()
         {
 
             @Override
-            public Iterable<ModelModule<ObjectModel>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<ObjectDescriptor>> map( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleObjects( visibility );
             }
-
         }, moduleInstances ) );
     }
 
-    /* package */ Iterable<ModelModule<TransientModel>> visibleTransients( final Visibility visibility )
+    /* package */ Iterable<ModelModule<TransientDescriptor>> visibleTransients( final Visibility visibility )
     {
-        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<TransientModel>>>()
+        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<TransientDescriptor>>>()
         {
 
             @Override
-            public Iterable<ModelModule<TransientModel>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<TransientDescriptor>> map( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleTransients( visibility );
             }
-
         }, moduleInstances ) );
     }
 
-    /* package */ Iterable<ModelModule<EntityModel>> visibleEntities( final Visibility visibility )
+    /* package */ Iterable<ModelModule<EntityDescriptor>> visibleEntities( final Visibility visibility )
     {
-        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<EntityModel>>>()
+        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<EntityDescriptor>>>()
         {
 
             @Override
-            public Iterable<ModelModule<EntityModel>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<EntityDescriptor>> map( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleEntities( visibility );
             }
-
         }, moduleInstances ) );
     }
 
-    /* package */ Iterable<ModelModule<ValueModel>> visibleValues( final Visibility visibility )
+    /* package */ Iterable<ModelModule<ValueDescriptor>> visibleValues( final Visibility visibility )
     {
-        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<ValueModel>>>()
+        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<ValueDescriptor>>>()
         {
 
             @Override
-            public Iterable<ModelModule<ValueModel>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<ValueDescriptor>> map( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleValues( visibility );
             }
-
         }, moduleInstances ) );
     }
 
@@ -196,7 +194,6 @@ public class LayerInstance
             {
                 return moduleInstance.visibleServices( visibility );
             }
-
         }, moduleInstances ) );
     }
 
@@ -212,5 +209,4 @@ public class LayerInstance
 
         throw new IllegalArgumentException( "No such module:" + moduleName );
     }
-
 }

@@ -41,24 +41,23 @@ import static org.qi4j.api.util.Classes.interfacesOf;
 /**
  * Generic mixin that handles delegation to Scala trait implementations.
  */
-@AppliesTo(ScalaTraitMixin.TraitFilter.class)
+@AppliesTo( ScalaTraitMixin.TraitFilter.class )
 public class ScalaTraitMixin
     implements InvocationHandler
 {
-    private static Map<Class<?>, Map<Method, InvocationHandler>> methods = new HashMap<Class<?>, Map<Method, InvocationHandler>>();
+    private static Map<Class<?>, Map<Method, InvocationHandler>> methods = new HashMap<>();
 
     private Class<?> compositeType;
 
     public ScalaTraitMixin( @This Composite composite )
     {
-        compositeType = Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite).primaryType();
+        compositeType = Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).primaryType();
     }
 
     @Override
     public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
     {
         InvocationHandler handler = methods.get( compositeType ).get( method );
-
         return handler.invoke( composite, method, args );
     }
 
@@ -68,35 +67,37 @@ public class ScalaTraitMixin
         @Override
         public boolean appliesTo( Method method, Class<?> mixin, Class<?> compositeType, Class<?> fragmentClass )
         {
-            if (isScalaTrait(method.getDeclaringClass()))
+            if( isScalaTrait( method.getDeclaringClass() ) )
             {
                 // Service injection
-                if (method.getAnnotation( Service.class ) != null)
+                if( method.getAnnotation( Service.class ) != null )
                 {
-                    if (method.getReturnType().equals( ServiceReference.class ))
+                    if( method.getReturnType().equals( ServiceReference.class ) )
                     {
                         InvocationHandler handler = new InvocationHandler()
                         {
                             @Override
                             public Object invoke( Object composite, Method method, Object[] objects ) throws Throwable
                             {
-                                return ((CompositeInstance)Proxy.getInvocationHandler( composite )).module().findService( method.getReturnType() );
-                            }
-                        };
-                        getHandlers( compositeType ).put( method, handler );
-                    } else
-                    {
-                        InvocationHandler handler = new InvocationHandler()
-                        {
-                            @Override
-                            public Object invoke( Object composite, Method method, Object[] objects ) throws Throwable
-                            {
-                                return ((CompositeInstance)Proxy.getInvocationHandler( composite )).module().findService( method.getReturnType() ).get();
+                                return ( (CompositeInstance) Proxy.getInvocationHandler( composite ) ).module()
+                                    .findService( method.getReturnType() );
                             }
                         };
                         getHandlers( compositeType ).put( method, handler );
                     }
-
+                    else
+                    {
+                        InvocationHandler handler = new InvocationHandler()
+                        {
+                            @Override
+                            public Object invoke( Object composite, Method method, Object[] objects ) throws Throwable
+                            {
+                                return ( (CompositeInstance) Proxy.getInvocationHandler( composite ) ).module()
+                                    .findService( method.getReturnType() ).get();
+                            }
+                        };
+                        getHandlers( compositeType ).put( method, handler );
+                    }
                     return true;
                 }
 
@@ -109,17 +110,22 @@ public class ScalaTraitMixin
                     @Override
                     public Class map( Class aClass )
                     {
-                        if ( declaringClass.isAssignableFrom(aClass))
+                        if( declaringClass.isAssignableFrom( aClass ) )
                         {
                             try
                             {
-                                aClass.getClassLoader().loadClass( aClass.getName()+"$class" );
+                                aClass.getClassLoader().loadClass( aClass.getName() + "$class" );
 
-                                if (current == null)
+                                if( current == null )
+                                {
                                     current = aClass;
+                                }
                                 else
+                                {
                                     current = current.isAssignableFrom( aClass ) ? aClass : current;
-                            } catch( ClassNotFoundException e )
+                                }
+                            }
+                            catch( ClassNotFoundException e )
                             {
                                 // Ignore - no trait implementation found
                             }
@@ -129,14 +135,16 @@ public class ScalaTraitMixin
                     }
                 }, Iterables.map( Classes.RAW_CLASS, interfacesOf( compositeType ) ) ) );
 
-                if (traitClass == null)
+                if( traitClass == null )
+                {
                     return false;
+                }
 
                 try
                 {
-                    Class traitMixin = traitClass.getClassLoader().loadClass( traitClass.getName()+"$class" );
+                    Class traitMixin = traitClass.getClassLoader().loadClass( traitClass.getName() + "$class" );
                     Class<?>[] methodParameterTypes = method.getParameterTypes();
-                    Class[] parameterTypes = new Class[1+ methodParameterTypes.length];
+                    Class[] parameterTypes = new Class[1 + methodParameterTypes.length];
                     parameterTypes[0] = traitClass;
                     System.arraycopy( methodParameterTypes, 0, parameterTypes, 1, methodParameterTypes.length );
                     final Method traitMethod = traitMixin.getMethod( method.getName(), parameterTypes );
@@ -148,7 +156,6 @@ public class ScalaTraitMixin
                         @Override
                         public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
                         {
-
                             if( args != null )
                             {
                                 Object[] params = new Object[args.length + 1];
@@ -156,20 +163,26 @@ public class ScalaTraitMixin
                                 System.arraycopy( args, 0, params, 1, args.length );
 
                                 return traitMethod.invoke( null, params );
-                            } else
+                            }
+                            else
+                            {
                                 return traitMethod.invoke( null, composite );
+                            }
                         }
                     } );
 
                     return true;
-                } catch( ClassNotFoundException e )
-                {
-                    return false;
-                } catch( NoSuchMethodException e )
+                }
+                catch( ClassNotFoundException e )
                 {
                     return false;
                 }
-            } else
+                catch( NoSuchMethodException e )
+                {
+                    return false;
+                }
+            }
+            else
             {
                 return false;
             }
@@ -179,7 +192,7 @@ public class ScalaTraitMixin
         {
             for( Annotation annotation : declaringClass.getAnnotations() )
             {
-                if (annotation.annotationType().getSimpleName().equals( "ScalaSignature" ))
+                if( annotation.annotationType().getSimpleName().equals( "ScalaSignature" ) )
                 {
                     return true;
                 }
@@ -187,15 +200,14 @@ public class ScalaTraitMixin
             return false;
         }
 
-        private Map<Method, InvocationHandler> getHandlers(Class<?> compositeType)
+        private Map<Method, InvocationHandler> getHandlers( Class<?> compositeType )
         {
             Map<Method,InvocationHandler> handlerMap = methods.get( compositeType );
-            if (handlerMap == null)
+            if( handlerMap == null )
             {
-                handlerMap = new HashMap<Method, InvocationHandler>();
+                handlerMap = new HashMap<>();
                 methods.put( compositeType, handlerMap );
             }
-
             return handlerMap;
         }
     }

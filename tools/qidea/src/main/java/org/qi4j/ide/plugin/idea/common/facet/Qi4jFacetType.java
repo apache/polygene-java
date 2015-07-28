@@ -46,7 +46,7 @@ public final class Qi4jFacetType extends FacetType<Qi4jFacet, Qi4jFacetConfigura
 
     public Qi4jFacetType()
     {
-        super( ID, "Qi4jFacet", "Qi4j Facet" );
+        super( ID, "Qi4jFacet", "Zest Facet" );
     }
 
     public final Qi4jFacetConfiguration createDefaultConfiguration()

@@ -33,12 +33,12 @@ import org.qi4j.functional.Iterables;
 import org.qi4j.runtime.composite.CompositeMethodsModel;
 import org.qi4j.runtime.composite.CompositeModel;
 import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Iterables.first;
@@ -62,7 +62,7 @@ public final class EntityModel
         }
         catch( NoSuchMethodException e )
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
+            throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: ModuleUnitOfWork" );
         }
     }
 
@@ -96,7 +96,7 @@ public final class EntityModel
         return (EntityStateModel) super.state();
     }
 
-    public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleInstance moduleInstance, EntityState state )
+    public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleSpi moduleInstance, EntityState state )
     {
         EntityInstance instance = new EntityInstance( uow, moduleInstance, this, state );
         return instance;
@@ -116,13 +116,13 @@ public final class EntityModel
         return ( (EntityMixinsModel) mixinsModel ).newMixin( entityInstance, entityState, mixins, method );
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference identity )
+    public EntityState newEntityState( EntityStoreUnitOfWork store, ModuleSpi module, EntityReference identity )
         throws ConstraintViolationException, EntityStoreException
     {
         try
         {
             // New EntityState
-            EntityState entityState = store.newEntityState( identity, this );
+            EntityState entityState = store.newEntityState( module, identity, this );
 
             // Set identity property
             PropertyDescriptor persistentPropertyDescriptor = state().propertyModelFor( IDENTITY_METHOD );
@@ -140,7 +140,7 @@ public final class EntityModel
         }
     }
 
-    public void initState( ModuleInstance module, EntityState entityState )
+    public void initState( ModuleSpi module, EntityState entityState )
     {
         // Set new properties to default value
         for( PropertyModel propertyDescriptor : state().properties() )

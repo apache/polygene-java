@@ -28,7 +28,7 @@ public class EntityAlreadyExistsException
 
     public EntityAlreadyExistsException( EntityReference identity )
     {
-        super("Entity " + identity + " already existed");
+        super("Entity " + identity + " already exists.");
         this.identity = identity;
     }
 

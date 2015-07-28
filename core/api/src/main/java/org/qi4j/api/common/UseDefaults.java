@@ -46,7 +46,7 @@ import java.lang.annotation.Target;
  * </p>
  * <p>
  * It is also possible to change the default values for Composites during the assembly. This is done by calling the
- * {@link org.qi4j.bootstrap.ModuleAssembly#forMixin(Class)} method.
+ * {@code org.qi4j.bootstrap.ModuleAssembly#forMixin(Class)} method.
  * </p>
  * <p>
  * Example;

@@ -142,7 +142,7 @@ public interface DataSourceConfigurationManagerService
 
                 MBeanInfo mbeanInfo = new MBeanInfo( DataSourceConfiguration.class.getName(), name, attributes.toArray( new MBeanAttributeInfo[ attributes.size() ] ), null, operations.toArray( new MBeanOperationInfo[ operations.size() ] ), null );
                 Object mbean = new ConfigurableDataSource( dataSourceService, mbeanInfo, name, properties );
-                ObjectName configurableDataSourceName = new ObjectName( "Qi4j:application=" + application.name() + ",class=Datasource,name=" + name );
+                ObjectName configurableDataSourceName = new ObjectName( "Zest:application=" + application.name() + ",class=Datasource,name=" + name );
                 server.registerMBean( mbean, configurableDataSourceName );
                 configurationNames.add( configurableDataSourceName );
             }

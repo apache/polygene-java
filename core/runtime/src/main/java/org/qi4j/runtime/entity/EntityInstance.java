@@ -36,10 +36,10 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkException;
 import org.qi4j.runtime.composite.CompositeMethodInstance;
 import org.qi4j.runtime.composite.MixinsInstance;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * Entity instance
@@ -54,7 +54,7 @@ public final class EntityInstance
 
     private final EntityComposite proxy;
     private final ModuleUnitOfWork uow;
-    private final ModuleInstance moduleInstance;
+    private final ModuleSpi moduleInstance;
     private final EntityModel entityModel;
     private final EntityReference identity;
     private final EntityState entityState;
@@ -63,7 +63,7 @@ public final class EntityInstance
     private EntityStateInstance state;
 
     public EntityInstance( ModuleUnitOfWork uow,
-                           ModuleInstance moduleInstance,
+                           ModuleSpi moduleInstance,
                            EntityModel entityModel,
                            EntityState entityState
     )
@@ -134,7 +134,7 @@ public final class EntityInstance
     }
 
     @Override
-    public ModuleInstance module()
+    public ModuleSpi module()
     {
         return moduleInstance;
     }
@@ -200,7 +200,7 @@ public final class EntityInstance
 
         if( status() == EntityStatus.REMOVED )
         {
-            throw new NoSuchEntityException( identity, entityModel.types() );
+            throw new NoSuchEntityException( identity, entityModel.types(), unitOfWork().usecase() );
         }
 
         mixins = entityModel.newMixinHolder();

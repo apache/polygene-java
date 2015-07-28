@@ -27,7 +27,7 @@ import org.qi4j.api.util.NullArgumentException;
  * </p>
  * <p>
  * <strong>NOTE: Unless you do very generic libraries, entity stores and other extensions that is deeply coupled into
- * the Qi4j runtime, it is very unlikely you will need to use this class directly.</strong>
+ * the Zest runtime, it is very unlikely you will need to use this class directly.</strong>
  * </p>
  * <p>
  * It is also important to notice that the QualifiedName needs to be long-term stable, as the names are written

@@ -14,19 +14,18 @@
 
 package org.qi4j.spi.entitystore;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.concern.ConcernOf;
 import org.qi4j.api.entity.EntityDescriptor;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.spi.entity.EntityState;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
@@ -44,11 +43,12 @@ public abstract class ConcurrentModificationCheckConcern
 {
     @This
     private EntityStateVersions versions;
+
     @Structure
     private Qi4j api;
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSpi module, long currentTime )
     {
         final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, module, currentTime );
         return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), module, currentTime );
@@ -59,16 +59,16 @@ public abstract class ConcurrentModificationCheckConcern
     {
         private final EntityStoreUnitOfWork uow;
         private EntityStateVersions versions;
-        private Module module;
+        private ModuleSpi module;
         private long currentTime;
 
-        private List<EntityState> loaded = new ArrayList<EntityState>();
+        private List<EntityState> loaded = new ArrayList<>();
 
-        private ReentrantReadWriteLock lock = new ReentrantReadWriteLock(  );
+        private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
         public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow,
                                                         EntityStateVersions versions,
-                                                        Module module,
+                                                        ModuleSpi module,
                                                         long currentTime
         )
         {
@@ -91,10 +91,13 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         @Override
-        public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
+        public EntityState newEntityState( ModuleSpi module,
+                                           EntityReference anIdentity,
+                                           EntityDescriptor entityDescriptor
+        )
             throws EntityStoreException
         {
-            return uow.newEntityState( anIdentity, entityDescriptor );
+            return uow.newEntityState( module, anIdentity, entityDescriptor );
         }
 
         @Override
@@ -105,34 +108,35 @@ public abstract class ConcurrentModificationCheckConcern
 
             try
             {
-               versions.checkForConcurrentModification( loaded, module, currentTime );
+                versions.checkForConcurrentModification( loaded, module, currentTime );
 
-               final StateCommitter committer = uow.applyChanges();
+                final StateCommitter committer = uow.applyChanges();
 
-               return new StateCommitter()
-               {
-                   @Override
-                   public void commit()
-                   {
-                       committer.commit();
-                       versions.forgetVersions( loaded );
+                return new StateCommitter()
+                {
+                    @Override
+                    public void commit()
+                    {
+                        committer.commit();
+                        versions.forgetVersions( loaded );
 
-                       lock.writeLock().unlock();
-                   }
+                        lock.writeLock().unlock();
+                    }
 
-                   @Override
-                   public void cancel()
-                   {
-                       committer.cancel();
-                       versions.forgetVersions( loaded );
+                    @Override
+                    public void cancel()
+                    {
+                        committer.cancel();
+                        versions.forgetVersions( loaded );
 
-                       lock.writeLock().unlock();
-                   }
-               };
-            } catch( EntityStoreException e )
+                        lock.writeLock().unlock();
+                    }
+                };
+            }
+            catch( EntityStoreException e )
             {
-               lock.writeLock().unlock();
-               throw e;
+                lock.writeLock().unlock();
+                throw e;
             }
         }
 
@@ -149,29 +153,38 @@ public abstract class ConcurrentModificationCheckConcern
 
                 try
                 {
-                   versions.forgetVersions( loaded );
-                } finally
+                    versions.forgetVersions( loaded );
+                }
+                finally
                 {
-                   lock.writeLock().unlock();
+                    lock.writeLock().unlock();
                 }
             }
         }
 
         @Override
-        public EntityState entityStateOf( EntityReference anIdentity )
+        public Usecase usecase()
+        {
+            return uow.usecase();
+        }
+
+        @SuppressWarnings( "DuplicateThrows" )
+        @Override
+        public EntityState entityStateOf( ModuleSpi module, EntityReference anIdentity )
             throws EntityStoreException, EntityNotFoundException
         {
             lock.readLock().lock();
 
             try
             {
-               EntityState entityState = uow.entityStateOf( anIdentity );
-               versions.rememberVersion( entityState.identity(), entityState.version() );
-               loaded.add( entityState );
-               return entityState;
-            } finally
+                EntityState entityState = uow.entityStateOf( module, anIdentity );
+                versions.rememberVersion( entityState.identity(), entityState.version() );
+                loaded.add( entityState );
+                return entityState;
+            }
+            finally
             {
-               lock.readLock().unlock();
+                lock.readLock().unlock();
             }
         }
     }

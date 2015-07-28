@@ -87,9 +87,7 @@ public final class InjectedFieldModel
                 {
                     TransientInstance handler = (TransientInstance) invocationHandler;
                     valueClassName = Classes.toString( handler.descriptor().types() )
-                                     + " in [" + handler.module().name() + "] of [" + handler.module()
-                        .layerInstance()
-                        .name() + "]";
+                                     + " in [" + handler.module().name() + "] of [" + handler.layer().name() + "]";
                 }
                 else
                 {
@@ -139,5 +137,11 @@ public final class InjectedFieldModel
         {
             return emptyList();
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "InjectedFieldModel{" + ", injectedField=" + injectedField + '}';
     }
 }

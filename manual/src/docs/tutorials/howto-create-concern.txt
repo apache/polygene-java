@@ -1,3 +1,22 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
 [[howto-create-concern,Create a Concern]]
 = Create a Concern =
 
@@ -7,7 +26,7 @@ If you want to reproduce what's explained in this tutorial, remember to depend o
 
 include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
 
 == Typed Concern ==
 
@@ -22,8 +41,8 @@ tag=allClass
 Note that we could have implemented the InventoryConcern as an abstract class if we were not interested in __all__ the methods in the Order interface.
 Extending the ConcernOf is a convenience mechanism, instead of an explicit @ConcernFor annotation on
 a private field, which can be used in rare occasions when you are not able to extend. This base class defines the next
-field, which is set up by the Qi4j runtime and points to the next fragment in the call stack. We can also see that the
-InventoryService is provided to the concern, which is done with dependency injection. Qi4j also supports dependency
+field, which is set up by the Zest™ runtime and points to the next fragment in the call stack. We can also see that the
+InventoryService is provided to the concern, which is done with dependency injection. Zest™ also supports dependency
 injection via constructors and methods.
 
 It can be used as follows;

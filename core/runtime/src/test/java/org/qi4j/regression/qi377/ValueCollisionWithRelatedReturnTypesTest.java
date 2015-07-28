@@ -18,21 +18,20 @@
  */
 package org.qi4j.regression.qi377;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.property.Property;
+import org.qi4j.api.value.ValueBuilder;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.test.AbstractQi4jTest;
 
-@Ignore( "This test exhibit QI-377" )
 public class ValueCollisionWithRelatedReturnTypesTest
     extends AbstractQi4jTest
 {
-
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -43,15 +42,18 @@ public class ValueCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToSetNameToTheCompany()
     {
-        Company startUp = module.newValue( Company.class );
-        startUp.name().set( "Acme" );
+        ValueBuilder<Company> builder = module.newValueBuilder( Company.class );
+        builder.prototype().name().set( "Acme" );
+        Company startUp = builder.newInstance();
     }
 
     @Test
     public void shouldBeAbleToSetLeadToTheCompany()
     {
         Company startUp = module.newValue( Company.class );
-        Employee niclas = module.newValue( Employee.class );
+        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        builder.prototype().identity().set( "niclas" );
+        Employee niclas = builder.newInstance();
         startUp.lead().set( niclas );
     }
 
@@ -59,7 +61,9 @@ public class ValueCollisionWithRelatedReturnTypesTest
     public void shouldBeAbleToSetLeadToTheSalesTeam()
     {
         SalesTeam startUp = module.newValue( SalesTeam.class );
-        Employee niclas = module.newValue( Employee.class );
+        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        builder.prototype().identity().set( "niclas" );
+        Employee niclas = builder.newInstance();
         startUp.lead().set( niclas );
     }
 
@@ -67,7 +71,9 @@ public class ValueCollisionWithRelatedReturnTypesTest
     public void shouldBeAbleToSetLeadToTheResearchTeam()
     {
         ResearchTeam startUp = module.newValue( ResearchTeam.class );
-        Employee niclas = module.newValue( Employee.class );
+        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        builder.prototype().identity().set( "niclas" );
+        Employee niclas = builder.newInstance();
         startUp.lead().set( niclas );
     }
 
@@ -75,7 +81,9 @@ public class ValueCollisionWithRelatedReturnTypesTest
     public void shouldBeAbleToAddEmployeesToTheCompany()
     {
         Company startUp = module.newValue( Company.class );
-        Employee niclas = module.newValue( Employee.class );
+        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        builder.prototype().identity().set( "niclas" );
+        Employee niclas = builder.newInstance();
         startUp.employees().add( niclas );
     }
 
@@ -83,7 +91,9 @@ public class ValueCollisionWithRelatedReturnTypesTest
     public void shouldBeAbleToAddEmployeesToTheSalesTeam()
     {
         SalesTeam startUp = module.newValue( SalesTeam.class );
-        Employee niclas = module.newValue( Employee.class );
+        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        builder.prototype().identity().set( "niclas" );
+        Employee niclas = builder.newInstance();
         startUp.employees().add( niclas );
     }
 
@@ -91,11 +101,14 @@ public class ValueCollisionWithRelatedReturnTypesTest
     public void shouldBeAbleToAddEmployeesToTheResearchTeam()
     {
         ResearchTeam startUp = module.newValue( ResearchTeam.class );
-        Employee niclas = module.newValue( Employee.class );
+        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        builder.prototype().identity().set( "niclas" );
+        Employee niclas = builder.newInstance();
         startUp.employees().add( niclas );
     }
 
     public interface Employee
+        extends Identity
     {
     }
 
@@ -128,5 +141,4 @@ public class ValueCollisionWithRelatedReturnTypesTest
         extends SalesTeam, ResearchTeam
     {
     }
-
 }

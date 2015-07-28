@@ -1,3 +1,19 @@
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <body>
 <h1>Step 1 - Evans "Making a booking."</h1>
 
@@ -66,7 +82,7 @@
 <p>
     Now, what we have done so far is to just use plain Java to implement the discussion of Mr Evans' Cargo
     example of domain-driven design. Before we move on to making the model more complex, and changing
-    the model as we understand it better, let's first refactor this into Qi4j and discuss the immediate
+    the model as we understand it better, let's first refactor this into Zest™ and discuss the immediate
     differences.
 </p>
 
@@ -74,9 +90,9 @@
     Steps;
 </p>
 <ol>
-    <li>Cargo has a <i>size</i> property. We change that to use the <i>Property</i> feature in Qi4j.</li>
+    <li>Cargo has a <i>size</i> property. We change that to use the <i>Property</i> feature in Zest™.</li>
     <li>Voyage likewise has the <i>capacity</i> and <i>bookedCargoSize</i> properties.</li>
-    <li>Qi4j doesn't need implementations of the Cargo and Voyage implementations.</li>
+    <li>Zest™ doesn't need implementations of the Cargo and Voyage implementations.</li>
     <li>Cargo and Voyage are entities, so we create CargoEntity and VoyageEntity interfaces.</li>
 </ol>
 </body>

@@ -1,9 +1,28 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
 [[state-modeling,State Modeling]]
-= Qi4j and state modeling =
+= Zest™ and state modeling =
 
 (From Rickard Oberg's blog, http://www.jroller.com/rickard/entry/qi4j_and_state_modeling, 2009-02-19)
 
-In the Qi4j project we strive to being able to express our domain as directly as possible, with as little translation
+In the Zest™ project we strive to being able to express our domain as directly as possible, with as little translation
 as possible between how we think about a domain and how it is actually coded.
 This then affects our entire view of how application frameworks should be constructed, and what we consider good and
 bad ways of implementing certain features.
@@ -17,7 +36,7 @@ In Domain Driven Design terms, POJOs are not in our Ubiquitous Language.
 
 From a DDD perspective we want to talk about Entities and Values, Properties and Associations.
 If our code does not reflect this, then there is translation going on, and translation inevitably leads to information loss.
-In Qi4j, where Composites and not Objects, are the basic construct, we have created specialized forms to model these
+In Zest™, where Composites and not Objects, are the basic construct, we have created specialized forms to model these
 concepts more explicitly.
 We have EntityComposites and ValueComposites, each with different ways of creating them and managing them.
 Both EntityComposites and ValueComposites can then have Properties, as first-class objects, but Properties in
@@ -74,7 +93,7 @@ For Collections they are set to empty collections of the type indicated.
 "@UseDefaults Property<List<String>> addresses();" would be initialized to an empty ArrayList, for example.
 
 In addition I have set surName() to be @Optional.
-In Qi4j we have defined all properties to be not-null as the default, and the same goes for all parameters in method
+In Zest™ we have defined all properties to be not-null as the default, and the same goes for all parameters in method
 invocations.
 If you explicitly want to allow properties to be null, so that for example "Madonna" would be an acceptable name,
 then you can mark it as @Optional.
@@ -115,7 +134,7 @@ What should have been a neat and tidy little package is instead a anorectic litt
 around your code, looking all soggy and unappetizing.
 
 What to do about this?
-One of the great inventions of Qi4j, I believe, is the notion of private mixins.
+One of the great inventions of Zest™, I believe, is the notion of private mixins.
 That we can have mixins in an object which are explicitly HIDDEN from usage outside of it.
 How can we use this for state modeling?
 What you'd want to do is to model the state of an Entity as a private mixin, which is hidden from clients, and then
@@ -145,10 +164,10 @@ Entity doesn't need the "Listable" interface the mixin will never be instantiate
 
 And so much more...
 
-The above is just a small taste of what you can do with state modeling in Qi4j.
+The above is just a small taste of what you can do with state modeling in Zest™.
 There is also support for associations and many-associations, the notion of aggregates, and a complete pluggable
 system for persistence and indexing/querying of data.
-To end with, here's a sample of how some other state modeling concepts can be expressed in Qi4j:
+To end with, here's a sample of how some other state modeling concepts can be expressed in Zest™:
 
 [snippet,java]
 -----------
@@ -158,5 +177,5 @@ tag=more
 
 I hope they are self-explanatory.
 
-My hope is that with Composite Oriented Programming and Qi4j we can come one step closer to being able to express our
+My hope is that with Composite Oriented Programming and Zest™ we can come one step closer to being able to express our
 domain as clearly as possible in code.

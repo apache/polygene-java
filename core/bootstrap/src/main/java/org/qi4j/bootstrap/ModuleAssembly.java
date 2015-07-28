@@ -21,6 +21,7 @@ package org.qi4j.bootstrap;
 
 import org.qi4j.api.activation.Activator;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.HasTypes;
 import org.qi4j.functional.Specification;
 
 /**
@@ -65,6 +66,8 @@ public interface ModuleAssembly
      * @return The name of this Module.
      */
     String name();
+
+    ModuleAssembly setMetaInfo( Object info );
 
     /**
      * Set the module activators. Activators are executed in order around the
@@ -136,6 +139,27 @@ public interface ModuleAssembly
      * @return An EntityDeclaration for the specified EntityComposite types.
      */
     EntityDeclaration entities( Specification<? super EntityAssembly> specification );
+
+    /**
+     * Declare a list of Configuration Composites for this Module. Use the ConfigurationDeclaration that is returned to
+     * declare further settings. Note that the ConfigurationDeclaration works on all of the types specified.
+     *
+     * @param configurationTypes The types that specifies the Configuration types.
+     *
+     * @return An ConfigurationDeclaration for the specified Configuration types.
+     */
+    ConfigurationDeclaration configurations( Class<?>... configurationTypes );
+
+    /**
+     * Given a Specification for ConfigurationAssembly's, returns a ConfigurationDeclaration that can
+     * be used to work with all of the assemblies matched by the specification.
+     *
+     * @param specification The Specification that specifies the ConfigurationComposite types of interest.
+     *
+     * @return An ConfigurationDeclaration for the specified EntityComposite types.
+     */
+    ConfigurationDeclaration configurations( Specification<HasTypes> specification );
+
 
     /**
      * Declare a list of object classes for this Module. Use the ObjectDeclaration that is returned to

@@ -97,7 +97,6 @@ import prefuse.visual.NodeItem;
         int height = fm.getHeight();
         minSize.setSize( width + INSET + INSET, height + INSET + INSET );
 
-        //System.out.println(fm.getAscent());
         return minSize;
     }
 
@@ -110,7 +109,6 @@ import prefuse.visual.NodeItem;
 
         if( depth > zoom )
         {
-            //System.out.println("depth: " +  depth + "  zoom: " + zoom);
             node.setBounds( x, y, 0, 0 );
             node.setVisible( false );
         }

@@ -24,7 +24,7 @@ public interface ApplicationDescriptor
 {
     /**
      * Create a new instance of the Application.
-     * @param runtime Qi4j Runtime
+     * @param runtime Zest Runtime
      * @param importedServiceInstances Imported Services instances
      * @return a new instance of the Application.
      */

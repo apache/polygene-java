@@ -19,13 +19,14 @@ import org.qi4j.api.property.StateHolder;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
 import org.qi4j.runtime.composite.UsesInstance;
 import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * JAVADOC
  */
 public final class InjectionContext
 {
-    private final ModuleInstance moduleInstance;
+    private final ModuleSpi moduleInstance;
     private CompositeInstance compositeInstance;
     private UsesInstance uses;
     private StateHolder state;
@@ -44,28 +45,28 @@ public final class InjectionContext
     }
 
     // For concerns and side-effects
-    public InjectionContext( ModuleInstance moduleInstance, Object next, ProxyReferenceInvocationHandler proxyHandler )
+    public InjectionContext( ModuleSpi moduleInstance, Object next, ProxyReferenceInvocationHandler proxyHandler )
     {
         this.moduleInstance = moduleInstance;
         this.next = next;
         this.proxyHandler = proxyHandler;
     }
 
-    public InjectionContext( ModuleInstance moduleInstance, UsesInstance uses )
+    public InjectionContext( ModuleSpi moduleInstance, UsesInstance uses )
     {
         this.moduleInstance = moduleInstance;
         this.uses = uses;
     }
 
     // For inner classes
-    public InjectionContext( ModuleInstance moduleInstance, UsesInstance uses, Object instance )
+    public InjectionContext( ModuleSpi moduleInstance, UsesInstance uses, Object instance )
     {
         this.moduleInstance = moduleInstance;
         this.uses = uses;
         this.instance = instance;
     }
 
-    public ModuleInstance module()
+    public ModuleSpi module()
     {
         return moduleInstance;
     }

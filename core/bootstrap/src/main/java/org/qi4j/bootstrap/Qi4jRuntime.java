@@ -18,7 +18,7 @@ import org.qi4j.api.Qi4j;
 import org.qi4j.spi.Qi4jSPI;
 
 /**
- * This interface has to be implemented by Qi4j runtimes.
+ * This interface has to be implemented by Zest runtimes.
  */
 public interface Qi4jRuntime
 {

@@ -21,7 +21,7 @@ import org.qi4j.api.activation.PassivationException;
 import org.qi4j.functional.Iterables;
 
 /**
- * Instance of a Qi4j Activators of one Activation target. Contains ordered
+ * Instance of a Zest Activators of one Activation target. Contains ordered
  * Activators and roll the Activation on the target.
  *
  * @param <ActivateeType> Type of the activation target

@@ -78,6 +78,7 @@ public class MetricsTest extends AbstractQi4jTest
     {
         Country underTest = module.newTransient( Country1.class );
         String result = runTest( underTest );
+        result = result.replace( "\r", "" );
         assertTrue( lastLine( result, 1 ).contains( "=====================" ) );
         System.out.println( "---END TEST---" );
     }
@@ -87,6 +88,7 @@ public class MetricsTest extends AbstractQi4jTest
     {
         Country underTest = module.newTransient( Country2.class );
         String result = runTest( underTest );
+        result = result.replace( "\r", "" );
         assertThat( lastLine( result, 34 ), equalTo( "org.qi4j.library.metrics.Country.SomeApplication:" ) );
         assertThat( lastLine( result, 33 ).trim(), equalTo( "name() [TimingCapture]:" ) );
         assertThat( lastLine( result, 16 ).trim(), equalTo( "updateName() [TimingCapture]:" ) );
@@ -103,7 +105,7 @@ public class MetricsTest extends AbstractQi4jTest
     {
         Country underTest = module.newTransient( Country3.class );
         String result = runTest( underTest );
-        System.out.println( result );
+        result = result.replace( "\r", "" );
         assertThat( lastLine( result, 17 ), equalTo( "org.qi4j.library.metrics.Country.SomeApplication:" ) );
         assertThat( lastLine( result, 16 ).trim(), equalTo( "updateName() [TimingCapture]:" ) );
         assertTrue( lastLine( result, 5 ).contains( "75% <=" ) );
@@ -131,6 +133,7 @@ public class MetricsTest extends AbstractQi4jTest
         return result.toString();
     }
 
+// START SNIPPET: complex-capture
     public interface Country extends TransientComposite
     {
         @Optional
@@ -181,7 +184,6 @@ public class MetricsTest extends AbstractQi4jTest
     public static abstract class Country3Mixin
         implements Country3
     {
-
         @Override
         @TimingCapture
         public void updateName( String newName )
@@ -189,4 +191,5 @@ public class MetricsTest extends AbstractQi4jTest
             name().set( newName );
         }
     }
+// END SNIPPET: complex-capture
 }

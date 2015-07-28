@@ -29,7 +29,7 @@ import org.qi4j.functional.Function2;
  * ValueSerialization producing and consuming JSON documents using org.json.
  *
  * <p>
- *     This class is used internally by the Qi4j Runtime to provide default ValueSerialization when no
+ *     This class is used internally by the Zest Runtime to provide default ValueSerialization when no
  *     ValueSerialization Service is available.
  * </p>
  * <p>

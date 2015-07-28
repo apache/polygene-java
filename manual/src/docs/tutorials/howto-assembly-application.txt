@@ -23,13 +23,13 @@ If you want to reproduce what's explained in this tutorial, remember to depend o
 
 include::../../../../core/bootstrap/build/docs/buildinfo/artifact.txt[]
 
-At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-qi4j>> tutorial for details.
+At runtime you will need the Core Runtime artifact too. See the <<howto-depend-on-zest>> tutorial for details.
 
 == Basics ==
 
-First let's recap the structural requirements of Qi4j;
+First let's recap the structural requirements of Zest;
 
-    * There is one and only one Application instance per Qi4j Runtime.
+    * There is one and only one Application instance per Zest™ Runtime.
     * Every Application must contain one or more Layers.
     * All Composites must be declared in one or more Modules.
     * Each Module belong to a Layer.
@@ -40,7 +40,7 @@ Ok, that was quite a handful. Let's look at them one by one.
 
 == Application ==
 
-The first one means that for each Qi4j Runtime you start, there will be exactly one application. As far as we know, Qi4j
+The first one means that for each Zest™ Runtime you start, there will be exactly one application. As far as we know, Zest
 is fully isolated, meaning there are no static members being populated and such.
 
 == Layers ==
@@ -49,7 +49,7 @@ Layers are the super-structures of an application. We have been talking about th
 whiteboards (or even black boards for those old enough), and sometimes organized the codebases along such boundaries.
 But, there has been little effort to enforce the Layer mechanism in code, although it is an extremely powerful
 construct. First of all it implies directional dependency and a high degree of order, spagetti code is reduced if
-successfully implemented. For Qi4j, it means that we can restrict access to Composite and Object declarations, so that
+successfully implemented. For Zest, it means that we can restrict access to Composite and Object declarations, so that
 higher layers can not reach them incidentally. You can enforce architecture to a high degree. You can require all
 creation of composites to go through an exposed Factory, which doesn't require the Composite to be public. And so on.
 Layers have hierarchy, i.e. one layer is top of one or more layers, and is below one or more layers, except for the
@@ -58,7 +58,7 @@ that are both the top and bottom.
 
 == Modules ==
 
-The Module concept has also been around forever. And in Qi4j we also makes the Modules explicit. Each Module belong to a
+The Module concept has also been around forever. And in Zest™ we also makes the Modules explicit. Each Module belong to a
 Layer, and for each Module you declare the Composite and Object types for that Module, together with a Visibility rule,
 one of; application, layer, module.
 
@@ -109,7 +109,7 @@ acting addiction).
 How to structure your code is beyond the scope of this section. If you are an experienced designer, you will have done
 that before, and you may have started out with good intentions at times only to find yourself in a spaghetti swamp
 later, or perhaps in the also famous "Clear as Clay" or "Ball (bowl?) of Mud". Either way, you need to draw on your
-experience and come up with good structure that Qi4j lets you enforce.
+experience and come up with good structure that Zest™ lets you enforce.
 
 So, for the sake of education, we are going to look at an application that consists of many layers, each with a few
 modules. See picture below.
@@ -127,7 +127,7 @@ tag=main
 -----------
 
 The above is the basic setup on how to structure a real-world applicaton, unless you intend to mess with the
-implementations of various Qi4j systems (yes there are hooks for that too), but that is definitely beyond the scope of
+implementations of various Zest™ systems (yes there are hooks for that too), but that is definitely beyond the scope of
 this tutorial.
 
 Now, the createXyzLayer() methods were excluded to keep the sample crisp and easy to follow. Let's take a look at what
@@ -158,5 +158,5 @@ source=manual/src/main/java/org/qi4j/manual/recipes/assemble/Main.java
 tag=shutdown
 -----------
 
-This concludes this tutorial. We have looked how to get the initial Qi4j runtime going, how to declare the assembly
+This concludes this tutorial. We have looked how to get the initial Zest™ runtime going, how to declare the assembly
 for application model creation and finally the activation of the model itself.

@@ -1,3 +1,22 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
 [[library-shiro-web, Shiro Web Security Library]]
 = Shiro Web Security =
 
@@ -18,16 +37,16 @@ application – from the smallest mobile applications to the largest web and ent
 Shiro website.
 
 We invite you to read the comprehensive http://shiro.apache.org/documentation.html[Apache Shiro documentation], we will
-mostly discuss Qi4j related matters here.
+mostly discuss Zest™ related matters here.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Servlet Context ==
 
-In a servlet context, being through the <<library-servlet>>, the <<library-http>> or your custom Qi4j application
+In a servlet context, being through the <<library-servlet>>, the <<library-http>> or your custom Zest™ application
 bootstrap, plain Shiro is usable. A WebEnvironment must be globally available and ShiroFilter must be registered.
 
-If you use a custom Qi4j application boostrap or the <<library-servlet>> you can directly use Shiro's provided
+If you use a custom Zest™ application boostrap or the <<library-servlet>> you can directly use Shiro's provided
 EnvironmentLoaderListener and ShiroFilter.
 
 If you use the <<library-http>> you can either directly use Shiro classes or use the assembly API as follows:

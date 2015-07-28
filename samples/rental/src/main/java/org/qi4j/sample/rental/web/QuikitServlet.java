@@ -108,7 +108,7 @@ public class QuikitServlet
         }
         catch( Exception e )
         {
-            throw new ServletException( "Can not initialize Qi4j.", e );
+            throw new ServletException( "Can not initialize Zest.", e );
         }
     }
 
@@ -150,7 +150,7 @@ public class QuikitServlet
         }
         catch( Exception e )
         {
-            throw new RuntimeException( "Problem to passivate Qi4j", e );
+            throw new RuntimeException( "Problem to passivate Zest", e );
         }
     }
 

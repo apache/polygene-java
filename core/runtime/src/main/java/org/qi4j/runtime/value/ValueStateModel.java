@@ -105,7 +105,7 @@ public final class ValueStateModel
     }
 
     @Override
-    public Iterable<? extends AssociationDescriptor> namedAssociations()
+    public Iterable<NamedAssociationModel> namedAssociations()
     {
         return namedAssociationsModel.namedAssociations();
     }

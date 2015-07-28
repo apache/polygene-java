@@ -130,8 +130,6 @@ public final class GraphPane
 
     private void graphItemLinkActivated( LinkEvent evt )
     {
-        //System.out.println("this is called");
-        //System.out.println(evt.getSource().getClass());
         if( evt.getSource().equals( treeDisplay ) )
         {
             stackedDisplay.setSelectedValue( evt.getObject() );

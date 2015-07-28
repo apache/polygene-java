@@ -186,7 +186,7 @@ public class CompositeCreationPerformanceTest
 
         long end = System.currentTimeMillis();
         long time = 1000000L * ( end - start ) / iter;
-        System.out.println( "Minimum Qi4j Object Creation Time:" + time + " nanoseconds per object" );
+        System.out.println( "Minimum Zest Object Creation Time:" + time + " nanoseconds per object" );
         return time;
     }
 

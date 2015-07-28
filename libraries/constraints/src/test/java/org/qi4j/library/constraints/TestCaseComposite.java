@@ -17,7 +17,9 @@ import java.util.List;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
-import org.qi4j.library.constraints.annotation.*;
+    // START SNIPPET: constraints
+    import org.qi4j.library.constraints.annotation.*;
+    // END SNIPPET: constraints
 
 /**
  * Test composite with all the constraints
@@ -56,7 +58,7 @@ public interface TestCaseComposite extends TransientComposite
 
     @OneOf( { "Bar", "Xyzzy" } ) Property<String> oneOf();
 
-    void testParameters(@GreaterThan(10) Integer greaterThan);
+    void testParameters( @GreaterThan( 10 ) Integer greaterThan );
     // END SNIPPET: constraints
 
     abstract class TestCaseMixin

@@ -287,16 +287,20 @@ public final class DependencyModel
                 ex = ex.getCause();
             }
 
-            String message = "[Module " + context.module()
-                .name() + "] InjectionProvider unable to resolve @" + injectionAnnotation.annotationType()
-                .getSimpleName() + " " + injectionType.toString();
+            String message = "[Module " + context.module().name() + "] InjectionProvider unable to resolve @" +
+                             injectionAnnotation.annotationType().getSimpleName() + " " + injectionType.toString();
             throw new ConstructionException( message, ex );
         }
         if( injectedValue == null && !optional )
         {
-            String message = "[Module " + context.module()
-                .name() + "] Non-optional @" + injectionAnnotation.annotationType()
-                .getSimpleName() + " " + injectionType.toString() + " was null in " + injectedClass.getName();
+            String simpleName = injectionAnnotation.annotationType().getSimpleName();
+            String message = "[Module " + context.module().name() + "] Non-optional @" +
+                             simpleName + " " + injectionType.toString() +
+                             " was null in " + injectedClass.getName();
+            if( simpleName.toLowerCase().contains( "service" ) )
+            {
+                message = message + ". Did you mean the @Service injection scope?";
+            }
             throw new ConstructionException( message );
         }
         return getInjectedValue( injectedValue );

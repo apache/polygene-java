@@ -26,6 +26,9 @@ import org.qi4j.api.service.ServiceFinder;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.value.ValueBuilderFactory;
 import org.qi4j.api.value.ValueDescriptor;
+import org.qi4j.functional.Function;
+import org.qi4j.functional.Visitable;
+import org.qi4j.functional.Visitor;
 
 /**
  * API for interacting with a Module. Instances
@@ -76,4 +79,5 @@ public interface Module
      * @return the descriptor for a value composite or null if the class could not be found or the value composite is not visible
      */
     ValueDescriptor valueDescriptor( String typeName );
+
 }

@@ -14,10 +14,10 @@
 //////////////////////
 
 [[ref-core-api, Core API]]
-= Qi4j Core API =
+= Zest™ Core API =
 
-The Qi4j Core API is main API that Qi4j developers interact with. In fact, if you need to use classes/interfaces
-in the Qi4j Core SPI or Qi4j Core Runtime, then please contact the Qi4j Community and explain your use-case.
+The Zest™ Core API is main API that Zest™ developers interact with. In fact, if you need to use classes/interfaces
+in the Zest™ Core SPI or Zest™ Core Runtime, then please contact the Zest™ Community and explain your use-case.
 
 The Core API is strictly layered, with no _spaghetti_ cross packages. The package list is fairly long, and
 we will look at each one in detail further down.

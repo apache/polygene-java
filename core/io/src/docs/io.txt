@@ -21,10 +21,10 @@
 source=core/io/dev-status.xml
 --------------
 
-The Qi4j Core I/O API is completely generic and not tied to the Qi4j programming model as a whole. It can be used
-independently of Qi4j, together with the Qi4j Core Functional API, which the Core I/O API depends on.
+The Zest™ Core I/O API is completely generic and not tied to the Zest™ programming model as a whole. It can be used
+independently of Zest, together with the Zest™ Core Functional API, which the Core I/O API depends on.
 
-The Qi4j Core I/O API tries to address the problem around shuffling data around from various I/O inputs and outputs,
+The Zest™ Core I/O API tries to address the problem around shuffling data around from various I/O inputs and outputs,
 possibly with transformations and filtering along the way. It was identified that there is a general mix-up of concerns
 in the stereotypical I/O handling codebases that people deal with all the time. The reasoning around this, can be found
 in the <<howto-use-io>>, and is recommended reading.
@@ -44,7 +44,7 @@ source.copyTo( destination );
 
 It seems natural to do, yet it is not present for us. We need to involve FileInputStream/FileOutputStream, wrap them
 in Buffered versions of it, do our own looping, close the streams afterwards and what not. So, the java.io.File does
-not have this simple feature and in the Qi4j Core API, we need to work around this limitation. We also want to
+not have this simple feature and in the Zest™ Core API, we need to work around this limitation. We also want to
 make the abstraction a little bit more encompassing than "just" files. So how does that look like then?
 
 == First Examples ==
@@ -60,7 +60,7 @@ tag=io1
 -----------
 
 Pretty much self-explanatory, wouldn't you say? But what happened to the handling of exceptions and closing of
-resources? It is all handled inside the Qi4j Core I/O API. There is nothing you can forget to do.
+resources? It is all handled inside the Zest™ Core I/O API. There is nothing you can forget to do.
 
 Another simple example, where we want to count the number of lines in the text;
 
@@ -127,7 +127,7 @@ interface. For O/S resources, they are handled purely inside the Input and Outpu
 Sender/Receiver are effectively dealing with the data itself.
 
 == org.qi4j.io.Transforms ==
-The 3 component in the Qi4j Core I/O API is the transformations that are possible. Interestingly enough, with the
+The 3 component in the Zest™ Core I/O API is the transformations that are possible. Interestingly enough, with the
 above separation of concerns, we don't need an InputOutput type that can both receive and send data. Instead, we
 simply need to prepare easy to use static factory methods, which are found in the org.qi4j.io.Transforms class. Again,
 it is fairly straight forward to create your own Transforms if you need something not provided here.
@@ -176,7 +176,7 @@ tag=progress
 
 It combines the Counter and the Log implementations, so that the count is forwarded to the Log at a given interval, such
 as every 1000 items. This may not be what you think a ProgressLog should look like, but it serves as a good example on
-how you can combine the general principles found in the Qi4j Core API package.
+how you can combine the general principles found in the Zest™ Core API package.
 
 == How to write a filter specification? ==
 The filter transform takes a specification implementation which has a very simple method, isSatisfiedBy() (read more

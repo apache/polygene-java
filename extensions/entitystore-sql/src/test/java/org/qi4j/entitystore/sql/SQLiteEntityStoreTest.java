@@ -13,6 +13,7 @@
  */
 package org.qi4j.entitystore.sql;
 
+import java.io.File;
 import org.apache.derby.iapi.services.io.FileUtil;
 import org.junit.BeforeClass;
 import org.qi4j.api.common.Visibility;
@@ -77,7 +78,7 @@ public class SQLiteEntityStoreTest
     {
         try
         {
-            FileUtil.removeDirectory( "target/qi4j-data" );
+            FileUtil.removeDirectory( new File( "target/qi4j-data" ) );
         }
         finally
         {

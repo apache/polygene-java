@@ -46,7 +46,7 @@ public interface RebuildingStrategy
 
     /**
      * The re-building strategy which NEVER re-builds the database schema. Useful when current
-     * Qi4j-related database schema structure must be preserved at all costs.
+     * Zest-related database schema structure must be preserved at all costs.
      */
     public class NeverNeed
         implements RebuildingStrategy

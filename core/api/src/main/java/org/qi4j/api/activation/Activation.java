@@ -18,7 +18,7 @@ package org.qi4j.api.activation;
 /**
  * Interface used by Structure elements and Services that can be activated and passivated.
  * <p>Application and Layer expose this interface so you can activate and passivate them.</p>
- * <p>Module and ServiceComposite activation/passivation is handled by the Qi4j runtime.</p>
+ * <p>Module and ServiceComposite activation/passivation is handled by the Zest runtime.</p>
  */
 public interface Activation
 {

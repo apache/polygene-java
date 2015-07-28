@@ -1,8 +1,24 @@
 <!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <idea-plugin>
   <id>org.qi4j</id>
   <name>qidea</name>
-  <description>Qi4j idea plugin</description>
+  <description>Apache Zest™ idea plugin</description>
   <version>0.1</version>
   <vendor>codedragons</vendor>
   <idea-version since-build="8000"/>
@@ -18,14 +34,14 @@
   <actions>
     <action id="CreateConcernFromMixinTypeOrCompositeAction"
             class="org.qi4j.ide.plugin.idea.concerns.actions.create.CreateConcernFromMixinTypeOrCompositeAction"
-            text="New Concern" description="Create new Qi4j concern">
+            text="New Concern" description="Create new Zest™ concern">
       <add-to-group group-id="CodeMenu" anchor="last"/>
     </action>
 
-    <group id="Qi4j" class="org.qi4j.ide.plugin.idea.common.actions.Qi4jCreateActionGroup" text="Qi4j">
-      <action id="Qi4j.NewConcernOf"
+    <group id="Zest" class="org.qi4j.ide.plugin.idea.common.actions.Qi4jCreateActionGroup" text="Zest™">
+      <action id="Zest.NewConcernOf"
               class="org.qi4j.ide.plugin.idea.concerns.actions.create.inPackage.CreateConcernOfInPackageAction"
-              text="New Concern" description="Create new Qi4j concern">
+              text="New Concern" description="Create new Zest concern">
       </action>
       <add-to-group group-id="NewGroup" anchor="last"/>
     </group>

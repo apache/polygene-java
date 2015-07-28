@@ -1,3 +1,22 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
 [[library-http, HTTP Library]]
 = HTTP =
 
@@ -10,7 +29,7 @@ The HTTP library provides a Jetty based embedded HTTP service with support for e
 filters assembly as Services.
 
 It's an easy way to embedd a servlet container and reuse everything that can be run in it (JAX-*, Restlet, Wicket,
-Vaadin, GWT etc..). If instead you want to run a Qi4j Application in a servlet container, see <<library-servlet>>.
+Vaadin, GWT etc..). If instead you want to run a Zest™ Application in a servlet container, see <<library-servlet>>.
 
 include::../../build/docs/buildinfo/artifact.txt[]
 
@@ -71,7 +90,7 @@ tag=jmx
 
 === Configuration ===
 
-Underlying Jetty engine configuration is exposed as a Qi4j Service Configuration.
+Underlying Jetty engine configuration is exposed as a Zest™ Service Configuration.
 The only one that is mandatory is the port.
 
 See org.qi4j.library.http.JettyConfiguration for a reference of all available
@@ -111,8 +130,4 @@ tag=config
 See org.qi4j.library.http.SecureJettyConfiguration for a reference of all available
 configuration properties.
 
-
-== Logging ==
-
-The SLF4J logger used by this library is named "org.qi4j.library.http".
 

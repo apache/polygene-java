@@ -14,7 +14,9 @@
 
 package org.qi4j.api.configuration;
 
+import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.Queryable;
 
 /**
@@ -25,6 +27,6 @@ import org.qi4j.api.entity.Queryable;
  */
 @Queryable( false )
 public interface ConfigurationComposite
-    extends EntityComposite
+    extends Identity, Composite
 {
 }

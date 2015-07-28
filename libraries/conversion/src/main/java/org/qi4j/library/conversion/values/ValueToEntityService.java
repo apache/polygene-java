@@ -15,10 +15,12 @@
  */
 package org.qi4j.library.conversion.values;
 
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.mixin.Mixins;
 
 /**
  * Service that creates or updates Entities from matching Values.
+ * @deprecated Please use {@link org.qi4j.api.unitofwork.UnitOfWork#toEntity(Class, Identity)} instead.
  */
 @Mixins( ValueToEntityMixin.class )
 public interface ValueToEntityService

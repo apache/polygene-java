@@ -53,6 +53,7 @@ import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.test.AbstractQi4jTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.joda.time.DateTimeZone.UTC;
 import static org.junit.Assert.assertThat;
@@ -452,6 +453,32 @@ public abstract class AbstractEntityStoreTest
             assertThat( "version is incorrect", spi.entityStateOf( testEntity1 ).version(),
                         not( equalTo( version ) ) );
             unitOfWork1.discard();
+        }
+    }
+
+    @Test
+    public void givenEntityStoredLoadedChangedWhenUnitOfWorkDiscardsThenDontStoreState()
+        throws UnitOfWorkCompletionException
+    {
+        UnitOfWork unitOfWork = module.newUnitOfWork();
+        try
+        {
+            String identity = createEntity( unitOfWork ).identity().get();
+            unitOfWork.complete();
+
+            unitOfWork = module.newUnitOfWork();
+            TestEntity entity = unitOfWork.get( TestEntity.class, identity );
+            assertThat( entity.intValue().get(), is( 42 ) );
+            entity.intValue().set( 23 );
+            unitOfWork.discard();
+
+            unitOfWork = module.newUnitOfWork();
+            entity = unitOfWork.get( TestEntity.class, identity );
+            assertThat( entity.intValue().get(), is( 42 ) );
+        }
+        finally
+        {
+            unitOfWork.discard();
         }
     }
 

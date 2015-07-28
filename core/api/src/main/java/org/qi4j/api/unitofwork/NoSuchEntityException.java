@@ -14,6 +14,7 @@
 package org.qi4j.api.unitofwork;
 
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.usecase.Usecase;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 
@@ -25,25 +26,28 @@ public class NoSuchEntityException
     extends UnitOfWorkException
 {
     private final EntityReference identity;
+    private final Usecase usecase;
     private final Class<?>[] mixinTypes;
 
-    public NoSuchEntityException( EntityReference identity, Class<?> mixinType )
+    public NoSuchEntityException( EntityReference identity, Class<?> mixinType, Usecase usecase )
     {
-        super( "Could not find entity (" + identity + ") of type " + mixinType.getName() );
+        super( "Could not find entity (" + identity + ") of type " + mixinType.getName() + " in usecase '" + usecase.name() + "'" );
         this.identity = identity;
+        this.usecase = usecase;
         this.mixinTypes = new Class<?>[]{ mixinType };
     }
 
-    public NoSuchEntityException( EntityReference identity, Class<?>[] mixinTypes )
+    public NoSuchEntityException( EntityReference identity, Class<?>[] mixinTypes, Usecase usecase )
     {
-        super( "Could not find entity (" + identity + ") of type " + toString( mixinTypes ) );
+        super( "Could not find entity (" + identity + ") of type " + toString( mixinTypes ) + " in usecase '" + usecase.name() + "'" );
         this.identity = identity;
         this.mixinTypes = mixinTypes;
+        this.usecase = usecase;
     }
 
-    public NoSuchEntityException( EntityReference identity, Iterable<Class<?>> types )
+    public NoSuchEntityException( EntityReference identity, Iterable<Class<?>> types, Usecase usecase )
     {
-        this( identity, castToArray( types ) );
+        this( identity, castToArray( types ), usecase );
     }
 
     public EntityReference identity()
@@ -54,6 +58,11 @@ public class NoSuchEntityException
     public Class<?>[] mixinTypes()
     {
         return mixinTypes;
+    }
+
+    public Usecase usecase()
+    {
+        return usecase;
     }
 
     private static Class<?>[] castToArray( Iterable<Class<?>> iterableClasses )

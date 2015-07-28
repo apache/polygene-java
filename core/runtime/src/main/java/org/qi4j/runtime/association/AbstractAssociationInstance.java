@@ -1,14 +1,28 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.qi4j.runtime.association;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import org.qi4j.api.association.AbstractAssociation;
-import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.functional.Function2;
-import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
-import org.qi4j.runtime.entity.EntityInstance;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -55,32 +69,17 @@ public abstract class AbstractAssociationInstance<T>
             return null;
         }
 
-        InvocationHandler handler = Proxy.getInvocationHandler( composite );
-        if( handler instanceof ProxyReferenceInvocationHandler )
-        {
-            handler = Proxy.getInvocationHandler( ( (ProxyReferenceInvocationHandler) handler ).proxy() );
-        }
-        EntityInstance instance = (EntityInstance) handler;
-        return instance.identity();
+        return new EntityReference( ( (Identity) composite ).identity().get() );
     }
 
     protected void checkType( Object instance )
     {
-        if( instance != null )
-        {
-            if( !( instance instanceof EntityComposite ) )
-            {
-                if( instance instanceof Proxy )
-                {
-                    if( Proxy.getInvocationHandler( instance ) instanceof EntityInstance )
-                    {
-                        return; // It's fine
-                    }
-                }
 
-                throw new IllegalArgumentException( "Object must be an EntityComposite" );
-            }
+        if( instance instanceof Identity || instance == null )
+        {
+            return;
         }
+        throw new IllegalArgumentException( "Object must be a subtype of org.qi4j.api.identity.Identity: " + instance.getClass() );
     }
 
     protected void checkImmutable()

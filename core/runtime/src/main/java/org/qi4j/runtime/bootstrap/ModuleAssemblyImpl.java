@@ -27,13 +27,17 @@ import org.qi4j.api.common.MetaInfo;
 import org.qi4j.api.common.Visibility;
 import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.service.DuplicateServiceIdentityException;
 import org.qi4j.api.service.ServiceImporter;
 import org.qi4j.api.structure.Module;
+import org.qi4j.api.type.HasTypes;
+import org.qi4j.api.type.MatchTypeSpecification;
 import org.qi4j.api.value.ValueComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.AssemblySpecifications;
 import org.qi4j.bootstrap.AssemblyVisitor;
+import org.qi4j.bootstrap.ConfigurationDeclaration;
 import org.qi4j.bootstrap.EntityAssembly;
 import org.qi4j.bootstrap.EntityDeclaration;
 import org.qi4j.bootstrap.ImportedServiceAssembly;
@@ -52,6 +56,7 @@ import org.qi4j.bootstrap.ValueAssembly;
 import org.qi4j.bootstrap.ValueDeclaration;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
+import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.activation.ActivatorsModel;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.TransientsModel;
@@ -254,6 +259,69 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
+    public ConfigurationDeclaration configurations( Class<?>... configurationTypes )
+    {
+        List<EntityAssemblyImpl> entityAssemblyList = new ArrayList<>();
+
+        for( Class entityType : configurationTypes )
+        {
+            if( this.entityAssemblies.containsKey( entityType ) )
+            {
+                entityAssemblyList.add( this.entityAssemblies.get( entityType ) );
+            }
+            else
+            {
+                EntityAssemblyImpl entityAssembly = new EntityAssemblyImpl( entityType );
+                this.entityAssemblies.put( entityType, entityAssembly );
+                entityAssemblyList.add( entityAssembly );
+            }
+        }
+
+        List<ValueAssemblyImpl> valueAssemblyList = new ArrayList<>();
+
+        for( Class valueType : configurationTypes )
+        {
+            if( valueAssemblies.containsKey( valueType ) )
+            {
+                valueAssemblyList.add( valueAssemblies.get( valueType ) );
+            }
+            else
+            {
+                ValueAssemblyImpl valueAssembly = new ValueAssemblyImpl( valueType );
+                valueAssemblies.put( valueType, valueAssembly );
+                valueAssemblyList.add( valueAssembly );
+                valueAssembly.types.add( Identity.class );
+            }
+        }
+
+        return new ConfigurationDeclarationImpl( entityAssemblyList, valueAssemblyList  );
+    }
+
+    @Override
+    public ConfigurationDeclaration configurations( Specification<HasTypes> specification )
+    {
+        Specification<HasTypes> isConfigurationComposite = new MatchTypeSpecification( Identity.class );
+        specification = Specifications.and( specification, isConfigurationComposite );
+        List<EntityAssemblyImpl> entityAssmblyList = new ArrayList<>();
+        for( EntityAssemblyImpl entityAssembly : entityAssemblies.values() )
+        {
+            if( specification.satisfiedBy( entityAssembly ) )
+            {
+                entityAssmblyList.add( entityAssembly );
+            }
+        }
+        List<ValueAssemblyImpl> valueAssemblyList = new ArrayList<>();
+        for( ValueAssemblyImpl transientAssembly : valueAssemblies.values() )
+        {
+            if( specification.satisfiedBy( transientAssembly ) )
+            {
+                valueAssemblyList.add( transientAssembly );
+            }
+        }
+        return new ConfigurationDeclarationImpl( entityAssmblyList, valueAssemblyList );
+    }
+
+    @Override
     public ObjectDeclaration objects( Class<?>... objectTypes )
         throws AssemblyException
     {
@@ -263,7 +331,7 @@ public final class ModuleAssemblyImpl
         {
             if( objectType.isInterface() )
             {
-                throw new AssemblyException( "Interfaces can not be Qi4j Objects." );
+                throw new AssemblyException( "Interfaces can not be Zest Objects." );
             }
             if( objectAssemblies.containsKey( objectType ) )
             {

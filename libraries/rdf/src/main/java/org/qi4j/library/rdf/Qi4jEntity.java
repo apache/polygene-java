@@ -19,7 +19,7 @@ import org.openrdf.model.impl.URIImpl;
 
 
 /**
- * This is the RDF vocabulary for Qi4j Entity data.
+ * This is the RDF vocabulary for Zest Entity data.
  */
 public interface Qi4jEntity
 {

@@ -16,13 +16,13 @@ package org.qi4j.test;
 
 import org.junit.After;
 import org.junit.Before;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.bootstrap.ApplicationAssembly;
 import org.qi4j.bootstrap.Assembler;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * Base class for Composite tests.
@@ -30,7 +30,7 @@ import org.qi4j.bootstrap.ModuleAssembly;
 public abstract class AbstractQi4jTest extends AbstractQi4jBaseTest
     implements Assembler
 {
-    protected Module module;
+    protected ModuleSpi module;
 
     @Before
     @Override
@@ -42,7 +42,7 @@ public abstract class AbstractQi4jTest extends AbstractQi4jBaseTest
         {
             return; // failure in Assembly.
         }
-        module = application.findModule( "Layer 1", "Module 1" );
+        module = (ModuleSpi) application.findModule( "Layer 1", "Module 1" );
         module.injectTo( this );
     }
 

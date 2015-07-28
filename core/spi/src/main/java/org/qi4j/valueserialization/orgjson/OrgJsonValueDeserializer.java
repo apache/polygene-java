@@ -20,6 +20,7 @@ package org.qi4j.valueserialization.orgjson;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -446,6 +447,34 @@ public class OrgJsonValueDeserializer
             if( key != null )
             {
                 map.put( key, value );
+            }
+        }
+    }
+
+    @Override
+    protected <V> void putObjectNodeInMap( Object inputNode, Function<Object, V> valueDeserializer, Map<String, V> map )
+        throws Exception
+    {
+        if( JSONObject.NULL.equals( inputNode ) )
+        {
+            return;
+        }
+        if( !( inputNode instanceof JSONObject ) )
+        {
+            throw new ValueSerializationException( "Expected an object but got " + inputNode );
+        }
+        JSONObject object = (JSONObject) inputNode;
+
+        @SuppressWarnings( "unchecked" )
+        Iterator<String> it = object.keys();
+        while( it.hasNext() )
+        {
+            String key = it.next();
+            Object item = object.get( key );
+            V valueValue = valueDeserializer.map( item );
+            if( key != null )
+            {
+                map.put( key, valueValue );
             }
         }
     }

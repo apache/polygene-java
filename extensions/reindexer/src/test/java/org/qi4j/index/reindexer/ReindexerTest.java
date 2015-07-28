@@ -39,7 +39,9 @@ import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.test.AbstractQi4jTest;
 import org.qi4j.test.EntityTestAssembler;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
 
@@ -85,6 +87,10 @@ public class ReindexerTest
     public void createDataWipeIndexReindexAndAssertData()
             throws UnitOfWorkCompletionException
     {
+        File rdfDir = new File( System.getProperty( "user.dir" ), "build/testdata/qi4j-index" ).getAbsoluteFile();
+        rdfDir.mkdirs();
+        assertThat( rdfDir.exists(), is(true) );
+
         // ----> Create data and wipe index
 
         UnitOfWork uow = module.newUnitOfWork();
@@ -97,6 +103,7 @@ public class ReindexerTest
         uow.complete();
 
         deleteIndexData(); // Wipe the index data on disk
+        rdfDir.mkdirs();
 
 
         // ----> Reindex and assert data
@@ -132,7 +139,7 @@ public class ReindexerTest
     private static boolean deleteEntitiesData()
     {
         boolean success = true;
-        File esDir = new File( "build/testdata/qi4j-entities" );
+        File esDir = new File( System.getProperty( "user.dir" ), "build/testdata/qi4j-entities" ).getAbsoluteFile();
         if ( esDir.exists() ) {
             success = FileUtil.deltree( esDir );
         }
@@ -142,7 +149,7 @@ public class ReindexerTest
     private static boolean deleteIndexData()
     {
         boolean success = true;
-        File rdfDir = new File( "build/testdata/qi4j-index" );
+        File rdfDir = new File( System.getProperty( "user.dir" ), "build/testdata/qi4j-index" ).getAbsoluteFile();
         if ( rdfDir.exists() ) {
             FileUtils.delete( rdfDir );
             success = FileUtil.deltree( rdfDir );

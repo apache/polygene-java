@@ -17,18 +17,16 @@
  */
 package org.qi4j.lib.swing.binding.internal;
 
+import java.awt.event.FocusListener;
+import java.lang.reflect.Method;
+import javax.swing.JComponent;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.object.ObjectFactory;
-import org.qi4j.api.property.GenericPropertyInfo;
 import org.qi4j.api.property.Property;
 import org.qi4j.lib.swing.binding.Binding;
 import org.qi4j.lib.swing.binding.SwingAdapter;
-
-import javax.swing.*;
-import java.awt.event.FocusListener;
-import java.lang.reflect.Method;
 
 public final class BoundProperty<T> extends AbstractBinding<T>
     implements Property<T>, Binding
@@ -44,7 +42,8 @@ public final class BoundProperty<T> extends AbstractBinding<T>
      * @throws IllegalArgumentException Thrown if the specified {@code aMethod} is {@code null}.
      */
     public BoundProperty( @Uses Method propertyMethod, @Structure ObjectFactory objectBuilderFactory,
-                          @Service Iterable<SwingAdapter> allAdapters )
+                          @Service Iterable<SwingAdapter> allAdapters
+    )
         throws IllegalArgumentException
     {
         super( propertyMethod, objectBuilderFactory, allAdapters );

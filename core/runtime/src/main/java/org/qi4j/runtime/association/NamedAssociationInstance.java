@@ -22,11 +22,20 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.association.ManyAssociationWrapper;
 import org.qi4j.api.association.NamedAssociation;
+import org.qi4j.api.association.NamedAssociationWrapper;
 import org.qi4j.api.entity.EntityReference;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.util.NullArgumentException;
+import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
-import org.qi4j.runtime.composite.ConstraintsCheck;
+import org.qi4j.functional.Iterables;
 import org.qi4j.spi.entity.NamedAssociationState;
+
+import static org.qi4j.functional.Iterables.map;
 
 public class NamedAssociationInstance<T>
     extends AbstractAssociationInstance<T>
@@ -37,7 +46,8 @@ public class NamedAssociationInstance<T>
 
     public NamedAssociationInstance( AssociationInfo associationInfo,
                                      Function2<EntityReference, Type, Object> associationFunction,
-                                     NamedAssociationState namedAssociationState )
+                                     NamedAssociationState namedAssociationState
+    )
     {
         super( associationInfo, associationFunction );
         this.namedAssociationState = namedAssociationState;
@@ -64,10 +74,11 @@ public class NamedAssociationInstance<T>
     @Override
     public boolean put( String name, T entity )
     {
+        NullArgumentException.validateNotNull( "entity", entity );
         checkImmutable();
         checkType( entity );
-        ( (ConstraintsCheck) associationInfo ).checkConstraints( entity );
-        return namedAssociationState.put( name, getEntityReference( entity ) );
+        associationInfo.checkConstraints( entity );
+        return namedAssociationState.put( name, new EntityReference( ( (Identity) entity ).identity().get() ) );
     }
 
     @Override
@@ -98,6 +109,132 @@ public class NamedAssociationInstance<T>
             map.put( name, getEntity( namedAssociationState.get( name ) ) );
         }
         return map;
+    }
+
+    @Override
+    public Iterable<EntityReference> references()
+    {
+        return map( new Function<String, EntityReference>()
+        {
+            @Override
+            public EntityReference map( String name )
+            {
+                return namedAssociationState.get( name );
+            }
+        }, namedAssociationState );
+    }
+
+    @Override
+    public EntityReference referenceOf( String name )
+    {
+        return namedAssociationState.get( name );
+    }
+
+    public Iterable<Map.Entry<String, EntityReference>> getEntityReferences()
+    {
+        return map( new Function<String, Map.Entry<String, EntityReference>>()
+        {
+            @Override
+            public Map.Entry<String, EntityReference> map( final String key )
+            {
+                final EntityReference value = namedAssociationState.get( key );
+                return new Map.Entry<String, EntityReference>()
+                {
+                    @Override
+                    public String getKey()
+                    {
+                        return key;
+                    }
+
+                    @Override
+                    public EntityReference getValue()
+                    {
+                        return value;
+                    }
+
+                    @Override
+                    public EntityReference setValue( EntityReference value )
+                    {
+                        throw new UnsupportedOperationException( "Immutable Map" );
+                    }
+
+                    @Override
+                    public boolean equals( Object o )
+                    {
+                        if( o instanceof Map.Entry )
+                        {
+                            Map.Entry other = (Map.Entry) o;
+                            return key.equals( other.getKey() );
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public int hashCode()
+                    {
+                        return 997 * key.hashCode() + 981813497;
+                    }
+                };
+            }
+        }, namedAssociationState );
+    }
+
+
+    @Override
+    public boolean equals( Object o )
+    {
+        if( this == o )
+        {
+            return true;
+        }
+        if( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+        NamedAssociation<?> that = (NamedAssociation) o;
+        // Unwrap if needed
+        while( that instanceof NamedAssociationWrapper )
+        {
+            that = ( (NamedAssociationWrapper) that ).next();
+        }
+        // Descriptor equality
+        NamedAssociationInstance<?> thatInstance = (NamedAssociationInstance) that;
+        AssociationDescriptor thatDescriptor = (AssociationDescriptor) thatInstance.associationInfo();
+        if( !associationInfo.equals( thatDescriptor ) )
+        {
+            return false;
+        }
+        // State equality
+        if( namedAssociationState.count() != thatInstance.namedAssociationState.count() )
+        {
+            return false;
+        }
+        for( String name : namedAssociationState )
+        {
+            if( !thatInstance.namedAssociationState.containsName( name ) )
+            {
+                return false;
+            }
+            EntityReference thisReference = namedAssociationState.get( name );
+            EntityReference thatReference = thatInstance.namedAssociationState.get( name );
+            if( !thisReference.equals( thatReference ) )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = associationInfo.hashCode() * 31; // Descriptor
+        for( String name : namedAssociationState )
+        {
+            hash += name.hashCode();
+            hash += namedAssociationState.get( name ).hashCode() * 7; // State
+        }
+        return hash;
     }
 
 }

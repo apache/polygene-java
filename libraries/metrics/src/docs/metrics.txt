@@ -14,7 +14,7 @@
 //////////////////////
 
 [[library-metrics,Metrics Library]]
-= Metrics Library=
+= Metrics Library =
 
 The Metrics library is available to application code to get production metrics from their applications. It allows
 applications to easily mark critical section for metrics gathering, without handling the details with the Metrics
@@ -25,8 +25,8 @@ include::../../build/docs/buildinfo/artifact.txt[]
 == Usage ==
 There are currently the following possibilities available;
 
-    * @TimingCapture
-    * @Counting
+    * @TimingCapture - capture timing on a single method
+    * TimingCaptureAll - capture timing on all methods of a composite
 
 Before looking at the details of these, we need to point out that there are some pre-conditions for Metrics to be
 working. First of all, you need to install a Metrics Extensions, most likely the
@@ -38,4 +38,26 @@ production plant and likewise a good front-end to view this. See your chosen Met
 == TimingCaptureAll ==
 There is a TimingCaptureAllConcern, which when added to a composite will install a _Timer_ for every method call
 in the composite.
+
+== @TimingCapture ==
+The +@TimingCapture+ annotation can be placed on any method of the composite, to indicate that
+a Timer is wanted on that method.
+
+Example;
+
+[snippet,java]
+----
+source=libraries/metrics/src/test/java/org/qi4j/library/metrics/DocumentationSupport.java
+tag=capture
+----
+
+== Which method? ==
+It is valid to annotate either the composite interface methods or the mixin implementation methods.
+Any of the method declarations should work. From the testcases we have the following example;
+
+[snippet,java]
+----
+source=libraries/metrics/src/test/java/org/qi4j/library/metrics/MetricsTest.java
+tag=complex-capture
+----
 

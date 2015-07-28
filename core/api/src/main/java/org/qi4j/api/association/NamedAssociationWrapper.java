@@ -20,10 +20,11 @@ package org.qi4j.api.association;
 
 import java.util.Iterator;
 import java.util.Map;
+import org.qi4j.api.entity.EntityReference;
 
 /**
  * If you want to catch calls to NamedAssociations, then create a GenericConcern
- * that wraps the Qi4j-supplied NamedAssociations instance with NamedAssociationsWrapper. Override
+ * that wraps the Zest-supplied NamedAssociations instance with NamedAssociationsWrapper. Override
  * methods to perform your custom code.
  */
 public class NamedAssociationWrapper
@@ -90,6 +91,18 @@ public class NamedAssociationWrapper
     }
 
     @Override
+    public Iterable<EntityReference> references()
+    {
+        return next.references();
+    }
+
+    @Override
+    public EntityReference referenceOf( String name )
+    {
+        return next.referenceOf( name );
+    }
+
+    @Override
     public int hashCode()
     {
         return next.hashCode();
@@ -106,5 +119,4 @@ public class NamedAssociationWrapper
     {
         return next.toString();
     }
-
 }

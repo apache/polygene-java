@@ -1,11 +1,30 @@
-description = "Qi4j Manuals and Website."
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+description = "Apache Zest™ Manuals and Website."
 
 dependencies {
   compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
   compile( project( ":org.qi4j.libraries:org.qi4j.library.constraints" ) )
   compile( project( ":org.qi4j.libraries:org.qi4j.library.logging" ) )
   runtime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
-  runtime( libraries.logback )
+  runtime( libraries.slf4j_simple )
 }
 
 
@@ -27,19 +46,19 @@ dependencies {
 
 task website( type: org.qi4j.gradle.plugin.Documentation,
               dependsOn: rootProject.allprojects.tasks.flatten().findAll { it.name == AsciidocBuildInfo.TASK_NAME } ) {
-  docName = 'website'
-  docType = 'article'
+  docName 'website'
+  docType 'article'
 }
 
 task archiveWebsite( type: Copy ) {
   dependsOn website
   if( rootProject.version == '0' || rootProject.version.contains( "SNAPSHOT" ) )
   {
-    into( "$rootProject.projectDir/../qi4j.github.com/develop" )
+    into( "$rootProject.projectDir/../zest-web/site/content/java/develop" )
   }
   else
   {
-    into( "$rootProject.projectDir/../qi4j.github.com/$version" )
+    into( "$rootProject.projectDir/../zest-web/site/content/java/$version" )
   }
   from( 'build/docs/website/' )
 }
@@ -48,8 +67,8 @@ task copyWebsite( type: Copy ) {
   dependsOn archiveWebsite
   if( rootProject.version != '0' && !rootProject.version.contains( "SNAPSHOT" ) )
   {
-    from( "$rootProject.projectDir/../qi4j.github.com/$version/" )
-    into( "$rootProject.projectDir/../qi4j.github.com/latest/" )
+    from( "$rootProject.projectDir/../zest-web/site/content/java/$version/" )
+    into( "$rootProject.projectDir/../zest-web/site/content/java/latest/" )
   }
 }
 
@@ -58,4 +77,20 @@ task manuals() {
 //  dependsOn userguide
 //  dependsOn referenceManual
 //  dependsOn recipes
+}
+
+// Skip if asciidoc is not found in PATH when building a 0 or SNAPSHOT version,
+// or if skipAsciidocIfAbsent property is set and asciidoc is not found in PATH
+[ website, archiveWebsite, copyWebsite, manuals ]*.onlyIf {
+  def skipAsciidocIfAbsent = rootProject.hasProperty( 'skipAsciidocIfAbsent' ) ? rootProject.skipAsciidocIfAbsent : false
+  def pathDirs = System.getenv( 'PATH' ).split( File.pathSeparator )
+  def present = pathDirs.collect( { new File( it, 'asciidoc') } ).flatten().findAll( { it.isFile() } )
+  if( !skipAsciidocIfAbsent && version != '0' && !version.contains( 'SNAPSHOT' ) ) {
+    project.logger.debug 'Asciidoc tasks forced because version is no-0 and no-SNAPSHOT, hope you have Asciidoc installed'
+    return true
+  }
+  if( !present ) {
+    project.logger.warn 'Asciidoc not found in PATH, manual tasks will skip, please install http://www.methods.co.nz/asciidoc/'
+  }
+  present
 }

@@ -80,7 +80,7 @@ on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
 
 include::../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 
-See the <<howto-depend-on-qi4j>> tutorial for details.
+See the <<howto-depend-on-zest>> tutorial for details.
 
 Once theses parts were identified it was mostly just a matter of putting interfaces on these pieces, and making sure
 they can be easily used in many different situations. The result is as follows.
@@ -245,10 +245,10 @@ Inputs.text( source ).transferTo( Transforms.map(counter, Outputs.text(destinati
 System.out.println("Nr of lines:"+counter.getCount())
 --------------
 
-== Usage in the Qi4j SPI ==
+== Usage in the Zest™ SPI ==
 
 Now I can finally get back to my initial problem that led me to look into this: how to implement a good way to access
-EntityStates in a Qi4j EntityStore, and perform restores of backups. The current version of accessing EntityStates look
+EntityStates in a Zest™ EntityStore, and perform restores of backups. The current version of accessing EntityStates look
 like this:
 
 [source,java]
@@ -322,5 +322,5 @@ things properly it becomes easier to perform these tasks in a scalable, performa
 allowing these tasks to be decorated with extra features when needed.
 
 This article has outlined one way to do this, and the API and helpers that I've described are available in the current
-Qi4j Core 1.3-SNAPSHOT in Git (see Qi4j homepage for access details). The idea is to start using it throughout Qi4j
+Zest™ Core 1.3-SNAPSHOT in Git (see Zest™ homepage for access details). The idea is to start using it throughout Zest
 wherever we need to do I/O of the type described here.

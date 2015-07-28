@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
-import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.runtime.association.AssociationInfo;
@@ -39,7 +38,7 @@ import org.qi4j.runtime.composite.StateResolver;
 import org.qi4j.runtime.property.PropertyInfo;
 import org.qi4j.runtime.property.PropertyInstance;
 import org.qi4j.runtime.property.PropertyModel;
-import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.spi.module.ModelModule;
 import org.qi4j.runtime.structure.ModuleInstance;
 
 /**
@@ -181,7 +180,7 @@ public final class ValueStateInstance
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public <T> NamedAssociation<T> namedAssociationFor( AccessibleObject accessor )
+    public <T> NamedAssociationInstance<T> namedAssociationFor( AccessibleObject accessor )
     {
         NamedAssociationInstance<T> namedAssociation = (NamedAssociationInstance<T>) namedAssociations.get( accessor );
 
@@ -194,7 +193,7 @@ public final class ValueStateInstance
     }
 
     @Override
-    public Iterable<? extends NamedAssociation<?>> allNamedAssociations()
+    public Iterable<? extends NamedAssociationInstance<?>> allNamedAssociations()
     {
         return namedAssociations.values();
     }
@@ -215,7 +214,11 @@ public final class ValueStateInstance
         {
             return false;
         }
-        return manyAssociations.equals( state.manyAssociations );
+        if( !manyAssociations.equals( state.manyAssociations ) )
+        {
+            return false;
+        }
+        return namedAssociations.equals( state.namedAssociations );
     }
 
     @Override
@@ -224,6 +227,7 @@ public final class ValueStateInstance
         int result = properties.hashCode();
         result = 31 * result + associations.hashCode();
         result = 31 * result + manyAssociations.hashCode();
+        result = 31 * result + namedAssociations.hashCode();
         return result;
     }
 }

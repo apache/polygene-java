@@ -1,21 +1,40 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
 [[introduction-background,Background]]
 = Background =
-Qi4j is the first Composite Oriented Programming implementation leveraging the Java 5 platform, so that everything you
-know from Java 5 still applies. You can mix Qi4j with your ordinary Java code as much as you want. All your existing
-Java tools works just like before, and Qi4j does not introduce any new programming language, no special development
+Zest™ is the first Composite Oriented Programming implementation leveraging the Java 5 platform, so that everything you
+know from Java 5 still applies. You can mix Zest™ with your ordinary Java code as much as you want. All your existing
+Java tools works just like before, and Zest™ does not introduce any new programming language, no special development
 tools needed and no XML is required.
 
 == Purpose ==
-Qi4j addresses the programming problems from the top-down, starting with the Domain Model and Business Rules needs,
+Zest™ addresses the programming problems from the top-down, starting with the Domain Model and Business Rules needs,
 and let those requirements flow downwards in the software stack and dictate the requirements for underlying layers
 such as persistence, messaging, querying and more. This means that the business value developer is left to
 concentrate on the domain models and the actual application bringing the value, instead of creating massive amounts
 of glue code to tie underlying technologies together.
 
 == Problem Descriptions ==
-Qi4j didn't appear out of the blue, when the founders of the project had nothing better to do. It is the result of
+Zest™ didn't appear out of the blue, when the founders of the project had nothing better to do. It is the result of
 observation of problems in real applications, and the experience from previous attempts to address or correct these
-problems, that has led to the Qi4j vision.
+problems, that has led to the Zest™ vision.
 
 == Object Oriented Programming (OOP) ==
 How can OOP be a problem? We and others have observed that there is a fundamental flaw in the OOP model. In fact, we
@@ -98,4 +117,4 @@ ServerContextualInvoiceEntity, and then persist the changes.
 Composite Oriented Programming is heavily influenced by the book "Domain Driven Design" by Eric Evans. And we are
 trying to use his analysis of the problem to provide the mechanisms needed to get the job done quicker and more
 reliably. Mr Evans talks about Applications, Layers, Modules, Specifications, SideEffects and so forth, and all of
-these should be present in a Composite Oriented Programming implementation, and to a large extent it is in Qi4j.
+these should be present in a Composite Oriented Programming implementation, and to a large extent it is in Zest™.

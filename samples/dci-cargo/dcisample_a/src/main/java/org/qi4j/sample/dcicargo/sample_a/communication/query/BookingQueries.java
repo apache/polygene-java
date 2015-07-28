@@ -34,7 +34,7 @@ import org.qi4j.sample.dcicargo.sample_a.infrastructure.model.JSONModel;
 /**
  * Booking queries
  *
- * This is in a Qi4j composite since we can then conveniently get the routing service injected.
+ * This is in a Zest composite since we can then conveniently get the routing service injected.
  * We could choose to implement all query classes like this too.
  *
  * Used by the communication layer only. Can change according to ui needs.

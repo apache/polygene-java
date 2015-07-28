@@ -1,6 +1,0 @@
-*.iml
-build/
-out/
-rdf/application.rdfn3
-rdf/application.rdfxml
-sql/derby.log

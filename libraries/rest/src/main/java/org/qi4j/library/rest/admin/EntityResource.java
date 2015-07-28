@@ -37,7 +37,6 @@ import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.Uses;
 import org.qi4j.api.property.PropertyDescriptor;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueSerialization;
@@ -53,6 +52,7 @@ import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.helpers.JSONEntityState;
+import org.qi4j.spi.module.ModuleSpi;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
@@ -74,10 +74,13 @@ public class EntityResource
 
     @Service
     private EntityStore entityStore;
+
     @Service
     private ValueSerialization valueSerialization;
+
     @Structure
-    private Module module;
+    private ModuleSpi module;
+
     @Uses
     private EntityStateSerializer entitySerializer;
     private String identity;
@@ -111,7 +114,7 @@ public class EntityResource
         try
         {
             EntityReference identityRef = EntityReference.parseEntityReference( identity );
-            uow.entityStateOf( identityRef ).remove();
+            uow.entityStateOf( module, identityRef ).remove();
             uow.applyChanges().commit();
             getResponse().setStatus( Status.SUCCESS_NO_CONTENT );
         }
@@ -176,7 +179,7 @@ public class EntityResource
         try
         {
             EntityReference entityReference = EntityReference.parseEntityReference( identity );
-            entityState = unitOfWork.entityStateOf( entityReference );
+            entityState = unitOfWork.entityStateOf( module, entityReference );
         }
         catch( EntityNotFoundException e )
         {
@@ -339,7 +342,6 @@ public class EntityResource
         };
         representation.setCharacterSet( CharacterSet.UTF_8 );
         return representation;
-
     }
 
     @Override
@@ -427,7 +429,7 @@ public class EntityResource
 
                         try
                         {
-                            unitOfWork.entityStateOf( reference );
+                            unitOfWork.entityStateOf( module, reference );
 
                             manyAssociation.remove( reference );
                             manyAssociation.add( index++, reference );
@@ -479,7 +481,7 @@ public class EntityResource
                         EntityReference reference = new EntityReference( identity );
                         try
                         {
-                            unitOfWork.entityStateOf( reference );
+                            unitOfWork.entityStateOf( module, reference );
 
                             namedAssociation.remove( name );
                             namedAssociation.put( name, reference );

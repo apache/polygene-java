@@ -1,7 +1,7 @@
 DCI Sample
 ==========
 
-This is a port of the DDD Sample application to the DCI paradigm using Java, Qi4j and Wicket.
+This is a port of the DDD Sample application to the DCI paradigm using Java, Zest™ and Wicket.
 
 The code is licensed under the Apache Software License 2.0 and lastest revisions are
 available from https://github.com/dci.

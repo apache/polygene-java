@@ -34,6 +34,8 @@ import org.qi4j.runtime.injection.InjectionContext;
 import org.qi4j.runtime.injection.InjectionProvider;
 import org.qi4j.runtime.injection.InjectionProviderFactory;
 import org.qi4j.runtime.model.Resolution;
+import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory
@@ -93,17 +95,21 @@ public final class StructureInjectionProviderFactory
             {
                 return context.module();
             }
+            else if( ModuleSpi.class.isAssignableFrom( clazz ) )
+            {
+                return context.module();
+            }
             else if( Layer.class.isAssignableFrom( clazz ) )
             {
-                return context.module().layerInstance();
+                return (( ModuleInstance) context.module()).layerInstance();
             }
             else if( Application.class.isAssignableFrom( clazz ) )
             {
-                return context.module().layerInstance().applicationInstance();
+                return (( ModuleInstance) context.module()).layerInstance().applicationInstance();
             }
             else if( Qi4j.class.isAssignableFrom( clazz ) )
             {
-                return context.module().layerInstance().applicationInstance().runtime();
+                return (( ModuleInstance) context.module()).layerInstance().applicationInstance().runtime();
             }
 
             return null;

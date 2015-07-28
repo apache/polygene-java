@@ -18,7 +18,7 @@
 package org.qi4j.library.scheduler;
 
 import org.qi4j.api.common.Optional;
-import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.property.Property;
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 @Mixins( FooTask.Mixin.class )
 public interface FooTask
-    extends Task, EntityComposite
+    extends Task, Identity
 {
     Property<String> input();
 
@@ -46,7 +46,7 @@ public interface FooTask
         @Override
         public void run()
         {
-            LOGGER.info( "FooTaskEntity.run({})", me.input().get() );
+            LOGGER.info( "FooTask.run({})", me.input().get() );
             if( me.input().get().equals( Constants.BAZAR ) )
             {
                 if( me.output().get() == null )

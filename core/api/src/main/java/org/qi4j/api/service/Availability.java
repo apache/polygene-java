@@ -15,7 +15,7 @@
 package org.qi4j.api.service;
 
 /**
- * Services can implement this interface in order to allow Qi4j to ask
+ * Services can implement this interface in order to allow Zest to ask
  * it whether it is currently available for use or not. This is accessed
  * by clients through the ServiceReference of the service. Services that do not
  * implement this are always considered to be available.

@@ -16,12 +16,17 @@ package org.qi4j.runtime.structure;
 
 import java.util.List;
 import org.qi4j.api.common.Visibility;
+import org.qi4j.api.composite.TransientDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.object.ObjectDescriptor;
 import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.object.ObjectModel;
 import org.qi4j.runtime.value.ValueModel;
+import org.qi4j.spi.module.ModelModule;
 
 import static org.qi4j.functional.Iterables.*;
 
@@ -37,48 +42,48 @@ public final class UsedLayersInstance
         this.usedLayerInstances = usedLayerInstances;
     }
 
-    /* package */ Iterable<ModelModule<ObjectModel>> visibleObjects()
+    /* package */ Iterable<ModelModule<ObjectDescriptor>> visibleObjects()
     {
-        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<ObjectModel>>>()
+        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<ObjectDescriptor>>>()
         {
             @Override
-            public Iterable<ModelModule<ObjectModel>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<ObjectDescriptor>> map( LayerInstance layerInstance )
             {
                 return layerInstance.visibleObjects( Visibility.application );
             }
         }, usedLayerInstances ) );
     }
 
-    /* package */ Iterable<ModelModule<TransientModel>> visibleTransients()
+    /* package */ Iterable<ModelModule<TransientDescriptor>> visibleTransients()
     {
-        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<TransientModel>>>()
+        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<TransientDescriptor>>>()
         {
             @Override
-            public Iterable<ModelModule<TransientModel>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<TransientDescriptor>> map( LayerInstance layerInstance )
             {
                 return layerInstance.visibleTransients( Visibility.application );
             }
         }, usedLayerInstances ) );
     }
 
-    /* package */ Iterable<ModelModule<EntityModel>> visibleEntities()
+    /* package */ Iterable<ModelModule<EntityDescriptor>> visibleEntities()
     {
-        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<EntityModel>>>()
+        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<EntityDescriptor>>>()
         {
             @Override
-            public Iterable<ModelModule<EntityModel>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<EntityDescriptor>> map( LayerInstance layerInstance )
             {
                 return layerInstance.visibleEntities( Visibility.application );
             }
         }, usedLayerInstances ) );
     }
 
-    /* package */ Iterable<ModelModule<ValueModel>> visibleValues()
+    /* package */ Iterable<ModelModule<ValueDescriptor>> visibleValues()
     {
-        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<ValueModel>>>()
+        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<ValueDescriptor>>>()
         {
             @Override
-            public Iterable<ModelModule<ValueModel>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<ValueDescriptor>> map( LayerInstance layerInstance )
             {
                 return layerInstance.visibleValues( Visibility.application );
             }

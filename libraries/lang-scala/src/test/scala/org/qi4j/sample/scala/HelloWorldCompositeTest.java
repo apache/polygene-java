@@ -1,11 +1,20 @@
+/*
+ * Copyright 2011 Rickard Öberg
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
 package org.qi4j.sample.scala;
 
-import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.bootstrap.SingletonAssembler;
@@ -24,6 +33,7 @@ public class HelloWorldCompositeTest
 {
     @Test
     public void testComposite()
+        throws Exception
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -31,9 +41,11 @@ public class HelloWorldCompositeTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
+                // START SNIPPET: composite
                 module.transients( HelloWorldComposite.class, HelloWorldComposite2.class ).
                     withMixins( ScalaTraitMixin.class ).
                     withConcerns( ExclamationGenericConcern.class );
+                // END SNIPPET: composite
             }
         };
 
@@ -56,7 +68,7 @@ public class HelloWorldCompositeTest
 
     @Test
     public void testEntity()
-        throws UnitOfWorkCompletionException, IOException
+        throws Exception
     {
         SingletonAssembler assembler = new SingletonAssembler()
         {
@@ -64,8 +76,12 @@ public class HelloWorldCompositeTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
+                // START SNIPPET: entity
                 module.entities( TestEntity.class ).withMixins( ScalaTraitMixin.class );
+                // END SNIPPET: entity
+                // START SNIPPET: service
                 module.services( TestService.class ).withMixins( ScalaTraitMixin.class );
+                // END SNIPPET: service
 
                 new EntityTestAssembler().assemble( module );
                 new RdfMemoryStoreAssembler().assemble( module );

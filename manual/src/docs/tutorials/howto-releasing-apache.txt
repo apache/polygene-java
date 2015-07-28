@@ -1,0 +1,635 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[releasing-apache,Releasing Zest]]
+= Releasing Zest™
+
+[WARNING]
+====
+You need a unix-like environment to actually perform the release process.
+This tutorial is known to work on Linux and Mac.
+====
+
+This tutorial is intended for Apache Zest™ commiters who want to release a new version of Apache Zest™ (Java Edition) at The Apache Software Foundation.
+It describes the tools and processes of a typical release.
+
+It is intended to be a recommendation of best practices for the Apache Zest™ project.
+The instructions provided here are consistent with, but not a replacement for the https://www.apache.org/dev/release.html[ASF Release Guidelines].
+
+
+
+== Preparing a release
+
+
+=== Select a Release Manager
+
+A Zest committer (normally one of the development team) should post an email to the development list proposing that a release be made and nominating a release manager.
+Typically, the proposer volunteers as the release manager and it passes by https://www.apache.org/foundation/glossary.html#LazyConsensus[lazy consensus].
+
+
+=== Clone/Checkout all repositories
+
+Clone/checkout all needed repositories, next to each other:
+
+[source,shell]
+----
+mkdir zest-repos
+cd zest-repos
+git clone https://git-wip-us.apache.org/repos/asf/zest-java.git zest-java
+svn checkout https://svn.apache.org/repos/asf/zest/ zest-web
+svn checkout --depth empty https://dist.apache.org/repos/dist/ zest-dist
+cd zest-dist
+svn update --set-depth immediates dev
+svn update --set-depth immediates release
+svn update --set-depth infinity dev/zest
+svn update --set-depth infinity release/zest
+----
+
+You should then get the following directory tree:
+
+[source,text]
+----
+.
+└── zest-repos
+    ├── zest-java           # Apache Zest™ (Java Edition) source
+    ├── zest-web            # https://zest.apache.org/ website
+    └── zest-dist
+        ├── dev
+        |   └── zest        # Releases candidate distributions
+        └── release
+            └── zest        # Releases distributions
+----
+
+
+[TIP]
+====
+From now on, all command line snippets start from the `zest-repos` directory.
+====
+
+
+=== Build Apache Zest™ (Java Edition)
+
+Ensure you can test, build Apache Zest™ (Java Edition), including the documentation minisite generation using Asciidoc and artifact signing.
+
+Here is what should pass before going further:
+
+[source,shell]
+----
+cd zest-java
+./gradlew -Dversion="<RELEASE-VERSION>" website signArchives
+----
+
+See the <<build-system, Build System>> tutorial for details.
+
+
+=== Install Jekyll
+
+Moreover, you will need to have a valid http://jekyllrb.com/[Jekyll] installation as the Apache Zest™ https://zest.apache.org/[website] is generated using it.
+
+
+=== Setup git flow
+
+`git-flow` is a git extension that add git commands to easily use the git flow branching model the Apache Zest™ project follows.
+See the https://github.com/nvie/gitflow/wiki/Installation[installation instructions].
+
+
+=== Setup git signing
+
+Ensure you can sign git tags.
+
+[source,shell]
+----
+git config --global user.signingkey <YOUR-PGP-ID>
+----
+
+See the https://git-scm.com/book/tr/v2/Git-Tools-Signing-Your-Work[Git Tools - Signing Your Work] section of the Git book.
+
+
+=== Setup Apache Nexus credentials
+
+See the Apache https://www.apache.org/dev/publishing-maven-artifacts.html[Publishing Maven Artifacts] guide and the Apache Zest™ (Java Edition) <<build-system,Build System>> tutorial.
+
+
+=== Update the `KEYS` files if needed.
+
+The reference `KEYS` file can be found at the `zest-java` repository's root, that is `zest-java/KEYS`.
+Ensure that it contains your public key.
+
+Next, diff it against the ones present in the `dev` and `release` distribution areas:
+
+[source,shell]
+----
+diff zest-java/KEYS zest-dist/dev/zest/KEYS
+diff zest-java/KEYS zest-dist/release/zest/KEYS
+----
+
+And update them if needed:
+
+[source,shell]
+----
+cp zest-java/KEYS zest-dist/dev/zest/KEYS
+cp zest-java/KEYS zest-dist/release/zest/KEYS
+cd zest-dist/dev/zest
+svn add dev/zest/KEYS release/zest/KEYS
+svn commit -m "zest: updating Zest KEYS"
+----
+
+
+
+== Creating a Release Candidate
+
+
+=== Resolve JIRA issues
+
+Resolve all issues on that version!
+They can be resolved by:
+
+- fixing
+- marking them as `INVALID` or `WONTFIX`
+- changing their fix version to another unreleased version
+
+See the https://issues.apache.org/jira/browse/ZEST[ZEST] project on JIRA.
+
+
+=== Prepare Release-Notes
+
+Apache Zest™ release-notes are generated from JIRA issues.
+
+Open the target Zest™ version's release-notes in https://issues.apache.org/jira/browse/ZEST/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel[JIRA] and review them.
+
+JIRA can produces release-notes as HTML or plain-text.
+Set it up to generate plain-text release-notes.
+
+We will need these in several formats.
+Starting from the plain-text one we will generate the others.
+
+First save the text-plain release-notes in a file named `apache-zest-java-<RELEASE-VERSION>-release-notes.txt`.
+A good place for this file would be in the `zest-repos` directory created earlier, alongside all repositories.
+
+Convert to Asciidoc:
+
+[source,shell]
+----
+cat "apache-zest-java-<RELEASE-VERSION>-release-notes.txt" | \
+  sed -e "s/* \[ZEST-\([0-9]\)*\]/- https:\/\/issues.apache.org\/jira\/browse\/ZEST-\1[ZEST-\1]/" | \
+  sed -e "s/^\*\*/===/" > "apache-zest-java-<RELEASE-VERSION>-release-notes.adoc"
+----
+
+Convert to Markdown:
+
+[source,shell]
+----
+cat "apache-zest-java-<RELEASE-VERSION>-release-notes.txt" | \
+  sed -e "s/* \[ZEST-\([0-9]\)*\]/- [ZEST-\1](https:\/\/issues.apache.org\/jira\/browse\/ZEST-\1)/" | \
+  sed -e "s/^\*\*/###/" > "apache-zest-java-<RELEASE-VERSION>-release-notes.md"
+----
+
+You should then have the following files:
+
+[source,shell]
+----
+.
+├── apache-zest-java-<RELEASE-VERSION>-release-notes.txt
+├── apache-zest-java-<RELEASE-VERSION>-release-notes.adoc
+└── apache-zest-java-<RELEASE-VERSION>-release-notes.md
+----
+
+We will use them later.
+
+
+=== Create a RC branch
+
+We use `<RELEASE-VERSION>-RC#` where `RELEASE-VERSION` is the target release version and `RC#` for Release Candidate and an incremental number in case the release process has to be done several times.
+
+[source,shell]
+----
+cd zest-java
+git flow release start "<RELEASE-VERSION>-RC#"
+----
+
+This will eventually generates a `<RELEASE-VERSION>-RC#` tag that we will amend with a `<RELEASE-VERSION>` signed tag if the vote passes, see below.
+
+
+=== Audit artifacts and distributions
+
+Make a complete build, deploying maven artifacts locally:
+
+[source,shell]
+----
+cd zest-java
+./gradlew -Dversion="<RELEASE-VERSION>" -PuploadRepository="file://$(pwd)/build/repositories/zest-java" \
+    clean assemble checkDists uploadArchives
+----
+
+Review maven artifacts in `build/repositories/zest-java`.
+
+Also review the release distributions in `build/distributions` where you should find the following files:
+
+[source,shell]
+----
+.
+├── apache-zest-java-<RELEASE-VERSION>-bin.tgz
+├── apache-zest-java-<RELEASE-VERSION>-bin.tgz.MD5
+├── apache-zest-java-<RELEASE-VERSION>-bin.tgz.SHA-512
+├── apache-zest-java-<RELEASE-VERSION>-bin.tgz.asc
+├── apache-zest-java-<RELEASE-VERSION>-bin.zip
+├── apache-zest-java-<RELEASE-VERSION>-bin.zip.MD5
+├── apache-zest-java-<RELEASE-VERSION>-bin.zip.SHA-512
+├── apache-zest-java-<RELEASE-VERSION>-bin.zip.asc
+├── apache-zest-java-<RELEASE-VERSION>-src.tgz
+├── apache-zest-java-<RELEASE-VERSION>-src.tgz.MD5
+├── apache-zest-java-<RELEASE-VERSION>-src.tgz.SHA-512
+├── apache-zest-java-<RELEASE-VERSION>-src.tgz.asc
+├── apache-zest-java-<RELEASE-VERSION>-src.zip
+├── apache-zest-java-<RELEASE-VERSION>-src.zip.MD5
+├── apache-zest-java-<RELEASE-VERSION>-src.zip.SHA-512
+└── apache-zest-java-<RELEASE-VERSION>-src.zip.asc
+----
+
+If any, make the required changes, commit them and iterate.
+
+
+=== Close the RC branch
+
+Once you are satisfied with the produced artifacts, close the release candidate branch:
+
+[source,shell]
+----
+cd zest-java
+git flow release finish "<RELEASE-VERSION>-RC#"
+----
+
+
+=== Checkout the RC tag
+
+To build the release candidate bits, we need to checkout the release candidate tag, that will eventually be promoted as a signed release tag, because the Apache Zest™ build system generates versionning information based on git metadata.
+
+[source,shell]
+----
+cd zest-java
+git checkout "<RELEASE-VERSION>-RC#"
+----
+
+
+=== Build RC artifacts and distributions
+
+[source,shell]
+----
+cd zest-java
+./gradlew -Dversion="<RELEASE-VERSION>" clean assemble
+----
+
+
+=== Stage RC maven artifacts
+
+Stage artifacts to https://repository.apache.org/[repository.apache.org] :
+
+[source,shell]
+----
+cd zest-java
+./gradlew -Dversion="<RELEASE-VERSION>" uploadArchives
+----
+
+Close the staging Nexus repository by following the https://www.apache.org/dev/publishing-maven-artifacts.html#close-stage[Closing the staged repository] guide.
+
+
+=== Upload RC distributions
+
+Source and binary distributions, checksums and signatures must be uploaded to https://dist.apache.org/repos/dist/dev/zest/[dist.apache.org/repos/dist/dev/zest].
+This build created these in the `buid/distributions` directory, named `apache-zest-java-<RELEASE-VERSION>-[src|bin]*.*`.
+As this release still is a simple candidate, we'll rename them before upload to advertise this in their names.
+
+[source,shell]
+----
+# Source ZIP
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.MD5" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.SHA-512" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.asc" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc"
+# Source TAR.GZ
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.MD5" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.SHA-512" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.asc" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc"
+# Binary ZIP
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.MD5" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.SHA-512" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.asc" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc"
+# Binary TAR.GZ
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.MD5" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.SHA-512" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.asc" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc"
+----
+
+And then upload them:
+
+[source,shell]
+----
+cd zest-dist/dev/zest
+svn add * --force
+svn commit -m "zest: upload <RELEASE-VERSION> to dist/dev/zest"
+----
+
+
+== Run the vote
+
+Send a "VOTE" to the mailto:dev@zest.apache.org[developer mailing list] including links to release artifacts. A VOTE always contains two parts. Send an email to the developer mailing list with the subject line:
+
+[source,text]
+----
+[VOTE] Release Zest (Java Edition) version <RELEASE-VERSION>
+----
+
+Here is a sample template:
+
+[source,text]
+----
+Dear community,
+
+I am happy to start the VOTE thread for Apache Zest (Java Edition) <RELEASE-VERSION>!
+
+The changelog for this release can be found here: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12316820&version=12332997
+
+Tag: https://git-wip-us.apache.org/repos/asf?p=zest-java.git;a=tag;h=cc0f8211bf47b2df72a6239c9fdcd1d6906ea246
+
+The distributions to be voted on are located here: https://dist.apache.org/repos/dist/dev/zest/
+
+Convenience artifacts in a maven repository are staged here: https://repository.apache.org/content/groups/staging/org/qi4j/
+
+Release distributions and convenience artifacts are signed with the following key: https://dist.apache.org/repos/dist/dev/zest/KEYS
+
+Please vote on releasing this package as Apache Zest (Java Edition) <RELEASE-VERSION>.
+
+The vote is open for the next 72 hours and passes if a majority of at least three +1 PMC votes are cast and there must be more positive than negative votes.
+
+[ ] +1 Release Apache Zest (Java Edition) <RELEASE-VERSION>
+[ ]  0 I don't have a strong opinion about this, but I assume it's ok
+[ ] -1 Do not release Apache Zest (Java Edition) <RELEASE-VERSION> because...
+
+Here is my vote:
+
++1 (binding)
+
+Cheers
+----
+
+After the vote is over, send a "RESULT" email to the list with the subject line:
+
+[source,text]
+----
+[RESULT][VOTE] Release Zest (Java Edition) version <RELEASE-VERSION>
+----
+
+Here is a sample template:
+
+[source,text]
+----
+To: "Zest Developers List" <dev@zest.apache.org>
+CC: "Zest Project Management Committee List" <private@zest.apache.org>
+Subject: [RESULT][VOTE] Release Zest (Java Edition) version <RELEASE-VERSION>
+
+Hi,
+
+The vote has passed|failed with the following result:
+
++1 (binding): <<list of names>>
++1 (non binding): <<list of names>>
+
+I will promote|drop the distributions and artifacts.
+----
+
+Votes on whether a package is ready to be released use majority approval -- i.e., at least three PMC members must vote affirmatively for release, and there must be more positive than negative votes.
+
+
+== VOTE passes
+
+
+=== Seal the release
+
+Create and sign the release git tag from the unsigned release candidate tag:
+
+[source,shell]
+----
+cd zest-java
+git tag -s "<RELEASE-VERSION>" "<RELEASE-VERSION>-RC#"
+----
+
+Push all git changes:
+
+[source,shell]
+----
+cd zest-java
+git checkout master
+git push origin master
+git checkout develop
+git push origin master
+git push origin --tags
+----
+
+
+=== Publish bits
+
+Promote the staged Nexus repository so it gets synched to Maven Central by following the https://www.apache.org/dev/publishing-maven-artifacts.html#promote[Promoting a repo] guide.
+
+Move the release distributions, checksums and signatures from https://dist.apache.org/repos/dist/dev/zest/[zest-dist/dev/zest] to https://dist.apache.org/repos/dist/release/zest/[zest-dist/release/zest]:
+
+[source,shell]
+----
+cd zest-dist
+# Source ZIP
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.zip"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.zip.MD5"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.zip.SHA-512"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.zip.asc"
+# Source TAR.GZ
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.tgz"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.tgz.MD5"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.tgz.SHA-512"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.tgz.asc"
+# Binary ZIP
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.zip"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.zip.MD5"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.zip.SHA-512"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.zip.asc"
+# Binary TAR.GZ
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.tgz"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.tgz.MD5"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.tgz.SHA-512"
+svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.tgz.asc"
+----
+
+And upload them:
+
+[source,shell]
+----
+cd zest-dist
+svn commit -m "zest: <RELEASE-VERSION>-RC# vote passed, promoted as <RELEASE-VERSION> release"
+----
+
+
+=== Wait 24 hours
+
+For mirrors to pick up the new bits.
+
+
+=== Prepare an announcement
+
+Coordinate a press release with press@apache.org.
+
+    TODO
+
+You can reuse the release-notes content from the `txt`/`adoc`/`md` files created earlier.
+
+This annoucement will be used in a variety of media like emails, websites etc...
+Start with a text version and once satisfied create at least a Markdown version for the website, see below.
+
+
+=== Update the Zest™ website
+
+Generate the documentation and javadoc minisite:
+
+[source,shell]
+----
+cd zest-java
+./gradlew -Dversion="<RELEASE-VERSION>" archiveJavadocs manuals
+----
+
+This will automatically put all files into the `zest-web` website repository.
+
+Create a new post on the Zest™ website by creating a new Markdown file:
+
+[source,shell]
+----
+cd zest-web
+touch "site/src/_posts/YYYY-MM-DD-apache-zest-java-<RELEASE-VERSION>.md"
+open !$
+----
+
+You can reuse the Markdown formatted announcement content.
+
+Add the new released version in `zest-web/site/content/java/versions.json` below the `latest` entry:
+
+[source,js]
+----
+{
+    "develop": "develop",
+    "latest": "latest",
+    "<RELEASE-VERSION>", "<RELEASE-VERSION>",
+    "2.0": "2.0",
+    "<=1.4.x": "1.4"
+}
+----
+
+Finally, edit `zest-web/site/src/_data/releases.yml` with the new release data.
+Upmost is the latest:
+
+[source,text]
+----
+- version: <RELEASE-VERSION>
+  announcement: YYYY/MM/DD/apache-zest-java-<RELEASE-VERSION>
+  signer: John Doe
+  pgpId: FB751943
+----
+
+You can run the Zest™ website locally:
+
+[source,shell]
+----
+cd zest-web
+jekyll serve
+----
+
+Open http://127.0.0.1:4000/[http://127.0.0.1:4000/] to live-preview your changes.
+
+Once you are satisfied with the changes, build the production website:
+
+[source,shell]
+----
+cd zest-web
+jekyll build
+----
+
+And publish it:
+
+[source,shell]
+----
+svn add * --force
+svn commit -m "zest: update website"
+----
+
+
+=== Register the release
+
+Register the new release at https://reporter.apache.org/[reporter.apache.org]
+
+
+=== Announce
+
+Finally, send an announcement to mailto:dev@zest.apache.org[dev@] and mailto:users@zest.apache.org[users@] mailing lists. Email announcements should have the subject line:
+
+[source,text]
+----
+[ANNOUNCE] Released Zest (Java Edition) version <RELEASE-VERSION>
+----
+
+The announcement email should contains the release-notes as text, remember they are in the `apache-zest-java-<RELEASE-VERSION>-release-notes.txt` file you created earlier.
+
+
+
+== VOTE fails
+
+
+=== Record failure
+
+We keep the release candidate git history.
+It can be useful for reviewers to have access to it.
+Remember, we created a release candidate branch and tags, no signed release tag.
+
+[source,shell]
+----
+cd zest-java
+git checkout master
+git push origin master
+git checkout develop
+git push origin master
+git push origin --tags
+----
+
+
+=== Drop RC artifacts and distributions
+
+Drop the Nexus staging repository by following the https://www.apache.org/dev/publishing-maven-artifacts.html#drop[Dropping a repo] guide.
+
+Drop distributions, checksums and signatures from https://dist.apache.org/repos/dist/dev/zest/[zest-dist/dev/zest]
+
+[source,shell]
+----
+cd zest-dist/dev/zest/
+rm "*<RELEASE-VERSION>-RC#*.*"
+svn add * --force
+svn commit -m "zest: dropping <RELEASE-VERSION>-RC# from dist/dev/zest as the vote failed"
+----
+
+
+=== Start over
+
+If a new RC is to be created, restart the process as described above.
+

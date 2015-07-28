@@ -19,9 +19,9 @@ import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
+import java.util.logging.Logger;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Specification;
-import org.slf4j.Logger;
 
 /**
  * Utility class for I/O transforms

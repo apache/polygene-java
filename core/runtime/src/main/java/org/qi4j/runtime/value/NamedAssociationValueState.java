@@ -81,5 +81,4 @@ public class NamedAssociationValueState
     {
         return references.keySet().iterator();
     }
-
 }

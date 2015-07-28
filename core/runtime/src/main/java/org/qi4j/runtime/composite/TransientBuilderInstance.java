@@ -20,7 +20,7 @@ import org.qi4j.api.composite.TransientBuilder;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.runtime.property.PropertyInfo;
 import org.qi4j.runtime.property.PropertyInstance;
-import org.qi4j.runtime.structure.ModelModule;
+import org.qi4j.spi.module.ModelModule;
 
 /**
  * JAVADOC

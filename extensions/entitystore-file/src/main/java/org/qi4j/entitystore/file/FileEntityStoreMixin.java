@@ -44,6 +44,7 @@ import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
 import org.qi4j.library.fileconfig.FileConfiguration;
 import org.qi4j.spi.entitystore.BackupRestore;
+import org.qi4j.spi.entitystore.EntityAlreadyExistsException;
 import org.qi4j.spi.entitystore.EntityNotFoundException;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.helpers.MapEntityStore;
@@ -73,17 +74,15 @@ public class FileEntityStoreMixin
         {
             if( fileConfiguration != null )
             {
-                pathName = new File( fileConfiguration.dataDirectory(), config.get()
-                    .identity()
-                    .get() ).getAbsolutePath();
+                String storeId = config.get().identity().get();
+                pathName = new File( fileConfiguration.dataDirectory(), storeId ).getAbsolutePath();
             }
             else
             {
                 pathName = System.getProperty( "user.dir" ) + "/qi4j/filestore/";
             }
         }
-        File rootDirectory = new File( pathName ).getAbsoluteFile();
-        dataDirectory = new File( rootDirectory, "data" );
+        dataDirectory = new File( pathName ).getAbsoluteFile();
         if( !dataDirectory.exists() )
         {
             if( !dataDirectory.mkdirs() )
@@ -216,6 +215,10 @@ public class FileEntityStoreMixin
                             super.close();
                             byte[] stateArray = this.toString().getBytes( "UTF-8" );
                             File dataFile = getDataFile( ref );
+                            if( dataFile.exists() )
+                            {
+                                throw new EntityAlreadyExistsException( ref );
+                            }
                             store( dataFile, stateArray );
                         }
                     };
@@ -248,6 +251,7 @@ public class FileEntityStoreMixin
                     {
                         throw new EntityNotFoundException( ref );
                     }
+                    //noinspection ResultOfMethodCallIgnored
                     dataFile.delete();
                 }
             } );
@@ -256,7 +260,7 @@ public class FileEntityStoreMixin
         {
             if( e instanceof EntityStoreException )
             {
-                throw (EntityStoreException) e;
+                throw e;
             }
             else
             {
@@ -277,8 +281,8 @@ public class FileEntityStoreMixin
                 output.receiveFrom( new Sender<String, IOException>()
                 {
                     @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super String, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
+                    public <ThrowableType extends Throwable> void sendTo( Receiver<? super String, ThrowableType> receiver )
+                        throws ThrowableType, IOException
                     {
                         for( File sliceDirectory : dataDirectory.listFiles() )
                         {
@@ -331,8 +335,8 @@ public class FileEntityStoreMixin
                 output.receiveFrom( new Sender<Reader, IOException>()
                 {
                     @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, IOException
+                    public <ThrowableType extends Throwable> void sendTo( Receiver<? super Reader, ThrowableType> receiver )
+                        throws ThrowableType, IOException
                     {
                         for( File sliceDirectory : dataDirectory.listFiles() )
                         {
@@ -350,13 +354,55 @@ public class FileEntityStoreMixin
 
     private File getDataFile( String identity )
     {
+        identity = replaceInvalidChars( identity );
         String slice = "" + ( Math.abs( identity.hashCode() ) % slices );
         File sliceDirectory = new File( dataDirectory, slice );
         if( !sliceDirectory.exists() )
         {
+            //noinspection ResultOfMethodCallIgnored
             sliceDirectory.mkdirs();
         }
         return new File( sliceDirectory, identity + ".json" );
+    }
+
+    /**
+     * We need to replace all characters that some file system can't handle.
+     * <p>
+     * The resulting files should be portable across filesystems.
+     * </p>
+     *
+     * @param identity The identity that needs a file to be stored in.
+     *
+     * @return A filesystem-safe name.
+     */
+    private String replaceInvalidChars( String identity )
+    {
+        StringBuilder b = new StringBuilder( identity.length() + 30 );
+        for( int i = 0; i < identity.length(); i++ )
+        {
+            char ch = identity.charAt( i );
+            if( ( ch >= 'a' && ch <= 'z' )
+                || ( ch >= 'A' && ch <= 'Z' )
+                || ( ch >= '0' && ch <= '9' )
+                || ch == '_' || ch == '.' || ch == '-' )
+            {
+                b.append( ch );
+            }
+            else
+            {
+                int value = (int) ch;
+                b.append( '~' );
+                b.append( toHex( value ) );
+            }
+
+        }
+        return b.toString();
+    }
+
+    private String toHex( int value )
+    {
+        String result = "000" + Integer.toHexString( value );
+        return result.substring( result.length() - 4 );
     }
 
     private File getDataFile( EntityReference ref )
@@ -367,7 +413,7 @@ public class FileEntityStoreMixin
     private byte[] fetch( File dataFile )
         throws IOException
     {
-        byte[] buf = new byte[ 1000 ];
+        byte[] buf = new byte[1000];
         BufferedInputStream in = null;
         FileInputStream fis = null;
         try

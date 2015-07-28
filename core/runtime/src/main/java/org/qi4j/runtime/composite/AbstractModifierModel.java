@@ -25,7 +25,7 @@ import org.qi4j.runtime.injection.DependencyModel;
 import org.qi4j.runtime.injection.InjectedFieldsModel;
 import org.qi4j.runtime.injection.InjectedMethodsModel;
 import org.qi4j.runtime.injection.InjectionContext;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.api.util.Classes.RAW_CLASS;
 import static org.qi4j.api.util.Classes.interfacesOf;
@@ -57,7 +57,7 @@ public abstract class AbstractModifierModel
         injectedFieldsModel = new InjectedFieldsModel( declaredModifierClass );
         injectedMethodsModel = new InjectedMethodsModel( declaredModifierClass );
         Class<Class<?>> componentType = (Class<Class<?>>) Class.class.cast( Class.class );
-        nextInterfaces = toArray( componentType, unique( map( RAW_CLASS, interfacesOf( declaredModifierClass ) ) ));
+        nextInterfaces = toArray( componentType, unique( map( RAW_CLASS, interfacesOf( declaredModifierClass ) ) ) );
     }
 
     public Class<?> modifierClass()
@@ -96,7 +96,7 @@ public abstract class AbstractModifierModel
     }
 
     // Context
-    public InvocationHandler newInstance( ModuleInstance moduleInstance,
+    public InvocationHandler newInstance( ModuleSpi moduleInstance,
                                           InvocationHandler next,
                                           ProxyReferenceInvocationHandler proxyHandler,
                                           Method method

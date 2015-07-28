@@ -18,7 +18,7 @@ import org.qi4j.api.activation.Activation;
 import org.qi4j.api.activation.ActivationEventListenerRegistration;
 
 /**
- * The Application represents a whole Qi4j application.
+ * The Application represents a whole Zest application.
  */
 public interface Application
     extends ActivationEventListenerRegistration, Activation, MetaInfoHolder

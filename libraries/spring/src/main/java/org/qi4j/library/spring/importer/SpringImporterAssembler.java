@@ -30,7 +30,7 @@ public class SpringImporterAssembler
     private Visibility defaultVisibility;
 
     /**
-     * Import all beans from the given ApplicationContext as services in Qi4j,
+     * Import all beans from the given ApplicationContext as services in Zest,
      * using Module as Visibility.
      *
      * @param context the Spring ApplicationContext
@@ -42,7 +42,7 @@ public class SpringImporterAssembler
 
 
     /**
-     * Import all beans from the given ApplicationContext as services in Qi4j,
+     * Import all beans from the given ApplicationContext as services in Zest,
      * using the specified Visibility level.
      *
      * @param context           the Spring ApplicationContext

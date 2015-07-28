@@ -15,12 +15,16 @@ package org.qi4j.runtime;
 
 import java.lang.reflect.InvocationHandler;
 import java.util.Arrays;
+import java.util.Map;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.association.AbstractAssociation;
+import org.qi4j.api.association.Association;
 import org.qi4j.api.association.AssociationDescriptor;
 import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.association.AssociationWrapper;
+import org.qi4j.api.association.ManyAssociation;
 import org.qi4j.api.association.ManyAssociationWrapper;
+import org.qi4j.api.association.NamedAssociation;
 import org.qi4j.api.association.NamedAssociationWrapper;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.CompositeDescriptor;
@@ -30,6 +34,7 @@ import org.qi4j.api.composite.TransientComposite;
 import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.property.PropertyWrapper;
@@ -45,6 +50,9 @@ import org.qi4j.bootstrap.ApplicationAssemblyFactory;
 import org.qi4j.bootstrap.ApplicationModelFactory;
 import org.qi4j.bootstrap.Qi4jRuntime;
 import org.qi4j.runtime.association.AbstractAssociationInstance;
+import org.qi4j.runtime.association.AssociationInstance;
+import org.qi4j.runtime.association.ManyAssociationInstance;
+import org.qi4j.runtime.association.NamedAssociationInstance;
 import org.qi4j.runtime.bootstrap.ApplicationAssemblyFactoryImpl;
 import org.qi4j.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.qi4j.runtime.composite.ProxyReferenceInvocationHandler;
@@ -63,7 +71,7 @@ import static java.lang.reflect.Proxy.getInvocationHandler;
 import static org.qi4j.runtime.composite.TransientInstance.compositeInstanceOf;
 
 /**
- * Incarnation of Qi4j.
+ * Incarnation of Zest.
  */
 public final class Qi4jRuntimeImpl
     implements Qi4jSPI, Qi4jRuntime
@@ -160,7 +168,7 @@ public final class Qi4jRuntimeImpl
         else if( compositeOrServiceReferenceOrUow instanceof ImportedServiceReferenceInstance )
         {
             ImportedServiceReferenceInstance<?> importedServiceReference
-                                                = (ImportedServiceReferenceInstance<?>) compositeOrServiceReferenceOrUow;
+                = (ImportedServiceReferenceInstance<?>) compositeOrServiceReferenceOrUow;
             return importedServiceReference.module();
         }
         throw new IllegalArgumentException( "Wrong type. Must be one of "
@@ -205,7 +213,7 @@ public final class Qi4jRuntimeImpl
         else if( compositeOrServiceReference instanceof ImportedServiceReferenceInstance )
         {
             ImportedServiceReferenceInstance<?> importedServiceReference
-                                                = (ImportedServiceReferenceInstance<?>) compositeOrServiceReference;
+                = (ImportedServiceReferenceInstance<?>) compositeOrServiceReference;
             return importedServiceReference.serviceDescriptor();
         }
         throw new IllegalArgumentException( "Wrong type. Must be one of "
@@ -312,7 +320,7 @@ public final class Qi4jRuntimeImpl
         {
             association = ( (ManyAssociationWrapper) association ).next();
         }
-        
+
         while( association instanceof NamedAssociationWrapper )
         {
             association = ( (NamedAssociationWrapper) association ).next();
@@ -326,5 +334,25 @@ public final class Qi4jRuntimeImpl
     public EntityState entityStateOf( EntityComposite composite )
     {
         return EntityInstance.entityInstanceOf( composite ).entityState();
+    }
+
+    @Override
+    public EntityReference entityReferenceOf( Association assoc )
+    {
+        @SuppressWarnings( "unchecked" )
+        Property<EntityReference> associationState = ( (AssociationInstance) assoc ).getAssociationState();
+        return associationState.get();
+    }
+
+    @Override
+    public Iterable<EntityReference> entityReferenceOf( ManyAssociation assoc )
+    {
+        return ( (ManyAssociationInstance) assoc ).getManyAssociationState();
+    }
+
+    @Override
+    public Iterable<Map.Entry<String, EntityReference>> entityReferenceOf( NamedAssociation assoc )
+    {
+        return ( (NamedAssociationInstance) assoc ).getEntityReferences();
     }
 }

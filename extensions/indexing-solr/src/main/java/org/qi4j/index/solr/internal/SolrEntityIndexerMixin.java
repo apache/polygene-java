@@ -181,7 +181,9 @@ public abstract class SolrEntityIndexerMixin
                     input.addField( name, value );
                 } else if( statement.getObject() instanceof BNode )
                 {
-                    Iterator<Statement> seq = graph.match( (Resource) statement.getObject(), new URIImpl( "http://www.w3.org/1999/02/22-rdf-syntax-ns#li" ), null, (Resource) null );
+                    Resource resource = (Resource) statement.getObject();
+                    URIImpl uri = new URIImpl( "http://www.w3.org/1999/02/22-rdf-syntax-ns#li" );
+                    Iterator<Statement> seq = graph.match( resource, uri, null, (Resource) null );
                     while( seq.hasNext() )
                     {
                         Statement seqStatement = seq.next();

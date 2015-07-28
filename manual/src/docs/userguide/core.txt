@@ -1,3 +1,22 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
 :leveloffset: 1
 
 [[core,Core]]
@@ -5,20 +24,20 @@
 
 == Overview ==
 
-The Qi4j Core is composed of several artifacts described in this section.
+The Zest™ Core is composed of several artifacts described in this section.
 
 The following figure show the Core artifacts alongside <<libraries,libraries>> and <<extensions,extensions>>, and, in green,
 typical applications artifacts. This is not a full code dependency graph but should give you a good overview of how the
-pieces fit together. Find out more about each of the Qi4j Core artifacts below.
+pieces fit together. Find out more about each of the Zest™ Core artifacts below.
 
-.Qi4j Core Overview
+.Zest™ Core Overview
 image::core-overview.png[]
 
 //*<<core-api,Core API>>*
 === Core API ===
 
 //____
-The Qi4j Core API is the primary interface for client application code during the main execution phase, i.e. after the
+The Zest™ Core API is the primary interface for client application code during the main execution phase, i.e. after the
 application has been activated.
 
 <<core-api,Learn more>>
@@ -27,9 +46,9 @@ application has been activated.
 //*<<core-bootstrap-assembly,Core Bootstrap>>*
 === Core Bootstrap ===
 //____
-Qi4j has a distinct bootstrap phase, also known as the _Assembly_ of an application, where the applications structure
+Zest™ has a distinct bootstrap phase, also known as the _Assembly_ of an application, where the applications structure
 is defined programmatically. Once all the layers, modules and all the composite types in each module have been defined
-the model is instantiated into an application. This enables the entire _structure_ system in Qi4j, where types "belongs"
+the model is instantiated into an application. This enables the entire _structure_ system in Zest, where types "belongs"
 to a module and visibility rules define default behaviors, enforcement of architectural integrity and much more.
 
 <<core-bootstrap-assembly,Learn more>>
@@ -38,8 +57,8 @@ to a module and visibility rules define default behaviors, enforcement of archit
 //*<<core-testsupport,Core Test Support>>*
 === Core Test Support ===
 //____
-Qi4j comes with classes to help with testing. There is also some mocking support, to allow some of Qi4j’s unique
-aspects to be mocked, but since Qi4j is so flexible at a fine-granular level, we have found that mocking is seldom,
+Zest™ comes with classes to help with testing. There is also some mocking support, to allow some of Zest’s unique
+aspects to be mocked, but since Zest™ is so flexible at a fine-granular level, we have found that mocking is seldom,
 if ever, needed.
 
 <<core-testsupport,Learn more>>
@@ -48,9 +67,9 @@ if ever, needed.
 //*<<core-functional,Core Functional API>>*
 === Core Functional API ===
 //____
-The Qi4j Core Functional API is a generic package to work with Iterables in a "functional programming language" style.
+The Zest™ Core Functional API is a generic package to work with Iterables in a "functional programming language" style.
 
-This package is completely independent of everything else in Qi4j and may be used on its own in any kind of environment
+This package is completely independent of everything else in Zest™ and may be used on its own in any kind of environment
 such as Spring or Java EE applications.
 
 <<core-functional,Learn more>>
@@ -59,7 +78,7 @@ such as Spring or Java EE applications.
 //*<<core-io,Core I/O API>>*
 === Core I/O API ===
 //____
-The Qi4j Core I/O API tries to address the problem around shuffling data around from various I/O inputs and outputs,
+The Zest™ Core I/O API tries to address the problem around shuffling data around from various I/O inputs and outputs,
 possibly with transformations and filtering along the way.
 
 <<core-io,Learn more>>
@@ -68,7 +87,7 @@ possibly with transformations and filtering along the way.
 //*<<core-spi,Core Extension SPI>>*
 === Core Extension SPI ===
 //____
-The Qi4j Core Runtime has a number of extension points, which we call the _Qi4j Core Extension SPI_. These are defined
+The Zest™ Core Runtime has a number of extension points, which we call the _Zest™ Core Extension SPI_. These are defined
 interfaces used *only* by the Core Runtime and *never* directly by application code. <<extensions>> are assembled in
 applications during the bootstrap phase.
 
@@ -78,8 +97,8 @@ applications during the bootstrap phase.
 //*<<core-spi,Core Runtime>>*
 === Core Runtime ===
 //____
-Your code should *never*, *ever*, have a dependency on Qi4j Core Runtime. If you think you need this, you should
-probably contact qi4j-dev forum at Google Groups and see if your usecase can either be solved in a existing way or
+Your code should *never*, *ever*, have a dependency on Zest™ Core Runtime. If you think you need this, you should
+probably contact dev@zest.apache.org and see if your usecase can either be solved in a existing way or
 perhaps that a new Core Extension SPI is needed.
 
 <<core-runtime,Learn more>>

@@ -1,0 +1,8 @@
+{
+  "identity" : "configtest",
+  "host": {
+    "ip": "12.23.34.45",
+    "port": 1234
+  },
+  "name": "main"
+}

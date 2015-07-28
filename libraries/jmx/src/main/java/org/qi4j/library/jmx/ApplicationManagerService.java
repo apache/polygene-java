@@ -33,29 +33,29 @@ import org.qi4j.api.service.ImportedServiceDescriptor;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
-import org.qi4j.api.service.qualifier.ServiceQualifier;
 import org.qi4j.api.structure.Application;
 import org.qi4j.api.structure.Layer;
 import org.qi4j.api.structure.LayerDescriptor;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.structure.ModuleDescriptor;
 import org.qi4j.functional.HierarchicalVisitorAdapter;
-import org.qi4j.functional.Iterables;
 
+import static org.qi4j.api.service.qualifier.ServiceQualifier.withId;
+import static org.qi4j.functional.Iterables.filter;
 import static org.qi4j.functional.Iterables.first;
 
 /**
- * Expose the Qi4j app as a "tree" of MBeans.
+ * Expose the Zest app as a "tree" of MBeans.
  *
  * Other services should reuse the object names and create
  * nodes under the ones created here. For example:
  * <pre>
- * Qi4j:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService
+ * Zest:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService
  * </pre>
  * is exported by this service, so another exporter showing some aspect related to this service should
  * use this as base for the ObjectName, and add their own properties. Example:
  * <pre>
- * Qi4j:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService,name=Configuration
+ * Zest:application=MyApp,layer=Application,module=MyModule,class=Service,service=MyService,name=Configuration
  * </pre>
  * Use the following snippet to find the ObjectName of a service with a given identity:
  * <pre>
@@ -69,32 +69,31 @@ public interface ApplicationManagerService
 {
 
     void exportApplicationStructure()
-            throws Exception;
+        throws Exception;
 
     void unexportApplicationStructure()
-            throws Exception;
+        throws Exception;
 
-    static class Activator
-            extends ActivatorAdapter<ServiceReference<ApplicationManagerService>>
+    class Activator
+        extends ActivatorAdapter<ServiceReference<ApplicationManagerService>>
     {
 
         @Override
         public void afterActivation( ServiceReference<ApplicationManagerService> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().exportApplicationStructure();
         }
 
         @Override
         public void beforePassivation( ServiceReference<ApplicationManagerService> passivating )
-                throws Exception
+            throws Exception
         {
             passivating.get().unexportApplicationStructure();
         }
-
     }
 
-    static abstract class Mixin
+    abstract class Mixin
         implements ApplicationManagerService
     {
         @Service
@@ -103,7 +102,7 @@ public interface ApplicationManagerService
         @Structure
         public Application application;
 
-        private List<ObjectName> mbeans = new ArrayList<ObjectName>();
+        private List<ObjectName> mbeans = new ArrayList<>();
 
         @Override
         public void exportApplicationStructure()
@@ -113,7 +112,7 @@ public interface ApplicationManagerService
             {
                 Layer layer;
                 Module module;
-                Stack<ObjectName> names = new Stack<ObjectName>();
+                Stack<ObjectName> names = new Stack<>();
 
                 @Override
                 public boolean visitEnter( Object visited )
@@ -125,17 +124,15 @@ public interface ApplicationManagerService
                         layer = application.findLayer( layerDescriptor.name() );
 
                         LayerBean layerBean = new LayerBean( layer, layerDescriptor );
-                        ObjectName objectName = new ObjectName( "Qi4j:application=" + application.name() + ",layer=" + layer
+                        ObjectName objectName = new ObjectName( "Zest:application=" + application.name() + ",layer=" + layer
                             .name() );
                         names.push( objectName );
 
                         RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, layerDescriptor.name(), LayerBean.class
                             .getName() ).
                             attribute( "uses", "Layer usages", String.class.getName(), "Other layers that this layer uses", "getUses", null )
-                            .
-                                operation( "restart", "Restart layer", String.class.getName(), MBeanOperationInfo.ACTION_INFO )
-                            .
-                                newModelMBean();
+                            .operation( "restart", "Restart layer", String.class.getName(), MBeanOperationInfo.ACTION_INFO )
+                            .newModelMBean();
 
                         mbean.setManagedResource( layerBean, "ObjectReference" );
                         server.registerMBean( mbean, objectName );
@@ -164,7 +161,7 @@ public interface ApplicationManagerService
                         ServiceDescriptor serviceDescriptor = (ServiceDescriptor) visited;
                         ObjectName objectName = new ObjectName( names.peek()
                                                                     .toString() + ",class=Service,service=" + serviceDescriptor
-                            .identity() );
+                                                                    .identity() );
                         RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, serviceDescriptor.identity(), ServiceBean.class
                             .getName() ).
                             attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
@@ -190,7 +187,7 @@ public interface ApplicationManagerService
                         ImportedServiceDescriptor importedServiceDescriptor = (ImportedServiceDescriptor) visited;
                         ObjectName objectName = new ObjectName( names.peek()
                                                                     .toString() + ",class=Imported service,importedservice=" + importedServiceDescriptor
-                            .identity() );
+                                                                    .identity() );
                         RequiredModelMBean mbean = new ModelMBeanBuilder( objectName, importedServiceDescriptor.identity(), ImportedServiceBean.class
                             .getName() ).
                             attribute( "Id", "Service id", String.class.getName(), "Id of service", "getId", null ).
@@ -234,7 +231,7 @@ public interface ApplicationManagerService
         }
     }
 
-    public static class LayerBean
+    class LayerBean
     {
         private final Layer layer;
         private final LayerDescriptor layerDescriptor;
@@ -273,7 +270,7 @@ public interface ApplicationManagerService
         }
     }
 
-    public static class ServiceBean
+    class ServiceBean
     {
         private final ServiceDescriptor serviceDescriptor;
         private final Module module;
@@ -296,27 +293,38 @@ public interface ApplicationManagerService
 
         public String getType()
         {
-            return first( serviceDescriptor.types() ).getName();
+            Class<?> first = first( serviceDescriptor.types() );
+            if( first == null )
+            {
+                return null;
+            }
+            return first.getName();
         }
 
         public boolean isActive()
         {
-            return Iterables.first( Iterables.filter( ServiceQualifier.withId( serviceDescriptor.identity() ), module.findServices( first( serviceDescriptor
-                                                                                                                                               .types() ) ) ) )
-                .isActive();
+            Class<?> mainType = first( serviceDescriptor.types() );
+            ServiceReference<?> first = first( filter( withId( serviceDescriptor.identity() ),
+                                                       module.findServices( mainType ) )
+            );
+            return first != null && first.isActive();
         }
 
         public boolean isAvailable()
         {
-            return Iterables.first( Iterables.filter( ServiceQualifier.withId( serviceDescriptor.identity() ), module.findServices( first( serviceDescriptor
-                                                                                                                                               .types() ) ) ) )
-                .isAvailable();
+            Class<?> mainType = first( serviceDescriptor.types() );
+            ServiceReference<?> first = first( filter( withId( serviceDescriptor.identity() ),
+                                                       module.findServices( mainType ) )
+            );
+            return first != null && first.isAvailable();
         }
 
         public String restart()
         {
-            Iterable services = module.findServices( first( serviceDescriptor.types() ) );
-            ServiceReference serviceRef = ( ServiceReference ) Iterables.first( Iterables.filter( ServiceQualifier.withId( serviceDescriptor.identity() ), services ) );
+            Iterable<?> services = module.findServices( first( serviceDescriptor.types() ) );
+            ServiceReference<?> serviceRef = (ServiceReference) first( filter( withId( serviceDescriptor.identity() ),
+                                                                               services )
+            );
             if( serviceRef != null )
             {
                 try
@@ -337,7 +345,7 @@ public interface ApplicationManagerService
         }
     }
 
-    public static class ImportedServiceBean
+    class ImportedServiceBean
     {
         private final ImportedServiceDescriptor serviceDescriptor;
 
@@ -358,7 +366,12 @@ public interface ApplicationManagerService
 
         public String getType()
         {
-            return first( serviceDescriptor.types() ).getName();
+            Class<?> mainType = first( serviceDescriptor.types() );
+            if( mainType == null )
+            {
+                return null;
+            }
+            return mainType.getName();
         }
     }
 }

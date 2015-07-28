@@ -72,13 +72,13 @@ import static org.qi4j.api.common.Visibility.application;
 import static org.qi4j.api.structure.Application.Mode.development;
 
 /**
- * Qi4j assembly of the DCI Sample application (version B)
+ * Zest assembly of the DCI Sample application (version B)
  *
- * A Qi4j application structure is declared by an assembly that defines which layers and modules
+ * A Zest application structure is declared by an assembly that defines which layers and modules
  * the application has and how they are allowed to depend on each other. Each layer could have it's
  * own assembly file in larger applications.
  *
- * The Qi4j assembly doesn't strictly map 1-1 to the directory hierarchy and the assembly
+ * The Zest assembly doesn't strictly map 1-1 to the directory hierarchy and the assembly
  * structures. An example is the Entities:
  *
  * Data objects (Entities and ValuesComposites) can be promoted to Role Players when they are

@@ -1,3 +1,22 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
 :leveloffset: 1
 
 [[libraries,Libraries]]
@@ -5,11 +24,22 @@
 
 == Overview ==
 
-The Qi4j Libraries are of varying maturity level and we try to maintain a STATUS (dev-status.xml) file indicating
+The Zest™ Libraries are of varying maturity level and we try to maintain a STATUS (dev-status.xml) file indicating
 how good the codebase, documentation and unit tests are for each of the libraries. This is highly subjective and
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.
 
+:leveloffset: 2
+
+include::../../../../libraries/lang-groovy/src/docs/lang-groovy.txt[]
+
+:leveloffset: 2
+
+include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
+
+:leveloffset: 2
+
+include::../../../../libraries/lang-scala/src/docs/lang-scala.txt[]
 
 :leveloffset: 2
 
@@ -29,19 +59,7 @@ include::../../../../libraries/conversion/src/docs/conversion.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/cxf/src/docs/cxf.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/eventsourcing/src/docs/eventsourcing.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/eventsourcing-jdbm/src/docs/eventsourcing-jdbm.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/eventsourcing-rest/src/docs/eventsourcing-rest.txt[]
 
 :leveloffset: 2
 
@@ -69,7 +87,7 @@ include::../../../../libraries/logging/src/docs/logging.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/neo4j/src/docs/neo4j.txt[]
+include::../../../../libraries/metrics/src/docs/metrics.txt[]
 
 :leveloffset: 2
 
@@ -101,26 +119,6 @@ include::../../../../libraries/scheduler/src/docs/scheduler.txt[]
 
 :leveloffset: 2
 
-include::../../../../libraries/lang-beanshell/src/docs/lang-beanshell.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-groovy/src/docs/lang-groovy.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-javascript/src/docs/lang-javascript.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-jruby/src/docs/lang-jruby.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/lang-scala/src/docs/lang-scala.txt[]
-
-:leveloffset: 2
-
 include::../../../../libraries/servlet/src/docs/servlet.txt[]
 
 :leveloffset: 2
@@ -138,18 +136,6 @@ include::../../../../libraries/spring/src/docs/spring.txt[]
 :leveloffset: 2
 
 include::../../../../libraries/sql/src/docs/sql.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/struts2-codebehind/src/docs/struts-codebehind.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/struts2-convention/src/docs/struts-convention.txt[]
-
-:leveloffset: 2
-
-include::../../../../libraries/struts2-plugin/src/docs/struts-plugin.txt[]
 
 :leveloffset: 2
 

@@ -20,12 +20,17 @@ import java.io.InputStream;
 import org.qi4j.api.Qi4j;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.composite.PropertyMapper;
+import org.qi4j.api.constraint.ConstraintViolationException;
 import org.qi4j.api.entity.EntityBuilder;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
 import org.qi4j.api.injection.scope.This;
 import org.qi4j.api.mixin.Mixins;
 import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.api.service.ServiceDescriptor;
+import org.qi4j.api.service.ServiceReference;
+import org.qi4j.api.service.qualifier.ServiceTags;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
@@ -33,6 +38,7 @@ import org.qi4j.api.unitofwork.UnitOfWork;
 import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.usecase.UsecaseBuilder;
+import org.qi4j.api.value.ValueSerialization;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -52,7 +58,7 @@ import static org.qi4j.functional.Iterables.first;
  * <p>
  * If a new Configuration instance is created then it will be populated with properties
  * from the properties file whose filesystem name is the same as the identity (e.g. "MyService.properties").
- * If a service is not given a name via the {@link org.qi4j.bootstrap.ServiceDeclaration#identifiedBy(String)}, the
+ * If a service is not given a name via the {@code org.qi4j.bootstrap.ServiceDeclaration#identifiedBy(String)}, the
  * name will default to the FQCN of the ServiceComposite type.
  * </p>
  * <p>
@@ -62,7 +68,7 @@ import static org.qi4j.functional.Iterables.first;
  * a request.
  * </p>
  * <p>
- * The Configuration will be automatically refreshed when the Service is activated by the Qi4j runtime.
+ * The Configuration will be automatically refreshed when the Service is activated by the Zest runtime.
  * Any refreshes at other points will have to be done manually or triggered through some other
  * mechanism.
  * </p>
@@ -107,7 +113,6 @@ import static org.qi4j.functional.Iterables.first;
  *     :
  * }
  * </code></pre>
- *
  */
 @SuppressWarnings( "JavadocReference" )
 @Mixins( Configuration.ConfigurationMixin.class )
@@ -116,7 +121,7 @@ public interface Configuration<T>
     /**
      * Retrieves the user configuration instance managed by this Configuration.
      * <p>
-     * Even if the user configuration is initialized from properties file, the consistency rules of Qi4j composites
+     * Even if the user configuration is initialized from properties file, the consistency rules of Zest composites
      * still applies. If the the properties file is missing a value, then the initialization will fail with a
      * RuntimeException. If Constraints has been defined, those will need to be satisfied as well. The user
      * configuration instance returned will fulfill the constraints and consistency normal to all composites, and
@@ -129,7 +134,7 @@ public interface Configuration<T>
 
     /**
      * Updates the values of the managed user ConfigurationComposite instance from the underlying
-     * {@link org.qi4j.spi.entitystore.EntityStore}.  Any modified values in the current user configuration that
+     * {@code org.qi4j.spi.entitystore.EntityStore}.  Any modified values in the current user configuration that
      * has not been saved, via {@link #save()} method, will be lost.
      */
     void refresh();
@@ -142,7 +147,7 @@ public interface Configuration<T>
     /**
      * Implementation of Configuration.
      * <p>
-     * This is effectively an internal class in Qi4j and should never be used directly by user code.
+     * This is effectively an internal class in Zest and should never be used directly by user code.
      * </p>
      *
      * @param <T>
@@ -161,6 +166,9 @@ public interface Configuration<T>
 
         @Structure
         private Module module;
+
+        @Service
+        private Iterable<ServiceReference<ValueSerialization>> valueSerialization;
 
         public ConfigurationMixin()
         {
@@ -238,10 +246,10 @@ public interface Configuration<T>
         }
 
         @SuppressWarnings( "unchecked" )
-        private <V> V initializeConfigurationInstance( ServiceComposite serviceComposite,
-                                                       UnitOfWork uow,
-                                                       ServiceDescriptor serviceModel,
-                                                       String identity
+        private <V extends Identity> V initializeConfigurationInstance( ServiceComposite serviceComposite,
+                                                                        UnitOfWork uow,
+                                                                        ServiceDescriptor serviceModel,
+                                                                        String identity
         )
             throws InstantiationException
         {
@@ -249,22 +257,68 @@ public interface Configuration<T>
             Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
             UnitOfWork buildUow = module.newUnitOfWork( usecase );
 
-            EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( serviceModel.<V>configurationType(), identity );
+            Class<?> type = first( api.serviceDescriptorFor( serviceComposite ).types() );
+            Class<V> configType = serviceModel.configurationType();
 
             // Check for defaults
-            String s = identity + ".properties";
-            Class<?> type = first( api.serviceDescriptorFor( serviceComposite ).types() );
-            // Load defaults from classpath root if available
-            if ( type.getResource( s ) == null && type.getResource( "/" + s ) != null )
+            V config = tryLoadPropertiesFile( buildUow, type, configType, identity );
+            if( config == null )
             {
-                s = "/" + s;
+                config = tryLoadJsonFile( buildUow, type, configType, identity );
+                if( config == null )
+                {
+                    config = tryLoadYamlFile( buildUow, type, configType, identity );
+                    if( config == null )
+                    {
+                        config = tryLoadXmlFile( buildUow, type, configType, identity );
+                        if( config == null )
+                        {
+                            try
+                            {
+                                EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( serviceModel.<V>configurationType(), identity );
+                                configBuilder.newInstance();
+                            }
+                            catch( ConstraintViolationException e )
+                            {
+                                throw new NoSuchConfigurationException( configType, identity, e );
+                            }
+                        }
+                    }
+                }
             }
-            InputStream asStream = type.getResourceAsStream( s );
+
+            try
+            {
+                buildUow.complete();
+
+                // Try again
+                return (V) findConfigurationInstanceFor( serviceComposite, uow );
+            }
+            catch( Exception e1 )
+            {
+                InstantiationException ex = new InstantiationException(
+                    "Could not instantiate configuration, and no configuration initialization file was found (" + identity + ")" );
+                ex.initCause( e1 );
+                throw ex;
+            }
+        }
+
+        private <C, V> V tryLoadPropertiesFile( UnitOfWork buildUow,
+                                                Class<C> compositeType,
+                                                Class<V> configType,
+                                                String identity
+        )
+            throws InstantiationException
+        {
+            EntityBuilder<V> configBuilder = buildUow.newEntityBuilder( configType, identity );
+            String resourceName = identity + ".properties";
+            InputStream asStream = getResource( compositeType, resourceName );
             if( asStream != null )
             {
                 try
                 {
                     PropertyMapper.map( asStream, (Composite) configBuilder.instance() );
+                    return configBuilder.newInstance();
                 }
                 catch( IOException e1 )
                 {
@@ -274,22 +328,69 @@ public interface Configuration<T>
                     throw exception;
                 }
             }
+            return null;
+        }
 
-            try
+        private InputStream getResource( Class<?> type, String resourceName )
+        {
+            // Load defaults from classpath root if available
+            if( type.getResource( resourceName ) == null && type.getResource( "/" + resourceName ) != null )
             {
-                configBuilder.newInstance();
-                buildUow.complete();
+                resourceName = "/" + resourceName;
+            }
+            return type.getResourceAsStream( resourceName );
+        }
 
-                // Try again
-                return (V) findConfigurationInstanceFor( serviceComposite, uow );
-            }
-            catch( Exception e1 )
+        private <C, V extends Identity> V tryLoadJsonFile( UnitOfWork uow,
+                                                           Class<C> compositeType,
+                                                           Class<V> configType,
+                                                           String identity
+        )
+        {
+            return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.JSON, ".json" );
+        }
+
+        private <C, V extends Identity> V tryLoadYamlFile( UnitOfWork uow,
+                                                           Class<C> compositeType,
+                                                           Class<V> configType,
+                                                           String identity
+        )
+        {
+            return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.YAML, ".yaml" );
+        }
+
+        private <C, V extends Identity> V tryLoadXmlFile( UnitOfWork uow,
+                                                          Class<C> compositeType,
+                                                          Class<V> configType,
+                                                          String identity
+        )
+        {
+            return readConfig( uow, compositeType, configType, identity, ValueSerialization.Formats.XML, ".xml" );
+        }
+
+        private <C, V extends Identity> V readConfig( UnitOfWork uow,
+                                                      Class<C> compositeType,
+                                                      Class<V> configType,
+                                                      String identity,
+                                                      String format,
+                                                      String extension
+        )
+        {
+            for( ServiceReference<ValueSerialization> serializerRef : valueSerialization )
             {
-                InstantiationException ex = new InstantiationException(
-                    "Could not instantiate configuration, and no Properties file was found (" + s + ")" );
-                ex.initCause( e1 );
-                throw ex;
+                ServiceTags serviceTags = serializerRef.metaInfo( ServiceTags.class );
+                if( serviceTags.hasTag( format ) )
+                {
+                    String resourceName = identity + extension;
+                    InputStream asStream = getResource( compositeType, resourceName );
+                    if( asStream != null )
+                    {
+                        V configObject = serializerRef.get().deserialize( configType, asStream );
+                        return uow.toEntity( configType, configObject );
+                    }
+                }
             }
+            return null;
         }
     }
 }

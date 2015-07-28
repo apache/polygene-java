@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-description = "Qi4j Metrics Extension"
+description = "Apache Zest™ Metrics Extension"
 
-jar { manifest { name = "Qi4j Extension - Metrics" }}
+jar { manifest { name = "Apache Zest™ Extension - Metrics" }}
 
 dependencies {
 

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.api.injection.scope.Service;
 import org.qi4j.api.injection.scope.Structure;
@@ -338,6 +339,31 @@ public class JacksonValueDeserializer
             {
                 map.put( key, value );
             }
+        }
+    }
+
+    @Override
+    protected <V> void putObjectNodeInMap( JsonNode inputNode,
+                                           Function<JsonNode, V> valueDeserializer,
+                                           Map<String, V> map
+    )
+        throws Exception
+    {
+        if( isNullOrMissing( inputNode ) )
+        {
+            return;
+        }
+        if( !inputNode.isObject() )
+        {
+            throw new ValueSerializationException( "Expected an object but got " + inputNode );
+        }
+        ObjectNode object = (ObjectNode) inputNode;
+        Iterator<Map.Entry<String, JsonNode>> fields = object.fields();
+        while( fields.hasNext() )
+        {
+            Map.Entry<String, JsonNode> entry = fields.next();
+            V value = valueDeserializer.map( entry.getValue() );
+            map.put( entry.getKey(), value );
         }
     }
 

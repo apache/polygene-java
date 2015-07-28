@@ -1,11 +1,30 @@
-[[two-minutes-intro,Qi4j in 2 minutes]]
-= Qi4j in 2 minutes =
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
+[[two-minutes-intro,Zest™ in 2 minutes]]
+= Zest™ in 2 minutes =
 
 TIP: Theses tutorials are based on actual code found in the `tutorials/` directory of the
-http://qi4j.org/downloads.html[Qi4j SDK sources]. You should start your favorite editor and find the code related to
+https://zest.apache.org/download.html[Zest™ SDK sources]. You should start your favorite editor and find the code related to
 this tutorial, run it and play with it.
 
-To show that Qi4j is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the
+To show that Zest™ is not necessarily complex, not hard to get going with and easy to deploy, we are first showing the
 classic HelloWorld, as small as it can get and still be Composite Oriented Programming and not only standard OOP.
 
 If you want to reproduce what's explained in this tutorial, remember to depend on the Core Runtime artifact that depends
@@ -13,7 +32,7 @@ on Core API, Core SPI, Core Bootstrap and Core Functional & I/O APIs:
 
 include::../../../../../core/runtime/build/docs/buildinfo/artifact.txt[]
 
-See the <<howto-depend-on-qi4j>> tutorial for details.
+See the <<howto-depend-on-zest>> tutorial for details.
 
 Ready, Set, Go!
 
@@ -45,7 +64,7 @@ source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/M
 tag=documentation
 -----------
 
-. The SingletonAssembler is a convenience class that creates a Qi4j Runtime instance and an application with one layer
+. The SingletonAssembler is a convenience class that creates a Zest™ Runtime instance and an application with one layer
   and one module in it.
 
 . We declare a TransientComposite of type `Speaker`.

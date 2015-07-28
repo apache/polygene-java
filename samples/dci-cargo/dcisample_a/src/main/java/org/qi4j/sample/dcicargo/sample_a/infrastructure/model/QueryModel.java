@@ -23,7 +23,7 @@ import org.qi4j.api.entity.EntityComposite;
 import org.qi4j.api.query.Query;
 
 /**
- * Callback Wicket model that holds a Qi4j Query object that can be called when needed to
+ * Callback Wicket model that holds a Zest Query object that can be called when needed to
  * retrieve fresh data.
  */
 public abstract class QueryModel<T, U extends EntityComposite>
@@ -53,7 +53,7 @@ public abstract class QueryModel<T, U extends EntityComposite>
         return dtoList;
     }
 
-    // Callback to retrieve the (unserializable) Qi4j Query object
+    // Callback to retrieve the (unserializable) Zest Query object
     public abstract Query<U> getQuery();
 
     public T getValue( U entity )

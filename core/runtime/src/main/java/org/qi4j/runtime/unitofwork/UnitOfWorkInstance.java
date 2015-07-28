@@ -31,7 +31,6 @@ import org.qi4j.api.metrics.MetricsCounterFactory;
 import org.qi4j.api.metrics.MetricsProvider;
 import org.qi4j.api.metrics.MetricsTimer;
 import org.qi4j.api.metrics.MetricsTimerFactory;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.ConcurrentEntityModificationException;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.unitofwork.NoSuchEntityException;
@@ -42,8 +41,6 @@ import org.qi4j.api.unitofwork.UnitOfWorkOptions;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
-import org.qi4j.runtime.structure.ModelModule;
-import org.qi4j.runtime.structure.ModuleInstance;
 import org.qi4j.runtime.structure.ModuleUnitOfWork;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
@@ -53,9 +50,12 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.metrics.DefaultMetric;
+import org.qi4j.spi.module.ModelModule;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.qi4j.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
+import static org.qi4j.functional.Iterables.map;
 
 public final class UnitOfWorkInstance
 {
@@ -109,7 +109,7 @@ public final class UnitOfWorkInstance
         return currentTime;
     }
 
-    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store, Module module )
+    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store, ModuleSpi module )
     {
         EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );
         if( uow == null )
@@ -136,7 +136,7 @@ public final class UnitOfWorkInstance
             // Check if this is a root UoW, or if no parent UoW knows about this entity
             EntityState entityState = null;
             EntityModel model = null;
-            ModuleInstance module = null;
+            ModuleSpi module = null;
             // Figure out what EntityStore to use
             for( ModelModule<EntityModel> potentialModel : potentialModels )
             {
@@ -144,7 +144,7 @@ public final class UnitOfWorkInstance
                 EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModel.module() );
                 try
                 {
-                    entityState = storeUow.entityStateOf( identity );
+                    entityState = storeUow.entityStateOf( potentialModel.module(), identity );
                 }
                 catch( EntityNotFoundException e )
                 {
@@ -162,11 +162,15 @@ public final class UnitOfWorkInstance
                 // Check if state was found
                 if( entityState == null )
                 {
-                    throw new NoSuchEntityException( identity, mixinType );
+                    throw new NoSuchEntityException( identity, mixinType, usecase );
                 }
                 else
                 {
-                    throw new EntityTypeNotFoundException( mixinType.getName() );
+                    throw new EntityTypeNotFoundException( mixinType.getName(),
+                                                           module.name(),
+                                                           map( ModelModule.toStringFunction,
+                                                                module.findVisibleEntityTypes()
+                                                           ) );
                 }
             }
 
@@ -180,7 +184,7 @@ public final class UnitOfWorkInstance
             // Check if it has been removed
             if( entityInstance.status() == EntityStatus.REMOVED )
             {
-                throw new NoSuchEntityException( identity, mixinType );
+                throw new NoSuchEntityException( identity, mixinType, usecase );
             }
         }
 

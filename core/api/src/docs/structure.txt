@@ -15,17 +15,17 @@
 
 [[core-api-structure,Structure]]
 = Structure =
-Qi4j promotes a conventional view of application structure, that computer science has been using for decades.
+Zest™ promotes a conventional view of application structure, that computer science has been using for decades.
 
 The definition is as follows;
 
-    * One Application per Qi4j runtime instance.
+    * One Application per Zest™ runtime instance.
     * One or more Layers per Application.
     * Zero, one or more Modules per Layer.
     * Zero, one or more Assemblies per Module.
 
 The principle of this Structure is to assist the programmer to create well modularized applications, that are easily
-extended and maintained. Qi4j will restrict access between Modules, so that code can only reach Composites and Objects
+extended and maintained. Zest™ will restrict access between Modules, so that code can only reach Composites and Objects
 in Modules (including itself) of the same or lower Layers.
 
 Each Layer has to be declared which lower Layer(s) it uses, and it is not allowed that a lower Layer uses a higher
@@ -33,20 +33,20 @@ Layer, i.e. cyclic references.
 
 [[core-api-application,Application]]
 = Application =
-Every Qi4j runtime has _one and only one_ Application in it. It is possible to run multiple Qi4j runtimes in the same
-JVM, and it is even possible to embed a Qi4j runtime within a Qi4j Application, but there can only be one Application
-in a Qi4j runtime.
+Every Zest™ runtime has _one and only one_ Application in it. It is possible to run multiple Zest™ runtimes in the same
+JVM, and it is even possible to embed a Zest™ runtime within a Zest™ Application, but there can only be one Application
+in a Zest™ runtime.
 
 An Application is then broken into layers and modules are placed within those layers. Composites are placed within
-modules. This forms the Application Structure and is enforced by the Qi4j runtime.
+modules. This forms the Application Structure and is enforced by the Zest™ runtime.
 
 [[core-api-layer,Layer]]
 = Layer =
-A Qi4j Application must consist of at least one layer. More layers are common, often dividing the application along the
+A Zest™ Application must consist of at least one layer. More layers are common, often dividing the application along the
 common architectural diagrams used on whiteboards, perhaps with a UI layer at the top, followed by a service or application
 layer, then with a domain layer and finally some persistence layer at the bottom.
 
-Qi4j enforces this layering by requiring the <<core-bootstrap-assembly>> to declare which layer uses which other layer. And
+Zest™ enforces this layering by requiring the <<core-bootstrap-assembly>> to declare which layer uses which other layer. And
 <<core-api-visibility>> rules define that layers below can not locate composites in layers above. Also, defining that
 "Layer1 uses Layer2" and "Layer2 uses Layer3" does NOT imply that Layer1 has <<core-api-visibility>> to Layer3. If that
 is wanted, then it must be declared explicitly.
@@ -60,7 +60,7 @@ belongs to a single Layer, but many Modules can exist in the same Layer. Composi
     * Composites from Modules in the same Layer, with Visibility set to Visibility.layer
     * Composites from Modules in Layers below, with Visibility set to Visibility.application
 
-Modules contains a lot of the Qi4j infrastructure, which are the enforcers of these wise modularization principles.
+Modules contains a lot of the Zest™ infrastructure, which are the enforcers of these wise modularization principles.
 
 It is not possible to modify the Modules, their resolution nor binding in any way after the application starts.
 

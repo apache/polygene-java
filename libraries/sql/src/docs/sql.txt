@@ -1,3 +1,22 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
 [[library-sql,SQL Library]]
 = SQL =
 
@@ -23,10 +42,9 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 == DataSource and connection pools ==
 
-DataSource support comes in four flavors:
+DataSource support comes in three flavors:
 
 - using the http://jolbox.com/[BoneCP] connection pool
-- using the http://sourceforge.net/projects/c3p0/[C3P0] connection pool
 - using the http://commons.apache.org/dbcp/[Apache DBCP] connection pool
 - importing an existing DataSource provided at assembly time
 
@@ -53,21 +71,6 @@ BoneCP support resides in the *sql-bonecp* module.
 ----
 source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
 tag=bonecp
-----
-
-*C3P0*
-
-[devstatus]
---------------
-source=libraries/sql-c3p0/dev-status.xml
---------------
-
-include::../../../sql-c3p0/build/docs/buildinfo/artifact.txt[]
-
-[snippet,java]
-----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
-tag=c3p0
 ----
 
 *Apache DBCP*
@@ -123,7 +126,7 @@ include::../test/resources/testds.properties[]
 
 === Importing an existing DataSource ===
 
-Importing an existing DataSource at assembly time is usefull when your Qi4j
+Importing an existing DataSource at assembly time is usefull when your Zest
 Application runs in an environment where DataSource are already provided.
 
 [snippet,java]

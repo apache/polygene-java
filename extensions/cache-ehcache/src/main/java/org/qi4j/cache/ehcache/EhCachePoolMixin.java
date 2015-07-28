@@ -110,7 +110,7 @@ public abstract class EhCachePoolMixin
         String name = conf.cacheManagerName().get();
         if( name == null )
         {
-            name = "Qi4j Cache Extension";
+            name = "Zest Cache Extension";
         }
         configuration.setName( name );
         String diskStorePath = conf.diskStorePath().get();

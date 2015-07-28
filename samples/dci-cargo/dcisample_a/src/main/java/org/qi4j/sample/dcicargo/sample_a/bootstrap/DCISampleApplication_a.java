@@ -35,7 +35,7 @@ import org.qi4j.sample.dcicargo.sample_a.infrastructure.wicket.tabs.TabsPanel;
 /**
  * DCI Sample application instance
  *
- * A Wicket application backed by Qi4j.
+ * A Wicket application backed by Zest.
  */
 public class DCISampleApplication_a
     extends WicketQi4jApplication

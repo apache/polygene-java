@@ -50,6 +50,7 @@ import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryBuilderFactory;
 import org.qi4j.api.service.NoSuchServiceException;
+import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.ServiceReference;
 import org.qi4j.api.structure.Module;
 import org.qi4j.api.unitofwork.UnitOfWork;
@@ -69,6 +70,7 @@ import org.qi4j.functional.Specification;
 import org.qi4j.functional.Specifications;
 import org.qi4j.runtime.activation.ActivationDelegate;
 import org.qi4j.runtime.composite.FunctionStateResolver;
+import org.qi4j.runtime.composite.StateResolver;
 import org.qi4j.runtime.composite.TransientBuilderInstance;
 import org.qi4j.runtime.composite.TransientModel;
 import org.qi4j.runtime.composite.TransientStateInstance;
@@ -88,7 +90,6 @@ import org.qi4j.runtime.service.ImportedServicesModel;
 import org.qi4j.runtime.service.ServicesInstance;
 import org.qi4j.runtime.service.ServicesModel;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.composite.StateResolver;
 import org.qi4j.runtime.value.ValueBuilderInstance;
 import org.qi4j.runtime.value.ValueBuilderWithPrototype;
 import org.qi4j.runtime.value.ValueBuilderWithState;
@@ -97,8 +98,13 @@ import org.qi4j.runtime.value.ValueModel;
 import org.qi4j.runtime.value.ValuesModel;
 import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.metrics.MetricsProviderAdapter;
+import org.qi4j.spi.module.ModelModule;
+import org.qi4j.spi.module.ModuleSpi;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerialization;
 
+import static org.qi4j.api.common.Visibility.application;
+import static org.qi4j.api.common.Visibility.layer;
+import static org.qi4j.api.common.Visibility.module;
 import static org.qi4j.api.util.Classes.RAW_CLASS;
 import static org.qi4j.api.util.Classes.modelTypeSpecification;
 import static org.qi4j.functional.Iterables.cast;
@@ -110,10 +116,10 @@ import static org.qi4j.functional.Iterables.map;
 import static org.qi4j.functional.Iterables.toList;
 
 /**
- * Instance of a Qi4j Module. Contains the various composites for this Module.
+ * Instance of a Zest Module. Contains the various composites for this Module.
  */
 public class ModuleInstance
-    implements Module, Activation
+    implements Module, ModuleSpi, Activation
 {
     // Constructor parameters
     private final ModuleModel model;
@@ -139,7 +145,8 @@ public class ModuleInstance
     @SuppressWarnings( "LeakingThisInConstructor" )
     public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, TransientsModel transientsModel,
                            EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel,
-                           ServicesModel servicesModel, ImportedServicesModel importedServicesModel )
+                           ServicesModel servicesModel, ImportedServicesModel importedServicesModel
+    )
     {
         // Constructor parameters
         model = moduleModel;
@@ -360,7 +367,8 @@ public class ModuleInstance
                                                          Function<PropertyDescriptor, Object> propertyFunction,
                                                          Function<AssociationDescriptor, EntityReference> associationFunction,
                                                          Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
-                                                         Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
+                                                         Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
+    )
     {
         NullArgumentException.validateNotNull( "propertyFunction", propertyFunction );
         NullArgumentException.validateNotNull( "associationFunction", associationFunction );
@@ -383,9 +391,9 @@ public class ModuleInstance
     private static class InitialStateResolver
         implements StateResolver
     {
-        private final ModuleInstance module;
+        private final Module module;
 
-        private InitialStateResolver( ModuleInstance module )
+        private InitialStateResolver( Module module )
         {
             this.module = module;
         }
@@ -567,7 +575,6 @@ public class ModuleInstance
         activation.deregisterActivationEventListener( listener );
     }
 
-
     // Other methods
     /* package */ ModuleModel model()
     {
@@ -624,7 +631,7 @@ public class ModuleInstance
         return store;
     }
 
-    /* package */ IdentityGenerator identityGenerator()
+    public IdentityGenerator identityGenerator()
     {
         synchronized( this )
         {
@@ -677,31 +684,31 @@ public class ModuleInstance
         return metrics;
     }
 
-    Iterable<ModelModule<ObjectModel>> visibleObjects( Visibility visibility )
+    public Iterable<ModelModule<ObjectDescriptor>> visibleObjects( Visibility visibility )
     {
-        return map( ModelModule.<ObjectModel>modelModuleFunction( this ),
+        return map( ModelModule.<ObjectDescriptor>modelModuleFunction( this ),
                     filter( new VisibilitySpecification( visibility ), objects.models() ) );
     }
 
-    Iterable<ModelModule<TransientModel>> visibleTransients( Visibility visibility )
+    public Iterable<ModelModule<TransientDescriptor>> visibleTransients( Visibility visibility )
     {
-        return map( ModelModule.<TransientModel>modelModuleFunction( this ),
+        return map( ModelModule.<TransientDescriptor>modelModuleFunction( this ),
                     filter( new VisibilitySpecification( visibility ), transients.models() ) );
     }
 
-    Iterable<ModelModule<EntityModel>> visibleEntities( Visibility visibility )
+    public Iterable<ModelModule<EntityDescriptor>> visibleEntities( Visibility visibility )
     {
-        return map( ModelModule.<EntityModel>modelModuleFunction( this ),
+        return map( ModelModule.<EntityDescriptor>modelModuleFunction( this ),
                     filter( new VisibilitySpecification( visibility ), entities.models() ) );
     }
 
-    Iterable<ModelModule<ValueModel>> visibleValues( Visibility visibility )
+    public Iterable<ModelModule<ValueDescriptor>> visibleValues( Visibility visibility )
     {
-        return map( ModelModule.<ValueModel>modelModuleFunction( this ),
+        return map( ModelModule.<ValueDescriptor>modelModuleFunction( this ),
                     filter( new VisibilitySpecification( visibility ), values.models() ) );
     }
 
-    Iterable<ServiceReference<?>> visibleServices( Visibility visibility )
+    public Iterable<ServiceReference<?>> visibleServices( Visibility visibility )
     {
         return flatten( services.visibleServices( visibility ),
                         importedServices.visibleServices( visibility ) );
@@ -823,5 +830,47 @@ public class ModuleInstance
 
             return clazz;
         }
+    }
+
+    public Iterable<ModelModule<ValueDescriptor>> findVisibleValueTypes()
+    {
+        return flatten( visibleValues( Visibility.module ),
+            layerInstance().visibleValues( Visibility.layer ),
+            layerInstance().visibleValues( Visibility.application ),
+            layerInstance().usedLayersInstance().visibleValues()
+        );
+    }
+
+    public Iterable<ModelModule<EntityDescriptor>> findVisibleEntityTypes()
+    {
+        return flatten( visibleEntities( Visibility.module ),
+            layerInstance().visibleEntities( Visibility.layer ),
+            layerInstance().visibleEntities( Visibility.application ),
+            layerInstance().usedLayersInstance().visibleEntities()
+        );
+    }
+    public Iterable<ModelModule<TransientDescriptor>> findVisibleTransientTypes()
+    {
+        return flatten( visibleTransients( Visibility.module ),
+            layerInstance().visibleTransients( Visibility.layer ),
+            layerInstance().visibleTransients( Visibility.application ),
+            layerInstance().usedLayersInstance().visibleTransients()
+        );
+    }
+    public Iterable<ModelModule<ServiceDescriptor>> findVisibleServiceTypes()
+    {
+        return flatten( visibleServices( Visibility.module ),
+            layerInstance().visibleServices( Visibility.layer ),
+            layerInstance().visibleServices( Visibility.application ),
+            layerInstance().usedLayersInstance().visibleServices()
+        );
+    }
+    public Iterable<ModelModule<ObjectDescriptor>> findVisibleObjectTypes()
+    {
+        return flatten( visibleObjects( Visibility.module ),
+            layerInstance().visibleObjects( Visibility.layer ),
+            layerInstance().visibleObjects( Visibility.application ),
+            layerInstance().usedLayersInstance().visibleObjects()
+        );
     }
 }

@@ -64,7 +64,6 @@ public class LocalManagedDns
             log += " on non-managed name (" + name + ")";
             result = DEFAULT_DNS.lookupAllHostAddr( name );
         }
-        System.out.println( log + " will return: " + Arrays.toString( result ) );
         return result;
     }
 

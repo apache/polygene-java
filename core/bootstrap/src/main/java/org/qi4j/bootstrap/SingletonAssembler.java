@@ -35,7 +35,7 @@ public abstract class SingletonAssembler
     private final Module moduleInstance;
 
     /**
-     * Creates a Qi4j Runtime instance containing one Layer with one Module.
+     * Creates a Zest Runtime instance containing one Layer with one Module.
      * The Layer will be named "Layer 1" and the Module will be named "Module 1". It is possible to add
      * additional layers and modules via the Assembler interface that must be implemented in the subclass of this
      * class.

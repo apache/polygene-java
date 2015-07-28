@@ -22,9 +22,9 @@ import org.qi4j.bootstrap.ModuleAssembly;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * Run a Qi4j Application as a Spring Bean and export its Services to Spring.
+ * Run a Zest Application as a Spring Bean and export its Services to Spring.
  * <p>
- * Steps to export Qi4j service:
+ * Steps to export Zest service:
  * </p>
  * <ul>
  * <li>Create spring BeanFactory service of qi4j services to export.</li>

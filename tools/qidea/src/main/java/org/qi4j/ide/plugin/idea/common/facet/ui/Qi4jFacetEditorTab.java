@@ -39,7 +39,7 @@ public final class Qi4jFacetEditorTab extends FacetEditorTab
     @Nls
     public final String getDisplayName()
     {
-        return "Qi4j";
+        return "Zest";
     }
 
     public JComponent createComponent()

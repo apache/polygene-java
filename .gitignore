@@ -15,4 +15,4 @@ derby.log
 .nb-gradle-properties
 .nb-gradle
 .gradletasknamecache
-
+private/cache

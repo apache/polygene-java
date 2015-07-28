@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract ServletContextListener implementing ApplicationAssembler.
  *
- * Extends this class to easily bind a Qi4j Application activation/passivation to your webapp lifecycle.
+ * Extends this class to easily bind a Zest Application activation/passivation to your webapp lifecycle.
  *
  * The {@link Application} is set as a {@link ServletContext} attribute named using a constant.
  * In your servlets, filters, whatever has access to the {@link ServletContext} use the following code to get a
@@ -62,10 +62,10 @@ public abstract class AbstractQi4jServletBootstrap
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( Qi4jServlet.class.getPackage().getName() );
-    // Qi4j Runtime
+    // Zest Runtime
     protected Qi4j api;
     protected Energy4Java qi4j;
-    // Qi4j Application
+    // Zest Application
     protected ApplicationDescriptor applicationModel;
     protected Application application;
 
@@ -122,7 +122,7 @@ public abstract class AbstractQi4jServletBootstrap
                 afterApplicationPassivation( application );
             }
         } catch ( Exception ex ) {
-            LOGGER.warn( "Unable to passivate Qi4j Application.", ex );
+            LOGGER.warn( "Unable to passivate Zest Application.", ex );
         }
     }
 

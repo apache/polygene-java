@@ -1,3 +1,22 @@
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
+
 [[library-eventsourcing, Event Sourcing Library]]
 = Event Sourcing =
 
@@ -6,8 +25,111 @@
 source=libraries/eventsourcing/dev-status.xml
 --------------
 
-Event Sourcing Library
+The Event Sourcing Library supports generating, storing and replaying two types of events: application-events and domain-events.
 
-NOTE: This Library has no documentation yet. Learn how to contribute in <<community-docs>>.
+Application events are bound to Usecase and are produced by execution of specific methods (ones with `ApplicationEvent` as their first parameter).
+Each application event holds information about Usecase, method name and JSON serialized values of method parameters.
+
+Domain events are bound to entity instances and are produced by execution of annotated (see `@DomainEvent`) methods that belongs to `EntityComposite`.
+Each domain event (see `DomainEventValue`) holds information about entity type, identity, method name and JSON serialized values of method parameters.
+
+Both application and domain events are captured during `UnitOfWork` lifetime and are stored in `EventStore` after successfully completed `UnitOfWork` as collection together (see `UnitOfWorkDomainEventsValue` and `TransactionApplicationEvents`).
+
+There is support for replaying events.
+When events are replayed the same code is executed but no new events are generated.
+
+There are helper classes that enables a service to easily track events feed, and for domain events there is `EventRouter` that allow to specify specification->receiver routes.
 
 include::../../build/docs/buildinfo/artifact.txt[]
+
+*JDBM backed store*
+
+EventStore supports indexed and streamed access to events feed.
+There is in-memory and JDBM backed implementations.
+
+[devstatus]
+--------------
+source=libraries/eventsourcing-jdbm/dev-status.xml
+--------------
+
+include::../../../eventsourcing-jdbm/build/docs/buildinfo/artifact.txt[]
+
+*REST access*
+
+For remote access to feed there is `eventsourcing-rest` library that exposes events as Atom feeds.
+
+[devstatus]
+--------------
+source=libraries/eventsourcing-rest/dev-status.xml
+--------------
+
+include::../../../eventsourcing-rest/build/docs/buildinfo/artifact.txt[]
+
+
+== Application Events ==
+
+Assembly is done as follows:
+
+[snippet,java]
+----
+source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/application/ApplicationEventTest.java
+tag=assemblyAE
+----
+
+Configure application events store:
+[snippet,java]
+----
+source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/application/ApplicationEventTest.java
+tag=storeAE
+----
+
+Actual method on composite which execution emits application event.
+First parameter is `null` on "normal" execution.
+If it is not `null`, then the method call is a replay of previously created events.
+[snippet,java]
+----
+source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/application/ApplicationEventTest.java
+tag=methodAE
+----
+
+To enable execution capturing, you have to configure composite with concern:
+[snippet,java]
+----
+source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/application/ApplicationEventTest.java
+tag=concernAE
+----
+
+== Domain Events ==
+
+Assembly:
+
+[snippet,java]
+----
+source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/domain/DomainEventTest.java
+tag=assemblyDE
+----
+
+Configure domain events store:
+
+[snippet,java]
+----
+source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/domain/DomainEventTest.java
+tag=storeDE
+----
+
+Annotate your entity state changing methods.
+Event methods may only change state.
+They may not fail or thrown exceptions:
+[snippet,java]
+----
+source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/domain/DomainEventTest.java
+tag=methodDE
+----
+
+To enable method execution capturing, you have to configure entity with concern:
+
+[snippet,java]
+----
+source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/domain/DomainEventTest.java
+tag=concernDE
+----

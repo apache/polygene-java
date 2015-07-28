@@ -25,6 +25,7 @@ import org.qi4j.api.composite.InvalidCompositeException;
 import org.qi4j.api.composite.ModelDescriptor;
 import org.qi4j.api.composite.TransientDescriptor;
 import org.qi4j.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.Identity;
 import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
@@ -33,7 +34,7 @@ import org.qi4j.api.value.ValueDescriptor;
 import org.qi4j.functional.Function;
 
 /**
- * Encapsulation of the Qi4j API.
+ * Encapsulation of the Zest API.
  */
 public interface Qi4j
 {
@@ -42,8 +43,9 @@ public interface Qi4j
      * then that reference must be dereferenced using this method
      * before handing it out for others to use.
      *
-     * @param <T> Parameterized type of the Composite
+     * @param <T>       Parameterized type of the Composite
      * @param composite instance reference injected in Modified using @This
+     *
      * @return the dereferenced Composite
      */
     <T> T dereference( T composite );
@@ -53,6 +55,7 @@ public interface Qi4j
      *
      * @param compositeOrUow The Composite (Service, Value, Entity or Transient) or UnitOfWork to lookup the Module it
      *                       belongs to.
+     *
      * @return The Module instance where the Composite or UnitOfWork belongs to.
      */
     Module moduleOf( Object compositeOrUow );
@@ -62,6 +65,7 @@ public interface Qi4j
      *
      * @param compositeOrServiceReference The Composite (Service, Value, Entity or Transient) for which to lookup the
      *                                    ModelDescriptor
+     *
      * @return The ModelDescriptor of the Composite
      */
     ModelDescriptor modelDescriptorFor( Object compositeOrServiceReference );
@@ -71,6 +75,7 @@ public interface Qi4j
      *
      * @param compositeOrServiceReference The Composite (Service, Value, Entity or Transient) for which to lookup the
      *                                    CompositeDescriptor
+     *
      * @return The CompositeDescriptor of the Composite
      */
     CompositeDescriptor compositeDescriptorFor( Object compositeOrServiceReference );
@@ -79,6 +84,7 @@ public interface Qi4j
      * Returns the TransientDescriptor of the TransientComposite.
      *
      * @param transsient The TransientComposite for which to lookup the TransientDescriptor
+     *
      * @return The TransientDescriptor of the TransientComposite
      */
     TransientDescriptor transientDescriptorFor( Object transsient );
@@ -87,6 +93,7 @@ public interface Qi4j
      * Returns the EntityDescriptor of the EntityComposite.
      *
      * @param entity The EntityComposite for which to lookup the EntityDescriptor
+     *
      * @return The EntityDescriptor of the EntityComposite
      */
     EntityDescriptor entityDescriptorFor( Object entity );
@@ -95,6 +102,7 @@ public interface Qi4j
      * Returns the ValueDescriptor of the ValueComposite.
      *
      * @param value The ValueComposite for which to lookup the ValueDescriptor
+     *
      * @return The ValueDescriptor of the ValueComposite
      */
     ValueDescriptor valueDescriptorFor( Object value );
@@ -103,6 +111,7 @@ public interface Qi4j
      * Returns the ServiceDescriptor of the ServiceComposite.
      *
      * @param service The ServiceComposite for which to lookup the ServiceDescriptor
+     *
      * @return The ServiceDescriptor of the ServiceComposite
      */
     ServiceDescriptor serviceDescriptorFor( Object service );
@@ -111,6 +120,7 @@ public interface Qi4j
      * Returns the PropertyDescriptor of the Property.
      *
      * @param property The Property for which to lookup the PropertyDescriptor
+     *
      * @return The PropertyDescriptor of the Property
      */
     PropertyDescriptor propertyDescriptorFor( Property<?> property );
@@ -119,6 +129,7 @@ public interface Qi4j
      * Returns the AssociationDescriptor of the Association.
      *
      * @param association The Association for which to lookup the AssociationDescriptor
+     *
      * @return The AssociationDescriptor of the Association
      */
     AssociationDescriptor associationDescriptorFor( AbstractAssociation association );

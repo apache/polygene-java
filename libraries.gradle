@@ -1,83 +1,86 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 // Versions of Dependencies;
-def asmVersion = '5.0.3'
-def beanshellVersion = '2.0b4'
+def asmVersion = '5.0.4'
 def bonecpVersion = '0.8.0.RELEASE'
-def bouncyVersion = '1.50'
-def c3p0Version = '0.9.1.2'
-def commonsCodecVersion = '1.8'
-def commonsDbcpVersion = '1.4' // Should be moved to org.apache.tomcat:tomcat-jdbc:8.0.8
-def commonsIoVersion = '2.4'
-def commonsLangVersion = '2.6'
-def cxfVersion = '2.5.6' // 2.7.11 Unable to resolve dependencies! - 3.0.0 exists
-def derbyVersion = '10.10.2.0'
-def dnsJavaVersion = '2.1.6'
-def ehcacheVersion = '2.8.3'
-def elasticsearchVersion = '1.3.4'
-def freemarkerVersion = '2.3.20'
-def gaeVersion = '1.8.8'
-def groovyVersion = '2.3.2'
-def guavaVersion = '17.0'
-def h2Version = '1.4.178'
-def hazelcastVersion = '3.2.2'
+def bouncyVersion = '1.52'
+def commonsDbcpVersion = '1.4' // Should be moved to commons-dbcp2
+def commonsLangVersion = '2.6' // Should be moved to commons-lang3
+def derbyVersion = '10.11.1.1'
+def dnsJavaVersion = '2.1.7'
+def ehcacheVersion = '2.10.0'
+def elasticsearchVersion = '1.6.0'
+def freemarkerVersion = '2.3.22'
+def groovyVersion = '2.4.3'
+def h2Version = '1.4.187'
+def hazelcastVersion = '3.5'
 def httpClientVersion = '4.2.2' // 4.3.4 exists
-def jacksonVersion = '2.4.0'
-def javascriptVersion = '1.7R4'
+def jacksonVersion = '2.5.4'
+def javascriptVersion = '1.7.7'
 def javasqlgeneratorVersion = '0.3.2'
-def jcloudsVersion = '1.7.3'
+def jcloudsVersion = '1.9.0'
 def jdbmVersion = '2.4'
-def jdomVersion = '2.0.2'
-def jedisVersion = '2.5.1'
-def jettyVersion = '9.2.1.v20140609'
+def jedisVersion = '2.7.2'
+def jettyVersion = '9.2.11.v20150529' // 9.3.x Tests fail!
 def jgoodiesLooksVersion = '2.5.3'
-def jodaMoneyVersion = '0.9.1'
-def jodaTimeVersion = '2.3'
-def jrubyVersion = '1.7.8' // 1.7.12 - Fails to run!
+def jodaMoneyVersion = '0.10.0'
+def jodaTimeVersion = '2.8.1'
 def jtaVersion = '1.1'
 def leveldbVersion = '0.7'
 def leveldbJniVersion = '1.8'
-def liquibaseVersion = '3.2.0'
-def log4jVersion = '1.2.17'
-def logbackVersion = '1.1.2'
-def mongodbVersion = '2.12.2'
-def mysqlVersion = '5.1.31'
-def neoVersion = '1.3' // 1.9.4 Fails to compile! - 2.1.2 exists
-def neoIndexVersion = '1.3-1.3.M01' // Do not exist anymore!
+def liquibaseVersion = '3.4.0'
+def logbackVersion = '1.1.3'
+def mongodbVersion = '2.13.2' // 3.0.x Fails to compile!
+def mysqlVersion = '5.1.35'
 def orgJsonVersion = '20130213'
 def osgiVersion = '4.2.0' // 4.3.0 Fails to compile! - 5.0.0 exists
 def pdfboxVersion = '1.8.5'
-def postgresqlVersion = '9.3-1101-jdbc4'
+def postgresqlVersion = '9.4-1201-jdbc41'
 def prefuseVersion = '0.21'
 def restletVersion = '2.0.15' // 2.2.1 Fails to compile!
 def rdfVersion = '2.7.9'
-def riakVersion = '1.4.4'
-def scalaVersion = '2.11.1'
+def riakVersion = '1.4.4' // 2.0.x Fails to compile!
+def scalaVersion = '2.11.6'
 def servletVersion = '3.1.0'
 def shiroVersion = '1.2.3'
 def skedVersion = '2.1'
-def sleepycatVersion = '5.0.73'
-def slf4jVersion = '1.7.7'
+def slf4jVersion = '1.7.12'
 def solrVersion = "1.4.1" // 4.8.1 Fails to compile!
-def springVersion = '3.2.6.RELEASE' // 4.0.5.RELEASE Fails to compile!
-def spymemcachedVersion = '2.11.3'
-def sqliteVersion = '3.7.2'
-def strutsVersion = '2.3.15.3' // 2.3.16.3 Fails to compile!
+def springVersion = '4.1.7.RELEASE'
+def spymemcachedVersion = '2.12.0'
+def sqliteVersion = '3.8.10.1'
 def velocityVersion = '1.7'
-def voldemortVersion = '1.3.0'
 def wicketVersion = '1.5.8' // 6.15.0 Samples fails to compile!
 def wicketStatelessVersion = '1.5.0'
-def woodstoxVersion = '4.4.0'
-def wsdl4jVersion = '1.6.3'
+def woodstoxVersion = '4.4.1'
 def yammerMetricsVersion = '2.2.0'
 
-def antVersion = '1.9.4'
-def awaitilityVersion = '1.6.0'
-def easyMockVersion = '3.2'
-def jmockVersion = '2.6.0'
+def antVersion = '1.9.5'
+def awaitilityVersion = '1.6.3'
+def easyMockVersion = '3.3.1'
+def jmockVersion = '2.8.1'
 def junitVersion = '4.11'
-def mockitoVersion = '1.9.5'
-def testNgVersion = '6.8.8'
-def restAssuredVersion= '2.3.2'
-def xmlunitVersion = '1.5'
+def mockitoVersion = '1.10.19'
+def testNgVersion = '6.9.4'
+def restAssuredVersion= '2.4.1'
+def xmlunitVersion = '1.6'
 
 // build a map of the dependency artifacts to use.  Allows centralized definition of the version of artifacts to
 // use.  In that respect it serves a role similar to <dependencyManagement> in Maven
@@ -101,7 +104,6 @@ rootProject.ext {
           // logging
           slf4j_api: "org.slf4j:slf4j-api:$slf4jVersion",
           slf4j_simple: "org.slf4j:slf4j-simple:$slf4jVersion",
-          log4j: 'log4j:log4j:' + log4jVersion,
           logback: 'ch.qos.logback:logback-classic:' + logbackVersion,
           jcl_slf4j: "org.slf4j:jcl-over-slf4j:$slf4jVersion",
           jcl_api: 'commons-logging:commons-logging-api:99.0-does-not-exist',  //ensure it is never used.
@@ -173,22 +175,9 @@ rootProject.ext {
           jetty_client: "org.eclipse.jetty:jetty-client:$jettyVersion",
           jetty_xml: "org.eclipse.jetty:jetty-xml:$jettyVersion",
 
-          // Struts
-          struts_codebehind: "org.apache.struts:struts2-codebehind-plugin:$strutsVersion",
-          struts_convention: "org.apache.struts:struts2-convention-plugin:$strutsVersion",
-          struts_core: "org.apache.struts:struts2-core:$strutsVersion",
-
           // Scripting
           groovy: "org.codehaus.groovy:groovy-all:$groovyVersion",
 
-          jruby: "org.jruby:jruby:$jrubyVersion",
-
-          beanshell: [ "org.beanshell:bsh-core:$beanshellVersion",
-                  "org.beanshell:bsh-classpath:$beanshellVersion",
-                  "org.beanshell:bsh-classgen:$beanshellVersion",
-                  "org.beanshell:bsh-reflect:$beanshellVersion"
-
-          ],
           javascript: "org.mozilla:rhino:$javascriptVersion",
 
           // Wicket
@@ -216,35 +205,15 @@ rootProject.ext {
           leveldb_api: "org.iq80.leveldb:leveldb-api:$leveldbVersion",
           leveldb_java: "org.iq80.leveldb:leveldb:$leveldbVersion",
           leveldb_jni_all: "org.fusesource.leveldbjni:leveldbjni-all:$leveldbJniVersion",
-          appengine: "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
           mongodb: "org.mongodb:mongo-java-driver:$mongodbVersion",
           riak: "com.basho.riak:riak-client:$riakVersion",
-          neo4j: [ "org.neo4j:neo4j:$neoVersion",
-                  "org.neo4j:neo4j-index:$neoIndexVersion"
-          ],
           jta: "javax.transaction:jta:$jtaVersion",
           javaSqlGenerator: "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
           javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
-          voldemort: "org.immunogenomics.gl.voldemort:voldemort:$voldemortVersion",
-          guava: "com.google.guava:guava:$guavaVersion",
-          sleepycat: "com.sleepycat:je:$sleepycatVersion",
-          jdom: "org.jdom:jdom:$jdomVersion",
           velocity: "org.apache.velocity:velocity:$velocityVersion",
-          commons_codec: "commons-codec:commons-codec:$commonsCodecVersion",
           commons_dbcp: "commons-dbcp:commons-dbcp:$commonsDbcpVersion",
-          commons_io: "commons-io:commons-io:$commonsIoVersion",
           commons_lang: "commons-lang:commons-lang:$commonsLangVersion",
           servlet_api: "javax.servlet:javax.servlet-api:$servletVersion",
-          cxf_api: 'org.apache.cxf:cxf-api:' + cxfVersion,
-          cxf_util: "org.apache.cxf:cxf-common-utilities:$cxfVersion",
-          cxf_rt_core: "org.apache.cxf:cxf-rt-core:$cxfVersion",
-          cxf_rt_soap: "org.apache.cxf:cxf-rt-bindings-soap:$cxfVersion",
-          cxf_rt_jaxws: "org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion",
-          cxf_rt_aegis: "org.apache.cxf:cxf-rt-databinding-aegis:$cxfVersion",
-          cxf_rt_local: "org.apache.cxf:cxf-rt-transports-local:$cxfVersion",
-          cxf_rt_http: "org.apache.cxf:cxf-rt-transports-http:$cxfVersion",
-          cxf_rt_http_jetty: "org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion",
-          wsdl4j: 'wsdl4j:wsdl4j:' + wsdl4jVersion,
           http_client: "org.apache.httpcomponents:httpclient:$httpClientVersion",
           woodstox: "org.codehaus.woodstox:woodstox-core-asl:$woodstoxVersion",
           restlet_xml: "org.restlet.jee:org.restlet.ext.xml:$restletVersion",
@@ -254,7 +223,6 @@ rootProject.ext {
           shiro: "org.apache.shiro:shiro-core:$shiroVersion",
           shiro_web: "org.apache.shiro:shiro-web:$shiroVersion",
           bonecp: "com.jolbox:bonecp:$bonecpVersion",
-          c3p0: "c3p0:c3p0:$c3p0Version",
           liquibase: "org.liquibase:liquibase-core:$liquibaseVersion",
           sked: "org.codeartisans:sked:$skedVersion",
           yammer_metrics: "com.yammer.metrics:metrics-core:$yammerMetricsVersion",
@@ -282,3 +250,47 @@ rootProject.ext {
   ]
 }
 
+// Global transitive dependencies substitution rules
+// See https://docs.gradle.org/current/userguide/dependency_management.html#dependency_substitution_rules
+// See https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.DependencySubstitutions.html
+allprojects {
+  configurations.all {
+    resolutionStrategy.dependencySubstitution.all { DependencySubstitution dep ->
+      if( dep.requested instanceof ModuleComponentSelector ) {
+        // Always resolve SLF4J to the same version
+        if( dep.requested.group == 'org.slf4j' ) {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: slf4jVersion
+        }
+        // Always resolve ASM to the same version
+        if( dep.requested.group == 'org.ow2.asm' ) {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: asmVersion
+        }
+        // Always resolve OSGi to the same version
+        if( dep.requested.group == 'org.osgi' ) {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: osgiVersion
+        }
+        // Always resolve Jackson to the same version
+        if( dep.requested.group.startsWith( 'com.fasterxml.jackson' ) ) {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: jacksonVersion
+        }
+        // woodstox:wstx-asl is broken (no pom), use org.codehaus.woodstox:wstx-asl instead
+        if( dep.requested.group == 'woodstox' && dep.requested.module == 'wstx-asl' ) {
+          dep.useTarget group: 'org.codehaus.woodstox', name: 'wstx-asl', version: dep.requested.version
+        }
+        // some bad citizens have SNAPSHOT parents ...
+        if( dep.requested.module == 'commons-sandbox-parent' && dep.requested.version == '3-SNAPSHOT') {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: '3'
+        }
+        // GSON 2.3 POM is invalid, use 2.3.1 instead .. see https://github.com/google/gson/issues/588
+        if( dep.requested.group == 'com.google.code.gson' && dep.requested.module == 'gson' && dep.requested.version == '2.3' ) {
+          dep.useTarget group: dep.requested.group, name: dep.requested.module, version: '2.3.1'
+        }
+        // Findbugs Annotation is LGPL, use https://github.com/stephenc/findbugs-annotations which is
+        // Apache 2 licensed instead
+        if( dep.requested.group == 'net.sourceforge.findbugs' && dep.requested.module == 'annotations' ) {
+          dep.useTarget group: 'com.github.stephenc.findbugs', name: 'findbugs-annotations', version: '1.3.9-1'
+        }
+      }
+    }
+  }
+}

@@ -17,9 +17,12 @@
  */
 package org.qi4j.library.invocationcache;
 
+import org.qi4j.api.mixin.Mixins;
+
 /**
  * Invocation Cache.
  */
+@Mixins( SimpleInvocationCacheMixin.class )
 public interface InvocationCache
 {
     Object setCachedValue( String name, Object aResult );

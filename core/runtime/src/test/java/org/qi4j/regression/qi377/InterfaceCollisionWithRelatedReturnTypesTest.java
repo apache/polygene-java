@@ -18,7 +18,6 @@
  */
 package org.qi4j.regression.qi377;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.qi4j.api.association.Association;
 import org.qi4j.api.association.ManyAssociation;
@@ -36,7 +35,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-@Ignore( "This test exhibit QI-377" )
 public class InterfaceCollisionWithRelatedReturnTypesTest
     extends AbstractQi4jTest
 {

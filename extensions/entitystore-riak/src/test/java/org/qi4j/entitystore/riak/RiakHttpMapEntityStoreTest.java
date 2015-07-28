@@ -69,7 +69,7 @@ public class RiakHttpMapEntityStoreTest
     public void tearDown()
         throws Exception
     {
-        // Riak don't expose bucket deletion in its API so we empty the Qi4j Entities bucket.
+        // Riak don't expose bucket deletion in its API so we empty the Zest Entities bucket.
         Bucket bucket = riakClient.fetchBucket( bucketKey ).execute();
         for( String key : bucket.keys() )
         {

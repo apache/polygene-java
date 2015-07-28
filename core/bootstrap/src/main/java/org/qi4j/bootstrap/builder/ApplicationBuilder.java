@@ -180,6 +180,19 @@ public class ApplicationBuilder
     {
         String applicationName = root.getString( "name" );
         ApplicationBuilder builder = new ApplicationBuilder( applicationName );
+        builder.configureWithJson( root );
+        return builder;
+    }
+
+    /** Configures the application struucture from a JSON document.
+     *
+     * @param root The JSON document root.
+     * @throws JSONException if the JSON document isn't valid.
+     * @throws AssemblyException if probelms in the Assemblers provided in the JSON document.
+     */
+    protected void configureWithJson( JSONObject root )
+        throws JSONException, AssemblyException
+    {
         JSONArray layers = root.optJSONArray( "layers" );
         if( layers != null )
         {
@@ -187,7 +200,7 @@ public class ApplicationBuilder
             {
                 JSONObject layerObject = layers.getJSONObject( i );
                 String layerName = layerObject.getString( "name" );
-                LayerDeclaration layerDeclaration = builder.withLayer( layerName );
+                LayerDeclaration layerDeclaration = withLayer( layerName );
                 JSONArray using = layerObject.optJSONArray( "uses" );
                 if( using != null )
                 {
@@ -209,14 +222,14 @@ public class ApplicationBuilder
                         {
                             for( int m = 0; m < assemblers.length(); m++ )
                             {
-                                moduleDeclaration.withAssembler( assemblers.getString( m ) );
+                                String string = assemblers.getString( m );
+                                moduleDeclaration.withAssembler( string );
                             }
                         }
                     }
                 }
             }
         }
-        return builder;
     }
 
     /**

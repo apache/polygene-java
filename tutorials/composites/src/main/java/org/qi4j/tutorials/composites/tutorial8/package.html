@@ -1,3 +1,19 @@
+<!--
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <body>
 <h1>Tutorial 8 - Generic mixins</h1>
 <p>
@@ -16,7 +32,7 @@ object that was invoked (the TransientComposite in this case), the method, and t
 Fragment is then allowed to implement the method any way it wants.
 </p>
 <p>
-Since interfaces with only Properties is such a common case Qi4j already has a generic Mixin
+Since interfaces with only Properties is such a common case Zest™ already has a generic Mixin
 that implements the Properties management described above, but for the builtin Property type instead
 of the getter/setter variant. The class is aptly named PropertyMixin.
 </p>
@@ -30,7 +46,7 @@ Steps for this tutorial:
     <li>Remove the HelloWorldStateMixin</li>
     <li>Add a GenericPropertyMixin, and have it implement InvocationHandler</li>
     <li>Inject "@State StateHolder state" in the mixin. The StateHolder interface will give
-        you access to the Properties for the TransientComposite which Qi4j manages for you
+        you access to the Properties for the TransientComposite which Zest™ manages for you
     </li>
     <li>On call to invoke(), delegate to the StateHolder interface to get the Property for the invoked method</li>
     <li>Add an @AppliesTo annotation to the Mixin and implement the AppliesToFilter with a rule that

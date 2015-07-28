@@ -174,6 +174,7 @@ public interface ValueSerializer
          * Default to TRUE.
          */
         public static final String INCLUDE_TYPE_INFO = "includeTypeInfo";
+        public static final String MAP_ENTRIES_AS_OBJECTS = "mapentriesasobjects";
         private final Map<String, String> options = new HashMap<>();
 
         /**
@@ -181,17 +182,8 @@ public interface ValueSerializer
          */
         public Options()
         {
-            options.put( INCLUDE_TYPE_INFO, "true" );
-        }
-
-        /**
-         * Create new ValueSerializer Options from given Map.
-         * @param options Options to copy in the new Options instance
-         */
-        public Options( Map<String, String> options )
-        {
-            this();
-            options.putAll( options );
+            this.options.put( INCLUDE_TYPE_INFO, "true" );
+            this.options.put( MAP_ENTRIES_AS_OBJECTS, "false" );
         }
 
         /**
@@ -210,6 +202,16 @@ public interface ValueSerializer
         public Options withoutTypeInfo()
         {
             return put( INCLUDE_TYPE_INFO, false );
+        }
+
+        public Options withMapEntriesAsObjects()
+        {
+            return put( MAP_ENTRIES_AS_OBJECTS, true );
+        }
+
+        public Options withMapEntriesAsKeyValuePairs()
+        {
+            return put( MAP_ENTRIES_AS_OBJECTS, false );
         }
 
         /**
@@ -318,5 +320,4 @@ public interface ValueSerializer
             return new HashMap<>( options );
         }
     }
-
 }

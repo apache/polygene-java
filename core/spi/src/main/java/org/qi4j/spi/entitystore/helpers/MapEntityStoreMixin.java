@@ -34,7 +34,6 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.json.JSONWriter;
 import org.qi4j.api.association.AssociationDescriptor;
-import org.qi4j.api.cache.CacheOptions;
 import org.qi4j.api.common.Optional;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.entity.EntityDescriptor;
@@ -47,16 +46,15 @@ import org.qi4j.api.property.PropertyDescriptor;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.ValueType;
 import org.qi4j.api.unitofwork.EntityTypeNotFoundException;
 import org.qi4j.api.usecase.Usecase;
-import org.qi4j.api.usecase.UsecaseBuilder;
 import org.qi4j.api.value.ValueSerialization;
 import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -64,11 +62,13 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.qi4j.spi.module.ModelModule;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -88,6 +88,9 @@ public class MapEntityStoreMixin
     private EntityStoreSPI entityStoreSpi;
 
     @Structure
+    private Qi4jSPI spi;
+
+    @Structure
     private Application application;
 
     @Service
@@ -104,40 +107,42 @@ public class MapEntityStoreMixin
     protected String uuid;
     private int count;
 
-    private Logger logger;
-
     @Override
     public void activateMapEntityStore()
         throws Exception
     {
         uuid = UUID.randomUUID().toString() + "-";
-
-        logger = LoggerFactory.getLogger( descriptor.identity() );
     }
 
     // EntityStore
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSpi module, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecaseMetaInfo, currentTime );
+        EntityStoreUnitOfWork storeUnitOfWork =
+            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
+        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
+        return storeUnitOfWork;
     }
 
     // EntityStoreSPI
     @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                       ModuleSpi module,
                                        EntityReference identity,
                                        EntityDescriptor entityDescriptor
     )
     {
-        return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
+        return new DefaultEntityState( unitOfWork.currentTime(), identity, entityDescriptor );
     }
 
     @Override
-    public synchronized EntityState entityStateOf( EntityStoreUnitOfWork unitofwork, EntityReference identity )
+    public synchronized EntityState entityStateOf( EntityStoreUnitOfWork unitofwork,
+                                                   ModuleSpi module,
+                                                   EntityReference identity
+    )
     {
-        DefaultEntityStoreUnitOfWork unitOfWork = (DefaultEntityStoreUnitOfWork) unitofwork;
         Reader in = mapEntityStore.get( identity );
-        return readEntityState( unitOfWork, in );
+        return readEntityState( module, in );
     }
 
     @Override
@@ -163,14 +168,14 @@ public class MapEntityStoreMixin
                                 DefaultEntityState state = (DefaultEntityState) entityState;
                                 if( state.status().equals( EntityStatus.NEW ) )
                                 {
-                                    try( Writer writer = changer.newEntity( state.identity(), state.entityDescriptor() ) )
+                                    try (Writer writer = changer.newEntity( state.identity(), state.entityDescriptor() ))
                                     {
                                         writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
                                     }
                                 }
                                 else if( state.status().equals( EntityStatus.UPDATED ) )
                                 {
-                                    try( Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ) )
+                                    try (Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ))
                                     {
                                         writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
                                     }
@@ -197,7 +202,7 @@ public class MapEntityStoreMixin
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final Module module )
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSpi module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -211,20 +216,7 @@ public class MapEntityStoreMixin
                     public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, EntityStoreException
                     {
-                        Usecase usecase = UsecaseBuilder
-                            .buildUsecase( "qi4j.entitystore.entitystates" )
-                            .withMetaInfo( CacheOptions.NEVER )
-                            .newUsecase();
-
-                        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork(
-                            entityStoreSpi,
-                            newUnitOfWorkId(),
-                            module,
-                            usecase,
-                            System.currentTimeMillis() );
-
                         final List<EntityState> migrated = new ArrayList<>();
-
                         try
                         {
                             mapEntityStore.entityStates().transferTo( new Output<Reader, ReceiverThrowableType>()
@@ -239,7 +231,7 @@ public class MapEntityStoreMixin
                                         public void receive( Reader item )
                                             throws ReceiverThrowableType
                                         {
-                                            final EntityState entity = readEntityState( uow, item );
+                                            final EntityState entity = readEntityState( module, item );
                                             if( entity.status() == EntityStatus.UPDATED )
                                             {
                                                 migrated.add( entity );
@@ -247,7 +239,14 @@ public class MapEntityStoreMixin
                                                 // Synch back 100 at a time
                                                 if( migrated.size() > 100 )
                                                 {
-                                                    synchMigratedEntities( migrated );
+                                                    try
+                                                    {
+                                                        synchMigratedEntities( migrated );
+                                                    }
+                                                    catch( IOException e )
+                                                    {
+                                                        throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
+                                                    }
                                                 }
                                             }
                                             receiver.receive( entity );
@@ -257,7 +256,14 @@ public class MapEntityStoreMixin
                                     // Synch any remaining migrated entities
                                     if( !migrated.isEmpty() )
                                     {
-                                        synchMigratedEntities( migrated );
+                                        try
+                                        {
+                                            synchMigratedEntities( migrated );
+                                        }
+                                        catch( IOException e )
+                                        {
+                                            throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
+                                        }
                                     }
                                 }
                             } );
@@ -273,31 +279,25 @@ public class MapEntityStoreMixin
     }
 
     private void synchMigratedEntities( final List<EntityState> migratedEntities )
+        throws IOException
     {
-        try
+        mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
         {
-            mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
+            @Override
+            public void visitMap( MapEntityStore.MapChanger changer )
+                throws IOException
             {
-                @Override
-                public void visitMap( MapEntityStore.MapChanger changer )
-                    throws IOException
+                for( EntityState migratedEntity : migratedEntities )
                 {
-                    for( EntityState migratedEntity : migratedEntities )
+                    DefaultEntityState state = (DefaultEntityState) migratedEntity;
+                    try (Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ))
                     {
-                        DefaultEntityState state = (DefaultEntityState) migratedEntity;
-                        try( Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ) )
-                        {
-                            writeEntityState( state, writer, state.version(), state.lastModified() );
-                        }
+                        writeEntityState( state, writer, state.version(), state.lastModified() );
                     }
                 }
-            } );
-            migratedEntities.clear();
-        }
-        catch( IOException e )
-        {
-            logger.warn( "Could not store migrated entites", e );
-        }
+            }
+        } );
+        migratedEntities.clear();
     }
 
     protected String newUnitOfWorkId()
@@ -346,7 +346,8 @@ public class MapEntityStoreMixin
             }
 
             JSONWriter associations = properties.endObject().key( JSONKeys.ASSOCIATIONS ).object();
-            for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations().entrySet() )
+            for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations()
+                .entrySet() )
             {
                 EntityReference value = stateNameEntityReferenceEntry.getValue();
                 associations.key( stateNameEntityReferenceEntry.getKey().name() ).
@@ -354,7 +355,8 @@ public class MapEntityStoreMixin
             }
 
             JSONWriter manyAssociations = associations.endObject().key( JSONKeys.MANY_ASSOCIATIONS ).object();
-            for( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations().entrySet() )
+            for( Map.Entry<QualifiedName, List<EntityReference>> stateNameListEntry : state.manyAssociations()
+                .entrySet() )
             {
                 JSONWriter assocs = manyAssociations.key( stateNameListEntry.getKey().name() ).array();
                 for( EntityReference entityReference : stateNameListEntry.getValue() )
@@ -365,7 +367,8 @@ public class MapEntityStoreMixin
             }
 
             JSONWriter namedAssociations = manyAssociations.endObject().key( JSONKeys.NAMED_ASSOCIATIONS ).object();
-            for( Map.Entry<QualifiedName, Map<String, EntityReference>> stateNameMapEntry : state.namedAssociations().entrySet() )
+            for( Map.Entry<QualifiedName, Map<String, EntityReference>> stateNameMapEntry : state.namedAssociations()
+                .entrySet() )
             {
                 JSONWriter assocs = namedAssociations.key( stateNameMapEntry.getKey().name() ).object();
                 for( Map.Entry<String, EntityReference> namedRef : stateNameMapEntry.getValue().entrySet() )
@@ -382,12 +385,11 @@ public class MapEntityStoreMixin
         }
     }
 
-    protected EntityState readEntityState( DefaultEntityStoreUnitOfWork unitOfWork, Reader entityState )
+    protected EntityState readEntityState( ModuleSpi module, Reader entityState )
         throws EntityStoreException
     {
         try
         {
-            Module module = unitOfWork.module();
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
             EntityStatus status = EntityStatus.LOADED;
 
@@ -408,11 +410,6 @@ public class MapEntityStoreMixin
                     // Do nothing - set version to be correct
                     jsonObject.put( JSONKeys.APPLICATION_VERSION, application.version() );
                 }
-
-                LoggerFactory.getLogger( MapEntityStoreMixin.class )
-                    .debug(
-                        "Updated version nr on " + identity + " from " + currentAppVersion + " to " + application.version() );
-
                 // State changed
                 status = EntityStatus.UPDATED;
             }
@@ -422,7 +419,11 @@ public class MapEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new EntityTypeNotFoundException( type );
+                throw new EntityTypeNotFoundException( type,
+                                                       module.name(),
+                                                       map( ModelModule.toStringFunction,
+                                                            module.findVisibleEntityTypes()
+                                                       ) );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();
@@ -528,8 +529,7 @@ public class MapEntityStoreMixin
                 }
             }
 
-            return new DefaultEntityState( unitOfWork,
-                                           version,
+            return new DefaultEntityState( version,
                                            modified,
                                            EntityReference.parseEntityReference( identity ),
                                            status,
@@ -551,7 +551,7 @@ public class MapEntityStoreMixin
         throws IOException
     {
         JSONObject jsonObject;
-        try( Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) ) )
+        try (Reader reader = mapEntityStore.get( EntityReference.parseEntityReference( id ) ))
         {
             jsonObject = new JSONObject( new JSONTokener( reader ) );
         }

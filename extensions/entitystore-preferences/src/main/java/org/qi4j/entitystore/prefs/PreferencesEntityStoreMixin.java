@@ -43,7 +43,6 @@ import org.qi4j.api.service.ServiceActivation;
 import org.qi4j.api.service.ServiceDescriptor;
 import org.qi4j.api.service.qualifier.Tagged;
 import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.Module;
 import org.qi4j.api.type.CollectionType;
 import org.qi4j.api.type.EnumType;
 import org.qi4j.api.type.MapType;
@@ -59,6 +58,7 @@ import org.qi4j.io.Input;
 import org.qi4j.io.Output;
 import org.qi4j.io.Receiver;
 import org.qi4j.io.Sender;
+import org.qi4j.spi.Qi4jSPI;
 import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
 import org.qi4j.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -66,12 +66,16 @@ import org.qi4j.spi.entitystore.EntityStore;
 import org.qi4j.spi.entitystore.EntityStoreException;
 import org.qi4j.spi.entitystore.EntityStoreSPI;
 import org.qi4j.spi.entitystore.EntityStoreUnitOfWork;
+import org.qi4j.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.qi4j.spi.entitystore.StateCommitter;
 import org.qi4j.spi.entitystore.helpers.DefaultEntityState;
+import org.qi4j.spi.module.ModelModule;
+import org.qi4j.spi.module.ModuleSpi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * Implementation of EntityStore that is backed by the Preferences API.
@@ -87,6 +91,9 @@ import static org.qi4j.functional.Iterables.first;
 public class PreferencesEntityStoreMixin
     implements ServiceActivation, EntityStore, EntityStoreSPI
 {
+    @Structure
+    private Qi4jSPI spi;
+
     @This
     private EntityStoreSPI entityStoreSpi;
 
@@ -167,13 +174,15 @@ public class PreferencesEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, Module module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSpi module, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), module, usecase, currentTime );
+        EntityStoreUnitOfWork storeUnitOfWork = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecase, currentTime );
+        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
+        return storeUnitOfWork;
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final Module module )
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleSpi module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -189,18 +198,16 @@ public class PreferencesEntityStoreMixin
                     {
                         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.preferences.visit" );
                         Usecase visitUsecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
-                        final DefaultEntityStoreUnitOfWork uow = new DefaultEntityStoreUnitOfWork(
-                            entityStoreSpi,
-                            newUnitOfWorkId(),
-                            module,
-                            visitUsecase,
-                            System.currentTimeMillis() );
+                        final EntityStoreUnitOfWork uow =
+                            newUnitOfWork( visitUsecase, module, System.currentTimeMillis() );
+
                         try
                         {
                             String[] identities = root.childrenNames();
                             for( String identity : identities )
                             {
-                                EntityState entityState = uow.entityStateOf( EntityReference.parseEntityReference( identity ) );
+                                EntityReference reference = EntityReference.parseEntityReference( identity );
+                                EntityState entityState = uow.entityStateOf( module, reference );
                                 receiver.receive( entityState );
                             }
                         }
@@ -216,25 +223,22 @@ public class PreferencesEntityStoreMixin
 
     @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
+                                       ModuleSpi module,
                                        EntityReference identity,
                                        EntityDescriptor entityDescriptor
     )
     {
-        return new DefaultEntityState( (DefaultEntityStoreUnitOfWork) unitOfWork, identity, entityDescriptor );
+        return new DefaultEntityState( unitOfWork.currentTime(), identity, entityDescriptor );
     }
 
     @Override
-    public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
+    public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleSpi module, EntityReference identity )
     {
         try
         {
-            DefaultEntityStoreUnitOfWork desuw = (DefaultEntityStoreUnitOfWork) unitOfWork;
-
-            Module module = desuw.module();
-
             if( !root.nodeExists( identity.identity() ) )
             {
-                throw new NoSuchEntityException( identity, UnknownType.class );
+                throw new NoSuchEntityException( identity, UnknownType.class, unitOfWork.usecase() );
             }
 
             Preferences entityPrefs = root.node( identity.identity() );
@@ -245,7 +249,11 @@ public class PreferencesEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new EntityTypeNotFoundException( type );
+                throw new EntityTypeNotFoundException( type,
+                                                       module.name(),
+                                                       map( ModelModule.toStringFunction,
+                                                            module.findVisibleEntityTypes()
+                                                       ) );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();
@@ -424,16 +432,15 @@ public class PreferencesEntityStoreMixin
                     }
                     for( int idx = 0; idx < namedRefs.length; idx += 2 )
                     {
-                        String name = namedRefs[idx];
-                        String ref = namedRefs[idx + 1];
+                        String name = namedRefs[ idx ];
+                        String ref = namedRefs[ idx + 1 ];
                         references.put( name, EntityReference.parseEntityReference( ref ) );
                     }
                     namedAssociations.put( namedAssociationType.qualifiedName(), references );
                 }
             }
 
-            return new DefaultEntityState( desuw,
-                                           entityPrefs.get( "version", "" ),
+            return new DefaultEntityState( entityPrefs.get( "version", "" ),
                                            entityPrefs.getLong( "modified", unitOfWork.currentTime() ),
                                            identity,
                                            status,
@@ -455,6 +462,7 @@ public class PreferencesEntityStoreMixin
     {
         return new StateCommitter()
         {
+            @SuppressWarnings( "SynchronizeOnNonFinalField" )
             @Override
             public void commit()
             {
@@ -595,7 +603,8 @@ public class PreferencesEntityStoreMixin
             if( !state.manyAssociations().isEmpty() )
             {
                 Preferences manyAssocsPrefs = entityPrefs.node( "manyassociations" );
-                for( Map.Entry<QualifiedName, List<EntityReference>> manyAssociation : state.manyAssociations().entrySet() )
+                for( Map.Entry<QualifiedName, List<EntityReference>> manyAssociation : state.manyAssociations()
+                    .entrySet() )
                 {
                     StringBuilder manyAssocs = new StringBuilder();
                     for( EntityReference entityReference : manyAssociation.getValue() )
@@ -617,7 +626,8 @@ public class PreferencesEntityStoreMixin
             if( !state.namedAssociations().isEmpty() )
             {
                 Preferences namedAssocsPrefs = entityPrefs.node( "namedassociations" );
-                for( Map.Entry<QualifiedName, Map<String, EntityReference>> namedAssociation : state.namedAssociations().entrySet() )
+                for( Map.Entry<QualifiedName, Map<String, EntityReference>> namedAssociation : state.namedAssociations()
+                    .entrySet() )
                 {
                     StringBuilder namedAssocs = new StringBuilder();
                     for( Map.Entry<String, EntityReference> namedRef : namedAssociation.getValue().entrySet() )
@@ -702,5 +712,4 @@ public class PreferencesEntityStoreMixin
     private static class UnknownType
     {
     }
-
 }

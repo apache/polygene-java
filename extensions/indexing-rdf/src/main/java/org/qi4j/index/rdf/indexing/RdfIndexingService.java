@@ -86,7 +86,7 @@ public interface RdfIndexingService
         @Override
         public void initialize()
         {
-            indexedEntityTypes = new HashSet<EntityDescriptor>();
+            indexedEntityTypes = new HashSet<>();
         }
 
         @Override

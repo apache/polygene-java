@@ -68,10 +68,6 @@ public class GraphTraversalServiceImpl
             {
                 final List<TransitPath> voyages = getShuffledVoyages( dao.voyages() );
 
-                // Output for testing...
-//                for (int i = 0; i < voyages.size(); i++)
-//                    System.out.println( i + " " + voyages.get( i ).print() );
-
                 for( TransitPath voyage : voyages )
                 {
                     if( depth >= voyage.getTransitEdges().size() )

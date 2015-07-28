@@ -15,14 +15,14 @@
 package org.qi4j.runtime.composite;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import org.qi4j.api.composite.MissingMethodException;
 import org.qi4j.functional.HierarchicalVisitor;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 import static org.qi4j.functional.Iterables.map;
 
@@ -32,12 +32,12 @@ import static org.qi4j.functional.Iterables.map;
 public final class CompositeMethodsModel
     implements VisitableHierarchy<Object, Object>
 {
-    private HashMap<Method, CompositeMethodModel> methods;
+    private final LinkedHashMap<Method, CompositeMethodModel> methods;
     private final MixinsModel mixinsModel;
 
     public CompositeMethodsModel( MixinsModel mixinsModel )
     {
-        methods = new HashMap<Method, CompositeMethodModel>();
+        methods = new LinkedHashMap<>();
         this.mixinsModel = mixinsModel;
     }
 
@@ -51,7 +51,7 @@ public final class CompositeMethodsModel
                           Object proxy,
                           Method method,
                           Object[] args,
-                          ModuleInstance moduleInstance
+                          ModuleSpi moduleInstance
     )
         throws Throwable
     {

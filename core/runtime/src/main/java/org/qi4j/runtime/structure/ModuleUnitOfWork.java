@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2013, Niclas Hedhman. All Rights Reserved.
+ * Copyright (c) 2013-2015, Niclas Hedhman. All Rights Reserved.
  * Copyright (c) 2013-2015, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,11 @@
 package org.qi4j.runtime.structure;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.qi4j.api.association.AssociationDescriptor;
+import org.qi4j.api.association.AssociationStateHolder;
 import org.qi4j.api.common.QualifiedName;
 import org.qi4j.api.composite.Composite;
 import org.qi4j.api.entity.EntityBuilder;
@@ -27,7 +29,9 @@ import org.qi4j.api.entity.EntityReference;
 import org.qi4j.api.entity.Identity;
 import org.qi4j.api.entity.IdentityGenerator;
 import org.qi4j.api.entity.LifecycleException;
+import org.qi4j.api.property.Property;
 import org.qi4j.api.property.PropertyDescriptor;
+import org.qi4j.api.property.StateHolder;
 import org.qi4j.api.query.Query;
 import org.qi4j.api.query.QueryBuilder;
 import org.qi4j.api.query.QueryExecutionException;
@@ -42,19 +46,26 @@ import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
 import org.qi4j.api.unitofwork.UnitOfWorkFactory;
 import org.qi4j.api.usecase.Usecase;
 import org.qi4j.api.util.NullArgumentException;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.api.value.ValueComposite;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Iterables;
 import org.qi4j.functional.Specification;
+import org.qi4j.runtime.association.AssociationInstance;
+import org.qi4j.runtime.association.ManyAssociationInstance;
+import org.qi4j.runtime.association.NamedAssociationInstance;
 import org.qi4j.runtime.composite.FunctionStateResolver;
 import org.qi4j.runtime.entity.EntityInstance;
 import org.qi4j.runtime.entity.EntityModel;
 import org.qi4j.runtime.property.PropertyModel;
 import org.qi4j.runtime.unitofwork.EntityBuilderInstance;
 import org.qi4j.runtime.unitofwork.UnitOfWorkInstance;
-import org.qi4j.runtime.composite.StateResolver;
-import org.qi4j.runtime.value.ValueStateModel;
+import org.qi4j.runtime.value.ValueInstance;
+import org.qi4j.spi.entity.EntityState;
 import org.qi4j.spi.entity.EntityStatus;
+import org.qi4j.spi.entity.NamedAssociationState;
 import org.qi4j.spi.entitystore.EntityStore;
+import org.qi4j.spi.module.ModelModule;
 import org.qi4j.spi.query.EntityFinder;
 import org.qi4j.spi.query.EntityFinderException;
 import org.qi4j.spi.query.QueryBuilderSPI;
@@ -62,6 +73,7 @@ import org.qi4j.spi.query.QuerySource;
 
 import static org.qi4j.api.entity.EntityReference.parseEntityReference;
 import static org.qi4j.functional.Iterables.first;
+import static org.qi4j.functional.Iterables.map;
 
 /**
  * JAVADOC
@@ -79,22 +91,22 @@ public class ModuleUnitOfWork
         }
         catch( NoSuchMethodException e )
         {
-            throw new InternalError( "Qi4j Core Runtime codebase is corrupted. Contact Qi4j team: ModuleUnitOfWork" );
+            throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: ModuleUnitOfWork" );
         }
     }
 
     private final UnitOfWorkInstance uow;
-    private final ModuleInstance moduleInstance;
+    private final ModuleInstance module;
 
-    ModuleUnitOfWork( ModuleInstance moduleInstance, UnitOfWorkInstance uow )
+    ModuleUnitOfWork( ModuleInstance module, UnitOfWorkInstance uow )
     {
-        this.moduleInstance = moduleInstance;
+        this.module = module;
         this.uow = uow;
     }
 
     public ModuleInstance module()
     {
-        return moduleInstance;
+        return module;
     }
 
     public UnitOfWorkInstance instance()
@@ -105,7 +117,7 @@ public class ModuleUnitOfWork
     @Override
     public UnitOfWorkFactory unitOfWorkFactory()
     {
-        return moduleInstance;
+        return module;
     }
 
     @Override
@@ -133,7 +145,7 @@ public class ModuleUnitOfWork
     }
 
     @Override
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     public <T> Query<T> newQuery( QueryBuilder<T> queryBuilder )
     {
         QueryBuilderSPI queryBuilderSPI = (QueryBuilderSPI) queryBuilder;
@@ -166,11 +178,15 @@ public class ModuleUnitOfWork
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
         throws EntityTypeNotFoundException
     {
-        ModelModule<EntityModel> model = moduleInstance.typeLookup().lookupEntityModel( type );
+        ModelModule<EntityModel> model = module.typeLookup().lookupEntityModel( type );
 
         if( model == null )
         {
-            throw new EntityTypeNotFoundException( type.getName() );
+            throw new EntityTypeNotFoundException( type.getName(),
+                                                   module.name(),
+                                                   map( ModelModule.toStringFunction,
+                                                        module.findVisibleEntityTypes()
+                                                   ) );
         }
 
         EntityStore entityStore = model.module().entityStore();
@@ -189,7 +205,7 @@ public class ModuleUnitOfWork
 
         builder = new EntityBuilderInstance<>( model,
                                                this,
-                                               uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
+                                               uow.getEntityStoreUnitOfWork( entityStore, module ),
                                                identity );
         return builder;
     }
@@ -226,16 +242,20 @@ public class ModuleUnitOfWork
         NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
         NullArgumentException.validateNotNull( "namedAssociationFunction", namedAssociationFunction );
 
-        ModelModule<EntityModel> model = moduleInstance.typeLookup().lookupEntityModel( type );
+        ModelModule<EntityModel> model = module.typeLookup().lookupEntityModel( type );
 
         if( model == null )
         {
-            throw new EntityTypeNotFoundException( type.getName() );
+            throw new EntityTypeNotFoundException( type.getName(),
+                                                   module.name(),
+                                                   map( ModelModule.toStringFunction,
+                                                        module.findVisibleEntityTypes()
+                                                   ) );
         }
 
         EntityStore entityStore = model.module().entityStore();
 
-        StateResolver stateResolver = new FunctionStateResolver(
+        FunctionStateResolver stateResolver = new FunctionStateResolver(
             propertyFunction, associationFunction, manyAssociationFunction, namedAssociationFunction
         );
 
@@ -258,7 +278,7 @@ public class ModuleUnitOfWork
 
         return new EntityBuilderInstance<>( model,
                                             this,
-                                            uow.getEntityStoreUnitOfWork( entityStore, moduleInstance ),
+                                            uow.getEntityStoreUnitOfWork( entityStore, module ),
                                             identity,
                                             stateResolver );
     }
@@ -267,11 +287,15 @@ public class ModuleUnitOfWork
     public <T> T get( Class<T> type, String identity )
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
-        Iterable<ModelModule<EntityModel>> models = moduleInstance.typeLookup().lookupEntityModels( type );
+        Iterable<ModelModule<EntityModel>> models = module.typeLookup().lookupEntityModels( type );
 
         if( !models.iterator().hasNext() )
         {
-            throw new EntityTypeNotFoundException( type.getName() );
+            throw new EntityTypeNotFoundException( type.getName(),
+                                                   module.name(),
+                                                   map( ModelModule.toStringFunction,
+                                                        module.findVisibleEntityTypes()
+                                                   ) );
         }
 
         return uow.get( parseEntityReference( identity ), this, models, type );
@@ -310,10 +334,11 @@ public class ModuleUnitOfWork
         }
         else
         {
-            throw new NoSuchEntityException( compositeInstance.identity(), compositeInstance.types() );
+            throw new NoSuchEntityException( compositeInstance.identity(), compositeInstance.types(), usecase() );
         }
     }
 
+    @SuppressWarnings( "DuplicateThrows" )
     @Override
     public void complete()
         throws UnitOfWorkCompletionException, ConcurrentEntityModificationException
@@ -332,7 +357,7 @@ public class ModuleUnitOfWork
     {
         discard();
     }
-    
+
     @Override
     public boolean isOpen()
     {
@@ -401,6 +426,55 @@ public class ModuleUnitOfWork
     public void addEntity( EntityInstance instance )
     {
         uow.addEntity( instance );
+    }
+
+    @Override
+    public <T extends Identity> T toValue( Class<T> primaryType, T entityComposite )
+    {
+        Function<PropertyDescriptor, Object> propertyFunction = new ToValuePropertyMappingFunction( entityComposite );
+        Function<AssociationDescriptor, EntityReference> assocationFunction = new ToValueAssociationMappingFunction<>( entityComposite );
+        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssocFunction = new ToValueManyAssociationMappingFunction<>( entityComposite );
+        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssocFunction = new ToValueNameAssociationMappingFunction<>( entityComposite );
+
+        @SuppressWarnings( "unchecked" )
+        ValueBuilder<T> builder = module().newValueBuilderWithState(
+            primaryType, propertyFunction, assocationFunction, manyAssocFunction, namedAssocFunction );
+        return builder.newInstance();
+    }
+
+    @Override
+    public <T extends Identity> T toEntity( Class<T> primaryType, T valueComposite )
+    {
+        Function<PropertyDescriptor, Object> propertyFunction = new ToEntityPropertyMappingFunction<>( valueComposite );
+        Function<AssociationDescriptor, EntityReference> assocationFunction = new ToEntityAssociationMappingFunction<>( valueComposite );
+        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssocFunction = new ToEntityManyAssociationMappingFunction<>( valueComposite );
+        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssocFunction = new ToEntityNameAssociationMappingFunction<>( valueComposite );
+
+        String identity = valueComposite.identity().get();
+        try
+        {
+            T entity = get( primaryType, identity );
+            // If successful, then this entity is to by modified.
+            EntityInstance instance = EntityInstance.entityInstanceOf( (EntityComposite) entity );
+            EntityState state = instance.entityState();
+            FunctionStateResolver stateResolver = new FunctionStateResolver( propertyFunction,
+                                                                             assocationFunction,
+                                                                             manyAssocFunction,
+                                                                             namedAssocFunction );
+            EntityModel model = (EntityModel) EntityInstance.entityInstanceOf( (EntityComposite) entity ).descriptor();
+            stateResolver.populateState( model, state );
+            return entity;
+        }
+        catch( NoSuchEntityException e )
+        {
+            EntityBuilder<T> entityBuilder = newEntityBuilderWithState( primaryType,
+                                                                        identity,
+                                                                        propertyFunction,
+                                                                        assocationFunction,
+                                                                        manyAssocFunction,
+                                                                        namedAssocFunction );
+            return entityBuilder.newInstance();
+        }
     }
 
     private static class UoWQuerySource implements QuerySource
@@ -531,6 +605,169 @@ public class ModuleUnitOfWork
         public String toString()
         {
             return "UnitOfWork( " + moduleUnitOfWork.usecase().name() + " )";
+        }
+    }
+
+    private class ToValuePropertyMappingFunction
+        implements Function<PropertyDescriptor, Object>
+    {
+        private Object entity;
+
+        public ToValuePropertyMappingFunction( Object entity )
+        {
+            this.entity = entity;
+        }
+
+        @Override
+        public Object map( PropertyDescriptor propertyDescriptor )
+        {
+            EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
+            return entityState.propertyValueOf( propertyDescriptor.qualifiedName() );
+        }
+    }
+
+    private class ToValueAssociationMappingFunction<T>
+        implements Function<AssociationDescriptor, EntityReference>
+    {
+        private final T entity;
+
+        public ToValueAssociationMappingFunction( T entity )
+        {
+            this.entity = entity;
+        }
+
+        @Override
+        public EntityReference map( AssociationDescriptor associationDescriptor )
+        {
+            EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
+            return entityState.associationValueOf( associationDescriptor.qualifiedName() );
+        }
+    }
+
+    private class ToValueManyAssociationMappingFunction<T>
+        implements Function<AssociationDescriptor, Iterable<EntityReference>>
+    {
+        private final T entity;
+
+        public ToValueManyAssociationMappingFunction( T entity )
+        {
+            this.entity = entity;
+        }
+
+        @Override
+        public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+        {
+            EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
+            return entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() );
+        }
+    }
+
+    private class ToValueNameAssociationMappingFunction<T>
+        implements Function<AssociationDescriptor, Map<String, EntityReference>>
+    {
+        private final T entity;
+
+        public ToValueNameAssociationMappingFunction( T entity )
+        {
+            this.entity = entity;
+        }
+
+        @Override
+        public Map<String, EntityReference> map( AssociationDescriptor associationDescriptor )
+        {
+            Map<String, EntityReference> result = new HashMap<>();
+            EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
+            final NamedAssociationState state = entityState.namedAssociationValueOf( associationDescriptor.qualifiedName() );
+            for( String name : state )
+            {
+                result.put( name, state.get( name ) );
+            }
+            return result;
+        }
+    }
+
+    private class ToEntityPropertyMappingFunction<T>
+        implements Function<PropertyDescriptor, Object>
+    {
+        private final T value;
+
+        public ToEntityPropertyMappingFunction( T value )
+        {
+            this.value = value;
+        }
+
+        @Override
+        public Object map( PropertyDescriptor propertyDescriptor )
+        {
+            StateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
+            Property<Object> property = state.propertyFor( propertyDescriptor.accessor() );
+            return property.get();
+        }
+    }
+
+    private class ToEntityAssociationMappingFunction<T>
+        implements Function<AssociationDescriptor, EntityReference>
+    {
+
+        private final T value;
+
+        public ToEntityAssociationMappingFunction( T value )
+        {
+            this.value = value;
+        }
+
+        @Override
+        public EntityReference map( AssociationDescriptor associationDescriptor )
+        {
+            AssociationStateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
+            AssociationInstance<T> association = (AssociationInstance<T>) state.associationFor( associationDescriptor.accessor() );
+            return association.getAssociationState().get();
+        }
+    }
+
+    private class ToEntityManyAssociationMappingFunction<T>
+        implements Function<AssociationDescriptor, Iterable<EntityReference>>
+    {
+
+        private final T value;
+
+        public ToEntityManyAssociationMappingFunction( T valueComposite )
+        {
+            this.value = valueComposite;
+        }
+
+        @Override
+        public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+        {
+            AssociationStateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
+            ManyAssociationInstance<T> association =
+                (ManyAssociationInstance<T>) state.manyAssociationFor( associationDescriptor.accessor() );
+            return association.getManyAssociationState();
+        }
+    }
+
+    private class ToEntityNameAssociationMappingFunction<T>
+        implements Function<AssociationDescriptor, Map<String, EntityReference>>
+    {
+        private final T value;
+
+        public ToEntityNameAssociationMappingFunction( T valueComposite )
+        {
+            this.value = valueComposite;
+        }
+
+        @Override
+        public Map<String, EntityReference> map( AssociationDescriptor associationDescriptor )
+        {
+            AssociationStateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
+            NamedAssociationInstance<T> association =
+                (NamedAssociationInstance<T>) state.namedAssociationFor( associationDescriptor.accessor() );
+            HashMap<String, EntityReference> result = new HashMap<>();
+            for( Map.Entry<String, EntityReference> entry : association.getEntityReferences() )
+            {
+                result.put( entry.getKey(), entry.getValue() );
+            }
+            return result;
         }
     }
 }

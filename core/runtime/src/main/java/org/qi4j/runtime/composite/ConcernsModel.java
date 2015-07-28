@@ -24,7 +24,7 @@ import org.qi4j.functional.Iterables;
 import org.qi4j.functional.VisitableHierarchy;
 import org.qi4j.runtime.injection.Dependencies;
 import org.qi4j.runtime.injection.DependencyModel;
-import org.qi4j.runtime.structure.ModuleInstance;
+import org.qi4j.spi.module.ModuleSpi;
 
 /**
  * JAVADOC
@@ -48,7 +48,7 @@ public final class ConcernsModel
     }
 
     // Context
-    public ConcernsInstance newInstance( Method method, ModuleInstance moduleInstance,
+    public ConcernsInstance newInstance( Method method, ModuleSpi moduleInstance,
                                          FragmentInvocationHandler mixinInvocationHandler
     )
     {

@@ -32,15 +32,24 @@ import static org.qi4j.api.unitofwork.concern.UnitOfWorkPropagation.Propagation.
 
 /**
  * Scheduler.
- *
+ * <p>
  * This is the only interface you should use in your application for scheduling tasks.
- *
+ * </p>
+ * <p>
  * See {@link SchedulerConfiguration} for configuration properties.
+ * </p>
+ * <p>
  * See in {@link SchedulerAssembler} how to assemble a {@link Scheduler} and optional {@link Timeline}.
- *
+ * </p>
+ * <p>
  * By default, a {@link Schedule} is not durable. In other words, it do not survive an {@link Application} restart.
+ * </p>
+ * <p>
  * To make a {@link Schedule} durable, set it's durable property to true once its scheduled.
+ * </p>
+ * <p>
  * Durable {@link Schedule}s that have no future run are removed by {@code SchedulerGarbageCollector} (not implemented?).
+ * </p>
  */
 @Concerns( UnitOfWorkConcern.class )
 public interface Scheduler

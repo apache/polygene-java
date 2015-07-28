@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2007, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2010, Niclas Hehdman. All Rights Reserved.
+ * Copyright (c) 2010, Niclas Hednman. All Rights Reserved.
  * Copyright (c) 2012-2014, Paul Merlin. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,8 +48,6 @@ import org.qi4j.api.value.ValueSerializationException;
 import org.qi4j.api.value.ValueSerializer;
 import org.qi4j.functional.Function;
 import org.qi4j.functional.Function2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.qi4j.functional.Iterables.first;
 
@@ -57,29 +55,29 @@ import static org.qi4j.functional.Iterables.first;
  * Adapter for pull-parsing capable ValueSerializers.
  *
  * <p>
- *     Among Plain values (see {@link ValueSerializer}) some are considered primitives to underlying serialization
- *     mechanisms and by so handed/come without conversion to/from implementations. Primitive values can be one of:
+ * Among Plain values (see {@link ValueSerializer}) some are considered primitives to underlying serialization
+ * mechanisms and by so handed/come without conversion to/from implementations. Primitive values can be one of:
  * </p>
  * <ul>
- *     <li>String,</li>
- *     <li>Character or char,</li>
- *     <li>Boolean or boolean,</li>
- *     <li>Integer or int,</li>
- *     <li>Long or long,</li>
- *     <li>Short or short,</li>
- *     <li>Byte or byte,</li>
- *     <li>Float or float,</li>
- *     <li>Double or double.</li>
+ * <li>String,</li>
+ * <li>Character or char,</li>
+ * <li>Boolean or boolean,</li>
+ * <li>Integer or int,</li>
+ * <li>Long or long,</li>
+ * <li>Short or short,</li>
+ * <li>Byte or byte,</li>
+ * <li>Float or float,</li>
+ * <li>Double or double.</li>
  * </ul>
  * <p>
- *     Some other Plain values are transformed before being handed to implementations:
+ * Some other Plain values are transformed before being handed to implementations:
  * </p>
  * <ul>
- *     <li>BigInteger and BigDecimal depends on ValueSerializer.{@link Options};</li>
- *     <li>Date as a ISO-8601 UTC String;</li>
- *     <li>DateTime (JodaTime) as a ISO-8601 String with timezone offset or Z for UTC;</li>
- *     <li>LocalDateTime (JodaTime) as a ISO-8601 String with no timezone offset;</li>
- *     <li>LocalDate (JodaTime) as a ISO-8601 String with no time info;</li>
+ * <li>BigInteger and BigDecimal depends on ValueSerializer.{@link org.qi4j.api.value.ValueSerializer.Options};</li>
+ * <li>Date as a ISO-8601 UTC String;</li>
+ * <li>DateTime (JodaTime) as a ISO-8601 String with timezone offset or Z for UTC;</li>
+ * <li>LocalDateTime (JodaTime) as a ISO-8601 String with no timezone offset;</li>
+ * <li>LocalDate (JodaTime) as a ISO-8601 String with no time info;</li>
  * </ul>
  *
  * @param <OutputType> Implementor output type
@@ -94,7 +92,6 @@ public abstract class ValueSerializerAdapter<OutputType>
             throws Exception;
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger( ValueSerializerAdapter.class );
     private static final String UTF_8 = "UTF-8";
 
     private static <TO, FROM extends TO> Function2<Options, FROM, TO> identitySerializer()
@@ -115,8 +112,8 @@ public abstract class ValueSerializerAdapter<OutputType>
     /**
      * Register a Plain Value type serialization Function.
      *
-     * @param <T> Plain Value parametrized Type
-     * @param type Plain Value Type
+     * @param <T>        Plain Value parametrized Type
+     * @param type       Plain Value Type
      * @param serializer Serialization Function
      */
     @SuppressWarnings( "unchecked" )
@@ -128,8 +125,8 @@ public abstract class ValueSerializerAdapter<OutputType>
     /**
      * Register a Complex Value type serialization Function.
      *
-     * @param <T> Complex Value parametrized Type
-     * @param type Complex Value Type
+     * @param <T>        Complex Value parametrized Type
+     * @param type       Complex Value Type
      * @param serializer Serialization Function
      */
     @SuppressWarnings( "unchecked" )
@@ -330,7 +327,6 @@ public abstract class ValueSerializerAdapter<OutputType>
     {
         if( object != null )
         {
-            // System.out.println( ">>>>>>>>>>>> " + ( object == null ? "null" : object.getClass() ) );
             if( serializers.get( object.getClass() ) != null )
             {
                 // Plain Value
@@ -364,60 +360,51 @@ public abstract class ValueSerializerAdapter<OutputType>
         // Null
         if( object == null )
         {
-            LOG.trace( "Null object -> onValue( null )" );
             onValue( output, null );
         }
         else // Registered serializer
-        if( serializers.get( object.getClass() ) != null )
-        {
-            LOG.trace( "Registered serializer matches -> onValue( serialized )" );
-            onValue( output, serializers.get( object.getClass() ).map( options, object ) );
-        }
-        else if( complexSerializers.get( object.getClass() ) != null )
-        {
-            complexSerializers.get( object.getClass() ).serialize( options, object, output );
-        }
-        else // ValueComposite
-        if( ValueComposite.class.isAssignableFrom( object.getClass() ) )
-        {
-            LOG.trace( "ValueComposite assignable -> serializeValueComposite( object )" );
-            serializeValueComposite( options, object, output, rootPass );
-        }
-        else // EntityComposite
-        if( EntityComposite.class.isAssignableFrom( object.getClass() ) )
-        {
-            LOG.trace( "EntityComposite assignable -> serializeEntityComposite( object )" );
-            serializeEntityComposite( object, output );
-        }
-        else // Collection - Iterable
-        if( Iterable.class.isAssignableFrom( object.getClass() ) )
-        {
-            LOG.trace( "Iterable assignable -> serializeIterable( object )" );
-            serializeIterable( options, object, output );
-        }
-        else // Array - QUID Remove this and use java serialization for arrays?
-        if( object.getClass().isArray() )
-        {
-            LOG.trace( "Object isArray -> serializeBase64Serializable( object )" );
-            serializeBase64Serializable( object, output );
-        }
-        else // Map
-        if( Map.class.isAssignableFrom( object.getClass() ) )
-        {
-            LOG.trace( "Map assignable -> serializeMap( object )" );
-            serializeMap( options, object, output );
-        }
-        else // Enum
-        if( object.getClass().isEnum() )
-        {
-            LOG.trace( "Object is an enum -> onValue( object.toString() )" );
-            onValue( output, object.toString() );
-        }
-        else // Fallback to Base64 encoded Java Serialization
-        {
-            LOG.trace( "Unknown object type -> serializeBase64Serializable( object )" );
-            serializeBase64Serializable( object, output );
-        }
+            if( serializers.get( object.getClass() ) != null )
+            {
+                onValue( output, serializers.get( object.getClass() ).map( options, object ) );
+            }
+            else if( complexSerializers.get( object.getClass() ) != null )
+            {
+                complexSerializers.get( object.getClass() ).serialize( options, object, output );
+            }
+            else // ValueComposite
+                if( ValueComposite.class.isAssignableFrom( object.getClass() ) )
+                {
+                    serializeValueComposite( options, object, output, rootPass );
+                }
+                else // EntityComposite
+                    if( EntityComposite.class.isAssignableFrom( object.getClass() ) )
+                    {
+                        serializeEntityComposite( object, output );
+                    }
+                    else // Collection - Iterable
+                        if( Iterable.class.isAssignableFrom( object.getClass() ) )
+                        {
+                            serializeIterable( options, object, output );
+                        }
+                        else // Array - QUID Remove this and use java serialization for arrays?
+                            if( object.getClass().isArray() )
+                            {
+                                serializeBase64Serializable( object, output );
+                            }
+                            else // Map
+                                if( Map.class.isAssignableFrom( object.getClass() ) )
+                                {
+                                    serializeMap( options, object, output );
+                                }
+                                else // Enum
+                                    if( object.getClass().isEnum() )
+                                    {
+                                        onValue( output, object.toString() );
+                                    }
+                                    else // Fallback to Base64 encoded Java Serialization
+                                    {
+                                        serializeBase64Serializable( object, output );
+                                    }
     }
 
     private void serializeValueComposite( Options options, Object object, OutputType output, boolean rootPass )
@@ -429,6 +416,7 @@ public abstract class ValueSerializerAdapter<OutputType>
 
         onObjectStart( output );
 
+        //noinspection ConstantConditions
         if( options.getBoolean( Options.INCLUDE_TYPE_INFO ) && !rootPass )
         {
             onFieldStart( output, "_type" );
@@ -450,16 +438,16 @@ public abstract class ValueSerializerAdapter<OutputType>
         for( AssociationDescriptor associationDescriptor : descriptor.valueType().associations() )
         {
             Association<?> association = state.associationFor( associationDescriptor.accessor() );
-            Object instance = association.get();
             onFieldStart( output, associationDescriptor.qualifiedName().name() );
             onValueStart( output );
-            if( instance == null )
+            EntityReference ref = association.reference();
+            if( ref == null )
             {
                 onValue( output, null );
             }
             else
             {
-                onValue( output, ( (Identity) instance ).identity().get() );
+                onValue( output, ref.identity() );
             }
             onValueEnd( output );
             onFieldEnd( output );
@@ -470,10 +458,10 @@ public abstract class ValueSerializerAdapter<OutputType>
             onFieldStart( output, associationDescriptor.qualifiedName().name() );
             onValueStart( output );
             onArrayStart( output );
-            for( Object instance : manyAssociation )
+            for( EntityReference ref : manyAssociation.references() )
             {
                 onValueStart( output );
-                onValue( output, ( (Identity) instance ).identity().get() );
+                onValue( output, ref.identity() );
                 onValueEnd( output );
             }
             onArrayEnd( output );
@@ -490,7 +478,8 @@ public abstract class ValueSerializerAdapter<OutputType>
             {
                 onFieldStart( output, name );
                 onValueStart( output );
-                onValue( output, ( (Identity) namedAssociation.get( name ) ).identity().get() );
+                EntityReference ref = namedAssociation.referenceOf( name );
+                onValue( output, ref.identity() );
                 onValueEnd( output );
                 onFieldEnd( output );
             }
@@ -528,26 +517,42 @@ public abstract class ValueSerializerAdapter<OutputType>
     {
         @SuppressWarnings( "unchecked" )
         Map<Object, Object> map = (Map<Object, Object>) object;
-        onArrayStart( output );
-        for( Map.Entry<Object, Object> entry : map.entrySet() )
+        if( options.getBoolean( Options.MAP_ENTRIES_AS_OBJECTS ) )
         {
             onObjectStart( output );
-
-            onFieldStart( output, "key" );
-            onValueStart( output );
-            onValue( output, entry.getKey().toString() );
-            onValueEnd( output );
-            onFieldEnd( output );
-
-            onFieldStart( output, "value" );
-            onValueStart( output );
-            doSerialize( options, entry.getValue(), output, false );
-            onValueEnd( output );
-            onFieldEnd( output );
-
+            for( Map.Entry<Object, Object> entry : map.entrySet() )
+            {
+                onFieldStart( output, entry.getKey().toString() );
+                onValueStart( output );
+                doSerialize( options, entry.getValue(), output, false );
+                onValueEnd( output );
+                onFieldEnd( output );
+            }
             onObjectEnd( output );
         }
-        onArrayEnd( output );
+        else
+        {
+            onArrayStart( output );
+            for( Map.Entry<Object, Object> entry : map.entrySet() )
+            {
+                onObjectStart( output );
+
+                onFieldStart( output, "key" );
+                onValueStart( output );
+                onValue( output, entry.getKey().toString() );
+                onValueEnd( output );
+                onFieldEnd( output );
+
+                onFieldStart( output, "value" );
+                onValueStart( output );
+                doSerialize( options, entry.getValue(), output, false );
+                onValueEnd( output );
+                onFieldEnd( output );
+
+                onObjectEnd( output );
+            }
+            onArrayEnd( output );
+        }
     }
 
     private void serializeBase64Serializable( Object object, OutputType output )
@@ -560,7 +565,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         throws Exception
     {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        try( ObjectOutputStream out = new ObjectOutputStream( bout ) )
+        try (ObjectOutputStream out = new ObjectOutputStream( bout ))
         {
             out.writeUnshared( object );
         }

@@ -1,24 +1,43 @@
-[[build-system,Build System]]
-= Build System =
+///////////////////////////////////////////////////////////////
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+///////////////////////////////////////////////////////////////
 
-This tutorial is intended for developpers who want to build the Qi4j SDK themselves.
-It describe the Qi4j SDK Build System from compilation to publication of artifacts for consumption by other
+[[build-system,Build System]]
+= Zest™ Build System =
+
+This tutorial is intended for developpers who want to build the Zest™ SDK themselves.
+It describe the Zest™ SDK Build System from compilation to publication of artifacts for consumption by other
 applications.
 
-If instead you want to setup your project build system to depend on modules of the Qi4j SDK see the
-<<howto-depend-on-qi4j,dedicated tutorial>>.
+If instead you want to setup your project build system to depend on modules of the Zest™ SDK see the
+<<howto-depend-on-zest,dedicated tutorial>>.
 
 
 == Gradle ==
 
 NOTE: All major Java IDEs have great Gradle support.
-Visit the http://www.gradle.org/tooling[Gradle Tooling] page to learn how to import the Qi4j SDK build into your
+Visit the http://www.gradle.org/tooling[Gradle Tooling] page to learn how to import the Zest™ SDK build into your
 favorite IDE.
 
-Qi4j community migrated away from Maven after several years of frustration, especially around release management,
+Zest™ community migrated away from Maven after several years of frustration, especially around release management,
 versioning and cross-module dependency resolution issues, in Feb 2011.
 The tool of choice is now Gradle, and it doesn't require any installation, there are +gradlew+ and +gradlew.bat+ in
-the root folder of the Qi4j SDK that will bootstrap Gradle if not done so already.
+the root folder of the Zest™ SDK that will bootstrap Gradle if not done so already.
 
 If you are new to Gradle, you should keep the http://www.gradle.org/documentation[documentation] at hands.
 
@@ -29,12 +48,19 @@ http://gradle.org/docs/current/userguide/tutorial_this_and_that.html#sec:gradle_
 
 == Root project tasks ==
 
-The Qi4j SDK root project has tasks that work with the whole SDK.
+The Zest™ SDK root project has tasks that work with the whole SDK.
 The default build, triggered when running gradle without any command line arguments, compiles the code and run the
 tests, but nothing else.
 A quick way to check that nothing broke.
 
 Here are some of theses global tasks we defined:
+
+goOffline::
++
+--
+Resolve, download and cache all needed dependencies.
+Useful to go offline.
+--
 
 clean::
 +
@@ -46,7 +72,7 @@ check::
 +
 --
 Run the tests and other checks like checkstyle.
-Reports are generated in +qi4j-sdk/build/reports+.
+Reports are generated in +build/reports+.
 --
 
 install::
@@ -61,14 +87,14 @@ buildAll::
 +
 --
 Produces all the archives, javadocs, manuals and website content.
-The output is generated to +qi4j-sdk/build+.
+The output is generated to +build+.
 --
 
 release::
 +
 --
 Uploads the release artifacts to the distribution servers and creates the release output into the
-+qi4j-sdk/build/distributions+ directory.
++build/distributions+ directory.
 --
 
 
@@ -83,7 +109,7 @@ To see all available tasks on a submodule issue the following command:
 ----
 
 This example will output all gradle tasks available in the +tests/performance+ module where you should find
-the +testPerf+ task that run the Qi4j performance test suite.
+the +testPerf+ task that run the Zest™ performance test suite.
 
 
 == Versions ==
@@ -105,39 +131,17 @@ If a +version+ property is not defined, the build system will refuse to make a r
 
 == Tests ==
 
-NOTE: See the http://qi4j.org/community/ci.html[Qi4j Continuous Integration] for current tests results
+NOTE: See the https://builds.apache.org/view/S-Z/view/Zest/[Zest™ Continuous Integration] for current tests results
 
-// TODO
-
-=== Regression tests ===
-
-They are not part of the default build.
-
-// TODO
-
-
-=== Performance tests ===
-
-Performance tests provide performance mesurements for typical Qi4j use cases.
-They are not part of the default build.
-
-// TODO
-
-
-=== Complex tests ===
-
-Complex tests are the ones that requires manual operation to be executed.
-They are not part of the default build.
-
-// TODO
-
+Unit and integration tests are located near the code under test.
+You'll find theses tests across the whole SDK.
 
 === Unit tests requiring external services ===
 
-NOTE: The HTML test reports generated by Gradle show skipped tests.
-
 Among unit tests, some require an external service to be run.
 For example, the MongoDB EntityStore extension requires an actual MongoDB server to run its tests.
+
+NOTE: The HTML test reports generated by Gradle show skipped tests.
 
 All thoses tests should be part of the default build and check if the service is available at its default location
 on +localhost+ and skip if not.
@@ -152,13 +156,42 @@ We'll list here services that the unit tests will use if available.
 - PostgreSQL for +extensions/entitystore-sql+ and +extensions/indexing-sql+ (need setup, see test source)
 - MySQL for +extensions/entitystore-sql+ (need setup, see test source)
 
+=== Performance tests ===
 
-== Releasing the Qi4j SDK ==
+Performance tests provide performance mesurements for typical Zest™ use cases.
+They are not part of the default build and are located in the `tests/performance` directory of the SDK.
+
+They can be run with the following Gradle command:
+
+[source,bash]
+-----------
+./gradlew :org.qi4j.tests:org.qi4j.test.performance:testPerf
+-----------
+
+Results will then be available in the test reports.
+
+
+== Documentation generation ==
+
+The build generates a documentation minisite:
+
+[source,bash]
+-----------
+./gradlew -p manual website
+-----------
+
+Output is in `~/manual/build/docs/website`.
+
+You'll need Asciidoc and docbook-xsl installed.
+
+
+
+== Build for releases ==
 
 IMPORTANT: Remember that if a +version+ property is not defined, the build system will refuse to make a release and upload.
 
-The Qi4j SDK build system is setup for an easy release process.
-This is very useful to the Qi4j Core Team but can also be useful to third parties that want to cut a in-house release.
+The Zest™ SDK build system is setup for an easy release process.
+This is very useful to the Zest™ Core Team but can also be useful to third parties that want to cut a in-house release.
 In this regard, we try to make every aspect of the release process usable for such cases.
 
 The following sections describe various aspects of the release process.
@@ -167,12 +200,12 @@ By default you need to have a proper PGP setup, see below.
 
 === Release Criteria ===
 
-The Qi4j SDK modules are of varying maturity level and we try to maintain a STATUS (+dev-status.xml+) file indicating
+The Zest™ SDK modules are of varying maturity level and we try to maintain a STATUS (+dev-status.xml+) file indicating
 how good the codebase, documentation and unit tests are for each of the modules. This is highly subjective and
 potentially different individuals will judge this differently, but at least it gives a ballpark idea of the situation
 for our users.
 
-The Qi4j SDK build system use the values from the +dev-status.xml+ files to filter out non-releasable modules out for
+The Zest™ SDK build system use the values from the +dev-status.xml+ files to filter out non-releasable modules out for
 the +javadocs+ and +uploadArchives+ root project tasks.
 Moreover, the +release+ task ensure that no releasable module depends on module(s) that don't fit the release criteria
 and throw a detailed exception if need be.
@@ -183,7 +216,7 @@ This can be relaxed by adding +-x checkReleaseSpec+ arguments to gradle invocati
 === Signing ===
 
 Artifact signing is done using PGP.
-You need to provide Gradle the following properties
+You need to provide Gradle the following properties, `~/.gradle/gradle.properties` is a good place:
 
     signing.keyId=FB751943
     signing.password=foobar
@@ -202,10 +235,10 @@ Signing can be turned on or off by setting the `uploadSigned` property to false.
 By default RELEASES must satisfy ReleaseSpecification, SNAPSHOT don't.
 ReleaseSpecification usage can be turned on or off by setting the `uploadReleaseSpec` property to false.
 
-By default RELEASES and SNAPHOTS are uploaded using WEBDAV.
+By default RELEASES and SNAPHOTS are uploaded using HTTP.
 Used Wagon can be overriden by setting the `uploadWagon` property.
 
-By default RELEASES and SNAPSHOTS are uploaded to Cloudbees.
+By default RELEASES and SNAPSHOTS are uploaded to the Apache Nexus.
 Target repository can be overriden by setting the `uploadRepository` property.
 
 No username/password is provided by default.
@@ -215,7 +248,7 @@ For example here is how to deploy all artifacts as unsigned SNAPSHOTs to a given
 
 [source,bash]
 -----------
-./gradlew uploadArchives -Dversion=2.0-SNAPSHOT -PuploadReleaseSpec=false \
+./gradlew uploadArchives -Dversion=3.2.1-SNAPSHOT -PuploadReleaseSpec=false \
     -PuploadWagon=what:ever:wagon -PuploadRepository=http://what.ever.repository/url \
     -PuploadUsername=foo -PuploadPassword=bar
 -----------
@@ -224,7 +257,7 @@ And here is how to deploy a signed release to the local filesystem:
 
 [source,bash]
 -----------
-./gradlew uploadArchives -Dversion=2.0 -PuploadRepository=file:///path/to/local/repository
+./gradlew uploadArchives -Dversion=3.2.1 -PuploadRepository=file:///path/to/local/repository
 -----------
 
 See the http://www.gradle.org/docs/current/userguide/maven_plugin.html#wagonLibs[Gradle documentation] about
