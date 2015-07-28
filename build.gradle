@@ -582,29 +582,53 @@ task buildAll( dependsOn: [
     ':org.qi4j.manual:website'
 ] ) { }
 
+// Generate license headers with comment styles
+def licenseHeader_wrap( base, top, left, bottom ) {
+  ( top ? "$top\n" : '' ) + base.readLines().collect{ "${left}${it}" }.join( '\n' ) + '\n' + ( bottom ? "$bottom\n" : '' )
+}
+def licenseHeader( flavour ) {
+  def base = project.file( 'etc/header.txt' ).text
+  def header
+  switch( flavour ) {
+    case 'java': case 'groovy': case 'scala': case 'js':
+      header = licenseHeader_wrap( base, '/*', ' * ', ' */' ) ; break
+    case 'xml': case 'html':
+      header = licenseHeader_wrap( base, '<!--', '  ', '-->' ) ; break
+    case 'txt': case 'shell': case 'python': case 'ruby':
+      header = licenseHeader_wrap( base, null, '# ', null ) ; break
+    case 'adoc': case 'asciidoc':
+      header = licenseHeader_wrap( base, null, '// ', null ) ; break
+    default:
+      header = base
+  }
+  header
+}
+
 task generateBinDistGoOfflineHelpers {
   def goOfflineGradleFile = file( 'build/go-offline-helpers/go-offline.gradle' )
   def goOfflinePomFile = file( 'build/go-offline-helpers/go-offline.pom')
   outputs.files goOfflineGradleFile
   outputs.files goOfflinePomFile
   doLast {
-    
-    def goOfflineGradle = '// This gradle build file has the sole purpose of downloading all dependencies in this directory.\n'
+
+    def goOfflineGradle = licenseHeader( 'java' )
+    goOfflineGradle += '// This gradle build file has the sole purpose of downloading all dependencies in a directory relative to this file named \'dependencies\'.\n'
     goOfflineGradle += '// Use the following command: gradle -b go-offline.gradle download\n'
     goOfflineGradle += 'apply plugin: \'java\'\nconfigurations { download }\nrepositories {\n'
-    def goOfflinePom = '<project>\n  <modelVersion>4.0.0</modelVersion>\n'
+    def goOfflinePom = licenseHeader( 'xml' )
+    goOfflinePom += '<project>\n  <modelVersion>4.0.0</modelVersion>\n'
     goOfflinePom += "  <groupId>org.qi4j</groupId>\n  <artifactId>go-offline-helper</artifactId>\n  <version>$version</version>\n"
     goOfflinePom += '  <packaging>pom</packaging>\n'
-    goOfflinePom += '  <!--\n  This pom has the sole purpose of downloading all dependencies in this directory.\n'
+    goOfflinePom += '  <!--\n  This pom has the sole purpose of downloading all dependencies in a directory relative to this file named \'dependencies\'.\n'
     goOfflinePom += '  Use the following command:\n\n  mvn -f go-offline.pom validate\n  -->\n  <repositories>\n'
-    
+
     def repoCount = 1
     repos_urls.each { repo_url ->
       goOfflineGradle += "  maven { url '${repo_url.value}' }\n"
       goOfflinePom += "    <repository><id>go-offline-repo-$repoCount</id><url>${repo_url.value}</url></repository>\n"
       repoCount++
     }
-    
+
     goOfflineGradle += '}\ndependencies {\n'
     goOfflinePom += '  </repositories>\n  <dependencies>\n'
 
