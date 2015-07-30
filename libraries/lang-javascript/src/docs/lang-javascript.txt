@@ -37,7 +37,7 @@ includes the package, and has "." replaced with "/".
 
 Example: 
 
-    org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
+    org/apache/zest/samples/hello/domain/HelloWorldSpeaker.say.js
 
 That means that the HelloWorldSpeaker.say.js file may be co-located with the 
 class files in the same package. It is currently not supported to place the 
@@ -50,6 +50,6 @@ interface or at assembly time.
 
 [snippet,java]
 ----
-source=libraries/lang-javascript/src/test/java/org/qi4j/lang/javascript/HelloSpeaker.java
+source=libraries/lang-javascript/src/test/java/org/apache/zest/library/javascript/HelloSpeaker.java
 tag=mixin
 ----

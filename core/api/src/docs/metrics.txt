@@ -30,7 +30,7 @@ constructor argument.
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/metrics/DocumentationSupport.java
 tag=common
 --------------
 
@@ -48,7 +48,7 @@ To create a Gauge, you do something like;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/metrics/DocumentationSupport.java
 tag=gauge
 --------------
 
@@ -56,14 +56,14 @@ tag=gauge
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/metrics/DocumentationSupport.java
 tag=counter
 --------------
 
 == Histogram ==
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/metrics/DocumentationSupport.java
 tag=histogram
 --------------
 
@@ -71,7 +71,7 @@ tag=histogram
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/metrics/DocumentationSupport.java
 tag=meter
 --------------
 
@@ -81,7 +81,7 @@ critical sections, or even HTTP requests duration and similar.
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/metrics/DocumentationSupport.java
 tag=timer
 --------------
 
@@ -89,6 +89,6 @@ tag=timer
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/metrics/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/metrics/DocumentationSupport.java
 tag=healthcheck
 --------------

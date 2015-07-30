@@ -46,7 +46,7 @@ Let's walk through the different steps typically needed.
 
 [snippet,java]
 -------------
-source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+source=libraries/rest-client/src/test/java/org/apache/zest/library/rest/client/ContextResourceClientFactoryTest.java
 tag=client-create1
 -------------
 
@@ -57,7 +57,7 @@ We then create the global handler, which will be set to all ContextResourceClien
 
 [snippet,java]
 -------------
-source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+source=libraries/rest-client/src/test/java/org/apache/zest/library/rest/client/ContextResourceClientFactoryTest.java
 tag=client-create2
 -------------
 
@@ -74,7 +74,7 @@ ReST API.
 
 [snippet,java]
 -------------
-source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+source=libraries/rest-client/src/test/java/org/apache/zest/library/rest/client/ContextResourceClientFactoryTest.java
 tag=client-create3
 -------------
 
@@ -89,28 +89,28 @@ The general approach is to register handlers for potential results when invoking
 === Query without Value ===
 [snippet,java]
 -------------
-source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+source=libraries/rest-client/src/test/java/org/apache/zest/library/rest/client/ContextResourceClientFactoryTest.java
 tag=query-without-value
 -------------
 
 === Query and Command ===
 [snippet,java]
 -------------
-source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+source=libraries/rest-client/src/test/java/org/apache/zest/library/rest/client/ContextResourceClientFactoryTest.java
 tag=query-and-command
 -------------
 
 === Query List and Command ===
 [snippet,java]
 -------------
-source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+source=libraries/rest-client/src/test/java/org/apache/zest/library/rest/client/ContextResourceClientFactoryTest.java
 tag=query-list-and-command
 -------------
 
 === Query List and Command Progressive ===
 [snippet,java]
 -------------
-source=libraries/rest-client/src/test/java/org/qi4j/library/rest/client/ContextResourceClientFactoryTest.java
+source=libraries/rest-client/src/test/java/org/apache/zest/library/rest/client/ContextResourceClientFactoryTest.java
 tag=query-list-and-command-progressive
 -------------
 

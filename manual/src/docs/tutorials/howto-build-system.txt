@@ -165,7 +165,7 @@ They can be run with the following Gradle command:
 
 [source,bash]
 -----------
-./gradlew :org.qi4j.tests:org.qi4j.test.performance:testPerf
+./gradlew :org.apache.zest.tests:org.apache.zest.test.performance:testPerf
 -----------
 
 Results will then be available in the test reports.

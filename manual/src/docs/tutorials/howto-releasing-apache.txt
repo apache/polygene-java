@@ -372,7 +372,7 @@ Tag: https://git-wip-us.apache.org/repos/asf?p=zest-java.git;a=tag;h=cc0f8211bf4
 
 The distributions to be voted on are located here: https://dist.apache.org/repos/dist/dev/zest/
 
-Convenience artifacts in a maven repository are staged here: https://repository.apache.org/content/groups/staging/org/qi4j/
+Convenience artifacts in a maven repository are staged here: https://repository.apache.org/content/groups/staging/org/apache/zest/
 
 Release distributions and convenience artifacts are signed with the following key: https://dist.apache.org/repos/dist/dev/zest/KEYS
 

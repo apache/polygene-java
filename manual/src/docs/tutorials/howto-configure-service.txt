@@ -34,7 +34,7 @@ Destinations. For the sake of simplicity, we are leaving out the domain details.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlan.java
+source=manual/src/main/java/org/apache/zest/manual/travel/TravelPlan.java
 tag=service
 -----------
 
@@ -42,7 +42,7 @@ So, then there is the ServiceComposite...
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlanService.java
+source=manual/src/main/java/org/apache/zest/manual/travel/TravelPlanService.java
 tag=serviceComposite
 -----------
 
@@ -52,7 +52,7 @@ configuration interface.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlanConfiguration.java
+source=manual/src/main/java/org/apache/zest/manual/travel/TravelPlanConfiguration.java
 tag=configuration
 -----------
 
@@ -63,7 +63,7 @@ Now we can access this configuration in the TravelPlanMixin like this;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlanMixin.java
+source=manual/src/main/java/org/apache/zest/manual/travel/TravelPlanMixin.java
 tag=mixin
 -----------
 
@@ -74,7 +74,7 @@ with the refresh() method in the Configuration interface;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlanMixin.java
+source=manual/src/main/java/org/apache/zest/manual/travel/TravelPlanMixin.java
 tag=refresh
 -----------
 
@@ -95,7 +95,7 @@ So, we create a properties file, where the keys are the names of the properties 
 
 [snippet,bash]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/TravelPlanService.properties
+source=manual/src/main/java/org/apache/zest/manual/travel/TravelPlanService.properties
 tag=params
 -----------
 File: org/hedhman/niclas/travel/TravelPlanService.properties
@@ -106,7 +106,7 @@ And this would work with the standard assembly.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/Main.java
+source=manual/src/main/java/org/apache/zest/manual/travel/Main.java
 tag=simple
 -----------
 
@@ -117,7 +117,7 @@ the same package as the ServiceComposite sub type, the TravelPlanService in the 
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/Main.java
+source=manual/src/main/java/org/apache/zest/manual/travel/Main.java
 tag=assemble
 -----------
 
@@ -125,18 +125,18 @@ And the two files for configuration,
 
 [snippet,bash]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/ExpediaService.properties
+source=manual/src/main/java/org/apache/zest/manual/travel/ExpediaService.properties
 tag=params
 -----------
-File: org/qi4j/manual/travel/ExpediaService.properties
+File: org/apache/zest/manual/travel/ExpediaService.properties
 
 
 [snippet,bash]
 -----------
-source=manual/src/main/java/org/qi4j/manual/travel/OrbitzService.properties
+source=manual/src/main/java/org/apache/zest/manual/travel/OrbitzService.properties
 tag=params
 -----------
-File: org/qi4j/manual/travel/OrbitzService.properties
+File: org/apache/zest/manual/travel/OrbitzService.properties
 
 == Changing Configuration in runtime ==
 Unlike most frameworks, the Configuration in Zest™ is an active Entity, and once the properties file has been read once

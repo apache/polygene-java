@@ -86,7 +86,7 @@ Let's see how it works in practice.
 
 [snippet,java]
 ----
-source=core/api/src/test/java/org/qi4j/api/value/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/value/DocumentationSupport.java
 tag=default
 ----
 
@@ -110,7 +110,7 @@ Let's see how to use the ValueSerialization Services.
 
 [snippet,java]
 ----
-source=core/api/src/test/java/org/qi4j/api/value/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/value/DocumentationSupport.java
 tag=service
 ----
 
@@ -130,7 +130,7 @@ The first one use classic streams.
 
 [snippet,java]
 ----
-source=core/api/src/test/java/org/qi4j/api/value/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/value/DocumentationSupport.java
 tag=stream
 ----
 
@@ -143,7 +143,7 @@ The second one use the <<core-io>>:
 
 [snippet,java]
 ----
-source=core/api/src/test/java/org/qi4j/api/value/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/value/DocumentationSupport.java
 tag=io
 ----
 

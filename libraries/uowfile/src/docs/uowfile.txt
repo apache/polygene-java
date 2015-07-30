@@ -43,7 +43,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 == Logging ==
 
-The SLF4J Logger used by this library is named "org.qi4j.library.uowfile".
+The SLF4J Logger used by this library is named "org.apache.zest.library.uowfile".
 
 
 == Add an attached file to an Entity ==
@@ -52,7 +52,7 @@ Let's say you have the following Entity:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFileTest.java
+source=libraries/uowfile/src/test/java/org/apache/zest/library/uowfile/HasUoWFileTest.java
 tag=entity
 ----
 
@@ -60,7 +60,7 @@ To add an attached file to it you first need to extends HasUoWFileLifecycle:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFileTest.java
+source=libraries/uowfile/src/test/java/org/apache/zest/library/uowfile/HasUoWFileTest.java
 tag=uowfile
 ----
 
@@ -68,7 +68,7 @@ This provides you with the following contract:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/main/java/org/qi4j/library/uowfile/singular/HasUoWFile.java
+source=libraries/uowfile/src/main/java/org/apache/zest/library/uowfile/singular/HasUoWFile.java
 tag=contract
 ----
 
@@ -76,7 +76,7 @@ Next you need to write the UoWFileLocator mixin:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFileTest.java
+source=libraries/uowfile/src/test/java/org/apache/zest/library/uowfile/HasUoWFileTest.java
 tag=locator
 ----
 
@@ -84,7 +84,7 @@ Assemble all this as follow:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFileTest.java
+source=libraries/uowfile/src/test/java/org/apache/zest/library/uowfile/HasUoWFileTest.java
 tag=assembly
 ----
 
@@ -92,7 +92,7 @@ You can now use the following methods on your EntityComposite:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFileTest.java
+source=libraries/uowfile/src/test/java/org/apache/zest/library/uowfile/HasUoWFileTest.java
 tag=api
 ----
 
@@ -106,7 +106,7 @@ Let's say you have the following Entity:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFilesTest.java
+source=libraries/uowfile/src/test/java/org/apache/zest/library/uowfile/HasUoWFilesTest.java
 tag=entity
 ----
 
@@ -118,7 +118,7 @@ HasUoWFilesLifecycle:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFilesTest.java
+source=libraries/uowfile/src/test/java/org/apache/zest/library/uowfile/HasUoWFilesTest.java
 tag=uowfile
 ----
 
@@ -126,7 +126,7 @@ This provides you with the following contract:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/main/java/org/qi4j/library/uowfile/plural/HasUoWFiles.java
+source=libraries/uowfile/src/main/java/org/apache/zest/library/uowfile/plural/HasUoWFiles.java
 tag=contract
 ----
 
@@ -134,7 +134,7 @@ Next you need to write the UoWFileLocator mixin:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFilesTest.java
+source=libraries/uowfile/src/test/java/org/apache/zest/library/uowfile/HasUoWFilesTest.java
 tag=locator
 ----
 
@@ -142,7 +142,7 @@ Assemble all this as follow:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFilesTest.java
+source=libraries/uowfile/src/test/java/org/apache/zest/library/uowfile/HasUoWFilesTest.java
 tag=assembly
 ----
 
@@ -150,7 +150,7 @@ You can now use the following methods on your EntityComposite:
 
 [snippet,java]
 ----
-source=libraries/uowfile/src/test/java/org/qi4j/library/uowfile/HasUoWFilesTest.java
+source=libraries/uowfile/src/test/java/org/apache/zest/library/uowfile/HasUoWFilesTest.java
 tag=api
 ----
 

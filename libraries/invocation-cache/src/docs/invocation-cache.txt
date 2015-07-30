@@ -63,7 +63,7 @@ Let's say that we have some service that is very expensive to call.
 
 [snippet,java]
 ----
-source=libraries/invocation-cache/src/test/java/org/qi4j/library/invocationcache/DocumentationSupport.java
+source=libraries/invocation-cache/src/test/java/org/apache/zest/library/invocationcache/DocumentationSupport.java
 tag=composite
 ----
 
@@ -73,7 +73,7 @@ provided.
 
 [snippet,java]
 ----
-source=libraries/invocation-cache/src/test/java/org/qi4j/library/invocationcache/DocumentationSupport.java
+source=libraries/invocation-cache/src/test/java/org/apache/zest/library/invocationcache/DocumentationSupport.java
 tag=assembly
 ----
 

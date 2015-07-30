@@ -34,7 +34,7 @@ A typed Concern is a Java class that implements the MixinType it can be used on:
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/InventoryConcern.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/InventoryConcern.java
 tag=allClass
 -----------
 
@@ -49,7 +49,7 @@ It can be used as follows;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/Order.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/concern/Order.java
 tag=class
 -----------
 
@@ -63,7 +63,7 @@ arbitrary MixinType.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/MyGenericConcern.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/concern/MyGenericConcern.java
 tag=class
 -----------
 
@@ -71,7 +71,7 @@ It can be used as follows;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/AnyMixinType.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/concern/AnyMixinType.java
 tag=class
 -----------
 
@@ -90,7 +90,7 @@ Here is how the declaration goes ;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/MyGenericConcern.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/concern/MyGenericConcern.java
 tag=appliesTo
 -----------
 
@@ -98,7 +98,7 @@ And how to use the annotation ;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/AnyMixinType.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/concern/AnyMixinType.java
 tag=annotationUse
 -----------
 
@@ -108,6 +108,6 @@ Finally here is how to implement an AppliesToFilter:
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/concern/MyAppliesToFilter.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/concern/MyAppliesToFilter.java
 tag=filter
 -----------

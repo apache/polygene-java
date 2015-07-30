@@ -33,7 +33,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 == Logging ==
 
-The SLF4J Logger used by this library is named "org.qi4j.library.scheduler".
+The SLF4J Logger used by this library is named "org.apache.zest.library.scheduler".
 
 == Assembly ==
 
@@ -45,7 +45,7 @@ Here is a full example:
 
 [snippet,java]
 ----
-source=libraries/scheduler/src/test/java/org/qi4j/library/scheduler/SchedulerTest.java
+source=libraries/scheduler/src/test/java/org/apache/zest/library/scheduler/SchedulerTest.java
 tag=assembly
 ----
 
@@ -55,7 +55,7 @@ SchedulerConfiguration defines configuration properties details:
 
 [snippet,java]
 ----
-source=libraries/scheduler/src/main/java/org/qi4j/library/scheduler/SchedulerConfiguration.java
+source=libraries/scheduler/src/main/java/org/apache/zest/library/scheduler/SchedulerConfiguration.java
 tag=configuration
 ----
 
@@ -67,7 +67,7 @@ The Task contract is quite simple:
 
 [snippet,java]
 ----
-source=libraries/scheduler/src/main/java/org/qi4j/library/scheduler/Task.java
+source=libraries/scheduler/src/main/java/org/apache/zest/library/scheduler/Task.java
 tag=task
 ----
 
@@ -82,7 +82,7 @@ Here is a simple example:
 
 [snippet,java]
 -----------
-source=libraries/scheduler/src/test/java/org/qi4j/library/scheduler/docsupport/SchedulerDocs.java
+source=libraries/scheduler/src/test/java/org/apache/zest/library/scheduler/docsupport/SchedulerDocs.java
 tag=1
 -----------
 
@@ -104,7 +104,7 @@ This is the easiest way to run a background Task once after a given initial dela
 
 [snippet,java]
 -----------
-source=libraries/scheduler/src/test/java/org/qi4j/library/scheduler/docsupport/SchedulerDocs.java
+source=libraries/scheduler/src/test/java/org/apache/zest/library/scheduler/docsupport/SchedulerDocs.java
 tag=2
 -----------
 
@@ -154,7 +154,7 @@ Use the following in your code to get a Timeline Service injected:
 
 [snippet,java]
 -----------
-source=libraries/scheduler/src/test/java/org/qi4j/library/scheduler/docsupport/SchedulerDocs.java
+source=libraries/scheduler/src/test/java/org/apache/zest/library/scheduler/docsupport/SchedulerDocs.java
 tag=timeline
 -----------
 
@@ -162,7 +162,7 @@ Here is the actual Timeline contract:
 
 [snippet,java]
 ----
-source=libraries/scheduler/src/main/java/org/qi4j/library/scheduler/timeline/Timeline.java
+source=libraries/scheduler/src/main/java/org/apache/zest/library/scheduler/timeline/Timeline.java
 tag=timeline
 ----
 

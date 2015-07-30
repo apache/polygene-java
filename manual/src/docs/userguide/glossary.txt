@@ -231,7 +231,7 @@ This term has no definition yet. Learn how to contribute in <<community-docs>>.
 [[def-invocation-stack,Invocation Stack]]Invocation Stack::
 +
 --
-For each method, Qi4J will create and re-use an Invocation Stack. It will be built with the sequence of
+For each method, Zest™ will create and re-use an Invocation Stack. It will be built with the sequence of
 <<def-modifier,Modifiers>> and an end-point that will link into the stateful <<def-mixin>>.
 
 It is important to recognize that, for memory footprint reasons, Invocation Stacks are shared across

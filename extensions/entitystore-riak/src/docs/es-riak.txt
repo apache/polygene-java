@@ -39,7 +39,7 @@ For HTTP based Riak client:
 
 [snippet,java]
 ----
-source=extensions/entitystore-riak/src/test/java/org/qi4j/entitystore/riak/RiakHttpMapEntityStoreTest.java
+source=extensions/entitystore-riak/src/test/java/org/apache/zest/entitystore/riak/RiakHttpMapEntityStoreTest.java
 tag=assembly
 ----
 
@@ -47,7 +47,7 @@ For ProtocolBuffer based Riak client:
 
 [snippet,java]
 ----
-source=extensions/entitystore-riak/src/test/java/org/qi4j/entitystore/riak/RiakProtobufMapEntityStoreTest.java
+source=extensions/entitystore-riak/src/test/java/org/apache/zest/entitystore/riak/RiakProtobufMapEntityStoreTest.java
 tag=assembly
 ----
 
@@ -57,7 +57,7 @@ Here are the configuration properties for the HTTP based Riak client:
 
 [snippet,java]
 ----
-source=extensions/entitystore-riak/src/main/java/org/qi4j/entitystore/riak/RiakHttpEntityStoreConfiguration.java
+source=extensions/entitystore-riak/src/main/java/org/apache/zest/entitystore/riak/RiakHttpEntityStoreConfiguration.java
 tag=config
 ----
 
@@ -65,6 +65,6 @@ Here are the configuration properties for the ProtocolBuffer based Riak client:
 
 [snippet,java]
 ----
-source=extensions/entitystore-riak/src/main/java/org/qi4j/entitystore/riak/RiakProtobufEntityStoreConfiguration.java
+source=extensions/entitystore-riak/src/main/java/org/apache/zest/entitystore/riak/RiakProtobufEntityStoreConfiguration.java
 tag=config
 ----
