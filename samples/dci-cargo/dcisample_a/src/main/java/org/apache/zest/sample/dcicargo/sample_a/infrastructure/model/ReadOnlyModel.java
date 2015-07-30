@@ -18,7 +18,7 @@
 package org.apache.zest.sample.dcicargo.sample_a.infrastructure.model;
 
 import org.apache.wicket.model.IModel;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.conversion.EntityToDTOService;
 
@@ -31,7 +31,7 @@ public abstract class ReadOnlyModel<T>
     private static final long serialVersionUID = 1L;
 
     static protected EntityToDTOService valueConverter;
-    static protected Qi4j qi4j;
+    static protected ZestAPI api;
     static protected Module module;
 
     /**
@@ -58,12 +58,12 @@ public abstract class ReadOnlyModel<T>
     }
 
     public static void prepareModelBaseClass( Module m,
-                                              Qi4j api,
+                                              ZestAPI api,
                                               EntityToDTOService entityToDTO
     )
     {
         module = m;
-        qi4j = api;
+        ReadOnlyModel.api = api;
         valueConverter = entityToDTO;
     }
 }

@@ -99,7 +99,7 @@ public final class GraphPane
         } );
     }
 
-    public void initQi4J( ApplicationDetailDescriptor descriptor )
+    public void initZest( ApplicationDetailDescriptor descriptor )
     {
         Graph graph = GraphBuilder.buildGraph( descriptor );
         Dimension size = getSize();

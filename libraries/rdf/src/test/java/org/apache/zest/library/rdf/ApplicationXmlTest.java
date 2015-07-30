@@ -34,7 +34,7 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.fileconfig.FileConfiguration;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.library.rdf.model.ApplicationSerializer;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
@@ -43,7 +43,7 @@ import java.lang.reflect.Method;
 /**
  * JAVADOC
  */
-public class ApplicationXmlTest extends AbstractQi4jTest
+public class ApplicationXmlTest extends AbstractZestTest
 {
 
     public void assemble( ModuleAssembly module )
@@ -86,7 +86,7 @@ public class ApplicationXmlTest extends AbstractQi4jTest
         throws RDFHandlerException
     {
         writer.startRDF();
-        writer.handleNamespace( "qi4j", Qi4jRdf.QI4JMODEL );
+        writer.handleNamespace( "zest", ZestRdf.ZEST_MODEL );
         writer.handleNamespace( "rdf", Rdfs.RDF );
         writer.handleNamespace( "rdfs", Rdfs.RDFS );
         for( Statement st : graph )

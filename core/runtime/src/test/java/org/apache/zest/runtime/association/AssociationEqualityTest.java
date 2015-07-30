@@ -26,7 +26,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertThat;
  * Assert that Association, ManyAssociation and NamedAssociation equals/hashcode methods combine AssociationDescriptor and State.
  */
 public class AssociationEqualityTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     //
@@ -90,14 +90,14 @@ public class AssociationEqualityTest
             AnEntity anEntity = uow.newEntity( AnEntity.class );
 
             SomeWithAssociations some = buildSomeWithAssociation( anEntity );
-            AssociationDescriptor someAssocDesc = qi4j.api().associationDescriptorFor( some.anEntity() );
-            AssociationDescriptor someManyAssocDesc = qi4j.api().associationDescriptorFor( some.manyEntities() );
-            AssociationDescriptor someNamedAssocDesc = qi4j.api().associationDescriptorFor( some.namedEntities() );
+            AssociationDescriptor someAssocDesc = zest.api().associationDescriptorFor( some.anEntity() );
+            AssociationDescriptor someManyAssocDesc = zest.api().associationDescriptorFor( some.manyEntities() );
+            AssociationDescriptor someNamedAssocDesc = zest.api().associationDescriptorFor( some.namedEntities() );
 
             SomeWithAssociations some2 = buildSomeWithAssociation( anEntity );
-            AssociationDescriptor some2AssocDesc = qi4j.api().associationDescriptorFor( some2.anEntity() );
-            AssociationDescriptor some2ManyAssocDesc = qi4j.api().associationDescriptorFor( some2.manyEntities() );
-            AssociationDescriptor some2NamedAssocDesc = qi4j.api().associationDescriptorFor( some2.namedEntities() );
+            AssociationDescriptor some2AssocDesc = zest.api().associationDescriptorFor( some2.anEntity() );
+            AssociationDescriptor some2ManyAssocDesc = zest.api().associationDescriptorFor( some2.manyEntities() );
+            AssociationDescriptor some2NamedAssocDesc = zest.api().associationDescriptorFor( some2.namedEntities() );
 
             assertThat( "AssociationDescriptor equal",
                         someAssocDesc,
@@ -131,14 +131,14 @@ public class AssociationEqualityTest
         try
         {
             SomeWithAssociations some = buildSomeWithAssociation( uow.newEntity( AnEntity.class ) );
-            AssociationDescriptor someAssocDesc = qi4j.api().associationDescriptorFor( some.anEntity() );
-            AssociationDescriptor someManyAssocDesc = qi4j.api().associationDescriptorFor( some.manyEntities() );
-            AssociationDescriptor someNamedAssocDesc = qi4j.api().associationDescriptorFor( some.namedEntities() );
+            AssociationDescriptor someAssocDesc = zest.api().associationDescriptorFor( some.anEntity() );
+            AssociationDescriptor someManyAssocDesc = zest.api().associationDescriptorFor( some.manyEntities() );
+            AssociationDescriptor someNamedAssocDesc = zest.api().associationDescriptorFor( some.namedEntities() );
 
             SomeWithAssociations some2 = buildSomeWithAssociation( uow.newEntity( AnEntity.class ) );
-            AssociationDescriptor some2AssocDesc = qi4j.api().associationDescriptorFor( some2.anEntity() );
-            AssociationDescriptor some2ManyAssocDesc = qi4j.api().associationDescriptorFor( some2.manyEntities() );
-            AssociationDescriptor some2NamedAssocDesc = qi4j.api().associationDescriptorFor( some2.namedEntities() );
+            AssociationDescriptor some2AssocDesc = zest.api().associationDescriptorFor( some2.anEntity() );
+            AssociationDescriptor some2ManyAssocDesc = zest.api().associationDescriptorFor( some2.manyEntities() );
+            AssociationDescriptor some2NamedAssocDesc = zest.api().associationDescriptorFor( some2.namedEntities() );
 
             assertThat( "AssociationDescriptor equal",
                         someAssocDesc,
@@ -174,14 +174,14 @@ public class AssociationEqualityTest
             AnEntity anEntity = uow.newEntity( AnEntity.class );
 
             SomeWithAssociations some = buildSomeWithAssociation( anEntity );
-            AssociationDescriptor someAssocDesc = qi4j.api().associationDescriptorFor( some.anEntity() );
-            AssociationDescriptor someManyAssocDesc = qi4j.api().associationDescriptorFor( some.manyEntities() );
-            AssociationDescriptor someNamedAssocDesc = qi4j.api().associationDescriptorFor( some.namedEntities() );
+            AssociationDescriptor someAssocDesc = zest.api().associationDescriptorFor( some.anEntity() );
+            AssociationDescriptor someManyAssocDesc = zest.api().associationDescriptorFor( some.manyEntities() );
+            AssociationDescriptor someNamedAssocDesc = zest.api().associationDescriptorFor( some.namedEntities() );
 
             OtherWithAssociations other = buildOtherWithAssociation( anEntity );
-            AssociationDescriptor otherAssocDesc = qi4j.api().associationDescriptorFor( other.anEntity() );
-            AssociationDescriptor otherManyAssocDesc = qi4j.api().associationDescriptorFor( other.manyEntities() );
-            AssociationDescriptor otherNamedAssocDesc = qi4j.api().associationDescriptorFor( other.namedEntities() );
+            AssociationDescriptor otherAssocDesc = zest.api().associationDescriptorFor( other.anEntity() );
+            AssociationDescriptor otherManyAssocDesc = zest.api().associationDescriptorFor( other.manyEntities() );
+            AssociationDescriptor otherNamedAssocDesc = zest.api().associationDescriptorFor( other.namedEntities() );
 
             assertThat( "AssociationDescriptor not equal",
                         someAssocDesc,

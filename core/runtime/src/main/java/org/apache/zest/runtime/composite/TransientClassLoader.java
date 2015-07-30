@@ -165,7 +165,7 @@ import static org.apache.zest.api.util.Classes.interfacesOf;
 
         // Composite reference
         {
-            fv = cw.visitField( ACC_PUBLIC, "_instance", "Lorg/qi4j/api/composite/CompositeInvoker;", null, null );
+            fv = cw.visitField( ACC_PUBLIC, "_instance", "Lorg/apache/zest/api/composite/CompositeInvoker;", null, null );
             fv.visitEnd();
         }
 
@@ -222,7 +222,7 @@ import static org.apache.zest.api.util.Classes.interfacesOf;
                 String[] exceptions = null;
                 {
                     mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, exceptions );
-                    if( isInternalQi4jMethod( method, baseClass ) )
+                    if( isInternalZestMethod( method, baseClass ) )
                     {
                         // generate a NoOp method...
                         mv.visitInsn( RETURN );
@@ -259,7 +259,7 @@ import static org.apache.zest.api.util.Classes.interfacesOf;
                         mv.visitLabel( l0 );
                         mv.visitVarInsn( ALOAD, 0 );
                         mv.visitFieldInsn( GETFIELD, classSlash, "_instance",
-                                           "Lorg/qi4j/api/composite/CompositeInvoker;" );
+                                           "Lorg/apache/zest/api/composite/CompositeInvoker;" );
                         mv.visitFieldInsn( GETSTATIC, classSlash, "m" + idx, "Ljava/lang/reflect/Method;" );
 
                         int paramCount = method.getParameterTypes().length;
@@ -284,7 +284,7 @@ import static org.apache.zest.api.util.Classes.interfacesOf;
                         }
 
                         // Call method
-                        mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/api/composite/CompositeInvoker",
+                        mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/zest/api/composite/CompositeInvoker",
                                             "invokeComposite",
                                             "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
 
@@ -449,7 +449,7 @@ import static org.apache.zest.api.util.Classes.interfacesOf;
         }
     }
 
-    private static boolean isInternalQi4jMethod( Method method, Class baseClass )
+    private static boolean isInternalZestMethod( Method method, Class baseClass )
     {
         return isDeclaredIn( method, Initializable.class, baseClass )
                || isDeclaredIn( method, Lifecycle.class, baseClass );

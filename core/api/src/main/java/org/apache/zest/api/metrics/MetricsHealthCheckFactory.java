@@ -29,7 +29,7 @@ public interface MetricsHealthCheckFactory extends MetricsFactory
      * @param name   A human readable, short name of the metric.
      * @param check  The health check to be performed regularly.
      *
-     * @return A MetricsHealthCheck instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
+     * @return A MetricsHealthCheck instance to be used, OR org.apache.zest.spi.metrics.DefaultMetric.NULL if not supported.
      *
      */
     MetricsHealthCheck registerHealthCheck( Class<?> origin, String name, MetricsHealthCheck check );

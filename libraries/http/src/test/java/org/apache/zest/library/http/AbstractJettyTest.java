@@ -27,10 +27,10 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 public abstract class AbstractJettyTest
-        extends AbstractQi4jTest
+        extends AbstractZestTest
 {
 
     protected static final int HTTP_PORT = 8041;

@@ -46,7 +46,7 @@ public class ResponseReaderDelegator
    {
       Logger logger = LoggerFactory.getLogger( getClass() );
 
-      ResourceBundle defaultResponseReaders = ResourceBundle.getBundle( "org.qi4j.library.rest.client.rest-client" );
+      ResourceBundle defaultResponseReaders = ResourceBundle.getBundle( "org.apache.zest.library.rest.client.rest-client" );
 
       String responseReaderClasses = defaultResponseReaders.getString( "responsereaders" );
       logger.info( "Using responsereaders:"+responseReaderClasses );

@@ -70,7 +70,7 @@ import org.apache.zest.library.rest.server.api.dci.Role;
 import org.apache.zest.library.rest.server.assembler.RestServerAssembler;
 import org.apache.zest.library.rest.server.restlet.NullCommandResult;
 import org.apache.zest.library.rest.server.spi.CommandResult;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.Client;
 import org.restlet.Request;
@@ -92,7 +92,7 @@ import static org.apache.zest.bootstrap.ImportedServiceDeclaration.*;
 import static org.apache.zest.library.rest.client.api.HandlerCommand.*;
 
 public class ContextResourceClientFactoryTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     private Server server;
     private ContextResourceClient crc;
@@ -200,7 +200,7 @@ public class ContextResourceClientFactoryTest
     @Override
     protected Application newApplicationInstance( ApplicationDescriptor applicationModel )
     {
-        return applicationModel.newInstance( qi4j.api(), new MetadataService() );
+        return applicationModel.newInstance( zest.api(), new MetadataService() );
     }
 
     @Test

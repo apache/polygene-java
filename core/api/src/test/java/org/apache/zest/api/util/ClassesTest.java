@@ -68,13 +68,13 @@ public class ClassesTest
     @Test
     public void givenClassNameWhenToUriThenUriIsReturned()
     {
-        assertThat( "URI is correct", Classes.toURI( A.class ), equalTo( "urn:qi4j:type:org.qi4j.api.util.ClassesTest-A" ) );
+        assertThat( "URI is correct", Classes.toURI( A.class ), equalTo( "urn:zest:type:org.apache.zest.api.util.ClassesTest-A" ) );
     }
 
     @Test
     public void givenUriWhenToClassNameThenClassNameIsReturned()
     {
-        assertThat( "Class name is correct", Classes.toClassName( "urn:qi4j:type:org.qi4j.api.util.ClassesTest-A" ), equalTo( "org.qi4j.api.util.ClassesTest$A" ) );
+        assertThat( "Class name is correct", Classes.toClassName( "urn:zest:type:org.apache.zest.api.util.ClassesTest-A" ), equalTo( "org.apache.zest.api.util.ClassesTest$A" ) );
     }
 
     @Test

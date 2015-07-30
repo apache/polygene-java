@@ -26,7 +26,7 @@ import org.apache.zest.runtime.property.PropertyEqualityTest.AnotherSome;
 import org.apache.zest.runtime.property.PropertyEqualityTest.Other;
 import org.apache.zest.runtime.property.PropertyEqualityTest.PrimitivesValue;
 import org.apache.zest.runtime.property.PropertyEqualityTest.Some;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -42,7 +42,7 @@ import static org.apache.zest.runtime.property.PropertyEqualityTest.buildSomeVal
  * Assert that Value equals/hashcode methods combine ValueDescriptor and ValueState.
  */
 public class ValueEqualityTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     //
@@ -62,10 +62,10 @@ public class ValueEqualityTest
     public void givenValuesOfTheSameTypeWhenTestingValueDescriptorEqualityExpectEquals()
     {
         Some some = buildSomeValue( module );
-        ValueDescriptor someDescriptor = qi4j.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
 
         Some other = buildSomeValue( module );
-        ValueDescriptor otherDescriptor = qi4j.api().valueDescriptorFor( other );
+        ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
 
         assertThat( "ValueDescriptors equal",
                     someDescriptor,
@@ -79,10 +79,10 @@ public class ValueEqualityTest
     public void givenValuesOfCommonTypesWhenTestingValueDescriptorEqualityExpectNotEquals()
     {
         Some some = buildSomeValue( module );
-        ValueDescriptor someDescriptor = qi4j.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
 
         PrimitivesValue primitive = buildPrimitivesValue( module );
-        ValueDescriptor primitiveDescriptor = qi4j.api().valueDescriptorFor( primitive );
+        ValueDescriptor primitiveDescriptor = zest.api().valueDescriptorFor( primitive );
 
         assertThat( "ValueDescriptors not equal",
                     someDescriptor,
@@ -96,10 +96,10 @@ public class ValueEqualityTest
     public void givenValuesOfDifferentTypesWhenTestingValueDescriptorEqualityExpectNotEquals()
     {
         Some some = buildSomeValue( module );
-        ValueDescriptor someDescriptor = qi4j.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
 
         Other other = buildOtherValue( module );
-        ValueDescriptor otherDescriptor = qi4j.api().valueDescriptorFor( other );
+        ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
 
         assertThat( "ValueDescriptors not equal",
                     someDescriptor,
@@ -116,10 +116,10 @@ public class ValueEqualityTest
     public void givenValuesOfSameTypesAndSameStateWhenTestingValueStateEqualityExpectEquals()
     {
         Some some = buildSomeValue( module );
-        AssociationStateHolder someState = qi4j.spi().stateOf( (ValueComposite) some );
+        AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
 
         Some some2 = buildSomeValue( module );
-        AssociationStateHolder some2State = qi4j.spi().stateOf( (ValueComposite) some2 );
+        AssociationStateHolder some2State = zest.spi().stateOf( (ValueComposite) some2 );
 
         assertThat( "ValueStates equal",
                     someState,
@@ -133,10 +133,10 @@ public class ValueEqualityTest
     public void givenValuesOfSameTypesAndDifferentStateWhenTestingValueStateEqualityExpectNotEquals()
     {
         Some some = buildSomeValue( module );
-        AssociationStateHolder someState = qi4j.spi().stateOf( (ValueComposite) some );
+        AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
 
         Some some2 = buildSomeValueWithDifferentState( module );
-        AssociationStateHolder some2State = qi4j.spi().stateOf( (ValueComposite) some2 );
+        AssociationStateHolder some2State = zest.spi().stateOf( (ValueComposite) some2 );
 
         assertThat( "ValueStates not equal",
                     someState,
@@ -150,10 +150,10 @@ public class ValueEqualityTest
     public void givenValuesOfDifferentTypesAndSameStateWhenTestingValueStateEqualityExpectEquals()
     {
         Some some = buildSomeValue( module );
-        AssociationStateHolder someState = qi4j.spi().stateOf( (ValueComposite) some );
+        AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
 
         AnotherSome anotherSome = buildAnotherSomeValue( module );
-        AssociationStateHolder anotherSomeState = qi4j.spi().stateOf( (ValueComposite) anotherSome );
+        AssociationStateHolder anotherSomeState = zest.spi().stateOf( (ValueComposite) anotherSome );
 
         assertThat( "ValueStates equal",
                     someState,
@@ -167,10 +167,10 @@ public class ValueEqualityTest
     public void givenValuesOfDifferentTypesAndDifferentStateWhenTestingValueStateEqualityExpectNotEquals()
     {
         Some some = buildSomeValue( module );
-        AssociationStateHolder someState = qi4j.spi().stateOf( (ValueComposite) some );
+        AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
 
         AnotherSome anotherSome = buildAnotherSomeValueWithDifferentState( module );
-        AssociationStateHolder anotherSomeState = qi4j.spi().stateOf( (ValueComposite) anotherSome );
+        AssociationStateHolder anotherSomeState = zest.spi().stateOf( (ValueComposite) anotherSome );
 
         assertThat( "ValueStates not equal",
                     someState,

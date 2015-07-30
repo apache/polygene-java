@@ -19,7 +19,7 @@ package org.apache.zest.library.logging.trace;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.concern.ConcernOf;
@@ -31,7 +31,7 @@ import org.apache.zest.library.logging.trace.service.TraceService;
 public abstract class AbstractTraceConcern extends ConcernOf<InvocationHandler>
     implements InvocationHandler
 {
-    @Structure private Qi4j api;
+    @Structure private ZestAPI api;
     @Optional @Service protected TraceService traceService;
     private Composite thisComposite;
     private Class compositeType;

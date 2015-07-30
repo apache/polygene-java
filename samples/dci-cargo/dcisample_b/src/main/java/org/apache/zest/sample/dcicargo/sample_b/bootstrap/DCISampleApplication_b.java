@@ -30,7 +30,7 @@ import org.apache.zest.sample.dcicargo.sample_b.communication.web.booking.ReRout
 import org.apache.zest.sample.dcicargo.sample_b.communication.web.booking.RouteCargoPage;
 import org.apache.zest.sample.dcicargo.sample_b.communication.web.handling.IncidentLoggingApplicationMockupPage;
 import org.apache.zest.sample.dcicargo.sample_b.communication.web.tracking.TrackCargoPage;
-import org.apache.zest.sample.dcicargo.sample_b.infrastructure.WicketQi4jApplication;
+import org.apache.zest.sample.dcicargo.sample_b.infrastructure.WicketZestApplication;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.tabs.TabsPanel;
 
 /**
@@ -39,7 +39,7 @@ import org.apache.zest.sample.dcicargo.sample_b.infrastructure.wicket.tabs.TabsP
  * A Wicket application backed by Zest.
  */
 public class DCISampleApplication_b
-    extends WicketQi4jApplication
+    extends WicketZestApplication
 {
     public void wicketInit()
     {

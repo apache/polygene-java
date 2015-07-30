@@ -22,14 +22,14 @@ description = "Apache Zest™ SQL Liquibase Library provides Liquibase support."
 jar { manifest { name = "Apache Zest™ Library - SQL Liquibase" }}
 
 dependencies {
-  compile(project(":org.qi4j.libraries:org.qi4j.library.sql"))
+  compile(project(":org.apache.zest.libraries:org.apache.zest.library.sql"))
   compile(libraries.liquibase)
   compile libraries.slf4j_api
 
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testCompile(project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp"))
+  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  testCompile(project(":org.apache.zest.libraries:org.apache.zest.library.sql-dbcp"))
 
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
   testRuntime(libraries.derby)
   testRuntime(libraries.logback)
 }

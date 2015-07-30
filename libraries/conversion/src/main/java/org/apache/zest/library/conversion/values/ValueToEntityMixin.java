@@ -41,7 +41,7 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.spi.Qi4jSPI;
+import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
 
@@ -145,7 +145,7 @@ public class ValueToEntityMixin
     }
 
     @Structure
-    private Qi4jSPI spi;
+    private ZestSPI spi;
 
     @Structure
     private ModuleSpi module;

@@ -78,7 +78,7 @@ public class SQLiteEntityStoreTest
     {
         try
         {
-            FileUtil.removeDirectory( new File( "target/qi4j-data" ) );
+            FileUtil.removeDirectory( new File( "target/zest-data" ) );
         }
         finally
         {

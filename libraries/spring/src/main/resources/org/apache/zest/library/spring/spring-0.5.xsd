@@ -15,10 +15,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<xsd:schema xmlns="http://www.qi4j.org/schema/qi4j/spring"
+<xsd:schema xmlns="http://zest.apache.org/schema/zest/spring"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns:beans="http://www.springframework.org/schema/beans"
-            targetNamespace="http://www.qi4j.org/schema/qi4j/spring"
+            targetNamespace="http://zest.apache.org/schema/zest/spring"
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
 
@@ -27,7 +27,7 @@
   <xsd:element name="bootstrap">
     <xsd:annotation>
       <xsd:documentation><![CDATA[
-Defines qi4j application bootstrap.
+Defines Apache Zest application bootstrap.
 			]]></xsd:documentation>
     </xsd:annotation>
     <xsd:complexType>
@@ -35,7 +35,7 @@ Defines qi4j application bootstrap.
     </xsd:complexType>
   </xsd:element>
 
-  <!-- Qi4j application attributes -->
+  <!-- Zest application attributes -->
   <xsd:attributeGroup name="bootstrapAttributes">
     <xsd:attribute name="class" type="xsd:string" use="required">
       <xsd:annotation>
@@ -49,7 +49,7 @@ Full class name of bootstrap class.
   <xsd:element name="service">
     <xsd:annotation>
       <xsd:documentation><![CDATA[
-Defines qi4j service to be exposed as spring bean.
+Defines Apache Zest service to be exposed as spring bean.
 			]]></xsd:documentation>
     </xsd:annotation>
     <xsd:complexType>

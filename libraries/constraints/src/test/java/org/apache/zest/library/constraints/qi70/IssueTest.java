@@ -23,10 +23,10 @@ import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 public class IssueTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     public void assemble( ModuleAssembly module )

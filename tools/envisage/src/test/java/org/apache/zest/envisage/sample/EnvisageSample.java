@@ -28,13 +28,13 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.envisage.Envisage;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.apache.zest.test.util.Assume.assumeDisplayPresent;
 
 public class EnvisageSample
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     public static void main( String[] args )

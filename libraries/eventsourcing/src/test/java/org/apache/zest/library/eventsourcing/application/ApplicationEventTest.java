@@ -43,7 +43,7 @@ import org.apache.zest.library.eventsourcing.application.source.ApplicationEvent
 import org.apache.zest.library.eventsourcing.application.source.helper.ApplicationEventParameters;
 import org.apache.zest.library.eventsourcing.application.source.memory.MemoryApplicationEventStoreService;
 import org.apache.zest.library.eventsourcing.bootstrap.EventsourcingAssembler;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import java.security.Principal;
@@ -59,7 +59,7 @@ import static org.junit.Assert.assertEquals;
  * Subscription is not stored in domain model but is available via application events feed.
  */
 public class ApplicationEventTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     @Service
     ApplicationEventSource eventSource;

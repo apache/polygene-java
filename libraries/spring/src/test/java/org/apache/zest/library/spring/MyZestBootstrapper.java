@@ -20,13 +20,13 @@ package org.apache.zest.library.spring;
 
 import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.library.spring.bootstrap.Qi4jApplicationBootstrap;
+import org.apache.zest.library.spring.bootstrap.ZestApplicationBootstrap;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 // START SNIPPET: code
-public class MyZestBootstrapper extends Qi4jApplicationBootstrap
+public class MyZestBootstrapper extends ZestApplicationBootstrap
         implements ApplicationContextAware
 {
     private ApplicationContext applicationContext;

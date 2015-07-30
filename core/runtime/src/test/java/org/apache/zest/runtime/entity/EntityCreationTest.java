@@ -26,14 +26,14 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 /**
  * Test case for http://team.ops4j.org/browse/QI-274
  */
 public class EntityCreationTest
-        extends AbstractQi4jTest
+        extends AbstractZestTest
 {
 
     @Mixins( SomeEntityMixin.class )

@@ -35,7 +35,7 @@ public interface FileEntityStoreConfiguration
      * The directory where the File Entity Store will be keep its persisted state.
      * <p>
      *     If no configuration is provided at all, then the default location is
-     *     {@code System.getProperty( "user.dir" ) + "/qi4j/filestore"; }.
+     *     {@code System.getProperty( "user.dir" ) + "/zest/filestore"; }.
      *     If a configuration is given, the entity store will be placed in the
      *     DATA directory, which is operating system specific.
      * </p>

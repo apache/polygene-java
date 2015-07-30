@@ -50,7 +50,7 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -63,7 +63,7 @@ import static org.junit.Assert.fail;
  * Abstract satisfiedBy with tests for the EntityStore interface.
  */
 public abstract class AbstractEntityStoreTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     @Service

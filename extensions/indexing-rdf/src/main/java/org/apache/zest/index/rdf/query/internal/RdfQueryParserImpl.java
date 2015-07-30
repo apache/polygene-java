@@ -57,7 +57,7 @@ import org.apache.zest.api.value.ValueSerializer.Options;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 import org.apache.zest.index.rdf.query.RdfQueryParser;
-import org.apache.zest.spi.Qi4jSPI;
+import org.apache.zest.spi.ZestSPI;
 import org.slf4j.LoggerFactory;
 
 import static java.lang.String.format;
@@ -84,7 +84,7 @@ public class RdfQueryParserImpl
 
     private final Namespaces namespaces = new Namespaces();
     private final Triples triples = new Triples( namespaces );
-    private final Qi4jSPI spi;
+    private final ZestSPI spi;
     private final ValueSerializer valueSerializer;
     private Map<String, Object> variables;
 
@@ -103,7 +103,7 @@ public class RdfQueryParserImpl
         ) );
     }
 
-    public RdfQueryParserImpl( Qi4jSPI spi, ValueSerializer valueSerializer )
+    public RdfQueryParserImpl( ZestSPI spi, ValueSerializer valueSerializer )
     {
         this.spi = spi;
         this.valueSerializer = valueSerializer;
@@ -560,7 +560,7 @@ public class RdfQueryParserImpl
         }
         else if( value instanceof EntityComposite )
         {
-            return "urn:qi4j:entity:" + value.toString();
+            return "urn:zest:entity:" + value.toString();
         }
         else if( value instanceof Variable )
         {

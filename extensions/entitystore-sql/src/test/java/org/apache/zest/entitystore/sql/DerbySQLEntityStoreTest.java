@@ -93,7 +93,7 @@ public class DerbySQLEntityStoreTest
                 stmt.execute( String.format( "DELETE FROM %s." + SQLs.TABLE_NAME, schemaName ) );
                 connection.commit();
             }
-            FileUtil.removeDirectory( new File( "target/qi4j-data" ) );
+            FileUtil.removeDirectory( new File( "target/zest-data" ) );
         }
         finally
         {

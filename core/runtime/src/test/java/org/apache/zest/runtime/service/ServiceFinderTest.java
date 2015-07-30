@@ -21,13 +21,13 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class ServiceFinderTest extends AbstractQi4jTest
+public class ServiceFinderTest extends AbstractZestTest
 {
 
     @Override

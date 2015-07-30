@@ -22,13 +22,13 @@ import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class IssueTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     @Override

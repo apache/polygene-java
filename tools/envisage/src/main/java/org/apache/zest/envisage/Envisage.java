@@ -33,7 +33,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 
 /**
- * Qi4J Application Viewer
+ * Apache Zest Application Viewer
  */
 public class Envisage
 {
@@ -85,7 +85,7 @@ public class Envisage
                     @Override
                     public void run()
                     {
-                        mainFrame.initQi4J();
+                        mainFrame.initZest();
                     }
                 } );
             }

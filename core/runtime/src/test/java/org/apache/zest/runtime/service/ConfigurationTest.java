@@ -28,7 +28,7 @@ import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertThat;
  * Test of configuration for services
  */
 public class ConfigurationTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     @Service
     ServiceReference<HelloWorldService> service;

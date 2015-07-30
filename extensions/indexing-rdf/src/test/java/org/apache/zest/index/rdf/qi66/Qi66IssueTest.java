@@ -28,7 +28,7 @@ import org.apache.zest.index.rdf.query.RdfQueryService;
 import org.apache.zest.library.rdf.entity.EntityStateSerializer;
 import org.apache.zest.library.rdf.entity.EntityTypeSerializer;
 import org.apache.zest.library.rdf.repository.MemoryRepositoryService;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
@@ -39,15 +39,15 @@ import static org.junit.Assert.fail;
  * Test for Qi-66
  */
 public class Qi66IssueTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
-    private static final String ACCOUNT_NAME = "qi4j";
+    private static final String ACCOUNT_NAME = "zest";
 
     @Test
     public final void testCompleteAfterFind()
         throws Exception
     {
-        String accountIdentity = newQi4jAccount();
+        String accountIdentity = newZestAccount();
 
         UnitOfWork work = module.newUnitOfWork();
         AccountComposite account = work.get( AccountComposite.class, accountIdentity );
@@ -65,13 +65,13 @@ public class Qi66IssueTest
     }
 
     /**
-     * Creates a new qi4j account.
+     * Creates a new Apache Zest account.
      *
-     * @return The identity of qi4j account.
+     * @return The identity of Zest account.
      *
      * @throws UnitOfWorkCompletionException Thrown if creational fail.
      */
-    private String newQi4jAccount()
+    private String newZestAccount()
         throws UnitOfWorkCompletionException
     {
         UnitOfWork work = module.newUnitOfWork();

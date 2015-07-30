@@ -29,14 +29,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.appliesTo.common.Qi4jAppliesToUtil.*;
+import static org.apache.zest.ide.plugin.idea.appliesTo.common.ZestAppliesToUtil.*;
 import static org.apache.zest.ide.plugin.idea.common.psi.PsiClassUtil.isImplementsInvocationHandler;
 import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.concerns.common.Qi4jConcernUtil.isAConcern;
-import static org.apache.zest.ide.plugin.idea.concerns.common.Qi4jConcernUtil.isAGenericConcern;
-import static org.apache.zest.ide.plugin.idea.sideEffects.common.Qi4jSideEffectUtil.isAGenericSideEffect;
-import static org.apache.zest.ide.plugin.idea.sideEffects.common.Qi4jSideEffectUtil.isASideEffect;
+import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.concerns.common.ZestConcernUtil.isAConcern;
+import static org.apache.zest.ide.plugin.idea.concerns.common.ZestConcernUtil.isAGenericConcern;
+import static org.apache.zest.ide.plugin.idea.sideEffects.common.ZestSideEffectUtil.isAGenericSideEffect;
+import static org.apache.zest.ide.plugin.idea.sideEffects.common.ZestSideEffectUtil.isASideEffect;
 
 /**
  * @author edward.yakop@gmail.com

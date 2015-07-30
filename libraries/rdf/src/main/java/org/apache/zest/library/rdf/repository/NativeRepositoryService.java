@@ -111,7 +111,7 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
                 {
                     if( serviceIdentity == null || "".equals( serviceIdentity ) )
                     {
-                        dataDir = "./rdf/repositories/qi4j";
+                        dataDir = "./rdf/repositories/zest";
                     }
                     else
                     {

@@ -23,7 +23,7 @@
 <script type="text/javascript">
 // DISQUS
   var disqus_identifier = "manual";
-  var disqus_title = "The Qi4j Manual";
+  var disqus_title = "The Apache Zest Manual";
   function getIdFromHeading ( headingElement )
   {
     var id = disqus_identifier;
@@ -98,7 +98,7 @@
   var disqus_url = window.location;
   if ( disqus_url.protocol === "http:" || disqus_url.protocol === "https:" )
   {
-    var docsLocation = "http://www.qi4j.org/chunked/snapshot/";
+    var docsLocation = "http://zest.apache.org/chunked/snapshot/";
     var path = disqus_url.pathname;
     var position = path.lastIndexOf('/');
     if ( position === -1 )
@@ -111,7 +111,7 @@
       disqus_url = docsLocation + page;
     }
   }
-  var disqus_shortname = "qi4j";
+  var disqus_shortname = "zest";
   var disqus_developer = 0;
 
 (function() {

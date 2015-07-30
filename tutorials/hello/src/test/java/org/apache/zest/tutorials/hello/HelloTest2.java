@@ -17,12 +17,12 @@ import org.junit.Test;
 import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class HelloTest2 extends AbstractQi4jTest
+public class HelloTest2 extends AbstractZestTest
 {
     @Override
     public void assemble( ModuleAssembly module )

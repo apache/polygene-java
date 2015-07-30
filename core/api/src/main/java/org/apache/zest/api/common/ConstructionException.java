@@ -23,7 +23,7 @@ package org.apache.zest.api.common;
  * <li>interface instead of a class.</li>
  * <li>useful constructor missing.</li>
  * <li>exception thrown in the constructor.</li>
- * <li>Subclassing of org.qi4j.api.property.Property</li>
+ * <li>Subclassing of org.apache.zest.api.property.Property</li>
  * </ul>
  * <p>
  * See the nested exception for additional details.

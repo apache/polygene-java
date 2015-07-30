@@ -23,14 +23,14 @@ jar { manifest { name = "Apache Zest™ Extension - Index/Query - ElasticSearch"
 
 dependencies {
 
-  compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
-  compile project(":org.qi4j.libraries:org.qi4j.library.fileconfig")
+  compile project(":org.apache.zest.core:org.apache.zest.core.bootstrap")
+  compile project(":org.apache.zest.libraries:org.apache.zest.library.fileconfig")
   compile libraries.slf4j_api
   compile libraries.elasticsearch
 
-  testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
+  testCompile project(":org.apache.zest.core:org.apache.zest.core.testsupport")
 
-  testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
+  testRuntime project(":org.apache.zest.core:org.apache.zest.core.runtime")
   testRuntime libraries.logback
 
 }

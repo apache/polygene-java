@@ -24,12 +24,12 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.junit.Assert.fail;
 
 public class NestedValueBuilderTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     static interface InnerValue

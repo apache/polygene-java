@@ -36,7 +36,7 @@ import prefuse.data.Node;
 import prefuse.data.Table;
 
 /**
- * Build Qi4J application model as Prefuse Tree Graph
+ * Build Apache Zest application model as Prefuse Tree Graph
  */
 /* package */ final class GraphBuilder
 {

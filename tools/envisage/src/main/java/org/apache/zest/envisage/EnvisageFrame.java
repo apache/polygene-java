@@ -123,14 +123,14 @@ public final class EnvisageFrame
         contentPane.add( graphSplitPane, BorderLayout.CENTER );
     }
 
-    public void initQi4J()
+    public void initZest()
     {
         modelSplitPane.setDividerLocation( 300 );
         graphSplitPane.setDividerLocation( 384 );
 
         descriptor = ApplicationDetailDescriptorBuilder.createApplicationDetailDescriptor( application );
-        treeModelPane.initQi4J( descriptor );
-        graphPane.initQi4J( descriptor );
+        treeModelPane.initZest( descriptor );
+        graphPane.initZest( descriptor );
     }
 
     /**

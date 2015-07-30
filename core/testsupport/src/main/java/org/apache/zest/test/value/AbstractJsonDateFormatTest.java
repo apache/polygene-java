@@ -29,7 +29,7 @@ import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.junit.Assert.*;
 
@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
  */
 @SuppressWarnings( "ProtectedField" )
 public class AbstractJsonDateFormatTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     private final ValueType dateType = new ValueType( Date.class );

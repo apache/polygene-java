@@ -19,7 +19,7 @@
 
 
 /**
- * Qi4j Documentation WebSite Progressive Enhancement.
+ * Apache Zest Documentation WebSite Progressive Enhancement.
  */
 $( document ).ready( function($){
 

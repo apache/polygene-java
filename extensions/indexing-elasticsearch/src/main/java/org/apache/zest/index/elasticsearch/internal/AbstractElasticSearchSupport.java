@@ -30,11 +30,11 @@ public abstract class AbstractElasticSearchSupport
 
     protected static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchSupport.class );
 
-    protected static final String DEFAULT_CLUSTER_NAME = "qi4j_cluster";
+    protected static final String DEFAULT_CLUSTER_NAME = "zest_cluster";
 
-    protected static final String DEFAULT_INDEX_NAME = "qi4j_index";
+    protected static final String DEFAULT_INDEX_NAME = "zest_index";
 
-    protected static final String ENTITIES_TYPE = "qi4j_entities";
+    protected static final String ENTITIES_TYPE = "zest_entities";
 
     protected Client client;
 

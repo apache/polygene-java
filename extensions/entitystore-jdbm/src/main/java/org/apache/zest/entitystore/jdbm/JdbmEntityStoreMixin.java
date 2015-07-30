@@ -415,7 +415,7 @@ public class JdbmEntityStoreMixin
             }
             else
             {
-                pathname = System.getProperty( "user.dir" ) + "/qi4j/jdbm.data";
+                pathname = System.getProperty( "user.dir" ) + "/zest/jdbm.data";
             }
         }
         File dataFile = new File( pathname );

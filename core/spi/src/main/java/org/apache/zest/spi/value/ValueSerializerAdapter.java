@@ -28,7 +28,7 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
@@ -409,7 +409,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     private void serializeValueComposite( Options options, Object object, OutputType output, boolean rootPass )
         throws Exception
     {
-        CompositeInstance valueInstance = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) object );
+        CompositeInstance valueInstance = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) object );
         ValueDescriptor descriptor = (ValueDescriptor) valueInstance.descriptor();
         AssociationStateHolder state = (AssociationStateHolder) valueInstance.state();
 

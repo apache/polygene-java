@@ -23,7 +23,7 @@ import java.util.Locale;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.property.Property;
 
@@ -34,7 +34,7 @@ public class SwingPanel
 
 // START SNIPPET: info-use
     @Structure
-    private Qi4j api;
+    private ZestAPI api;
 // END SNIPPET: info-use
 
 // START SNIPPET: info-use

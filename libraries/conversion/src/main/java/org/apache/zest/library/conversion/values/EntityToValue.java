@@ -44,7 +44,7 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.spi.Qi4jSPI;
+import org.apache.zest.spi.ZestSPI;
 
 import static org.apache.zest.library.conversion.values.Shared.STRING_COLLECTION_TYPE_SPEC;
 import static org.apache.zest.library.conversion.values.Shared.STRING_MAP_TYPE_SPEC;
@@ -103,7 +103,7 @@ public interface EntityToValue
     {
 
         @Structure
-        private Qi4jSPI spi;
+        private ZestSPI spi;
         @Structure
         private Module module;
 

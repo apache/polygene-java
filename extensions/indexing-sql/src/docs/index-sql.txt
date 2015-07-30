@@ -43,7 +43,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 == Configuration ==
 
 SQL Index/Query Configuration is optional and provides only one configuration property: `schemaName` defaulted to
-'qi4j_es'. On SQL databases that don't support schemas this configuration property is simply ignored.
+'zest_es'. On SQL databases that don't support schemas this configuration property is simply ignored.
 
 The assembly snippets below show the DataSource assembly alongside the SQL Index/Query assembly. Remember to configure
 the DataSource properly, see <<library-sql>> and <<howto-configure-service>>.

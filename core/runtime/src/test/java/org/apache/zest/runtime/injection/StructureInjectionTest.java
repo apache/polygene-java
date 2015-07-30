@@ -15,7 +15,7 @@
 package org.apache.zest.runtime.injection;
 
 import org.junit.Test;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.injection.scope.Structure;
@@ -26,8 +26,8 @@ import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.spi.Qi4jSPI;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertThat;
  * Test the @Structure annotation
  */
 public class StructureInjectionTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -46,7 +46,7 @@ public class StructureInjectionTest
     }
 
     /**
-     * Tests injected mixin for a CompositeBuilderFactory annotated with {@link @org.qi4j.composite.scope.Structure}.
+     * Tests injected mixin for a CompositeBuilderFactory annotated with {@link @org.apache.zest.composite.scope.Structure}.
      */
     @Test
     public void injectedStructureForCompositeBuilderFactory()
@@ -56,7 +56,7 @@ public class StructureInjectionTest
     }
 
     /**
-     * Tests injected mixin for a ObjectBuilderFactory annotated with {@link @org.qi4j.composite.scope.Structure}.
+     * Tests injected mixin for a ObjectBuilderFactory annotated with {@link @org.apache.zest.composite.scope.Structure}.
      */
     @Test
     public void injectedStructureForObjectBuilderFactory()
@@ -66,7 +66,7 @@ public class StructureInjectionTest
     }
 
     /**
-     * Tests injected mixin for a UnitOfWorkFactory annotated with {@link @org.qi4j.composite.scope.Structure}.
+     * Tests injected mixin for a UnitOfWorkFactory annotated with {@link @org.apache.zest.composite.scope.Structure}.
      */
     @Test
     public void injectedStructureForUnitOfWorkFactory()
@@ -76,7 +76,7 @@ public class StructureInjectionTest
     }
 
     /**
-     * Tests injected mixin for a ServiceLocator annotated with {@link @org.qi4j.composite.scope.Structure}.
+     * Tests injected mixin for a ServiceLocator annotated with {@link @org.apache.zest.composite.scope.Structure}.
      */
     @Test
     public void injectedStructureForServiceLocator()
@@ -86,7 +86,7 @@ public class StructureInjectionTest
     }
 
     /**
-     * Tests injected mixin for a ModuleBinding annotated with {@link @org.qi4j.composite.scope.Structure}.
+     * Tests injected mixin for a ModuleBinding annotated with {@link @org.apache.zest.composite.scope.Structure}.
      */
     @Test
     public void injectedStructureForModuleBinding()
@@ -96,23 +96,23 @@ public class StructureInjectionTest
     }
 
     /**
-     * Tests injected mixin for a Zest annotated with {@link @org.qi4j.composite.scope.Structure}.
+     * Tests injected mixin for a Zest annotated with {@link @org.apache.zest.composite.scope.Structure}.
      */
     @Test
-    public void injectedStructureForQi4j()
+    public void injectedStructureForZest()
     {
         StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
-        assertThat( "Injected Zest", sic.getQi4j(), is( notNullValue() ) );
+        assertThat( "Injected Zest", sic.getZest(), is( notNullValue() ) );
     }
 
     /**
-     * Tests injected mixin for a Qi4jSpi annotated with {@link @org.qi4j.composite.scope.Structure}.
+     * Tests injected mixin for a ZestSPI annotated with {@link @org.apache.zest.composite.scope.Structure}.
      */
     @Test
-    public void injectedStructureForQi4jSpi()
+    public void injectedStructureForZestSpi()
     {
         StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
-        assertThat( "Injected Qi4jSpi", sic.getQi4jSpi(), is( notNullValue() ) );
+        assertThat( "Injected ZestSPI", sic.getZestSpi(), is( notNullValue() ) );
     }
 
     @Mixins( StructureInjectionMixin.class )
@@ -129,9 +129,9 @@ public class StructureInjectionTest
 
         public Module getModule();
 
-        public Qi4j getQi4j();
+        public ZestAPI getZest();
 
-        public Qi4jSPI getQi4jSpi();
+        public ZestSPI getZestSpi();
     }
 
     public abstract static class StructureInjectionMixin
@@ -153,9 +153,9 @@ public class StructureInjectionTest
         Module module;
 
         @Structure
-        Qi4j qi4j;
+        ZestAPI api;
         @Structure
-        Qi4jSPI qi4jSpi;
+        ZestSPI spi;
 
         public TransientBuilderFactory getCompositeBuilderFactory()
         {
@@ -182,14 +182,14 @@ public class StructureInjectionTest
             return module;
         }
 
-        public Qi4j getQi4j()
+        public ZestAPI getZest()
         {
-            return qi4j;
+            return api;
         }
 
-        public Qi4jSPI getQi4jSpi()
+        public ZestSPI getZestSpi()
         {
-            return qi4jSpi;
+            return spi;
         }
     }
 }

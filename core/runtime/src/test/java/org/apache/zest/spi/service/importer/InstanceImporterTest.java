@@ -19,7 +19,7 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -28,7 +28,7 @@ import static org.junit.Assert.assertThat;
  * Test import of singleton services
  */
 public class InstanceImporterTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     @Service
     TestInterface service;

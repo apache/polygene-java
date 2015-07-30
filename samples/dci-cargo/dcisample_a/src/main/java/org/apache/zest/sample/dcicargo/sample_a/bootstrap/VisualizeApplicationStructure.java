@@ -30,10 +30,10 @@ public class VisualizeApplicationStructure
     public static void main( String[] args )
         throws Exception
     {
-        Energy4Java qi4j = new Energy4Java();
+        Energy4Java zest = new Energy4Java();
         Assembler assembler = new Assembler();
-        ApplicationDescriptor applicationModel = qi4j.newApplicationModel( assembler );
-        applicationModel.newInstance( qi4j.spi() );
+        ApplicationDescriptor applicationModel = zest.newApplicationModel( assembler );
+        applicationModel.newInstance( zest.spi() );
 
         /*
        * The Envisage Swing app visualizes the application assemblage structure.

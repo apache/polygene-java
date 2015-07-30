@@ -95,7 +95,7 @@ public class ApplicationBuilderTest
         "                {\n" +
         "                    \"name\" : \"test module\",\n" +
         "                    \"assemblers\" : [\n" +
-        "                            \"org.qi4j.bootstrap.builder.ApplicationBuilderTest$TestServiceAssembler\"\n" +
+        "                            \"org.apache.zest.bootstrap.builder.ApplicationBuilderTest$TestServiceAssembler\"\n" +
         "                    ]\n" +
         "                }\n" +
         "            ]\n" +

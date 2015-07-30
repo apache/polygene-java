@@ -20,12 +20,12 @@
 apply plugin: 'application'
 
 description = "Command line tools for building Apache Zest™ applications."
-mainClassName = "org.qi4j.tools.shell.Main"
+mainClassName = "org.apache.zest.tools.shell.Main"
 
 jar { manifest { name = "Apache Zest™ Command Line" } }
 
 dependencies {
-  compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
+  compile( project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" ) )
 
   testRuntime( libraries.logback )
 }

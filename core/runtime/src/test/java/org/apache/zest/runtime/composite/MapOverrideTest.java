@@ -29,7 +29,7 @@ import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -42,7 +42,7 @@ import static org.junit.Assert.assertThat;
  */
 @Ignore( "Awaiting QI-298" )
 public class MapOverrideTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     @Override
     public void assemble( ModuleAssembly module )

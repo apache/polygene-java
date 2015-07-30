@@ -141,7 +141,7 @@ public class FragmentClassLoader
             }
 //  To Allow JDK classes to be composed.
             if( name.startsWith( "java." ))
-                name = "qi4j." + name;
+                name = "zest." + name;
 
             byte[] b = generateClass( name, baseClass );
             return defineClass( name, b, 0, b.length, baseClass.getProtectionDomain() );
@@ -164,7 +164,7 @@ public class FragmentClassLoader
 
         // Composite reference
         {
-            cw.visitField( ACC_PUBLIC, "_instance", "Lorg/qi4j/api/composite/CompositeInvoker;", null, null ).visitEnd();
+            cw.visitField( ACC_PUBLIC, "_instance", "Lorg/apache/zest/api/composite/CompositeInvoker;", null, null ).visitEnd();
         }
 
         // Static Method references
@@ -235,7 +235,7 @@ public class FragmentClassLoader
                     String[] exceptions = null;
                     {
                         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, methodName, desc, null, null );
-                        if( isInternalQi4jMethod( method, baseClass ) )
+                        if( isInternalZestMethod( method, baseClass ) )
                         {
                             // generate a NoOp method...
                             mv.visitInsn( RETURN );
@@ -272,7 +272,7 @@ public class FragmentClassLoader
                             mv.visitLabel( l0 );
                             mv.visitVarInsn( ALOAD, 0 );
                             mv.visitFieldInsn( GETFIELD, classSlash, "_instance",
-                                               "Lorg/qi4j/api/composite/CompositeInvoker;" );
+                                               "Lorg/apache/zest/api/composite/CompositeInvoker;" );
                             mv.visitFieldInsn( GETSTATIC, classSlash, "m" + idx, "Ljava/lang/reflect/Method;" );
 
                             int paramCount = method.getParameterTypes().length;
@@ -297,7 +297,7 @@ public class FragmentClassLoader
                             }
 
                             // Call method
-                            mv.visitMethodInsn( INVOKEINTERFACE, "org/qi4j/api/composite/CompositeInvoker",
+                            mv.visitMethodInsn( INVOKEINTERFACE, "org/apache/zest/api/composite/CompositeInvoker",
                                                 "invokeComposite",
                                                 "(Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;", true );
 
@@ -482,7 +482,7 @@ public class FragmentClassLoader
         {
             // if() used for clarity.
             //noinspection RedundantIfStatement
-            if( isInternalQi4jMethod( method, baseClass ) )
+            if( isInternalZestMethod( method, baseClass ) )
             {
                 return false; // Skip methods in Zest-internal interfaces
             }
@@ -497,7 +497,7 @@ public class FragmentClassLoader
         }
     }
 
-    private static boolean isInternalQi4jMethod( Method method, Class baseClass )
+    private static boolean isInternalZestMethod( Method method, Class baseClass )
     {
         return isDeclaredIn( method, Initializable.class, baseClass )
                || isDeclaredIn( method, Lifecycle.class, baseClass );

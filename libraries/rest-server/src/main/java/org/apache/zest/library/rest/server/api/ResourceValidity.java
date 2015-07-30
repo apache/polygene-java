@@ -21,7 +21,7 @@ import java.util.Date;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.spi.Qi4jSPI;
+import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -35,10 +35,10 @@ import org.restlet.resource.ResourceException;
 public class ResourceValidity
 {
     EntityComposite entity;
-    private final Qi4jSPI spi;
+    private final ZestSPI spi;
     private Request request;
 
-    public ResourceValidity( EntityComposite entity, Qi4jSPI spi, Request request )
+    public ResourceValidity( EntityComposite entity, ZestSPI spi, Request request )
     {
         this.entity = entity;
         this.spi = spi;

@@ -28,7 +28,7 @@ import static org.apache.zest.test.util.Assume.assumeConnectivity;
  * PostgreSQL Query Tests.
  * <p>Many features are not supported.</p>
  */
-// See org.qi4j.index.sql.support.skeletons.SQLCompatEntityStateWrapper that filter out unsupported properties.
+// See org.apache.zest.index.sql.support.skeletons.SQLCompatEntityStateWrapper that filter out unsupported properties.
 public class PostgreSQLQueryTest
     extends AbstractQueryTest
 {

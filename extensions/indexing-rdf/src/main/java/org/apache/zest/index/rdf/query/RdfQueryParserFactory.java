@@ -27,7 +27,7 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializer;
 import org.apache.zest.index.rdf.UnsupportedLanguageException;
 import org.apache.zest.index.rdf.query.internal.RdfQueryParserImpl;
-import org.apache.zest.spi.Qi4jSPI;
+import org.apache.zest.spi.ZestSPI;
 
 @Mixins( RdfQueryParserFactory.RdfQueryParserFactoryMixin.class )
 public interface RdfQueryParserFactory
@@ -39,7 +39,7 @@ public interface RdfQueryParserFactory
         implements RdfQueryParserFactory
     {
         @Structure
-        private Qi4jSPI spi;
+        private ZestSPI spi;
         @Service
         @Tagged( ValueSerialization.Formats.JSON )
         private ValueSerializer valueSerializer;

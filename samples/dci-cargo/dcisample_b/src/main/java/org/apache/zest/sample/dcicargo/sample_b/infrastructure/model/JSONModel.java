@@ -48,7 +48,7 @@ public class JSONModel<T, U extends ValueComposite>
         }
 
         // Get ValueComposite interface
-        Class<U> valueCompositeClass = (Class<U>) qi4j.valueDescriptorFor( value ).valueType().mainType();
+        Class<U> valueCompositeClass = (Class<U>) api.valueDescriptorFor( value ).valueType().mainType();
 
         return new JSONModel<T, U>( value, valueCompositeClass );
     }

@@ -25,7 +25,7 @@ public class RestAssembler
         throws AssemblyException
     {
         module.objects( RestApplication.class ).visibleIn( visibility() );
-        module.objects( Qi4jFinder.class,
+        module.objects( ZestFinder.class,
                         EntitiesResource.class,
                         EntityResource.class,
                         IndexResource.class,

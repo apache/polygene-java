@@ -19,9 +19,9 @@ package org.apache.zest.entitystore.jdbm;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
-public class DocumentationSupport extends AbstractQi4jTest
+public class DocumentationSupport extends AbstractZestTest
 {
     
     // START SNIPPET: UsingAssembler

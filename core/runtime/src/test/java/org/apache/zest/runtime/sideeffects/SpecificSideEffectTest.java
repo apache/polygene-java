@@ -24,7 +24,7 @@ import org.apache.zest.api.sideeffect.SideEffectOf;
 import org.apache.zest.api.sideeffect.SideEffects;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
  * Test for adding side-effects to methods specified by domain interfaces
  */
 public class SpecificSideEffectTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     public void assemble( ModuleAssembly module )

@@ -47,10 +47,10 @@ import org.slf4j.LoggerFactory;
     implements ServiceActivation, MapEntityStore, RiakAccessors
 {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.riak" );
+    protected static final Logger LOGGER = LoggerFactory.getLogger( "org.apache.zest.entitystore.riak" );
     protected static final int DEFAULT_MAX_CONNECTIONS = 50;
 
-    /* package */ static final String DEFAULT_BUCKET_KEY = "qi4j:entities";
+    /* package */ static final String DEFAULT_BUCKET_KEY = "zest:entities";
     protected IRiakClient riakClient;
     protected String bucketKey;
 

@@ -49,7 +49,7 @@ import org.apache.zest.io.Input;
 import org.apache.zest.io.Output;
 import org.apache.zest.io.Receiver;
 import org.apache.zest.io.Sender;
-import org.apache.zest.spi.Qi4jSPI;
+import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.cache.Cache;
 import org.apache.zest.spi.cache.CachePool;
 import org.apache.zest.spi.cache.NullCache;
@@ -86,7 +86,7 @@ public class JSONMapEntityStoreMixin
     private EntityStoreSPI entityStoreSpi;
 
     @Structure
-    private Qi4jSPI spi;
+    private ZestSPI spi;
 
     @Structure
     private Application application;

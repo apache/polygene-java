@@ -17,13 +17,13 @@ import org.junit.Test;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 // START SNIPPET: step1
-public class HelloTest extends AbstractQi4jTest
+public class HelloTest extends AbstractZestTest
 {
 // END SNIPPET: step1
 

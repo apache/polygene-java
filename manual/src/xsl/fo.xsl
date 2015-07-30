@@ -343,7 +343,7 @@
       <xsl:with-param name="master-reference">titlepage</xsl:with-param>
       <xsl:with-param name="content">
         <fo:block text-align="center" margin-top="5.0cm">
-          <fo:external-graphic src="url(images/qi4j-blue.png)"
+          <fo:external-graphic src="url(images/zest-blue.png)"
                                content-width="12cm"
                                content-height="2.94cm"
                                scaling="uniform"/>

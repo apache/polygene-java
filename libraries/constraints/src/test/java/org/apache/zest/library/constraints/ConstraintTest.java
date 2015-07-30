@@ -20,12 +20,12 @@ import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.junit.Assert.fail;
 
 public class ConstraintTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     @Override
@@ -79,7 +79,7 @@ public class ConstraintTest
     public void testURLOk()
     {
         TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
-        cb.prototype().url().set( "http://qi4j.org/path?query=string#fragment" );
+        cb.prototype().url().set( "http://zest.apache.org/path?query=string#fragment" );
     }
 
     @Test( expected = ConstraintViolationException.class )
@@ -93,7 +93,7 @@ public class ConstraintTest
     public void testURIOk()
     {
         TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
-        cb.prototype().uri().set( "http://qi4j.org/path?query=string#fragment" );
+        cb.prototype().uri().set( "http://zest.apache.org/path?query=string#fragment" );
     }
 
     @Test( expected = ConstraintViolationException.class )

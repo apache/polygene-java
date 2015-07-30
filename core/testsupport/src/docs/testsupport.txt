@@ -29,7 +29,7 @@ mocking is seldom, if ever, needed.
 include::../../build/docs/buildinfo/artifact.txt[]
 
 == Your First Testcase ==
-In most cases, you will probably use the AbstractQi4jTest class to simplify starting a Zest™ test instance.
+In most cases, you will probably use the AbstractZestTest class to simplify starting a Zest™ test instance.
 
 [snippet,java]
 --------------

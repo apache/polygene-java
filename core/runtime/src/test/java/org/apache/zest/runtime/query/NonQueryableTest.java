@@ -26,13 +26,13 @@ import org.apache.zest.api.query.QueryException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.apache.zest.api.query.QueryExpressions.eq;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 
 public class NonQueryableTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

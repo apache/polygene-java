@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
@@ -54,7 +54,7 @@ public class ConstraintViolationException
                                          Collection<ConstraintViolation> constraintViolations
     )
     {
-        this( instance.toString(), Qi4j.FUNCTION_DESCRIPTOR_FOR.map( instance ).types(), method, constraintViolations );
+        this( instance.toString(), ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( instance ).types(), method, constraintViolations );
     }
 
     public ConstraintViolationException( String instanceToString,
@@ -92,10 +92,11 @@ public class ConstraintViolationException
     /**
      * Creates localized messages of all the constraint violations that has occured.
      * <p>
-     * The key "<code>Qi4j_ConstraintViolation_<i><strong>CompositeType</strong></i></code>" will be used to lookup the text formatting
+     * The key "<code>zest.constraint.<i><strong>CompositeType</strong></i>.<i><string>methodName</string></i></code>"
+     * will be used to lookup the text formatting
      * pattern from the ResourceBundle, where <strong><code><i>CompositeType</i></code></strong> is the
      * class name of the Composite where the constraint was violated. If such key does not exist, then the
-     * key &nbsp;"<code>Qi4j_ConstraintViolation</code>" will be used, and if that one also doesn't exist, or
+     * key &nbsp;"<code>zest.constraint</code>" will be used, and if that one also doesn't exist, or
      * the resourceBundle argument is null, then the default patterns will be used;
      * </p>
      * <table summary="Localization of constraint vioations.">
@@ -157,13 +158,13 @@ public class ConstraintViolationException
             {
                 try
                 {
-                    pattern = bundle.getString( "qi4j.constraint." + mixinTypeName + "." + methodName );
+                    pattern = bundle.getString( "zest.constraint." + mixinTypeName + "." + methodName );
                 }
                 catch( MissingResourceException e1 )
                 {
                     try
                     {
-                        pattern = bundle.getString( "qi4j.constraint" );
+                        pattern = bundle.getString( "zest.constraint" );
                     }
                     catch( MissingResourceException e2 )
                     {

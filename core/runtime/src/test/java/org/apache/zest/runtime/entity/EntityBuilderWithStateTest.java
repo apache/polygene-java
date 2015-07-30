@@ -34,7 +34,7 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.functional.Function;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -44,7 +44,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * EntityBuilder With State Test.
  */
 public class EntityBuilderWithStateTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     @Override
     public void assemble( ModuleAssembly module )

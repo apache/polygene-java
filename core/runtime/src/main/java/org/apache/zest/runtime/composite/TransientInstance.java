@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.property.StateHolder;
@@ -150,7 +150,7 @@ public class TransientInstance
         {
             return false;
         }
-        TransientInstance other = (TransientInstance) Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (Composite) o );
+        TransientInstance other = (TransientInstance) ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( (Composite) o );
         if( other.mixins.length != mixins.length )
         {
             return false;

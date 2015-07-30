@@ -32,13 +32,13 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.metrics.yammer.YammerMetricsAssembler;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class MetricsTest extends AbstractQi4jTest
+public class MetricsTest extends AbstractZestTest
 {
     private PrintStream reportOut;
     private ByteArrayOutputStream result;
@@ -89,7 +89,7 @@ public class MetricsTest extends AbstractQi4jTest
         Country underTest = module.newTransient( Country2.class );
         String result = runTest( underTest );
         result = result.replace( "\r", "" );
-        assertThat( lastLine( result, 34 ), equalTo( "org.qi4j.library.metrics.Country.SomeApplication:" ) );
+        assertThat( lastLine( result, 34 ), equalTo( "org.apache.zest.library.metrics.Country.SomeApplication:" ) );
         assertThat( lastLine( result, 33 ).trim(), equalTo( "name() [TimingCapture]:" ) );
         assertThat( lastLine( result, 16 ).trim(), equalTo( "updateName() [TimingCapture]:" ) );
         assertTrue( lastLine( result, 5 ).contains( "75% <=" ) );
@@ -106,7 +106,7 @@ public class MetricsTest extends AbstractQi4jTest
         Country underTest = module.newTransient( Country3.class );
         String result = runTest( underTest );
         result = result.replace( "\r", "" );
-        assertThat( lastLine( result, 17 ), equalTo( "org.qi4j.library.metrics.Country.SomeApplication:" ) );
+        assertThat( lastLine( result, 17 ), equalTo( "org.apache.zest.library.metrics.Country.SomeApplication:" ) );
         assertThat( lastLine( result, 16 ).trim(), equalTo( "updateName() [TimingCapture]:" ) );
         assertTrue( lastLine( result, 5 ).contains( "75% <=" ) );
         assertTrue( lastLine( result, 4 ).contains( "95% <=" ) );

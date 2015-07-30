@@ -32,7 +32,7 @@ public final class EntityReference
      */
     public static EntityReference parseURI( String uri )
     {
-        String identity = uri.substring( "urn:qi4j:entity:".length() );
+        String identity = uri.substring( "urn:zest:entity:".length() );
         return new EntityReference( identity );
     }
 
@@ -98,7 +98,7 @@ public final class EntityReference
      */
     public String toURI()
     {
-        return "urn:qi4j:entity:" + identity;
+        return "urn:zest:entity:" + identity;
     }
 
     @Override

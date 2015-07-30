@@ -73,7 +73,7 @@ public class JCloudsMapEntityStoreMixin
     implements ServiceActivation, MapEntityStore
 {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.entitystore.jclouds" );
+    private static final Logger LOGGER = LoggerFactory.getLogger( "org.apache.zest.entitystore.jclouds" );
 
     private static final Map<String, ApiMetadata> allApis = Maps.uniqueIndex(
         Apis.viewableAs( BlobStoreContext.class ),
@@ -116,7 +116,7 @@ public class JCloudsMapEntityStoreMixin
         }
         if( container == null )
         {
-            container = "qi4j-entities";
+            container = "zest-entities";
         }
         storeContext = ContextBuilder.newBuilder( provider ).
             credentials( identifier, credentials ).

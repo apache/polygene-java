@@ -55,8 +55,8 @@ import org.apache.zest.spi.entitystore.helpers.MapEntityStore;
 public class MongoMapEntityStoreMixin
     implements ServiceActivation, MapEntityStore, MongoAccessors
 {
-    private static final String DEFAULT_DATABASE_NAME = "qi4j:entitystore";
-    private static final String DEFAULT_COLLECTION_NAME = "qi4j:entitystore:entities";
+    private static final String DEFAULT_DATABASE_NAME = "zest:entitystore";
+    private static final String DEFAULT_COLLECTION_NAME = "zest:entitystore:entities";
     public static final String IDENTITY_COLUMN = "_id";
     public static final String STATE_COLUMN = "state";
     @This
@@ -122,14 +122,14 @@ public class MongoMapEntityStoreMixin
             serverAddresses.addAll( config.nodes().get() );
         }
 
-        // If database name not configured, set it to qi4j:entitystore
+        // If database name not configured, set it to zest:entitystore
         databaseName = config.database().get();
         if( databaseName == null )
         {
             databaseName = DEFAULT_DATABASE_NAME;
         }
 
-        // If collection name not configured, set it to qi4j:entitystore:entities
+        // If collection name not configured, set it to zest:entitystore:entities
         collectionName = config.collection().get();
         if( collectionName == null )
         {

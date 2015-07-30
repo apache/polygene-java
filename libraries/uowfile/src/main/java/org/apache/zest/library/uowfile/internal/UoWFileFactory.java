@@ -54,7 +54,7 @@ public interface UoWFileFactory
         {
         }
 
-        private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.library.uowfile" );
+        private static final Logger LOGGER = LoggerFactory.getLogger( "org.apache.zest.library.uowfile" );
 
         @Structure
         private Application app;
@@ -78,7 +78,7 @@ public interface UoWFileFactory
             File tmp;
             if( fileConfig == null )
             {
-                tmp = new File( "qi4j", app.name() + "-" + app.version() );
+                tmp = new File( "zest", app.name() + "-" + app.version() );
             }
             else
             {

@@ -131,7 +131,7 @@ public abstract class AbstractSQLStartup
         SQLDataType customizeType( Type propertyType, SQLTypeInfo sqlTypeInfo );
     }
 
-    public static final String DEFAULT_SCHEMA_NAME = "qi4j";
+    public static final String DEFAULT_SCHEMA_NAME = "zest";
 
     private static final Class<?> ENTITY_PK_TYPE = Long.class;
     private static final Class<?> ENTITY_TYPE_PK_TYPE = Integer.class;
