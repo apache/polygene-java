@@ -69,7 +69,7 @@ BoneCP support resides in the *sql-bonecp* module.
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+source=libraries/sql/src/test/java/org/apache/zest/library/sql/DocumentationSupport.java
 tag=bonecp
 ----
 
@@ -84,7 +84,7 @@ include::../../../sql-dbcp/build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+source=libraries/sql/src/test/java/org/apache/zest/library/sql/DocumentationSupport.java
 tag=dbcp
 ----
 
@@ -98,7 +98,7 @@ tag=dbcp
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+source=libraries/sql/src/test/java/org/apache/zest/library/sql/DocumentationSupport.java
 tag=datasource
 ----
 
@@ -111,7 +111,7 @@ See <<howto-configure-service>>.
 
 [snippet,java]
 ----
-source=libraries/sql/src/main/java/org/qi4j/library/sql/datasource/DataSourceConfigurationState.java
+source=libraries/sql/src/main/java/org/apache/zest/library/sql/datasource/DataSourceConfigurationState.java
 tag=config
 ----
 
@@ -131,7 +131,7 @@ Application runs in an environment where DataSource are already provided.
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/datasource/ExternalDataSourceTest.java
+source=libraries/sql/src/test/java/org/apache/zest/library/sql/datasource/ExternalDataSourceTest.java
 tag=assembly
 ----
 
@@ -149,7 +149,7 @@ CircuitBreaker and set it as <<def-metainfo>> of the DataSource.
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+source=libraries/sql/src/test/java/org/apache/zest/library/sql/DocumentationSupport.java
 tag=cb-assembly
 ----
 
@@ -158,7 +158,7 @@ by a CircuitBreaker proxy.
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/DocumentationSupport.java
+source=libraries/sql/src/test/java/org/apache/zest/library/sql/DocumentationSupport.java
 tag=cb-datasource
 ----
 
@@ -171,7 +171,7 @@ Here is a simple example:
 
 [snippet,java]
 ----
-source=libraries/sql-liquibase/src/test/java/org/qi4j/library/sql/liquibase/LiquibaseServiceTest.java
+source=libraries/sql-liquibase/src/test/java/org/apache/zest/library/sql/liquibase/LiquibaseServiceTest.java
 tag=io
 ----
 
@@ -184,7 +184,7 @@ through JMX.
 
 [snippet,java]
 ----
-source=libraries/sql/src/test/java/org/qi4j/library/sql/jmx/DataSourceConfigurationManagerServiceTest.java
+source=libraries/sql/src/test/java/org/apache/zest/library/sql/jmx/DataSourceConfigurationManagerServiceTest.java
 tag=jmx
 ----
 
@@ -212,7 +212,7 @@ include::../../../sql-liquibase/build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 ----
-source=libraries/sql-liquibase/src/test/java/org/qi4j/library/sql/liquibase/LiquibaseServiceTest.java
+source=libraries/sql-liquibase/src/test/java/org/apache/zest/library/sql/liquibase/LiquibaseServiceTest.java
 tag=assembly
 ----
 
@@ -223,7 +223,7 @@ applies the configured changelog.
 
 [snippet,java]
 ----
-source=libraries/sql-liquibase/src/main/java/org/qi4j/library/sql/liquibase/LiquibaseConfiguration.java
+source=libraries/sql-liquibase/src/main/java/org/apache/zest/library/sql/liquibase/LiquibaseConfiguration.java
 tag=config
 ----
 

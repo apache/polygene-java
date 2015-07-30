@@ -27,7 +27,7 @@ is defined programmatically. Once all the layers, modules and all the composite 
 the model is instantiated into an application. This enables the entire _structure_ system in Zest, where types "belongs"
 to a module and visibility rules define default behaviors, enforcement of architectural integrity and much more.
 
-The _assembly_ is preceeded by the creation of the _Qi4j Runtime_. The _assembly_ can be declared fully by defining
+The _assembly_ is preceeded by the creation of the _Zest Runtime_. The _assembly_ can be declared fully by defining
 all modules and layers, and how the layers are sitting on top of each other, OR one can utilize one of the two
 convenience assemblies, one for a _pancake_ pattern, where all layers are top on each other, or one with a single module
 in a single layer, useful for small applications, spikes and tests. The +bootstrap+ system has several ways to acheive
@@ -53,7 +53,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=objects
 --------------
 
@@ -62,7 +62,7 @@ tag=objects
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=transients
 --------------
 
@@ -71,7 +71,7 @@ tag=transients
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=values
 --------------
 
@@ -80,7 +80,7 @@ tag=values
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=entities
 --------------
 
@@ -89,7 +89,7 @@ tag=entities
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=services
 --------------
 
@@ -97,7 +97,7 @@ tag=services
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=tagged-services
 --------------
 
@@ -105,7 +105,7 @@ tag=tagged-services
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=imported-services
 --------------
 
@@ -113,7 +113,7 @@ tag=imported-services
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=properties-defaults
 --------------
 
@@ -136,7 +136,7 @@ such as;
 
 [snippet,java]
 --------------
-source=libraries/rest-server/src/test/java/org/qi4j/library/rest/server/DocumentationSupport.java
+source=libraries/rest-server/src/test/java/org/apache/zest/library/rest/server/DocumentationSupport.java
 tag=UsingAssembler
 --------------
 
@@ -160,7 +160,7 @@ used like;
 
 [snippet,java]
 --------------
-source=extensions/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/DocumentationSupport.java
+source=extensions/entitystore-jdbm/src/test/java/org/apache/zest/entitystore/jdbm/DocumentationSupport.java
 tag=UsingAssembler
 --------------
 
@@ -214,7 +214,7 @@ Let's take a closer look at how it is put together.
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=singleton
 --------------
 
@@ -268,7 +268,7 @@ Let's look at an example;
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=pancake
 --------------
 
@@ -283,7 +283,7 @@ ApplicationAssemblyFactory, which is used to create an ApplicationAssembly descr
 
 [snippet,java]
 --------------
-source=core/bootstrap/src/test/java/org/qi4j/bootstrap/DocumentationSupport.java
+source=core/bootstrap/src/test/java/org/apache/zest/bootstrap/DocumentationSupport.java
 tag=full
 --------------
 

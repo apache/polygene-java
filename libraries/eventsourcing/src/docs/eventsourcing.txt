@@ -72,14 +72,14 @@ Assembly is done as follows:
 
 [snippet,java]
 ----
-source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/application/ApplicationEventTest.java
+source=libraries/eventsourcing/src/test/java/org/apache/zest/library/eventsourcing/application/ApplicationEventTest.java
 tag=assemblyAE
 ----
 
 Configure application events store:
 [snippet,java]
 ----
-source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/application/ApplicationEventTest.java
+source=libraries/eventsourcing/src/test/java/org/apache/zest/library/eventsourcing/application/ApplicationEventTest.java
 tag=storeAE
 ----
 
@@ -88,14 +88,14 @@ First parameter is `null` on "normal" execution.
 If it is not `null`, then the method call is a replay of previously created events.
 [snippet,java]
 ----
-source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/application/ApplicationEventTest.java
+source=libraries/eventsourcing/src/test/java/org/apache/zest/library/eventsourcing/application/ApplicationEventTest.java
 tag=methodAE
 ----
 
 To enable execution capturing, you have to configure composite with concern:
 [snippet,java]
 ----
-source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/application/ApplicationEventTest.java
+source=libraries/eventsourcing/src/test/java/org/apache/zest/library/eventsourcing/application/ApplicationEventTest.java
 tag=concernAE
 ----
 
@@ -105,7 +105,7 @@ Assembly:
 
 [snippet,java]
 ----
-source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/domain/DomainEventTest.java
+source=libraries/eventsourcing/src/test/java/org/apache/zest/library/eventsourcing/domain/DomainEventTest.java
 tag=assemblyDE
 ----
 
@@ -113,7 +113,7 @@ Configure domain events store:
 
 [snippet,java]
 ----
-source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/domain/DomainEventTest.java
+source=libraries/eventsourcing/src/test/java/org/apache/zest/library/eventsourcing/domain/DomainEventTest.java
 tag=storeDE
 ----
 
@@ -122,7 +122,7 @@ Event methods may only change state.
 They may not fail or thrown exceptions:
 [snippet,java]
 ----
-source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/domain/DomainEventTest.java
+source=libraries/eventsourcing/src/test/java/org/apache/zest/library/eventsourcing/domain/DomainEventTest.java
 tag=methodDE
 ----
 
@@ -130,6 +130,6 @@ To enable method execution capturing, you have to configure entity with concern:
 
 [snippet,java]
 ----
-source=libraries/eventsourcing/src/test/java/org/qi4j/library/eventsourcing/domain/DomainEventTest.java
+source=libraries/eventsourcing/src/test/java/org/apache/zest/library/eventsourcing/domain/DomainEventTest.java
 tag=concernDE
 ----

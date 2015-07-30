@@ -73,7 +73,7 @@ provide an _Identity_ of the Alarm, which must survive restarts. The code could 
 
 [snippet,java]
 --------------
-source=libraries/alarm/src/test/java/org/qi4j/library/alarm/AlarmProxyTest.java
+source=libraries/alarm/src/test/java/org/apache/zest/library/alarm/AlarmProxyTest.java
 tag=documentation
 --------------
 

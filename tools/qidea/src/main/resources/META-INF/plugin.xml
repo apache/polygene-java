@@ -27,20 +27,20 @@
 
   <application-components>
     <component>
-      <implementation-class>org.qi4j.ide.plugin.idea.Qi4jApplicationComponent</implementation-class>
+      <implementation-class>org.apache.zest.ide.plugin.idea.Qi4jApplicationComponent</implementation-class>
     </component>
   </application-components>
 
   <actions>
     <action id="CreateConcernFromMixinTypeOrCompositeAction"
-            class="org.qi4j.ide.plugin.idea.concerns.actions.create.CreateConcernFromMixinTypeOrCompositeAction"
+            class="org.apache.zest.ide.plugin.idea.concerns.actions.create.CreateConcernFromMixinTypeOrCompositeAction"
             text="New Concern" description="Create new Zest™ concern">
       <add-to-group group-id="CodeMenu" anchor="last"/>
     </action>
 
-    <group id="Zest" class="org.qi4j.ide.plugin.idea.common.actions.Qi4jCreateActionGroup" text="Zest™">
+    <group id="Zest" class="org.apache.zest.ide.plugin.idea.common.actions.Qi4jCreateActionGroup" text="Zest™">
       <action id="Zest.NewConcernOf"
-              class="org.qi4j.ide.plugin.idea.concerns.actions.create.inPackage.CreateConcernOfInPackageAction"
+              class="org.apache.zest.ide.plugin.idea.concerns.actions.create.inPackage.CreateConcernOfInPackageAction"
               text="New Concern" description="Create new Zest concern">
       </action>
       <add-to-group group-id="NewGroup" anchor="last"/>

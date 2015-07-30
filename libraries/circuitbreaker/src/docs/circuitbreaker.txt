@@ -70,7 +70,7 @@ Here is a code snippet that demonstrate how to create a CircuitBreaker and how i
 
 [snippet,java]
 ----
-source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/CircuitBreakerTest.java
+source=libraries/circuitbreaker/src/test/java/org/apache/zest/library/circuitbreaker/CircuitBreakerTest.java
 tag=direct
 ----
 
@@ -88,7 +88,7 @@ Here is how to declare such a Service:
 
 [snippet,java]
 ----
-source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/BreaksCircuitOnThrowableTest.java
+source=libraries/circuitbreaker/src/test/java/org/apache/zest/library/circuitbreaker/BreaksCircuitOnThrowableTest.java
 tag=service
 ----
 
@@ -106,7 +106,7 @@ Here is how it goes:
 
 [snippet,java]
 ----
-source=libraries/circuitbreaker/src/test/java/org/qi4j/library/circuitbreaker/jmx/CircuitBreakerManagementSample.java
+source=libraries/circuitbreaker/src/test/java/org/apache/zest/library/circuitbreaker/jmx/CircuitBreakerManagementSample.java
 tag=jmx
 ----
 

@@ -38,7 +38,7 @@ All examples below are based on this type:
 
 [snippet,java]
 ----
-source=libraries/lang-groovy/src/test/groovy/org/qi4j/lang/groovy/HelloSpeaker.java
+source=libraries/lang-groovy/src/test/groovy/org/apache/zest/library/groovy/HelloSpeaker.java
 tag=speaker
 ----
 
@@ -52,7 +52,7 @@ Having this Groovy class compiled ;
 .HelloSpeakerMixin.groovy
 [snippet,groovy]
 ----
-source=libraries/lang-groovy/src/test/groovy/org/qi4j/lang/groovy/HelloSpeakerMixin.groovy
+source=libraries/lang-groovy/src/test/groovy/org/apache/zest/library/groovy/HelloSpeakerMixin.groovy
 tag=direct
 ----
 
@@ -60,7 +60,7 @@ assemble it directly:
 
 [snippet,java]
 ----
-source=libraries/lang-groovy/src/test/groovy/org/qi4j/lang/groovy/HelloSpeakerTest.java
+source=libraries/lang-groovy/src/test/groovy/org/apache/zest/library/groovy/HelloSpeakerTest.java
 tag=direct
 ----
 
@@ -72,7 +72,7 @@ Declare a Groovy class in a classpath resource file located in the same package 
 .HelloSpeaker.groovy
 [snippet,groovy]
 ----
-source=libraries/lang-groovy/src/test/resources/org/qi4j/lang/groovy/HelloSpeaker.groovy
+source=libraries/lang-groovy/src/test/resources/org/apache/zest/lang/groovy/HelloSpeaker.groovy
 tag=script
 ----
 
@@ -80,7 +80,7 @@ Then assemble it with the +GroovyMixin+:
 
 [snippet,java]
 ----
-source=libraries/lang-groovy/src/test/groovy/org/qi4j/lang/groovy/HelloSpeakerTest.java
+source=libraries/lang-groovy/src/test/groovy/org/apache/zest/library/groovy/HelloSpeakerTest.java
 tag=script
 ----
 
@@ -94,7 +94,7 @@ Implement single composites methods, each in a classpath resource file located i
 .HelloSpeaker.sayHello.groovy
 [snippet,groovy]
 ----
-source=libraries/lang-groovy/src/test/resources/org/qi4j/lang/groovy/HelloSpeaker.sayHello.groovy
+source=libraries/lang-groovy/src/test/resources/org/apache/zest/library/groovy/HelloSpeaker.sayHello.groovy
 tag=script
 ----
 
@@ -102,7 +102,7 @@ Then assemble it with the +GroovyMixin+:
 
 [snippet,java]
 ----
-source=libraries/lang-groovy/src/test/groovy/org/qi4j/lang/groovy/HelloSpeakerTest.java
+source=libraries/lang-groovy/src/test/groovy/org/apache/zest/library/groovy/HelloSpeakerTest.java
 tag=script
 ----
 

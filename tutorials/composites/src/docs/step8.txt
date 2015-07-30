@@ -60,21 +60,21 @@ These ones remain unchanged:
 *GenericPropertyMixin.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial9/GenericPropertyMixin.java
+source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial9/GenericPropertyMixin.java
 tag=solution
 ----
 
 *HelloWorldBehaviourMixin.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial9/HelloWorldBehaviourMixin.java
+source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial9/HelloWorldBehaviourMixin.java
 tag=solution
 ----
 
 *HelloWorldComposite.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial9/HelloWorldComposite.java
+source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial9/HelloWorldComposite.java
 tag=solution
 ----
 

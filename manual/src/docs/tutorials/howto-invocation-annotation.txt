@@ -53,7 +53,7 @@ First create an annotation of your own liking, it must have +java.lang.annotatio
 
 [snippet,java]
 -----------
-source=core/runtime/src/test/java/org/qi4j/runtime/injection/InvocationInjectionTest.java
+source=core/runtime/src/test/java/org/apache/zest/runtime/injection/InvocationInjectionTest.java
 tag=annotation
 -----------
 
@@ -61,7 +61,7 @@ After that it is possible to have this annotation placed on composite type metho
 
 [snippet,java]
 -----------
-source=core/runtime/src/test/java/org/qi4j/runtime/injection/InvocationInjectionTest.java
+source=core/runtime/src/test/java/org/apache/zest/runtime/injection/InvocationInjectionTest.java
 tag=declaration
 -----------
 
@@ -69,7 +69,7 @@ and then the annotation can simply be injected into your Concerns or Mixins, lik
 
 [snippet,java]
 -----------
-source=core/runtime/src/test/java/org/qi4j/runtime/injection/InvocationInjectionTest.java
+source=core/runtime/src/test/java/org/apache/zest/runtime/injection/InvocationInjectionTest.java
 tag=use1
 -----------
 

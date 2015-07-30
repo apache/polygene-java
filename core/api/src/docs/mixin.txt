@@ -25,7 +25,7 @@ the @Mixins annotation of a Composite declaration) implements one or more method
 Mixin Type can be very simple, like;
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/BankAccount.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/BankAccount.java
 tag=mixinType
 -----------
 
@@ -68,12 +68,12 @@ Mixins are declared as annotations on the composite interface.
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/Something.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/Something.java
 tag=something
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/SomethingMixin.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/SomethingMixin.java
 tag=something
 -----------
 In the above sample, the SomethingMixin will be made part of the Something composite.
@@ -83,17 +83,17 @@ the mixins required.
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/Car.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/Car.java
 tag=mixin
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/Startable.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/Startable.java
 tag=mixin
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/Vehicle.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/Vehicle.java
 tag=mixin
 -----------
 
@@ -103,22 +103,22 @@ which are ordinary mixins but are lacking some methods. This is simply done by d
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/partial/Car.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/partial/Car.java
 tag=partial
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/partial/Vehicle.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/partial/Vehicle.java
 tag=partial
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/partial/SpeedLocation.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/partial/SpeedLocation.java
 tag=partial
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/partial/SpeedMixin.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/partial/SpeedMixin.java
 tag=partial
 -----------
 
@@ -142,7 +142,7 @@ the Cargo interface like;
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/Cargo.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/privateMixin/Cargo.java
 tag=private
 -----------
 
@@ -152,12 +152,12 @@ probably do something like;
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/CargoMixin.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/privateMixin/CargoMixin.java
 tag=private
 -----------
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/qi4j/api/mixin/privateMixin/CargoState.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/privateMixin/CargoState.java
 tag=private
 -----------
 
@@ -179,7 +179,7 @@ interfaces and automatically included if needed. They also serve as excellent ex
 
 [snippet,java]
 -----------
-source=core/api/src/main/java/org/qi4j/api/property/PropertyMixin.java
+source=core/api/src/main/java/org/apache/zest/api/property/PropertyMixin.java
 tag=actual
 -----------
 

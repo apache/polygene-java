@@ -89,7 +89,7 @@ To start with we have Input:
 
 [snippet,java]
 --------------
-source=core/io/src/main/java/org/qi4j/io/Input.java
+source=core/io/src/main/java/org/apache/zest/io/Input.java
 tag=input
 -------------
 
@@ -105,7 +105,7 @@ On the receiving side we then have Output:
 
 [snippet,java]
 --------------
-source=core/io/src/main/java/org/qi4j/io/Output.java
+source=core/io/src/main/java/org/apache/zest/io/Output.java
 tag=output
 -------------
 
@@ -118,7 +118,7 @@ Next we have Sender:
 
 [snippet,java]
 --------------
-source=core/io/src/main/java/org/qi4j/io/Sender.java
+source=core/io/src/main/java/org/apache/zest/io/Sender.java
 tag=sender
 -------------
 
@@ -127,7 +127,7 @@ this point can start transferring data of type T to the receiver, one at a time.
 
 [snippet,java]
 --------------
-source=core/io/src/main/java/org/qi4j/io/Receiver.java
+source=core/io/src/main/java/org/apache/zest/io/Receiver.java
 tag=receiver
 -------------
 
@@ -147,7 +147,7 @@ looks like this:
 
 [snippet,java]
 --------------
-source=manual/src/main/java/org/qi4j/manual/recipes/io/Docs.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/io/Docs.java
 tag=filter
 --------------
 

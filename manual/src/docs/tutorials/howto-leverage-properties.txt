@@ -30,13 +30,13 @@ So in Zest, instead of writing;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/pojo/Book.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/properties/pojo/Book.java
 tag=book
 -----------
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/pojo/MutableBook.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/properties/pojo/MutableBook.java
 tag=mutableBook
 -----------
 
@@ -51,7 +51,7 @@ like this;
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/Book.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/properties/Book.java
 tag=book
 -----------
 
@@ -64,7 +64,7 @@ There is more to this than meets the eye.
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/BookFactory.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/properties/BookFactory.java
 tag=create
 -----------
 
@@ -87,7 +87,7 @@ actual domain model. Such Swing client will utilize a SwingInfo property info if
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/SwingInfo.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/properties/SwingInfo.java
 tag=info
 -----------
 
@@ -95,6 +95,6 @@ Our generic Swing UI will be mainly reflective in nature, but when it gets hold 
 
 [snippet,java]
 -----------
-source=manual/src/main/java/org/qi4j/manual/recipes/properties/SwingPanel.java
+source=manual/src/main/java/org/apache/zest/manual/recipes/properties/SwingPanel.java
 tag=info-use
 -----------

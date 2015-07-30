@@ -53,7 +53,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/test/java/org/qi4j/index/elasticsearch/DocumentationSupport.java
+source=extensions/indexing-elasticsearch/src/test/java/org/apache/zest/index/elasticsearch/DocumentationSupport.java
 tag=memory
 ----
 
@@ -67,7 +67,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/test/java/org/qi4j/index/elasticsearch/DocumentationSupport.java
+source=extensions/indexing-elasticsearch/src/test/java/org/apache/zest/index/elasticsearch/DocumentationSupport.java
 tag=filesystem
 ----
 
@@ -80,7 +80,7 @@ Here are the configuration properties for both the in-memory and on-filesystem E
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/main/java/org/qi4j/index/elasticsearch/ElasticSearchConfiguration.java
+source=extensions/indexing-elasticsearch/src/main/java/org/apache/zest/index/elasticsearch/ElasticSearchConfiguration.java
 tag=config
 ----
 
@@ -95,7 +95,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/test/java/org/qi4j/index/elasticsearch/DocumentationSupport.java
+source=extensions/indexing-elasticsearch/src/test/java/org/apache/zest/index/elasticsearch/DocumentationSupport.java
 tag=cluster
 ----
 
@@ -107,7 +107,7 @@ properties defined in the in-memory or on-filesystem configuration, see above.
 
 [snippet,java]
 ----
-source=extensions/indexing-elasticsearch/src/main/java/org/qi4j/index/elasticsearch/ElasticSearchClusterConfiguration.java
+source=extensions/indexing-elasticsearch/src/main/java/org/apache/zest/index/elasticsearch/ElasticSearchClusterConfiguration.java
 tag=config
 ----
 

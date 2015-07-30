@@ -54,7 +54,7 @@ by calling instantiateOnStartup(), this way;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/service/DocumentationSupport.java
 tag=instantiateOnStartup
 --------------
 
@@ -69,7 +69,7 @@ The easiest way is to implement the ServiceActivation interface directly in the 
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/service/DocumentationSupport.java
 tag=activation1
 --------------
 
@@ -77,7 +77,7 @@ The activation code can also be moved outside the composite by using the Service
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/service/DocumentationSupport.java
 tag=activation2
 --------------
 
@@ -85,7 +85,7 @@ Activators can be registered on Service assembly too, this way;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/service/DocumentationSupport.java
 tag=activation3
 --------------
 
@@ -102,7 +102,7 @@ instance. Services can also be arbitrarily tagged, via the ServiceDescriptor. Ex
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/service/DocumentationSupport.java
 tag=tag
 --------------
 
@@ -110,6 +110,6 @@ Tags are useful inside the application code to locate a particular service insta
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/service/DocumentationSupport.java
+source=core/api/src/test/java/org/apache/zest/api/service/DocumentationSupport.java
 tag=UseTag
 --------------

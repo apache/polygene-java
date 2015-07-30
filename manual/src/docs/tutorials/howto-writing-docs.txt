@@ -226,7 +226,7 @@ Most source code that is included in the documentation should be extract via +SN
 ----
  [snippet,java]
  -----------
- source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+ source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/OrderEntity.java
  tag=mainClass
  -----------
 ----
@@ -236,11 +236,11 @@ The above could be bringing in content that looks like;
 
 [source]
 ----
-package org.qi4j.demo.tenminute;
+package org.apache.zest.demo.tenminute;
 
-import org.qi4j.api.concern.Concerns;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.sideeffect.SideEffects;
+import org.apache.zest.api.concern.Concerns;
+import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.sideeffect.SideEffects;
 
 // START SNIPPET: sideEffect
 @SideEffects( MailNotifySideEffect.class )
@@ -259,7 +259,7 @@ which will be rendered as;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/OrderEntity.java
 tag=mainClass
 -----------
 

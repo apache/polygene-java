@@ -29,7 +29,7 @@ Envisage can be easily used directly and prior your Application activation:
 
 [snippet,java]
 ----
-source=tools/envisage/src/test/java/org/qi4j/envisage/school/EnvisageSchoolSample.java
+source=tools/envisage/src/test/java/org/apache/zest/envisage/school/EnvisageSchoolSample.java
 tag=envisage
 ----
 

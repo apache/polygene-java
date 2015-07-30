@@ -32,7 +32,7 @@ the same model instance, so any changes to the model will notify the views.
 We start with the FooModel interface;
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/FooModel.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/decoratorMixin/FooModel.java
 tag=plain
 --------------
 
@@ -41,7 +41,7 @@ and its implementation is not really relevant for this discussion.
 Each of the views looks like this;
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/View1.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/decoratorMixin/View1.java
 tag=decorator
 --------------
 
@@ -53,7 +53,7 @@ FooModel with the DecoratorMixin.
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/FooModel.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/decoratorMixin/FooModel.java
 tag=decorator
 --------------
 
@@ -62,7 +62,7 @@ do;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/DecoratorMixinTest.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/decoratorMixin/DecoratorMixinTest.java
 tag=create
 --------------
 
@@ -70,7 +70,7 @@ And there is nothing special in the assembly of this simple example;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/DecoratorMixinTest.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/decoratorMixin/DecoratorMixinTest.java
 tag=assembly
 --------------
 
@@ -78,6 +78,6 @@ This can now be validated in a small test;
 
 [snippet,java]
 --------------
-source=core/api/src/test/java/org/qi4j/api/mixin/decoratorMixin/DecoratorMixinTest.java
+source=core/api/src/test/java/org/apache/zest/api/mixin/decoratorMixin/DecoratorMixinTest.java
 tag=test
 --------------
