@@ -19,16 +19,16 @@ package org.qi4j.regression.qi78;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.api.structure.Application;
-import org.qi4j.api.structure.ApplicationDescriptor;
-import org.qi4j.api.structure.LayerDescriptor;
-import org.qi4j.bootstrap.ApplicationAssembler;
-import org.qi4j.bootstrap.ApplicationAssembly;
-import org.qi4j.bootstrap.ApplicationAssemblyFactory;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.Energy4Java;
-import org.qi4j.bootstrap.LayerAssembly;
-import org.qi4j.functional.HierarchicalVisitorAdapter;
+import org.apache.zest.api.structure.Application;
+import org.apache.zest.api.structure.ApplicationDescriptor;
+import org.apache.zest.api.structure.LayerDescriptor;
+import org.apache.zest.bootstrap.ApplicationAssembler;
+import org.apache.zest.bootstrap.ApplicationAssembly;
+import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
+import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.Energy4Java;
+import org.apache.zest.bootstrap.LayerAssembly;
+import org.apache.zest.functional.HierarchicalVisitorAdapter;
 
 public class IssueTest
 {

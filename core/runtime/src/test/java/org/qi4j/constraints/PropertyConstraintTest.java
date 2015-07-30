@@ -18,18 +18,18 @@
 package org.qi4j.constraints;
 
 import java.util.Collection;
-import org.qi4j.api.composite.TransientBuilder;
-import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.constraint.ConstraintViolation;
-import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.constraint.Constraints;
-import org.qi4j.api.property.Property;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.library.constraints.MinLengthConstraint;
-import org.qi4j.library.constraints.annotation.Matches;
-import org.qi4j.library.constraints.annotation.MinLength;
-import org.qi4j.test.AbstractQi4jTest;
+import org.apache.zest.api.composite.TransientBuilder;
+import org.apache.zest.api.composite.TransientComposite;
+import org.apache.zest.api.constraint.ConstraintViolation;
+import org.apache.zest.api.constraint.ConstraintViolationException;
+import org.apache.zest.api.constraint.Constraints;
+import org.apache.zest.api.property.Property;
+import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.library.constraints.MinLengthConstraint;
+import org.apache.zest.library.constraints.annotation.Matches;
+import org.apache.zest.library.constraints.annotation.MinLength;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

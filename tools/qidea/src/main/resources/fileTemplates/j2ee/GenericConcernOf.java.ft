@@ -1,7 +1,6 @@
 package ${PACKAGE_NAME};
 
-import java.lang.reflect.Method;
-import org.qi4j.api.concern.GenericConcern;
+import org.apache.zest.api.concern.GenericConcern;
 
 #parse("File Header.java")
 public class ${NAME} extends GenericConcern

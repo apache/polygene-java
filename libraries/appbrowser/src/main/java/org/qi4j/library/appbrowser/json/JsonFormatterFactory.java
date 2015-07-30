@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.qi4j.library.appbrowser.json;
+package org.apache.zest.library.appbrowser.json;
 
 import java.io.Writer;
 import org.json.JSONWriter;
-import org.qi4j.library.appbrowser.Formatter;
-import org.qi4j.library.appbrowser.FormatterFactory;
+import org.apache.zest.library.appbrowser.Formatter;
+import org.apache.zest.library.appbrowser.FormatterFactory;
 
 public class JsonFormatterFactory
     implements FormatterFactory

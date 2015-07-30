@@ -19,11 +19,11 @@
 package org.qi4j.regression.qi65;
 
 import org.junit.Test;
-import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.apache.zest.api.composite.TransientComposite;
+import org.apache.zest.api.mixin.Mixins;
+import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.test.AbstractQi4jTest;
 
 public class IssueTest
     extends AbstractQi4jTest

@@ -27,6 +27,6 @@
         <appender-ref ref="stdout" />
     </root>
 
-    <logger name="org.qi4j.spi" level="debug"/>
+    <logger name="org.apache.zest.spi" level="debug"/>
 
 </configuration>

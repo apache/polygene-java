@@ -24,10 +24,10 @@
   <servlet>
     <display-name>Quikit Web Application Framework</display-name>
     <servlet-name>QuikitServlet</servlet-name>
-    <servlet-class>org.qi4j.sample.rental.web.QuikitServlet</servlet-class>
+    <servlet-class>org.apache.zest.sample.rental.web.QuikitServlet</servlet-class>
     <init-param>
       <param-name>qi4j-assembler</param-name>
-      <param-value>org.qi4j.sample.rental.web.assembly.RentalApplicationAssembler</param-value>
+      <param-value>org.apache.zest.sample.rental.web.assembly.RentalApplicationAssembler</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>

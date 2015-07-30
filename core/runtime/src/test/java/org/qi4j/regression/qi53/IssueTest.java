@@ -19,17 +19,17 @@
 package org.qi4j.regression.qi53;
 
 import org.junit.Test;
-import org.qi4j.api.composite.TransientBuilder;
-import org.qi4j.api.composite.TransientBuilderFactory;
-import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.injection.scope.Structure;
-import org.qi4j.api.injection.scope.This;
-import org.qi4j.api.mixin.Mixins;
-import org.qi4j.api.property.Immutable;
-import org.qi4j.api.property.Property;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.apache.zest.api.composite.TransientBuilder;
+import org.apache.zest.api.composite.TransientBuilderFactory;
+import org.apache.zest.api.composite.TransientComposite;
+import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.injection.scope.This;
+import org.apache.zest.api.mixin.Mixins;
+import org.apache.zest.api.property.Immutable;
+import org.apache.zest.api.property.Property;
+import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 

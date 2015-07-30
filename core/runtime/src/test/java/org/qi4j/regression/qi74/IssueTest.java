@@ -19,13 +19,13 @@ package org.qi4j.regression.qi74;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.qi4j.api.composite.TransientBuilder;
-import org.qi4j.api.composite.TransientComposite;
-import org.qi4j.api.constraint.ConstraintViolationException;
-import org.qi4j.api.property.Property;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.test.AbstractQi4jTest;
+import org.apache.zest.api.composite.TransientBuilder;
+import org.apache.zest.api.composite.TransientComposite;
+import org.apache.zest.api.constraint.ConstraintViolationException;
+import org.apache.zest.api.property.Property;
+import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.test.AbstractQi4jTest;
 
 public class IssueTest
     extends AbstractQi4jTest
