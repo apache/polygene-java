@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-http\://www.qi4j.org/schema/qi4j/spring=org.qi4j.library.spring.bootstrap.internal.Qi4jNamespaceHandler
+http\://www.qi4j.org/schema/qi4j/spring=org.apache.zest.library.spring.bootstrap.internal.Qi4jNamespaceHandler

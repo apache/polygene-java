@@ -18,16 +18,16 @@
 package org.qi4j.regression.qi383;
 
 import org.junit.Test;
-import org.qi4j.api.entity.EntityComposite;
-import org.qi4j.api.unitofwork.EntityCompositeAlreadyExistsException;
-import org.qi4j.api.unitofwork.UnitOfWork;
-import org.qi4j.api.unitofwork.UnitOfWorkCompletionException;
-import org.qi4j.api.value.ValueSerialization;
-import org.qi4j.bootstrap.AssemblyException;
-import org.qi4j.bootstrap.ModuleAssembly;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
-import org.qi4j.test.AbstractQi4jTest;
-import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.unitofwork.EntityCompositeAlreadyExistsException;
+import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.value.ValueSerialization;
+import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
+import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class Qi383Test extends AbstractQi4jTest
 {

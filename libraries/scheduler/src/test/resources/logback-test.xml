@@ -27,6 +27,6 @@
         <appender-ref ref="stdout" />
     </root>
 
-    <logger name="org.qi4j.library.scheduler" level="trace"/>
+    <logger name="org.apache.zest.library.scheduler" level="trace"/>
 
 </configuration>

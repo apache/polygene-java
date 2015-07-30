@@ -27,6 +27,6 @@
         <appender-ref ref="stdout" />
     </root>
 
-    <logger name="org.qi4j.index" level="trace"/>
+    <logger name="org.apache.zest.index" level="trace"/>
 
 </configuration>

@@ -1,0 +1,68 @@
+/*
+ * Copyright 2007-2009 Niclas Hedhman.
+ * Copyright 2008 Alin Dreghiciu.
+ *
+ * Licensed  under the  Apache License,  Version 2.0  (the "License");
+ * you may not use  this file  except in  compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed  under the  License is distributed on an "AS IS" BASIS,
+ * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
+ * implied.
+ *
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.zest.runtime.query;
+
+import org.apache.zest.api.query.NotQueryableException;
+import org.apache.zest.api.query.QueryBuilder;
+import org.apache.zest.api.query.QueryBuilderFactory;
+import org.apache.zest.api.service.NoSuchServiceException;
+import org.apache.zest.api.service.ServiceFinder;
+import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.api.util.NullArgumentException;
+import org.apache.zest.spi.query.EntityFinder;
+
+/**
+ * Default implementation of {@link QueryBuilderFactory}
+ */
+public final class QueryBuilderFactoryImpl
+    implements QueryBuilderFactory
+{
+    private ServiceFinder finder;
+
+    /**
+     * Constructor.
+     *
+     * @param finder The ServiceFinder of the Module this QueryBuilderFactory belongs to.
+     */
+    public QueryBuilderFactoryImpl( ServiceFinder finder )
+    {
+        NullArgumentException.validateNotNull( "ServiceFinder", finder );
+        this.finder = finder;
+    }
+
+    /**
+     * @see QueryBuilderFactory#newQueryBuilder(Class)
+     */
+    @Override
+    public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
+    {
+        NotQueryableException.throwIfNotQueryable( resultType );
+
+        final ServiceReference<EntityFinder> serviceReference;
+        try
+        {
+            serviceReference = finder.findService( EntityFinder.class );
+            return new QueryBuilderImpl<T>( serviceReference.get(), resultType, null );
+        }
+        catch( NoSuchServiceException e )
+        {
+            return new QueryBuilderImpl<T>( null, resultType, null );
+        }
+    }
+}
