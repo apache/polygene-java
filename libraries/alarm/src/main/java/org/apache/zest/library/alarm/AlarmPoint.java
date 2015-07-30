@@ -456,7 +456,7 @@ public interface AlarmPoint
             {
                 locale = Locale.getDefault();
             }
-            ResourceBundle rb = ResourceBundle.getBundle( "org.qi4j.library.alarm.user.AlarmDescriptions", locale );
+            ResourceBundle rb = ResourceBundle.getBundle( "org.apache.zest.library.alarm.user.AlarmDescriptions", locale );
             return rb.getString( name() );
         }
 

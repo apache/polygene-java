@@ -40,7 +40,7 @@ import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.junit.Assert.*;
 import static org.apache.zest.io.Inputs.iterable;
@@ -54,7 +54,7 @@ import static org.apache.zest.io.Transforms.map;
  */
 // TODO How to assert that given a collection of valuecomposites when serializing and deserializing we have to OOME?
 public class AbstractCollectionSerializationTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     @Override

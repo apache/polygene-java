@@ -23,12 +23,12 @@ jar { manifest { name = "Apache Zest™ Extension: EhCache"}}
 
 dependencies {
 
-  compile(project(':org.qi4j.core:org.qi4j.core.spi'))
-  compile(project(':org.qi4j.core:org.qi4j.core.bootstrap'))
+  compile(project(':org.apache.zest.core:org.apache.zest.core.spi'))
+  compile(project(':org.apache.zest.core:org.apache.zest.core.bootstrap'))
   compile(libraries.ehcache)
 
-  testCompile( project(':org.qi4j.core:org.qi4j.core.testsupport') )
+  testCompile( project(':org.apache.zest.core:org.apache.zest.core.testsupport') )
 
-  testRuntime( project(':org.qi4j.core:org.qi4j.core.runtime'))
+  testRuntime( project(':org.apache.zest.core:org.apache.zest.core.runtime'))
   testRuntime(libraries.logback)
 }

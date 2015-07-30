@@ -18,7 +18,7 @@
 package org.apache.zest.library.logging.log;
 
 import java.io.Serializable;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.injection.scope.Service;
@@ -31,7 +31,7 @@ import static org.apache.zest.functional.Iterables.first;
 public final class SimpleLogConcern
     implements SimpleLog
 {
-    @Structure private Qi4j api;
+    @Structure private ZestAPI api;
     @Optional @Service private LoggingService loggingService;
     private Composite composite;
     private String category;
@@ -39,7 +39,7 @@ public final class SimpleLogConcern
     public SimpleLogConcern( @This Composite composite )
     {
         this.composite = composite;
-        Class<?> type = first( Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types() );
+        Class<?> type = first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( composite ).types() );
         category = type.getName();
     }
 

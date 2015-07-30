@@ -33,7 +33,7 @@ import org.apache.zest.library.eventsourcing.domain.api.UnitOfWorkDomainEventsVa
 import org.apache.zest.library.eventsourcing.domain.factory.DomainEventCreationConcern;
 import org.apache.zest.library.eventsourcing.domain.source.EventSource;
 import org.apache.zest.library.eventsourcing.domain.source.memory.MemoryEventStoreService;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ import java.security.Principal;
  * JAVADOC
  */
 public class DomainEventTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {

@@ -33,8 +33,8 @@ public class Main
     public Main()
         throws Exception
     {
-        Energy4Java qi4j = new Energy4Java();
-        application = qi4j.newApplication( new MainAssembler() );
+        Energy4Java zest = new Energy4Java();
+        application = zest.newApplication( new MainAssembler() );
         application.activate();
     }
 

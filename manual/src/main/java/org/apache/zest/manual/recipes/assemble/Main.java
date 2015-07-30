@@ -27,7 +27,7 @@ import org.apache.zest.bootstrap.*;
 // START SNIPPET: main
 public class Main
 {
-    private static Energy4Java qi4j;
+    private static Energy4Java zest;
     private static Application application;
 
     public static void main( String[] args )
@@ -35,10 +35,10 @@ public class Main
     {
         // Bootstrap Zest Runtime
         // Create a Zest Runtime
-        qi4j = new Energy4Java();
+        zest = new Energy4Java();
 
         // Instantiate the Application Model.
-        application = qi4j.newApplication( new ApplicationAssembler()
+        application = zest.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble(
                     ApplicationAssemblyFactory factory )

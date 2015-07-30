@@ -41,8 +41,8 @@ public class SolrEntityFinderTest
         throws AssemblyException
     {
         super.assemble( module );
-        FileConfigurationOverride override = new FileConfigurationOverride().withData( new File( DATA_DIR, "qi4j-data" ) ).
-            withLog( new File( DATA_DIR, "qi4j-logs" ) ).withTemporary( new File( DATA_DIR, "qi4j-temp" ) );
+        FileConfigurationOverride override = new FileConfigurationOverride().withData( new File( DATA_DIR, "zest-data" ) ).
+            withLog( new File( DATA_DIR, "zest-logs" ) ).withTemporary( new File( DATA_DIR, "zest-temp" ) );
         module.services( FileConfigurationService.class ).
             setMetaInfo( override );
         new SolrAssembler().assemble( module );

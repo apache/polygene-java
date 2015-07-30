@@ -26,7 +26,7 @@ import org.apache.zest.tools.model.descriptor.*;
 import org.apache.zest.tools.model.util.DescriptorNameComparator;
 
 /**
- * Helper class to build tree model for Qi4J model as Structure Tree
+ * Helper class to build tree model for Apache Zest model as Structure Tree
  */
 /* package */ final class StructureModelBuilder
 {

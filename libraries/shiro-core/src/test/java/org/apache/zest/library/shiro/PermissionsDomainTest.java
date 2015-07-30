@@ -38,7 +38,7 @@ import org.apache.zest.library.shiro.domain.permissions.Role;
 import org.apache.zest.library.shiro.domain.permissions.RoleAssignee;
 import org.apache.zest.library.shiro.domain.permissions.RoleFactory;
 import org.apache.zest.library.shiro.ini.ShiroIniConfiguration;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -46,7 +46,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class PermissionsDomainTest
-        extends AbstractQi4jTest
+        extends AbstractZestTest
 {
 
     // START SNIPPET: domain

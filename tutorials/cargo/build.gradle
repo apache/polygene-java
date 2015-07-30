@@ -22,10 +22,10 @@ description = "Tutorial on how to convert existing application into a Apache Zes
 jar { manifest { name = "Apache Zest™ Tutorial - Cargo" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.core:org.qi4j.core.runtime"))  // TODO: Get rid of this dependency
+  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+  compile(project(":org.apache.zest.core:org.apache.zest.core.runtime"))  // TODO: Get rid of this dependency
 
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
   testCompile(libraries.easymock)
   testRuntime(libraries.logback)
 }

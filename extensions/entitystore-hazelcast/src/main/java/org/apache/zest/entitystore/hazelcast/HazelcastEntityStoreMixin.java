@@ -50,7 +50,7 @@ public class HazelcastEntityStoreMixin
     implements ServiceActivation, HazelcastAccessors, MapEntityStore
 {
 
-    private static final String DEFAULT_MAPNAME = "qi4j:entitystore:data";
+    private static final String DEFAULT_MAPNAME = "zest:entitystore:data";
 
     @This
     private Configuration<HazelcastConfiguration> config;

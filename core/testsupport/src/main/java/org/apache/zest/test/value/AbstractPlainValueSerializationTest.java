@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.value.ValueSerialization;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
@@ -40,7 +40,7 @@ import static org.junit.Assert.assertThat;
  * Assert that ValueSerialization behaviour on plain values is correct.
  */
 public abstract class AbstractPlainValueSerializationTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     @Before

@@ -15,10 +15,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<module xmlns="http://www.qi4j.org/schemas/2008/dev-status/1"
+<module xmlns="http://zest.apache.org/schemas/2008/dev-status/1"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.qi4j.org/schemas/2008/dev-status/1
-        http://www.qi4j.org/schemas/2008/dev-status/1/dev-status.xsd">
+        xsi:schemaLocation="http://zest.apache.org/schemas/2008/dev-status/1
+        http://zest.apache.org/schemas/2008/dev-status/1/dev-status.xsd">
   <status>
     <!--none,early,beta,stable,mature-->
     <codebase>beta</codebase>

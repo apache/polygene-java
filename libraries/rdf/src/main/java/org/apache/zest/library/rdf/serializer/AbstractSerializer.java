@@ -22,7 +22,7 @@ import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.RDFWriterFactory;
-import org.apache.zest.library.rdf.Qi4jRdf;
+import org.apache.zest.library.rdf.ZestRdf;
 import org.apache.zest.library.rdf.Rdfs;
 
 abstract class AbstractSerializer
@@ -38,8 +38,8 @@ abstract class AbstractSerializer
     @Override
     public void serialize( Iterable<Statement> graph, Writer out ) throws RDFHandlerException
     {
-        String[] prefixes = { "qi4j", "rdf", "rdfs" };
-        String[] namespaces = { Qi4jRdf.QI4JMODEL, Rdfs.RDF, Rdfs.RDFS };
+        String[] prefixes = { "zest", "rdf", "rdfs" };
+        String[] namespaces = { ZestRdf.ZEST_MODEL, Rdfs.RDF, Rdfs.RDFS };
         serialize( graph, out, prefixes, namespaces );
     }
 

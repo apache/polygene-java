@@ -31,7 +31,7 @@ import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.functional.Specification;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.core.IsEqual.*;
 import static org.junit.Assert.*;
@@ -41,7 +41,7 @@ import static org.apache.zest.functional.Iterables.*;
  * Assert that JDK classes are usable as Mixins.
  */
 public class JDKMixinTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     @Concerns( JDKMixinConcern.class )

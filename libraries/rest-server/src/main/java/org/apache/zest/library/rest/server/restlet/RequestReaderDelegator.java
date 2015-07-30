@@ -60,7 +60,7 @@ public class RequestReaderDelegator
         }
 
         // Add defaults
-        ResourceBundle defaultRequestReaders = ResourceBundle.getBundle( "org.qi4j.library.rest.server.rest-server" );
+        ResourceBundle defaultRequestReaders = ResourceBundle.getBundle( "org.apache.zest.library.rest.server.rest-server" );
 
         String requestReaderClasses = defaultRequestReaders.getString( "requestreaders" );
         logger.info( "Using request readers:" + requestReaderClasses );

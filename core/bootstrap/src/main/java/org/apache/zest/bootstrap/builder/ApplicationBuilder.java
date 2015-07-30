@@ -64,8 +64,8 @@ public class ApplicationBuilder
     public Application newApplication()
         throws AssemblyException, ActivationException
     {
-        Energy4Java qi4j = new Energy4Java();
-        ApplicationDescriptor model = qi4j.newApplicationModel( new ApplicationAssembler()
+        Energy4Java zest = new Energy4Java();
+        ApplicationDescriptor model = zest.newApplicationModel( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory factory )
@@ -86,7 +86,7 @@ public class ApplicationBuilder
                 return assembly;
             }
         } );
-        Application application = model.newInstance( qi4j.api() );
+        Application application = model.newInstance( zest.api() );
         for( ActivationEventListener activationListener : activationListeners )
         {
             application.registerActivationEventListener( activationListener );

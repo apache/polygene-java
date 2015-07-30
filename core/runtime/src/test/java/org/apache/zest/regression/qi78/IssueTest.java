@@ -36,9 +36,9 @@ public class IssueTest
     public void testLayersCanBeCreatedInOrderDifferentFromTheirDependency()
         throws AssemblyException
     {
-        Energy4Java qi4j = new Energy4Java();
+        Energy4Java zest = new Energy4Java();
 
-        Application app = qi4j.newApplication( new ApplicationAssembler()
+        Application app = zest.newApplication( new ApplicationAssembler()
         {
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
                 throws AssemblyException

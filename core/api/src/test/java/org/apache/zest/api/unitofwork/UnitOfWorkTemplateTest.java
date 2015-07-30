@@ -24,14 +24,14 @@ import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 /**
  * TODO
  */
 public class UnitOfWorkTemplateTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     @Override
     public void assemble( ModuleAssembly module )

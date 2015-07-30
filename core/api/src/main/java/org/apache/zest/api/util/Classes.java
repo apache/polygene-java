@@ -552,7 +552,7 @@ public final class Classes
      * Example:
      * </p>
      * <p>
-     * Class name com.example.Foo$Bar is converted to URI urn:qi4j:com.example.Foo-Bar
+     * Class name com.example.Foo$Bar is converted to URI urn:zest:com.example.Foo-Bar
      * </p>
      *
      * @param className class name
@@ -565,7 +565,7 @@ public final class Classes
         throws NullPointerException
     {
         className = normalizeClassToURI( className );
-        return "urn:qi4j:type:" + className;
+        return "urn:zest:type:" + className;
     }
 
     /**
@@ -580,7 +580,7 @@ public final class Classes
     public static String toClassName( String uri )
         throws NullPointerException
     {
-        uri = uri.substring( "urn:qi4j:type:".length() );
+        uri = uri.substring( "urn:zest:type:".length() );
         uri = denormalizeURIToClass( uri );
         return uri;
     }

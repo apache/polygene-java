@@ -20,10 +20,10 @@ package org.apache.zest.entitystore;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.prefs.assembly.PreferenceEntityStoreAssembler;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 public class DocumentationSupport
-        extends AbstractQi4jTest
+        extends AbstractZestTest
 {
 
     // START SNIPPET: assembly

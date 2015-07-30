@@ -37,7 +37,7 @@ public class ApplicationDocs
     {
         {
 // START SNIPPET: application1
-            SingletonAssembler qi4j = new SingletonAssembler()
+            SingletonAssembler zest = new SingletonAssembler()
             {
                 public void assemble( ModuleAssembly assembly )
                     throws AssemblyException
@@ -80,8 +80,8 @@ public class ApplicationDocs
                       }
                     }
                 };
-            Energy4Java qi4j = new Energy4Java();
-            Application app = qi4j.newApplication( new ApplicationAssembler()
+            Energy4Java zest = new Energy4Java();
+            Application app = zest.newApplication( new ApplicationAssembler()
             {
 
                 @Override
@@ -111,13 +111,13 @@ public class ApplicationDocs
     }
 
     // START SNIPPET: application3
-    private static Energy4Java qi4j;
+    private static Energy4Java zest;
 
     public static void main( String[] args )
         throws Exception
     {
-        qi4j = new Energy4Java();
-        ApplicationDescriptor model = qi4j.newApplicationModel( new ApplicationAssembler()
+        zest = new Energy4Java();
+        ApplicationDescriptor model = zest.newApplicationModel( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
@@ -126,7 +126,7 @@ public class ApplicationDocs
                 return createAssembly( applicationFactory );
             }
         } );
-        Application application = model.newInstance( qi4j.spi() );
+        Application application = model.newInstance( zest.spi() );
     }
 
     private static ApplicationAssembly createAssembly( ApplicationAssemblyFactory factory )

@@ -24,13 +24,13 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.sideeffect.GenericSideEffect;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 /**
  * Test of declaring sideeffect in assembly
  */
 public class ModuleSideEffectTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     public static boolean ok = false;
 

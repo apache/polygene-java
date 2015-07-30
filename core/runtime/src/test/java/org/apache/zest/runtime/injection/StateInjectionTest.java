@@ -24,7 +24,7 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.StateHolder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertThat;
  * Test the @State annotation
  */
 public class StateInjectionTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

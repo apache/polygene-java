@@ -26,14 +26,14 @@ import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class RemovalTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

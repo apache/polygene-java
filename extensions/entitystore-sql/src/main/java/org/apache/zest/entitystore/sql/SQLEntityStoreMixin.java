@@ -63,7 +63,7 @@ import org.apache.zest.io.Output;
 import org.apache.zest.io.Receiver;
 import org.apache.zest.io.Sender;
 import org.apache.zest.library.sql.common.SQLUtil;
-import org.apache.zest.spi.Qi4jSPI;
+import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -91,7 +91,7 @@ import static org.apache.zest.functional.Iterables.map;
  */
 // TODO Rewrite reusing JSONMapEntityStoreMixin
 // Old notes:
-//      Most of this code is copy-paste from {@link org.qi4j.spi.entitystore.helpers.MapEntityStoreMixin}.
+//      Most of this code is copy-paste from {@link org.apache.zest.spi.entitystore.helpers.MapEntityStoreMixin}.
 //      Refactor stuff that has to do with general things than actual MapEntityStore from MapEntityStoreMixin
 //      so that this class could extend some "AbstractJSONEntityStoreMixin".
 public class SQLEntityStoreMixin
@@ -107,7 +107,7 @@ public class SQLEntityStoreMixin
     private EntityStoreSPI entityStoreSPI;
 
     @Structure
-    private Qi4jSPI spi;
+    private ZestSPI spi;
 
     @Structure
     private Application application;
@@ -306,7 +306,7 @@ public class SQLEntityStoreMixin
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.sql.visit" );
+        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "zest.entitystore.sql.visit" );
         Usecase usecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
         final ModuleEntityStoreUnitOfWork uow =
             (ModuleEntityStoreUnitOfWork) newUnitOfWork( usecase, module, System.currentTimeMillis() );

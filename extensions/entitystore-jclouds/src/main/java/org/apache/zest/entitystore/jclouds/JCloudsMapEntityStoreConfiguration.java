@@ -37,7 +37,7 @@ public interface JCloudsMapEntityStoreConfiguration
      */
     @UseDefaults Property<Map<String, String>> properties();
     /**
-     * Name of the JClouds container to use. Defaults to 'qi4j-entities'.
+     * Name of the JClouds container to use. Defaults to 'zest-entities'.
      */
     @Optional Property<String> container();
     // END SNIPPET: config

@@ -26,7 +26,7 @@ package org.apache.zest.runtime.composite;
  * </pre>
  *
  * <p>
- * The Compaction is set through the System Property "<code><b>qi4j.compacttrace</b></code>" to
+ * The Compaction is set through the System Property "<code><b>zest.compacttrace</b></code>" to
  * any of the above values.
  * </p>
  */

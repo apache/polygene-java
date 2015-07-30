@@ -19,7 +19,7 @@ import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  * JAVADOC
  */
 public class LockingTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

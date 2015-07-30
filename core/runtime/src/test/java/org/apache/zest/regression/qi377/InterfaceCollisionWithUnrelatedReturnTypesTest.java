@@ -21,10 +21,10 @@ import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 public class InterfaceCollisionWithUnrelatedReturnTypesTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     @Override
@@ -47,7 +47,7 @@ public class InterfaceCollisionWithUnrelatedReturnTypesTest
 
     /**
      * DOESN'T COMPILE!!!
-     * java: types org.qi4j.regression.qi377.InterfaceCollisionWithUnrelatedReturnTypesTest.Robot and org.qi4j.regression.qi377.InterfaceCollisionWithUnrelatedReturnTypesTest.Person are incompatible; both define name(), but with unrelated return types
+     * java: types org.apache.zest.regression.qi377.InterfaceCollisionWithUnrelatedReturnTypesTest.Robot and org.apache.zest.regression.qi377.InterfaceCollisionWithUnrelatedReturnTypesTest.Person are incompatible; both define name(), but with unrelated return types
      */
 //    public interface TeamMember extends Person, Robot {}
 }

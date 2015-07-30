@@ -28,7 +28,7 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 /**
  * PropertyMixin invocation performance test.
@@ -37,7 +37,7 @@ import org.apache.zest.test.AbstractQi4jTest;
  * </p>
  */
 public class PropertyMixinInvocationPerformanceTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     @Override
     public void assemble( ModuleAssembly module )

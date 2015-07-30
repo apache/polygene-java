@@ -19,7 +19,7 @@
 package org.apache.zest.runtime.bootstrap;
 
 import org.junit.Test;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.concern.Concerns;
@@ -31,12 +31,12 @@ import org.apache.zest.api.mixin.NoopMixin;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.junit.Assert.assertEquals;
 
 public class DereferenceForBootstrappedConcernsTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     public void assemble( ModuleAssembly module )
@@ -117,7 +117,7 @@ public class DereferenceForBootstrappedConcernsTest
         implements Other
     {
         @Structure
-        private Qi4j api;
+        private ZestAPI api;
 
         @This
         private Composite me;

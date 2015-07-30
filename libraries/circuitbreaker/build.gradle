@@ -22,18 +22,18 @@ description = "Apache Zest™ Circuit Breaker Library provides a framework for c
 jar { manifest {name = "Apache Zest™ Library - Circuit Breaker"}}
 
 dependencies {
-    compile project( ':org.qi4j.core:org.qi4j.core.api' )
-    compile project( ':org.qi4j.libraries:org.qi4j.library.jmx' )
+    compile project( ':org.apache.zest.core:org.apache.zest.core.api' )
+    compile project( ':org.apache.zest.libraries:org.apache.zest.library.jmx' )
     compile libraries.slf4j_api
 
-    testCompile project( ':org.qi4j.core:org.qi4j.core.testsupport' )
+    testCompile project( ':org.apache.zest.core:org.apache.zest.core.testsupport' )
     testCompile libraries.awaitility
 
-    testRuntime project( ':org.qi4j.core:org.qi4j.core.runtime' )
+    testRuntime project( ':org.apache.zest.core:org.apache.zest.core.runtime' )
     testRuntime libraries.logback
 }
 
 task( runSample, dependsOn: 'testClasses', type: JavaExec ) {
-    main = 'org.qi4j.library.circuitbreaker.jmx.CircuitBreakerManagementTest'
+    main = 'org.apache.zest.library.circuitbreaker.jmx.CircuitBreakerManagementTest'
     classpath = sourceSets.test.runtimeClasspath
 }

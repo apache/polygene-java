@@ -21,9 +21,9 @@ package org.apache.zest.runtime.internal;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.apache.zest.bootstrap.Qi4jRuntime;
+import org.apache.zest.bootstrap.ZestRuntime;
 import org.apache.zest.bootstrap.RuntimeFactory;
-import org.apache.zest.runtime.Qi4jRuntimeImpl;
+import org.apache.zest.runtime.ZestRuntimeImpl;
 
 /**
  *
@@ -40,9 +40,9 @@ public class Activator
         RuntimeFactory factory = new RuntimeFactory()
         {
             @Override
-            public Qi4jRuntime createRuntime()
+            public ZestRuntime createRuntime()
             {
-                return new Qi4jRuntimeImpl();
+                return new ZestRuntimeImpl();
             }
         };
         registration = bundleContext.registerService( RuntimeFactory.class.getName(), factory, null );

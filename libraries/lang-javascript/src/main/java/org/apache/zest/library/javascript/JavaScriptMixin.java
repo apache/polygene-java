@@ -36,7 +36,7 @@ import org.apache.zest.library.scripting.ScriptReloadable;
  * Example:
  * </p>
  * <pre><code>
- * org/qi4j/samples/hello/domain/HelloWorldSpeaker.say.js
+ * org/apache/zest/samples/hello/domain/HelloWorldSpeaker.say.js
  * </code></pre>
  */
 @AppliesTo( JavaScriptMixin.AppliesTo.class )

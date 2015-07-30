@@ -235,13 +235,13 @@ public class DocumentationSupport
         public static class PricingAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
         public static class ProductAssembler implements Assembler { public void assemble( ModuleAssembly module ) throws AssemblyException { } }
 
-        private static Energy4Java qi4j;
+        private static Energy4Java zest;
 
         // START SNIPPET: pancake
         public static void main( String[] args )
                 throws Exception
         {
-            qi4j = new Energy4Java();
+            zest = new Energy4Java();
             Assembler[][][] assemblers = new Assembler[][][]{
                 { // View Layer
                     { // Login Module
@@ -281,14 +281,14 @@ public class DocumentationSupport
                 }
             };
             ApplicationDescriptor model = newApplication( assemblers );
-            Application runtime = model.newInstance( qi4j.spi() );
+            Application runtime = model.newInstance( zest.spi() );
             runtime.activate();
         }
 
         private static ApplicationDescriptor newApplication( final Assembler[][][] assemblers )
                 throws AssemblyException
         {
-            return qi4j.newApplicationModel( new ApplicationAssembler()
+            return zest.newApplicationModel( new ApplicationAssembler()
             {
 
                 @Override
@@ -320,7 +320,7 @@ public class DocumentationSupport
         public static class NeoAssembler implements Assembler{ NeoAssembler( String path ) {} public void assemble( ModuleAssembly module ) throws AssemblyException { } }
 
         // START SNIPPET: full
-        private static Energy4Java qi4j;
+        private static Energy4Java zest;
 
         private static Application application;
 
@@ -328,8 +328,8 @@ public class DocumentationSupport
                 throws Exception
         {
             // Create a Zest Runtime
-            qi4j = new Energy4Java();
-            application = qi4j.newApplication( new ApplicationAssembler()
+            zest = new Energy4Java();
+            application = zest.newApplication( new ApplicationAssembler()
             {
 
                 @Override

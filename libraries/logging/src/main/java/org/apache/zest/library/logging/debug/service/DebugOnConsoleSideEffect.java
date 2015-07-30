@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.injection.scope.Invocation;
 import org.apache.zest.api.sideeffect.SideEffectOf;
@@ -62,7 +62,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
 
     private String getCompositeName( Composite composite )
     {
-        return first( Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
+        return first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
     }
 
     @Override

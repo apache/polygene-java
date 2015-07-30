@@ -57,7 +57,7 @@ public class ResponseWriterDelegator
         }
 
         // Add defaults
-        ResourceBundle defaultResultWriters = ResourceBundle.getBundle( "org.qi4j.library.rest.server.rest-server" );
+        ResourceBundle defaultResultWriters = ResourceBundle.getBundle( "org.apache.zest.library.rest.server.rest-server" );
 
         String resultWriterClasses = defaultResultWriters.getString( "responsewriters" );
         logger.info( "Using response writers:" + resultWriterClasses );

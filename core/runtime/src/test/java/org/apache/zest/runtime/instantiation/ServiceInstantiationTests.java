@@ -26,11 +26,11 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 public class ServiceInstantiationTests
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     @Override

@@ -29,7 +29,7 @@ import org.apache.zest.sample.dcicargo.sample_a.communication.web.booking.Change
 import org.apache.zest.sample.dcicargo.sample_a.communication.web.booking.RouteCargoPage;
 import org.apache.zest.sample.dcicargo.sample_a.communication.web.handling.RegisterHandlingEventPage;
 import org.apache.zest.sample.dcicargo.sample_a.communication.web.tracking.TrackCargoPage;
-import org.apache.zest.sample.dcicargo.sample_a.infrastructure.WicketQi4jApplication;
+import org.apache.zest.sample.dcicargo.sample_a.infrastructure.WicketZestApplication;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.tabs.TabsPanel;
 
 /**
@@ -38,7 +38,7 @@ import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.tabs.TabsP
  * A Wicket application backed by Zest.
  */
 public class DCISampleApplication_a
-    extends WicketQi4jApplication
+    extends WicketZestApplication
 {
     public void wicketInit()
     {

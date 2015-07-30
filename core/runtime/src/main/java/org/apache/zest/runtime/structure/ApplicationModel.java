@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
-import org.apache.zest.bootstrap.Qi4jRuntime;
+import org.apache.zest.bootstrap.ZestRuntime;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
 import org.apache.zest.runtime.activation.ActivatorsModel;
@@ -112,7 +112,7 @@ public final class ApplicationModel
     }
 
     @Override
-    public ApplicationInstance newInstance( Qi4j runtime, Object... importedServiceInstances )
+    public ApplicationInstance newInstance( ZestAPI runtime, Object... importedServiceInstances )
         throws InvalidApplicationException
     {
         MetaInfo instanceMetaInfo = new MetaInfo( metaInfo );
@@ -121,7 +121,7 @@ public final class ApplicationModel
             instanceMetaInfo.set( importedServiceInstance );
         }
 
-        ApplicationInstance applicationInstance = new ApplicationInstance( this, (Qi4jRuntime) runtime, instanceMetaInfo );
+        ApplicationInstance applicationInstance = new ApplicationInstance( this, (ZestRuntime) runtime, instanceMetaInfo );
 
         // Create layer instances
         Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<>();

@@ -35,7 +35,7 @@ import org.apache.zest.index.rdf.ContainsAllTest.ExampleValue2;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import java.util.Arrays;
@@ -44,7 +44,7 @@ import java.util.Set;
 import org.junit.Rule;
 import org.apache.zest.test.util.DelTreeAfter;
 
-public class ContainsTest extends AbstractQi4jTest
+public class ContainsTest extends AbstractZestTest
 {
 
    private static final File DATA_DIR = new File( "build/tmp/contains-test" );

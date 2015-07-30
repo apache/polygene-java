@@ -22,9 +22,9 @@ description = "Apache Zest™ RDF Library provides commonalities of various RDF 
 jar { manifest { name = "Apache Zest™ Library - RDF" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.spi"))
-  compile(project(':org.qi4j.libraries:org.qi4j.library.constraints'))
-  compile(project(":org.qi4j.libraries:org.qi4j.library.fileconfig"))
+  compile(project(":org.apache.zest.core:org.apache.zest.core.spi"))
+  compile(project(':org.apache.zest.libraries:org.apache.zest.library.constraints'))
+  compile(project(":org.apache.zest.libraries:org.apache.zest.library.fileconfig"))
   compile(libraries.sesame)
 //  compile("org.openrdf.sesame:sesame-model:$rdfVersion")
 //  compile("org.openrdf.sesame:sesame-repository-dataset:$rdfVersion")
@@ -35,9 +35,9 @@ dependencies {
 //  compile("org.openrdf.sesame:sesame-sail-nativerdf:$rdfVersion")
 //  compile("org.openrdf.sesame:sesame-sail-rdbms:$rdfVersion")
 
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testCompile project( ':org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson' )
+  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  testCompile project( ':org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson' )
 
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
   testRuntime(libraries.logback)
 }

@@ -23,13 +23,13 @@ import org.openrdf.repository.RepositoryException;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 /**
  * JAVADOC
  */
 public class MemoryRepositoryTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     @Service
     Repository repository;

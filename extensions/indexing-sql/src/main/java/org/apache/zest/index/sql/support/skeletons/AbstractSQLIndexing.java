@@ -32,7 +32,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.sql.DataSource;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityReference;
@@ -57,7 +57,7 @@ import org.apache.zest.index.sql.support.postgresql.PostgreSQLTypeHelper;
 import org.apache.zest.index.sql.support.skeletons.SQLSkeletonUtil.Lazy;
 import org.apache.zest.index.sql.support.skeletons.SQLSkeletonUtil.LazyInit;
 import org.apache.zest.library.sql.common.SQLUtil;
-import org.apache.zest.spi.Qi4jSPI;
+import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.sql.generation.api.grammar.builders.modification.ColumnSourceByValuesBuilder;
@@ -100,7 +100,7 @@ public abstract class AbstractSQLIndexing
     private Application _app;
 
     @Structure
-    private Qi4jSPI _qi4SPI;
+    private ZestSPI _qi4SPI;
 
     @This
     private SQLDBState _state;
@@ -927,7 +927,7 @@ public abstract class AbstractSQLIndexing
         throws SQLException
     {
         ValueDescriptor vDesc = this._qi4SPI.valueDescriptorFor( (ValueComposite) property );
-        StateHolder state = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) property ).state();
+        StateHolder state = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) property ).state();
         Integer originalPropertyPK = propertyPK;
         ++propertyPK;
         for( PropertyDescriptor pDesc : vDesc.state().properties() )

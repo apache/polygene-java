@@ -22,12 +22,12 @@ description = "Apache Zest™ Common Scripting Library contains common classes a
 jar { manifest { name = "Apache Zest™ Library - Scripting - Common" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.api"))
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.apache.zest.core:org.apache.zest.core.api"))
+  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
   compile(libraries.slf4j_api)
   testCompile(libraries.junit)
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
   testRuntime(libraries.asm)
   testRuntime(libraries.asm_commons)
   testRuntime(libraries.slf4j_simple)

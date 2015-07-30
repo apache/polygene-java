@@ -28,11 +28,11 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.rdf.DcRdf;
-import org.apache.zest.library.rdf.Qi4jEntityType;
+import org.apache.zest.library.rdf.ZestEntityType;
 import org.apache.zest.library.rdf.Rdfs;
 import org.apache.zest.library.rdf.serializer.RdfXmlSerializer;
 import org.apache.zest.spi.entitystore.EntityStore;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import java.io.PrintWriter;
 import org.apache.zest.test.EntityTestAssembler;
@@ -42,7 +42,7 @@ import org.apache.zest.test.EntityTestAssembler;
  * JAVADOC
  */
 public class EntityTypeSerializerTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     @Service EntityStore entityStore;
     @Uses EntityTypeSerializer serializer;
@@ -73,8 +73,8 @@ public class EntityTypeSerializerTest
 
         Iterable<Statement> graph = serializer.serialize( entityDescriptor );
 
-        String[] prefixes = new String[]{ "rdf", "dc", " vc", "qi4j" };
-        String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.NAMESPACE, "http://www.w3.org/2001/vcard-rdf/3.0#", Qi4jEntityType.NAMESPACE };
+        String[] prefixes = new String[]{ "rdf", "dc", " vc", "zest" };
+        String[] namespaces = new String[]{ Rdfs.RDF, DcRdf.NAMESPACE, "http://www.w3.org/2001/vcard-rdf/3.0#", ZestEntityType.NAMESPACE };
 
         new RdfXmlSerializer().serialize( graph, new PrintWriter( System.out ), prefixes, namespaces );
     }

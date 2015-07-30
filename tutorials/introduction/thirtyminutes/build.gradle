@@ -22,11 +22,11 @@ description = "A 30-minute Introduction Tutorial to Apache Zest™ in its simple
 jar { manifest { name = "Apache Zest™ Tutorial - 30 minute Introduction" }}
 
 dependencies {
-  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
-  compile(project(":org.qi4j.tutorials:org.qi4j.tutorial.introduction:org.qi4j.tutorial.introduction.tenminutes"))
+  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+  compile(project(":org.apache.zest.tutorials:org.apache.zest.tutorial.introduction:org.apache.zest.tutorial.introduction.tenminutes"))
 
-  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
   
-  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
+  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
   testRuntime(libraries.logback)
 }

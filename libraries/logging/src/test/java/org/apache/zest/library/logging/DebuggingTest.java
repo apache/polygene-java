@@ -38,14 +38,14 @@ import org.apache.zest.library.logging.debug.service.DebuggingServiceComposite;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
 import static org.apache.zest.functional.Iterables.first;
 
 public class DebuggingTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -66,7 +66,7 @@ public class DebuggingTest
         {
             // There is no Query capability available for Libraries, since that sits in Extensions.
             // Obtaining the EntityStore directly is a very ugly hack to get around this problem, and only related
-            // to the test sitting in qi4j-libraries source repository.
+            // to the test sitting in libraries/ source repository.
 
 //            QueryBuilder<DebugRecord> builder = module.newQueryBuilder( DebugRecord.class );
 //            Query<DebugRecord> query = builder.newQuery( uow );

@@ -18,7 +18,7 @@ package org.apache.zest.library.spring.bootstrap;
 
 public final class Constants
 {
-    public static final String BEAN_ID_QI4J_APPLICATION = "qi4jApplication";
+    public static final String BEAN_ID_ZEST_APPLICATION = "zestApplication";
 
     private Constants()
     {

@@ -29,13 +29,13 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.constraints.MinLengthConstraint;
 import org.apache.zest.library.constraints.annotation.Matches;
 import org.apache.zest.library.constraints.annotation.MinLength;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class PropertyConstraintTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
     @org.junit.Test
     public void givenConstraintOnPropertyWhenInvalidValueThenThrowException()

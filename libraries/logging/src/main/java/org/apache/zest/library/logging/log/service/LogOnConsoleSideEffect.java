@@ -21,7 +21,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.injection.scope.Invocation;
 import org.apache.zest.api.sideeffect.SideEffectOf;
@@ -54,7 +54,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
 
     private String getCompositeName( Composite composite )
     {
-        return first( Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
+        return first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
     }
 
     public void log( LogType type, Composite composite, String category, String message, Object param1 )

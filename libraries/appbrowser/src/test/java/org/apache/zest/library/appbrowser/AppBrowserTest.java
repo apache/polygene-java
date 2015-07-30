@@ -37,9 +37,9 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.library.appbrowser.json.JsonFormatterFactory;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
-public class AppBrowserTest extends AbstractQi4jTest
+public class AppBrowserTest extends AbstractZestTest
 {
     @Override
     public void assemble( ModuleAssembly module )

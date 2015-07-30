@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
@@ -166,6 +166,6 @@ public abstract class LoggingServiceMixin
 
     private String getCompositeName( Composite composite )
     {
-        return first( Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
+        return first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
     }
 }

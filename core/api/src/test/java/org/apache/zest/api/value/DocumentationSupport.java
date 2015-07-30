@@ -45,7 +45,7 @@ import org.apache.zest.functional.Function;
 import org.apache.zest.io.Inputs;
 import org.apache.zest.io.Outputs;
 import org.apache.zest.io.Transforms;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -58,7 +58,7 @@ import static org.junit.Assert.assertThat;
  * - lookup  : ValueSerialization values module finder
  */
 public class DocumentationSupport
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     @Before

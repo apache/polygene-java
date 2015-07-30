@@ -18,7 +18,7 @@
  */
 package org.apache.zest.sample.forum.context;
 
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.structure.Module;
@@ -38,6 +38,6 @@ public class Context
 
     protected <T> T role( Object object, Class<T> roleType )
     {
-        return Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (Composite) object ).newProxy( roleType );
+        return ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( (Composite) object ).newProxy( roleType );
     }
 }

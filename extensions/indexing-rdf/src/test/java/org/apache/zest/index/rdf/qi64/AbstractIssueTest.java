@@ -22,23 +22,23 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.rdf.repository.MemoryRepositoryService;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 public abstract class AbstractIssueTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
-    private static final String DEFAULT_ACCOUNT_NAME = "qi4j";
+    private static final String DEFAULT_ACCOUNT_NAME = "zest";
 
     /**
-     * Creates a new qi4j account.
+     * Creates a new Apaxhe Zest account.
      *
      * @return The new account identity.
      *
      * @throws org.apache.zest.api.unitofwork.UnitOfWorkCompletionException
      *          Thrown if creational fail.
      */
-    protected final String newQi4jAccount()
+    protected final String newZestAccount()
         throws UnitOfWorkCompletionException
     {
         UnitOfWork work = module.newUnitOfWork();

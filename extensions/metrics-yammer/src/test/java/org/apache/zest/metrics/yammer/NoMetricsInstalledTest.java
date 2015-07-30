@@ -28,10 +28,10 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
-public class NoMetricsInstalledTest extends AbstractQi4jTest
+public class NoMetricsInstalledTest extends AbstractZestTest
 {
     @Override
     public void assemble( ModuleAssembly module )
@@ -42,7 +42,7 @@ public class NoMetricsInstalledTest extends AbstractQi4jTest
     }
 
     @Test
-    public void givenMetricsEnabledQi4jWhenManyEntityChangesExpectCounterToBeOneOrZeroAndChangeRateHigh()
+    public void givenMetricsEnabledZestWhenManyEntityChangesExpectCounterToBeOneOrZeroAndChangeRateHigh()
         throws UnitOfWorkCompletionException
     {
         ConsoleReporter reporter = new ConsoleReporter( Metrics.defaultRegistry(), System.out, MetricPredicate.ALL );

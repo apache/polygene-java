@@ -28,7 +28,7 @@ public interface MetricsHistogramFactory extends MetricsFactory
      * @param origin The class that instantiate the metric
      * @param name   A human readable, short name of the metric.
      *
-     * @return A Metric instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
+     * @return A Metric instance to be used, OR org.apache.zest.spi.metrics.DefaultMetric.NULL if not supported.
      *
      */
     MetricsHistogram createHistogram( Class<?> origin, String name );

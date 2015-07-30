@@ -100,7 +100,7 @@ public class PostgreSQLEntityStorePerformanceTest
         finally
         {
 
-            Energy4Java qi4j = new Energy4Java();
+            Energy4Java zest = new Energy4Java();
             Assembler[][][] assemblers = new Assembler[][][]
             {
                 {
@@ -109,7 +109,7 @@ public class PostgreSQLEntityStorePerformanceTest
                     }
                 }
             };
-            Application application = qi4j.newApplication( new ApplicationAssemblerAdapter( assemblers )
+            Application application = zest.newApplication( new ApplicationAssemblerAdapter( assemblers )
             {
             } );
             application.activate();
@@ -121,7 +121,7 @@ public class PostgreSQLEntityStorePerformanceTest
             {
                 SQLConfiguration config = uow.get( SQLConfiguration.class,
                                                    PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
-                // TODO fix AbstractEntityStorePerformanceTest to extend from AbstractQi4jTest
+                // TODO fix AbstractEntityStorePerformanceTest to extend from AbstractZestTest
                 Connection connection = null; // SQLUtil.getConnection( this.serviceLocator );
                 String schemaName = config.schemaName().get();
                 if( schemaName == null )

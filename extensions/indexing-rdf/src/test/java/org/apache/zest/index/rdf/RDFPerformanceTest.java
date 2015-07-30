@@ -36,7 +36,7 @@ import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.spi.query.IndexExporter;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ import java.util.List;
 import org.junit.Rule;
 import org.apache.zest.test.util.DelTreeAfter;
 
-public class RDFPerformanceTest extends AbstractQi4jTest
+public class RDFPerformanceTest extends AbstractZestTest
 {
     private static final Logger LOG = LoggerFactory.getLogger( RDFPerformanceTest.class );
     private static final File DATA_DIR = new File( "build/tmp/rdf-performance-test" );

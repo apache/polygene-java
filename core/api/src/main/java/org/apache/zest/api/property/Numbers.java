@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 
 /**
  * Convenience class for mathematical operations on numerical properties.
- * <pre>import static org.qi4j.api.property.Numbers.*;
+ * <pre>import static org.apache.zest.api.property.Numbers.*;
  * ...
  * add( object.numberProperty(), 5 );</pre>
  */

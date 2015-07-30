@@ -53,7 +53,7 @@
     <xsl:param name="generate.toc" select="''"/>
 
     <xsl:template name="footer.navigation">
-      <div class="footer"> (c) 2012 The Qi4j Community</div>
+      <div class="footer"> (c) 2012 The Apache Zest Community</div>
     </xsl:template>
 
     <xsl:template name="header.navigation">

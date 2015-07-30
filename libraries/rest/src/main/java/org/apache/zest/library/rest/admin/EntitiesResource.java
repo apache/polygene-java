@@ -131,12 +131,12 @@ public class EntitiesResource
                 {
                     PrintWriter out = new PrintWriter( writer );
                     out.println( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<rdf:RDF\n"
-                                 + "\txmlns=\"urn:qi4j:\"\n" + "\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n"
+                                 + "\txmlns=\"urn:zest:\"\n" + "\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n"
                                  + "\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
                                  + "\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">" );
                     for( EntityReference qualifiedIdentity : query )
                     {
-                        out.println( "<qi4j:entity rdf:about=\"" + getRequest().getResourceRef().getPath() + "/"
+                        out.println( "<zest:entity rdf:about=\"" + getRequest().getResourceRef().getPath() + "/"
                                      + qualifiedIdentity.identity() + ".rdf\"/>" );
                     }
 

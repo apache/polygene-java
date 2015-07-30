@@ -38,7 +38,7 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.util.DelTreeAfter;
 
@@ -51,7 +51,7 @@ import static org.apache.zest.api.query.QueryExpressions.templateFor;
 import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
 
 public class ElasticSearchTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     private static final File DATA_DIR = new File( "build/tmp/es-test" );
@@ -142,9 +142,9 @@ public class ElasticSearchTest
 
         // FileConfig
         FileConfigurationOverride override = new FileConfigurationOverride().
-            withData( new File( DATA_DIR, "qi4j-data" ) ).
-            withLog( new File( DATA_DIR, "qi4j-logs" ) ).
-            withTemporary( new File( DATA_DIR, "qi4j-temp" ) );
+            withData( new File( DATA_DIR, "zest-data" ) ).
+            withLog( new File( DATA_DIR, "zest-logs" ) ).
+            withTemporary( new File( DATA_DIR, "zest-temp" ) );
         module.services( FileConfigurationService.class ).
             setMetaInfo( override );
 

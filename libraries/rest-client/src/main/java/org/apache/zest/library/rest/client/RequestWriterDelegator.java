@@ -49,7 +49,7 @@ public class RequestWriterDelegator
    {
       Logger logger = LoggerFactory.getLogger( getClass() );
 
-      ResourceBundle defaultRequestWriters = ResourceBundle.getBundle( "org.qi4j.library.rest.client.rest-client" );
+      ResourceBundle defaultRequestWriters = ResourceBundle.getBundle( "org.apache.zest.library.rest.client.rest-client" );
 
       String requestWriterClasses = defaultRequestWriters.getString( "requestwriters" );
       logger.info( "Using request writers:"+requestWriterClasses );

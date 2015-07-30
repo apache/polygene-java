@@ -19,13 +19,13 @@ import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 /**
  * JAVADOC
  */
 public class QI256Test
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     public static class TestException

@@ -44,7 +44,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.service.ServiceReference;
@@ -87,8 +87,8 @@ public class QuikitServlet
 
             ApplicationAssembler assembler = createApplicationAssembler( config );
 
-            Energy4Java qi4j = new Energy4Java();
-            application = qi4j.newApplication( assembler );
+            Energy4Java zest = new Energy4Java();
+            application = zest.newApplication( assembler );
             application.activate();
             Module module = application.findModule( "WebLayer", "PagesModule" );
             finder = module;
@@ -115,7 +115,7 @@ public class QuikitServlet
     private ApplicationAssembler createApplicationAssembler( ServletConfig config )
         throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
     {
-        String assemblerClassname = config.getInitParameter( "qi4j-assembler" );
+        String assemblerClassname = config.getInitParameter( "zest-assembler" );
         ClassLoader loader = getClass().getClassLoader();
         Class<?> assemblerClass = loader.loadClass( assemblerClassname );
         ApplicationAssembler assembler;
@@ -127,7 +127,7 @@ public class QuikitServlet
         else
         {
             Application.Mode mode;
-            String modeSetting = config.getInitParameter( "qi4j-application-mode" );
+            String modeSetting = config.getInitParameter( "zest-application-mode" );
             if( modeSetting == null )
             {
                 mode = Application.Mode.development;
@@ -194,7 +194,7 @@ public class QuikitServlet
     private void renderPage( Page page, String path, PrintWriter output, HttpServletRequest httpRequest )
         throws ParserConfigurationException, SAXException, IOException, RenderException, TransformerException
     {
-        Class<? extends Composite> pageClass = (Class<Composite>) first( Qi4j.FUNCTION_DESCRIPTOR_FOR
+        Class<? extends Composite> pageClass = (Class<Composite>) first( ZestAPI.FUNCTION_DESCRIPTOR_FOR
                                                                              .map( page ).types() );
 
         String pageName = pageClass.getSimpleName() + ".html";

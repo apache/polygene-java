@@ -21,7 +21,7 @@ package org.apache.zest.library.logging.trace.service;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.zest.api.Qi4j;
+import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -104,7 +104,7 @@ public class TraceServiceMixin
             EntityComposite entity = (EntityComposite) object;
             String identity = entity.identity().get();
             EntityComposite source = (EntityComposite) uow.get( (Class<?>) first(
-                Qi4j.FUNCTION_DESCRIPTOR_FOR.map( entity ).types() ), identity );
+                ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( entity ).types() ), identity );
             EntityBuilder<EntityTraceRecordEntity> builder = uow.newEntityBuilder( EntityTraceRecordEntity.class );
             EntityTraceRecordEntity state = builder.instance();
             setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );

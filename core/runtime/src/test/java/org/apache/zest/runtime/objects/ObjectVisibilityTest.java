@@ -40,7 +40,7 @@ import org.apache.zest.test.EntityTestAssembler;
 public class ObjectVisibilityTest
 {
 
-    private Energy4Java qi4j;
+    private Energy4Java zest;
     private Module module;
     private Application app;
 
@@ -48,7 +48,7 @@ public class ObjectVisibilityTest
     public void setup()
         throws Exception
     {
-        qi4j = new Energy4Java();
+        zest = new Energy4Java();
 
         Assembler[][][] assemblers = new Assembler[][][]
             {
@@ -71,7 +71,7 @@ public class ObjectVisibilityTest
                   }
                 }
             };
-        app = qi4j.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        app = zest.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();

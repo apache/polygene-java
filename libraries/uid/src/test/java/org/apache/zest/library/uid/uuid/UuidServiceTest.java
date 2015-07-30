@@ -24,12 +24,12 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.uid.uuid.assembly.UuidServiceAssembler;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class UuidServiceTest extends AbstractQi4jTest
+public class UuidServiceTest extends AbstractZestTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {

@@ -22,7 +22,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -32,7 +32,7 @@ import static org.junit.Assert.assertThat;
  * Assert that Automatic Resource Management (ie. Java 7 try-with-resources) work on UoWs.
  */
 public class AutoCloseableUoWTest
-    extends AbstractQi4jTest
+    extends AbstractZestTest
 {
 
     public interface TestEntity

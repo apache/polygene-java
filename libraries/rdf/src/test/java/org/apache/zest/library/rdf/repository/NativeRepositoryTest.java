@@ -24,14 +24,14 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 /**
  * JAVADOC
  */
 public class NativeRepositoryTest
-        extends AbstractQi4jTest
+        extends AbstractZestTest
 {
    @Service
    Repository repository;

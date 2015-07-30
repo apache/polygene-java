@@ -22,7 +22,7 @@ description = "Apache Zest™ SQL BoneCP Library provides BoneCP support."
 jar { manifest { name = "Apache Zest™ Library - SQL BoneCP" }}
 
 dependencies {
-  compile(project(":org.qi4j.libraries:org.qi4j.library.sql"))
+  compile(project(":org.apache.zest.libraries:org.apache.zest.library.sql"))
   compile(libraries.bonecp)
 }
 
