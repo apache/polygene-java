@@ -55,7 +55,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-sql/src/test/java/org/apache/zest/index/sql/postgresql/SQLTestHelper.java
+source=extensions/indexing-sql/src/test/java/org/qi4j/index/sql/postgresql/SQLTestHelper.java
 tag=assembly
 ----
 

@@ -48,19 +48,19 @@ You simply declare dependencies on Zest™ artifacts:
 ----
 <dependencies>
     <dependency>
-        <groupId>org.apache.zest.core</groupId>
-        <artifactId>org.apache.zest.core.bootstrap</artifactId>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>org.qi4j.core.bootstrap</artifactId>
         <version>ZEST_VERSION</version>
     </dependency>
     <dependency>
-        <groupId>org.apache.zest.core</groupId>
-        <artifactId>org.apache.zest.core.runtime</artifactId>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>org.qi4j.core.runtime</artifactId>
         <version>ZEST_VERSION</version>
         <scope>runtime</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.zest.core</groupId>
-        <artifactId>org.apache.zest.core.testsupport</artifactId>
+        <groupId>org.qi4j.core</groupId>
+        <artifactId>org.qi4j.core.testsupport</artifactId>
         <version>ZEST_VERSION</version>
         <scope>test</scope>
     </dependency>
@@ -91,9 +91,9 @@ You simply declare dependencies on Zest™ artifacts:
 [source,groovy]
 ----
 dependencies {
-    compile     "org.apache.zest.core:org.apache.zest.core.bootstrap:ZEST_VERSION"
-    runtime     "org.apache.zest.core:org.apache.zest.core.runtime:ZEST_VERSION"
-    testCompile "org.apache.zest.core:org.apache.zest.core.testsupport:ZEST_VERSION"
+    compile     "org.qi4j.core:org.qi4j.core.bootstrap:ZEST_VERSION"
+    runtime     "org.qi4j.core:org.qi4j.core.runtime:ZEST_VERSION"
+    testCompile "org.qi4j.core:org.qi4j.core.testsupport:ZEST_VERSION"
 }
 ----
 
@@ -115,9 +115,9 @@ You simply declare dependencies on Zest™ artifacts:
 
 [source,ruby]
 ----
-compile.with 'org.apache.zest.core:org.apache.zest.core.bootstrap:ZEST_VERSION'
-package(:war).with :libs => 'org.apache.zest.core:org.apache.zest.core.runtime:ZEST_VERSION'
-test.with 'org.apache.zest.core:org.apache.zest.core.testsupport:ZEST_VERSION'
+compile.with 'org.qi4j.core:org.qi4j.core.bootstrap:ZEST_VERSION'
+package(:war).with :libs => 'org.qi4j.core:org.qi4j.core.runtime:ZEST_VERSION'
+test.with 'org.qi4j.core:org.qi4j.core.testsupport:ZEST_VERSION'
 ----
 
 Where `ZEST_VERSION` is the Zest™ version you want to use.
@@ -137,13 +137,13 @@ You simply declare dependencies on Zest™ artifacts:
 [source,scala]
 ----
 libraryDependencies += \
-    "org.apache.zest.core" % "org.apache.zest.core.bootstrap" % "ZEST_VERSION" \
+    "org.qi4j.core" % "org.qi4j.core.bootstrap" % "ZEST_VERSION" \
     withSources() withJavadoc()
 libraryDependencies += \
-    "org.apache.zest.core" % "org.apache.zest.core.runtime" % "ZEST_VERSION" % "runtime" \
+    "org.qi4j.core" % "org.qi4j.core.runtime" % "ZEST_VERSION" % "runtime" \
     withSources() withJavadoc()
 libraryDependencies += \
-    "org.apache.zest.core" % "org.apache.zest.core.testsupport" % "ZEST_VERSION" % "test" \
+    "org.qi4j.core" % "org.qi4j.core.testsupport" % "ZEST_VERSION" % "test" \
     withSources() withJavadoc()
 ----
 
@@ -165,11 +165,11 @@ You simply declare dependencies on Zest™ artifacts:
 ----
 <ivy-module>
     <dependencies>
-        <dependency org="org.apache.zest.core" name="org.apache.zest.core.bootstrap"
+        <dependency org="org.qi4j.core" name="org.qi4j.core.bootstrap"
                     rev="ZEST_VERSION"  conf="default" />
-        <dependency org="org.apache.zest.core" name="org.apache.zest.core.runtime"
+        <dependency org="org.qi4j.core" name="org.qi4j.core.runtime"
                     rev="ZEST_VERSION"  conf="runtime" />
-        <dependency org="org.apache.zest.core" name="org.apache.zest.core.testsupport"
+        <dependency org="org.qi4j.core" name="org.qi4j.core.testsupport"
                     rev="ZEST_VERSION"  conf="test" />
     </dependencies>
 </ivy-module>

@@ -44,7 +44,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-jclouds/src/test/java/org/apache/zest/entitystore/jclouds/JCloudsTransientTest.java
+source=extensions/entitystore-jclouds/src/test/java/org/qi4j/entitystore/jclouds/JCloudsTransientTest.java
 tag=assembly
 ----
 
@@ -54,6 +54,6 @@ Here are the configuration properties for the JClouds EntityStore:
 
 [snippet,java]
 ----
-source=extensions/entitystore-jclouds/src/main/java/org/apache/zest/entitystore/jclouds/JCloudsMapEntityStoreConfiguration.java
+source=extensions/entitystore-jclouds/src/main/java/org/qi4j/entitystore/jclouds/JCloudsMapEntityStoreConfiguration.java
 tag=config
 ----

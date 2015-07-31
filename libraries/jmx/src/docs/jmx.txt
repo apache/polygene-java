@@ -35,7 +35,7 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 [snippet,java]
 ----
-source=libraries/jmx/src/test/java/org/apache/zest/library/jmx/JMXTest.java
+source=libraries/jmx/src/test/java/org/qi4j/library/jmx/JMXTest.java
 tag=assembly
 ----
 

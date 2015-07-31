@@ -53,7 +53,7 @@ If you use the <<library-http>> you can either directly use Shiro classes or use
 
 [snippet,java]
 ----
-source=libraries/shiro-web/src/test/java/org/apache/zest/library/shiro/web/WebHttpShiroTest.java
+source=libraries/shiro-web/src/test/java/org/qi4j/library/shiro/web/WebHttpShiroTest.java
 tag=assembly
 ----
 

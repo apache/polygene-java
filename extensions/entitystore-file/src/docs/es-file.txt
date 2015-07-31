@@ -37,7 +37,7 @@ Assembly is done as follows:
 
 [snippet,java]
 ----
-source=extensions/entitystore-file/src/test/java/org/apache/zest/entitystore/file/FileEntityStoreTest.java
+source=extensions/entitystore-file/src/test/java/org/qi4j/entitystore/file/FileEntityStoreTest.java
 tag=assembly
 ----
 
@@ -47,7 +47,7 @@ Here are the configuration properties for the File EntityStore:
 
 [snippet,java]
 ----
-source=extensions/entitystore-file/src/main/java/org/apache/zest/entitystore/file/FileEntityStoreConfiguration.java
+source=extensions/entitystore-file/src/main/java/org/qi4j/entitystore/file/FileEntityStoreConfiguration.java
 tag=config
 ----
 

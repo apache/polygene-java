@@ -90,7 +90,7 @@ This leads us to this typical implementation of an Entity
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/apache/zest/demo/intro/WhatsAnObjectDocs.java
+source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/WhatsAnObjectDocs.java
 tag=wo1
 -----------
 
@@ -102,7 +102,7 @@ in the mixins.
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/apache/zest/demo/intro/WhatsAnObjectDocs.java
+source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/WhatsAnObjectDocs.java
 tag=wo2
 -----------
 
@@ -114,7 +114,7 @@ interface:
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/apache/zest/demo/intro/WhatsAnObjectDocs.java
+source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/WhatsAnObjectDocs.java
 tag=wo3
 -----------
 
@@ -122,7 +122,7 @@ This lets us see the totality of all the state that the Entity has, and can be u
 
 [snippet,java]
 -----------
-source=tutorials/introduction/src/main/java/org/apache/zest/demo/intro/WhatsAnObjectDocs.java
+source=tutorials/introduction/src/main/java/org/qi4j/demo/intro/WhatsAnObjectDocs.java
 tag=wo4
 -----------
 
@@ -199,5 +199,5 @@ on this page.
 
 That's it. Well done if you've read this far :-)
 
-Comments and thoughts to dev@zest.apache.org mailing list on this are highly appreciated. This is very very important
-topics, and crucial to understanding/explaining why COP/Zest™ is so great! :-)
+Comments and thoughts to qi4j-dev forum at Google Groups on this are highly appreciated. This is very very important topics,
+and crucial to understanding/explaining why COP/Zest™ is so great! :-)

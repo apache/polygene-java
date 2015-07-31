@@ -45,7 +45,7 @@ To convert Entities to Values, use the EntityToValueService. It is easily assemb
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/apache/zest/library/conversion/values/EntityToValueTest.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
 tag=assembly
 ----
 
@@ -53,7 +53,7 @@ Let's say we have an interface defining state:
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/apache/zest/library/conversion/values/TestModel.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/TestModel.java
 tag=state
 ----
 
@@ -61,7 +61,7 @@ An EntityComposite using the state as a Private Mixin:
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/apache/zest/library/conversion/values/TestModel.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/TestModel.java
 tag=entity
 ----
 
@@ -69,7 +69,7 @@ And a ValueComposite extending this very same state;
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/apache/zest/library/conversion/values/TestModel.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/TestModel.java
 tag=value
 ----
 
@@ -77,7 +77,7 @@ Here is how to convert an EntityComposite to a ValueComposite:
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/apache/zest/library/conversion/values/EntityToValueTest.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/EntityToValueTest.java
 tag=conversion
 ----
 
@@ -89,7 +89,7 @@ It is easy assembled:
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/apache/zest/library/conversion/values/ValueToEntityTest.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/ValueToEntityTest.java
 tag=assembly
 ----
 
@@ -99,7 +99,7 @@ Here is how to create an EntityComposite from a ValueComposite:
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/apache/zest/library/conversion/values/ValueToEntityTest.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/ValueToEntityTest.java
 tag=creation
 ----
 
@@ -107,7 +107,7 @@ Here is how to update an EntityComposite from a ValueComposite:
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/apache/zest/library/conversion/values/ValueToEntityTest.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/ValueToEntityTest.java
 tag=update
 ----
 
@@ -123,7 +123,7 @@ Here is an example:
 
 [snippet,java]
 ----
-source=libraries/conversion/src/test/java/org/apache/zest/library/conversion/values/TestModel.java
+source=libraries/conversion/src/test/java/org/qi4j/library/conversion/values/TestModel.java
 tag=unqualified
 ----
 

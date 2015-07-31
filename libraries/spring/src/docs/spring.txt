@@ -38,7 +38,7 @@ beans will be available as Zest™ services. The most important things to rememb
 
 [snippet,java]
 ----
-source=libraries/spring/src/test/java/org/apache/zest/library/spring/importer/Qi4jImportServiceTest.java
+source=libraries/spring/src/test/java/org/qi4j/library/spring/importer/Qi4jImportServiceTest.java
 tag=import
 ----
 
@@ -47,15 +47,15 @@ It is also possible to run a Zest™ Application as a Spring Bean and export its
 
 Steps to export Zest™ service:
 
-    1. Create spring BeanFactory service of Zest services to export.
+    1. Create spring BeanFactory service of qi4j services to export.
     2. Create a class that extends Qi4jApplicationBootstrap.
     3. Sets the layer and module that register BeanFactory service.
-    4. Assemble Zest application by implementing #assemble method.
+    4. Assemble qi4j application by implementing #assemble method.
     5. Sets the identity of bean factory service. This identity is the spring bean name.
-    6. Declare Zest bootstrap in spring xml application context.
+    6. Declare qi4j bootstrap in spring xml application context.
 
 To bootstrap the Zest™ runtime in Spring, you should have a bootstrap bean that extends the
-+org.apache.zest.library.spring.bootstrap.Qi4jApplicationBootstrap+ and implement the
++org.qi4j.library.spring.bootstrap.Qi4jApplicationBootstrap+ and implement the
 +org.springframework.context.ApplicationContextAware+.
 
 A new bean will appear in the application context, called +"qi4jApplication"+ which is only
@@ -86,6 +86,6 @@ Example application context;
 
 [snippet,java]
 ----
-source=libraries/spring/src/test/java/org/apache/zest/library/spring/MyZestBootstrapper.java
+source=libraries/spring/src/test/java/org/qi4j/library/spring/MyZestBootstrapper.java
 tag=code
 ----

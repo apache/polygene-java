@@ -63,14 +63,14 @@ These ones remain unchanged:
 *HelloWorldBehaviourMixin.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial5/HelloWorldBehaviourMixin.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial5/HelloWorldBehaviourMixin.java
 tag=solution
 ----
 
 *HelloWorldBehaviourConcern.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial5/HelloWorldBehaviourConcern.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial5/HelloWorldBehaviourConcern.java
 tag=solution
 ----
 

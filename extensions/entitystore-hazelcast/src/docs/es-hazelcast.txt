@@ -35,7 +35,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-hazelcast/src/test/java/org/apache/zest/entitystore/hazelcast/HazelcastEntityStoreTest.java
+source=extensions/entitystore-hazelcast/src/test/java/org/qi4j/entitystore/hazelcast/HazelcastEntityStoreTest.java
 tag=assembly
 ----
 
@@ -45,7 +45,7 @@ Here are the configuration properties for the Hazelcast EntityStore:
 
 [snippet,java]
 ----
-source=extensions/entitystore-hazelcast/src/main/java/org/apache/zest/entitystore/hazelcast/HazelcastConfiguration.java
+source=extensions/entitystore-hazelcast/src/main/java/org/qi4j/entitystore/hazelcast/HazelcastConfiguration.java
 tag=config
 ----
 

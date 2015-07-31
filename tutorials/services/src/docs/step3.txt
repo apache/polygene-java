@@ -41,7 +41,7 @@ Steps to do.
 - Delete the LibraryActivator and remove the @Activators annotation from the LibraryService and the corresponding createInitialData method.
 - In the LibraryMixin remove the member injection of the ValueBuilderFactory, and instead inject the ValueBuilderFactory in the constructor.
 - Inject the LibraryConfiguration via the constructor. The injection scope is @This.
-- Create a resource called LibraryService.properties and place it in the directory +org/apache/zest/tutorials/services/step4+ in the classpath (for instance, src/main/resources ). Put something like this in:
+- Create a resource called LibraryService.properties and place it in the directory org/qi4j/tutorials/services/step4 in the classpath (for instance, src/main/resources ). Put something like this in:
     titles=Domain Driven Design, Pragmatic Programmer, Extreme Programming Explained
     authors=Eric Evans, Andy Hunt, Kent Beck
     #Number of copies of each book.

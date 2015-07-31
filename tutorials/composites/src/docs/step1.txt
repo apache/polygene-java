@@ -27,7 +27,7 @@ Composite Oriented application. Here is the initial code of HelloWorld.
 
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial1/HelloWorld.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial1/HelloWorld.java
 tag=initial
 ----
 
@@ -57,28 +57,28 @@ If you have successfully completed the task, you should end up with the followin
 *HelloWorld.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial2/HelloWorld.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorld.java
 tag=solution
 ----
 
 *HelloWorldState.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial2/HelloWorldState.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldState.java
 tag=solution
 ----
 
 *HelloWorldBehaviour.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial2/HelloWorldBehaviour.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldBehaviour.java
 tag=solution
 ----
 
 *HelloWorldMixin.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial2/HelloWorldMixin.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldMixin.java
 tag=solution
 ----
 

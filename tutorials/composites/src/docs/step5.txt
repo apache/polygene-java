@@ -66,28 +66,28 @@ These ones remain unchanged:
 *HelloWorldBehaviour.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial6/HelloWorldBehaviour.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial6/HelloWorldBehaviour.java
 tag=solution
 ----
 
 *HelloWorldBehaviourMixin.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial6/HelloWorldBehaviourMixin.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial6/HelloWorldBehaviourMixin.java
 tag=solution
 ----
 
 *HelloWorldBehaviourConcern.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial6/HelloWorldBehaviourConcern.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial6/HelloWorldBehaviourConcern.java
 tag=solution
 ----
 
 *HelloWorldState.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial6/HelloWorldState.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial6/HelloWorldState.java
 tag=solution
 ----
 

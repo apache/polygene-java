@@ -35,7 +35,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-rdf/src/test/java/org/apache/zest/index/rdf/DocumentationSupport.java
+source=extensions/indexing-rdf/src/test/java/org/qi4j/index/rdf/DocumentationSupport.java
 tag=memory
 ----
 
@@ -49,7 +49,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-rdf/src/test/java/org/apache/zest/index/rdf/DocumentationSupport.java
+source=extensions/indexing-rdf/src/test/java/org/qi4j/index/rdf/DocumentationSupport.java
 tag=native
 ----
 
@@ -59,7 +59,7 @@ Here are the configuration properties for the Native RDF Index/Query:
 
 [snippet,java]
 ----
-source=libraries/rdf/src/main/java/org/apache/zest/library/rdf/repository/NativeConfiguration.java
+source=libraries/rdf/src/main/java/org/qi4j/library/rdf/repository/NativeConfiguration.java
 tag=config
 ----
 
@@ -72,7 +72,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/indexing-rdf/src/test/java/org/apache/zest/index/rdf/DocumentationSupport.java
+source=extensions/indexing-rdf/src/test/java/org/qi4j/index/rdf/DocumentationSupport.java
 tag=rdbms
 ----
 
@@ -82,6 +82,6 @@ Here are the configuration properties for the RDBMS based RDF Index/Query:
 
 [snippet,java]
 ----
-source=libraries/rdf/src/main/java/org/apache/zest/library/rdf/repository/RdbmsRepositoryConfiguration.java
+source=libraries/rdf/src/main/java/org/qi4j/library/rdf/repository/RdbmsRepositoryConfiguration.java
 tag=config
 ----

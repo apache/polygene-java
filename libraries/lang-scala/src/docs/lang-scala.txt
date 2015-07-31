@@ -37,28 +37,28 @@ The Scala Support Library is a Generic mixin class that implements  Composites b
 Example mixin declaration:
 [snippet,scala]
 ----
-source=libraries/lang-scala/src/test/scala/org/apache/zest/library/scala/HelloWorldMixin2.scala
+source=libraries/lang-scala/src/test/scala/org/qi4j/sample/scala/HelloWorldMixin2.scala
 tag=mixin
 ----
 
 Example composite declaration:
 [snippet,scala]
 ----
-source=libraries/lang-scala/src/test/scala/org/apache/zest/library/scala/HelloWorldComposite.scala
+source=libraries/lang-scala/src/test/scala/org/qi4j/sample/scala/HelloWorldComposite.scala
 tag=composite
 ----
 
 Example typed concern:
 [snippet,scala]
 ----
-source=libraries/lang-scala/src/test/scala/org/apache/zest/library/scala/HelloThereConcern.scala
+source=libraries/lang-scala/src/test/scala/org/qi4j/sample/scala/HelloThereConcern.scala
 tag=typedconcern
 ----
 
 Example generic concern with filter:
 [snippet,scala]
 ----
-source=libraries/lang-scala/src/test/scala/org/apache/zest/library/scala/ExclamationGenericConcern.scala
+source=libraries/lang-scala/src/test/scala/org/qi4j/sample/scala/ExclamationGenericConcern.scala
 tag=genericconcern
 ----
 
@@ -66,7 +66,7 @@ And the assembly code.
 Note that the `ScalaTraitMixin` must be added.
 [snippet,java]
 ----
-source=libraries/lang-scala/src/test/scala/org/apache/zest/library/scala/HelloWorldCompositeTest.java
+source=libraries/lang-scala/src/test/scala/org/qi4j/sample/scala/HelloWorldCompositeTest.java
 tag=composite
 ----
 
@@ -81,7 +81,7 @@ Only commands are called by client code.
 
 [snippet,scala]
 ----
-source=libraries/lang-scala/src/test/scala/org/apache/zest/library/scala/TestEntity.scala
+source=libraries/lang-scala/src/test/scala/org/qi4j/sample/scala/TestEntity.scala
 tag=entity
 ----
 
@@ -93,7 +93,7 @@ And the corresponding assembly code:
 
 [snippet,java]
 ----
-source=libraries/lang-scala/src/test/scala/org/apache/zest/library/scala/HelloWorldCompositeTest.java
+source=libraries/lang-scala/src/test/scala/org/qi4j/sample/scala/HelloWorldCompositeTest.java
 tag=entity
 ----
 
@@ -104,7 +104,7 @@ The following example is a pretty simple service written as a Scala trait:
 
 [snippet,scala]
 ----
-source=libraries/lang-scala/src/test/scala/org/apache/zest/library/scala/TestService.scala
+source=libraries/lang-scala/src/test/scala/org/qi4j/sample/scala/TestService.scala
 tag=service
 ----
 
@@ -112,6 +112,6 @@ And the corresponding assembly code:
 
 [snippet,java]
 ----
-source=libraries/lang-scala/src/test/scala/org/apache/zest/library/scala/HelloWorldCompositeTest.java
+source=libraries/lang-scala/src/test/scala/org/qi4j/sample/scala/HelloWorldCompositeTest.java
 tag=service
 ----

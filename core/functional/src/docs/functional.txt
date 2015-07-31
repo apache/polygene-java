@@ -34,7 +34,7 @@ sum it all up in something like this;
 
 [snippet,java]
 -----------
-source=core/functional/src/test/java/org/apache/zest/functional/docsupport/FunctionalDocs.java
+source=core/functional/src/test/java/org/qi4j/functional/docsupport/FunctionalDocs.java
 tag=func1
 -----------
 
@@ -42,7 +42,7 @@ With the Zest™ Core Functional API, you go about it in a different way. The co
 
 [snippet,java]
 -----------
-source=core/functional/src/test/java/org/apache/zest/functional/docsupport/FunctionalDocs.java
+source=core/functional/src/test/java/org/qi4j/functional/docsupport/FunctionalDocs.java
 tag=func2
 -----------
 

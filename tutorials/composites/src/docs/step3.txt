@@ -40,35 +40,35 @@ Only *HelloWorld.java* remains unchanged.
 *HelloWorldComposite.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial4/HelloWorldComposite.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldComposite.java
 tag=solution
 ----
 
 *HelloWorldBehaviour.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial4/HelloWorldBehaviour.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldBehaviour.java
 tag=solution
 ----
 
 *HelloWorldBehaviourMixin.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial4/HelloWorldBehaviourMixin.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldBehaviourMixin.java
 tag=solution
 ----
 
 *HelloWorldState.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial4/HelloWorldState.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldState.java
 tag=solution
 ----
 
 *HelloWorldStateMixin.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial4/HelloWorldStateMixin.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial4/HelloWorldStateMixin.java
 tag=solution
 ----
 

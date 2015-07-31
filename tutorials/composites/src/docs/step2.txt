@@ -34,7 +34,7 @@ checks in the Mixin. If a null value is passed in an exception will be thrown by
 
 Steps for this tutorial:
 
-- Create an interface that extends the domain interface +HelloWorld+ and +org.apache.zest.api.composite.TransientComposite+.
+- Create an interface that extends the domain interface HelloWorld and org.qi4j.api.composite.TransientComposite.
 - Add a @Mixins annotation to it with the name of the Mixin as argument.
 
 == Solution ==
@@ -48,14 +48,14 @@ These ones remain unchanged:
 *HelloWorldComposite.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial3/HelloWorldComposite.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial3/HelloWorldComposite.java
 tag=solution
 ----
 
 *HelloWorldMixin.java*
 [snippet,java]
 ----
-source=tutorials/composites/src/main/java/org/apache/zest/tutorials/composites/tutorial2/HelloWorldMixin.java
+source=tutorials/composites/src/main/java/org/qi4j/tutorials/composites/tutorial2/HelloWorldMixin.java
 tag=solution
 ----
 

@@ -35,7 +35,7 @@ Assembly is done using the provided Assembler.
 
 [snippet,java]
 ----
-source=extensions/entitystore-redis/src/test/java/org/apache/zest/entitystore/redis/RedisMapEntityStoreTest.java
+source=extensions/entitystore-redis/src/test/java/org/qi4j/entitystore/redis/RedisMapEntityStoreTest.java
 tag=assembly
 ----
 
@@ -46,6 +46,6 @@ Here are the configuration properties for the Redis client:
 
 [snippet,java]
 ----
-source=extensions/entitystore-redis/src/main/java/org/apache/zest/entitystore/redis/RedisEntityStoreConfiguration.java
+source=extensions/entitystore-redis/src/main/java/org/qi4j/entitystore/redis/RedisEntityStoreConfiguration.java
 tag=config
 ----

@@ -43,7 +43,7 @@ But we also need an implementation for Speaker, which we declare here via the `@
 
 [snippet,java]
 -----------
-source=tutorials/introduction/twominutes/src/main/java/org/apache/zest/demo/twominute/Speaker.java
+source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/Speaker.java
 tag=documentation
 -----------
 
@@ -52,7 +52,7 @@ In this case, return a String with the content "Hello, World!".
 
 [snippet,java]
 -----------
-source=tutorials/introduction/twominutes/src/main/java/org/apache/zest/demo/twominute/SpeakerMixin.java
+source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/SpeakerMixin.java
 tag=documentation
 -----------
 
@@ -60,7 +60,7 @@ So far so good. We now need to make this into something that can run. This can b
 
 [snippet,java]
 -----------
-source=tutorials/introduction/twominutes/src/main/java/org/apache/zest/demo/twominute/Main.java
+source=tutorials/introduction/twominutes/src/main/java/org/qi4j/demo/twominute/Main.java
 tag=documentation
 -----------
 

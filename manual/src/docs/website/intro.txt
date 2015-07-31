@@ -36,7 +36,7 @@ include::../../../../tutorials/introduction/src/docs/what-is-composite-oriented-
 
 :leveloffset: 2
 
-// include::../../../../tutorials/introduction/src/docs/zest-cop.txt[]
+// include::../../../../tutorials/introduction/src/docs/qi4j-cop.txt[]
 //
 // :leveloffset: 2
 

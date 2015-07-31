@@ -65,7 +65,7 @@ The full code looks like this;
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/apache/zest/api/docsupport/ApplicationDocs.java
+source=core/api/src/test/java/org/qi4j/api/docsupport/ApplicationDocs.java
 tag=application1
 -----------
 
@@ -76,7 +76,7 @@ shows what is the actual required sequence to start up Zest.
 
 [snippet,java]
 -----------
-source=core/bootstrap/src/main/java/org/apache/zest/bootstrap/SingletonAssembler.java
+source=core/bootstrap/src/main/java/org/qi4j/bootstrap/SingletonAssembler.java
 tag=actual
 -----------
 
@@ -94,7 +94,7 @@ Module in the second index and any number of Assembler instances in the last ind
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/apache/zest/api/docsupport/ApplicationDocs.java
+source=core/api/src/test/java/org/qi4j/api/docsupport/ApplicationDocs.java
 tag=application2
 -----------
 
@@ -109,7 +109,7 @@ free structure, as long as the rules for no cyclic reference of the Layers are k
 
 [snippet,java]
 -----------
-source=core/api/src/test/java/org/apache/zest/api/docsupport/ApplicationDocs.java
+source=core/api/src/test/java/org/qi4j/api/docsupport/ApplicationDocs.java
 tag=application3
 -----------
 

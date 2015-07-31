@@ -53,7 +53,7 @@ SecurityManager when activating your Zest™ Application. It can be done outside
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/test/java/org/apache/zest/library/shiro/StandaloneShiroTest.java
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/StandaloneShiroTest.java
 tag=before
 ----
 
@@ -64,7 +64,7 @@ the SecurityManager when passivated:
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/test/java/org/apache/zest/library/shiro/StandaloneShiroTest.java
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/StandaloneShiroTest.java
 tag=assembly
 ----
 
@@ -72,7 +72,7 @@ You can change the INI resource path through the ShiroIniConfiguration:
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/main/java/org/apache/zest/library/shiro/ini/ShiroIniConfiguration.java
+source=libraries/shiro-core/src/main/java/org/qi4j/library/shiro/ini/ShiroIniConfiguration.java
 tag=config
 ----
 
@@ -85,7 +85,7 @@ Once started you must remember to register the SecurityManager in Shiro's Thread
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/test/java/org/apache/zest/library/shiro/StandaloneShiroTest.java
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/StandaloneShiroTest.java
 tag=thread-context
 ----
 
@@ -126,7 +126,7 @@ credientials and configuring it ;
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/test/java/org/apache/zest/library/shiro/RealmServiceTest.java
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/RealmServiceTest.java
 tag=realm-service
 ----
 
@@ -164,7 +164,7 @@ UserFactory too. Note that the factory uses the PasswordService implemented by t
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/test/java/org/apache/zest/library/shiro/PasswordDomainTest.java
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PasswordDomainTest.java
 tag=domain
 ----
 
@@ -173,7 +173,7 @@ entity and its factory:
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/test/java/org/apache/zest/library/shiro/PasswordDomainTest.java
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PasswordDomainTest.java
 tag=assembly
 ----
 
@@ -181,7 +181,7 @@ And finally here is how to create a new user and below how to perform a login:
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/test/java/org/apache/zest/library/shiro/PasswordDomainTest.java
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PasswordDomainTest.java
 tag=usage
 ----
 
@@ -190,7 +190,7 @@ change this you can do it using PasswordRealmConfiguration properties:
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/main/java/org/apache/zest/library/shiro/domain/passwords/PasswordRealmConfiguration.java
+source=libraries/shiro-core/src/main/java/org/qi4j/library/shiro/domain/passwords/PasswordRealmConfiguration.java
 tag=config
 ----
 
@@ -206,7 +206,7 @@ First you need to add the RoleAssignee type to your account:
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/test/java/org/apache/zest/library/shiro/PermissionsDomainTest.java
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PermissionsDomainTest.java
 tag=domain
 ----
 
@@ -214,7 +214,7 @@ Assembly is straight forward:
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/test/java/org/apache/zest/library/shiro/PermissionsDomainTest.java
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PermissionsDomainTest.java
 tag=assembly
 ----
 
@@ -222,7 +222,7 @@ And here is how to use all this:
 
 [snippet,java]
 ----
-source=libraries/shiro-core/src/test/java/org/apache/zest/library/shiro/PermissionsDomainTest.java
+source=libraries/shiro-core/src/test/java/org/qi4j/library/shiro/PermissionsDomainTest.java
 tag=usage
 ----
 
@@ -241,4 +241,4 @@ contribute.
 
 == Logging ==
 
-All code from this library use the `org.apache.zest.library.shiro` logger.
+All code from this library use the `org.qi4j.library.shiro` logger.

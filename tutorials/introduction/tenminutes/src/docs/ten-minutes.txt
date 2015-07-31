@@ -46,7 +46,7 @@ See the <<howto-depend-on-zest>> tutorial for details.
 Composition is done with Java interfaces and Annotations. Example;
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
 tag=mainClass
 -----------
 
@@ -56,7 +56,7 @@ methods that they declare, for instance;
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/InventoryConcern.java
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/InventoryConcern.java
 tag=allClass
 -----------
 
@@ -80,7 +80,7 @@ will execute after the Constraints, Concerns and Mixins. We add the SideEffect t
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/OrderEntity.java
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/OrderEntity.java
 tag=sideEffect
 -----------
 
@@ -88,7 +88,7 @@ The SideEffect implementation is fairly simple.
 
 [snippet,java]
 -----------
-source=tutorials/introduction/tenminutes/src/main/java/org/apache/zest/demo/tenminute/MailNotifySideEffect.java
+source=tutorials/introduction/tenminutes/src/main/java/org/qi4j/demo/tenminute/MailNotifySideEffect.java
 tag=allClass
 -----------
 The MailService is dependency injected, as we have seen before.

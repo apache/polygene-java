@@ -29,13 +29,13 @@ public class HelloSpeakerTest extends AbstractQi4jTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.transients( org.apache.zest.library.groovy.support.HelloSpeaker.class ).withMixins( GroovyMixin.class );
+        module.transients( HelloSpeaker.class ).withMixins( GroovyMixin.class );
     }
 
     @Test
     public void testHello()
     {
-        org.apache.zest.library.groovy.support.HelloSpeaker speaker = module.newTransient( org.apache.zest.library.groovy.support.HelloSpeaker.class );
+        HelloSpeaker speaker = module.newTransient( HelloSpeaker.class );
         Assert.assertEquals( "Hello World!", speaker.sayHello( "World" ) );
     }
 
@@ -50,10 +50,10 @@ public class HelloSpeakerTest extends AbstractQi4jTest
             public void assemble( ModuleAssembly assembly )
                 throws AssemblyException
             {
-                assembly.transients( org.apache.zest.library.groovy.support.HelloSpeaker.class ).withMixins( GroovyMixin.class );
+                assembly.transients( HelloSpeaker.class ).withMixins( GroovyMixin.class );
             }
         };
-        org.apache.zest.library.groovy.support.HelloSpeaker speaker = assembler.module().newTransient( org.apache.zest.library.groovy.support.HelloSpeaker.class );
+        HelloSpeaker speaker = assembler.module().newTransient( HelloSpeaker.class );
         Assert.assertEquals( "Hello World!", speaker.sayHello( "World" ) );
         // END SNIPPET: script
     }
@@ -69,10 +69,10 @@ public class HelloSpeakerTest extends AbstractQi4jTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.transients( org.apache.zest.library.groovy.support.HelloSpeaker.class ).withMixins( HelloSpeakerMixin.class );
+                module.transients( HelloSpeaker.class ).withMixins( HelloSpeakerMixin.class );
             }
         };
-        org.apache.zest.library.groovy.support.HelloSpeaker speaker = assembler.module().newTransient( org.apache.zest.library.groovy.support.HelloSpeaker.class );
+        HelloSpeaker speaker = assembler.module().newTransient( HelloSpeaker.class );
         Assert.assertEquals( "Hello World!", speaker.sayHello( "World" ) );
         // END SNIPPET: direct
     }

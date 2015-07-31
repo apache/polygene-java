@@ -47,7 +47,7 @@ Example;
 
 [snippet,java]
 ----
-source=libraries/metrics/src/test/java/org/apache/zest/library/metrics/DocumentationSupport.java
+source=libraries/metrics/src/test/java/org/qi4j/library/metrics/DocumentationSupport.java
 tag=capture
 ----
 
@@ -57,7 +57,7 @@ Any of the method declarations should work. From the testcases we have the follo
 
 [snippet,java]
 ----
-source=libraries/metrics/src/test/java/org/apache/zest/library/metrics/MetricsTest.java
+source=libraries/metrics/src/test/java/org/qi4j/library/metrics/MetricsTest.java
 tag=complex-capture
 ----
 

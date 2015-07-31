@@ -35,7 +35,7 @@ Assembly is done as follows:
 
 [snippet,java]
 ----
-source=extensions/entitystore-memory/src/test/java/org/apache/zest/entitystore/memory/MemoryEntityStoreTest.java
+source=extensions/entitystore-memory/src/test/java/org/qi4j/entitystore/memory/MemoryEntityStoreTest.java
 tag=assembly
 ----
 

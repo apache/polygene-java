@@ -61,7 +61,7 @@ or apply it during assembly, in case that is the only choice (such as existing/e
 
 [snippet,java]
 ----
-source=libraries/locking/src/test/java/org/apache/zest/library/locking/DocumentationSupport.java
+source=libraries/locking/src/test/java/org/qi4j/library/locking/DocumentationSupport.java
 tag=assembly
 ----
 

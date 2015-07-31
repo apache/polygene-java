@@ -35,7 +35,7 @@ Assembly is done using the provided Assembler:
 
 [snippet,java]
 ----
-source=extensions/entitystore-jdbm/src/test/java/org/apache/zest/entitystore/jdbm/DocumentationSupport.java
+source=extensions/entitystore-jdbm/src/test/java/org/qi4j/entitystore/jdbm/DocumentationSupport.java
 tag=UsingAssembler
 ----
 
@@ -45,7 +45,7 @@ Here are the configuration properties for the JDBM EntityStore:
 
 [snippet,java]
 ----
-source=extensions/entitystore-jdbm/src/main/java/org/apache/zest/entitystore/jdbm/JdbmConfiguration.java
+source=extensions/entitystore-jdbm/src/main/java/org/qi4j/entitystore/jdbm/JdbmConfiguration.java
 tag=config
 ----
 

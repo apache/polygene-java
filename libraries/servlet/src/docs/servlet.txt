@@ -44,7 +44,7 @@ Here is an example ServletContextListener:
 
 [snippet,java]
 ----
-source=libraries/servlet/src/test/java/org/apache/zest/library/servlet/ServletTest.java
+source=libraries/servlet/src/test/java/org/qi4j/library/servlet/ServletTest.java
 tag=bootstrap
 ----
 
@@ -58,12 +58,12 @@ Here is a sample servlet that simply output the assembled Application name:
 
 [snippet,java]
 ----
-source=libraries/servlet/src/test/java/org/apache/zest/library/servlet/ServletTest.java
+source=libraries/servlet/src/test/java/org/qi4j/library/servlet/ServletTest.java
 tag=usage
 ----
 
 
 == Logging ==
 
-The SLF4J logger used by this library is named "org.apache.zest.library.servlet".
+The SLF4J logger used by this library is named "org.qi4j.library.servlet".
 
