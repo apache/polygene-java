@@ -270,7 +270,7 @@ allprojects {
           dep.useTarget group: dep.requested.group, name: dep.requested.module, version: osgiVersion
         }
         // Always resolve Jackson to the same version
-        if( dep.requested.group.startsWith( 'com.fasterxml.jackson' ) ) {
+        if( dep.requested.group.startsWith( 'com.fasterxml.jackson' ) && dep.requested.module != 'jackson-parent' ) {
           dep.useTarget group: dep.requested.group, name: dep.requested.module, version: jacksonVersion
         }
         // woodstox:wstx-asl is broken (no pom), use org.codehaus.woodstox:wstx-asl instead
