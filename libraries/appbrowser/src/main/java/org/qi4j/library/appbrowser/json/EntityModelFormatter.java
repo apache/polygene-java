@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.library.appbrowser.json;
+package org.qi4j.library.appbrowser.json;
 
 import org.json.JSONException;
 import org.json.JSONWriter;
-import org.apache.zest.api.entity.EntityDescriptor;
+import org.qi4j.api.entity.EntityDescriptor;
 
 public class EntityModelFormatter extends AbstractJsonFormatter<EntityDescriptor, Void>
 {

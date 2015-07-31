@@ -15,19 +15,19 @@
 package org.qi4j.regression.qi230;
 
 import org.junit.Test;
-import org.apache.zest.api.Qi4j;
-import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.concern.ConcernOf;
-import org.apache.zest.api.concern.Concerns;
-import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.injection.scope.This;
-import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.mixin.NoopMixin;
-import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.qi4j.api.Qi4j;
+import org.qi4j.api.composite.Composite;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.Structure;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.mixin.NoopMixin;
+import org.qi4j.api.service.ServiceComposite;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 

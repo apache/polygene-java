@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-org.apache.zest.library.http.dns.LocalManagedDnsDescriptor
+org.qi4j.library.http.dns.LocalManagedDnsDescriptor

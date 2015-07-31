@@ -17,11 +17,11 @@
  */
 package org.qi4j.regression.qi377;
 
-import org.apache.zest.api.common.UseDefaults;
-import org.apache.zest.api.property.Property;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.qi4j.api.common.UseDefaults;
+import org.qi4j.api.property.Property;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class InterfaceCollisionWithUnrelatedReturnTypesTest
     extends AbstractQi4jTest

@@ -15,14 +15,14 @@
 package org.qi4j.regression.qi59;
 
 import org.junit.Test;
-import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.property.Property;
-import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.library.constraints.annotation.NotEmpty;
-import org.apache.zest.test.AbstractQi4jTest;
-import org.apache.zest.test.EntityTestAssembler;
+import org.qi4j.api.entity.EntityComposite;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.unitofwork.UnitOfWork;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.library.constraints.annotation.NotEmpty;
+import org.qi4j.test.AbstractQi4jTest;
+import org.qi4j.test.EntityTestAssembler;
 
 import static org.junit.Assert.fail;
 

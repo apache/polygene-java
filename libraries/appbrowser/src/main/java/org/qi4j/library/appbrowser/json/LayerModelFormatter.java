@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.library.appbrowser.json;
+package org.qi4j.library.appbrowser.json;
 
 import org.json.JSONException;
 import org.json.JSONWriter;
-import org.apache.zest.api.structure.LayerDescriptor;
-import org.apache.zest.api.structure.UsedLayersDescriptor;
+import org.qi4j.api.structure.LayerDescriptor;
+import org.qi4j.api.structure.UsedLayersDescriptor;
 
 public class LayerModelFormatter extends AbstractJsonFormatter<LayerDescriptor, Void>
 {

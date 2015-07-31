@@ -19,10 +19,10 @@
 package org.qi4j.regression.qi55;
 
 import org.junit.Test;
-import org.apache.zest.api.injection.scope.Uses;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.qi4j.api.injection.scope.Uses;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 

@@ -16,28 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.library.appbrowser;
+package org.qi4j.library.appbrowser;
 
 import java.io.StringWriter;
 import java.io.Writer;
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.apache.zest.api.association.Association;
-import org.apache.zest.api.association.ManyAssociation;
-import org.apache.zest.api.common.Optional;
-import org.apache.zest.api.concern.ConcernOf;
-import org.apache.zest.api.concern.Concerns;
-import org.apache.zest.api.entity.Identity;
-import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.injection.scope.This;
-import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.property.Property;
-import org.apache.zest.api.value.ValueSerialization;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.library.appbrowser.json.JsonFormatterFactory;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.concern.ConcernOf;
+import org.qi4j.api.concern.Concerns;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.injection.scope.Service;
+import org.qi4j.api.injection.scope.This;
+import org.qi4j.api.mixin.Mixins;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.value.ValueSerialization;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.library.appbrowser.json.JsonFormatterFactory;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class AppBrowserTest extends AbstractQi4jTest
 {

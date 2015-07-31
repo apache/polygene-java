@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.library.appbrowser;
+package org.qi4j.library.appbrowser;
 
 import org.json.JSONException;
 

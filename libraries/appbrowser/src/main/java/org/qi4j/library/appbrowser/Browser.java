@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.library.appbrowser;
+package org.qi4j.library.appbrowser;
 
 import java.util.Stack;
 import org.json.JSONException;
-import org.apache.zest.api.structure.ApplicationDescriptor;
-import org.apache.zest.functional.HierarchicalVisitor;
+import org.qi4j.api.structure.ApplicationDescriptor;
+import org.qi4j.functional.HierarchicalVisitor;
 
 public class Browser
 {

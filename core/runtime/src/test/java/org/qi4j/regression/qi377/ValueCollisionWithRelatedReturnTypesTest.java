@@ -19,15 +19,15 @@
 package org.qi4j.regression.qi377;
 
 import org.junit.Test;
-import org.apache.zest.api.entity.Identity;
-import org.apache.zest.api.association.Association;
-import org.apache.zest.api.association.ManyAssociation;
-import org.apache.zest.api.common.Optional;
-import org.apache.zest.api.property.Property;
-import org.apache.zest.api.value.ValueBuilder;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractQi4jTest;
+import org.qi4j.api.entity.Identity;
+import org.qi4j.api.association.Association;
+import org.qi4j.api.association.ManyAssociation;
+import org.qi4j.api.common.Optional;
+import org.qi4j.api.property.Property;
+import org.qi4j.api.value.ValueBuilder;
+import org.qi4j.bootstrap.AssemblyException;
+import org.qi4j.bootstrap.ModuleAssembly;
+import org.qi4j.test.AbstractQi4jTest;
 
 public class ValueCollisionWithRelatedReturnTypesTest
     extends AbstractQi4jTest

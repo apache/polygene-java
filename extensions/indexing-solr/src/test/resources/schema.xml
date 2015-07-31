@@ -258,12 +258,12 @@
 
         <fieldType name="phone" class="solr.TextField" positionIncrementGap="100">
             <analyzer type="index">
-                <tokenizer class="org.apache.zest.index.solr.internal.SingleTokenTokenizerFactory"/>
+                <tokenizer class="org.qi4j.index.solr.internal.SingleTokenTokenizerFactory"/>
                 <filter class="solr.WordDelimiterFilterFactory" generateWordParts="0" generateNumberParts="0"
                         catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="0"/>
             </analyzer>
             <analyzer type="query">
-                <tokenizer class="org.apache.zest.index.solr.internal.SingleTokenTokenizerFactory"/>
+                <tokenizer class="org.qi4j.index.solr.internal.SingleTokenTokenizerFactory"/>
                 <filter class="solr.WordDelimiterFilterFactory" generateWordParts="0" generateNumberParts="0"
                         catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="0"/>
             </analyzer>

@@ -28,7 +28,7 @@
       <object>
         <field>
           <name>_type</name>
-          <value>org.apache.zest.test.entity.AbstractConfigurationDeserializationTest$Host</value>
+          <value>org.qi4j.test.entity.AbstractConfigurationDeserializationTest$Host</value>
         </field>
         <field>
           <name>port</name>
