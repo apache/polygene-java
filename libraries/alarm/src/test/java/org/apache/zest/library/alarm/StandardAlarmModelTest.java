@@ -29,7 +29,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class StandardAlarmModelTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
 
     @SuppressWarnings( { "unchecked" } )
@@ -88,7 +88,7 @@ public class StandardAlarmModelTest
         throws Exception
     {
         StandardAlarmModelService.StandardAlarmModelMixin spi = new StandardAlarmModelService.StandardAlarmModelMixin();
-        assertEquals( "org.apache.zest.library.alarm.model.standard", spi.modelName() );
+        assertEquals( "org.qi4j.library.alarm.model.standard", spi.modelName() );
     }
 
     @Test

@@ -26,10 +26,10 @@ import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
 import org.apache.zest.ide.plugin.idea.injections.common.inspections.AbstractInjectionAnnotationDeclarationOnFieldAndConstructorInspection;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationConstants.QUALIFIED_NAME_STRUCTURE_ANNOTATION;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult;
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationUtil.validateStructureAnnotationDeclaration;
+import static org.apache.zest.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationConstants.QUALIFIED_NAME_STRUCTURE_ANNOTATION;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.StructureAnnotationDeclarationValidationResult;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.validateStructureAnnotationDeclaration;
 
 /**
  * {@code StructureAnnotationUsedCorrectly} validates {@code @Structure} injection annotation declaration.

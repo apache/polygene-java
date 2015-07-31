@@ -30,7 +30,7 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ import org.apache.zest.test.util.DelTreeAfter;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class SolrQueryServiceTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
 
     private static final File DATA_DIR = new File( "build/tmp/solr-query-service-test" );
@@ -55,8 +55,8 @@ public class SolrQueryServiceTest
     {
         module.layer().application().setMode( Application.Mode.test );
 
-        FileConfigurationOverride override = new FileConfigurationOverride().withData( new File( DATA_DIR, "zest-data" ) ).
-            withLog( new File( DATA_DIR, "zest-logs" ) ).withTemporary( new File( DATA_DIR, "zest-temp" ) );
+        FileConfigurationOverride override = new FileConfigurationOverride().withData( new File( DATA_DIR, "qi4j-data" ) ).
+            withLog( new File( DATA_DIR, "qi4j-logs" ) ).withTemporary( new File( DATA_DIR, "qi4j-temp" ) );
         module.services( FileConfigurationService.class ).
             setMetaInfo( override );
 

@@ -15,7 +15,7 @@
 package org.apache.zest.spi.entity;
 
 import java.io.Serializable;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.util.Classes;
 
@@ -34,7 +34,7 @@ public final class QualifiedIdentity
 {
     public static QualifiedIdentity parseURI( String uri )
     {
-        String str = uri.substring( "urn:zest:entity:".length() );
+        String str = uri.substring( "urn:qi4j:entity:".length() );
         int idx = str.indexOf( "/" );
         String type = str.substring( 0, idx ).replace( "-", "$" );
         String identity = str.substring( idx + 1 );
@@ -61,7 +61,7 @@ public final class QualifiedIdentity
 
     public QualifiedIdentity( EntityComposite entityComposite )
     {
-        this( entityComposite.identity().get(), first( ZestAPI.FUNCTION_DESCRIPTOR_FOR
+        this( entityComposite.identity().get(), first( Qi4j.FUNCTION_DESCRIPTOR_FOR
                                                            .map( entityComposite )
                                                            .types() ).getName() );
     }
@@ -101,7 +101,7 @@ public final class QualifiedIdentity
 
     public final String toURI()
     {
-        return "urn:zest:entity:" + Classes.normalizeClassToURI( compositeType ) + "/" + identity;
+        return "urn:qi4j:entity:" + Classes.normalizeClassToURI( compositeType ) + "/" + identity;
     }
 
     @Override

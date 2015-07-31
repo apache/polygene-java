@@ -25,14 +25,14 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 /**
  * TODO
  */
 @Ignore( "Not implemented yet" )
 public class IterableDataSetTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     DataSet<TestValue> dataSet;
 

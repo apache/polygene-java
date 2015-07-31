@@ -28,13 +28,13 @@ import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 /**
  * Test of the @AppliesTo annotation
  */
 public class AppliesToTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

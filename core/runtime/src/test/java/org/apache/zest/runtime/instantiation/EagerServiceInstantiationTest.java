@@ -26,12 +26,12 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 
 public class EagerServiceInstantiationTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     private TestInfo testInfo;
 

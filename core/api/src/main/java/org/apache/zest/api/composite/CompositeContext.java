@@ -18,7 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.functional.Iterables;
 
@@ -52,7 +52,7 @@ public class CompositeContext<T extends TransientComposite>
     {
         TransientComposite composite = get();
 
-        Iterable<Class<?>> types = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).types();
+        Iterable<Class<?>> types = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).types();
         return (T) Proxy.newProxyInstance(
             composite.getClass().getClassLoader(),
             toArray( Class.class, Iterables.<Class>cast( types ) ),

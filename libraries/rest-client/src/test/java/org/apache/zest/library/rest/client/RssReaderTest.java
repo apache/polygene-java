@@ -38,7 +38,7 @@ import org.apache.zest.library.rest.client.spi.ResponseHandler;
 import org.apache.zest.library.rest.client.spi.ResponseReader;
 import org.apache.zest.library.rest.client.spi.ResultHandler;
 import org.apache.zest.library.rest.common.ValueAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.Client;
 import org.restlet.Response;
@@ -58,7 +58,7 @@ import static org.apache.zest.test.util.Assume.assumeConnectivity;
  * library.
  */
 public class RssReaderTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
 
     @BeforeClass

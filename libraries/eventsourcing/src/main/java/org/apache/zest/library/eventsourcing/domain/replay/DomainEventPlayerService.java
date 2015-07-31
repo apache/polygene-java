@@ -35,7 +35,7 @@ import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.library.eventsourcing.domain.api.DomainEventValue;
 import org.apache.zest.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.Qi4jSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public interface DomainEventPlayerService
         Module module;
 
         @Structure
-        ZestSPI spi;
+        Qi4jSPI spi;
 
         SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE MMM dd HH:mm:ss zzz yyyy" );
 

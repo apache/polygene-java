@@ -59,7 +59,7 @@ import static org.apache.zest.functional.Iterables.first;
  * </pre>
  * Use the following snippet to find the ObjectName of a service with a given identity:
  * <pre>
- * ObjectName serviceName = ZestMBeans.findService(mbeanServer, applicationName, serviceId);
+ * ObjectName serviceName = Qi4jMBeans.findService(mbeanServer, applicationName, serviceId);
  * </pre>
  */
 @Mixins( ApplicationManagerService.Mixin.class )

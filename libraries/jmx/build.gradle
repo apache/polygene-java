@@ -22,17 +22,17 @@ description = "Apache Zest™ JMX Library provides Java Management Extension (JM
 jar { manifest { name = "Apache Zest™ Library - JMX" }}
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
   compile libraries.slf4j_api
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.logback)
 }
 
 task(runSample, dependsOn: 'testClasses', type: JavaExec) {
-    main = 'org.apache.zest.library.jmx.JMXTest'
+    main = 'org.qi4j.library.jmx.JMXTest'
     classpath = sourceSets.test.runtimeClasspath
 }
 

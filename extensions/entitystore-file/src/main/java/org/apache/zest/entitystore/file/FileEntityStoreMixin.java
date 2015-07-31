@@ -79,7 +79,7 @@ public class FileEntityStoreMixin
             }
             else
             {
-                pathName = System.getProperty( "user.dir" ) + "/zest/filestore/";
+                pathName = System.getProperty( "user.dir" ) + "/qi4j/filestore/";
             }
         }
         dataDirectory = new File( pathName ).getAbsoluteFile();

@@ -419,7 +419,7 @@ public abstract class AbstractQueryTest
     {
         QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
         Person person = templateFor( Person.class );
-        qb.where( eq( person.personalWebsite().get().host().get().value(), "zest.apache.org" ) );
+        qb.where( eq( person.personalWebsite().get().host().get().value(), "www.qi4j.org" ) );
     }
 
     @Test( expected = NotQueryableException.class )

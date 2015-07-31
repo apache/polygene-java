@@ -31,10 +31,10 @@ import java.util.List;
 import java.util.Set;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.concerns.common.ZestConcernUtil.isAConcern;
-import static org.apache.zest.ide.plugin.idea.mixins.common.ZestMixinUtil.*;
-import static org.apache.zest.ide.plugin.idea.sideEffects.common.ZestSideEffectUtil.isASideEffect;
+import static org.apache.zest.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.concerns.common.Qi4jConcernUtil.isAConcern;
+import static org.apache.zest.ide.plugin.idea.mixins.common.Qi4jMixinUtil.*;
+import static org.apache.zest.ide.plugin.idea.sideEffects.common.Qi4jSideEffectUtil.isASideEffect;
 
 /**
  * @author edward.yakop@gmail.com

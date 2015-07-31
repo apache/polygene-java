@@ -25,7 +25,7 @@ import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.spi.cache.Cache;
 import org.apache.zest.spi.cache.CachePool;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -35,7 +35,7 @@ import static org.junit.Assert.fail;
  * Abstract satisfiedBy with tests for the CachePool interface.
  */
 public abstract class AbstractCachePoolTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     protected CachePool cachePool;
     protected Cache<String> cache;

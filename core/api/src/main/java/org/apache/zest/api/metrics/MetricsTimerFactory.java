@@ -32,7 +32,7 @@ public interface MetricsTimerFactory extends MetricsFactory
      * @param duration the scale unit for this timer's duration metrics
      * @param rate     the scale unit for this timer's rate metrics
      *
-     * @return A Metric instance to be used, OR org.apache.zest.spi.metrics.DefaultMetric.NULL if not supported.
+     * @return A Metric instance to be used, OR org.qi4j.spi.metrics.DefaultMetric.NULL if not supported.
      *
      */
     MetricsTimer createTimer( Class<?> origin, String name, TimeUnit duration, TimeUnit rate );

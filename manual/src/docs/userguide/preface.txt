@@ -20,7 +20,7 @@
 [[preface, Preface]]
 = Preface =
 
-This is the reference manual for Zest™ version {zest-version}, written by members of the Zest™ Community.
+This is the reference manual for Zest™ version {qi4j-version}, written by members of the Zest™ Community.
 
 The main parts of the manual are:
 

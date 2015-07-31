@@ -45,21 +45,21 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
 public class RestTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
 
     @Override
     protected ApplicationDescriptor newApplication()
         throws AssemblyException
     {
-        return zest.newApplicationModel( new ApplicationAssemblerAdapter( new Assembler[][][]
+        return qi4j.newApplicationModel( new ApplicationAssemblerAdapter( new Assembler[][][]
             {
                 {
                     {
@@ -123,12 +123,12 @@ public class RestTest
         // System.out.println( rdf.replaceAll( "\n", "\\\\n" ).replaceAll( "\"", "\\\\\"" ) );
         assertThat( "Incorrect RDF produced", rdf, anyOf(
             // Open JDK 8 & Valid
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n	<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n	<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n	<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n	<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.qi4j.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:qi4j:type:\" rdf:about=\"urn:qi4j:entity:P1\">\n	<lastname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<firstname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<identity xmlns=\"urn:qi4j:type:org.qi4j.api.entity.Identity#\">P1</identity>\n	<mother xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:qi4j:entity:P2\"/>\n</org.qi4j.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.qi4j.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:qi4j:type:\" rdf:about=\"urn:qi4j:entity:P1\">\n	<identity xmlns=\"urn:qi4j:type:org.qi4j.api.entity.Identity#\">P1</identity>\n	<firstname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<lastname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<mother xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:qi4j:entity:P2\"/>\n</org.qi4j.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
             // Sun JDK 6 / Oracle JDK 7 & Valid
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n	<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n	<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.qi4j.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:qi4j:type:\" rdf:about=\"urn:qi4j:entity:P1\">\n	<firstname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<lastname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<identity xmlns=\"urn:qi4j:type:org.qi4j.api.entity.Identity#\">P1</identity>\n	<mother xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:qi4j:entity:P2\"/>\n</org.qi4j.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ),
             // IBM JDK 6 & Valid
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.apache.zest.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:zest:type:\" rdf:about=\"urn:zest:entity:P1\">\n	<identity xmlns=\"urn:zest:type:org.apache.zest.api.entity.Identity#\">P1</identity>\n	<lastname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<firstname xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<mother xmlns=\"urn:zest:type:org.apache.zest.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:zest:entity:P2\"/>\n</org.apache.zest.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ) ) );
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n	xmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n	xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n	xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<org.qi4j.library.rest.admin.RestTest-PersonEntity xmlns=\"urn:qi4j:type:\" rdf:about=\"urn:qi4j:entity:P1\">\n	<identity xmlns=\"urn:qi4j:type:org.qi4j.api.entity.Identity#\">P1</identity>\n	<lastname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Doe</lastname>\n	<firstname xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\">Joe</firstname>\n	<mother xmlns=\"urn:qi4j:type:org.qi4j.library.rest.admin.RestTest-Person#\" rdf:resource=\"urn:qi4j:entity:P2\"/>\n</org.qi4j.library.rest.admin.RestTest-PersonEntity>\n\n</rdf:RDF>" ) ) );
     }
 
     @Test
@@ -191,10 +191,10 @@ public class RestTest
         assertThat(
             "Returned RDF", result,
             anyOf(
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n</rdf:RDF>\n" ),
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\\\"no\\\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n</rdf:RDF>\n" ),
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n</rdf:RDF>\n" ),
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\\\"no\\\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n</rdf:RDF>\n" ) ) );
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns=\"urn:qi4j:\"\n\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<qi4j:entity rdf:about=\"/entity/P2.rdf\"/>\n<qi4j:entity rdf:about=\"/entity/P1.rdf\"/>\n</rdf:RDF>\n" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\\\"no\\\"?>\n<rdf:RDF\n\txmlns=\"urn:qi4j:\"\n\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<qi4j:entity rdf:about=\"/entity/P2.rdf\"/>\n<qi4j:entity rdf:about=\"/entity/P1.rdf\"/>\n</rdf:RDF>\n" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns=\"urn:qi4j:\"\n\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<qi4j:entity rdf:about=\"/entity/P1.rdf\"/>\n<qi4j:entity rdf:about=\"/entity/P2.rdf\"/>\n</rdf:RDF>\n" ),
+            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\\\"no\\\"?>\n<rdf:RDF\n\txmlns=\"urn:qi4j:\"\n\txmlns:qi4j=\"http://www.qi4j.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<qi4j:entity rdf:about=\"/entity/P1.rdf\"/>\n<qi4j:entity rdf:about=\"/entity/P2.rdf\"/>\n</rdf:RDF>\n" ) ) );
     }
 
     public static class RestTester

@@ -86,7 +86,7 @@ uploadArchives {
             roles {
               role 'Core Team'
             }
-            organizationUrl 'http://zest.apache.org'
+            organizationUrl 'http://www.qi4j.org'
             timezone 'UTC+8'
           }
           developer {
@@ -108,7 +108,7 @@ uploadArchives {
             roles {
               role 'Core Team'
             }
-            organizationUrl 'http://zest.apache.org'
+            organizationUrl 'http://www.qi4j.org'
             timezone 'UTC+8'
           }
           developer {
@@ -118,7 +118,7 @@ uploadArchives {
             roles {
               role 'Core Team'
             }
-            organizationUrl 'http://zest.apache.org'
+            organizationUrl 'http://www.qi4j.org'
             timezone 'UTC+2'
           }
           developer {

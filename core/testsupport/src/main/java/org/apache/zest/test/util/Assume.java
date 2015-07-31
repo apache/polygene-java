@@ -78,11 +78,12 @@ public class Assume
     }
 
     /**
-     * If called on a runtime with no access to zest.apache.org on port 80, the test will halt and be ignored.
+     * // TODO: qi4j.org will soon go down.
+     * If called on a runtime with no access to qi4j.org on port 80, the test will halt and be ignored.
      */
     public static void assumeConnectivity()
     {
-        assumeConnectivity( "zest.apache.org", 80 );
+        assumeConnectivity( "qi4j.org", 80 );
     }
 
     /**

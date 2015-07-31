@@ -39,7 +39,7 @@ import org.apache.zest.test.EntityTestAssembler;
 
 public class ServiceVisibilityTest
 {
-    private Energy4Java zest;
+    private Energy4Java qi4j;
     private Module module;
     private Application app;
 
@@ -47,7 +47,7 @@ public class ServiceVisibilityTest
     public void setup()
         throws Exception
     {
-        zest = new Energy4Java();
+        qi4j = new Energy4Java();
 
         Assembler[][][] assemblers = new Assembler[][][]
             {
@@ -70,7 +70,7 @@ public class ServiceVisibilityTest
                   }
                 }
             };
-        app = zest.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        app = qi4j.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         app.activate();

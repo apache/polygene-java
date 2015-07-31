@@ -23,7 +23,6 @@ import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiModifierList;
 import com.intellij.psi.PsiVariable;
-import org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
@@ -110,8 +109,8 @@ public abstract class AbstractInjectionAnnotationDeclarationOnFieldInspection ex
     @NotNull protected String getInjectionAnnotationValidDeclarationMessage()
     {
         String annotationQualifiedName = getAnnotationToCheckQualifiedName();
-        return ZestResourceBundle.message( "abstract.injection.annotation.declaration.inspection.error.annotation.not.declared.correctly",
-                                           annotationQualifiedName );
+        return org.apache.zest.ide.plugin.idea.common.resource.Qi4jResourceBundle.message( "abstract.injection.annotation.declaration.inspection.error.annotation.not.declared.correctly",
+                                                                                    annotationQualifiedName );
     }
 
     @NotNull

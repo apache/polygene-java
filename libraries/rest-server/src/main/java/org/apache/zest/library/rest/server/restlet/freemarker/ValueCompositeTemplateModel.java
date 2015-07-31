@@ -24,7 +24,7 @@ import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.value.ValueComposite;
@@ -46,7 +46,7 @@ public class ValueCompositeTemplateModel
     {
         this.composite = composite;
         this.wrapper = wrapper;
-        descriptor = (ValueDescriptor) ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( composite );
+        descriptor = (ValueDescriptor) Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite );
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ValueCompositeTemplateModel
                     throw new IllegalStateException( e );
                 }
             }
-        }, ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).state().properties() ).iterator() );
+        }, Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).state().properties() ).iterator() );
     }
 
     @Override
@@ -97,7 +97,7 @@ public class ValueCompositeTemplateModel
     {
         try
         {
-            return wrapper.wrap( ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF
+            return wrapper.wrap( Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
                                      .map( composite )
                                      .state()
                                      .propertyFor( descriptor.state().findPropertyModelByName( key ).accessor() )

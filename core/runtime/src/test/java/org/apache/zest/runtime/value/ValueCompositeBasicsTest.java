@@ -25,13 +25,13 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class ValueCompositeBasicsTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     @Override
     public void assemble( ModuleAssembly module )

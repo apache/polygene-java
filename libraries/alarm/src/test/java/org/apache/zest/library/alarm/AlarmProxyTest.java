@@ -21,14 +21,14 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-public class AlarmProxyTest extends AbstractZestTest
+public class AlarmProxyTest extends AbstractQi4jTest
 {
     // START SNIPPET: documentation
     @Service

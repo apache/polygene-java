@@ -29,6 +29,6 @@ These instructions are for preparing your out-of-box PostgreSQL installation so 
 2.3. This will open new window, erase any text which pgAdmin generates there for you.
 2.4. Then navigate to your PostgreSQL installation directory, then into 'share', and then into 'contrib'. Open file 'ltree.sql' in your favorite text editor.
 2.5. Select all text, copy it, and paste to SQL query window which you opened in stage 2.2.
-2.6. If you know what you are doing, you may change the line 'SET search_path = public;' to make search_path be 'pg_catalog', or name of schema that Zest™ application will use ('zest' by default). It's ok to leave it to 'public' though.
+2.6. If you know what you are doing, you may change the line 'SET search_path = public;' to make search_path be 'pg_catalog', or name of schema that Zest™ application will use ('qi4j' by default). It's ok to leave it to 'public' though.
 2.7. Hit F5 or go Query -> Execute Query to execute the SQL. It should print some notices into output window but no errors nor warnings should be present.
 2.8. Ltree type should be now installed to your PostgreSQL installation.

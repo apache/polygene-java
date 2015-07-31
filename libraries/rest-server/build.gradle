@@ -22,16 +22,16 @@ description = "Apache Zest™ REST Server Library provides a server component fo
 jar { manifest { name = "Apache Zest™ Library - REST server" }}
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.api"))
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.rest-common"))
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.rest-common"))
   compile(libraries.servlet_api)
   compile libraries.slf4j_api
   compile(libraries.velocity)
   compile(libraries.restlet)
   compile(libraries.freemarker)
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.logback)
 }

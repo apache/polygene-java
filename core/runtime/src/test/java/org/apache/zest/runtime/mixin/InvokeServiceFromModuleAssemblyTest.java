@@ -20,7 +20,7 @@ import org.apache.zest.api.mixin.NoopMixin;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.junit.Assert.fail;
 
@@ -28,7 +28,7 @@ import static org.junit.Assert.fail;
  * @author Stanislav Muhametsin
  */
 public class InvokeServiceFromModuleAssemblyTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     @Mixins( NoopMixin.class )
     public interface TestService

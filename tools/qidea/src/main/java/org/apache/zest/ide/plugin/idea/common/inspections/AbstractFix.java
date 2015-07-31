@@ -19,7 +19,7 @@ package org.apache.zest.ide.plugin.idea.common.inspections;
 import com.intellij.codeInspection.LocalQuickFix;
 import org.jetbrains.annotations.NotNull;
 
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
 
 /**
  * @author edward.yakop@gmail.com
@@ -44,6 +44,6 @@ public abstract class AbstractFix
     @NotNull
     public final String getFamilyName()
     {
-        return message( "zest.quick.fixes.family.name" );
+        return message( "qi4j.quick.fixes.family.name" );
     }
 }

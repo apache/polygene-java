@@ -24,7 +24,7 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.Layer;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.bootstrap.ZestRuntime;
+import org.apache.zest.bootstrap.Qi4jRuntime;
 import org.apache.zest.runtime.activation.ActivationDelegate;
 
 /**
@@ -36,13 +36,13 @@ public class ApplicationInstance
 
     // Constructor parameters
     private final ApplicationModel applicationModel;
-    private final ZestRuntime runtime;
+    private final Qi4jRuntime runtime;
     private final MetaInfo instanceMetaInfo;
     // Eager instance objects
     private final ActivationDelegate activation;
     private final List<LayerInstance> layerInstances;
 
-    public ApplicationInstance( ApplicationModel model, ZestRuntime runtime, MetaInfo instanceMetaInfo )
+    public ApplicationInstance( ApplicationModel model, Qi4jRuntime runtime, MetaInfo instanceMetaInfo )
     {
         // Constructor parameters
         this.applicationModel = model;
@@ -154,7 +154,7 @@ public class ApplicationInstance
         layerInstances.add( layer );
     }
 
-    public ZestRuntime runtime()
+    public Qi4jRuntime runtime()
     {
         return runtime;
     }

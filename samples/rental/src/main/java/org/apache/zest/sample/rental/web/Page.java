@@ -21,7 +21,7 @@ package org.apache.zest.sample.rental.web;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.injection.scope.Uses;
@@ -41,7 +41,7 @@ public interface Page
     extends ServiceComposite
 {
     String XHTML = "http://www.w3.org/1999/xhtml";
-    String QI = "http://zest.apache.org/ns/2009/quikit";
+    String QI = "http://www.qi4j.org/ns/2009/quikit";
 
     /**
      * Returns the URL where the Page is mounted.
@@ -89,7 +89,7 @@ public interface Page
         private void execute( QuikitContext context, Element element, Element parent )
             throws RenderException
         {
-            Class<? extends Composite> compositeType = (Class<Composite>) first( ZestAPI.FUNCTION_DESCRIPTOR_FOR
+            Class<? extends Composite> compositeType = (Class<Composite>) first( Qi4j.FUNCTION_DESCRIPTOR_FOR
                                                                                      .map( context.page() )
                                                                                      .types() );
             try

@@ -21,7 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 import org.json.JSONWriter;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Structure;
@@ -54,7 +54,7 @@ public interface DomainEventFactoryService
 
             DomainEventValue prototype = builder.prototype();
             prototype.name().set( name );
-            prototype.entityType().set( first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( entity ).types()).getName() );
+            prototype.entityType().set( first( Qi4j.FUNCTION_DESCRIPTOR_FOR.map( entity ).types()).getName() );
             prototype.entityId().set( entity.identity().get() );
 
             // JSON-ify parameters

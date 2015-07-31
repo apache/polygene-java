@@ -31,7 +31,7 @@ public class DocumentationSupport
     {
 
         // START SNIPPET: export
-        interface MyZestService
+        interface MyQi4jService
             extends OSGiEnabledService
         {
             // ...
@@ -49,7 +49,7 @@ public class DocumentationSupport
             // START SNIPPET: export
             module.services( OSGiServiceExporter.class ).
                 setMetaInfo( bundleContext );
-            module.services( MyZestService.class );
+            module.services( MyQi4jService.class );
         }
         // END SNIPPET: export
 

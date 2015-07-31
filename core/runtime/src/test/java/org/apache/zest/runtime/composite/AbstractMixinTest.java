@@ -28,18 +28,18 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 /**
  * JAVADOC
  */
 public class AbstractMixinTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        System.setProperty( "zest.compacttrace", "off" );
+        System.setProperty( "qi4j.compacttrace", "off" );
         module.transients( TestComposite.class );
     }
 

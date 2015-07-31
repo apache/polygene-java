@@ -133,8 +133,8 @@ public class VisibilityInUnitOfWorkTest
     private Application createApplication()
         throws AssemblyException
     {
-        Energy4Java zest = new Energy4Java();
-        return zest.newApplication( new ApplicationAssembler()
+        Energy4Java qi4j = new Energy4Java();
+        return qi4j.newApplication( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory appFactory )

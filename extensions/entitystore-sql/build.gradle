@@ -23,19 +23,19 @@ jar { manifest { name = "Apache Zest™ Extension - EntityStore - SQL" }}
 
 dependencies {
 
-  compile project(":org.apache.zest.core:org.apache.zest.core.bootstrap")
-  compile project(":org.apache.zest.libraries:org.apache.zest.library.sql")
+  compile project(":org.qi4j.core:org.qi4j.core.bootstrap")
+  compile project(":org.qi4j.libraries:org.qi4j.library.sql")
   compile libraries.javaSqlGenerator
   compile( libraries.javaSqlGeneratorImpl ) { 
       exclude group: 'junit'
   }
 
-  testCompile project(":org.apache.zest.core:org.apache.zest.core.testsupport")
-  testCompile project(":org.apache.zest.libraries:org.apache.zest.library.sql-dbcp")
-  testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson"))
+  testCompile project(":org.qi4j.core:org.qi4j.core.testsupport")
+  testCompile project(":org.qi4j.libraries:org.qi4j.library.sql-dbcp")
+  testCompile(project(":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson"))
   testCompile libraries.derby // Needed at compile time for polite test shutdown
 
-  testRuntime project(":org.apache.zest.core:org.apache.zest.core.runtime")
+  testRuntime project(":org.qi4j.core:org.qi4j.core.runtime")
   testRuntime libraries.logback
   testRuntime libraries.h2
   testRuntime libraries.mysql_connector

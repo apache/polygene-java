@@ -20,11 +20,11 @@ package org.apache.zest.tutorials.services.step6;
 import org.junit.Test;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 public class LibraryTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     @Test
     public void testLibrary()

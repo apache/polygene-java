@@ -58,7 +58,7 @@ public final class SerializerContext
 
     public String createApplicationUri( String app )
     {
-        return "urn:zest:model:" + app;
+        return "urn:qi4j:model:" + app;
     }
 
     public String createLayerUri( String appUri, String layer )

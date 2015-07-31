@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.apache.zest.envisage.detail.ServiceConfigurationPane">
   <grid id="27dc6" binding="contentPane" layout-manager="GridBagLayout">
     <constraints>
-      <xy x="20" y="20" width="1045" height="266"/>
+      <xy x="20" y="20" width="311" height="266"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -13,7 +29,7 @@
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties>
-          <text resource-bundle="org/apache/zest/envisage/detail/ServiceConfigurationPane" key="CTL_Name.Text"/>
+          <text resource-bundle="org/qi4j/envisage/detail/ServiceConfigurationPane" key="CTL_Name.Text"/>
         </properties>
       </component>
       <hspacer id="f7748">
@@ -49,7 +65,7 @@
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties>
-          <text resource-bundle="org/apache/zest/envisage/detail/ServiceConfigurationPane" key="CTL_Class.Text"/>
+          <text resource-bundle="org/qi4j/envisage/detail/ServiceConfigurationPane" key="CTL_Class.Text"/>
         </properties>
       </component>
       <component id="86ec7" class="javax.swing.JLabel" binding="classLabel">
@@ -73,7 +89,7 @@
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties>
-          <text resource-bundle="org/apache/zest/envisage/detail/ServiceConfigurationPane" key="CTL_Link.Text"/>
+          <text resource-bundle="org/qi4j/envisage/detail/ServiceConfigurationPane" key="CTL_Link.Text"/>
         </properties>
       </component>
       <vspacer id="ab189">
@@ -88,7 +104,7 @@
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties>
-          <text resource-bundle="org/apache/zest/envisage/detail/ServiceConfigurationPane" key="CTL_Type.Text"/>
+          <text resource-bundle="org/qi4j/envisage/detail/ServiceConfigurationPane" key="CTL_Type.Text"/>
         </properties>
       </component>
       <component id="845aa" class="javax.swing.JLabel" binding="typeLabel">

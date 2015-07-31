@@ -101,7 +101,7 @@ public interface StandardAlarmModelService extends AlarmModel, ServiceComposite
         @Override
         public String modelName()
         {
-            return "org.apache.zest.library.alarm.model.standard";
+            return "org.qi4j.library.alarm.model.standard";
         }
 
         /**

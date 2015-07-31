@@ -21,14 +21,14 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 /**
  * @author Stanislav Muhametsin
  */
 public class QI273Test
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
 
     public static interface RoleA

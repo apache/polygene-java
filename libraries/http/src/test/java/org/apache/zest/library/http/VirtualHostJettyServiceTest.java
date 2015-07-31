@@ -32,8 +32,8 @@ import static org.apache.zest.test.util.Assume.assumeNoIbmJdk;
 public class VirtualHostJettyServiceTest
     extends AbstractJettyTest
 {
-    private static final String HOST1 = "host1.http.library.zest";
-    private static final String HOST2 = "host2.http.library.zest";
+    private static final String HOST1 = "host1.http.library.qi4j";
+    private static final String HOST2 = "host2.http.library.qi4j";
 
     @Override
     public void assemble( ModuleAssembly module )

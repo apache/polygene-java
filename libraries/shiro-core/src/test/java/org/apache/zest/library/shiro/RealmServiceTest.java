@@ -30,13 +30,13 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.shiro.assembly.StandaloneShiroAssembler;
 import org.apache.zest.library.shiro.ini.ShiroIniConfiguration;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertNotNull;
 
 public class RealmServiceTest
-        extends AbstractZestTest
+        extends AbstractQi4jTest
 {
 
     // START SNIPPET: realm-service

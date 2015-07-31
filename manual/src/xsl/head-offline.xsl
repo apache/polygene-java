@@ -22,15 +22,15 @@
 
 <!-- favicon -->
 
-<link rel="shortcut icon" href="http://zest.apache.org/favicon.ico" type="image/vnd.microsoft.icon" />
-<link rel="icon" href="http://zest.apache.org/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="http://qi4j.org/favicon.ico" type="image/vnd.microsoft.icon" />
+<link rel="icon" href="http://qi4j.org/favicon.ico" type="image/x-icon" />
 
 <!-- style -->
 
 <link href="css/shCore.css" rel="stylesheet" type="text/css" />
 <link href="css/shCoreEclipse.css" rel="stylesheet" type="text/css" />
 <link href="css/shThemeEclipse.css" rel="stylesheet" type="text/css" />
-<link href="css/zest.css" rel="stylesheet" type="text/css" />
+<link href="css/qi4j.css" rel="stylesheet" type="text/css" />
 
 <!-- Syntax Highlighter -->
 

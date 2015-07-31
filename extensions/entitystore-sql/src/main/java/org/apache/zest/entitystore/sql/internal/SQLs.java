@@ -17,9 +17,9 @@ package org.apache.zest.entitystore.sql.internal;
 public interface SQLs
 {
 
-    String DEFAULT_SCHEMA_NAME = "zest_es";
+    String DEFAULT_SCHEMA_NAME = "qi4j_es";
 
-    String TABLE_NAME = "zest_entities";
+    String TABLE_NAME = "qi4j_entities";
 
     String ENTITY_PK_COLUMN_NAME = "entity_pk";
 

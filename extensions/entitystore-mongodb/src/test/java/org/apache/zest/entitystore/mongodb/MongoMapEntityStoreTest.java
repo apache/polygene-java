@@ -60,8 +60,8 @@ public class MongoMapEntityStoreTest
 
         MongoEntityStoreConfiguration mongoConfig = config.forMixin( MongoEntityStoreConfiguration.class ).declareDefaults();
         mongoConfig.writeConcern().set( MongoEntityStoreConfiguration.WriteConcern.FSYNC_SAFE );
-        mongoConfig.database().set( "zest:test" );
-        mongoConfig.collection().set( "zest:test:entities" );
+        mongoConfig.database().set( "qi4j:test" );
+        mongoConfig.collection().set( "qi4j:test:entities" );
         // START SNIPPET: assembly
     }
     // END SNIPPET: assembly

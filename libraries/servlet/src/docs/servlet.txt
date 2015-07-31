@@ -34,10 +34,10 @@ include::../../build/docs/buildinfo/artifact.txt[]
 
 == Application Bootstrap ==
 
-Extends `AbstractZestServletBootstrap` to easily bind a Zest™ `Application` activation/passivation to your webapp
+Extends `AbstractQi4jServletBootstrap` to easily bind a Zest™ `Application` activation/passivation to your webapp
 lifecycle.
 
-Use `ZestServletSupport#application(javax.servlet.ServletContext)` to get a handle on the `Application` from the
+Use `Qi4jServletSupport#application(javax.servlet.ServletContext)` to get a handle on the `Application` from the
 `ServletContext`.
 
 Here is an example ServletContextListener:
@@ -51,7 +51,7 @@ tag=bootstrap
 
 == Facilities ==
 
-`ZestServlet` and `ZestFilter` respectively provide base class for easy access to the `Application` from the
+`Qi4jServlet` and `Qi4jFilter` respectively provide base class for easy access to the `Application` from the
 `ServletContext`.
 
 Here is a sample servlet that simply output the assembled Application name:

@@ -37,7 +37,7 @@ import org.apache.zest.migration.assembly.MigrationOperation;
 import org.apache.zest.spi.entitystore.BackupRestore;
 import org.apache.zest.spi.entitystore.helpers.JSONKeys;
 import org.apache.zest.spi.entitystore.helpers.StateStore;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertThat;
@@ -46,7 +46,7 @@ import static org.junit.Assert.assertThat;
  * JAVADOC
  */
 public class MigrationTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     @Override
     public void assemble( ModuleAssembly module )
@@ -82,7 +82,7 @@ public class MigrationTest
             custom( new CustomBarOperation() ).
             end().
             toVersion( "3.0" ).
-            renamePackage( "org.apache.zest.migration", "org.apache.zest.migration.moved" ).
+            renamePackage( "org.qi4j.migration", "org.qi4j.migration.moved" ).
             withEntities( "TestEntity2_0" ).
             end();
 

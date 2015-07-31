@@ -25,7 +25,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.zest.sample.dcicargo.sample_a.infrastructure.WicketZestApplication;
+import org.apache.zest.sample.dcicargo.sample_a.infrastructure.WicketQi4jApplication;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.page.BaseWebPage;
 import org.apache.zest.sample.dcicargo.sample_a.infrastructure.wicket.tabs.TabsPanel;
 
@@ -68,7 +68,7 @@ public class BasePage extends BaseWebPage
         add( toggleLinks );
         add( links.setOutputMarkupPlaceholderTag( true ).setVisible( false ) );
 
-        add( new Label( "version", ( (WicketZestApplication) getApplication() ).appVersion() ) );
+        add( new Label( "version", ( (WicketQi4jApplication) getApplication() ).appVersion() ) );
 
         add( new TabsPanel( activeTab ) );
     }

@@ -30,7 +30,7 @@ public class RestletServletAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        addServlets( serve( "/zest/*" ).with( ZestServerServletService.class ) ).to( module );
+        addServlets( serve( "/qi4j/*" ).with( Qi4jServerServletService.class ) ).to( module );
         // addFilters( filter( "/*" ).through( UnitOfWorkFilterService.class ).on( REQUEST ) ).to( module );
     }
 }

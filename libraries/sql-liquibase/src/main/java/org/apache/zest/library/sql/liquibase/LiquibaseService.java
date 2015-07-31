@@ -64,7 +64,7 @@ public interface LiquibaseService
             implements LiquibaseService
     {
 
-        private static final Logger LOGGER = LoggerFactory.getLogger( "org.apache.zest.library.sql" );
+        private static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.library.sql" );
 
         @This
         Configuration<LiquibaseConfiguration> config;

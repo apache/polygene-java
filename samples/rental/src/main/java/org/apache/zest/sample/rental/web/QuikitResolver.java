@@ -93,7 +93,7 @@ public class QuikitResolver
         }
         catch( Exception e )
         {
-            throw new UnsupportedOperationException( "Internal problem. Please report to dev@zest.apache.org mailing list.", e  );
+            throw new UnsupportedOperationException( "Internal problem. Please report to qi4j-dev forum at Google Groups.", e  );
         }
         input.setBaseURI( baseURI );
         input.setByteStream( resource );

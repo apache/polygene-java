@@ -20,31 +20,31 @@
 description = "Apache Zest™ Manuals and Website."
 
 dependencies {
-  compile( project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" ) )
-  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.constraints" ) )
-  compile( project( ":org.apache.zest.libraries:org.apache.zest.library.logging" ) )
-  runtime( project( ":org.apache.zest.core:org.apache.zest.core.runtime" ) )
+  compile( project( ":org.qi4j.core:org.qi4j.core.bootstrap" ) )
+  compile( project( ":org.qi4j.libraries:org.qi4j.library.constraints" ) )
+  compile( project( ":org.qi4j.libraries:org.qi4j.library.logging" ) )
+  runtime( project( ":org.qi4j.core:org.qi4j.core.runtime" ) )
   runtime( libraries.slf4j_simple )
 }
 
 
-//task userguide( type: org.apache.zest.gradle.plugin.documentation.Documentation ) {
+//task userguide( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
 //  docName = 'userguide'
 //  docType = 'book'
 //}
 //
-//task recipes( type: org.apache.zest.gradle.plugin.documentation.Documentation ) {
+//task recipes( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
 //  docName = 'recipes'
 //  docType = 'article'
 //}
 //
-//task referenceManual( type: org.apache.zest.gradle.plugin.documentation.Documentation ) {
+//task referenceManual( type: org.qi4j.gradle.plugin.documentation.Documentation ) {
 //  docName = 'reference'
 //  docType = 'book'
 //}
 
 
-task website( type: org.apache.zest.gradle.plugin.Documentation,
+task website( type: org.qi4j.gradle.plugin.Documentation,
               dependsOn: rootProject.allprojects.tasks.flatten().findAll { it.name == AsciidocBuildInfo.TASK_NAME } ) {
   docName 'website'
   docType 'article'

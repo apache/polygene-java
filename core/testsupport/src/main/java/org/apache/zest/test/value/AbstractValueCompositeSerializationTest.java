@@ -50,7 +50,7 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -63,7 +63,7 @@ import static org.junit.Assert.assertThat;
 // TODO Assert Arrays behaviour!
 // TODO Assert Generics behaviour!
 public abstract class AbstractValueCompositeSerializationTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     @Rule
     public TestName testName = new TestName();

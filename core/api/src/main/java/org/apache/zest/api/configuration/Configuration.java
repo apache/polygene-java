@@ -17,7 +17,7 @@ package org.apache.zest.api.configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.PropertyMapper;
 import org.apache.zest.api.constraint.ConstraintViolationException;
@@ -58,7 +58,7 @@ import static org.apache.zest.functional.Iterables.first;
  * <p>
  * If a new Configuration instance is created then it will be populated with properties
  * from the properties file whose filesystem name is the same as the identity (e.g. "MyService.properties").
- * If a service is not given a name via the {@code org.apache.zest.bootstrap.ServiceDeclaration#identifiedBy(String)}, the
+ * If a service is not given a name via the {@code org.qi4j.bootstrap.ServiceDeclaration#identifiedBy(String)}, the
  * name will default to the FQCN of the ServiceComposite type.
  * </p>
  * <p>
@@ -134,7 +134,7 @@ public interface Configuration<T>
 
     /**
      * Updates the values of the managed user ConfigurationComposite instance from the underlying
-     * {@code org.apache.zest.spi.entitystore.EntityStore}.  Any modified values in the current user configuration that
+     * {@code org.qi4j.spi.entitystore.EntityStore}.  Any modified values in the current user configuration that
      * has not been saved, via {@link #save()} method, will be lost.
      */
     void refresh();
@@ -159,7 +159,7 @@ public interface Configuration<T>
         private UnitOfWork uow;
 
         @Structure
-        private ZestAPI api;
+        private Qi4j api;
 
         @This
         private ServiceComposite me;

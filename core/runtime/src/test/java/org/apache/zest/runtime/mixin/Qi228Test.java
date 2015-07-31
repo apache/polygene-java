@@ -26,10 +26,10 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 public class Qi228Test
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

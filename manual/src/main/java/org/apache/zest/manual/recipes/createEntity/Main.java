@@ -26,10 +26,10 @@ public class Main
     public static void main(String[] args) throws Exception
     {
 
-        Energy4Java zest = new Energy4Java();
+        Energy4Java qi4j = new Energy4Java();
 
         // Instantiate the Application Model.
-        Application application = zest.newApplication( new ApplicationAssembler()
+        Application application = qi4j.newApplication( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble(ApplicationAssemblyFactory applicationFactory) throws AssemblyException

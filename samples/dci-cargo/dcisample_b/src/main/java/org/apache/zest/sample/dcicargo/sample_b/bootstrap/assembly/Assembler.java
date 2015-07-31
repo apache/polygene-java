@@ -90,6 +90,8 @@ import static org.apache.zest.api.structure.Application.Mode.development;
  * in the CONTEXT-RoleMapCandidates module. Note that there are still no "physical" upward dependencies
  * from the data package (containing entities and values) to layers above.
  *
+ * See more at http://www.qi4j.org/qi4j/70.html
+ *
  * TRY THIS:
  * Run VisualizeApplicationStructure to see a cool visualization of the assembly!
  */

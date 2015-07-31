@@ -22,5 +22,5 @@ description = "Sample of how to use the Swing bindings."
 jar { manifest { name = "Apache Zest™ Sample - Swing Bindings" }}
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
 }

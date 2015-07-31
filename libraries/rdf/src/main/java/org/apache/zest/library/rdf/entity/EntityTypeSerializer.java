@@ -35,7 +35,7 @@ import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.util.Classes;
-import org.apache.zest.library.rdf.ZestEntityType;
+import org.apache.zest.library.rdf.Qi4jEntityType;
 import org.apache.zest.library.rdf.Rdfs;
 
 import static org.apache.zest.functional.Iterables.first;
@@ -74,8 +74,8 @@ public class EntityTypeSerializer
         graph.add( entityTypeUri, Rdfs.TYPE, Rdfs.CLASS );
         graph.add( entityTypeUri, Rdfs.TYPE, OWL.CLASS );
 
-        graph.add( entityTypeUri, ZestEntityType.TYPE, values.createLiteral( first( entityDescriptor.types() ).toString() ) );
-        graph.add( entityTypeUri, ZestEntityType.QUERYABLE, values.createLiteral( entityDescriptor.queryable() ) );
+        graph.add( entityTypeUri, Qi4jEntityType.TYPE, values.createLiteral( first( entityDescriptor.types() ).toString() ) );
+        graph.add( entityTypeUri, Qi4jEntityType.QUERYABLE, values.createLiteral( entityDescriptor.queryable() ) );
 
         serializeMixinTypes( entityDescriptor, graph, entityTypeUri );
 

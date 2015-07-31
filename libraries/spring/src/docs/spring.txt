@@ -38,7 +38,7 @@ beans will be available as Zest™ services. The most important things to rememb
 
 [snippet,java]
 ----
-source=libraries/spring/src/test/java/org/apache/zest/library/spring/importer/ZestImportServiceTest.java
+source=libraries/spring/src/test/java/org/apache/zest/library/spring/importer/Qi4jImportServiceTest.java
 tag=import
 ----
 
@@ -48,17 +48,17 @@ It is also possible to run a Zest™ Application as a Spring Bean and export its
 Steps to export Zest™ service:
 
     1. Create spring BeanFactory service of Zest services to export.
-    2. Create a class that extends ZestApplicationBootstrap.
+    2. Create a class that extends Qi4jApplicationBootstrap.
     3. Sets the layer and module that register BeanFactory service.
     4. Assemble Zest application by implementing #assemble method.
     5. Sets the identity of bean factory service. This identity is the spring bean name.
     6. Declare Zest bootstrap in spring xml application context.
 
 To bootstrap the Zest™ runtime in Spring, you should have a bootstrap bean that extends the
-+org.apache.zest.library.spring.bootstrap.ZestApplicationBootstrap+ and implement the
++org.apache.zest.library.spring.bootstrap.Qi4jApplicationBootstrap+ and implement the
 +org.springframework.context.ApplicationContextAware+.
 
-A new bean will appear in the application context, called +"zestApplication"+ which is only
+A new bean will appear in the application context, called +"qi4jApplication"+ which is only
 intended for internal use of this library.
 
 Example application context;
@@ -68,18 +68,18 @@ Example application context;
 
  <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:zest="http://zest.apache.org/schema/zest/spring"
+  xmlns:qi4j="http://www.qi4j.org/schema/qi4j/spring"
   xsi:schemaLocation="
   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-  http://zest.apache.org/schema/zest/spring http://zest.apache.org/schema/zest/spring/spring-0.5.xsd">
+  http://www.qi4j.org/schema/qi4j/spring http://www.qi4j.org/schema/qi4j/spring/spring-0.5.xsd">
 
-  <!-- class that implements ZestApplicationBootstrap -->
+  <!-- class that implements Qi4jApplicationBootstrap -->
 
-  <zest:bootstrap class="org.hedhman.niclas.MyZestBootstrapper"/>
+  <qi4j:bootstrap class="org.hedhman.niclas.MyZestBootstrapper"/>
 
   <bean id="someService" class="org.hedhman.niclas.SomeService">
 
-  <constructor-arg ref="someService"/> <!-- Reference zest comment service -->
+  <constructor-arg ref="someService"/> <!-- Reference qi4j comment service -->
 
  </bean>
 ----

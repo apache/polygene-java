@@ -30,11 +30,11 @@ import org.apache.zest.api.sideeffect.SideEffectOf;
 import org.apache.zest.api.sideeffect.SideEffects;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 
 public class ConcernsOnPropertyTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

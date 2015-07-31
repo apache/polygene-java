@@ -322,8 +322,8 @@ For other highlighters we could add see http://alexgorbatchev.com/SyntaxHighligh
 
 Common attributes you can use in documents:
 
-* \{zest-revnumber} - rendered as "{zest-revnumber}"
-* \{zest-importdir} - rendered as "{zest-importdir}"
+* \{qi4j-revnumber} - rendered as "{qi4j-revnumber}"
+* \{qi4j-importdir} - rendered as "{qi4j-importdir}"
 
 These can substitute part of URLs that point to for example APIdocs or source code.
 

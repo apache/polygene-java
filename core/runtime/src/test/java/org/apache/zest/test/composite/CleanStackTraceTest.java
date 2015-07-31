@@ -25,7 +25,7 @@ import org.apache.zest.api.concern.GenericConcern;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertEquals;
@@ -35,11 +35,11 @@ import static org.junit.Assume.assumeTrue;
 /**
  * Test if the stacktrace is cleaned up properly.
  * <p>
- * NOTE: This satisfiedBy MUST NOT be inside package org.apache.zest.runtime, or it will fail.
+ * NOTE: This satisfiedBy MUST NOT be inside package org.qi4j.runtime, or it will fail.
  * </p>
  */
 public class CleanStackTraceTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
 
     @BeforeClass
@@ -62,7 +62,7 @@ public class CleanStackTraceTest
     public void cleanStackTraceOnApplicationException()
     {
         // Don't run the satisfiedBy if compacttrace is set to anything else but proxy
-        String compactTracePropertyValue = System.getProperty( "zest.compacttrace" );
+        String compactTracePropertyValue = System.getProperty( "qi4j.compacttrace" );
         if( compactTracePropertyValue != null && !"proxy".equals( compactTracePropertyValue ) )
         {
             return;
@@ -76,14 +76,14 @@ public class CleanStackTraceTest
         {
             String separator = System.getProperty( "line.separator" );
             String correctTrace1 = "java.lang.RuntimeException: level 2" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:122)" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:73)";
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:122)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:73)";
             assertEquality( e, correctTrace1 );
             String correctTrace2 = "java.lang.RuntimeException: level 1" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:118)" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
-                                   "\tat org.apache.zest.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:73)";
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$DoStuffMixin.doStuff(CleanStackTraceTest.java:118)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest$NillyWilly.invoke(CleanStackTraceTest.java:135)" + separator +
+                                   "\tat org.qi4j.test.composite.CleanStackTraceTest.cleanStackTraceOnApplicationException(CleanStackTraceTest.java:73)";
             assertThat( e.getCause(), notNullValue() );
             assertEquality( e.getCause(), correctTrace2 );
         }

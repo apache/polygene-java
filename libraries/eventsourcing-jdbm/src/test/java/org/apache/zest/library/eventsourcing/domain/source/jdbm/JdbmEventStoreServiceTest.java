@@ -38,12 +38,12 @@ import org.apache.zest.library.eventsourcing.domain.factory.DomainEventCreationC
 import org.apache.zest.library.eventsourcing.domain.factory.DomainEventFactoryService;
 import org.apache.zest.library.eventsourcing.domain.source.EventSource;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
 public class JdbmEventStoreServiceTest
-        extends AbstractZestTest
+        extends AbstractQi4jTest
     {
         @Override
         public void assemble( ModuleAssembly module ) throws AssemblyException

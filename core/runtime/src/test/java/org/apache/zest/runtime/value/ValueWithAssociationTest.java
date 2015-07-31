@@ -37,13 +37,13 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class ValueWithAssociationTest extends AbstractZestTest
+public class ValueWithAssociationTest extends AbstractQi4jTest
 {
     @Override
     public void assemble( ModuleAssembly module )

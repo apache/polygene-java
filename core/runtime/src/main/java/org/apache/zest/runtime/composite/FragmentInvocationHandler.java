@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 abstract class FragmentInvocationHandler
     implements InvocationHandler
 {
-    private static final String COMPACT_TRACE = "zest.compacttrace";
+    private static final String COMPACT_TRACE = "qi4j.compacttrace";
 
     private static final CompactLevel compactLevel;
 
@@ -110,7 +110,7 @@ abstract class FragmentInvocationHandler
             return !isJdkInternals( className );
         }
         return !( className.endsWith( FragmentClassLoader.GENERATED_POSTFIX ) ||
-                  className.startsWith( "org.apache.zest.runtime" ) ||
+                  className.startsWith( "org.qi4j.runtime" ) ||
                   isJdkInternals( className ) );
     }
 

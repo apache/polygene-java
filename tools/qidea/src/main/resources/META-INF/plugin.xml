@@ -16,7 +16,7 @@
   limitations under the License.
 -->
 <idea-plugin>
-  <id>org.apache.zest</id>
+  <id>org.qi4j</id>
   <name>qidea</name>
   <description>Apache Zest™ idea plugin</description>
   <version>0.1</version>
@@ -27,7 +27,7 @@
 
   <application-components>
     <component>
-      <implementation-class>org.apache.zest.ide.plugin.idea.ZestApplicationComponent</implementation-class>
+      <implementation-class>org.apache.zest.ide.plugin.idea.Qi4jApplicationComponent</implementation-class>
     </component>
   </application-components>
 
@@ -38,7 +38,7 @@
       <add-to-group group-id="CodeMenu" anchor="last"/>
     </action>
 
-    <group id="Zest" class="org.apache.zest.ide.plugin.idea.common.actions.ZestCreateActionGroup" text="Zest™">
+    <group id="Zest" class="org.apache.zest.ide.plugin.idea.common.actions.Qi4jCreateActionGroup" text="Zest™">
       <action id="Zest.NewConcernOf"
               class="org.apache.zest.ide.plugin.idea.concerns.actions.create.inPackage.CreateConcernOfInPackageAction"
               text="New Concern" description="Create new Zest concern">

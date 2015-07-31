@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.common.AppliesTo;
 import org.apache.zest.api.common.AppliesToFilter;
 import org.apache.zest.api.composite.Composite;
@@ -51,7 +51,7 @@ public class ScalaTraitMixin
 
     public ScalaTraitMixin( @This Composite composite )
     {
-        compositeType = ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( composite ).primaryType();
+        compositeType = Qi4j.FUNCTION_DESCRIPTOR_FOR.map( composite ).primaryType();
     }
 
     @Override

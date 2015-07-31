@@ -184,15 +184,15 @@ public final class QualifiedName
      * The URI of the {@link TypeName} component is in the form of;
      * </p>
      * <pre>
-     * "urn:zest:type:" normalizedClassName
+     * "urn:qi4j:type:" normalizedClassName
      * </pre>
      * <p>
      * where {@code normalizedClassName} is the fully-qualified class name having had any dollar ($) characters replaced
      * by URI friendly dashes (-), with a trailing hash (#). Examples;
      * </p>
      * <pre>
-     * urn:zest:type:org.apache.zest.api.common.QualifiedName#
-     * urn:zest:type:org.apache.zest.samples.MyClass-MyInnerClass#
+     * urn:qi4j:type:org.qi4j.api.common.QualifiedName#
+     * urn:qi4j:type:org.qi4j.samples.MyClass-MyInnerClass#
      * </pre>
      *
      * @return the URI of the {@link TypeName} component of the QualifiedName.

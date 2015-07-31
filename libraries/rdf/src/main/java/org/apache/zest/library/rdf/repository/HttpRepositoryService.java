@@ -84,7 +84,7 @@ public interface HttpRepositoryService
             Property<String> id = configuration.repositoryId();
             if( id.get() == null )
             {
-                id.set( "zest" );
+                id.set( "qi4j" );
             }
             return id.get();
         }

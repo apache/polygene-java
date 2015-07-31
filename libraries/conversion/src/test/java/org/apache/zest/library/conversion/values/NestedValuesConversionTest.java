@@ -27,14 +27,14 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class NestedValuesConversionTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
 
     @Override

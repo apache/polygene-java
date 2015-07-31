@@ -14,7 +14,7 @@
 
 package org.apache.zest.bootstrap;
 
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
@@ -30,7 +30,7 @@ import org.apache.zest.api.structure.Module;
 public abstract class SingletonAssembler
     implements Assembler
 {
-    private Energy4Java zest;
+    private Energy4Java qi4j;
     private Application applicationInstance;
     private final Module moduleInstance;
 
@@ -48,8 +48,8 @@ public abstract class SingletonAssembler
         throws AssemblyException, ActivationException
     {
 // START SNIPPET: actual
-        zest = new Energy4Java();
-        applicationInstance = zest.newApplication( new ApplicationAssembler()
+        qi4j = new Energy4Java();
+        applicationInstance = qi4j.newApplication( new ApplicationAssembler()
         {
             @Override
             public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
@@ -77,9 +77,9 @@ public abstract class SingletonAssembler
         moduleInstance = applicationInstance.findModule( "Layer 1", "Module 1" );
     }
 
-    public final ZestAPI runtime()
+    public final Qi4j runtime()
     {
-        return zest.spi();
+        return qi4j.spi();
     }
 
     public final Application application()

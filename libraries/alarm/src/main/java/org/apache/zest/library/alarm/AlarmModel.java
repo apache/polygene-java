@@ -40,7 +40,7 @@ import org.apache.zest.api.common.Optional;
  */
 public interface AlarmModel
 {
-    String MODEL_BUNDLE_NAME = "org.apache.zest.library.alarm.AlarmResources";
+    String MODEL_BUNDLE_NAME = "org.qi4j.library.alarm.AlarmResources";
 
     /**
      * Execute the required changes upon an AlarmTrigger.

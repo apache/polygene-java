@@ -25,13 +25,13 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.circuitbreaker.service.AbstractBreakOnThrowable;
 import org.apache.zest.library.circuitbreaker.service.BreaksCircuitOnThrowable;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 /**
  * Test @BreaksCircuitOnThrowable annotation
  */
 public class BreaksCircuitOnThrowableTest
-        extends AbstractZestTest
+        extends AbstractQi4jTest
 {
 
     // START SNIPPET: service

@@ -79,7 +79,7 @@ public abstract class AbstractAssociationInstance<T>
         {
             return;
         }
-        throw new IllegalArgumentException( "Object must be a subtype of org.apache.zest.api.identity.Identity: " + instance.getClass() );
+        throw new IllegalArgumentException( "Object must be a subtype of org.qi4j.api.identity.Identity: " + instance.getClass() );
     }
 
     protected void checkImmutable()

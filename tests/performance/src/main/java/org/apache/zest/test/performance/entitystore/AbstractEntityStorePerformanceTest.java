@@ -75,7 +75,7 @@ public abstract class AbstractEntityStorePerformanceTest
                     module.entities( SimpleProduct.class );
                 }
             };
-            createZestRuntime( assembler );
+            createQi4jRuntime( assembler );
 
             for( int i = 0; i < 10000; i++ )
             {
@@ -112,7 +112,7 @@ public abstract class AbstractEntityStorePerformanceTest
                     module.entities( SimpleProduct.class );
                 }
             };
-            createZestRuntime( assembler );
+            createQi4jRuntime( assembler );
 
             profile( new Callable<Void>()
             {
@@ -162,7 +162,7 @@ public abstract class AbstractEntityStorePerformanceTest
                     module.entities( SimpleProduct.class );
                 }
             };
-            createZestRuntime( assembler );
+            createQi4jRuntime( assembler );
             profile( new Callable<Void>()
             {
                 @Override
@@ -212,7 +212,7 @@ public abstract class AbstractEntityStorePerformanceTest
                     module.entities( ComplexProduct.class );
                 }
             };
-            createZestRuntime( assembler );
+            createQi4jRuntime( assembler );
             profile( new Callable<Void>()
             {
                 @Override
@@ -257,7 +257,7 @@ public abstract class AbstractEntityStorePerformanceTest
                     module.entities( ComplexProduct.class );
                 }
             };
-            createZestRuntime( assembler );
+            createQi4jRuntime( assembler );
             profile( new Callable<Void>()
             {
                 @Override
@@ -307,7 +307,7 @@ public abstract class AbstractEntityStorePerformanceTest
                     module.entities( ComplexProduct.class );
                 }
             };
-            createZestRuntime( assembler );
+            createQi4jRuntime( assembler );
             {
                 int bulk = 0;
                 UnitOfWork uow = module.newUnitOfWork( newUsecase( "readEntityWithComplexType PREPARE " + bulk ) );
@@ -387,10 +387,10 @@ public abstract class AbstractEntityStorePerformanceTest
         System.out.println( "Report written to " + name );
     }
 
-    private void createZestRuntime( Assembler testSetup )
+    private void createQi4jRuntime( Assembler testSetup )
         throws Exception
     {
-        Energy4Java zest = new Energy4Java();
+        Energy4Java qi4j = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
         {
             {
@@ -399,7 +399,7 @@ public abstract class AbstractEntityStorePerformanceTest
                 }
             }
         };
-        application = zest.newApplication( new ApplicationAssemblerAdapter( assemblers )
+        application = qi4j.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         application.activate();

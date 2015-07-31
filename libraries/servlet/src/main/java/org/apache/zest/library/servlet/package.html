@@ -24,23 +24,23 @@ limitations under the License.
 
         <h3>Logging</h3>
         <p>
-            The SLF4J logger used by this library is named "org.apache.zest.library.servlet".
+            The SLF4J logger used by this library is named "org.qi4j.library.servlet".
         </p>
 
         <h3>Application Bootstrap</h3>
         <p>
-            Extends {@link org.apache.zest.library.servlet.lifecycle.AbstractZestServletBootstrap} to easily bind a Zest™
-            {@link org.apache.zest.api.structure.Application} activation/passivation to your webapp lifecycle.
+            Extends {@link org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap} to easily bind a Zest™
+            {@link org.qi4j.api.structure.Application} activation/passivation to your webapp lifecycle.
         </p>
         <p>
-            Use {@link org.apache.zest.library.servlet.ZestServletSupport#application(javax.servlet.ServletContext)} to get
-            a handle on the {@link org.apache.zest.api.structure.Application} from the {@link javax.servlet.ServletContext}.
+            Use {@link org.qi4j.library.servlet.Qi4jServletSupport#application(javax.servlet.ServletContext)} to get
+            a handle on the {@link org.qi4j.api.structure.Application} from the {@link javax.servlet.ServletContext}.
         </p>
 
         <h3>Facilities</h3>
         <p>
-            {@link org.apache.zest.library.servlet.ZestServlet} and {@link org.apache.zest.library.servlet.ZestFilter} respectively
-            provide base class for easy access to the {@link org.apache.zest.api.structure.Application}} from the
+            {@link org.qi4j.library.servlet.Qi4jServlet} and {@link org.qi4j.library.servlet.Qi4jFilter} respectively
+            provide base class for easy access to the {@link org.qi4j.api.structure.Application}} from the
             {@link javax.servlet.ServletContext}.
         </p>
     </body>

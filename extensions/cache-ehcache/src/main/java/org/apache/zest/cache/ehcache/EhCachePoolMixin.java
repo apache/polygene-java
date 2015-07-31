@@ -84,7 +84,7 @@ public abstract class EhCachePoolMixin
     {
         net.sf.ehcache.config.Configuration configuration = new net.sf.ehcache.config.Configuration();
         configureEhCache( configuration );
-        CacheConfiguration cc = createCacheConfiguration( "zest.ehcache.config.default" );
+        CacheConfiguration cc = createCacheConfiguration( "qi4j.ehcache.config.default" );
         configuration.setDefaultCacheConfiguration( cc );
         cacheManager = CacheManager.newInstance( configuration );
     }

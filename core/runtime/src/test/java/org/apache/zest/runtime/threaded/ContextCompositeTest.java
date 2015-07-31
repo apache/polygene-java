@@ -25,12 +25,12 @@ import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 
 public class ContextCompositeTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
 
     @Test

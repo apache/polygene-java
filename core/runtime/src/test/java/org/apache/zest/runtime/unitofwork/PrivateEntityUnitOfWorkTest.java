@@ -55,7 +55,7 @@ public class PrivateEntityUnitOfWorkTest
     public void givenAppWithPrivateEntityWhenUnitOfWorkCanSeeItThenCanCommit()
         throws Exception
     {
-        System.setProperty( "zest.compacttrace", "off" );
+        System.setProperty( "qi4j.compacttrace", "off" );
 
         Energy4Java is = new Energy4Java();
         Application app = is.newApplication( new ApplicationAssembler()

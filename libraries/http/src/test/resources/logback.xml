@@ -19,7 +19,7 @@
 
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[ZEST] @%-20thread %-5level %logger{36} - %msg%n</pattern>
+            <pattern>[QI4J] @%-20thread %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 

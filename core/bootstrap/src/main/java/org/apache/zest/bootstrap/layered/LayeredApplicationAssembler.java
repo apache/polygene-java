@@ -50,10 +50,10 @@ public abstract class LayeredApplicationAssembler
         this.name = name;
         this.version = version;
         this.mode = mode;
-        Energy4Java zest = new Energy4Java();
-        ApplicationDescriptor model = zest.newApplicationModel( this );
+        Energy4Java qi4j = new Energy4Java();
+        ApplicationDescriptor model = qi4j.newApplicationModel( this );
         onModelCreated( model );
-        instantiateApplication( zest, model );
+        instantiateApplication( qi4j, model );
     }
 
     public ApplicationAssembly assembly()
@@ -68,15 +68,15 @@ public abstract class LayeredApplicationAssembler
      * The default implementation simply calls;
      * </p>
      * <pre><code>
-     *   application = model.newInstance( zest.spi() );
+     *   application = model.newInstance( qi4j.spi() );
      * </code></pre>
      *
-     * @param zest  The Zest runtime engine.
+     * @param qi4j  The Zest runtime engine.
      * @param model The application model descriptor.
      */
-    protected void instantiateApplication( Energy4Java zest, ApplicationDescriptor model )
+    protected void instantiateApplication( Energy4Java qi4j, ApplicationDescriptor model )
     {
-        application = model.newInstance( zest.spi() );
+        application = model.newInstance( qi4j.spi() );
     }
 
     /**

@@ -74,7 +74,7 @@ import static org.apache.zest.api.structure.Application.Mode.development;
  *
  * A Zest application structure is declared by an assembly that defines which layers and modules
  * the application has and how they are allowed to depend on each other. Each layer could have it's
- * own assembly file in larger applications (read more at http://zest.apache.org/latest/core-bootstrap-assembly.html).
+ * own assembly file in larger applications (read more at http://qi4j.org/latest/core-bootstrap-assembly.html).
  *
  * The Zest assembly doesn't follow a strict 1-1 correlation between the directory hierarchy and
  * the assembly structures. An example is the Entities:
@@ -89,7 +89,7 @@ import static org.apache.zest.api.structure.Application.Mode.development;
  * layers above.
  *
  * So dependency structure layers (ie. as shown by Structure101) are not the same as Zest layers.
- * See more at http://zest.apache.org/latest/core-bootstrap-assembly.html
+ * See more at http://qi4j.org/latest/core-bootstrap-assembly.html
  *
  * TRY THIS: Run VisualizeApplicationStructure to see a cool visualization of the assembly below!
  */

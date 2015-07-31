@@ -46,8 +46,8 @@ import org.apache.zest.io.Outputs;
  * Example:
  * </p>
  * <pre><code>
- * org/apache/zest/samples/hello/domain/HelloWorldSpeaker.groovy
- * org/apache/zest/samples/hello/domain/HelloWorldSpeaker.sayAgain.groovy
+ * org/qi4j/samples/hello/domain/HelloWorldSpeaker.groovy
+ * org/qi4j/samples/hello/domain/HelloWorldSpeaker.sayAgain.groovy
  * </code></pre>
  *
  */

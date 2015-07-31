@@ -19,9 +19,9 @@
 
 = Zest™ v{revnumber} User Guide =
 
-:zest-version: {revnumber}
-:zest-buildnumber: {revnumber}
-:zest-git-tag: {gitversion}
+:qi4j-version: {revnumber}
+:qi4j-buildnumber: {revnumber}
+:qi4j-git-tag: {gitversion}
 
 
 :leveloffset: {level2}

@@ -31,7 +31,7 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import java.util.Iterator;
@@ -39,7 +39,7 @@ import java.util.Iterator;
 import static org.apache.zest.api.query.QueryExpressions.orderBy;
 
 public class Qi173IssueTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

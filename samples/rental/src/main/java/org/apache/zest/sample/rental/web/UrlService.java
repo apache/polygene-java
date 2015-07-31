@@ -21,7 +21,7 @@ package org.apache.zest.sample.rental.web;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.Qi4jSPI;
 
 @Mixins( UrlService.UrlServiceMixin.class )
 public interface UrlService
@@ -35,7 +35,7 @@ public interface UrlService
         implements UrlService
     {
         @Structure
-        ZestSPI spi;
+        Qi4jSPI spi;
 
         private String baseUri;
 

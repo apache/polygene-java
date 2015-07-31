@@ -29,7 +29,7 @@ import org.apache.zest.api.util.Classes;
 import org.apache.zest.functional.Iterables;
 
 /**
- * XXX Workaround for inconsistency in Zest core-api/spi
+ * XXX Workaround for inconsistency in Qi4J core-api/spi
  * ImportedServiceDescriptor wrapper as composite
  */
 public class ImportedServiceCompositeDescriptor

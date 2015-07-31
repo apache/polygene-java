@@ -21,7 +21,7 @@ project.ext {
   title = "Apache Zest™ (Java Edition) SDK"
   description = "Apache Zest™ (Java Edition) is a framework for domain centric application development, including evolved concepts from AOP, DI and DDD."
   testFailures = [ ]
-  mainClassName = 'org.apache.zest.container.Main'
+  mainClassName = 'org.qi4j.container.Main'
   groovycMain_mx = "700m"
   groovycMain_permSize = "512m"
   groovycMain_maxPermSize = "512m"
@@ -54,7 +54,7 @@ sourceCompatibility = "1.7"
 
 // Collect the modules that fulfills the Release Criteria.
 project.ext {
-  releaseSpec = new org.apache.zest.gradle.plugin.ModuleReleaseSpecification()
+  releaseSpec = new org.qi4j.gradle.plugin.ModuleReleaseSpecification()
   releaseApprovedProjects = allprojects.findAll( { p -> rootProject.releaseSpec.satisfiedBy( p ) } )
 }
 
@@ -135,7 +135,7 @@ allprojects {
 
   defaultTasks 'classes', 'test'
 
-  group = name == 'org.apache.zest' ? 'org.apache.zest' : name.substring( 0, name.lastIndexOf( '.' ) )
+  group = name == 'org.qi4j' ? 'org.qi4j' : name.substring( 0, name.lastIndexOf( '.' ) )
   if( version == 'unspecified' ) {
     version = System.properties.version ?: "0"
   }
@@ -292,28 +292,28 @@ allprojects {
     apply plugin: VersionClass
     apply plugin: AsciidocBuildInfo
 
-//    if( name == "org.apache.zest.core.runtime" )
+//    if( name == "org.qi4j.core.runtime" )
 //    {
 //      checkstyleMain {
-//        configFile = new File( "$rootProject.projectDir.absolutePath/etc/zest-runtime-checkstyle.xml" )
+//        configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-runtime-checkstyle.xml" )
 //        ignoreFailures = true
 //      }
 //    }
 //    else
 //    {
 //      checkstyleMain {
-//        configFile = new File( rootProject.projectDir.absolutePath.toString() + '/etc/zest-api-checkstyle.xml' )
+//        configFile = new File( rootProject.projectDir.absolutePath.toString() + '/etc/qi4j-api-checkstyle.xml' )
 //        ignoreFailures = true
 //        reporting.baseDir = "$rootProject.reporting.baseDir/checkstyle"
 //      }
 //    }
 //    checkstyleTest {
-//      configFile = new File( "$rootProject.projectDir.absolutePath/etc/zest-tests-checkstyle.xml" )
+//      configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml" )
 //      ignoreFailures = true
 //    }
 //
 //    checkstyleVersion {
-//      configFile = new File( "$rootProject.projectDir.absolutePath/etc/zest-tests-checkstyle.xml" )
+//      configFile = new File( "$rootProject.projectDir.absolutePath/etc/qi4j-tests-checkstyle.xml" )
 //      ignoreFailures = true
 //    }
 
@@ -476,12 +476,12 @@ task coverageReport {
   dependsOn subprojects*.test
   def outputPath = "build/reports/coverage"
   def coveredProjects = subprojects.findAll { p -> new File( "${p.buildDir.path}/jacoco" ).exists() }
-  def coreProjects = coveredProjects.findAll { p -> p.name.startsWith('org.apache.zest.core' ) }
-  def libProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.apache.zest.lib' ) }
-  def extProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.apache.zest.ext' ) }
-  def toolsProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.apache.zest.tool' ) }
-  def tutoProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.apache.zest.tuto' ) }
-  def samplesProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.apache.zest.sample' ) }
+  def coreProjects = coveredProjects.findAll { p -> p.name.startsWith('org.qi4j.core' ) }
+  def libProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.lib' ) }
+  def extProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.ext' ) }
+  def toolsProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.tool' ) }
+  def tutoProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.tuto' ) }
+  def samplesProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.sample' ) }
   ant {
     taskdef name:'jacocoreport', classname: 'org.jacoco.ant.ReportTask', classpath: configurations.jacoco.asPath
     mkdir dir: outputPath
@@ -533,10 +533,10 @@ task javadocs( type: Javadoc ) {
   options.overview = "${rootProject.projectDir}/src/javadoc/overview.html"
   title = "${rootProject.title} ${version}"
   def apiSources = releaseApprovedProjects.findAll( { project ->
-    ( project.name.startsWith( 'org.apache.zest.core' ) && !project.name.startsWith( 'org.apache.zest.core.runtime' ) ) ||
-    project.name.startsWith( 'org.apache.zest.library' ) ||
-    project.name.startsWith( 'org.apache.zest.extension' ) ||
-    project.name.startsWith( 'org.apache.zest.tool' )
+    ( project.name.startsWith( 'org.qi4j.core' ) && !project.name.startsWith( 'org.qi4j.core.runtime' ) ) ||
+    project.name.startsWith( 'org.qi4j.library' ) ||
+    project.name.startsWith( 'org.qi4j.extension' ) ||
+    project.name.startsWith( 'org.qi4j.tool' )
   } )
   source apiSources.collect { project ->
     project.sourceSets.main.allJava
@@ -546,13 +546,13 @@ task javadocs( type: Javadoc ) {
   classpath = files( apiSources.collect { project ->
     project.sourceSets.main.compileClasspath
   } )
-  options.group( [ "Core API": [ "org.apache.zest.api", "org.apache.zest.api.*", "org.apache.zest.io", "org.apache.zest.functional" ],
-                         "Core Bootstrap": [ "org.apache.zest.bootstrap", "org.apache.zest.bootstrap.*" ],
-                         "Core SPI": [ "org.apache.zest.spi", "org.apache.zest.spi.*" ],
-                         "Libraries": [ "org.apache.zest.library.*" ],
-                         "Extensions": [ "org.apache.zest.valueserialization.*", "org.apache.zest.entitystore.*", "org.apache.zest.index.*", "org.apache.zest.metrics.*", "org.apache.zest.cache.*", "org.apache.zest.migration", "org.apache.zest.migration.*" ],
-                         "Tools": [ "org.apache.zest.tools.*", "org.apache.zest.envisage", "org.apache.zest.envisage.*" ],
-                         "Test Support": [ "org.apache.zest.test", "org.apache.zest.test.*" ]
+  options.group( [ "Core API": [ "org.qi4j.api", "org.qi4j.api.*", "org.qi4j.io", "org.qi4j.functional" ],
+                         "Core Bootstrap": [ "org.qi4j.bootstrap", "org.qi4j.bootstrap.*" ],
+                         "Core SPI": [ "org.qi4j.spi", "org.qi4j.spi.*" ],
+                         "Libraries": [ "org.qi4j.library.*", "org.qi4j.logging", "org.qi4j.logging.*", "org.qi4j.lang.*" ],
+                         "Extensions": [ "org.qi4j.valueserialization.*", "org.qi4j.entitystore.*", "org.qi4j.index.*", "org.qi4j.metrics.*", "org.qi4j.cache.*", "org.qi4j.migration", "org.qi4j.migration.*" ],
+                         "Tools": [ "org.qi4j.tools.*", "org.qi4j.envisage", "org.qi4j.envisage.*", "org.qi4j.library.swing.entityviewer" ],
+                         "Test Support": [ "org.qi4j.test", "org.qi4j.test.*" ]
                  ] )
 
 }
@@ -579,7 +579,7 @@ task buildAll( dependsOn: [
     jar,
     subprojects*.dependencyReport,
     subprojects*.assemble,
-    ':org.apache.zest.manual:website'
+    ':org.qi4j.manual:website'
 ] ) { }
 
 // Generate license headers with comment styles
@@ -617,7 +617,7 @@ task generateBinDistGoOfflineHelpers {
     goOfflineGradle += 'apply plugin: \'java\'\nconfigurations { download }\nrepositories {\n'
     def goOfflinePom = licenseHeader( 'xml' )
     goOfflinePom += '<project>\n  <modelVersion>4.0.0</modelVersion>\n'
-    goOfflinePom += "  <groupId>org.apache.zest</groupId>\n  <artifactId>go-offline-helper</artifactId>\n  <version>$version</version>\n"
+    goOfflinePom += "  <groupId>org.qi4j</groupId>\n  <artifactId>go-offline-helper</artifactId>\n  <version>$version</version>\n"
     goOfflinePom += '  <packaging>pom</packaging>\n'
     goOfflinePom += '  <!--\n  This pom has the sole purpose of downloading all dependencies in a directory relative to this file named \'dependencies\'.\n'
     goOfflinePom += '  Use the following command:\n\n  mvn -f go-offline.pom validate\n  -->\n  <repositories>\n'
@@ -640,7 +640,7 @@ task generateBinDistGoOfflineHelpers {
     rootProject.dependencies { allRuntimeDeps.each{ goOfflineHelpers it } }
     rootProject.configurations.goOfflineHelpers.incoming.resolutionResult.allComponents.each { comp ->
       def depCoords = "${comp.moduleVersion.group}:${comp.moduleVersion.name}:${comp.moduleVersion.version}"
-      if( !comp.moduleVersion.group.startsWith( 'org.apache.zest' ) ) {
+      if( !comp.moduleVersion.group.startsWith( 'org.qi4j' ) ) {
         goOfflineGradle += "  download( '$depCoords' ) { transitive = false }\n"
         goOfflinePom += "    <dependency><groupId>${comp.moduleVersion.group}</groupId><artifactId>${comp.moduleVersion.name}</artifactId><version>${comp.moduleVersion.version}</version></dependency>\n"
       }
@@ -936,7 +936,7 @@ task checkBinDist_goOfflineGradle( type: GradleBuild, dependsOn: unpackBinDist )
     releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({it.name}).each { dep ->
       def jarArtifactId = dep.name instanceof String ? dep.name : dep.name.last()
       def jarVersion = dep.version instanceof String ? dep.version : dep.version.last()
-      if( !jarArtifactId.startsWith( 'org.apache.zest' ) ) {
+      if( !jarArtifactId.startsWith( 'org.qi4j' ) ) {
         def jarName = "${jarArtifactId}-${jarVersion}.jar"
         if( !new File( dependenciesDir, jarName ).exists() ) {
           throw new GradleException( "Binary distribution go-offline.gradle failed! Missing: $jarName" );
@@ -960,7 +960,7 @@ task checkBinDist_goOfflineMaven( type: Exec, dependsOn: unpackBinDist ) {
     releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({it.name}).each { dep ->
       def jarArtifactId = dep.name instanceof String ? dep.name : dep.name.last()
       def jarVersion = dep.version instanceof String ? dep.version : dep.version.last()
-      if( !jarArtifactId.startsWith( 'org.apache.zest' ) ) {
+      if( !jarArtifactId.startsWith( 'org.qi4j' ) ) {
         def jarName = "${jarArtifactId}-${jarVersion}.jar"
         if( !new File( dependenciesDir, jarName ).exists() ) {
           throw new GradleException( "Binary distribution go-offline.pom failed! Missing: $jarName" );
@@ -1019,7 +1019,7 @@ task release {
       throw new GradleException( "'version' must be given as a system property to perform a release." )
     }
   }
-  dependsOn checkReleaseSpec, rat, archiveJavadocs, ':org.apache.zest.manual:copyWebsite', allprojects*.uploadArchives, dist
+  dependsOn checkReleaseSpec, rat, archiveJavadocs, ':org.qi4j.manual:copyWebsite', allprojects*.uploadArchives, dist
 }
 
 //

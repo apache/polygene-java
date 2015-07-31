@@ -32,14 +32,14 @@ import org.apache.zest.index.sql.support.common.GenericDatabaseExplorer.Database
 import org.apache.zest.index.sql.support.postgresql.PostgreSQLAppStartup;
 import org.apache.zest.library.sql.common.SQLConfiguration;
 import org.apache.zest.library.sql.common.SQLUtil;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.sql.generation.api.vendor.PostgreSQLVendor;
 import org.sql.generation.api.vendor.SQLVendorProvider;
 
 import static org.apache.zest.test.util.Assume.assumeConnectivity;
 
 public class PostgreSQLDBIntegrityTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     @BeforeClass
     public static void beforePostgreSQLQueryTests()

@@ -23,7 +23,7 @@ package org.apache.zest.bootstrap;
  */
 public interface RuntimeFactory
 {
-    ZestRuntime createRuntime();
+    Qi4jRuntime createRuntime();
 
     /**
      * Standalone application Zest runtime factory.
@@ -32,12 +32,12 @@ public interface RuntimeFactory
         implements RuntimeFactory
     {
         @Override
-        public ZestRuntime createRuntime()
+        public Qi4jRuntime createRuntime()
         {
             ClassLoader loader = getClass().getClassLoader();
             try
             {
-                Class<? extends ZestRuntime> runtimeClass = loadRuntimeClass( loader );
+                Class<? extends Qi4jRuntime> runtimeClass = loadRuntimeClass( loader );
                 return runtimeClass.newInstance();
             }
             catch( ClassNotFoundException e )
@@ -47,16 +47,16 @@ public interface RuntimeFactory
             catch( InstantiationException | IllegalAccessException e )
             {
                 System.err.println( "Invalid Zest Runtime class. If you are providing your own Zest Runtime, please " +
-                                    "contact dev@zest.apache.org mailing list for assistance." );
+                                    "contact qi4j-dev at Google Groups for assistance." );
             }
             return null;
         }
 
         @SuppressWarnings( { "unchecked" } )
-        private Class<? extends ZestRuntime> loadRuntimeClass( ClassLoader loader )
+        private Class<? extends Qi4jRuntime> loadRuntimeClass( ClassLoader loader )
             throws ClassNotFoundException
         {
-            return (Class<? extends ZestRuntime>) loader.loadClass( "org.apache.zest.runtime.ZestRuntimeImpl" );
+            return (Class<? extends Qi4jRuntime>) loader.loadClass( "org.qi4j.runtime.Qi4jRuntimeImpl" );
         }
     }
 }

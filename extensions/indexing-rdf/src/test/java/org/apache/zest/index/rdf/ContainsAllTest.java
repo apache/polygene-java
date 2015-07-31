@@ -38,7 +38,7 @@ import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ import org.apache.zest.test.util.DelTreeAfter;
 
 // A test to verify that containsAll QueryExpression works properly.
 public class ContainsAllTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     private static final File DATA_DIR = new File( "build/tmp/contains-all-test" );
     @Rule

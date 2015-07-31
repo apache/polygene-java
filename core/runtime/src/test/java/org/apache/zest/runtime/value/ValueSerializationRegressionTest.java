@@ -31,10 +31,10 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
-public class ValueSerializationRegressionTest extends AbstractZestTest
+public class ValueSerializationRegressionTest extends AbstractQi4jTest
 {
     @Override
     public void assemble( ModuleAssembly module )

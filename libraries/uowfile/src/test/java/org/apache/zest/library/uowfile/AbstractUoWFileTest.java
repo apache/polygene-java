@@ -26,10 +26,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.apache.zest.io.Inputs;
 import org.apache.zest.io.Outputs;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 public abstract class AbstractUoWFileTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     protected static File baseTestDir;
 

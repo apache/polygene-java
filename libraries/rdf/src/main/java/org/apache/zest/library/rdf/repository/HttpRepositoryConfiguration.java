@@ -36,7 +36,7 @@ public interface HttpRepositoryConfiguration
     /**
      * The ID of the Repository at the remote Sesame HTTP host.
      *
-     * Default: zest
+     * Default: qi4j
      *
      * @return The configured ID at the remote Sesame HTTP host.
      */

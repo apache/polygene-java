@@ -33,13 +33,13 @@ import org.apache.zest.library.shiro.assembly.PasswordDomainAssembler;
 import org.apache.zest.library.shiro.assembly.StandaloneShiroAssembler;
 import org.apache.zest.library.shiro.domain.passwords.PasswordSecurable;
 import org.apache.zest.library.shiro.ini.ShiroIniConfiguration;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.junit.Assert.*;
 
 public class PasswordDomainTest
-        extends AbstractZestTest
+        extends AbstractQi4jTest
 {
 
     // START SNIPPET: domain

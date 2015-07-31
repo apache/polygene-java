@@ -29,7 +29,7 @@ import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.library.servlet.lifecycle.AbstractZestServletBootstrap;
+import org.apache.zest.library.servlet.lifecycle.AbstractQi4jServletBootstrap;
 import org.apache.zest.test.util.FreePortFinder;
 
 public class ServletTest
@@ -39,7 +39,7 @@ public class ServletTest
 
     // START SNIPPET: bootstrap
     public static class FooServletContextListener
-            extends AbstractZestServletBootstrap
+            extends AbstractQi4jServletBootstrap
     {
 
         public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
@@ -64,7 +64,7 @@ public class ServletTest
 
     // START SNIPPET: usage
     public static class FooServlet
-            extends ZestServlet
+            extends Qi4jServlet
     {
 
         @Override

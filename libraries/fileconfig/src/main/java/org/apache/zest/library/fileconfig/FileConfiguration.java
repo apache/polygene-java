@@ -26,7 +26,7 @@ import java.io.File;
  * These will default to the platform settings, but can be overridden manually, either one-by-one or as a whole.
  * </p>
  * <p>
- * You can override defaults by adding org.apache.zest.library.fileconfig.FileConfiguration_OS.properties files to your
+ * You can override defaults by adding org.qi4j.library.fileconfig.FileConfiguration_OS.properties files to your
  * classpath where OS is one of win, mac or unix.
  * </p>
  * <p>

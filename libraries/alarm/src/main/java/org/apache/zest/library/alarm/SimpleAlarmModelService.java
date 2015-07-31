@@ -89,7 +89,7 @@ public interface SimpleAlarmModelService extends AlarmModel, ServiceComposite
         @Override
         public String modelName()
         {
-            return "org.apache.zest.library.alarm.model.simple";
+            return "org.qi4j.library.alarm.model.simple";
         }
 
         /**

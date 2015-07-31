@@ -20,7 +20,7 @@ package org.apache.zest.test.indexing;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.indexing.model.Address;
 import org.apache.zest.test.indexing.model.File;
@@ -40,7 +40,7 @@ import org.apache.zest.test.indexing.model.entities.MaleEntity;
  * Abstract satisfiedBy with tests for any queries against Index/Query engines.
  */
 public class AbstractAnyQueryTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     protected UnitOfWork unitOfWork;
 

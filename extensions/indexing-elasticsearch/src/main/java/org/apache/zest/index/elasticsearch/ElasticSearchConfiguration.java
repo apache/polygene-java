@@ -29,13 +29,13 @@ public interface ElasticSearchConfiguration
 
     /**
      * Cluster name.
-     * Defaults to 'zest_cluster'.
+     * Defaults to 'qi4j_cluster'.
      */
     @Optional Property<String> clusterName();
 
     /**
      * Index name.
-     * Defaults to 'zest_index'.
+     * Defaults to 'qi4j_index'.
      */
     @Optional Property<String> index();
 

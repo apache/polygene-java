@@ -36,7 +36,7 @@ import org.apache.zest.entitystore.jdbm.JdbmConfiguration;
 import org.apache.zest.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -47,7 +47,7 @@ import static org.apache.zest.api.query.QueryExpressions.templateFor;
 
 @SuppressWarnings( "PublicInnerClass" )
 public class ReindexerTest
-        extends AbstractZestTest
+        extends AbstractQi4jTest
 {
 
     @SuppressWarnings( "unchecked" )
@@ -87,7 +87,7 @@ public class ReindexerTest
     public void createDataWipeIndexReindexAndAssertData()
             throws UnitOfWorkCompletionException
     {
-        File rdfDir = new File( System.getProperty( "user.dir" ), "build/testdata/zest-index" ).getAbsoluteFile();
+        File rdfDir = new File( System.getProperty( "user.dir" ), "build/testdata/qi4j-index" ).getAbsoluteFile();
         rdfDir.mkdirs();
         assertThat( rdfDir.exists(), is(true) );
 
@@ -139,7 +139,7 @@ public class ReindexerTest
     private static boolean deleteEntitiesData()
     {
         boolean success = true;
-        File esDir = new File( System.getProperty( "user.dir" ), "build/testdata/zest-entities" ).getAbsoluteFile();
+        File esDir = new File( System.getProperty( "user.dir" ), "build/testdata/qi4j-entities" ).getAbsoluteFile();
         if ( esDir.exists() ) {
             success = FileUtil.deltree( esDir );
         }
@@ -149,7 +149,7 @@ public class ReindexerTest
     private static boolean deleteIndexData()
     {
         boolean success = true;
-        File rdfDir = new File( System.getProperty( "user.dir" ), "build/testdata/zest-index" ).getAbsoluteFile();
+        File rdfDir = new File( System.getProperty( "user.dir" ), "build/testdata/qi4j-index" ).getAbsoluteFile();
         if ( rdfDir.exists() ) {
             FileUtils.delete( rdfDir );
             success = FileUtil.deltree( rdfDir );

@@ -33,7 +33,7 @@ class VersionClass implements Plugin<Project>
     def makeVersionClassTask = project.task('makeVersionClass') << {
       def now = new Date()
       def tmpGroup = project.name
-      if( tmpGroup.startsWith("org.apache.zest.core"))
+      if( tmpGroup.startsWith("org.qi4j.core"))
       {
         tmpGroup = tmpGroup - ".core"
       }

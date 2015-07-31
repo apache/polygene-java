@@ -21,12 +21,12 @@ jar { manifest { name = "Apache Zest™ Extension - EntityStore - Memory" }}
 
 dependencies {
 
-    compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
+    compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
 
-    testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-    testCompile(project(":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson"))
+    testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+    testCompile(project(":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson"))
 
-    testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
+    testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
     testRuntime(libraries.logback)
 
 }

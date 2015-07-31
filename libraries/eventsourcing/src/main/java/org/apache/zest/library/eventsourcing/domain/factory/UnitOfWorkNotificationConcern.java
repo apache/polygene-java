@@ -18,7 +18,7 @@
 package org.apache.zest.library.eventsourcing.domain.factory;
 
 import java.io.IOException;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Service;
@@ -64,7 +64,7 @@ public class UnitOfWorkNotificationConcern
     UnitOfWorkFactory uowf;
 
     @Structure
-    ZestAPI api;
+    Qi4j api;
 
     String version;
 

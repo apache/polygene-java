@@ -36,8 +36,8 @@ import org.apache.zest.api.injection.InjectionScope;
  * - Module
  * - Layer
  * - Application
- * - ZestAPI
- * - ZestSPI
+ * - Qi4j
+ * - Qi4jSPI
  * </code></pre>
  */
 @Retention( RetentionPolicy.RUNTIME )

@@ -69,7 +69,7 @@ public class H2SQLEntityStoreTest
     {
         try
         {
-            FileUtil.removeDirectory( new File( "target/zest-data" ) );
+            FileUtil.removeDirectory( new File( "target/qi4j-data" ) );
         }
         finally
         {

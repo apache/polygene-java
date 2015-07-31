@@ -54,7 +54,7 @@ import org.apache.zest.io.Input;
 import org.apache.zest.io.Output;
 import org.apache.zest.io.Receiver;
 import org.apache.zest.io.Sender;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.Qi4jSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -88,7 +88,7 @@ public class MapEntityStoreMixin
     private EntityStoreSPI entityStoreSpi;
 
     @Structure
-    private ZestSPI spi;
+    private Qi4jSPI spi;
 
     @Structure
     private Application application;

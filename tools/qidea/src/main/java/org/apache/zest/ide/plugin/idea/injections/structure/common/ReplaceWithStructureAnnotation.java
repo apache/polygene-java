@@ -22,7 +22,7 @@ import com.intellij.psi.PsiAnnotation;
 import org.jetbrains.annotations.NotNull;
 import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
 
-import static org.apache.zest.ide.plugin.idea.injections.structure.common.ZestStructureAnnotationUtil.createStructureAnnotation;
+import static org.apache.zest.ide.plugin.idea.injections.structure.common.Qi4jStructureAnnotationUtil.createStructureAnnotation;
 
 /**
  * @author edward.yakop@gmail.com

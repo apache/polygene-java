@@ -24,7 +24,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueBuilder;
@@ -156,7 +156,7 @@ public interface TableQuery
       @Override
       public Table applyTo(Table table)
       {
-         ValueBuilder<Table> tableBuilder = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF
+         ValueBuilder<Table> tableBuilder = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
              .map( table ).module().newValueBuilderWithPrototype( table );
 
 /* TODO Finish label setting

@@ -22,13 +22,13 @@ description = "Apache Zest™ OSGi Library provides integration of OSGi and Apac
 jar { manifest { name = "Apache Zest™ Library - OSGi Integration" }}
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.api"))
+  compile(project(":org.qi4j.core:org.qi4j.core.api"))
   compile(libraries.osgi_core)
   compile(libraries.osgi_compendium)
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
   testCompile(libraries.mockito)
 
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.logback)
 }

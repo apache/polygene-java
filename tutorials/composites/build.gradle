@@ -22,10 +22,10 @@ description = "Basic tutorial on how to covert a simple 'Hello World' applicatio
 jar { manifest { name = "Apache Zest™ Tutorial - Composites" }}
 
 dependencies {
-  compile(project(":org.apache.zest.core:org.apache.zest.core.bootstrap"))
-  compile(project(":org.apache.zest.libraries:org.apache.zest.library.constraints"))
+  compile(project(":org.qi4j.core:org.qi4j.core.bootstrap"))
+  compile(project(":org.qi4j.libraries:org.qi4j.library.constraints"))
 
-  testCompile(project(":org.apache.zest.core:org.apache.zest.core.testsupport"))
-  testRuntime(project(":org.apache.zest.core:org.apache.zest.core.runtime"))
+  testCompile(project(":org.qi4j.core:org.qi4j.core.testsupport"))
+  testRuntime(project(":org.qi4j.core:org.qi4j.core.runtime"))
   testRuntime(libraries.logback)
 }

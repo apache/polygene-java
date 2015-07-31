@@ -27,16 +27,16 @@ import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.annotations.NotNull;
 import org.apache.zest.ide.plugin.idea.common.inspections.AbstractFix;
 import org.apache.zest.ide.plugin.idea.common.inspections.AbstractInspection;
-import org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle;
-import org.apache.zest.ide.plugin.idea.sideEffects.common.ZestSideEffectUtil;
+import org.apache.zest.ide.plugin.idea.common.resource.Qi4jResourceBundle;
+import org.apache.zest.ide.plugin.idea.sideEffects.common.Qi4jSideEffectUtil;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR_OR_WARNING;
 import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.common.resource.ZestResourceBundle.message;
-import static org.apache.zest.ide.plugin.idea.sideEffects.common.ZestSideEffectUtil.*;
+import static org.apache.zest.ide.plugin.idea.common.resource.Qi4jResourceBundle.message;
+import static org.apache.zest.ide.plugin.idea.sideEffects.common.Qi4jSideEffectUtil.*;
 
 /**
  * @author edward.yakop@gmail.com
@@ -89,7 +89,7 @@ public final class SideEffectsAnnotationDeclaredCorrectlyInspection extends Abst
         // If SideEffectOf is not resolved, ignore
         Project project = psiClass.getProject();
         GlobalSearchScope searchScope = determineSearchScope( psiClass );
-        PsiClass sideEffectOfClass = ZestSideEffectUtil.getGenericSideEffectClass( project, searchScope );
+        PsiClass sideEffectOfClass = Qi4jSideEffectUtil.getGenericSideEffectClass( project, searchScope );
         if( sideEffectOfClass == null )
         {
             return null;
@@ -117,7 +117,7 @@ public final class SideEffectsAnnotationDeclaredCorrectlyInspection extends Abst
             // If side effect class does not inherit SideEffectOf class, suggest remove that reference.
             if( !sideEffectClass.isInheritor( sideEffectOfClass, true ) )
             {
-                String message = ZestResourceBundle.message(
+                String message = Qi4jResourceBundle.message(
                     "side.effects.annotation.declared.correctly.error.side.effect.does.not.extend.side.effect.of",
                     sideEffectClass.getQualifiedName()
                 );

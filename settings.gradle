@@ -106,7 +106,7 @@ include 'core:functional',
         'tests:regression',
         'tests:performance'
 
-rootProject.name = "org.apache.zest"
+rootProject.name = "org.qi4j"
 
 validateProject(rootProject, "")
 
@@ -117,9 +117,9 @@ def validateProject(project, parentName)
     {
         assert project.buildFile.isFile()
     }
-    if( parentName == 'org.apache.zest.libraries' )
+    if( parentName == 'org.qi4j.libraries' )
     {
-        parentName = 'org.apache.zest.library'
+        parentName = 'org.qi4j.library'
     }
     if( parentName.endsWith('s') )
     {

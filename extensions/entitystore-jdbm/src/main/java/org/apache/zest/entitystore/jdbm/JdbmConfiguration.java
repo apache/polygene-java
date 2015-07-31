@@ -32,7 +32,7 @@ public interface JdbmConfiguration
    /**
     * The file where the JDBM data will be stored
     * <p>
-    * Default: System.getProperty( "user.dir" ) + "/zest/jdbmstore.data";
+    * Default: System.getProperty( "user.dir" ) + "/qi4j/jdbmstore.data";
     * </p>
     * @return path to data file relative to current path
     */

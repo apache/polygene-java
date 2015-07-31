@@ -17,7 +17,7 @@ package org.apache.zest.spi.entitystore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.concern.ConcernOf;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
@@ -45,7 +45,7 @@ public abstract class ConcurrentModificationCheckConcern
     private EntityStateVersions versions;
 
     @Structure
-    private ZestAPI api;
+    private Qi4j api;
 
     @Override
     public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSpi module, long currentTime )

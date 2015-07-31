@@ -64,9 +64,9 @@ public class ElasticSearchFinderTest
 
         // FileConfig
         FileConfigurationOverride override = new FileConfigurationOverride().
-            withData( new File( DATA_DIR, "zest-data" ) ).
-            withLog( new File( DATA_DIR, "zest-logs" ) ).
-            withTemporary( new File( DATA_DIR, "zest-temp" ) );
+            withData( new File( DATA_DIR, "qi4j-data" ) ).
+            withLog( new File( DATA_DIR, "qi4j-logs" ) ).
+            withTemporary( new File( DATA_DIR, "qi4j-temp" ) );
         module.services( FileConfigurationService.class ).
             setMetaInfo( override );
     }

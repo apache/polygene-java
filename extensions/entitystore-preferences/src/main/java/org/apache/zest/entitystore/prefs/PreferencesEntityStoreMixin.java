@@ -58,7 +58,7 @@ import org.apache.zest.io.Input;
 import org.apache.zest.io.Output;
 import org.apache.zest.io.Receiver;
 import org.apache.zest.io.Sender;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.Qi4jSPI;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entitystore.DefaultEntityStoreUnitOfWork;
@@ -92,7 +92,7 @@ public class PreferencesEntityStoreMixin
     implements ServiceActivation, EntityStore, EntityStoreSPI
 {
     @Structure
-    private ZestSPI spi;
+    private Qi4jSPI spi;
 
     @This
     private EntityStoreSPI entityStoreSpi;
@@ -196,7 +196,7 @@ public class PreferencesEntityStoreMixin
                     public <ReceiverThrowableType extends Throwable> void sendTo( Receiver<? super EntityState, ReceiverThrowableType> receiver )
                         throws ReceiverThrowableType, EntityStoreException
                     {
-                        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "zest.entitystore.preferences.visit" );
+                        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "qi4j.entitystore.preferences.visit" );
                         Usecase visitUsecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
                         final EntityStoreUnitOfWork uow =
                             newUnitOfWork( visitUsecase, module, System.currentTimeMillis() );

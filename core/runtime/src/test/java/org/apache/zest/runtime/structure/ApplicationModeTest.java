@@ -23,10 +23,10 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 public class ApplicationModeTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -37,7 +37,7 @@ public class ApplicationModeTest
     @Test
     public void testApplicationModeNotSet()
     {
-        // mode is set to test in AbstractZestTest
+        // mode is set to test in AbstractQi4jTest
         Assert.assertThat( "mode set to default",
                            application.mode(),
                            CoreMatchers.equalTo( Application.Mode.test ) );

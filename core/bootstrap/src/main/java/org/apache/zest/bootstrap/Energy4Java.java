@@ -18,10 +18,10 @@
 
 package org.apache.zest.bootstrap;
 
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.Qi4jSPI;
 
 /**
  * Main bootstrap class for starting Zest and creating new applications.
@@ -30,12 +30,12 @@ import org.apache.zest.spi.ZestSPI;
  * </p>
  * <p>
  * This class will use the Service Loader mechanism in Java to try to locate a runtime that implements
- * the ZestRuntime interface. This avoids a direct dependency from the bootstrap to the runtime.
+ * the Qi4jRuntime interface. This avoids a direct dependency from the bootstrap to the runtime.
  * </p>
  */
 public final class Energy4Java
 {
-    private ZestRuntime runtime;
+    private Qi4jRuntime runtime;
 
     public Energy4Java( RuntimeFactory runtimeFactory )
     {
@@ -47,7 +47,7 @@ public final class Energy4Java
         this( new RuntimeFactory.StandaloneApplicationRuntimeFactory().createRuntime() );
     }
 
-    public Energy4Java( ZestRuntime runtime )
+    public Energy4Java( Qi4jRuntime runtime )
     {
         if( runtime == null )
         {
@@ -84,12 +84,12 @@ public final class Energy4Java
         return model.newInstance( runtime.spi(), importedServiceInstances );
     }
 
-    public ZestSPI spi()
+    public Qi4jSPI spi()
     {
         return runtime.spi();
     }
 
-    public ZestAPI api()
+    public Qi4j api()
     {
         return runtime.spi();
     }

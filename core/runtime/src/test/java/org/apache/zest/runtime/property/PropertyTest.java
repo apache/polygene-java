@@ -27,7 +27,7 @@ import org.apache.zest.api.property.PropertyMixin;
 import org.apache.zest.api.property.PropertyWrapper;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
 //    "This is an incorrect satisfiedBy case. The Property fragment support is not well defined at the moment, so until" +
 //    "more work is finalized on exactly what should be supported, this is ignored not to be forgotten." )
 public class PropertyTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
 
     public void assemble( ModuleAssembly module )

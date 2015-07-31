@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityComposite;
@@ -70,7 +70,7 @@ import org.apache.zest.index.sql.support.api.SQLQuerying;
 import org.apache.zest.index.sql.support.common.DBNames;
 import org.apache.zest.index.sql.support.common.QNameInfo;
 import org.apache.zest.index.sql.support.postgresql.PostgreSQLTypeHelper;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.Qi4jSPI;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +112,7 @@ public abstract class AbstractSQLQuerying
     private Module module;
 
     @Structure
-    private ZestSPI spi;
+    private Qi4jSPI spi;
 
     private static class TraversedAssoOrManyAssoRef
     {
@@ -1747,7 +1747,7 @@ public abstract class AbstractSQLQuerying
             // Visit all properties with recursion and make joins as necessary
             // @formatter:off
             for( Property<?> property
-                 : ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) value ).state().properties() )
+                 : Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) value ).state().properties() )
             {
                 Boolean qNameJoinDone = false;
                 Integer sourceIndex = maxTableIndex.getInt();

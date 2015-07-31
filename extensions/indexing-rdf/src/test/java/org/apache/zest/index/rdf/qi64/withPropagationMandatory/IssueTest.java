@@ -50,7 +50,7 @@ public final class IssueTest
         throws Throwable
     {
         // Bootstrap the account
-        String id = newZestAccount();
+        String id = newQi4jAccount();
 
         // Make sure there's no unit of work
         assertNull( module.currentUnitOfWork() );
@@ -63,7 +63,7 @@ public final class IssueTest
         throws Throwable
     {
         // Bootstrap the account
-        String id = newZestAccount();
+        String id = newQi4jAccount();
 
         // Make sure there's no unit of work
         assertFalse( module.isUnitOfWorkActive() );

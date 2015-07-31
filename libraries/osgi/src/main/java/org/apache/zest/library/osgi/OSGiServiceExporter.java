@@ -94,9 +94,9 @@ public interface OSGiServiceExporter
                 {
                     properties = new Properties();
                 }
-                properties.put( "org.apache.zest.api.service.active", ref.isActive() );
-                properties.put( "org.apache.zest.api.service.available", ref.isAvailable() );
-                properties.put( "org.apache.zest.api.service.identity", ref.identity() );
+                properties.put( "org.qi4j.api.service.active", ref.isActive() );
+                properties.put( "org.qi4j.api.service.available", ref.isAvailable() );
+                properties.put( "org.qi4j.api.service.identity", ref.identity() );
                 int i = 0;
                 for( Class cls : interfaces )
                 {

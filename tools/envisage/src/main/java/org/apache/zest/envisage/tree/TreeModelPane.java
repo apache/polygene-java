@@ -127,11 +127,11 @@ public final class TreeModelPane
     }
 
     /**
-     * Initialize Apache Zest for this component
+     * Initialize Qi4J for this component
      *
      * @param descriptor the Application descriptor
      */
-    public void initZest( ApplicationDetailDescriptor descriptor )
+    public void initQi4J( ApplicationDetailDescriptor descriptor )
     {
         // traverse the model and build JTree representation
         MutableTreeNode rootNode1 = StructureModelBuilder.build( descriptor );

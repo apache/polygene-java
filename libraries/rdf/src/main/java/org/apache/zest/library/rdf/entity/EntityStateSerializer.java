@@ -25,7 +25,7 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -167,7 +167,7 @@ public class EntityStateSerializer
 
         for( PropertyDescriptor persistentProperty : ( (ValueCompositeType) valueType ).properties() )
         {
-            Object propertyValue = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF
+            Object propertyValue = Qi4j.FUNCTION_COMPOSITE_INSTANCE_OF
                 .map( (Composite) value )
                 .state()
                 .propertyFor( persistentProperty.accessor() )

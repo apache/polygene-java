@@ -37,7 +37,7 @@ import org.apache.zest.library.logging.trace.records.EntityTraceRecordEntity;
 import org.apache.zest.library.logging.trace.records.ServiceTraceRecordEntity;
 import org.apache.zest.library.logging.trace.records.TraceRecord;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import java.util.Iterator;
 import org.apache.zest.test.EntityTestAssembler;
@@ -47,7 +47,7 @@ import static org.apache.zest.api.query.QueryExpressions.orderBy;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 
 public class TracingTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

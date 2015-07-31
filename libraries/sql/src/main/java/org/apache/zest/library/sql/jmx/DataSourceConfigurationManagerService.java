@@ -56,7 +56,7 @@ import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.library.sql.datasource.DataSourceConfiguration;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.Qi4jSPI;
 
 /**
  * Expose DataSourceConfiguration through JMX.
@@ -105,7 +105,7 @@ public interface DataSourceConfigurationManagerService
         MBeanServer server;
 
         @Structure
-        ZestSPI spi;
+        Qi4jSPI spi;
 
         @Structure
         Application application;

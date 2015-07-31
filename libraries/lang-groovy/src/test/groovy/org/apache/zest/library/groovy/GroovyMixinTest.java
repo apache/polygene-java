@@ -16,9 +16,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
-public class GroovyMixinTest extends AbstractZestTest
+public class GroovyMixinTest extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module )
         throws AssemblyException

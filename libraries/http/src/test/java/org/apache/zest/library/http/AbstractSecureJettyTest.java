@@ -45,11 +45,11 @@ public abstract class AbstractSecureJettyTest
     private static final String HTTPS = "https";
     protected static final int HTTPS_PORT = 8441;
     protected static final String KS_PASSWORD = "changeit";
-    protected static final String CLIENT_KEYSTORE_PATH = "src/test/resources/org/apache/zest/library/http/zest-lib-http-unittests-client-cert.jceks";
+    protected static final String CLIENT_KEYSTORE_PATH = "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-client-cert.jceks";
     protected static final File CLIENT_KEYSTORE_FILE = new File( CLIENT_KEYSTORE_PATH );
-    protected static final String SERVER_KEYSTORE_PATH = "src/test/resources/org/apache/zest/library/http/zest-lib-http-unittests-server-cert.jceks";
+    protected static final String SERVER_KEYSTORE_PATH = "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-server-cert.jceks";
     protected static final File SERVER_KEYSTORE_FILE = new File( SERVER_KEYSTORE_PATH );
-    protected static final String TRUSTSTORE_PATH = "src/test/resources/org/apache/zest/library/http/zest-lib-http-unittests-ca.jceks";
+    protected static final String TRUSTSTORE_PATH = "src/test/resources/org/qi4j/library/http/qi4j-lib-http-unittests-ca.jceks";
     protected static final File TRUSTSTORE_FILE = new File( TRUSTSTORE_PATH );
     // These two clients use a HostnameVerifier that don't do any check, don't do this in production code
     protected HttpClient trustHttpClient;

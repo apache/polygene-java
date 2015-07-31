@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public class UoWFile
 {
-    /* package */ static final Logger LOGGER = LoggerFactory.getLogger( "org.apache.zest.library.uowfile" );
+    /* package */ static final Logger LOGGER = LoggerFactory.getLogger( "org.qi4j.library.uowfile" );
     private static final int FILE_BUFFER_SIZE = 4096;
     private static final AtomicLong COUNT = new AtomicLong( 0L );
     private final long originalIdentity;

@@ -32,7 +32,7 @@ import org.apache.zest.library.conversion.values.TestModel.PersonValue;
 import org.apache.zest.library.conversion.values.TestModel.PersonValue2;
 import org.apache.zest.library.conversion.values.TestModel.PersonValue3;
 import org.apache.zest.library.conversion.values.TestModel.PersonValue4;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -48,7 +48,7 @@ import static org.apache.zest.library.conversion.values.TestModel.createPerson;
  * ValueToEntity Service Test.
  */
 public class ValueToEntityTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     @Override
     public void assemble( ModuleAssembly module )

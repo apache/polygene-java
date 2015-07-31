@@ -41,14 +41,14 @@ import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.conversion.values.Unqualified;
-import org.apache.zest.spi.ZestSPI;
+import org.apache.zest.spi.Qi4jSPI;
 
 /**
  * Conversion of Entity objects to DTO's
  *
  * Value composites that extend {@link DTO} will have association properties converted recursively.
  *
- * Modification of {org.apache.zest.library.conversion.values.EntityToValue}
+ * Modification of {org.qi4j.library.conversion.values.EntityToValue}
  * WARN No support of NamedAssociations
  */
 @SuppressWarnings( "unchecked" )
@@ -65,7 +65,7 @@ public interface EntityToDTOService
         private ValueBuilderFactory vbf;
 
         @Structure
-        private ZestSPI spi;
+        private Qi4jSPI spi;
 
         @Structure
         private Module module;

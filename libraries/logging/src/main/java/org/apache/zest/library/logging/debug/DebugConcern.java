@@ -18,7 +18,7 @@
 package org.apache.zest.library.logging.debug;
 
 import java.io.Serializable;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.injection.scope.Service;
@@ -29,7 +29,7 @@ import org.apache.zest.library.logging.debug.service.DebuggingService;
 public class DebugConcern
     implements Debug
 {
-    @Structure private ZestAPI api;
+    @Structure private Qi4j api;
     @Optional @Service private DebuggingService loggingService;
     @This private Composite composite;
 

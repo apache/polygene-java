@@ -70,57 +70,57 @@ public class QueryPerformanceTest
 
     private Application application;
     private Module module;
-    private static final String QUERY1 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+    private static final String QUERY1 = "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                                         + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
+                                         + "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
                                          + "SELECT ?entityType ?identity\n"
                                          + "WHERE {\n"
-                                         + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
+                                         + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
                                          + "?entity rdf:type ?entityType. \n"
                                          + "?entity ns0:identity ?identity. \n"
                                          + "?entity ns1:name \"Lead64532\". \n"
                                          + "}";
-    private static final String QUERY2 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+    private static final String QUERY2 = "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                                         + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
+                                         + "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
                                          + "SELECT ?entityType ?identity\n"
                                          + "WHERE {\n"
-                                         + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
+                                         + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
                                          + "?entity rdf:type ?entityType. \n"
                                          + "?entity ns0:identity ?identity. \n"
                                          + "?entity ns1:name \"Lead98276\". \n"
                                          + "}";
-    private static final String QUERY3 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+    private static final String QUERY3 = "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                                         + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
+                                         + "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
                                          + "SELECT ?entityType ?identity\n"
                                          + "WHERE {\n"
-                                         + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
+                                         + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
                                          + "?entity rdf:type ?entityType. \n"
                                          + "?entity ns0:identity ?identity. \n"
                                          + "?entity ns1:name \"Lead2\". \n"
                                          + "}";
-    private static final String QUERY4 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+    private static final String QUERY4 = "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                                         + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
+                                         + "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
                                          + "SELECT ?entityType ?identity\n"
                                          + "WHERE {\n"
-                                         + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
+                                         + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
                                          + "?entity rdf:type ?entityType. \n"
                                          + "?entity ns0:identity ?identity. \n"
                                          + "?entity ns1:name \"Lead14332\". \n"
                                          + "}";
-    private static final String QUERY5 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
+    private static final String QUERY5 = "PREFIX ns0: <urn:qi4j:type:org.qi4j.api.entity.Identity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
-                                         + "PREFIX ns1: <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
+                                         + "PREFIX ns1: <urn:qi4j:type:org.qi4j.test.performance.indexing.rdf.QueryPerformanceTest-Lead#> \n"
                                          + "SELECT ?entityType ?identity\n"
                                          + "WHERE {\n"
-                                         + "?entityType rdfs:subClassOf <urn:zest:type:org.apache.zest.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
+                                         + "?entityType rdfs:subClassOf <urn:qi4j:type:org.qi4j.test.performance.indexing.rdf.QueryPerformanceTest-Lead>. \n"
                                          + "?entity rdf:type ?entityType. \n"
                                          + "?entity ns0:identity ?identity. \n"
                                          + "?entity ns1:name \"Lead632\". \n"
@@ -131,8 +131,8 @@ public class QueryPerformanceTest
     public void setup()
         throws Exception
     {
-        Energy4Java zest = new Energy4Java();
-        application = zest.newApplication( this );
+        Energy4Java qi4j = new Energy4Java();
+        application = qi4j.newApplication( this );
         module = application.findModule( LAYER_DOMAIN, MODULE_DOMAIN );
         application.activate();
         indexingDataDir = module.findService( RdfIndexingService.class ).get().dataDir();

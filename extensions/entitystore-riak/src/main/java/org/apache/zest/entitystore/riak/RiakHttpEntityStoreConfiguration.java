@@ -42,7 +42,7 @@ public interface RiakHttpEntityStoreConfiguration
     /**
      * Riak Bucket where Entities state will be stored.
      *
-     * Defaulted to "zest:entities".
+     * Defaulted to "qi4j:entities".
      */
     @Optional
     Property<String> bucket();

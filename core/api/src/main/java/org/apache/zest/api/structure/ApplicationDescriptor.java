@@ -13,7 +13,7 @@
  */
 package org.apache.zest.api.structure;
 
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.functional.VisitableHierarchy;
 
 /**
@@ -28,7 +28,7 @@ public interface ApplicationDescriptor
      * @param importedServiceInstances Imported Services instances
      * @return a new instance of the Application.
      */
-    Application newInstance( ZestAPI runtime, Object... importedServiceInstances );
+    Application newInstance( Qi4j runtime, Object... importedServiceInstances );
 
     /**
      * @return the Application's name

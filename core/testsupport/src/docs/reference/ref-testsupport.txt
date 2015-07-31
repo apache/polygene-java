@@ -17,9 +17,9 @@
  * under the License.
 ///////////////////////////////////////////////////////////////
 
-include::AbstractZestTest.txt
+include::AbstractQi4jTest.txt
 
-include::AbstractZestScenarioTest.txt
+include::AbstractQi4jScenarioTest.txt
 
 include::AbstractEntityStoreTest.txt
 

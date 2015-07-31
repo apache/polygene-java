@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-http\://zest.apache.org/schema/zest/spring/spring-0.5.xsd=org/apache/zest/library/spring/spring-0.5.xsd
+http\://www.qi4j.org/schema/qi4j/spring/spring-0.5.xsd=org/qi4j/library/spring/spring-0.5.xsd

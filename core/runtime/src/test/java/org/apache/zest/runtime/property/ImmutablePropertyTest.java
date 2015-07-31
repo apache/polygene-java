@@ -27,14 +27,14 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public final class ImmutablePropertyTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     private static final String KUALA_LUMPUR = "Kuala Lumpur";
 

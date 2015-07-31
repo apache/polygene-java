@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
@@ -52,7 +52,7 @@ public interface ApplicationEventPlayerService
         Module module;
 
         @Structure
-        ZestAPI api;
+        Qi4j api;
 
         SimpleDateFormat dateFormat = new SimpleDateFormat( "EEE MMM dd HH:mm:ss zzz yyyy" );
 

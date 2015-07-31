@@ -35,11 +35,11 @@ import java.util.List;
 import static com.intellij.psi.search.searches.ClassInheritorsSearch.search;
 import static java.util.Collections.emptyList;
 import static org.apache.zest.ide.plugin.idea.common.psi.search.GlobalSearchScopeUtil.determineSearchScope;
-import static org.apache.zest.ide.plugin.idea.concerns.common.ZestConcernUtil.addOrReplaceConcernAnnotation;
-import static org.apache.zest.ide.plugin.idea.concerns.common.ZestConcernUtil.getConcernOfClass;
+import static org.apache.zest.ide.plugin.idea.concerns.common.Qi4jConcernUtil.addOrReplaceConcernAnnotation;
+import static org.apache.zest.ide.plugin.idea.concerns.common.Qi4jConcernUtil.getConcernOfClass;
 
 /**
- * JAVADOC: This is disabled in ZestApplicationComponent.
+ * JAVADOC: This is disabled in Qi4jApplicationComponent.
  *
  * @author edward.yakop@gmail.com
  * @since 0.1

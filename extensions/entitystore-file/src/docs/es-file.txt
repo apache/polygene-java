@@ -53,7 +53,7 @@ tag=config
 
 +directory+ is optional and represent the directory where the File EntityStore will keep its persisted state.
 
-It defaults to System.getProperty( "user.dir" ) + "/zest/filestore"
+It defaults to System.getProperty( "user.dir" ) + "/qi4j/filestore"
 If the given path is not absolute, then it's relative to the current working directory.
 If you use the <<library-fileconfig>> then this property value is ignored and FileConfig is prefered.
 

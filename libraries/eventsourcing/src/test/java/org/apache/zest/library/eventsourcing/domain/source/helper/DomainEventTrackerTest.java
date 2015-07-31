@@ -47,11 +47,11 @@ import org.apache.zest.library.eventsourcing.domain.factory.DomainEventFactorySe
 import org.apache.zest.library.eventsourcing.domain.source.EventSource;
 import org.apache.zest.library.eventsourcing.domain.source.EventStream;
 import org.apache.zest.library.eventsourcing.domain.source.memory.MemoryEventStoreService;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 public class DomainEventTrackerTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     public void assemble( ModuleAssembly module ) throws AssemblyException
     {

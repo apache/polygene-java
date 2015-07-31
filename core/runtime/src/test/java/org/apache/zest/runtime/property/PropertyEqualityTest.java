@@ -31,7 +31,7 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -43,7 +43,7 @@ import static org.junit.Assert.assertThat;
  * Assert that Property equals/hashcode methods combine PropertyDescriptor and State.
  */
 public class PropertyEqualityTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
 
     //
@@ -124,11 +124,11 @@ public class PropertyEqualityTest
     public void givenValuesOfTheSameTypeWhenTestingPropertyDescriptorEqualityExpectEquals()
     {
         Some some = buildSomeValue( module );
-        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = qi4j.api().valueDescriptorFor( some );
         PropertyDescriptor someCharPropDesc = someDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         Some other = buildSomeValue( module );
-        ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
+        ValueDescriptor otherDescriptor = qi4j.api().valueDescriptorFor( other );
         PropertyDescriptor otherCharPropDesc = otherDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         assertThat( "PropertyDescriptors equal",
@@ -143,11 +143,11 @@ public class PropertyEqualityTest
     public void givenValuesOfCommonTypesWhenTestingPropertyDescriptorEqualityExpectEquals()
     {
         Some some = buildSomeValue( module );
-        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = qi4j.api().valueDescriptorFor( some );
         PropertyDescriptor someCharPropDesc = someDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         PrimitivesValue primitive = buildPrimitivesValue( module );
-        ValueDescriptor primitiveDescriptor = zest.api().valueDescriptorFor( primitive );
+        ValueDescriptor primitiveDescriptor = qi4j.api().valueDescriptorFor( primitive );
         PropertyDescriptor primitiveCharPropDesc = primitiveDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         assertThat( "PropertyDescriptors equal",
@@ -162,11 +162,11 @@ public class PropertyEqualityTest
     public void givenValuesOfDifferentTypesWhenTestingPropertyDescriptorEqualityExpectNotEquals()
     {
         Some some = buildSomeValue( module );
-        ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
+        ValueDescriptor someDescriptor = qi4j.api().valueDescriptorFor( some );
         PropertyDescriptor someCharPropDesc = someDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         Other other = buildOtherValue( module );
-        ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
+        ValueDescriptor otherDescriptor = qi4j.api().valueDescriptorFor( other );
         PropertyDescriptor otherCharPropDesc = otherDescriptor.state().findPropertyModelByName( "characterProperty" );
 
         assertThat( "PropertyDescriptors not equal",

@@ -18,7 +18,7 @@
 package org.apache.zest.runtime.injection.provider;
 
 import java.lang.reflect.Type;
-import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.Qi4j;
 import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.object.ObjectFactory;
 import org.apache.zest.api.query.QueryBuilderFactory;
@@ -107,7 +107,7 @@ public final class StructureInjectionProviderFactory
             {
                 return (( ModuleInstance) context.module()).layerInstance().applicationInstance();
             }
-            else if( ZestAPI.class.isAssignableFrom( clazz ) )
+            else if( Qi4j.class.isAssignableFrom( clazz ) )
             {
                 return (( ModuleInstance) context.module()).layerInstance().applicationInstance().runtime();
             }

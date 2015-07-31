@@ -25,13 +25,13 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.test.AbstractQi4jTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
 
 public class IssueTest
-    extends AbstractZestTest
+    extends AbstractQi4jTest
 {
     @SuppressWarnings( "unchecked" )
     public void assemble( ModuleAssembly aModule )
@@ -48,7 +48,7 @@ public class IssueTest
         try
         {
             EntityBuilder<Item> builder = uow.newEntityBuilder( Item.class );
-            assertEquals( ItemType.class, zest.api()
+            assertEquals( ItemType.class, qi4j.api()
                 .entityDescriptorFor( builder.instance() )
                 .state()
                 .getAssociationByName( "typeOfItem" )
