@@ -187,8 +187,9 @@ Convert to Asciidoc:
 [source,shell]
 ----
 cat "apache-zest-java-<RELEASE-VERSION>-release-notes.txt" | \
-  sed -e "s/* \[ZEST-\([0-9]\)*\]/- https:\/\/issues.apache.org\/jira\/browse\/ZEST-\1[ZEST-\1]/" | \
-  sed -e "s/^\*\*/===/" > "apache-zest-java-<RELEASE-VERSION>-release-notes.adoc"
+  sed -e "s/\[ZEST-\([0-9]\)*\]/https:\/\/issues.apache.org\/jira\/browse\/ZEST-\1[ZEST-\1]/" | \
+  sed -e "s/    \* /- /" | sed -e "s/^\*\*/====/" \
+  > "apache-zest-java-<RELEASE-VERSION>-release-notes.adoc"
 ----
 
 Convert to Markdown:
@@ -196,8 +197,9 @@ Convert to Markdown:
 [source,shell]
 ----
 cat "apache-zest-java-<RELEASE-VERSION>-release-notes.txt" | \
-  sed -e "s/* \[ZEST-\([0-9]\)*\]/- [ZEST-\1](https:\/\/issues.apache.org\/jira\/browse\/ZEST-\1)/" | \
-  sed -e "s/^\*\*/###/" > "apache-zest-java-<RELEASE-VERSION>-release-notes.md"
+  sed -e "s/\[ZEST-\([0-9]*\)\]/[ZEST-\1](https:\/\/issues.apache.org\/jira\/browse\/ZEST-\1)/" | \
+  sed -e "s/    \* /- /" | sed -e "s/^\*\*/####/" \
+  > "apache-zest-java-<RELEASE-VERSION>-release-notes.md"
 ----
 
 You should then have the following files:
@@ -318,25 +320,41 @@ As this release still is a simple candidate, we'll rename them before upload to 
 [source,shell]
 ----
 # Source ZIP
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.MD5" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.SHA-512" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.asc" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.MD5" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.SHA-512" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.zip.asc" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc"
 # Source TAR.GZ
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.MD5" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.SHA-512" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.asc" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.MD5" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.SHA-512" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-src.tgz.asc" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc"
 # Binary ZIP
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.MD5" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.SHA-512" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.asc" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.MD5" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.SHA-512" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.zip.asc" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc"
 # Binary TAR.GZ
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.MD5" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.SHA-512" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512"
-cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.asc" "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.MD5" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.SHA-512" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512"
+cp "zest-java/build/distributions/apache-zest-java-<RELEASE-VERSION>-bin.tgz.asc" \
+   "zest-dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc"
 ----
 
 And then upload them:
@@ -368,7 +386,7 @@ I am happy to start the VOTE thread for Apache Zest (Java Edition) <RELEASE-VERS
 
 The changelog for this release can be found here: https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12316820&version=12332997
 
-Tag: https://git-wip-us.apache.org/repos/asf?p=zest-java.git;a=tag;h=cc0f8211bf47b2df72a6239c9fdcd1d6906ea246
+Tag: https://git-wip-us.apache.org/repos/asf?p=zest-java.git;a=tag;h=refs/tags/<RELEASE-VERSION>-RC#
 
 The distributions to be voted on are located here: https://dist.apache.org/repos/dist/dev/zest/
 
@@ -419,6 +437,117 @@ I will promote|drop the distributions and artifacts.
 Votes on whether a package is ready to be released use majority approval -- i.e., at least three PMC members must vote affirmatively for release, and there must be more positive than negative votes.
 
 
+
+== Verifying a Release Candidate
+
+In order to verify a Apache Zest™ (Java Edition) release candidate you'll need valid `wget`, `md5sum`, `shasum` with support for SHA-5.12, GnuPG and Java JDK >= 7 installations.
+
+If the setup feels like a chore, keep reading, you probably already have what's needed for some of the checks.
+A single check is better than none.
+
+
+=== Download RC
+
+First go downloading the release candidate distributions from https://dist.apache.org/repos/dist/dev/zest/[dist.a.o/repos/dist/dev/zest].
+Including `*.MD5`, `*.SHA-512` and `*.asc` files.
+Put them in a directory:
+
+[source,shell]
+----
+cd zest-check-rc
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512
+wget https://dist.apache.org/repos/dist/dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc
+----
+
+
+=== Verify RC signatures
+
+Verify PGP signatures:
+
+[source,shell]
+----
+cd zest-check-rc
+gpg apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc
+gpg apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc
+gpg apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc
+gpg apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc
+----
+
+This must output `gpg: Good signature from "Signer Name <signer@ema.il>"` for each distribution.
+
+
+Verify MD5 checksum:
+
+[source,shell]
+----
+cd zest-check-rc
+echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5) apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz" | md5sum -c -
+echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5) apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip" | md5sum -c -
+echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5) apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz" | md5sum -c -
+echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5) apache-zest-java-<RELEASE-VERSION>-RC#-src.zip" | md5sum -c -
+----
+
+This must output `some-filename: OK` for each distribution.
+
+
+Verify SHA-512 checksum:
+
+[source,shell]
+----
+cd zest-check-rc
+echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5)  apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz" | shasum -a 512 -c -
+echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5)  apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip" | shasum -a 512 -c -
+echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5)  apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz" | shasum -a 512 -c -
+echo "$(cat apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5)  apache-zest-java-<RELEASE-VERSION>-RC#-src.zip" | shasum -a 512 -c -
+----
+
+This also must output `some-filename: OK` for each distribution.
+
+
+=== Verify source distribution
+
+Unpack the source distributions, we will use the `zip` distribution here, both should be checked. 
+
+[source,shell]
+----
+cd zest-check-rc
+unzip apache-zest-java-<RELEASE-VERSION>-RC#-src.zip
+cd apache-zest-java-<RELEASE-VERSION>-RC#-src
+----
+
+
+==== LICENSE & NOTICE
+
+Review `LICENSE` and `NOTICE` file(s) ;
+see the Apache's https://www.apache.org/dev/licensing-howto.html[Licensing Howto].
+
+Tools like https://creadur.apache.org/rat/[Apache Rat™] and other projects from https://creadur.apache.org/[Apache Creadur™] can come in handy.
+You can also `grep` the whole source tree.
+
+
+==== Build RC from sources
+
+[source,shell]
+----
+cd zest-check-rc/apache-zest-java-<RELEASE-VERSION>-RC#-src
+./gradlew check assemble
+----
+
+
 == VOTE passes
 
 
@@ -455,34 +584,62 @@ Move the release distributions, checksums and signatures from https://dist.apach
 ----
 cd zest-dist
 # Source ZIP
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.zip"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.zip.MD5"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.zip.SHA-512"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.zip.asc"
+export DIST_DEV_URL="https://dist.apache.org/repos/dist/dev/zest"
+export DIST_RELEASE_URL="https://dist.apache.org/repos/dist/release/zest"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.zip" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.MD5" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.zip.MD5" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.SHA-512" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.zip.SHA-512" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.zip.asc" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.zip.asc" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
 # Source TAR.GZ
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.tgz"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.tgz.MD5"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.tgz.SHA-512"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc" "release/zest/apache-zest-java-<RELEASE-VERSION>-src.tgz.asc"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.tgz" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.MD5" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.tgz.MD5" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.SHA-512" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.tgz.SHA-512" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-src.tgz.asc" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-src.tgz.asc" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
 # Binary ZIP
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.zip"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.zip.MD5"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.zip.SHA-512"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.zip.asc"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.zip" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.MD5" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.zip.MD5" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.SHA-512" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.zip.SHA-512" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.zip.asc" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.zip.asc" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
 # Binary TAR.GZ
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.tgz"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.tgz.MD5"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.tgz.SHA-512"
-svn move "dev/zest/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc" "release/zest/apache-zest-java-<RELEASE-VERSION>-bin.tgz.asc"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.tgz" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.MD5" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.tgz.MD5" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.SHA-512" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.tgz.SHA-512" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
+svn move "$DIST_DEV_URL/apache-zest-java-<RELEASE-VERSION>-RC#-bin.tgz.asc" \
+     "$DIST_RELEASE_URL/apache-zest-java-<RELEASE-VERSION>-bin.tgz.asc" \
+     -m "zest: promoting release <RELEASE-VERSION> distributions"
 ----
 
-And upload them:
-
-[source,shell]
-----
-cd zest-dist
-svn commit -m "zest: <RELEASE-VERSION>-RC# vote passed, promoted as <RELEASE-VERSION> release"
-----
+This produces one commit per file but keep svn history and runs fast, without re-uploading the distributions.
 
 
 === Wait 24 hours
