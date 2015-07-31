@@ -18,7 +18,7 @@
 ///////////////////////////////////////////////////////////////
 
 [[highlights,Highlights]]
-= Highligts =
+= Highlights =
 
 == Principles ==
 

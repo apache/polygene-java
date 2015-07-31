@@ -13,9 +13,10 @@
  */
 package org.qi4j.library.servlet;
 
-import javax.servlet.ServletContext;
 import org.qi4j.api.structure.Application;
 import org.qi4j.library.servlet.lifecycle.AbstractQi4jServletBootstrap;
+
+import javax.servlet.ServletContext;
 
 public final class Qi4jServletSupport
 {
@@ -28,7 +29,8 @@ public final class Qi4jServletSupport
      */
     public static Application application( ServletContext servletContext )
     {
-        return ( Application ) servletContext.getAttribute( APP_IN_CTX ); // TODO try/catch and find a suitable Zest exception
+        // TODO try/catch and find a suitable Zest exception
+        return ( Application ) servletContext.getAttribute( APP_IN_CTX );
     }
 
     private Qi4jServletSupport()
