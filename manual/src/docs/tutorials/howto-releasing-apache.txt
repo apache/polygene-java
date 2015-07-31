@@ -530,7 +530,7 @@ cd apache-zest-java-<RELEASE-VERSION>-RC#-src
 ----
 
 
-==== LICENSE & NOTICE
+*LICENSE & NOTICE*
 
 Review `LICENSE` and `NOTICE` file(s) ;
 see the Apache's https://www.apache.org/dev/licensing-howto.html[Licensing Howto].
@@ -539,7 +539,7 @@ Tools like https://creadur.apache.org/rat/[Apache Rat™] and other projects fro
 You can also `grep` the whole source tree.
 
 
-==== Build RC from sources
+*Build RC from sources*
 
 [source,shell]
 ----
