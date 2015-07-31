@@ -72,7 +72,7 @@ Declare a Groovy class in a classpath resource file located in the same package 
 .HelloSpeaker.groovy
 [snippet,groovy]
 ----
-source=libraries/lang-groovy/src/test/resources/org/apache/zest/lang/groovy/HelloSpeaker.groovy
+source=libraries/lang-groovy/src/test/resources/org/apache/zest/library/groovy/HelloSpeaker.groovy
 tag=script
 ----
 
