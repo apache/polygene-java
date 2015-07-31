@@ -92,7 +92,7 @@ public class ConstraintViolationException
     /**
      * Creates localized messages of all the constraint violations that has occured.
      * <p>
-     * The key "<code>zest.constraint.<i><strong>CompositeType</strong></i>.<i><string>methodName</string></i></code>"
+     * The key "<code>zest.constraint.<i><strong>CompositeType</strong></i>.<i><strong>methodName</strong></i></code>"
      * will be used to lookup the text formatting
      * pattern from the ResourceBundle, where <strong><code><i>CompositeType</i></code></strong> is the
      * class name of the Composite where the constraint was violated. If such key does not exist, then the
