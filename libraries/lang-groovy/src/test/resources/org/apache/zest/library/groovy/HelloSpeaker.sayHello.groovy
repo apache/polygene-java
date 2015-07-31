@@ -1,4 +1,3 @@
-package org.apache.zest.library.groovy
 /*
  * Copyright (c) 2015 the original author or authors
  *
@@ -16,6 +15,8 @@ package org.apache.zest.library.groovy
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.zest.library.groovy
+
 // START SNIPPET: script
 "Hello ${args[0]}!".toString()
 // END SNIPPET: script

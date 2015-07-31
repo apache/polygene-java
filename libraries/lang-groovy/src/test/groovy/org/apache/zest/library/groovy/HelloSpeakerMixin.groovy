@@ -18,7 +18,10 @@
 package org.apache.zest.library.groovy;
 
 // START SNIPPET: direct
-public class HelloSpeakerMixin implements HelloSpeaker {
+public class HelloSpeakerMixin
+        implements HelloSpeaker
+{
+
     public String sayHello( String name ) {
         "Hello $name!"
     }

@@ -56,20 +56,19 @@ public class GroovyMixin
     implements InvocationHandler
 {
 
-    private @This
-    Composite me;
+    @This
+    private Composite me;
+
     private final Map<Class, GroovyObject> groovyObjects;
 
     public static class AppliesTo
         implements AppliesToFilter
     {
-
         @Override
         public boolean appliesTo( Method method, Class compositeType, Class mixin, Class modelClass )
         {
             return getFunctionResource( method ) != null;
         }
-
     }
 
     public GroovyMixin()

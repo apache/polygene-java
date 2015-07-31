@@ -1,4 +1,3 @@
-package org.apache.zest.library.groovy.support
 /*
  * Copyright 2007 Rickard Öberg
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,6 +9,8 @@ package org.apache.zest.library.groovy.support
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+package org.apache.zest.library.groovy
+
 public class Mixin1
 {
     def This

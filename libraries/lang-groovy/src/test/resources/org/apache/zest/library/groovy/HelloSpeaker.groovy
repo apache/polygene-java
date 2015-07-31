@@ -1,4 +1,3 @@
-package org.apache.zest.library.groovy.support
 /*
  * Copyright (c) 2015 the original author or authors
  *
@@ -16,6 +15,8 @@ package org.apache.zest.library.groovy.support
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.zest.library.groovy
+
 // START SNIPPET: script
 class HelloSpeaker {
   def This
