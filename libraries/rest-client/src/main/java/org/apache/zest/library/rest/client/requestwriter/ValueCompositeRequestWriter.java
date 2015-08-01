@@ -98,7 +98,7 @@ public class ValueCompositeRequestWriter
                     throws IOException
                 {
                    setCharacterSet( CharacterSet.UTF_8 );
-                   valueSerializer.serialize( valueObject, new WriterOutputStream( writer ) );
+                   valueSerializer.serialize( valueObject, new WriterOutputStream( writer, CharacterSet.UTF_8 ) );
                 }
             });
          }

@@ -84,17 +84,17 @@ public class RestApplication
     {
         Router router = new Router( getContext() );
 
-        router.attach( "/entity", createFinder( EntitiesResource.class ) );
-        router.attach( "/entity/{identity}", createFinder( EntityResource.class ) );
+        router.attach( "/entity", newFinder( EntitiesResource.class ) );
+        router.attach( "/entity/{identity}", newFinder( EntityResource.class ) );
 
-        router.attach( "/query", createFinder( SPARQLResource.class ) );
-        router.attach( "/query/sparqlhtml", createFinder( SPARQLResource.class ) );
-        router.attach( "/query/index", createFinder( IndexResource.class ) );
+        router.attach( "/query", newFinder( SPARQLResource.class ) );
+        router.attach( "/query/sparqlhtml", newFinder( SPARQLResource.class ) );
+        router.attach( "/query/index", newFinder( IndexResource.class ) );
 
         return router;
     }
 
-    private Finder createFinder( Class<? extends ServerResource> resource )
+    private Finder newFinder( Class<? extends ServerResource> resource )
     {
         Finder finder = module.newObject( Finder.class );
         finder.setTargetClass( resource );

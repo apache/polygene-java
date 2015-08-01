@@ -49,8 +49,8 @@ apply plugin: 'project-report'
 apply from: 'libraries.gradle'
 apply plugin: 'org.nosphere.apache.rat'
 
-targetCompatibility = "1.7"
-sourceCompatibility = "1.7"
+targetCompatibility = "1.8"
+sourceCompatibility = "1.8"
 
 // Collect the modules that fulfills the Release Criteria.
 project.ext {
@@ -372,7 +372,7 @@ allprojects {
       }
     }
     jacoco {
-      toolVersion = '0.7.2.201409121644'
+      toolVersion = '0.7.5.201505241946'
     }
 
 //    // Create checkstyle report

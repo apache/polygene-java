@@ -436,50 +436,6 @@ public class ContextResourceClient
         return contextResourceFactory.newClient( reference );
     }
 
-    // Internal
-    private Object handlxeError( Response response )
-        throws ResourceException
-    {
-        if( response.getStatus().equals( Status.SERVER_ERROR_INTERNAL ) )
-        {
-            if( MediaType.APPLICATION_JAVA_OBJECT.equals( response.getEntity().getMediaType() ) )
-            {
-                try
-                {
-                    Object exception = new ObjectRepresentation( response.getEntity() ).getObject();
-                    throw new ResourceException( (Throwable) exception );
-                }
-                catch( IOException e )
-                {
-                    throw new ResourceException( e );
-                }
-                catch( ClassNotFoundException e )
-                {
-                    throw new ResourceException( e );
-                }
-            }
-
-            throw new ResourceException( Status.SERVER_ERROR_INTERNAL, response.getEntityAsText() );
-        }
-        else
-        {
-            if( response.getEntity() != null )
-            {
-                String text = response.getEntityAsText();
-                throw new ResourceException( response.getStatus().getCode(), response.getStatus()
-                    .getName(), text, response.getRequest().getResourceRef().toUri().toString() );
-            }
-            else
-            {
-                throw new ResourceException( response.getStatus().getCode(), response.getStatus()
-                    .getName(), response.getStatus().getDescription(), response.getRequest()
-                    .getResourceRef()
-                    .toUri()
-                    .toString() );
-            }
-        }
-    }
-
     @Override
     public String toString()
     {

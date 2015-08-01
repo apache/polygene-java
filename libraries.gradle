@@ -54,7 +54,7 @@ def osgiVersion = '4.2.0' // 4.3.0 Fails to compile! - 5.0.0 exists
 def pdfboxVersion = '1.8.5'
 def postgresqlVersion = '9.4-1201-jdbc41'
 def prefuseVersion = '0.21'
-def restletVersion = '2.0.15' // 2.2.1 Fails to compile!
+def restletVersion = '2.3.4'
 def rdfVersion = '2.7.9'
 def riakVersion = '1.4.4' // 2.0.x Fails to compile!
 def scalaVersion = '2.11.6'
@@ -115,7 +115,7 @@ rootProject.ext {
           // Restlet
           restlet: [
                   "org.restlet.jee:org.restlet:$restletVersion",
-                  "org.restlet.jee:org.restlet.ext.ssl:$restletVersion",
+//                  "org.restlet.jee:org.restlet.ext.ssl:$restletVersion",
                   "org.restlet.jee:org.restlet.ext.atom:$restletVersion",
                   "org.restlet.jee:org.restlet.ext.servlet:$restletVersion",
                   "org.restlet.jee:org.restlet.ext.slf4j:$restletVersion"
