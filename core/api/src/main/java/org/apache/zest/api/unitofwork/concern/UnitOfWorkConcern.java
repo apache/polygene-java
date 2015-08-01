@@ -117,7 +117,7 @@ public class UnitOfWorkConcern
             {
                 maxTries = retryAnnot.retries();
                 initialDelay = retryAnnot.initialDelay();
-                delayFactor = retryAnnot.delayFactory();
+                delayFactor = retryAnnot.delayFactor();
             }
             int retry = 0;
             while( true )

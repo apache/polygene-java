@@ -40,5 +40,5 @@ public @interface UnitOfWorkRetry
 
     long initialDelay() default 0;
 
-    long delayFactory() default 10;
+    long delayFactor() default 10;
 }
