@@ -68,9 +68,10 @@ public @interface UnitOfWorkRetry
      * </code></pre>
      * where retry will be 0 after first UnitOfWork had a {@link ConcurrentEntityModificationException} and is 1 after
      * the first retry and so forth.
-     * <p/>
+     * <p>
      * So, with the {@code retries=4, initialDelay=5, delayFactor=20} the 3 delays between the UnitOfWorks will be
      * {@code 5ms, 25ms, 45ms}
+     * </p>
      *
      * @return The number of milliseconds per retry, except the first one, that should be added to the delay between
      * tries.
