@@ -65,31 +65,40 @@ class Documentation extends DefaultTask
 
   def void installAsciidocFilters()
   {
+    def digester = java.security.MessageDigest.getInstance( 'SHA' )
+    def filtersDir = project.rootProject.file( 'buildSrc/src/asciidoc/filters' )
     def userHome = new File( System.getProperty( 'user.home' ) )
-    def snippetDir = new File( userHome, '.asciidoc/filters/snippet' ).absoluteFile
-    if( !snippetDir.exists() )
-    {
-      println "Installing [snippet] into $snippetDir"
-      snippetDir.mkdirs()
-      project.copy {
-        from "${project.rootDir}/buildSrc/src/bin"
-        into snippetDir
-        include 'snippet.*'
+    def dotAsciidocFiltersDir = new File( userHome, '.asciidoc/filters' )
+    def installSnippets = false
+    filtersDir.eachFileRecurse( groovy.io.FileType.FILES ) { originalFile ->
+      def targetFile = new File( dotAsciidocFiltersDir, (originalFile.toURI() as String) - (filtersDir.toURI() as String) )
+      if( !targetFile.exists() )
+      {
+        installSnippets = true
       }
-      ant.chmod( dir: snippetDir, perm: '755', includes: 'snippet.py' )
+      else
+      {
+        def originalDigest = digester.digest( originalFile.bytes )
+        def targetDigest = digester.digest( targetFile.bytes )
+        if( originalDigest != targetDigest )
+        {
+          installSnippets = true
+        }
+      }
     }
-
-    def devstatusDir = new File( userHome, '.asciidoc/filters/devstatus' ).absoluteFile
-    if( !devstatusDir.exists() )
+    if( installSnippets )
     {
-      println "Installing [devstatus] into $devstatusDir"
-      snippetDir.mkdirs()
-      project.copy {
-        from "${project.rootDir}/buildSrc/src/bin"
-        into devstatusDir
-        include 'devstatus.*'
+      dotAsciidocFiltersDir.mkdirs()
+      project.rootProject.copy {
+        from filtersDir
+        into dotAsciidocFiltersDir
       }
-      ant.chmod( dir: devstatusDir, perm: '755', includes: 'devstatus.py' )
+      dotAsciidocFiltersDir.eachFileRecurse( groovy.io.FileType.FILES ) { file ->
+        if( file.name.endsWith( '.py' ) ) {
+          ant.chmod( file: file.absolutePath, perm: '755' )
+        }
+      }
+      println "Zest Asciidoc Filters Installed!"
     }
   }
 
