@@ -372,7 +372,7 @@ allprojects {
       }
     }
     jacoco {
-      toolVersion = '0.7.2.201409121644'
+      toolVersion = '0.7.5.201505241946'
     }
 
 //    // Create checkstyle report
@@ -469,60 +469,63 @@ configurations {
   jacoco
 }
 dependencies {
-  jacoco 'org.jacoco:org.jacoco.ant:0.7.2.201409121644'
+  jacoco 'org.jacoco:org.jacoco.ant:0.7.5.201505241946'
 }
 // Generate a global code codeverage report
 task coverageReport {
   dependsOn subprojects*.test
   def outputPath = "build/reports/coverage"
-  def coveredProjects = subprojects.findAll { p -> new File( "${p.buildDir.path}/jacoco" ).exists() }
-  def coreProjects = coveredProjects.findAll { p -> p.name.startsWith('org.qi4j.core' ) }
-  def libProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.lib' ) }
-  def extProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.ext' ) }
-  def toolsProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.tool' ) }
-  def tutoProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.tuto' ) }
-  def samplesProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.qi4j.sample' ) }
-  ant {
-    taskdef name:'jacocoreport', classname: 'org.jacoco.ant.ReportTask', classpath: configurations.jacoco.asPath
-    mkdir dir: outputPath
-    jacocoreport {
-      executiondata {
-        coveredProjects.collect { p -> fileset( dir: "${p.buildDir.path}/jacoco" ) { include( name: '*.exec' ) } }
-      }
-      structure( name: "Apache Zest™ (Java Edition) SDK" ) {
-        group( name: "Core" ) {
-          classfiles { coreProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
-          sourcefiles { coreProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
-        }
-        group( name: "Libraries" ) {
-          classfiles { libProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
-          sourcefiles { libProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
-        }
-        group( name: "Extensions" ) {
-          classfiles { extProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
-          sourcefiles { extProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
-        }
-        group( name: "Tools" ) {
-          classfiles { toolsProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
-          sourcefiles { toolsProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
-        }
-        group( name: "Tutorials" ) {
-          classfiles { tutoProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
-          sourcefiles { tutoProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
-        }
-        group( name: "Samples" ) {
-          classfiles { samplesProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
-          sourcefiles { samplesProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
-        }
-      }
-      csv  destfile: "${outputPath}/jacoco.csv", encoding: "UTF-8"
-      xml  destfile: "${outputPath}/jacoco.xml", encoding: "UTF-8"
-      html destdir:  outputPath, encoding: "UTF-8", locale: "en", footer: "Apache Zest™ (Java Edition) SDK"
-    }
-  }
   inputs.dir subprojects.collect { p -> "${p.buildDir.path}/jacoco" }
   outputs.dir outputPath
+  doLast {
+    def coveredProjects = subprojects.findAll { p -> new File( "${p.buildDir.path}/jacoco" ).exists() }
+    def coreProjects = coveredProjects.findAll { p -> p.name.startsWith('org.apache.zest.core' ) }
+    def libProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.apache.zest.lib' ) }
+    def extProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.apache.zest.ext' ) }
+    def toolsProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.apache.zest.tool' ) }
+    def tutoProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.apache.zest.tuto' ) }
+    def samplesProjects = coveredProjects.findAll { p -> p.name.startsWith( 'org.apache.zest.sample' ) }
+    ant {
+      taskdef name:'jacocoreport', classname: 'org.jacoco.ant.ReportTask', classpath: configurations.jacoco.asPath
+      mkdir dir: outputPath
+      jacocoreport {
+        executiondata {
+          coveredProjects.collect { p -> fileset( dir: "${p.buildDir.path}/jacoco" ) { include( name: '*.exec' ) } }
+        }
+        structure( name: "Apache Zest™ (Java Edition) SDK" ) {
+          group( name: "Core" ) {
+            classfiles { coreProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
+            sourcefiles { coreProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
+          }
+          group( name: "Libraries" ) {
+            classfiles { libProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
+            sourcefiles { libProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
+          }
+          group( name: "Extensions" ) {
+            classfiles { extProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
+            sourcefiles { extProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
+          }
+          group( name: "Tools" ) {
+            classfiles { toolsProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
+            sourcefiles { toolsProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
+          }
+          group( name: "Tutorials" ) {
+            classfiles { tutoProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
+            sourcefiles { tutoProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
+          }
+          group( name: "Samples" ) {
+            classfiles { samplesProjects.collect { p -> fileset dir: "${p.buildDir.path}/classes/main" } }
+            sourcefiles { samplesProjects.collect { p -> fileset dir: "${p.projectDir.path}/src/main/java" } }
+          }
+        }
+        csv  destfile: "${outputPath}/jacoco.csv", encoding: "UTF-8"
+        xml  destfile: "${outputPath}/jacoco.xml", encoding: "UTF-8"
+        html destdir:  outputPath, encoding: "UTF-8", locale: "en", footer: "Apache Zest™ (Java Edition) SDK"
+      }
+    }
+  }
 }
+check.dependsOn coverageReport
 
 
 // Build the whole SDK public Javadoc
@@ -988,7 +991,7 @@ task checkReleaseSpec {
     def notReleasable = [:]
     releaseApprovedProjects*.configurations.runtime.allDependencies.findAll({ it instanceof ProjectDependency }).each { dep ->
       def depNotReleaseApproved = releaseApprovedProjects.findAll { rp ->
-        rp.group == dep.dependencyProject.group && rp.name == dep.dependencyProject.name 
+        rp.group == dep.dependencyProject.group && rp.name == dep.dependencyProject.name
       }.isEmpty()
       if( depNotReleaseApproved )
       {
