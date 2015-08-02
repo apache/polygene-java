@@ -15,28 +15,39 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.apache.zest.bootstrap.assembly;
 
-import org.junit.Test;
-import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.api.structure.Application;
-import org.apache.zest.bootstrap.AssemblyException;
+package org.apache.zest.library.restlet;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import java.util.List;
+import org.apache.zest.api.common.Optional;
+import org.apache.zest.api.mixin.Mixins;
+import org.apache.zest.api.property.Property;
+import org.apache.zest.library.restlet.filters.NameFilter;
 
-public class LayeredApplicationAssemblerTest
+@Mixins( RestForm.Mixin.class )
+public interface RestForm
 {
-    @Test
-    public void validateThatAssemblerCreatesApplication()
-        throws AssemblyException, ActivationException
-    {
-        TestApplication assembler = new TestApplication( "Test Application", "1.0.1", Application.Mode.test );
-        assembler.initialize();
-        assembler.start();
+    FormField field( String name );
 
-        assertThat( assembler.application().name(), equalTo("Test Application") );
-        assertThat( assembler.application().version(), equalTo("1.0.1") );
+    @Optional
+    Property<RestLink> link();
+
+    Property<List<FormField>> fields();
+
+    abstract class Mixin
+        implements RestForm
+    {
+        @Override
+        public FormField field( String name )
+        {
+            java.util.Optional<FormField> exists = fields().get().stream().filter( new NameFilter( name ) ).findFirst();
+            if( exists.isPresent() )
+            {
+                return exists.get();
+            }
+            return null;
+        }
     }
 }

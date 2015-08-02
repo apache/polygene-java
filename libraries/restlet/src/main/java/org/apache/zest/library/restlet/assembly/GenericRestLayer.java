@@ -15,28 +15,22 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.apache.zest.bootstrap.assembly;
 
-import org.junit.Test;
-import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.api.structure.Application;
+package org.apache.zest.library.restlet.assembly;
+
 import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.LayerAssembly;
+import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-public class LayeredApplicationAssemblerTest
+public class GenericRestLayer extends LayeredLayerAssembler
 {
-    @Test
-    public void validateThatAssemblerCreatesApplication()
-        throws AssemblyException, ActivationException
-    {
-        TestApplication assembler = new TestApplication( "Test Application", "1.0.1", Application.Mode.test );
-        assembler.initialize();
-        assembler.start();
 
-        assertThat( assembler.application().name(), equalTo("Test Application") );
-        assertThat( assembler.application().version(), equalTo("1.0.1") );
+    @Override
+    public LayerAssembly assemble( LayerAssembly layer )
+        throws AssemblyException
+    {
+        return null;
     }
 }

@@ -15,28 +15,42 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.apache.zest.bootstrap.assembly;
 
-import org.junit.Test;
-import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.api.structure.Application;
-import org.apache.zest.bootstrap.AssemblyException;
+package org.apache.zest.library.restlet.identity;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import org.apache.zest.api.entity.Identity;
+import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.injection.scope.This;
+import org.apache.zest.api.mixin.Mixins;
 
-public class LayeredApplicationAssemblerTest
+@Mixins( CanonicalName.Mixin.class )
+public interface CanonicalName
 {
-    @Test
-    public void validateThatAssemblerCreatesApplication()
-        throws AssemblyException, ActivationException
-    {
-        TestApplication assembler = new TestApplication( "Test Application", "1.0.1", Application.Mode.test );
-        assembler.initialize();
-        assembler.start();
+    String name();
 
-        assertThat( assembler.application().name(), equalTo("Test Application") );
-        assertThat( assembler.application().version(), equalTo("1.0.1") );
+    Class type();
+
+    class Mixin
+        implements CanonicalName
+    {
+        @This
+        private Identity me;
+
+        @Service
+        private IdentityManager manager;
+
+        @Override
+        public String name()
+        {
+            return manager.extractName( me.identity().get() );
+        }
+
+        @Override
+        public Class type()
+        {
+            return manager.extractType( me.identity().get() );
+        }
     }
 }

@@ -15,28 +15,28 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.apache.zest.bootstrap.assembly;
 
-import org.junit.Test;
-import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.api.structure.Application;
-import org.apache.zest.bootstrap.AssemblyException;
+package org.apache.zest.library.restlet.repository;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-public class LayeredApplicationAssemblerTest
+public class EntityTypeDescriptor
 {
-    @Test
-    public void validateThatAssemblerCreatesApplication()
-        throws AssemblyException, ActivationException
-    {
-        TestApplication assembler = new TestApplication( "Test Application", "1.0.1", Application.Mode.test );
-        assembler.initialize();
-        assembler.start();
+    private Class entityType;
 
-        assertThat( assembler.application().name(), equalTo("Test Application") );
-        assertThat( assembler.application().version(), equalTo("1.0.1") );
+    public EntityTypeDescriptor( Class entityType )
+    {
+        this.entityType = entityType;
+    }
+
+    public Class entityType()
+    {
+        return entityType;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "EntityTypeDescriptor{" + entityType + '}';
     }
 }

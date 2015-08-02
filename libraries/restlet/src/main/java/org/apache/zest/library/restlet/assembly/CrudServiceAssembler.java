@@ -15,28 +15,27 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.apache.zest.bootstrap.assembly;
+package org.apache.zest.library.restlet.assembly;
 
-import org.junit.Test;
-import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.api.structure.Application;
+import org.apache.zest.api.common.Visibility;
+import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.library.restlet.identity.IdentityManager;
+import org.apache.zest.library.restlet.identity.IdentityMappingConfiguration;
+import org.apache.zest.library.restlet.repository.RepositoryLocator;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-public class LayeredApplicationAssemblerTest
+public class CrudServiceAssembler
+    implements Assembler
 {
-    @Test
-    public void validateThatAssemblerCreatesApplication()
-        throws AssemblyException, ActivationException
+    @Override
+    public void assemble( ModuleAssembly module )
+        throws AssemblyException
     {
-        TestApplication assembler = new TestApplication( "Test Application", "1.0.1", Application.Mode.test );
-        assembler.initialize();
-        assembler.start();
-
-        assertThat( assembler.application().name(), equalTo("Test Application") );
-        assertThat( assembler.application().version(), equalTo("1.0.1") );
+        module.entities( IdentityMappingConfiguration.class ).visibleIn( Visibility.module );
+        module.services( IdentityManager.class ).visibleIn( Visibility.application ).instantiateOnStartup();
+        module.services( RepositoryLocator.class ).visibleIn( Visibility.application );
     }
 }

@@ -15,28 +15,27 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.apache.zest.bootstrap.assembly;
 
-import org.junit.Test;
-import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.api.structure.Application;
-import org.apache.zest.bootstrap.AssemblyException;
+package org.apache.zest.library.restlet.filters;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import java.util.function.Predicate;
+import org.apache.zest.library.restlet.FormField;
+import org.apache.zest.library.restlet.HasName;
 
-public class LayeredApplicationAssemblerTest
+public class NameFilter implements Predicate<HasName>
 {
-    @Test
-    public void validateThatAssemblerCreatesApplication()
-        throws AssemblyException, ActivationException
-    {
-        TestApplication assembler = new TestApplication( "Test Application", "1.0.1", Application.Mode.test );
-        assembler.initialize();
-        assembler.start();
+    private final String name;
 
-        assertThat( assembler.application().name(), equalTo("Test Application") );
-        assertThat( assembler.application().version(), equalTo("1.0.1") );
+    public NameFilter( String name )
+    {
+        this.name = name;
+    }
+
+    @Override
+    public boolean test( HasName hasName )
+    {
+        return hasName.name().get().equals(name);
     }
 }

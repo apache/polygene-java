@@ -15,28 +15,33 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.apache.zest.bootstrap.assembly;
 
-import org.junit.Test;
-import org.apache.zest.api.activation.ActivationException;
-import org.apache.zest.api.structure.Application;
+package org.apache.zest.library.restlet.assembly.configuration;
+
 import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.LayerAssembly;
+import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.layered.LayerAssembler;
+import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-public class LayeredApplicationAssemblerTest
+public class ConfigurationLayer extends LayeredLayerAssembler
+    implements LayerAssembler
 {
-    @Test
-    public void validateThatAssemblerCreatesApplication()
-        throws AssemblyException, ActivationException
-    {
-        TestApplication assembler = new TestApplication( "Test Application", "1.0.1", Application.Mode.test );
-        assembler.initialize();
-        assembler.start();
+    public static final String NAME = "Configuration Layer";
+    private ModuleAssembly configModule;
 
-        assertThat( assembler.application().name(), equalTo("Test Application") );
-        assertThat( assembler.application().version(), equalTo("1.0.1") );
+    @Override
+    public LayerAssembly assemble( LayerAssembly layer )
+        throws AssemblyException
+    {
+        configModule = createModule( layer, ConfigurationModule.class );
+        return layer;
+    }
+
+    public ModuleAssembly configModule()
+    {
+        return configModule;
     }
 }

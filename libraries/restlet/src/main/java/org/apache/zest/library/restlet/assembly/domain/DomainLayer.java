@@ -15,28 +15,33 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.apache.zest.bootstrap.assembly;
 
-import org.junit.Test;
-import org.apache.zest.api.activation.ActivationException;
+package org.apache.zest.library.restlet.assembly.domain;
+
 import org.apache.zest.api.structure.Application;
+import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.LayerAssembly;
+import org.apache.zest.bootstrap.layered.LayerAssembler;
+import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.zest.functional.Function;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-public class LayeredApplicationAssemblerTest
+public class DomainLayer extends LayeredLayerAssembler
+    implements LayerAssembler
 {
-    @Test
-    public void validateThatAssemblerCreatesApplication()
-        throws AssemblyException, ActivationException
-    {
-        TestApplication assembler = new TestApplication( "Test Application", "1.0.1", Application.Mode.test );
-        assembler.initialize();
-        assembler.start();
+    public static final String NAME = "Domain Layer";
 
-        assertThat( assembler.application().name(), equalTo("Test Application") );
-        assertThat( assembler.application().version(), equalTo("1.0.1") );
+    @Override
+    public LayerAssembly assemble( LayerAssembly layer )
+        throws AssemblyException
+    {
+        return layer;
+    }
+
+    public static Function<Application, Module> typeFinder()
+    {
+        return application -> application.findModule( "Domain Layer", "TypeFinder Module" );
     }
 }
