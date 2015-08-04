@@ -36,12 +36,19 @@ is NOT under the usual http://www.opensource.org/licenses/Apache-2.0[Apache Lice
 
 We would like to thank Fredrik Kalseth for his explicit approval as well.
 
+Since then, this article went offline but can be found on the
+https://web.archive.org/web/20130414005509/http://iridescence.no/post/composite-oriented-programming.aspx[Internet Archive].
+
 
 == http://iridescence.no/post/composite-oriented-programming.aspx[Composite Oriented Programming] ==
 
-I've written a series of post on AOP lately (here, here and here), and in the last part I promised to tackle mixins
-and introductions in a future post. When I was doing my research for just that, I came cross a Java framework (just
-humor me :p) called Zest™ (that's 'chee for jay'), written by Swedish Richard Öberg, pioneering the idea of Composite
+I've written a series of post on AOP lately
+(https://web.archive.org/web/20090417052136/http://www.iridescence.no/post/Aspect-Oriented-Programming---A-Primer.aspx[here],
+https://web.archive.org/web/20091222150653/http://www.iridescence.no/post/Implementing-an-AOP-Framework-Part-1.aspx[here]
+and https://web.archive.org/web/20130417090819/http://www.iridescence.no/post/Implementing-an-AOP-Framework-Part-2.aspx[here]),
+and in the last part I promised to tackle mixins and introductions in a future post.
+When I was doing my research for just that, I came cross a Java framework (just
+humor me :p) called Apache Zest™, written by Swedish Richard Öberg, pioneering the idea of Composite
 Oriented Programming, which instantly put a spell on me. Essentially, it takes the concepts from Aspect Oriented
 Programming to the extreme, and for the past week I’ve dug into it with a passion. This post is the first fruits of
 my labor.
