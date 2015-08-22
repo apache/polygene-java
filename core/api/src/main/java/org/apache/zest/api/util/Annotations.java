@@ -18,7 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
-import org.apache.zest.functional.Function;
+import java.util.function.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 
@@ -37,9 +37,9 @@ public final class Annotations
     public static Function<Type, Iterable<Annotation>> ANNOTATIONS_OF = Classes.forTypes( new Function<Type, Iterable<Annotation>>()
     {
         @Override
-        public Iterable<Annotation> map( Type type )
+        public Iterable<Annotation> apply( Type type )
         {
-            return Iterables.iterable( Classes.RAW_CLASS.map( type ).getAnnotations() );
+            return Iterables.iterable( Classes.RAW_CLASS.apply( type ).getAnnotations() );
         }
     } );
 
@@ -60,7 +60,7 @@ public final class Annotations
         return new Function<Annotation, Class<? extends Annotation>>()
         {
             @Override
-            public Class<? extends Annotation> map( Annotation annotation )
+            public Class<? extends Annotation> apply( Annotation annotation )
             {
                 return annotation.annotationType();
             }
@@ -81,7 +81,7 @@ public final class Annotations
 
     public static <T extends Annotation> T annotationOn( Type type, Class<T> annotationType )
     {
-        return annotationType.cast( Classes.RAW_CLASS.map( type ).getAnnotation( annotationType ) );
+        return annotationType.cast( Classes.RAW_CLASS.apply( type ).getAnnotation( annotationType ) );
     }
 
     public static Iterable<Annotation> findAccessorAndTypeAnnotationsIn( AccessibleObject accessor )

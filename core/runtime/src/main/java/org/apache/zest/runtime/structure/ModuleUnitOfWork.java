@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.common.QualifiedName;
@@ -48,7 +49,6 @@ import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 import org.apache.zest.runtime.association.AssociationInstance;
@@ -619,7 +619,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public Object map( PropertyDescriptor propertyDescriptor )
+        public Object apply( PropertyDescriptor propertyDescriptor )
         {
             EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
             return entityState.propertyValueOf( propertyDescriptor.qualifiedName() );
@@ -637,7 +637,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public EntityReference map( AssociationDescriptor associationDescriptor )
+        public EntityReference apply( AssociationDescriptor associationDescriptor )
         {
             EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
             return entityState.associationValueOf( associationDescriptor.qualifiedName() );
@@ -655,7 +655,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+        public Iterable<EntityReference> apply( AssociationDescriptor associationDescriptor )
         {
             EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
             return entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() );
@@ -673,7 +673,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public Map<String, EntityReference> map( AssociationDescriptor associationDescriptor )
+        public Map<String, EntityReference> apply( AssociationDescriptor associationDescriptor )
         {
             Map<String, EntityReference> result = new HashMap<>();
             EntityState entityState = EntityInstance.entityInstanceOf( (EntityComposite) entity ).entityState();
@@ -697,7 +697,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public Object map( PropertyDescriptor propertyDescriptor )
+        public Object apply( PropertyDescriptor propertyDescriptor )
         {
             StateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
             Property<Object> property = state.propertyFor( propertyDescriptor.accessor() );
@@ -717,7 +717,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public EntityReference map( AssociationDescriptor associationDescriptor )
+        public EntityReference apply( AssociationDescriptor associationDescriptor )
         {
             AssociationStateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
             AssociationInstance<T> association = (AssociationInstance<T>) state.associationFor( associationDescriptor.accessor() );
@@ -737,7 +737,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+        public Iterable<EntityReference> apply( AssociationDescriptor associationDescriptor )
         {
             AssociationStateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
             ManyAssociationInstance<T> association =
@@ -757,7 +757,7 @@ public class ModuleUnitOfWork
         }
 
         @Override
-        public Map<String, EntityReference> map( AssociationDescriptor associationDescriptor )
+        public Map<String, EntityReference> apply( AssociationDescriptor associationDescriptor )
         {
             AssociationStateHolder state = ValueInstance.valueInstanceOf( (ValueComposite) value ).state();
             NamedAssociationInstance<T> association =

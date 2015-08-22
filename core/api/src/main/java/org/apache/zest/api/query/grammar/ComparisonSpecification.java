@@ -46,7 +46,7 @@ public abstract class ComparisonSpecification<T>
     {
         try
         {
-            Property<T> prop = property.map( item );
+            Property<T> prop = property.apply( item );
 
             if( prop == null )
             {

@@ -16,6 +16,7 @@
 package org.apache.zest.api.unitofwork;
 
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.composite.AmbiguousTypeException;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -27,7 +28,6 @@ import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.structure.MetaInfoHolder;
 import org.apache.zest.api.usecase.Usecase;
-import org.apache.zest.functional.Function;
 
 /**
  * All operations on entities goes through an UnitOfWork.

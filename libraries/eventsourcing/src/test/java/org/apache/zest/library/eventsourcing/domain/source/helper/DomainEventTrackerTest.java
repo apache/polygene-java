@@ -16,6 +16,7 @@ package org.apache.zest.library.eventsourcing.domain.source.helper;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.function.Function;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
@@ -34,7 +35,6 @@ import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ImportedServiceDeclaration;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Function;
 import org.apache.zest.io.Output;
 import org.apache.zest.io.Outputs;
 import org.apache.zest.io.Transforms;
@@ -163,7 +163,7 @@ public class DomainEventTrackerTest
 
                Output<UnitOfWorkDomainEventsValue,RuntimeException> map = Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
                        {
-                           public String map( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
+                           public String apply( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
                            {
                                return unitOfWorkDomainEventsValue.toString();
                            }

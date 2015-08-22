@@ -17,13 +17,13 @@ package org.apache.zest.runtime.injection.provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.function.Function;
 import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.qualifier.Qualifier;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.InvalidInjectionException;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Specifications;
@@ -66,7 +66,7 @@ public final class ServiceInjectionProviderFactory
         if( dependencyModel.rawInjectionType().equals( Iterable.class ) )
         {
             Type iterableType = ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ];
-            if( Classes.RAW_CLASS.map( iterableType ).equals( ServiceReference.class ) )
+            if( Classes.RAW_CLASS.apply( iterableType ).equals( ServiceReference.class ) )
             {
                 // @Service Iterable<ServiceReference<MyService<Foo>> serviceRefs
                 Type serviceType = ( (ParameterizedType) iterableType ).getActualTypeArguments()[ 0 ];
@@ -129,7 +129,7 @@ public final class ServiceInjectionProviderFactory
         }
 
         @Override
-        public Object map( ServiceReference<?> objectServiceReference )
+        public Object apply( ServiceReference<?> objectServiceReference )
         {
             return objectServiceReference.get();
         }

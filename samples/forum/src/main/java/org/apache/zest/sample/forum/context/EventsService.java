@@ -20,6 +20,7 @@ package org.apache.zest.sample.forum.context;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.function.Function;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
@@ -29,7 +30,6 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCallback;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.value.ValueBuilder;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.rest.server.api.ObjectSelection;
 import org.apache.zest.sample.forum.domainevent.DomainEventValue;
@@ -78,7 +78,7 @@ public interface EventsService
             Iterables.addAll( prototype.selection().get(), Iterables.map( new Function<Object, String>()
             {
                 @Override
-                public String map( Object o )
+                public String apply( Object o )
                 {
                     return o.toString();
                 }

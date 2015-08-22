@@ -17,10 +17,10 @@ package org.apache.zest.runtime.composite;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.PropertyDescriptor;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.association.ManyAssociationModel;
 import org.apache.zest.runtime.association.NamedAssociationModel;
@@ -54,25 +54,25 @@ public class FunctionStateResolver
     @Override
     public Object getPropertyState( PropertyDescriptor propertyDescriptor )
     {
-        return propertyFunction.map( propertyDescriptor );
+        return propertyFunction.apply( propertyDescriptor );
     }
 
     @Override
     public EntityReference getAssociationState( AssociationDescriptor associationDescriptor )
     {
-        return associationFunction.map( associationDescriptor );
+        return associationFunction.apply( associationDescriptor );
     }
 
     @Override
     public List<EntityReference> getManyAssociationState( AssociationDescriptor associationDescriptor )
     {
-        return Iterables.toList( manyAssociationFunction.map( associationDescriptor ) );
+        return Iterables.toList( manyAssociationFunction.apply( associationDescriptor ) );
     }
 
     @Override
     public Map<String, EntityReference> getNamedAssociationState( AssociationDescriptor associationDescriptor )
     {
-        return namedAssociationFunction.map( associationDescriptor );
+        return namedAssociationFunction.apply( associationDescriptor );
     }
 
     public void populateState( EntityModel model, EntityState state )

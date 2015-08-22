@@ -195,7 +195,7 @@ public class QuikitServlet
         throws ParserConfigurationException, SAXException, IOException, RenderException, TransformerException
     {
         Class<? extends Composite> pageClass = (Class<Composite>) first( ZestAPI.FUNCTION_DESCRIPTOR_FOR
-                                                                             .map( page ).types() );
+                                                                             .apply( page ).types() );
 
         String pageName = pageClass.getSimpleName() + ".html";
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();

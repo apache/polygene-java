@@ -138,7 +138,7 @@ public interface ConfigurationManagerService
                 }
 
                 // Check if service has configuration
-                CompositeInstance compositeInstance = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( (Composite) service );
+                CompositeInstance compositeInstance = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (Composite) service );
                 try
                 {
                     Configuration config = compositeInstance.newProxy( Configuration.class );
@@ -406,7 +406,7 @@ public interface ConfigurationManagerService
                         {
                             // Refresh configuration
                             CompositeInstance compositeInstance = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF
-                                .map( (Composite) serviceRef.get() );
+                                .apply( (Composite) serviceRef.get() );
                             compositeInstance.newProxy( Configuration.class ).refresh();
 
                             ( (Activation) serviceRef ).passivate();

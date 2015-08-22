@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
@@ -58,7 +59,6 @@ import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
@@ -1689,7 +1689,7 @@ public abstract class AbstractSQLStartup
                + Iterables.toString( descriptor.types(), new Function<Class<?>, String>()
         {
             @Override
-            public String map( Class<?> item )
+            public String apply( Class<?> item )
             {
                 return item.getName();
             }
@@ -1738,7 +1738,7 @@ public abstract class AbstractSQLStartup
                         new Function<Class<?>, String>()
                         {
                             @Override
-                            public String map( Class<?> from )
+                            public String apply( Class<?> from )
                             {
                                 return from.getName();
                             }

@@ -14,6 +14,7 @@
 
 package org.apache.zest.functional;
 
+import java.util.function.Function;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -74,7 +75,7 @@ public class SpecificationsTest
         Function<Object, String> stringifier = new Function<Object, String>()
         {
             @Override
-            public String map( Object s )
+            public String apply( Object s )
             {
                 return s.toString();
             }

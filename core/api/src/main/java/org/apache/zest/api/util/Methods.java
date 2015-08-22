@@ -20,7 +20,7 @@ package org.apache.zest.api.util;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import org.apache.zest.functional.Function;
+import java.util.function.Function;
 import org.apache.zest.functional.Specification;
 
 import static org.apache.zest.functional.Iterables.iterable;
@@ -35,16 +35,16 @@ public class Methods
         @Override
         public boolean satisfiedBy( Type item )
         {
-            return Classes.RAW_CLASS.map( item ).getDeclaredMethods().length > 0;
+            return Classes.RAW_CLASS.apply( item ).getDeclaredMethods().length > 0;
         }
     };
 
     public static final Function<Type, Iterable<Method>> METHODS_OF = Classes.forTypes( new Function<Type, Iterable<Method>>()
     {
         @Override
-        public Iterable<Method> map( Type type )
+        public Iterable<Method> apply( Type type )
         {
-            return iterable( Classes.RAW_CLASS.map( type ).getDeclaredMethods() );
+            return iterable( Classes.RAW_CLASS.apply( type ).getDeclaredMethods() );
         }
     } );
 }

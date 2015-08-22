@@ -196,7 +196,7 @@ public final class ServiceModel extends CompositeModel
                     .equals( Configuration.class ) && dependencyModel.injectionType() instanceof ParameterizedType )
             {
                 Class<?> type = Classes.RAW_CLASS
-                    .map( ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ] );
+                    .apply( ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ] );
                 if( injectionClass == null )
                 {
                     injectionClass = type;

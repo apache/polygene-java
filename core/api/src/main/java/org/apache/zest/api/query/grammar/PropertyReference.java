@@ -18,9 +18,9 @@
  */
 package org.apache.zest.api.query.grammar;
 
+import java.util.function.Function;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.functional.Function;
 
 /**
  * Property Reference.

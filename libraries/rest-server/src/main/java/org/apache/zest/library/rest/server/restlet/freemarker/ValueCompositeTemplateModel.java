@@ -24,12 +24,12 @@ import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
+import java.util.function.Function;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 
 /**
@@ -46,7 +46,7 @@ public class ValueCompositeTemplateModel
     {
         this.composite = composite;
         this.wrapper = wrapper;
-        descriptor = (ValueDescriptor) ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( composite );
+        descriptor = (ValueDescriptor) ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite );
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ValueCompositeTemplateModel
         return (TemplateCollectionModel) wrapper.wrap( Iterables.map( new Function<PropertyDescriptor, String>()
         {
             @Override
-            public String map( PropertyDescriptor propertyDescriptor )
+            public String apply( PropertyDescriptor propertyDescriptor )
             {
                 return propertyDescriptor.qualifiedName().name();
             }
@@ -77,7 +77,7 @@ public class ValueCompositeTemplateModel
         return (TemplateCollectionModel) wrapper.wrap( Iterables.map( new Function<Property<?>, Object>()
         {
             @Override
-            public Object map( Property<?> objectProperty )
+            public Object apply( Property<?> objectProperty )
             {
                 try
                 {
@@ -88,7 +88,7 @@ public class ValueCompositeTemplateModel
                     throw new IllegalStateException( e );
                 }
             }
-        }, ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( composite ).state().properties() ).iterator() );
+        }, ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite ).state().properties() ).iterator() );
     }
 
     @Override
@@ -98,7 +98,7 @@ public class ValueCompositeTemplateModel
         try
         {
             return wrapper.wrap( ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF
-                                     .map( composite )
+                                     .apply( composite )
                                      .state()
                                      .propertyFor( descriptor.state().findPropertyModelByName( key ).accessor() )
                                      .get() );

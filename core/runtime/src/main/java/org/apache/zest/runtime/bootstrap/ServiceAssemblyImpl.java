@@ -17,6 +17,7 @@ package org.apache.zest.runtime.bootstrap;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.common.InvalidApplicationException;
@@ -25,7 +26,6 @@ import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.ServiceAssembly;
 import org.apache.zest.bootstrap.StateDeclarations;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.service.ServiceModel;
@@ -88,7 +88,7 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
         Function<Type, Iterable<Class<? extends Activator<?>>>> function = new Function<Type, Iterable<Class<? extends Activator<?>>>>()
         {
             @Override
-            public Iterable<Class<? extends Activator<?>>> map( Type type )
+            public Iterable<Class<? extends Activator<?>>> apply( Type type )
             {
                 Activators activators = Annotations.annotationOn( type, Activators.class );
                 if( activators == null )

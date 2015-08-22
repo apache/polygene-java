@@ -15,11 +15,11 @@
  */
 package org.apache.zest.library.conversion.values;
 
+import java.util.function.Function;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.functional.Function;
 
 /**
  * Create or update Entities from matching Values.

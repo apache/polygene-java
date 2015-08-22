@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.constraint.Name;
@@ -38,7 +39,6 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.rest.server.spi.RequestReader;
 import org.restlet.Request;
@@ -283,7 +283,7 @@ public class DefaultRequestReader
             new Function<PropertyDescriptor, Object>()
         {
             @Override
-            public Object map( PropertyDescriptor propertyDescriptor )
+            public Object apply( PropertyDescriptor propertyDescriptor )
             {
                 Parameter param = queryAsForm.getFirst( propertyDescriptor.qualifiedName().name() );
 
@@ -314,7 +314,7 @@ public class DefaultRequestReader
             new Function<AssociationDescriptor, EntityReference>()
             {
                 @Override
-                public EntityReference map( AssociationDescriptor associationDescriptor )
+                public EntityReference apply( AssociationDescriptor associationDescriptor )
                 {
                     Parameter param = queryAsForm.getFirst( associationDescriptor.qualifiedName().name() );
 
@@ -336,7 +336,7 @@ public class DefaultRequestReader
             new Function<AssociationDescriptor, Iterable<EntityReference>>()
             {
                 @Override
-                public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+                public Iterable<EntityReference> apply( AssociationDescriptor associationDescriptor )
                 {
                     // TODO
                     return Iterables.empty();
@@ -345,7 +345,7 @@ public class DefaultRequestReader
             new Function<AssociationDescriptor, Map<String, EntityReference>>()
             {
                 @Override
-                public Map<String, EntityReference> map( AssociationDescriptor from )
+                public Map<String, EntityReference> apply( AssociationDescriptor from )
                 {
                     // TODO
                     return Collections.emptyMap();

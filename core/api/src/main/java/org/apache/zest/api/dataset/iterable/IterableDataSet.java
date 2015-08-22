@@ -18,9 +18,9 @@
  */
 package org.apache.zest.api.dataset.iterable;
 
+import java.util.function.Function;
 import org.apache.zest.api.dataset.DataSet;
 import org.apache.zest.api.dataset.Query;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 

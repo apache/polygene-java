@@ -157,7 +157,7 @@ public interface TableQuery
       public Table applyTo(Table table)
       {
          ValueBuilder<Table> tableBuilder = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF
-             .map( table ).module().newValueBuilderWithPrototype( table );
+             .apply( table ).module().newValueBuilderWithPrototype( table );
 
 /* TODO Finish label setting
          if (label() != null)

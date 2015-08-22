@@ -15,8 +15,8 @@
 package org.apache.zest.api.type;
 
 import java.util.Collections;
+import java.util.function.Function;
 import org.apache.zest.api.util.NullArgumentException;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 
 import static org.apache.zest.functional.Iterables.first;
@@ -138,7 +138,7 @@ public class ValueType
             new Function<Class<?>, String>()
             {
                 @Override
-                public String map( Class<?> item )
+                public String apply( Class<?> item )
                 {
                     return item.getName();
                 }

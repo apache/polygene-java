@@ -39,7 +39,7 @@ public final class TypeName
 
     public static TypeName nameOf( Type type )
     {
-        return nameOf( Classes.RAW_CLASS.map( type ) );
+        return nameOf( Classes.RAW_CLASS.apply( type ) );
     }
 
     public static TypeName nameOf( String typeName )

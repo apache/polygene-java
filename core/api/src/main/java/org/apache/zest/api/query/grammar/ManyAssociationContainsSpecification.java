@@ -49,7 +49,7 @@ public class ManyAssociationContainsSpecification<T>
     @Override
     public boolean satisfiedBy( Composite item )
     {
-        ManyAssociation<T> collection = manyAssociationFunction.map( item );
+        ManyAssociation<T> collection = manyAssociationFunction.apply( item );
         if( collection == null )
         {
             return false;

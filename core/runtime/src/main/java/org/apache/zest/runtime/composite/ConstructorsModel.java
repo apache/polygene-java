@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.InvalidCompositeException;
@@ -32,7 +33,6 @@ import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
 import org.apache.zest.functional.Iterables;
@@ -112,7 +112,7 @@ public final class ConstructorsModel
         Function<ConstructorModel, Iterable<DependencyModel>> constructorDependencies = new Function<ConstructorModel, Iterable<DependencyModel>>()
         {
             @Override
-            public Iterable<DependencyModel> map( ConstructorModel constructorModel )
+            public Iterable<DependencyModel> apply( ConstructorModel constructorModel )
             {
                 return constructorModel.dependencies();
             }

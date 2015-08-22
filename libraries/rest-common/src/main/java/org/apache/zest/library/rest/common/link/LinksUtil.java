@@ -17,7 +17,7 @@
 
 package org.apache.zest.library.rest.common.link;
 
-import org.apache.zest.functional.Function;
+import java.util.function.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 
@@ -90,7 +90,7 @@ public final class LinksUtil
       return new Function<Link, String>()
       {
          @Override
-         public String map(Link link )
+         public String apply(Link link )
          {
             return link.rel().get();
          }

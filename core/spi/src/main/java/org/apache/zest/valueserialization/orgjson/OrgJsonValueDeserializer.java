@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -32,7 +33,6 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.functional.Function;
 import org.apache.zest.spi.value.ValueDeserializerAdapter;
 
 /**
@@ -139,7 +139,7 @@ public class OrgJsonValueDeserializer
             else
             {
                 input.back();
-                collection.add( deserializer.map( input ) );
+                collection.add( deserializer.apply( input ) );
             }
             c = input.nextClean();
             switch( c )
@@ -266,11 +266,11 @@ public class OrgJsonValueDeserializer
 
                     if( "key".equals( objectKey ) )
                     {
-                        key = keyDeserializer.map( input );
+                        key = keyDeserializer.apply( input );
                     }
                     else if( "value".equals( objectKey ) )
                     {
-                        value = valueDeserializer.map( input );
+                        value = valueDeserializer.apply( input );
                     }
                     else
                     {
@@ -394,7 +394,7 @@ public class OrgJsonValueDeserializer
         {
             return null;
         }
-        T value = valueDeserializer.map( valueNode );
+        T value = valueDeserializer.apply( valueNode );
         return value;
     }
 
@@ -414,7 +414,7 @@ public class OrgJsonValueDeserializer
         for( int idx = 0; idx < array.length(); idx++ )
         {
             Object item = array.get( idx );
-            T value = deserializer.map( item );
+            T value = deserializer.apply( item );
             collection.add( value );
         }
     }
@@ -442,8 +442,8 @@ public class OrgJsonValueDeserializer
             JSONObject object = (JSONObject) item;
             Object keyNode = object.get( "key" );
             Object valueNode = object.get( "value" );
-            K key = keyDeserializer.map( keyNode );
-            V value = valueDeserializer.map( valueNode );
+            K key = keyDeserializer.apply( keyNode );
+            V value = valueDeserializer.apply( valueNode );
             if( key != null )
             {
                 map.put( key, value );
@@ -471,7 +471,7 @@ public class OrgJsonValueDeserializer
         {
             String key = it.next();
             Object item = object.get( key );
-            V valueValue = valueDeserializer.map( item );
+            V valueValue = valueDeserializer.apply( item );
             if( key != null )
             {
                 map.put( key, valueValue );

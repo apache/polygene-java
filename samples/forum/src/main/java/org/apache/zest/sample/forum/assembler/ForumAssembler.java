@@ -19,6 +19,7 @@
 package org.apache.zest.sample.forum.assembler;
 
 import java.lang.reflect.Modifier;
+import java.util.function.Function;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.structure.Application;
@@ -33,7 +34,6 @@ import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.file.assembly.FileEntityStoreAssembler;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.functional.Function;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.library.rest.common.ValueAssembler;
 import org.apache.zest.library.rest.server.assembler.RestServerAssembler;
@@ -89,14 +89,7 @@ public class ForumAssembler
             entityStore.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
             new OrgJsonValueSerializationAssembler().
                 visibleIn( Visibility.application ).
-                withValuesModuleFinder( new Function<Application, Module>()
-            {
-                @Override
-                public Module map( Application app )
-                {
-                    return app.findModule( "REST", "Values" );
-                }
-            } ).
+                withValuesModuleFinder( app -> app.findModule( "REST", "Values" ) ).
                 assemble( entityStore );
         }
 

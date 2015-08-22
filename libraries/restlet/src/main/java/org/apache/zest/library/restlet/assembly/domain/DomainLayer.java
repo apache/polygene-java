@@ -20,13 +20,13 @@
 
 package org.apache.zest.library.restlet.assembly.domain;
 
+import java.util.function.Function;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.layered.LayerAssembler;
 import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
-import org.apache.zest.functional.Function;
 
 public class DomainLayer extends LayeredLayerAssembler
     implements LayerAssembler

@@ -25,6 +25,8 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -45,8 +47,6 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueSerializationException;
 import org.apache.zest.api.value.ValueSerializer;
-import org.apache.zest.functional.Function;
-import org.apache.zest.functional.Function2;
 
 import static org.apache.zest.functional.Iterables.first;
 
@@ -93,19 +93,19 @@ public abstract class ValueSerializerAdapter<OutputType>
 
     private static final String UTF_8 = "UTF-8";
 
-    private static <TO, FROM extends TO> Function2<Options, FROM, TO> identitySerializer()
+    private static <TO, FROM extends TO> BiFunction<Options, FROM, TO> identitySerializer()
     {
-        return new Function2<Options, FROM, TO>()
+        return new BiFunction<Options, FROM, TO>()
         {
             @Override
-            public TO map( Options options, FROM from )
+            public TO apply( Options options, FROM from )
             {
                 return from;
             }
         };
     }
 
-    private final Map<Class<?>, Function2<Options, Object, Object>> serializers = new HashMap<>( 16 );
+    private final Map<Class<?>, BiFunction<Options, Object, Object>> serializers = new HashMap<>( 16 );
     private final Map<Class<?>, ComplexSerializer<Object, OutputType>> complexSerializers = new HashMap<>( 2 );
 
     /**
@@ -116,9 +116,9 @@ public abstract class ValueSerializerAdapter<OutputType>
      * @param serializer Serialization Function
      */
     @SuppressWarnings( "unchecked" )
-    protected final <T> void registerSerializer( Class<T> type, Function2<Options, T, Object> serializer )
+    protected final <T> void registerSerializer( Class<T> type, BiFunction<Options, T, Object> serializer )
     {
-        serializers.put( type, (Function2<Options, Object, Object>) serializer );
+        serializers.put( type, (BiFunction<Options, Object, Object>) serializer );
     }
 
     /**
@@ -148,62 +148,62 @@ public abstract class ValueSerializerAdapter<OutputType>
         registerSerializer( Double.class, ValueSerializerAdapter.<Object, Double>identitySerializer() );
 
         // Number types
-        registerSerializer( BigDecimal.class, new Function2<Options, BigDecimal, Object>()
+        registerSerializer( BigDecimal.class, new BiFunction<Options, BigDecimal, Object>()
         {
             @Override
-            public Object map( Options options, BigDecimal bigDecimal )
+            public Object apply( Options options, BigDecimal bigDecimal )
             {
                 return bigDecimal.toString();
             }
         } );
-        registerSerializer( BigInteger.class, new Function2<Options, BigInteger, Object>()
+        registerSerializer( BigInteger.class, new BiFunction<Options, BigInteger, Object>()
         {
             @Override
-            public Object map( Options options, BigInteger bigInteger )
+            public Object apply( Options options, BigInteger bigInteger )
             {
                 return bigInteger.toString();
             }
         } );
 
         // Date types
-        registerSerializer( Date.class, new Function2<Options, Date, Object>()
+        registerSerializer( Date.class, new BiFunction<Options, Date, Object>()
         {
             @Override
-            public Object map( Options options, Date date )
+            public Object apply( Options options, Date date )
             {
                 return Dates.toUtcString( date );
             }
         } );
-        registerSerializer( DateTime.class, new Function2<Options, DateTime, Object>()
+        registerSerializer( DateTime.class, new BiFunction<Options, DateTime, Object>()
         {
             @Override
-            public Object map( Options options, DateTime date )
+            public Object apply( Options options, DateTime date )
             {
                 return date.toString();
             }
         } );
-        registerSerializer( LocalDateTime.class, new Function2<Options, LocalDateTime, Object>()
+        registerSerializer( LocalDateTime.class, new BiFunction<Options, LocalDateTime, Object>()
         {
             @Override
-            public Object map( Options options, LocalDateTime date )
+            public Object apply( Options options, LocalDateTime date )
             {
                 return date.toString();
             }
         } );
-        registerSerializer( LocalDate.class, new Function2<Options, LocalDate, Object>()
+        registerSerializer( LocalDate.class, new BiFunction<Options, LocalDate, Object>()
         {
             @Override
-            public Object map( Options options, LocalDate date )
+            public Object apply( Options options, LocalDate date )
             {
                 return date.toString();
             }
         } );
 
         // Other supported types
-        registerSerializer( EntityReference.class, new Function2<Options, EntityReference, Object>()
+        registerSerializer( EntityReference.class, new BiFunction<Options, EntityReference, Object>()
         {
             @Override
-            public Object map( Options options, EntityReference ref )
+            public Object apply( Options options, EntityReference ref )
             {
                 return ref.toString();
             }
@@ -216,7 +216,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         return new Function<T, String>()
         {
             @Override
-            public String map( T object )
+            public String apply( T object )
             {
                 return serialize( object );
             }
@@ -229,7 +229,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         return new Function<T, String>()
         {
             @Override
-            public String map( T object )
+            public String apply( T object )
             {
                 return serialize( options, object );
             }
@@ -243,7 +243,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         return new Function<T, String>()
         {
             @Override
-            public String map( T object )
+            public String apply( T object )
             {
                 return serialize( includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
                                   object );
@@ -329,7 +329,7 @@ public abstract class ValueSerializerAdapter<OutputType>
             if( serializers.get( object.getClass() ) != null )
             {
                 // Plain Value
-                Object serialized = serializers.get( object.getClass() ).map( options, object );
+                Object serialized = serializers.get( object.getClass() ).apply( options, object );
                 output.write( serialized.toString().getBytes( UTF_8 ) );
             }
             else if( object.getClass().isEnum() )
@@ -364,7 +364,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         else // Registered serializer
             if( serializers.get( object.getClass() ) != null )
             {
-                onValue( output, serializers.get( object.getClass() ).map( options, object ) );
+                onValue( output, serializers.get( object.getClass() ).apply( options, object ) );
             }
             else if( complexSerializers.get( object.getClass() ) != null )
             {
@@ -409,7 +409,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     private void serializeValueComposite( Options options, Object object, OutputType output, boolean rootPass )
         throws Exception
     {
-        CompositeInstance valueInstance = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) object );
+        CompositeInstance valueInstance = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) object );
         ValueDescriptor descriptor = (ValueDescriptor) valueInstance.descriptor();
         AssociationStateHolder state = (AssociationStateHolder) valueInstance.state();
 

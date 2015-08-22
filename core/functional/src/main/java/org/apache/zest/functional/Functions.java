@@ -16,18 +16,20 @@ package org.apache.zest.functional;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Utility functions. Combine these with methods in Iterables, for example. See FunctionsTest for usages.
  */
 public final class Functions
 {
-    public static <A, B, C> Function2<Function<? super B, C>, Function<A, B>, Function<A, C>> compose()
+    public static <A, B, C> BiFunction<Function<? super B, C>, Function<A, B>, Function<A, C>> compose()
     {
-        return new Function2<Function<? super B, C>, Function<A, B>, Function<A, C>>()
+        return new BiFunction<Function<? super B, C>, Function<A, B>, Function<A, C>>()
         {
             @Override
-            public Function<A, C> map( Function<? super B, C> bcFunction, Function<A, B> abFunction )
+            public Function<A, C> apply( Function<? super B, C> bcFunction, Function<A, B> abFunction )
             {
                 return compose( bcFunction, abFunction );
             }
@@ -49,9 +51,9 @@ public final class Functions
         return new Function<FROM, TO>()
         {
             @Override
-            public TO map( FROM from )
+            public TO apply( FROM from )
             {
-                return outer.map( inner.map( from ) );
+                return outer.apply( inner.apply( from ) );
             }
         };
     }
@@ -61,7 +63,7 @@ public final class Functions
         return new Function<FROM, TO>()
         {
             @Override
-            public TO map( FROM from )
+            public TO apply( FROM from )
             {
                 return from;
             }
@@ -73,7 +75,7 @@ public final class Functions
         return new Function<FROM, TO>()
         {
             @Override
-            public TO map( FROM from )
+            public TO apply( FROM from )
             {
                 return map.get( from );
             }
@@ -85,7 +87,7 @@ public final class Functions
         return new Function<T, T>()
         {
             @Override
-            public T map( T from )
+            public T apply( T from )
             {
                 if( from == null )
                 {
@@ -106,7 +108,7 @@ public final class Functions
             long sum;
 
             @Override
-            public Long map( Number number )
+            public Long apply( Number number )
             {
                 sum += number.longValue();
                 return sum;
@@ -121,7 +123,7 @@ public final class Functions
             int sum;
 
             @Override
-            public Integer map( Number number )
+            public Integer apply( Number number )
             {
                 sum += number.intValue();
                 return sum;
@@ -132,7 +134,7 @@ public final class Functions
     /**
      * Count the number of items in an iterable that matches a given specification.
      *
-     * Sample usage: last( map( count( in( "X" ) ), iterable( "X","Y","X","X","Y" ) ) )
+     * Sample usage: last( apply( count( in( "X" ) ), iterable( "X","Y","X","X","Y" ) ) )
      * Returns: 3
      *
      * @param specification The items that adhere to the Specification is counted.
@@ -147,7 +149,7 @@ public final class Functions
             int count;
 
             @Override
-            public Integer map( T item )
+            public Integer apply( T item )
             {
                 if( specification.satisfiedBy( item ) )
                 {
@@ -177,7 +179,7 @@ public final class Functions
             int current = 0;
 
             @Override
-            public Integer map( T item )
+            public Integer apply( T item )
             {
                 if( index == -1 && specification.satisfiedBy( item ) )
                 {
@@ -221,9 +223,9 @@ public final class Functions
         return new Function<T, T>()
         {
             @Override
-            public T map( T from )
+            public T apply( T from )
             {
-                return specification.satisfiedBy( from ) ? function.map( from ) : from;
+                return specification.satisfiedBy( from ) ? function.apply( from ) : from;
             }
         };
     }
@@ -254,14 +256,14 @@ public final class Functions
                 Comparable key1 = compareKeys.get( o1 );
                 if( key1 == null )
                 {
-                    key1 = comparableFunction.map( o1 );
+                    key1 = comparableFunction.apply( o1 );
                     compareKeys.put( o1, key1 );
                 }
 
                 Comparable key2 = compareKeys.get( o2 );
                 if( key2 == null )
                 {
-                    key2 = comparableFunction.map( o2 );
+                    key2 = comparableFunction.apply( o2 );
                     compareKeys.put( o2, key2 );
                 }
 

@@ -15,13 +15,13 @@
 package org.apache.zest.runtime.structure;
 
 import java.util.List;
+import java.util.function.Function;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.Function;
 import org.apache.zest.spi.module.ModelModule;
 
 import static org.apache.zest.functional.Iterables.*;
@@ -43,7 +43,7 @@ public final class UsedLayersInstance
         return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<ObjectDescriptor>>>()
         {
             @Override
-            public Iterable<ModelModule<ObjectDescriptor>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<ObjectDescriptor>> apply( LayerInstance layerInstance )
             {
                 return layerInstance.visibleObjects( Visibility.application );
             }
@@ -55,7 +55,7 @@ public final class UsedLayersInstance
         return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<TransientDescriptor>>>()
         {
             @Override
-            public Iterable<ModelModule<TransientDescriptor>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<TransientDescriptor>> apply( LayerInstance layerInstance )
             {
                 return layerInstance.visibleTransients( Visibility.application );
             }
@@ -67,7 +67,7 @@ public final class UsedLayersInstance
         return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<EntityDescriptor>>>()
         {
             @Override
-            public Iterable<ModelModule<EntityDescriptor>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<EntityDescriptor>> apply( LayerInstance layerInstance )
             {
                 return layerInstance.visibleEntities( Visibility.application );
             }
@@ -79,7 +79,7 @@ public final class UsedLayersInstance
         return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<ValueDescriptor>>>()
         {
             @Override
-            public Iterable<ModelModule<ValueDescriptor>> map( LayerInstance layerInstance )
+            public Iterable<ModelModule<ValueDescriptor>> apply( LayerInstance layerInstance )
             {
                 return layerInstance.visibleValues( Visibility.application );
             }
@@ -91,7 +91,7 @@ public final class UsedLayersInstance
         return flattenIterables( map( new Function<LayerInstance, Iterable<ServiceReference<?>>>()
         {
             @Override
-            public Iterable<ServiceReference<?>> map( LayerInstance layerInstance )
+            public Iterable<ServiceReference<?>> apply( LayerInstance layerInstance )
             {
                 return layerInstance.visibleServices( Visibility.application );
             }

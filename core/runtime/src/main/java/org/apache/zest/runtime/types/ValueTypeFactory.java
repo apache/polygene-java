@@ -79,12 +79,12 @@ public class ValueTypeFactory
                     collectionType = Classes.resolveTypeVariable( collectionTypeVariable, declaringClass, compositeType );
                 }
                 ValueType collectedType = newValueType( collectionType, declaringClass, compositeType, layer, module, variant );
-                valueType = new CollectionType( Classes.RAW_CLASS.map( type ), collectedType );
+                valueType = new CollectionType( Classes.RAW_CLASS.apply( type ), collectedType );
             }
             else
             {
                 ValueType collectedType = newValueType( Object.class, declaringClass, compositeType, layer, module, variant );
-                valueType = new CollectionType( Classes.RAW_CLASS.map( type ), collectedType );
+                valueType = new CollectionType( Classes.RAW_CLASS.apply( type ), collectedType );
             }
         }
         else if( MapType.isMap( type ) )
@@ -106,19 +106,19 @@ public class ValueTypeFactory
                     valType = Classes.resolveTypeVariable( valueTypeVariable, declaringClass, compositeType );
                 }
                 ValueType valuedType = newValueType( valType, declaringClass, compositeType, layer, module, variant );
-                valueType = new MapType( Classes.RAW_CLASS.map( type ), keyedType, valuedType, variant );
+                valueType = new MapType( Classes.RAW_CLASS.apply( type ), keyedType, valuedType, variant );
             }
             else
             {
                 ValueType keyType = newValueType( Object.class, declaringClass, compositeType, layer, module, variant );
                 ValueType valuesType = newValueType( Object.class, declaringClass, compositeType, layer, module, variant );
-                valueType = new MapType( Classes.RAW_CLASS.map( type ), keyType, valuesType, variant );
+                valueType = new MapType( Classes.RAW_CLASS.apply( type ), keyType, valuesType, variant );
             }
         }
         else if( ValueCompositeType.isValueComposite( type ) )
         {
             // Find ValueModel in module/layer/used layers
-            ValueModel model = new ValueFinder( layer, module, Classes.RAW_CLASS.map( type ) ).getFoundModel();
+            ValueModel model = new ValueFinder( layer, module, Classes.RAW_CLASS.apply( type ) ).getFoundModel();
 
             if( model == null )
             {
@@ -144,11 +144,11 @@ public class ValueTypeFactory
         }
         else if( EnumType.isEnum( type ) )
         {
-            valueType = new EnumType( Classes.RAW_CLASS.map( type ) );
+            valueType = new EnumType( Classes.RAW_CLASS.apply( type ) );
         }
         else
         {
-            valueType = new ValueType( Classes.RAW_CLASS.map( type ) );
+            valueType = new ValueType( Classes.RAW_CLASS.apply( type ) );
         }
 
         return valueType;

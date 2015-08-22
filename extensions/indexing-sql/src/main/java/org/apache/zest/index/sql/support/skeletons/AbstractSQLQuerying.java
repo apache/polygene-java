@@ -178,10 +178,13 @@ public abstract class AbstractSQLQuerying
             return "[hasRefs="
                    + this._hasRefs
                    + ", ref:"
-                   + ( this._hasRefs
-                       ? ( this._traversedAsso == null ? this._traversedManyAsso : this._traversedAsso )
-                       : "null" )
+                   + ( this._hasRefs ? getTraversedAssociations() : "null" )
                    + "]";
+        }
+
+        private Object getTraversedAssociations()
+        {
+            return this._traversedAsso == null ? this._traversedManyAsso : this._traversedAsso;
         }
     }
 
@@ -1747,7 +1750,7 @@ public abstract class AbstractSQLQuerying
             // Visit all properties with recursion and make joins as necessary
             // @formatter:off
             for( Property<?> property
-                 : ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) value ).state().properties() )
+                 : ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) value ).state().properties() )
             {
                 Boolean qNameJoinDone = false;
                 Integer sourceIndex = maxTableIndex.getInt();

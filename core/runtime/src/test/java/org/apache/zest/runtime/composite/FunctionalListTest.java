@@ -20,6 +20,7 @@ package org.apache.zest.runtime.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import org.junit.Test;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
@@ -27,7 +28,6 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Function;
 import org.apache.zest.test.AbstractZestTest;
 
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -56,7 +56,7 @@ public class FunctionalListTest extends AbstractZestTest
         List<String> strings = list.translate( new Function<Integer, String>()
         {
             @Override
-            public String map( Integer x )
+            public String apply( Integer x )
             {
                 return x.toString();
             }
@@ -90,7 +90,7 @@ public class FunctionalListTest extends AbstractZestTest
             List<TO> result = module.newTransient( List.class );
             for( FROM data : list )
             {
-                result.add( function.map( data ) );
+                result.add( function.apply( data ) );
             }
             return result;
         }

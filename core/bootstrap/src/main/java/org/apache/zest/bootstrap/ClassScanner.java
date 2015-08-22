@@ -23,10 +23,10 @@ import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.CodeSource;
+import java.util.function.Function;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 
@@ -90,7 +90,7 @@ public class ClassScanner
                                                      map( new Function<JarEntry, Class<?>>()
                                                      {
                                                          @Override
-                                                         public Class map( JarEntry jarEntry )
+                                                         public Class apply( JarEntry jarEntry )
                                                          {
                                                              String name = jarEntry.getName();
                                                              name = name.substring( 0, name.length() - 6 );
@@ -142,7 +142,7 @@ public class ClassScanner
                            map( new Function<File, Class<?>>()
                            {
                                @Override
-                               public Class<?> map( File f )
+                               public Class<?> apply( File f )
                                {
                                    String fileName = f.getAbsolutePath().substring( file.toString().length() + 1 );
                                    fileName = fileName.replace( File.separatorChar, '.' )
@@ -190,7 +190,7 @@ public class ClassScanner
                         flattenIterables( map( new Function<File, Iterable<File>>()
                         {
                             @Override
-                            public Iterable<File> map( File file )
+                            public Iterable<File> apply( File file )
                             {
                                 return findFiles( file, filter );
                             }

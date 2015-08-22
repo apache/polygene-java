@@ -16,6 +16,7 @@ package org.apache.zest.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
@@ -26,7 +27,6 @@ import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Layer;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.Function;
 import org.apache.zest.runtime.activation.ActivationDelegate;
 import org.apache.zest.spi.module.ModelModule;
 
@@ -138,7 +138,7 @@ public class LayerInstance
         {
 
             @Override
-            public Iterable<ModelModule<ObjectDescriptor>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<ObjectDescriptor>> apply( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleObjects( visibility );
             }
@@ -151,7 +151,7 @@ public class LayerInstance
         {
 
             @Override
-            public Iterable<ModelModule<TransientDescriptor>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<TransientDescriptor>> apply( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleTransients( visibility );
             }
@@ -164,7 +164,7 @@ public class LayerInstance
         {
 
             @Override
-            public Iterable<ModelModule<EntityDescriptor>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<EntityDescriptor>> apply( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleEntities( visibility );
             }
@@ -177,7 +177,7 @@ public class LayerInstance
         {
 
             @Override
-            public Iterable<ModelModule<ValueDescriptor>> map( ModuleInstance moduleInstance )
+            public Iterable<ModelModule<ValueDescriptor>> apply( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleValues( visibility );
             }
@@ -190,7 +190,7 @@ public class LayerInstance
         {
 
             @Override
-            public Iterable<ServiceReference<?>> map( ModuleInstance moduleInstance )
+            public Iterable<ServiceReference<?>> apply( ModuleInstance moduleInstance )
             {
                 return moduleInstance.visibleServices( visibility );
             }

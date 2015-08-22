@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import javax.sql.DataSource;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationEvent;
@@ -33,7 +34,6 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
-import org.apache.zest.functional.Function;
 import org.apache.zest.io.Inputs;
 import org.apache.zest.io.Outputs;
 import org.apache.zest.library.sql.assembly.DataSourceAssembler;
@@ -134,7 +134,7 @@ public class LiquibaseServiceTest
         Function<ResultSet, SomeValue> toValue = new Function<ResultSet, SomeValue>()
         {
             @Override
-            public SomeValue map( ResultSet resultSet )
+            public SomeValue apply( ResultSet resultSet )
             {
                 ValueBuilder<SomeValue> builder = assembler.module().newValueBuilder( SomeValue.class );
                 try

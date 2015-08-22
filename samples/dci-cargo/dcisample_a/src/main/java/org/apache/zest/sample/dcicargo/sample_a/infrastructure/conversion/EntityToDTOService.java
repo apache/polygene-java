@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.association.ManyAssociation;
@@ -38,7 +39,6 @@ import org.apache.zest.api.value.NoSuchValueException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.conversion.values.Unqualified;
 import org.apache.zest.spi.ZestSPI;
@@ -90,7 +90,7 @@ public interface EntityToDTOService
                 builder = vbf.newValueBuilderWithState( valueType, new Function<PropertyDescriptor, Object>()
                 {
                     @Override
-                    public Object map( PropertyDescriptor descriptor )
+                    public Object apply( PropertyDescriptor descriptor )
                     {
                         try
                         {
@@ -149,7 +149,7 @@ public interface EntityToDTOService
                 }, new Function<AssociationDescriptor, EntityReference>()
                 {
                     @Override
-                    public EntityReference map( AssociationDescriptor associationDescriptor )
+                    public EntityReference apply( AssociationDescriptor associationDescriptor )
                     {
                         return EntityReference.entityReferenceFor(
                             associationState.associationFor( associationDescriptor.accessor() ).get() );
@@ -157,7 +157,7 @@ public interface EntityToDTOService
                 }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
                 {
                     @Override
-                    public Iterable<EntityReference> map( AssociationDescriptor associationDescriptor )
+                    public Iterable<EntityReference> apply( AssociationDescriptor associationDescriptor )
                     {
                         ManyAssociation<?> state = associationState.manyAssociationFor( associationDescriptor.accessor() );
                         List<EntityReference> refs = new ArrayList<>( state.count() );
@@ -170,7 +170,7 @@ public interface EntityToDTOService
                 }, new Function<AssociationDescriptor, Map<String, EntityReference>>()
                 {
                     @Override
-                    public Map<String, EntityReference> map( AssociationDescriptor from )
+                    public Map<String, EntityReference> apply( AssociationDescriptor from )
                     {
                         // No NamedAssociation support
                         return Collections.emptyMap();
@@ -182,7 +182,7 @@ public interface EntityToDTOService
                 builder = vbf.newValueBuilderWithState( valueType, new Function<PropertyDescriptor, Object>()
                 {
                     @Override
-                    public Object map( PropertyDescriptor descriptor )
+                    public Object apply( PropertyDescriptor descriptor )
                     {
                         try
                         {
@@ -266,7 +266,7 @@ public interface EntityToDTOService
                 }, new Function<AssociationDescriptor, EntityReference>()
                 {
                     @Override
-                    public EntityReference map( AssociationDescriptor descriptor )
+                    public EntityReference apply( AssociationDescriptor descriptor )
                     {
                         AssociationDescriptor associationDescriptor;
                         try
@@ -285,7 +285,7 @@ public interface EntityToDTOService
                 }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
                 {
                     @Override
-                    public Iterable<EntityReference> map( AssociationDescriptor descriptor )
+                    public Iterable<EntityReference> apply( AssociationDescriptor descriptor )
                     {
                         AssociationDescriptor associationDescriptor;
                         try
@@ -309,7 +309,7 @@ public interface EntityToDTOService
                 }, new Function<AssociationDescriptor, Map<String, EntityReference>>()
                 {
                     @Override
-                    public Map<String, EntityReference> map( AssociationDescriptor from )
+                    public Map<String, EntityReference> apply( AssociationDescriptor from )
                     {
                         // No NamedAssociations support
                         return Collections.emptyMap();

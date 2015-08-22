@@ -22,14 +22,14 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.association.NamedAssociationWrapper;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.util.NullArgumentException;
-import org.apache.zest.functional.Function;
-import org.apache.zest.functional.Function2;
 import org.apache.zest.spi.entity.NamedAssociationState;
 
 import static org.apache.zest.functional.Iterables.map;
@@ -42,7 +42,7 @@ public class NamedAssociationInstance<T>
     private final NamedAssociationState namedAssociationState;
 
     public NamedAssociationInstance( AssociationInfo associationInfo,
-                                     Function2<EntityReference, Type, Object> associationFunction,
+                                     BiFunction<EntityReference, Type, Object> associationFunction,
                                      NamedAssociationState namedAssociationState
     )
     {
@@ -114,7 +114,7 @@ public class NamedAssociationInstance<T>
         return map( new Function<String, EntityReference>()
         {
             @Override
-            public EntityReference map( String name )
+            public EntityReference apply( String name )
             {
                 return namedAssociationState.get( name );
             }
@@ -132,7 +132,7 @@ public class NamedAssociationInstance<T>
         return map( new Function<String, Map.Entry<String, EntityReference>>()
         {
             @Override
-            public Map.Entry<String, EntityReference> map( final String key )
+            public Map.Entry<String, EntityReference> apply( final String key )
             {
                 final EntityReference value = namedAssociationState.get( key );
                 return new Map.Entry<String, EntityReference>()

@@ -19,12 +19,12 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
+import java.util.function.Function;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.DependencyDescriptor;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.bootstrap.InvalidInjectionException;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Visitable;
@@ -404,7 +404,7 @@ public final class DependencyModel
         implements Function<DependencyModel, Class<?>>
     {
         @Override
-        public Class<?> map( DependencyModel dependencyModel )
+        public Class<?> apply( DependencyModel dependencyModel )
         {
             return dependencyModel.rawInjectionType();
         }

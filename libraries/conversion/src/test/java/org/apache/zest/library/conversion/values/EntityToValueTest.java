@@ -20,6 +20,7 @@
 package org.apache.zest.library.conversion.values;
 
 import java.util.Date;
+import java.util.function.Function;
 import org.junit.Test;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.service.ServiceReference;
@@ -27,7 +28,6 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Function;
 import org.apache.zest.library.conversion.values.TestModel.PersonEntity;
 import org.apache.zest.library.conversion.values.TestModel.PersonValue;
 import org.apache.zest.library.conversion.values.TestModel.PersonValue2;
@@ -168,7 +168,7 @@ public class EntityToValueTest
             PersonValue value = conversion.convert( PersonValue.class, entity, new Function<PersonValue, PersonValue>()
             {
                 @Override
-                public PersonValue map( PersonValue prototype )
+                public PersonValue apply( PersonValue prototype )
                 {
                     prototype.firstName().set( "Prototype Opportunity" );
                     return prototype;

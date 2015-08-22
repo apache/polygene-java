@@ -21,11 +21,11 @@ package org.apache.zest.api.query.grammar;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Proxy;
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.CompositeInstance;
-import org.apache.zest.functional.Function;
 
 /**
  * Function to get Entity NamedAssociations.
@@ -71,14 +71,14 @@ public class NamedAssociationFunction<T>
     }
 
     @Override
-    public NamedAssociation<T> map( Composite entity )
+    public NamedAssociation<T> apply( Composite entity )
     {
         try
         {
             Object target = entity;
             if( traversedAssociation != null )
             {
-                target = traversedAssociation.map( entity ).get();
+                target = traversedAssociation.apply( entity ).get();
             }
             if( traversedManyAssociation != null )
             {

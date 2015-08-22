@@ -22,6 +22,7 @@ package org.apache.zest.library.restlet.serialization;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.injection.scope.Structure;
@@ -31,7 +32,6 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.Function;
 import org.apache.zest.spi.ZestSPI;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -85,7 +85,7 @@ public class FormRepresentation<T> extends OutputRepresentation
             new Function<PropertyDescriptor, Object>()
             {
                 @Override
-                public Object map( PropertyDescriptor descriptor )
+                public Object apply( PropertyDescriptor descriptor )
                 {
                     return form.getFirstValue( descriptor.qualifiedName().name() );
                 }

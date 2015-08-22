@@ -19,8 +19,8 @@ package org.apache.zest.library.rest.common.table;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.value.ValueBuilderFactory;
-import org.apache.zest.functional.Function;
 
 /**
  * Factory for setting up TableBuilder instances. Defines available columns, and how they are extracted from objects.

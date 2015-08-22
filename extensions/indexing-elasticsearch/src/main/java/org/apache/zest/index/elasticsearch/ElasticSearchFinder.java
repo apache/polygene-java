@@ -19,6 +19,7 @@ package org.apache.zest.index.elasticsearch;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -57,7 +58,6 @@ import org.apache.zest.api.query.grammar.PropertyNotNullSpecification;
 import org.apache.zest.api.query.grammar.PropertyNullSpecification;
 import org.apache.zest.api.query.grammar.QuerySpecification;
 import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 import org.apache.zest.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
@@ -136,7 +136,7 @@ public interface ElasticSearchFinder
             return Iterables.map( new Function<SearchHit, EntityReference>()
             {
                 @Override
-                public EntityReference map( SearchHit from )
+                public EntityReference apply( SearchHit from )
                 {
                     return EntityReference.parseEntityReference( from.id() );
                 }

@@ -20,8 +20,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 import org.apache.zest.api.util.Methods;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 import org.apache.zest.io.Output;
@@ -107,11 +107,11 @@ public class ApplicationEvents
         return ApplicationEvents.withNames( Iterables.map( new Function<Method, String>()
         {
             @Override
-            public String map( Method method )
+            public String apply( Method method )
             {
                 return method.getName();
             }
-        }, Iterables.toList( Methods.METHODS_OF.map( eventClass ) ) ));
+        }, Iterables.toList( Methods.METHODS_OF.apply( eventClass ) ) ));
     }
 
     public static Specification<ApplicationEvent> afterDate( final Date afterDate )

@@ -13,9 +13,9 @@
  */
 package org.apache.zest.api.unitofwork;
 
+import java.util.function.Function;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.usecase.Usecase;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 
 /**
@@ -76,7 +76,7 @@ public class NoSuchEntityException
         Iterable<String> map = Iterables.map( new Function<Class<?>, String>()
         {
             @Override
-            public String map( Class<?> item )
+            public String apply( Class<?> item )
             {
                 return item.getName();
             }
@@ -92,7 +92,7 @@ public class NoSuchEntityException
             }
 
             @Override
-            public String map( String strings )
+            public String apply( String strings )
             {
                 if( !first )
                 {

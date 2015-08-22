@@ -83,7 +83,7 @@ public class ClassesTest
     {
         Type returnType = Generics.class.getMethod( "wildcard" ).getGenericReturnType();
         Type wildcardType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0];
-        assertThat( "Return type is A", Classes.RAW_CLASS.map( wildcardType ), equalTo( (Class) A.class ) );
+        assertThat( "Return type is A", Classes.RAW_CLASS.apply( wildcardType ), equalTo( (Class) A.class ) );
     }
 
     @Test

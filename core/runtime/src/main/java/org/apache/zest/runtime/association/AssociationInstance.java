@@ -15,13 +15,13 @@
 package org.apache.zest.runtime.association;
 
 import java.lang.reflect.Type;
+import java.util.function.BiFunction;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationWrapper;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.functional.Function2;
 
 /**
  * Implementation of Association to a single Entity.
@@ -33,7 +33,7 @@ public final class AssociationInstance<T>
     private Property<EntityReference> associationState;
 
     public AssociationInstance( AssociationInfo associationInfo,
-                                Function2<EntityReference, Type, Object> entityFunction,
+                                BiFunction<EntityReference, Type, Object> entityFunction,
                                 Property<EntityReference> associationState
     )
     {

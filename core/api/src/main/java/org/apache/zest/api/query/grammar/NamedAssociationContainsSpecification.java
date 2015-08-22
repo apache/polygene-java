@@ -49,7 +49,7 @@ public class NamedAssociationContainsSpecification<T>
     @Override
     public boolean satisfiedBy( Composite item )
     {
-        NamedAssociation<T> collection = namedAssociationFunction.map( item );
+        NamedAssociation<T> collection = namedAssociationFunction.apply( item );
         if( collection == null )
         {
             return false;

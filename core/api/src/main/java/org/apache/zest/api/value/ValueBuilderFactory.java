@@ -14,11 +14,11 @@
 package org.apache.zest.api.value;
 
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.PropertyDescriptor;
-import org.apache.zest.functional.Function;
 
 /**
  * Factory for Values and ValueBuilders.

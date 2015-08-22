@@ -17,6 +17,7 @@
  */
 package org.apache.zest.index.sql.support.skeletons;
 
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateDescriptor;
 import org.apache.zest.api.common.QualifiedName;
@@ -27,7 +28,6 @@ import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 import org.apache.zest.spi.entity.EntityState;
@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
     {
 
         @Override
-        public EntityState map( EntityState from )
+        public EntityState apply( EntityState from )
         {
             return new SQLCompatEntityStateWrapper( from );
         }

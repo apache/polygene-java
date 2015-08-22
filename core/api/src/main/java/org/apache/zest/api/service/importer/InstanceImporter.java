@@ -14,6 +14,7 @@
 
 package org.apache.zest.api.service.importer;
 
+import java.util.function.Function;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporter;
@@ -22,7 +23,6 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Layer;
 import org.apache.zest.api.structure.MetaInfoHolder;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 
 import static org.apache.zest.functional.Iterables.filter;
@@ -58,7 +58,7 @@ public final class InstanceImporter<T>
             {
                 @Override
                 @SuppressWarnings( "unchecked" )
-                public T map( Class<?> type )
+                public T apply( Class<?> type )
                 {
                     return (T) metaInfoHolder.metaInfo( type );
                 }

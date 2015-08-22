@@ -23,9 +23,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
 import org.apache.zest.functional.Specification;
@@ -90,7 +90,7 @@ public class MixinsModel
     {
         for( Type type : interfacesOf( mixinType ) )
         {
-            mixinTypes.add( Classes.RAW_CLASS.map( type ) );
+            mixinTypes.add( Classes.RAW_CLASS.apply( type ) );
         }
     }
 
@@ -194,7 +194,7 @@ public class MixinsModel
         return flattenIterables( map( new Function<MixinModel, Iterable<DependencyModel>>()
         {
             @Override
-            public Iterable<DependencyModel> map( MixinModel mixinModel )
+            public Iterable<DependencyModel> apply( MixinModel mixinModel )
             {
                 return mixinModel.dependencies();
             }
@@ -206,7 +206,7 @@ public class MixinsModel
         return map( new Function<Map.Entry<Method, MixinModel>, Method>()
         {
             @Override
-            public Method map( Map.Entry<Method, MixinModel> entry )
+            public Method apply( Map.Entry<Method, MixinModel> entry )
             {
                 return entry.getKey();
             }

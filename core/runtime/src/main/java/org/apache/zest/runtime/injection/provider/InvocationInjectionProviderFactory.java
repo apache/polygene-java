@@ -43,7 +43,7 @@ public final class InvocationInjectionProviderFactory
     public InjectionProvider newInjectionProvider( Resolution resolution, DependencyModel dependencyModel )
         throws InvalidInjectionException
     {
-        Class injectionClass = Classes.RAW_CLASS.map( dependencyModel.injectionType() );
+        Class injectionClass = Classes.RAW_CLASS.apply( dependencyModel.injectionType() );
         if( injectionClass.equals( Method.class ) ||
             injectionClass.equals( AnnotatedElement.class ) ||
             injectionClass.equals( Iterable.class ) ||
@@ -75,7 +75,7 @@ public final class InvocationInjectionProviderFactory
         public Object provideInjection( InjectionContext context )
             throws InjectionProviderException
         {
-            Class injectionClass = Classes.RAW_CLASS.map( dependencyModel.injectionType() );
+            Class injectionClass = Classes.RAW_CLASS.apply( dependencyModel.injectionType() );
             final CompositeMethodModel methodModel = resolution.method();
             if( injectionClass.equals( Method.class ) )
             {

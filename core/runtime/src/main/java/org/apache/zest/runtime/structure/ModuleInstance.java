@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
@@ -64,8 +66,6 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.functional.Function;
-import org.apache.zest.functional.Function2;
 import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Specifications;
 import org.apache.zest.runtime.activation.ActivationDelegate;
@@ -588,13 +588,13 @@ public class ModuleInstance
         return typeLookup;
     }
 
-    public Function2<EntityReference, Type, Object> getEntityFunction()
+    public BiFunction<EntityReference, Type, Object> getEntityFunction()
     {
         return entityFunction;
     }
 
     private static class EntityFunction
-        implements Function2<EntityReference, Type, Object>
+        implements BiFunction<EntityReference, Type, Object>
     {
 
         private final UnitOfWorkFactory uowf;
@@ -605,9 +605,9 @@ public class ModuleInstance
         }
 
         @Override
-        public Object map( EntityReference entityReference, Type type )
+        public Object apply( EntityReference entityReference, Type type )
         {
-            return uowf.currentUnitOfWork().get( RAW_CLASS.map( type ), entityReference.identity() );
+            return uowf.currentUnitOfWork().get( RAW_CLASS.apply( type ), entityReference.identity() );
         }
     }
 

@@ -28,6 +28,8 @@ dependencies {
   compile project( ":org.apache.zest.core:org.apache.zest.core.spi" )
   compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
   compile project( ':org.apache.zest.extensions:org.apache.zest.extension.valueserialization-jackson' )
+  compile project( ':org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf' )
+  compile project( ':org.apache.zest.extensions:org.apache.zest.extension.entitystore-file' )
 
   compile libraries.restlet
   compile libraries.servlet_api

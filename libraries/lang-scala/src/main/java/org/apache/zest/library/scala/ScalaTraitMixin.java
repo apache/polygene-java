@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.common.AppliesTo;
 import org.apache.zest.api.common.AppliesToFilter;
@@ -33,7 +34,6 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.util.Classes;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
@@ -51,7 +51,7 @@ public class ScalaTraitMixin
 
     public ScalaTraitMixin( @This Composite composite )
     {
-        compositeType = ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( composite ).primaryType();
+        compositeType = ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).primaryType();
     }
 
     @Override
@@ -108,7 +108,7 @@ public class ScalaTraitMixin
                     Class current;
 
                     @Override
-                    public Class map( Class aClass )
+                    public Class apply( Class aClass )
                     {
                         if( declaringClass.isAssignableFrom( aClass ) )
                         {

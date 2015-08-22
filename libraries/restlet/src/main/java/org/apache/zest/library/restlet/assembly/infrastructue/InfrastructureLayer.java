@@ -20,6 +20,7 @@
 
 package org.apache.zest.library.restlet.assembly.infrastructue;
 
+import java.util.function.Function;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -27,7 +28,6 @@ import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.layered.LayerAssembler;
 import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
-import org.apache.zest.functional.Function;
 import org.apache.zest.library.restlet.assembly.configuration.ConfigurationLayer;
 import org.apache.zest.library.restlet.assembly.configuration.ConfigurationModule;
 import org.apache.zest.library.restlet.assembly.domain.DomainLayer;

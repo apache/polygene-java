@@ -33,11 +33,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Visitor;
 
 import static java.util.Arrays.asList;
@@ -176,7 +176,7 @@ public class InputOutputTest
                 stringCounter,
                 Transforms.map( new Function<String, String>()
                 {
-                    public String map( String s )
+                    public String apply( String s )
                     {
                         System.out.println( s );
                         return s;
@@ -205,7 +205,7 @@ public class InputOutputTest
                 stringCounter,
                 Transforms.map( new Function<String, String>()
             {
-                public String map( String s )
+                public String apply( String s )
                 {
                     System.out.println( s );
                     return s;

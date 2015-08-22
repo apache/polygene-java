@@ -183,8 +183,8 @@ public class IterableQuerySource
             {
                 try
                 {
-                    final Property prop1 = orderBySegment.property().map( o1 );
-                    final Property prop2 = orderBySegment.property().map( o2 );
+                    final Property prop1 = orderBySegment.property().apply( o1 );
+                    final Property prop2 = orderBySegment.property().apply( o2 );
                     if( prop1 == null || prop2 == null )
                     {
                         if( prop1 == null && prop2 == null )

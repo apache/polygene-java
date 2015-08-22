@@ -38,6 +38,6 @@ public class Context
 
     protected <T> T role( Object object, Class<T> roleType )
     {
-        return ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( (Composite) object ).newProxy( roleType );
+        return ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (Composite) object ).newProxy( roleType );
     }
 }

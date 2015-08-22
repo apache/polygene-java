@@ -62,7 +62,7 @@ public final class QualifiedIdentity
     public QualifiedIdentity( EntityComposite entityComposite )
     {
         this( entityComposite.identity().get(), first( ZestAPI.FUNCTION_DESCRIPTOR_FOR
-                                                           .map( entityComposite )
+                                                           .apply( entityComposite )
                                                            .types() ).getName() );
     }
 

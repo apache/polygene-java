@@ -22,6 +22,7 @@ package org.apache.zest.runtime.value;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.association.NamedAssociation;
@@ -30,7 +31,6 @@ import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.functional.Function;
 import org.apache.zest.runtime.composite.FunctionStateResolver;
 import org.apache.zest.runtime.composite.MixinModel;
 import org.apache.zest.runtime.composite.MixinsModel;
@@ -163,7 +163,7 @@ public class ValueBuilderWithPrototype<T>
         }
 
         @Override
-        public Object map( PropertyDescriptor descriptor )
+        public Object apply( PropertyDescriptor descriptor )
         {
             return prototypeState.propertyFor( descriptor.accessor() ).get();
         }
@@ -180,7 +180,7 @@ public class ValueBuilderWithPrototype<T>
         }
 
         @Override
-        public EntityReference map( AssociationDescriptor descriptor )
+        public EntityReference apply( AssociationDescriptor descriptor )
         {
             return prototypeState.associationFor( descriptor.accessor() ).reference();
         }
@@ -197,7 +197,7 @@ public class ValueBuilderWithPrototype<T>
         }
 
         @Override
-        public Iterable<EntityReference> map( AssociationDescriptor descriptor )
+        public Iterable<EntityReference> apply( AssociationDescriptor descriptor )
         {
             return prototypeState.manyAssociationFor( descriptor.accessor() ).references();
         }
@@ -214,7 +214,7 @@ public class ValueBuilderWithPrototype<T>
         }
 
         @Override
-        public Map<String, EntityReference> map( AssociationDescriptor descriptor )
+        public Map<String, EntityReference> apply( AssociationDescriptor descriptor )
         {
             Map<String, EntityReference> result = new HashMap<>();
             NamedAssociation<?> namedAssociation = prototypeState.namedAssociationFor( descriptor.accessor() );

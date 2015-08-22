@@ -44,7 +44,7 @@ public class AssociationNotNullSpecification<T>
     {
         try
         {
-            Association<T> assoc = association.map( item );
+            Association<T> assoc = association.apply( item );
 
             if( assoc == null )
             {

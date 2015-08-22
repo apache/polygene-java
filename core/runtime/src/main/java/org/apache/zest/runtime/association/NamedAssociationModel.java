@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
+import java.util.function.BiFunction;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.GenericAssociationInfo;
 import org.apache.zest.api.association.NamedAssociation;
@@ -38,7 +39,6 @@ import org.apache.zest.api.entity.Queryable;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
-import org.apache.zest.functional.Function2;
 import org.apache.zest.functional.Visitable;
 import org.apache.zest.functional.Visitor;
 import org.apache.zest.runtime.composite.ValueConstraintsInstance;
@@ -143,12 +143,12 @@ public final class NamedAssociationModel
 
     public <T> NamedAssociation<T> newInstance( final ModuleUnitOfWork uow, EntityState state )
     {
-        return new NamedAssociationInstance<>( state instanceof BuilderEntityState ? builderInfo : this, new Function2<EntityReference, Type, Object>()
+        return new NamedAssociationInstance<>( state instanceof BuilderEntityState ? builderInfo : this, new BiFunction<EntityReference, Type, Object>()
         {
             @Override
-            public Object map( EntityReference entityReference, Type type )
+            public Object apply( EntityReference entityReference, Type type )
             {
-                return uow.get( Classes.RAW_CLASS.map( type ), entityReference.identity() );
+                return uow.get( Classes.RAW_CLASS.apply( type ), entityReference.identity() );
             }
         }, state.namedAssociationValueOf( qualifiedName ) );
     }

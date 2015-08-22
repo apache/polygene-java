@@ -118,7 +118,7 @@ public final class ValueAssemblyImpl
             return; // Skip already registered names
         }
 
-        Class<?> accessorType = Classes.RAW_CLASS.map( typeOf( accessor ) );
+        Class<?> accessorType = Classes.RAW_CLASS.apply( typeOf( accessor ) );
         if( Property.class.isAssignableFrom( accessorType ) )
         {
             propertiesModel.addProperty( newPropertyModel( accessor, constraintClasses ) );

@@ -17,6 +17,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.bootstrap.assembly;
 
+import java.util.function.Function;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueSerialization;
@@ -27,7 +28,6 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.functional.Function;
 import org.apache.zest.index.rdf.RdfIndexingEngineService;
 import org.apache.zest.library.rdf.entity.EntityStateSerializer;
 import org.apache.zest.library.rdf.entity.EntityTypeSerializer;
@@ -255,7 +255,7 @@ public class Assembler
             .setMetaInfo( new Function<Application, Module>()
         {
             @Override
-            public Module map( Application application )
+            public Module apply( Application application )
             {
                 return application.findModule( "CONTEXT", "CONTEXT-ContextSupport" );
             }

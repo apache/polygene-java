@@ -19,8 +19,8 @@ import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
+import java.util.function.Function;
 import java.util.logging.Logger;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Specification;
 
 /**
@@ -105,7 +105,7 @@ public class Transforms
                             public void receive( From item )
                                 throws ReceiverThrowableType
                             {
-                                receiver.receive( function.map( item ) );
+                                receiver.receive( function.apply( item ) );
                             }
                         } );
                     }
@@ -151,7 +151,7 @@ public class Transforms
                             {
                                 if( specification.satisfiedBy( item ) )
                                 {
-                                    receiver.receive( function.map( item ) );
+                                    receiver.receive( function.apply( item ) );
                                 }
                                 else
                                 {
@@ -291,7 +291,7 @@ public class Transforms
         }
 
         @Override
-        public T map( T t )
+        public T apply( T t )
         {
             count++;
             return t;
@@ -314,7 +314,7 @@ public class Transforms
         }
 
         @Override
-        public byte[] map( String s )
+        public byte[] apply( String s )
         {
             return s.getBytes( charSet );
         }
@@ -334,7 +334,7 @@ public class Transforms
         }
 
         @Override
-        public String map( ByteBuffer buffer )
+        public String apply( ByteBuffer buffer )
         {
             return new String( buffer.array(), charSet );
         }
@@ -348,7 +348,7 @@ public class Transforms
         implements Function<Object, String>
     {
         @Override
-        public String map( Object o )
+        public String apply( Object o )
         {
             return o.toString();
         }
@@ -373,7 +373,7 @@ public class Transforms
         }
 
         @Override
-        public T map( T item )
+        public T apply( T item )
         {
             logger.info( format.format( new String[]{ item.toString() } ) );
             return item;
@@ -412,9 +412,9 @@ public class Transforms
         }
 
         @Override
-        public T map( T t )
+        public T apply( T t )
         {
-            counter.map( t );
+            counter.apply( t );
             if( counter.count % interval == 0 )
             {
                 logProgress();
@@ -427,7 +427,7 @@ public class Transforms
         {
             if( log != null )
             {
-                log.map( counter.count + "" );
+                log.apply( counter.count + "" );
             }
         }
     }

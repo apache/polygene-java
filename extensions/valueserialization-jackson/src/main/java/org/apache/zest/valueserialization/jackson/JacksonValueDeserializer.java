@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.ServiceReference;
@@ -34,7 +35,6 @@ import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.functional.Function;
 import org.apache.zest.spi.value.ValueDeserializerAdapter;
 
 /**
@@ -126,7 +126,7 @@ public class JacksonValueDeserializer
         }
         while( input.nextToken() != JsonToken.END_ARRAY )
         {
-            T element = deserializer.map( input );
+            T element = deserializer.apply( input );
             collection.add( element );
         }
         return collection;
@@ -174,11 +174,11 @@ public class JacksonValueDeserializer
                 input.nextToken();
                 if( "key".equals( objectKey ) )
                 {
-                    key = keyDeserializer.map( input );
+                    key = keyDeserializer.apply( input );
                 }
                 else if( "value".equals( objectKey ) )
                 {
-                    value = valueDeserializer.map( input );
+                    value = valueDeserializer.apply( input );
                 }
                 else
                 {
@@ -283,7 +283,7 @@ public class JacksonValueDeserializer
         {
             return null;
         }
-        T value = valueDeserializer.map( valueNode );
+        T value = valueDeserializer.apply( valueNode );
         return value;
     }
 
@@ -304,7 +304,7 @@ public class JacksonValueDeserializer
         ArrayNode array = (ArrayNode) inputNode;
         for( JsonNode item : array )
         {
-            T value = deserializer.map( item );
+            T value = deserializer.apply( item );
             collection.add( value );
         }
     }
@@ -333,8 +333,8 @@ public class JacksonValueDeserializer
             }
             JsonNode keyNode = item.get( "key" );
             JsonNode valueNode = item.get( "value" );
-            K key = keyDeserializer.map( keyNode );
-            V value = valueDeserializer.map( valueNode );
+            K key = keyDeserializer.apply( keyNode );
+            V value = valueDeserializer.apply( valueNode );
             if( key != null )
             {
                 map.put( key, value );
@@ -362,7 +362,7 @@ public class JacksonValueDeserializer
         while( fields.hasNext() )
         {
             Map.Entry<String, JsonNode> entry = fields.next();
-            V value = valueDeserializer.map( entry.getValue() );
+            V value = valueDeserializer.apply( entry.getValue() );
             map.put( entry.getKey(), value );
         }
     }

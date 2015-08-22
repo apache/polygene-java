@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -46,7 +47,7 @@ public class FunctionsTest
     Function<Object, String> stringifier = new Function<Object, String>()
     {
         @Override
-        public String map( Object s )
+        public String apply( Object s )
         {
             return s.toString();
         }
@@ -55,7 +56,7 @@ public class FunctionsTest
     Function<String, Integer> length = new Function<String, Integer>()
     {
         @Override
-        public Integer map( String s )
+        public Integer apply( String s )
         {
             return s.length();
         }
@@ -65,9 +66,9 @@ public class FunctionsTest
     public void testCompose()
     {
         assertThat( Functions.<Object, String, Integer>compose()
-                        .map( length, stringifier )
-                        .map( 12345L ), equalTo( 5 ) );
-        assertThat( compose( length, stringifier ).map( 12345L ), equalTo( 5 ) );
+                        .apply( length, stringifier )
+                        .apply( 12345L ), equalTo( 5 ) );
+        assertThat( compose( length, stringifier ).apply( 12345L ), equalTo( 5 ) );
     }
 
     @Test
@@ -130,7 +131,7 @@ public class FunctionsTest
         Comparator<Integer> comparator = Functions.comparator( new Function<Integer, Comparable>()
         {
             @Override
-            public Comparable map( Integer integer )
+            public Comparable apply( Integer integer )
             {
                 return integer.toString();
             }

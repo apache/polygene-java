@@ -13,6 +13,8 @@
  */
 package org.apache.zest.functional;
 
+import java.util.function.Function;
+
 /**
  * Common generic specification expressions
  */
@@ -110,7 +112,7 @@ public class Specifications
             @Override
             public boolean satisfiedBy( FROM item )
             {
-                return specification.satisfiedBy( function.map( item ) );
+                return specification.satisfiedBy( function.apply( item ) );
             }
         };
     }

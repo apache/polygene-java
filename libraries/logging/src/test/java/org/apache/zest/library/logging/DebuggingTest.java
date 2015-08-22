@@ -18,6 +18,7 @@
 
 package org.apache.zest.library.logging;
 
+import java.util.function.Function;
 import org.junit.Test;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -27,7 +28,6 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Function;
 import org.apache.zest.io.Outputs;
 import org.apache.zest.io.Transforms;
 import org.apache.zest.library.logging.debug.Debug;
@@ -78,7 +78,7 @@ public class DebuggingTest
             final String[] result = new String[1];
             es.entityStates( module ).transferTo( Transforms.map( new Function<EntityState, EntityState>()
                     {
-                        public EntityState map( EntityState entityState )
+                        public EntityState apply( EntityState entityState )
                         {
                             if( ServiceDebugRecordEntity.class.getName()
                                     .equals( first(entityState.entityDescriptor().types()).getName() ) )

@@ -16,6 +16,7 @@ package org.apache.zest.api;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.function.Function;
 import org.apache.zest.api.association.AbstractAssociation;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.composite.Composite;
@@ -30,7 +31,6 @@ import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.Function;
 
 /**
  * Encapsulation of the Zest API.
@@ -139,7 +139,7 @@ public interface ZestAPI
     Function<Composite, CompositeDescriptor> FUNCTION_DESCRIPTOR_FOR = new Function<Composite, CompositeDescriptor>()
     {
         @Override
-        public CompositeDescriptor map( Composite composite )
+        public CompositeDescriptor apply( Composite composite )
         {
             if( composite instanceof Proxy )
             {
@@ -168,7 +168,7 @@ public interface ZestAPI
     Function<Composite, CompositeInstance> FUNCTION_COMPOSITE_INSTANCE_OF = new Function<Composite, CompositeInstance>()
     {
         @Override
-        public CompositeInstance map( Composite composite )
+        public CompositeInstance apply( Composite composite )
         {
             if( composite instanceof Proxy )
             {

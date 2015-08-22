@@ -39,7 +39,7 @@ public final class ModifiesInjectionProviderFactory
     {
         if( bindingContext.model() instanceof CompositeDescriptor )
         {
-            Class<?> type = Classes.RAW_CLASS.map( dependencyModel.injectionType() );
+            Class<?> type = Classes.RAW_CLASS.apply( dependencyModel.injectionType() );
             if( type.isAssignableFrom( dependencyModel.injectedClass() ) )
             {
                 return new ModifiedInjectionProvider();

@@ -18,7 +18,7 @@
  */
 package org.apache.zest.api.dataset;
 
-import org.apache.zest.functional.Function;
+import java.util.function.Function;
 import org.apache.zest.functional.Specification;
 
 /**

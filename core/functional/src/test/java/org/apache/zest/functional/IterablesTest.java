@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.function.Function;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -103,7 +104,7 @@ public class IterablesTest
             int sum = 0;
 
             @Override
-            public Integer map( Integer number )
+            public Integer apply( Integer number )
             {
                 return sum += number;
             }
@@ -172,7 +173,7 @@ public class IterablesTest
         assertThat( Iterables.toList( Iterables.map( new Function<String, String>()
         {
 
-            public String map( String s )
+            public String apply( String s )
             {
                 return s + s;
             }
@@ -184,7 +185,7 @@ public class IterablesTest
         {
 
             @Override
-            public Integer map( Collection collection )
+            public Integer apply( Collection collection )
             {
                 return collection.size();
             }
@@ -231,7 +232,7 @@ public class IterablesTest
         {
 
             @Override
-            public String map( String s )
+            public String apply( String s )
             {
                 return s + ":" + s.length();
             }

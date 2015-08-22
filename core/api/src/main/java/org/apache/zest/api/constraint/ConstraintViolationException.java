@@ -25,9 +25,10 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.function.Function;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 
 /**
@@ -54,7 +55,7 @@ public class ConstraintViolationException
                                          Collection<ConstraintViolation> constraintViolations
     )
     {
-        this( instance.toString(), ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( instance ).types(), method, constraintViolations );
+        this( instance.toString(), ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( instance ).types(), method, constraintViolations );
     }
 
     public ConstraintViolationException( String instanceToString,
@@ -192,7 +193,7 @@ public class ConstraintViolationException
                 classes = "[" + Iterables.<Class<?>>toString( instanceTypes, new Function<Class<?>, String>()
                 {
                     @Override
-                    public String map( Class<?> from )
+                    public String apply( Class<?> from )
                     {
                         return from.getSimpleName();
                     }

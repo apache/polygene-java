@@ -14,6 +14,7 @@
 
 package org.apache.zest.library.eventsourcing.domain;
 
+import java.util.function.Function;
 import org.junit.Test;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.entity.EntityComposite;
@@ -24,7 +25,6 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Function;
 import org.apache.zest.io.Outputs;
 import org.apache.zest.io.Transforms;
 import org.apache.zest.library.eventsourcing.bootstrap.EventsourcingAssembler;
@@ -90,7 +90,7 @@ public class DomainEventTest
 
         source.events( 0, Long.MAX_VALUE ).transferTo( Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
                 {
-                    public String map( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
+                    public String apply( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
                     {
                         return unitOfWorkDomainEventsValue.toString();
                     }

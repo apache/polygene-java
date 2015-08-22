@@ -18,8 +18,8 @@
  */
 package org.apache.zest.spi.module;
 
+import java.util.function.Function;
 import org.apache.zest.api.composite.ModelDescriptor;
-import org.apache.zest.functional.Function;
 
 /**
  * TODO
@@ -30,7 +30,7 @@ public class ModelModule<T extends ModelDescriptor>
     public static Function<?, String> toStringFunction = new Function<ModelModule<?>, String>()
     {
         @Override
-        public String map( ModelModule item )
+        public String apply( ModelModule item )
         {
             return item.model()
                        .types()
@@ -45,7 +45,7 @@ public class ModelModule<T extends ModelDescriptor>
         return new Function<T, ModelModule<T>>()
         {
             @Override
-            public ModelModule<T> map( T model )
+            public ModelModule<T> apply( T model )
             {
                 return new ModelModule<>( module, model );
             }
@@ -57,7 +57,7 @@ public class ModelModule<T extends ModelDescriptor>
         return new Function<ModelModule<T>, T>()
         {
             @Override
-            public T map( ModelModule<T> modelModule )
+            public T apply( ModelModule<T> modelModule )
             {
                 return modelModule.model();
             }

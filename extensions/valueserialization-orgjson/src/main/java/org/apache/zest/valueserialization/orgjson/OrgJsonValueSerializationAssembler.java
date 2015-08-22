@@ -15,13 +15,13 @@
  */
 package org.apache.zest.valueserialization.orgjson;
 
+import java.util.function.Function;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Function;
 
 /**
  * Assemble a ValueSerialization Service producing and consuming JSON documents.

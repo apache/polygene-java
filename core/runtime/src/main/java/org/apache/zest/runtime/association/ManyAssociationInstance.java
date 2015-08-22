@@ -24,13 +24,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.ManyAssociationWrapper;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.util.NullArgumentException;
-import org.apache.zest.functional.Function2;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.entity.ManyAssociationState;
 
@@ -44,7 +44,7 @@ public class ManyAssociationInstance<T>
     private ManyAssociationState manyAssociationState;
 
     public ManyAssociationInstance( AssociationInfo associationInfo,
-                                    Function2<EntityReference, Type, Object> associationFunction,
+                                    BiFunction<EntityReference, Type, Object> associationFunction,
                                     ManyAssociationState manyAssociationState
     )
     {

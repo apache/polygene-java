@@ -19,10 +19,10 @@
 package org.apache.zest.runtime.association;
 
 import java.lang.reflect.Type;
+import java.util.function.BiFunction;
 import org.apache.zest.api.association.AbstractAssociation;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.Identity;
-import org.apache.zest.functional.Function2;
 
 /**
  * Implementation of AbstractAssociation. Includes helper methods for subclasses
@@ -31,10 +31,10 @@ public abstract class AbstractAssociationInstance<T>
     implements AbstractAssociation
 {
     protected AssociationInfo associationInfo;
-    private final Function2<EntityReference, Type, Object> entityFunction;
+    private final BiFunction<EntityReference, Type, Object> entityFunction;
 
     public AbstractAssociationInstance( AssociationInfo associationInfo,
-                                        Function2<EntityReference, Type, Object> entityFunction
+                                        BiFunction<EntityReference, Type, Object> entityFunction
     )
     {
         this.associationInfo = associationInfo;
@@ -59,7 +59,7 @@ public abstract class AbstractAssociationInstance<T>
             return null;
         }
 
-        return (T) entityFunction.map( entityId, associationInfo.type() );
+        return (T) entityFunction.apply( entityId, associationInfo.type() );
     }
 
     protected EntityReference getEntityReference( Object composite )

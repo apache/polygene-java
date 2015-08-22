@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.QualifiedName;
@@ -58,7 +59,6 @@ import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.util.Fields;
 import org.apache.zest.bootstrap.StateDeclarations;
 import org.apache.zest.functional.ForEach;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
@@ -399,7 +399,7 @@ public abstract class CompositeAssemblyImpl
                             return true;
                         }
                     };
-                    ForEach.forEach( Fields.FIELDS_OF.map( model.mixinClass() ) ).
+                    ForEach.forEach( Fields.FIELDS_OF.apply( model.mixinClass() ) ).
                         filter( Annotations.hasAnnotation( State.class ) ).
                         visit( addState );
                     return false;
@@ -420,7 +420,7 @@ public abstract class CompositeAssemblyImpl
             return; // Skip already registered names
         }
 
-        if( Property.class.isAssignableFrom( Classes.RAW_CLASS.map( typeOf( accessor ) ) ) )
+        if( Property.class.isAssignableFrom( Classes.RAW_CLASS.apply( typeOf( accessor ) ) ) )
         {
             propertiesModel.addProperty( newPropertyModel( accessor, constraintClasses ) );
             registeredStateNames.add( stateName );
@@ -694,7 +694,7 @@ public abstract class CompositeAssemblyImpl
         Function<Type, Iterable<Class<? extends Constraint<?, ?>>>> function = new Function<Type, Iterable<Class<? extends Constraint<?, ?>>>>()
         {
             @Override
-            public Iterable<Class<? extends Constraint<?, ?>>> map( Type type )
+            public Iterable<Class<? extends Constraint<?, ?>>> apply( Type type )
             {
                 Constraints constraints = Annotations.annotationOn( type, Constraints.class );
                 if( constraints == null )
@@ -724,7 +724,7 @@ public abstract class CompositeAssemblyImpl
         Function<Type, Iterable<Class<?>>> function = new Function<Type, Iterable<Class<?>>>()
         {
             @Override
-            public Iterable<Class<?>> map( Type type )
+            public Iterable<Class<?>> apply( Type type )
             {
                 Concerns concerns = Annotations.annotationOn( type, Concerns.class );
                 if( concerns == null )
@@ -754,7 +754,7 @@ public abstract class CompositeAssemblyImpl
         Function<Type, Iterable<Class<?>>> function = new Function<Type, Iterable<Class<?>>>()
         {
             @Override
-            public Iterable<Class<?>> map( Type type )
+            public Iterable<Class<?>> apply( Type type )
             {
                 SideEffects sideEffects = Annotations.annotationOn( type, SideEffects.class );
                 if( sideEffects == null )
@@ -818,7 +818,7 @@ public abstract class CompositeAssemblyImpl
         Function<Type, Iterable<Class<?>>> function = new Function<Type, Iterable<Class<?>>>()
         {
             @Override
-            public Iterable<Class<?>> map( Type type )
+            public Iterable<Class<?>> apply( Type type )
             {
                 Mixins mixins = Annotations.annotationOn( type, Mixins.class );
                 if( mixins == null )

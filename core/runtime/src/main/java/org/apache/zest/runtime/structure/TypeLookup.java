@@ -27,11 +27,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import org.apache.zest.api.composite.AmbiguousTypeException;
 import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Specifications;
 import org.apache.zest.runtime.composite.TransientModel;
@@ -385,7 +385,7 @@ public class TypeLookup
 
         if( serviceReference == null )
         {
-            throw new NoSuchServiceException( RAW_CLASS.map( serviceType ).getName(), moduleInstance.name() );
+            throw new NoSuchServiceException( RAW_CLASS.apply( serviceType ).getName(), moduleInstance.name() );
         }
 
         return (ServiceReference<T>) serviceReference;
@@ -514,7 +514,7 @@ public class TypeLookup
     {
 
         @Override
-        public Iterable<Class<?>> map( ModelModule<T> modelModule )
+        public Iterable<Class<?>> apply( ModelModule<T> modelModule )
         {
             return modelModule.model().types();
         }
@@ -525,7 +525,7 @@ public class TypeLookup
     {
 
         @Override
-        public Iterable<Class<?>> map( ServiceReference<?> serviceReference )
+        public Iterable<Class<?>> apply( ServiceReference<?> serviceReference )
         {
             return serviceReference.types();
         }

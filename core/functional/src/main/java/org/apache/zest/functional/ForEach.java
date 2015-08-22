@@ -14,6 +14,7 @@
 package org.apache.zest.functional;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
 /**
  * When using Iterables with map() and filter() the code often reads "in reverse", with the first item last in the code.

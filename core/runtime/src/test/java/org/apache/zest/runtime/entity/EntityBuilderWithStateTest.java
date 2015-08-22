@@ -18,6 +18,7 @@ package org.apache.zest.runtime.entity;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Function;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
@@ -33,7 +34,6 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Function;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
@@ -74,7 +74,7 @@ public class EntityBuilderWithStateTest
                 new Function<PropertyDescriptor, Object>()
                 {
                     @Override
-                    public Object map( PropertyDescriptor descriptor )
+                    public Object apply( PropertyDescriptor descriptor )
                     {
                         if( "prop".equals( descriptor.qualifiedName().name() ) )
                         {
@@ -86,7 +86,7 @@ public class EntityBuilderWithStateTest
                 new Function<AssociationDescriptor, EntityReference>()
                 {
                     @Override
-                    public EntityReference map( AssociationDescriptor descriptor )
+                    public EntityReference apply( AssociationDescriptor descriptor )
                     {
                         if( "ass".equals( descriptor.qualifiedName().name() ) )
                         {
@@ -98,7 +98,7 @@ public class EntityBuilderWithStateTest
                 new Function<AssociationDescriptor, Iterable<EntityReference>>()
                 {
                     @Override
-                    public Iterable<EntityReference> map( AssociationDescriptor descriptor )
+                    public Iterable<EntityReference> apply( AssociationDescriptor descriptor )
                     {
                         if( "manyAss".equals( descriptor.qualifiedName().name() ) )
                         {
@@ -110,7 +110,7 @@ public class EntityBuilderWithStateTest
                 new Function<AssociationDescriptor, Map<String, EntityReference>>()
                 {
                     @Override
-                    public Map<String, EntityReference> map( AssociationDescriptor descriptor )
+                    public Map<String, EntityReference> apply( AssociationDescriptor descriptor )
                     {
                         if( "namedAss".equals( descriptor.qualifiedName().name() ) )
                         {

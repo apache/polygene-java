@@ -62,7 +62,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
 
     private String getCompositeName( Composite composite )
     {
-        return first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( composite ).types()).getName();
+        return first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types()).getName();
     }
 
     @Override

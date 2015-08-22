@@ -21,6 +21,7 @@ package org.apache.zest.library.rdf.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.function.Function;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.zest.api.composite.DependencyDescriptor;
@@ -30,7 +31,6 @@ import org.apache.zest.api.mixin.MixinDescriptor;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
@@ -63,7 +63,7 @@ public class Model2XML
     }
 
     @Override
-    public Document map( ApplicationDescriptor Application )
+    public Document apply( ApplicationDescriptor Application )
     {
         try
         {

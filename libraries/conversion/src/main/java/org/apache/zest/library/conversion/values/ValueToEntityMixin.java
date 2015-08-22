@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateDescriptor;
@@ -39,7 +40,6 @@ import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.module.ModelModule;
@@ -77,7 +77,7 @@ public class ValueToEntityMixin
         MANY_ASSOC_TO_ENTITY_REF_ITERABLE = new Function<ManyAssociation<?>, Iterable<EntityReference>>()
         {
             @Override
-            public Iterable<EntityReference> map( ManyAssociation<?> manyAssoc )
+            public Iterable<EntityReference> apply( ManyAssociation<?> manyAssoc )
             {
                 if( manyAssoc == null )
                 {
@@ -94,7 +94,7 @@ public class ValueToEntityMixin
         NAMED_ASSOC_TO_ENTITY_REF_MAP = new Function<NamedAssociation<?>, Map<String, EntityReference>>()
         {
             @Override
-            public Map<String, EntityReference> map( NamedAssociation<?> namedAssoc )
+            public Map<String, EntityReference> apply( NamedAssociation<?> namedAssoc )
             {
                 if( namedAssoc == null )
                 {
@@ -111,7 +111,7 @@ public class ValueToEntityMixin
         STRING_COLLEC_TO_ENTITY_REF_ITERABLE = new Function<Collection<String>, Iterable<EntityReference>>()
         {
             @Override
-            public Iterable<EntityReference> map( Collection<String> stringCollec )
+            public Iterable<EntityReference> apply( Collection<String> stringCollec )
             {
                 if( stringCollec == null )
                 {
@@ -128,7 +128,7 @@ public class ValueToEntityMixin
         STRING_MAP_TO_ENTITY_REF_MAP = new Function<Map<String, String>, Map<String, EntityReference>>()
         {
             @Override
-            public Map<String, EntityReference> map( Map<String, String> stringMap )
+            public Map<String, EntityReference> apply( Map<String, String> stringMap )
             {
                 if( stringMap == null )
                 {
@@ -166,7 +166,7 @@ public class ValueToEntityMixin
     public <T> T create( Class<T> entityType, Object value, Function<T, T> prototypeOpportunity )
     {
         EntityBuilder<?> builder = doConversion( entityType, null, value );
-        prototypeOpportunity.map( (T) builder.instance() );
+        prototypeOpportunity.apply( (T) builder.instance() );
         return createInstance( builder );
     }
 
@@ -174,7 +174,7 @@ public class ValueToEntityMixin
     public <T> T create( Class<T> entityType, String identity, Object value, Function<T, T> prototypeOpportunity )
     {
         EntityBuilder<?> builder = doConversion( entityType, identity, value );
-        prototypeOpportunity.map( (T) builder.instance() );
+        prototypeOpportunity.apply( (T) builder.instance() );
         return createInstance( builder );
     }
 
@@ -185,7 +185,7 @@ public class ValueToEntityMixin
             new Function<Object, T>()
             {
                 @Override
-                public T map( Object value )
+                public T apply( Object value )
                 {
                     return create( entityType, value );
                 }
@@ -204,7 +204,7 @@ public class ValueToEntityMixin
             new Function<Object, T>()
             {
                 @Override
-                public T map( Object value )
+                public T apply( Object value )
                 {
                     return create( entityType, value, prototypeOpportunity );
                 }
@@ -244,11 +244,10 @@ public class ValueToEntityMixin
         final AssociationStateHolder vState, final AssociationStateDescriptor vStateDesc
     )
     {
-        Function<PropertyDescriptor, Object> props
-            = new Function<PropertyDescriptor, Object>()
+        Function<PropertyDescriptor, Object> props = new Function<PropertyDescriptor, Object>()
         {
             @Override
-            public Object map( PropertyDescriptor ePropDesc )
+            public Object apply( PropertyDescriptor ePropDesc )
             {
                 try
                 {
@@ -265,7 +264,7 @@ public class ValueToEntityMixin
             = new Function<AssociationDescriptor, EntityReference>()
         {
             @Override
-            public EntityReference map( AssociationDescriptor eAssocDesc )
+            public EntityReference apply( AssociationDescriptor eAssocDesc )
             {
                 try
                 {
@@ -296,12 +295,12 @@ public class ValueToEntityMixin
             = new Function<AssociationDescriptor, Iterable<EntityReference>>()
         {
             @Override
-            public Iterable<EntityReference> map( AssociationDescriptor eAssocDesc )
+            public Iterable<EntityReference> apply( AssociationDescriptor eAssocDesc )
             {
                 try
                 {
                     ManyAssociation<Object> vAssocState = vState.manyAssociationFor( eAssocDesc.accessor() );
-                    return MANY_ASSOC_TO_ENTITY_REF_ITERABLE.map( vAssocState );
+                    return MANY_ASSOC_TO_ENTITY_REF_ITERABLE.apply( vAssocState );
                 }
                 catch( IllegalArgumentException assocNotFoundOnValue )
                 {
@@ -314,7 +313,7 @@ public class ValueToEntityMixin
                         {
                             Collection<String> vAssocState = (Collection) vState
                                 .propertyFor( vPropDesc.accessor() ).get();
-                            return STRING_COLLEC_TO_ENTITY_REF_ITERABLE.map( vAssocState );
+                            return STRING_COLLEC_TO_ENTITY_REF_ITERABLE.apply( vAssocState );
                         }
                         return Iterables.empty();
                     }
@@ -329,12 +328,12 @@ public class ValueToEntityMixin
             = new Function<AssociationDescriptor, Map<String, EntityReference>>()
         {
             @Override
-            public Map<String, EntityReference> map( AssociationDescriptor eAssocDesc )
+            public Map<String, EntityReference> apply( AssociationDescriptor eAssocDesc )
             {
                 try
                 {
                     NamedAssociation<?> vAssocState = vState.namedAssociationFor( eAssocDesc.accessor() );
-                    return NAMED_ASSOC_TO_ENTITY_REF_MAP.map( vAssocState );
+                    return NAMED_ASSOC_TO_ENTITY_REF_MAP.apply( vAssocState );
                 }
                 catch( IllegalArgumentException assocNotFoundOnValue )
                 {
@@ -347,7 +346,7 @@ public class ValueToEntityMixin
                         {
                             Map<String, String> vAssocState = (Map) vState
                                 .propertyFor( vPropDesc.accessor() ).get();
-                            return STRING_MAP_TO_ENTITY_REF_MAP.map( vAssocState );
+                            return STRING_MAP_TO_ENTITY_REF_MAP.apply( vAssocState );
                         }
                         return Collections.EMPTY_MAP;
                     }
@@ -372,7 +371,7 @@ public class ValueToEntityMixin
             = new Function<PropertyDescriptor, Object>()
         {
             @Override
-            public Object map( PropertyDescriptor ePropDesc )
+            public Object apply( PropertyDescriptor ePropDesc )
             {
                 String propName = ePropDesc.qualifiedName().name();
                 try
@@ -391,7 +390,7 @@ public class ValueToEntityMixin
             = new Function<AssociationDescriptor, EntityReference>()
         {
             @Override
-            public EntityReference map( AssociationDescriptor eAssocDesc )
+            public EntityReference apply( AssociationDescriptor eAssocDesc )
             {
                 String assocName = eAssocDesc.qualifiedName().name();
                 try
@@ -424,14 +423,14 @@ public class ValueToEntityMixin
             = new Function<AssociationDescriptor, Iterable<EntityReference>>()
         {
             @Override
-            public Iterable<EntityReference> map( AssociationDescriptor eAssocDesc )
+            public Iterable<EntityReference> apply( AssociationDescriptor eAssocDesc )
             {
                 String assocName = eAssocDesc.qualifiedName().name();
                 try
                 {
                     AssociationDescriptor vAssocDesc = vStateDesc.getManyAssociationByName( assocName );
                     ManyAssociation<Object> vManyAssoc = vState.manyAssociationFor( vAssocDesc.accessor() );
-                    return MANY_ASSOC_TO_ENTITY_REF_ITERABLE.map( vManyAssoc );
+                    return MANY_ASSOC_TO_ENTITY_REF_ITERABLE.apply( vManyAssoc );
                 }
                 catch( IllegalArgumentException assocNotFoundOnValue )
                 {
@@ -443,7 +442,7 @@ public class ValueToEntityMixin
                         {
                             Collection<String> vAssocState = (Collection) vState
                                 .propertyFor( vPropDesc.accessor() ).get();
-                            return STRING_COLLEC_TO_ENTITY_REF_ITERABLE.map( vAssocState );
+                            return STRING_COLLEC_TO_ENTITY_REF_ITERABLE.apply( vAssocState );
                         }
                         return Iterables.empty();
                     }
@@ -458,14 +457,14 @@ public class ValueToEntityMixin
             = new Function<AssociationDescriptor, Map<String, EntityReference>>()
         {
             @Override
-            public Map<String, EntityReference> map( AssociationDescriptor eAssocDesc )
+            public Map<String, EntityReference> apply( AssociationDescriptor eAssocDesc )
             {
                 String assocName = eAssocDesc.qualifiedName().name();
                 try
                 {
                     AssociationDescriptor vAssocDesc = vStateDesc.getNamedAssociationByName( assocName );
                     NamedAssociation<Object> vAssocState = vState.namedAssociationFor( vAssocDesc.accessor() );
-                    return NAMED_ASSOC_TO_ENTITY_REF_MAP.map( vAssocState );
+                    return NAMED_ASSOC_TO_ENTITY_REF_MAP.apply( vAssocState );
                 }
                 catch( IllegalArgumentException assocNotFoundOnValue )
                 {
@@ -477,7 +476,7 @@ public class ValueToEntityMixin
                         {
                             Map<String, String> vAssocState = (Map) vState
                                 .propertyFor( vPropDesc.accessor() ).get();
-                            return STRING_MAP_TO_ENTITY_REF_MAP.map( vAssocState );
+                            return STRING_MAP_TO_ENTITY_REF_MAP.apply( vAssocState );
                         }
                         return Collections.EMPTY_MAP;
                     }

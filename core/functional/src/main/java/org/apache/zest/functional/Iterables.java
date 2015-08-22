@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Utility methods for working with Iterables. See test for examples of how to use.
@@ -338,7 +339,7 @@ public final class Iterables
                 final Iterable<Iterator<T>> iterators = toList( map( new Function<Iterable<T>, Iterator<T>>()
                 {
                     @Override
-                    public Iterator<T> map( Iterable<T> iterable )
+                    public Iterator<T> apply( Iterable<T> iterable )
                     {
                         return iterable.iterator();
                     }
@@ -437,7 +438,7 @@ public final class Iterables
         {
             @Override
             @SuppressWarnings( "unchecked" )
-            public TO map( FROM from )
+            public TO apply( FROM from )
             {
                 return (TO) from;
             }
@@ -574,15 +575,15 @@ public final class Iterables
         return map( new Function<T, T>()
         {
             @Override
-            public T map( T t )
+            public T apply( T t )
             {
                 if( functions.length != 0 )
                 {
                     String[] mapped = new String[ functions.length ];
                     for( int i = 0; i < functions.length; i++ )
                     {
-                        Function<T, String> function = functions[i];
-                        mapped[i] = function.map( t );
+                        Function<T, String> function = functions[ i ];
+                        mapped[ i ] = function.apply( t );
                     }
                 }
                 return t;
@@ -600,7 +601,7 @@ public final class Iterables
         return toString( iterable, new Function<T, String>()
         {
             @Override
-            public String map( T t )
+            public String apply( T t )
             {
                 return t == null ? "[null]" : t.toString();
             }
@@ -617,7 +618,7 @@ public final class Iterables
             {
                 builder.append( separator );
             }
-            builder.append( toStringFunction.map( item ) );
+            builder.append( toStringFunction.apply( item ) );
             first = false;
         }
         return builder.toString();
@@ -699,7 +700,7 @@ public final class Iterables
             public TO next()
             {
                 FROM from = fromIterator.next();
-                return function.map( from );
+                return function.apply( from );
             }
 
             @Override

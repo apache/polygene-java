@@ -17,6 +17,7 @@
  */
 package org.apache.zest.sample.rental.web.assembly;
 
+import java.util.function.Function;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
@@ -24,7 +25,6 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.functional.Function;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 
@@ -40,14 +40,7 @@ public class StorageModule
         module.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
         new OrgJsonValueSerializationAssembler().
             visibleIn( Visibility.application ).
-            withValuesModuleFinder( new Function<Application, Module>()
-        {
-            @Override
-            public Module map( Application app )
-            {
-                return app.findModule( "DomainLayer", "RentalModule" );
-            }
-        } ).
+            withValuesModuleFinder( app -> app.findModule( "DomainLayer", "RentalModule" ) ).
             assemble( module );
     }
 }

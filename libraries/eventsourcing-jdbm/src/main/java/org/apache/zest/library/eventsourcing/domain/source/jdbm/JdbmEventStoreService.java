@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
+import java.util.function.Function;
 import jdbm.RecordManager;
 import jdbm.RecordManagerFactory;
 import jdbm.RecordManagerOptions;
@@ -37,7 +38,6 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.value.ValueSerialization;
-import org.apache.zest.functional.Function;
 import org.apache.zest.io.Input;
 import org.apache.zest.io.Output;
 import org.apache.zest.io.Receiver;
@@ -123,7 +123,7 @@ public interface JdbmEventStoreService
             }, Transforms.map( new Function<String, UnitOfWorkDomainEventsValue>()
             {
                 @Override
-                public UnitOfWorkDomainEventsValue map( String item )
+                public UnitOfWorkDomainEventsValue apply( String item )
                 {
                     return valueSerialization.<UnitOfWorkDomainEventsValue>deserialize( eventsType, item );
                 }

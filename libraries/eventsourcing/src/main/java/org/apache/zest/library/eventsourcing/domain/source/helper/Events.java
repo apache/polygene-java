@@ -18,8 +18,8 @@ package org.apache.zest.library.eventsourcing.domain.source.helper;
 
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.function.Function;
 import org.apache.zest.api.util.Methods;
-import org.apache.zest.functional.Function;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Specification;
 import org.apache.zest.library.eventsourcing.domain.api.DomainEventValue;
@@ -37,7 +37,7 @@ public class Events
         return Iterables.flattenIterables( Iterables.map( new Function<UnitOfWorkDomainEventsValue, Iterable<DomainEventValue>>()
         {
             @Override
-            public Iterable<DomainEventValue> map( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
+            public Iterable<DomainEventValue> apply( UnitOfWorkDomainEventsValue unitOfWorkDomainEventsValue )
             {
                 return unitOfWorkDomainEventsValue.events().get();
             }
@@ -147,11 +147,11 @@ public class Events
         return Events.withNames( map( new Function<Method, String>()
         {
             @Override
-            public String map( Method method )
+            public String apply( Method method )
             {
                 return method.getName();
             }
-        }, Iterables.toList( Methods.METHODS_OF.map( eventClass ) ) ));
+        }, Iterables.toList( Methods.METHODS_OF.apply( eventClass ) ) ));
     }
 
     public static Specification<DomainEventValue> onEntities( final String... entities )

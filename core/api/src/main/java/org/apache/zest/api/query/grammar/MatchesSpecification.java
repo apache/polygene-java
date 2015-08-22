@@ -60,7 +60,7 @@ public class MatchesSpecification
     @Override
     public boolean satisfiedBy( Composite item )
     {
-        Property<String> prop = property.map( item );
+        Property<String> prop = property.apply( item );
 
         if( prop == null )
         {

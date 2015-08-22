@@ -42,7 +42,7 @@ public class PropertyNullSpecification<T>
     @Override
     public boolean satisfiedBy( Composite item )
     {
-        Property<T> prop = property.map( item );
+        Property<T> prop = property.apply( item );
 
         if( prop == null )
         {

@@ -52,7 +52,7 @@ public class ContainsAllSpecification<T>
     @Override
     public boolean satisfiedBy( Composite item )
     {
-        Collection<T> collection = collectionProperty.map( item ).get();
+        Collection<T> collection = collectionProperty.apply( item ).get();
 
         if( collection == null )
         {

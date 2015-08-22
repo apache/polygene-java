@@ -27,6 +27,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.injection.scope.Service;
@@ -41,7 +42,6 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Function;
 import org.apache.zest.io.Inputs;
 import org.apache.zest.io.Outputs;
 import org.apache.zest.io.Transforms;
@@ -252,7 +252,7 @@ public class DocumentationSupport
                                     Function<Application, Module> valuesModuleFinder = new Function<Application, Module>()
                                     {
                                         @Override
-                                        public Module map( Application app )
+                                        public Module apply( Application app )
                                         {
                                             return app.findModule( "SINGLE-Layer", "VALUES-Module" );
                                         }

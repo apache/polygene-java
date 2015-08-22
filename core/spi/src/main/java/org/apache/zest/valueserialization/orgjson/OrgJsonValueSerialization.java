@@ -17,13 +17,13 @@ package org.apache.zest.valueserialization.orgjson;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.functional.Function;
-import org.apache.zest.functional.Function2;
 
 /**
  * ValueSerialization producing and consuming JSON documents using org.json.
@@ -46,14 +46,7 @@ public class OrgJsonValueSerialization
     public OrgJsonValueSerialization( Application application, Module module, final Module valuesModule )
     {
         this.serializer = new OrgJsonValueSerializer();
-        this.deserializer = new OrgJsonValueDeserializer( application, module, new Function<Application, Module>()
-        {
-            @Override
-            public Module map( Application from )
-            {
-                return valuesModule;
-            }
-        } );
+        this.deserializer = new OrgJsonValueDeserializer( application, module, from -> valuesModule );
     }
 
     @Override
@@ -132,7 +125,7 @@ public class OrgJsonValueSerialization
     }
 
     @Override
-    public <T> Function2<ValueType, String, T> deserialize()
+    public <T> BiFunction<ValueType, String, T> deserialize()
     {
         return deserializer.deserialize();
     }

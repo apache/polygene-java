@@ -15,7 +15,8 @@
  */
 package org.apache.zest.api.unitofwork;
 
-import org.apache.zest.functional.Function;
+
+import java.util.function.Function;
 
 import static org.apache.zest.functional.Iterables.fold;
 
@@ -45,7 +46,7 @@ public class EntityTypeNotFoundException
             }
 
             @Override
-            public String map( String type )
+            public String apply( String type )
             {
                 result.append( type );
                 result.append( "\n" );

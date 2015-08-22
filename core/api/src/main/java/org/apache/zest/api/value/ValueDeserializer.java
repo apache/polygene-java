@@ -16,9 +16,9 @@
 package org.apache.zest.api.value;
 
 import java.io.InputStream;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import org.apache.zest.api.type.ValueType;
-import org.apache.zest.functional.Function;
-import org.apache.zest.functional.Function2;
 
 /**
  * Use a ValueDeserializer to create new values instances from serialized state.
@@ -100,7 +100,7 @@ public interface ValueDeserializer
      * @param <T> the parametrized function return type
      * @return a deserialization function
      */
-    <T> Function2<ValueType, String, T> deserialize();
+    <T> BiFunction<ValueType, String, T> deserialize();
 
     /**
      * Deserialize a value from a state.

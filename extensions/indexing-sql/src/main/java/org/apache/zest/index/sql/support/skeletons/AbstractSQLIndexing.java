@@ -927,7 +927,7 @@ public abstract class AbstractSQLIndexing
         throws SQLException
     {
         ValueDescriptor vDesc = this._qi4SPI.valueDescriptorFor( (ValueComposite) property );
-        StateHolder state = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.map( (ValueComposite) property ).state();
+        StateHolder state = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( (ValueComposite) property ).state();
         Integer originalPropertyPK = propertyPK;
         ++propertyPK;
         for( PropertyDescriptor pDesc : vDesc.state().properties() )

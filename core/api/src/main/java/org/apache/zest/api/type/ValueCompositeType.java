@@ -30,7 +30,7 @@ public final class ValueCompositeType
 
     public static boolean isValueComposite( Type type )
     {
-        return ValueComposite.class.isAssignableFrom( Classes.RAW_CLASS.map( type ) );
+        return ValueComposite.class.isAssignableFrom( Classes.RAW_CLASS.apply( type ) );
     }
 
     public ValueCompositeType( ValueDescriptor model )

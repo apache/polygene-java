@@ -39,7 +39,7 @@ public final class SimpleLogConcern
     public SimpleLogConcern( @This Composite composite )
     {
         this.composite = composite;
-        Class<?> type = first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.map( composite ).types() );
+        Class<?> type = first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types() );
         category = type.getName();
     }
 
