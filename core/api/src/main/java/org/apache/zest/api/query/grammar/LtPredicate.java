@@ -19,12 +19,12 @@
 package org.apache.zest.api.query.grammar;
 
 /**
- * Greater or equals Specification.
+ * Lesser than Specification.
  */
-public class GeSpecification<T>
-    extends ComparisonSpecification<T>
+public class LtPredicate<T>
+    extends ComparisonPredicate<T>
 {
-    public GeSpecification( PropertyFunction<T> property, T value )
+    public LtPredicate( PropertyFunction<T> property, T value )
     {
         super( property, value );
     }
@@ -33,12 +33,12 @@ public class GeSpecification<T>
     @SuppressWarnings( "unchecked" )
     protected boolean compare( T value )
     {
-        return ( (Comparable) value ).compareTo( this.value ) >= 0;
+        return ( (Comparable) value ).compareTo( this.value ) < 0;
     }
 
     @Override
     public String toString()
     {
-        return property.toString() + ">=" + value.toString();
+        return property.toString() + "<" + value.toString();
     }
 }

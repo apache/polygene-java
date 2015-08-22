@@ -18,6 +18,7 @@
  */
 package org.apache.zest.bootstrap;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.property.Property;
@@ -27,15 +28,14 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 
 public class DocumentationSupport
 {
 
-    public static Specification<ObjectAssembly> hasMyTypeSpecification = new Specification<ObjectAssembly>()
+    public static Predicate<ObjectAssembly> hasMyTypeSpecification = new Predicate<ObjectAssembly>()
     {
 
-        public boolean satisfiedBy( ObjectAssembly item )
+        public boolean test( ObjectAssembly item )
         {
             return Iterables.toList( item.types() ).contains( String.class );
         }

@@ -24,13 +24,13 @@ import org.apache.zest.api.composite.Composite;
 /**
  * ManyAssociation Contains Specification.
  */
-public class ManyAssociationContainsSpecification<T>
-    extends ExpressionSpecification
+public class ManyAssociationContainsPredicate<T>
+    extends ExpressionPredicate
 {
     private final ManyAssociationFunction<T> manyAssociationFunction;
     private final T value;
 
-    public ManyAssociationContainsSpecification( ManyAssociationFunction<T> manyAssociationFunction, T value )
+    public ManyAssociationContainsPredicate( ManyAssociationFunction<T> manyAssociationFunction, T value )
     {
         this.manyAssociationFunction = manyAssociationFunction;
         this.value = value;
@@ -47,7 +47,7 @@ public class ManyAssociationContainsSpecification<T>
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
         ManyAssociation<T> collection = manyAssociationFunction.apply( item );
         if( collection == null )

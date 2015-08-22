@@ -24,16 +24,16 @@ import org.apache.zest.api.composite.Composite;
 /**
  * NamedAssociation Contains Specification.
  */
-public class NamedAssociationContainsNameSpecification<T>
-    extends ExpressionSpecification
+public class NamedAssociationContainsPredicate<T>
+    extends ExpressionPredicate
 {
     private final NamedAssociationFunction<T> namedAssociationFunction;
-    private final String name;
+    private final T value;
 
-    public NamedAssociationContainsNameSpecification( NamedAssociationFunction<T> namedAssociationFunction, String name )
+    public NamedAssociationContainsPredicate( NamedAssociationFunction<T> namedAssociationFunction, T value )
     {
         this.namedAssociationFunction = namedAssociationFunction;
-        this.name = name;
+        this.value = value;
     }
 
     public NamedAssociationFunction<T> namedAssociation()
@@ -41,25 +41,25 @@ public class NamedAssociationContainsNameSpecification<T>
         return namedAssociationFunction;
     }
 
-    public String name()
+    public T value()
     {
-        return name;
+        return value;
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
         NamedAssociation<T> collection = namedAssociationFunction.apply( item );
         if( collection == null )
         {
             return false;
         }
-        return collection.containsName( name );
+        return collection.nameOf( value ) != null;
     }
 
     @Override
     public String toString()
     {
-        return namedAssociationFunction + " contains name:" + name;
+        return namedAssociationFunction + " contains:" + value;
     }
 }

@@ -16,45 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.api.query.grammar;
+package org.apache.zest.runtime.structure;
 
-import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.property.Property;
+import java.util.function.Predicate;
+import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.composite.ModelDescriptor;
 
 /**
- * Property not null Specification.
+ * TODO
  */
-public class PropertyNotNullSpecification<T>
-    extends ExpressionSpecification
+public class Visibilitypredicate
+    implements Predicate<ModelDescriptor>
 {
-    private PropertyFunction<T> property;
+    public static final Predicate<ModelDescriptor> MODULE = new Visibilitypredicate( Visibility.module );
+    public static final Predicate<ModelDescriptor> LAYER = new Visibilitypredicate( Visibility.layer );
+    public static final Predicate<ModelDescriptor> APPLICATION = new Visibilitypredicate( Visibility.application );
 
-    public PropertyNotNullSpecification( PropertyFunction<T> property )
+    private final Visibility visibility;
+
+    public Visibilitypredicate( Visibility visibility )
     {
-        this.property = property;
-    }
-
-    public PropertyFunction<T> property()
-    {
-        return property;
-    }
-
-    @Override
-    public boolean satisfiedBy( Composite item )
-    {
-        Property<T> prop = property.apply( item );
-
-        if( prop == null )
-        {
-            return false;
-        }
-
-        return prop.get() != null;
+        this.visibility = visibility;
     }
 
     @Override
-    public String toString()
+    public boolean test( ModelDescriptor item )
     {
-        return property.toString() + "is not null";
+        return item.visibility().ordinal() >= visibility.ordinal();
     }
 }

@@ -18,8 +18,8 @@
  */
 package org.apache.zest.bootstrap;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.type.HasTypes;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Specifications;
 
 /**
@@ -27,17 +27,17 @@ import org.apache.zest.functional.Specifications;
  */
 public class AssemblySpecifications
 {
-    public static Specification<HasTypes> types( final Class... types )
+    public static Predicate<HasTypes> types( final Class... types )
     {
-        return new Specification<HasTypes>()
+        return new Predicate<HasTypes>()
         {
             @Override
-            public boolean satisfiedBy( HasTypes item )
+            public boolean test( HasTypes item )
             {
 
                 for( Class<?> type : item.types() )
                 {
-                    if( Specifications.in( types ).satisfiedBy( type ) )
+                    if( Specifications.in( types ).test( type ) )
                     {
                         return true;
                     }

@@ -15,13 +15,13 @@
 package org.apache.zest.api.service.qualifier;
 
 import java.lang.annotation.Annotation;
+import java.util.function.Predicate;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.functional.Specification;
 
 /**
  * Constructs a Specification for a given qualifier annotation
  */
 public interface AnnotationQualifier<QUALIFIER extends Annotation>
 {
-    public <T> Specification<ServiceReference<?>> qualifier( QUALIFIER qualifier );
+    public <T> Predicate<ServiceReference<?>> qualifier( QUALIFIER qualifier );
 }

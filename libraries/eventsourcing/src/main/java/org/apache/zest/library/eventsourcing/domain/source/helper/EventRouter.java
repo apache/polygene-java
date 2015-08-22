@@ -19,7 +19,7 @@ package org.apache.zest.library.eventsourcing.domain.source.helper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.apache.zest.functional.Specification;
+import java.util.function.Predicate;
 import org.apache.zest.io.Output;
 import org.apache.zest.io.Receiver;
 import org.apache.zest.io.Sender;
@@ -35,7 +35,7 @@ import org.apache.zest.library.eventsourcing.domain.api.UnitOfWorkDomainEventsVa
 public class EventRouter<T extends Throwable>
         implements Output<DomainEventValue, T>, Receiver<UnitOfWorkDomainEventsValue, T>
 {
-    private Map<Specification<DomainEventValue>, Receiver<DomainEventValue, T>> routeEvent = new LinkedHashMap<Specification<DomainEventValue>, Receiver<DomainEventValue, T>>();
+    private Map<Predicate<DomainEventValue>, Receiver<DomainEventValue, T>> routeEvent = new LinkedHashMap<Predicate<DomainEventValue>, Receiver<DomainEventValue, T>>();
 
     private Receiver<DomainEventValue, T> defaultReceiver = new Receiver<DomainEventValue, T>()
     {
@@ -46,7 +46,7 @@ public class EventRouter<T extends Throwable>
         }
     };
 
-    public EventRouter route( Specification<DomainEventValue> specification, Receiver<DomainEventValue, T> receiver )
+    public EventRouter route( Predicate<DomainEventValue> specification, Receiver<DomainEventValue, T> receiver )
     {
         routeEvent.put( specification, receiver );
 
@@ -67,9 +67,9 @@ public class EventRouter<T extends Throwable>
             @Override
             public void receive( DomainEventValue item ) throws T
             {
-                for( Map.Entry<Specification<DomainEventValue>, Receiver<DomainEventValue, T>> specificationReceiverEntry : routeEvent.entrySet() )
+                for( Map.Entry<Predicate<DomainEventValue>, Receiver<DomainEventValue, T>> specificationReceiverEntry : routeEvent.entrySet() )
                 {
-                    if( specificationReceiverEntry.getKey().satisfiedBy( item ) )
+                    if( specificationReceiverEntry.getKey().test( item ) )
                     {
                         specificationReceiverEntry.getValue().receive( item );
                         return;

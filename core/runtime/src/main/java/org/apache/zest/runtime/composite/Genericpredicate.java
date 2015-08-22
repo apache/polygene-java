@@ -16,28 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.api.query.grammar;
+package org.apache.zest.runtime.composite;
+
+import java.lang.reflect.InvocationHandler;
+import java.util.function.Predicate;
 
 /**
- * Equals Specification.
+ * Specification that checks whether a given class implements InvocationHandler or not.
  */
-public class EqSpecification<T>
-    extends ComparisonSpecification<T>
+public class Genericpredicate
+    implements Predicate<Class<?>>
 {
-    public EqSpecification( PropertyFunction<T> property, T value )
-    {
-        super( property, value );
-    }
+    public static final Genericpredicate INSTANCE = new Genericpredicate();
 
     @Override
-    protected boolean compare( T value )
+    public boolean test( Class<?> item )
     {
-        return value.equals( this.value );
-    }
-
-    @Override
-    public String toString()
-    {
-        return property.toString() + "=" + value.toString();
+        return InvocationHandler.class.isAssignableFrom( item );
     }
 }

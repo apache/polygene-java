@@ -18,6 +18,7 @@
 package org.apache.zest.index.sql.support.skeletons;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateDescriptor;
 import org.apache.zest.api.common.QualifiedName;
@@ -29,7 +30,6 @@ import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entity.ManyAssociationState;
@@ -57,11 +57,11 @@ import org.slf4j.LoggerFactory;
             return new SQLCompatEntityStateWrapper( from );
         }
     };
-    private static final Specification<PropertyDescriptor> PROPERTY_SPEC = new Specification<PropertyDescriptor>()
+    private static final Predicate<PropertyDescriptor> PROPERTY_SPEC = new Predicate<PropertyDescriptor>()
     {
 
         @Override
-        public boolean satisfiedBy( PropertyDescriptor propertyDescriptor )
+        public boolean test( PropertyDescriptor propertyDescriptor )
         {
             boolean supported = isSupported( propertyDescriptor.valueType() );
             if( !supported )

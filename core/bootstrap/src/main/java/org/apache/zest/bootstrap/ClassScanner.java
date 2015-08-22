@@ -24,11 +24,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 
 import static org.apache.zest.functional.Iterables.filter;
 import static org.apache.zest.functional.Iterables.flatten;
@@ -105,10 +105,10 @@ public class ClassScanner
                                                              }
                                                          }
                                                      }
-                                                         , filter( new Specification<JarEntry>()
+                                                         , filter( new Predicate<JarEntry>()
                                                      {
                                                          @Override
-                                                         public boolean satisfiedBy( JarEntry jarEntry )
+                                                         public boolean test( JarEntry jarEntry )
                                                          {
                                                              return jarEntry.getName()
                                                                         .startsWith( packageName ) && jarEntry.getName()
@@ -129,10 +129,10 @@ public class ClassScanner
         else
         {
             final File path = new File( file, seedClass.getPackage().getName().replace( '.', File.separatorChar ) );
-            Iterable<File> files = findFiles( path, new Specification<File>()
+            Iterable<File> files = findFiles( path, new Predicate<File>()
             {
                 @Override
-                public boolean satisfiedBy( File file )
+                public boolean test( File file )
                 {
                     return file.getName().endsWith( ".class" );
                 }
@@ -170,21 +170,21 @@ public class ClassScanner
      *
      * @return regex class name specification
      */
-    public static Specification<Class<?>> matches( String regex )
+    public static Predicate<Class<?>> matches( String regex )
     {
         final Pattern pattern = Pattern.compile( regex );
 
-        return new Specification<Class<?>>()
+        return new Predicate<Class<?>>()
         {
             @Override
-            public boolean satisfiedBy( Class<?> aClass )
+            public boolean test( Class<?> aClass )
             {
                 return pattern.matcher( aClass.getName() ).matches();
             }
         };
     }
 
-    private static Iterable<File> findFiles( File directory, final Specification<File> filter )
+    private static Iterable<File> findFiles( File directory, final Predicate<File> filter )
     {
         return flatten( filter( filter, iterable( directory.listFiles() ) ),
                         flattenIterables( map( new Function<File, Iterable<File>>()
@@ -194,10 +194,10 @@ public class ClassScanner
                             {
                                 return findFiles( file, filter );
                             }
-                        }, filter( new Specification<File>()
+                        }, filter( new Predicate<File>()
                         {
                             @Override
-                            public boolean satisfiedBy( File file )
+                            public boolean test( File file )
                             {
                                 return file.isDirectory();
                             }
@@ -205,10 +205,10 @@ public class ClassScanner
     }
 
     private static class ValidClass
-        implements Specification<Class<?>>
+        implements Predicate<Class<?>>
     {
         @Override
-        public boolean satisfiedBy( Class<?> item )
+        public boolean test( Class<?> item )
         {
             return ( item.isInterface() || !Modifier.isAbstract( item.getModifiers() ) ) && ( !item.isEnum() && !item.isAnonymousClass() );
         }

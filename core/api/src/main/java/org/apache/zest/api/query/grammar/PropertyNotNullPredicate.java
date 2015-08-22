@@ -22,14 +22,14 @@ import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.property.Property;
 
 /**
- * Property null Specification.
+ * Property not null Specification.
  */
-public class PropertyNullSpecification<T>
-    extends ExpressionSpecification
+public class PropertyNotNullPredicate<T>
+    extends ExpressionPredicate
 {
     private PropertyFunction<T> property;
 
-    public PropertyNullSpecification( PropertyFunction<T> property )
+    public PropertyNotNullPredicate( PropertyFunction<T> property )
     {
         this.property = property;
     }
@@ -40,21 +40,21 @@ public class PropertyNullSpecification<T>
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
         Property<T> prop = property.apply( item );
 
         if( prop == null )
         {
-            return true;
+            return false;
         }
 
-        return prop.get() == null;
+        return prop.get() != null;
     }
 
     @Override
     public String toString()
     {
-        return property.toString() + "is null";
+        return property.toString() + "is not null";
     }
 }

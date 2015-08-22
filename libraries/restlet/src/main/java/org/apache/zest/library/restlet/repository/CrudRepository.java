@@ -20,9 +20,10 @@
 
 package org.apache.zest.library.restlet.repository;
 
+import java.util.function.Predicate;
+import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
-import org.apache.zest.functional.Specification;
 
 public interface CrudRepository<T extends Identity>
 {
@@ -42,7 +43,7 @@ public interface CrudRepository<T extends Identity>
     Iterable<T> findAll();
 
     @UnitOfWorkPropagation
-    Iterable<T> find( Specification specification );
+    Iterable<T> find( Predicate<Composite> specification );
 
     T toValue( T entity );
 

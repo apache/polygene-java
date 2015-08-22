@@ -20,13 +20,12 @@
 
 package org.apache.zest.library.restlet.crud;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.util.NullArgumentException;
-import org.apache.zest.functional.Specification;
-import org.apache.zest.library.restlet.HasName;
 
 public class IdentitySpecification
-    implements Specification<Identity>
+    implements Predicate<Identity>
 {
     private final String id;
 
@@ -37,7 +36,7 @@ public class IdentitySpecification
     }
 
     @Override
-    public boolean satisfiedBy( Identity item )
+    public boolean test( Identity item )
     {
         return id.equals( item.identity().get() );
     }

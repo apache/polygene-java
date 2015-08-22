@@ -208,7 +208,7 @@ public final class DefaultEntityState
     @Override
     public boolean isAssignableTo( Class<?> type )
     {
-        return Classes.exactTypeSpecification( type ).satisfiedBy( entityDescriptor );
+        return Classes.exactTypeSpecification( type ).test( entityDescriptor );
     }
 
     @Override

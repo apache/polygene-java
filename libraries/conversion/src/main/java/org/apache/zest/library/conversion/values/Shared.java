@@ -15,44 +15,44 @@
  */
 package org.apache.zest.library.conversion.values;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.MapType;
 import org.apache.zest.api.type.ValueType;
-import org.apache.zest.functional.Specification;
 
 /**
  * Shared.
  */
 final class Shared
 {
-    static final Specification<ValueType> STRING_TYPE_SPEC;
-    static final Specification<ValueType> STRING_COLLECTION_TYPE_SPEC;
-    static final Specification<ValueType> STRING_MAP_TYPE_SPEC;
+    static final Predicate<ValueType> STRING_TYPE_SPEC;
+    static final Predicate<ValueType> STRING_COLLECTION_TYPE_SPEC;
+    static final Predicate<ValueType> STRING_MAP_TYPE_SPEC;
 
     static
     {
         // Type Specifications
-        STRING_TYPE_SPEC = new Specification<ValueType>()
+        STRING_TYPE_SPEC = new Predicate<ValueType>()
         {
             @Override
-            public boolean satisfiedBy( ValueType valueType )
+            public boolean test( ValueType valueType )
             {
                 return valueType.mainType().equals( String.class );
             }
         };
-        STRING_COLLECTION_TYPE_SPEC = new Specification<ValueType>()
+        STRING_COLLECTION_TYPE_SPEC = new Predicate<ValueType>()
         {
             @Override
-            public boolean satisfiedBy( ValueType valueType )
+            public boolean test( ValueType valueType )
             {
                 return valueType instanceof CollectionType
                        && ( (CollectionType) valueType ).collectedType().mainType().equals( String.class );
             }
         };
-        STRING_MAP_TYPE_SPEC = new Specification<ValueType>()
+        STRING_MAP_TYPE_SPEC = new Predicate<ValueType>()
         {
             @Override
-            public boolean satisfiedBy( ValueType valueType )
+            public boolean test( ValueType valueType )
             {
                 return valueType instanceof MapType
                        && ( (MapType) valueType ).keyType().mainType().equals( String.class )

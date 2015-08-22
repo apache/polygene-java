@@ -19,12 +19,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Specifications;
 import org.apache.zest.spi.query.QuerySource;
 
@@ -49,7 +49,7 @@ public class IterableQuerySource
 
     @Override
     public <T> T find( Class<T> resultType,
-                       Specification<Composite> whereClause,
+                       Predicate<Composite> whereClause,
                        Iterable<OrderBy> orderBySegments,
                        Integer firstResult,
                        Integer maxResults,
@@ -66,7 +66,7 @@ public class IterableQuerySource
 
     @Override
     public <T> long count( Class<T> resultType,
-                           Specification<Composite> whereClause,
+                           Predicate<Composite> whereClause,
                            Iterable<OrderBy> orderBySegments,
                            Integer firstResult,
                            Integer maxResults,
@@ -78,7 +78,7 @@ public class IterableQuerySource
 
     @Override
     public <T> Iterator<T> iterator( Class<T> resultType,
-                                     Specification<Composite> whereClause,
+                                     Predicate<Composite> whereClause,
                                      Iterable<OrderBy> orderBySegments,
                                      Integer firstResult,
                                      Integer maxResults,
@@ -90,7 +90,7 @@ public class IterableQuerySource
 
     @SuppressWarnings( {"raw", "unchecked"} )
     private <T> List<T> list( Class<T> resultType,
-                              Specification<Composite> whereClause,
+                              Predicate<Composite> whereClause,
                               Iterable<OrderBy> orderBySegments,
                               Integer firstResult,
                               Integer maxResults,
@@ -146,7 +146,7 @@ public class IterableQuerySource
     }
 
     @SuppressWarnings( {"raw", "unchecked"} )
-    private <T> List<T> filter( Class<T> resultType, Specification whereClause )
+    private <T> List<T> filter( Class<T> resultType, Predicate whereClause )
     {
         if( whereClause == null )
         {

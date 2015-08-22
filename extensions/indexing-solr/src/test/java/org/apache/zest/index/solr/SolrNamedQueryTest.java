@@ -18,12 +18,12 @@
 package org.apache.zest.index.solr;
 
 import java.io.File;
+import java.util.function.Predicate;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
 import org.apache.zest.test.indexing.AbstractNamedQueryTest;
@@ -59,7 +59,7 @@ public class SolrNamedQueryTest
     }
 
     @Override
-    protected Specification<Composite> createNamedQueryDescriptor( String queryName, String queryString )
+    protected Predicate<Composite> createNamedQueryDescriptor( String queryName, String queryString )
     {
         return SolrExpressions.search( queryString );
     }

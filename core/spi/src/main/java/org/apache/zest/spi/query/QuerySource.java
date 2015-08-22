@@ -20,9 +20,9 @@ package org.apache.zest.spi.query;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.query.grammar.OrderBy;
-import org.apache.zest.functional.Specification;
 
 /**
  * Query Source, used in QueryBuilder SPI.
@@ -30,7 +30,7 @@ import org.apache.zest.functional.Specification;
 public interface QuerySource
 {
     <T> T find( Class<T> resultType,
-                Specification<Composite> whereClause,
+                Predicate<Composite> whereClause,
                 Iterable<OrderBy> orderBySegments,
                 Integer firstResult,
                 Integer maxResults,
@@ -38,7 +38,7 @@ public interface QuerySource
     );
 
     <T> long count( Class<T> resultType,
-                    Specification<Composite> whereClause,
+                    Predicate<Composite> whereClause,
                     Iterable<OrderBy> orderBySegments,
                     Integer firstResult,
                     Integer maxResults,
@@ -46,7 +46,7 @@ public interface QuerySource
     );
 
     <T> Iterator<T> iterator( Class<T> resultType,
-                              Specification<Composite> whereClause,
+                              Predicate<Composite> whereClause,
                               Iterable<OrderBy> orderBySegments,
                               Integer firstResult,
                               Integer maxResults,

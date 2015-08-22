@@ -20,9 +20,9 @@ package org.apache.zest.index.sql.support.postgresql;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.query.grammar.OrderBy;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.index.sql.support.skeletons.AbstractSQLQuerying;
 import org.sql.generation.api.grammar.builders.query.QuerySpecificationBuilder;
 import org.sql.generation.api.grammar.query.QueryExpression;
@@ -36,7 +36,7 @@ public class PostgreSQLQuerying
     protected QueryExpression finalizeQuery(
             SQLVendor sqlVendor, QuerySpecificationBuilder specBuilder,
             Class<?> resultType,
-            Specification<Composite> whereClause,
+            Predicate<Composite> whereClause,
             OrderBy[] orderBySegments,
             Integer firstResult,
             Integer maxResults,

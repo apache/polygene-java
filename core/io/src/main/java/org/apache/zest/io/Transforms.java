@@ -20,8 +20,8 @@ import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
-import org.apache.zest.functional.Specification;
 
 /**
  * Utility class for I/O transforms
@@ -38,7 +38,7 @@ public class Transforms
      *
      * @return And Output encapsulation the filter operation.
      */
-    public static <T, Receiver2ThrowableType extends Throwable> Output<T, Receiver2ThrowableType> filter( final Specification<? super T> specification,
+    public static <T, Receiver2ThrowableType extends Throwable> Output<T, Receiver2ThrowableType> filter( final Predicate<? super T> specification,
                                                                                                           final Output<T, Receiver2ThrowableType> output
     )
     {
@@ -60,7 +60,7 @@ public class Transforms
                             public void receive( T item )
                                 throws ReceiverThrowableType
                             {
-                                if( specification.satisfiedBy( item ) )
+                                if( specification.test( item ) )
                                 {
                                     receiver.receive( item );
                                 }
@@ -126,7 +126,7 @@ public class Transforms
      *
      * @return An Output instance that encapsulates the operation.
      */
-    public static <T, Receiver2ThrowableType extends Throwable> Output<T, Receiver2ThrowableType> filteredMap( final Specification<? super T> specification,
+    public static <T, Receiver2ThrowableType extends Throwable> Output<T, Receiver2ThrowableType> filteredMap( final Predicate<? super T> specification,
                                                                                                                final Function<? super T, ? extends T> function,
                                                                                                                final Output<T, Receiver2ThrowableType> output
     )
@@ -149,7 +149,7 @@ public class Transforms
                             public void receive( T item )
                                 throws ReceiverThrowableType
                             {
-                                if( specification.satisfiedBy( item ) )
+                                if( specification.test( item ) )
                                 {
                                     receiver.receive( function.apply( item ) );
                                 }

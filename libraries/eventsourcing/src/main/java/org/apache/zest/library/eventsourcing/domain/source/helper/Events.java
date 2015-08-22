@@ -19,9 +19,9 @@ package org.apache.zest.library.eventsourcing.domain.source.helper;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.zest.api.util.Methods;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.library.eventsourcing.domain.api.DomainEventValue;
 import org.apache.zest.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
 
@@ -50,36 +50,36 @@ public class Events
     }
 
     // Common specifications
-    public static Specification<UnitOfWorkDomainEventsValue> afterDate( final Date afterDate )
+    public static Predicate<UnitOfWorkDomainEventsValue> afterDate( final Date afterDate )
     {
-        return new Specification<UnitOfWorkDomainEventsValue>()
+        return new Predicate<UnitOfWorkDomainEventsValue>()
         {
             @Override
-            public boolean satisfiedBy( UnitOfWorkDomainEventsValue eventValue )
+            public boolean test( UnitOfWorkDomainEventsValue eventValue )
             {
                 return eventValue.timestamp().get() > afterDate.getTime();
             }
         };
     }
 
-    public static Specification<UnitOfWorkDomainEventsValue> beforeDate( final Date afterDate )
+    public static Predicate<UnitOfWorkDomainEventsValue> beforeDate( final Date afterDate )
     {
-        return new Specification<UnitOfWorkDomainEventsValue>()
+        return new Predicate<UnitOfWorkDomainEventsValue>()
         {
             @Override
-            public boolean satisfiedBy( UnitOfWorkDomainEventsValue eventValue )
+            public boolean test( UnitOfWorkDomainEventsValue eventValue )
             {
                 return eventValue.timestamp().get() < afterDate.getTime();
             }
         };
     }
 
-    public static Specification<UnitOfWorkDomainEventsValue> withUsecases( final String... names )
+    public static Predicate<UnitOfWorkDomainEventsValue> withUsecases( final String... names )
     {
-        return new Specification<UnitOfWorkDomainEventsValue>()
+        return new Predicate<UnitOfWorkDomainEventsValue>()
         {
             @Override
-            public boolean satisfiedBy( UnitOfWorkDomainEventsValue eventValue )
+            public boolean test( UnitOfWorkDomainEventsValue eventValue )
             {
                 for (String name : names)
                 {
@@ -91,12 +91,12 @@ public class Events
         };
     }
 
-    public static Specification<UnitOfWorkDomainEventsValue> byUser( final String... by )
+    public static Predicate<UnitOfWorkDomainEventsValue> byUser( final String... by )
     {
-        return new Specification<UnitOfWorkDomainEventsValue>()
+        return new Predicate<UnitOfWorkDomainEventsValue>()
         {
             @Override
-            public boolean satisfiedBy( UnitOfWorkDomainEventsValue eventValue )
+            public boolean test( UnitOfWorkDomainEventsValue eventValue )
             {
                 for (String user : by)
                 {
@@ -108,12 +108,12 @@ public class Events
         };
     }
 
-    public static Specification<DomainEventValue> withNames( final Iterable<String> names )
+    public static Predicate<DomainEventValue> withNames( final Iterable<String> names )
     {
-        return new Specification<DomainEventValue>()
+        return new Predicate<DomainEventValue>()
         {
             @Override
-            public boolean satisfiedBy( DomainEventValue eventValue )
+            public boolean test( DomainEventValue eventValue )
             {
                 for (String name : names)
                 {
@@ -125,12 +125,12 @@ public class Events
         };
     }
 
-    public static Specification<DomainEventValue> withNames( final String... names )
+    public static Predicate<DomainEventValue> withNames( final String... names )
     {
-        return new Specification<DomainEventValue>()
+        return new Predicate<DomainEventValue>()
         {
             @Override
-            public boolean satisfiedBy( DomainEventValue eventValue )
+            public boolean test( DomainEventValue eventValue )
             {
                 for (String name : names)
                 {
@@ -142,7 +142,7 @@ public class Events
         };
     }
 
-    public static Specification<DomainEventValue> withNames( final Class eventClass )
+    public static Predicate<DomainEventValue> withNames( final Class eventClass )
     {
         return Events.withNames( map( new Function<Method, String>()
         {
@@ -154,12 +154,12 @@ public class Events
         }, Iterables.toList( Methods.METHODS_OF.apply( eventClass ) ) ));
     }
 
-    public static Specification<DomainEventValue> onEntities( final String... entities )
+    public static Predicate<DomainEventValue> onEntities( final String... entities )
     {
-        return new Specification<DomainEventValue>()
+        return new Predicate<DomainEventValue>()
         {
             @Override
-            public boolean satisfiedBy( DomainEventValue eventValue )
+            public boolean test( DomainEventValue eventValue )
             {
                 for (String entity : entities)
                 {
@@ -171,12 +171,12 @@ public class Events
         };
     }
 
-    public static Specification<DomainEventValue> onEntityTypes( final String... entityTypes )
+    public static Predicate<DomainEventValue> onEntityTypes( final String... entityTypes )
     {
-        return new Specification<DomainEventValue>()
+        return new Predicate<DomainEventValue>()
         {
             @Override
-            public boolean satisfiedBy( DomainEventValue eventValue )
+            public boolean test( DomainEventValue eventValue )
             {
                 for (String entityType : entityTypes)
                 {
@@ -188,12 +188,12 @@ public class Events
         };
     }
 
-    public static Specification<DomainEventValue> paramIs( final String name, final String value )
+    public static Predicate<DomainEventValue> paramIs( final String name, final String value )
     {
-        return new Specification<DomainEventValue>()
+        return new Predicate<DomainEventValue>()
         {
             @Override
-            public boolean satisfiedBy( DomainEventValue eventValue )
+            public boolean test( DomainEventValue eventValue )
             {
                 return EventParameters.getParameter( eventValue, name ).equals( value );
             }

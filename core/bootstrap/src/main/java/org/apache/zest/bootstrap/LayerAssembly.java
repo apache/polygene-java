@@ -19,9 +19,9 @@
 
 package org.apache.zest.bootstrap;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.structure.Layer;
-import org.apache.zest.functional.Specification;
 
 /**
  * Fluid API for declaring a layer in an application. This is obtained by calling {@link ApplicationAssembly#layer(String)}.
@@ -69,7 +69,7 @@ public interface LayerAssembly
      *
      * @return An EntityDeclaration for the specified EntityComposite types.
      */
-    EntityDeclaration entities( Specification<? super EntityAssembly> specification );
+    EntityDeclaration entities( Predicate<? super EntityAssembly> specification );
 
     /**
      * Given a Specification for ServiceAssembly's, returns a ServiceDeclaration that can
@@ -79,7 +79,7 @@ public interface LayerAssembly
      *
      * @return An ServiceDeclaration for the specified ServiceComposite types.
      */
-    ServiceDeclaration services( Specification<? super ServiceAssembly> specification );
+    ServiceDeclaration services( Predicate<? super ServiceAssembly> specification );
 
     /**
      * Given a Specification for TransientAssembly's, returns a TransientDeclaration that can
@@ -89,7 +89,7 @@ public interface LayerAssembly
      *
      * @return An TransientDeclaration for the specified TransientComposite types.
      */
-    TransientDeclaration transients( Specification<? super TransientAssembly> specification );
+    TransientDeclaration transients( Predicate<? super TransientAssembly> specification );
 
     /**
      * Given a Specification for ValueAssembly's, returns a ValueDeclaration that can
@@ -99,7 +99,7 @@ public interface LayerAssembly
      *
      * @return An ValueDeclaration for the specified ValueComposite types.
      */
-    ValueDeclaration values( Specification<? super ValueAssembly> specification );
+    ValueDeclaration values( Predicate<? super ValueAssembly> specification );
 
     /**
      * Given a Specification for ObjectAssembly's, returns a ObjectDeclaration that can
@@ -109,7 +109,7 @@ public interface LayerAssembly
      *
      * @return An ObjectDeclaration for the specified Object types.
      */
-    ObjectDeclaration objects( Specification<? super ObjectAssembly> specification );
+    ObjectDeclaration objects( Predicate<? super ObjectAssembly> specification );
 
     /**
      * Given a Specification for ImportedServiceAssembly's, returns a ImportedServiceDeclaration that can
@@ -119,5 +119,5 @@ public interface LayerAssembly
      *
      * @return An ImportedServiceDeclaration for the specified Imported Service types.
      */
-    ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification );
+    ImportedServiceDeclaration importedServices( Predicate<? super ImportedServiceAssembly> specification );
 }

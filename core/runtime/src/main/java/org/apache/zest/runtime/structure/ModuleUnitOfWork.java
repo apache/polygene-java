@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.common.QualifiedName;
@@ -50,7 +51,6 @@ import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.runtime.association.AssociationInstance;
 import org.apache.zest.runtime.association.ManyAssociationInstance;
 import org.apache.zest.runtime.association.NamedAssociationInstance;
@@ -488,7 +488,7 @@ public class ModuleUnitOfWork
 
         @Override
         public <T> T find( Class<T> resultType,
-                           Specification<Composite> whereClause,
+                           Predicate<Composite> whereClause,
                            Iterable<OrderBy> orderBySegments,
                            Integer firstResult,
                            Integer maxResults,
@@ -523,7 +523,7 @@ public class ModuleUnitOfWork
 
         @Override
         public <T> long count( Class<T> resultType,
-                               Specification<Composite> whereClause,
+                               Predicate<Composite> whereClause,
                                Iterable<OrderBy> orderBySegments,
                                Integer firstResult,
                                Integer maxResults,
@@ -545,7 +545,7 @@ public class ModuleUnitOfWork
 
         @Override
         public <T> Iterator<T> iterator( final Class<T> resultType,
-                                         Specification<Composite> whereClause,
+                                         Predicate<Composite> whereClause,
                                          Iterable<OrderBy> orderBySegments,
                                          Integer firstResult,
                                          Integer maxResults,

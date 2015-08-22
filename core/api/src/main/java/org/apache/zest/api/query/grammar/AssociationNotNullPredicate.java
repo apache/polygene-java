@@ -18,36 +18,50 @@
  */
 package org.apache.zest.api.query.grammar;
 
+import org.apache.zest.api.association.Association;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.functional.Specification;
-import org.apache.zest.functional.Specifications;
 
 /**
- * NOT Specification.
+ * Association not null Specification.
  */
-public class NotSpecification implements Specification<Composite>
+public class AssociationNotNullPredicate<T>
+    extends ExpressionPredicate
 {
-    private Specification<Composite> operand;
+    private AssociationFunction<T> association;
 
-    public NotSpecification( Specification<Composite> operand )
+    public AssociationNotNullPredicate( AssociationFunction<T> association )
     {
-        this.operand = operand;
+        this.association = association;
     }
 
-    public Specification<Composite> operand()
+    public AssociationFunction<T> association()
     {
-        return operand;
+        return association;
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
-        return Specifications.not( operand ).satisfiedBy( item );
+        try
+        {
+            Association<T> assoc = association.apply( item );
+
+            if( assoc == null )
+            {
+                return false;
+            }
+
+            return assoc.get() != null;
+        }
+        catch( IllegalArgumentException e )
+        {
+            return false;
+        }
     }
 
     @Override
     public String toString()
     {
-        return "!" + operand.toString();
+        return association.toString() + "is not null";
     }
 }

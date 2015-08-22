@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Utility functions. Combine these with methods in Iterables, for example. See FunctionsTest for usages.
@@ -26,14 +27,7 @@ public final class Functions
 {
     public static <A, B, C> BiFunction<Function<? super B, C>, Function<A, B>, Function<A, C>> compose()
     {
-        return new BiFunction<Function<? super B, C>, Function<A, B>, Function<A, C>>()
-        {
-            @Override
-            public Function<A, C> apply( Function<? super B, C> bcFunction, Function<A, B> abFunction )
-            {
-                return compose( bcFunction, abFunction );
-            }
-        };
+        return Functions::compose;
     }
 
     /**
@@ -48,64 +42,29 @@ public final class Functions
                                                                  final Function<FROM, MIDDLE> inner
     )
     {
-        return new Function<FROM, TO>()
-        {
-            @Override
-            public TO apply( FROM from )
-            {
-                return outer.apply( inner.apply( from ) );
-            }
-        };
+        return from -> outer.apply( inner.apply( from ) );
     }
 
     public static <TO, FROM extends TO> Function<FROM, TO> identity()
     {
-        return new Function<FROM, TO>()
-        {
-            @Override
-            public TO apply( FROM from )
-            {
-                return from;
-            }
-        };
+        return from -> from;
     }
 
     public static <FROM, TO> Function<FROM, TO> fromMap( final Map<FROM, TO> map )
     {
-        return new Function<FROM, TO>()
-        {
-            @Override
-            public TO apply( FROM from )
-            {
-                return map.get( from );
-            }
-        };
+        return map::get;
     }
 
     public static <T> Function<T, T> withDefault( final T defaultValue )
     {
-        return new Function<T, T>()
-        {
-            @Override
-            public T apply( T from )
-            {
-                if( from == null )
-                {
-                    return defaultValue;
-                }
-                else
-                {
-                    return from;
-                }
-            }
-        };
+        return from -> from == null ? defaultValue : from;
     }
 
     public static Function<Number, Long> longSum()
     {
         return new Function<Number, Long>()
         {
-            long sum;
+            private long sum = 0;
 
             @Override
             public Long apply( Number number )
@@ -120,7 +79,7 @@ public final class Functions
     {
         return new Function<Number, Integer>()
         {
-            int sum;
+            private int sum = 0;
 
             @Override
             public Integer apply( Number number )
@@ -142,7 +101,7 @@ public final class Functions
      *
      * @return A Function that can count items adhering to a Specification.
      */
-    public static <T> Function<T, Integer> count( final Specification<T> specification )
+    public static <T> Function<T, Integer> count( final Predicate<T> specification )
     {
         return new Function<T, Integer>()
         {
@@ -151,7 +110,7 @@ public final class Functions
             @Override
             public Integer apply( T item )
             {
-                if( specification.satisfiedBy( item ) )
+                if( specification.test( item ) )
                 {
                     count++;
                 }
@@ -171,7 +130,7 @@ public final class Functions
      * @return A Function that will provide the 'index' where the Specifcation is fulfilled. The Function will
      * return -1 if the current item doesn't fulfill the Specification.
      */
-    public static <T> Function<T, Integer> indexOf( final Specification<T> specification )
+    public static <T> Function<T, Integer> indexOf( final Predicate<T> specification )
     {
         return new Function<T, Integer>()
         {
@@ -181,7 +140,7 @@ public final class Functions
             @Override
             public Integer apply( T item )
             {
-                if( index == -1 && specification.satisfiedBy( item ) )
+                if( index == -1 && specification.test( item ) )
                 {
                     index = current;
                 }
@@ -218,14 +177,14 @@ public final class Functions
      *
      * @return A Function that performs the filter operation when applied to Iterables.
      */
-    public static <T> Function<T, T> filteredMap( final Specification<T> specification, final Function<T, T> function )
+    public static <T> Function<T, T> filteredMap( final Predicate<T> specification, final Function<T, T> function )
     {
         return new Function<T, T>()
         {
             @Override
             public T apply( T from )
             {
-                return specification.satisfiedBy( from ) ? function.apply( from ) : from;
+                return specification.test( from ) ? function.apply( from ) : from;
             }
         };
     }

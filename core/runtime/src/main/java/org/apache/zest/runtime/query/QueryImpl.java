@@ -21,6 +21,7 @@ package org.apache.zest.runtime.query;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.Query;
@@ -28,7 +29,6 @@ import org.apache.zest.api.query.QueryExecutionException;
 import org.apache.zest.api.query.QueryExpressions;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.spi.query.QuerySource;
 
 /**
@@ -46,7 +46,7 @@ import org.apache.zest.spi.query.QuerySource;
     /**
      * Where clause.
      */
-    private final Specification<Composite> whereClause;
+    private final Predicate<Composite> whereClause;
     private QuerySource querySource;
     /**
      * Order by clause segments.
@@ -72,7 +72,7 @@ import org.apache.zest.spi.query.QuerySource;
      * @param whereClause where clause
      */
     /* package */ QueryImpl( final Class<T> resultType,
-               final Specification<Composite> whereClause,
+               final Predicate<Composite> whereClause,
                final QuerySource querySource
     )
     {

@@ -17,6 +17,7 @@ package org.apache.zest.library.conversion.values;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.function.Predicate;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.constraint.ConstraintViolationException;
@@ -26,7 +27,6 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.library.conversion.values.TestModel.PersonEntity;
 import org.apache.zest.library.conversion.values.TestModel.PersonValue;
 import org.apache.zest.library.conversion.values.TestModel.PersonValue2;
@@ -105,10 +105,10 @@ public class ValueToEntityTest
             assertThat( edEntity.firstName(), equalTo( "Ed" ) );
             assertThat( edEntity.lastName(), equalTo( "Flintstone" ) );
             assertThat( edEntity.spouse().get().firstName(), equalTo( "Edna" ) );
-            assertThat( Iterables.count( Iterables.filter( new Specification<PersonEntity>()
+            assertThat( Iterables.count( Iterables.filter( new Predicate<PersonEntity>()
             {
                 @Override
-                public boolean satisfiedBy( PersonEntity child )
+                public boolean test( PersonEntity child )
                 {
                     return "Zeke".equals( child.firstName() ) || "Fred".equals( child.firstName() );
                 }
@@ -139,10 +139,10 @@ public class ValueToEntityTest
             assertThat( edEntity.firstName(), equalTo( "Ed" ) );
             assertThat( edEntity.lastName(), equalTo( "Flintstone" ) );
             assertThat( edEntity.spouse().get().firstName(), equalTo( "Edna" ) );
-            assertThat( Iterables.count( Iterables.filter( new Specification<PersonEntity>()
+            assertThat( Iterables.count( Iterables.filter( new Predicate<PersonEntity>()
             {
                 @Override
-                public boolean satisfiedBy( PersonEntity child )
+                public boolean test( PersonEntity child )
                 {
                     return "Zeke".equals( child.firstName() ) || "Fred".equals( child.firstName() );
                 }
@@ -173,10 +173,10 @@ public class ValueToEntityTest
             assertThat( edEntity.firstName(), equalTo( "Ed" ) );
             assertThat( edEntity.lastName(), equalTo( "Flintstone" ) );
             assertThat( edEntity.spouse().get().firstName(), equalTo( "Edna" ) );
-            assertThat( Iterables.count( Iterables.filter( new Specification<PersonEntity>()
+            assertThat( Iterables.count( Iterables.filter( new Predicate<PersonEntity>()
             {
                 @Override
-                public boolean satisfiedBy( PersonEntity child )
+                public boolean test( PersonEntity child )
                 {
                     return "Zeke".equals( child.firstName() ) || "Fred".equals( child.firstName() );
                 }

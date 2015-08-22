@@ -22,12 +22,11 @@ package org.apache.zest.library.restlet.repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceReference;
-
-import static org.apache.zest.functional.ForEach.forEach;
 
 @Mixins( RepositoryLocator.Mixin.class )
 public interface RepositoryLocator
@@ -42,7 +41,7 @@ public interface RepositoryLocator
 
         public Mixin( @Service Iterable<ServiceReference<CrudRepository>> repositories )
         {
-            forEach( repositories ).forEach( ref -> {
+            StreamSupport.stream( repositories.spliterator(), true ).forEach( ref -> {
                 Class type = ref.metaInfo( EntityTypeDescriptor.class ).entityType();
                 this.repositories.put( type, ref.get() );
             } );

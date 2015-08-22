@@ -19,10 +19,10 @@
 package org.apache.zest.api.dataset.iterable;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.zest.api.dataset.DataSet;
 import org.apache.zest.api.dataset.Query;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 
 /**
  * TODO
@@ -38,7 +38,7 @@ public class IterableDataSet<T>
     }
 
     @Override
-    public DataSet<T> constrain( Specification<T> selection )
+    public DataSet<T> constrain( Predicate<T> selection )
     {
         return new IterableDataSet<T>( Iterables.filter( selection, iterable ) );
     }

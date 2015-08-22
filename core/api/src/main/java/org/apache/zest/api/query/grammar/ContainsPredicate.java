@@ -18,27 +18,50 @@
  */
 package org.apache.zest.api.query.grammar;
 
+import java.util.Collection;
+import org.apache.zest.api.composite.Composite;
+
 /**
- * Lesser than Specification.
+ * Contains Specification.
  */
-public class LtSpecification<T>
-    extends ComparisonSpecification<T>
+public class ContainsPredicate<T>
+    extends ExpressionPredicate
 {
-    public LtSpecification( PropertyFunction<T> property, T value )
+    private PropertyFunction<? extends Collection<T>> collectionProperty;
+    private T value;
+
+    public ContainsPredicate( PropertyFunction<? extends Collection<T>> collectionProperty, T value )
     {
-        super( property, value );
+        this.collectionProperty = collectionProperty;
+        this.value = value;
+    }
+
+    public PropertyFunction<? extends Collection<T>> collectionProperty()
+    {
+        return collectionProperty;
+    }
+
+    public T value()
+    {
+        return value;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected boolean compare( T value )
+    public boolean test( Composite item )
     {
-        return ( (Comparable) value ).compareTo( this.value ) < 0;
+        Collection<T> collection = collectionProperty.apply( item ).get();
+
+        if( collection == null )
+        {
+            return false;
+        }
+
+        return collection.contains( value );
     }
 
     @Override
     public String toString()
     {
-        return property.toString() + "<" + value.toString();
+        return collectionProperty + " contains " + value;
     }
 }

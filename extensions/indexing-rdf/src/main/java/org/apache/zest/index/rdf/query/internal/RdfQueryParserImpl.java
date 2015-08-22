@@ -27,35 +27,35 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.function.Predicate;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.query.grammar.AndSpecification;
-import org.apache.zest.api.query.grammar.AssociationNotNullSpecification;
-import org.apache.zest.api.query.grammar.AssociationNullSpecification;
-import org.apache.zest.api.query.grammar.ComparisonSpecification;
-import org.apache.zest.api.query.grammar.ContainsAllSpecification;
-import org.apache.zest.api.query.grammar.ContainsSpecification;
-import org.apache.zest.api.query.grammar.EqSpecification;
-import org.apache.zest.api.query.grammar.GeSpecification;
-import org.apache.zest.api.query.grammar.GtSpecification;
-import org.apache.zest.api.query.grammar.LeSpecification;
-import org.apache.zest.api.query.grammar.LtSpecification;
-import org.apache.zest.api.query.grammar.ManyAssociationContainsSpecification;
-import org.apache.zest.api.query.grammar.MatchesSpecification;
-import org.apache.zest.api.query.grammar.NeSpecification;
-import org.apache.zest.api.query.grammar.NotSpecification;
-import org.apache.zest.api.query.grammar.OrSpecification;
+import org.apache.zest.api.query.grammar.AndPredicate;
+import org.apache.zest.api.query.grammar.AssociationNotNullPredicate;
+import org.apache.zest.api.query.grammar.AssociationNullPredicate;
+import org.apache.zest.api.query.grammar.ComparisonPredicate;
+import org.apache.zest.api.query.grammar.ContainsAllPredicate;
+import org.apache.zest.api.query.grammar.ContainsPredicate;
+import org.apache.zest.api.query.grammar.EqPredicate;
+import org.apache.zest.api.query.grammar.GePredicate;
+import org.apache.zest.api.query.grammar.GtPredicate;
+import org.apache.zest.api.query.grammar.LePredicate;
+import org.apache.zest.api.query.grammar.LtPredicate;
+import org.apache.zest.api.query.grammar.ManyAssociationContainsPredicate;
+import org.apache.zest.api.query.grammar.MatchesPredicate;
+import org.apache.zest.api.query.grammar.NePredicate;
+import org.apache.zest.api.query.grammar.Notpredicate;
+import org.apache.zest.api.query.grammar.OrPredicate;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.query.grammar.PropertyFunction;
-import org.apache.zest.api.query.grammar.PropertyNotNullSpecification;
-import org.apache.zest.api.query.grammar.PropertyNullSpecification;
+import org.apache.zest.api.query.grammar.PropertyNotNullPredicate;
+import org.apache.zest.api.query.grammar.PropertyNullPredicate;
 import org.apache.zest.api.query.grammar.QuerySpecification;
 import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.value.ValueSerializer;
 import org.apache.zest.api.value.ValueSerializer.Options;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.index.rdf.query.RdfQueryParser;
 import org.apache.zest.spi.ZestSPI;
 import org.slf4j.LoggerFactory;
@@ -79,7 +79,7 @@ public class RdfQueryParserImpl
         }
     };
 
-    private static final Map<Class<? extends ComparisonSpecification>, String> OPERATORS;
+    private static final Map<Class<? extends ComparisonPredicate>, String> OPERATORS;
     private static final Set<Character> RESERVED_CHARS;
 
     private final Namespaces namespaces = new Namespaces();
@@ -91,12 +91,12 @@ public class RdfQueryParserImpl
     static
     {
         OPERATORS = new HashMap<>( 6 );
-        OPERATORS.put( EqSpecification.class, "=" );
-        OPERATORS.put( GeSpecification.class, ">=" );
-        OPERATORS.put( GtSpecification.class, ">" );
-        OPERATORS.put( LeSpecification.class, "<=" );
-        OPERATORS.put( LtSpecification.class, "<" );
-        OPERATORS.put( NeSpecification.class, "!=" );
+        OPERATORS.put( EqPredicate.class, "=" );
+        OPERATORS.put( GePredicate.class, ">=" );
+        OPERATORS.put( GtPredicate.class, ">" );
+        OPERATORS.put( LePredicate.class, "<=" );
+        OPERATORS.put( LtPredicate.class, "<" );
+        OPERATORS.put( NePredicate.class, "!=" );
 
         RESERVED_CHARS = new HashSet<>( Arrays.asList(
             '\"', '^', '.', '\\', '?', '*', '+', '{', '}', '(', ')', '|', '$', '[', ']'
@@ -111,7 +111,7 @@ public class RdfQueryParserImpl
 
     @Override
     public String constructQuery( final Class<?> resultType,
-                                  final Specification<Composite> specification,
+                                  final Predicate<Composite> specification,
                                   final OrderBy[] orderBySegments,
                                   final Integer firstResult,
                                   final Integer maxResults,
@@ -214,20 +214,20 @@ public class RdfQueryParserImpl
         return query.toString();
     }
 
-    private void processFilter( final Specification<Composite> expression, boolean allowInline, StringBuilder builder )
+    private void processFilter( final Predicate<Composite> expression, boolean allowInline, StringBuilder builder )
     {
         if( expression == null )
         {
             return;
         }
 
-        if( expression instanceof AndSpecification )
+        if( expression instanceof AndPredicate )
         {
-            final AndSpecification conjunction = (AndSpecification) expression;
+            final AndPredicate conjunction = (AndPredicate) expression;
 
             int start = builder.length();
             boolean first = true;
-            for( Specification<Composite> operand : conjunction.operands() )
+            for( Predicate<Composite> operand : conjunction.operands() )
             {
                 int size = builder.length();
                 processFilter( operand, allowInline, builder );
@@ -250,13 +250,13 @@ public class RdfQueryParserImpl
                 builder.append( ')' );
             }
         }
-        else if( expression instanceof OrSpecification )
+        else if( expression instanceof OrPredicate )
         {
-            final OrSpecification disjunction = (OrSpecification) expression;
+            final OrPredicate disjunction = (OrPredicate) expression;
 
             int start = builder.length();
             boolean first = true;
-            for( Specification<Composite> operand : disjunction.operands() )
+            for( Predicate<Composite> operand : disjunction.operands() )
             {
                 int size = builder.length();
                 processFilter( operand, false, builder );
@@ -279,47 +279,47 @@ public class RdfQueryParserImpl
                 builder.append( ')' );
             }
         }
-        else if( expression instanceof NotSpecification )
+        else if( expression instanceof Notpredicate )
         {
             builder.insert( 0, "(!" );
-            processFilter( ( (NotSpecification) expression ).operand(), false, builder );
+            processFilter( ( (Notpredicate) expression ).operand(), false, builder );
             builder.append( ")" );
         }
-        else if( expression instanceof ComparisonSpecification )
+        else if( expression instanceof ComparisonPredicate )
         {
             processComparisonPredicate( expression, allowInline, builder );
         }
-        else if( expression instanceof ContainsAllSpecification )
+        else if( expression instanceof ContainsAllPredicate )
         {
-            processContainsAllPredicate( (ContainsAllSpecification) expression, builder );
+            processContainsAllPredicate( (ContainsAllPredicate) expression, builder );
         }
-        else if( expression instanceof ContainsSpecification<?> )
+        else if( expression instanceof ContainsPredicate<?> )
         {
-            processContainsPredicate( (ContainsSpecification<?>) expression, builder );
+            processContainsPredicate( (ContainsPredicate<?>) expression, builder );
         }
-        else if( expression instanceof MatchesSpecification )
+        else if( expression instanceof MatchesPredicate )
         {
-            processMatchesPredicate( (MatchesSpecification) expression, builder );
+            processMatchesPredicate( (MatchesPredicate) expression, builder );
         }
-        else if( expression instanceof PropertyNotNullSpecification<?> )
+        else if( expression instanceof PropertyNotNullPredicate<?> )
         {
-            processNotNullPredicate( (PropertyNotNullSpecification) expression, builder );
+            processNotNullPredicate( (PropertyNotNullPredicate) expression, builder );
         }
-        else if( expression instanceof PropertyNullSpecification<?> )
+        else if( expression instanceof PropertyNullPredicate<?> )
         {
-            processNullPredicate( (PropertyNullSpecification) expression, builder );
+            processNullPredicate( (PropertyNullPredicate) expression, builder );
         }
-        else if( expression instanceof AssociationNotNullSpecification<?> )
+        else if( expression instanceof AssociationNotNullPredicate<?> )
         {
-            processNotNullPredicate( (AssociationNotNullSpecification) expression, builder );
+            processNotNullPredicate( (AssociationNotNullPredicate) expression, builder );
         }
-        else if( expression instanceof AssociationNullSpecification<?> )
+        else if( expression instanceof AssociationNullPredicate<?> )
         {
-            processNullPredicate( (AssociationNullSpecification) expression, builder );
+            processNullPredicate( (AssociationNullPredicate) expression, builder );
         }
-        else if( expression instanceof ManyAssociationContainsSpecification<?> )
+        else if( expression instanceof ManyAssociationContainsPredicate<?> )
         {
-            processManyAssociationContainsPredicate( (ManyAssociationContainsSpecification) expression, allowInline, builder );
+            processManyAssociationContainsPredicate( (ManyAssociationContainsPredicate) expression, allowInline, builder );
         }
         else
         {
@@ -378,7 +378,7 @@ public class RdfQueryParserImpl
         return builder.toString();
     }
 
-    private void processContainsAllPredicate( final ContainsAllSpecification<?> predicate, StringBuilder builder )
+    private void processContainsAllPredicate( final ContainsAllPredicate<?> predicate, StringBuilder builder )
     {
         Iterable<?> values = predicate.containedValues();
         String valueVariable = triples.addTriple( predicate.collectionProperty(), false ).value();
@@ -421,7 +421,7 @@ public class RdfQueryParserImpl
         }
     }
 
-    private void processContainsPredicate( final ContainsSpecification<?> predicate, StringBuilder builder )
+    private void processContainsPredicate( final ContainsPredicate<?> predicate, StringBuilder builder )
     {
         Object value = predicate.value();
         String valueVariable = triples.addTriple( predicate.collectionProperty(), false ).value();
@@ -431,26 +431,26 @@ public class RdfQueryParserImpl
         ) );
     }
 
-    private void processMatchesPredicate( final MatchesSpecification predicate, StringBuilder builder )
+    private void processMatchesPredicate( final MatchesPredicate predicate, StringBuilder builder )
     {
         String valueVariable = triples.addTriple( predicate.property(), false ).value();
         builder.append( format( "regex(%s,\"%s\")", valueVariable, predicate.regexp() ) );
     }
 
-    private void processComparisonPredicate( final Specification<Composite> predicate,
+    private void processComparisonPredicate( final Predicate<Composite> predicate,
                                              boolean allowInline,
                                              StringBuilder builder
     )
     {
-        if( predicate instanceof ComparisonSpecification )
+        if( predicate instanceof ComparisonPredicate )
         {
-            ComparisonSpecification<?> comparisonSpecification = (ComparisonSpecification<?>) predicate;
-            Triples.Triple triple = triples.addTriple( (PropertyFunction) comparisonSpecification.property(), false );
+            ComparisonPredicate<?> comparisonPredicate = (ComparisonPredicate<?>) predicate;
+            Triples.Triple triple = triples.addTriple( (PropertyFunction) comparisonPredicate.property(), false );
 
             // Don't use FILTER for equals-comparison. Do direct match instead
-            if( predicate instanceof EqSpecification && allowInline )
+            if( predicate instanceof EqPredicate && allowInline )
             {
-                triple.setValue( "\"" + toString( comparisonSpecification.value() ) + "\"" );
+                triple.setValue( "\"" + toString( comparisonPredicate.value() ) + "\"" );
             }
             else
             {
@@ -458,8 +458,8 @@ public class RdfQueryParserImpl
                 builder.append( String.format(
                     "(%s %s \"%s\")",
                     valueVariable,
-                    getOperator( comparisonSpecification.getClass() ),
-                    toString( comparisonSpecification.value() ) ) );
+                    getOperator( comparisonPredicate.getClass() ),
+                    toString( comparisonPredicate.value() ) ) );
             }
         }
         else
@@ -469,31 +469,31 @@ public class RdfQueryParserImpl
         }
     }
 
-    private void processNullPredicate( final PropertyNullSpecification<?> predicate, StringBuilder builder )
+    private void processNullPredicate( final PropertyNullPredicate<?> predicate, StringBuilder builder )
     {
         final String value = triples.addTriple( predicate.property(), true ).value();
         builder.append( format( "(! bound(%s))", value ) );
     }
 
-    private void processNotNullPredicate( final PropertyNotNullSpecification<?> predicate, StringBuilder builder )
+    private void processNotNullPredicate( final PropertyNotNullPredicate<?> predicate, StringBuilder builder )
     {
         final String value = triples.addTriple( predicate.property(), true ).value();
         builder.append( format( "(bound(%s))", value ) );
     }
 
-    private void processNullPredicate( final AssociationNullSpecification<?> predicate, StringBuilder builder )
+    private void processNullPredicate( final AssociationNullPredicate<?> predicate, StringBuilder builder )
     {
         final String value = triples.addTripleAssociation( predicate.association(), true ).value();
         builder.append( format( "(! bound(%s))", value ) );
     }
 
-    private void processNotNullPredicate( final AssociationNotNullSpecification<?> predicate, StringBuilder builder )
+    private void processNotNullPredicate( final AssociationNotNullPredicate<?> predicate, StringBuilder builder )
     {
         final String value = triples.addTripleAssociation( predicate.association(), true ).value();
         builder.append( format( "(bound(%s))", value ) );
     }
 
-    private void processManyAssociationContainsPredicate( ManyAssociationContainsSpecification<?> predicate,
+    private void processManyAssociationContainsPredicate( ManyAssociationContainsPredicate<?> predicate,
                                                           boolean allowInline, StringBuilder builder
     )
     {
@@ -537,7 +537,7 @@ public class RdfQueryParserImpl
         }
     }
 
-    private String getOperator( final Class<? extends ComparisonSpecification> predicateClass )
+    private String getOperator( final Class<? extends ComparisonPredicate> predicateClass )
     {
         String operator = OPERATORS.get( predicateClass );
         if( operator == null )

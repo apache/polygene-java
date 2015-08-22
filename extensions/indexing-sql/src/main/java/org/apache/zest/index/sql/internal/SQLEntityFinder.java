@@ -25,13 +25,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import javax.sql.DataSource;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.query.grammar.OrderBy;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.index.sql.support.api.SQLQuerying;
 import org.apache.zest.library.sql.common.SQLUtil;
 import org.apache.zest.spi.query.EntityFinder;
@@ -58,7 +58,7 @@ public class SQLEntityFinder
     }
 
     @Override
-    public long countEntities( Class<?> resultType, @Optional Specification<Composite> whereClause, Map<String, Object> variables )
+    public long countEntities( Class<?> resultType, @Optional Predicate<Composite> whereClause, Map<String, Object> variables )
         throws EntityFinderException
     {
         final List<Object> values = new ArrayList<>();
@@ -93,7 +93,7 @@ public class SQLEntityFinder
 
     @Override
     public Iterable<EntityReference> findEntities( Class<?> resultType,
-                                                   @Optional Specification<Composite> whereClause,
+                                                   @Optional Predicate<Composite> whereClause,
                                                    @Optional OrderBy[] orderBySegments,
                                                    @Optional final Integer firstResult,
                                                    @Optional final Integer maxResults,
@@ -161,7 +161,7 @@ public class SQLEntityFinder
 
     @Override
     public EntityReference findEntity( Class<?> resultType,
-                                       @Optional Specification<Composite> whereClause,
+                                       @Optional Predicate<Composite> whereClause,
                                        Map<String, Object> variables )
         throws EntityFinderException
     {

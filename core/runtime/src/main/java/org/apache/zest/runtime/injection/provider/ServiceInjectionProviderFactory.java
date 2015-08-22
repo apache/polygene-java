@@ -18,6 +18,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.qualifier.Qualifier;
@@ -25,7 +26,6 @@ import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.InvalidInjectionException;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Specifications;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectionContext;
@@ -49,7 +49,7 @@ public final class ServiceInjectionProviderFactory
         // TODO This could be changed to allow multiple @Qualifier annotations
         Annotation qualifierAnnotation = first( filter( Specifications.translate( Annotations.type(), hasAnnotation( Qualifier.class ) ), iterable( dependencyModel
                                                                                                                                                         .annotations() ) ) );
-        Specification<ServiceReference<?>> serviceQualifier = null;
+        Predicate<ServiceReference<?>> serviceQualifier = null;
         if( qualifierAnnotation != null )
         {
             Qualifier qualifier = qualifierAnnotation.annotationType().getAnnotation( Qualifier.class );
@@ -96,7 +96,7 @@ public final class ServiceInjectionProviderFactory
         extends ServiceInjectionProvider
     {
         private IterableServiceReferenceProvider( Type serviceType,
-                                                  Specification<ServiceReference<?>> serviceQualifier
+                                                  Predicate<ServiceReference<?>> serviceQualifier
         )
         {
             super( serviceType, serviceQualifier );
@@ -115,7 +115,7 @@ public final class ServiceInjectionProviderFactory
         implements Function<ServiceReference<?>, Object>
     {
         private IterableServiceProvider( Type serviceType,
-                                         Specification<ServiceReference<?>> serviceQualifier
+                                         Predicate<ServiceReference<?>> serviceQualifier
         )
         {
             super( serviceType, serviceQualifier );
@@ -138,7 +138,7 @@ public final class ServiceInjectionProviderFactory
     private static class ServiceReferenceProvider
         extends ServiceInjectionProvider
     {
-        ServiceReferenceProvider( Type serviceType, Specification<ServiceReference<?>> qualifier )
+        ServiceReferenceProvider( Type serviceType, Predicate<ServiceReference<?>> qualifier )
         {
             super( serviceType, qualifier );
         }
@@ -154,7 +154,7 @@ public final class ServiceInjectionProviderFactory
     private static class ServiceProvider
         extends ServiceInjectionProvider
     {
-        ServiceProvider( Type serviceType, Specification<ServiceReference<?>> qualifier )
+        ServiceProvider( Type serviceType, Predicate<ServiceReference<?>> qualifier )
         {
             super( serviceType, qualifier );
         }
@@ -180,10 +180,10 @@ public final class ServiceInjectionProviderFactory
         implements InjectionProvider
     {
         private final Type serviceType;
-        private final Specification<ServiceReference<?>> serviceQualifier;
+        private final Predicate<ServiceReference<?>> serviceQualifier;
 
         private ServiceInjectionProvider( Type serviceType,
-                                            Specification<ServiceReference<?>> serviceQualifier
+                                          Predicate<ServiceReference<?>> serviceQualifier
         )
         {
             this.serviceType = serviceType;

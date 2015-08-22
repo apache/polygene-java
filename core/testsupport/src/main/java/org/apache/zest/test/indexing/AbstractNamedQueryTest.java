@@ -20,13 +20,13 @@ package org.apache.zest.test.indexing;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.junit.Test;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.spi.query.IndexExporter;
 import org.apache.zest.test.EntityTestAssembler;
@@ -51,7 +51,7 @@ public abstract class AbstractNamedQueryTest
     extends AbstractAnyQueryTest
 {
 
-    private final Map<String, Specification<Composite>> queries = new HashMap<>();
+    private final Map<String, Predicate<Composite>> queries = new HashMap<>();
 
     @Override
     public void assemble( ModuleAssembly module )
@@ -65,7 +65,7 @@ public abstract class AbstractNamedQueryTest
             String queryName = String.format( "script%02d", i + 1 );
             if( query[i].length() != 0 )
             {
-                Specification<Composite> expression = createNamedQueryDescriptor( queryName, query[i] );
+                Predicate<Composite> expression = createNamedQueryDescriptor( queryName, query[i] );
                 queries.put( queryName, expression );
             }
         }
@@ -73,7 +73,7 @@ public abstract class AbstractNamedQueryTest
 
     protected abstract String[] queryStrings();
 
-    protected abstract Specification<Composite> createNamedQueryDescriptor( String queryName, String queryString );
+    protected abstract Predicate<Composite> createNamedQueryDescriptor( String queryName, String queryString );
 
     @Test
     public void showNetwork()

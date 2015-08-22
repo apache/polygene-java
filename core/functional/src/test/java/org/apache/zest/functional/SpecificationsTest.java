@@ -15,6 +15,7 @@
 package org.apache.zest.functional;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,45 +29,44 @@ public class SpecificationsTest
     @Test
     public void testTRUE()
     {
-        Assert.assertThat( Specifications.<Object>TRUE().satisfiedBy( new Object() ), equalTo( true ) );
+        Assert.assertThat( Specifications.<Object>TRUE().test( new Object() ), equalTo( true ) );
     }
 
     @Test
     public void testNot()
     {
-        Assert.assertThat( Specifications.not( Specifications.<Object>TRUE() )
-                               .satisfiedBy( new Object() ), equalTo( false ) );
+        Assert.assertThat( Specifications.not( Specifications.<Object>TRUE() ).test( new Object() ), equalTo( false ) );
     }
 
     @Test
     public void testAnd()
     {
-        Specification<Object> trueSpec = Specifications.<Object>TRUE();
-        Specification<Object> falseSpec = Specifications.not( Specifications.<Object>TRUE() );
+        Predicate<Object> trueSpec = Specifications.<Object>TRUE();
+        Predicate<Object> falseSpec = Specifications.not( Specifications.<Object>TRUE() );
 
-        Assert.assertThat( Specifications.and( falseSpec, falseSpec ).satisfiedBy( new Object() ), equalTo( false ) );
-        Assert.assertThat( Specifications.and( trueSpec, falseSpec ).satisfiedBy( new Object() ), equalTo( false ) );
-        Assert.assertThat( Specifications.and( falseSpec, trueSpec ).satisfiedBy( new Object() ), equalTo( false ) );
-        Assert.assertThat( Specifications.and( trueSpec, trueSpec ).satisfiedBy( new Object() ), equalTo( true ) );
+        Assert.assertThat( Specifications.and( falseSpec, falseSpec ).test( new Object() ), equalTo( false ) );
+        Assert.assertThat( Specifications.and( trueSpec, falseSpec ).test( new Object() ), equalTo( false ) );
+        Assert.assertThat( Specifications.and( falseSpec, trueSpec ).test( new Object() ), equalTo( false ) );
+        Assert.assertThat( Specifications.and( trueSpec, trueSpec ).test( new Object() ), equalTo( true ) );
     }
 
     @Test
     public void testOr()
     {
-        Specification<Object> trueSpec = Specifications.<Object>TRUE();
-        Specification<Object> falseSpec = Specifications.not( Specifications.<Object>TRUE() );
+        Predicate<Object> trueSpec = Specifications.<Object>TRUE();
+        Predicate<Object> falseSpec = Specifications.not( Specifications.<Object>TRUE() );
 
-        Assert.assertThat( Specifications.or( falseSpec, falseSpec ).satisfiedBy( new Object() ), equalTo( false ) );
-        Assert.assertThat( Specifications.or( trueSpec, falseSpec ).satisfiedBy( new Object() ), equalTo( true ) );
-        Assert.assertThat( Specifications.or( falseSpec, trueSpec ).satisfiedBy( new Object() ), equalTo( true ) );
-        Assert.assertThat( Specifications.or( trueSpec, trueSpec ).satisfiedBy( new Object() ), equalTo( true ) );
+        Assert.assertThat( Specifications.or( falseSpec, falseSpec ).test( new Object() ), equalTo( false ) );
+        Assert.assertThat( Specifications.or( trueSpec, falseSpec ).test( new Object() ), equalTo( true ) );
+        Assert.assertThat( Specifications.or( falseSpec, trueSpec ).test( new Object() ), equalTo( true ) );
+        Assert.assertThat( Specifications.or( trueSpec, trueSpec ).test( new Object() ), equalTo( true ) );
     }
 
     @Test
     public void testIn()
     {
-        Assert.assertThat( Specifications.in( "1", "2", "3" ).satisfiedBy( "2" ), equalTo( true ) );
-        Assert.assertThat( Specifications.in( "1", "2", "3" ).satisfiedBy( "4" ), equalTo( false ) );
+        Assert.assertThat( Specifications.in( "1", "2", "3" ).test( "2" ), equalTo( true ) );
+        Assert.assertThat( Specifications.in( "1", "2", "3" ).test( "4" ), equalTo( false ) );
     }
 
     @Test
@@ -81,6 +81,6 @@ public class SpecificationsTest
             }
         };
 
-        Assert.assertTrue( Specifications.translate( stringifier, Specifications.in( "3" ) ).satisfiedBy( 3L ) );
+        Assert.assertTrue( Specifications.translate( stringifier, Specifications.in( "3" ) ).test( 3L ) );
     }
 }

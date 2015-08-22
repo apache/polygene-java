@@ -18,27 +18,39 @@
  */
 package org.apache.zest.api.query.grammar;
 
+import java.util.function.Predicate;
+import org.apache.zest.api.composite.Composite;
+import org.apache.zest.functional.Specifications;
+
 /**
- * Greater than Specification.
+ * AND Specification.
  */
-public class GtSpecification<T>
-    extends ComparisonSpecification<T>
+public class AndPredicate
+    extends BinaryPredicate
 {
-    public GtSpecification( PropertyFunction<T> property, T value )
+
+    public AndPredicate( Iterable<Predicate<Composite>> operands )
     {
-        super( property, value );
+        super( operands );
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected boolean compare( T value )
+    public boolean test( Composite item )
     {
-        return ( (Comparable) value ).compareTo( this.value ) > 0;
+        return Specifications.and( operands ).test( item );
     }
 
     @Override
     public String toString()
     {
-        return property.toString() + ">" + value.toString();
+        StringBuilder sb = new StringBuilder( "(" );
+        String and = "";
+        for( Predicate<Composite> operand : operands )
+        {
+            sb.append( and ).append( operand );
+            and = " and ";
+        }
+        return sb.append( ")" ).toString();
     }
+
 }

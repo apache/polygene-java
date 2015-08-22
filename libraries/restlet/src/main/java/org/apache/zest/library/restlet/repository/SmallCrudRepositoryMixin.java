@@ -20,7 +20,9 @@
 
 package org.apache.zest.library.restlet.repository;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
@@ -33,7 +35,6 @@ import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Specifications;
 import org.apache.zest.library.restlet.identity.IdentityManager;
 
@@ -106,7 +107,7 @@ public class SmallCrudRepositoryMixin<T extends Identity>
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public Iterable<T> find( Specification specification )
+    public Iterable<T> find( Predicate<Composite> specification )
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
         QueryBuilder<T> qb = qbf.newQueryBuilder( entityType );

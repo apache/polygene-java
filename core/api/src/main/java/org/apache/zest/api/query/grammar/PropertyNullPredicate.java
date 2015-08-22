@@ -19,38 +19,42 @@
 package org.apache.zest.api.query.grammar;
 
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.functional.Specification;
-import org.apache.zest.functional.Specifications;
+import org.apache.zest.api.property.Property;
 
 /**
- * OR Specification.
+ * Property null Specification.
  */
-public class OrSpecification
-    extends BinarySpecification
+public class PropertyNullPredicate<T>
+    extends ExpressionPredicate
 {
+    private PropertyFunction<T> property;
 
-    public OrSpecification( Iterable<Specification<Composite>> operands )
+    public PropertyNullPredicate( PropertyFunction<T> property )
     {
-        super( operands );
+        this.property = property;
+    }
+
+    public PropertyFunction<T> property()
+    {
+        return property;
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
-        return Specifications.or( operands ).satisfiedBy( item );
+        Property<T> prop = property.apply( item );
+
+        if( prop == null )
+        {
+            return true;
+        }
+
+        return prop.get() == null;
     }
 
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder( "(" );
-        String or = "";
-        for( Specification<Composite> operand : operands )
-        {
-            sb.append( or ).append( operand );
-            or = " or ";
-        }
-        return sb.append( ")" ).toString();
+        return property.toString() + "is null";
     }
-
 }

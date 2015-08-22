@@ -19,8 +19,8 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
 import static org.apache.zest.api.util.Classes.typeOf;
@@ -43,12 +43,12 @@ public final class Annotations
         }
     } );
 
-    public static Specification<AnnotatedElement> hasAnnotation( final Class<? extends Annotation> annotationType )
+    public static Predicate<AnnotatedElement> hasAnnotation( final Class<? extends Annotation> annotationType )
     {
-        return new Specification<AnnotatedElement>()
+        return new Predicate<AnnotatedElement>()
         {
             @Override
-            public boolean satisfiedBy( AnnotatedElement element )
+            public boolean test( AnnotatedElement element )
             {
                 return element.getAnnotation( annotationType ) != null;
             }
@@ -67,12 +67,12 @@ public final class Annotations
         };
     }
 
-    public static Specification<Annotation> isType( final Class<? extends Annotation> annotationType )
+    public static Predicate<Annotation> isType( final Class<? extends Annotation> annotationType )
     {
-        return new Specification<Annotation>()
+        return new Predicate<Annotation>()
         {
             @Override
-            public boolean satisfiedBy( Annotation annotation )
+            public boolean test( Annotation annotation )
             {
                 return annotation.annotationType().equals( annotationType );
             }

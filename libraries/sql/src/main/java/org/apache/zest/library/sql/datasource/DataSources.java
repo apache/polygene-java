@@ -19,9 +19,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.ConnectException;
+import java.util.function.Predicate;
 import javax.sql.DataSource;
 import org.apache.zest.api.service.ServiceImporterException;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.library.circuitbreaker.CircuitBreaker;
 
 import static org.apache.zest.functional.Specifications.not;
@@ -39,7 +39,7 @@ public class DataSources
     public static CircuitBreaker newDataSourceCircuitBreaker( int threshold, long timeout )
     {
         @SuppressWarnings( "unchecked" )
-        Specification<Throwable> in = in( ConnectException.class );
+        Predicate<Throwable> in = in( ConnectException.class );
         return new CircuitBreaker( threshold, timeout, not( rootCause( in ) ) );
     }
 

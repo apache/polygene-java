@@ -20,13 +20,13 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Collections;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.DependencyDescriptor;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.bootstrap.InvalidInjectionException;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Visitable;
 import org.apache.zest.functional.Visitor;
 import org.apache.zest.runtime.injection.provider.InjectionProviderException;
@@ -384,7 +384,7 @@ public final class DependencyModel
     }
 
     public static class ScopeSpecification
-        implements Specification<DependencyModel>
+        implements Predicate<DependencyModel>
     {
         private final Class<? extends Annotation> scope;
 
@@ -394,7 +394,7 @@ public final class DependencyModel
         }
 
         @Override
-        public boolean satisfiedBy( DependencyModel model )
+        public boolean test( DependencyModel model )
         {
             return model.hasScope( scope );
         }

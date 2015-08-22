@@ -18,50 +18,27 @@
  */
 package org.apache.zest.api.query.grammar;
 
-import org.apache.zest.api.association.Association;
-import org.apache.zest.api.composite.Composite;
-
 /**
- * Association not null Specification.
+ * Greater or equals Specification.
  */
-public class AssociationNotNullSpecification<T>
-    extends ExpressionSpecification
+public class GePredicate<T>
+    extends ComparisonPredicate<T>
 {
-    private AssociationFunction<T> association;
-
-    public AssociationNotNullSpecification( AssociationFunction<T> association )
+    public GePredicate( PropertyFunction<T> property, T value )
     {
-        this.association = association;
-    }
-
-    public AssociationFunction<T> association()
-    {
-        return association;
+        super( property, value );
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    @SuppressWarnings( "unchecked" )
+    protected boolean compare( T value )
     {
-        try
-        {
-            Association<T> assoc = association.apply( item );
-
-            if( assoc == null )
-            {
-                return false;
-            }
-
-            return assoc.get() != null;
-        }
-        catch( IllegalArgumentException e )
-        {
-            return false;
-        }
+        return ( (Comparable) value ).compareTo( this.value ) >= 0;
     }
 
     @Override
     public String toString()
     {
-        return association.toString() + "is not null";
+        return property.toString() + ">=" + value.toString();
     }
 }

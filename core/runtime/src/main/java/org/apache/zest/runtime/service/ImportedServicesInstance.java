@@ -15,6 +15,7 @@
 package org.apache.zest.runtime.service;
 
 import java.util.List;
+import java.util.function.Predicate;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationEventListenerRegistration;
@@ -23,7 +24,6 @@ import org.apache.zest.api.activation.PassivationException;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.runtime.activation.ActivationDelegate;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
 
@@ -69,10 +69,10 @@ public class ImportedServicesInstance
 
     public Iterable<ServiceReference> visibleServices( final Visibility visibility )
     {
-        return Iterables.filter( new Specification<ServiceReference>()
+        return Iterables.filter( new Predicate<ServiceReference>()
         {
             @Override
-            public boolean satisfiedBy( ServiceReference item )
+            public boolean test( ServiceReference item )
             {
                 return ( (ImportedServiceReferenceInstance) item ).serviceDescriptor()
                     .visibility()

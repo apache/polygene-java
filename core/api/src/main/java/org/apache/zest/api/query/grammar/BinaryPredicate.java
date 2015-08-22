@@ -16,22 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.runtime.composite;
+package org.apache.zest.api.query.grammar;
 
-import java.lang.reflect.InvocationHandler;
-import org.apache.zest.functional.Specification;
+import java.util.function.Predicate;
+import org.apache.zest.api.composite.Composite;
 
 /**
- * Specification that checks whether a given class implements InvocationHandler or not.
+ * Base binary Specification, used for AND and OR Specifications..
  */
-public class GenericSpecification
-    implements Specification<Class<?>>
+public abstract class BinaryPredicate
+    extends ExpressionPredicate
 {
-    public static final GenericSpecification INSTANCE = new GenericSpecification();
+    protected final Iterable<Predicate<Composite>> operands;
 
-    @Override
-    public boolean satisfiedBy( Class<?> item )
+    protected BinaryPredicate( Iterable<Predicate<Composite>> operands )
     {
-        return InvocationHandler.class.isAssignableFrom( item );
+        this.operands = operands;
+    }
+
+    public Iterable<Predicate<Composite>> operands()
+    {
+        return operands;
     }
 }

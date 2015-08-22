@@ -16,8 +16,8 @@ package org.apache.zest.api.service.qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.function.Predicate;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.functional.Specification;
 
 /**
  * Filter services based on identity. Identity can be set during assembly, like so:
@@ -45,7 +45,7 @@ public @interface IdentifiedBy
         implements AnnotationQualifier<IdentifiedBy>
     {
         @Override
-        public <T> Specification<ServiceReference<?>> qualifier( IdentifiedBy identifiedBy )
+        public <T> Predicate<ServiceReference<?>> qualifier( IdentifiedBy identifiedBy )
         {
             return ServiceQualifier.withId( identifiedBy.value() );
         }

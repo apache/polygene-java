@@ -22,6 +22,7 @@ package org.apache.zest.library.restlet.identity;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.configuration.Configuration;
@@ -30,7 +31,6 @@ import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 
 import static org.apache.zest.functional.Iterables.filter;
@@ -144,7 +144,7 @@ public interface IdentityManager
         }
 
         private static class FindClassSpecification
-            implements Specification<Map.Entry<Class, String>>
+            implements Predicate<Map.Entry<Class, String>>
         {
             private String prefix;
 
@@ -154,7 +154,7 @@ public interface IdentityManager
             }
 
             @Override
-            public boolean satisfiedBy( Map.Entry<Class, String> item )
+            public boolean test( Map.Entry<Class, String> item )
             {
                 return item.getValue().equals( prefix );
             }

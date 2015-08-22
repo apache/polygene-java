@@ -16,13 +16,13 @@
 
 package org.apache.zest.api.type;
 
-import org.apache.zest.functional.Specification;
+import java.util.function.Predicate;
 
 /**
  * Match Type Specification for HasTypes.
  */
 public class MatchTypeSpecification
-    implements Specification<HasTypes>
+    implements Predicate<HasTypes>
 {
     private final Class<?> matchType;
 
@@ -32,7 +32,7 @@ public class MatchTypeSpecification
     }
 
     @Override
-    public boolean satisfiedBy( HasTypes item )
+    public boolean test( HasTypes item )
     {
         for( Class<?> type : item.types() )
         {

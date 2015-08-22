@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 
 import static org.apache.zest.functional.Iterables.cast;
 import static org.apache.zest.functional.Iterables.empty;
@@ -272,13 +272,13 @@ public final class Classes
         return WRAPPER_CLASS.apply( type );
     }
 
-    public static Specification<Class<?>> isAssignableFrom( final Class clazz )
+    public static Predicate<Class<?>> isAssignableFrom( final Class clazz )
     {
-        return new Specification<Class<?>>()
+        return new Predicate<Class<?>>()
         {
             @Override
             @SuppressWarnings( "unchecked" )
-            public boolean satisfiedBy( Class<?> item )
+            public boolean test( Class<?> item )
             {
                 return clazz.isAssignableFrom( item );
             }
@@ -286,24 +286,24 @@ public final class Classes
     }
 
     @SuppressWarnings( "raw" )
-    public static Specification<Object> instanceOf( final Class clazz )
+    public static Predicate<Object> instanceOf( final Class clazz )
     {
-        return new Specification<Object>()
+        return new Predicate<Object>()
         {
             @Override
-            public boolean satisfiedBy( Object item )
+            public boolean test( Object item )
             {
                 return clazz.isInstance( item );
             }
         };
     }
 
-    public static Specification<Class<?>> hasModifier( final int classModifier )
+    public static Predicate<Class<?>> hasModifier( final int classModifier )
     {
-        return new Specification<Class<?>>()
+        return new Predicate<Class<?>>()
         {
             @Override
-            public boolean satisfiedBy( Class<?> item )
+            public boolean test( Class<?> item )
             {
                 return ( item.getModifiers() & classModifier ) != 0;
             }
@@ -429,12 +429,12 @@ public final class Classes
         return result;
     }
 
-    public static Specification<Member> memberNamed( final String name )
+    public static Predicate<Member> memberNamed( final String name )
     {
-        return new Specification<Member>()
+        return new Predicate<Member>()
         {
             @Override
-            public boolean satisfiedBy( Member item )
+            public boolean test( Member item )
             {
                 return item.getName().equals( name );
             }
@@ -595,17 +595,17 @@ public final class Classes
         return uriPart.replace( '-', '$' );
     }
 
-    public static Specification<ModelDescriptor> modelTypeSpecification( final String className )
+    public static Predicate<ModelDescriptor> modelTypeSpecification( final String className )
     {
-        return new Specification<ModelDescriptor>()
+        return new Predicate<ModelDescriptor>()
         {
             @Override
-            public boolean satisfiedBy( ModelDescriptor item )
+            public boolean test( ModelDescriptor item )
             {
-                return matchesAny( new Specification<String>()
+                return matchesAny( new Predicate<String>()
                 {
                     @Override
-                    public boolean satisfiedBy( String item )
+                    public boolean test( String item )
                     {
                         return item.equals( className );
                     }
@@ -622,17 +622,17 @@ public final class Classes
     }
 
     @SuppressWarnings( "raw" )
-    public static Specification<ModelDescriptor> exactTypeSpecification( final Class type )
+    public static Predicate<ModelDescriptor> exactTypeSpecification( final Class type )
     {
-        return new Specification<ModelDescriptor>()
+        return new Predicate<ModelDescriptor>()
         {
             @Override
-            public boolean satisfiedBy( ModelDescriptor item )
+            public boolean test( ModelDescriptor item )
             {
-                return matchesAny( new Specification<Class<?>>()
+                return matchesAny( new Predicate<Class<?>>()
                 {
                     @Override
-                    public boolean satisfiedBy( Class<?> item )
+                    public boolean test( Class<?> item )
                     {
                         return item.equals( type );
                     }
@@ -642,18 +642,18 @@ public final class Classes
     }
 
     @SuppressWarnings( "raw" )
-    public static Specification<ModelDescriptor> assignableTypeSpecification( final Class type )
+    public static Predicate<ModelDescriptor> assignableTypeSpecification( final Class type )
     {
-        return new Specification<ModelDescriptor>()
+        return new Predicate<ModelDescriptor>()
         {
             @Override
-            public boolean satisfiedBy( ModelDescriptor item )
+            public boolean test( ModelDescriptor item )
             {
-                return matchesAny( new Specification<Class<?>>()
+                return matchesAny( new Predicate<Class<?>>()
                 {
                     @Override
                     @SuppressWarnings( "unchecked" )
-                    public boolean satisfiedBy( Class<?> itemType )
+                    public boolean test( Class<?> itemType )
                     {
                         return !type.equals( itemType ) && type.isAssignableFrom( itemType );
                     }

@@ -18,50 +18,59 @@
  */
 package org.apache.zest.api.query.grammar;
 
-import java.util.Collection;
 import org.apache.zest.api.composite.Composite;
+import org.apache.zest.api.property.Property;
 
 /**
- * Contains Specification.
+ * Base comparison Specification.
  */
-public class ContainsSpecification<T>
-    extends ExpressionSpecification
+public abstract class ComparisonPredicate<T>
+    extends ExpressionPredicate
 {
-    private PropertyFunction<? extends Collection<T>> collectionProperty;
-    private T value;
+    protected final PropertyFunction<T> property;
+    protected final T value;
 
-    public ContainsSpecification( PropertyFunction<? extends Collection<T>> collectionProperty, T value )
+    public ComparisonPredicate( PropertyFunction<T> property, T value )
     {
-        this.collectionProperty = collectionProperty;
+        this.property = property;
         this.value = value;
     }
 
-    public PropertyFunction<? extends Collection<T>> collectionProperty()
+    public PropertyFunction<T> property()
     {
-        return collectionProperty;
+        return property;
     }
+
+    @Override
+    public final boolean test( Composite item )
+    {
+        try
+        {
+            Property<T> prop = property.apply( item );
+
+            if( prop == null )
+            {
+                return false;
+            }
+
+            T propValue = prop.get();
+            if( propValue == null )
+            {
+                return false;
+            }
+
+            return compare( propValue );
+        }
+        catch( IllegalArgumentException e )
+        {
+            return false;
+        }
+    }
+
+    protected abstract boolean compare( T value );
 
     public T value()
     {
         return value;
-    }
-
-    @Override
-    public boolean satisfiedBy( Composite item )
-    {
-        Collection<T> collection = collectionProperty.apply( item ).get();
-
-        if( collection == null )
-        {
-            return false;
-        }
-
-        return collection.contains( value );
-    }
-
-    @Override
-    public String toString()
-    {
-        return collectionProperty + " contains " + value;
     }
 }

@@ -16,8 +16,8 @@ package org.apache.zest.api.service.qualifier;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.function.Predicate;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.functional.Specification;
 
 /**
  * Filter services based on Meta Info being declared on the Service.
@@ -68,13 +68,13 @@ public @interface HasMetaInfo
         implements AnnotationQualifier<HasMetaInfo>
     {
         @Override
-        public <T> Specification<ServiceReference<?>> qualifier( final HasMetaInfo hasMetaInfo )
+        public <T> Predicate<ServiceReference<?>> qualifier( final HasMetaInfo hasMetaInfo )
         {
-            return new Specification<ServiceReference<?>>()
+            return new Predicate<ServiceReference<?>>()
             {
                 @Override
                 @SuppressWarnings( {"raw", "unchecked"} )
-                public boolean satisfiedBy( ServiceReference<?> service )
+                public boolean test( ServiceReference<?> service )
                 {
                     for( Class metaInfoType : hasMetaInfo.value() )
                     {

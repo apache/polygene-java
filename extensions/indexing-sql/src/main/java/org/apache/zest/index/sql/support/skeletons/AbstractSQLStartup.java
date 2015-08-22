@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
@@ -61,7 +62,6 @@ import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.index.reindexer.Reindexer;
 import org.apache.zest.index.sql.support.api.SQLAppStartup;
 import org.apache.zest.index.sql.support.api.SQLTypeInfo;
@@ -1519,10 +1519,10 @@ public abstract class AbstractSQLStartup
                             // TODO this doesn't understand, say, Map<String, String>, or indeed,
                             // any
                             // other Serializable
-                            if( Iterables.matchesAny( new Specification<Class<?>>()
+                            if( Iterables.matchesAny( new Predicate<Class<?>>()
                             {
                                 @Override
-                                public boolean satisfiedBy( Class<?> item )
+                                public boolean test( Class<?> item )
                                 {
                                     return vTypeClass.isAssignableFrom( item );
                                 }

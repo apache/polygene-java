@@ -18,59 +18,50 @@
  */
 package org.apache.zest.api.query.grammar;
 
+import org.apache.zest.api.association.Association;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.property.Property;
 
 /**
- * Base comparison Specification.
+ * Association null Specification.
  */
-public abstract class ComparisonSpecification<T>
-    extends ExpressionSpecification
+public class AssociationNullPredicate<T>
+    extends ExpressionPredicate
 {
-    protected final PropertyFunction<T> property;
-    protected final T value;
+    private AssociationFunction<T> association;
 
-    public ComparisonSpecification( PropertyFunction<T> property, T value )
+    public AssociationNullPredicate( AssociationFunction<T> association )
     {
-        this.property = property;
-        this.value = value;
+        this.association = association;
     }
 
-    public PropertyFunction<T> property()
+    public AssociationFunction<T> association()
     {
-        return property;
+        return association;
     }
 
     @Override
-    public final boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
         try
         {
-            Property<T> prop = property.apply( item );
+            Association<T> assoc = association.apply( item );
 
-            if( prop == null )
+            if( assoc == null )
             {
-                return false;
+                return true;
             }
 
-            T propValue = prop.get();
-            if( propValue == null )
-            {
-                return false;
-            }
-
-            return compare( propValue );
+            return assoc.get() == null;
         }
         catch( IllegalArgumentException e )
         {
-            return false;
+            return true;
         }
     }
 
-    protected abstract boolean compare( T value );
-
-    public T value()
+    @Override
+    public String toString()
     {
-        return value;
+        return association.toString() + "is null";
     }
 }

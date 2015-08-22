@@ -20,6 +20,7 @@ package org.apache.zest.runtime.bootstrap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Member;
@@ -32,7 +33,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.QualifiedName;
@@ -58,11 +62,8 @@ import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.util.Fields;
 import org.apache.zest.bootstrap.StateDeclarations;
-import org.apache.zest.functional.ForEach;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
-import org.apache.zest.functional.Visitor;
 import org.apache.zest.runtime.composite.AbstractConstraintModel;
 import org.apache.zest.runtime.composite.CompositeConstraintModel;
 import org.apache.zest.runtime.composite.CompositeMethodModel;
@@ -71,7 +72,7 @@ import org.apache.zest.runtime.composite.ConcernModel;
 import org.apache.zest.runtime.composite.ConcernsModel;
 import org.apache.zest.runtime.composite.ConstraintModel;
 import org.apache.zest.runtime.composite.ConstraintsModel;
-import org.apache.zest.runtime.composite.GenericSpecification;
+import org.apache.zest.runtime.composite.Genericpredicate;
 import org.apache.zest.runtime.composite.MixinModel;
 import org.apache.zest.runtime.composite.MixinsModel;
 import org.apache.zest.runtime.composite.SideEffectModel;
@@ -314,16 +315,16 @@ public abstract class CompositeAssemblyImpl
         // Check if mixinClass implements the method. If so, check if the mixinClass is generic or if the filter passes.
         // If a mixinClass is both generic AND non-generic at the same time, then the filter applies to the non-generic
         // side only.
-        Specification<Class<?>> appliesToSpec = new Specification<Class<?>>()
+        Predicate<Class<?>> appliesToSpec = new Predicate<Class<?>>()
         {
             @Override
-            public boolean satisfiedBy( Class<?> item )
+            public boolean test( Class<?> item )
             {
                 return helper.appliesTo( item, method, types, item );
             }
         };
         return first( filter( and( isAssignableFrom( method.getDeclaringClass() ),
-                                   or( GenericSpecification.INSTANCE, appliesToSpec ) ),
+                                   or( Genericpredicate.INSTANCE, appliesToSpec ) ),
                               mixins ) );
     }
 
@@ -331,10 +332,10 @@ public abstract class CompositeAssemblyImpl
     private Class<?> findGenericImplementation( final Method method, Iterable<Class<?>> mixins )
     {
         // Check if mixinClass is generic and the applies-to filter passes
-        return first( filter( and( GenericSpecification.INSTANCE, new Specification<Class<?>>()
+        return first( filter( and( Genericpredicate.INSTANCE, new Predicate<Class<?>>()
         {
             @Override
-            public boolean satisfiedBy( Class<?> item )
+            public boolean test( Class<?> item )
             {
                 return helper.appliesTo( item, method, types, item );
             }
@@ -389,19 +390,18 @@ public abstract class CompositeAssemblyImpl
                 if( visited instanceof MixinModel )
                 {
                     MixinModel model = (MixinModel) visited;
-                    Visitor<Field, RuntimeException> addState = new Visitor<Field, RuntimeException>()
+                    Consumer<Field> addState = new Consumer<Field>()
                     {
                         @Override
-                        public boolean visit( Field visited )
-                            throws RuntimeException
+                        public void accept( Field field )
                         {
-                            addStateFor( visited, constraintClasses );
-                            return true;
+                            addStateFor( field, constraintClasses );
                         }
                     };
-                    ForEach.forEach( Fields.FIELDS_OF.apply( model.mixinClass() ) ).
-                        filter( Annotations.hasAnnotation( State.class ) ).
-                        visit( addState );
+                    Iterable<Field> fields = Fields.FIELDS_OF.apply( model.mixinClass() );
+                    StreamSupport.stream( fields.spliterator(), true )
+                        .filter( Annotations.hasAnnotation( State.class ) )
+                        .forEach( addState );
                     return false;
                 }
                 return super.visitEnter( visited );
@@ -517,9 +517,10 @@ public abstract class CompositeAssemblyImpl
         valueType = wrapperClass( valueType );
 
         List<AbstractConstraintModel> constraintModels = new ArrayList<>();
+        Iterable<Annotation> filter = filter( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ),
+                                              constraintAnnotations );
         nextConstraint:
-        for( Annotation constraintAnnotation : filter( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ),
-                                                       constraintAnnotations ) )
+        for( Annotation constraintAnnotation : filter )
         {
             // Check composite declarations first
             Class<? extends Annotation> annotationType = constraintAnnotation.annotationType();

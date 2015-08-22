@@ -19,12 +19,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+import java.util.function.Predicate;
 import org.apache.zest.api.composite.InjectedFieldDescriptor;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.bootstrap.InjectionException;
 import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.composite.TransientInstance;
 import org.apache.zest.runtime.model.Resolution;
@@ -127,9 +127,9 @@ public final class InjectedFieldModel
         return visitor.visitLeave( this );
     }
 
-    public Collection<DependencyModel> filter( Specification<DependencyModel> specification )
+    public Collection<DependencyModel> filter( Predicate<DependencyModel> specification )
     {
-        if( specification.satisfiedBy( dependencyModel ) )
+        if( specification.test( dependencyModel ) )
         {
             return singleton( dependencyModel );
         }

@@ -18,10 +18,10 @@
  */
 package org.apache.zest.api.dataset;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.QueryException;
 import org.apache.zest.api.query.QueryExecutionException;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Visitor;
 
 /**
@@ -34,7 +34,7 @@ public interface Query<T>
         ASCENDING, DESCENDING
     }
 
-    Query filter( Specification<T> filter );
+    Query filter( Predicate<T> filter );
 
     Query orderBy( final Property<?> property, final Order order );
 

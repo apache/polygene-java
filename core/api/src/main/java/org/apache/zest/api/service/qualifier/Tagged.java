@@ -16,8 +16,8 @@ package org.apache.zest.api.service.qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.function.Predicate;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.functional.Specification;
 
 /**
  * Filter services based on tags. Tags can be set using the ServiceTags meta-info, like so:
@@ -46,7 +46,7 @@ public @interface Tagged
         implements AnnotationQualifier<Tagged>
     {
         @Override
-        public Specification<ServiceReference<?>> qualifier( Tagged tagged )
+        public Predicate<ServiceReference<?>> qualifier( Tagged tagged )
         {
             return ServiceQualifier.withTags( tagged.value() );
         }

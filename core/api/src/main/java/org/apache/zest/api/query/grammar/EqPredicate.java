@@ -19,12 +19,12 @@
 package org.apache.zest.api.query.grammar;
 
 /**
- * Not equals Specification.
+ * Equals Specification.
  */
-public class NeSpecification<T>
-    extends ComparisonSpecification<T>
+public class EqPredicate<T>
+    extends ComparisonPredicate<T>
 {
-    public NeSpecification( PropertyFunction<T> property, T value )
+    public EqPredicate( PropertyFunction<T> property, T value )
     {
         super( property, value );
     }
@@ -32,12 +32,12 @@ public class NeSpecification<T>
     @Override
     protected boolean compare( T value )
     {
-        return !value.equals( this.value );
+        return value.equals( this.value );
     }
 
     @Override
     public String toString()
     {
-        return property.toString() + "!=" + value.toString();
+        return property.toString() + "=" + value.toString();
     }
 }

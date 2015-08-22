@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectedFieldModel;
@@ -210,10 +210,10 @@ public class MixinsModel
             {
                 return entry.getKey();
             }
-        }, filter( new Specification<Map.Entry<Method, MixinModel>>()
+        }, filter( new Predicate<Map.Entry<Method, MixinModel>>()
         {
             @Override
-            public boolean satisfiedBy( Map.Entry<Method, MixinModel> item )
+            public boolean test( Map.Entry<Method, MixinModel> item )
             {
                 MixinModel model = item.getValue();
                 return model.mixinClass().equals( mixinClass );

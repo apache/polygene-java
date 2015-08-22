@@ -26,13 +26,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.spi.query.EntityFinder;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.spi.query.IndexExporter;
@@ -65,7 +65,7 @@ public abstract class AbstractEntityFinderTest
     extends AbstractAnyQueryTest
 {
 
-    private static final Specification<Composite> ALL = null;
+    private static final Predicate<Composite> ALL = null;
 
     private static final OrderBy[] NO_SORTING = null;
 

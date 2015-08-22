@@ -272,7 +272,7 @@ public class ContextResourceClient
 
         // Check if we should do POST or PUT
         Method method;
-        if( LinksUtil.withClass( "idempotent" ).satisfiedBy( link ) )
+        if( LinksUtil.withClass( "idempotent" ).test( link ) )
         {
             method = Method.PUT;
         }

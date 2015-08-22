@@ -17,6 +17,7 @@ package org.apache.zest.runtime.injection;
 import java.io.Serializable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.function.Predicate;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.ConstructionException;
@@ -36,7 +37,6 @@ import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.bootstrap.SingletonAssembler;
-import org.apache.zest.functional.Specification;
 
 import static org.junit.Assert.assertEquals;
 import static org.apache.zest.api.common.Visibility.application;
@@ -294,11 +294,11 @@ public class ServiceInjectionTest
     public static final class NamedSelector
         implements AnnotationQualifier<Named>
     {
-        public <T> Specification<ServiceReference<?>> qualifier( final Named named )
+        public <T> Predicate<ServiceReference<?>> qualifier( final Named named )
         {
-            return new Specification<ServiceReference<?>>()
+            return new Predicate<ServiceReference<?>>()
             {
-                public boolean satisfiedBy( ServiceReference<?> service )
+                public boolean test( ServiceReference<?> service )
                 {
                     ServiceName serviceName = service.metaInfo( ServiceName.class );
                     return ( serviceName != null && serviceName.getName().equals( named.value() ) );

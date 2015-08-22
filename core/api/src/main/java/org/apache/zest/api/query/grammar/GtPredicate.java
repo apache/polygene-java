@@ -16,21 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.api.dataset;
-
-import java.util.function.Function;
-import java.util.function.Predicate;
+package org.apache.zest.api.query.grammar;
 
 /**
- * definition.constrain(entity(Person.class))
- * builder.from(path(Person.class,Movie.))
- * TODO
+ * Greater than Specification.
  */
-public interface DataSet<T>
+public class GtPredicate<T>
+    extends ComparisonPredicate<T>
 {
-    DataSet<T> constrain( Predicate<T> selection );
+    public GtPredicate( PropertyFunction<T> property, T value )
+    {
+        super( property, value );
+    }
 
-    <U> DataSet<U> project( Function<T, U> conversion );
+    @Override
+    @SuppressWarnings( "unchecked" )
+    protected boolean compare( T value )
+    {
+        return ( (Comparable) value ).compareTo( this.value ) > 0;
+    }
 
-    Query<T> newQuery();
+    @Override
+    public String toString()
+    {
+        return property.toString() + ">" + value.toString();
+    }
 }

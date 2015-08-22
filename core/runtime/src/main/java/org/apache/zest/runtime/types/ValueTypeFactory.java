@@ -210,7 +210,7 @@ public class ValueTypeFactory
             else if( visited instanceof ValueModel )
             {
                 ValueModel valueModel = (ValueModel) visited;
-                boolean typeEquality = Specifications.in( valueModel.types() ).satisfiedBy( type );
+                boolean typeEquality = Specifications.in( valueModel.types() ).test( type );
                 if( typeEquality && valueModel.visibility().ordinal() >= visibility.ordinal() )
                 {
                     foundModel = valueModel;

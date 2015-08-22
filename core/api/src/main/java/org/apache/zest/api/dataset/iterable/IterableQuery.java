@@ -20,11 +20,11 @@ package org.apache.zest.api.dataset.iterable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.zest.api.dataset.Query;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.QueryException;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Visitor;
 
 /**
@@ -43,7 +43,7 @@ public class IterableQuery<T> implements Query<T>
     }
 
     @Override
-    public Query filter( Specification<T> filter )
+    public Query filter( Predicate<T> filter )
     {
         iterable = Iterables.filter( filter, iterable );
 

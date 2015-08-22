@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
@@ -44,7 +45,6 @@ import org.apache.zest.bootstrap.TransientAssembly;
 import org.apache.zest.bootstrap.TransientDeclaration;
 import org.apache.zest.bootstrap.ValueAssembly;
 import org.apache.zest.bootstrap.ValueDeclaration;
-import org.apache.zest.functional.Specification;
 
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
@@ -135,7 +135,7 @@ public final class LayerAssemblyImpl
     }
 
     @Override
-    public EntityDeclaration entities( Specification<? super EntityAssembly> specification )
+    public EntityDeclaration entities( Predicate<? super EntityAssembly> specification )
     {
         final List<EntityDeclaration> declarations = new ArrayList<>();
 
@@ -209,7 +209,7 @@ public final class LayerAssemblyImpl
     }
 
     @Override
-    public ServiceDeclaration services( Specification<? super ServiceAssembly> specification )
+    public ServiceDeclaration services( Predicate<? super ServiceAssembly> specification )
     {
         final List<ServiceDeclaration> declarations = new ArrayList<>();
 
@@ -325,7 +325,7 @@ public final class LayerAssemblyImpl
     }
 
     @Override
-    public TransientDeclaration transients( Specification<? super TransientAssembly> specification )
+    public TransientDeclaration transients( Predicate<? super TransientAssembly> specification )
     {
         final List<TransientDeclaration> declarations = new ArrayList<>();
 
@@ -399,7 +399,7 @@ public final class LayerAssemblyImpl
     }
 
     @Override
-    public ValueDeclaration values( Specification<? super ValueAssembly> specification )
+    public ValueDeclaration values( Predicate<? super ValueAssembly> specification )
     {
         final List<ValueDeclaration> declarations = new ArrayList<>();
 
@@ -472,7 +472,7 @@ public final class LayerAssemblyImpl
     }
 
     @Override
-    public ObjectDeclaration objects( Specification<? super ObjectAssembly> specification )
+    public ObjectDeclaration objects( Predicate<? super ObjectAssembly> specification )
     {
         final List<ObjectDeclaration> declarations = new ArrayList<>();
 
@@ -506,7 +506,7 @@ public final class LayerAssemblyImpl
     }
 
     @Override
-    public ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification )
+    public ImportedServiceDeclaration importedServices( Predicate<? super ImportedServiceAssembly> specification )
     {
         final List<ImportedServiceDeclaration> declarations = new ArrayList<>();
 

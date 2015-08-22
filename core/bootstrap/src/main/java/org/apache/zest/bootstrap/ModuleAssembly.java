@@ -19,10 +19,10 @@
 
 package org.apache.zest.bootstrap;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.type.HasTypes;
-import org.apache.zest.functional.Specification;
 
 /**
  * The ModuleAssembly is used to register any information about * what the module should contain, such as composites,
@@ -98,7 +98,7 @@ public interface ModuleAssembly
      *
      * @return An TransientDeclaration for the specified TransientComposite types.
      */
-    TransientDeclaration transients( Specification<? super TransientAssembly> specification );
+    TransientDeclaration transients( Predicate<? super TransientAssembly> specification );
 
     /**
      * Declare a list of ValueComposites for this Module. Use the ValueDeclaration that is returned to
@@ -118,7 +118,7 @@ public interface ModuleAssembly
      *
      * @return An ValueDeclaration for the specified ValueComposite types.
      */
-    ValueDeclaration values( Specification<? super ValueAssembly> specification );
+    ValueDeclaration values( Predicate<? super ValueAssembly> specification );
 
     /**
      * Declare a list of EntityComposites for this Module. Use the EntityDeclaration that is returned to
@@ -138,7 +138,7 @@ public interface ModuleAssembly
      *
      * @return An EntityDeclaration for the specified EntityComposite types.
      */
-    EntityDeclaration entities( Specification<? super EntityAssembly> specification );
+    EntityDeclaration entities( Predicate<? super EntityAssembly> specification );
 
     /**
      * Declare a list of Configuration Composites for this Module. Use the ConfigurationDeclaration that is returned to
@@ -158,7 +158,7 @@ public interface ModuleAssembly
      *
      * @return An ConfigurationDeclaration for the specified EntityComposite types.
      */
-    ConfigurationDeclaration configurations( Specification<HasTypes> specification );
+    ConfigurationDeclaration configurations( Predicate<HasTypes> specification );
 
 
     /**
@@ -180,7 +180,7 @@ public interface ModuleAssembly
      *
      * @return An ObjectDeclaration for the specified Object types.
      */
-    ObjectDeclaration objects( Specification<? super ObjectAssembly> specification );
+    ObjectDeclaration objects( Predicate<? super ObjectAssembly> specification );
 
     /**
      * Create a list of ServiceComposites for this Module. Use the ServiceDeclaration that is returned to
@@ -211,7 +211,7 @@ public interface ModuleAssembly
      *
      * @return An ServiceDeclaration for the specified ServiceComposite types.
      */
-    ServiceDeclaration services( Specification<? super ServiceAssembly> specification );
+    ServiceDeclaration services( Predicate<? super ServiceAssembly> specification );
 
     /**
      * Declare a list of imported services for this Module. Use the ImportedServiceDeclaration that is returned to
@@ -231,7 +231,7 @@ public interface ModuleAssembly
      *
      * @return An ImportedServiceDeclaration for the specified Imported Service types.
      */
-    ImportedServiceDeclaration importedServices( Specification<? super ImportedServiceAssembly> specification );
+    ImportedServiceDeclaration importedServices( Predicate<? super ImportedServiceAssembly> specification );
 
     <T> MixinDeclaration<T> forMixin( Class<T> mixinType );
 

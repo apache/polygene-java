@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -249,11 +250,11 @@ public class IterablesTest
     {
         final int[] count = new int[ 1 ];
 
-        Iterable<String> b = Iterables.cache( Iterables.filter( Specifications.and( new Specification<String>()
+        Iterable<String> b = Iterables.cache( Iterables.filter( Specifications.and( new Predicate<String>()
         {
 
             @Override
-            public boolean satisfiedBy( String item )
+            public boolean test( String item )
             {
                 count[ 0] = count[ 0] + 1;
                 return true;

@@ -21,7 +21,7 @@ package org.apache.zest.api.util;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.function.Function;
-import org.apache.zest.functional.Specification;
+import java.util.function.Predicate;
 
 import static org.apache.zest.functional.Iterables.iterable;
 
@@ -30,10 +30,10 @@ import static org.apache.zest.functional.Iterables.iterable;
  */
 public class Methods
 {
-    public static final Specification<Type> HAS_METHODS = new Specification<Type>()
+    public static final Predicate<Type> HAS_METHODS = new Predicate<Type>()
     {
         @Override
-        public boolean satisfiedBy( Type item )
+        public boolean test( Type item )
         {
             return Classes.RAW_CLASS.apply( item ).getDeclaredMethods().length > 0;
         }

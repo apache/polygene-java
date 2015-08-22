@@ -18,27 +18,36 @@
  */
 package org.apache.zest.api.query.grammar;
 
+import java.util.function.Predicate;
+import org.apache.zest.api.composite.Composite;
+import org.apache.zest.functional.Specifications;
+
 /**
- * Less or equals Specification.
+ * NOT Specification.
  */
-public class LeSpecification<T>
-    extends ComparisonSpecification<T>
+public class Notpredicate implements Predicate<Composite>
 {
-    public LeSpecification( PropertyFunction<T> property, T value )
+    private Predicate<Composite> operand;
+
+    public Notpredicate( Predicate<Composite> operand )
     {
-        super( property, value );
+        this.operand = operand;
+    }
+
+    public Predicate<Composite> operand()
+    {
+        return operand;
     }
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    protected boolean compare( T value )
+    public boolean test( Composite item )
     {
-        return ( (Comparable) value ).compareTo( this.value ) <= 0;
+        return Specifications.not( operand ).test( item );
     }
 
     @Override
     public String toString()
     {
-        return property.toString() + "<=" + value.toString();
+        return "!" + operand.toString();
     }
 }

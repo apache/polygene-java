@@ -18,6 +18,7 @@
 package org.apache.zest.index.rdf.query;
 
 import java.util.Map;
+import java.util.function.Predicate;
 import org.openrdf.query.QueryLanguage;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityReference;
@@ -27,7 +28,6 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.query.grammar.QuerySpecification;
 import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.spi.query.EntityFinder;
 import org.apache.zest.spi.query.EntityFinderException;
 
@@ -55,7 +55,7 @@ public interface RdfQueryService
 
         @Override
         public Iterable<EntityReference> findEntities( Class<?> resultType,
-                                                       Specification<Composite> whereClause,
+                                                       Predicate<Composite> whereClause,
                                                        OrderBy[] orderBySegments,
                                                        Integer firstResult,
                                                        Integer maxResults,
@@ -82,7 +82,7 @@ public interface RdfQueryService
         }
 
         @Override
-        public EntityReference findEntity( Class<?> resultType, Specification<Composite> whereClause, Map<String, Object> variables )
+        public EntityReference findEntity( Class<?> resultType, Predicate<Composite> whereClause, Map<String, Object> variables )
             throws EntityFinderException
         {
             final SingleQualifiedIdentityResultCallback singleCallback = new SingleQualifiedIdentityResultCallback();
@@ -102,7 +102,7 @@ public interface RdfQueryService
         }
 
         @Override
-        public long countEntities( Class<?> resultType, Specification<Composite> whereClause, Map<String, Object> variables )
+        public long countEntities( Class<?> resultType, Predicate<Composite> whereClause, Map<String, Object> variables )
             throws EntityFinderException
         {
             if (QuerySpecification.isQueryLanguage( "SERQL", whereClause ))

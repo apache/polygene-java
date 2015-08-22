@@ -27,6 +27,7 @@ import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
@@ -66,7 +67,6 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.functional.Specifications;
 import org.apache.zest.runtime.activation.ActivationDelegate;
 import org.apache.zest.runtime.composite.FunctionStateResolver;
@@ -684,25 +684,25 @@ public class ModuleInstance
     public Iterable<ModelModule<ObjectDescriptor>> visibleObjects( Visibility visibility )
     {
         return map( ModelModule.<ObjectDescriptor>modelModuleFunction( this ),
-                    filter( new VisibilitySpecification( visibility ), objects.models() ) );
+                    filter( new Visibilitypredicate( visibility ), objects.models() ) );
     }
 
     public Iterable<ModelModule<TransientDescriptor>> visibleTransients( Visibility visibility )
     {
         return map( ModelModule.<TransientDescriptor>modelModuleFunction( this ),
-                    filter( new VisibilitySpecification( visibility ), transients.models() ) );
+                    filter( new Visibilitypredicate( visibility ), transients.models() ) );
     }
 
     public Iterable<ModelModule<EntityDescriptor>> visibleEntities( Visibility visibility )
     {
         return map( ModelModule.<EntityDescriptor>modelModuleFunction( this ),
-                    filter( new VisibilitySpecification( visibility ), entities.models() ) );
+                    filter( new Visibilitypredicate( visibility ), entities.models() ) );
     }
 
     public Iterable<ModelModule<ValueDescriptor>> visibleValues( Visibility visibility )
     {
         return map( ModelModule.<ValueDescriptor>modelModuleFunction( this ),
-                    filter( new VisibilitySpecification( visibility ), values.models() ) );
+                    filter( new Visibilitypredicate( visibility ), values.models() ) );
     }
 
     public Iterable<ServiceReference<?>> visibleServices( Visibility visibility )
@@ -732,8 +732,8 @@ public class ModuleInstance
             Class<?> clazz = classes.get( name );
             if( clazz == null )
             {
-                Specification<ModelDescriptor> modelTypeSpecification = modelTypeSpecification( name );
-                Specification<ModelModule<ModelDescriptor>> translate = Specifications.translate( ModelModule.modelFunction(), modelTypeSpecification );
+                Predicate<ModelDescriptor> modelTypeSpecification = modelTypeSpecification( name );
+                Predicate<ModelModule<ModelDescriptor>> translate = Specifications.translate( ModelModule.modelFunction(), modelTypeSpecification );
                 // Check module
                 {
                     Iterable<ModelModule<ModelDescriptor>> i = cast( flatten(

@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.sql.DataSource;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.association.AssociationDescriptor;
@@ -48,7 +49,6 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.index.sql.support.api.SQLIndexing;
 import org.apache.zest.index.sql.support.common.DBNames;
 import org.apache.zest.index.sql.support.common.QNameInfo;
@@ -197,10 +197,10 @@ public abstract class AbstractSQLIndexing
             Map<Long, EntityState> statesByPK = new HashMap<>();
             Map<Long, Integer> qNamePKs = new HashMap<>();
 
-            Iterable<EntityState> relatedStates = Iterables.filter( new Specification<EntityState>()
+            Iterable<EntityState> relatedStates = Iterables.filter( new Predicate<EntityState>()
             {
                 @Override
-                public boolean satisfiedBy( EntityState item )
+                public boolean test( EntityState item )
                 {
                     return item.entityDescriptor().queryable();
                 }

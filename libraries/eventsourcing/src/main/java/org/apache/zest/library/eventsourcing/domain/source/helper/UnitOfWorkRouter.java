@@ -19,7 +19,7 @@ package org.apache.zest.library.eventsourcing.domain.source.helper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.apache.zest.functional.Specification;
+import java.util.function.Predicate;
 import org.apache.zest.io.Output;
 import org.apache.zest.io.Receiver;
 import org.apache.zest.io.Sender;
@@ -33,7 +33,7 @@ import org.apache.zest.library.eventsourcing.domain.api.UnitOfWorkDomainEventsVa
 public class UnitOfWorkRouter<T extends Throwable>
     implements Output<UnitOfWorkDomainEventsValue, T>
 {
-    private Map<Specification<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>> routes = new LinkedHashMap<Specification<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>>(  );
+    private Map<Predicate<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>> routes = new LinkedHashMap<Predicate<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>>(  );
 
     private Receiver<UnitOfWorkDomainEventsValue, T> defaultReceiver = new Receiver<UnitOfWorkDomainEventsValue, T>()
     {
@@ -44,7 +44,7 @@ public class UnitOfWorkRouter<T extends Throwable>
         }
     };
 
-    public UnitOfWorkRouter route( Specification<UnitOfWorkDomainEventsValue> specification, Receiver<UnitOfWorkDomainEventsValue, T> receiver)
+    public UnitOfWorkRouter route( Predicate<UnitOfWorkDomainEventsValue> specification, Receiver<UnitOfWorkDomainEventsValue, T> receiver)
     {
         routes.put(specification, receiver);
 
@@ -65,9 +65,9 @@ public class UnitOfWorkRouter<T extends Throwable>
             @Override
             public void receive( UnitOfWorkDomainEventsValue item ) throws T
             {
-                for( Map.Entry<Specification<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>> specificationReceiverEntry : routes.entrySet() )
+                for( Map.Entry<Predicate<UnitOfWorkDomainEventsValue>, Receiver<UnitOfWorkDomainEventsValue, T>> specificationReceiverEntry : routes.entrySet() )
                 {
-                    if (specificationReceiverEntry.getKey().satisfiedBy( item ))
+                    if (specificationReceiverEntry.getKey().test( item ))
                     {
                         specificationReceiverEntry.getValue().receive( item );
                         return;

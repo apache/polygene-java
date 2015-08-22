@@ -25,14 +25,14 @@ import org.apache.zest.functional.Iterables;
 /**
  * Contains All Specification.
  */
-public class ContainsAllSpecification<T>
-    extends ExpressionSpecification
+public class ContainsAllPredicate<T>
+    extends ExpressionPredicate
 {
     private PropertyFunction<? extends Collection<T>> collectionProperty;
     private Iterable<T> valueCollection;
 
-    public ContainsAllSpecification( PropertyFunction<? extends Collection<T>> collectionProperty,
-                                     Iterable<T> valueCollection
+    public ContainsAllPredicate( PropertyFunction<? extends Collection<T>> collectionProperty,
+                                 Iterable<T> valueCollection
     )
     {
         this.collectionProperty = collectionProperty;
@@ -50,7 +50,7 @@ public class ContainsAllSpecification<T>
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
         Collection<T> collection = collectionProperty.apply( item ).get();
 

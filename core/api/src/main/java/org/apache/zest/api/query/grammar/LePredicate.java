@@ -18,24 +18,27 @@
  */
 package org.apache.zest.api.query.grammar;
 
-import org.apache.zest.api.composite.Composite;
-import org.apache.zest.functional.Specification;
-
 /**
- * Base binary Specification, used for AND and OR Specifications..
+ * Less or equals Specification.
  */
-public abstract class BinarySpecification
-    extends ExpressionSpecification
+public class LePredicate<T>
+    extends ComparisonPredicate<T>
 {
-    protected final Iterable<Specification<Composite>> operands;
-
-    protected BinarySpecification( Iterable<Specification<Composite>> operands )
+    public LePredicate( PropertyFunction<T> property, T value )
     {
-        this.operands = operands;
+        super( property, value );
     }
 
-    public Iterable<Specification<Composite>> operands()
+    @Override
+    @SuppressWarnings( "unchecked" )
+    protected boolean compare( T value )
     {
-        return operands;
+        return ( (Comparable) value ).compareTo( this.value ) <= 0;
+    }
+
+    @Override
+    public String toString()
+    {
+        return property.toString() + "<=" + value.toString();
     }
 }

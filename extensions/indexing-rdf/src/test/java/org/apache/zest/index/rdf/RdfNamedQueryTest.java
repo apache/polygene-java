@@ -17,11 +17,11 @@
  */
 package org.apache.zest.index.rdf;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.index.rdf.query.RdfQueryParserFactory;
 import org.apache.zest.index.rdf.query.SesameExpressions;
 import org.apache.zest.library.rdf.entity.EntityStateSerializer;
@@ -39,7 +39,7 @@ public class RdfNamedQueryTest extends AbstractNamedQueryTest
     }
 
     @Override
-    protected Specification<Composite> createNamedQueryDescriptor( String queryName, String queryString )
+    protected Predicate<Composite> createNamedQueryDescriptor( String queryName, String queryString )
     {
         return SesameExpressions.sparql( queryString );
     }

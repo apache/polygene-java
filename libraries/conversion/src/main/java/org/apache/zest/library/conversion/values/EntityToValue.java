@@ -182,7 +182,7 @@ public interface EntityToValue
                         {
                             AssociationStateDescriptor entityState = entityDescriptor.state();
                             String associationName = descriptor.qualifiedName().name();
-                            if( STRING_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
+                            if( STRING_TYPE_SPEC.test( descriptor.valueType() ) )
                             {
                                 // Find Association and convert to string
                                 AssociationDescriptor associationDescriptor;
@@ -205,7 +205,7 @@ public interface EntityToValue
                                     return null;
                                 }
                             }
-                            else if( STRING_COLLECTION_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
+                            else if( STRING_COLLECTION_TYPE_SPEC.test( descriptor.valueType() ) )
                             {
                                 AssociationDescriptor associationDescriptor;
                                 try
@@ -225,7 +225,7 @@ public interface EntityToValue
                                 }
                                 return entities;
                             }
-                            else if( STRING_MAP_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
+                            else if( STRING_MAP_TYPE_SPEC.test( descriptor.valueType() ) )
                             {
                                 AssociationDescriptor associationDescriptor;
                                 try
@@ -305,7 +305,7 @@ public interface EntityToValue
                         }
                         catch( IllegalArgumentException e )
                         {
-                            if( STRING_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
+                            if( STRING_TYPE_SPEC.test( descriptor.valueType() ) )
                             {
                                 // Find Association and convert to string
                                 AssociationDescriptor associationDescriptor;
@@ -329,7 +329,7 @@ public interface EntityToValue
                                     return null;
                                 }
                             }
-                            else if( STRING_COLLECTION_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
+                            else if( STRING_COLLECTION_TYPE_SPEC.test( descriptor.valueType() ) )
                             {
                                 AssociationDescriptor associationDescriptor;
                                 try
@@ -350,7 +350,7 @@ public interface EntityToValue
                                 }
                                 return entities;
                             }
-                            else if( STRING_MAP_TYPE_SPEC.satisfiedBy( descriptor.valueType() ) )
+                            else if( STRING_MAP_TYPE_SPEC.test( descriptor.valueType() ) )
                             {
                                 AssociationDescriptor associationDescriptor;
                                 try

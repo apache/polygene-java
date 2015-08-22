@@ -24,19 +24,19 @@ import org.apache.zest.api.property.Property;
 /**
  * Regular expression match Specification.
  */
-public class MatchesSpecification
-    extends ExpressionSpecification
+public class MatchesPredicate
+    extends ExpressionPredicate
 {
     private PropertyFunction<String> property;
     private Object value;
 
-    public MatchesSpecification( PropertyFunction<String> property, String regexp )
+    public MatchesPredicate( PropertyFunction<String> property, String regexp )
     {
         this.property = property;
         this.value = regexp;
     }
 
-    public MatchesSpecification( PropertyFunction<String> property, Variable variable )
+    public MatchesPredicate( PropertyFunction<String> property, Variable variable )
     {
         this.property = property;
         this.value = variable;
@@ -58,7 +58,7 @@ public class MatchesSpecification
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
         Property<String> prop = property.apply( item );
 

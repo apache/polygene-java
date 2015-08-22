@@ -28,6 +28,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.Predicate;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.GenericAssociationInfo;
 import org.apache.zest.api.association.ManyAssociation;
@@ -37,34 +38,33 @@ import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.State;
 import org.apache.zest.api.property.GenericPropertyInfo;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.api.query.grammar.AndSpecification;
+import org.apache.zest.api.query.grammar.AndPredicate;
 import org.apache.zest.api.query.grammar.AssociationFunction;
-import org.apache.zest.api.query.grammar.AssociationNotNullSpecification;
-import org.apache.zest.api.query.grammar.AssociationNullSpecification;
-import org.apache.zest.api.query.grammar.ContainsAllSpecification;
-import org.apache.zest.api.query.grammar.ContainsSpecification;
-import org.apache.zest.api.query.grammar.EqSpecification;
-import org.apache.zest.api.query.grammar.GeSpecification;
-import org.apache.zest.api.query.grammar.GtSpecification;
-import org.apache.zest.api.query.grammar.LeSpecification;
-import org.apache.zest.api.query.grammar.LtSpecification;
-import org.apache.zest.api.query.grammar.ManyAssociationContainsSpecification;
+import org.apache.zest.api.query.grammar.AssociationNotNullPredicate;
+import org.apache.zest.api.query.grammar.AssociationNullPredicate;
+import org.apache.zest.api.query.grammar.ContainsAllPredicate;
+import org.apache.zest.api.query.grammar.ContainsPredicate;
+import org.apache.zest.api.query.grammar.EqPredicate;
+import org.apache.zest.api.query.grammar.GePredicate;
+import org.apache.zest.api.query.grammar.GtPredicate;
+import org.apache.zest.api.query.grammar.LePredicate;
+import org.apache.zest.api.query.grammar.LtPredicate;
+import org.apache.zest.api.query.grammar.ManyAssociationContainsPredicate;
 import org.apache.zest.api.query.grammar.ManyAssociationFunction;
-import org.apache.zest.api.query.grammar.MatchesSpecification;
-import org.apache.zest.api.query.grammar.NamedAssociationContainsNameSpecification;
-import org.apache.zest.api.query.grammar.NamedAssociationContainsSpecification;
+import org.apache.zest.api.query.grammar.MatchesPredicate;
+import org.apache.zest.api.query.grammar.NamedAssociationContainsNamePredicate;
+import org.apache.zest.api.query.grammar.NamedAssociationContainsPredicate;
 import org.apache.zest.api.query.grammar.NamedAssociationFunction;
-import org.apache.zest.api.query.grammar.NeSpecification;
-import org.apache.zest.api.query.grammar.NotSpecification;
-import org.apache.zest.api.query.grammar.OrSpecification;
+import org.apache.zest.api.query.grammar.NePredicate;
+import org.apache.zest.api.query.grammar.Notpredicate;
+import org.apache.zest.api.query.grammar.OrPredicate;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.query.grammar.PropertyFunction;
-import org.apache.zest.api.query.grammar.PropertyNotNullSpecification;
-import org.apache.zest.api.query.grammar.PropertyNullSpecification;
+import org.apache.zest.api.query.grammar.PropertyNotNullPredicate;
+import org.apache.zest.api.query.grammar.PropertyNullPredicate;
 import org.apache.zest.api.query.grammar.PropertyReference;
 import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.util.NullArgumentException;
-import org.apache.zest.functional.Specification;
 
 import static org.apache.zest.functional.Iterables.first;
 import static org.apache.zest.functional.Iterables.prepend;
@@ -300,12 +300,12 @@ public final class QueryExpressions
      * @return a new AND specification
      */
     @SafeVarargs
-    public static AndSpecification and( Specification<Composite> left,
-                                        Specification<Composite> right,
-                                        Specification<Composite>... optionalRight
+    public static AndPredicate and( Predicate<Composite> left,
+                                    Predicate<Composite> right,
+                                    Predicate<Composite>... optionalRight
     )
     {
-        return new AndSpecification( prepend( left, prepend( right, Arrays.asList( optionalRight ) ) ) );
+        return new AndPredicate( prepend( left, prepend( right, Arrays.asList( optionalRight ) ) ) );
     }
 
     /**
@@ -316,9 +316,9 @@ public final class QueryExpressions
      * @return a new OR specification
      */
     @SafeVarargs
-    public static OrSpecification or( Specification<Composite>... specs )
+    public static OrPredicate or( Predicate<Composite>... specs )
     {
-        return new OrSpecification( Arrays.asList( specs ) );
+        return new OrPredicate( Arrays.asList( specs ) );
     }
 
     /**
@@ -328,9 +328,9 @@ public final class QueryExpressions
      *
      * @return a new NOT specification
      */
-    public static NotSpecification not( Specification<Composite> operand )
+    public static Notpredicate not( Predicate<Composite> operand )
     {
-        return new NotSpecification( operand );
+        return new Notpredicate( operand );
     }
 
     // Comparisons -----------------------------------------------------------|
@@ -343,9 +343,9 @@ public final class QueryExpressions
      *
      * @return a new EQUALS specification for a Property.
      */
-    public static <T> EqSpecification<T> eq( Property<T> property, T value )
+    public static <T> EqPredicate<T> eq( Property<T> property, T value )
     {
-        return new EqSpecification<>( property( property ), value );
+        return new EqPredicate<>( property( property ), value );
     }
 
     /**
@@ -357,9 +357,9 @@ public final class QueryExpressions
      * @return a new EQUALS specification for a Property using a named Variable.
      */
     @SuppressWarnings( {"raw", "unchecked"} )
-    public static <T> EqSpecification<T> eq( Property<T> property, Variable variable )
+    public static <T> EqPredicate<T> eq( Property<T> property, Variable variable )
     {
-        return new EqSpecification( property( property ), variable );
+        return new EqPredicate( property( property ), variable );
     }
 
     /**
@@ -370,9 +370,9 @@ public final class QueryExpressions
      *
      * @return a new EQUALS specification for an Association.
      */
-    public static <T> EqSpecification<String> eq( Association<T> association, T value )
+    public static <T> EqPredicate<String> eq( Association<T> association, T value )
     {
-        return new EqSpecification<>( new PropertyFunction<String>( null,
+        return new EqPredicate<>( new PropertyFunction<String>( null,
                                                                     association( association ),
                                                                     null,
                                                                     null,
@@ -388,9 +388,9 @@ public final class QueryExpressions
      *
      * @return a new GREATER OR EQUALS specification for a Property.
      */
-    public static <T> GeSpecification<T> ge( Property<T> property, T value )
+    public static <T> GePredicate<T> ge( Property<T> property, T value )
     {
-        return new GeSpecification<>( property( property ), value );
+        return new GePredicate<>( property( property ), value );
     }
 
     /**
@@ -402,9 +402,9 @@ public final class QueryExpressions
      * @return a new GREATER OR EQUALS specification for a Property using a named Variable.
      */
     @SuppressWarnings( {"raw", "unchecked"} )
-    public static <T> GeSpecification<T> ge( Property<T> property, Variable variable )
+    public static <T> GePredicate<T> ge( Property<T> property, Variable variable )
     {
-        return new GeSpecification( property( property ), variable );
+        return new GePredicate( property( property ), variable );
     }
 
     /**
@@ -415,9 +415,9 @@ public final class QueryExpressions
      *
      * @return a new GREATER THAN specification for a Property.
      */
-    public static <T> GtSpecification<T> gt( Property<T> property, T value )
+    public static <T> GtPredicate<T> gt( Property<T> property, T value )
     {
-        return new GtSpecification<>( property( property ), value );
+        return new GtPredicate<>( property( property ), value );
     }
 
     /**
@@ -429,9 +429,9 @@ public final class QueryExpressions
      * @return a new GREATER THAN specification for a Property using a named Variable.
      */
     @SuppressWarnings( {"raw", "unchecked"} )
-    public static <T> GtSpecification<T> gt( Property<T> property, Variable variable )
+    public static <T> GtPredicate<T> gt( Property<T> property, Variable variable )
     {
-        return new GtSpecification( property( property ), variable );
+        return new GtPredicate( property( property ), variable );
     }
 
     /**
@@ -442,9 +442,9 @@ public final class QueryExpressions
      *
      * @return a new LESS OR EQUALS specification for a Property.
      */
-    public static <T> LeSpecification<T> le( Property<T> property, T value )
+    public static <T> LePredicate<T> le( Property<T> property, T value )
     {
-        return new LeSpecification<>( property( property ), value );
+        return new LePredicate<>( property( property ), value );
     }
 
     /**
@@ -456,9 +456,9 @@ public final class QueryExpressions
      * @return a new LESS OR EQUALS specification for a Property using a named Variable.
      */
     @SuppressWarnings( {"raw", "unchecked"} )
-    public static <T> LeSpecification<T> le( Property<T> property, Variable variable )
+    public static <T> LePredicate<T> le( Property<T> property, Variable variable )
     {
-        return new LeSpecification( property( property ), variable );
+        return new LePredicate( property( property ), variable );
     }
 
     /**
@@ -469,9 +469,9 @@ public final class QueryExpressions
      *
      * @return a new LESSER THAN specification for a Property.
      */
-    public static <T> LtSpecification<T> lt( Property<T> property, T value )
+    public static <T> LtPredicate<T> lt( Property<T> property, T value )
     {
-        return new LtSpecification<>( property( property ), value );
+        return new LtPredicate<>( property( property ), value );
     }
 
     /**
@@ -483,9 +483,9 @@ public final class QueryExpressions
      * @return a new LESSER THAN specification for a Property using a named Variable.
      */
     @SuppressWarnings( {"raw", "unchecked"} )
-    public static <T> LtSpecification<T> lt( Property<T> property, Variable variable )
+    public static <T> LtPredicate<T> lt( Property<T> property, Variable variable )
     {
-        return new LtSpecification( property( property ), variable );
+        return new LtPredicate( property( property ), variable );
     }
 
     /**
@@ -496,9 +496,9 @@ public final class QueryExpressions
      *
      * @return a new NOT EQUALS specification for a Property.
      */
-    public static <T> NeSpecification<T> ne( Property<T> property, T value )
+    public static <T> NePredicate<T> ne( Property<T> property, T value )
     {
-        return new NeSpecification<>( property( property ), value );
+        return new NePredicate<>( property( property ), value );
     }
 
     /**
@@ -510,9 +510,9 @@ public final class QueryExpressions
      * @return a new NOT EQUALS specification for a Property using a named Variable.
      */
     @SuppressWarnings( {"raw", "unchecked"} )
-    public static <T> NeSpecification<T> ne( Property<T> property, Variable variable )
+    public static <T> NePredicate<T> ne( Property<T> property, Variable variable )
     {
-        return new NeSpecification( property( property ), variable );
+        return new NePredicate( property( property ), variable );
     }
 
     /**
@@ -523,9 +523,9 @@ public final class QueryExpressions
      *
      * @return a new REGULAR EXPRESSION specification for a Property.
      */
-    public static MatchesSpecification matches( Property<String> property, String regexp )
+    public static MatchesPredicate matches( Property<String> property, String regexp )
     {
-        return new MatchesSpecification( property( property ), regexp );
+        return new MatchesPredicate( property( property ), regexp );
     }
 
     /**
@@ -536,9 +536,9 @@ public final class QueryExpressions
      *
      * @return a new REGULAR EXPRESSION specification for a Property using a named Variable.
      */
-    public static MatchesSpecification matches( Property<String> property, Variable variable )
+    public static MatchesPredicate matches( Property<String> property, Variable variable )
     {
-        return new MatchesSpecification( property( property ), variable );
+        return new MatchesPredicate( property( property ), variable );
     }
 
     // Null checks -----------------------------------------------------------|
@@ -550,9 +550,9 @@ public final class QueryExpressions
      *
      * @return a new NOT NULL specification for a Property.
      */
-    public static <T> PropertyNotNullSpecification<T> isNotNull( Property<T> property )
+    public static <T> PropertyNotNullPredicate<T> isNotNull( Property<T> property )
     {
-        return new PropertyNotNullSpecification<>( property( property ) );
+        return new PropertyNotNullPredicate<>( property( property ) );
     }
 
     /**
@@ -562,9 +562,9 @@ public final class QueryExpressions
      *
      * @return a new NULL specification for a Property.
      */
-    public static <T> PropertyNullSpecification<T> isNull( Property<T> property )
+    public static <T> PropertyNullPredicate<T> isNull( Property<T> property )
     {
-        return new PropertyNullSpecification<>( property( property ) );
+        return new PropertyNullPredicate<>( property( property ) );
     }
 
     /**
@@ -574,9 +574,9 @@ public final class QueryExpressions
      *
      * @return a new NOT NULL specification for an Association.
      */
-    public static <T> AssociationNotNullSpecification<T> isNotNull( Association<T> association )
+    public static <T> AssociationNotNullPredicate<T> isNotNull( Association<T> association )
     {
-        return new AssociationNotNullSpecification<>( association( association ) );
+        return new AssociationNotNullPredicate<>( association( association ) );
     }
 
     /**
@@ -586,9 +586,9 @@ public final class QueryExpressions
      *
      * @return a new NULL specification for an Association.
      */
-    public static <T> AssociationNullSpecification<T> isNull( Association<T> association )
+    public static <T> AssociationNullPredicate<T> isNull( Association<T> association )
     {
-        return new AssociationNullSpecification<>( association( association ) );
+        return new AssociationNullPredicate<>( association( association ) );
     }
 
     // Collections -----------------------------------------------------------|
@@ -601,11 +601,11 @@ public final class QueryExpressions
      *
      * @return a new CONTAINS ALL specification for a Collection Property.
      */
-    public static <T> ContainsAllSpecification<T> containsAll( Property<? extends Collection<T>> collectionProperty,
+    public static <T> ContainsAllPredicate<T> containsAll( Property<? extends Collection<T>> collectionProperty,
                                                                Iterable<T> values )
     {
         NullArgumentException.validateNotNull( "Values", values );
-        return new ContainsAllSpecification<>( property( collectionProperty ), values );
+        return new ContainsAllPredicate<>( property( collectionProperty ), values );
     }
 
     /**
@@ -617,12 +617,12 @@ public final class QueryExpressions
      * @return a new CONTAINS ALL specification for a Collection Property using named Variables.
      */
     @SuppressWarnings( {"raw", "unchecked"} )
-    public static <T> ContainsAllSpecification<T> containsAllVariables(
+    public static <T> ContainsAllPredicate<T> containsAllVariables(
         Property<? extends Collection<T>> collectionProperty,
         Iterable<Variable> variables )
     {
         NullArgumentException.validateNotNull( "Variables", variables );
-        return new ContainsAllSpecification( property( collectionProperty ), variables );
+        return new ContainsAllPredicate( property( collectionProperty ), variables );
     }
 
     /**
@@ -633,11 +633,11 @@ public final class QueryExpressions
      *
      * @return a new CONTAINS specification for a Collection Property.
      */
-    public static <T> ContainsSpecification<T> contains( Property<? extends Collection<T>> collectionProperty,
+    public static <T> ContainsPredicate<T> contains( Property<? extends Collection<T>> collectionProperty,
                                                          T value )
     {
         NullArgumentException.validateNotNull( "Value", value );
-        return new ContainsSpecification<>( property( collectionProperty ), value );
+        return new ContainsPredicate<>( property( collectionProperty ), value );
     }
 
     /**
@@ -649,11 +649,11 @@ public final class QueryExpressions
      * @return a new CONTAINS specification for a Collection Property using named Variables.
      */
     @SuppressWarnings( {"raw", "unchecked"} )
-    public static <T> ContainsSpecification<T> contains( Property<? extends Collection<T>> collectionProperty,
+    public static <T> ContainsPredicate<T> contains( Property<? extends Collection<T>> collectionProperty,
                                                          Variable variable )
     {
         NullArgumentException.validateNotNull( "Variable", variable );
-        return new ContainsSpecification( property( collectionProperty ), variable );
+        return new ContainsPredicate( property( collectionProperty ), variable );
     }
 
     /**
@@ -664,9 +664,9 @@ public final class QueryExpressions
      *
      * @return a new CONTAINS specification for a ManyAssociation.
      */
-    public static <T> ManyAssociationContainsSpecification<T> contains( ManyAssociation<T> manyAssoc, T value )
+    public static <T> ManyAssociationContainsPredicate<T> contains( ManyAssociation<T> manyAssoc, T value )
     {
-        return new ManyAssociationContainsSpecification<>( manyAssociation( manyAssoc ), value );
+        return new ManyAssociationContainsPredicate<>( manyAssociation( manyAssoc ), value );
     }
 
     /**
@@ -677,9 +677,9 @@ public final class QueryExpressions
      *
      * @return a new CONTAINS specification for a NamedAssociation.
      */
-    public static <T> NamedAssociationContainsSpecification<T> contains( NamedAssociation<T> namedAssoc, T value )
+    public static <T> NamedAssociationContainsPredicate<T> contains( NamedAssociation<T> namedAssoc, T value )
     {
-        return new NamedAssociationContainsSpecification<>( namedAssociation( namedAssoc ), value );
+        return new NamedAssociationContainsPredicate<>( namedAssociation( namedAssoc ), value );
     }
 
     /**
@@ -690,10 +690,10 @@ public final class QueryExpressions
      *
      * @return a new CONTAINS NAME specification for a NamedAssociation.
      */
-    public static <T> NamedAssociationContainsNameSpecification<T> containsName( NamedAssociation<T> namedAssoc,
+    public static <T> NamedAssociationContainsNamePredicate<T> containsName( NamedAssociation<T> namedAssoc,
                                                                                  String name )
     {
-        return new NamedAssociationContainsNameSpecification<>( namedAssociation( namedAssoc ), name );
+        return new NamedAssociationContainsNamePredicate<>( namedAssociation( namedAssoc ), name );
     }
 
     // Ordering --------------------------------------------------------------|

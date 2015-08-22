@@ -20,6 +20,7 @@ package org.apache.zest.index.elasticsearch;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -34,32 +35,31 @@ import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.query.grammar.AndSpecification;
-import org.apache.zest.api.query.grammar.AssociationNotNullSpecification;
-import org.apache.zest.api.query.grammar.AssociationNullSpecification;
-import org.apache.zest.api.query.grammar.BinarySpecification;
-import org.apache.zest.api.query.grammar.ComparisonSpecification;
-import org.apache.zest.api.query.grammar.ContainsAllSpecification;
-import org.apache.zest.api.query.grammar.ContainsSpecification;
-import org.apache.zest.api.query.grammar.EqSpecification;
-import org.apache.zest.api.query.grammar.GeSpecification;
-import org.apache.zest.api.query.grammar.GtSpecification;
-import org.apache.zest.api.query.grammar.LeSpecification;
-import org.apache.zest.api.query.grammar.LtSpecification;
-import org.apache.zest.api.query.grammar.ManyAssociationContainsSpecification;
-import org.apache.zest.api.query.grammar.MatchesSpecification;
-import org.apache.zest.api.query.grammar.NamedAssociationContainsNameSpecification;
-import org.apache.zest.api.query.grammar.NamedAssociationContainsSpecification;
-import org.apache.zest.api.query.grammar.NeSpecification;
-import org.apache.zest.api.query.grammar.NotSpecification;
-import org.apache.zest.api.query.grammar.OrSpecification;
+import org.apache.zest.api.query.grammar.AndPredicate;
+import org.apache.zest.api.query.grammar.AssociationNotNullPredicate;
+import org.apache.zest.api.query.grammar.AssociationNullPredicate;
+import org.apache.zest.api.query.grammar.BinaryPredicate;
+import org.apache.zest.api.query.grammar.ComparisonPredicate;
+import org.apache.zest.api.query.grammar.ContainsAllPredicate;
+import org.apache.zest.api.query.grammar.ContainsPredicate;
+import org.apache.zest.api.query.grammar.EqPredicate;
+import org.apache.zest.api.query.grammar.GePredicate;
+import org.apache.zest.api.query.grammar.GtPredicate;
+import org.apache.zest.api.query.grammar.LePredicate;
+import org.apache.zest.api.query.grammar.LtPredicate;
+import org.apache.zest.api.query.grammar.ManyAssociationContainsPredicate;
+import org.apache.zest.api.query.grammar.MatchesPredicate;
+import org.apache.zest.api.query.grammar.NamedAssociationContainsNamePredicate;
+import org.apache.zest.api.query.grammar.NamedAssociationContainsPredicate;
+import org.apache.zest.api.query.grammar.NePredicate;
+import org.apache.zest.api.query.grammar.Notpredicate;
+import org.apache.zest.api.query.grammar.OrPredicate;
 import org.apache.zest.api.query.grammar.OrderBy;
-import org.apache.zest.api.query.grammar.PropertyNotNullSpecification;
-import org.apache.zest.api.query.grammar.PropertyNullSpecification;
+import org.apache.zest.api.query.grammar.PropertyNotNullPredicate;
+import org.apache.zest.api.query.grammar.PropertyNullPredicate;
 import org.apache.zest.api.query.grammar.QuerySpecification;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.index.elasticsearch.ElasticSearchFinderSupport.ComplexTypeSupport;
 import org.apache.zest.spi.query.EntityFinder;
 import org.apache.zest.spi.query.EntityFinderException;
@@ -93,7 +93,7 @@ public interface ElasticSearchFinder
 
         @Override
         public Iterable<EntityReference> findEntities( Class<?> resultType,
-                                                       Specification<Composite> whereClause,
+                                                       Predicate<Composite> whereClause,
                                                        OrderBy[] orderBySegments,
                                                        Integer firstResult, Integer maxResults,
                                                        Map<String, Object> variables )
@@ -146,7 +146,7 @@ public interface ElasticSearchFinder
 
         @Override
         public EntityReference findEntity( Class<?> resultType,
-                                           Specification<Composite> whereClause,
+                                           Predicate<Composite> whereClause,
                                            Map<String, Object> variables )
             throws EntityFinderException
         {
@@ -175,7 +175,7 @@ public interface ElasticSearchFinder
 
         @Override
         public long countEntities( Class<?> resultType,
-                                   Specification<Composite> whereClause,
+                                   Predicate<Composite> whereClause,
                                    Map<String, Object> variables )
             throws EntityFinderException
         {
@@ -202,7 +202,7 @@ public interface ElasticSearchFinder
         }
 
         private QueryBuilder processWhereSpecification( AndFilterBuilder filterBuilder,
-                                                        Specification<Composite> spec,
+                                                        Predicate<Composite> spec,
                                                         Map<String, Object> variables )
             throws EntityFinderException
         {
@@ -221,76 +221,76 @@ public interface ElasticSearchFinder
         }
 
         private void processSpecification( FilterBuilder filterBuilder,
-                                           Specification<Composite> spec,
+                                           Predicate<Composite> spec,
                                            Map<String, Object> variables )
             throws EntityFinderException
         {
-            if( spec instanceof BinarySpecification )
+            if( spec instanceof BinaryPredicate )
             {
-                BinarySpecification binSpec = (BinarySpecification) spec;
+                BinaryPredicate binSpec = (BinaryPredicate) spec;
                 processBinarySpecification( filterBuilder, binSpec, variables );
             }
-            else if( spec instanceof NotSpecification )
+            else if( spec instanceof Notpredicate )
             {
-                NotSpecification notSpec = (NotSpecification) spec;
+                Notpredicate notSpec = (Notpredicate) spec;
                 processNotSpecification( filterBuilder, notSpec, variables );
             }
-            else if( spec instanceof ComparisonSpecification )
+            else if( spec instanceof ComparisonPredicate )
             {
-                ComparisonSpecification<?> compSpec = (ComparisonSpecification<?>) spec;
+                ComparisonPredicate<?> compSpec = (ComparisonPredicate<?>) spec;
                 processComparisonSpecification( filterBuilder, compSpec, variables );
             }
-            else if( spec instanceof ContainsAllSpecification )
+            else if( spec instanceof ContainsAllPredicate )
             {
-                ContainsAllSpecification<?> contAllSpec = (ContainsAllSpecification) spec;
+                ContainsAllPredicate<?> contAllSpec = (ContainsAllPredicate) spec;
                 processContainsAllSpecification( filterBuilder, contAllSpec, variables );
             }
-            else if( spec instanceof ContainsSpecification )
+            else if( spec instanceof ContainsPredicate )
             {
-                ContainsSpecification<?> contSpec = (ContainsSpecification) spec;
+                ContainsPredicate<?> contSpec = (ContainsPredicate) spec;
                 processContainsSpecification( filterBuilder, contSpec, variables );
             }
-            else if( spec instanceof MatchesSpecification )
+            else if( spec instanceof MatchesPredicate )
             {
-                MatchesSpecification matchSpec = (MatchesSpecification) spec;
+                MatchesPredicate matchSpec = (MatchesPredicate) spec;
                 processMatchesSpecification( filterBuilder, matchSpec, variables );
             }
-            else if( spec instanceof PropertyNotNullSpecification )
+            else if( spec instanceof PropertyNotNullPredicate )
             {
-                PropertyNotNullSpecification<?> propNotNullSpec = (PropertyNotNullSpecification) spec;
+                PropertyNotNullPredicate<?> propNotNullSpec = (PropertyNotNullPredicate) spec;
                 processPropertyNotNullSpecification( filterBuilder, propNotNullSpec );
             }
-            else if( spec instanceof PropertyNullSpecification )
+            else if( spec instanceof PropertyNullPredicate )
             {
-                PropertyNullSpecification<?> propNullSpec = (PropertyNullSpecification) spec;
+                PropertyNullPredicate<?> propNullSpec = (PropertyNullPredicate) spec;
                 processPropertyNullSpecification( filterBuilder, propNullSpec );
             }
-            else if( spec instanceof AssociationNotNullSpecification )
+            else if( spec instanceof AssociationNotNullPredicate )
             {
-                AssociationNotNullSpecification<?> assNotNullSpec = (AssociationNotNullSpecification) spec;
+                AssociationNotNullPredicate<?> assNotNullSpec = (AssociationNotNullPredicate) spec;
                 processAssociationNotNullSpecification( filterBuilder, assNotNullSpec );
             }
-            else if( spec instanceof AssociationNullSpecification )
+            else if( spec instanceof AssociationNullPredicate )
             {
-                AssociationNullSpecification<?> assNullSpec = (AssociationNullSpecification) spec;
+                AssociationNullPredicate<?> assNullSpec = (AssociationNullPredicate) spec;
                 processAssociationNullSpecification( filterBuilder, assNullSpec );
             }
-            else if( spec instanceof ManyAssociationContainsSpecification )
+            else if( spec instanceof ManyAssociationContainsPredicate )
             {
-                ManyAssociationContainsSpecification<?> manyAssContSpec = (ManyAssociationContainsSpecification) spec;
+                ManyAssociationContainsPredicate<?> manyAssContSpec = (ManyAssociationContainsPredicate) spec;
                 processManyAssociationContainsSpecification( filterBuilder, manyAssContSpec, variables );
             }
-            else if( spec instanceof NamedAssociationContainsSpecification )
+            else if( spec instanceof NamedAssociationContainsPredicate )
             {
 
-                NamedAssociationContainsSpecification<?> namedAssContSpec = (NamedAssociationContainsSpecification) spec;
+                NamedAssociationContainsPredicate<?> namedAssContSpec = (NamedAssociationContainsPredicate) spec;
                 processNamedAssociationContainsSpecification( filterBuilder, namedAssContSpec, variables );
 
             }
-            else if( spec instanceof NamedAssociationContainsNameSpecification )
+            else if( spec instanceof NamedAssociationContainsNamePredicate )
             {
 
-                NamedAssociationContainsNameSpecification<?> namedAssContNameSpec = (NamedAssociationContainsNameSpecification) spec;
+                NamedAssociationContainsNamePredicate<?> namedAssContNameSpec = (NamedAssociationContainsNamePredicate) spec;
                 processNamedAssociationContainsNameSpecification( filterBuilder, namedAssContNameSpec, variables );
 
             }
@@ -319,26 +319,26 @@ public interface ElasticSearchFinder
         }
 
         private void processBinarySpecification( FilterBuilder filterBuilder,
-                                                 BinarySpecification spec,
+                                                 BinaryPredicate spec,
                                                  Map<String, Object> variables )
             throws EntityFinderException
         {
             LOGGER.trace( "Processing BinarySpecification {}", spec );
-            Iterable<Specification<Composite>> operands = spec.operands();
+            Iterable<Predicate<Composite>> operands = spec.operands();
 
-            if( spec instanceof AndSpecification )
+            if( spec instanceof AndPredicate )
             {
                 AndFilterBuilder andFilterBuilder = new AndFilterBuilder();
-                for( Specification<Composite> operand : operands )
+                for( Predicate<Composite> operand : operands )
                 {
                     processSpecification( andFilterBuilder, operand, variables );
                 }
                 addFilter( andFilterBuilder, filterBuilder );
             }
-            else if( spec instanceof OrSpecification )
+            else if( spec instanceof OrPredicate )
             {
                 OrFilterBuilder orFilterBuilder = new OrFilterBuilder();
-                for( Specification<Composite> operand : operands )
+                for( Predicate<Composite> operand : operands )
                 {
                     processSpecification( orFilterBuilder, operand, variables );
                 }
@@ -352,7 +352,7 @@ public interface ElasticSearchFinder
         }
 
         private void processNotSpecification( FilterBuilder filterBuilder,
-                                              NotSpecification spec,
+                                              Notpredicate spec,
                                               Map<String, Object> variables )
             throws EntityFinderException
         {
@@ -363,7 +363,7 @@ public interface ElasticSearchFinder
         }
 
         private void processComparisonSpecification( FilterBuilder filterBuilder,
-                                                     ComparisonSpecification<?> spec,
+                                                     ComparisonPredicate<?> spec,
                                                      Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ComparisonSpecification {}", spec );
@@ -385,29 +385,29 @@ public interface ElasticSearchFinder
                 // Query by simple property value
                 String name = spec.property().toString();
                 Object value = resolveVariable( spec.value(), variables );
-                if( spec instanceof EqSpecification )
+                if( spec instanceof EqPredicate )
                 {
                     addFilter( termFilter( name, value ), filterBuilder );
                 }
-                else if( spec instanceof NeSpecification )
+                else if( spec instanceof NePredicate )
                 {
                     addFilter( andFilter( existsFilter( name ),
                                           notFilter( termFilter( name, value ) ) ),
                                filterBuilder );
                 }
-                else if( spec instanceof GeSpecification )
+                else if( spec instanceof GePredicate )
                 {
                     addFilter( rangeFilter( name ).gte( value ), filterBuilder );
                 }
-                else if( spec instanceof GtSpecification )
+                else if( spec instanceof GtPredicate )
                 {
                     addFilter( rangeFilter( name ).gt( value ), filterBuilder );
                 }
-                else if( spec instanceof LeSpecification )
+                else if( spec instanceof LePredicate )
                 {
                     addFilter( rangeFilter( name ).lte( value ), filterBuilder );
                 }
-                else if( spec instanceof LtSpecification )
+                else if( spec instanceof LtPredicate )
                 {
                     addFilter( rangeFilter( name ).lt( value ), filterBuilder );
                 }
@@ -421,7 +421,7 @@ public interface ElasticSearchFinder
         }
 
         private void processContainsAllSpecification( FilterBuilder filterBuilder,
-                                                      ContainsAllSpecification<?> spec,
+                                                      ContainsAllPredicate<?> spec,
                                                       Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ContainsAllSpecification {}", spec );
@@ -450,7 +450,7 @@ public interface ElasticSearchFinder
         }
 
         private void processContainsSpecification( FilterBuilder filterBuilder,
-                                                   ContainsSpecification<?> spec,
+                                                   ContainsPredicate<?> spec,
                                                    Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ContainsSpecification {}", spec );
@@ -474,7 +474,7 @@ public interface ElasticSearchFinder
         }
 
         private void processMatchesSpecification( FilterBuilder filterBuilder,
-                                                  MatchesSpecification spec,
+                                                  MatchesPredicate spec,
                                                   Map<String, Object> variables )
         {
             LOGGER.trace( "Processing MatchesSpecification {}", spec );
@@ -484,35 +484,35 @@ public interface ElasticSearchFinder
         }
 
         private void processPropertyNotNullSpecification( FilterBuilder filterBuilder,
-                                                          PropertyNotNullSpecification<?> spec )
+                                                          PropertyNotNullPredicate<?> spec )
         {
             LOGGER.trace( "Processing PropertyNotNullSpecification {}", spec );
             addFilter( existsFilter( spec.property().toString() ), filterBuilder );
         }
 
         private void processPropertyNullSpecification( FilterBuilder filterBuilder,
-                                                       PropertyNullSpecification<?> spec )
+                                                       PropertyNullPredicate<?> spec )
         {
             LOGGER.trace( "Processing PropertyNullSpecification {}", spec );
             addFilter( missingFilter( spec.property().toString() ), filterBuilder );
         }
 
         private void processAssociationNotNullSpecification( FilterBuilder filterBuilder,
-                                                             AssociationNotNullSpecification<?> spec )
+                                                             AssociationNotNullPredicate<?> spec )
         {
             LOGGER.trace( "Processing AssociationNotNullSpecification {}", spec );
             addFilter( existsFilter( spec.association().toString() + ".identity" ), filterBuilder );
         }
 
         private void processAssociationNullSpecification( FilterBuilder filterBuilder,
-                                                          AssociationNullSpecification<?> spec )
+                                                          AssociationNullPredicate<?> spec )
         {
             LOGGER.trace( "Processing AssociationNullSpecification {}", spec );
             addFilter( missingFilter( spec.association().toString() + ".identity" ), filterBuilder );
         }
 
         private void processManyAssociationContainsSpecification( FilterBuilder filterBuilder,
-                                                                  ManyAssociationContainsSpecification<?> spec,
+                                                                  ManyAssociationContainsPredicate<?> spec,
                                                                   Map<String, Object> variables )
         {
             LOGGER.trace( "Processing ManyAssociationContainsSpecification {}", spec );
@@ -522,7 +522,7 @@ public interface ElasticSearchFinder
         }
 
         private void processNamedAssociationContainsSpecification( FilterBuilder filterBuilder,
-                                                                   NamedAssociationContainsSpecification<?> spec,
+                                                                   NamedAssociationContainsPredicate<?> spec,
                                                                    Map<String, Object> variables )
         {
             LOGGER.trace( "Processing NamedAssociationContainsSpecification {}", spec );
@@ -532,7 +532,7 @@ public interface ElasticSearchFinder
         }
 
         private void processNamedAssociationContainsNameSpecification( FilterBuilder filterBuilder,
-                                                                       NamedAssociationContainsNameSpecification<?> spec,
+                                                                       NamedAssociationContainsNamePredicate<?> spec,
                                                                        Map<String, Object> variables )
         {
             LOGGER.trace( "Processing NamedAssociationContainsNameSpecification {}", spec );

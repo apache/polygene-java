@@ -19,6 +19,7 @@ package org.apache.zest.library.rest.server.assembler;
 
 import java.lang.reflect.Modifier;
 import java.util.Properties;
+import java.util.function.Predicate;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.service.importer.NewObjectImporter;
@@ -26,7 +27,6 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ClassScanner;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.library.rest.server.restlet.InteractionConstraintsService;
 import org.apache.zest.library.rest.server.restlet.RequestReaderDelegator;
 import org.apache.zest.library.rest.server.restlet.ResponseWriterDelegator;
@@ -97,8 +97,8 @@ public class RestServerAssembler
 
         // Standard response writers
         Iterable<Class<?>> writers = ClassScanner.findClasses( DefaultResponseWriter.class );
-        Specification<Class<?>> responseWriterClass = isAssignableFrom( ResponseWriter.class );
-        Specification<Class<?>> isNotAnAbstract = not( hasModifier( Modifier.ABSTRACT ) );
+        Predicate<Class<?>> responseWriterClass = isAssignableFrom( ResponseWriter.class );
+        Predicate<Class<?>> isNotAnAbstract = not( hasModifier( Modifier.ABSTRACT ) );
         Iterable<Class<?>> candidates = filter( and( isNotAnAbstract, responseWriterClass ), writers );
         for( Class<?> responseWriter : candidates )
         {

@@ -18,17 +18,17 @@
  */
 package org.apache.zest.api.query.grammar;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.functional.Specification;
 
 /**
  * This should be used when doing native queries, such as SQL, SPARQL or similar. EntityFinders can choose
  * what type of query languages they can understand by checking the language property of a QuerySpecification
  */
 public class QuerySpecification
-    implements Specification<Composite>
+    implements Predicate<Composite>
 {
-    public static boolean isQueryLanguage( String language, Specification<Composite> specification )
+    public static boolean isQueryLanguage( String language, Predicate<Composite> specification )
     {
         if( !( specification instanceof QuerySpecification ) )
         {
@@ -58,7 +58,7 @@ public class QuerySpecification
     }
 
     @Override
-    public boolean satisfiedBy( Composite item )
+    public boolean test( Composite item )
     {
         return false;
     }

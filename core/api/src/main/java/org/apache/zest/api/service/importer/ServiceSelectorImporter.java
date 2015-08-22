@@ -16,6 +16,7 @@ package org.apache.zest.api.service.importer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.Availability;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
@@ -25,7 +26,6 @@ import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.qualifier.ServiceQualifier;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specification;
 
 /**
  * If several services are available with a given type, and you want to constrain
@@ -47,13 +47,13 @@ public final class ServiceSelectorImporter<T>
     public T importService( ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        Specification<ServiceReference<?>> selector = serviceDescriptor.metaInfo( Specification.class );
+        Predicate<ServiceReference<?>> selector = serviceDescriptor.metaInfo( Predicate.class );
         Class serviceType = Iterables.first( serviceDescriptor.types() );
         Iterable<ServiceReference<T>> services = locator.findServices( serviceType );
         List<ServiceReference<T>> filteredServices = new ArrayList<>();
         for( ServiceReference<T> service : services )
         {
-            Specification selector1 = service.metaInfo( Specification.class );
+            Predicate selector1 = service.metaInfo( Predicate.class );
             if( selector1 != null && selector1 == selector )
             {
                 continue;

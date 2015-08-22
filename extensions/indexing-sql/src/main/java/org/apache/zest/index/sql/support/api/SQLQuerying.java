@@ -20,10 +20,10 @@ package org.apache.zest.index.sql.support.api;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.query.grammar.OrderBy;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.spi.query.EntityFinderException;
 
 /**
@@ -53,7 +53,7 @@ public interface SQLQuerying
      */
     public String constructQuery( //
         Class<?> resultType, //
-        @Optional Specification<Composite> whereClause, //
+        @Optional Predicate<Composite> whereClause, //
         @Optional OrderBy[] orderBySegments, //
         @Optional Integer firstResult, //
         @Optional Integer maxResults, //

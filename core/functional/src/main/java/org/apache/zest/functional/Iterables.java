@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Utility methods for working with Iterables. See test for examples of how to use.
@@ -204,9 +205,9 @@ public final class Iterables
     }
 
     @SuppressWarnings( "unchecked" )
-    public static <X> Iterable<X> filter( Specification<? /* super X*/> specification, Iterable<X> i )
+    public static <X> Iterable<X> filter( Predicate<? /* super X*/> specification, Iterable<X> i )
     {
-        return new FilterIterable<>( i, (Specification<? super X>) specification );
+        return new FilterIterable<>( i, (Predicate<? super X>) specification );
     }
 
     public static <X> X first( Iterable<X> i )
@@ -287,13 +288,13 @@ public final class Iterables
         return list;
     }
 
-    public static <T> boolean matchesAny( Specification<? super T> specification, Iterable<T> iterable )
+    public static <T> boolean matchesAny( Predicate<? super T> specification, Iterable<T> iterable )
     {
         boolean result = false;
 
         for( T item : iterable )
         {
-            if( ( (Specification<? super T>) specification ).satisfiedBy( item ) )
+            if( ( (Predicate<? super T>) specification ).test( item ) )
             {
                 result = true;
                 break;
@@ -303,12 +304,12 @@ public final class Iterables
         return result;
     }
 
-    public static <T> boolean matchesAll( Specification<? super T> specification, Iterable<T> iterable )
+    public static <T> boolean matchesAll( Predicate<? super T> specification, Iterable<T> iterable )
     {
         boolean result = true;
         for( T item : iterable )
         {
-            if( !specification.satisfiedBy( item ) )
+            if( !specification.test( item ) )
             {
                 result = false;
             }
@@ -717,9 +718,9 @@ public final class Iterables
     {
         private final Iterable<T> iterable;
 
-        private final Specification<? super T> specification;
+        private final Predicate<? super T> specification;
 
-        private FilterIterable( Iterable<T> iterable, Specification<? super T> specification )
+        private FilterIterable( Iterable<T> iterable, Predicate<? super T> specification )
         {
             this.iterable = iterable;
             this.specification = specification;
@@ -736,13 +737,13 @@ public final class Iterables
         {
             private final Iterator<T> iterator;
 
-            private final Specification<? super T> specification;
+            private final Predicate<? super T> specification;
 
             private T currentValue;
             boolean finished = false;
             boolean nextConsumed = true;
 
-            private FilterIterator( Iterator<T> iterator, Specification<? super T> specification )
+            private FilterIterator( Iterator<T> iterator, Predicate<? super T> specification )
             {
                 this.specification = specification;
                 this.iterator = iterator;
@@ -754,7 +755,7 @@ public final class Iterables
                 while( !found && iterator.hasNext() )
                 {
                     T currentValue = iterator.next();
-                    boolean satisfies = specification.satisfiedBy( currentValue );
+                    boolean satisfies = specification.test( currentValue );
 
                     if( satisfies )
                     {

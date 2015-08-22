@@ -18,11 +18,11 @@
  */
 package org.apache.zest.runtime.query;
 
+import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.QueryExpressions;
-import org.apache.zest.functional.Specification;
 import org.apache.zest.spi.query.EntityFinder;
 import org.apache.zest.spi.query.QueryBuilderSPI;
 import org.apache.zest.spi.query.QuerySource;
@@ -46,7 +46,7 @@ final class QueryBuilderImpl<T>
     /**
      * Where clause.
      */
-    private final Specification<Composite> whereClause;
+    private final Predicate<Composite> whereClause;
 
     /**
      * Constructor.
@@ -57,7 +57,7 @@ final class QueryBuilderImpl<T>
      */
     QueryBuilderImpl( final EntityFinder entityFinder,
                       final Class<T> resultType,
-                      final Specification<Composite> whereClause
+                      final Predicate<Composite> whereClause
     )
     {
         this.entityFinder = entityFinder;
@@ -67,7 +67,7 @@ final class QueryBuilderImpl<T>
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public QueryBuilder<T> where( Specification<Composite> specification )
+    public QueryBuilder<T> where( Predicate<Composite> specification )
     {
         if( specification == null )
         {

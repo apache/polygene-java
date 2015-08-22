@@ -277,7 +277,7 @@ public class ValueToEntityMixin
                     try
                     {
                         PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
-                        if( STRING_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                        if( STRING_TYPE_SPEC.test( vPropDesc.valueType() ) )
                         {
                             String assocState = (String) vState.propertyFor( vPropDesc.accessor() ).get();
                             return EntityReference.parseEntityReference( assocState );
@@ -309,7 +309,7 @@ public class ValueToEntityMixin
                     try
                     {
                         PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
-                        if( STRING_COLLECTION_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                        if( STRING_COLLECTION_TYPE_SPEC.test( vPropDesc.valueType() ) )
                         {
                             Collection<String> vAssocState = (Collection) vState
                                 .propertyFor( vPropDesc.accessor() ).get();
@@ -342,7 +342,7 @@ public class ValueToEntityMixin
                     try
                     {
                         PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
-                        if( STRING_MAP_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                        if( STRING_MAP_TYPE_SPEC.test( vPropDesc.valueType() ) )
                         {
                             Map<String, String> vAssocState = (Map) vState
                                 .propertyFor( vPropDesc.accessor() ).get();
@@ -405,7 +405,7 @@ public class ValueToEntityMixin
                     try
                     {
                         PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( assocName );
-                        if( STRING_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                        if( STRING_TYPE_SPEC.test( vPropDesc.valueType() ) )
                         {
                             String assocId = (String) vState.propertyFor( vPropDesc.accessor() ).get();
                             return assocId == null ? null : EntityReference.parseEntityReference( assocId );
@@ -438,7 +438,7 @@ public class ValueToEntityMixin
                     try
                     {
                         PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( assocName );
-                        if( STRING_COLLECTION_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                        if( STRING_COLLECTION_TYPE_SPEC.test( vPropDesc.valueType() ) )
                         {
                             Collection<String> vAssocState = (Collection) vState
                                 .propertyFor( vPropDesc.accessor() ).get();
@@ -472,7 +472,7 @@ public class ValueToEntityMixin
                     try
                     {
                         PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( assocName );
-                        if( STRING_MAP_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                        if( STRING_MAP_TYPE_SPEC.test( vPropDesc.valueType() ) )
                         {
                             Map<String, String> vAssocState = (Map) vState
                                 .propertyFor( vPropDesc.accessor() ).get();
@@ -562,7 +562,7 @@ public class ValueToEntityMixin
                 {
                     PropertyDescriptor vPropDesc
                         = vStateDesc.findPropertyModelByName( eAssocDesc.qualifiedName().name() );
-                    if( STRING_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                    if( STRING_TYPE_SPEC.test( vPropDesc.valueType() ) )
                     {
                         String assocId = (String) vState.propertyFor( vPropDesc.accessor() ).get();
                         if( assocId != null )
@@ -605,7 +605,7 @@ public class ValueToEntityMixin
                 {
                     PropertyDescriptor vPropDesc
                         = vStateDesc.findPropertyModelByName( eAssocDesc.qualifiedName().name() );
-                    if( STRING_COLLECTION_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                    if( STRING_COLLECTION_TYPE_SPEC.test( vPropDesc.valueType() ) )
                     {
                         Collection<String> vAssocState = (Collection) vState.propertyFor( vPropDesc.accessor() ).get();
                         for( Object assoc : eManyAssoc.toList() )
@@ -653,7 +653,7 @@ public class ValueToEntityMixin
                 {
                     PropertyDescriptor vPropDesc
                         = vStateDesc.findPropertyModelByName( eAssocDesc.qualifiedName().name() );
-                    if( STRING_MAP_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                    if( STRING_MAP_TYPE_SPEC.test( vPropDesc.valueType() ) )
                     {
                         Map<String, String> vAssocState = (Map) vState.propertyFor( vPropDesc.accessor() ).get();
                         for( String assocName : Iterables.toList( eNamedAssoc ) )
@@ -717,7 +717,7 @@ public class ValueToEntityMixin
                 {
                     PropertyDescriptor vPropDesc
                         = vStateDesc.findPropertyModelByName( eAssocDesc.qualifiedName().name() );
-                    if( STRING_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                    if( STRING_TYPE_SPEC.test( vPropDesc.valueType() ) )
                     {
                         String assocId = (String) vState.propertyFor( vPropDesc.accessor() ).get();
                         if( assocId != null )
@@ -760,7 +760,7 @@ public class ValueToEntityMixin
                 {
                     PropertyDescriptor vPropDesc
                         = vStateDesc.findPropertyModelByName( eAssocDesc.qualifiedName().name() );
-                    if( STRING_COLLECTION_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                    if( STRING_COLLECTION_TYPE_SPEC.test( vPropDesc.valueType() ) )
                     {
                         Collection<String> vAssocState = (Collection) vState.propertyFor( vPropDesc.accessor() ).get();
                         for( Object ass : eManyAssoc.toList() )
@@ -808,7 +808,7 @@ public class ValueToEntityMixin
                 {
                     PropertyDescriptor vPropDesc
                         = vStateDesc.findPropertyModelByName( eAssocDesc.qualifiedName().name() );
-                    if( STRING_MAP_TYPE_SPEC.satisfiedBy( vPropDesc.valueType() ) )
+                    if( STRING_MAP_TYPE_SPEC.test( vPropDesc.valueType() ) )
                     {
                         Map<String, String> vAssocState = (Map) vState.propertyFor( vPropDesc.accessor() ).get();
                         for( String assocName : Iterables.toList( eNamedAssoc ) )
