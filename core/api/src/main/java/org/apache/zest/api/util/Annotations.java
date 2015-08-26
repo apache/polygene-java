@@ -19,8 +19,11 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
@@ -55,13 +58,12 @@ public final class Annotations
         return annotationType.cast( Classes.RAW_CLASS.apply( type ).getAnnotation( annotationType ) );
     }
 
-    public static Stream<Annotation> findAccessorAndTypeAnnotationsIn( AccessibleObject accessor )
-    {
-        return Stream.concat(
-            Arrays.stream( accessor.getAnnotations() ),
-            interfacesOf( typeOf( accessor ) ).flatMap( ANNOTATIONS_OF )
+    public static List<Annotation> findAccessorAndTypeAnnotationsIn(AccessibleObject accessor) {
+        Stream<Annotation> stream = Stream.concat(
+                Arrays.stream(accessor.getAnnotations()),
+                interfacesOf(typeOf(accessor)).flatMap(ANNOTATIONS_OF)
         );
-//        return flatten( iterable( accessor.getAnnotations() ),
-//                        flattenIterables( map( Annotations.ANNOTATIONS_OF, interfacesOf( typeOf( accessor ) ) ) ) );
+        Collector<Annotation, ?, List<Annotation>> collector = Collectors.toList();
+        return stream.collect(collector);
     }
 }

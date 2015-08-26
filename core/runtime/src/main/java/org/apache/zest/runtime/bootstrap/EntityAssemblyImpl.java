@@ -18,37 +18,19 @@
  */
 package org.apache.zest.runtime.bootstrap;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Member;
-import java.util.List;
-import java.util.stream.Stream;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.GenericAssociationInfo;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
-import org.apache.zest.api.common.InvalidApplicationException;
-import org.apache.zest.api.common.MetaInfo;
-import org.apache.zest.api.common.Optional;
-import org.apache.zest.api.common.QualifiedName;
-import org.apache.zest.api.common.UseDefaults;
+import org.apache.zest.api.common.*;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.property.GenericPropertyInfo;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
-import org.apache.zest.bootstrap.AssociationDeclarations;
-import org.apache.zest.bootstrap.EntityAssembly;
-import org.apache.zest.bootstrap.ManyAssociationDeclarations;
-import org.apache.zest.bootstrap.NamedAssociationDeclarations;
-import org.apache.zest.bootstrap.StateDeclarations;
-import org.apache.zest.runtime.association.AssociationModel;
-import org.apache.zest.runtime.association.AssociationsModel;
-import org.apache.zest.runtime.association.ManyAssociationModel;
-import org.apache.zest.runtime.association.ManyAssociationsModel;
-import org.apache.zest.runtime.association.NamedAssociationModel;
-import org.apache.zest.runtime.association.NamedAssociationsModel;
+import org.apache.zest.bootstrap.*;
+import org.apache.zest.runtime.association.*;
 import org.apache.zest.runtime.composite.MixinsModel;
 import org.apache.zest.runtime.composite.StateModel;
 import org.apache.zest.runtime.composite.ValueConstraintsInstance;
@@ -57,6 +39,11 @@ import org.apache.zest.runtime.entity.EntityMixinsModel;
 import org.apache.zest.runtime.entity.EntityModel;
 import org.apache.zest.runtime.entity.EntityStateModel;
 import org.apache.zest.runtime.property.PropertyModel;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
+import java.util.List;
 
 import static org.apache.zest.api.util.Annotations.isType;
 import static org.apache.zest.api.util.Classes.typeOf;
@@ -163,10 +150,9 @@ public final class EntityAssemblyImpl
                                               List<Class<?>> constraintClasses
     )
     {
-        Stream<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        boolean optional = annotations.anyMatch( isType( Optional.class ) );
-        annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericPropertyInfo.propertyTypeOf( accessor ), ( (Member) accessor )
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn(accessor);
+        boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericPropertyInfo.propertyTypeOf( accessor ), ( (Member) accessor )
             .getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
@@ -184,12 +170,11 @@ public final class EntityAssemblyImpl
                                                  Iterable<Class<?>> constraintClasses
     )
     {
-        Stream<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        boolean optional = annotations.anyMatch( isType( Optional.class ) );
-        annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn(accessor);
+        boolean optional = annotations.stream().anyMatch(isType(Optional.class));
 
         // Constraints for Association references
-        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
             .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
@@ -198,7 +183,7 @@ public final class EntityAssemblyImpl
         }
 
         // Constraints for the Association itself
-        valueConstraintsModel = constraintsFor( annotations, Association.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        valueConstraintsModel = constraintsFor( annotations.stream(), Association.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance associationValueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
@@ -213,12 +198,11 @@ public final class EntityAssemblyImpl
                                                          List<Class<?>> constraintClasses
     )
     {
-        Stream<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        boolean optional = annotations.anyMatch( isType( Optional.class ) );
-        annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn(accessor);
+        boolean optional = annotations.stream().anyMatch(isType(Optional.class));
 
         // Constraints for entities in ManyAssociation
-        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
             .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
@@ -227,7 +211,7 @@ public final class EntityAssemblyImpl
         }
 
         // Constraints for the ManyAssociation itself
-        valueConstraintsModel = constraintsFor( annotations, ManyAssociation.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        valueConstraintsModel = constraintsFor( annotations.stream(), ManyAssociation.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance manyValueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
@@ -241,12 +225,11 @@ public final class EntityAssemblyImpl
                                                            List<Class<?>> constraintClasses
     )
     {
-        Stream<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        boolean optional = annotations.anyMatch( isType( Optional.class ) );
-        annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn(accessor);
+        boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
 
         // Constraints for entities in NamedAssociation
-        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
+        ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericAssociationInfo
             .associationTypeOf( accessor ), ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
@@ -255,7 +238,7 @@ public final class EntityAssemblyImpl
         }
 
         // Constraints for the NamedAssociation itself
-        valueConstraintsModel = constraintsFor( annotations, NamedAssociation.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
+        valueConstraintsModel = constraintsFor( annotations.stream(), NamedAssociation.class, ( (Member) accessor ).getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance namedValueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {

@@ -18,30 +18,8 @@
  */
 package org.apache.zest.runtime.bootstrap;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.apache.zest.api.common.MetaInfo;
+import org.apache.zest.api.common.*;
 import org.apache.zest.api.common.Optional;
-import org.apache.zest.api.common.QualifiedName;
-import org.apache.zest.api.common.UseDefaults;
-import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.InvalidCompositeException;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.constraint.Constraint;
@@ -63,40 +41,24 @@ import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.util.Fields;
 import org.apache.zest.bootstrap.StateDeclarations;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.runtime.composite.AbstractConstraintModel;
-import org.apache.zest.runtime.composite.CompositeConstraintModel;
-import org.apache.zest.runtime.composite.CompositeMethodModel;
-import org.apache.zest.runtime.composite.CompositeMethodsModel;
-import org.apache.zest.runtime.composite.ConcernModel;
-import org.apache.zest.runtime.composite.ConcernsModel;
-import org.apache.zest.runtime.composite.ConstraintModel;
-import org.apache.zest.runtime.composite.ConstraintsModel;
-import org.apache.zest.runtime.composite.Genericpredicate;
-import org.apache.zest.runtime.composite.MixinModel;
-import org.apache.zest.runtime.composite.MixinsModel;
-import org.apache.zest.runtime.composite.SideEffectModel;
-import org.apache.zest.runtime.composite.SideEffectsModel;
-import org.apache.zest.runtime.composite.StateModel;
-import org.apache.zest.runtime.composite.ValueConstraintsInstance;
-import org.apache.zest.runtime.composite.ValueConstraintsModel;
+import org.apache.zest.runtime.composite.*;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.property.PropertiesModel;
 import org.apache.zest.runtime.property.PropertyModel;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static java.util.stream.Stream.concat;
-import static org.apache.zest.api.util.Annotations.hasAnnotation;
-import static org.apache.zest.api.util.Annotations.isType;
-import static org.apache.zest.api.util.Annotations.type;
-import static org.apache.zest.api.util.Classes.classHierarchy;
-import static org.apache.zest.api.util.Classes.interfacesOf;
-import static org.apache.zest.api.util.Classes.isAssignableFrom;
-import static org.apache.zest.api.util.Classes.typeOf;
-import static org.apache.zest.api.util.Classes.typesOf;
-import static org.apache.zest.api.util.Classes.wrapperClass;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.iterable;
+import static org.apache.zest.api.util.Annotations.*;
+import static org.apache.zest.api.util.Classes.*;
+import static org.apache.zest.functional.Iterables.*;
 import static org.apache.zest.runtime.legacy.Specifications.translate;
 
 /**
@@ -427,16 +389,15 @@ public abstract class CompositeAssemblyImpl
                                               List<Class<?>> constraintClasses
     )
     {
-        Stream<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        boolean optional = annotations.anyMatch( isType( Optional.class ) );
-        annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn(accessor);
+        boolean optional = annotations.stream().anyMatch(isType(Optional.class));
         ValueConstraintsModel valueConstraintsModel = constraintsFor(
-            annotations,
-            GenericPropertyInfo.propertyTypeOf( accessor ),
-            ( (Member) accessor ).getName(),
-            optional,
-            constraintClasses,
-            accessor );
+                annotations.stream(),
+                GenericPropertyInfo.propertyTypeOf(accessor),
+                ((Member) accessor).getName(),
+                optional,
+                constraintClasses,
+                accessor);
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
