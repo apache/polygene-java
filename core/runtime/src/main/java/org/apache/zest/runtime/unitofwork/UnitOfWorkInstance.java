@@ -109,12 +109,12 @@ public final class UnitOfWorkInstance
         return currentTime;
     }
 
-    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store, ModuleSpi module )
+    public EntityStoreUnitOfWork getEntityStoreUnitOfWork( EntityStore store )
     {
         EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );
         if( uow == null )
         {
-            uow = store.newUnitOfWork( usecase, module, currentTime );
+            uow = store.newUnitOfWork( usecase, currentTime );
             storeUnitOfWork.put( store, uow );
         }
         return uow;
@@ -141,7 +141,7 @@ public final class UnitOfWorkInstance
             for( ModelModule<EntityModel> potentialModel : potentialModels )
             {
                 EntityStore store = potentialModel.module().entityStore();
-                EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModel.module() );
+                EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store );
                 try
                 {
                     entityState = storeUow.entityStateOf( potentialModel.module(), identity );

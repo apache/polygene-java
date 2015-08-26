@@ -24,7 +24,6 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Entity versions state.
@@ -36,7 +35,7 @@ public interface EntityStateVersions
 
     void rememberVersion( EntityReference identity, String version );
 
-    void checkForConcurrentModification( Iterable<EntityState> loaded, ModuleSpi module, long currentTime )
+    void checkForConcurrentModification( Iterable<EntityState> loaded, long currentTime )
         throws ConcurrentEntityStateModificationException;
 
     /**
@@ -67,7 +66,6 @@ public interface EntityStateVersions
 
         @Override
         public synchronized void checkForConcurrentModification( Iterable<EntityState> loaded,
-                                                                 ModuleSpi module,
                                                                  long currentTime
         )
             throws ConcurrentEntityStateModificationException
@@ -83,9 +81,8 @@ public interface EntityStateVersions
                 String storeVersion = versions.get( entityState.identity() );
                 if( storeVersion == null )
                 {
-                    EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( Usecase.DEFAULT, module, currentTime );
-                    EntityState state = unitOfWork.entityStateOf( module, entityState.identity() );
-                    storeVersion = state.version();
+                    EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( Usecase.DEFAULT, currentTime );
+                    storeVersion = unitOfWork.versionOf( entityState.identity() );
                     unitOfWork.discard();
                 }
 

@@ -205,7 +205,7 @@ public class ModuleUnitOfWork
 
         builder = new EntityBuilderInstance<>( model,
                                                this,
-                                               uow.getEntityStoreUnitOfWork( entityStore, module ),
+                                               uow.getEntityStoreUnitOfWork( entityStore ),
                                                identity );
         return builder;
     }
@@ -278,7 +278,7 @@ public class ModuleUnitOfWork
 
         return new EntityBuilderInstance<>( model,
                                             this,
-                                            uow.getEntityStoreUnitOfWork( entityStore, module ),
+                                            uow.getEntityStoreUnitOfWork( entityStore ),
                                             identity,
                                             stateResolver );
     }

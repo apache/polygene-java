@@ -28,9 +28,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.apache.zest.api.cache.CacheOptions;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -60,13 +57,14 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.EntityStoreSPI;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
-import org.apache.zest.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
 import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.map;
+import static org.apache.zest.functional.Iterables.*;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -143,11 +141,9 @@ public class JSONMapEntityStoreMixin
     // EntityStore
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSpi module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, long currentTime )
     {
-        EntityStoreUnitOfWork storeUnitOfWork = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
-        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
-        return storeUnitOfWork;
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
     }
 
     // EntityStoreSPI
@@ -199,6 +195,13 @@ public class JSONMapEntityStoreMixin
             cache.put( identity.identity(), new CacheState( loadedState.state() ) );
         }
         return loadedState;
+    }
+
+    @Override
+    public String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
+    {
+        Reader in = mapEntityStore.get( identity );
+        return readVersion( in );
     }
 
     @Override
@@ -448,6 +451,21 @@ public class JSONMapEntityStoreMixin
                                         entityDescriptor,
                                         jsonObject
             );
+        }
+        catch( JSONException e )
+        {
+            throw new EntityStoreException( e );
+        }
+    }
+
+    protected String readVersion( Reader entityState )
+        throws EntityStoreException
+    {
+        try
+        {
+            JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
+            return jsonObject.getString( JSONKeys.VERSION );
+
         }
         catch( JSONException e )
         {

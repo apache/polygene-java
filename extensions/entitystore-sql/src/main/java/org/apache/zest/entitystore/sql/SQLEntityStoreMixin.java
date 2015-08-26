@@ -72,7 +72,6 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.EntityStoreSPI;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
-import org.apache.zest.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
 import org.apache.zest.spi.entitystore.helpers.DefaultEntityState;
 import org.apache.zest.spi.entitystore.helpers.JSONKeys;
@@ -245,6 +244,13 @@ public class SQLEntityStoreMixin
     }
 
     @Override
+    public String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef )
+    {
+        EntityValueResult valueResult = getValue( entityRef );
+        return readVersion( valueResult.getReader() );
+    }
+
+    @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
                                        ModuleSpi module,
                                        EntityReference entityRef,
@@ -255,12 +261,9 @@ public class SQLEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSpi module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
     {
-        EntityStoreUnitOfWork storeUnitOfWork =
-            new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), usecase, currentTime );
-        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
-        return storeUnitOfWork;
+        return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), usecase, currentTime );
     }
 
     @Override
@@ -308,8 +311,6 @@ public class SQLEntityStoreMixin
         ResultSet rs = null;
         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "zest.entitystore.sql.visit" );
         Usecase usecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
-        final ModuleEntityStoreUnitOfWork uow =
-            (ModuleEntityStoreUnitOfWork) newUnitOfWork( usecase, module, System.currentTimeMillis() );
         try
         {
             connection = database.getConnection();
@@ -495,6 +496,21 @@ public class SQLEntityStoreMixin
             return new DefaultEntityState( version, modified,
                                            EntityReference.parseEntityReference( identity ), status, entityDescriptor,
                                            properties, associations, manyAssociations, namedAssociations );
+        }
+        catch( JSONException e )
+        {
+            throw new EntityStoreException( e );
+        }
+    }
+
+    protected String readVersion( Reader entityState )
+        throws EntityStoreException
+    {
+        try
+        {
+            JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
+            String version = jsonObject.getString( JSONKeys.VERSION );
+            return version;
         }
         catch( JSONException e )
         {

@@ -110,7 +110,7 @@ public class EntityResource
         throws ResourceException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Remove entity" );
-        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( usecase, module, System.currentTimeMillis() );
+        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( usecase, System.currentTimeMillis() );
         try
         {
             EntityReference identityRef = EntityReference.parseEntityReference( identity );
@@ -132,7 +132,6 @@ public class EntityResource
         throws ResourceException
     {
         EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Get entity" ),
-                                                               module,
                                                                System.currentTimeMillis() );
 
         try
@@ -356,7 +355,7 @@ public class EntityResource
         throws ResourceException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Update entity" );
-        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, module, System.currentTimeMillis() );
+        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, System.currentTimeMillis() );
         EntityState entity = getEntityState( unitOfWork );
 
         Form form = new Form( entityRepresentation );

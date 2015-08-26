@@ -26,7 +26,7 @@ import org.apache.zest.spi.module.ModuleSpi;
  */
 public interface EntityStore
 {
-    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSpi module, long currentTime );
+    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, long currentTime );
 
     Input<EntityState, EntityStoreException> entityStates( ModuleSpi module );
 }

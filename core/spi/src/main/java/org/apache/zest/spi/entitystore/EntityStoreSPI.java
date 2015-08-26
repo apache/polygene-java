@@ -31,6 +31,8 @@ public interface EntityStoreSPI
 
     EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleSpi module, EntityReference identity );
 
+    String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity );
+
     StateCommitter applyChanges( EntityStoreUnitOfWork unitOfWork, Iterable<EntityState> state
     );
 }

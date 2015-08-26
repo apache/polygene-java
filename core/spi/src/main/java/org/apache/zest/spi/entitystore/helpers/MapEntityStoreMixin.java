@@ -62,7 +62,6 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.EntityStoreSPI;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
-import org.apache.zest.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
 import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
@@ -116,12 +115,9 @@ public class MapEntityStoreMixin
 
     // EntityStore
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, ModuleSpi module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, long currentTime )
     {
-        EntityStoreUnitOfWork storeUnitOfWork =
-            new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
-        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
-        return storeUnitOfWork;
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
     }
 
     // EntityStoreSPI
@@ -143,6 +139,13 @@ public class MapEntityStoreMixin
     {
         Reader in = mapEntityStore.get( identity );
         return readEntityState( module, in );
+    }
+
+    @Override
+    public String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
+    {
+        Reader in = mapEntityStore.get( identity );
+        return readVersion( in );
     }
 
     @Override
@@ -539,6 +542,20 @@ public class MapEntityStoreMixin
                                            manyAssociations,
                                            namedAssociations
             );
+        }
+        catch( JSONException e )
+        {
+            throw new EntityStoreException( e );
+        }
+    }
+
+    protected String readVersion( Reader entityState )
+        throws EntityStoreException
+    {
+        try
+        {
+            JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
+            return jsonObject.getString( JSONKeys.VERSION );
         }
         catch( JSONException e )
         {

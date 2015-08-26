@@ -59,6 +59,8 @@ public interface EntityStoreUnitOfWork
     EntityState entityStateOf( ModuleSpi module, EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException;
 
+    String versionOf( EntityReference anIdentity) throws EntityStoreException;
+
     StateCommitter applyChanges()
         throws EntityStoreException;
 
