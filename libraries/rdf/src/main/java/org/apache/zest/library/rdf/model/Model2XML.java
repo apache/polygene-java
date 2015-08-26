@@ -38,8 +38,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import static org.apache.zest.functional.Iterables.first;
-
 /**
  * TODO
  */
@@ -117,7 +115,7 @@ public class Model2XML
                         TransientDescriptor descriptor = (TransientDescriptor) visited;
                         Node node = document.createElement( "transient" );
 
-                        addAttribute( "type", first(descriptor.types()).getName(), node );
+                        addAttribute( "type", descriptor.types().findFirst().get().getName(), node );
                         addAttribute( "visibility", descriptor.visibility().name(), node );
 
                         current.push( node );

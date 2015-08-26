@@ -21,6 +21,7 @@ package org.apache.zest.runtime.service;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
@@ -31,8 +32,6 @@ import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
 import org.apache.zest.runtime.activation.ActivatorsModel;
-
-import static org.apache.zest.functional.Iterables.iterable;
 
 /**
  * JAVADOC
@@ -78,10 +77,9 @@ public final class ImportedServiceModel
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
-        Iterable<? extends Class<?>> iterable = iterable( type );
-        return (Iterable<Class<?>>) iterable;
+        return Stream.of( type );
     }
 
     @Override
@@ -120,7 +118,7 @@ public final class ImportedServiceModel
         return moduleName;
     }
 
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     public ActivatorsInstance<?> newActivatorsInstance( Module module )
         throws Exception
     {
@@ -144,7 +142,7 @@ public final class ImportedServiceModel
         return visitor.visitLeave( this );
     }
 
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     public <T> ImportedServiceInstance<T> importInstance( Module module )
     {
         ServiceImporter importer = module.newObject( serviceImporter );

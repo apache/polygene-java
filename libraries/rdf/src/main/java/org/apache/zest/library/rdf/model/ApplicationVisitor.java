@@ -25,8 +25,6 @@ import org.apache.zest.functional.HierarchicalVisitorAdapter;
 import org.apache.zest.library.rdf.ZestRdf;
 import org.apache.zest.library.rdf.serializer.SerializerContext;
 
-import static org.apache.zest.functional.Iterables.first;
-
 /**
  * JAVADOC
  */
@@ -78,7 +76,7 @@ class ApplicationVisitor extends HierarchicalVisitorAdapter<Object, Object, Runt
         if( visited instanceof TransientDescriptor )
         {
             TransientDescriptor transientDescriptor = (TransientDescriptor) visited;
-            compositeUri = context.createCompositeUri( moduleUri, first( transientDescriptor.types() ) );
+            compositeUri = context.createCompositeUri( moduleUri, transientDescriptor.types().findFirst().orElse( null ) );
             context.addType( compositeUri, ZestRdf.TYPE_COMPOSITE );
             context.addRelationship( moduleUri, ZestRdf.RELATIONSHIP_COMPOSITE, compositeUri );
         }
@@ -86,7 +84,7 @@ class ApplicationVisitor extends HierarchicalVisitorAdapter<Object, Object, Runt
         if( visited instanceof EntityDescriptor )
         {
             EntityDescriptor entityDescriptor = (EntityDescriptor) visited;
-            compositeUri = context.createCompositeUri( moduleUri, first( entityDescriptor.types() ) );
+            compositeUri = context.createCompositeUri( moduleUri, entityDescriptor.types().findFirst().orElse( null ));
             context.addType( compositeUri, ZestRdf.TYPE_ENTITY );
             context.addRelationship( moduleUri, ZestRdf.RELATIONSHIP_ENTITY, compositeUri );
         }
@@ -94,7 +92,7 @@ class ApplicationVisitor extends HierarchicalVisitorAdapter<Object, Object, Runt
         if( visited instanceof ObjectDescriptor )
         {
             ObjectDescriptor objectDescriptor = (ObjectDescriptor) visited;
-            compositeUri = context.createCompositeUri( moduleUri, first( objectDescriptor.types() ) );
+            compositeUri = context.createCompositeUri( moduleUri, objectDescriptor.types().findFirst().orElse( null ) );
             context.addType( compositeUri, ZestRdf.TYPE_OBJECT );
             context.addRelationship( moduleUri, ZestRdf.RELATIONSHIP_OBJECT, compositeUri );
         }

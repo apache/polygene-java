@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
@@ -51,11 +52,10 @@ public class MethodFinder
         for( CompositeMethodDetailDescriptor descriptor : iter )
         {
             CompositeDescriptor compositeDescriptor = descriptor.composite().descriptor();
-            Iterable<Class<?>> compositeType = compositeDescriptor.types();
             Class<?> mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
-            for( Class<?> compositeClass : compositeType )
+            compositeDescriptor.types().forEach( mixinType ->
             {
-                if( mixinMethodClass.isAssignableFrom( compositeClass ) )
+                if( mixinMethodClass.isAssignableFrom( mixinType ) )
                 {
                     publicList.add( descriptor );
                 }
@@ -63,7 +63,7 @@ public class MethodFinder
                 {
                     privateList.add( descriptor );
                 }
-            }
+            } );
         }
 
         // combine into one list, with public listed first then private

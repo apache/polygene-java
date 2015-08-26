@@ -19,6 +19,7 @@
 package org.apache.zest.api.association;
 
 import java.lang.reflect.AccessibleObject;
+import java.util.stream.Stream;
 import org.apache.zest.api.property.StateHolder;
 
 /**
@@ -41,7 +42,7 @@ public interface AssociationStateHolder
      *
      * @return iterable of associations
      */
-    Iterable<? extends Association<?>> allAssociations();
+    Stream<? extends Association<?>> allAssociations();
 
     /**
      * Get a many-association for a specific accessor method
@@ -57,7 +58,7 @@ public interface AssociationStateHolder
      *
      * @return iterable of many-associations
      */
-    Iterable<? extends ManyAssociation<?>> allManyAssociations();
+    Stream<? extends ManyAssociation<?>> allManyAssociations();
 
     /**
      * Get a named-association for a specific accessor method
@@ -73,5 +74,5 @@ public interface AssociationStateHolder
      *
      * @return iterable of named-associations
      */
-    Iterable<? extends NamedAssociation<?>> allNamedAssociations();
+    Stream<? extends NamedAssociation<?>> allNamedAssociations();
 }

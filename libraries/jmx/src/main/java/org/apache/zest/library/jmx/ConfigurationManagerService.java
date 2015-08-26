@@ -67,8 +67,6 @@ import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.spi.ZestSPI;
 
-import static org.apache.zest.functional.Iterables.first;
-
 /**
  * Expose ConfigurationComposites through JMX.
  * Allow configurations to be edited, and the services to be restarted.
@@ -122,7 +120,7 @@ public interface ConfigurationManagerService
         @Service
         Iterable<ServiceReference<?>> configurableServices;
 
-        private List<ObjectName> configurationNames = new ArrayList<ObjectName>();
+        private List<ObjectName> configurationNames = new ArrayList<>();
 
         @Override
         public void exportConfigurableServices()
@@ -149,7 +147,7 @@ public interface ConfigurationManagerService
                     continue;
                 }
 
-                String serviceClass = first(compositeInstance.types()).getName();
+                String serviceClass = compositeInstance.types().findFirst().get().getName();
                 String name = configurableService.identity();
                 ServiceDescriptor serviceDescriptor = spi.serviceDescriptorFor( configurableService );
                 Module module = spi.moduleOf( configurableService );
@@ -157,10 +155,9 @@ public interface ConfigurationManagerService
                 if( configurationClass != null )
                 {
                     EntityDescriptor descriptor = module.entityDescriptor( configurationClass.getName() );
-                    List<MBeanAttributeInfo> attributes = new ArrayList<MBeanAttributeInfo>();
-                    Map<String, AccessibleObject> properties = new HashMap<String, AccessibleObject>();
-                    for( PropertyDescriptor persistentProperty : descriptor.state().properties() )
-                    {
+                    List<MBeanAttributeInfo> attributes = new ArrayList<>();
+                    Map<String, AccessibleObject> properties = new HashMap<>();
+                    descriptor.state().properties().forEach( persistentProperty -> {
                         if( !persistentProperty.isImmutable() )
                         {
                             String propertyName = persistentProperty.qualifiedName().name();
@@ -177,7 +174,7 @@ public interface ConfigurationManagerService
                                 // Try to add legal values
                                 try
                                 {
-                                    Set<String> legalValues = new LinkedHashSet();
+                                    Set<String> legalValues = new LinkedHashSet<>();
                                     Class<?> enumType = getClass().getClassLoader()
                                         .loadClass( persistentProperty.valueType().mainType().getName() );
                                     for( Field field : enumType.getFields() )
@@ -195,9 +192,9 @@ public interface ConfigurationManagerService
                             attributes.add( new MBeanAttributeInfo( propertyName, type, propertyName, true, true, type.equals( "java.lang.Boolean" ), attrDescriptor ) );
                             properties.put( propertyName, persistentProperty.accessor() );
                         }
-                    }
+                    } );
 
-                    List<MBeanOperationInfo> operations = new ArrayList<MBeanOperationInfo>();
+                    List<MBeanOperationInfo> operations = new ArrayList<>();
                     operations.add( new MBeanOperationInfo( "restart", "Restart service", new MBeanParameterInfo[ 0 ], "java.lang.String", MBeanOperationInfo.ACTION_INFO ) );
 
                     MBeanInfo mbeanInfo = new MBeanInfo( serviceClass, name, attributes.toArray( new MBeanAttributeInfo[ attributes
@@ -280,14 +277,15 @@ public interface ConfigurationManagerService
                 try
                 {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
-                    AssociationStateHolder state = spi.stateOf( (EntityComposite) configuration );
+                    AssociationStateHolder state = spi.stateOf( configuration );
                     AccessibleObject accessor = propertyNames.get( attribute.getName() );
                     Property<Object> property = state.propertyFor( accessor );
                     PropertyDescriptor propertyDescriptor = spi.propertyDescriptorFor( property );
                     if( EnumType.isEnum( propertyDescriptor.type() ) )
                     {
-                        property.set( Enum.valueOf( (Class<Enum>) propertyDescriptor.type(), attribute.getValue()
-                            .toString() ) );
+                        //noinspection unchecked
+                        property.set( Enum.valueOf( (Class<Enum>) propertyDescriptor.type(),
+                                                    attribute.getValue().toString() ) );
                     }
                     else
                     {
@@ -320,15 +318,7 @@ public interface ConfigurationManagerService
                         Object value = getAttribute( name );
                         list.add( new Attribute( name, value ) );
                     }
-                    catch( AttributeNotFoundException e )
-                    {
-                        e.printStackTrace();
-                    }
-                    catch( MBeanException e )
-                    {
-                        e.printStackTrace();
-                    }
-                    catch( ReflectionException e )
+                    catch( AttributeNotFoundException | MBeanException | ReflectionException e )
                     {
                         e.printStackTrace();
                     }
@@ -350,19 +340,7 @@ public interface ConfigurationManagerService
                         setAttribute( attribute );
                         list.add( attribute );
                     }
-                    catch( AttributeNotFoundException e )
-                    {
-                        e.printStackTrace();
-                    }
-                    catch( InvalidAttributeValueException e )
-                    {
-                        e.printStackTrace();
-                    }
-                    catch( MBeanException e )
-                    {
-                        e.printStackTrace();
-                    }
-                    catch( ReflectionException e )
+                    catch( AttributeNotFoundException | InvalidAttributeValueException | ReflectionException | MBeanException e )
                     {
                         e.printStackTrace();
                     }

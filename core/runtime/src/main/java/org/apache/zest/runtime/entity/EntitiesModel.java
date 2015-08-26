@@ -15,6 +15,8 @@
 package org.apache.zest.runtime.entity;
 
 import java.util.List;
+import java.util.stream.Stream;
+import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 
@@ -31,9 +33,9 @@ public class EntitiesModel
         this.entityModels = entityModels;
     }
 
-    public Iterable<EntityModel> models()
+    public Stream<EntityModel> models()
     {
-        return entityModels;
+        return entityModels.stream();
     }
 
     @Override
@@ -51,5 +53,10 @@ public class EntitiesModel
             }
         }
         return modelVisitor.visitLeave( this );
+    }
+
+    public Stream<? extends EntityDescriptor> stream()
+    {
+        return entityModels.stream();
     }
 }

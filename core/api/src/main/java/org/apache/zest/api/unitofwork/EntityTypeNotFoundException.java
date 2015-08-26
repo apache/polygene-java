@@ -15,10 +15,10 @@
  */
 package org.apache.zest.api.unitofwork;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import java.util.function.Function;
-
-import static org.apache.zest.functional.Iterables.fold;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Zest exception to be thrown in case that an entity composite
@@ -29,30 +29,11 @@ public class EntityTypeNotFoundException
 {
     private final String compositeType;
 
-    public EntityTypeNotFoundException( String entityType, String moduleName, Iterable<String> visibility )
+    public EntityTypeNotFoundException( String entityType, String moduleName, Stream<String> visibility )
     {
         super( "Could not find an EntityComposite of type " + entityType + " in module [" + moduleName + "].\n" +
-               "\tThe following entity types are visible:\n" + join(visibility) );
+               "\tThe following entity types are visible:\n" + visibility.collect( Collectors.joining( "\n" ) ) );
         this.compositeType = entityType;
-    }
-
-    private static String join( Iterable<String> visibility )
-    {
-        return fold( new Function<String, String>()
-        {
-            StringBuilder result;
-            {
-                result = new StringBuilder();
-            }
-
-            @Override
-            public String apply( String type )
-            {
-                result.append( type );
-                result.append( "\n" );
-                return result.toString();
-            }
-        }, visibility );
     }
 
     public String compositeType()

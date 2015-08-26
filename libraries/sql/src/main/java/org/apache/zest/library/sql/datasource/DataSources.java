@@ -24,7 +24,6 @@ import javax.sql.DataSource;
 import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.library.circuitbreaker.CircuitBreaker;
 
-import static org.apache.zest.functional.Specifications.not;
 import static org.apache.zest.library.circuitbreaker.CircuitBreakers.in;
 import static org.apache.zest.library.circuitbreaker.CircuitBreakers.rootCause;
 
@@ -40,7 +39,7 @@ public class DataSources
     {
         @SuppressWarnings( "unchecked" )
         Predicate<Throwable> in = in( ConnectException.class );
-        return new CircuitBreaker( threshold, timeout, not( rootCause( in ) ) );
+        return new CircuitBreaker( threshold, timeout, rootCause( in ).negate() );
     }
 
     public static DataSource wrapWithCircuitBreaker( final String dataSourceIdentity, final DataSource pool, final CircuitBreaker circuitBreaker )

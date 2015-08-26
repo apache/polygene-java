@@ -28,7 +28,6 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import static org.apache.zest.api.util.Classes.isAssignableFrom;
 import static org.apache.zest.functional.Iterables.filter;
 import static org.apache.zest.functional.Iterables.toList;
-import static org.apache.zest.functional.Specifications.not;
 
 /**
  * Provides declared {@link org.apache.zest.api.structure.Module} information that the {@link ApplicationBuilder} can use.
@@ -94,7 +93,7 @@ public class ModuleDeclaration
         throws AssemblyException
     {
         List<Class<?>> notAssemblers = toList(
-            filter( not( isAssignableFrom( Assembler.class ) ),
+            filter( isAssignableFrom( Assembler.class ).negate(),
                     assemblerClasses )
         );
         if( !notAssemblers.isEmpty() )

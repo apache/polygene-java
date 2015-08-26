@@ -16,22 +16,21 @@ package org.apache.zest.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
 import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Layer;
+import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.runtime.activation.ActivationDelegate;
 import org.apache.zest.spi.module.ModelModule;
-
-import static org.apache.zest.functional.Iterables.flattenIterables;
-import static org.apache.zest.functional.Iterables.map;
 
 /**
  * Instance of a Zest application layer. Contains a list of modules which are managed by this layer.
@@ -110,6 +109,12 @@ public class LayerInstance
         activation.deregisterActivationEventListener( listener );
     }
 
+    @Override
+    public Stream<? extends Module> modules()
+    {
+        return moduleInstances.stream();
+    }
+
     // Other methods
     /* package */ void addModule( ModuleInstance module )
     {
@@ -132,69 +137,29 @@ public class LayerInstance
         return usedLayersInstance;
     }
 
-    /* package */ Iterable<ModelModule<ObjectDescriptor>> visibleObjects( final Visibility visibility )
+    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleObjects( final Visibility visibility )
     {
-        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<ObjectDescriptor>>>()
-        {
-
-            @Override
-            public Iterable<ModelModule<ObjectDescriptor>> apply( ModuleInstance moduleInstance )
-            {
-                return moduleInstance.visibleObjects( visibility );
-            }
-        }, moduleInstances ) );
+        return moduleInstances.stream().flatMap( module -> module.visibleObjects( visibility ) );
     }
 
-    /* package */ Iterable<ModelModule<TransientDescriptor>> visibleTransients( final Visibility visibility )
+    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleTransients( final Visibility visibility )
     {
-        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<TransientDescriptor>>>()
-        {
-
-            @Override
-            public Iterable<ModelModule<TransientDescriptor>> apply( ModuleInstance moduleInstance )
-            {
-                return moduleInstance.visibleTransients( visibility );
-            }
-        }, moduleInstances ) );
+        return moduleInstances.stream().flatMap( module -> module.visibleTransients( visibility ) );
     }
 
-    /* package */ Iterable<ModelModule<EntityDescriptor>> visibleEntities( final Visibility visibility )
+    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleEntities( final Visibility visibility )
     {
-        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<EntityDescriptor>>>()
-        {
-
-            @Override
-            public Iterable<ModelModule<EntityDescriptor>> apply( ModuleInstance moduleInstance )
-            {
-                return moduleInstance.visibleEntities( visibility );
-            }
-        }, moduleInstances ) );
+        return moduleInstances.stream().flatMap( module -> module.visibleEntities( visibility ) );
     }
 
-    /* package */ Iterable<ModelModule<ValueDescriptor>> visibleValues( final Visibility visibility )
+    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleValues( final Visibility visibility )
     {
-        return flattenIterables( map( new Function<ModuleInstance, Iterable<ModelModule<ValueDescriptor>>>()
-        {
-
-            @Override
-            public Iterable<ModelModule<ValueDescriptor>> apply( ModuleInstance moduleInstance )
-            {
-                return moduleInstance.visibleValues( visibility );
-            }
-        }, moduleInstances ) );
+        return moduleInstances.stream().flatMap( module -> module.visibleValues( visibility ) );
     }
 
-    /* package */ Iterable<ServiceReference<?>> visibleServices( final Visibility visibility )
+    /* package */ Stream<ServiceReference<?>> visibleServices( final Visibility visibility )
     {
-        return flattenIterables( map( new Function<ModuleInstance, Iterable<ServiceReference<?>>>()
-        {
-
-            @Override
-            public Iterable<ServiceReference<?>> apply( ModuleInstance moduleInstance )
-            {
-                return moduleInstance.visibleServices( visibility );
-            }
-        }, moduleInstances ) );
+        return moduleInstances.stream().flatMap( module -> module.visibleServices( visibility ) );
     }
 
     /* package */ ModuleInstance findModule( String moduleName )

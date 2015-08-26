@@ -14,14 +14,20 @@
  */
 package org.apache.zest.api.structure;
 
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.ActivationEventListenerRegistration;
+import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.TransientBuilderFactory;
+import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.composite.TransientDescriptor;
+import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.object.ObjectFactory;
 import org.apache.zest.api.query.QueryBuilderFactory;
+import org.apache.zest.api.service.ImportedServiceDescriptor;
+import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilderFactory;
@@ -77,4 +83,10 @@ public interface Module
      */
     ValueDescriptor valueDescriptor( String typeName );
 
+    Stream<? extends TransientDescriptor> transientComposites();
+    Stream<? extends ValueDescriptor> valueComposites();
+    Stream<? extends ServiceDescriptor> serviceComposites();
+    Stream<? extends EntityDescriptor> entityComposites();
+    Stream<? extends ImportedServiceDescriptor> importedServices();
+    Stream<? extends ObjectDescriptor> objects();
 }

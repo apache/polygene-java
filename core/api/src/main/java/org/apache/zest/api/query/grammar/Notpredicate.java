@@ -20,7 +20,6 @@ package org.apache.zest.api.query.grammar;
 
 import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.functional.Specifications;
 
 /**
  * NOT Specification.
@@ -42,7 +41,7 @@ public class Notpredicate implements Predicate<Composite>
     @Override
     public boolean test( Composite item )
     {
-        return Specifications.not( operand ).test( item );
+        return operand.negate().test( item );
     }
 
     @Override

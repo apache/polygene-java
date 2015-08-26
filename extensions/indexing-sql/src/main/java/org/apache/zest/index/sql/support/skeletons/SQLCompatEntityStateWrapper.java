@@ -19,6 +19,7 @@ package org.apache.zest.index.sql.support.skeletons;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateDescriptor;
 import org.apache.zest.api.common.QualifiedName;
@@ -29,7 +30,6 @@ import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entity.ManyAssociationState;
@@ -48,15 +48,8 @@ import org.slf4j.LoggerFactory;
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( SQLCompatEntityStateWrapper.class.getName() );
 
-    /* package */ static final Function<EntityState, EntityState> WRAP = new Function<EntityState, EntityState>()
-    {
+    /* package */ static final Function<EntityState, EntityState> WRAP = SQLCompatEntityStateWrapper::new;
 
-        @Override
-        public EntityState apply( EntityState from )
-        {
-            return new SQLCompatEntityStateWrapper( from );
-        }
-    };
     private static final Predicate<PropertyDescriptor> PROPERTY_SPEC = new Predicate<PropertyDescriptor>()
     {
 
@@ -219,7 +212,7 @@ import org.slf4j.LoggerFactory;
         }
 
         @Override
-        public Iterable<Class<?>> mixinTypes()
+        public Stream<Class<?>> mixinTypes()
         {
             return wrappedEntityDescriptor.mixinTypes();
         }
@@ -237,7 +230,7 @@ import org.slf4j.LoggerFactory;
         }
 
         @Override
-        public Iterable<Class<?>> types()
+        public Stream<Class<?>> types()
         {
             return wrappedEntityDescriptor.types();
         }
@@ -315,19 +308,19 @@ import org.slf4j.LoggerFactory;
         }
 
         @Override
-        public Iterable<? extends AssociationDescriptor> associations()
+        public Stream<? extends AssociationDescriptor> associations()
         {
             return wrappedAssociationStateDescriptor.associations();
         }
 
         @Override
-        public Iterable<? extends AssociationDescriptor> manyAssociations()
+        public Stream<? extends AssociationDescriptor> manyAssociations()
         {
             return wrappedAssociationStateDescriptor.manyAssociations();
         }
 
         @Override
-        public Iterable<? extends AssociationDescriptor> namedAssociations()
+        public Stream<? extends AssociationDescriptor> namedAssociations()
         {
             return wrappedAssociationStateDescriptor.namedAssociations();
         }
@@ -347,9 +340,9 @@ import org.slf4j.LoggerFactory;
         }
 
         @Override
-        public Iterable<? extends PropertyDescriptor> properties()
+        public Stream<? extends PropertyDescriptor> properties()
         {
-            return Iterables.filter( PROPERTY_SPEC, wrappedAssociationStateDescriptor.properties() );
+            return wrappedAssociationStateDescriptor.properties().filter( PROPERTY_SPEC );
         }
 
         @Override

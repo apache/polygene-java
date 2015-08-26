@@ -89,9 +89,8 @@ public interface Page
         private void execute( QuikitContext context, Element element, Element parent )
             throws RenderException
         {
-            Class<? extends Composite> compositeType = (Class<Composite>) first( ZestAPI.FUNCTION_DESCRIPTOR_FOR
-                                                                                     .apply( context.page() )
-                                                                                     .types() );
+            Class<? extends Composite> compositeType =
+                (Class<Composite>) ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( context.page() ).types().findFirst().orElse( null );
             try
             {
                 Method method = findMethod( context.methodName(), compositeType );

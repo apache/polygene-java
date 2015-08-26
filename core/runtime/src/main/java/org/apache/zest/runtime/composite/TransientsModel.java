@@ -15,6 +15,8 @@
 package org.apache.zest.runtime.composite;
 
 import java.util.List;
+import java.util.stream.Stream;
+import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 
@@ -31,9 +33,9 @@ public class TransientsModel
         this.transientModels = transientModels;
     }
 
-    public Iterable<TransientModel> models()
+    public Stream<TransientModel> models()
     {
-        return transientModels;
+        return transientModels.stream();
     }
 
     @Override
@@ -51,5 +53,10 @@ public class TransientsModel
             }
         }
         return modelVisitor.visitLeave( this );
+    }
+
+    public Stream<? extends TransientDescriptor> stream()
+    {
+        return transientModels.stream();
     }
 }

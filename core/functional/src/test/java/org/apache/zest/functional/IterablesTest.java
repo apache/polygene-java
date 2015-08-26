@@ -19,7 +19,6 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -36,19 +35,6 @@ public class IterablesTest
     private List<String> numbers = Arrays.asList( "1", "2", "3" );
     private Iterable<Long> numberLongs = Arrays.asList( 1L, 2L, 3L );
     private Iterable<Integer> numberIntegers = Arrays.asList( 1, 2, 3 );
-
-    @Test
-    public void testConstant()
-    {
-        String str = "";
-
-        for( String string : Iterables.limit( 3, Iterables.constant( "123" ) ) )
-        {
-            str += string;
-        }
-
-        assertThat( str, CoreMatchers.equalTo( "123123123" ) );
-    }
 
     @Test
     public void testUnique()
@@ -74,12 +60,6 @@ public class IterablesTest
     public void testCount()
     {
         assertThat( Iterables.count( numbers ), equalTo( 3L ) );
-    }
-
-    @Test
-    public void testFilter()
-    {
-        assertThat( Iterables.first( Iterables.filter( Specifications.in( "2" ), numbers ) ), equalTo( "2" ) );
     }
 
     @Test
@@ -125,20 +105,6 @@ public class IterablesTest
     {
         assertThat( Iterables.reverse( numbers ).toString(), equalTo( "[3, 2, 1]" ) );
         assertThat( Iterables.reverse( emptyList() ), equalTo( (Object) emptyList() ) );
-    }
-
-    @Test
-    public void testMatchesAny()
-    {
-        assertThat( Iterables.matchesAny( Specifications.in( "2" ), numbers ), equalTo( true ) );
-        assertThat( Iterables.matchesAny( Specifications.in( "4" ), numbers ), equalTo( false ) );
-    }
-
-    @Test
-    public void testMatchesAll()
-    {
-        assertThat( Iterables.matchesAll( Specifications.in( "1", "2", "3" ), numbers ), equalTo( true ) );
-        assertThat( Iterables.matchesAll( Specifications.in( "2", "3", "4" ), numbers ), equalTo( false ) );
     }
 
     @Test
@@ -215,62 +181,6 @@ public class IterablesTest
     {
         Iterable<Long> values = numberLongs;
         Iterable<Number> numbers = Iterables.cast( values );
-    }
-
-    @Test
-    public void testDebug()
-    {
-        assertThat( Iterables.first( Iterables.debug( "Filtered number:{0}",
-                                                      Iterables.filter( Specifications.in( "2" ),
-                                                                        Iterables.debug( "Number:{0}", numbers ) ) ) ),
-                    equalTo( "2" ) );
-    }
-
-    @Test
-    public void testDebugWithFunctions()
-    {
-        Function<String, String> fun = new Function<String, String>()
-        {
-
-            @Override
-            public String apply( String s )
-            {
-                return s + ":" + s.length();
-            }
-
-        };
-        assertThat( Iterables.first( Iterables.debug( "Filtered number:{0}",
-                                                      Iterables.filter( Specifications.in( "2" ),
-                                                                        Iterables.debug( "Number:{0}", numbers, fun ) ) ) ),
-                    equalTo( "2" ) );
-    }
-
-    @Test
-    public void testCache()
-    {
-        final int[] count = new int[ 1 ];
-
-        Iterable<String> b = Iterables.cache( Iterables.filter( Specifications.and( new Predicate<String>()
-        {
-
-            @Override
-            public boolean test( String item )
-            {
-                count[ 0] = count[ 0] + 1;
-                return true;
-            }
-
-        }, Specifications.in( "B" ) ), Iterables.iterable( "A", "B", "C" ) ) );
-
-        assertThat( count[ 0], equalTo( 0 ) );
-
-        Iterables.toList( b );
-
-        assertThat( count[ 0], equalTo( 3 ) );
-
-        Iterables.toList( b );
-
-        assertThat( count[ 0], equalTo( 3 ) );
     }
 
     @Test

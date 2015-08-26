@@ -25,7 +25,6 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specifications;
 import org.apache.zest.spi.query.QuerySource;
 
 /**
@@ -154,7 +153,7 @@ public class IterableQuerySource
         }
         else
         {
-            return Iterables.toList( Iterables.filter( Specifications.and( Classes.instanceOf( resultType ), whereClause ), iterable ) );
+            return Iterables.toList( Iterables.filter( Classes.instanceOf( resultType ).and( whereClause ), iterable ) );
         }
     }
 

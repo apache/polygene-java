@@ -19,10 +19,8 @@ import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.value.NoSuchValueException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.runtime.composite.StateResolver;
-import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.runtime.structure.ModuleInstance;
-
-import static org.apache.zest.functional.Iterables.first;
+import org.apache.zest.spi.module.ModelModule;
 
 /**
  * Implementation of ValueBuilder
@@ -34,7 +32,10 @@ public final class ValueBuilderInstance<T>
     private final ModuleInstance currentModule;
     private final ValueInstance prototypeInstance;
 
-    public ValueBuilderInstance( ModelModule<ValueModel> compositeModelModule, ModuleInstance currentModule, StateResolver stateResolver )
+    public ValueBuilderInstance( ModelModule<ValueModel> compositeModelModule,
+                                 ModuleInstance currentModule,
+                                 StateResolver stateResolver
+    )
     {
         ValueStateInstance state = new ValueStateInstance( compositeModelModule, currentModule, stateResolver );
         prototypeInstance = compositeModelModule.model().newValueInstance( compositeModelModule.module(), state );
@@ -65,7 +66,7 @@ public final class ValueBuilderInstance<T>
     public T newInstance()
         throws ConstructionException
     {
-        Class<Composite> valueType = (Class<Composite>) first( prototypeInstance.types() );
+        Class<Composite> valueType = (Class<Composite>) prototypeInstance.types().findFirst().orElse( null );
 
         ModelModule<ValueModel> valueModel = currentModule.typeLookup().lookupValueModel( valueType );
 
@@ -75,5 +76,4 @@ public final class ValueBuilderInstance<T>
         }
         return new ValueBuilderWithPrototype<>( valueModel, currentModule, prototype() ).newInstance();
     }
-
 }

@@ -21,12 +21,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.GenericAssociationInfo;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.QualifiedName;
-import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.constraint.ConstraintViolation;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.entity.Aggregated;
@@ -39,9 +39,6 @@ import org.apache.zest.functional.Visitor;
 import org.apache.zest.runtime.composite.ValueConstraintsInstance;
 import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
-
-import static org.apache.zest.functional.Iterables.empty;
-import static org.apache.zest.functional.Iterables.first;
 
 /**
  * Model for an Association.
@@ -149,7 +146,7 @@ public final class AssociationModel
             List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
-                Iterable<Class<?>> empty = empty();
+                Stream<Class<?>> empty = Stream.empty();
                 throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
             }
         }
@@ -163,7 +160,8 @@ public final class AssociationModel
             List<ConstraintViolation> violations = associationConstraints.checkConstraints( association );
             if( !violations.isEmpty() )
             {
-                throw new ConstraintViolationException( (Composite) association.get(), (Member) accessor, violations );
+                Stream<Class<?>> empty = Stream.empty();
+                throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
             }
         }
     }
@@ -203,7 +201,7 @@ public final class AssociationModel
         if( type instanceof TypeVariable )
         {
 
-            Class mainType = first( resolution.model().types() );
+            Class mainType = resolution.model().types().findFirst().orElse( null );
             type = Classes.resolveTypeVariable( (TypeVariable) type, ( (Member) accessor ).getDeclaringClass(), mainType );
         }
     }

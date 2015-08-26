@@ -20,27 +20,19 @@ package org.apache.zest.index.elasticsearch;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.apache.zest.api.association.AssociationDescriptor;
+import java.util.stream.Collectors;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.usecase.UsecaseBuilder;
-import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializer;
 import org.apache.zest.api.value.ValueSerializer.Options;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entity.ManyAssociationState;
@@ -49,6 +41,11 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateChangeListener;
 import org.apache.zest.spi.module.ModuleSpi;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,18 +185,23 @@ public interface ElasticSearchIndexer
          */
         private String toJSON( EntityState state, Map<String, EntityState> newStates, EntityStoreUnitOfWork uow )
         {
+            JSONObject json = new JSONObject();
+
             try
             {
-                JSONObject json = new JSONObject();
-
                 json.put( "_identity", state.identity().identity() );
-                json.put( "_types", Iterables.toList( Iterables.map( Classes.toClassName(), state.entityDescriptor()
-                    .mixinTypes() ) ) );
+                json.put( "_types", state.entityDescriptor().mixinTypes().collect( Collectors.toList() ) );
+            }
+            catch( JSONException e )
+            {
+                throw new ElasticSearchIndexException( "Could not index EntityState", e );
+            }
 
-                EntityDescriptor entityType = state.entityDescriptor();
+            EntityDescriptor entityType = state.entityDescriptor();
 
-                // Properties
-                for( PropertyDescriptor propDesc : entityType.state().properties() )
+            // Properties
+            entityType.state().properties().forEach( propDesc -> {
+                try
                 {
                     if( propDesc.queryable() )
                     {
@@ -228,9 +230,15 @@ public interface ElasticSearchIndexer
                         }
                     }
                 }
+                catch( JSONException e )
+                {
+                    throw new ElasticSearchIndexException( "Could not index EntityState", e );
+                }
+            } );
 
-                // Associations
-                for( AssociationDescriptor assocDesc : entityType.state().associations() )
+            // Associations
+            entityType.state().associations().forEach( assocDesc -> {
+                try
                 {
                     if( assocDesc.queryable() )
                     {
@@ -264,9 +272,15 @@ public interface ElasticSearchIndexer
                         json.put( key, value );
                     }
                 }
+                catch( JSONException e )
+                {
+                    throw new ElasticSearchIndexException( "Could not index EntityState", e );
+                }
+            } );
 
-                // ManyAssociations
-                for( AssociationDescriptor manyAssocDesc : entityType.state().manyAssociations() )
+            // ManyAssociations
+            entityType.state().manyAssociations().forEach( manyAssocDesc -> {
+                try
                 {
                     if( manyAssocDesc.queryable() )
                     {
@@ -296,9 +310,15 @@ public interface ElasticSearchIndexer
                         json.put( key, array );
                     }
                 }
+                catch( JSONException e )
+                {
+                    throw new ElasticSearchIndexException( "Could not index EntityState", e );
+                }
+            } );
 
-                // NamedAssociations
-                for( AssociationDescriptor namedAssocDesc : entityType.state().namedAssociations() )
+            // NamedAssociations
+            entityType.state().namedAssociations().forEach( namedAssocDesc -> {
+                try
                 {
                     if( namedAssocDesc.queryable() )
                     {
@@ -336,13 +356,12 @@ public interface ElasticSearchIndexer
                         json.put( key, array );
                     }
                 }
-
-                return json.toString();
-            }
-            catch( JSONException e )
-            {
-                throw new ElasticSearchIndexException( "Could not index EntityState", e );
-            }
+                catch( JSONException e )
+                {
+                    throw new ElasticSearchIndexException( "Could not index EntityState", e );
+                }
+            } );
+            return json.toString();
         }
     }
 }

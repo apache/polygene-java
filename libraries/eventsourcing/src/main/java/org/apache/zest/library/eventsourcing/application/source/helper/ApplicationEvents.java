@@ -68,50 +68,52 @@ public class ApplicationEvents
 
     // Common specifications
 
-    public static Predicate<ApplicationEvent> withNames( final Iterable<String> names )
-    {
-        return new Predicate<ApplicationEvent>()
-        {
-            @Override
-            public boolean test( ApplicationEvent event )
-            {
-                for (String name : names)
-                {
-                    if (event.name().get().equals( name ))
-                        return true;
-                }
-                return false;
-            }
-        };
-    }
-
-    public static Predicate<ApplicationEvent> withNames( final String... names )
-    {
-        return new Predicate<ApplicationEvent>()
-        {
-            @Override
-            public boolean test( ApplicationEvent event )
-            {
-                for (String name : names)
-                {
-                    if (event.name().get().equals( name ))
-                        return true;
-                }
-                return false;
-            }
-        };
-    }
-
+//    public static Predicate<ApplicationEvent> withNames( final Iterable<String> names )
+//    {
+//        return new Predicate<ApplicationEvent>()
+//        {
+//            @Override
+//            public boolean test( ApplicationEvent event )
+//            {
+//                for (String name : names)
+//                {
+//                    if (event.name().get().equals( name ))
+//                        return true;
+//                }
+//                return false;
+//            }
+//        };
+//    }
+//
+//    public static Predicate<ApplicationEvent> withNames( final String... names )
+//    {
+//        return new Predicate<ApplicationEvent>()
+//        {
+//            @Override
+//            public boolean test( ApplicationEvent event )
+//            {
+//                for (String name : names)
+//                {
+//                    if (event.name().get().equals( name ))
+//                        return true;
+//                }
+//                return false;
+//            }
+//        };
+//    }
+//
     public static Predicate<ApplicationEvent> withNames( final Class eventClass )
     {
-        return ApplicationEvents.withNames( Iterables.map( new Function<Method, String>()
-        {
-            @Override
-            public String apply( Method method )
-            {
-                return method.getName();
-            }
-        }, Iterables.toList( Methods.METHODS_OF.apply( eventClass ) ) ));
+        return new WithNamesPredicate(eventClass );
+
+//        ApplicationEvents.withNames( Iterables.map( new Function<Method, String>()
+//        {
+//            @Override
+//            public String apply( Method method )
+//            {
+//                return method.getName();
+//            }
+//        }, Iterables.toList( Methods.METHODS_OF.apply( eventClass ) ) ));
     }
 
     public static Predicate<ApplicationEvent> afterDate( final Date afterDate )
@@ -190,5 +192,23 @@ public class ApplicationEvents
                 } );
             }
         };
+    }
+
+    private static class WithNamesPredicate implements Predicate<ApplicationEvent>
+    {
+        private final Class eventClass;
+
+        public WithNamesPredicate( Class eventClass )
+        {
+            this.eventClass = eventClass;
+        }
+
+        @Override
+        public boolean test( ApplicationEvent event )
+        {
+            return Methods.METHODS_OF.apply( eventClass )
+                .map( Method::getName )
+                .anyMatch( name -> event.name().get().equals( name ) );
+        }
     }
 }

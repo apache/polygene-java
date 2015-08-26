@@ -26,7 +26,7 @@ import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.InvalidInjectionException;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specifications;
+import org.apache.zest.runtime.legacy.Specifications;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.injection.InjectionProvider;

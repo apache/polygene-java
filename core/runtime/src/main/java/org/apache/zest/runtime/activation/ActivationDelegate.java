@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEvent;
 import org.apache.zest.api.activation.ActivationEventListener;
@@ -156,7 +157,7 @@ public final class ActivationDelegate
     public void passivate()
         throws PassivationException
     {
-        passivate( (Runnable) null );
+        passivate( null );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -221,14 +222,7 @@ public final class ActivationDelegate
             }
             catch( Exception ex )
             {
-                if( ex instanceof PassivationException )
-                {
-                    exceptions.addAll( ( (PassivationException) ex ).causes() );
-                }
-                else
-                {
-                    exceptions.add( ex );
-                }
+                exceptions.add( ex );
             }
         }
 
@@ -340,7 +334,7 @@ public final class ActivationDelegate
         }
 
         @Override
-        public Iterable<Class<?>> types()
+        public Stream<Class<?>> types()
         {
             return reference.types();
         }

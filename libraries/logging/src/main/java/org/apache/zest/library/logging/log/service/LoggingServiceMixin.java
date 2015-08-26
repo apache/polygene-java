@@ -37,7 +37,6 @@ import org.apache.zest.library.logging.log.records.EntityLogRecord;
 import org.apache.zest.library.logging.log.records.LogRecord;
 import org.apache.zest.library.logging.log.records.ServiceLogRecord;
 
-import static org.apache.zest.functional.Iterables.first;
 
 public abstract class LoggingServiceMixin
     implements LoggingService
@@ -166,6 +165,6 @@ public abstract class LoggingServiceMixin
 
     private String getCompositeName( Composite composite )
     {
-        return first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types()).getName();
+        return ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().get().getName();
     }
 }

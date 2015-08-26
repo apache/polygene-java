@@ -20,8 +20,10 @@ package org.apache.zest.api.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.functional.Iterables;
 
 import static org.apache.zest.functional.Iterables.iterable;
@@ -31,21 +33,14 @@ import static org.apache.zest.functional.Iterables.iterable;
  */
 public final class Fields
 {
-    public static final BiFunction<Class<?>, String, Field> FIELD_NAMED = new BiFunction<Class<?>, String, Field>()
-    {
-        @Override
-        public Field apply( Class<?> aClass, String name )
-        {
-            return Iterables.first( Iterables.filter( Classes.memberNamed( name ), FIELDS_OF.apply( aClass ) ) );
-        }
-    };
+    public static final Function<Type, Stream<Field>> FIELDS_OF =
+        Classes.forClassHierarchy( type -> Arrays.stream( type.getDeclaredFields() ) );
 
-    public static final Function<Type, Iterable<Field>> FIELDS_OF = Classes.forClassHierarchy( new Function<Class<?>, Iterable<Field>>()
+    public static final BiFunction<Class<?>, String, Field> FIELD_NAMED = ( clazz, name ) ->
+        FIELDS_OF.apply( clazz ).filter( Classes.memberNamed( name ) ).findFirst().orElse( null );
+
+    public static Stream<Field> fieldsOf( Type type )
     {
-        @Override
-        public Iterable<Field> apply( Class<?> type )
-        {
-            return iterable( type.getDeclaredFields() );
-        }
-    } );
+        return Stream.of( type ).flatMap( FIELDS_OF );
+    }
 }

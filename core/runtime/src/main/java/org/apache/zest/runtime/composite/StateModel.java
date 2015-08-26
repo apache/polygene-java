@@ -18,6 +18,7 @@
 package org.apache.zest.runtime.composite;
 
 import java.lang.reflect.AccessibleObject;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.StateDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
@@ -58,7 +59,7 @@ public class StateModel
     }
 
     @Override
-    public Iterable<PropertyModel> properties()
+    public Stream<PropertyModel> properties()
     {
         return propertiesModel.properties();
     }

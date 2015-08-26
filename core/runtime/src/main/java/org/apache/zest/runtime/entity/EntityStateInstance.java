@@ -24,18 +24,15 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.Association;
-import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.util.Classes;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.association.AssociationInstance;
 import org.apache.zest.runtime.association.AssociationModel;
 import org.apache.zest.runtime.association.ManyAssociationInstance;
@@ -98,16 +95,9 @@ public final class EntityStateInstance
     }
 
     @Override
-    public Iterable<Property<?>> properties()
+    public Stream<Property<?>> properties()
     {
-        return Iterables.map( new Function<PropertyDescriptor, Property<?>>()
-        {
-            @Override
-            public Property<?> apply( PropertyDescriptor propertyDescriptor )
-            {
-                return propertyFor( propertyDescriptor.accessor() );
-            }
-        }, stateModel.properties() );
+        return stateModel.properties().map( descriptor -> propertyFor( descriptor.accessor() ) );
     }
 
     @Override
@@ -127,20 +117,20 @@ public final class EntityStateInstance
                 : associationModel,
                 entityFunction,
                 new Property<EntityReference>()
-            {
-                @Override
-                public EntityReference get()
                 {
-                    return entityState.associationValueOf( associationModel.qualifiedName() );
-                }
+                    @Override
+                    public EntityReference get()
+                    {
+                        return entityState.associationValueOf( associationModel.qualifiedName() );
+                    }
 
-                @Override
-                public void set( EntityReference newValue )
-                    throws IllegalArgumentException, IllegalStateException
-                {
-                    entityState.setAssociationValue( associationModel.qualifiedName(), newValue );
-                }
-            } );
+                    @Override
+                    public void set( EntityReference newValue )
+                        throws IllegalArgumentException, IllegalStateException
+                    {
+                        entityState.setAssociationValue( associationModel.qualifiedName(), newValue );
+                    }
+                } );
             state.put( accessor, association );
         }
 
@@ -148,16 +138,9 @@ public final class EntityStateInstance
     }
 
     @Override
-    public Iterable<Association<?>> allAssociations()
+    public Stream<? extends Association<?>> allAssociations()
     {
-        return Iterables.map( new Function<AssociationDescriptor, Association<?>>()
-        {
-            @Override
-            public Association<?> apply( AssociationDescriptor associationDescriptor )
-            {
-                return associationFor( associationDescriptor.accessor() );
-            }
-        }, stateModel.associations() );
+        return stateModel.associations().map( descriptor -> associationFor( descriptor.accessor() ) );
     }
 
     @Override
@@ -184,16 +167,9 @@ public final class EntityStateInstance
     }
 
     @Override
-    public Iterable<ManyAssociation<?>> allManyAssociations()
+    public Stream<ManyAssociation<?>> allManyAssociations()
     {
-        return Iterables.map( new Function<AssociationDescriptor, ManyAssociation<?>>()
-        {
-            @Override
-            public ManyAssociation<?> apply( AssociationDescriptor associationDescriptor )
-            {
-                return manyAssociationFor( associationDescriptor.accessor() );
-            }
-        }, stateModel.manyAssociations() );
+        return stateModel.manyAssociations().map( descriptor -> manyAssociationFor( descriptor.accessor() ) );
     }
 
     @Override
@@ -220,33 +196,22 @@ public final class EntityStateInstance
     }
 
     @Override
-    public Iterable<? extends NamedAssociation<?>> allNamedAssociations()
+    public Stream<? extends NamedAssociation<?>> allNamedAssociations()
     {
-        return Iterables.map( new Function<AssociationDescriptor, NamedAssociation<?>>()
-        {
-            @Override
-            public NamedAssociation<?> apply( AssociationDescriptor associationDescriptor )
-            {
-                return namedAssociationFor( associationDescriptor.accessor() );
-            }
-        }, stateModel.namedAssociations() );
+        return stateModel.namedAssociations().map( descriptor -> namedAssociationFor( descriptor.accessor() ) );
     }
 
     public void checkConstraints()
     {
-        for( PropertyDescriptor propertyDescriptor : stateModel.properties() )
-        {
-            ConstraintsCheck constraints = (ConstraintsCheck) propertyDescriptor;
+        stateModel.properties().forEach( propertyDescriptor -> {
             Property<Object> property = this.propertyFor( propertyDescriptor.accessor() );
-            constraints.checkConstraints( property.get() );
-        }
+            propertyDescriptor.checkConstraints( property.get() );
+        } );
 
-        for( AssociationDescriptor associationDescriptor : stateModel.associations() )
-        {
-            ConstraintsCheck constraints = (ConstraintsCheck) associationDescriptor;
+        stateModel.associations().forEach( associationDescriptor -> {
             Association<Object> association = this.associationFor( associationDescriptor.accessor() );
-            constraints.checkConstraints( association.get() );
-        }
+            associationDescriptor.checkConstraints( association.get() );
+        } );
 
         // TODO Should ManyAssociations and NamedAssociations be checked too?
     }

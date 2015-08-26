@@ -20,6 +20,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import org.apache.zest.api.composite.DependencyDescriptor;
 import org.apache.zest.api.composite.InjectedFieldDescriptor;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
@@ -36,7 +38,7 @@ import static java.util.Collections.singleton;
  * JAVADOC
  */
 public final class InjectedFieldModel
-    implements InjectedFieldDescriptor, VisitableHierarchy<InjectedFieldModel, DependencyModel>
+    implements InjectedFieldDescriptor, Dependencies, VisitableHierarchy<InjectedFieldModel, DependencyModel>
 {
     private DependencyModel dependencyModel;
     private Field injectedField;
@@ -49,15 +51,21 @@ public final class InjectedFieldModel
     }
 
     @Override
-    public DependencyModel dependency()
+    public Stream<DependencyModel> dependencies()
     {
-        return dependencyModel;
+        return Stream.of( dependencyModel );
     }
 
     @Override
     public Field field()
     {
         return injectedField;
+    }
+
+    @Override
+    public DependencyDescriptor dependency()
+    {
+        return dependencyModel;
     }
 
     public void bind( Resolution resolution )
@@ -80,7 +88,11 @@ public final class InjectedFieldModel
         catch( IllegalArgumentException e )
         {
             String valueClassName;
-            if( Proxy.isProxyClass( value.getClass() ) )
+            if( value == null )
+            {
+                valueClassName = "<null>";
+            }
+            else if( Proxy.isProxyClass( value.getClass() ) )
             {
                 InvocationHandler invocationHandler = Proxy.getInvocationHandler( value );
                 if( invocationHandler instanceof TransientInstance )

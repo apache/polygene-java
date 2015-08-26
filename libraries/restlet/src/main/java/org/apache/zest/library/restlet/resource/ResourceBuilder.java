@@ -167,7 +167,7 @@ public interface ResourceBuilder
         @Override
         public Route findRoute( String name, Router router )
         {
-            return router.getRoutes().stream().filter( route -> name.equals( route.getName() ) ).findFirst().get();
+            return router.getRoutes().stream().filter( route -> name.equals( route.getName() ) ).findFirst().orElse( null );
         }
     }
 }

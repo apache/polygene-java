@@ -17,6 +17,8 @@ package org.apache.zest.runtime.composite;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.injection.scope.This;
@@ -25,29 +27,25 @@ import org.apache.zest.api.mixin.InitializationException;
 import org.apache.zest.api.mixin.MixinDescriptor;
 import org.apache.zest.api.property.StateHolder;
 import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.VisitableHierarchy;
+import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectedFieldsModel;
 import org.apache.zest.runtime.injection.InjectedMethodsModel;
 import org.apache.zest.runtime.injection.InjectionContext;
 
-import static org.apache.zest.functional.Iterables.map;
-import static org.apache.zest.functional.Iterables.toList;
-import static org.apache.zest.functional.Iterables.unique;
-
 /**
  * JAVADOC
  */
 public final class MixinModel
-    implements MixinDescriptor, VisitableHierarchy<Object, Object>
+    implements MixinDescriptor, VisitableHierarchy<Object, Object>, Dependencies
 {
     private final Class<?> mixinClass;
     private final Class<?> instantiationClass;
     private final ConstructorsModel constructorsModel;
     private final InjectedFieldsModel injectedFieldsModel;
     private final InjectedMethodsModel injectedMethodsModel;
-    private final Iterable<Class<?>> thisMixinTypes;
+    private final List<Class<?>> thisMixinTypes;
 
     public MixinModel( Class<?> declaredMixinClass, Class<?> instantiationClass )
     {
@@ -77,10 +75,12 @@ public final class MixinModel
         return InvocationHandler.class.isAssignableFrom( mixinClass );
     }
 
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        return Iterables.flatten( constructorsModel.dependencies(), injectedFieldsModel.dependencies(), injectedMethodsModel
-            .dependencies() );
+        return Stream.of( constructorsModel, injectedFieldsModel, injectedMethodsModel )
+            .flatMap( Dependencies::dependencies );
+//        return Iterables.flatten( constructorsModel.dependencies(), injectedFieldsModel.dependencies(), injectedMethodsModel
+//            .dependencies() );
     }
 
     @Override
@@ -121,11 +121,7 @@ public final class MixinModel
                 instantiationClass.getDeclaredField( "_instance" ).set( mixin,
                                                                         injectionContext.compositeInstance() );
             }
-            catch( IllegalAccessException e )
-            {
-                e.printStackTrace();
-            }
-            catch( NoSuchFieldException e )
+            catch( IllegalAccessException | NoSuchFieldException e )
             {
                 e.printStackTrace();
             }
@@ -141,7 +137,7 @@ public final class MixinModel
             }
             catch( InitializationException e )
             {
-                List<Class<?>> compositeType = toList( compositeInstance.types() );
+                List<Class<?>> compositeType = compositeInstance.types().collect( Collectors.toList() );
                 String message = "Unable to initialize " + mixinClass + " in composite " + compositeType;
                 throw new ConstructionException( message, e );
             }
@@ -154,9 +150,14 @@ public final class MixinModel
         return thisMixinTypes;
     }
 
-    private Iterable<Class<?>> buildThisMixinTypes()
+    private List<Class<?>> buildThisMixinTypes()
     {
-        return map( new DependencyModel.InjectionTypeFunction(), unique( Iterables.filter( new DependencyModel.ScopeSpecification( This.class ), dependencies() ) ) );
+        return dependencies()
+            .filter( new DependencyModel.ScopeSpecification( This.class ) )
+            .distinct()
+            .map( new DependencyModel.InjectionTypeFunction() )
+            .collect( Collectors.toList() );
+//        return map( new DependencyModel.InjectionTypeFunction(), unique( Iterables.filter( new DependencyModel.ScopeSpecification( This.class ), dependencies() ) ) );
     }
 
     protected FragmentInvocationHandler newInvocationHandler( Method method )

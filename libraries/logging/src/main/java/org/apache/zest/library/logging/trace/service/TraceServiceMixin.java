@@ -38,13 +38,13 @@ import org.apache.zest.library.logging.trace.records.EntityTraceRecordEntity;
 import org.apache.zest.library.logging.trace.records.ServiceTraceRecordEntity;
 import org.apache.zest.library.logging.trace.records.TraceRecord;
 
-import static org.apache.zest.functional.Iterables.first;
-
 public class TraceServiceMixin
     implements TraceService
 {
-    @Structure private UnitOfWorkFactory uowf;
-    @This private Configuration<TraceServiceConfiguration> configuration;
+    @Structure
+    private UnitOfWorkFactory uowf;
+    @This
+    private Configuration<TraceServiceConfiguration> configuration;
     private int counter;
     private Integer traceLevel;
 
@@ -60,7 +60,14 @@ public class TraceServiceMixin
     }
 
     @Override
-    public void traceSuccess( Class compositeType, Composite object, Method method, Object[] args, Object result, long entryTime, long durationNano )
+    public void traceSuccess( Class compositeType,
+                              Composite object,
+                              Method method,
+                              Object[] args,
+                              Object result,
+                              long entryTime,
+                              long durationNano
+    )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
         try
@@ -79,7 +86,14 @@ public class TraceServiceMixin
     }
 
     @Override
-    public void traceException( Class compositeType, Composite object, Method method, Object[] args, Throwable t, long entryTime, long durationNano )
+    public void traceException( Class compositeType,
+                                Composite object,
+                                Method method,
+                                Object[] args,
+                                Throwable t,
+                                long entryTime,
+                                long durationNano
+    )
     {
         UnitOfWork uow = uowf.newUnitOfWork();
         try
@@ -97,14 +111,25 @@ public class TraceServiceMixin
         }
     }
 
-    private void createTraceRecord( UnitOfWork uow, Class compositeType, Composite object, Method method, Object[] args, long entryTime, long durationNano, Throwable exception )
+    private void createTraceRecord( UnitOfWork uow,
+                                    Class compositeType,
+                                    Composite object,
+                                    Method method,
+                                    Object[] args,
+                                    long entryTime,
+                                    long durationNano,
+                                    Throwable exception
+    )
     {
         if( object instanceof EntityComposite )
         {
             EntityComposite entity = (EntityComposite) object;
             String identity = entity.identity().get();
-            EntityComposite source = (EntityComposite) uow.get( (Class<?>) first(
-                ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( entity ).types() ), identity );
+            EntityComposite source = (EntityComposite) uow.get(
+                ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( entity )
+                    .types()
+                    .findFirst()
+                    .orElse( null ), identity );
             EntityBuilder<EntityTraceRecordEntity> builder = uow.newEntityBuilder( EntityTraceRecordEntity.class );
             EntityTraceRecordEntity state = builder.instance();
             setStandardStuff( compositeType, method, args, entryTime, durationNano, state, exception );
@@ -130,7 +155,14 @@ public class TraceServiceMixin
         }
     }
 
-    private void setStandardStuff( Class compositeType, Method method, Object[] args, long entryTime, long durationNano, TraceRecord state, Throwable exception )
+    private void setStandardStuff( Class compositeType,
+                                   Method method,
+                                   Object[] args,
+                                   long entryTime,
+                                   long durationNano,
+                                   TraceRecord state,
+                                   Throwable exception
+    )
     {
         state.duration().set( durationNano );
         state.entryTime().set( entryTime );
@@ -145,9 +177,9 @@ public class TraceServiceMixin
     {
         if( args == null )
         {
-            return new ArrayList<String>( 0 );
+            return new ArrayList<>( 0 );
         }
-        List<String> result = new ArrayList<String>( args.length );
+        List<String> result = new ArrayList<>( args.length );
         for( Object arg : args )
         {
             if( arg == null )

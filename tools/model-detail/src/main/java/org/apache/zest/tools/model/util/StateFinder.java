@@ -43,7 +43,7 @@ public class StateFinder
 
         for( CompositeMethodDetailDescriptor descriptor : iter )
         {
-            Class<?> compositeClass = first( descriptor.composite().descriptor().types() );
+            Class<?> compositeClass = descriptor.composite().descriptor().types().findFirst().orElse( null );
             Class<?> mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
             if( mixinMethodClass.isAssignableFrom( compositeClass ) )
             {

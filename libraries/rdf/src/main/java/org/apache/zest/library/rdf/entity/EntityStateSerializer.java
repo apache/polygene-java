@@ -17,17 +17,9 @@
  */
 package org.apache.zest.library.rdf.entity;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Graph;
-import org.openrdf.model.Literal;
-import org.openrdf.model.Resource;
-import org.openrdf.model.Statement;
-import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.GraphImpl;
+import java.util.stream.Stream;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.association.AssociationDescriptor;
-import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
@@ -43,8 +35,14 @@ import org.apache.zest.api.value.ValueSerializer.Options;
 import org.apache.zest.library.rdf.Rdfs;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.ManyAssociationState;
-
-import static org.apache.zest.functional.Iterables.first;
+import org.openrdf.model.BNode;
+import org.openrdf.model.Graph;
+import org.openrdf.model.Literal;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.GraphImpl;
 
 /**
  * JAVADOC
@@ -67,7 +65,8 @@ public class EntityStateSerializer
     }
 
     public Iterable<Statement> serialize( final EntityState entityState,
-                                          final boolean includeNonQueryable )
+                                          final boolean includeNonQueryable
+    )
     {
         Graph graph = new GraphImpl();
         serialize( entityState, includeNonQueryable, graph );
@@ -76,7 +75,8 @@ public class EntityStateSerializer
 
     public void serialize( final EntityState entityState,
                            final boolean includeNonQueryable,
-                           final Graph graph )
+                           final Graph graph
+    )
     {
         ValueFactory values = graph.getValueFactory();
         EntityReference identity = entityState.identity();
@@ -84,7 +84,7 @@ public class EntityStateSerializer
 
         graph.add( entityUri,
                    Rdfs.TYPE,
-                   values.createURI( Classes.toURI( first( entityState.entityDescriptor().types() ) ) ) );
+                   values.createURI( Classes.toURI( entityState.entityDescriptor().types().findFirst().orElse( null ) ) ) );
 
         serializeProperties( entityState,
                              graph,
@@ -109,24 +109,25 @@ public class EntityStateSerializer
                                       final Graph graph,
                                       final Resource subject,
                                       final EntityDescriptor entityType,
-                                      final boolean includeNonQueryable )
+                                      final boolean includeNonQueryable
+    )
     {
         // Properties
-        for( PropertyDescriptor persistentProperty : entityType.state().properties() )
-        {
+        entityType.state().properties().forEach( persistentProperty -> {
             Object property = entityState.propertyValueOf( persistentProperty.qualifiedName() );
             if( property != null )
             {
                 serializeProperty( persistentProperty, property, subject, graph, includeNonQueryable );
             }
-        }
+        } );
     }
 
     private void serializeProperty( PropertyDescriptor persistentProperty,
                                     Object property,
                                     Resource subject,
                                     Graph graph,
-                                    boolean includeNonQueryable )
+                                    boolean includeNonQueryable
+    )
     {
         if( !( includeNonQueryable || persistentProperty.queryable() ) )
         {
@@ -159,55 +160,48 @@ public class EntityStateSerializer
                                           ValueType valueType,
                                           Graph graph,
                                           String baseUri,
-                                          boolean includeNonQueryable )
+                                          boolean includeNonQueryable
+    )
     {
         final ValueFactory valueFactory = graph.getValueFactory();
         BNode collection = valueFactory.createBNode();
         graph.add( subject, predicate, collection );
 
-        for( PropertyDescriptor persistentProperty : ( (ValueCompositeType) valueType ).properties() )
-        {
+        ( (ValueCompositeType) valueType ).properties().forEach( persistentProperty -> {
             Object propertyValue = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF
-                .apply( (Composite) value )
+                .apply( value )
                 .state()
                 .propertyFor( persistentProperty.accessor() )
                 .get();
 
-            if( propertyValue == null )
+            if( propertyValue != null )
             {
-                continue; // Skip null values
+                ValueType type = persistentProperty.valueType();
+                if( type instanceof ValueCompositeType )
+                {
+                    URI pred = valueFactory.createURI( baseUri, persistentProperty.qualifiedName().name() );
+                    serializeValueComposite( collection, pred, (ValueComposite) propertyValue, type, graph,
+                                             baseUri + persistentProperty.qualifiedName().name() + "/",
+                                             includeNonQueryable );
+                }
+                else
+                {
+                    serializeProperty( persistentProperty, propertyValue, collection, graph, includeNonQueryable );
+                }
             }
-
-            ValueType type = persistentProperty.valueType();
-            if( type instanceof ValueCompositeType )
-            {
-                URI pred = valueFactory.createURI( baseUri, persistentProperty.qualifiedName().name() );
-                serializeValueComposite( collection, pred, (ValueComposite) propertyValue, type, graph,
-                                         baseUri + persistentProperty.qualifiedName().name() + "/",
-                                         includeNonQueryable );
-            }
-            else
-            {
-                serializeProperty( persistentProperty, propertyValue, collection, graph, includeNonQueryable );
-            }
-        }
+        } );
     }
 
     private void serializeAssociations( final EntityState entityState,
                                         final Graph graph, URI entityUri,
-                                        final Iterable<? extends AssociationDescriptor> associations,
-                                        final boolean includeNonQueryable )
+                                        final Stream<? extends AssociationDescriptor> associations,
+                                        final boolean includeNonQueryable
+    )
     {
         ValueFactory values = graph.getValueFactory();
 
         // Associations
-        for( AssociationDescriptor associationType : associations )
-        {
-            if( !( includeNonQueryable || associationType.queryable() ) )
-            {
-                continue; // Skip non-queryable
-            }
-
+        associations.filter( type -> includeNonQueryable || type.queryable() ).forEach( associationType -> {
             EntityReference associatedId = entityState.associationValueOf( associationType.qualifiedName() );
             if( associatedId != null )
             {
@@ -215,25 +209,20 @@ public class EntityStateSerializer
                 URI assocEntityURI = values.createURI( associatedId.toURI() );
                 graph.add( entityUri, assocURI, assocEntityURI );
             }
-        }
+        } );
     }
 
     private void serializeManyAssociations( final EntityState entityState,
                                             final Graph graph,
                                             final URI entityUri,
-                                            final Iterable<? extends AssociationDescriptor> associations,
-                                            final boolean includeNonQueryable )
+                                            final Stream<? extends AssociationDescriptor> associations,
+                                            final boolean includeNonQueryable
+    )
     {
         ValueFactory values = graph.getValueFactory();
 
         // Many-Associations
-        for( AssociationDescriptor associationType : associations )
-        {
-            if( !( includeNonQueryable || associationType.queryable() ) )
-            {
-                continue; // Skip non-queryable
-            }
-
+        associations.filter( type -> includeNonQueryable || type.queryable() ).forEach( associationType -> {
             BNode collection = values.createBNode();
             graph.add( entityUri, values.createURI( associationType.qualifiedName().toURI() ), collection );
             graph.add( collection, Rdfs.TYPE, Rdfs.SEQ );
@@ -244,6 +233,6 @@ public class EntityStateSerializer
                 URI assocEntityURI = values.createURI( associatedId.toURI() );
                 graph.add( collection, Rdfs.LIST_ITEM, assocEntityURI );
             }
-        }
+        } );
     }
 }

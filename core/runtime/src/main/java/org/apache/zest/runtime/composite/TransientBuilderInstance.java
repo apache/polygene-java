@@ -84,10 +84,10 @@ public final class TransientBuilderInstance<T>
         throws ConstructionException
     {
         // Set correct info's (immutable) on the state
-        for( PropertyDescriptor propertyDescriptor : model.model().state().properties() )
+        model.model().state().properties().forEach( propertyDescriptor ->
         {
-            ( (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() ) ).setPropertyInfo( (PropertyInfo) propertyDescriptor );
-        }
+            ( (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() ) ).setPropertyInfo( propertyDescriptor );
+        } );
 
         model.model().checkConstraints( state );
 

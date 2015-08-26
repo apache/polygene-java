@@ -20,21 +20,18 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.injection.InjectionScope;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.util.Fields;
 import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.VisitableHierarchy;
 
 import static org.apache.zest.api.util.Annotations.hasAnnotation;
 import static org.apache.zest.api.util.Annotations.type;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.functional.Specifications.translate;
+import static org.apache.zest.runtime.legacy.Specifications.translate;
 
 /**
  * JAVADOC
@@ -42,20 +39,17 @@ import static org.apache.zest.functional.Specifications.translate;
 public final class InjectedFieldsModel
     implements Dependencies, VisitableHierarchy<Object, Object>
 {
-    private final List<InjectedFieldModel> fields = new ArrayList<InjectedFieldModel>();
+    private final List<InjectedFieldModel> fields = new ArrayList<>();
 
     public InjectedFieldsModel( Class fragmentClass )
     {
-        Iterable<Field> mappedFields = Fields.FIELDS_OF.apply( fragmentClass );
-        for( Field field : mappedFields )
-        {
-            Annotation injectionAnnotation = first( filter( translate( type(), hasAnnotation( InjectionScope.class ) ), iterable( field
-                                                                                                                                      .getAnnotations() ) ) );
-            if( injectionAnnotation != null )
-            {
-                addModel( fragmentClass, field, injectionAnnotation );
-            }
-        }
+        Fields.fieldsOf( fragmentClass ).forEach( field ->
+            Arrays.stream( field.getAnnotations() )
+                .filter( translate( type(), hasAnnotation( InjectionScope.class ) ) )
+                .filter( annot -> annot != null )
+                .forEach( injectionAnnotation ->  addModel( fragmentClass, field, injectionAnnotation )
+            )
+        );
     }
 
     private void addModel( Class fragmentClass, Field field, Annotation injectionAnnotation )
@@ -85,16 +79,17 @@ public final class InjectedFieldsModel
     }
 
     @Override
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        return Iterables.map( new Function<InjectedFieldModel, DependencyModel>()
-        {
-            @Override
-            public DependencyModel apply( InjectedFieldModel injectedFieldModel )
-            {
-                return injectedFieldModel.dependency();
-            }
-        }, fields );
+        return fields.stream().flatMap( Dependencies::dependencies );
+//        return Iterables.map( new Function<InjectedFieldModel, DependencyModel>()
+//        {
+//            @Override
+//            public DependencyModel apply( InjectedFieldModel injectedFieldModel )
+//            {
+//                return injectedFieldModel.dependency();
+//            }
+//        }, fields );
     }
 
     @Override

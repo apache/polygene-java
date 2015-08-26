@@ -145,7 +145,7 @@ class ServiceConfigurationFinder
                 descriptor = ( (CompositeDetailDescriptor) obj ).descriptor();
             }
 
-            if( configType.equals( first( descriptor.types() ) ) )
+            if( configType.equals( descriptor.types().findFirst().orElse( null ) ) )
             {
                 configDescriptor = obj;
                 break;

@@ -20,7 +20,9 @@ package org.apache.zest.api.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static org.apache.zest.functional.Iterables.iterable;
 
@@ -29,12 +31,6 @@ import static org.apache.zest.functional.Iterables.iterable;
  */
 public final class Constructors
 {
-    public static final Function<Type, Iterable<Constructor<?>>> CONSTRUCTORS_OF = Classes.forClassHierarchy( new Function<Class<?>, Iterable<Constructor<?>>>()
-    {
-        @Override
-        public Iterable<Constructor<?>> apply( Class<?> type )
-        {
-            return iterable( type.getDeclaredConstructors() );
-        }
-    } );
+    public static final Function<Type, Stream<Constructor<?>>> CONSTRUCTORS_OF =
+        Classes.forClassHierarchy( type -> Arrays.stream( type.getDeclaredConstructors() ) );
 }

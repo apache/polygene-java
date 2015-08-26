@@ -16,11 +16,14 @@
 */
 package org.apache.zest.spi.module;
 
+import java.util.stream.Stream;
+import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.IdentityGenerator;
 import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.service.ServiceDescriptor;
+import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueSerialization;
@@ -34,13 +37,13 @@ public interface ModuleSpi extends Module
 
     ValueSerialization valueSerialization();
 
-    Iterable<ModelModule<EntityDescriptor>> findVisibleEntityTypes();
+    Stream<ModelModule<? extends ModelDescriptor>> findVisibleEntityTypes();
 
-    Iterable<ModelModule<ValueDescriptor>> findVisibleValueTypes();
+    Stream<ModelModule<? extends ModelDescriptor>> findVisibleValueTypes();
 
-    Iterable<ModelModule<TransientDescriptor>> findVisibleTransientTypes();
+    Stream<ModelModule<? extends ModelDescriptor>> findVisibleTransientTypes();
 
-    Iterable<ModelModule<ObjectDescriptor>> findVisibleObjectTypes();
+    Stream<ModelModule<? extends ModelDescriptor>> findVisibleObjectTypes();
 
-    Iterable<ModelModule<ServiceDescriptor>> findVisibleServiceTypes();
+    Stream<ServiceReference<?>> findVisibleServiceTypes();
 }

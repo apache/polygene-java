@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateDescriptor;
@@ -45,7 +46,6 @@ import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
 
-import static org.apache.zest.functional.Iterables.map;
 import static org.apache.zest.library.conversion.values.Shared.STRING_COLLECTION_TYPE_SPEC;
 import static org.apache.zest.library.conversion.values.Shared.STRING_MAP_TYPE_SPEC;
 import static org.apache.zest.library.conversion.values.Shared.STRING_TYPE_SPEC;
@@ -74,73 +74,50 @@ public class ValueToEntityMixin
         {
             throw new InternalError( "Zest Core Runtime codebase is corrupted. Contact Zest team: ValueToEntityMixin" );
         }
-        MANY_ASSOC_TO_ENTITY_REF_ITERABLE = new Function<ManyAssociation<?>, Iterable<EntityReference>>()
-        {
-            @Override
-            public Iterable<EntityReference> apply( ManyAssociation<?> manyAssoc )
+        MANY_ASSOC_TO_ENTITY_REF_ITERABLE = manyAssoc -> {
+            if( manyAssoc == null )
             {
-                if( manyAssoc == null )
-                {
-                    return Iterables.empty();
-                }
-                List<EntityReference> refs = new ArrayList<>( manyAssoc.count() );
-                for( Object entity : manyAssoc )
-                {
-                    refs.add( EntityReference.entityReferenceFor( entity ) );
-                }
-                return refs;
+                return Iterables.empty();
             }
+            List<EntityReference> refs = new ArrayList<>( manyAssoc.count() );
+            for( Object entity : manyAssoc )
+            {
+                refs.add( EntityReference.entityReferenceFor( entity ) );
+            }
+            return refs;
         };
-        NAMED_ASSOC_TO_ENTITY_REF_MAP = new Function<NamedAssociation<?>, Map<String, EntityReference>>()
-        {
-            @Override
-            public Map<String, EntityReference> apply( NamedAssociation<?> namedAssoc )
+        NAMED_ASSOC_TO_ENTITY_REF_MAP = namedAssoc -> {
+            if( namedAssoc == null )
             {
-                if( namedAssoc == null )
-                {
-                    return Collections.emptyMap();
-                }
-                Map<String, EntityReference> refs = new LinkedHashMap<>( namedAssoc.count() );
-                for( String name : namedAssoc )
-                {
-                    refs.put( name, EntityReference.entityReferenceFor( namedAssoc.get( name ) ) );
-                }
-                return refs;
+                return Collections.emptyMap();
             }
+            Map<String, EntityReference> refs = new LinkedHashMap<>( namedAssoc.count() );
+            for( String name : namedAssoc )
+            {
+                refs.put( name, EntityReference.entityReferenceFor( namedAssoc.get( name ) ) );
+            }
+            return refs;
         };
-        STRING_COLLEC_TO_ENTITY_REF_ITERABLE = new Function<Collection<String>, Iterable<EntityReference>>()
-        {
-            @Override
-            public Iterable<EntityReference> apply( Collection<String> stringCollec )
+        STRING_COLLEC_TO_ENTITY_REF_ITERABLE = stringCollec -> {
+            if( stringCollec == null )
             {
-                if( stringCollec == null )
-                {
-                    return Iterables.empty();
-                }
-                List<EntityReference> refList = new ArrayList<>();
-                for( String assId : stringCollec )
-                {
-                    refList.add( EntityReference.parseEntityReference( assId ) );
-                }
-                return refList;
+                return Iterables.empty();
             }
+            return stringCollec.stream()
+                .map( EntityReference::parseEntityReference )
+                .collect( Collectors.toList() );
         };
-        STRING_MAP_TO_ENTITY_REF_MAP = new Function<Map<String, String>, Map<String, EntityReference>>()
-        {
-            @Override
-            public Map<String, EntityReference> apply( Map<String, String> stringMap )
+        STRING_MAP_TO_ENTITY_REF_MAP = stringMap -> {
+            if( stringMap == null )
             {
-                if( stringMap == null )
-                {
-                    return Collections.emptyMap();
-                }
-                Map<String, EntityReference> refMap = new LinkedHashMap<>( stringMap.size() );
-                for( Map.Entry<String, String> entry : stringMap.entrySet() )
-                {
-                    refMap.put( entry.getKey(), EntityReference.parseEntityReference( entry.getValue() ) );
-                }
-                return refMap;
+                return Collections.emptyMap();
             }
+            Map<String, EntityReference> refMap = new LinkedHashMap<>( stringMap.size() );
+            for( Map.Entry<String, String> entry : stringMap.entrySet() )
+            {
+                refMap.put( entry.getKey(), EntityReference.parseEntityReference( entry.getValue() ) );
+            }
+            return refMap;
         };
     }
 
@@ -166,6 +143,7 @@ public class ValueToEntityMixin
     public <T> T create( Class<T> entityType, Object value, Function<T, T> prototypeOpportunity )
     {
         EntityBuilder<?> builder = doConversion( entityType, null, value );
+        //noinspection unchecked
         prototypeOpportunity.apply( (T) builder.instance() );
         return createInstance( builder );
     }
@@ -174,6 +152,7 @@ public class ValueToEntityMixin
     public <T> T create( Class<T> entityType, String identity, Object value, Function<T, T> prototypeOpportunity )
     {
         EntityBuilder<?> builder = doConversion( entityType, identity, value );
+        //noinspection unchecked
         prototypeOpportunity.apply( (T) builder.instance() );
         return createInstance( builder );
     }
@@ -182,14 +161,7 @@ public class ValueToEntityMixin
     public <T> Iterable<T> create( final Class<T> entityType, final Iterable<Object> values )
     {
         return Iterables.map(
-            new Function<Object, T>()
-            {
-                @Override
-                public T apply( Object value )
-                {
-                    return create( entityType, value );
-                }
-            },
+            value -> create( entityType, value ),
             values
         );
     }
@@ -201,14 +173,7 @@ public class ValueToEntityMixin
     )
     {
         return Iterables.map(
-            new Function<Object, T>()
-            {
-                @Override
-                public T apply( Object value )
-                {
-                    return create( entityType, value, prototypeOpportunity );
-                }
-            },
+            value -> create( entityType, value, prototypeOpportunity ),
             values
         );
     }
@@ -220,9 +185,9 @@ public class ValueToEntityMixin
         {
             throw new EntityTypeNotFoundException( entityType.getName(),
                                                    module.name(),
-                                                   map( ModelModule.toStringFunction,
-                                                        module.findVisibleEntityTypes()
-                                                   ) );
+                                                   module.findVisibleEntityTypes()
+                                                       .map( ModelModule.toStringFunction )
+            );
         }
 
         ValueComposite vComposite = (ValueComposite) value;
@@ -244,116 +209,93 @@ public class ValueToEntityMixin
         final AssociationStateHolder vState, final AssociationStateDescriptor vStateDesc
     )
     {
-        Function<PropertyDescriptor, Object> props = new Function<PropertyDescriptor, Object>()
-        {
-            @Override
-            public Object apply( PropertyDescriptor ePropDesc )
+        Function<PropertyDescriptor, Object> props = ePropDesc -> {
+            try
             {
+                return vState.propertyFor( ePropDesc.accessor() ).get();
+            }
+            catch( IllegalArgumentException propNotFoundOnValue )
+            {
+                // Property not found
+                return null;
+            }
+        };
+        Function<AssociationDescriptor, EntityReference> assocs = eAssocDesc -> {
+            try
+            {
+                return EntityReference.entityReferenceFor( vState.associationFor( eAssocDesc.accessor() ) );
+            }
+            catch( IllegalArgumentException assocNotFoundOnValue )
+            {
+                // Find String Property and convert to Association
+                String propName = eAssocDesc.qualifiedName().name();
                 try
                 {
-                    return vState.propertyFor( ePropDesc.accessor() ).get();
+                    PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
+                    if( STRING_TYPE_SPEC.test( vPropDesc.valueType() ) )
+                    {
+                        String assocState = (String) vState.propertyFor( vPropDesc.accessor() ).get();
+                        return EntityReference.parseEntityReference( assocState );
+                    }
+                    return null;
                 }
                 catch( IllegalArgumentException propNotFoundOnValue )
                 {
-                    // Property not found
                     return null;
                 }
             }
         };
-        Function<AssociationDescriptor, EntityReference> assocs
-            = new Function<AssociationDescriptor, EntityReference>()
-        {
-            @Override
-            public EntityReference apply( AssociationDescriptor eAssocDesc )
+        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssocs = eAssocDesc -> {
+            try
             {
+                ManyAssociation<Object> vAssocState = vState.manyAssociationFor( eAssocDesc.accessor() );
+                return MANY_ASSOC_TO_ENTITY_REF_ITERABLE.apply( vAssocState );
+            }
+            catch( IllegalArgumentException assocNotFoundOnValue )
+            {
+                // Find Collection<String> Property and convert to ManyAssociation
+                String propName = eAssocDesc.qualifiedName().name();
                 try
                 {
-                    return EntityReference.entityReferenceFor( vState.associationFor( eAssocDesc.accessor() ) );
+                    PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
+                    if( STRING_COLLECTION_TYPE_SPEC.test( vPropDesc.valueType() ) )
+                    {
+                        @SuppressWarnings( "unchecked" )
+                        Collection<String> vAssocState = (Collection) vState.propertyFor( vPropDesc.accessor() ).get();
+                        return STRING_COLLEC_TO_ENTITY_REF_ITERABLE.apply( vAssocState );
+                    }
+                    return Iterables.empty();
                 }
-                catch( IllegalArgumentException assocNotFoundOnValue )
+                catch( IllegalArgumentException propNotFoundOnValue )
                 {
-                    // Find String Property and convert to Association
-                    String propName = eAssocDesc.qualifiedName().name();
-                    try
-                    {
-                        PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
-                        if( STRING_TYPE_SPEC.test( vPropDesc.valueType() ) )
-                        {
-                            String assocState = (String) vState.propertyFor( vPropDesc.accessor() ).get();
-                            return EntityReference.parseEntityReference( assocState );
-                        }
-                        return null;
-                    }
-                    catch( IllegalArgumentException propNotFoundOnValue )
-                    {
-                        return null;
-                    }
+                    return Iterables.empty();
                 }
             }
         };
-        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssocs
-            = new Function<AssociationDescriptor, Iterable<EntityReference>>()
-        {
-            @Override
-            public Iterable<EntityReference> apply( AssociationDescriptor eAssocDesc )
+        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssocs = eAssocDesc -> {
+            try
             {
-                try
-                {
-                    ManyAssociation<Object> vAssocState = vState.manyAssociationFor( eAssocDesc.accessor() );
-                    return MANY_ASSOC_TO_ENTITY_REF_ITERABLE.apply( vAssocState );
-                }
-                catch( IllegalArgumentException assocNotFoundOnValue )
-                {
-                    // Find Collection<String> Property and convert to ManyAssociation
-                    String propName = eAssocDesc.qualifiedName().name();
-                    try
-                    {
-                        PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
-                        if( STRING_COLLECTION_TYPE_SPEC.test( vPropDesc.valueType() ) )
-                        {
-                            Collection<String> vAssocState = (Collection) vState
-                                .propertyFor( vPropDesc.accessor() ).get();
-                            return STRING_COLLEC_TO_ENTITY_REF_ITERABLE.apply( vAssocState );
-                        }
-                        return Iterables.empty();
-                    }
-                    catch( IllegalArgumentException propNotFoundOnValue )
-                    {
-                        return Iterables.empty();
-                    }
-                }
+                NamedAssociation<?> vAssocState = vState.namedAssociationFor( eAssocDesc.accessor() );
+                return NAMED_ASSOC_TO_ENTITY_REF_MAP.apply( vAssocState );
             }
-        };
-        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssocs
-            = new Function<AssociationDescriptor, Map<String, EntityReference>>()
-        {
-            @Override
-            public Map<String, EntityReference> apply( AssociationDescriptor eAssocDesc )
+            catch( IllegalArgumentException assocNotFoundOnValue )
             {
+                // Find Map<String,String> Property and convert to NamedAssociation
+                String propName = eAssocDesc.qualifiedName().name();
                 try
                 {
-                    NamedAssociation<?> vAssocState = vState.namedAssociationFor( eAssocDesc.accessor() );
-                    return NAMED_ASSOC_TO_ENTITY_REF_MAP.apply( vAssocState );
+                    PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
+                    if( STRING_MAP_TYPE_SPEC.test( vPropDesc.valueType() ) )
+                    {
+                        //noinspection unchecked
+                        Map<String, String> vAssocState = (Map) vState.propertyFor( vPropDesc.accessor() ).get();
+                        return STRING_MAP_TO_ENTITY_REF_MAP.apply( vAssocState );
+                    }
+                    return Collections.EMPTY_MAP;
                 }
-                catch( IllegalArgumentException assocNotFoundOnValue )
+                catch( IllegalArgumentException propNotFoundOnValue )
                 {
-                    // Find Map<String,String> Property and convert to NamedAssociation
-                    String propName = eAssocDesc.qualifiedName().name();
-                    try
-                    {
-                        PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
-                        if( STRING_MAP_TYPE_SPEC.test( vPropDesc.valueType() ) )
-                        {
-                            Map<String, String> vAssocState = (Map) vState
-                                .propertyFor( vPropDesc.accessor() ).get();
-                            return STRING_MAP_TO_ENTITY_REF_MAP.apply( vAssocState );
-                        }
-                        return Collections.EMPTY_MAP;
-                    }
-                    catch( IllegalArgumentException propNotFoundOnValue )
-                    {
-                        return Collections.EMPTY_MAP;
-                    }
+                    return Collections.EMPTY_MAP;
                 }
             }
         };
@@ -367,123 +309,99 @@ public class ValueToEntityMixin
         final AssociationStateHolder vState, final AssociationStateDescriptor vStateDesc
     )
     {
-        Function<PropertyDescriptor, Object> props
-            = new Function<PropertyDescriptor, Object>()
-        {
-            @Override
-            public Object apply( PropertyDescriptor ePropDesc )
+        Function<PropertyDescriptor, Object> props = ePropDesc -> {
+            String propName = ePropDesc.qualifiedName().name();
+            try
             {
-                String propName = ePropDesc.qualifiedName().name();
+                PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
+                return vState.propertyFor( vPropDesc.accessor() ).get();
+            }
+            catch( IllegalArgumentException propNotFoundOnValue )
+            {
+                // Property not found on Value
+                return null;
+            }
+        };
+        Function<AssociationDescriptor, EntityReference> assocs = eAssocDesc -> {
+            String assocName = eAssocDesc.qualifiedName().name();
+            try
+            {
+                AssociationDescriptor vAssocDesc = vStateDesc.getAssociationByName( assocName );
+                Object assocEntity = vState.associationFor( vAssocDesc.accessor() ).get();
+                return assocEntity == null ? null : EntityReference.entityReferenceFor( assocEntity );
+            }
+            catch( IllegalArgumentException assocNotFoundOnValue )
+            {
+                // Association not found on Value, find Property<String> and convert to Association
                 try
                 {
-                    PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( propName );
-                    return vState.propertyFor( vPropDesc.accessor() ).get();
+                    PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( assocName );
+                    if( STRING_TYPE_SPEC.test( vPropDesc.valueType() ) )
+                    {
+                        String assocId = (String) vState.propertyFor( vPropDesc.accessor() ).get();
+                        return assocId == null ? null : EntityReference.parseEntityReference( assocId );
+                    }
+                    return null;
                 }
                 catch( IllegalArgumentException propNotFoundOnValue )
                 {
-                    // Property not found on Value
                     return null;
                 }
             }
         };
-        Function<AssociationDescriptor, EntityReference> assocs
-            = new Function<AssociationDescriptor, EntityReference>()
-        {
-            @Override
-            public EntityReference apply( AssociationDescriptor eAssocDesc )
+        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssocs = eAssocDesc -> {
+            String assocName = eAssocDesc.qualifiedName().name();
+            try
             {
-                String assocName = eAssocDesc.qualifiedName().name();
+                AssociationDescriptor vAssocDesc = vStateDesc.getManyAssociationByName( assocName );
+                ManyAssociation<Object> vManyAssoc = vState.manyAssociationFor( vAssocDesc.accessor() );
+                return MANY_ASSOC_TO_ENTITY_REF_ITERABLE.apply( vManyAssoc );
+            }
+            catch( IllegalArgumentException assocNotFoundOnValue )
+            {
+                // ManyAssociation not found on Value, find List<String> and convert to ManyAssociation
                 try
                 {
-                    AssociationDescriptor vAssocDesc = vStateDesc.getAssociationByName( assocName );
-                    Object assocEntity = vState.associationFor( vAssocDesc.accessor() ).get();
-                    return assocEntity == null ? null : EntityReference.entityReferenceFor( assocEntity );
+                    PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( assocName );
+                    if( STRING_COLLECTION_TYPE_SPEC.test( vPropDesc.valueType() ) )
+                    {
+                        @SuppressWarnings( "unchecked" )
+                        Collection<String> vAssocState = (Collection) vState.propertyFor( vPropDesc.accessor() ).get();
+                        return STRING_COLLEC_TO_ENTITY_REF_ITERABLE.apply( vAssocState );
+                    }
+                    return Iterables.empty();
                 }
-                catch( IllegalArgumentException assocNotFoundOnValue )
+                catch( IllegalArgumentException propNotFoundOnValue )
                 {
-                    // Association not found on Value, find Property<String> and convert to Association
-                    try
-                    {
-                        PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( assocName );
-                        if( STRING_TYPE_SPEC.test( vPropDesc.valueType() ) )
-                        {
-                            String assocId = (String) vState.propertyFor( vPropDesc.accessor() ).get();
-                            return assocId == null ? null : EntityReference.parseEntityReference( assocId );
-                        }
-                        return null;
-                    }
-                    catch( IllegalArgumentException propNotFoundOnValue )
-                    {
-                        return null;
-                    }
+                    return Iterables.empty();
                 }
             }
         };
-        Function<AssociationDescriptor, Iterable<EntityReference>> manyAssocs
-            = new Function<AssociationDescriptor, Iterable<EntityReference>>()
-        {
-            @Override
-            public Iterable<EntityReference> apply( AssociationDescriptor eAssocDesc )
+        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssocs = eAssocDesc -> {
+            String assocName = eAssocDesc.qualifiedName().name();
+            try
             {
-                String assocName = eAssocDesc.qualifiedName().name();
-                try
-                {
-                    AssociationDescriptor vAssocDesc = vStateDesc.getManyAssociationByName( assocName );
-                    ManyAssociation<Object> vManyAssoc = vState.manyAssociationFor( vAssocDesc.accessor() );
-                    return MANY_ASSOC_TO_ENTITY_REF_ITERABLE.apply( vManyAssoc );
-                }
-                catch( IllegalArgumentException assocNotFoundOnValue )
-                {
-                    // ManyAssociation not found on Value, find List<String> and convert to ManyAssociation
-                    try
-                    {
-                        PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( assocName );
-                        if( STRING_COLLECTION_TYPE_SPEC.test( vPropDesc.valueType() ) )
-                        {
-                            Collection<String> vAssocState = (Collection) vState
-                                .propertyFor( vPropDesc.accessor() ).get();
-                            return STRING_COLLEC_TO_ENTITY_REF_ITERABLE.apply( vAssocState );
-                        }
-                        return Iterables.empty();
-                    }
-                    catch( IllegalArgumentException propNotFoundOnValue )
-                    {
-                        return Iterables.empty();
-                    }
-                }
+                AssociationDescriptor vAssocDesc = vStateDesc.getNamedAssociationByName( assocName );
+                NamedAssociation<Object> vAssocState = vState.namedAssociationFor( vAssocDesc.accessor() );
+                return NAMED_ASSOC_TO_ENTITY_REF_MAP.apply( vAssocState );
             }
-        };
-        Function<AssociationDescriptor, Map<String, EntityReference>> namedAssocs
-            = new Function<AssociationDescriptor, Map<String, EntityReference>>()
-        {
-            @Override
-            public Map<String, EntityReference> apply( AssociationDescriptor eAssocDesc )
+            catch( IllegalArgumentException assocNotFoundOnValue )
             {
-                String assocName = eAssocDesc.qualifiedName().name();
+                // Find Map<String,String> Property and convert to NamedAssociation
                 try
                 {
-                    AssociationDescriptor vAssocDesc = vStateDesc.getNamedAssociationByName( assocName );
-                    NamedAssociation<Object> vAssocState = vState.namedAssociationFor( vAssocDesc.accessor() );
-                    return NAMED_ASSOC_TO_ENTITY_REF_MAP.apply( vAssocState );
+                    PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( assocName );
+                    if( STRING_MAP_TYPE_SPEC.test( vPropDesc.valueType() ) )
+                    {
+                        @SuppressWarnings( "unchecked" )
+                        Map<String, String> vAssocState = (Map) vState.propertyFor( vPropDesc.accessor() ).get();
+                        return STRING_MAP_TO_ENTITY_REF_MAP.apply( vAssocState );
+                    }
+                    return Collections.EMPTY_MAP;
                 }
-                catch( IllegalArgumentException assocNotFoundOnValue )
+                catch( IllegalArgumentException propNotFoundOnValue )
                 {
-                    // Find Map<String,String> Property and convert to NamedAssociation
-                    try
-                    {
-                        PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( assocName );
-                        if( STRING_MAP_TYPE_SPEC.test( vPropDesc.valueType() ) )
-                        {
-                            Map<String, String> vAssocState = (Map) vState
-                                .propertyFor( vPropDesc.accessor() ).get();
-                            return STRING_MAP_TO_ENTITY_REF_MAP.apply( vAssocState );
-                        }
-                        return Collections.EMPTY_MAP;
-                    }
-                    catch( IllegalArgumentException propNotFoundOnValue )
-                    {
-                        return Collections.EMPTY_MAP;
-                    }
+                    return Collections.EMPTY_MAP;
                 }
             }
         };
@@ -494,6 +412,7 @@ public class ValueToEntityMixin
 
     protected <T> T createInstance( EntityBuilder<?> builder )
     {
+        //noinspection unchecked
         return (T) builder.newInstance();
     }
 
@@ -529,24 +448,22 @@ public class ValueToEntityMixin
     )
         throws NoSuchEntityException
     {
-        for( PropertyDescriptor ePropDesc : eStateDesc.properties() )
+        eStateDesc.properties().forEach( ePropDesc ->
         {
-            if( IDENTITY_STATE_NAME.equals( ePropDesc.qualifiedName() ) )
+            if( ! IDENTITY_STATE_NAME.equals( ePropDesc.qualifiedName() ) )
             {
-                // Ignore Identity, could be logged
-                continue;
+                try
+                {
+                    PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByQualifiedName( ePropDesc.qualifiedName() );
+                    eState.propertyFor( ePropDesc.accessor() ).set( vState.propertyFor( vPropDesc.accessor() ).get() );
+                }
+                catch( IllegalArgumentException propNotFoundOnValue )
+                {
+                    // Property not found on Value, do nothing
+                }
             }
-            try
-            {
-                PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByQualifiedName( ePropDesc.qualifiedName() );
-                eState.propertyFor( ePropDesc.accessor() ).set( vState.propertyFor( vPropDesc.accessor() ).get() );
-            }
-            catch( IllegalArgumentException propNotFoundOnValue )
-            {
-                // Property not found on Value, do nothing
-            }
-        }
-        for( AssociationDescriptor eAssocDesc : eStateDesc.associations() )
+        } );
+        eStateDesc.associations().forEach( eAssocDesc ->
         {
             Association<Object> eAssoc = eState.associationFor( eAssocDesc.accessor() );
             try
@@ -580,8 +497,8 @@ public class ValueToEntityMixin
                     // Do nothing
                 }
             }
-        }
-        for( AssociationDescriptor eAssocDesc : eStateDesc.manyAssociations() )
+        });
+        eStateDesc.manyAssociations().forEach( eAssocDesc ->
         {
             ManyAssociation<Object> eManyAssoc = eState.manyAssociationFor( eAssocDesc.accessor() );
             try
@@ -589,14 +506,8 @@ public class ValueToEntityMixin
                 AssociationDescriptor vAssocDesc
                     = vStateDesc.getManyAssociationByQualifiedName( eAssocDesc.qualifiedName() );
                 ManyAssociation<Object> vManyAssoc = vState.manyAssociationFor( vAssocDesc.accessor() );
-                for( Object assoc : eManyAssoc.toList() )
-                {
-                    eManyAssoc.remove( assoc );
-                }
-                for( Object assoc : vManyAssoc.toList() )
-                {
-                    eManyAssoc.add( assoc );
-                }
+                eManyAssoc.toList().forEach( eManyAssoc::remove );
+                vManyAssoc.toList().forEach( eManyAssoc::add );
             }
             catch( IllegalArgumentException assocNotFoundOnValue )
             {
@@ -607,11 +518,9 @@ public class ValueToEntityMixin
                         = vStateDesc.findPropertyModelByName( eAssocDesc.qualifiedName().name() );
                     if( STRING_COLLECTION_TYPE_SPEC.test( vPropDesc.valueType() ) )
                     {
+                        @SuppressWarnings( "unchecked" )
                         Collection<String> vAssocState = (Collection) vState.propertyFor( vPropDesc.accessor() ).get();
-                        for( Object assoc : eManyAssoc.toList() )
-                        {
-                            eManyAssoc.remove( assoc );
-                        }
+                        eManyAssoc.toList().forEach( eManyAssoc::remove );
                         if( vAssocState != null )
                         {
                             for( String eachAssoc : vAssocState )
@@ -628,8 +537,8 @@ public class ValueToEntityMixin
                     // Do nothing
                 }
             }
-        }
-        for( AssociationDescriptor eAssocDesc : eStateDesc.namedAssociations() )
+        });
+        eStateDesc.namedAssociations().forEach( eAssocDesc ->
         {
             NamedAssociation<Object> eNamedAssoc = eState.namedAssociationFor( eAssocDesc.accessor() );
             try
@@ -637,10 +546,7 @@ public class ValueToEntityMixin
                 AssociationDescriptor vAssocDesc
                     = vStateDesc.getNamedAssociationByQualifiedName( eAssocDesc.qualifiedName() );
                 NamedAssociation<Object> vNamedAssoc = vState.namedAssociationFor( vAssocDesc.accessor() );
-                for( String assocName : Iterables.toList( eNamedAssoc ) )
-                {
-                    eNamedAssoc.remove( assocName );
-                }
+                Iterables.toList( eNamedAssoc ).forEach( eNamedAssoc::remove );
                 for( Map.Entry<String, Object> assocEntry : vNamedAssoc.toMap().entrySet() )
                 {
                     eNamedAssoc.put( assocEntry.getKey(), assocEntry.getValue() );
@@ -655,11 +561,9 @@ public class ValueToEntityMixin
                         = vStateDesc.findPropertyModelByName( eAssocDesc.qualifiedName().name() );
                     if( STRING_MAP_TYPE_SPEC.test( vPropDesc.valueType() ) )
                     {
+                        @SuppressWarnings( "unchecked" )
                         Map<String, String> vAssocState = (Map) vState.propertyFor( vPropDesc.accessor() ).get();
-                        for( String assocName : Iterables.toList( eNamedAssoc ) )
-                        {
-                            eNamedAssoc.remove( assocName );
-                        }
+                        Iterables.toList( eNamedAssoc ).forEach( eNamedAssoc::remove );
                         if( vAssocState != null )
                         {
                             for( Map.Entry<String, String> assocEntry : vAssocState.entrySet() )
@@ -677,7 +581,7 @@ public class ValueToEntityMixin
                     // Do nothing
                 }
             }
-        }
+        } );
     }
 
     private void doUnQualifiedUpdate(
@@ -685,24 +589,22 @@ public class ValueToEntityMixin
         AssociationStateHolder vState, AssociationStateDescriptor vStateDesc
     )
     {
-        for( PropertyDescriptor ePropDesc : eStateDesc.properties() )
+        eStateDesc.properties().forEach( ePropDesc ->
         {
-            if( IDENTITY_STATE_NAME.equals( ePropDesc.qualifiedName() ) )
+            if( ! IDENTITY_STATE_NAME.equals( ePropDesc.qualifiedName() ) )
             {
-                // Ignore Identity, could be logged
-                continue;
+                try
+                {
+                    PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( ePropDesc.qualifiedName().name() );
+                    eState.propertyFor( ePropDesc.accessor() ).set( vState.propertyFor( vPropDesc.accessor() ).get() );
+                }
+                catch( IllegalArgumentException propNotFoundOnValue )
+                {
+                    // Property not found on Value, do nothing
+                }
             }
-            try
-            {
-                PropertyDescriptor vPropDesc = vStateDesc.findPropertyModelByName( ePropDesc.qualifiedName().name() );
-                eState.propertyFor( ePropDesc.accessor() ).set( vState.propertyFor( vPropDesc.accessor() ).get() );
-            }
-            catch( IllegalArgumentException propNotFoundOnValue )
-            {
-                // Property not found on Value, do nothing
-            }
-        }
-        for( AssociationDescriptor eAssocDesc : eStateDesc.associations() )
+        } );
+        eStateDesc.associations().forEach( eAssocDesc ->
         {
             Association<Object> eAssoc = eState.associationFor( eAssocDesc.accessor() );
             try
@@ -735,8 +637,8 @@ public class ValueToEntityMixin
                     // Do nothing
                 }
             }
-        }
-        for( AssociationDescriptor eAssocDesc : eStateDesc.manyAssociations() )
+        } );
+        eStateDesc.manyAssociations().forEach( eAssocDesc ->
         {
             ManyAssociation<Object> eManyAssoc = eState.manyAssociationFor( eAssocDesc.accessor() );
             try
@@ -744,14 +646,8 @@ public class ValueToEntityMixin
                 AssociationDescriptor vAssDesc
                     = vStateDesc.getManyAssociationByName( eAssocDesc.qualifiedName().name() );
                 ManyAssociation<Object> vManyAss = vState.manyAssociationFor( vAssDesc.accessor() );
-                for( Object ass : eManyAssoc.toList() )
-                {
-                    eManyAssoc.remove( ass );
-                }
-                for( Object ass : vManyAss.toList() )
-                {
-                    eManyAssoc.add( ass );
-                }
+                eManyAssoc.toList().forEach( eManyAssoc::remove );
+                vManyAss.toList().forEach( eManyAssoc::add );
             }
             catch( IllegalArgumentException assNotFoundOnValue )
             {
@@ -762,19 +658,17 @@ public class ValueToEntityMixin
                         = vStateDesc.findPropertyModelByName( eAssocDesc.qualifiedName().name() );
                     if( STRING_COLLECTION_TYPE_SPEC.test( vPropDesc.valueType() ) )
                     {
+                        @SuppressWarnings( "unchecked" )
                         Collection<String> vAssocState = (Collection) vState.propertyFor( vPropDesc.accessor() ).get();
-                        for( Object ass : eManyAssoc.toList() )
-                        {
-                            eManyAssoc.remove( ass );
-                        }
+                        eManyAssoc.toList().forEach( eManyAssoc::remove );
                         if( vAssocState != null )
                         {
-                            for( String eachAssoc : vAssocState )
+                            vAssocState.forEach( eachAssoc ->
                             {
                                 eManyAssoc.add(
-                                    module.currentUnitOfWork().get( (Class) eAssocDesc.type(), eachAssoc )
+                                    module.currentUnitOfWork().get( (Class<?>) eAssocDesc.type(), eachAssoc )
                                 );
-                            }
+                            } );
                         }
                     }
                 }
@@ -783,8 +677,8 @@ public class ValueToEntityMixin
                     // Do nothing
                 }
             }
-        }
-        for( AssociationDescriptor eAssocDesc : eStateDesc.namedAssociations() )
+        } );
+        eStateDesc.namedAssociations().forEach( eAssocDesc ->
         {
             NamedAssociation<Object> eNamedAssoc = eState.namedAssociationFor( eAssocDesc.accessor() );
             try
@@ -792,10 +686,7 @@ public class ValueToEntityMixin
                 AssociationDescriptor vAssocDesc
                     = vStateDesc.getNamedAssociationByName( eAssocDesc.qualifiedName().name() );
                 NamedAssociation<Object> vNamedAssoc = vState.namedAssociationFor( vAssocDesc.accessor() );
-                for( String assocName : Iterables.toList( eNamedAssoc ) )
-                {
-                    eNamedAssoc.remove( assocName );
-                }
+                Iterables.toList( eNamedAssoc ).forEach( eNamedAssoc::remove );
                 for( Map.Entry<String, Object> assocEntry : vNamedAssoc.toMap().entrySet() )
                 {
                     eNamedAssoc.put( assocEntry.getKey(), assocEntry.getValue() );
@@ -810,11 +701,10 @@ public class ValueToEntityMixin
                         = vStateDesc.findPropertyModelByName( eAssocDesc.qualifiedName().name() );
                     if( STRING_MAP_TYPE_SPEC.test( vPropDesc.valueType() ) )
                     {
-                        Map<String, String> vAssocState = (Map) vState.propertyFor( vPropDesc.accessor() ).get();
-                        for( String assocName : Iterables.toList( eNamedAssoc ) )
-                        {
-                            eNamedAssoc.remove( assocName );
-                        }
+                        @SuppressWarnings( "unchecked" )
+                        Map<String, String> vAssocState =
+                            (Map<String,String>) vState.propertyFor( vPropDesc.accessor() ).get();
+                        Iterables.toList( eNamedAssoc ).forEach( eNamedAssoc::remove );
                         if( vAssocState != null )
                         {
                             for( Map.Entry<String, String> assocEntry : vAssocState.entrySet() )
@@ -832,6 +722,6 @@ public class ValueToEntityMixin
                     // Do nothing
                 }
             }
-        }
+        } );
     }
 }

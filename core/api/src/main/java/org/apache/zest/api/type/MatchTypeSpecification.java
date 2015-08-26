@@ -34,13 +34,14 @@ public class MatchTypeSpecification
     @Override
     public boolean test( HasTypes item )
     {
-        for( Class<?> type : item.types() )
-        {
-            if( matchType.isAssignableFrom( type ) )
-            {
-                return true;
-            }
-        }
-        return false;
+        return item.types().anyMatch( matchType::isAssignableFrom );
+//        for( Class<?> type : item.types() )
+//        {
+//            if( matchType.isAssignableFrom( type ) )
+//            {
+//                return true;
+//            }
+//        }
+//        return false;
     }
 }

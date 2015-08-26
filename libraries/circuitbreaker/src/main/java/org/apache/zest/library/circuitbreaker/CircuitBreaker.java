@@ -23,9 +23,6 @@ import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
 import java.util.Date;
 import java.util.function.Predicate;
-import org.apache.zest.functional.Specifications;
-
-import static org.apache.zest.functional.Specifications.not;
 
 /**
  * Implementation of CircuitBreaker pattern
@@ -63,7 +60,7 @@ public class CircuitBreaker
 
     public CircuitBreaker( int threshold, long timeout )
     {
-        this( threshold, timeout, not( Specifications.<Throwable>TRUE() ) ); // Trip on all exceptions as default
+        this( threshold, timeout, ( (Predicate<Throwable>) trip -> true ).negate() ); // Trip on all exceptions as default
     }
 
     public CircuitBreaker()

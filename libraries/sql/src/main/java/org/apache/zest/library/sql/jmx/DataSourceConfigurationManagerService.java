@@ -47,7 +47,6 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.ServiceReference;
@@ -116,7 +115,7 @@ public interface DataSourceConfigurationManagerService
         @Service
         ServiceReference<ServiceImporter<DataSource>> dataSourceService;
 
-        private List<ObjectName> configurationNames = new ArrayList<ObjectName>();
+        private List<ObjectName> configurationNames = new ArrayList<>();
 
         @Override
         public void exportDataSources()
@@ -124,20 +123,20 @@ public interface DataSourceConfigurationManagerService
         {
             for ( ServiceReference<DataSource> dataSource : dataSources ) {
                 String name = dataSource.identity();
-                Module module = ( Module ) spi.moduleOf( dataSource );
+                Module module = spi.moduleOf( dataSource );
                 EntityDescriptor descriptor = module.entityDescriptor( DataSourceConfiguration.class.getName() );
-                List<MBeanAttributeInfo> attributes = new ArrayList<MBeanAttributeInfo>();
-                Map<String, AccessibleObject> properties = new LinkedHashMap<String, AccessibleObject>();
-                for ( PropertyDescriptor persistentProperty : descriptor.state().properties() ) {
+                List<MBeanAttributeInfo> attributes = new ArrayList<>();
+                Map<String, AccessibleObject> properties = new LinkedHashMap<>();
+                descriptor.state().properties().forEach(persistentProperty -> {
                     if ( !persistentProperty.isImmutable() ) {
                         String propertyName = persistentProperty.qualifiedName().name();
                         String type = persistentProperty.valueType().mainType().getName();
                         attributes.add( new MBeanAttributeInfo( propertyName, type, propertyName, true, true, type.equals( "java.lang.Boolean" ) ) );
                         properties.put( propertyName, persistentProperty.accessor() );
                     }
-                }
+                } );
 
-                List<MBeanOperationInfo> operations = new ArrayList<MBeanOperationInfo>();
+                List<MBeanOperationInfo> operations = new ArrayList<>();
                 operations.add( new MBeanOperationInfo( "restart", "Restart DataSource", new MBeanParameterInfo[ 0 ], "void", MBeanOperationInfo.ACTION_INFO ) );
 
                 MBeanInfo mbeanInfo = new MBeanInfo( DataSourceConfiguration.class.getName(), name, attributes.toArray( new MBeanAttributeInfo[ attributes.size() ] ), null, operations.toArray( new MBeanOperationInfo[ operations.size() ] ), null );
@@ -221,11 +220,7 @@ public interface DataSourceConfigurationManagerService
                     try {
                         Object value = getAttribute( name );
                         list.add( new Attribute( name, value ) );
-                    } catch ( AttributeNotFoundException e ) {
-                        e.printStackTrace();
-                    } catch ( MBeanException e ) {
-                        e.printStackTrace();
-                    } catch ( ReflectionException e ) {
+                    } catch ( AttributeNotFoundException | MBeanException | ReflectionException e ) {
                         e.printStackTrace();
                     }
                 }
@@ -243,13 +238,7 @@ public interface DataSourceConfigurationManagerService
                     try {
                         setAttribute( attribute );
                         list.add( attribute );
-                    } catch ( AttributeNotFoundException e ) {
-                        e.printStackTrace();
-                    } catch ( InvalidAttributeValueException e ) {
-                        e.printStackTrace();
-                    } catch ( MBeanException e ) {
-                        e.printStackTrace();
-                    } catch ( ReflectionException e ) {
+                    } catch ( AttributeNotFoundException | InvalidAttributeValueException | ReflectionException | MBeanException e ) {
                         e.printStackTrace();
                     }
                 }

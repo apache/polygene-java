@@ -34,10 +34,8 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
-import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.impl.URIImpl;
-import org.openrdf.model.impl.ValueFactoryImpl;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.index.solr.EmbeddedSolrService;
@@ -47,8 +45,6 @@ import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.apache.zest.functional.Iterables.first;
 
 /**
  * JAVADOC
@@ -62,7 +58,7 @@ public abstract class SolrEntityIndexerMixin
     @Uses
     private EntityStateSerializer stateSerializer;
 
-    private ValueFactory valueFactory = new ValueFactoryImpl();
+//    private ValueFactory valueFactory = new ValueFactoryImpl();
 
     private SolrServer server;
     private Map<String, SchemaField> indexedFields;
@@ -99,7 +95,7 @@ public abstract class SolrEntityIndexerMixin
             {
                 // Figure out what to update
                 List<String> deleted = null;
-                List<SolrInputDocument> added = new ArrayList<SolrInputDocument>();
+                List<SolrInputDocument> added = new ArrayList<>();
                 for( EntityState entityState : entityStates )
                 {
                     if( entityState.entityDescriptor().queryable() )
@@ -107,14 +103,14 @@ public abstract class SolrEntityIndexerMixin
                         if( entityState.status().equals( EntityStatus.REMOVED ) )
                         {
                             if( deleted == null )
-                                deleted = new ArrayList<String>();
+                                deleted = new ArrayList<>();
                             deleted.add( entityState.identity().identity() );
                         } else if( entityState.status().equals( EntityStatus.UPDATED ) )
                         {
-                            added.add( indexEntityState( entityState, server ) );
+                            added.add( indexEntityState( entityState ) );
                         } else if( entityState.status().equals( EntityStatus.NEW ) )
                         {
-                            added.add( indexEntityState( entityState, server ) );
+                            added.add( indexEntityState( entityState ) );
                         }
                     }
                 }
@@ -138,8 +134,7 @@ public abstract class SolrEntityIndexerMixin
         }
     }
 
-    private SolrInputDocument indexEntityState( final EntityState entityState,
-                                                final SolrServer server )
+    private SolrInputDocument indexEntityState( final EntityState entityState )
             throws IOException, SolrServerException, JSONException
     {
         Graph graph = new GraphImpl();
@@ -147,7 +142,7 @@ public abstract class SolrEntityIndexerMixin
 
         SolrInputDocument input = new SolrInputDocument();
         input.addField( "id", entityState.identity().identity() );
-        input.addField( "type", first(entityState.entityDescriptor().types()).getName() );
+        input.addField( "type", entityState.entityDescriptor().types().findFirst().get().getName() );
         input.addField( "lastModified", new Date( entityState.lastModified() ) );
 
         for( Statement statement : graph )

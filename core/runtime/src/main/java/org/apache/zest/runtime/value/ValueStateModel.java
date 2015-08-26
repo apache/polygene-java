@@ -19,6 +19,7 @@
  */
 package org.apache.zest.runtime.value;
 
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateDescriptor;
 import org.apache.zest.api.common.QualifiedName;
@@ -93,19 +94,19 @@ public final class ValueStateModel
     }
 
     @Override
-    public Iterable<AssociationModel> associations()
+    public Stream<AssociationModel> associations()
     {
         return associationsModel.associations();
     }
 
     @Override
-    public Iterable<ManyAssociationModel> manyAssociations()
+    public Stream<ManyAssociationModel> manyAssociations()
     {
         return manyAssociationsModel.manyAssociations();
     }
 
     @Override
-    public Iterable<NamedAssociationModel> namedAssociations()
+    public Stream<NamedAssociationModel> namedAssociations()
     {
         return namedAssociationsModel.namedAssociations();
     }

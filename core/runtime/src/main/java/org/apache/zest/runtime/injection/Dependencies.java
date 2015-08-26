@@ -19,20 +19,14 @@
 package org.apache.zest.runtime.injection;
 
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * TODO
  */
 public interface Dependencies
 {
-    public static Function<Dependencies, Iterable<DependencyModel>> DEPENDENCIES_FUNCTION = new Function<Dependencies, Iterable<DependencyModel>>()
-    {
-        @Override
-        public Iterable<DependencyModel> apply( Dependencies dependencies )
-        {
-            return dependencies.dependencies();
-        }
-    };
+    Function<Dependencies, Stream<DependencyModel>> DEPENDENCIES_FUNCTION = Dependencies::dependencies;
 
-    Iterable<DependencyModel> dependencies();
+    Stream<DependencyModel> dependencies();
 }

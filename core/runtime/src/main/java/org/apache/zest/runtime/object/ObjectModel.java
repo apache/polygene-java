@@ -14,6 +14,7 @@
 
 package org.apache.zest.runtime.object;
 
+import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
@@ -26,8 +27,6 @@ import org.apache.zest.runtime.composite.ConstructorsModel;
 import org.apache.zest.runtime.injection.InjectedFieldsModel;
 import org.apache.zest.runtime.injection.InjectedMethodsModel;
 import org.apache.zest.runtime.injection.InjectionContext;
-
-import static org.apache.zest.functional.Iterables.iterable;
 
 /**
  * JAVADOC
@@ -58,10 +57,9 @@ public final class ObjectModel
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
-        Iterable<? extends Class<?>> iterable = iterable( objectType );
-        return (Iterable<Class<?>>) iterable;
+        return Stream.of( objectType );
     }
 
     @Override

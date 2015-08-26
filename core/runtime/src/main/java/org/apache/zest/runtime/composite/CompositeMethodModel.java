@@ -22,6 +22,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.composite.MethodDescriptor;
 import org.apache.zest.api.util.NullArgumentException;
@@ -30,11 +32,6 @@ import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.spi.module.ModuleSpi;
-
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.flattenIterables;
-import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.functional.Specifications.notNull;
 
 /**
  * JAVADOC
@@ -94,10 +91,11 @@ public final class CompositeMethodModel
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        return flattenIterables( filter( notNull(), iterable( concerns != null ? concerns.dependencies() : null,
-                                                              sideEffects != null ? sideEffects.dependencies() : null ) ) );
+        return Stream.of( concerns, sideEffects ).filter( e -> e != null ).flatMap( Dependencies::dependencies );
+//        return flattenIterables( filter( notNull(), iterable( concerns != null ? concerns.dependencies() : null,
+//                                                              sideEffects != null ? sideEffects.dependencies() : null ) ) );
     }
 
     // Context
@@ -197,7 +195,7 @@ public final class CompositeMethodModel
 
     public Iterable<Method> invocationsFor( Class<?> mixinClass )
     {
-        return mixins.invocationsFor( mixinClass );
+        return mixins.invocationsFor( mixinClass ).collect( Collectors.toList() );
     }
 
     public class CompositeMethodAnnotatedElement

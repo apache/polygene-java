@@ -35,7 +35,6 @@ import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.functional.Specifications;
 import org.apache.zest.library.restlet.identity.IdentityManager;
 
 public class SmallCrudRepositoryMixin<T extends Identity>
@@ -102,7 +101,7 @@ public class SmallCrudRepositoryMixin<T extends Identity>
     @Override
     public Iterable<T> findAll()
     {
-        return find( Specifications.TRUE() );
+        return find( item -> true );
     }
 
     @Override

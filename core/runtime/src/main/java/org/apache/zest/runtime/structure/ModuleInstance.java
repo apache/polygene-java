@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
@@ -52,6 +53,7 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.QueryBuilderFactory;
+import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
@@ -67,7 +69,6 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.functional.Specifications;
 import org.apache.zest.runtime.activation.ActivationDelegate;
 import org.apache.zest.runtime.composite.FunctionStateResolver;
 import org.apache.zest.runtime.composite.StateResolver;
@@ -83,7 +84,6 @@ import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.object.ObjectModel;
 import org.apache.zest.runtime.object.ObjectsModel;
 import org.apache.zest.runtime.property.PropertyInstance;
-import org.apache.zest.runtime.property.PropertyModel;
 import org.apache.zest.runtime.query.QueryBuilderFactoryImpl;
 import org.apache.zest.runtime.service.ImportedServicesInstance;
 import org.apache.zest.runtime.service.ImportedServicesModel;
@@ -102,15 +102,11 @@ import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerialization;
 
+import static java.util.stream.Stream.concat;
 import static org.apache.zest.api.util.Classes.RAW_CLASS;
 import static org.apache.zest.api.util.Classes.modelTypeSpecification;
-import static org.apache.zest.functional.Iterables.cast;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.flatten;
 import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.functional.Iterables.map;
-import static org.apache.zest.functional.Iterables.toList;
+import static org.apache.zest.runtime.legacy.Specifications.translate;
 
 /**
  * Instance of a Zest Module. Contains the various composites for this Module.
@@ -262,6 +258,42 @@ public class ModuleInstance
         }
     }
 
+    @Override
+    public Stream<? extends TransientDescriptor> transientComposites()
+    {
+        return transients.stream();
+    }
+
+    @Override
+    public Stream<? extends ValueDescriptor> valueComposites()
+    {
+        return values.stream();
+    }
+
+    @Override
+    public Stream<? extends ServiceDescriptor> serviceComposites()
+    {
+        return services.stream();
+    }
+
+    @Override
+    public Stream<? extends EntityDescriptor> entityComposites()
+    {
+        return entities.stream();
+    }
+
+    @Override
+    public Stream<? extends ImportedServiceDescriptor> importedServices()
+    {
+        return importedServices.stream();
+    }
+
+    @Override
+    public Stream<? extends ObjectDescriptor> objects()
+    {
+        return objects.stream();
+    }
+
     // Implementation of MetaInfoHolder
     @Override
     public <T> T metaInfo( Class<T> infoType )
@@ -316,12 +348,15 @@ public class ModuleInstance
         }
 
         Map<AccessibleObject, Property<?>> properties = new HashMap<>();
-        for( PropertyModel propertyModel : modelModule.model().state().properties() )
-        {
-            Property<?> property = new PropertyInstance<>( propertyModel.getBuilderInfo(),
-                                                           propertyModel.initialValue( modelModule.module() ) );
-            properties.put( propertyModel.accessor(), property );
-        }
+        modelModule.model().state().properties().forEach( propertyModel ->
+                                                          {
+                                                              Property<?> property = new PropertyInstance<>( propertyModel
+                                                                                                                 .getBuilderInfo(),
+                                                                                                             propertyModel
+                                                                                                                 .initialValue( modelModule
+                                                                                                                                    .module() ) );
+                                                              properties.put( propertyModel.accessor(), property );
+                                                          } );
 
         TransientStateInstance state = new TransientStateInstance( properties );
 
@@ -427,7 +462,7 @@ public class ModuleInstance
         NullArgumentException.validateNotNull( "prototype", prototype );
 
         ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) prototype );
-        Class<Composite> valueType = (Class<Composite>) first( valueInstance.types() );
+        Class<Composite> valueType = (Class<Composite>) valueInstance.types().findFirst().orElse( null );
 
         ModelModule<ValueModel> modelModule = typeLookup.lookupValueModel( valueType );
 
@@ -681,34 +716,38 @@ public class ModuleInstance
         return metrics;
     }
 
-    public Iterable<ModelModule<ObjectDescriptor>> visibleObjects( Visibility visibility )
+    public Stream<ModelModule<? extends ModelDescriptor>> visibleObjects( Visibility visibility )
     {
-        return map( ModelModule.<ObjectDescriptor>modelModuleFunction( this ),
-                    filter( new Visibilitypredicate( visibility ), objects.models() ) );
+        return objects.stream()
+            .filter( new Visibilitypredicate( visibility ) )
+            .map( ModelModule.<ObjectDescriptor>modelModuleFunction( this ) );
     }
 
-    public Iterable<ModelModule<TransientDescriptor>> visibleTransients( Visibility visibility )
+    public Stream<ModelModule<? extends ModelDescriptor>> visibleTransients( Visibility visibility )
     {
-        return map( ModelModule.<TransientDescriptor>modelModuleFunction( this ),
-                    filter( new Visibilitypredicate( visibility ), transients.models() ) );
+        return transients.models()
+            .filter( new Visibilitypredicate( visibility ) )
+            .map( ModelModule.<TransientDescriptor>modelModuleFunction( this ) );
     }
 
-    public Iterable<ModelModule<EntityDescriptor>> visibleEntities( Visibility visibility )
+    public Stream<ModelModule<? extends ModelDescriptor>> visibleEntities( Visibility visibility )
     {
-        return map( ModelModule.<EntityDescriptor>modelModuleFunction( this ),
-                    filter( new Visibilitypredicate( visibility ), entities.models() ) );
+        return entities.models()
+            .filter( new Visibilitypredicate( visibility ) )
+            .map( ModelModule.<EntityDescriptor>modelModuleFunction( this ) );
     }
 
-    public Iterable<ModelModule<ValueDescriptor>> visibleValues( Visibility visibility )
+    public Stream<ModelModule<? extends ModelDescriptor>> visibleValues( Visibility visibility )
     {
-        return map( ModelModule.<ValueDescriptor>modelModuleFunction( this ),
-                    filter( new Visibilitypredicate( visibility ), values.models() ) );
+        return values.models()
+            .filter( new Visibilitypredicate( visibility ) )
+            .map( ModelModule.<ValueDescriptor>modelModuleFunction( this ) );
     }
 
-    public Iterable<ServiceReference<?>> visibleServices( Visibility visibility )
+    public Stream<ServiceReference<?>> visibleServices( Visibility visibility )
     {
-        return flatten( services.visibleServices( visibility ),
-                        importedServices.visibleServices( visibility ) );
+        return concat( services.visibleServices( visibility ),
+                       importedServices.visibleServices( visibility ) );
     }
 
     // Module ClassLoader
@@ -733,59 +772,76 @@ public class ModuleInstance
             if( clazz == null )
             {
                 Predicate<ModelDescriptor> modelTypeSpecification = modelTypeSpecification( name );
-                Predicate<ModelModule<ModelDescriptor>> translate = Specifications.translate( ModelModule.modelFunction(), modelTypeSpecification );
-                // Check module
+                Predicate<ModelModule<? extends ModelDescriptor>> translation = translate( ModelModule.modelFunction(), modelTypeSpecification );
+                Stream<ModelModule<? extends ModelDescriptor>> moduleModels = concat(
+                    moduleInstance.visibleObjects( Visibility.module ),
+                    concat(
+                        moduleInstance.visibleEntities( Visibility.module ),
+                        concat(
+                            moduleInstance.visibleTransients( Visibility.module ),
+                            moduleInstance.visibleValues( Visibility.module )
+                        )
+                    )
+                ).filter( translation );
+
+                Iterator<ModelModule<? extends ModelDescriptor>> moduleModelsIter = moduleModels.iterator();
+                if( moduleModelsIter.hasNext() )
                 {
-                    Iterable<ModelModule<ModelDescriptor>> i = cast( flatten(
-                        cast( moduleInstance.visibleObjects( Visibility.module ) ),
-                        cast( moduleInstance.visibleEntities( Visibility.module ) ),
-                        cast( moduleInstance.visibleTransients( Visibility.module ) ),
-                        cast( moduleInstance.visibleValues( Visibility.module ) ) ) );
+                    clazz = moduleModelsIter.next().model().types().findFirst().orElse( null );
 
-                    Iterable<ModelModule<ModelDescriptor>> moduleModels = filter( translate, i );
-                    Iterator<ModelModule<ModelDescriptor>> iter = moduleModels.iterator();
-                    if( iter.hasNext() )
+                    if( moduleModelsIter.hasNext() )
                     {
-                        clazz = first( iter.next().model().types() );
-
-                        if( iter.hasNext() )
-                        {
-                            // Ambiguous exception
-                            throw new ClassNotFoundException(
-                                name,
-                                new AmbiguousTypeException(
-                                    "More than one model matches the classname " + name + ":" + toList( moduleModels )
-                                )
-                            );
-                        }
+                        // Ambiguous exception
+                        throw new ClassNotFoundException(
+                            name,
+                            new AmbiguousTypeException(
+                                "More than one model matches the classname " + name + ":" + moduleModelsIter.next()
+                            )
+                        );
                     }
                 }
 
                 // Check layer
                 if( clazz == null )
                 {
-                    Iterable<ModelModule<ModelDescriptor>> flatten = cast( flatten(
-                        cast( moduleInstance.layerInstance().visibleObjects( Visibility.layer ) ),
-                        cast( moduleInstance.layerInstance().visibleTransients( Visibility.layer ) ),
-                        cast( moduleInstance.layerInstance().visibleEntities( Visibility.layer ) ),
-                        cast( moduleInstance.layerInstance().visibleValues( Visibility.layer ) ),
-                        cast( moduleInstance.layerInstance().visibleObjects( Visibility.application ) ),
-                        cast( moduleInstance.layerInstance().visibleTransients( Visibility.application ) ),
-                        cast( moduleInstance.layerInstance().visibleEntities( Visibility.application ) ),
-                        cast( moduleInstance.layerInstance().visibleValues( Visibility.application ) ) ) );
-                    Iterable<ModelModule<ModelDescriptor>> layerModels = filter( translate, flatten );
-                    Iterator<ModelModule<ModelDescriptor>> iter = layerModels.iterator();
-                    if( iter.hasNext() )
-                    {
-                        clazz = first( iter.next().model().types() );
+                    Stream<ModelModule<? extends ModelDescriptor>> modelsInLayer1 = concat(
+                        moduleInstance.layerInstance().visibleObjects( Visibility.layer ),
+                        concat(
+                            moduleInstance.layerInstance().visibleEntities( Visibility.layer ),
+                            concat(
+                                moduleInstance.layerInstance().visibleTransients( Visibility.layer ),
+                                moduleInstance.layerInstance().visibleValues( Visibility.layer )
+                            )
+                        )
+                    );
+                    // TODO: What does this actually represents?? Shouldn't 'application' visible models already be handed back from lasyerInstance().visibleXyz() ??
+                    Stream<ModelModule<? extends ModelDescriptor>> modelsInLayer2 = concat(
+                        moduleInstance.layerInstance().visibleObjects( Visibility.application ),
+                        concat(
+                            moduleInstance.layerInstance().visibleEntities( Visibility.application ),
+                            concat(
+                                moduleInstance.layerInstance().visibleTransients( Visibility.application ),
+                                moduleInstance.layerInstance().visibleValues( Visibility.application )
+                            )
+                        )
+                    );
+                    Stream<ModelModule<? extends ModelDescriptor>> layerModels = concat(
+                        modelsInLayer1,
+                        modelsInLayer2
+                    ).filter( translation );
 
-                        if( iter.hasNext() )
+                    Iterator<ModelModule<? extends ModelDescriptor>> layerModelsIter = layerModels.iterator();
+                    if( layerModelsIter.hasNext() )
+                    {
+                        clazz = layerModelsIter.next().model().types().findFirst().orElse( null );
+
+                        if( layerModelsIter.hasNext() )
                         {
                             // Ambiguous exception
                             throw new ClassNotFoundException(
                                 name,
                                 new AmbiguousTypeException(
-                                    "More than one model matches the classname " + name + ":" + toList( layerModels ) )
+                                    "More than one model matches the classname " + name + ":" + layerModelsIter.next() )
                             );
                         }
                     }
@@ -794,24 +850,29 @@ public class ModuleInstance
                 // Check used layers
                 if( clazz == null )
                 {
-                    Iterable<ModelModule<ModelDescriptor>> flatten = cast( flatten(
-                        cast( moduleInstance.layerInstance().usedLayersInstance().visibleObjects() ),
-                        cast( moduleInstance.layerInstance().usedLayersInstance().visibleTransients() ),
-                        cast( moduleInstance.layerInstance().usedLayersInstance().visibleEntities() ),
-                        cast( moduleInstance.layerInstance().usedLayersInstance().visibleValues() ) ) );
-                    Iterable<ModelModule<ModelDescriptor>> usedLayersModels = filter( translate, flatten );
-                    Iterator<ModelModule<ModelDescriptor>> iter = usedLayersModels.iterator();
-                    if( iter.hasNext() )
-                    {
-                        clazz = first( iter.next().model().types() );
+                    Stream<ModelModule<? extends ModelDescriptor>> usedLayersModels = concat(
+                        moduleInstance.layerInstance().usedLayersInstance().visibleObjects(),
+                        concat(
+                            moduleInstance.layerInstance().usedLayersInstance().visibleEntities(),
+                            concat(
+                                moduleInstance.layerInstance().usedLayersInstance().visibleTransients(),
+                                moduleInstance.layerInstance().usedLayersInstance().visibleValues()
+                            )
+                        )
+                    ).filter( translation );
 
-                        if( iter.hasNext() )
+                    Iterator<ModelModule<? extends ModelDescriptor>> usedLayersModelsIter = usedLayersModels.iterator();
+                    if( usedLayersModelsIter.hasNext() )
+                    {
+                        clazz = usedLayersModelsIter.next().model().types().findFirst().orElse( null );
+
+                        if( usedLayersModelsIter.hasNext() )
                         {
                             // Ambiguous exception
                             throw new ClassNotFoundException(
                                 name,
                                 new AmbiguousTypeException(
-                                    "More than one model matches the classname " + name + ":" + toList( usedLayersModels )
+                                    "More than one model matches the classname " + name + ":" + usedLayersModelsIter.next()
                                 )
                             );
                         }
@@ -829,45 +890,68 @@ public class ModuleInstance
         }
     }
 
-    public Iterable<ModelModule<ValueDescriptor>> findVisibleValueTypes()
+    public Stream<ModelModule<? extends ModelDescriptor>> findVisibleValueTypes()
     {
-        return flatten( visibleValues( Visibility.module ),
-            layerInstance().visibleValues( Visibility.layer ),
-            layerInstance().visibleValues( Visibility.application ),
-            layerInstance().usedLayersInstance().visibleValues()
+        return concat( visibleValues( Visibility.module ),
+                       concat(
+                           layerInstance().visibleValues( Visibility.layer ),
+                           concat(
+                               layerInstance().visibleValues( Visibility.application ),
+                               layerInstance().usedLayersInstance().visibleValues()
+                           )
+                       )
         );
     }
 
-    public Iterable<ModelModule<EntityDescriptor>> findVisibleEntityTypes()
+    public Stream<ModelModule<? extends ModelDescriptor>> findVisibleEntityTypes()
     {
-        return flatten( visibleEntities( Visibility.module ),
-            layerInstance().visibleEntities( Visibility.layer ),
-            layerInstance().visibleEntities( Visibility.application ),
-            layerInstance().usedLayersInstance().visibleEntities()
+        return concat( visibleEntities( Visibility.module ),
+                       concat(
+                           layerInstance().visibleEntities( Visibility.layer ),
+                           concat(
+                               layerInstance().visibleEntities( Visibility.application ),
+                               layerInstance().usedLayersInstance().visibleEntities()
+                           )
+                       )
         );
     }
-    public Iterable<ModelModule<TransientDescriptor>> findVisibleTransientTypes()
+
+    public Stream<ModelModule<? extends ModelDescriptor>> findVisibleTransientTypes()
     {
-        return flatten( visibleTransients( Visibility.module ),
-            layerInstance().visibleTransients( Visibility.layer ),
-            layerInstance().visibleTransients( Visibility.application ),
-            layerInstance().usedLayersInstance().visibleTransients()
+        return concat( visibleTransients( Visibility.module ),
+                       concat(
+                           layerInstance().visibleTransients( Visibility.layer ),
+                           concat(
+                               layerInstance().visibleTransients( Visibility.application ),
+                               layerInstance().usedLayersInstance().visibleTransients()
+                           )
+                       )
         );
     }
-    public Iterable<ModelModule<ServiceDescriptor>> findVisibleServiceTypes()
+
+    public Stream<ServiceReference<?>> findVisibleServiceTypes()
     {
-        return flatten( visibleServices( Visibility.module ),
-            layerInstance().visibleServices( Visibility.layer ),
-            layerInstance().visibleServices( Visibility.application ),
-            layerInstance().usedLayersInstance().visibleServices()
+        return concat( visibleServices( Visibility.module ),
+                       concat(
+                           layerInstance().visibleServices( Visibility.layer ),
+                           concat(
+                               layerInstance().visibleServices( Visibility.application ),
+                               layerInstance().usedLayersInstance().visibleServices()
+                           )
+                       )
         );
     }
-    public Iterable<ModelModule<ObjectDescriptor>> findVisibleObjectTypes()
+
+    public Stream<ModelModule<? extends ModelDescriptor>> findVisibleObjectTypes()
     {
-        return flatten( visibleObjects( Visibility.module ),
-            layerInstance().visibleObjects( Visibility.layer ),
-            layerInstance().visibleObjects( Visibility.application ),
-            layerInstance().usedLayersInstance().visibleObjects()
+        return concat( visibleObjects( Visibility.module ),
+                       concat(
+                           layerInstance().visibleObjects( Visibility.layer ),
+                           concat(
+                               layerInstance().visibleObjects( Visibility.application ),
+                               layerInstance().usedLayersInstance().visibleObjects()
+                           )
+                       )
         );
     }
 }

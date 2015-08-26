@@ -16,8 +16,10 @@ package org.apache.zest.runtime.bootstrap;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.common.InvalidApplicationException;
@@ -56,14 +58,14 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
         return identity;
     }
 
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     ServiceModel newServiceModel( StateDeclarations stateDeclarations, AssemblyHelper helper )
     {
         try
         {
             buildComposite( helper, stateDeclarations );
             List<Class<? extends Activator<?>>> activatorClasses = Iterables.toList(
-                    Iterables.<Class<? extends Activator<?>>>flatten( activators, activatorsDeclarations( types ) ) );
+                Iterables.<Class<? extends Activator<?>>>flatten( activators, activatorsDeclarations( types.stream() ) ) );
             return new ServiceModel( types, visibility, metaInfo,
                                      new ActivatorsModel( activatorClasses ),
                                      mixinsModel, stateModel, compositeMethodsModel,
@@ -74,35 +76,22 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
             throw new InvalidApplicationException( "Could not register " + types, e );
         }
     }
-    
-    private Iterable<Class<? extends Activator<?>>> activatorsDeclarations( Iterable<? extends Class<?>> typess )
+
+    private Iterable<Class<? extends Activator<?>>> activatorsDeclarations( Stream<? extends Class<?>> typess )
     {
-        // Find activator declarations
-        ArrayList<Type> allTypes = new ArrayList<>();
-        for( Class<?> type : typess )
-        {
-            Iterable<Type> types = Classes.typesOf( type );
-            Iterables.addAll( allTypes, types );
-        }
-        // Find all activators and flattern them into an iterable
-        Function<Type, Iterable<Class<? extends Activator<?>>>> function = new Function<Type, Iterable<Class<? extends Activator<?>>>>()
-        {
-            @Override
-            public Iterable<Class<? extends Activator<?>>> apply( Type type )
-            {
-                Activators activators = Annotations.annotationOn( type, Activators.class );
-                if( activators == null )
-                {
-                    return Iterables.empty();
-                }
-                else
-                {
-                    return Iterables.iterable( activators.value() );
-                }
-            }
-        };
-        Iterable<Class<? extends Activator<?>>> flatten = Iterables.flattenIterables( Iterables.map( function, allTypes ) );
-        return Iterables.toList( flatten );
+        return typess.flatMap( Classes::typesOf )
+            .filter( type -> Annotations.annotationOn( type, Activators.class ) == null )
+            .flatMap( this::getAnnotations )
+            .collect( Collectors.toList() );
     }
 
+    private Stream<? extends Class<? extends Activator<?>>> getAnnotations( Type type )
+    {
+        Activators activators1 = Annotations.annotationOn( type, Activators.class );
+        if( activators1 == null )
+        {
+            return Stream.empty();
+        }
+        return Arrays.stream( activators1.value() );
+    }
 }

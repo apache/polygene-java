@@ -15,6 +15,7 @@
 package org.apache.zest.runtime.object;
 
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 
@@ -48,8 +49,8 @@ public class ObjectsModel
         return visitor.visitLeave( this );
     }
 
-    public Iterable<ObjectModel> models()
+    public Stream<ObjectModel> stream()
     {
-        return objectModels;
+        return objectModels.stream();
     }
 }

@@ -21,6 +21,8 @@ package org.apache.zest.runtime.types;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
@@ -33,8 +35,6 @@ import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specifications;
 import org.apache.zest.runtime.association.AssociationsModel;
 import org.apache.zest.runtime.association.ManyAssociationsModel;
 import org.apache.zest.runtime.association.NamedAssociationsModel;
@@ -57,7 +57,7 @@ public class ValueTypeFactory
         return instance;
     }
 
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     public ValueType newValueType( Type type,
                                    Class declaringClass,
                                    Class compositeType,
@@ -126,7 +126,8 @@ public class ValueTypeFactory
                 {
                     // Create default model
                     MixinsModel mixinsModel = new MixinsModel();
-                    Iterable valueComposite = (Iterable) Iterables.iterable( ValueComposite.class );
+                    List<Class<?>> valueComposite = new ArrayList<>();
+                    valueComposite.add( ValueComposite.class );
                     ValueStateModel valueStateModel = new ValueStateModel( new PropertiesModel(),
                                                                            new AssociationsModel(),
                                                                            new ManyAssociationsModel(),
@@ -158,7 +159,7 @@ public class ValueTypeFactory
     private static class ValueFinder
         extends HierarchicalVisitorAdapter<Object, Object, RuntimeException>
     {
-        private Class type;
+        private Class<?> type;
         private ValueModel foundModel;
         private Visibility visibility;
 
@@ -199,18 +200,18 @@ public class ValueTypeFactory
             {
                 return true;
             }
-            else if (visited instanceof LayerModel )
+            else if( visited instanceof LayerModel )
             {
                 return true;
             }
-            else if (visited instanceof UsedLayersModel )
+            else if( visited instanceof UsedLayersModel )
             {
                 return true;
             }
             else if( visited instanceof ValueModel )
             {
                 ValueModel valueModel = (ValueModel) visited;
-                boolean typeEquality = Specifications.in( valueModel.types() ).test( type );
+                boolean typeEquality = valueModel.types().anyMatch( t -> t.equals( type ) );
                 if( typeEquality && valueModel.visibility().ordinal() >= visibility.ordinal() )
                 {
                     foundModel = valueModel;

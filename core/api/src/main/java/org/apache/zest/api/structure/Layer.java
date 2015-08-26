@@ -15,6 +15,7 @@
 
 package org.apache.zest.api.structure;
 
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListenerRegistration;
 
@@ -28,4 +29,6 @@ public interface Layer
      * @return the Layer's name
      */
     String name();
+
+    Stream<? extends Module> modules();
 }

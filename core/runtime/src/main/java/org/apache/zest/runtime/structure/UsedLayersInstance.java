@@ -15,16 +15,15 @@
 package org.apache.zest.runtime.structure;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.spi.module.ModelModule;
-
-import static org.apache.zest.functional.Iterables.*;
 
 /**
  * JAVADOC
@@ -38,63 +37,33 @@ public final class UsedLayersInstance
         this.usedLayerInstances = usedLayerInstances;
     }
 
-    /* package */ Iterable<ModelModule<ObjectDescriptor>> visibleObjects()
+    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleObjects()
     {
-        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<ObjectDescriptor>>>()
-        {
-            @Override
-            public Iterable<ModelModule<ObjectDescriptor>> apply( LayerInstance layerInstance )
-            {
-                return layerInstance.visibleObjects( Visibility.application );
-            }
-        }, usedLayerInstances ) );
+        return usedLayerInstances.stream()
+            .flatMap( layerInstance -> layerInstance.visibleObjects( Visibility.application ) );
     }
 
-    /* package */ Iterable<ModelModule<TransientDescriptor>> visibleTransients()
+    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleTransients()
     {
-        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<TransientDescriptor>>>()
-        {
-            @Override
-            public Iterable<ModelModule<TransientDescriptor>> apply( LayerInstance layerInstance )
-            {
-                return layerInstance.visibleTransients( Visibility.application );
-            }
-        }, usedLayerInstances ) );
+        return usedLayerInstances.stream()
+            .flatMap( layerInstance -> layerInstance.visibleTransients( Visibility.application ) );
     }
 
-    /* package */ Iterable<ModelModule<EntityDescriptor>> visibleEntities()
+    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleEntities()
     {
-        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<EntityDescriptor>>>()
-        {
-            @Override
-            public Iterable<ModelModule<EntityDescriptor>> apply( LayerInstance layerInstance )
-            {
-                return layerInstance.visibleEntities( Visibility.application );
-            }
-        }, usedLayerInstances ) );
+        return usedLayerInstances.stream()
+            .flatMap( layerInstance -> layerInstance.visibleEntities( Visibility.application ) );
     }
 
-    /* package */ Iterable<ModelModule<ValueDescriptor>> visibleValues()
+    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleValues()
     {
-        return flattenIterables( map( new Function<LayerInstance, Iterable<ModelModule<ValueDescriptor>>>()
-        {
-            @Override
-            public Iterable<ModelModule<ValueDescriptor>> apply( LayerInstance layerInstance )
-            {
-                return layerInstance.visibleValues( Visibility.application );
-            }
-        }, usedLayerInstances ) );
+        return usedLayerInstances.stream()
+            .flatMap( layerInstance -> layerInstance.visibleValues( Visibility.application ) );
     }
 
-    /* package */ Iterable<ServiceReference<?>> visibleServices()
+    /* package */ Stream<ServiceReference<?>> visibleServices()
     {
-        return flattenIterables( map( new Function<LayerInstance, Iterable<ServiceReference<?>>>()
-        {
-            @Override
-            public Iterable<ServiceReference<?>> apply( LayerInstance layerInstance )
-            {
-                return layerInstance.visibleServices( Visibility.application );
-            }
-        }, usedLayerInstances ) );
+        return usedLayerInstances.stream()
+            .flatMap( layerInstance -> layerInstance.visibleServices( Visibility.application ) );
     }
 }

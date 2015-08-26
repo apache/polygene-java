@@ -15,26 +15,23 @@
 package org.apache.zest.runtime.injection;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.apache.zest.api.injection.InjectionScope;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.util.Methods;
 import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.Specifications;
+import org.apache.zest.runtime.legacy.Specifications;
 import org.apache.zest.functional.VisitableHierarchy;
 
 import static org.apache.zest.api.util.Annotations.hasAnnotation;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.flattenIterables;
-import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.functional.Iterables.map;
 
 /**
  * JAVADOC
@@ -43,57 +40,70 @@ public final class InjectedMethodsModel
     implements Dependencies, VisitableHierarchy<Object, Object>
 {
     // Model
-    private final List<InjectedMethodModel> methodModels = new ArrayList<InjectedMethodModel>();
+    private final List<InjectedMethodModel> methodModels = new ArrayList<>();
 
     public InjectedMethodsModel( Class fragmentClass )
     {
-        nextMethod:
-        for( Method method : Methods.METHODS_OF.apply( fragmentClass ) )
-        {
+        Methods.methodsOf( fragmentClass ).forEach( method -> {
             Annotation[][] parameterAnnotations = method.getParameterAnnotations();
             if( parameterAnnotations.length > 0 )
             {
                 InjectedParametersModel parametersModel = new InjectedParametersModel();
                 final Type[] genericParameterTypes = method.getGenericParameterTypes();
+                boolean found = true;
                 for( int i = 0; i < parameterAnnotations.length; i++ )
                 {
-                    Annotation injectionAnnotation = first( filter( Specifications.translate( Annotations.type(), hasAnnotation( InjectionScope.class ) ), iterable( parameterAnnotations[ i ] ) ) );
-                    if( injectionAnnotation == null )
+                    Optional<Annotation> opt = Arrays.stream( parameterAnnotations[ i ] )
+                        .filter( Specifications.translate( Annotations.type(), hasAnnotation( InjectionScope.class ) ) )
+                        .findFirst();
+                    if( opt.isPresent() )
                     {
-                        continue nextMethod;
-                    }
-
-                    Type genericType = genericParameterTypes[ i ];
-                    if( genericType instanceof ParameterizedType )
-                    {
-                        genericType = new ParameterizedTypeInstance( ( (ParameterizedType) genericType ).getActualTypeArguments(), ( (ParameterizedType) genericType )
-                            .getRawType(), ( (ParameterizedType) genericType ).getOwnerType() );
-
-                        for( int j = 0; j < ( (ParameterizedType) genericType ).getActualTypeArguments().length; j++ )
+                        Annotation injectionAnnotation = opt.get();
+                        Type genericType = genericParameterTypes[ i ];
+                        if( genericType instanceof ParameterizedType )
                         {
-                            Type type = ( (ParameterizedType) genericType ).getActualTypeArguments()[ j ];
-                            if( type instanceof TypeVariable )
+                            genericType = createParameterizedTypeInstance( (ParameterizedType) genericType );
+
+                            for( int j = 0; j < ( (ParameterizedType) genericType ).getActualTypeArguments().length; j++ )
                             {
-                                type = Classes.resolveTypeVariable( (TypeVariable) type, method.getDeclaringClass(), fragmentClass );
-                                ( (ParameterizedType) genericType ).getActualTypeArguments()[ j ] = type;
+                                Type type = ( (ParameterizedType) genericType ).getActualTypeArguments()[ j ];
+                                if( type instanceof TypeVariable )
+                                {
+                                    type = Classes.resolveTypeVariable( (TypeVariable) type, method.getDeclaringClass(), fragmentClass );
+                                    ( (ParameterizedType) genericType ).getActualTypeArguments()[ j ] = type;
+                                }
                             }
                         }
+                        boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[ i ] );
+                        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, genericType, fragmentClass, optional, parameterAnnotations[ i ] );
+                        parametersModel.addDependency( dependencyModel );
                     }
-
-                    boolean optional = DependencyModel.isOptional( injectionAnnotation, parameterAnnotations[ i ] );
-                    DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, genericType, fragmentClass, optional, parameterAnnotations[ i ] );
-                    parametersModel.addDependency( dependencyModel );
+                    else
+                    {
+                        found = false;
+                        break;
+                    }
                 }
-                InjectedMethodModel methodModel = new InjectedMethodModel( method, parametersModel );
-                methodModels.add( methodModel );
+                if( found )
+                {
+                    methodModels.add( new InjectedMethodModel( method, parametersModel ) );
+                }
             }
-        }
+        } );
+    }
+
+    private Type createParameterizedTypeInstance( ParameterizedType genericType )
+    {
+        return new ParameterizedTypeInstance(
+            genericType.getActualTypeArguments(), genericType.getRawType(), genericType.getOwnerType()
+        );
     }
 
     @Override
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        return flattenIterables( map( Dependencies.DEPENDENCIES_FUNCTION, methodModels ) );
+        return methodModels.stream().flatMap( InjectedMethodModel::dependencies );
+//        return flattenIterables( map( Dependencies.DEPENDENCIES_FUNCTION, methodModels ) );
     }
 
     // Context

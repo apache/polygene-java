@@ -21,6 +21,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.zest.api.entity.EntityDescriptor;
+import org.apache.zest.api.property.PropertyDescriptor;
+import org.apache.zest.api.util.Classes;
+import org.apache.zest.library.rdf.Rdfs;
+import org.apache.zest.library.rdf.ZestEntityType;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -31,14 +36,6 @@ import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.XMLSchema;
-import org.apache.zest.api.association.AssociationDescriptor;
-import org.apache.zest.api.entity.EntityDescriptor;
-import org.apache.zest.api.property.PropertyDescriptor;
-import org.apache.zest.api.util.Classes;
-import org.apache.zest.library.rdf.ZestEntityType;
-import org.apache.zest.library.rdf.Rdfs;
-
-import static org.apache.zest.functional.Iterables.first;
 
 /**
  * JAVADOC
@@ -69,12 +66,15 @@ public class EntityTypeSerializer
     {
         Graph graph = new GraphImpl();
         ValueFactory values = graph.getValueFactory();
-        URI entityTypeUri = values.createURI( Classes.toURI( first( entityDescriptor.types() ) ) );
+        URI entityTypeUri = values.createURI( Classes.toURI( entityDescriptor.types().findFirst().orElse( null ) ) );
 
         graph.add( entityTypeUri, Rdfs.TYPE, Rdfs.CLASS );
         graph.add( entityTypeUri, Rdfs.TYPE, OWL.CLASS );
 
-        graph.add( entityTypeUri, ZestEntityType.TYPE, values.createLiteral( first( entityDescriptor.types() ).toString() ) );
+        graph.add( entityTypeUri, ZestEntityType.TYPE, values.createLiteral( entityDescriptor.types()
+                                                                                 .findFirst()
+                                                                                 .get()
+                                                                                 .toString() ) );
         graph.add( entityTypeUri, ZestEntityType.QUERYABLE, values.createLiteral( entityDescriptor.queryable() ) );
 
         serializeMixinTypes( entityDescriptor, graph, entityTypeUri );
@@ -88,25 +88,24 @@ public class EntityTypeSerializer
 
     private void serializeMixinTypes( final EntityDescriptor entityDescriptor,
                                       final Graph graph,
-                                      final URI entityTypeUri )
+                                      final URI entityTypeUri
+    )
     {
         ValueFactory values = graph.getValueFactory();
 
-        // Mixin types
-        for( Class<?> mixinType : entityDescriptor.mixinTypes() )
-        {
+        entityDescriptor.mixinTypes().forEach( mixinType -> {
             graph.add( entityTypeUri, Rdfs.SUB_CLASS_OF, values.createURI( Classes.toURI( mixinType ) ) );
-        }
+        } );
     }
 
     private void serializeManyAssociationTypes( final EntityDescriptor entityDescriptor,
                                                 final Graph graph,
-                                                final URI entityTypeUri )
+                                                final URI entityTypeUri
+    )
     {
         ValueFactory values = graph.getValueFactory();
         // ManyAssociations
-        for( AssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
-        {
+        entityDescriptor.state().manyAssociations().forEach( manyAssociationType -> {
             URI associationURI = values.createURI( manyAssociationType.qualifiedName().toURI() );
             graph.add( associationURI, Rdfs.DOMAIN, entityTypeUri );
 
@@ -115,17 +114,17 @@ public class EntityTypeSerializer
             URI associatedURI = values.createURI( manyAssociationType.qualifiedName().toURI() );
             graph.add( associationURI, Rdfs.RANGE, associatedURI );
             graph.add( associationURI, Rdfs.RANGE, XMLSchema.ANYURI );
-        }
+        } );
     }
 
     private void serializeAssociationTypes( final EntityDescriptor entityDescriptor,
                                             final Graph graph,
-                                            final URI entityTypeUri )
+                                            final URI entityTypeUri
+    )
     {
         ValueFactory values = graph.getValueFactory();
         // Associations
-        for( AssociationDescriptor associationType : entityDescriptor.state().associations() )
-        {
+        entityDescriptor.state().associations().forEach( associationType -> {
             URI associationURI = values.createURI( associationType.qualifiedName().toURI() );
             graph.add( associationURI, Rdfs.DOMAIN, entityTypeUri );
             graph.add( associationURI, Rdfs.TYPE, Rdfs.PROPERTY );
@@ -133,18 +132,18 @@ public class EntityTypeSerializer
             URI associatedURI = values.createURI( Classes.toURI( Classes.RAW_CLASS.apply( associationType.type() ) ) );
             graph.add( associationURI, Rdfs.RANGE, associatedURI );
             graph.add( associationURI, Rdfs.RANGE, XMLSchema.ANYURI );
-        }
+        } );
     }
 
     private void serializePropertyTypes( final EntityDescriptor entityDescriptor,
                                          final Graph graph,
-                                         final URI entityTypeUri )
+                                         final URI entityTypeUri
+    )
     {
         ValueFactory values = graph.getValueFactory();
 
         // Properties
-        for( PropertyDescriptor persistentProperty : entityDescriptor.state().properties() )
-        {
+        entityDescriptor.state().properties().forEach( persistentProperty -> {
             URI propertyURI = values.createURI( persistentProperty.qualifiedName().toURI() );
             graph.add( propertyURI, Rdfs.DOMAIN, entityTypeUri );
             graph.add( propertyURI, Rdfs.TYPE, Rdfs.PROPERTY );
@@ -155,6 +154,6 @@ public class EntityTypeSerializer
             {
                 graph.add( propertyURI, Rdfs.RANGE, type );
             }
-        }
+        } );
     }
 }

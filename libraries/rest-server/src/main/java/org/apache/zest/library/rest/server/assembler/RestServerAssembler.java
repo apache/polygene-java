@@ -42,8 +42,6 @@ import static org.apache.zest.api.util.Classes.isAssignableFrom;
 import static org.apache.zest.bootstrap.ImportedServiceDeclaration.INSTANCE;
 import static org.apache.zest.bootstrap.ImportedServiceDeclaration.NEW_OBJECT;
 import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Specifications.and;
-import static org.apache.zest.functional.Specifications.not;
 
 /**
  * JAVADOC
@@ -98,8 +96,8 @@ public class RestServerAssembler
         // Standard response writers
         Iterable<Class<?>> writers = ClassScanner.findClasses( DefaultResponseWriter.class );
         Predicate<Class<?>> responseWriterClass = isAssignableFrom( ResponseWriter.class );
-        Predicate<Class<?>> isNotAnAbstract = not( hasModifier( Modifier.ABSTRACT ) );
-        Iterable<Class<?>> candidates = filter( and( isNotAnAbstract, responseWriterClass ), writers );
+        Predicate<Class<?>> isNotAnAbstract = hasModifier( Modifier.ABSTRACT ).negate();
+        Iterable<Class<?>> candidates = filter( isNotAnAbstract.and( responseWriterClass ), writers );
         for( Class<?> responseWriter : candidates )
         {
             module.objects( responseWriter );

@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.GenericAssociationInfo;
 import org.apache.zest.api.association.NamedAssociation;
@@ -162,7 +163,7 @@ public final class NamedAssociationModel
             List<ConstraintViolation> violations = constraints.checkConstraints( composite );
             if( !violations.isEmpty() )
             {
-                Iterable<Class<?>> empty = empty();
+                Stream<Class<?>> empty = Stream.empty();
                 throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
             }
         }
@@ -176,7 +177,7 @@ public final class NamedAssociationModel
             List<ConstraintViolation> violations = associationConstraints.checkConstraints( association );
             if( !violations.isEmpty() )
             {
-                Iterable<Class<?>> empty = empty();
+                Stream<Class<?>> empty = Stream.empty();
                 throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
             }
         }
@@ -223,7 +224,7 @@ public final class NamedAssociationModel
 
         if( type instanceof TypeVariable )
         {
-            Class mainType = first( resolution.model().types() );
+            Class mainType = resolution.model().types().findFirst().orElse( null );
             type = Classes.resolveTypeVariable( (TypeVariable) type, ( (Member) accessor ).getDeclaringClass(), mainType );
         }
     }

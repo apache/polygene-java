@@ -61,9 +61,9 @@ public final class QualifiedIdentity
 
     public QualifiedIdentity( EntityComposite entityComposite )
     {
-        this( entityComposite.identity().get(), first( ZestAPI.FUNCTION_DESCRIPTOR_FOR
+        this( entityComposite.identity().get(), ZestAPI.FUNCTION_DESCRIPTOR_FOR
                                                            .apply( entityComposite )
-                                                           .types() ).getName() );
+                                                           .types().findFirst().get().getName() );
     }
 
     public QualifiedIdentity( String identity, Class<?> clazz )

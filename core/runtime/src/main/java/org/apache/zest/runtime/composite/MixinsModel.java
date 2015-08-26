@@ -25,11 +25,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
 import org.apache.zest.functional.VisitableHierarchy;
+import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectedFieldModel;
 import org.apache.zest.runtime.model.Binder;
@@ -37,7 +39,6 @@ import org.apache.zest.runtime.model.Resolution;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
 import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.flattenIterables;
 import static org.apache.zest.functional.Iterables.map;
 
 /**
@@ -45,7 +46,7 @@ import static org.apache.zest.functional.Iterables.map;
  * and mixin implementations.
  */
 public class MixinsModel
-    implements Binder, VisitableHierarchy<Object, Object>
+    implements Binder, VisitableHierarchy<Object, Object>, Dependencies
 {
     protected final Map<Method, MixinModel> methodImplementation = new HashMap<Method, MixinModel>();
     protected final Map<Method, Integer> methodIndex = new HashMap<Method, Integer>();
@@ -54,9 +55,9 @@ public class MixinsModel
     private final Map<Class, Integer> mixinIndex = new HashMap<Class, Integer>();
     private final Set<Class<?>> mixinTypes = new LinkedHashSet<Class<?>>();
 
-    public Iterable<Class<?>> mixinTypes()
+    public Stream<Class<?>> mixinTypes()
     {
-        return mixinTypes;
+        return mixinTypes.stream();
     }
 
     public <T> boolean isImplemented( Class<T> mixinType )
@@ -88,10 +89,9 @@ public class MixinsModel
 
     public void addMixinType( Class mixinType )
     {
-        for( Type type : interfacesOf( mixinType ) )
-        {
-            mixinTypes.add( Classes.RAW_CLASS.apply( type ) );
-        }
+        Stream<? extends Type> stream = interfacesOf( mixinType );
+        Stream<Class<?>> rawClass = stream.map( Classes.RAW_CLASS );
+        rawClass.forEach( mixinTypes::add );
     }
 
     public void addMixinModel( MixinModel mixinModel )
@@ -189,36 +189,33 @@ public class MixinsModel
         return mixinFor( method ).newInvocationHandler( method );
     }
 
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        return flattenIterables( map( new Function<MixinModel, Iterable<DependencyModel>>()
-        {
-            @Override
-            public Iterable<DependencyModel> apply( MixinModel mixinModel )
-            {
-                return mixinModel.dependencies();
-            }
-        }, mixinModels ) );
+        return mixinModels.stream().flatMap( Dependencies::dependencies );
     }
 
-    public Iterable<Method> invocationsFor( final Class<?> mixinClass )
+    public Stream<Method> invocationsFor( final Class<?> mixinClass )
     {
-        return map( new Function<Map.Entry<Method, MixinModel>, Method>()
-        {
-            @Override
-            public Method apply( Map.Entry<Method, MixinModel> entry )
-            {
-                return entry.getKey();
-            }
-        }, filter( new Predicate<Map.Entry<Method, MixinModel>>()
-        {
-            @Override
-            public boolean test( Map.Entry<Method, MixinModel> item )
-            {
-                MixinModel model = item.getValue();
-                return model.mixinClass().equals( mixinClass );
-            }
-        }, methodImplementation.entrySet() ) );
+        return methodImplementation.entrySet()
+            .stream().filter( entry -> entry.getValue().mixinClass().equals( mixinClass ) )
+            .map( Map.Entry::getKey );
+
+//        return map( new Function<Map.Entry<Method, MixinModel>, Method>()
+//        {
+//            @Override
+//            public Method apply( Map.Entry<Method, MixinModel> entry )
+//            {
+//                return entry.getKey();
+//            }
+//        }, filter( new Predicate<Map.Entry<Method, MixinModel>>()
+//        {
+//            @Override
+//            public boolean test( Map.Entry<Method, MixinModel> item )
+//            {
+//                MixinModel model = item.getValue();
+//                return model.mixinClass().equals( mixinClass );
+//            }
+//        }, methodImplementation.entrySet() ) );
     }
 
     private class Uses

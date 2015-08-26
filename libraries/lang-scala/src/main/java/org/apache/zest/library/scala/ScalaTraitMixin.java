@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.common.AppliesTo;
 import org.apache.zest.api.common.AppliesToFilter;
@@ -34,7 +33,6 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.util.Classes;
-import org.apache.zest.functional.Iterables;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
 
@@ -55,7 +53,8 @@ public class ScalaTraitMixin
     }
 
     @Override
-    public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
+    public Object invoke( Object composite, Method method, Object[] args )
+        throws Throwable
     {
         InvocationHandler handler = methods.get( compositeType ).get( method );
         return handler.invoke( composite, method, args );
@@ -77,7 +76,8 @@ public class ScalaTraitMixin
                         InvocationHandler handler = new InvocationHandler()
                         {
                             @Override
-                            public Object invoke( Object composite, Method method, Object[] objects ) throws Throwable
+                            public Object invoke( Object composite, Method method, Object[] objects )
+                                throws Throwable
                             {
                                 return ( (CompositeInstance) Proxy.getInvocationHandler( composite ) ).module()
                                     .findService( method.getReturnType() );
@@ -90,7 +90,8 @@ public class ScalaTraitMixin
                         InvocationHandler handler = new InvocationHandler()
                         {
                             @Override
-                            public Object invoke( Object composite, Method method, Object[] objects ) throws Throwable
+                            public Object invoke( Object composite, Method method, Object[] objects )
+                                throws Throwable
                             {
                                 return ( (CompositeInstance) Proxy.getInvocationHandler( composite ) ).module()
                                     .findService( method.getReturnType() ).get();
@@ -101,39 +102,61 @@ public class ScalaTraitMixin
                     return true;
                 }
 
-                // Map methods
                 final Class<?> declaringClass = method.getDeclaringClass();
-                Class traitClass = Iterables.last( Iterables.map( new Function<Class, Class>()
-                {
-                    Class current;
+                Class traitClass = interfacesOf( compositeType ).map( Classes.RAW_CLASS )
+                    .filter( declaringClass::isAssignableFrom )
+                    .reduce( null, ( current, type ) -> {
+                                 try
+                                 {
+                                     type.getClassLoader().loadClass( type.getName() + "$class" );
+                                     if( current == null )
+                                     {
+                                         return type;
+                                     }
+                                     else
+                                     {
+                                         return current.isAssignableFrom( type ) ? type : current;
+                                     }
+                                 }
+                                 catch( ClassNotFoundException e )
+                                 {
+                                     // Ignore - no trait implementation found
+                                 }
+                                 return current;
+                             }
+                    );
 
-                    @Override
-                    public Class apply( Class aClass )
-                    {
-                        if( declaringClass.isAssignableFrom( aClass ) )
-                        {
-                            try
-                            {
-                                aClass.getClassLoader().loadClass( aClass.getName() + "$class" );
-
-                                if( current == null )
-                                {
-                                    current = aClass;
-                                }
-                                else
-                                {
-                                    current = current.isAssignableFrom( aClass ) ? aClass : current;
-                                }
-                            }
-                            catch( ClassNotFoundException e )
-                            {
-                                // Ignore - no trait implementation found
-                            }
-                        }
-
-                        return current;
-                    }
-                }, Iterables.map( Classes.RAW_CLASS, interfacesOf( compositeType ) ) ) );
+//                Class traitClass = Iterables.last( Iterables.map( new Function<Class, Class>()
+//                {
+//                    Class current;
+//
+//                    @Override
+//                    public Class apply( Class aClass )
+//                    {
+//                        if( declaringClass.isAssignableFrom( aClass ) )
+//                        {
+//                            try
+//                            {
+//                                aClass.getClassLoader().loadClass( aClass.getName() + "$class" );
+//
+//                                if( current == null )
+//                                {
+//                                    current = aClass;
+//                                }
+//                                else
+//                                {
+//                                    current = current.isAssignableFrom( aClass ) ? aClass : current;
+//                                }
+//                            }
+//                            catch( ClassNotFoundException e )
+//                            {
+//                                // Ignore - no trait implementation found
+//                            }
+//                        }
+//
+//                        return current;
+//                    }
+//                }, Iterables.map( Classes.RAW_CLASS, interfacesOf( compositeType ) ) ) );
 
                 if( traitClass == null )
                 {
@@ -144,30 +167,25 @@ public class ScalaTraitMixin
                 {
                     Class traitMixin = traitClass.getClassLoader().loadClass( traitClass.getName() + "$class" );
                     Class<?>[] methodParameterTypes = method.getParameterTypes();
-                    Class[] parameterTypes = new Class[1 + methodParameterTypes.length];
-                    parameterTypes[0] = traitClass;
+                    Class[] parameterTypes = new Class[ 1 + methodParameterTypes.length ];
+                    parameterTypes[ 0 ] = traitClass;
                     System.arraycopy( methodParameterTypes, 0, parameterTypes, 1, methodParameterTypes.length );
                     final Method traitMethod = traitMixin.getMethod( method.getName(), parameterTypes );
 
-                    Map<Method,InvocationHandler> handlers = getHandlers( compositeType );
+                    Map<Method, InvocationHandler> handlers = getHandlers( compositeType );
 
-                    handlers.put( method, new InvocationHandler()
-                    {
-                        @Override
-                        public Object invoke( Object composite, Method method, Object[] args ) throws Throwable
+                    handlers.put( method, ( composite, method1, args ) -> {
+                        if( args != null )
                         {
-                            if( args != null )
-                            {
-                                Object[] params = new Object[args.length + 1];
-                                params[0] = composite;
-                                System.arraycopy( args, 0, params, 1, args.length );
+                            Object[] params = new Object[ args.length + 1 ];
+                            params[ 0 ] = composite;
+                            System.arraycopy( args, 0, params, 1, args.length );
 
-                                return traitMethod.invoke( null, params );
-                            }
-                            else
-                            {
-                                return traitMethod.invoke( null, composite );
-                            }
+                            return traitMethod.invoke( null, params );
+                        }
+                        else
+                        {
+                            return traitMethod.invoke( null, composite );
                         }
                     } );
 
@@ -202,7 +220,7 @@ public class ScalaTraitMixin
 
         private Map<Method, InvocationHandler> getHandlers( Class<?> compositeType )
         {
-            Map<Method,InvocationHandler> handlerMap = methods.get( compositeType );
+            Map<Method, InvocationHandler> handlerMap = methods.get( compositeType );
             if( handlerMap == null )
             {
                 handlerMap = new HashMap<>();

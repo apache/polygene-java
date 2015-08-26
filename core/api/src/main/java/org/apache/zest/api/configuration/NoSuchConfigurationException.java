@@ -28,7 +28,7 @@ public class NoSuchConfigurationException extends RuntimeException
 
     public NoSuchConfigurationException( Class<? extends Identity> configType,
                                          String identity,
-                                         ConstraintViolationException cause
+                                         Exception cause
     )
     {
         super( "No configuration found for '" + identity + "' and configuration " + configType.getName() + " has one or more non-Optional properties.", cause );

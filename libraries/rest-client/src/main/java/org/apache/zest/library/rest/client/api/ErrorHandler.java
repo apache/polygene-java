@@ -21,7 +21,6 @@ package org.apache.zest.library.rest.client.api;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Predicate;
-import org.apache.zest.functional.Specifications;
 import org.apache.zest.library.rest.client.spi.ResponseHandler;
 import org.restlet.Response;
 import org.restlet.data.Status;
@@ -65,7 +64,7 @@ public class ErrorHandler
 
     public ErrorHandler onError(ResponseHandler handler)
     {
-        handlers.put( Specifications.<Response>TRUE(), handler );
+        handlers.put( item -> true, handler );
         return this;
     }
 

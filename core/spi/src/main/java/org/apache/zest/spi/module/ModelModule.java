@@ -27,37 +27,23 @@ import org.apache.zest.api.composite.ModelDescriptor;
 public class ModelModule<T extends ModelDescriptor>
 {
 
-    public static Function<?, String> toStringFunction = new Function<ModelModule<?>, String>()
-    {
-        @Override
-        public String apply( ModelModule item )
-        {
-            return item.model()
-                       .types()
-                       .iterator()
-                       .next()
-                       .getName() + "[" + item.module().name() + "]";
-        }
-    };
+    public static Function<ModelModule<?>, String> toStringFunction = item -> item.model()
+               .types()
+               .iterator()
+               .next()
+               .getName() + "[" + item.module().name() + "]";
 
     public static <T extends ModelDescriptor> Function<T, ModelModule<T>> modelModuleFunction( final ModuleSpi module )
     {
-        return new Function<T, ModelModule<T>>()
-        {
-            @Override
-            public ModelModule<T> apply( T model )
-            {
-                return new ModelModule<>( module, model );
-            }
-        };
+        return model1 -> new ModelModule<>( module, model1 );
     }
 
-    public static <T extends ModelDescriptor> Function<ModelModule<T>, T> modelFunction()
+    public static Function<ModelModule<? extends ModelDescriptor>, ModelDescriptor> modelFunction()
     {
-        return new Function<ModelModule<T>, T>()
+        return new Function<ModelModule<? extends ModelDescriptor>, ModelDescriptor>()
         {
             @Override
-            public T apply( ModelModule<T> modelModule )
+            public ModelDescriptor apply( ModelModule<? extends ModelDescriptor> modelModule )
             {
                 return modelModule.model();
             }

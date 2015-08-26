@@ -21,6 +21,7 @@ package org.apache.zest.tools.model.descriptor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
@@ -49,9 +50,9 @@ public class ImportedServiceCompositeDescriptor
     }
 
     @Override
-    public Iterable<Class<?>> mixinTypes()
+    public Stream<Class<?>> mixinTypes()
     {
-        return mixins;
+        return mixins.stream();
     }
 
     @Override
@@ -73,9 +74,9 @@ public class ImportedServiceCompositeDescriptor
     }
 
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
-        return Iterables.cast( Iterables.iterable( importedService.type() ) );
+        return importedService.types();
     }
 
     @Override

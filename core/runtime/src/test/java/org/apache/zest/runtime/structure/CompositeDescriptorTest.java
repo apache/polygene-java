@@ -40,7 +40,7 @@ public class CompositeDescriptorTest
         TransientDescriptor addressDescriptor = spi.transientDescriptorFor( address );
 
         assertNotNull( addressDescriptor );
-        assertEquals( AddressComposite.class, first( addressDescriptor.types() ) );
+        assertEquals( AddressComposite.class, addressDescriptor.types().findFirst().orElse( null ) );
         assertTrue( TransientDescriptor.class.isAssignableFrom( addressDescriptor.getClass() ) );
     }
 
@@ -51,7 +51,7 @@ public class CompositeDescriptorTest
         TransientDescriptor addressDesc = module.transientDescriptor( AddressComposite.class.getName() );
         assertNotNull( addressDesc );
 
-        assertEquals( AddressComposite.class, first( addressDesc.types() ) );
+        assertEquals( AddressComposite.class, addressDesc.types().findFirst().orElse( null ) );
     }
 
     public final void assemble( ModuleAssembly aModule )

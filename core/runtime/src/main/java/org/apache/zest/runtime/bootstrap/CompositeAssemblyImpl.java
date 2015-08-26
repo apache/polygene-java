@@ -20,7 +20,6 @@ package org.apache.zest.runtime.bootstrap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Member;
@@ -29,14 +28,15 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.QualifiedName;
@@ -63,7 +63,6 @@ import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.util.Fields;
 import org.apache.zest.bootstrap.StateDeclarations;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.composite.AbstractConstraintModel;
 import org.apache.zest.runtime.composite.CompositeConstraintModel;
 import org.apache.zest.runtime.composite.CompositeMethodModel;
@@ -80,11 +79,12 @@ import org.apache.zest.runtime.composite.SideEffectsModel;
 import org.apache.zest.runtime.composite.StateModel;
 import org.apache.zest.runtime.composite.ValueConstraintsInstance;
 import org.apache.zest.runtime.composite.ValueConstraintsModel;
+import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.property.PropertiesModel;
 import org.apache.zest.runtime.property.PropertyModel;
 
-import static java.util.Arrays.asList;
+import static java.util.stream.Stream.concat;
 import static org.apache.zest.api.util.Annotations.hasAnnotation;
 import static org.apache.zest.api.util.Annotations.isType;
 import static org.apache.zest.api.util.Annotations.type;
@@ -94,22 +94,10 @@ import static org.apache.zest.api.util.Classes.isAssignableFrom;
 import static org.apache.zest.api.util.Classes.typeOf;
 import static org.apache.zest.api.util.Classes.typesOf;
 import static org.apache.zest.api.util.Classes.wrapperClass;
-import static org.apache.zest.functional.Iterables.addAll;
-import static org.apache.zest.functional.Iterables.cast;
-import static org.apache.zest.functional.Iterables.empty;
 import static org.apache.zest.functional.Iterables.filter;
 import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.flatten;
-import static org.apache.zest.functional.Iterables.flattenIterables;
 import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.functional.Iterables.map;
-import static org.apache.zest.functional.Iterables.matchesAny;
-import static org.apache.zest.functional.Iterables.toList;
-import static org.apache.zest.functional.Specifications.and;
-import static org.apache.zest.functional.Specifications.in;
-import static org.apache.zest.functional.Specifications.not;
-import static org.apache.zest.functional.Specifications.or;
-import static org.apache.zest.functional.Specifications.translate;
+import static org.apache.zest.runtime.legacy.Specifications.translate;
 
 /**
  * Declaration of a Composite.
@@ -140,9 +128,9 @@ public abstract class CompositeAssemblyImpl
     }
 
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
-        return types;
+        return types.stream();
     }
 
     protected StateModel createStateModel()
@@ -171,18 +159,30 @@ public abstract class CompositeAssemblyImpl
         propertiesModel = new PropertiesModel();
         stateModel = createStateModel();
         mixinsModel = createMixinsModel();
+//        compositeMethodsModel = new CompositeMethodsModel();
         compositeMethodsModel = new CompositeMethodsModel( mixinsModel );
 
         // Implement composite methods
-        ArrayList<Type> allTypes = getTypes( this.types );
-        Iterable<Class<? extends Constraint<?, ?>>> constraintClasses = constraintDeclarations( getTypes( this.types ) );
-        Iterable<Class<?>> concernClasses = flatten( concerns, concernDeclarations( allTypes ) );
-        Iterable<Class<?>> sideEffectClasses = flatten( sideEffects, sideEffectDeclarations( allTypes ) );
-        Iterable<Class<?>> mixinClasses = flatten( mixins, mixinDeclarations( this.types ) );
-        implementMixinType( types, constraintClasses, concernClasses, sideEffectClasses, mixinClasses );
+        List<Class<?>> constraintClasses = toList( constraintDeclarations( this.types.stream() ) );
+        List<Class<?>> concernClasses = toList( concat( concerns.stream(), concernDeclarations( this.types.stream() ) ) );
+        List<Class<?>> sideEffectClasses = toList( concat( sideEffects.stream(), sideEffectDeclarations( this.types.stream() ) ) );
+        List<Class<?>> mixinClasses = toList( concat( mixins.stream(), mixinDeclarations( this.types.stream() ) ) );
+        //noinspection unchecked
+        implementMixinType( types,
+                            constraintClasses,
+                            concernClasses,
+                            sideEffectClasses,
+                            mixinClasses
+        );
 
         // Add state from methods and fields
+        //noinspection unchecked
         addState( constraintClasses );
+    }
+
+    private List<Class<?>> toList( Stream<Class<?>> stream )
+    {
+        return stream.collect( Collectors.toList() );
     }
 
     protected void addAnnotationsMetaInfo( Class<?> type, MetaInfo compositeMetaInfo )
@@ -190,21 +190,20 @@ public abstract class CompositeAssemblyImpl
         Class[] declaredInterfaces = type.getInterfaces();
         for( int i = declaredInterfaces.length - 1; i >= 0; i-- )
         {
-            addAnnotationsMetaInfo( declaredInterfaces[ i], compositeMetaInfo );
+            addAnnotationsMetaInfo( declaredInterfaces[ i ], compositeMetaInfo );
         }
         compositeMetaInfo.withAnnotations( type );
     }
 
-    protected void implementMixinType( Iterable<? extends Class<?>> types,
-                                       Iterable<Class<? extends Constraint<?, ?>>> constraintClasses,
-                                       Iterable<Class<?>> concernClasses,
-                                       Iterable<Class<?>> sideEffectClasses,
-                                       Iterable<Class<?>> mixinClasses
+    protected void implementMixinType( List<? extends Class<?>> types,
+                                       List<Class<?>> constraintClasses,
+                                       List<Class<?>> concernClasses,
+                                       List<Class<?>> sideEffectClasses,
+                                       List<Class<?>> mixinClasses
     )
     {
         Set<Class<?>> thisDependencies = new HashSet<>();
-        for( Class<?> mixinType : types )
-        {
+        types.forEach( mixinType -> {
             for( Method method : mixinType.getMethods() )
             {
                 if( !compositeMethodsModel.isImplemented( method )
@@ -216,20 +215,20 @@ public abstract class CompositeAssemblyImpl
                     ConcernsModel concernsModel = concernsFor(
                         method,
                         mixinModel.mixinClass(),
-                        Iterables.<Class<?>>flatten( concernDeclarations( mixinModel.mixinClass() ),
-                                                     concernClasses )
+                        concat( concernDeclarations( mixinModel.mixinClass() ),
+                                concernClasses.stream() )
                     );
                     SideEffectsModel sideEffectsModel = sideEffectsFor(
                         method,
                         mixinModel.mixinClass(),
-                        Iterables.<Class<?>>flatten( sideEffectDeclarations( mixinModel.mixinClass() ),
-                                                     sideEffectClasses )
+                        concat( sideEffectDeclarations( mixinModel.mixinClass() ),
+                                sideEffectClasses.stream() )
                     );
                     method.setAccessible( true );
                     ConstraintsModel constraints = constraintsFor(
                         method,
-                        Iterables.<Class<? extends Constraint<?, ?>>>flatten( constraintDeclarations( mixinModel.mixinClass() ),
-                                                                              constraintClasses )
+                        toList( concat( constraintDeclarations( mixinModel.mixinClass() ),
+                                        constraintClasses.stream() ) )
                     );
                     CompositeMethodModel methodComposite = new CompositeMethodModel(
                         method,
@@ -239,60 +238,76 @@ public abstract class CompositeAssemblyImpl
                         mixinsModel
                     );
 
-                    // Implement @This references
-                    Iterable<Class<?>> map = map( new DependencyModel.InjectionTypeFunction(),
-                                                  filter( new DependencyModel.ScopeSpecification( This.class ),
-                                                          methodComposite.dependencies() ) );
-                    Iterable<Class<?>> map1 = map( new DependencyModel.InjectionTypeFunction(),
-                                                   filter( new DependencyModel.ScopeSpecification( This.class ),
-                                                           mixinModel.dependencies() ) );
-                    @SuppressWarnings( "unchecked" )
-                    Iterable<Class<?>> filter = filter(
-                        not( in( Initializable.class, Lifecycle.class, InvocationHandler.class ) ),
-                        map( Classes.RAW_CLASS, interfacesOf( mixinModel.mixinClass() ) )
-                    );
-                    Iterable<? extends Class<?>> flatten = flatten( map, map1, filter );
-                    addAll( thisDependencies, flatten );
+                    DependencyModel.InjectionTypeFunction injectionTypeFunction = new DependencyModel.InjectionTypeFunction();
+                    DependencyModel.ScopeSpecification thisSpec = new DependencyModel.ScopeSpecification( This.class );
+                    Stream<? extends Dependencies> source = Stream.of( methodComposite, mixinModel );
+                    source.flatMap( Dependencies::dependencies )
+                        .filter( thisSpec )
+                        .map( injectionTypeFunction )
+                        .forEach( thisDependencies::add );
+
+                    interfacesOf( mixinModel.mixinClass() )
+                        .map( Classes.RAW_CLASS )
+                        .filter( clazz -> Stream.of( Initializable.class, Lifecycle.class, InvocationHandler.class ).noneMatch( c -> c
+                            .equals( clazz ) ) )
+                        .forEach( thisDependencies::add );
+
+//                    // Implement @This references
+//                    Iterable<Class<?>> map = map( new DependencyModel.InjectionTypeFunction(),
+//                                                  filter( new DependencyModel.ScopeSpecification( This.class ),
+//                                                          methodComposite.dependencies() ) );
+//                    Iterable<Class<?>> map1 = map( new DependencyModel.InjectionTypeFunction(),
+//                                                   filter( new DependencyModel.ScopeSpecification( This.class ),
+//                                                           mixinModel.dependencies() ) );
+//                    @SuppressWarnings( "unchecked" )
+//                    Iterable<Class<?>> filter = filter(
+//                        not( in( Initializable.class, Lifecycle.class, InvocationHandler.class ) ),
+//                        map( Classes.RAW_CLASS, interfacesOf( mixinModel.mixinClass() ) )
+//                    );
+//                    Iterable<? extends Class<?>> flatten = flatten( map, map1, filter );
+//                    addAll( thisDependencies, flatten );
 
                     compositeMethodsModel.addMethod( methodComposite );
                 }
             }
             // Add type to set of mixin types
             mixinsModel.addMixinType( mixinType );
-        }
+        } );
 
         // Implement all @This dependencies that were found
-        for( Class<?> thisDependency : thisDependencies )
-        {
+        thisDependencies.forEach( thisDependency -> {
             // Add additional declarations from the @This type
-            Iterable<Class<? extends Constraint<?, ?>>> typeConstraintClasses = flatten(
-                constraintClasses,
+            Stream<Class<?>> typeConstraintClasses = concat(
+                constraintClasses.stream(),
                 constraintDeclarations( thisDependency ) );
-            Iterable<Class<?>> typeConcernClasses = flatten(
-                concernClasses,
+            Stream<Class<?>> typeConcernClasses = concat(
+                concernClasses.stream(),
                 concernDeclarations( thisDependency ) );
-            Iterable<Class<?>> typeSideEffectClasses = flatten(
-                sideEffectClasses,
+            Stream<Class<?>> typeSideEffectClasses = concat(
+                sideEffectClasses.stream(),
                 sideEffectDeclarations( thisDependency ) );
-            Iterable<Class<?>> typeMixinClasses = flatten(
-                mixinClasses,
+            Stream<Class<?>> typeMixinClasses = concat(
+                mixinClasses.stream(),
                 mixinDeclarations( thisDependency ) );
-
-            @SuppressWarnings( "unchecked" )
-            Iterable<? extends Class<?>> singleton = iterable( thisDependency );
-            implementMixinType( singleton, typeConstraintClasses, typeConcernClasses, typeSideEffectClasses, typeMixinClasses );
-        }
+            List<? extends Class<?>> singleton = Collections.singletonList( thisDependency );
+            implementMixinType( singleton,
+                                toList(typeConstraintClasses),
+                                toList(typeConcernClasses),
+                                toList(typeSideEffectClasses),
+                                toList(typeMixinClasses)
+            );
+        } );
     }
 
     @SuppressWarnings( "raw" )
-    protected MixinModel implementMethod( Method method, Iterable<Class<?>> mixinDeclarations )
+    protected MixinModel implementMethod( Method method, List<Class<?>> mixinDeclarations )
     {
         MixinModel implementationModel = mixinsModel.mixinFor( method );
         if( implementationModel != null )
         {
             return implementationModel;
         }
-        Class mixinClass = findTypedImplementation( method, mixinDeclarations );
+        Class mixinClass = findTypedImplementation( method, mixinDeclarations.stream() );
         if( mixinClass != null )
         {
             return implementMethodWithClass( method, mixinClass );
@@ -309,37 +324,26 @@ public abstract class CompositeAssemblyImpl
                                              + "\nin\n    " + types );
     }
 
-    @SuppressWarnings( {"raw", "unchecked"} )
-    private Class findTypedImplementation( final Method method, Iterable<Class<?>> mixins )
+    @SuppressWarnings( { "raw", "unchecked" } )
+    private Class<?> findTypedImplementation( final Method method, Stream<Class<?>> mixins )
     {
         // Check if mixinClass implements the method. If so, check if the mixinClass is generic or if the filter passes.
         // If a mixinClass is both generic AND non-generic at the same time, then the filter applies to the non-generic
         // side only.
-        Predicate<Class<?>> appliesToSpec = new Predicate<Class<?>>()
-        {
-            @Override
-            public boolean test( Class<?> item )
-            {
-                return helper.appliesTo( item, method, types, item );
-            }
-        };
-        return first( filter( and( isAssignableFrom( method.getDeclaringClass() ),
-                                   or( Genericpredicate.INSTANCE, appliesToSpec ) ),
-                              mixins ) );
+        Predicate<Class<?>> appliesToSpec = item -> helper.appliesTo( item, method, types, item );
+        return mixins
+            .filter( isAssignableFrom( method.getDeclaringClass() )
+                         .and( Genericpredicate.INSTANCE
+                                   .or( appliesToSpec ) ) )
+            .findFirst().orElse( null );
     }
 
     @SuppressWarnings( "unchecked" )
     private Class<?> findGenericImplementation( final Method method, Iterable<Class<?>> mixins )
     {
         // Check if mixinClass is generic and the applies-to filter passes
-        return first( filter( and( Genericpredicate.INSTANCE, new Predicate<Class<?>>()
-        {
-            @Override
-            public boolean test( Class<?> item )
-            {
-                return helper.appliesTo( item, method, types, item );
-            }
-        } ), mixins ) );
+        return first( filter( Genericpredicate.INSTANCE
+                                  .and( item -> helper.appliesTo( item, method, types, item ) ), mixins ) );
     }
 
     private MixinModel implementMethodWithClass( Method method, Class mixinClass )
@@ -356,7 +360,7 @@ public abstract class CompositeAssemblyImpl
         return mixinModel;
     }
 
-    protected void addState( final Iterable<Class<? extends Constraint<?, ?>>> constraintClasses )
+    protected void addState( final List<Class<?>> constraintClasses )
     {
         // Add method state
         compositeMethodsModel.accept( new HierarchicalVisitorAdapter<Object, Object, RuntimeException>()
@@ -390,16 +394,8 @@ public abstract class CompositeAssemblyImpl
                 if( visited instanceof MixinModel )
                 {
                     MixinModel model = (MixinModel) visited;
-                    Consumer<Field> addState = new Consumer<Field>()
-                    {
-                        @Override
-                        public void accept( Field field )
-                        {
-                            addStateFor( field, constraintClasses );
-                        }
-                    };
-                    Iterable<Field> fields = Fields.FIELDS_OF.apply( model.mixinClass() );
-                    StreamSupport.stream( fields.spliterator(), true )
+                    Consumer<Field> addState = field -> addStateFor( field, constraintClasses );
+                    Fields.FIELDS_OF.apply( model.mixinClass() )
                         .filter( Annotations.hasAnnotation( State.class ) )
                         .forEach( addState );
                     return false;
@@ -410,7 +406,7 @@ public abstract class CompositeAssemblyImpl
     }
 
     protected void addStateFor( AccessibleObject accessor,
-                                Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
+                                List<Class<?>> constraintClasses
     )
     {
         String stateName = QualifiedName.fromAccessor( accessor ).name();
@@ -428,11 +424,12 @@ public abstract class CompositeAssemblyImpl
     }
 
     protected PropertyModel newPropertyModel( AccessibleObject accessor,
-                                              Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
+                                              List<Class<?>> constraintClasses
     )
     {
-        Iterable<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+        Stream<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        boolean optional = annotations.anyMatch( isType( Optional.class ) );
+        annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         ValueConstraintsModel valueConstraintsModel = constraintsFor(
             annotations,
             GenericPropertyInfo.propertyTypeOf( accessor ),
@@ -449,19 +446,18 @@ public abstract class CompositeAssemblyImpl
         Object initialValue = stateDeclarations.initialValueOf( accessor );
         boolean useDefaults = metaInfo.get( UseDefaults.class ) != null || stateDeclarations.useDefaults( accessor );
         boolean immutable = this.immutable || metaInfo.get( Immutable.class ) != null;
-        PropertyModel propertyModel = new PropertyModel(
+        return new PropertyModel(
             accessor,
             immutable,
             useDefaults,
             valueConstraintsInstance,
             metaInfo,
             initialValue );
-        return propertyModel;
     }
 
     // Model
     private ConstraintsModel constraintsFor( Method method,
-                                             Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
+                                             List<Class<?>> constraintClasses
     )
     {
         List<ValueConstraintsModel> parameterConstraintModels = Collections.emptyList();
@@ -470,15 +466,15 @@ public abstract class CompositeAssemblyImpl
         boolean constrained = false;
         for( int i = 0; i < parameterAnnotations.length; i++ )
         {
-            Annotation[] parameterAnnotation = parameterAnnotations[i];
+            Annotation[] parameterAnnotation = parameterAnnotations[ i ];
 
             Name nameAnnotation = (Name) first( filter( isType( Name.class ), iterable( parameterAnnotation ) ) );
             String name = nameAnnotation == null ? "param" + ( i + 1 ) : nameAnnotation.value();
 
             boolean optional = first( filter( isType( Optional.class ), iterable( parameterAnnotation ) ) ) != null;
             ValueConstraintsModel parameterConstraintsModel = constraintsFor(
-                asList( parameterAnnotation ),
-                parameterTypes[i],
+                Arrays.stream( parameterAnnotation ),
+                parameterTypes[ i ],
                 name,
                 optional,
                 constraintClasses,
@@ -506,29 +502,32 @@ public abstract class CompositeAssemblyImpl
     }
 
     protected ValueConstraintsModel constraintsFor(
-        Iterable<Annotation> constraintAnnotations,
+        Stream<Annotation> constraintAnnotations,
         Type valueType,
         String name,
         boolean optional,
-        Iterable<Class<? extends Constraint<?, ?>>> constraintClasses,
+        Iterable<Class<?>> constraintClasses,
         AccessibleObject accessor
     )
     {
         valueType = wrapperClass( valueType );
 
         List<AbstractConstraintModel> constraintModels = new ArrayList<>();
-        Iterable<Annotation> filter = filter( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ),
-                                              constraintAnnotations );
+        List<Annotation> filtered = constraintAnnotations
+            .filter( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ) )
+            .collect( Collectors.toList() );
+
+        // TODO: This massive block below should be cleaned up.
         nextConstraint:
-        for( Annotation constraintAnnotation : filter )
+        for( Annotation constraintAnnotation : filtered )
         {
             // Check composite declarations first
             Class<? extends Annotation> annotationType = constraintAnnotation.annotationType();
-            for( Class<? extends Constraint<?, ?>> constraint : constraintClasses )
+            for( Class<?> constraint : constraintClasses )
             {
-                if( helper.appliesTo( constraint, annotationType, valueType ) )
+                if( helper.appliesTo( (Class<? extends Constraint<?, ?>>) constraint, annotationType, valueType ) )
                 {
-                    constraintModels.add( new ConstraintModel( constraintAnnotation, constraint ) );
+                    constraintModels.add( new ConstraintModel( constraintAnnotation, (Class<? extends Constraint<?, ?>>) constraint ) );
                     continue nextConstraint;
                 }
             }
@@ -549,11 +548,11 @@ public abstract class CompositeAssemblyImpl
 
             // No implementation found!
             // Check if if it's a composite constraints
-            Iterable<Annotation> annotations = iterable( annotationType.getAnnotations() );
-            if( matchesAny( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ), annotations ) )
+            if( Arrays.stream( annotationType.getAnnotations() )
+                .anyMatch( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ) ) )
             {
                 ValueConstraintsModel valueConstraintsModel = constraintsFor(
-                    annotations,
+                    Arrays.stream( annotationType.getAnnotations() ),
                     valueType,
                     name,
                     optional,
@@ -563,30 +562,29 @@ public abstract class CompositeAssemblyImpl
                     constraintAnnotation,
                     valueConstraintsModel );
                 constraintModels.add( compositeConstraintModel );
-                continue nextConstraint;
             }
-
-            throw new InvalidCompositeException(
-                "Cannot find implementation of constraint @"
-                + annotationType.getSimpleName()
-                + " for "
-                + valueType
-                + " in method "
-                + ( (Member) accessor ).getName()
-                + " of composite " + types );
+            else
+            {
+                throw new InvalidCompositeException(
+                    "Cannot find implementation of constraint @"
+                    + annotationType.getSimpleName()
+                    + " for "
+                    + valueType
+                    + " in method "
+                    + ( (Member) accessor ).getName()
+                    + " of composite " + types );
+            }
         }
-
         return new ValueConstraintsModel( constraintModels, name, optional );
     }
 
     private ConcernsModel concernsFor( Method method,
                                        Class<?> mixinClass,
-                                       Iterable<Class<?>> concernClasses
+                                       Stream<Class<?>> concernClasses
     )
     {
         List<ConcernModel> concernsFor = new ArrayList<>();
-        for( Class<?> concern : concernClasses )
-        {
+        concernClasses.forEach( concern -> {
             if( helper.appliesTo( concern, method, types, mixinClass ) )
             {
                 concernsFor.add( helper.getConcernModel( concern ) );
@@ -610,7 +608,7 @@ public abstract class CompositeAssemblyImpl
                     }
                 }
             }
-        }
+        } );
 
         // Check annotations on method that have @Concerns annotations themselves
         for( Annotation annotation : method.getAnnotations() )
@@ -641,12 +639,11 @@ public abstract class CompositeAssemblyImpl
 
     private SideEffectsModel sideEffectsFor( Method method,
                                              Class<?> mixinClass,
-                                             Iterable<Class<?>> sideEffectClasses
+                                             Stream<Class<?>> sideEffectClasses
     )
     {
         List<SideEffectModel> sideEffectsFor = new ArrayList<>();
-        for( Class<?> sideEffect : sideEffectClasses )
-        {
+        sideEffectClasses.forEach( sideEffect -> {
             if( helper.appliesTo( sideEffect, method, types, mixinClass ) )
             {
                 sideEffectsFor.add( helper.getSideEffectModel( sideEffect ) );
@@ -670,7 +667,7 @@ public abstract class CompositeAssemblyImpl
                     }
                 }
             }
-        }
+        } );
 
         if( sideEffectsFor.isEmpty() )
         {
@@ -683,156 +680,75 @@ public abstract class CompositeAssemblyImpl
     }
 
     @SuppressWarnings( "unchecked" )
-    private Iterable<Class<? extends Constraint<?, ?>>> constraintDeclarations( Class<?> type )
+    private Stream<Class<?>> constraintDeclarations( Class<?> type )
     {
-        ArrayList<Type> allTypes = getTypes( type );
-        return constraintDeclarations( allTypes );
+        Stream<? extends Type> types = getTypes( type );
+        return constraintDeclarations( types );
     }
 
-    private Iterable<Class<? extends Constraint<?, ?>>> constraintDeclarations( ArrayList<Type> allTypes )
+    private Stream<Class<?>> constraintDeclarations( Stream<? extends Type> types )
     {
-        // Find all constraints and flatten them into an iterable
-        Function<Type, Iterable<Class<? extends Constraint<?, ?>>>> function = new Function<Type, Iterable<Class<? extends Constraint<?, ?>>>>()
-        {
-            @Override
-            public Iterable<Class<? extends Constraint<?, ?>>> apply( Type type )
-            {
-                Constraints constraints = Annotations.annotationOn( type, Constraints.class );
-                if( constraints == null )
-                {
-                    return empty();
-                }
-                else
-                {
-                    return iterable( constraints.value() );
-                }
-            }
-        };
-        Iterable<Class<? extends Constraint<?, ?>>> flatten = flattenIterables( map( function, allTypes ) );
-        return toList( flatten );
+        return types
+            .filter( mixinType -> Annotations.annotationOn( mixinType, Constraints.class ) != null )
+            .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Constraints.class ).value() ) );
     }
 
     @SuppressWarnings( "unchecked" )
-    private Iterable<Class<?>> concernDeclarations( Class<?> type )
+    private Stream<Class<?>> concernDeclarations( Class<?> type )
     {
-        Iterable<? extends Class<?>> iterable = iterable( type );
-        return concernDeclarations( getTypes( iterable ) );
+        Stream<? extends Type> types = getTypes( type );
+        return concernDeclarations( types );
     }
 
-    private Iterable<Class<?>> concernDeclarations( ArrayList<Type> allTypes )
+    private Stream<Class<?>> concernDeclarations( Stream<? extends Type> types )
     {
-        // Find all concerns and flattern them into an iterable
-        Function<Type, Iterable<Class<?>>> function = new Function<Type, Iterable<Class<?>>>()
-        {
-            @Override
-            public Iterable<Class<?>> apply( Type type )
-            {
-                Concerns concerns = Annotations.annotationOn( type, Concerns.class );
-                if( concerns == null )
-                {
-                    return empty();
-                }
-                else
-                {
-                    return iterable( concerns.value() );
-                }
-            }
-        };
-        Iterable<Class<?>> flatten = flattenIterables( map( function, allTypes ) );
-        return toList( flatten );
+        return types
+            .filter( mixinType -> Annotations.annotationOn( mixinType, Concerns.class ) != null )
+            .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Concerns.class ).value() ) );
     }
 
     @SuppressWarnings( "unchecked" )
-    protected Iterable<Class<?>> sideEffectDeclarations( Class<?> type )
+    protected Stream<Class<?>> sideEffectDeclarations( Class<?> type )
     {
-        Iterable<? extends Class<?>> iterable = iterable( type );
-        return sideEffectDeclarations( getTypes( iterable ) );
+        Stream<? extends Type> types = getTypes( type );
+        return sideEffectDeclarations( types );
     }
 
-    protected Iterable<Class<?>> sideEffectDeclarations( ArrayList<Type> allTypes )
+    private Stream<Class<?>> sideEffectDeclarations( Stream<? extends Type> types )
     {
-        // Find all side-effects and flattern them into an iterable
-        Function<Type, Iterable<Class<?>>> function = new Function<Type, Iterable<Class<?>>>()
+        return types
+            .filter( mixinType -> Annotations.annotationOn( mixinType, SideEffects.class ) != null )
+            .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, SideEffects.class ).value() ) );
+    }
+
+    private Stream<? extends Type> getTypes( Type type )
+    {
+        if( type instanceof Class )
         {
-            @Override
-            public Iterable<Class<?>> apply( Type type )
+            Class<?> clazz = (Class<?>) type;
+            if( clazz.isInterface() )
             {
-                SideEffects sideEffects = Annotations.annotationOn( type, SideEffects.class );
-                if( sideEffects == null )
-                {
-                    return empty();
-                }
-                else
-                {
-                    return iterable( sideEffects.value() );
-                }
-            }
-        };
-        Iterable<Class<?>> flatten = flattenIterables( map( function, allTypes ) );
-        return toList( flatten );
-    }
-
-    private ArrayList<Type> getTypes( Class<?> type )
-    {
-        Iterable<? extends Class<?>> iterable = iterable( type );
-        return getTypes( iterable );
-    }
-
-    private ArrayList<Type> getTypes( Iterable<? extends Class<?>> typess )
-    {
-        // Find side-effect declarations
-        ArrayList<Type> allTypes = new ArrayList<>();
-        for( Class<?> type : typess )
-        {
-            Iterable<Type> types;
-            if( type.isInterface() )
-            {
-                types = typesOf( type );
+                return typesOf( clazz );
             }
             else
             {
-                types = cast( classHierarchy( type ) );
+                return classHierarchy( clazz );
             }
-            addAll( allTypes, types );
         }
-        return allTypes;
+        throw new UnsupportedOperationException( "Unable to handle type " + type.getTypeName() );
     }
 
     @SuppressWarnings( "unchecked" )
-    protected Iterable<Class<?>> mixinDeclarations( Class<?> type )
+    protected Stream<Class<?>> mixinDeclarations( Class<?> type )
     {
-        Iterable<? extends Class<?>> iterable = iterable( type );
-        return mixinDeclarations( iterable );
+        Stream<? extends Type> types = getTypes( type );
+        return mixinDeclarations( types );
     }
 
-    protected Iterable<Class<?>> mixinDeclarations( Iterable<? extends Class<?>> typess )
+    private Stream<Class<?>> mixinDeclarations( Stream<? extends Type> types )
     {
-        // Find mixin declarations
-        ArrayList<Type> allTypes = new ArrayList<>();
-        for( Class<?> type : typess )
-        {
-            Iterable<Type> types = typesOf( type );
-            addAll( allTypes, types );
-        }
-
-        // Find all mixins and flattern them into an iterable
-        Function<Type, Iterable<Class<?>>> function = new Function<Type, Iterable<Class<?>>>()
-        {
-            @Override
-            public Iterable<Class<?>> apply( Type type )
-            {
-                Mixins mixins = Annotations.annotationOn( type, Mixins.class );
-                if( mixins == null )
-                {
-                    return empty();
-                }
-                else
-                {
-                    return iterable( mixins.value() );
-                }
-            }
-        };
-        Iterable<Class<?>> flatten = flattenIterables( map( function, allTypes ) );
-        return toList( flatten );
+        return types.flatMap( this::getTypes )
+            .filter( mixinType -> Annotations.annotationOn( mixinType, Mixins.class ) != null )
+            .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Mixins.class ).value() ) );
     }
 }

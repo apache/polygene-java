@@ -18,11 +18,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.stream.Stream;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.functional.Iterables;
-
-import static org.apache.zest.functional.Iterables.toArray;
 
 /**
  * Thread-associated composites. This is basically a ThreadLocal which maintains a reference
@@ -52,10 +50,10 @@ public class CompositeContext<T extends TransientComposite>
     {
         TransientComposite composite = get();
 
-        Iterable<Class<?>> types = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite ).types();
+        Stream<Class<?>> types = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite ).types();
         return (T) Proxy.newProxyInstance(
             composite.getClass().getClassLoader(),
-            toArray( Class.class, Iterables.<Class>cast( types ) ),
+            types.toArray( Class[]::new ),
             new ContextInvocationhandler() );
     }
 

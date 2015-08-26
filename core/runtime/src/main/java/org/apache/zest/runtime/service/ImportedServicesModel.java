@@ -16,6 +16,8 @@ package org.apache.zest.runtime.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
@@ -36,7 +38,7 @@ public class ImportedServicesModel
 
     public ImportedServicesInstance newInstance( ModuleInstance module )
     {
-        List<ServiceReference> serviceReferences = new ArrayList<ServiceReference>();
+        List<ServiceReference<?>> serviceReferences = new ArrayList<>();
         for( ImportedServiceModel serviceModel : importedServiceModels )
         {
             ImportedServiceReferenceInstance serviceReferenceInstance = new ImportedServiceReferenceInstance( serviceModel, module );
@@ -61,5 +63,10 @@ public class ImportedServicesModel
             }
         }
         return visitor.visitLeave( this );
+    }
+
+    public Stream<ImportedServiceModel> stream()
+    {
+        return importedServiceModels.stream();
     }
 }

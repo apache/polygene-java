@@ -14,21 +14,14 @@
 
 package org.apache.zest.api.service.importer;
 
-import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Layer;
-import org.apache.zest.api.structure.MetaInfoHolder;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.functional.Iterables;
-
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.map;
-import static org.apache.zest.functional.Specifications.notNull;
 
 /**
  * Return a predefined service instance that was provided as meta-info. Search for meta-info in the following order:
@@ -50,26 +43,25 @@ public final class InstanceImporter<T>
     public T importService( final ImportedServiceDescriptor serviceDescriptor )
         throws ServiceImporterException
     {
-        T instance = null;
-        Iterable<MetaInfoHolder> holders = Iterables.iterable( serviceDescriptor, module, layer, application );
-        for( final MetaInfoHolder metaInfoHolder : holders )
-        {
-            Function<Class<?>, T> metaFinder = new Function<Class<?>, T>()
-            {
-                @Override
-                @SuppressWarnings( "unchecked" )
-                public T apply( Class<?> type )
-                {
-                    return (T) metaInfoHolder.metaInfo( type );
-                }
-            };
-            instance = first( filter( notNull(), map( metaFinder, serviceDescriptor.types() ) ) );
-            if( instance != null )
-            {
-                break;
-            }
-        }
-        return instance;
+        return Stream.of( serviceDescriptor, module, layer, application )
+            .flatMap( holder -> serviceDescriptor.types().map( type -> (T) holder.metaInfo( type ) ) )
+            .filter( meta -> meta != null )
+            .findFirst().orElse( null );
+
+//        T instance = null;
+//        Iterable<MetaInfoHolder> holders = Iterables.iterable( serviceDescriptor, module, layer, application );
+//        for( final MetaInfoHolder metaInfoHolder : holders )
+//        {
+//            Function<Class<?>, T> metaFinder = type -> (T) metaInfoHolder.metaInfo( type );
+//
+//
+//            instance = first( filter( notNull(), map( metaFinder, serviceDescriptor.types() ) ) );
+//            if( instance != null )
+//            {
+//                break;
+//            }
+//        }
+//        return instance;
     }
 
     @Override

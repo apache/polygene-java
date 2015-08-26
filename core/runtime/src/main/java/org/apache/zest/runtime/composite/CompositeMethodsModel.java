@@ -15,10 +15,11 @@
 package org.apache.zest.runtime.composite;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 import org.apache.zest.api.composite.MissingMethodException;
 import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
@@ -30,20 +31,24 @@ import static org.apache.zest.functional.Iterables.map;
  * Model for Composite methods. This includes both private and public methods.
  */
 public final class CompositeMethodsModel
-    implements VisitableHierarchy<Object, Object>
+    implements VisitableHierarchy<Object, Object>, Dependencies
 {
     private final LinkedHashMap<Method, CompositeMethodModel> methods;
+    // TODO: With the large block disappearing, this member has no use. Other implications are also commented out for now.
     private final MixinsModel mixinsModel;
 
     public CompositeMethodsModel( MixinsModel mixinsModel )
+//    public CompositeMethodsModel()
     {
         methods = new LinkedHashMap<>();
         this.mixinsModel = mixinsModel;
     }
 
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        return Iterables.flattenIterables( map( Dependencies.DEPENDENCIES_FUNCTION, methods.values() ) );
+        Collection<CompositeMethodModel> compositeMethods = methods.values();
+        return compositeMethods.stream().flatMap( Dependencies.DEPENDENCIES_FUNCTION );
+//        return Iterables.flattenIterables( map( , methods.values() ) );
     }
 
     // Context
@@ -64,26 +69,22 @@ public final class CompositeMethodsModel
                 return mixins.invokeObject( proxy, args, method );
             }
 
+            // TODO: Figure out what was the intention of this code block, added by Rickard in 2009. It doesn't do anything useful.
             if( !method.getDeclaringClass().isInterface() )
             {
-                Iterable<Class<?>> types = mixinsModel.mixinTypes();
-                for( Class<?> aClass : types )
-                {
+                compositeMethod = mixinsModel.mixinTypes().map( aClass -> {
                     try
                     {
                         Method realMethod = aClass.getMethod( method.getName(), method.getParameterTypes() );
-                        compositeMethod = methods.get( realMethod );
-                        break;
+                        return methods.get( realMethod );
                     }
-                    catch( NoSuchMethodException e )
+                    catch( NoSuchMethodException | SecurityException e )
                     {
+
                     }
-                    catch( SecurityException e )
-                    {
-                    }
-                }
+                    return null;
+                }).filter( model -> model != null ).findFirst().orElse( null );
             }
-//            return mixins.invokeObject( proxy, args, method );
             throw new MissingMethodException( "Method '" + method + "' is not implemented" );
         }
         else

@@ -106,31 +106,27 @@ public final class ValueInstance
      */
     public void prepareToBuild()
     {
-        for( PropertyModel propertyDescriptor : descriptor().state().properties() )
-        {
+        descriptor().state().properties().forEach( propertyDescriptor -> {
             PropertyInstance<Object> propertyInstance =
                 (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
 
             propertyInstance.prepareToBuild( propertyDescriptor );
-        }
+        } );
 
-        for( AssociationModel associationDescriptor : descriptor().state().associations() )
-        {
+        descriptor().state().associations().forEach( associationDescriptor -> {
             state().associationFor( associationDescriptor.accessor() )
                 .setAssociationInfo( associationDescriptor.getBuilderInfo() );
-        }
+        } );
 
-        for( ManyAssociationModel associationDescriptor : descriptor().state().manyAssociations() )
-        {
+        descriptor().state().manyAssociations().forEach( associationDescriptor -> {
             state().manyAssociationFor( associationDescriptor.accessor() )
                 .setAssociationInfo( associationDescriptor.getBuilderInfo() );
-        }
+        } );
 
-        for( NamedAssociationModel associationDescriptor : descriptor().state().namedAssociations() )
-        {
+        descriptor().state().namedAssociations().forEach( associationDescriptor -> {
             state().namedAssociationFor( associationDescriptor.accessor() )
                 .setAssociationInfo( associationDescriptor.getBuilderInfo() );
-        }
+        } );
     }
 
     /**
@@ -139,27 +135,23 @@ public final class ValueInstance
      */
     public void prepareBuilderState()
     {
-        for( PropertyModel propertyDescriptor : descriptor().state().properties() )
-        {
+        descriptor().state().properties().forEach( propertyDescriptor -> {
             PropertyInstance<Object> propertyInstance =
                 (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() );
             propertyInstance.prepareBuilderState( propertyDescriptor );
-        }
+        } );
 
-        for( AssociationModel associationDescriptor : descriptor().state().associations() )
-        {
+        descriptor().state().associations().forEach( associationDescriptor -> {
             state().associationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
-        }
+        } );
 
-        for( ManyAssociationModel associationDescriptor : descriptor().state().manyAssociations() )
-        {
+        descriptor().state().manyAssociations().forEach( associationDescriptor -> {
             state().manyAssociationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
-        }
+        } );
 
-        for( NamedAssociationModel associationDescriptor : descriptor().state().namedAssociations() )
-        {
+        descriptor().state().namedAssociations().forEach( associationDescriptor -> {
             state().namedAssociationFor( associationDescriptor.accessor() ).setAssociationInfo( associationDescriptor );
-        }
+        } );
     }
 
     /**

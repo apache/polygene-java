@@ -16,12 +16,12 @@ package org.apache.zest.runtime.bootstrap;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.bootstrap.ObjectAssembly;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.object.ObjectModel;
 
 /**
@@ -46,9 +46,9 @@ public final class ObjectAssemblyImpl
     }
 
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
-        return Iterables.<Class<?>>iterable( objectType );
+        return Stream.of( objectType );
     }
 
     void addObjectModel( List<ObjectModel> objectModels )

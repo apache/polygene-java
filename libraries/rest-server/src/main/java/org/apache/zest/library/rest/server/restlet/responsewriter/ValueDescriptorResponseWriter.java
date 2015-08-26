@@ -29,7 +29,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.restlet.Response;
@@ -63,9 +62,8 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
             {
                 JSONObject json = new JSONObject();
                 ValueDescriptor vd = (ValueDescriptor) result;
-                try
-                {
-                    for( PropertyDescriptor propertyDescriptor : vd.state().properties() )
+                vd.state().properties().forEach( propertyDescriptor -> {
+                    try
                     {
                         Object o = propertyDescriptor.initialValue( module );
                         if( o == null )
@@ -77,15 +75,14 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
                             json.put( propertyDescriptor.qualifiedName().name(), o.toString() );
                         }
                     }
-                }
-                catch( JSONException e )
-                {
-                    throw new ResourceException(e);
-                }
+                    catch( JSONException e )
+                    {
+                        throw new RestResponseException( "Unable to serialize " + vd, e);
+                    }
+                } );
                 StringRepresentation representation
                     = new StringRepresentation( json.toString(), MediaType.APPLICATION_JSON );
                 response.setEntity( representation );
-
                 return true;
             }
             else if( MediaType.TEXT_HTML.equals( type ) )
@@ -96,7 +93,7 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
                     public void write( Writer writer )
                         throws IOException
                     {
-                        Map<String, Object> context = new HashMap<String, Object>();
+                        Map<String, Object> context = new HashMap<>();
                         context.put( "request", response.getRequest() );
                         context.put( "response", response );
                         context.put( "result", result );

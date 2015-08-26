@@ -14,22 +14,21 @@
 
 package org.apache.zest.runtime.composite;
 
+import java.util.List;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.runtime.injection.InjectionContext;
-import org.apache.zest.runtime.property.PropertyModel;
 import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Model for Transient Composites
  */
-public class TransientModel
-    extends CompositeModel
+public class TransientModel extends CompositeModel
     implements TransientDescriptor
 {
-    public TransientModel( Iterable<Class<?>> types, final Visibility visibility,
+    public TransientModel( List<Class<?>> types, final Visibility visibility,
                            final MetaInfo metaInfo,
                            final MixinsModel mixinsModel,
                            final StateModel stateModel,
@@ -62,9 +61,8 @@ public class TransientModel
     public void checkConstraints( TransientStateInstance instanceState )
         throws ConstraintViolationException
     {
-        for( PropertyModel propertyModel : stateModel.properties() )
-        {
-            propertyModel.checkConstraints( instanceState.<Object>propertyFor( propertyModel.accessor() ).get() );
-        }
+        stateModel.properties().forEach( propertyModel ->
+            propertyModel.checkConstraints( instanceState.propertyFor( propertyModel.accessor() ).get() )
+        );
     }
 }

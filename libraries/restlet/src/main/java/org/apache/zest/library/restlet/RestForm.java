@@ -42,12 +42,7 @@ public interface RestForm
         @Override
         public FormField field( String name )
         {
-            java.util.Optional<FormField> exists = fields().get().stream().filter( new NameFilter( name ) ).findFirst();
-            if( exists.isPresent() )
-            {
-                return exists.get();
-            }
-            return null;
+            return fields().get().stream().filter( new NameFilter( name ) ).findFirst().orElse( null );
         }
     }
 }

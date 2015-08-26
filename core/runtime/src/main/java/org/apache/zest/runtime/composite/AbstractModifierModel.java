@@ -14,9 +14,12 @@
 
 package org.apache.zest.runtime.composite;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.function.IntFunction;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
@@ -29,11 +32,6 @@ import org.apache.zest.spi.module.ModuleSpi;
 
 import static org.apache.zest.api.util.Classes.RAW_CLASS;
 import static org.apache.zest.api.util.Classes.interfacesOf;
-import static org.apache.zest.functional.Iterables.flattenIterables;
-import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.functional.Iterables.map;
-import static org.apache.zest.functional.Iterables.toArray;
-import static org.apache.zest.functional.Iterables.unique;
 
 /**
  * JAVADOC
@@ -47,7 +45,7 @@ public abstract class AbstractModifierModel
     private final InjectedFieldsModel injectedFieldsModel;
     private final InjectedMethodsModel injectedMethodsModel;
 
-    private final Class<?>[] nextInterfaces;
+    private final Class<Class<?>>[] nextInterfaces;
 
     @SuppressWarnings( "unchecked" )
     public AbstractModifierModel( Class<?> declaredModifierClass, Class<?> instantiationClass )
@@ -57,7 +55,10 @@ public abstract class AbstractModifierModel
         injectedFieldsModel = new InjectedFieldsModel( declaredModifierClass );
         injectedMethodsModel = new InjectedMethodsModel( declaredModifierClass );
         Class<Class<?>> componentType = (Class<Class<?>>) Class.class.cast( Class.class );
-        nextInterfaces = toArray( componentType, unique( map( RAW_CLASS, interfacesOf( declaredModifierClass ) ) ) );
+        nextInterfaces = interfacesOf( declaredModifierClass )
+            .map( RAW_CLASS )
+            .distinct()
+            .toArray( size -> (Class<Class<?>>[]) Array.newInstance( componentType, size ) );
     }
 
     public Class<?> modifierClass()
@@ -67,9 +68,11 @@ public abstract class AbstractModifierModel
 
     @Override
     @SuppressWarnings( "unchecked" )
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        return flattenIterables( map( DEPENDENCIES_FUNCTION, iterable( constructorsModel, injectedFieldsModel, injectedMethodsModel ) ) );
+        return Stream.of( constructorsModel, injectedFieldsModel, injectedMethodsModel )
+            .flatMap( Dependencies::dependencies );
+//        return flattenIterables( map( DEPENDENCIES_FUNCTION, iterable( constructorsModel, injectedFieldsModel, injectedMethodsModel ) ) );
     }
 
     public boolean isGeneric()

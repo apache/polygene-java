@@ -21,6 +21,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
@@ -40,9 +41,9 @@ public final class AssociationsModel
     {
     }
 
-    public Iterable<AssociationModel> associations()
+    public Stream<AssociationModel> associations()
     {
-        return mapAccessorAssociationModel.values();
+        return mapAccessorAssociationModel.values().stream();
     }
 
     public void addAssociation( AssociationModel associationModel )

@@ -334,7 +334,7 @@ import static org.apache.zest.functional.Iterables.first;
             Icon icon;
             CompositeMethodDetailDescriptor descriptor = (CompositeMethodDetailDescriptor) value;
 
-            Class compositeClass = first( descriptor.composite().descriptor().types() );
+            Class compositeClass = descriptor.composite().descriptor().types().findFirst().get();
             Class mixinMethodClass = descriptor.descriptor().method().getDeclaringClass();
             if( mixinMethodClass.isAssignableFrom( compositeClass ) )
             {

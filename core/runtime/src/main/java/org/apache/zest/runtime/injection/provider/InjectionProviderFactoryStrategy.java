@@ -35,16 +35,14 @@ import org.apache.zest.runtime.injection.InjectionProvider;
 import org.apache.zest.runtime.injection.InjectionProviderFactory;
 import org.apache.zest.runtime.model.Resolution;
 
-import static org.apache.zest.functional.Iterables.first;
-
 /**
  * JAVADOC
  */
 public final class InjectionProviderFactoryStrategy
     implements InjectionProviderFactory
 {
-    private final Map<Class<? extends Annotation>, InjectionProviderFactory> generalProviderFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
-    private final Map<Class<? extends Annotation>, InjectionProviderFactory> valuesProviderFactories = new HashMap<Class<? extends Annotation>, InjectionProviderFactory>();
+    private final Map<Class<? extends Annotation>, InjectionProviderFactory> generalProviderFactories = new HashMap<>();
+    private final Map<Class<? extends Annotation>, InjectionProviderFactory> valuesProviderFactories = new HashMap<>();
     private MetaInfo metaInfo;
 
     public InjectionProviderFactoryStrategy( MetaInfo metaInfo )
@@ -82,7 +80,7 @@ public final class InjectionProviderFactoryStrategy
             }
         }
         ModelDescriptor composite = resolution.model();
-        Class<?> compositeType = first( composite.types() );
+        Class<?> compositeType = composite.types().findFirst().orElse( null );
         if( factory1 != null && ValueComposite.class.isAssignableFrom( compositeType ) )
         {
             throw new InvalidValueCompositeException( "@" + injectionAnnotationType.getSimpleName() + " is not allowed in ValueComposites: " + compositeType );

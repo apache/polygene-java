@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.concern.ConcernsDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.Iterables;
@@ -42,9 +43,10 @@ public final class ConcernsModel
     }
 
     @Override
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        return Iterables.flattenIterables( Iterables.map( Dependencies.DEPENDENCIES_FUNCTION, concernsFor ) );
+        return concernsFor.stream().flatMap( ConcernModel::dependencies );
+//        return Iterables.flattenIterables( Iterables.map( Dependencies.DEPENDENCIES_FUNCTION, concernsFor ) );
     }
 
     // Context

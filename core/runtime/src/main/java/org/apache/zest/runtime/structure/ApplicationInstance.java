@@ -16,6 +16,7 @@ package org.apache.zest.runtime.structure;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
@@ -105,6 +106,12 @@ public class ApplicationInstance
         }
 
         throw new IllegalArgumentException( "No such layer:" + layerName );
+    }
+
+    @Override
+    public Stream<? extends Layer> layers()
+    {
+        return layerInstances.stream();
     }
 
     @Override

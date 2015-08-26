@@ -871,10 +871,8 @@ public class ContextResource
         {
             ValueDescriptor valueDescriptor = module.valueDescriptor( valueType.getName() );
 
-            for( PropertyDescriptor propertyDescriptor : valueDescriptor.state().properties() )
-            {
+            valueDescriptor.state().properties().forEach(propertyDescriptor -> {
                 String value = getValue( propertyDescriptor.qualifiedName().name(), queryAsForm, entityAsForm );
-
                 if( value == null )
                 {
                     Object initialValue = propertyDescriptor.initialValue( module );
@@ -883,9 +881,8 @@ public class ContextResource
                         value = initialValue.toString();
                     }
                 }
-
                 form.add( propertyDescriptor.qualifiedName().name(), value );
-            }
+            });
         }
         else if( valueType.isInterface() && interactionMethod.getParameterTypes().length == 1 )
         {

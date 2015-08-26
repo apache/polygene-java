@@ -17,13 +17,11 @@ package org.apache.zest.runtime.entity;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.Set;
-import org.apache.zest.api.association.Association;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateDescriptor;
-import org.apache.zest.api.association.ManyAssociation;
-import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.constraint.ConstraintViolationException;
@@ -40,6 +38,8 @@ import org.apache.zest.runtime.structure.ModuleUnitOfWork;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.module.ModuleSpi;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Entity instance
@@ -128,7 +128,7 @@ public final class EntityInstance
     }
 
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
         return entityModel.types();
     }
@@ -268,50 +268,27 @@ public final class EntityInstance
     {
         // Calculate aggregated Entities
         AssociationStateDescriptor stateDescriptor = entityModel.state();
-        Set<Object> aggregatedEntities = new HashSet<>();
-        Iterable<? extends AssociationDescriptor> associations = stateDescriptor.associations();
-        for( AssociationDescriptor association : associations )
-        {
-            if( association.isAggregated() )
-            {
-                Association<?> assoc = state.associationFor( association.accessor() );
-                Object aggregatedEntity = assoc.get();
-                if( aggregatedEntity != null )
-                {
-                    aggregatedEntities.add( aggregatedEntity );
-                }
-            }
-        }
-        Iterable<? extends AssociationDescriptor> manyAssociations = stateDescriptor.manyAssociations();
-        for( AssociationDescriptor association : manyAssociations )
-        {
-            if( association.isAggregated() )
-            {
-                ManyAssociation<?> manyAssoc = state.manyAssociationFor( association.accessor() );
-                for( Object entity : manyAssoc )
-                {
-                    aggregatedEntities.add( entity );
-                }
-            }
-        }
-        Iterable<? extends AssociationDescriptor> namedAssociations = stateDescriptor.namedAssociations();
-        for( AssociationDescriptor association : namedAssociations )
-        {
-            if( association.isAggregated() )
-            {
-                NamedAssociation<?> namedAssoc = state.namedAssociationFor( association.accessor() );
-                for( String name : namedAssoc )
-                {
-                    aggregatedEntities.add( namedAssoc.get( name ) );
-                }
-            }
-        }
+        Stream.concat(
+            stateDescriptor.associations()
+                .filter( AssociationDescriptor::isAggregated )
+                .map( association -> state.associationFor( association.accessor() ).get() )
+                .filter( entity -> entity != null ),
 
-        // Remove aggregated Entities
-        for( Object aggregatedEntity : aggregatedEntities )
-        {
-            unitOfWork.remove( aggregatedEntity );
-        }
+            Stream.concat(
+                stateDescriptor.manyAssociations()
+                    .filter( AssociationDescriptor::isAggregated )
+                    .flatMap( association -> state.manyAssociationFor( association.accessor() ).toList().stream() )
+                    .filter( entity -> entity != null ),
+
+                stateDescriptor.namedAssociations()
+                    .filter( AssociationDescriptor::isAggregated )
+                    .flatMap( association -> state.namedAssociationFor( association.accessor() )
+                        .toMap()
+                        .values()
+                        .stream() )
+                    .filter( entity -> entity != null )
+            )
+        ).distinct().forEach( unitOfWork::remove );
     }
 
     public void checkConstraints()
@@ -322,8 +299,8 @@ public final class EntityInstance
         }
         catch( ConstraintViolationException e )
         {
-            throw new ConstraintViolationException( identity.identity(), entityModel.types(), e.mixinTypeName(), e.methodName(), e
-                .constraintViolations() );
+            List<Class<?>> entityModelList = entityModel.types().collect( toList() );
+            throw new ConstraintViolationException( identity.identity(), entityModelList, e.mixinTypeName(), e.methodName(), e.constraintViolations() );
         }
     }
 }

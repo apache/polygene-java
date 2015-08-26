@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.InvalidCompositeException;
@@ -35,8 +35,7 @@ import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specifications;
+import org.apache.zest.runtime.legacy.Specifications;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
@@ -107,18 +106,24 @@ public final class ConstructorsModel
     }
 
     @Override
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        Function<ConstructorModel, Iterable<DependencyModel>> constructorDependencies = new Function<ConstructorModel, Iterable<DependencyModel>>()
+        if( boundConstructors == null )
         {
-            @Override
-            public Iterable<DependencyModel> apply( ConstructorModel constructorModel )
-            {
-                return constructorModel.dependencies();
-            }
-        };
+            return constructorModels.stream().flatMap( ConstructorModel::dependencies );
+        }
+        return boundConstructors.stream().flatMap( ConstructorModel::dependencies );
 
-        return Iterables.flattenIterables( Iterables.map( constructorDependencies, boundConstructors == null ? constructorModels : boundConstructors ) );
+//        Function<ConstructorModel, Iterable<DependencyModel>> constructorDependencies = new Function<ConstructorModel, Iterable<DependencyModel>>()
+//        {
+//            @Override
+//            public Iterable<DependencyModel> apply( ConstructorModel constructorModel )
+//            {
+//                return constructorModel.dependencies();
+//            }
+//        };
+//
+//        return Iterables.flattenIterables( Iterables.map( constructorDependencies, boundConstructors == null ? constructorModels : boundConstructors ) );
     }
 
     @SuppressWarnings( "raw" )

@@ -19,6 +19,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.zest.api.entity.Lifecycle;
+import org.apache.zest.api.mixin.Initializable;
+import org.apache.zest.api.util.Methods;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
@@ -26,12 +29,9 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.apache.zest.api.entity.Lifecycle;
-import org.apache.zest.api.mixin.Initializable;
-import org.apache.zest.api.util.Classes;
-import org.apache.zest.api.util.Methods;
-import org.apache.zest.functional.Iterables;
 
+import static org.apache.zest.api.util.Classes.RAW_CLASS;
+import static org.apache.zest.api.util.Classes.interfacesOf;
 import static org.objectweb.asm.Opcodes.AASTORE;
 import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
@@ -71,7 +71,6 @@ import static org.objectweb.asm.Opcodes.POP;
 import static org.objectweb.asm.Opcodes.PUTSTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Type.getInternalName;
-import static org.apache.zest.api.util.Classes.interfacesOf;
 
 /**
  * Generate subclasses of classes used for transients. All methods delegate to CompositeInvoker.
@@ -88,13 +87,13 @@ import static org.apache.zest.api.util.Classes.interfacesOf;
         String jdkString = System.getProperty( "java.specification.version" );
         switch( jdkString )
         {
-            case "1.8":
-                JDK_VERSION = Opcodes.V1_8;
-                break;
-            case "1.7":
-            default:
-                JDK_VERSION = Opcodes.V1_7;
-                break;
+        case "1.8":
+            JDK_VERSION = Opcodes.V1_8;
+            break;
+        case "1.7":
+        default:
+            JDK_VERSION = Opcodes.V1_7;
+            break;
         }
     }
 
@@ -439,14 +438,7 @@ import static org.apache.zest.api.util.Classes.interfacesOf;
 
     private static boolean isOverloaded( Method method, Class baseClass )
     {
-        if( Modifier.isFinal( method.getModifiers() ) )
-        {
-            return false; // Cannot override final methods
-        }
-        else
-        {
-            return true;
-        }
+        return !Modifier.isFinal( method.getModifiers() );
     }
 
     private static boolean isInternalZestMethod( Method method, Class baseClass )
@@ -473,33 +465,29 @@ import static org.apache.zest.api.util.Classes.interfacesOf;
         }
     }
 
-    private static Class getInterfaceMethodDeclaration( Method method, Class clazz )
+    private static Class<?> getInterfaceMethodDeclaration( Method method, Class clazz )
         throws NoSuchMethodException
     {
-        Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, interfacesOf( clazz ) );
-        for( Class<?> anInterface : interfaces )
-        {
+        return interfacesOf( clazz ).map( RAW_CLASS ).filter( intFace -> {
             try
             {
-                anInterface.getMethod( method.getName(), method.getParameterTypes() );
-                return anInterface;
+                intFace.getMethod( method.getName(), method.getParameterTypes() );
+                return true;
             }
             catch( NoSuchMethodException e )
             {
                 // Try next
+                return false;
             }
-        }
-
-        throw new NoSuchMethodException( method.getName() );
+        } ).findFirst().orElseThrow( () -> new NoSuchMethodException( method.getName() ) );
     }
 
     private static boolean isInterfaceMethod( Method method, Class<?> baseClass )
     {
-        for( Class<?> aClass : Iterables.filter( Methods.HAS_METHODS, Iterables.map( Classes.RAW_CLASS, interfacesOf( baseClass ) ) ) )
-        {
+        return interfacesOf( baseClass ).map( RAW_CLASS ).filter( Methods.HAS_METHODS ).anyMatch( clazz -> {
             try
             {
-                Method m = aClass.getMethod( method.getName(), method.getParameterTypes() );
+                Method m = clazz.getMethod( method.getName(), method.getParameterTypes() );
                 m.setAccessible( true );
                 return true;
             }
@@ -507,8 +495,8 @@ import static org.apache.zest.api.util.Classes.interfacesOf;
             {
                 // Ignore
             }
-        }
-        return false;
+            return false;
+        } );
     }
 
     private static void type( MethodVisitor mv, Class<?> aClass )

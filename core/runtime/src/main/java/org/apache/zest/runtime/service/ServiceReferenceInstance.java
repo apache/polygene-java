@@ -20,6 +20,7 @@
 package org.apache.zest.runtime.service;
 
 import java.lang.reflect.Method;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
@@ -71,13 +72,13 @@ public final class ServiceReferenceInstance<T>
     }
 
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
         return serviceModel.types();
     }
 
     @Override
-    public <T> T metaInfo( Class<T> infoType )
+    public <M> M metaInfo( Class<M> infoType )
     {
         return serviceModel.metaInfo( infoType );
     }
@@ -122,14 +123,7 @@ public final class ServiceReferenceInstance<T>
         if( instance != null )
         {
             try {
-                activation.passivate( new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        active = false;
-                    }
-                } );
+                activation.passivate( () -> active = false );
             } finally {
                 instance = null;
                 active = false;
@@ -151,14 +145,9 @@ public final class ServiceReferenceInstance<T>
 
                     try
                     {
-                        activation.activate( serviceModel.newActivatorsInstance( module ), instance, new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                active = true;
-                            }
-                        } );
+                        activation.activate( serviceModel.newActivatorsInstance( module ),
+                                             instance,
+                                             () -> active = true );
                     }
                     catch( Exception e )
                     {
@@ -194,26 +183,26 @@ public final class ServiceReferenceInstance<T>
     {
         @Override
         @SuppressWarnings( "unchecked" )
-        public <T> T proxy()
+        public <P> P proxy()
         {
-            return (T) ServiceReferenceInstance.this.get();
+            return (P) ServiceReferenceInstance.this.get();
         }
 
         @Override
-        public <T> T newProxy( Class<T> mixinType )
+        public <P> P newProxy( Class<P> mixinType )
             throws IllegalArgumentException
         {
             return getInstance().newProxy( mixinType );
         }
 
         @Override
-        public <T> T metaInfo( Class<T> infoType )
+        public <M> M metaInfo( Class<M> infoType )
         {
             return ServiceReferenceInstance.this.metaInfo( infoType );
         }
 
         @Override
-        public Iterable<Class<?>> types()
+        public Stream<Class<?>> types()
         {
             return ServiceReferenceInstance.this.types();
         }

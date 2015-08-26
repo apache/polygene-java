@@ -293,7 +293,7 @@ public interface ApplicationManagerService
 
         public String getType()
         {
-            Class<?> first = first( serviceDescriptor.types() );
+            Class<?> first = serviceDescriptor.types().findFirst().orElse( null );
             if( first == null )
             {
                 return null;
@@ -303,7 +303,7 @@ public interface ApplicationManagerService
 
         public boolean isActive()
         {
-            Class<?> mainType = first( serviceDescriptor.types() );
+            Class<?> mainType = serviceDescriptor.types().findFirst().orElse( null );
             ServiceReference<?> first = first( filter( withId( serviceDescriptor.identity() ),
                                                        module.findServices( mainType ) )
             );
@@ -312,7 +312,7 @@ public interface ApplicationManagerService
 
         public boolean isAvailable()
         {
-            Class<?> mainType = first( serviceDescriptor.types() );
+            Class<?> mainType = serviceDescriptor.types().findFirst().orElse( null );
             ServiceReference<?> first = first( filter( withId( serviceDescriptor.identity() ),
                                                        module.findServices( mainType ) )
             );
@@ -321,7 +321,7 @@ public interface ApplicationManagerService
 
         public String restart()
         {
-            Iterable<?> services = module.findServices( first( serviceDescriptor.types() ) );
+            Iterable<?> services = module.findServices( serviceDescriptor.types().findFirst().orElse( null ) );
             ServiceReference<?> serviceRef = (ServiceReference) first( filter( withId( serviceDescriptor.identity() ),
                                                                                services )
             );
@@ -366,7 +366,7 @@ public interface ApplicationManagerService
 
         public String getType()
         {
-            Class<?> mainType = first( serviceDescriptor.types() );
+            Class<?> mainType = serviceDescriptor.types().findFirst().orElse( null );
             if( mainType == null )
             {
                 return null;

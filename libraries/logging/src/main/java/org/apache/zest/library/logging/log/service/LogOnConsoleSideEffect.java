@@ -27,8 +27,6 @@ import org.apache.zest.api.injection.scope.Invocation;
 import org.apache.zest.api.sideeffect.SideEffectOf;
 import org.apache.zest.library.logging.log.LogType;
 
-import static org.apache.zest.functional.Iterables.first;
-
 /**
  * The ConsoleViewSideEffect is just a temporary solution for logging output, until a more
  * robust framework has been designed.
@@ -54,7 +52,7 @@ public abstract class LogOnConsoleSideEffect extends SideEffectOf<LoggingService
 
     private String getCompositeName( Composite composite )
     {
-        return first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types()).getName();
+        return ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().get().getName();
     }
 
     public void log( LogType type, Composite composite, String category, String message, Object param1 )

@@ -17,6 +17,7 @@ package org.apache.zest.runtime.bootstrap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.common.MetaInfo;
@@ -24,7 +25,6 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.importer.InstanceImporter;
 import org.apache.zest.bootstrap.ImportedServiceAssembly;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.service.ImportedServiceModel;
 
@@ -53,12 +53,12 @@ public final class ImportedServiceAssemblyImpl
     }
 
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
-        return Iterables.<Class<?>>iterable( serviceType );
+        return Stream.of( serviceType );
     }
 
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     void addImportedServiceModel( List<ImportedServiceModel> serviceModels )
     {
         try

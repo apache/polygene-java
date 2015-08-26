@@ -71,7 +71,7 @@ final class ServiceLocator
             {
                 layerName = tempLayerName;
                 moduleName = tempModuleName;
-                serviceType = first( aDescriptor.types() );
+                serviceType = aDescriptor.types().findFirst().orElse( null );
             }
         }
         else if( visited instanceof ObjectDescriptor )

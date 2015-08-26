@@ -16,6 +16,7 @@ package org.apache.zest.runtime.injection;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.stream.Stream;
 import org.apache.zest.api.composite.InjectedMethodDescriptor;
 import org.apache.zest.bootstrap.InjectionException;
 import org.apache.zest.functional.HierarchicalVisitor;
@@ -45,7 +46,7 @@ public final class InjectedMethodModel
     }
 
     @Override
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
         return parameters.dependencies();
     }

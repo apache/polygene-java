@@ -54,7 +54,7 @@ public final class ServiceFactoryBean
     @Override
     public final Class getObjectType()
     {
-        return first( serviceReference.types() );
+        return serviceReference.types().findFirst().orElse( null );
     }
 
     @Override

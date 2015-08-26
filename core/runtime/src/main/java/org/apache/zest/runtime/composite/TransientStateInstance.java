@@ -20,6 +20,7 @@ package org.apache.zest.runtime.composite;
 
 import java.lang.reflect.AccessibleObject;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.StateHolder;
 
@@ -53,8 +54,8 @@ public final class TransientStateInstance
     }
 
     @Override
-    public Iterable<Property<?>> properties()
+    public Stream<Property<?>> properties()
     {
-        return properties.values();
+        return properties.values().stream();
     }
 }

@@ -14,9 +14,12 @@
 package org.apache.zest.api.unitofwork;
 
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.functional.Iterables;
+
+import static java.util.Arrays.stream;
 
 /**
  * This exception indicates that the requested Entity with the given
@@ -45,9 +48,9 @@ public class NoSuchEntityException
         this.usecase = usecase;
     }
 
-    public NoSuchEntityException( EntityReference identity, Iterable<Class<?>> types, Usecase usecase )
+    public NoSuchEntityException( EntityReference identity, Stream<Class<?>> types, Usecase usecase )
     {
-        this( identity, castToArray( types ), usecase );
+        this( identity, types.toArray( Class[]::new ), usecase );
     }
 
     public EntityReference identity()
@@ -73,35 +76,7 @@ public class NoSuchEntityException
 
     private static String toString( Class<?>[] mixinTypes )
     {
-        Iterable<String> map = Iterables.map( new Function<Class<?>, String>()
-        {
-            @Override
-            public String apply( Class<?> item )
-            {
-                return item.getName();
-            }
-        }, Iterables.iterable( mixinTypes ) );
-        return Iterables.fold( new Function<String, String>()
-        {
-            StringBuilder result;
-            boolean first = true;
-
-            {
-                result = new StringBuilder();
-                result.append( "[" );
-            }
-
-            @Override
-            public String apply( String strings )
-            {
-                if( !first )
-                {
-                    result.append( ',' );
-                }
-                first = false;
-                result.append( strings );
-                return result.toString() + "]";
-            }
-        }, map );
+        String reduced = stream( mixinTypes ).map( Class::getName ).reduce( "", ( ret, name ) -> ret + "," + name );
+        return "[" + reduced.substring( 1 ) + "]";
     }
 }

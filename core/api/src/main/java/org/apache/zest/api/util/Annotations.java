@@ -18,65 +18,36 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import org.apache.zest.functional.Iterables;
+import java.util.stream.Stream;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
 import static org.apache.zest.api.util.Classes.typeOf;
-import static org.apache.zest.functional.Iterables.flatten;
-import static org.apache.zest.functional.Iterables.flattenIterables;
-import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.functional.Iterables.map;
 
 /**
  * Useful methods for handling Annotations.
  */
 public final class Annotations
 {
-    public static Function<Type, Iterable<Annotation>> ANNOTATIONS_OF = Classes.forTypes( new Function<Type, Iterable<Annotation>>()
-    {
-        @Override
-        public Iterable<Annotation> apply( Type type )
-        {
-            return Iterables.iterable( Classes.RAW_CLASS.apply( type ).getAnnotations() );
-        }
-    } );
+    public static Function<Type, Stream<Annotation>> ANNOTATIONS_OF =
+        Classes.forTypes( type -> Arrays.stream( Classes.RAW_CLASS.apply( type ).getAnnotations() ) );
+//        Classes.forTypes( type -> Iterables.iterable( Classes.RAW_CLASS.apply( type ).getAnnotations() ) );
 
     public static Predicate<AnnotatedElement> hasAnnotation( final Class<? extends Annotation> annotationType )
     {
-        return new Predicate<AnnotatedElement>()
-        {
-            @Override
-            public boolean test( AnnotatedElement element )
-            {
-                return element.getAnnotation( annotationType ) != null;
-            }
-        };
+        return element -> element.getAnnotation( annotationType ) != null;
     }
 
     public static Function<Annotation, Class<? extends Annotation>> type()
     {
-        return new Function<Annotation, Class<? extends Annotation>>()
-        {
-            @Override
-            public Class<? extends Annotation> apply( Annotation annotation )
-            {
-                return annotation.annotationType();
-            }
-        };
+        return Annotation::annotationType;
     }
 
     public static Predicate<Annotation> isType( final Class<? extends Annotation> annotationType )
     {
-        return new Predicate<Annotation>()
-        {
-            @Override
-            public boolean test( Annotation annotation )
-            {
-                return annotation.annotationType().equals( annotationType );
-            }
-        };
+        return annotation -> annotation.annotationType().equals( annotationType );
     }
 
     public static <T extends Annotation> T annotationOn( Type type, Class<T> annotationType )
@@ -84,9 +55,13 @@ public final class Annotations
         return annotationType.cast( Classes.RAW_CLASS.apply( type ).getAnnotation( annotationType ) );
     }
 
-    public static Iterable<Annotation> findAccessorAndTypeAnnotationsIn( AccessibleObject accessor )
+    public static Stream<Annotation> findAccessorAndTypeAnnotationsIn( AccessibleObject accessor )
     {
-        return flatten( iterable( accessor.getAnnotations() ),
-                        flattenIterables( map( Annotations.ANNOTATIONS_OF, interfacesOf( typeOf( accessor ) ) ) ) );
+        return Stream.concat(
+            Arrays.stream( accessor.getAnnotations() ),
+            interfacesOf( typeOf( accessor ) ).flatMap( ANNOTATIONS_OF )
+        );
+//        return flatten( iterable( accessor.getAnnotations() ),
+//                        flattenIterables( map( Annotations.ANNOTATIONS_OF, interfacesOf( typeOf( accessor ) ) ) ) );
     }
 }

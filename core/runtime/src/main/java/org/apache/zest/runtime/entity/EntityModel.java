@@ -15,6 +15,7 @@
 package org.apache.zest.runtime.entity;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.common.MetaInfo;
@@ -29,7 +30,6 @@ import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.property.StateHolder;
 import org.apache.zest.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.apache.zest.api.util.Annotations;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.composite.CompositeMethodsModel;
 import org.apache.zest.runtime.composite.CompositeModel;
 import org.apache.zest.runtime.property.PropertyModel;
@@ -40,16 +40,10 @@ import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.module.ModuleSpi;
 
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.flattenIterables;
-import static org.apache.zest.functional.Iterables.map;
-
 /**
  * JAVADOC
  */
-public final class EntityModel
-    extends CompositeModel
+public final class EntityModel extends CompositeModel
     implements EntityDescriptor
 {
     private static final Method IDENTITY_METHOD;
@@ -68,7 +62,7 @@ public final class EntityModel
 
     private final boolean queryable;
 
-    public EntityModel( Iterable<Class<?>> types,
+    public EntityModel( List<Class<?>> types,
                         Visibility visibility,
                         MetaInfo info,
                         EntityMixinsModel mixinsModel,
@@ -78,10 +72,12 @@ public final class EntityModel
     {
         super( types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
-        final Queryable queryable = first( Iterables.<Queryable>cast(
-            filter( Annotations.isType( Queryable.class ),
-                    flattenIterables( map( Annotations.ANNOTATIONS_OF, types ) ) ) ) );
-        this.queryable = queryable == null || queryable.value();
+        this.queryable = types.stream()
+            .flatMap( Annotations.ANNOTATIONS_OF )
+            .filter( Annotations.isType( Queryable.class ) )
+            .map( annot -> ( (Queryable) annot ).value() )
+            .findFirst()
+            .orElse( false );
     }
 
     @Override
@@ -98,8 +94,7 @@ public final class EntityModel
 
     public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleSpi moduleInstance, EntityState state )
     {
-        EntityInstance instance = new EntityInstance( uow, moduleInstance, this, state );
-        return instance;
+        return new EntityInstance( uow, moduleInstance, this, state );
     }
 
     public Object[] newMixinHolder()
@@ -143,28 +138,24 @@ public final class EntityModel
     public void initState( ModuleSpi module, EntityState entityState )
     {
         // Set new properties to default value
-        for( PropertyModel propertyDescriptor : state().properties() )
-        {
+        state().properties().forEach( propertyDescriptor -> {
             entityState.setPropertyValue( propertyDescriptor.qualifiedName(), propertyDescriptor.initialValue( module ) );
-        }
+        } );
 
         // Set new associations to null
-        for( AssociationDescriptor associationDescriptor : state().associations() )
-        {
+        state().associations().forEach( associationDescriptor -> {
             entityState.setAssociationValue( associationDescriptor.qualifiedName(), null );
-        }
+        } );
 
         // Set new many-associations to empty
-        for( AssociationDescriptor associationDescriptor : state().manyAssociations() )
-        {
+        state().manyAssociations().forEach( associationDescriptor -> {
             entityState.manyAssociationValueOf( associationDescriptor.qualifiedName() );
-        }
+        } );
 
         // Set new named-associations to empty
-        for( AssociationDescriptor associationDescriptor : state().namedAssociations() )
-        {
+        state().namedAssociations().forEach( associationDescriptor -> {
             entityState.namedAssociationValueOf( associationDescriptor.qualifiedName() );
-        }
+        } );
     }
 
     public void invokeLifecycle( boolean create, Object[] mixins, CompositeInstance instance, StateHolder state )

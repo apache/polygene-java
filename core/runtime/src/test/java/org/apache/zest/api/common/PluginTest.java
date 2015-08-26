@@ -19,8 +19,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
@@ -42,10 +40,8 @@ import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.LayerName;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.ModuleName;
-import org.apache.zest.functional.Iterables;
-
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.toArray;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Sample of how a plugin architecture could work.
@@ -73,19 +69,19 @@ public class PluginTest
             throws AssemblyException
         {
             return applicationFactory.newApplicationAssembly( new Assembler[][][]
-                                                              {
                                                                   {
                                                                       {
-                                                                          new PluginAssembler(),
-                                                                          new UIAssembler(),
-                                                                      }
-                                                                  },
-                                                                  {
+                                                                          {
+                                                                              new PluginAssembler(),
+                                                                              new UIAssembler(),
+                                                                          }
+                                                                      },
                                                                       {
-                                                                          new ServiceAssembler()
+                                                                          {
+                                                                              new ServiceAssembler()
+                                                                          }
                                                                       }
-                                                                  }
-                                                              } );
+                                                                  } );
         }
     }
 
@@ -294,26 +290,21 @@ public class PluginTest
         public Object importService( final ImportedServiceDescriptor serviceDescriptor )
             throws ServiceImporterException
         {
-            final Class<?> mainType = first( serviceDescriptor.types() );
-            
-            Class[] interfaces = toArray( Class.class, Iterables.<Class>cast( serviceDescriptor.types() ) );
+            final Class<?> mainType = serviceDescriptor.types().findFirst().orElse(null);
+
+            Class[] interfaces = serviceDescriptor.types().toArray( Class[]::new );
             return Proxy.newProxyInstance(
                 mainType.getClassLoader(),
                 interfaces,
-                new InvocationHandler()
-                {
-                    public Object invoke( Object proxy, Method method, Object[] args )
-                        throws Throwable
+                ( proxy, method, args ) -> {
+                    ServiceFinder finder = serviceDescriptor.metaInfo( ServiceFinder.class );
+                    if( finder == null )
                     {
-                        ServiceFinder finder = serviceDescriptor.metaInfo( ServiceFinder.class );
-                        if( finder == null )
-                        {
-                            throw new ServiceImporterException( "No ServiceFinder specified for imported service " + serviceDescriptor
-                                .identity() );
-                        }
-                        Object service = finder.findService( mainType ).get();
-                        return method.invoke( service, args );
+                        throw new ServiceImporterException( "No ServiceFinder specified for imported service " + serviceDescriptor
+                            .identity() );
                     }
+                    Object service = finder.findService( mainType ).get();
+                    return method.invoke( service, args );
                 } );
         }
 

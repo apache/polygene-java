@@ -26,20 +26,21 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.library.logging.log.service.LoggingService;
 
-import static org.apache.zest.functional.Iterables.first;
-
 public final class SimpleLogConcern
     implements SimpleLog
 {
-    @Structure private ZestAPI api;
-    @Optional @Service private LoggingService loggingService;
+    @Structure
+    private ZestAPI api;
+    @Optional
+    @Service
+    private LoggingService loggingService;
     private Composite composite;
     private String category;
 
     public SimpleLogConcern( @This Composite composite )
     {
         this.composite = composite;
-        Class<?> type = first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types() );
+        Class<?> type = ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().orElse( null );
         category = type.getName();
     }
 

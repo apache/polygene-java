@@ -27,7 +27,6 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.functional.Specifications;
 
 /**
  * TODO
@@ -56,11 +55,11 @@ public class ApplicationAssemblerTest
 
                 module.entities( TestEntity.class );
 
-                layer1.services( AssemblySpecifications.types( TestService.class ) ).instantiateOnStartup();
+                layer1.services( AssemblySpecifications.ofAnyType( TestService.class ) ).instantiateOnStartup();
 
-                layer1.services( Specifications.<Object>TRUE() ).visibleIn( Visibility.layer );
+                layer1.services( s -> true ).visibleIn( Visibility.layer );
 
-                layer1.entities( Specifications.<Object>TRUE() ).visibleIn( Visibility.application );
+                layer1.entities( s -> true ).visibleIn( Visibility.application );
 
                 return assembly;
             }

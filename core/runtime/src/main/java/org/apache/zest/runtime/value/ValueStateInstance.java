@@ -23,23 +23,18 @@ import java.lang.reflect.AccessibleObject;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.zest.api.association.AssociationDescriptor;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.runtime.association.AssociationInfo;
 import org.apache.zest.runtime.association.AssociationInstance;
-import org.apache.zest.runtime.association.AssociationModel;
 import org.apache.zest.runtime.association.ManyAssociationInstance;
-import org.apache.zest.runtime.association.ManyAssociationModel;
 import org.apache.zest.runtime.association.NamedAssociationInstance;
-import org.apache.zest.runtime.association.NamedAssociationModel;
 import org.apache.zest.runtime.composite.StateResolver;
 import org.apache.zest.runtime.property.PropertyInfo;
 import org.apache.zest.runtime.property.PropertyInstance;
-import org.apache.zest.runtime.property.PropertyModel;
-import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.runtime.structure.ModuleInstance;
+import org.apache.zest.spi.module.ModelModule;
 
 /**
  * TODO
@@ -66,34 +61,33 @@ public final class ValueStateInstance
 
     public ValueStateInstance( ModelModule<ValueModel> compositeModelModule,
                                ModuleInstance currentModule,
-                               StateResolver stateResolver )
+                               StateResolver stateResolver
+    )
     {
         ValueModel valueModel = compositeModelModule.model();
         this.properties = new LinkedHashMap<>();
-        for( PropertyDescriptor propertyDescriptor : valueModel.state().properties() )
-        {
-            PropertyInfo builderInfo = ( (PropertyModel) propertyDescriptor ).getBuilderInfo();
+        valueModel.state().properties().forEach( propertyDescriptor -> {
+            PropertyInfo builderInfo = propertyDescriptor.getBuilderInfo();
             Object value = stateResolver.getPropertyState( propertyDescriptor );
             PropertyInstance<Object> propertyInstance = new PropertyInstance<>( builderInfo, value );
             properties.put( propertyDescriptor.accessor(), propertyInstance );
-        }
+        } );
 
         this.associations = new LinkedHashMap<>();
-        for( AssociationDescriptor associationDescriptor : valueModel.state().associations() )
-        {
-            AssociationInfo builderInfo = ( (AssociationModel) associationDescriptor ).getBuilderInfo();
+        valueModel.state().associations().forEach( associationDescriptor -> {
+            AssociationInfo builderInfo = associationDescriptor.getBuilderInfo();
             EntityReference value = stateResolver.getAssociationState( associationDescriptor );
             AssociationInstance<Object> associationInstance1 = new AssociationInstance<>(
                 builderInfo,
                 currentModule.getEntityFunction(),
                 new ReferenceProperty( value ) );
             associations.put( associationDescriptor.accessor(), associationInstance1 );
-        }
+        } );
 
         this.manyAssociations = new LinkedHashMap<>();
-        for( AssociationDescriptor associationDescriptor : valueModel.state().manyAssociations() )
-        {
-            AssociationInfo builderInfo = ( (ManyAssociationModel) associationDescriptor ).getBuilderInfo();
+        valueModel.state().manyAssociations().forEach( associationDescriptor -> {
+            AssociationInfo builderInfo = associationDescriptor
+                .getBuilderInfo();
             List<EntityReference> value = stateResolver.getManyAssociationState( associationDescriptor );
             ManyAssociationValueState manyAssociationState = new ManyAssociationValueState( value );
             ManyAssociationInstance<Object> associationInstance = new ManyAssociationInstance<>(
@@ -101,12 +95,12 @@ public final class ValueStateInstance
                 currentModule.getEntityFunction(),
                 manyAssociationState );
             manyAssociations.put( associationDescriptor.accessor(), associationInstance );
-        }
+        } );
 
         this.namedAssociations = new LinkedHashMap<>();
-        for( AssociationDescriptor associationDescriptor : valueModel.state().namedAssociations() )
-        {
-            AssociationInfo builderInfo = ( (NamedAssociationModel) associationDescriptor ).getBuilderInfo();
+        valueModel.state().namedAssociations().forEach( associationDescriptor -> {
+            AssociationInfo builderInfo = associationDescriptor
+                .getBuilderInfo();
             Map<String, EntityReference> value = stateResolver.getNamedAssociationState( associationDescriptor );
             NamedAssociationValueState namedAssociationState = new NamedAssociationValueState( value );
             NamedAssociationInstance<Object> associationInstance = new NamedAssociationInstance<>(
@@ -114,7 +108,7 @@ public final class ValueStateInstance
                 currentModule.getEntityFunction(),
                 namedAssociationState );
             namedAssociations.put( associationDescriptor.accessor(), associationInstance );
-        }
+        } );
     }
 
     @Override
@@ -133,9 +127,9 @@ public final class ValueStateInstance
     }
 
     @Override
-    public Iterable<PropertyInstance<?>> properties()
+    public Stream<PropertyInstance<?>> properties()
     {
-        return properties.values();
+        return properties.values().stream();
     }
 
     @Override
@@ -153,9 +147,9 @@ public final class ValueStateInstance
     }
 
     @Override
-    public Iterable<AssociationInstance<?>> allAssociations()
+    public Stream<AssociationInstance<?>> allAssociations()
     {
-        return associations.values();
+        return associations.values().stream();
     }
 
     @Override
@@ -173,9 +167,9 @@ public final class ValueStateInstance
     }
 
     @Override
-    public Iterable<ManyAssociationInstance<?>> allManyAssociations()
+    public Stream<ManyAssociationInstance<?>> allManyAssociations()
     {
-        return manyAssociations.values();
+        return manyAssociations.values().stream();
     }
 
     @Override
@@ -193,11 +187,12 @@ public final class ValueStateInstance
     }
 
     @Override
-    public Iterable<? extends NamedAssociationInstance<?>> allNamedAssociations()
+    public Stream<? extends NamedAssociationInstance<?>> allNamedAssociations()
     {
-        return namedAssociations.values();
+        return namedAssociations.values().stream();
     }
 
+    @SuppressWarnings( "SimplifiableIfStatement" )
     @Override
     public boolean equals( Object obj )
     {

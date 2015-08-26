@@ -18,12 +18,11 @@ package org.apache.zest.runtime.composite;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.constraint.ConstraintViolation;
 import org.apache.zest.api.constraint.ConstraintViolationException;
-
-import static org.apache.zest.functional.Iterables.iterable;
 
 /**
  * JAVADOC
@@ -71,10 +70,10 @@ public final class ConstraintsInstance
             }
             if( instance instanceof CompositeInstance )
             {
-                throw new ConstraintViolationException( (Composite) ( (CompositeInstance) instance ).proxy(), method, violations );
+                throw new ConstraintViolationException( ( (CompositeInstance) instance ).proxy(), method, violations );
             }
-            Iterable<? extends Class<?>> types = iterable( instance.getClass() );
-            throw new ConstraintViolationException( instance.toString(), (Iterable<Class<?>>) types, method, violations );
+            Stream<Class<?>> types = Stream.of( instance.getClass() );
+            throw new ConstraintViolationException( instance.toString(), types, method, violations );
         }
     }
 }

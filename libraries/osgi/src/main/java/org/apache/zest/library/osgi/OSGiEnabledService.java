@@ -20,8 +20,7 @@ package org.apache.zest.library.osgi;
 
 import java.lang.reflect.Type;
 import java.util.Dictionary;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
 import org.apache.zest.api.injection.scope.Structure;
@@ -31,13 +30,11 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Module;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 import static org.apache.zest.api.util.Classes.toClassName;
 import static org.apache.zest.api.util.Classes.typesOf;
-import static org.apache.zest.functional.Iterables.cast;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.map;
-import static org.apache.zest.functional.Iterables.toArray;
 
 /**
  * Service Fragment providing OSGi support.
@@ -48,31 +45,29 @@ public interface OSGiEnabledService extends ServiceComposite
 {
 
     void registerServices()
-            throws Exception;
+        throws Exception;
 
     void unregisterServices()
-            throws Exception;
+        throws Exception;
 
     class Activator
-            extends ActivatorAdapter<ServiceReference<OSGiEnabledService>>
+        extends ActivatorAdapter<ServiceReference<OSGiEnabledService>>
     {
 
         @Override
         public void afterActivation( ServiceReference<OSGiEnabledService> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().registerServices();
         }
 
         @Override
         public void beforePassivation( ServiceReference<OSGiEnabledService> passivating )
-                throws Exception
+            throws Exception
         {
             passivating.get().unregisterServices();
         }
-
     }
-
 
     public abstract class OSGiEnabledServiceMixin
         implements OSGiEnabledService
@@ -94,11 +89,11 @@ public interface OSGiEnabledService extends ServiceComposite
             {
                 return;
             }
-            for( ServiceReference ref : module.findServices( first( descriptor.types() ) ) )
+            for( ServiceReference ref : module.findServices( descriptor.types().findFirst().orElse( null ) ) )
             {
                 if( ref.identity().equals( identity().get() ) )
                 {
-                    Iterable<Type> classesSet = cast(descriptor.types());
+                    Stream<? extends Type> classesSet = descriptor.types();
                     Dictionary properties = descriptor.metaInfo( Dictionary.class );
                     String[] clazzes = fetchInterfacesImplemented( classesSet );
                     registration = context.registerService( clazzes, ref.get(), properties );
@@ -106,9 +101,9 @@ public interface OSGiEnabledService extends ServiceComposite
             }
         }
 
-        private String[] fetchInterfacesImplemented( Iterable<Type> classesSet )
+        private String[] fetchInterfacesImplemented( Stream<? extends Type> classesSet )
         {
-            return toArray( String.class, map( toClassName(), typesOf( classesSet ) ) );
+            return typesOf( classesSet ).map( toClassName() ).toArray( String[]::new );
         }
 
         @Override

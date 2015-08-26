@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.constraint.ConstraintViolation;
@@ -44,8 +45,8 @@ import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
 import org.apache.zest.runtime.types.ValueTypeFactory;
 
-import static org.apache.zest.functional.Iterables.empty;
-import static org.apache.zest.functional.Iterables.first;
+//import static org.apache.zest.functional.Iterables.empty;
+//import static org.apache.zest.functional.Iterables.first;
 
 /**
  * Model for a Property.
@@ -172,7 +173,7 @@ public class PropertyModel
         {
             if( valueType instanceof ValueCompositeType )
             {
-                return module.newValue( (Class<?>) first( valueType().types() ) );
+                return module.newValue( valueType().types().findFirst().orElse( null ) );
             }
             else
             {
@@ -189,7 +190,7 @@ public class PropertyModel
     {
         ValueTypeFactory factory = ValueTypeFactory.instance();
         Class<?> declaringClass = ( (Member) accessor() ).getDeclaringClass();
-        Class<?> mainType = first( resolution.model().types() );
+        Class<?> mainType = resolution.model().types().findFirst().orElse( null );
         Serialization.Variant variant = findVariant();
         valueType = factory.newValueType( type(), declaringClass, mainType, resolution.layer(), resolution.module(), variant );
         builderInfo = new BuilderPropertyInfo();
@@ -230,8 +231,8 @@ public class PropertyModel
             List<ConstraintViolation> violations = constraints.checkConstraints( value );
             if( !violations.isEmpty() )
             {
-                Iterable<Class<?>> empty = empty();
-                throw new ConstraintViolationException( "<new instance>", empty, ( (Member) accessor ), violations );
+                Stream<Class<?>> empty = Stream.empty();
+                throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
             }
         }
     }
@@ -300,8 +301,8 @@ public class PropertyModel
                 List<ConstraintViolation> violations = constraints.checkConstraints( value );
                 if( !violations.isEmpty() )
                 {
-                    Iterable<Class<?>> empty = empty();
-                    throw new ConstraintViolationException( "<new instance>", empty, ( (Member) accessor ), violations );
+                    Stream<Class<?>> empty = Stream.empty();
+                    throw new ConstraintViolationException( "", empty, (Member) accessor, violations );
                 }
             }
         }

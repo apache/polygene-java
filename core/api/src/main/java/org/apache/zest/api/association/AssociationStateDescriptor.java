@@ -19,6 +19,7 @@
  */
 package org.apache.zest.api.association;
 
+import java.util.stream.Stream;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.StateDescriptor;
 
@@ -45,9 +46,9 @@ public interface AssociationStateDescriptor extends StateDescriptor
     AssociationDescriptor getNamedAssociationByQualifiedName( QualifiedName name )
         throws IllegalArgumentException;
 
-    Iterable<? extends AssociationDescriptor> associations();
+    Stream<? extends AssociationDescriptor> associations();
 
-    Iterable<? extends AssociationDescriptor> manyAssociations();
+    Stream<? extends AssociationDescriptor> manyAssociations();
 
-    Iterable<? extends AssociationDescriptor> namedAssociations();
+    Stream<? extends AssociationDescriptor> namedAssociations();
 }

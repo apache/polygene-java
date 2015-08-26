@@ -164,7 +164,7 @@ public class JSONMapEntityStoreMixin
             JSONObject state = new JSONObject();
             state.put( JSONKeys.IDENTITY, identity.identity() );
             state.put( JSONKeys.APPLICATION_VERSION, application.version() );
-            state.put( JSONKeys.TYPE, first( entityDescriptor.types() ).getName() );
+            state.put( JSONKeys.TYPE, entityDescriptor.types().findFirst().get().getName() );
             state.put( JSONKeys.VERSION, unitOfWork.identity() );
             state.put( JSONKeys.MODIFIED, unitOfWork.currentTime() );
             state.put( JSONKeys.PROPERTIES, new JSONObject() );
@@ -435,9 +435,9 @@ public class JSONMapEntityStoreMixin
             {
                 throw new EntityTypeNotFoundException( type,
                                                        module.name(),
-                                                       map( ModelModule.toStringFunction,
-                                                            module.findVisibleEntityTypes()
-                                                       ) );
+                                                       module.findVisibleEntityTypes()
+                                                           .map( ModelModule.toStringFunction )
+            );
             }
 
             return new JSONEntityState( valueSerialization,

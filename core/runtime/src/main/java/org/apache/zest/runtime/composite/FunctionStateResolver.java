@@ -77,18 +77,15 @@ public class FunctionStateResolver
 
     public void populateState( EntityModel model, EntityState state )
     {
-        for( PropertyDescriptor propDesc : model.state().properties() )
-        {
+        model.state().properties().forEach( propDesc -> {
             Object value = getPropertyState( propDesc );
             state.setPropertyValue( propDesc.qualifiedName(), value );
-        }
-        for( AssociationDescriptor assDesc : model.state().associations() )
-        {
+        } );
+        model.state().associations().forEach( assDesc -> {
             EntityReference ref = getAssociationState( assDesc );
             state.setAssociationValue( assDesc.qualifiedName(), ref );
-        }
-        for( ManyAssociationModel manyAssDesc : model.state().manyAssociations() )
-        {
+        } );
+        model.state().manyAssociations().forEach( manyAssDesc -> {
             ManyAssociationState associationState = state.manyAssociationValueOf( manyAssDesc.qualifiedName() );
             // First clear existing ones
             for( EntityReference ref : associationState )
@@ -100,9 +97,8 @@ public class FunctionStateResolver
             {
                 associationState.add( 0, ref );
             }
-        }
-        for( NamedAssociationModel namedAssDesc : model.state().namedAssociations() )
-        {
+        } );
+        model.state().namedAssociations().forEach( namedAssDesc -> {
             NamedAssociationState associationState = state.namedAssociationValueOf( namedAssDesc.qualifiedName() );
             // First clear existing ones
             for( String name : associationState )
@@ -114,6 +110,6 @@ public class FunctionStateResolver
             {
                 associationState.put( entry.getKey(), entry.getValue() );
             }
-        }
+        } );
     }
 }

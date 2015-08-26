@@ -48,7 +48,7 @@ public final class ServiceSelectorImporter<T>
         throws ServiceImporterException
     {
         Predicate<ServiceReference<?>> selector = serviceDescriptor.metaInfo( Predicate.class );
-        Class serviceType = Iterables.first( serviceDescriptor.types() );
+        Class serviceType = serviceDescriptor.types().findFirst().orElse( null );
         Iterable<ServiceReference<T>> services = locator.findServices( serviceType );
         List<ServiceReference<T>> filteredServices = new ArrayList<>();
         for( ServiceReference<T> service : services )

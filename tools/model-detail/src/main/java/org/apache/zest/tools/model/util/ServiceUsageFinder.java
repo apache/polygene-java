@@ -36,8 +36,6 @@ import org.apache.zest.tools.model.descriptor.ServiceUsage;
 import org.apache.zest.tools.model.descriptor.TransientDetailDescriptor;
 import org.apache.zest.tools.model.descriptor.ValueDetailDescriptor;
 
-import static org.apache.zest.functional.Iterables.first;
-
 /* package */ class ServiceUsageFinder
 {
     private ServiceDetailDescriptor descriptor;
@@ -138,20 +136,23 @@ import static org.apache.zest.functional.Iterables.first;
             Class<? extends Annotation> clazz = annotation.annotationType();
             if( Uses.class.equals( clazz ) || Service.class.equals( clazz ) )
             {
-                boolean used = false;
-                if( dependencyDescriptor.injectionType().equals( first( this.descriptor.descriptor().types() ) ) )
+                if( dependencyDescriptor.injectionType()
+                    .equals( this.descriptor.descriptor().types().findFirst().orElse( null ) ) )
                 {
                     ServiceUsage usage;
                     if( ownerDescriptor instanceof MixinDetailDescriptor )
                     {
                         MixinDetailDescriptor mixinDescriptor = (MixinDetailDescriptor) ownerDescriptor;
-                        usage = new ServiceUsage( mixinDescriptor.composite(), descriptorField, mixinDescriptor.composite().module(), mixinDescriptor.composite().module().layer() );
+                        usage = new ServiceUsage( mixinDescriptor.composite(), descriptorField, mixinDescriptor.composite()
+                            .module(), mixinDescriptor.composite().module().layer() );
                     }
                     else
                     {
                         // assume ObjectDetailDescriptor
                         ObjectDetailDescriptor objectDescriptor = (ObjectDetailDescriptor) ownerDescriptor;
-                        usage = new ServiceUsage( objectDescriptor, descriptorField, objectDescriptor.module(), objectDescriptor.module().layer() );
+                        usage = new ServiceUsage( objectDescriptor, descriptorField, objectDescriptor.module(), objectDescriptor
+                            .module()
+                            .layer() );
                     }
                     usages.add( usage );
                 }

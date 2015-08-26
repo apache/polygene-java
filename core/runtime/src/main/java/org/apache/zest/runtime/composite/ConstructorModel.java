@@ -17,6 +17,7 @@ package org.apache.zest.runtime.composite;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.composite.ConstructorDescriptor;
 import org.apache.zest.api.composite.InvalidCompositeException;
@@ -49,7 +50,7 @@ public final class ConstructorModel
         return constructor;
     }
 
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
         return parameters.dependencies();
     }

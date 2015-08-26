@@ -18,7 +18,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
@@ -48,10 +50,11 @@ public abstract class CompositeModel
     private final Visibility visibility;
     private final MetaInfo metaInfo;
     protected final StateModel stateModel;
+    private volatile Class<?> primaryType;
     protected Class<? extends Composite> proxyClass;
     protected Constructor<? extends Composite> proxyConstructor;
 
-    protected CompositeModel( final Iterable<Class<?>> types,
+    protected CompositeModel( final List<Class<?>> types,
                               final Visibility visibility,
                               final MetaInfo metaInfo,
                               final MixinsModel mixinsModel,
@@ -59,7 +62,7 @@ public abstract class CompositeModel
                               final CompositeMethodsModel compositeMethodsModel
     )
     {
-        this.types = Iterables.addAll( new LinkedHashSet<Class<?>>(), types );
+        this.types = new LinkedHashSet<>( types );
         this.visibility = visibility;
         this.metaInfo = metaInfo;
         this.stateModel = stateModel;
@@ -68,13 +71,27 @@ public abstract class CompositeModel
 
         // Create proxy class
         createProxyClass();
+        primaryType = mixinTypes()
+            .filter( type -> !type.getName().equals( "scala.ScalaObject" ) )
+            .reduce( null, ( primary, type ) ->
+            {
+                if( primary == null )
+                {
+                    return type;
+                }
+                else if( primary.isAssignableFrom( type ) )
+                {
+                    return type;
+                }
+                return primary;
+            } );
     }
 
     // Model
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
-        return types;
+        return types.stream();
     }
 
     public StateModel state()
@@ -116,35 +133,20 @@ public abstract class CompositeModel
     @SuppressWarnings( { "raw", "unchecked" } )
     public Class<?> primaryType()
     {
-        Class primaryType = null;
-        for( Class type : mixinTypes() )
-        {
-            if( type.getName().equals( "scala.ScalaObject" ) )
-            {
-                continue;
-            }
-            if( primaryType == null )
-            {
-                primaryType = type;
-            }
-            else if( primaryType.isAssignableFrom( type ) )
-            {
-                primaryType = type;
-            }
-        }
         return primaryType;
     }
 
     @Override
-    public Iterable<Class<?>> mixinTypes()
+    public Stream<Class<?>> mixinTypes()
     {
         return mixinsModel.mixinTypes();
     }
 
     @Override
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        return Iterables.flatten( mixinsModel.dependencies(), compositeMethodsModel.dependencies() );
+        return Stream.of( mixinsModel, compositeMethodsModel ).flatMap( Dependencies::dependencies );
+//        return Iterables.flatten( mixinsModel.dependencies(), compositeMethodsModel.dependencies() );
     }
 
     @Override
@@ -214,7 +216,7 @@ public abstract class CompositeModel
     public Composite newProxy( InvocationHandler invocationHandler )
         throws ConstructionException
     {
-        Class<?> mainType = first( types() );
+        Class<?> mainType = first( types );
         if( mainType.isInterface() )
         {
 

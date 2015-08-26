@@ -21,6 +21,8 @@ package org.apache.zest.runtime.bootstrap;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
+import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.GenericAssociationInfo;
 import org.apache.zest.api.association.ManyAssociation;
@@ -30,7 +32,6 @@ import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.common.UseDefaults;
-import org.apache.zest.api.constraint.Constraint;
 import org.apache.zest.api.property.GenericPropertyInfo;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.util.Annotations;
@@ -53,8 +54,6 @@ import org.apache.zest.runtime.value.ValueStateModel;
 
 import static org.apache.zest.api.util.Annotations.isType;
 import static org.apache.zest.api.util.Classes.typeOf;
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Iterables.first;
 
 /**
  * Declaration of a ValueComposite.
@@ -95,10 +94,8 @@ public final class ValueAssemblyImpl
             namedAssociationsModel = new NamedAssociationsModel();
             buildComposite( helper, stateDeclarations );
 
-            ValueModel valueModel = new ValueModel(
+            return new ValueModel(
                 types, visibility, metaInfo, mixinsModel, (ValueStateModel) stateModel, compositeMethodsModel );
-
-            return valueModel;
         }
         catch( Exception e )
         {
@@ -108,7 +105,7 @@ public final class ValueAssemblyImpl
 
     @Override
     protected void addStateFor( AccessibleObject accessor,
-                                Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
+                                List<Class<?>> constraintClasses
     )
     {
         String stateName = QualifiedName.fromAccessor( accessor ).name();
@@ -143,11 +140,12 @@ public final class ValueAssemblyImpl
 
     @Override
     protected PropertyModel newPropertyModel( AccessibleObject accessor,
-                                              Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
+                                              List<Class<?>> constraintClasses
     )
     {
-        Iterable<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+        Stream<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        boolean optional = annotations.anyMatch( isType( Optional.class ) );
+        annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericPropertyInfo.propertyTypeOf( accessor ), ( (Member) accessor )
             .getName(), optional, constraintClasses, accessor );
         ValueConstraintsInstance valueConstraintsInstance = null;
@@ -162,11 +160,11 @@ public final class ValueAssemblyImpl
     }
 
     public AssociationModel newAssociationModel( AccessibleObject accessor,
-                                                 Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
+                                                 List<Class<?>> constraintClasses
     )
     {
-        Iterable<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+        Stream<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        boolean optional = annotations.anyMatch( isType( Optional.class ) );
 
         // Constraints for Association references
         ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
@@ -186,16 +184,15 @@ public final class ValueAssemblyImpl
         }
 
         MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
-        AssociationModel associationModel = new AssociationModel( accessor, valueConstraintsInstance, associationValueConstraintsInstance, metaInfo );
-        return associationModel;
+        return new AssociationModel( accessor, valueConstraintsInstance, associationValueConstraintsInstance, metaInfo );
     }
 
     public ManyAssociationModel newManyAssociationModel( AccessibleObject accessor,
-                                                         Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
+                                                         List<Class<?>> constraintClasses
     )
     {
-        Iterable<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+        Stream<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        boolean optional = annotations.anyMatch( isType( Optional.class ) );
 
         // Constraints for entities in ManyAssociation
         ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
@@ -214,16 +211,15 @@ public final class ValueAssemblyImpl
             manyValueConstraintsInstance = valueConstraintsModel.newInstance();
         }
         MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
-        ManyAssociationModel associationModel = new ManyAssociationModel( accessor, valueConstraintsInstance, manyValueConstraintsInstance, metaInfo );
-        return associationModel;
+        return new ManyAssociationModel( accessor, valueConstraintsInstance, manyValueConstraintsInstance, metaInfo );
     }
-    
+
     public NamedAssociationModel newNamedAssociationModel( AccessibleObject accessor,
-                                                           Iterable<Class<? extends Constraint<?, ?>>> constraintClasses
+                                                           List<Class<?>> constraintClasses
     )
     {
-        Iterable<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
-        boolean optional = first( filter( isType( Optional.class ), annotations ) ) != null;
+        Stream<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        boolean optional = annotations.anyMatch( isType( Optional.class ) );
 
         // Constraints for entities in NamedAssociation
         ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations, GenericAssociationInfo
@@ -242,7 +238,6 @@ public final class ValueAssemblyImpl
             namedValueConstraintsInstance = valueConstraintsModel.newInstance();
         }
         MetaInfo metaInfo = stateDeclarations.metaInfoFor( accessor );
-        NamedAssociationModel associationModel = new NamedAssociationModel( accessor, valueConstraintsInstance, namedValueConstraintsInstance, metaInfo );
-        return associationModel;
+        return new NamedAssociationModel( accessor, valueConstraintsInstance, namedValueConstraintsInstance, metaInfo );
     }
 }

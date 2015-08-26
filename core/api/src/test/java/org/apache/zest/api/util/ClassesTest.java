@@ -20,17 +20,13 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Predicate;
 import org.junit.Test;
-import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specifications;
 
+import static org.apache.zest.api.util.Classes.interfacesOf;
+import static org.apache.zest.api.util.Classes.interfacesWithMethods;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.apache.zest.api.util.Classes.interfacesOf;
-import static org.apache.zest.api.util.Classes.interfacesWithMethods;
-import static org.apache.zest.functional.Iterables.count;
 
 /**
  * Tests for Classes
@@ -41,9 +37,9 @@ public class ClassesTest
     @Test
     public void givenClassWithInterfacesWhenInterfacesOfThenGetCorrectSet()
     {
-        assertThat( "one interface returned", count( interfacesOf( A.class ) ), equalTo( 1L ) );
-        assertThat( "two interface returned", count( interfacesOf( B.class ) ), equalTo( 2L ) );
-        assertThat( "tree interface returned", count( interfacesOf( C.class ) ), equalTo( 4L ) );
+        assertThat( "one interface returned", interfacesOf( A.class ).count(), equalTo( 1L ) );
+        assertThat( "two interface returned", interfacesOf( B.class ).count(), equalTo( 2L ) );
+        assertThat( "tree interface returned", interfacesOf( C.class ).count(), equalTo( 4L ) );
     }
 
     @Test
@@ -59,10 +55,11 @@ public class ClassesTest
     @Test
     public void givenClassesWithInterfacesWhenGetInterfacesWithMethodsThenGetCorrectSet()
     {
-        Iterable<Type> types = Iterables.filter( Methods.HAS_METHODS, interfacesOf( C.class ) );
-        assertThat( "one interface returned", count( types ), equalTo( 1L ) );
-        assertThat( "correct interface returned", Iterables.matchesAny( (Predicate) Specifications.in( B.class ), Iterables
-            .<Class<?>>cast( types ) ), is( true ) );
+        assertThat( "one interface returned", interfacesOf( C.class ).filter( Methods.HAS_METHODS )
+            .count(), equalTo( 1L ) );
+        boolean isIn = interfacesOf( C.class ).filter( Methods.HAS_METHODS )
+            .anyMatch( B.class::equals );
+        assertThat( "correct interface returned", isIn, is( true ) );
     }
 
     @Test
@@ -82,7 +79,7 @@ public class ClassesTest
         throws NoSuchMethodException
     {
         Type returnType = Generics.class.getMethod( "wildcard" ).getGenericReturnType();
-        Type wildcardType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0];
+        Type wildcardType = ( (ParameterizedType) returnType ).getActualTypeArguments()[ 0 ];
         assertThat( "Return type is A", Classes.RAW_CLASS.apply( wildcardType ), equalTo( (Class) A.class ) );
     }
 
@@ -97,15 +94,15 @@ public class ClassesTest
             System.out.println( type + "=" + resolvedType );
             switch( method.getName() )
             {
-                case "type":
-                    assertThat( resolvedType, equalTo( (Type) String.class ) );
-                    break;
-                case "type1":
-                    assertThat( resolvedType, equalTo( (Type) String.class ) );
-                    break;
-                case "type2":
-                    assertThat( resolvedType, equalTo( (Type) Long.class ) );
-                    break;
+            case "type":
+                assertThat( resolvedType, equalTo( (Type) String.class ) );
+                break;
+            case "type1":
+                assertThat( resolvedType, equalTo( (Type) String.class ) );
+                break;
+            case "type2":
+                assertThat( resolvedType, equalTo( (Type) Long.class ) );
+                break;
             }
         }
     }
@@ -174,7 +171,6 @@ public class ClassesTest
     {
 
         public void doStuff();
-
     }
 
     interface C
@@ -186,7 +182,6 @@ public class ClassesTest
     {
 
         Iterable<? extends A> wildcard();
-
     }
 
     interface Type1
@@ -201,14 +196,11 @@ public class ClassesTest
         TYPE1 type1();
 
         TYPE2 type2();
-
     }
 
     interface Type3<TYPE>
     {
 
         TYPE type();
-
     }
-
 }

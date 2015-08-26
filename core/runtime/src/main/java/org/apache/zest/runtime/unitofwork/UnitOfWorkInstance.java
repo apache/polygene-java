@@ -55,7 +55,6 @@ import org.apache.zest.spi.module.ModuleSpi;
 
 import static org.apache.zest.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.apache.zest.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
-import static org.apache.zest.functional.Iterables.map;
 
 public final class UnitOfWorkInstance
 {
@@ -168,9 +167,9 @@ public final class UnitOfWorkInstance
                 {
                     throw new EntityTypeNotFoundException( mixinType.getName(),
                                                            module.name(),
-                                                           map( ModelModule.toStringFunction,
-                                                                module.findVisibleEntityTypes()
-                                                           ) );
+                                                           module.findVisibleEntityTypes()
+                                                               .map( ModelModule.toStringFunction )
+                    );
                 }
             }
 
@@ -237,10 +236,7 @@ public final class UnitOfWorkInstance
                     }
                     if( prunedInstances != null )
                     {
-                        for( EntityReference prunedInstance : prunedInstances )
-                        {
-                            instanceCache.remove( prunedInstance );
-                        }
+                        prunedInstances.forEach( instanceCache::remove );
                     }
                 }
             }
@@ -279,10 +275,7 @@ public final class UnitOfWorkInstance
         notifyBeforeCompletion( currentCallbacks );
 
         // Commit all changes
-        for( StateCommitter committer : committers )
-        {
-            committer.commit();
-        }
+        committers.forEach( StateCommitter::commit );
 
         close();
 
@@ -305,12 +298,7 @@ public final class UnitOfWorkInstance
 
         // Call callbacks
         notifyAfterCompletion( currentCallbacks, DISCARDED );
-
-        for( EntityStoreUnitOfWork entityStoreUnitOfWork : storeUnitOfWork.values() )
-        {
-            entityStoreUnitOfWork.discard();
-        }
-
+        storeUnitOfWork.values().forEach( EntityStoreUnitOfWork::discard );
         callbacks = currentCallbacks;
     }
 
@@ -368,10 +356,7 @@ public final class UnitOfWorkInstance
             catch( Exception e )
             {
                 // Cancel all previously prepared stores
-                for( StateCommitter committer : committers )
-                {
-                    committer.cancel();
-                }
+                committers.forEach( StateCommitter::cancel );
 
                 if( e instanceof ConcurrentEntityStateModificationException )
                 {
@@ -381,14 +366,9 @@ public final class UnitOfWorkInstance
                     Collection<EntityComposite> modifiedEntities = new ArrayList<>();
                     for( EntityReference modifiedEntityIdentity : modifiedEntityIdentities )
                     {
-                        Collection<EntityInstance> instances = instanceCache.values();
-                        for( EntityInstance instance : instances )
-                        {
-                            if( instance.identity().equals( modifiedEntityIdentity ) )
-                            {
-                                modifiedEntities.add( instance.<EntityComposite>proxy() );
-                            }
-                        }
+                        instanceCache.values().stream()
+                            .filter( instance -> instance.identity().equals( modifiedEntityIdentity ) )
+                            .forEach( instance -> modifiedEntities.add( instance.<EntityComposite>proxy() ) );
                     }
                     throw new ConcurrentEntityModificationException( modifiedEntities );
                 }

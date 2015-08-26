@@ -159,11 +159,14 @@ import static org.apache.zest.functional.Iterables.first;
         }
         else if( configDescriptor instanceof CompositeDetailDescriptor )
         {
-            spiDescriptor = ( (ObjectDetailDescriptor) configDescriptor ).descriptor();
+            spiDescriptor = ( (CompositeDetailDescriptor) configDescriptor ).descriptor();
             typeString = "Transient";
         }
-
-        Class<?> type = first( spiDescriptor.types() );
+        else
+        {
+            throw new InternalError( "Unknown Config descriptor type" );
+        }
+        Class<?> type = spiDescriptor.types().findFirst().orElse( null );
         String simpleName = type.getSimpleName();
         nameLabel.setText( "<html><a href='" + simpleName + "'>" + simpleName + "</a></html>" );
         classLabel.setText( type.getName() );

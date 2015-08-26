@@ -21,6 +21,9 @@ package org.apache.zest.runtime.injection.provider;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.InvalidInjectionException;
@@ -31,9 +34,6 @@ import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.injection.InjectionProvider;
 import org.apache.zest.runtime.injection.InjectionProviderFactory;
 import org.apache.zest.runtime.model.Resolution;
-
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.iterable;
 
 /**
  * JAVADOC
@@ -51,7 +51,7 @@ public final class ThisInjectionProviderFactory
             // If Composite type then return real type, otherwise use the specified one
             final Class<?> thisType = dependencyModel.rawInjectionType();
 
-            Iterable<Class<?>> injectionTypes = null;
+            Stream<Class<?>> injectionTypes;
             if( Classes.assignableTypeSpecification( thisType ).test( bindingContext.model() ) )
             {
                 injectionTypes = bindingContext.model().types();
@@ -59,25 +59,17 @@ public final class ThisInjectionProviderFactory
             else
             {
                 CompositeDescriptor acd = ( (CompositeDescriptor) bindingContext.model() );
-                for( Class<?> mixinType : acd.mixinTypes() )
-                {
-                    if( thisType.isAssignableFrom( mixinType ) )
-                    {
-                        Iterable<? extends Class<?>> iterable = iterable( thisType );
-                        injectionTypes = (Iterable<Class<?>>) iterable;
-                        break;
-                    }
-                }
-
-                if( injectionTypes == null )
-                {
-                    throw new InvalidInjectionException( "Composite " + bindingContext.model()
-                                                         + " does not implement @This type " + thisType.getName() + " in fragment "
-                                                         + dependencyModel.injectedClass().getName() );
-                }
+                injectionTypes = acd.mixinTypes().filter( thisType::isAssignableFrom );
             }
 
-            return new ThisInjectionProvider( injectionTypes );
+            List<Class<?>> classes = injectionTypes.collect( Collectors.toList() );
+            if( classes.size() == 0 )
+            {
+                throw new InvalidInjectionException( "Composite " + bindingContext.model()
+                                                     + " does not implement @This type " + thisType.getName() + " in fragment "
+                                                     + dependencyModel.injectedClass().getName() );
+            }
+            return new ThisInjectionProvider( classes );
         }
         else
         {
@@ -85,27 +77,27 @@ public final class ThisInjectionProviderFactory
         }
     }
 
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     private static class ThisInjectionProvider
         implements InjectionProvider
     {
         Constructor proxyConstructor;
         private Class[] interfaces;
 
-        private ThisInjectionProvider( Iterable<Class<?>> types )
+        private ThisInjectionProvider( List<Class<?>> types )
         {
             try
             {
                 Class proxyClass;
-                if( Proxy.class.isAssignableFrom( first( types ) ) )
+                Class<?> mainType = types.get( 0 );
+                if( Proxy.class.isAssignableFrom( mainType ) )
                 {
-                    proxyClass = first( types );
+                    proxyClass = mainType;
                 }
                 else
                 {
-                    Class<?> mainType = first( types );
                     interfaces = Iterables.toArray( Class.class, Iterables.<Class>cast( types ) );
-                    proxyClass = ProxyGenerator.createProxyClass(mainType.getClassLoader(), interfaces);
+                    proxyClass = ProxyGenerator.createProxyClass( mainType.getClassLoader(), interfaces );
                 }
 
                 proxyConstructor = proxyClass.getConstructor( InvocationHandler.class );

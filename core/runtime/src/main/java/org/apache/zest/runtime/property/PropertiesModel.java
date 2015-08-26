@@ -21,6 +21,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
@@ -60,9 +61,9 @@ public class PropertiesModel
         return visitor.visitLeave( this );
     }
 
-    public Iterable<PropertyModel> properties()
+    public Stream<PropertyModel> properties()
     {
-        return mapAccessiblePropertyModel.values();
+        return mapAccessiblePropertyModel.values().stream();
     }
 
     public PropertyModel getProperty( AccessibleObject accessor )

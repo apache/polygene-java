@@ -1,12 +1,11 @@
 /**
- *
  * Copyright 2009-2010 Rickard Öberg AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,10 +16,6 @@
 
 package org.apache.zest.library.eventsourcing.domain.factory;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
-import org.json.JSONWriter;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.entity.EntityComposite;
@@ -30,19 +25,21 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.library.eventsourcing.domain.api.DomainEventValue;
-
-import static org.apache.zest.functional.Iterables.first;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
+import org.json.JSONWriter;
 
 /**
  * DomainEventValue factory
  */
-@Concerns(UnitOfWorkNotificationConcern.class)
-@Mixins(DomainEventFactoryService.DomainEventFactoryMixin.class)
+@Concerns( UnitOfWorkNotificationConcern.class )
+@Mixins( DomainEventFactoryService.DomainEventFactoryMixin.class )
 public interface DomainEventFactoryService
-        extends DomainEventFactory, ServiceComposite
+    extends DomainEventFactory, ServiceComposite
 {
     class DomainEventFactoryMixin
-            implements DomainEventFactory
+        implements DomainEventFactory
     {
         @Structure
         private ValueBuilderFactory vbf;
@@ -54,7 +51,11 @@ public interface DomainEventFactoryService
 
             DomainEventValue prototype = builder.prototype();
             prototype.name().set( name );
-            prototype.entityType().set( first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( entity ).types()).getName() );
+            prototype.entityType().set( ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( entity )
+                                            .types()
+                                            .findFirst()
+                                            .get()
+                                            .getName() );
             prototype.entityId().set( entity.identity().get() );
 
             // JSON-ify parameters
@@ -62,25 +63,26 @@ public interface DomainEventFactoryService
             try
             {
                 JSONWriter params = json.object();
-                for (int i = 0; i < args.length; i++)
+                for( int i = 0; i < args.length; i++ )
                 {
                     params.key( "param" + i );
-                    if (args[i] == null)
+                    if( args[ i ] == null )
+                    {
                         params.value( JSONObject.NULL );
+                    }
                     else
-                        params.value( args[i] );
+                    {
+                        params.value( args[ i ] );
+                    }
                 }
                 json.endObject();
-            } catch (JSONException e)
+            }
+            catch( JSONException e )
             {
                 throw new IllegalArgumentException( "Could not create eventValue", e );
             }
-
             prototype.parameters().set( json.toString() );
-
-            DomainEventValue eventValue = builder.newInstance();
-
-            return eventValue;
+            return builder.newInstance();
         }
     }
 }

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.Writer;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.property.StateHolder;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.value.ValueComposite;
@@ -65,31 +64,30 @@ public class ValueCompositeRequestWriter
             StateHolder holder = spi.stateOf( valueObject );
             final ValueDescriptor descriptor = spi.valueDescriptorFor( valueObject );
 
-            final Reference ref = request.getResourceRef();
-            ref.setQuery( null );
-
-             try
-             {
-                 for( PropertyDescriptor propertyDescriptor : descriptor.state().properties() )
+             final Reference ref = request.getResourceRef();
+             ref.setQuery( null );
+             descriptor.state().properties().forEach( propertyDescriptor -> {
+                 try
                  {
                      Object value = holder.propertyFor( propertyDescriptor.accessor() ).get();
                      String param;
                      if( value == null )
                      {
-                        param = null;
+                         param = null;
                      }
                      else
                      {
-                        param = valueSerializer.serialize( value );
+                         param = valueSerializer.serialize( value );
                      }
                      ref.addQueryParameter( propertyDescriptor.qualifiedName().name(), param );
                  }
-             }
-             catch( ValueSerializationException e )
-             {
-                 throw new ResourceException( e );
-             }
-         } else
+                 catch( ValueSerializationException e )
+                 {
+                     throw new ResourceException( e );
+                 }
+             } );
+         }
+         else
          {
             request.setEntity(new WriterRepresentation( MediaType.APPLICATION_JSON )
             {

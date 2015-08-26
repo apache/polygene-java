@@ -20,7 +20,6 @@ package org.apache.zest.api.query.grammar;
 
 import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.functional.Specifications;
 
 /**
  * AND Specification.
@@ -28,7 +27,6 @@ import org.apache.zest.functional.Specifications;
 public class AndPredicate
     extends BinaryPredicate
 {
-
     public AndPredicate( Iterable<Predicate<Composite>> operands )
     {
         super( operands );
@@ -37,7 +35,12 @@ public class AndPredicate
     @Override
     public boolean test( Composite item )
     {
-        return Specifications.and( operands ).test( item );
+        Predicate<Composite> master = t -> true;
+        for( Predicate<Composite> p : operands )
+        {
+            master = master.and( p );
+        }
+        return master.test( item );
     }
 
     @Override

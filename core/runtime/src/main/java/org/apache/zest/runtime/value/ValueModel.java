@@ -14,33 +14,30 @@
 
 package org.apache.zest.runtime.value;
 
+import java.util.List;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.constraint.ConstraintViolationException;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.runtime.association.AssociationModel;
-import org.apache.zest.runtime.association.ManyAssociationModel;
 import org.apache.zest.runtime.composite.CompositeMethodsModel;
 import org.apache.zest.runtime.composite.CompositeModel;
 import org.apache.zest.runtime.composite.MixinModel;
 import org.apache.zest.runtime.composite.MixinsModel;
 import org.apache.zest.runtime.composite.UsesInstance;
 import org.apache.zest.runtime.injection.InjectionContext;
-import org.apache.zest.runtime.property.PropertyModel;
 import org.apache.zest.runtime.unitofwork.UnitOfWorkInstance;
 import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Model for ValueComposites
  */
-public final class ValueModel
-    extends CompositeModel
+public final class ValueModel extends CompositeModel
     implements ValueDescriptor
 {
     private ValueCompositeType valueType;
 
-    public ValueModel( final Iterable<Class<?>> types,
+    public ValueModel( final List<Class<?>> types,
                        final Visibility visibility,
                        final MetaInfo metaInfo,
                        final MixinsModel mixinsModel,
@@ -69,25 +66,26 @@ public final class ValueModel
     void checkConstraints( ValueStateInstance state )
         throws ConstraintViolationException
     {
-        for( PropertyModel propertyModel : stateModel.properties() )
-        {
-            propertyModel.checkConstraints( state.propertyFor( propertyModel.accessor() ).get() );
-        }
+        stateModel.properties().forEach( propertyModel ->
+            propertyModel.checkConstraints( state.propertyFor( propertyModel.accessor() ).get() )
+        );
 
         // IF no UnitOfWork is active, then the Association checks shouldn't be done.
         if( UnitOfWorkInstance.getCurrent().empty() )
         {
             return;
         }
-        for( AssociationModel associationModel : ( (ValueStateModel) stateModel ).associations() )
-        {
-            associationModel.checkConstraints( state.associationFor( associationModel.accessor() ).get() );
-        }
+        ( (ValueStateModel) stateModel ).associations().forEach( associationModel ->
+            associationModel.checkConstraints( state.associationFor( associationModel.accessor() ).get() )
+        );
 
-        for( ManyAssociationModel associationModel : ( (ValueStateModel) stateModel ).manyAssociations() )
-        {
-            associationModel.checkAssociationConstraints( state.manyAssociationFor( associationModel.accessor() ) );
-        }
+        ( (ValueStateModel) stateModel ).manyAssociations().forEach( associationModel ->
+            associationModel.checkAssociationConstraints( state.manyAssociationFor( associationModel.accessor() ) )
+        );
+
+        ( (ValueStateModel) stateModel ).namedAssociations().forEach( associationModel ->
+            associationModel.checkAssociationConstraints( state.namedAssociationFor( associationModel.accessor() ) )
+        );
     }
 
     public ValueInstance newValueInstance( ModuleSpi moduleInstance,

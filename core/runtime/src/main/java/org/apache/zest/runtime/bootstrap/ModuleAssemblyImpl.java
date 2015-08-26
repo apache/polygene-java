@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
@@ -56,7 +58,6 @@ import org.apache.zest.bootstrap.TransientDeclaration;
 import org.apache.zest.bootstrap.ValueAssembly;
 import org.apache.zest.bootstrap.ValueDeclaration;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.functional.Specifications;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.composite.TransientModel;
 import org.apache.zest.runtime.composite.TransientsModel;
@@ -72,7 +73,6 @@ import org.apache.zest.runtime.structure.ModuleModel;
 import org.apache.zest.runtime.value.ValueModel;
 import org.apache.zest.runtime.value.ValuesModel;
 
-import static org.apache.zest.functional.Iterables.first;
 import static org.apache.zest.functional.Iterables.iterable;
 
 /**
@@ -145,7 +145,7 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     public ValueDeclaration values( Class<?>... valueTypes )
     {
         List<ValueAssemblyImpl> assemblies = new ArrayList<>();
@@ -183,7 +183,7 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     public TransientDeclaration transients( Class<?>... transientTypes )
     {
         List<TransientAssemblyImpl> assemblies = new ArrayList<>();
@@ -221,7 +221,7 @@ public final class ModuleAssemblyImpl
     }
 
     @Override
-    @SuppressWarnings( {"raw", "unchecked"} )
+    @SuppressWarnings( { "raw", "unchecked" } )
     public EntityDeclaration entities( Class<?>... entityTypes )
     {
         List<EntityAssemblyImpl> assemblies = new ArrayList<>();
@@ -294,14 +294,14 @@ public final class ModuleAssemblyImpl
             }
         }
 
-        return new ConfigurationDeclarationImpl( entityAssemblyList, valueAssemblyList  );
+        return new ConfigurationDeclarationImpl( entityAssemblyList, valueAssemblyList );
     }
 
     @Override
     public ConfigurationDeclaration configurations( Predicate<HasTypes> specification )
     {
         Predicate<HasTypes> isConfigurationComposite = new MatchTypeSpecification( Identity.class );
-        specification = Specifications.and( specification, isConfigurationComposite );
+        specification = specification.and( isConfigurationComposite );
         List<EntityAssemblyImpl> entityAssmblyList = new ArrayList<>();
         for( EntityAssemblyImpl entityAssembly : entityAssemblies.values() )
         {
@@ -385,9 +385,9 @@ public final class ModuleAssemblyImpl
 
         for( Class<?> serviceType : serviceTypes )
         {
-            if( Iterables.matchesAny( AssemblySpecifications.types( serviceType ), serviceAssemblies ) )
+            if( Iterables.matchesAny( AssemblySpecifications.ofAnyType( serviceType ), serviceAssemblies ) )
             {
-                Iterables.addAll( assemblies, Iterables.filter( AssemblySpecifications.types( serviceType ), serviceAssemblies ) );
+                Iterables.addAll( assemblies, Iterables.filter( AssemblySpecifications.ofAnyType( serviceType ), serviceAssemblies ) );
             }
             else
             {
@@ -522,10 +522,10 @@ public final class ModuleAssemblyImpl
         List<EntityModel> entityModels = new ArrayList<>();
         for( EntityAssemblyImpl entityDeclaration : entityAssemblies.values() )
         {
-            entityModels.add( entityDeclaration.newEntityModel( metaInfoDeclaration, 
-                                                                metaInfoDeclaration, 
-                                                                metaInfoDeclaration, 
-                                                                metaInfoDeclaration, 
+            entityModels.add( entityDeclaration.newEntityModel( metaInfoDeclaration,
+                                                                metaInfoDeclaration,
+                                                                metaInfoDeclaration,
+                                                                metaInfoDeclaration,
                                                                 helper ) );
         }
 
@@ -586,18 +586,11 @@ public final class ModuleAssemblyImpl
 
         for( ImportedServiceModel importedServiceModel : importedServiceModels )
         {
-            boolean found = false;
-            for( ObjectModel objectModel : objectModels )
+            if( StreamSupport.stream( objectModels.spliterator(), false )
+                .anyMatch( model ->
+                               model.types().findFirst().get().equals( importedServiceModel.serviceImporter() ) )
+                )
             {
-                if( first( objectModel.types() ).equals( importedServiceModel.serviceImporter() ) )
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if( !found )
-            {
-                @SuppressWarnings( "raw" )
                 Class<? extends ServiceImporter> serviceFactoryType = importedServiceModel.serviceImporter();
                 ObjectModel objectModel = new ObjectModel( serviceFactoryType, Visibility.module, new MetaInfo() );
                 objectModels.add( objectModel );
@@ -607,11 +600,10 @@ public final class ModuleAssemblyImpl
         return moduleModel;
     }
 
-    private String generateId( Iterable<Class<?>> serviceTypes )
+    private String generateId( Stream<Class<?>> serviceTypes )
     {
         // Find service identity that is not yet used
-        Class<?> serviceType = serviceTypes.iterator()
-            .next(); // Use the first Iterable, which *SHOULD* be the main serviceType
+        Class<?> serviceType = serviceTypes.findFirst().orElse( null ); // Use the first, which *SHOULD* be the main serviceType
         int idx = 0;
         String id = serviceType.getSimpleName();
         boolean invalid;

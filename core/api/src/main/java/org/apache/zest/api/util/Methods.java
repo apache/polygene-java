@@ -20,31 +20,25 @@ package org.apache.zest.api.util;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import static org.apache.zest.functional.Iterables.iterable;
+import java.util.stream.Stream;
 
 /**
  * Useful methods for handling Methods.
  */
 public class Methods
 {
-    public static final Predicate<Type> HAS_METHODS = new Predicate<Type>()
-    {
-        @Override
-        public boolean test( Type item )
-        {
-            return Classes.RAW_CLASS.apply( item ).getDeclaredMethods().length > 0;
-        }
-    };
+    public static final Predicate<Type> HAS_METHODS =
+        item -> Classes.RAW_CLASS.apply( item ).getDeclaredMethods().length > 0;
 
-    public static final Function<Type, Iterable<Method>> METHODS_OF = Classes.forTypes( new Function<Type, Iterable<Method>>()
+    public static final Function<Type, Stream<Method>> METHODS_OF = Classes.forTypes( type ->
+        Stream.of( type ).map( Classes.RAW_CLASS ).flatMap( clazz -> Arrays.stream( clazz.getDeclaredMethods() ) )
+    );
+
+    public static Stream<Method> methodsOf( Type type )
     {
-        @Override
-        public Iterable<Method> apply( Type type )
-        {
-            return iterable( Classes.RAW_CLASS.apply( type ).getDeclaredMethods() );
-        }
-    } );
+        return Stream.of(type).flatMap( METHODS_OF );
+    }
 }

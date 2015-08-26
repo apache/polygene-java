@@ -17,6 +17,7 @@
  */
 package org.apache.zest.runtime.bootstrap;
 
+import java.util.stream.Stream;
 import org.apache.zest.bootstrap.ConfigurationAssembly;
 
 /**
@@ -35,7 +36,7 @@ public final class ConfigurationAssemblyImpl
     }
 
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
         return value.types();
     }

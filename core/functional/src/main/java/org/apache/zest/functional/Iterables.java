@@ -70,36 +70,6 @@ public final class Iterables
         return EMPTY;
     }
 
-    public static <T> Iterable<T> constant( final T item )
-    {
-        return new Iterable<T>()
-        {
-            @Override
-            public Iterator<T> iterator()
-            {
-                return new Iterator<T>()
-                {
-                    @Override
-                    public boolean hasNext()
-                    {
-                        return true;
-                    }
-
-                    @Override
-                    public T next()
-                    {
-                        return item;
-                    }
-
-                    @Override
-                    public void remove()
-                    {
-                    }
-                };
-            }
-        };
-    }
-
     public static <T> Iterable<T> limit( final int limitItems, final Iterable<T> iterable )
     {
         return new Iterable<T>()
@@ -453,59 +423,52 @@ public final class Iterables
 
     public static <T> Iterable<T> prepend( final T item, final Iterable<T> iterable )
     {
-        return new Iterable<T>()
+        return () -> new Iterator<T>()
         {
+            private T first = item;
+            private Iterator<T> iterator;
+
             @Override
-            public Iterator<T> iterator()
+            public boolean hasNext()
             {
-                return new Iterator<T>()
+                if( first != null )
                 {
-                    T first = item;
-                    Iterator<T> iterator;
-
-                    @Override
-                    public boolean hasNext()
+                    return true;
+                }
+                else
+                {
+                    if( iterator == null )
                     {
-                        if( first != null )
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            if( iterator == null )
-                            {
-                                iterator = iterable.iterator();
-                            }
-                        }
-
-                        return iterator.hasNext();
+                        iterator = iterable.iterator();
                     }
+                }
 
-                    @Override
-                    public T next()
+                return iterator.hasNext();
+            }
+
+            @Override
+            public T next()
+            {
+                if( first != null )
+                {
+                    try
                     {
-                        if( first != null )
-                        {
-                            try
-                            {
-                                return first;
-                            }
-                            finally
-                            {
-                                first = null;
-                            }
-                        }
-                        else
-                        {
-                            return iterator.next();
-                        }
+                        return first;
                     }
-
-                    @Override
-                    public void remove()
+                    finally
                     {
+                        first = null;
                     }
-                };
+                }
+                else
+                {
+                    return iterator.next();
+                }
+            }
+
+            @Override
+            public void remove()
+            {
             }
         };
     }

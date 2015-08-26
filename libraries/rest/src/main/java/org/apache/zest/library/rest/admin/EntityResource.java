@@ -28,15 +28,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.openrdf.model.Statement;
-import org.openrdf.rio.RDFHandlerException;
-import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueSerialization;
@@ -53,6 +49,8 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.helpers.JSONEntityState;
 import org.apache.zest.spi.module.ModuleSpi;
+import org.openrdf.model.Statement;
+import org.openrdf.rio.RDFHandlerException;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
@@ -217,8 +215,7 @@ public class EntityResource
 
                 final EntityDescriptor descriptor = entity.entityDescriptor();
 
-                for( PropertyDescriptor persistentProperty : descriptor.state().properties() )
-                {
+                descriptor.state().properties().forEach( persistentProperty -> {
                     Object value = entity.propertyValueOf( persistentProperty.qualifiedName() );
                     out.println( "<tr><td>"
                                  + "<label for=\"" + persistentProperty.qualifiedName() + "\" >"
@@ -231,12 +228,11 @@ public class EntityResource
                                  + "name=\"" + persistentProperty.qualifiedName() + "\" "
                                  + "value=\"" + ( value == null ? "" : valueSerialization.serialize( value ) )
                                  + "\"/></td></tr>" );
-                }
+                } );
                 out.println( "</table></fieldset>\n" );
 
                 out.println( "<fieldset><legend>Associations</legend>\n<table>" );
-                for( AssociationDescriptor associationType : descriptor.state().associations() )
-                {
+                descriptor.state().associations().forEach( associationType -> {
                     Object value = entity.associationValueOf( associationType.qualifiedName() );
                     if( value == null )
                     {
@@ -251,12 +247,11 @@ public class EntityResource
                                  + "size=\"80\" "
                                  + "name=\"" + associationType.qualifiedName() + "\" "
                                  + "value=\"" + value + "\"/></td></tr>" );
-                }
+                } );
                 out.println( "</table></fieldset>\n" );
 
                 out.println( "<fieldset><legend>ManyAssociations</legend>\n<table>" );
-                for( AssociationDescriptor associationType : descriptor.state().manyAssociations() )
-                {
+                descriptor.state().manyAssociations().forEach( associationType -> {
                     ManyAssociationState identities = entity.manyAssociationValueOf( associationType.qualifiedName() );
                     String value = "";
                     for( EntityReference identity : identities )
@@ -274,12 +269,11 @@ public class EntityResource
                                  + "name=\"" + associationType.qualifiedName() + "\" >"
                                  + value
                                  + "</textarea></td></tr>" );
-                }
+                });
                 out.println( "</table></fieldset>\n" );
 
                 out.println( "<fieldset><legend>NamedAssociations</legend>\n<table>" );
-                for( AssociationDescriptor associationType : descriptor.state().namedAssociations() )
-                {
+                descriptor.state().namedAssociations().forEach( associationType -> {
                     NamedAssociationState identities = entity.namedAssociationValueOf( associationType.qualifiedName() );
                     String value = "";
                     for( String name : identities )
@@ -297,7 +291,7 @@ public class EntityResource
                                  + "name=\"" + associationType.qualifiedName() + "\" >"
                                  + value
                                  + "</textarea></td></tr>" );
-                }
+                } );
                 out.println( "</table></fieldset>\n" );
 
                 out.println( "<input type=\"submit\" value=\"Update\"/></form>\n" );
@@ -366,8 +360,7 @@ public class EntityResource
             final EntityDescriptor descriptor = entity.entityDescriptor();
 
             // Parse JSON into properties
-            for( PropertyDescriptor persistentProperty : descriptor.state().properties() )
-            {
+            descriptor.state().properties().forEach( persistentProperty -> {
                 if( !persistentProperty.isImmutable() )
                 {
                     String formValue = form.getFirstValue( persistentProperty.qualifiedName().name(), null );
@@ -382,10 +375,9 @@ public class EntityResource
                             valueSerialization.deserialize( persistentProperty.valueType(), formValue ) );
                     }
                 }
-            }
+            } );
 
-            for( AssociationDescriptor associationType : descriptor.state().associations() )
-            {
+            descriptor.state().associations().forEach( associationType -> {
                 String newStringAssociation = form.getFirstValue( associationType.qualifiedName().name() );
                 if( newStringAssociation == null || newStringAssociation.isEmpty() )
                 {
@@ -396,9 +388,8 @@ public class EntityResource
                     entity.setAssociationValue( associationType.qualifiedName(),
                                                 EntityReference.parseEntityReference( newStringAssociation ) );
                 }
-            }
-            for( AssociationDescriptor associationType : descriptor.state().manyAssociations() )
-            {
+            } );
+            descriptor.state().manyAssociations().forEach( associationType -> {
                 String newStringAssociation = form.getFirstValue( associationType.qualifiedName().name() );
                 ManyAssociationState manyAssociation = entity.manyAssociationValueOf( associationType.qualifiedName() );
                 if( newStringAssociation == null )
@@ -408,51 +399,51 @@ public class EntityResource
                     {
                         manyAssociation.remove( entityReference );
                     }
-                    continue;
                 }
-
-                BufferedReader bufferedReader = new BufferedReader( new StringReader( newStringAssociation ) );
-                String identity;
-
-                try
+                else
                 {
-                    // Synchronize old and new association
-                    int index = 0;
-                    while( ( identity = bufferedReader.readLine() ) != null )
+                    BufferedReader bufferedReader = new BufferedReader( new StringReader( newStringAssociation ) );
+                    String identity;
+
+                    try
                     {
-                        EntityReference reference = new EntityReference( identity );
-
-                        if( manyAssociation.count() < index && manyAssociation.get( index ).equals( reference ) )
+                        // Synchronize old and new association
+                        int index = 0;
+                        while( ( identity = bufferedReader.readLine() ) != null )
                         {
-                            continue;
+                            EntityReference reference = new EntityReference( identity );
+
+                            if( manyAssociation.count() < index && manyAssociation.get( index ).equals( reference ) )
+                            {
+                                continue;
+                            }
+
+                            try
+                            {
+                                unitOfWork.entityStateOf( module, reference );
+
+                                manyAssociation.remove( reference );
+                                manyAssociation.add( index++, reference );
+                            }
+                            catch( EntityNotFoundException e )
+                            {
+                                // Ignore this entity - doesn't exist
+                            }
                         }
 
-                        try
+                        // Remove "left-overs"
+                        while( manyAssociation.count() > index )
                         {
-                            unitOfWork.entityStateOf( module, reference );
-
-                            manyAssociation.remove( reference );
-                            manyAssociation.add( index++, reference );
-                        }
-                        catch( EntityNotFoundException e )
-                        {
-                            // Ignore this entity - doesn't exist
+                            manyAssociation.remove( manyAssociation.get( index ) );
                         }
                     }
-
-                    // Remove "left-overs"
-                    while( manyAssociation.count() > index )
+                    catch( IOException e )
                     {
-                        manyAssociation.remove( manyAssociation.get( index ) );
+                        // Ignore
                     }
                 }
-                catch( IOException e )
-                {
-                    // Ignore
-                }
-            }
-            for( AssociationDescriptor associationType : descriptor.state().namedAssociations() )
-            {
+            } );
+            descriptor.state().namedAssociations().forEach( associationType -> {
                 String newStringAssociation = form.getFirstValue( associationType.qualifiedName().name() );
                 NamedAssociationState namedAssociation = entity.namedAssociationValueOf( associationType.qualifiedName() );
                 if( newStringAssociation == null )
@@ -462,52 +453,51 @@ public class EntityResource
                     {
                         namedAssociation.remove( name );
                     }
-                    continue;
                 }
-                Set<String> names = new HashSet<>();
-                BufferedReader bufferedReader = new BufferedReader( new StringReader( newStringAssociation ) );
-                String line;
-                try
+                else
                 {
-                    while( ( line = bufferedReader.readLine() ) != null )
+                    Set<String> names = new HashSet<>();
+                    BufferedReader bufferedReader = new BufferedReader( new StringReader( newStringAssociation ) );
+                    String line;
+                    try
                     {
-                        String name = line;
-                        line = bufferedReader.readLine();
-                        if( line == null )
+                        while( ( line = bufferedReader.readLine() ) != null )
                         {
-                            break;
-                        }
-                        String identity = line;
-                        EntityReference reference = new EntityReference( identity );
-                        try
-                        {
-                            unitOfWork.entityStateOf( module, reference );
+                            String name = line;
+                            line = bufferedReader.readLine();
+                            if( line == null )
+                            {
+                                break;
+                            }
+                            String identity = line;
+                            EntityReference reference = new EntityReference( identity );
+                            try
+                            {
+                                unitOfWork.entityStateOf( module, reference );
 
-                            namedAssociation.remove( name );
-                            namedAssociation.put( name, reference );
+                                namedAssociation.remove( name );
+                                namedAssociation.put( name, reference );
 
-                            names.add( name );
+                                names.add( name );
+                            }
+                            catch( EntityNotFoundException e )
+                            {
+                                // Ignore this entity - doesn't exist
+                            }
                         }
-                        catch( EntityNotFoundException e )
-                        {
-                            // Ignore this entity - doesn't exist
-                        }
+
+                        // Remove "left-overs"
+                        Iterables.toList( namedAssociation )
+                            .stream()
+                            .filter( assocName -> !names.contains( assocName ) )
+                            .forEach( namedAssociation::remove );
                     }
-
-                    // Remove "left-overs"
-                    for( String assocName : Iterables.toList( namedAssociation ) )
+                    catch( IOException e )
                     {
-                        if( !names.contains( assocName ) )
-                        {
-                            namedAssociation.remove( assocName );
-                        }
+                        // Ignore
                     }
                 }
-                catch( IOException e )
-                {
-                    // Ignore
-                }
-            }
+            } );
         }
         catch( ValueSerializationException | IllegalArgumentException e )
         {

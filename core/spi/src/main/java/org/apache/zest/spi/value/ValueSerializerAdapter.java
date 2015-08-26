@@ -27,12 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.association.Association;
-import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
@@ -40,15 +36,15 @@ import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.util.Base64Encoder;
 import org.apache.zest.api.util.Dates;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueSerializationException;
 import org.apache.zest.api.value.ValueSerializer;
-
-import static org.apache.zest.functional.Iterables.first;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 /**
  * Adapter for pull-parsing capable ValueSerializers.
@@ -95,14 +91,7 @@ public abstract class ValueSerializerAdapter<OutputType>
 
     private static <TO, FROM extends TO> BiFunction<Options, FROM, TO> identitySerializer()
     {
-        return new BiFunction<Options, FROM, TO>()
-        {
-            @Override
-            public TO apply( Options options, FROM from )
-            {
-                return from;
-            }
-        };
+        return ( options, from ) -> from;
     }
 
     private final Map<Class<?>, BiFunction<Options, Object, Object>> serializers = new HashMap<>( 16 );
@@ -148,107 +137,38 @@ public abstract class ValueSerializerAdapter<OutputType>
         registerSerializer( Double.class, ValueSerializerAdapter.<Object, Double>identitySerializer() );
 
         // Number types
-        registerSerializer( BigDecimal.class, new BiFunction<Options, BigDecimal, Object>()
-        {
-            @Override
-            public Object apply( Options options, BigDecimal bigDecimal )
-            {
-                return bigDecimal.toString();
-            }
-        } );
-        registerSerializer( BigInteger.class, new BiFunction<Options, BigInteger, Object>()
-        {
-            @Override
-            public Object apply( Options options, BigInteger bigInteger )
-            {
-                return bigInteger.toString();
-            }
-        } );
+        registerSerializer( BigDecimal.class, ( options, bigDecimal ) -> bigDecimal.toString() );
+        registerSerializer( BigInteger.class, ( options, bigInteger ) -> bigInteger.toString() );
 
         // Date types
-        registerSerializer( Date.class, new BiFunction<Options, Date, Object>()
-        {
-            @Override
-            public Object apply( Options options, Date date )
-            {
-                return Dates.toUtcString( date );
-            }
-        } );
-        registerSerializer( DateTime.class, new BiFunction<Options, DateTime, Object>()
-        {
-            @Override
-            public Object apply( Options options, DateTime date )
-            {
-                return date.toString();
-            }
-        } );
-        registerSerializer( LocalDateTime.class, new BiFunction<Options, LocalDateTime, Object>()
-        {
-            @Override
-            public Object apply( Options options, LocalDateTime date )
-            {
-                return date.toString();
-            }
-        } );
-        registerSerializer( LocalDate.class, new BiFunction<Options, LocalDate, Object>()
-        {
-            @Override
-            public Object apply( Options options, LocalDate date )
-            {
-                return date.toString();
-            }
-        } );
+        registerSerializer( Date.class, ( options, date ) -> Dates.toUtcString( date ) );
+        registerSerializer( DateTime.class, ( options, date ) -> date.toString() );
+        registerSerializer( LocalDateTime.class, ( options, date ) -> date.toString() );
+        registerSerializer( LocalDate.class, ( options, date ) -> date.toString() );
 
         // Other supported types
-        registerSerializer( EntityReference.class, new BiFunction<Options, EntityReference, Object>()
-        {
-            @Override
-            public Object apply( Options options, EntityReference ref )
-            {
-                return ref.toString();
-            }
-        } );
+        registerSerializer( EntityReference.class, ( options, ref ) -> ref.toString() );
     }
 
     @Override
     public final <T> Function<T, String> serialize()
     {
-        return new Function<T, String>()
-        {
-            @Override
-            public String apply( T object )
-            {
-                return serialize( object );
-            }
-        };
+        return object -> serialize( object );
     }
 
     @Override
     public final <T> Function<T, String> serialize( final Options options )
     {
-        return new Function<T, String>()
-        {
-            @Override
-            public String apply( T object )
-            {
-                return serialize( options, object );
-            }
-        };
+        return object -> serialize( options, object );
     }
 
     @Override
     @Deprecated
     public final <T> Function<T, String> serialize( final boolean includeTypeInfo )
     {
-        return new Function<T, String>()
-        {
-            @Override
-            public String apply( T object )
-            {
-                return serialize( includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
-                                  object );
-            }
-        };
+        return object -> serialize(
+            includeTypeInfo ? new Options().withTypeInfo() : new Options().withoutTypeInfo(),
+            object );
     }
 
     @Override
@@ -420,72 +340,96 @@ public abstract class ValueSerializerAdapter<OutputType>
         {
             onFieldStart( output, "_type" );
             onValueStart( output );
-            onValue( output, first( descriptor.valueType().types() ).getName() );
+            onValue( output, descriptor.valueType().types().findFirst().orElse( null ));
             onValueEnd( output );
             onFieldEnd( output );
         }
 
-        for( PropertyDescriptor persistentProperty : descriptor.valueType().properties() )
-        {
+        descriptor.valueType().properties().forEach( persistentProperty -> {
             Property<?> property = state.propertyFor( persistentProperty.accessor() );
-            onFieldStart( output, persistentProperty.qualifiedName().name() );
-            onValueStart( output );
-            doSerialize( options, property.get(), output, false );
-            onValueEnd( output );
-            onFieldEnd( output );
-        }
-        for( AssociationDescriptor associationDescriptor : descriptor.valueType().associations() )
-        {
-            Association<?> association = state.associationFor( associationDescriptor.accessor() );
-            onFieldStart( output, associationDescriptor.qualifiedName().name() );
-            onValueStart( output );
-            EntityReference ref = association.reference();
-            if( ref == null )
+            try
             {
-                onValue( output, null );
-            }
-            else
-            {
-                onValue( output, ref.identity() );
-            }
-            onValueEnd( output );
-            onFieldEnd( output );
-        }
-        for( AssociationDescriptor associationDescriptor : descriptor.valueType().manyAssociations() )
-        {
-            ManyAssociation<?> manyAssociation = state.manyAssociationFor( associationDescriptor.accessor() );
-            onFieldStart( output, associationDescriptor.qualifiedName().name() );
-            onValueStart( output );
-            onArrayStart( output );
-            for( EntityReference ref : manyAssociation.references() )
-            {
+                onFieldStart( output, persistentProperty.qualifiedName().name() );
                 onValueStart( output );
-                onValue( output, ref.identity() );
-                onValueEnd( output );
-            }
-            onArrayEnd( output );
-            onValueEnd( output );
-            onFieldEnd( output );
-        }
-        for( AssociationDescriptor associationDescriptor : descriptor.valueType().namedAssociations() )
-        {
-            NamedAssociation<?> namedAssociation = state.namedAssociationFor( associationDescriptor.accessor() );
-            onFieldStart( output, associationDescriptor.qualifiedName().name() );
-            onValueStart( output );
-            onObjectStart( output );
-            for( String name : namedAssociation )
-            {
-                onFieldStart( output, name );
-                onValueStart( output );
-                EntityReference ref = namedAssociation.referenceOf( name );
-                onValue( output, ref.identity() );
+                doSerialize( options, property.get(), output, false );
                 onValueEnd( output );
                 onFieldEnd( output );
             }
-            onObjectEnd( output );
-            onValueEnd( output );
-            onFieldEnd( output );
-        }
+            catch( Exception e )
+            {
+                throw new ValueSerializationException( "Unable to serialize property " + persistentProperty, e );
+            }
+        } );
+        descriptor.valueType().associations().forEach(associationDescriptor ->        {
+            Association<?> association = state.associationFor( associationDescriptor.accessor() );
+            try
+            {
+                onFieldStart( output, associationDescriptor.qualifiedName().name() );
+                onValueStart( output );
+                EntityReference ref = association.reference();
+                if( ref == null )
+                {
+                    onValue( output, null );
+                }
+                else
+                {
+                    onValue( output, ref.identity() );
+                }
+                onValueEnd( output );
+                onFieldEnd( output );
+            }
+            catch( Exception e )
+            {
+                throw new ValueSerializationException( "Unable to serialize association " + associationDescriptor, e );
+            }
+        } );
+        descriptor.valueType().manyAssociations().forEach( associationDescriptor -> {
+            ManyAssociation<?> manyAssociation = state.manyAssociationFor( associationDescriptor.accessor() );
+            try
+            {
+                onFieldStart( output, associationDescriptor.qualifiedName().name() );
+                onValueStart( output );
+                onArrayStart( output );
+                for( EntityReference ref : manyAssociation.references() )
+                {
+                    onValueStart( output );
+                    onValue( output, ref.identity() );
+                    onValueEnd( output );
+                }
+                onArrayEnd( output );
+                onValueEnd( output );
+                onFieldEnd( output );
+            }
+            catch( Exception e )
+            {
+                throw new ValueSerializationException( "Unable to serialize manyassociation " + associationDescriptor, e );
+            }
+        });
+        descriptor.valueType().namedAssociations().forEach( associationDescriptor -> {
+            NamedAssociation<?> namedAssociation = state.namedAssociationFor( associationDescriptor.accessor() );
+            try
+            {
+                onFieldStart( output, associationDescriptor.qualifiedName().name() );
+                onValueStart( output );
+                onObjectStart( output );
+                for( String name : namedAssociation )
+                {
+                    onFieldStart( output, name );
+                    onValueStart( output );
+                    EntityReference ref = namedAssociation.referenceOf( name );
+                    onValue( output, ref.identity() );
+                    onValueEnd( output );
+                    onFieldEnd( output );
+                }
+                onObjectEnd( output );
+                onValueEnd( output );
+                onFieldEnd( output );
+            }
+            catch( Exception e )
+            {
+                throw new ValueSerializationException( "Unable to serialize namedassociation " + associationDescriptor, e );
+            }
+        } );
 
         onObjectEnd( output );
     }
@@ -516,6 +460,7 @@ public abstract class ValueSerializerAdapter<OutputType>
     {
         @SuppressWarnings( "unchecked" )
         Map<Object, Object> map = (Map<Object, Object>) object;
+        //noinspection ConstantConditions
         if( options.getBoolean( Options.MAP_ENTRIES_AS_OBJECTS ) )
         {
             onObjectStart( output );

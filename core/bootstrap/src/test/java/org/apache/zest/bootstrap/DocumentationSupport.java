@@ -37,7 +37,7 @@ public class DocumentationSupport
 
         public boolean test( ObjectAssembly item )
         {
-            return Iterables.toList( item.types() ).contains( String.class );
+            return item.types().anyMatch( type -> type.equals(String.class) );
         }
 
     };

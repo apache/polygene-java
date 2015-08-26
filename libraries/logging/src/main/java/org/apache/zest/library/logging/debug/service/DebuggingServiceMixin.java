@@ -39,8 +39,6 @@ import org.apache.zest.library.logging.debug.records.DebugRecord;
 import org.apache.zest.library.logging.debug.records.EntityDebugRecordEntity;
 import org.apache.zest.library.logging.debug.records.ServiceDebugRecordEntity;
 
-import static org.apache.zest.functional.Iterables.first;
-
 public class DebuggingServiceMixin
     implements DebuggingService
 {
@@ -175,6 +173,6 @@ public class DebuggingServiceMixin
 
     private String getCompositeName( Composite composite )
     {
-        return first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types()).getName();
+        return ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().get().getName();
     }
 }

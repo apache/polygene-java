@@ -87,18 +87,16 @@ public class ZestSPITest
 
     private void validateState( AssociationStateHolder state, EntityDescriptor entityDescriptor )
     {
-        for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
-        {
+        entityDescriptor.state().properties().forEach( propertyDescriptor -> {
             Property<?> prop = state.propertyFor( propertyDescriptor.accessor() );
             assertThat( "Properties could be listed", prop, CoreMatchers.notNullValue() );
-        }
+        } );
 
         AssociationStateDescriptor descriptor = entityDescriptor.state();
-        for( AssociationDescriptor associationDescriptor : descriptor.associations() )
-        {
+        descriptor.associations().forEach( associationDescriptor -> {
             AbstractAssociation assoc = state.associationFor( associationDescriptor.accessor() );
             assertThat( "Assocs could be listed", assoc, CoreMatchers.notNullValue() );
-        }
+        } );
     }
 
     public interface TestEntity

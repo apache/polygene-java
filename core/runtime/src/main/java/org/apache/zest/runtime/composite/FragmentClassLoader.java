@@ -19,17 +19,17 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.zest.api.entity.Lifecycle;
+import org.apache.zest.api.mixin.Initializable;
+import org.apache.zest.api.util.Classes;
+import org.apache.zest.api.util.Methods;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.apache.zest.api.entity.Lifecycle;
-import org.apache.zest.api.mixin.Initializable;
-import org.apache.zest.api.util.Classes;
-import org.apache.zest.api.util.Methods;
-import org.apache.zest.functional.Iterables;
 
+import static org.apache.zest.api.util.Classes.interfacesOf;
 import static org.objectweb.asm.Opcodes.AASTORE;
 import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
@@ -69,7 +69,6 @@ import static org.objectweb.asm.Opcodes.POP;
 import static org.objectweb.asm.Opcodes.PUTSTATIC;
 import static org.objectweb.asm.Opcodes.RETURN;
 import static org.objectweb.asm.Type.getInternalName;
-import static org.apache.zest.api.util.Classes.interfacesOf;
 
 /**
  * Generate subclasses of mixins/modifiers that implement all interfaces not in the class itself
@@ -87,13 +86,13 @@ public class FragmentClassLoader
         String jdkString = System.getProperty( "java.specification.version" );
         switch( jdkString )
         {
-            case "1.8":
-                JDK_VERSION = Opcodes.V1_8;
-                break;
-            case "1.7":
-            default:
-                JDK_VERSION = Opcodes.V1_7;
-                break;
+        case "1.8":
+            JDK_VERSION = Opcodes.V1_8;
+            break;
+        case "1.7":
+        default:
+            JDK_VERSION = Opcodes.V1_7;
+            break;
         }
     }
 
@@ -140,8 +139,10 @@ public class FragmentClassLoader
                 }
             }
 //  To Allow JDK classes to be composed.
-            if( name.startsWith( "java." ))
+            if( name.startsWith( "java." ) )
+            {
                 name = "zest." + name;
+            }
 
             byte[] b = generateClass( name, baseClass );
             return defineClass( name, b, 0, b.length, baseClass.getProtectionDomain() );
@@ -164,7 +165,8 @@ public class FragmentClassLoader
 
         // Composite reference
         {
-            cw.visitField( ACC_PUBLIC, "_instance", "Lorg/apache/zest/api/composite/CompositeInvoker;", null, null ).visitEnd();
+            cw.visitField( ACC_PUBLIC, "_instance", "Lorg/apache/zest/api/composite/CompositeInvoker;", null, null )
+                .visitEnd();
         }
 
         // Static Method references
@@ -173,10 +175,10 @@ public class FragmentClassLoader
             int idx = 1;
             for( Method method : baseClass.getMethods() )
             {
-                if( isOverridden(method, baseClass) )
+                if( isOverridden( method, baseClass ) )
                 {
                     cw.visitField( ACC_PRIVATE + ACC_STATIC, "m" + idx++, "Ljava/lang/reflect/Method;", null,
-                                        null ).visitEnd();
+                                   null ).visitEnd();
                     hasProxyMethods = true;
                 }
             }
@@ -190,33 +192,41 @@ public class FragmentClassLoader
                 String desc = org.objectweb.asm.commons.Method.getMethod( constructor ).getDescriptor();
                 MethodVisitor cmv = cw.visitMethod( ACC_PUBLIC, "<init>", desc, null, null );
                 cmv.visitCode();
-                cmv.visitVarInsn(ALOAD, 0);
+                cmv.visitVarInsn( ALOAD, 0 );
 
                 int idx = 1;
                 for( Class aClass : constructor.getParameterTypes() )
                 {
                     final int opcode;
-                    if (aClass.equals(Integer.TYPE)) {
+                    if( aClass.equals( Integer.TYPE ) )
+                    {
                         opcode = ILOAD;
-                    } else if (aClass.equals(Long.TYPE)) {
+                    }
+                    else if( aClass.equals( Long.TYPE ) )
+                    {
                         opcode = LLOAD;
-                    } else if (aClass.equals(Float.TYPE)) {
+                    }
+                    else if( aClass.equals( Float.TYPE ) )
+                    {
                         opcode = FLOAD;
-                    } else if (aClass.equals(Double.TYPE)) {
+                    }
+                    else if( aClass.equals( Double.TYPE ) )
+                    {
                         opcode = DLOAD;
-                    } else {
+                    }
+                    else
+                    {
                         opcode = ALOAD;
                     }
-                    cmv.visitVarInsn(opcode, idx++);
+                    cmv.visitVarInsn( opcode, idx++ );
                 }
 
-                cmv.visitMethodInsn(INVOKESPECIAL, baseClassSlash, "<init>", desc, false);
-                cmv.visitInsn(RETURN);
-                cmv.visitMaxs(idx, idx);
+                cmv.visitMethodInsn( INVOKESPECIAL, baseClassSlash, "<init>", desc, false );
+                cmv.visitInsn( RETURN );
+                cmv.visitMaxs( idx, idx );
                 cmv.visitEnd();
             }
         }
-
 
         // Overloaded and unimplemented methods
         if( hasProxyMethods )
@@ -226,7 +236,7 @@ public class FragmentClassLoader
             List<Label> exceptionLabels = new ArrayList<>();
             for( Method method : methods )
             {
-                if( isOverridden(method, baseClass) )
+                if( isOverridden( method, baseClass ) )
                 {
                     idx++;
                     String methodName = method.getName();
@@ -404,7 +414,7 @@ public class FragmentClassLoader
                 int midx = 0;
                 for( Method method : methods )
                 {
-                    if( isOverridden(method, baseClass) )
+                    if( isOverridden( method, baseClass ) )
                     {
                         method.setAccessible( true );
                         Class methodClass;
@@ -466,7 +476,7 @@ public class FragmentClassLoader
         return cw.toByteArray();
     }
 
-    private static boolean isOverridden(Method method, Class baseClass)
+    private static boolean isOverridden( Method method, Class baseClass )
     {
         if( Modifier.isAbstract( method.getModifiers() ) )
         {
@@ -505,58 +515,39 @@ public class FragmentClassLoader
 
     private static boolean isDeclaredIn( Method method, Class<?> clazz, Class<?> baseClass )
     {
-        if( !clazz.isAssignableFrom( baseClass ) )
-        {
-            return false;
-        }
+        return clazz.isAssignableFrom( baseClass ) && checkForMethod( method, clazz );
+    }
 
+    private static Class getInterfaceMethodDeclaration( Method method, Class clazz )
+        throws NoSuchMethodException
+    {
+        return interfacesOf( clazz )
+            .map( Classes.RAW_CLASS )
+            .filter( intface -> checkForMethod( method, intface ) )
+            .findFirst()
+            .orElseThrow( () -> new NoSuchMethodException( method.getName() ) );
+    }
+
+    private static boolean isInterfaceMethod( Method method, Class<?> baseClass )
+    {
+        return interfacesOf( baseClass )
+            .map( Classes.RAW_CLASS )
+            .filter( Methods.HAS_METHODS )
+            .anyMatch( intface -> checkForMethod( method, intface ));
+    }
+
+    private static boolean checkForMethod( Method method, Class<?> intface )
+    {
         try
         {
-            clazz.getMethod( method.getName(), method.getParameterTypes() );
+            Method m = intface.getMethod( method.getName(), method.getParameterTypes() );
+            m.setAccessible( true );
             return true;
         }
         catch( NoSuchMethodException e )
         {
             return false;
         }
-    }
-
-    private static Class getInterfaceMethodDeclaration( Method method, Class clazz )
-        throws NoSuchMethodException
-    {
-        Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, interfacesOf( clazz ) );
-        for( Class<?> anInterface : interfaces )
-        {
-            try
-            {
-                anInterface.getMethod( method.getName(), method.getParameterTypes() );
-                return anInterface;
-            }
-            catch( NoSuchMethodException e )
-            {
-                // Try next
-            }
-        }
-
-        throw new NoSuchMethodException( method.getName() );
-    }
-
-    private static boolean isInterfaceMethod( Method method, Class<?> baseClass )
-    {
-        for( Class<?> aClass : Iterables.filter( Methods.HAS_METHODS, Iterables.map( Classes.RAW_CLASS, interfacesOf( baseClass ) ) ) )
-        {
-            try
-            {
-                Method m = aClass.getMethod( method.getName(), method.getParameterTypes() );
-                m.setAccessible( true );
-                return true;
-            }
-            catch( NoSuchMethodException e )
-            {
-                // Ignore
-            }
-        }
-        return false;
     }
 
     private static void type( MethodVisitor mv, Class<?> aClass )

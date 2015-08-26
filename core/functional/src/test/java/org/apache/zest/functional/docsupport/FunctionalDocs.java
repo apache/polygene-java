@@ -19,11 +19,7 @@
 package org.apache.zest.functional.docsupport;
 
 import java.util.ArrayList;
-
-// START SNIPPET: func2
-import static org.apache.zest.functional.ForEach.forEach;
-import static org.apache.zest.functional.Functions.longSum;
-// END SNIPPET: func2
+import java.util.stream.StreamSupport;
 
 public class FunctionalDocs
 {
@@ -45,9 +41,9 @@ public class FunctionalDocs
         }
         {
 // START SNIPPET: func2
-            Iterable<Number> data = new ArrayList<Number>();
-            Long sum = forEach( data ).map( longSum() ).last();
-            System.out.println( "The sum is " + sum );
+            Iterable<Long> data = new ArrayList<>();
+            Long total = StreamSupport.stream( data.spliterator(), true ).reduce( 0L, ( sum, n ) -> sum + n );
+            System.out.println( "The sum is " + total );
 
 // END SNIPPET: func2
         }

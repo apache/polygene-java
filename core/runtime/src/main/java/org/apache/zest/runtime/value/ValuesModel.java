@@ -15,6 +15,8 @@
 package org.apache.zest.runtime.value;
 
 import java.util.List;
+import java.util.stream.Stream;
+import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 
@@ -31,9 +33,9 @@ public final class ValuesModel
         this.valueModels = valueModels;
     }
 
-    public Iterable<ValueModel> models()
+    public Stream<ValueModel> models()
     {
-        return valueModels;
+        return valueModels.stream();
     }
 
     @Override
@@ -51,5 +53,10 @@ public final class ValuesModel
             }
         }
         return visitor.visitLeave( this );
+    }
+
+    public Stream<? extends ValueDescriptor> stream()
+    {
+        return valueModels.stream();
     }
 }

@@ -18,32 +18,17 @@
  */
 package org.apache.zest.bootstrap;
 
+import java.util.Arrays;
 import java.util.function.Predicate;
 import org.apache.zest.api.type.HasTypes;
-import org.apache.zest.functional.Specifications;
 
 /**
  * Utility specifications for Assemblies.
  */
 public class AssemblySpecifications
 {
-    public static Predicate<HasTypes> types( final Class... types )
+    public static Predicate<HasTypes> ofAnyType( final Class... types )
     {
-        return new Predicate<HasTypes>()
-        {
-            @Override
-            public boolean test( HasTypes item )
-            {
-
-                for( Class<?> type : item.types() )
-                {
-                    if( Specifications.in( types ).test( type ) )
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
+        return item -> item.types().anyMatch( a -> Arrays.stream( types ).anyMatch( a::equals ) );
     }
 }

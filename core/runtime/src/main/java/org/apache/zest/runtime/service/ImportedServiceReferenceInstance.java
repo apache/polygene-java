@@ -19,6 +19,7 @@
  */
 package org.apache.zest.runtime.service;
 
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
@@ -61,7 +62,7 @@ public final class ImportedServiceReferenceInstance<T>
     }
 
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
         return serviceModel.types();
     }

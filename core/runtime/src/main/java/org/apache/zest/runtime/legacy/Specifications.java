@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
+ * Copyright (c) 2010, Rickard Öberg. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,18 +11,21 @@
  * limitations under the License.
  *
  */
+package org.apache.zest.runtime.legacy;
 
-package org.apache.zest.api.composite;
-
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
- * Composite Descriptor.
+ * Common generic specification expressions
  */
-public interface CompositeDescriptor
-    extends ModelDescriptor
+public class Specifications
 {
-    Class<?> primaryType();
-
-    Stream<Class<?>> mixinTypes();
+    public static <FROM, TO> Predicate<FROM> translate( final Function<FROM, TO> function,
+                                                        final Predicate<? super TO> specification
+    )
+    {
+        return item -> specification.test( function.apply( item ) );
+    }
 }

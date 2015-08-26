@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.zest.api.composite.InjectedParametersDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
+import org.apache.zest.runtime.composite.ConstructorModel;
 
 /**
  * JAVADOC
@@ -36,9 +38,9 @@ public final class InjectedParametersModel
     }
 
     @Override
-    public Iterable<DependencyModel> dependencies()
+    public Stream<DependencyModel> dependencies()
     {
-        return parameterDependencies;
+        return parameterDependencies.stream();
     }
 
     // Context

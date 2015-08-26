@@ -136,57 +136,47 @@ public interface ZestAPI
     /**
      * Function that returns the CompositeDescriptor of a Composite.
      */
-    Function<Composite, CompositeDescriptor> FUNCTION_DESCRIPTOR_FOR = new Function<Composite, CompositeDescriptor>()
-    {
-        @Override
-        public CompositeDescriptor apply( Composite composite )
+    Function<Composite, CompositeDescriptor> FUNCTION_DESCRIPTOR_FOR = composite -> {
+        if( composite instanceof Proxy )
         {
-            if( composite instanceof Proxy )
-            {
-                InvocationHandler invocationHandler = Proxy.getInvocationHandler( composite );
-                return ( (CompositeInstance) invocationHandler ).descriptor();
-            }
-            try
-            {
-                Class<? extends Composite> compositeClass = composite.getClass();
-                Field instanceField = compositeClass.getField( "_instance" );
-                Object instance = instanceField.get( composite );
-                return ( (CompositeInstance) instance ).descriptor();
-            }
-            catch( Exception e )
-            {
-                InvalidCompositeException exception = new InvalidCompositeException( "Could not get _instance field" );
-                exception.initCause( e );
-                throw exception;
-            }
+            InvocationHandler invocationHandler = Proxy.getInvocationHandler( composite );
+            return ( (CompositeInstance) invocationHandler ).descriptor();
+        }
+        try
+        {
+            Class<? extends Composite> compositeClass = composite.getClass();
+            Field instanceField = compositeClass.getField( "_instance" );
+            Object instance = instanceField.get( composite );
+            return ( (CompositeInstance) instance ).descriptor();
+        }
+        catch( Exception e )
+        {
+            InvalidCompositeException exception = new InvalidCompositeException( "Could not get _instance field" );
+            exception.initCause( e );
+            throw exception;
         }
     };
 
     /**
      * Function that returns the CompositeInstance of a Composite.
      */
-    Function<Composite, CompositeInstance> FUNCTION_COMPOSITE_INSTANCE_OF = new Function<Composite, CompositeInstance>()
-    {
-        @Override
-        public CompositeInstance apply( Composite composite )
+    Function<Composite, CompositeInstance> FUNCTION_COMPOSITE_INSTANCE_OF = composite -> {
+        if( composite instanceof Proxy )
         {
-            if( composite instanceof Proxy )
-            {
-                return ( (CompositeInstance) Proxy.getInvocationHandler( composite ) );
-            }
-            try
-            {
-                Class<? extends Composite> compositeClass = composite.getClass();
-                Field instanceField = compositeClass.getField( "_instance" );
-                Object instance = instanceField.get( composite );
-                return (CompositeInstance) instance;
-            }
-            catch( Exception e )
-            {
-                InvalidCompositeException exception = new InvalidCompositeException( "Could not get _instance field" );
-                exception.initCause( e );
-                throw exception;
-            }
+            return ( (CompositeInstance) Proxy.getInvocationHandler( composite ) );
+        }
+        try
+        {
+            Class<? extends Composite> compositeClass = composite.getClass();
+            Field instanceField = compositeClass.getField( "_instance" );
+            Object instance = instanceField.get( composite );
+            return (CompositeInstance) instance;
+        }
+        catch( Exception e )
+        {
+            InvalidCompositeException exception = new InvalidCompositeException( "Could not get _instance field" );
+            exception.initCause( e );
+            throw exception;
         }
     };
 }

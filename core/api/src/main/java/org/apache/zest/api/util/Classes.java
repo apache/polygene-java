@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -32,17 +33,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.composite.ModelDescriptor;
-import org.apache.zest.functional.Iterables;
 
-import static org.apache.zest.functional.Iterables.cast;
-import static org.apache.zest.functional.Iterables.empty;
-import static org.apache.zest.functional.Iterables.flatten;
-import static org.apache.zest.functional.Iterables.flattenIterables;
-import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.functional.Iterables.map;
-import static org.apache.zest.functional.Iterables.matchesAny;
-import static org.apache.zest.functional.Iterables.prepend;
+import static java.util.stream.Stream.concat;
+import static java.util.stream.StreamSupport.stream;
 
 /**
  * Useful methods for handling Classes.
@@ -82,14 +78,9 @@ public final class Classes
      * Return the same class if it's not a primitive class. This can therefore safely be used on all types
      * to ensure that they are not primitives.
      */
-    private static final Function<Type, Type> WRAPPER_CLASS = new Function<Type, Type>()
-    {
-        @Override
-        public Type apply( Type aClass )
-        {
-            Type wrapperClass = wrapperClasses.get( aClass );
-            return wrapperClass == null ? aClass : wrapperClass;
-        }
+    private static final Function<Type, Type> WRAPPER_CLASS = clazz -> {
+        Type wrapperClass = wrapperClasses.get( clazz );
+        return wrapperClass == null ? clazz : wrapperClass;
     };
 
     /**
@@ -98,132 +89,114 @@ public final class Classes
      * to ensure that they are primitives if possible.
      */
     @SuppressWarnings( "UnusedDeclaration" )
-    private static final Function<Type, Type> PRIMITIVE_CLASS = new Function<Type, Type>()
-    {
-        @Override
-        public Type apply( Type aClass )
-        {
-            Type primitiveClass = primitiveClasses.get( aClass );
-            return primitiveClass == null ? aClass : primitiveClass;
-        }
+    private static final Function<Type, Type> PRIMITIVE_CLASS = aClass -> {
+        Type primitiveClass = primitiveClasses.get( aClass );
+        return primitiveClass == null ? aClass : primitiveClass;
     };
 
     /**
      * Function that extract the raw class of a type.
      */
-    public static final Function<Type, Class<?>> RAW_CLASS = new Function<Type, Class<?>>()
-    {
-        @Override
-        public Class<?> apply( Type genericType )
+    public static final Function<Type, Class<?>> RAW_CLASS = genericType -> {
+        // Calculate raw type
+        if( genericType instanceof Class )
         {
-            // Calculate raw type
-            if( genericType instanceof Class )
-            {
-                return (Class<?>) genericType;
-            }
-            else if( genericType instanceof ParameterizedType )
-            {
-                return (Class<?>) ( (ParameterizedType) genericType ).getRawType();
-            }
-            else if( genericType instanceof TypeVariable )
-            {
-                return (Class<?>) ( (TypeVariable) genericType ).getGenericDeclaration();
-            }
-            else if( genericType instanceof WildcardType )
-            {
-                return (Class<?>) ( (WildcardType) genericType ).getUpperBounds()[ 0];
-            }
-            else if( genericType instanceof GenericArrayType )
-            {
-                Object temp = Array.newInstance( (Class<?>) ( (GenericArrayType) genericType ).getGenericComponentType(), 0 );
-                return temp.getClass();
-            }
-            throw new IllegalArgumentException( "Could not extract the raw class of " + genericType );
+            return (Class<?>) genericType;
         }
+        else if( genericType instanceof ParameterizedType )
+        {
+            return (Class<?>) ( (ParameterizedType) genericType ).getRawType();
+        }
+        else if( genericType instanceof TypeVariable )
+        {
+            return (Class<?>) ( (TypeVariable) genericType ).getGenericDeclaration();
+        }
+        else if( genericType instanceof WildcardType )
+        {
+            return (Class<?>) ( (WildcardType) genericType ).getUpperBounds()[ 0 ];
+        }
+        else if( genericType instanceof GenericArrayType )
+        {
+            Object temp = Array.newInstance( (Class<?>) ( (GenericArrayType) genericType ).getGenericComponentType(), 0 );
+            return temp.getClass();
+        }
+        throw new IllegalArgumentException( "Could not extract the raw class of " + genericType );
     };
 
-    private static final Function<AccessibleObject, Type> TYPE_OF = new Function<AccessibleObject, Type>()
-    {
-        @Override
-        public Type apply( AccessibleObject accessor )
+    private static final Function<AccessibleObject, Type> TYPE_OF = accessor -> {
+        if( accessor instanceof Method )
         {
-            return accessor instanceof Method ? ( (Method) accessor ).getGenericReturnType() : ( (Field) accessor ).getGenericType();
+            return ( (Method) accessor ).getGenericReturnType();
         }
+        return ( (Field) accessor ).getGenericType();
     };
 
-    private static final Function<Type, Iterable<Class<?>>> CLASS_HIERARCHY = new Function<Type, Iterable<Class<?>>>()
+    private static final Function<Type, Stream<Class<?>>> CLASS_HIERARCHY = new Function<Type, Stream<Class<?>>>()
     {
         @Override
-        @SuppressWarnings( {"raw", "unchecked"} )
-        public Iterable<Class<?>> apply( Type type )
+        public Stream<Class<?>> apply( Type type )
         {
             if( type == null )
             {
-                return empty();
+                return Stream.empty();
             }
             if( type.equals( Object.class ) )
             {
-                Class<?> aClass = (Class<?>) type;
-                return cast( iterable( aClass ) );
+                return Stream.of( (Class<?>) type );
             }
             else
             {
                 type = RAW_CLASS.apply( type );
                 Class superclass = ( (Class) type ).getSuperclass();
-                return prepend( (Class<?>) type, apply( superclass ) );
+                return concat( Stream.of( (Class<?>) type ), apply( superclass ) );
             }
         }
     };
 
     @SuppressWarnings( "raw" )
-    private static final Function<Type, Iterable<Type>> INTERFACES_OF = new Function<Type, Iterable<Type>>()
+    private static final Function<Type, Stream<? extends Type>> INTERFACES_OF = new Function<Type, Stream<? extends Type>>()
     {
         @Override
-        public Iterable<Type> apply( Type type )
+        public Stream<? extends Type> apply( Type type )
         {
             Class clazz = RAW_CLASS.apply( type );
 
             if( clazz.isInterface() )
             {
-                Iterable<Type> genericInterfaces = iterable( clazz.getGenericInterfaces() );
-                Iterable<Type> flattenIterables = flattenIterables( Iterables.map( INTERFACES_OF, genericInterfaces ) );
-                return prepend( type, flattenIterables );
+                Stream<? extends Type> genericInterfaces = Arrays.stream( clazz.getGenericInterfaces() );
+                Stream<? extends Type> intfaces = genericInterfaces.flatMap( INTERFACES_OF );
+                return concat( Stream.of( type ), intfaces );
             }
             else
             {
                 if( type.equals( Object.class ) )
                 {
-                    return iterable( clazz.getGenericInterfaces() );
+                    return Arrays.stream( clazz.getGenericInterfaces() );
                 }
                 else
                 {
-                    return flatten( flattenIterables( Iterables.map( INTERFACES_OF,
-                                                                     iterable( clazz.getGenericInterfaces() ) ) ),
-                                    INTERFACES_OF.apply( RAW_CLASS.apply( type ).getSuperclass() ) );
+                    Stream<Type> stream1 = Arrays.stream( clazz.getGenericInterfaces() ).flatMap( INTERFACES_OF );
+                    Stream<Type> stream2 = Stream.of( type )
+                        .map( RAW_CLASS )
+                        .map( Class::getSuperclass )
+                        .map( RAW_CLASS );
+                    return concat( stream1, stream2 );
                 }
             }
         }
     };
 
-    @SuppressWarnings( "raw" )
-    private static final Function<Type, Iterable<Type>> TYPES_OF = new Function<Type, Iterable<Type>>()
-    {
-        @Override
-        public Iterable<Type> apply( Type type )
-        {
-            Class clazz = RAW_CLASS.apply( type );
+    private static final Function<Type, Stream<? extends Type>> TYPES_OF = type -> {
+        Class clazz = RAW_CLASS.apply( type );
 
-            if( clazz.isInterface() )
-            {
-                Iterable<Type> genericInterfaces = iterable( clazz.getGenericInterfaces() );
-                Iterable<Type> flattenIterables = flattenIterables( Iterables.map( INTERFACES_OF, genericInterfaces ) );
-                return prepend( clazz, flattenIterables );
-            }
-            else
-            {
-                return flatten( CLASS_HIERARCHY.apply( type ),
-                                flattenIterables( Iterables.map( INTERFACES_OF, CLASS_HIERARCHY.apply( type ) ) ) );
-            }
+        if( clazz.isInterface() )
+        {
+            Stream<Type> intfaces = Arrays.stream( clazz.getGenericInterfaces() ).flatMap( INTERFACES_OF );
+            return concat( Stream.of(clazz), intfaces );
+        }
+        else
+        {
+            return Stream.of(type).flatMap( CLASS_HIERARCHY ).flatMap( INTERFACES_OF ).flatMap( CLASS_HIERARCHY );
         }
     };
 
@@ -232,39 +205,29 @@ public final class Classes
         return TYPE_OF.apply( from );
     }
 
-    public static Iterable<Type> typesOf( Iterable<Type> types )
+    public static Stream<Type> typesOf( Stream<? extends Type> types )
     {
-        Iterable<Type> result = empty();
-        for( Type type : types )
-        {
-            result = flatten( result, typesOf( type ) );
-        }
-        return result;
+        return types.flatMap( TYPES_OF );
     }
 
-    public static Iterable<Type> typesOf( Type type )
+    public static Stream<? extends Type> typesOf( Type type )
     {
         return TYPES_OF.apply( type );
     }
 
-    public static Iterable<? extends Type> interfacesOf( Iterable<? extends Type> types )
+    public static Stream<? extends Type> interfacesOf( Stream<? extends Type> types )
     {
-        Iterable<Type> result = empty();
-        for( Type type : types )
-        {
-            result = flatten( result, interfacesOf( type ) );
-        }
-        return result;
+        return types.flatMap( INTERFACES_OF );
     }
 
-    public static Iterable<Type> interfacesOf( Type type )
+    public static Stream<? extends Type> interfacesOf( Type type )
     {
-        return INTERFACES_OF.apply( type );
+        return Stream.of(type).flatMap( INTERFACES_OF );
     }
 
-    public static Iterable<Class<?>> classHierarchy( Class<?> type )
+    public static Stream<Class<?>> classHierarchy( Class<?> type )
     {
-        return CLASS_HIERARCHY.apply( type );
+        return Stream.of(type).flatMap( CLASS_HIERARCHY );
     }
 
     public static Type wrapperClass( Type type )
@@ -272,17 +235,9 @@ public final class Classes
         return WRAPPER_CLASS.apply( type );
     }
 
-    public static Predicate<Class<?>> isAssignableFrom( final Class clazz )
+    public static Predicate<Class<?>> isAssignableFrom( final Class<?> clazz )
     {
-        return new Predicate<Class<?>>()
-        {
-            @Override
-            @SuppressWarnings( "unchecked" )
-            public boolean test( Class<?> item )
-            {
-                return clazz.isAssignableFrom( item );
-            }
-        };
+        return clazz::isAssignableFrom;
     }
 
     @SuppressWarnings( "raw" )
@@ -310,28 +265,14 @@ public final class Classes
         };
     }
 
-    public static <T> Function<Type, Iterable<T>> forClassHierarchy( final Function<Class<?>, Iterable<T>> function )
+    public static <T> Function<Type, Stream<T>> forClassHierarchy( final Function<Class<?>, Stream<T>> function )
     {
-        return new Function<Type, Iterable<T>>()
-        {
-            @Override
-            public Iterable<T> apply( Type type )
-            {
-                return flattenIterables( Iterables.map( function, CLASS_HIERARCHY.apply( type ) ) );
-            }
-        };
+        return type -> Stream.of( type ).flatMap( CLASS_HIERARCHY ).flatMap( function );
     }
 
-    public static <T> Function<Type, Iterable<T>> forTypes( final Function<Type, Iterable<T>> function )
+    public static <T> Function<Type, Stream<T>> forTypes( final Function<Type, Stream<T>> function )
     {
-        return new Function<Type, Iterable<T>>()
-        {
-            @Override
-            public Iterable<T> apply( Type type )
-            {
-                return flattenIterables( Iterables.map( function, TYPES_OF.apply( type ) ) );
-            }
-        };
+        return type -> Stream.of(type).flatMap( TYPES_OF ).flatMap( function );
     }
 
     @SuppressWarnings( "raw" )
@@ -414,19 +355,27 @@ public final class Classes
 
     @SuppressWarnings( "UnusedDeclaration" )
     public static <AnnotationType extends Annotation>
-        AnnotationType findAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type, Class<AnnotationType> annotationClass )
+    AnnotationType findAnnotationOfTypeOrAnyOfSuperTypes( Class<?> type, Class<AnnotationType> annotationClass )
     {
-        AnnotationType result = null;
-        for( Type clazz : Classes.TYPES_OF.apply( type ) )
-        {
-            result = Classes.RAW_CLASS.apply( clazz ).getAnnotation( annotationClass );
-            if( result != null )
-            {
-                break;
-            }
-        }
-
-        return result;
+        return Stream.of( type )
+            .flatMap( TYPES_OF )
+            .map( RAW_CLASS )
+            .map( clazz -> clazz.getAnnotation(annotationClass))
+            .filter(  annot -> annot != null )
+            .findAny().get();
+//
+//
+//        AnnotationType result = null;
+//        for( Type clazz : Classes.TYPES_OF.apply( type ) )
+//        {
+//            result = Classes.RAW_CLASS.apply( clazz ).getAnnotation( annotationClass );
+//            if( result != null )
+//            {
+//                break;
+//            }
+//        }
+//
+//        return result;
     }
 
     public static Predicate<Member> memberNamed( final String name )
@@ -445,9 +394,9 @@ public final class Classes
      * Given a type variable, find what it resolves to given the declaring class where type
      * variable was found and a top class that extends the declaring class.
      *
-     * @param name The TypeVariable name.
+     * @param name           The TypeVariable name.
      * @param declaringClass The class where the TypeVariable is declared.
-     * @param topClass The top class that extends the declaringClass
+     * @param topClass       The top class that extends the declaringClass
      *
      * @return The Type instance of the given TypeVariable
      */
@@ -479,55 +428,87 @@ public final class Classes
             return resolvedType;
         }
 
-        List<Type> types = new ArrayList<>();
-        for( Type type : current.getGenericInterfaces() )
-        {
-            Iterable<Type> interfaces = Classes.INTERFACES_OF.apply( type );
-            for( Type anInterface : interfaces )
-            {
-                if( !types.contains( anInterface ) )
-                {
-                    types.add( anInterface );
-                }
-            }
-            types.add( type );
-        }
+        Stream<? extends Type> stream1 = Arrays.stream( current.getGenericInterfaces() )
+            .flatMap( INTERFACES_OF )
+            .distinct();
 
-        if( current.getGenericSuperclass() != null )
-        {
-            types.add( current.getGenericSuperclass() );
-        }
+        return concat( Stream.of(current.getGenericSuperclass()), stream1)
+                .map( type ->
+                      {
+                          Class subClass;
+                          if( type instanceof ParameterizedType )
+                          {
+                              ParameterizedType pt = (ParameterizedType) type;
+                              Type[] args = pt.getActualTypeArguments();
+                              Class clazz = (Class) pt.getRawType();
+                              TypeVariable[] vars = clazz.getTypeParameters();
+                              for( int i = 0; i < vars.length; i++ )
+                              {
+                                  TypeVariable var = vars[ i ];
+                                  Type mappedType = args[ i ];
+                                  mappings.put( var, mappedType );
+                              }
+                              subClass = (Class) pt.getRawType();
+                          }
+                          else
+                          {
+                              subClass = (Class) type;
+                          }
+                          return subClass;
+                      } )
+                .map( subClass -> resolveTypeVariable( name, declaringClass, mappings, subClass ) )
+                .filter( type -> type != null )
+                .findAny().get();
 
-        for( Type type : types )
-        {
-            Class subClass;
-            if( type instanceof ParameterizedType )
-            {
-                ParameterizedType pt = (ParameterizedType) type;
-                Type[] args = pt.getActualTypeArguments();
-                Class clazz = (Class) pt.getRawType();
-                TypeVariable[] vars = clazz.getTypeParameters();
-                for( int i = 0; i < vars.length; i++ )
-                {
-                    TypeVariable var = vars[ i];
-                    Type mappedType = args[ i];
-                    mappings.put( var, mappedType );
-                }
-                subClass = (Class) pt.getRawType();
-            }
-            else
-            {
-                subClass = (Class) type;
-            }
-
-            Type resolvedType = resolveTypeVariable( name, declaringClass, mappings, subClass );
-            if( resolvedType != null )
-            {
-                return resolvedType;
-            }
-        }
-
-        return null;
+//        List<Type> types = new ArrayList<>();
+//        for( Type type : current.getGenericInterfaces() )
+//        {
+//            Iterable<Type> interfaces = Classes.INTERFACES_OF.apply( type );
+//            for( Type anInterface : interfaces )
+//            {
+//                if( !types.contains( anInterface ) )
+//                {
+//                    types.add( anInterface );
+//                }
+//            }
+//            types.add( type );
+//        }
+//
+//        if( current.getGenericSuperclass() != null )
+//        {
+//            types.add( current.getGenericSuperclass() );
+//        }
+//
+//        for( Type type : types )
+//        {
+//            Class subClass;
+//            if( type instanceof ParameterizedType )
+//            {
+//                ParameterizedType pt = (ParameterizedType) type;
+//                Type[] args = pt.getActualTypeArguments();
+//                Class clazz = (Class) pt.getRawType();
+//                TypeVariable[] vars = clazz.getTypeParameters();
+//                for( int i = 0; i < vars.length; i++ )
+//                {
+//                    TypeVariable var = vars[ i ];
+//                    Type mappedType = args[ i ];
+//                    mappings.put( var, mappedType );
+//                }
+//                subClass = (Class) pt.getRawType();
+//            }
+//            else
+//            {
+//                subClass = (Class) type;
+//            }
+//
+//            Type resolvedType = resolveTypeVariable( name, declaringClass, mappings, subClass );
+//            if( resolvedType != null )
+//            {
+//                return resolvedType;
+//            }
+//        }
+//
+//        return null;
     }
 
     /**
@@ -597,100 +578,35 @@ public final class Classes
 
     public static Predicate<ModelDescriptor> modelTypeSpecification( final String className )
     {
-        return new Predicate<ModelDescriptor>()
-        {
-            @Override
-            public boolean test( ModelDescriptor item )
-            {
-                return matchesAny( new Predicate<String>()
-                {
-                    @Override
-                    public boolean test( String item )
-                    {
-                        return item.equals( className );
-                    }
-                }, map( new Function<Class<?>, String>()
-                {
-                    @Override
-                    public String apply( Class<?> item )
-                    {
-                        return item.getName();
-                    }
-                }, item.types() ) );
-            }
-        };
+        return item ->
+            stream( item.types().spliterator(), false )
+                .map( Class::getName ).anyMatch( typeName -> typeName.equals( className ) );
     }
 
     @SuppressWarnings( "raw" )
     public static Predicate<ModelDescriptor> exactTypeSpecification( final Class type )
     {
-        return new Predicate<ModelDescriptor>()
-        {
-            @Override
-            public boolean test( ModelDescriptor item )
-            {
-                return matchesAny( new Predicate<Class<?>>()
-                {
-                    @Override
-                    public boolean test( Class<?> item )
-                    {
-                        return item.equals( type );
-                    }
-                }, item.types() );
-            }
-        };
+        return item -> item.types().anyMatch( clazz -> clazz.equals( type ) );
     }
 
     @SuppressWarnings( "raw" )
-    public static Predicate<ModelDescriptor> assignableTypeSpecification( final Class type )
+    public static Predicate<ModelDescriptor> assignableTypeSpecification( final Class<?> type )
     {
-        return new Predicate<ModelDescriptor>()
-        {
-            @Override
-            public boolean test( ModelDescriptor item )
-            {
-                return matchesAny( new Predicate<Class<?>>()
-                {
-                    @Override
-                    @SuppressWarnings( "unchecked" )
-                    public boolean test( Class<?> itemType )
-                    {
-                        return !type.equals( itemType ) && type.isAssignableFrom( itemType );
-                    }
-                }, item.types() );
-            }
-        };
+        return item ->
+            item.types().anyMatch(
+                itemType -> !type.equals( itemType ) && type.isAssignableFrom( itemType )
+            );
     }
 
     @SuppressWarnings( "raw" )
-    public static String toString( Iterable<? extends Class> type )
+    public static String toString( Stream<? extends Class> types )
     {
-        StringBuilder builder = new StringBuilder();
-        builder.append( "[" );
-        boolean first = true;
-        for( Class c : type )
-        {
-            if( !first )
-            {
-                builder.append( "," );
-            }
-            first = false;
-            builder.append( c.getSimpleName() );
-        }
-        builder.append( "]" );
-        return builder.toString();
+        return "[" + types.map(Class::getSimpleName).collect( Collectors.joining(",")) +"]";
     }
 
     public static Function<Type, String> toClassName()
     {
-        return new Function<Type, String>()
-        {
-            @Override
-            public String apply( Type type )
-            {
-                return RAW_CLASS.apply( type ).getName();
-            }
-        };
+        return type -> RAW_CLASS.apply( type ).getName();
     }
 
     private Classes()

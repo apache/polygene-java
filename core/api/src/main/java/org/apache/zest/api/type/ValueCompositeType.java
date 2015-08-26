@@ -14,6 +14,8 @@
 package org.apache.zest.api.type;
 
 import java.lang.reflect.Type;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.util.Classes;
@@ -35,26 +37,26 @@ public final class ValueCompositeType
 
     public ValueCompositeType( ValueDescriptor model )
     {
-        super( model.types() );
+        super( model.types().collect( Collectors.toList() ) );
         this.model = model;
     }
 
-    public Iterable<? extends PropertyDescriptor> properties()
+    public Stream<? extends PropertyDescriptor> properties()
     {
         return model.state().properties();
     }
 
-    public Iterable<? extends AssociationDescriptor> associations()
+    public Stream<? extends AssociationDescriptor> associations()
     {
         return model.state().associations();
     }
 
-    public Iterable<? extends AssociationDescriptor> manyAssociations()
+    public Stream<? extends AssociationDescriptor> manyAssociations()
     {
         return model.state().manyAssociations();
     }
 
-    public Iterable<? extends AssociationDescriptor> namedAssociations()
+    public Stream<? extends AssociationDescriptor> namedAssociations()
     {
         return model.state().namedAssociations();
     }

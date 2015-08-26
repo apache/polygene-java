@@ -22,14 +22,16 @@ import java.lang.reflect.Member;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.function.Function;
-import java.util.stream.StreamSupport;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.functional.Iterables;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * This Exception is thrown when there is one or more Constraint Violations in a method
@@ -49,30 +51,31 @@ public class ConstraintViolationException
     private String methodName;
     private String mixinTypeName;
     private String instanceToString;
-    private Iterable<Class<?>> instanceTypes;
+    private List<Class<?>> instanceTypes;
 
     public ConstraintViolationException( Composite instance, Member method,
                                          Collection<ConstraintViolation> constraintViolations
     )
     {
-        this( instance.toString(), ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( instance ).types(), method, constraintViolations );
+        this( instance.toString(), ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( instance )
+            .types(), method, constraintViolations );
     }
 
     public ConstraintViolationException( String instanceToString,
-                                         Iterable<Class<?>> instanceTypes,
+                                         Stream<Class<?>> instanceTypes,
                                          Member method,
                                          Collection<ConstraintViolation> violations
     )
     {
         this.instanceToString = instanceToString;
-        this.instanceTypes = instanceTypes;
+        this.instanceTypes = instanceTypes.collect( Collectors.toList() );
         mixinTypeName = method.getDeclaringClass().getName();
         methodName = method.getName();
         this.constraintViolations = violations;
     }
 
     public ConstraintViolationException( String instanceToString,
-                                         Iterable<Class<?>> instanceTypes,
+                                         List<Class<?>> instanceTypes,
                                          String mixinTypeName,
                                          String methodName,
                                          Collection<ConstraintViolation> violations
@@ -151,7 +154,7 @@ public class ConstraintViolationException
     {
         String pattern = "Constraint violation in {0}.{1} for method ''{3}'' with constraint \"{4}({6})\", for value ''{5}''";
 
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for( ConstraintViolation violation : constraintViolations )
         {
             Locale locale;
@@ -184,20 +187,13 @@ public class ConstraintViolationException
             String name = violation.name();
             Object value = violation.value();
             String classes;
-            if( Iterables.count( instanceTypes ) == 1 )
+            if( instanceTypes.stream().count() == 1 )
             {
-                classes = Iterables.first( instanceTypes ).getSimpleName();
+                classes = instanceTypes.stream().findFirst().get().getSimpleName();
             }
             else
             {
-                classes = "[" + Iterables.<Class<?>>toString( instanceTypes, new Function<Class<?>, String>()
-                {
-                    @Override
-                    public String apply( Class<?> from )
-                    {
-                        return from.getSimpleName();
-                    }
-                }, "," ) + "]";
+                classes = "[" + instanceTypes.stream().map( Class::getSimpleName ).collect( joining( "," ) ) + "]";
             }
             Object[] args = new Object[]
                 {

@@ -15,7 +15,9 @@
 package org.apache.zest.api.type;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.functional.Iterables;
 
@@ -106,17 +108,17 @@ public class ValueType
         }
         return false;
     }
-    protected final Iterable<Class<?>> types;
+    protected final List<Class<?>> types;
 
     public ValueType( Class<?> type )
     {
-        this( Collections.singleton( type ) );
+        this( Collections.singletonList( type ) );
     }
 
     @SuppressWarnings( "unchecked" )
-    public ValueType( Iterable<? extends Class<?>> types )
+    public ValueType( List<Class<?>> types )
     {
-        this.types = (Iterable<Class<?>>) types;
+        this.types = types;
     }
 
     public Class<?> mainType()
@@ -125,25 +127,15 @@ public class ValueType
     }
 
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
-        return types;
+        return types.stream();
     }
 
     @Override
     public String toString()
     {
-        String name = Iterables.toString(
-            types,
-            new Function<Class<?>, String>()
-            {
-                @Override
-                public String apply( Class<?> item )
-                {
-                    return item.getName();
-                }
-            },
-            "," );
+        String name = Iterables.toString( types, Class::getName, "," );
         if( name.contains( "," ) )
         {
             name = "{" + name + "}";

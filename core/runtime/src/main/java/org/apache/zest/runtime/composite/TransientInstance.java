@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.stream.Stream;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.CompositeInstance;
@@ -102,7 +103,7 @@ public class TransientInstance
     }
 
     @Override
-    public Iterable<Class<?>> types()
+    public Stream<Class<?>> types()
     {
         return compositeModel.types();
     }
@@ -213,7 +214,7 @@ public class TransientInstance
             String modelTypeName = compositeModel.getClass().getSimpleName();
             String metaTypeModel = modelTypeName.substring( 0, modelTypeName.length() - 5 );
             return metaTypeModel + "Instance{" +
-                   "mixins=" + ( mixins == null ? null : Arrays.asList( mixins ) ) +
+                   "mixins=" + Arrays.asList( mixins ) +
                    ", state=" + state +
                    ", compositeModel=" + compositeModel +
                    ", module=" + moduleInstance +

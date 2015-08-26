@@ -24,10 +24,11 @@ import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.Iterables;
@@ -53,32 +54,26 @@ public class ValueCompositeTemplateModel
     public int size()
         throws TemplateModelException
     {
-        return (int) Iterables.count( descriptor.state().properties() );
+        return (int) descriptor.state().properties().count();
     }
 
     @Override
     public TemplateCollectionModel keys()
         throws TemplateModelException
     {
-        return (TemplateCollectionModel) wrapper.wrap( Iterables.map( new Function<PropertyDescriptor, String>()
-        {
-            @Override
-            public String apply( PropertyDescriptor propertyDescriptor )
-            {
-                return propertyDescriptor.qualifiedName().name();
-            }
-        }, descriptor.state().properties() ).iterator() );
+        List<String> names = descriptor.state().properties()
+            .map( descriptor -> descriptor.qualifiedName().name() )
+            .collect( Collectors.toList() );
+        return (TemplateCollectionModel) wrapper.wrap( names.iterator() );
     }
 
     @Override
     public TemplateCollectionModel values()
         throws TemplateModelException
     {
-        return (TemplateCollectionModel) wrapper.wrap( Iterables.map( new Function<Property<?>, Object>()
-        {
-            @Override
-            public Object apply( Property<?> objectProperty )
-            {
+        List<Object> values = ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite )
+            .state().properties()
+            .map( (Function<Property<?>, Object>) objectProperty -> {
                 try
                 {
                     return wrapper.wrap( objectProperty.get() );
@@ -87,8 +82,10 @@ public class ValueCompositeTemplateModel
                 {
                     throw new IllegalStateException( e );
                 }
-            }
-        }, ZestAPI.FUNCTION_COMPOSITE_INSTANCE_OF.apply( composite ).state().properties() ).iterator() );
+            } )
+            .collect( Collectors.toList() );
+
+        return (TemplateCollectionModel) wrapper.wrap( values );
     }
 
     @Override

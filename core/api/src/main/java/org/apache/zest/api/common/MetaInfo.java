@@ -16,7 +16,6 @@ package org.apache.zest.api.common;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -80,7 +79,7 @@ public final class MetaInfo
 
     static
     {
-        ignored = new HashSet<Class>( 4, 0.8f ); // Optimize size used.
+        ignored = new HashSet<>( 4, 0.8f ); // Optimize size used.
         ignored.addAll( asList( Mixins.class, Concerns.class, SideEffects.class ) );
     }
 
@@ -88,12 +87,12 @@ public final class MetaInfo
 
     public MetaInfo()
     {
-        metaInfoMap = new LinkedHashMap<Class<?>, Object>();
+        metaInfoMap = new LinkedHashMap<>();
     }
 
     public MetaInfo( MetaInfo metaInfo )
     {
-        metaInfoMap = new LinkedHashMap<Class<?>, Object>();
+        metaInfoMap = new LinkedHashMap<>();
         metaInfoMap.putAll( metaInfo.metaInfoMap );
     }
 
@@ -107,11 +106,9 @@ public final class MetaInfo
         else
         {
             Class<?> metaInfoclass = metaInfo.getClass();
-            Iterable<Type> types = typesOf( metaInfoclass );
-            for( Type type : types )
-            {
-                metaInfoMap.put( Classes.RAW_CLASS.apply( type ), metaInfo );
-            }
+            typesOf( metaInfoclass )
+                .map( Classes.RAW_CLASS )
+                .forEach( type -> metaInfoMap.put( type, metaInfo ) );
         }
     }
 

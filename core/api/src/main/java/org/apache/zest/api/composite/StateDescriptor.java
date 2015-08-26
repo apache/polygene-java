@@ -14,6 +14,7 @@
 
 package org.apache.zest.api.composite;
 
+import java.util.stream.Stream;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.property.PropertyDescriptor;
 
@@ -28,5 +29,5 @@ public interface StateDescriptor
     PropertyDescriptor findPropertyModelByQualifiedName( QualifiedName name )
         throws IllegalArgumentException;
 
-    Iterable<? extends PropertyDescriptor> properties();
+    Stream<? extends PropertyDescriptor> properties();
 }

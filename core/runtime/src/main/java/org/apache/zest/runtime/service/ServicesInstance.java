@@ -15,13 +15,14 @@
 package org.apache.zest.runtime.service;
 
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationEventListenerRegistration;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
 import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivationDelegate;
@@ -37,10 +38,10 @@ public class ServicesInstance
     implements Activation, ActivationEventListenerRegistration
 {
     private final ServicesModel servicesModel;
-    private final List<ServiceReference> serviceReferences;
+    private final List<ServiceReference<?>> serviceReferences;
     private final ActivationDelegate activation = new ActivationDelegate( this, false );
 
-    public ServicesInstance( ServicesModel servicesModel, List<ServiceReference> serviceReferences )
+    public ServicesInstance( ServicesModel servicesModel, List<ServiceReference<?>> serviceReferences )
     {
         this.servicesModel = servicesModel;
         this.serviceReferences = serviceReferences;
@@ -48,6 +49,11 @@ public class ServicesInstance
         {
             serviceReference.registerActivationEventListener( activation );
         }
+    }
+
+    public Stream<ServiceModel> models()
+    {
+        return servicesModel.stream();
     }
 
     @Override
@@ -65,18 +71,11 @@ public class ServicesInstance
         activation.passivate();
     }
 
-    public Iterable<ServiceReference> visibleServices( final Visibility visibility )
+    public Stream<ServiceReference<?>> visibleServices( final Visibility visibility )
     {
-        return Iterables.filter( new Predicate<ServiceReference>()
-        {
-            @Override
-            public boolean test( ServiceReference item )
-            {
-                return ( (ServiceReferenceInstance) item ).serviceDescriptor()
-                           .visibility()
-                           .ordinal() >= visibility.ordinal();
-            }
-        }, serviceReferences );
+        return serviceReferences.stream()
+            .filter( item -> ( (ServiceReferenceInstance) item ).serviceDescriptor()
+                                 .visibility().ordinal() >= visibility.ordinal() );
     }
 
     @Override
@@ -104,5 +103,10 @@ public class ServicesInstance
     public void deregisterActivationEventListener( ActivationEventListener listener )
     {
         activation.deregisterActivationEventListener( listener );
+    }
+
+    public Stream<? extends ServiceDescriptor> stream()
+    {
+        return servicesModel.stream();
     }
 }

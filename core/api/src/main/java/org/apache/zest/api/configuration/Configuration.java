@@ -40,8 +40,6 @@ import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueSerialization;
 
-import static org.apache.zest.functional.Iterables.first;
-
 /**
  * Provide Configurations for Services. A Service that wants to be configurable
  * should inject a reference to Configuration with the Configuration type:
@@ -257,7 +255,7 @@ public interface Configuration<T>
             Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
             UnitOfWork buildUow = module.newUnitOfWork( usecase );
 
-            Class<?> type = first( api.serviceDescriptorFor( serviceComposite ).types() );
+            Class<?> type = api.serviceDescriptorFor( serviceComposite ).types().findFirst().orElse( null );
             Class<V> configType = serviceModel.configurationType();
 
             // Check for defaults

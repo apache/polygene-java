@@ -28,12 +28,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONWriter;
-import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -41,15 +35,13 @@ import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
-import org.apache.zest.api.injection.scope.Uses;
-import org.apache.zest.api.property.PropertyDescriptor;
-import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.value.ValueSerialization;
+import org.apache.zest.api.value.ValueSerializationException;
 import org.apache.zest.io.Input;
 import org.apache.zest.io.Output;
 import org.apache.zest.io.Receiver;
@@ -66,9 +58,11 @@ import org.apache.zest.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
 import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
-
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.map;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.json.JSONWriter;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -101,9 +95,9 @@ public class MapEntityStoreMixin
     @Service
     private Migration migration;
 
-    @Uses
-    private ServiceDescriptor descriptor;
-
+    //    @Uses
+//    private ServiceDescriptor descriptor;
+//
     protected String uuid;
     private int count;
 
@@ -157,33 +151,27 @@ public class MapEntityStoreMixin
             {
                 try
                 {
-                    mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
-                    {
-                        @Override
-                        public void visitMap( MapEntityStore.MapChanger changer )
-                            throws IOException
+                    mapEntityStore.applyChanges( changer -> {
+                        for( EntityState entityState : state )
                         {
-                            for( EntityState entityState : state )
+                            DefaultEntityState state1 = (DefaultEntityState) entityState;
+                            if( state1.status().equals( EntityStatus.NEW ) )
                             {
-                                DefaultEntityState state = (DefaultEntityState) entityState;
-                                if( state.status().equals( EntityStatus.NEW ) )
+                                try (Writer writer = changer.newEntity( state1.identity(), state1.entityDescriptor() ))
                                 {
-                                    try (Writer writer = changer.newEntity( state.identity(), state.entityDescriptor() ))
-                                    {
-                                        writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
-                                    }
+                                    writeEntityState( state1, writer, unitofwork.identity(), unitofwork.currentTime() );
                                 }
-                                else if( state.status().equals( EntityStatus.UPDATED ) )
+                            }
+                            else if( state1.status().equals( EntityStatus.UPDATED ) )
+                            {
+                                try (Writer writer = changer.updateEntity( state1.identity(), state1.entityDescriptor() ))
                                 {
-                                    try (Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ))
-                                    {
-                                        writeEntityState( state, writer, unitofwork.identity(), unitofwork.currentTime() );
-                                    }
+                                    writeEntityState( state1, writer, unitofwork.identity(), unitofwork.currentTime() );
                                 }
-                                else if( state.status().equals( EntityStatus.REMOVED ) )
-                                {
-                                    changer.removeEntity( state.identity(), state.entityDescriptor() );
-                                }
+                            }
+                            else if( state1.status().equals( EntityStatus.REMOVED ) )
+                            {
+                                changer.removeEntity( state1.identity(), state1.entityDescriptor() );
                             }
                         }
                     } );
@@ -213,44 +201,38 @@ public class MapEntityStoreMixin
                 output.receiveFrom( new Sender<EntityState, EntityStoreException>()
                 {
                     @Override
-                    public <ReceiverThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, ReceiverThrowableType> receiver )
-                        throws ReceiverThrowableType, EntityStoreException
+                    public <RecThrowableType extends Throwable> void sendTo( final Receiver<? super EntityState, RecThrowableType> receiver )
+                        throws RecThrowableType, EntityStoreException
                     {
                         final List<EntityState> migrated = new ArrayList<>();
                         try
                         {
-                            mapEntityStore.entityStates().transferTo( new Output<Reader, ReceiverThrowableType>()
+                            mapEntityStore.entityStates().transferTo( new Output<Reader, RecThrowableType>()
                             {
                                 @Override
                                 public <SenderThrowableType extends Throwable> void receiveFrom( Sender<? extends Reader, SenderThrowableType> sender )
-                                    throws ReceiverThrowableType, SenderThrowableType
+                                    throws RecThrowableType, SenderThrowableType
                                 {
-                                    sender.sendTo( new Receiver<Reader, ReceiverThrowableType>()
-                                    {
-                                        @Override
-                                        public void receive( Reader item )
-                                            throws ReceiverThrowableType
+                                    sender.sendTo( item -> {
+                                        final EntityState entity = readEntityState( module, item );
+                                        if( entity.status() == EntityStatus.UPDATED )
                                         {
-                                            final EntityState entity = readEntityState( module, item );
-                                            if( entity.status() == EntityStatus.UPDATED )
-                                            {
-                                                migrated.add( entity );
+                                            migrated.add( entity );
 
-                                                // Synch back 100 at a time
-                                                if( migrated.size() > 100 )
+                                            // Synch back 100 at a time
+                                            if( migrated.size() > 100 )
+                                            {
+                                                try
                                                 {
-                                                    try
-                                                    {
-                                                        synchMigratedEntities( migrated );
-                                                    }
-                                                    catch( IOException e )
-                                                    {
-                                                        throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
-                                                    }
+                                                    synchMigratedEntities( migrated );
+                                                }
+                                                catch( IOException e )
+                                                {
+                                                    throw new EntityStoreException( "Synchronization of Migrated Entities failed.", e );
                                                 }
                                             }
-                                            receiver.receive( entity );
                                         }
+                                        receiver.receive( entity );
                                     } );
 
                                     // Synch any remaining migrated entities
@@ -281,19 +263,13 @@ public class MapEntityStoreMixin
     private void synchMigratedEntities( final List<EntityState> migratedEntities )
         throws IOException
     {
-        mapEntityStore.applyChanges( new MapEntityStore.MapChanges()
-        {
-            @Override
-            public void visitMap( MapEntityStore.MapChanger changer )
-                throws IOException
+        mapEntityStore.applyChanges( changer -> {
+            for( EntityState migratedEntity : migratedEntities )
             {
-                for( EntityState migratedEntity : migratedEntities )
+                DefaultEntityState state = (DefaultEntityState) migratedEntity;
+                try (Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ))
                 {
-                    DefaultEntityState state = (DefaultEntityState) migratedEntity;
-                    try (Writer writer = changer.updateEntity( state.identity(), state.entityDescriptor() ))
-                    {
-                        writeEntityState( state, writer, state.version(), state.lastModified() );
-                    }
+                    writeEntityState( state, writer, state.version(), state.lastModified() );
                 }
             }
         } );
@@ -314,36 +290,42 @@ public class MapEntityStoreMixin
             JSONWriter properties = json.object().
                 key( JSONKeys.IDENTITY ).value( state.identity().identity() ).
                 key( JSONKeys.APPLICATION_VERSION ).value( application.version() ).
-                key( JSONKeys.TYPE ).value( first( state.entityDescriptor().types() ).getName() ).
+                key( JSONKeys.TYPE ).value( state.entityDescriptor().types().findFirst().get().getName() ).
                 key( JSONKeys.VERSION ).value( version ).
                 key( JSONKeys.MODIFIED ).value( lastModified ).
                 key( JSONKeys.PROPERTIES ).object();
             EntityDescriptor entityType = state.entityDescriptor();
-            for( PropertyDescriptor persistentProperty : entityType.state().properties() )
-            {
+            entityType.state().properties().forEach( persistentProperty -> {
                 Object value = state.properties().get( persistentProperty.qualifiedName() );
-                json.key( persistentProperty.qualifiedName().name() );
-                if( value == null || ValueType.isPrimitiveValue( value ) )
+                try
                 {
-                    json.value( value );
-                }
-                else
-                {
-                    String serialized = valueSerialization.serialize( value );
-                    if( serialized.startsWith( "{" ) )
+                    json.key( persistentProperty.qualifiedName().name() );
+                    if( value == null || ValueType.isPrimitiveValue( value ) )
                     {
-                        json.value( new JSONObject( serialized ) );
-                    }
-                    else if( serialized.startsWith( "[" ) )
-                    {
-                        json.value( new JSONArray( serialized ) );
+                        json.value( value );
                     }
                     else
                     {
-                        json.value( serialized );
+                        String serialized = valueSerialization.serialize( value );
+                        if( serialized.startsWith( "{" ) )
+                        {
+                            json.value( new JSONObject( serialized ) );
+                        }
+                        else if( serialized.startsWith( "[" ) )
+                        {
+                            json.value( new JSONArray( serialized ) );
+                        }
+                        else
+                        {
+                            json.value( serialized );
+                        }
                     }
                 }
-            }
+                catch( JSONException e )
+                {
+                    throw new ValueSerializationException( "Unable to write property " + persistentProperty, e );
+                }
+            } );
 
             JSONWriter associations = properties.endObject().key( JSONKeys.ASSOCIATIONS ).object();
             for( Map.Entry<QualifiedName, EntityReference> stateNameEntityReferenceEntry : state.associations()
@@ -391,7 +373,7 @@ public class MapEntityStoreMixin
         try
         {
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
-            EntityStatus status = EntityStatus.LOADED;
+            final EntityStatus[] status = {EntityStatus.LOADED};
 
             String version = jsonObject.getString( JSONKeys.VERSION );
             long modified = jsonObject.getLong( JSONKeys.MODIFIED );
@@ -411,7 +393,7 @@ public class MapEntityStoreMixin
                     jsonObject.put( JSONKeys.APPLICATION_VERSION, application.version() );
                 }
                 // State changed
-                status = EntityStatus.UPDATED;
+                status[0] = EntityStatus.UPDATED;
             }
 
             String type = jsonObject.getString( JSONKeys.TYPE );
@@ -421,43 +403,40 @@ public class MapEntityStoreMixin
             {
                 throw new EntityTypeNotFoundException( type,
                                                        module.name(),
-                                                       map( ModelModule.toStringFunction,
-                                                            module.findVisibleEntityTypes()
-                                                       ) );
+                                                       module.findVisibleEntityTypes()
+                                                           .map( ModelModule.toStringFunction )
+                );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();
             JSONObject props = jsonObject.getJSONObject( JSONKeys.PROPERTIES );
-            for( PropertyDescriptor propertyDescriptor : entityDescriptor.state().properties() )
-            {
+            entityDescriptor.state().properties().forEach( propertyDescriptor -> {
                 Object jsonValue;
                 try
                 {
                     jsonValue = props.get( propertyDescriptor.qualifiedName().name() );
+                    if( JSONObject.NULL.equals( jsonValue ) )
+                    {
+                        properties.put( propertyDescriptor.qualifiedName(), null );
+                    }
+                    else
+                    {
+                        Object value = valueSerialization.deserialize( propertyDescriptor.valueType(), jsonValue.toString() );
+                        properties.put( propertyDescriptor.qualifiedName(), value );
+                    }
                 }
                 catch( JSONException e )
                 {
                     // Value not found, default it
                     Object initialValue = propertyDescriptor.initialValue( module );
                     properties.put( propertyDescriptor.qualifiedName(), initialValue );
-                    status = EntityStatus.UPDATED;
-                    continue;
+                    status[0] = EntityStatus.UPDATED;
                 }
-                if( JSONObject.NULL.equals( jsonValue ) )
-                {
-                    properties.put( propertyDescriptor.qualifiedName(), null );
-                }
-                else
-                {
-                    Object value = valueSerialization.deserialize( propertyDescriptor.valueType(), jsonValue.toString() );
-                    properties.put( propertyDescriptor.qualifiedName(), value );
-                }
-            }
+            } );
 
             Map<QualifiedName, EntityReference> associations = new HashMap<>();
             JSONObject assocs = jsonObject.getJSONObject( JSONKeys.ASSOCIATIONS );
-            for( AssociationDescriptor associationType : entityDescriptor.state().associations() )
-            {
+            entityDescriptor.state().associations().forEach( associationType -> {
                 try
                 {
                     Object jsonValue = assocs.get( associationType.qualifiedName().name() );
@@ -470,14 +449,13 @@ public class MapEntityStoreMixin
                 {
                     // Association not found, default it to null
                     associations.put( associationType.qualifiedName(), null );
-                    status = EntityStatus.UPDATED;
+                    status[0] = EntityStatus.UPDATED;
                 }
-            }
+            } );
 
             JSONObject manyAssocs = jsonObject.getJSONObject( JSONKeys.MANY_ASSOCIATIONS );
             Map<QualifiedName, List<EntityReference>> manyAssociations = new HashMap<>();
-            for( AssociationDescriptor manyAssociationType : entityDescriptor.state().manyAssociations() )
-            {
+            entityDescriptor.state().manyAssociations().forEach( manyAssociationType -> {
                 List<EntityReference> references = new ArrayList<>();
                 try
                 {
@@ -497,12 +475,11 @@ public class MapEntityStoreMixin
                     // ManyAssociation not found, default to empty one
                     manyAssociations.put( manyAssociationType.qualifiedName(), references );
                 }
-            }
+            } );
 
             JSONObject namedAssocs = jsonObject.getJSONObject( JSONKeys.NAMED_ASSOCIATIONS );
             Map<QualifiedName, Map<String, EntityReference>> namedAssociations = new HashMap<>();
-            for( AssociationDescriptor namedAssociationType : entityDescriptor.state().namedAssociations() )
-            {
+            entityDescriptor.state().namedAssociations().forEach( namedAssociationType -> {
                 Map<String, EntityReference> references = new LinkedHashMap<>();
                 try
                 {
@@ -527,12 +504,12 @@ public class MapEntityStoreMixin
                     // NamedAssociation not found, default to empty one
                     namedAssociations.put( namedAssociationType.qualifiedName(), references );
                 }
-            }
+            }  );
 
             return new DefaultEntityState( version,
                                            modified,
                                            EntityReference.parseEntityReference( identity ),
-                                           status,
+                                           status[0],
                                            entityDescriptor,
                                            properties,
                                            associations,

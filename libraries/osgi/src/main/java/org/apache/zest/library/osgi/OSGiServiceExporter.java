@@ -20,6 +20,7 @@ package org.apache.zest.library.osgi;
 
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.stream.Stream;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.apache.zest.api.activation.ActivatorAdapter;
@@ -30,7 +31,6 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.qualifier.HasMetaInfo;
 import org.apache.zest.api.util.Classes;
-import org.apache.zest.functional.Iterables;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
 
@@ -87,8 +87,6 @@ public interface OSGiServiceExporter
                 Class<? extends BundleContext> type = BundleContext.class;
                 BundleContext context = ref.metaInfo( type );
                 ServiceComposite service = ref.get();
-                Iterable<Class<?>> interfaces = Iterables.map( Classes.RAW_CLASS, interfacesOf( service.getClass() ) );
-                String[] interfaceNames = new String[ (int) Iterables.count( interfaces ) ];
                 Properties properties = ref.metaInfo( Properties.class );
                 if( properties == null )
                 {
@@ -97,13 +95,12 @@ public interface OSGiServiceExporter
                 properties.put( "org.apache.zest.api.service.active", ref.isActive() );
                 properties.put( "org.apache.zest.api.service.available", ref.isAvailable() );
                 properties.put( "org.apache.zest.api.service.identity", ref.identity() );
-                int i = 0;
-                for( Class cls : interfaces )
-                {
-                    interfaceNames[ i++] = cls.getName();
-                }
-                registrations.add( context.registerService( interfaceNames, service, properties ) );
 
+
+                String[] interfaceNames = interfacesOf( service.getClass() )
+                    .map( Classes.RAW_CLASS ).toArray( String[]::new );
+
+                registrations.add( context.registerService( interfaceNames, service, properties ) );
             }
         }
 

@@ -23,7 +23,9 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.configuration.Configuration;
@@ -34,7 +36,6 @@ import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.Specifications;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.composite.CompositeMethodsModel;
@@ -47,12 +48,9 @@ import org.apache.zest.runtime.composite.UsesInstance;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.property.PropertyInstance;
-import org.apache.zest.runtime.property.PropertyModel;
 import org.apache.zest.runtime.structure.ModuleInstance;
 
-import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Specifications.and;
-import static org.apache.zest.functional.Specifications.translate;
+import static org.apache.zest.runtime.legacy.Specifications.translate;
 
 /**
  * JAVADOC
@@ -80,7 +78,7 @@ public final class ServiceModel extends CompositeModel
     @SuppressWarnings( "raw" )
     private final Class configurationType;
 
-    public ServiceModel( Iterable<Class<?>> types,
+    public ServiceModel( List<Class<?>> types,
                          Visibility visibility,
                          MetaInfo metaInfo,
                          ActivatorsModel<?> activatorsModel,
@@ -113,8 +111,9 @@ public final class ServiceModel extends CompositeModel
         return identity;
     }
 
-    @SuppressWarnings( {"raw", "unchecked"} )
-    public ActivatorsInstance<?> newActivatorsInstance( Module module ) throws Exception
+    @SuppressWarnings( { "raw", "unchecked" } )
+    public ActivatorsInstance<?> newActivatorsInstance( Module module )
+        throws Exception
     {
         return new ActivatorsInstance( activatorsModel.newInstances( module ) );
     }
@@ -145,14 +144,13 @@ public final class ServiceModel extends CompositeModel
         }
         return visitor.visitLeave( this );
     }
-    
+
     public ServiceInstance newInstance( final ModuleInstance module )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
         Map<AccessibleObject, Property<?>> properties = new HashMap<>();
-        for( PropertyModel propertyModel : stateModel.properties() )
-        {
+        stateModel.properties().forEach( propertyModel -> {
             Object initialValue = propertyModel.initialValue( module );
             if( propertyModel.accessor().equals( identityMethod ) )
             {
@@ -161,7 +159,7 @@ public final class ServiceModel extends CompositeModel
 
             Property<?> property = new PropertyInstance<>( propertyModel, initialValue );
             properties.put( propertyModel.accessor(), property );
-        }
+        } );
 
         TransientStateInstance state = new TransientStateInstance( properties );
         ServiceInstance compositeInstance = new ServiceInstance( this, module, mixins, state );
@@ -187,16 +185,14 @@ public final class ServiceModel extends CompositeModel
     @SuppressWarnings( { "raw", "unchecked" } )
     public Class calculateConfigurationType()
     {
-        Class injectionClass = null;
-        Iterable<DependencyModel> configurationThisDependencies = filter( and( translate( new DependencyModel.InjectionTypeFunction(), Specifications
-            .<Class<?>>in( Configuration.class ) ), new DependencyModel.ScopeSpecification( This.class ) ), dependencies() );
-        for( DependencyModel dependencyModel : configurationThisDependencies )
-        {
-            if( dependencyModel.rawInjectionType()
-                    .equals( Configuration.class ) && dependencyModel.injectionType() instanceof ParameterizedType )
-            {
-                Class<?> type = Classes.RAW_CLASS
-                    .apply( ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ] );
+        DependencyModel.ScopeSpecification thisSpec = new DependencyModel.ScopeSpecification( This.class );
+        Predicate<DependencyModel> configurationCheck =
+            translate( new DependencyModel.InjectionTypeFunction(), clazz -> clazz.equals( Configuration.class ) );
+        return dependencies().filter( thisSpec.and( configurationCheck ) )
+            .filter( dependencyModel -> dependencyModel.rawInjectionType().equals( Configuration.class ) )
+            .filter( dependencyModel -> dependencyModel.injectionType() instanceof ParameterizedType )
+            .map( dependencyModel -> Classes.RAW_CLASS.apply( ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ] ) )
+            .reduce( null, ( injectionClass, type ) -> {
                 if( injectionClass == null )
                 {
                     injectionClass = type;
@@ -208,9 +204,41 @@ public final class ServiceModel extends CompositeModel
                         injectionClass = type;
                     }
                 }
-            }
-        }
-        return injectionClass;
-    }
+                return injectionClass;
+            } );
 
+//        Class injectionClass = null;
+//        Iterable<DependencyModel> configurationThisDependencies =
+//            filter(
+//                and(
+//                    translate( new DependencyModel.InjectionTypeFunction(),
+//                               Specifications.<Class<?>>in( Configuration.class )
+//                    ),
+//                    new DependencyModel.ScopeSpecification( This.class ) ),
+//                dependencies()
+//            );
+//        for( DependencyModel dependencyModel : configurationThisDependencies )
+//
+//        {
+//            if( dependencyModel.rawInjectionType()
+//                    .equals( Configuration.class ) && dependencyModel.injectionType() instanceof ParameterizedType )
+//            {
+//                Class<?> type = Classes.RAW_CLASS
+//                    .apply( ( (ParameterizedType) dependencyModel.injectionType() ).getActualTypeArguments()[ 0 ] );
+//                if( injectionClass == null )
+//                {
+//                    injectionClass = type;
+//                }
+//                else
+//                {
+//                    if( injectionClass.isAssignableFrom( type ) )
+//                    {
+//                        injectionClass = type;
+//                    }
+//                }
+//            }
+//        }
+//
+//        return injectionClass;
+    }
 }

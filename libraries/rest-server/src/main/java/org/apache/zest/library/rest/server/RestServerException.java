@@ -15,15 +15,20 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.apache.zest.api.type;
 
-import java.util.stream.Stream;
+package org.apache.zest.library.rest.server;
 
-/**
- * Has types.
- */
-public interface HasTypes
+public class RestServerException extends RuntimeException
 {
-    Stream<Class<?>> types();
+    public RestServerException( String message, Throwable cause )
+    {
+        super( message, cause );
+    }
+
+    public RestServerException( String message )
+    {
+        super( message );
+    }
 }

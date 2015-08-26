@@ -29,8 +29,6 @@ import org.apache.zest.api.sideeffect.SideEffectOf;
 import org.apache.zest.library.logging.debug.Debug;
 import org.apache.zest.library.logging.log.service.LoggingService;
 
-import static org.apache.zest.functional.Iterables.first;
-
 /**
  * The DebugOnConsoleSideEffect is just a temporary solution for logging output, until a more
  * robust framework has been designed.
@@ -62,7 +60,7 @@ public class DebugOnConsoleSideEffect extends SideEffectOf<LoggingService>
 
     private String getCompositeName( Composite composite )
     {
-        return first( ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types()).getName();
+        return ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( composite ).types().findFirst().get().getName();
     }
 
     @Override

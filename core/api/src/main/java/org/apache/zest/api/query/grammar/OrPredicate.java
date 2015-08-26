@@ -20,7 +20,6 @@ package org.apache.zest.api.query.grammar;
 
 import java.util.function.Predicate;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.functional.Specifications;
 
 /**
  * OR Specification.
@@ -37,7 +36,12 @@ public class OrPredicate
     @Override
     public boolean test( Composite item )
     {
-        return Specifications.or( operands ).test( item );
+        Predicate<Composite> master = t -> false;
+        for( Predicate<Composite> p : operands )
+        {
+            master = master.or( p );
+        }
+        return master.test( item );
     }
 
     @Override

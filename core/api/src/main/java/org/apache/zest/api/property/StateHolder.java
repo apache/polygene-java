@@ -15,6 +15,7 @@
 package org.apache.zest.api.property;
 
 import java.lang.reflect.AccessibleObject;
+import java.util.stream.Stream;
 
 /**
  * This represents the state of a composite (properties).
@@ -33,5 +34,5 @@ public interface StateHolder
     <T> Property<T> propertyFor( AccessibleObject accessor )
         throws IllegalArgumentException;
 
-    Iterable<? extends Property<?>> properties();
+    Stream<? extends Property<?>> properties();
 }

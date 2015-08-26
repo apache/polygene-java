@@ -42,7 +42,6 @@ import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
 
 import static org.junit.Assert.assertEquals;
-import static org.apache.zest.functional.Iterables.first;
 
 public class DebuggingTest
     extends AbstractZestTest
@@ -81,7 +80,7 @@ public class DebuggingTest
                         public EntityState apply( EntityState entityState )
                         {
                             if( ServiceDebugRecordEntity.class.getName()
-                                    .equals( first(entityState.entityDescriptor().types()).getName() ) )
+                                    .equals( entityState.entityDescriptor().types().findFirst().get().getName() ) )
                             {
                                 result[0] = entityState.identity().identity();
                             }

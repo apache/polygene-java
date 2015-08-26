@@ -72,8 +72,6 @@ import org.apache.zest.spi.query.QueryBuilderSPI;
 import org.apache.zest.spi.query.QuerySource;
 
 import static org.apache.zest.api.entity.EntityReference.parseEntityReference;
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.map;
 
 /**
  * JAVADOC
@@ -184,9 +182,8 @@ public class ModuleUnitOfWork
         {
             throw new EntityTypeNotFoundException( type.getName(),
                                                    module.name(),
-                                                   map( ModelModule.toStringFunction,
-                                                        module.findVisibleEntityTypes()
-                                                   ) );
+                                                   module.findVisibleEntityTypes().map( ModelModule.toStringFunction )
+            );
         }
 
         EntityStore entityStore = model.module().entityStore();
@@ -199,7 +196,7 @@ public class ModuleUnitOfWork
             {
                 throw new NoSuchServiceException( IdentityGenerator.class.getName(), model.module().name() );
             }
-            identity = idGen.generate( first( model.model().types() ) );
+            identity = idGen.generate( model.model().types().findFirst().orElse( null ) );
         }
         EntityBuilder<T> builder;
 
@@ -248,9 +245,8 @@ public class ModuleUnitOfWork
         {
             throw new EntityTypeNotFoundException( type.getName(),
                                                    module.name(),
-                                                   map( ModelModule.toStringFunction,
-                                                        module.findVisibleEntityTypes()
-                                                   ) );
+                                                   module.findVisibleEntityTypes().map( ModelModule.toStringFunction )
+            );
         }
 
         EntityStore entityStore = model.module().entityStore();
@@ -272,7 +268,7 @@ public class ModuleUnitOfWork
                 {
                     throw new NoSuchServiceException( IdentityGenerator.class.getName(), model.module().name() );
                 }
-                identity = idGen.generate( first( model.model().types() ) );
+                identity = idGen.generate( model.model().types().findFirst().orElse( null ));
             }
         }
 
@@ -293,9 +289,8 @@ public class ModuleUnitOfWork
         {
             throw new EntityTypeNotFoundException( type.getName(),
                                                    module.name(),
-                                                   map( ModelModule.toStringFunction,
-                                                        module.findVisibleEntityTypes()
-                                                   ) );
+                                                   module.findVisibleEntityTypes().map( ModelModule.toStringFunction )
+            );
         }
 
         return uow.get( parseEntityReference( identity ), this, models, type );
@@ -309,7 +304,7 @@ public class ModuleUnitOfWork
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.entityInstanceOf( entityComposite );
         ModelModule<EntityModel> model = new ModelModule<>( compositeInstance.module(), compositeInstance.entityModel() );
-        Class<T> type = (Class<T>) first( compositeInstance.types() );
+        Class<T> type = (Class<T>) compositeInstance.types().findFirst().orElse( null );
         return uow.get( compositeInstance.identity(), this, Collections.singletonList( model ), type );
     }
 

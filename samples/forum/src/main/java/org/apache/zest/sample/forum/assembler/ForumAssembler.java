@@ -56,7 +56,6 @@ import org.restlet.service.MetadataService;
 import static org.apache.zest.api.util.Classes.hasModifier;
 import static org.apache.zest.api.util.Classes.isAssignableFrom;
 import static org.apache.zest.functional.Iterables.filter;
-import static org.apache.zest.functional.Specifications.not;
 
 /**
  * TODO
@@ -106,7 +105,7 @@ public class ForumAssembler
         LayerAssembly context = assembly.layer( "Context" ).uses( data );
         {
             ModuleAssembly contexts = context.module( "Context" );
-            for( Class<?> contextClass : filter( not( hasModifier( Modifier.INTERFACE ) ), ClassScanner.findClasses( Context.class ) ) )
+            for( Class<?> contextClass : filter( hasModifier( Modifier.INTERFACE ).negate(), ClassScanner.findClasses( Context.class ) ) )
             {
                 if( contextClass.getName().contains( "$" ) )
                 {
