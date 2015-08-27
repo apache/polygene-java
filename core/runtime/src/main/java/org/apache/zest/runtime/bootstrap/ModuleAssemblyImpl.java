@@ -586,7 +586,7 @@ public final class ModuleAssemblyImpl
 
         for( ImportedServiceModel importedServiceModel : importedServiceModels )
         {
-            if( StreamSupport.stream( objectModels.spliterator(), false )
+            if( !StreamSupport.stream( objectModels.spliterator(), false )
                 .anyMatch( model ->
                                model.types().findFirst().get().equals( importedServiceModel.serviceImporter() ) )
                 )
