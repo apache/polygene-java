@@ -80,18 +80,20 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
     private Iterable<Class<? extends Activator<?>>> activatorsDeclarations( Stream<? extends Class<?>> typess )
     {
         return typess.flatMap( Classes::typesOf )
-            .filter( type -> Annotations.annotationOn( type, Activators.class ) == null )
+//            .filter( type -> Annotations.annotationOn( type, Activators.class ) == null )
             .flatMap( this::getAnnotations )
             .collect( Collectors.toList() );
     }
 
     private Stream<? extends Class<? extends Activator<?>>> getAnnotations( Type type )
     {
-        Activators activators1 = Annotations.annotationOn( type, Activators.class );
-        if( activators1 == null )
+        Activators activators = Annotations.annotationOn( type, Activators.class );
+        if( activators == null )
         {
             return Stream.empty();
         }
-        return Arrays.stream( activators1.value() );
+        return Arrays.stream( activators.value() );
     }
+
+
 }

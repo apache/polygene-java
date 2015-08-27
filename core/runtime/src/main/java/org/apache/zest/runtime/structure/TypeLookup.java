@@ -33,9 +33,9 @@ import org.apache.zest.api.composite.AmbiguousTypeException;
 import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.runtime.legacy.Specifications;
 import org.apache.zest.runtime.composite.TransientModel;
 import org.apache.zest.runtime.entity.EntityModel;
+import org.apache.zest.runtime.legacy.Specifications;
 import org.apache.zest.runtime.object.ObjectModel;
 import org.apache.zest.runtime.value.ValueModel;
 import org.apache.zest.spi.module.ModelModule;
@@ -471,6 +471,19 @@ public class TypeLookup
         // TODO: Figure out why AmbiguityFinder doesn't implement Function<ModelModule<T>, ModelModule<T>>, when it clearly says it does. Absurd.
         Function<ModelModule<? extends ModelDescriptor>, ModelModule<? extends ModelDescriptor>> ambiguityFinder = new AmbiguityFinder( type );
         return models.map( ambiguityFinder );
+    }
+
+    public Stream<Class<?>> allVisibleObjects()
+    {
+        return concat( moduleInstance.visibleObjects( module ),
+                       concat(
+                           moduleInstance.layerInstance().visibleObjects( layer ),
+                           concat(
+                               moduleInstance.layerInstance().visibleObjects( application ),
+                               moduleInstance.layerInstance().usedLayersInstance().visibleObjects()
+                           )
+                       )
+        ).flatMap( model -> model.model().types() );
     }
 
     private static class ModelModuleTypesFunction<T extends ModelDescriptor>

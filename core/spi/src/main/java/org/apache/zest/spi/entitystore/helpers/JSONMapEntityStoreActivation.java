@@ -38,7 +38,7 @@ public interface JSONMapEntityStoreActivation
     /**
      * JSONMapEntityStoreMixin Activator.
      */
-    public class Activator
+    class Activator
         extends ActivatorAdapter<ServiceReference<JSONMapEntityStoreActivation>>
     {
 

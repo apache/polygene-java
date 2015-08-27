@@ -28,9 +28,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.apache.zest.api.cache.CacheOptions;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -64,9 +61,9 @@ import org.apache.zest.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
 import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
-
-import static org.apache.zest.functional.Iterables.first;
-import static org.apache.zest.functional.Iterables.map;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 /**
  * Implementation of EntityStore that works with an implementation of MapEntityStore.
@@ -437,7 +434,7 @@ public class JSONMapEntityStoreMixin
                                                        module.name(),
                                                        module.findVisibleEntityTypes()
                                                            .map( ModelModule.toStringFunction )
-            );
+                );
             }
 
             return new JSONEntityState( valueSerialization,
@@ -479,7 +476,6 @@ public class JSONMapEntityStoreMixin
             {
                 String type = data.getString( JSONKeys.TYPE );
                 EntityDescriptor entityDescriptor = module.entityDescriptor( type );
-//                return new JSONEntityState( currentTime, valueSerialization, identity, entityDescriptor, data );
                 return new JSONEntityState( valueSerialization, data.getString( JSONKeys.VERSION ), data.getLong( JSONKeys.MODIFIED ), identity, EntityStatus.LOADED, entityDescriptor, data );
             }
             catch( JSONException e )

@@ -13,6 +13,8 @@
  */
 package org.apache.zest.api.object;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.zest.api.common.InvalidApplicationException;
 
 /**
@@ -26,10 +28,13 @@ public class NoSuchObjectException
     private final String objectType;
     private final String moduleName;
 
-    public NoSuchObjectException( String type, String moduleName )
+    public NoSuchObjectException( String type, String moduleName, Stream<Class<?>> visible )
     {
-        super( "Could not find any visible Object of type [" + type + "] in module [" +
-               moduleName + "]." );
+        super( "Could not find any visible Object of type [" + type + "] in module ["
+               + moduleName
+               + "]. The visible types are: \n"
+               + visible.map( Class::getName ).collect( Collectors.joining("\n") )
+        );
         this.objectType = type;
         this.moduleName = moduleName;
     }

@@ -24,11 +24,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -175,12 +173,22 @@ public final class Classes
                 }
                 else
                 {
-                    Stream<Type> stream1 = Arrays.stream( clazz.getGenericInterfaces() ).flatMap( INTERFACES_OF );
-                    Stream<Type> stream2 = Stream.of( type )
-                        .map( RAW_CLASS )
-                        .map( Class::getSuperclass )
-                        .map( RAW_CLASS );
-                    return concat( stream1, stream2 );
+//                    Stream<Type> stream1 = Arrays.stream( clazz.getGenericInterfaces() ).flatMap( INTERFACES_OF );
+//                    Stream<Type> stream2 = Stream.of( type )
+//                        .map( RAW_CLASS )
+//                        .map( Class::getSuperclass )
+//                        .map( RAW_CLASS );
+//                    return concat( stream1, stream2 );
+
+                    return concat( Stream.of( clazz.getGenericInterfaces() ).flatMap( INTERFACES_OF ),
+                                   Stream.of( clazz.getSuperclass() ).flatMap( INTERFACES_OF ) );
+//                    return flatten(
+//                        flattenIterables(
+//                            map( INTERFACES_OF, iterable( clazz.getGenericInterfaces() ) )
+//                        ),
+//                        INTERFACES_OF.apply( RAW_CLASS.apply( type ).getSuperclass() )
+//                    );
+
                 }
             }
         }
@@ -192,12 +200,12 @@ public final class Classes
         if( clazz.isInterface() )
         {
             Stream<Type> intfaces = Arrays.stream( clazz.getGenericInterfaces() ).flatMap( INTERFACES_OF );
-            return concat( Stream.of(clazz), intfaces );
+            return concat( Stream.of( clazz ), intfaces );
         }
         else
         {
             return concat( Stream.of( clazz ),
-                           Stream.of( type ).flatMap( CLASS_HIERARCHY ).flatMap( INTERFACES_OF ));
+                           Stream.of( type ).flatMap( CLASS_HIERARCHY ).flatMap( INTERFACES_OF ) );
         }
     };
 
@@ -223,12 +231,12 @@ public final class Classes
 
     public static Stream<? extends Type> interfacesOf( Type type )
     {
-        return Stream.of(type).flatMap( INTERFACES_OF );
+        return Stream.of( type ).flatMap( INTERFACES_OF );
     }
 
     public static Stream<Class<?>> classHierarchy( Class<?> type )
     {
-        return Stream.of(type).flatMap( CLASS_HIERARCHY );
+        return Stream.of( type ).flatMap( CLASS_HIERARCHY );
     }
 
     public static Type wrapperClass( Type type )
@@ -273,7 +281,7 @@ public final class Classes
 
     public static <T> Function<Type, Stream<T>> forTypes( final Function<Type, Stream<T>> function )
     {
-        return type -> Stream.of(type).flatMap( TYPES_OF ).flatMap( function );
+        return type -> Stream.of( type ).flatMap( TYPES_OF ).flatMap( function );
     }
 
     @SuppressWarnings( "raw" )
@@ -361,8 +369,8 @@ public final class Classes
         return Stream.of( type )
             .flatMap( TYPES_OF )
             .map( RAW_CLASS )
-            .map( clazz -> clazz.getAnnotation(annotationClass))
-            .filter(  annot -> annot != null )
+            .map( clazz -> clazz.getAnnotation( annotationClass ) )
+            .filter( annot -> annot != null )
             .findAny().get();
 //
 //
@@ -404,7 +412,7 @@ public final class Classes
     @SuppressWarnings( "raw" )
     public static Type resolveTypeVariable( TypeVariable name, Class declaringClass, Class topClass )
     {
-        Type type = resolveTypeVariable( name, declaringClass, new HashMap<TypeVariable, Type>(), topClass );
+        Type type = resolveTypeVariable( name, declaringClass, new HashMap<>(), topClass );
         if( type == null )
         {
             type = Object.class;
@@ -412,7 +420,6 @@ public final class Classes
         return type;
     }
 
-    @SuppressWarnings( "raw" )
     private static Type resolveTypeVariable( TypeVariable name,
                                              Class declaringClass,
                                              Map<TypeVariable, Type> mappings,
@@ -429,37 +436,30 @@ public final class Classes
             return resolvedType;
         }
 
-        Stream<? extends Type> stream1 = Arrays.stream( current.getGenericInterfaces() )
+        Stream<? extends Type> stream = Arrays.stream( current.getGenericInterfaces() )
             .flatMap( INTERFACES_OF )
             .distinct();
 
-        return concat( Stream.of(current.getGenericSuperclass()), stream1)
-                .map( type ->
-                      {
-                          Class subClass;
-                          if( type instanceof ParameterizedType )
-                          {
-                              ParameterizedType pt = (ParameterizedType) type;
-                              Type[] args = pt.getActualTypeArguments();
-                              Class clazz = (Class) pt.getRawType();
-                              TypeVariable[] vars = clazz.getTypeParameters();
-                              for( int i = 0; i < vars.length; i++ )
-                              {
-                                  TypeVariable var = vars[ i ];
-                                  Type mappedType = args[ i ];
-                                  mappings.put( var, mappedType );
-                              }
-                              subClass = (Class) pt.getRawType();
-                          }
-                          else
-                          {
-                              subClass = (Class) type;
-                          }
-                          return subClass;
-                      } )
-                .map( subClass -> resolveTypeVariable( name, declaringClass, mappings, subClass ) )
-                .filter( type -> type != null )
-                .findAny().get();
+        Type genericSuperclass = current.getGenericSuperclass();
+        if( genericSuperclass != null )
+        {
+            stream = concat( stream, Stream.of( genericSuperclass ) );
+        }
+        return stream.map( type -> {
+            Class subClass;
+            if( type instanceof ParameterizedType )
+            {
+                subClass = extractTypeVariables( mappings, (ParameterizedType) type );
+            }
+            else
+            {
+                subClass = (Class) type;
+            }
+            return subClass;
+        } )
+            .map( subClass -> resolveTypeVariable( name, declaringClass, mappings, subClass ) )
+            .filter( type -> type != null )
+            .findAny().orElse( null );
 
 //        List<Type> types = new ArrayList<>();
 //        for( Type type : current.getGenericInterfaces() )
@@ -510,6 +510,22 @@ public final class Classes
 //        }
 //
 //        return null;
+    }
+
+    private static Class extractTypeVariables( Map<TypeVariable, Type> mappings, ParameterizedType type )
+    {
+        Class subClass;
+        Type[] args = type.getActualTypeArguments();
+        Class clazz = (Class) type.getRawType();
+        TypeVariable[] vars = clazz.getTypeParameters();
+        for( int i = 0; i < vars.length; i++ )
+        {
+            TypeVariable var = vars[ i ];
+            Type mappedType = args[ i ];
+            mappings.put( var, mappedType );
+        }
+        subClass = (Class) type.getRawType();
+        return subClass;
     }
 
     /**
@@ -602,7 +618,7 @@ public final class Classes
     @SuppressWarnings( "raw" )
     public static String toString( Stream<? extends Class> types )
     {
-        return "[" + types.map(Class::getSimpleName).collect( Collectors.joining(",")) +"]";
+        return "[" + types.map( Class::getSimpleName ).collect( Collectors.joining( "," ) ) + "]";
     }
 
     public static Function<Type, String> toClassName()

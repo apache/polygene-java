@@ -311,7 +311,7 @@ public class ModuleInstance
 
         if( modelModule == null )
         {
-            throw new NoSuchObjectException( mixinType.getName(), name() );
+            throw new NoSuchObjectException( mixinType.getName(), name(), typeLookup.allVisibleObjects() );
         }
 
         InjectionContext injectionContext = new InjectionContext( modelModule.module(), UsesInstance.EMPTY_USES.use( uses ) );
@@ -327,7 +327,7 @@ public class ModuleInstance
 
         if( modelModule == null )
         {
-            throw new NoSuchObjectException( instance.getClass().getName(), name() );
+            throw new NoSuchObjectException( instance.getClass().getName(), name(), typeLookup.allVisibleObjects() );
         }
 
         InjectionContext injectionContext = new InjectionContext( modelModule.module(), UsesInstance.EMPTY_USES.use( uses ) );
