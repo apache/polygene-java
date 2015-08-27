@@ -54,6 +54,7 @@ public class AbstractJsonDateFormatTest
     {
         module.injectTo( this );
     }
+
     @Service
     protected ValueDeserializer valueDeserializer;
 

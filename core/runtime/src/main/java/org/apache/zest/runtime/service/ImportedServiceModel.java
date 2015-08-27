@@ -145,9 +145,9 @@ public final class ImportedServiceModel
     @SuppressWarnings( { "raw", "unchecked" } )
     public <T> ImportedServiceInstance<T> importInstance( Module module )
     {
-        ServiceImporter importer = module.newObject( serviceImporter );
         try
         {
+            ServiceImporter importer = module.newObject( serviceImporter );
             T instance = (T) importer.importService( this );
             return new ImportedServiceInstance<>( instance, importer );
         }

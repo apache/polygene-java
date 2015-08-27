@@ -340,7 +340,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         {
             onFieldStart( output, "_type" );
             onValueStart( output );
-            onValue( output, descriptor.valueType().types().findFirst().orElse( null ));
+            onValue( output, descriptor.valueType().types().findFirst().get().getName());
             onValueEnd( output );
             onFieldEnd( output );
         }
