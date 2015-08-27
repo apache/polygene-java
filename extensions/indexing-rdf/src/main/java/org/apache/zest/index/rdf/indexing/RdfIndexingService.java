@@ -18,6 +18,7 @@
 
 package org.apache.zest.index.rdf.indexing;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,7 +53,7 @@ public interface RdfIndexingService
 {
     void initialize();
 
-//    File dataDir();
+    File dataDir();
 
     class Activator extends ActivatorAdapter<ServiceReference<RdfIndexingService>>
     {
@@ -226,10 +227,10 @@ public interface RdfIndexingService
             return valueFactory;
         }
 
-//        @Override
-//        public File dataDir()
-//        {
-//            return repository.get().getDataDir();
-//        }
+        @Override
+        public File dataDir()
+        {
+            return repository.get().getDataDir();
+        }
     }
 }
