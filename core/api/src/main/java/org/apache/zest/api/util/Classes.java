@@ -196,7 +196,8 @@ public final class Classes
         }
         else
         {
-            return Stream.of(type).flatMap( CLASS_HIERARCHY ).flatMap( INTERFACES_OF ).flatMap( CLASS_HIERARCHY );
+            return concat( Stream.of( clazz ),
+                           Stream.of( type ).flatMap( CLASS_HIERARCHY ).flatMap( INTERFACES_OF ));
         }
     };
 
