@@ -18,6 +18,7 @@
  */
 package org.apache.zest.runtime.bootstrap;
 
+import java.util.function.Function;
 import org.apache.zest.api.common.*;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.InvalidCompositeException;
@@ -125,10 +126,10 @@ public abstract class CompositeAssemblyImpl
         compositeMethodsModel = new CompositeMethodsModel( mixinsModel );
 
         // Implement composite methods
-        List<Class<?>> constraintClasses = toList( constraintDeclarations( this.types.stream() ) );
-        List<Class<?>> concernClasses = toList( concat( concerns.stream(), concernDeclarations( this.types.stream() ) ) );
-        List<Class<?>> sideEffectClasses = toList( concat( sideEffects.stream(), sideEffectDeclarations( this.types.stream() ) ) );
-        List<Class<?>> mixinClasses = toList( concat( mixins.stream(), mixinDeclarations( this.types.stream() ) ) );
+        List<Class<?>> constraintClasses = toList( constraintDeclarations( getAllTypes() ) );
+        List<Class<?>> concernClasses = toList( concat( concerns.stream(), concernDeclarations( getAllTypes() ) ) );
+        List<Class<?>> sideEffectClasses = toList( concat( sideEffects.stream(), sideEffectDeclarations( getAllTypes() ) ) );
+        List<Class<?>> mixinClasses = toList( concat( mixins.stream(), mixinDeclarations( getAllTypes() ) ) );
         //noinspection unchecked
         implementMixinType( types,
                             constraintClasses,
@@ -665,7 +666,14 @@ public abstract class CompositeAssemblyImpl
     {
         return types
             .filter( mixinType -> Annotations.annotationOn( mixinType, Concerns.class ) != null )
-            .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Concerns.class ).value() ) );
+            .flatMap( new Function<Type, Stream<? extends Class<?>>>()
+            {
+                @Override
+                public Stream<? extends Class<?>> apply( Type mixinType )
+                {
+                    return Arrays.stream( Annotations.annotationOn( mixinType, Concerns.class ).value() );
+                }
+            } );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -680,6 +688,24 @@ public abstract class CompositeAssemblyImpl
         return types
             .filter( mixinType -> Annotations.annotationOn( mixinType, SideEffects.class ) != null )
             .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, SideEffects.class ).value() ) );
+    }
+
+    protected Stream<Class<?>> mixinDeclarations( Class<?> type )
+    {
+        Stream<? extends Type> types = getTypes( type );
+        return mixinDeclarations( types );
+    }
+
+    private Stream<Class<?>> mixinDeclarations( Stream<? extends Type> types )
+    {
+        return types.flatMap( this::getTypes )
+            .filter( mixinType -> Annotations.annotationOn( mixinType, Mixins.class ) != null )
+            .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Mixins.class ).value() ) );
+    }
+
+    private Stream<Type> getAllTypes()
+    {
+        return this.types.stream().flatMap( this::getTypes );
     }
 
     private Stream<? extends Type> getTypes( Type type )
@@ -697,19 +723,5 @@ public abstract class CompositeAssemblyImpl
             }
         }
         throw new UnsupportedOperationException( "Unable to handle type " + type.getTypeName() );
-    }
-
-    @SuppressWarnings( "unchecked" )
-    protected Stream<Class<?>> mixinDeclarations( Class<?> type )
-    {
-        Stream<? extends Type> types = getTypes( type );
-        return mixinDeclarations( types );
-    }
-
-    private Stream<Class<?>> mixinDeclarations( Stream<? extends Type> types )
-    {
-        return types.flatMap( this::getTypes )
-            .filter( mixinType -> Annotations.annotationOn( mixinType, Mixins.class ) != null )
-            .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Mixins.class ).value() ) );
     }
 }
