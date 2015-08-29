@@ -18,6 +18,7 @@ package org.apache.zest.runtime.unitofwork;
 
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityBuilder;
+import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.entity.LifecycleException;
@@ -28,6 +29,7 @@ import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.runtime.structure.ModuleUnitOfWork;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
+import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Implementation of EntityBuilder. Maintains an instance of the entity which
@@ -38,9 +40,10 @@ public final class EntityBuilderInstance<T>
 {
     private static final QualifiedName IDENTITY_STATE_NAME;
 
-    private final ModelModule<EntityModel> model;
+    private final EntityModel model;
     private final ModuleUnitOfWork uow;
     private final EntityStoreUnitOfWork store;
+    private final ModuleSpi module;
     private String identity;
 
     private final BuilderEntityState entityState;
@@ -59,7 +62,7 @@ public final class EntityBuilderInstance<T>
     }
 
     public EntityBuilderInstance(
-        ModelModule<EntityModel> model,
+        ModelModule<EntityDescriptor> model,
         ModuleUnitOfWork uow,
         EntityStoreUnitOfWork store,
         String identity
@@ -69,26 +72,27 @@ public final class EntityBuilderInstance<T>
     }
 
     public EntityBuilderInstance(
-        ModelModule<EntityModel> model,
+        ModelModule<EntityDescriptor> model,
         ModuleUnitOfWork uow,
         EntityStoreUnitOfWork store,
         String identity,
         FunctionStateResolver stateResolver
     )
     {
-        this.model = model;
+        this.model = (EntityModel) model.model();
+        this.module = model.module();
         this.uow = uow;
         this.store = store;
         this.identity = identity;
         EntityReference reference = new EntityReference( identity );
         entityState = new BuilderEntityState( model.model(), reference );
-        model.model().initState( model.module(), entityState );
+        this.model.initState( model.module(), entityState );
         if( stateResolver != null )
         {
-            stateResolver.populateState( model.model(), entityState );
+            stateResolver.populateState( this.model, entityState );
         }
         entityState.setPropertyValue( IDENTITY_STATE_NAME, identity );
-        prototypeInstance = model.model().newInstance( uow, model.module(), entityState );
+        prototypeInstance = this.model.newInstance( uow, model.module(), entityState );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -117,7 +121,7 @@ public final class EntityBuilderInstance<T>
 
         // Figure out whether to use given or generated identity
         identity = (String) entityState.propertyValueOf( IDENTITY_STATE_NAME );
-        EntityState newEntityState = model.model().newEntityState( store, uow.module(),
+        EntityState newEntityState = model.newEntityState( store, uow.module(),
                                                                    EntityReference.parseEntityReference( identity ) );
 
         prototypeInstance.invokeCreate();
@@ -127,7 +131,7 @@ public final class EntityBuilderInstance<T>
 
         entityState.copyTo( newEntityState );
 
-        EntityInstance instance = model.model().newInstance( uow, model.module(), newEntityState );
+        EntityInstance instance = model.newInstance( uow, module, newEntityState );
 
         Object proxy = instance.proxy();
 

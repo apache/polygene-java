@@ -75,7 +75,6 @@ public final class ServiceModel extends CompositeModel
     private final String identity;
     private final boolean instantiateOnStartup;
     private final ActivatorsModel<?> activatorsModel;
-    @SuppressWarnings( "raw" )
     private final Class configurationType;
 
     public ServiceModel( List<Class<?>> types,

@@ -17,10 +17,10 @@ package org.apache.zest.runtime.composite;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.composite.TransientBuilder;
-import org.apache.zest.api.property.PropertyDescriptor;
-import org.apache.zest.runtime.property.PropertyInfo;
+import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.runtime.property.PropertyInstance;
 import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * JAVADOC
@@ -28,7 +28,8 @@ import org.apache.zest.spi.module.ModelModule;
 public final class TransientBuilderInstance<T>
     implements TransientBuilder<T>
 {
-    private ModelModule<TransientModel> model;
+    private ModuleSpi module;
+    private TransientModel model;
 
     // lazy initialized in accessor
     private UsesInstance uses = UsesInstance.EMPTY_USES;
@@ -38,12 +39,13 @@ public final class TransientBuilderInstance<T>
 
     private TransientStateInstance state;
 
-    public TransientBuilderInstance( ModelModule<TransientModel> model,
+    public TransientBuilderInstance( ModelModule<TransientDescriptor> modelModule,
                                      TransientStateInstance state,
                                      UsesInstance uses
     )
     {
-        this.model = model;
+        this.model = (TransientModel) modelModule.model();
+        this.module = modelModule.module();
         this.state = state;
         this.uses = uses;
     }
@@ -61,7 +63,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = model.model().newInstance( model.module(), uses, state );
+            prototypeInstance = model.newInstance( module, uses, state );
         }
 
         return prototypeInstance.<T>proxy();
@@ -73,7 +75,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = model.model().newInstance( model.module(), uses, state );
+            prototypeInstance = model.newInstance( module, uses, state );
         }
 
         return prototypeInstance.newProxy( mixinType );
@@ -84,15 +86,16 @@ public final class TransientBuilderInstance<T>
         throws ConstructionException
     {
         // Set correct info's (immutable) on the state
-        model.model().state().properties().forEach( propertyDescriptor ->
-        {
-            ( (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() ) ).setPropertyInfo( propertyDescriptor );
-        } );
+        model.state().properties()
+            .forEach(
+                propertyDescriptor ->
+                    ( (PropertyInstance<Object>) state.propertyFor( propertyDescriptor.accessor() ) )
+                        .setPropertyInfo( propertyDescriptor ) );
 
-        model.model().checkConstraints( state );
+        model.checkConstraints( state );
 
         CompositeInstance compositeInstance =
-            model.model().newInstance( model.module(), uses, state );
+            model.newInstance( module, uses, state );
         return compositeInstance.<T>proxy();
     }
 }

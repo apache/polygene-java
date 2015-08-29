@@ -219,9 +219,12 @@ public abstract class CompositeAssemblyImpl
 //                    Iterable<Class<?>> map = map( new DependencyModel.InjectionTypeFunction(),
 //                                                  filter( new DependencyModel.ScopeSpecification( This.class ),
 //                                                          methodComposite.dependencies() ) );
+
+
 //                    Iterable<Class<?>> map1 = map( new DependencyModel.InjectionTypeFunction(),
 //                                                   filter( new DependencyModel.ScopeSpecification( This.class ),
 //                                                           mixinModel.dependencies() ) );
+
 //                    @SuppressWarnings( "unchecked" )
 //                    Iterable<Class<?>> filter = filter(
 //                        not( in( Initializable.class, Lifecycle.class, InvocationHandler.class ) ),
@@ -692,7 +695,7 @@ public abstract class CompositeAssemblyImpl
 
     protected Stream<Class<?>> mixinDeclarations( Class<?> type )
     {
-        Stream<? extends Type> types = getTypes( type );
+        Stream<? extends Type> types = typesOf( type );
         return mixinDeclarations( types );
     }
 
@@ -715,11 +718,11 @@ public abstract class CompositeAssemblyImpl
             Class<?> clazz = (Class<?>) type;
             if( clazz.isInterface() )
             {
-                return typesOf( clazz );
+                return typesOf( clazz ).map( Classes.RAW_CLASS );
             }
             else
             {
-                return classHierarchy( clazz );
+                return classHierarchy( clazz ).map( Classes.RAW_CLASS );
             }
         }
         throw new UnsupportedOperationException( "Unable to handle type " + type.getTypeName() );

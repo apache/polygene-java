@@ -25,8 +25,10 @@ import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
+import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.CompositeInstance;
+import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.property.StateHolder;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporterException;
@@ -48,7 +50,7 @@ import org.apache.zest.runtime.structure.ModuleInstance;
  * @param <T> Service Type
  */
 public final class ServiceReferenceInstance<T>
-    implements ServiceReference<T>, Activation
+    implements ServiceReference<T>, Activation, ModelDescriptor
 {
     private volatile ServiceInstance instance;
     private final T serviceProxy;
@@ -176,6 +178,18 @@ public final class ServiceReferenceInstance<T>
     public ServiceDescriptor serviceDescriptor()
     {
         return serviceModel;
+    }
+
+    @Override
+    public Visibility visibility()
+    {
+        return serviceModel.visibility();
+    }
+
+    @Override
+    public boolean isAssignableTo( Class<?> type )
+    {
+        return serviceModel.isAssignableTo( type );
     }
 
     public final class ServiceInvocationHandler

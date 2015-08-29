@@ -22,23 +22,22 @@ package org.apache.zest.runtime.structure;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.AmbiguousTypeException;
 import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.api.composite.TransientDescriptor;
+import org.apache.zest.api.entity.EntityDescriptor;
+import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.runtime.composite.TransientModel;
-import org.apache.zest.runtime.entity.EntityModel;
-import org.apache.zest.runtime.legacy.Specifications;
-import org.apache.zest.runtime.object.ObjectModel;
-import org.apache.zest.runtime.value.ValueModel;
+import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.spi.module.ModelModule;
 
 import static java.util.stream.Stream.concat;
@@ -47,7 +46,6 @@ import static org.apache.zest.api.common.Visibility.layer;
 import static org.apache.zest.api.common.Visibility.module;
 import static org.apache.zest.api.util.Classes.RAW_CLASS;
 import static org.apache.zest.api.util.Classes.interfacesOf;
-import static org.apache.zest.functional.Iterables.cast;
 import static org.apache.zest.functional.Iterables.first;
 
 /**
@@ -59,20 +57,20 @@ public class TypeLookup
     // Constructor parameters
     private final ModuleInstance moduleInstance;
     // Eager instance objects
-    private final Map<Class<?>, ModelModule<ObjectModel>> objectModels;
-    private final Map<Class<?>, ModelModule<TransientModel>> transientModels;
-    private final Map<Class<?>, ModelModule<ValueModel>> valueModels;
-    private final Map<Class<?>, List<ModelModule<EntityModel>>> allEntityModels;
-    private final Map<Class<?>, ModelModule<EntityModel>> unambiguousEntityModels;
-    private final Map<Type, ServiceReference<?>> serviceReferences;
-    private final Map<Type, Iterable<ServiceReference<?>>> servicesReferences;
+    private final Map<Class<?>, ModelModule<ObjectDescriptor>> objectModels;
+    private final Map<Class<?>, ModelModule<TransientDescriptor>> transientModels;
+    private final Map<Class<?>, ModelModule<ValueDescriptor>> valueModels;
+    private final Map<Class<?>, List<ModelModule<EntityDescriptor>>> allEntityModels;
+    private final Map<Class<?>, ModelModule<EntityDescriptor>> unambiguousEntityModels;
+    private final Map<Class, ServiceReference<?>> serviceReferences;
+    private final Map<Class, List<ServiceReference<?>>> servicesReferences;
 
     /**
      * Create a new TypeLookup bound to the given ModuleInstance.
      *
      * @param moduleInstance ModuleInstance bound to this TypeLookup
      */
-    /* package */ TypeLookup( ModuleInstance moduleInstance )
+    TypeLookup( ModuleInstance moduleInstance )
     {
         // Constructor parameters
         this.moduleInstance = moduleInstance;
@@ -102,43 +100,22 @@ public class TypeLookup
      *
      * @return First matching Object Model
      */
-    @SuppressWarnings( { "raw", "unchecked" } )
-    /* package */ ModelModule<ObjectModel> lookupObjectModel( final Class type )
+    ModelModule<ObjectDescriptor> lookupObjectModel( final Class type )
     {
-        ModelModule<ObjectModel> model = objectModels.get( type );
-
+        ModelModule<ObjectDescriptor> model = objectModels.get( type );
         if( model == null )
         {
-            // Unambiguously and lazily resolve ObjectModel
-            Stream<ModelModule<? extends ModelDescriptor>> models = concat(
-                ambiguousTypeCheck( type,
-                                    findModels( new ExactTypeLookupSpecification( type ),
-                                                moduleInstance.visibleObjects( module ),
-                                                moduleInstance.layerInstance().visibleObjects( layer ),
-                                                moduleInstance.layerInstance().visibleObjects( application ),
-                                                moduleInstance.layerInstance()
-                                                    .usedLayersInstance()
-                                                    .visibleObjects() ) ),
-
-                ambiguousTypeCheck( type,
-                                    findModels( new AssignableTypeLookupSpecification( type ),
-                                                moduleInstance.visibleObjects( module ),
-                                                moduleInstance.layerInstance()
-                                                    .visibleObjects( layer ),
-                                                moduleInstance.layerInstance()
-                                                    .visibleObjects( application ),
-                                                moduleInstance.layerInstance()
-                                                    .usedLayersInstance()
-                                                    .visibleObjects() ) ) );
-
-            model = (ModelModule<ObjectModel>) models.findFirst().orElse( null );
-
+            List<ModelModule<ObjectDescriptor>> allModels = allObjects().collect( Collectors.toList() );
+            model = ambiguityMatching( type, allModels, new ExactTypeMatching<>( type ) );
+            if( model == null )
+            {
+                model = ambiguityMatching( type, allModels, new AssignableFromTypeMatching<>( type ) );
+            }
             if( model != null )
             {
                 objectModels.put( type, model );
             }
         }
-
         return model;
     }
 
@@ -157,37 +134,17 @@ public class TypeLookup
      *
      * @return First matching Transient Model
      */
-    @SuppressWarnings( { "raw", "unchecked" } )
-    /* package */ ModelModule<TransientModel> lookupTransientModel( final Class type )
+    ModelModule<TransientDescriptor> lookupTransientModel( final Class type )
     {
-        ModelModule<TransientModel> model = transientModels.get( type );
-
+        ModelModule<TransientDescriptor> model = transientModels.get( type );
         if( model == null )
         {
-            // Unambiguously and lazily resolve ObjectModel
-            Stream<ModelModule<? extends ModelDescriptor>> models = concat(
-                ambiguousTypeCheck( type,
-                                    findModels( new ExactTypeLookupSpecification( type ),
-                                                moduleInstance.visibleTransients( module ),
-                                                moduleInstance.layerInstance().visibleTransients( layer ),
-                                                moduleInstance.layerInstance().visibleTransients( application ),
-                                                moduleInstance.layerInstance()
-                                                    .usedLayersInstance()
-                                                    .visibleTransients() ) ),
-
-                ambiguousTypeCheck( type,
-                                    findModels( new AssignableTypeLookupSpecification( type ),
-                                                moduleInstance.visibleTransients( module ),
-                                                moduleInstance.layerInstance()
-                                                    .visibleTransients( layer ),
-                                                moduleInstance.layerInstance()
-                                                    .visibleTransients( application ),
-                                                moduleInstance.layerInstance()
-                                                    .usedLayersInstance()
-                                                    .visibleTransients() ) ) );
-
-            model = (ModelModule<TransientModel>) models.findFirst().orElse( null );
-
+            List<ModelModule<TransientDescriptor>> allModels = allTransients().collect( Collectors.toList() );
+            model = ambiguityMatching( type, allModels, new ExactTypeMatching<>( type ) );
+            if( model == null )
+            {
+                model = ambiguityMatching( type, allModels, new AssignableFromTypeMatching<>( type ) );
+            }
             if( model != null )
             {
                 transientModels.put( type, model );
@@ -211,43 +168,22 @@ public class TypeLookup
      *
      * @return First matching Value Model
      */
-    @SuppressWarnings( { "raw", "unchecked" } )
-    public ModelModule<ValueModel> lookupValueModel( final Class type )
+    public ModelModule<ValueDescriptor> lookupValueModel( final Class type )
     {
-        ModelModule<ValueModel> model = valueModels.get( type );
-
+        ModelModule<ValueDescriptor> model = valueModels.get( type );
         if( model == null )
         {
-            // Unambiguously and lazily resolve ObjectModel
-            Stream<ModelModule<? extends ModelDescriptor>> models = concat(
-                ambiguousTypeCheck( type,
-                                    findModels( new ExactTypeLookupSpecification( type ),
-                                                moduleInstance.visibleValues( module ),
-                                                moduleInstance.layerInstance().visibleValues( layer ),
-                                                moduleInstance.layerInstance().visibleValues( application ),
-                                                moduleInstance.layerInstance()
-                                                    .usedLayersInstance()
-                                                    .visibleValues() ) ),
-
-                ambiguousTypeCheck( type,
-                                    findModels( new AssignableTypeLookupSpecification( type ),
-                                                moduleInstance.visibleValues( module ),
-                                                moduleInstance.layerInstance()
-                                                    .visibleValues( layer ),
-                                                moduleInstance.layerInstance()
-                                                    .visibleValues( application ),
-                                                moduleInstance.layerInstance()
-                                                    .usedLayersInstance()
-                                                    .visibleValues() ) ) );
-
-            model = (ModelModule<ValueModel>) models.findFirst().orElse( null );
-
+            List<ModelModule<ValueDescriptor>> allModels = allValues().collect( Collectors.toList() );
+            model = ambiguityMatching( type, allModels, new ExactTypeMatching<>( type ) );
+            if( model == null )
+            {
+                model = ambiguityMatching( type, allModels, new AssignableFromTypeMatching<>( type ) );
+            }
             if( model != null )
             {
                 valueModels.put( type, model );
             }
         }
-
         return model;
     }
 
@@ -269,43 +205,23 @@ public class TypeLookup
      *
      * @return First matching Entity Model
      */
-    @SuppressWarnings( { "raw", "unchecked" } )
-    /* package */ ModelModule<EntityModel> lookupEntityModel( final Class type )
+    ModelModule<EntityDescriptor> lookupEntityModel( final Class type )
     {
-        ModelModule<EntityModel> model = unambiguousEntityModels.get( type );
+        ModelModule<EntityDescriptor> model = unambiguousEntityModels.get( type );
 
         if( model == null )
         {
-            // Unambiguously and lazily resolve ObjectModel
-            Stream<ModelModule<? extends ModelDescriptor>> models = concat(
-                ambiguousTypeCheck( type,
-                                    findModels( new ExactTypeLookupSpecification( type ),
-                                                moduleInstance.visibleEntities( module ),
-                                                moduleInstance.layerInstance().visibleEntities( layer ),
-                                                moduleInstance.layerInstance().visibleEntities( application ),
-                                                moduleInstance.layerInstance()
-                                                    .usedLayersInstance()
-                                                    .visibleEntities() ) ),
-
-                ambiguousTypeCheck( type,
-                                    findModels( new AssignableTypeLookupSpecification( type ),
-                                                moduleInstance.visibleEntities( module ),
-                                                moduleInstance.layerInstance()
-                                                    .visibleEntities( layer ),
-                                                moduleInstance.layerInstance()
-                                                    .visibleEntities( application ),
-                                                moduleInstance.layerInstance()
-                                                    .usedLayersInstance()
-                                                    .visibleEntities() ) ) );
-
-            model = (ModelModule<EntityModel>) models.findFirst().orElse( null );
-
+            List<ModelModule<EntityDescriptor>> allModels = allEntities().collect( Collectors.toList() );
+            model = ambiguityMatching( type, allModels, new ExactTypeMatching<>( type ) );
+            if( model == null )
+            {
+                model = ambiguityMatching( type, allModels, new AssignableFromTypeMatching<>( type ) );
+            }
             if( model != null )
             {
                 unambiguousEntityModels.put( type, model );
             }
         }
-
         return model;
     }
 
@@ -331,30 +247,15 @@ public class TypeLookup
      *
      * @return All matching Entity Models
      */
-    /* package */ Iterable<ModelModule<EntityModel>> lookupEntityModels( final Class type )
+    Iterable<ModelModule<EntityDescriptor>> lookupEntityModels( final Class type )
     {
-        List<ModelModule<EntityModel>> result = allEntityModels.get( type );
+        List<ModelModule<EntityDescriptor>> result = allEntityModels.get( type );
         if( result == null )
         {
-            // Unambiguously and lazily resolve ObjectModel
-            Stream<ModelModule<? extends ModelDescriptor>> models = concat(
-                ambiguousTypeCheck( type,
-                                    findModels( new ExactTypeLookupSpecification( type ),
-                                                moduleInstance.visibleEntities( module ),
-                                                moduleInstance.layerInstance().visibleEntities( layer ),
-                                                moduleInstance.layerInstance().visibleEntities( application ),
-                                                moduleInstance.layerInstance()
-                                                    .usedLayersInstance()
-                                                    .visibleEntities() ) ),
-
-                findModels( new AssignableTypeLookupSpecification( type ),
-                            moduleInstance.visibleEntities( module ),
-                            moduleInstance.layerInstance().visibleEntities( layer ),
-                            moduleInstance.layerInstance().visibleEntities( application ),
-                            moduleInstance.layerInstance().usedLayersInstance().visibleEntities() )
-            ).distinct();
-
-            result = models.map( m -> (ModelModule<EntityModel>) m ).collect( Collectors.toList() );
+            result = concat(
+                allEntities().filter( new ExactTypeMatching<>( type ) ),
+                allEntities().filter( new AssignableFromTypeMatching<>( type ) )
+            ).distinct().collect( Collectors.toList() );
             allEntityModels.put( type, result );
         }
         return result;
@@ -365,18 +266,17 @@ public class TypeLookup
      *
      * <p>Type lookup is done lazily and cached.</p>
      *
-     * <p>See {@link #lookupServiceReferences(java.lang.reflect.Type)}.</p>
+     * <p>See {@link #lookupServiceReferences(Class)}.</p>
      *
      * @param <T>         Service Type
      * @param serviceType Looked up Type
      *
      * @return First matching ServiceReference
      */
-    /* package */
-    @SuppressWarnings( "unchecked" )
-    <T> ServiceReference<T> lookupServiceReference( Type serviceType )
+    <T> ServiceReference<T> lookupServiceReference( Class<T> serviceType )
     {
-        ServiceReference<?> serviceReference = serviceReferences.get( serviceType );
+        @SuppressWarnings( "unchecked" )
+        ServiceReference<T> serviceReference = (ServiceReference<T>) serviceReferences.get( serviceType );
         if( serviceReference == null )
         {
             // Lazily resolve ServiceReference
@@ -391,8 +291,7 @@ public class TypeLookup
         {
             throw new NoSuchServiceException( RAW_CLASS.apply( serviceType ).getName(), moduleInstance.name() );
         }
-
-        return (ServiceReference<T>) serviceReference;
+        return serviceReference;
     }
 
     /**
@@ -410,71 +309,38 @@ public class TypeLookup
      *
      * <p>Type lookup is done lazily and cached.</p>
      *
-     * @param <T>         Service Type
-     * @param serviceType Looked up Type
+     * @param <T>  Service Type
+     * @param type Looked up Type
      *
      * @return All matching ServiceReferences
      */
-    @SuppressWarnings( "unchecked" )
-    /* package */ <T> Iterable<ServiceReference<T>> lookupServiceReferences( final Type serviceType )
+    <T> List<ServiceReference<T>> lookupServiceReferences( final Class<T> type )
     {
-        Iterable<ServiceReference<?>> serviceRefs = servicesReferences.get( serviceType );
+        List<ServiceReference<?>> serviceRefs = servicesReferences.get( type );
         if( serviceRefs == null )
         {
-            // Lazily resolve ServicesReferences
-            Stream<ServiceReference<?>> matchingServices = concat(
-                findServiceReferences( new ExactTypeLookupSpecification( serviceType ),
-                                       moduleInstance.visibleServices( module ),
-                                       moduleInstance.layerInstance().visibleServices( layer ),
-                                       moduleInstance.layerInstance().visibleServices( application ),
-                                       moduleInstance.layerInstance().usedLayersInstance().visibleServices() ),
-                findServiceReferences( new AssignableTypeLookupSpecification( serviceType ),
-                                       moduleInstance.visibleServices( module ),
-                                       moduleInstance.layerInstance().visibleServices( layer ),
-                                       moduleInstance.layerInstance().visibleServices( application ),
-                                       moduleInstance.layerInstance().usedLayersInstance().visibleServices() )
-            ).distinct();
-            serviceRefs = matchingServices.collect( Collectors.toList() );
-            servicesReferences.put( serviceType, serviceRefs );
+            serviceRefs = concat(
+                allServices()
+                    .filter( ref -> ref.types().anyMatch( clazz -> clazz.equals( type ) ) ),
+                allServices()
+                    .filter( ref -> ref.types().anyMatch(
+                                 t -> !( t.equals( type ) ) && type.isAssignableFrom( t ) )
+                    )
+            ).distinct().collect( Collectors.toList() );
+            servicesReferences.put( type, serviceRefs );
         }
-
-        return cast( serviceRefs );
-    }
-
-    @SafeVarargs
-    private static Stream<ModelModule<? extends ModelDescriptor>> findModels( Predicate<Stream<Class<?>>> specification,
-                                                                              Stream<ModelModule<? extends ModelDescriptor>>... models
-    )
-    {
-        Function<ModelModule<? extends ModelDescriptor>, Stream<Class<?>>> function = new ModelModuleTypesFunction();
-        Predicate<ModelModule<? extends ModelDescriptor>> spec = Specifications.translate( function, specification );
-        Stream<ModelModule<? extends ModelDescriptor>> stream = Stream.of( models ).flatMap( flatten -> flatten );
-        return stream.filter( spec );
-    }
-
-    @SafeVarargs
-    private static Stream<ServiceReference<?>> findServiceReferences( Predicate<Stream<Class<?>>> specification,
-                                                                      Stream<ServiceReference<?>>... references
-    )
-    {
-        Predicate<ServiceReference<?>> spec = Specifications.translate( new ServiceReferenceTypesFunction(), specification );
-        return Stream.of( references ).flatMap( flatten -> flatten ).filter( spec );
-    }
-
-    /**
-     * Check if the list of models contains several ones with the same visibility. If yes, then
-     * throw an AmbiguousTypeException
-     */
-    private static Stream<ModelModule<? extends ModelDescriptor>> ambiguousTypeCheck( final Class<?> type,
-                                                                                      Stream<ModelModule<? extends ModelDescriptor>> models
-    )
-    {
-        // TODO: Figure out why AmbiguityFinder doesn't implement Function<ModelModule<T>, ModelModule<T>>, when it clearly says it does. Absurd.
-        Function<ModelModule<? extends ModelDescriptor>, ModelModule<? extends ModelDescriptor>> ambiguityFinder = new AmbiguityFinder( type );
-        return models.map( ambiguityFinder );
+        List<ServiceReference<T>> result = new ArrayList<>();
+        //noinspection unchecked
+        serviceRefs.forEach( ref -> result.add( (ServiceReference<T>) ref ) );
+        return result;
     }
 
     public Stream<Class<?>> allVisibleObjects()
+    {
+        return allObjects().flatMap( model -> model.model().types() );
+    }
+
+    private Stream<ModelModule<ObjectDescriptor>> allObjects()
     {
         return concat( moduleInstance.visibleObjects( module ),
                        concat(
@@ -484,54 +350,100 @@ public class TypeLookup
                                moduleInstance.layerInstance().usedLayersInstance().visibleObjects()
                            )
                        )
-        ).flatMap( model -> model.model().types() );
+        );
     }
 
-    private static class ModelModuleTypesFunction<T extends ModelDescriptor>
-        implements Function<ModelModule<T>, Stream<Class<?>>>
+    private Stream<ModelModule<TransientDescriptor>> allTransients()
     {
+        return concat( moduleInstance.visibleTransients( module ),
+                       concat(
+                           moduleInstance.layerInstance().visibleTransients( layer ),
+                           concat(
+                               moduleInstance.layerInstance().visibleTransients( application ),
+                               moduleInstance.layerInstance().usedLayersInstance().visibleTransients()
+                           )
+                       )
+        );
+    }
 
-        @Override
-        public Stream<Class<?>> apply( ModelModule<T> modelModule )
+    private Stream<ModelModule<ValueDescriptor>> allValues()
+    {
+        return concat( moduleInstance.visibleValues( module ),
+                       concat(
+                           moduleInstance.layerInstance().visibleValues( layer ),
+                           concat(
+                               moduleInstance.layerInstance().visibleValues( application ),
+                               moduleInstance.layerInstance().usedLayersInstance().visibleValues()
+                           )
+                       )
+        );
+    }
+
+    private Stream<ModelModule<EntityDescriptor>> allEntities()
+    {
+        return concat( moduleInstance.visibleEntities( module ),
+                       concat(
+                           moduleInstance.layerInstance().visibleEntities( layer ),
+                           concat(
+                               moduleInstance.layerInstance().visibleEntities( application ),
+                               moduleInstance.layerInstance().usedLayersInstance().visibleEntities()
+                           )
+                       )
+        );
+    }
+
+    private Stream<ServiceReference<?>> allServices()
+    {
+        return concat( moduleInstance.visibleServices( module ),
+                       concat(
+                           moduleInstance.layerInstance().visibleServices( layer ),
+                           concat(
+                               moduleInstance.layerInstance().visibleServices( application ),
+                               moduleInstance.layerInstance().usedLayersInstance().visibleServices()
+                           )
+                       )
+        );
+    }
+
+    private <T extends ModelDescriptor> ModelModule<T> ambiguityMatching(
+        Class type,
+        List<ModelModule<T>> modelModules,
+        TypeMatching<T> matching
+    )
+    {
+        List<ModelModule<T>> models = modelModules.stream()
+            .filter( matching )
+            .filter( new SameVisibility<>() )
+            .distinct()
+            .collect( Collectors.toList() );
+
+        if( models.size() > 1 )
         {
-            return modelModule.model().types();
+            throw new AmbiguousTypeException( "More than one type matches " + type.getName() + ": " + models + "]" );
         }
-    }
-
-    private static class ServiceReferenceTypesFunction
-        implements Function<ServiceReference<?>, Stream<Class<?>>>
-    {
-
-        @Override
-        public Stream<Class<?>> apply( ServiceReference<?> serviceReference )
+        if( models.isEmpty() )
         {
-            return serviceReference.types();
+            return null;
         }
+        return models.get( 0 );
     }
 
-    private static final class ExactTypeLookupSpecification
-        implements Predicate<Stream<Class<?>>>
+    private static abstract class TypeMatching<T extends ModelDescriptor>
+        implements Predicate<ModelModule<T>>
     {
-
         protected final Type lookedUpType;
 
-        private ExactTypeLookupSpecification( Type lookedUpType )
+        protected TypeMatching( Type lookedUpType )
         {
             this.lookedUpType = lookedUpType;
         }
 
-        protected boolean checkClassMatch( Class<?> candidate, Class<?> lookedUpType )
-        {
-            return candidate.equals( lookedUpType );
-        }
-
         @Override
-        public final boolean test( Stream<Class<?>> types )
+        public final boolean test( ModelModule<T> model )
         {
             if( lookedUpType instanceof Class )
             {
-                // Straight class assignability check
-                return checkClassMatch( types, (Class) lookedUpType );
+                return model.model().types().anyMatch( checkMatch( lookedUpType ) );
             }
             else
             {
@@ -540,13 +452,13 @@ public class TypeLookup
                     // Foo<Bar> check
                     // First check Foo
                     ParameterizedType parameterizedType = (ParameterizedType) lookedUpType;
-                    Collection asCollection = types.collect( Collectors.toList() );
-                    if( !checkClassMatch( asCollection.stream(), (Class) parameterizedType.getRawType() ) )
+                    Type rawType = parameterizedType.getRawType();
+                    if( !model.model().types().anyMatch( checkMatch( rawType ) ) )
                     {
                         return false;
                     }
                     // Then check Bar
-                    return interfacesOf( asCollection.stream() ).anyMatch( intf -> intf.equals( lookedUpType ) );
+                    return interfacesOf( model.model().types() ).anyMatch( intf -> intf.equals( lookedUpType ) );
                 }
                 else if( lookedUpType instanceof WildcardType )
                 {
@@ -556,92 +468,59 @@ public class TypeLookup
             }
         }
 
-        private boolean checkClassMatch( Stream<Class<?>> candidates, Class<?> lookedUpType )
+        protected abstract Predicate<Type> checkMatch( Type matchTo );
+    }
+
+    private static final class ExactTypeMatching<T extends ModelDescriptor> extends TypeMatching<T>
+    {
+        private ExactTypeMatching( Type lookedUpType )
         {
-            return candidates.anyMatch( candidate -> checkClassMatch( candidate, lookedUpType ) );
+            super( lookedUpType );
+        }
+
+        protected Predicate<Type> checkMatch( Type matchTo )
+        {
+            return matchTo::equals;
         }
     }
 
-    private static final class AssignableTypeLookupSpecification
-        implements Predicate<Stream<Class<?>>>
+    private static final class AssignableFromTypeMatching<T extends ModelDescriptor> extends TypeMatching<T>
     {
-
-        protected final Type lookedUpType;
-
-        private AssignableTypeLookupSpecification( Type lookedUpType )
+        private AssignableFromTypeMatching( Type lookedUpType )
         {
-            this.lookedUpType = lookedUpType;
+            super( lookedUpType );
         }
 
-        protected boolean checkClassMatch( Class<?> candidate, Class<?> lookedUpType )
+        protected Predicate<Type> checkMatch( Type matchTo )
         {
-            return !candidate.equals( lookedUpType ) && lookedUpType.isAssignableFrom( candidate );
-        }
-
-        @Override
-        public final boolean test( Stream<Class<?>> types )
-        {
-            if( lookedUpType instanceof Class )
+            // TODO; what to do if there is ParameterizedType here?? Now set to ClassCastException and see if anything surfaces
+//            if( matchTo instanceof Class )
             {
-                // Straight class assignability check
-                return checkClassMatch( types, (Class) lookedUpType );
+                Class<?> clazz = (Class<?>) matchTo;
+                return candidate ->
+                    !candidate.equals( matchTo ) && clazz.isAssignableFrom( (Class<?>) candidate );
             }
-            else
-            {
-                if( lookedUpType instanceof ParameterizedType )
-                {
-                    // Foo<Bar> check
-                    // First check Foo
-                    ParameterizedType parameterizedType = (ParameterizedType) lookedUpType;
-                    Collection asCollection = types.collect( Collectors.toList() );
-
-                    if( !checkClassMatch( asCollection.stream(), (Class) parameterizedType.getRawType() ) )
-                    {
-                        return false;
-                    }
-                    // Then check Bar
-                    interfacesOf( asCollection.stream() ).anyMatch( intf -> intf.equals( lookedUpType ) );
-                }
-                else if( lookedUpType instanceof WildcardType )
-                {
-                    return true;
-                }
-                return false;
-            }
-        }
-
-        private boolean checkClassMatch( Stream<Class<?>> candidates, Class<?> lookedUpType )
-        {
-            return candidates.anyMatch( candidate -> checkClassMatch( candidate, lookedUpType ) );
+//            return candidate -> candidate.equals( matchTo );
         }
     }
 
-    private static class AmbiguityFinder<T extends ModelDescriptor>
-        implements Function<ModelModule<T>, ModelModule<T>>
+    /**
+     * This Predicate will filter out all Models that doesn't have the same visisbility as the first one.
+     */
+    private class SameVisibility<T extends ModelDescriptor>
+        implements Predicate<ModelModule<T>>
     {
-        private ModelModule<T> current = null;
-        private final Class<?> type;
-
-        private AmbiguityFinder( Class<?> type )
-        {
-            this.type = type;
-        }
+        private Visibility current = null;
 
         @Override
-        public ModelModule<T> apply( ModelModule<T> model )
+        public boolean test( ModelModule<T> model )
         {
-            if( current != null && !model.equals( current ) )
+            if( current == null )
             {
-                if( model.model().visibility() == current.model().visibility() )
-                {
-                    throw new AmbiguousTypeException( "More than one type matches " + type.getName() + ": " + current + ", " + model + "]" );
-                }
+                current = model.model().visibility();
+                return true;
             }
-            else
-            {
-                current = model;
-            }
-            return current;
+            return current == model.model().visibility();
         }
     }
 }

@@ -84,6 +84,7 @@ import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.object.ObjectModel;
 import org.apache.zest.runtime.object.ObjectsModel;
 import org.apache.zest.runtime.property.PropertyInstance;
+import org.apache.zest.runtime.property.PropertyModel;
 import org.apache.zest.runtime.query.QueryBuilderFactoryImpl;
 import org.apache.zest.runtime.service.ImportedServicesInstance;
 import org.apache.zest.runtime.service.ImportedServicesModel;
@@ -188,7 +189,7 @@ public class ModuleInstance
         try
         {
             Class<?> type = classLoader().loadClass( name );
-            ModelModule<EntityModel> entityModel = typeLookup.lookupEntityModel( type );
+            ModelModule<EntityDescriptor> entityModel = typeLookup.lookupEntityModel( type );
             if( entityModel == null )
             {
                 return null;
@@ -207,7 +208,7 @@ public class ModuleInstance
         try
         {
             Class<?> type = classLoader().loadClass( typeName );
-            ModelModule<ObjectModel> objectModel = typeLookup.lookupObjectModel( type );
+            ModelModule<ObjectDescriptor> objectModel = typeLookup.lookupObjectModel( type );
             if( objectModel == null )
             {
                 return null;
@@ -226,7 +227,7 @@ public class ModuleInstance
         try
         {
             Class<?> type = classLoader().loadClass( name );
-            ModelModule<TransientModel> transientModel = typeLookup.lookupTransientModel( type );
+            ModelModule<TransientDescriptor> transientModel = typeLookup.lookupTransientModel( type );
             if( transientModel == null )
             {
                 return null;
@@ -245,7 +246,7 @@ public class ModuleInstance
         try
         {
             Class<?> type = classLoader().loadClass( name );
-            ModelModule<ValueModel> valueModel = typeLookup.lookupValueModel( type );
+            ModelModule<ValueDescriptor> valueModel = typeLookup.lookupValueModel( type );
             if( valueModel == null )
             {
                 return null;
@@ -307,7 +308,7 @@ public class ModuleInstance
         throws NoSuchObjectException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ObjectModel> modelModule = typeLookup.lookupObjectModel( mixinType );
+        ModelModule<ObjectDescriptor> modelModule = typeLookup.lookupObjectModel( mixinType );
 
         if( modelModule == null )
         {
@@ -315,7 +316,7 @@ public class ModuleInstance
         }
 
         InjectionContext injectionContext = new InjectionContext( modelModule.module(), UsesInstance.EMPTY_USES.use( uses ) );
-        return mixinType.cast( modelModule.model().newInstance( injectionContext ) );
+        return mixinType.cast( ((ObjectModel) modelModule.model()).newInstance( injectionContext ) );
     }
 
     @Override
@@ -323,7 +324,7 @@ public class ModuleInstance
         throws ConstructionException
     {
         NullArgumentException.validateNotNull( "instance", instance );
-        ModelModule<ObjectModel> modelModule = typeLookup.lookupObjectModel( instance.getClass() );
+        ModelModule<ObjectDescriptor> modelModule = typeLookup.lookupObjectModel( instance.getClass() );
 
         if( modelModule == null )
         {
@@ -331,7 +332,7 @@ public class ModuleInstance
         }
 
         InjectionContext injectionContext = new InjectionContext( modelModule.module(), UsesInstance.EMPTY_USES.use( uses ) );
-        modelModule.model().inject( injectionContext, instance );
+        ((ObjectModel) modelModule.model()).inject( injectionContext, instance );
     }
 
     // Implementation of TransientBuilderFactory
@@ -340,7 +341,7 @@ public class ModuleInstance
         throws NoSuchTransientException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<TransientModel> modelModule = typeLookup.lookupTransientModel( mixinType );
+        ModelModule<TransientDescriptor> modelModule = typeLookup.lookupTransientModel( mixinType );
 
         if( modelModule == null )
         {
@@ -348,15 +349,13 @@ public class ModuleInstance
         }
 
         Map<AccessibleObject, Property<?>> properties = new HashMap<>();
-        modelModule.model().state().properties().forEach( propertyModel ->
-                                                          {
-                                                              Property<?> property = new PropertyInstance<>( propertyModel
-                                                                                                                 .getBuilderInfo(),
-                                                                                                             propertyModel
-                                                                                                                 .initialValue( modelModule
-                                                                                                                                    .module() ) );
-                                                              properties.put( propertyModel.accessor(), property );
-                                                          } );
+        modelModule.model().state().properties().forEach(
+            propertyModel ->
+            {
+                Property<?> property = new PropertyInstance<>( ((PropertyModel) propertyModel).getBuilderInfo(),
+                                                               propertyModel.initialValue( modelModule.module() ) );
+                properties.put( propertyModel.accessor(), property );
+            } );
 
         TransientStateInstance state = new TransientStateInstance( properties );
 
@@ -383,7 +382,7 @@ public class ModuleInstance
         throws NoSuchValueException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ValueModel> compositeModelModule = typeLookup.lookupValueModel( mixinType );
+        ModelModule<ValueDescriptor> compositeModelModule = typeLookup.lookupValueModel( mixinType );
 
         if( compositeModelModule == null )
         {
@@ -407,7 +406,7 @@ public class ModuleInstance
         NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
         NullArgumentException.validateNotNull( "namedAssociationFunction", namedAssociationFunction );
 
-        ModelModule<ValueModel> compositeModelModule = typeLookup.lookupValueModel( mixinType );
+        ModelModule<ValueDescriptor> compositeModelModule = typeLookup.lookupValueModel( mixinType );
 
         if( compositeModelModule == null )
         {
@@ -464,7 +463,7 @@ public class ModuleInstance
         ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) prototype );
         Class<Composite> valueType = (Class<Composite>) valueInstance.types().findFirst().orElse( null );
 
-        ModelModule<ValueModel> modelModule = typeLookup.lookupValueModel( valueType );
+        ModelModule<ValueDescriptor> modelModule = typeLookup.lookupValueModel( valueType );
 
         if( modelModule == null )
         {
@@ -479,7 +478,7 @@ public class ModuleInstance
         throws NoSuchValueException, ConstructionException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ValueModel> modelModule = typeLookup.lookupValueModel( mixinType );
+        ModelModule<ValueDescriptor> modelModule = typeLookup.lookupValueModel( mixinType );
 
         if( modelModule == null )
         {
@@ -558,25 +557,27 @@ public class ModuleInstance
     @Override
     public <T> ServiceReference<T> findService( Class<T> serviceType )
     {
-        return typeLookup.lookupServiceReference( (Type) serviceType );
+        return typeLookup.lookupServiceReference( serviceType );
     }
 
     @Override
     public <T> ServiceReference<T> findService( Type serviceType )
     {
-        return typeLookup.lookupServiceReference( serviceType );
+        Class<T> clazz = (Class<T>) serviceType;
+        return typeLookup.lookupServiceReference( clazz );
     }
 
     @Override
     public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
     {
-        return typeLookup.lookupServiceReferences( (Type) serviceType );
+        return typeLookup.lookupServiceReferences( serviceType );
     }
 
     @Override
     public <T> Iterable<ServiceReference<T>> findServices( Type serviceType )
     {
-        return typeLookup.lookupServiceReferences( serviceType );
+        Class<T> clazz = (Class<T>) serviceType;
+        return typeLookup.lookupServiceReferences( clazz );
     }
 
     // Implementation of Activation
@@ -716,28 +717,28 @@ public class ModuleInstance
         return metrics;
     }
 
-    public Stream<ModelModule<? extends ModelDescriptor>> visibleObjects( Visibility visibility )
+    public Stream<ModelModule<ObjectDescriptor>> visibleObjects( Visibility visibility )
     {
         return objects.stream()
             .filter( new Visibilitypredicate( visibility ) )
             .map( ModelModule.<ObjectDescriptor>modelModuleFunction( this ) );
     }
 
-    public Stream<ModelModule<? extends ModelDescriptor>> visibleTransients( Visibility visibility )
+    public Stream<ModelModule<TransientDescriptor>> visibleTransients( Visibility visibility )
     {
         return transients.models()
             .filter( new Visibilitypredicate( visibility ) )
             .map( ModelModule.<TransientDescriptor>modelModuleFunction( this ) );
     }
 
-    public Stream<ModelModule<? extends ModelDescriptor>> visibleEntities( Visibility visibility )
+    public Stream<ModelModule<EntityDescriptor>> visibleEntities( Visibility visibility )
     {
         return entities.models()
             .filter( new Visibilitypredicate( visibility ) )
             .map( ModelModule.<EntityDescriptor>modelModuleFunction( this ) );
     }
 
-    public Stream<ModelModule<? extends ModelDescriptor>> visibleValues( Visibility visibility )
+    public Stream<ModelModule<ValueDescriptor>> visibleValues( Visibility visibility )
     {
         return values.models()
             .filter( new Visibilitypredicate( visibility ) )

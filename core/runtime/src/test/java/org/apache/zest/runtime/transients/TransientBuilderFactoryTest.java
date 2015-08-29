@@ -150,13 +150,13 @@ public class TransientBuilderFactoryTest
         };
 
         AnyTransient anyTransient = assembler.module().newTransient( AnyTransient.class );
-        assertThat( anyTransient.hello( "me" ), new IsEqual<String>( "Hello ME from Module 1" ) );
+        assertThat( anyTransient.hello( "me" ), new IsEqual<>( "Hello ME from Module 1" ) );
 
-        assertThat( anyTransient.hello( "World" ), new IsEqual<String>( "Hello WORLD from ME" ) );
+        assertThat( anyTransient.hello( "World" ), new IsEqual<>( "Hello WORLD from ME" ) );
         anyTransient.hello( "Universe" );
     }
 
-    public static interface AnyComposite
+    public interface AnyComposite
         extends TransientComposite
     {
     }

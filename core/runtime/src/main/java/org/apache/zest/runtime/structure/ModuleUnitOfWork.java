@@ -27,6 +27,7 @@ import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.entity.IdentityGenerator;
@@ -176,7 +177,7 @@ public class ModuleUnitOfWork
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
         throws EntityTypeNotFoundException
     {
-        ModelModule<EntityModel> model = module.typeLookup().lookupEntityModel( type );
+        ModelModule<EntityDescriptor> model = module.typeLookup().lookupEntityModel( type );
 
         if( model == null )
         {
@@ -239,7 +240,7 @@ public class ModuleUnitOfWork
         NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
         NullArgumentException.validateNotNull( "namedAssociationFunction", namedAssociationFunction );
 
-        ModelModule<EntityModel> model = module.typeLookup().lookupEntityModel( type );
+        ModelModule<EntityDescriptor> model = module.typeLookup().lookupEntityModel( type );
 
         if( model == null )
         {
@@ -258,7 +259,7 @@ public class ModuleUnitOfWork
         if( identity == null )
         {
             // Use identity from StateResolver if available
-            PropertyModel identityModel = model.model().state().findPropertyModelByQualifiedName( IDENTITY_STATE_NAME );
+            PropertyModel identityModel = (PropertyModel) model.model().state().findPropertyModelByQualifiedName( IDENTITY_STATE_NAME );
             identity = (String) stateResolver.getPropertyState( identityModel );
             if( identity == null )
             {
@@ -283,7 +284,7 @@ public class ModuleUnitOfWork
     public <T> T get( Class<T> type, String identity )
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
-        Iterable<ModelModule<EntityModel>> models = module.typeLookup().lookupEntityModels( type );
+        Iterable<ModelModule<EntityDescriptor>> models = module.typeLookup().lookupEntityModels( type );
 
         if( !models.iterator().hasNext() )
         {
@@ -303,7 +304,7 @@ public class ModuleUnitOfWork
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.entityInstanceOf( entityComposite );
-        ModelModule<EntityModel> model = new ModelModule<>( compositeInstance.module(), compositeInstance.entityModel() );
+        ModelModule<EntityDescriptor> model = new ModelModule<>( compositeInstance.module(), compositeInstance.entityModel() );
         Class<T> type = (Class<T>) compositeInstance.types().findFirst().orElse( null );
         return uow.get( compositeInstance.identity(), this, Collections.singletonList( model ), type );
     }

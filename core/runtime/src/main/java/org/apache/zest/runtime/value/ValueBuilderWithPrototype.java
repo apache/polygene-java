@@ -31,6 +31,7 @@ import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
+import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.runtime.composite.FunctionStateResolver;
 import org.apache.zest.runtime.composite.MixinModel;
 import org.apache.zest.runtime.composite.MixinsModel;
@@ -49,12 +50,12 @@ public class ValueBuilderWithPrototype<T>
     private ValueInstance prototypeInstance;
     private final ValueModel valueModel;
 
-    public ValueBuilderWithPrototype( ModelModule<ValueModel> compositeModelModule,
+    public ValueBuilderWithPrototype( ModelModule<ValueDescriptor> compositeModelModule,
                                       ModuleInstance currentModule,
                                       T prototype
     )
     {
-        valueModel = compositeModelModule.model();
+        valueModel = (ValueModel) compositeModelModule.model();
         // Only shallow clone, as all generic types of the ValueComposites are expected to be Immutable.
 
         MixinsModel mixinsModel = valueModel.mixinsModel();

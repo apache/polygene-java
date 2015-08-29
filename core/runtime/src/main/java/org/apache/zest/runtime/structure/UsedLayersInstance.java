@@ -37,25 +37,25 @@ public final class UsedLayersInstance
         this.usedLayerInstances = usedLayerInstances;
     }
 
-    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleObjects()
+    /* package */ Stream<ModelModule<ObjectDescriptor>> visibleObjects()
     {
         return usedLayerInstances.stream()
             .flatMap( layerInstance -> layerInstance.visibleObjects( Visibility.application ) );
     }
 
-    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleTransients()
+    /* package */ Stream<ModelModule<TransientDescriptor>> visibleTransients()
     {
         return usedLayerInstances.stream()
             .flatMap( layerInstance -> layerInstance.visibleTransients( Visibility.application ) );
     }
 
-    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleEntities()
+    /* package */ Stream<ModelModule<EntityDescriptor>> visibleEntities()
     {
         return usedLayerInstances.stream()
             .flatMap( layerInstance -> layerInstance.visibleEntities( Visibility.application ) );
     }
 
-    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleValues()
+    /* package */ Stream<ModelModule<ValueDescriptor>> visibleValues()
     {
         return usedLayerInstances.stream()
             .flatMap( layerInstance -> layerInstance.visibleValues( Visibility.application ) );

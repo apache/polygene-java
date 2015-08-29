@@ -137,22 +137,22 @@ public class LayerInstance
         return usedLayersInstance;
     }
 
-    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleObjects( final Visibility visibility )
+    /* package */ Stream<ModelModule<ObjectDescriptor>> visibleObjects( final Visibility visibility )
     {
         return moduleInstances.stream().flatMap( module -> module.visibleObjects( visibility ) );
     }
 
-    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleTransients( final Visibility visibility )
+    /* package */ Stream<ModelModule<TransientDescriptor>> visibleTransients( final Visibility visibility )
     {
         return moduleInstances.stream().flatMap( module -> module.visibleTransients( visibility ) );
     }
 
-    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleEntities( final Visibility visibility )
+    /* package */ Stream<ModelModule<EntityDescriptor>> visibleEntities( final Visibility visibility )
     {
         return moduleInstances.stream().flatMap( module -> module.visibleEntities( visibility ) );
     }
 
-    /* package */ Stream<ModelModule<? extends ModelDescriptor>> visibleValues( final Visibility visibility )
+    /* package */ Stream<ModelModule<ValueDescriptor>> visibleValues( final Visibility visibility )
     {
         return moduleInstances.stream().flatMap( module -> module.visibleValues( visibility ) );
     }

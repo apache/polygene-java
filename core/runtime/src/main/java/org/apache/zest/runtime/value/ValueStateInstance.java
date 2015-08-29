@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationStateHolder;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.runtime.association.AssociationInfo;
 import org.apache.zest.runtime.association.AssociationInstance;
 import org.apache.zest.runtime.association.ManyAssociationInstance;
@@ -59,12 +60,12 @@ public final class ValueStateInstance
         this.namedAssociations = namedAssociations;
     }
 
-    public ValueStateInstance( ModelModule<ValueModel> compositeModelModule,
+    public ValueStateInstance( ModelModule<ValueDescriptor> compositeModelModule,
                                ModuleInstance currentModule,
                                StateResolver stateResolver
     )
     {
-        ValueModel valueModel = compositeModelModule.model();
+        ValueModel valueModel = (ValueModel) compositeModelModule.model();
         this.properties = new LinkedHashMap<>();
         valueModel.state().properties().forEach( propertyDescriptor -> {
             PropertyInfo builderInfo = propertyDescriptor.getBuilderInfo();

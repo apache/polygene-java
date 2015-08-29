@@ -25,6 +25,7 @@ import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.metrics.MetricsCounter;
 import org.apache.zest.api.metrics.MetricsCounterFactory;
@@ -121,7 +122,7 @@ public final class UnitOfWorkInstance
 
     public <T> T get( EntityReference identity,
                       ModuleUnitOfWork uow,
-                      Iterable<ModelModule<EntityModel>> potentialModels,
+                      Iterable<ModelModule<EntityDescriptor>> potentialModels,
                       Class<T> mixinType
     )
         throws EntityTypeNotFoundException, NoSuchEntityException
@@ -137,7 +138,7 @@ public final class UnitOfWorkInstance
             EntityModel model = null;
             ModuleSpi module = null;
             // Figure out what EntityStore to use
-            for( ModelModule<EntityModel> potentialModel : potentialModels )
+            for( ModelModule<EntityDescriptor> potentialModel : potentialModels )
             {
                 EntityStore store = potentialModel.module().entityStore();
                 EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store, potentialModel.module() );
