@@ -266,14 +266,14 @@ public class TypeLookup
      *
      * <p>Type lookup is done lazily and cached.</p>
      *
-     * <p>See {@link #lookupServiceReferences(Class)}.</p>
+     * <p>See {@link #lookupServiceReferences(Type)}.</p>
      *
      * @param <T>         Service Type
      * @param serviceType Looked up Type
      *
      * @return First matching ServiceReference
      */
-    <T> ServiceReference<T> lookupServiceReference( Class<T> serviceType )
+    <T> ServiceReference<T> lookupServiceReference( Type serviceType )
     {
         @SuppressWarnings( "unchecked" )
         ServiceReference<T> serviceReference = (ServiceReference<T>) serviceReferences.get( serviceType );
@@ -283,7 +283,7 @@ public class TypeLookup
             serviceReference = first( lookupServiceReferences( serviceType ) );
             if( serviceReference != null )
             {
-                serviceReferences.put( serviceType, serviceReference );
+                serviceReferences.put( (Class) serviceType, serviceReference );
             }
         }
 
@@ -314,7 +314,7 @@ public class TypeLookup
      *
      * @return All matching ServiceReferences
      */
-    <T> List<ServiceReference<T>> lookupServiceReferences( final Class<T> type )
+    <T> List<ServiceReference<T>> lookupServiceReferences( final Type type )
     {
         List<ServiceReference<?>> serviceRefs = servicesReferences.get( type );
         if( serviceRefs == null )
@@ -324,10 +324,10 @@ public class TypeLookup
                     .filter( ref -> ref.types().anyMatch( clazz -> clazz.equals( type ) ) ),
                 allServices()
                     .filter( ref -> ref.types().anyMatch(
-                                 t -> !( t.equals( type ) ) && type.isAssignableFrom( t ) )
+                                 t -> !( t.equals( type ) ) && ((Class)type).isAssignableFrom( t ) )
                     )
             ).distinct().collect( Collectors.toList() );
-            servicesReferences.put( type, serviceRefs );
+            servicesReferences.put( (Class) type, serviceRefs );
         }
         List<ServiceReference<T>> result = new ArrayList<>();
         //noinspection unchecked

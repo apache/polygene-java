@@ -563,8 +563,7 @@ public class ModuleInstance
     @Override
     public <T> ServiceReference<T> findService( Type serviceType )
     {
-        Class<T> clazz = (Class<T>) serviceType;
-        return typeLookup.lookupServiceReference( clazz );
+        return typeLookup.lookupServiceReference( serviceType );
     }
 
     @Override
@@ -576,8 +575,7 @@ public class ModuleInstance
     @Override
     public <T> Iterable<ServiceReference<T>> findServices( Type serviceType )
     {
-        Class<T> clazz = (Class<T>) serviceType;
-        return typeLookup.lookupServiceReferences( clazz );
+        return typeLookup.lookupServiceReferences( serviceType );
     }
 
     // Implementation of Activation
