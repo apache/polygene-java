@@ -22,6 +22,7 @@ package org.apache.zest.runtime.structure;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -539,12 +540,13 @@ public class TypeLookup
                     // Foo<Bar> check
                     // First check Foo
                     ParameterizedType parameterizedType = (ParameterizedType) lookedUpType;
-                    if( !checkClassMatch( types, (Class) parameterizedType.getRawType() ) )
+                    Collection asCollection = types.collect( Collectors.toList() );
+                    if( !checkClassMatch( asCollection.stream(), (Class) parameterizedType.getRawType() ) )
                     {
                         return false;
                     }
                     // Then check Bar
-                    return interfacesOf( types ).anyMatch( intf -> intf.equals( lookedUpType ) );
+                    return interfacesOf( asCollection.stream() ).anyMatch( intf -> intf.equals( lookedUpType ) );
                 }
                 else if( lookedUpType instanceof WildcardType )
                 {
@@ -591,12 +593,14 @@ public class TypeLookup
                     // Foo<Bar> check
                     // First check Foo
                     ParameterizedType parameterizedType = (ParameterizedType) lookedUpType;
-                    if( !checkClassMatch( types, (Class) parameterizedType.getRawType() ) )
+                    Collection asCollection = types.collect( Collectors.toList() );
+
+                    if( !checkClassMatch( asCollection.stream(), (Class) parameterizedType.getRawType() ) )
                     {
                         return false;
                     }
                     // Then check Bar
-                    interfacesOf( types ).anyMatch( intf -> intf.equals( lookedUpType ) );
+                    interfacesOf( asCollection.stream() ).anyMatch( intf -> intf.equals( lookedUpType ) );
                 }
                 else if( lookedUpType instanceof WildcardType )
                 {
