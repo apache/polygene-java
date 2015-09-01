@@ -37,6 +37,7 @@ import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.spi.module.ModelModule;
 
@@ -62,8 +63,8 @@ public class TypeLookup
     private final Map<Class<?>, ModelModule<ValueDescriptor>> valueModels;
     private final Map<Class<?>, List<ModelModule<EntityDescriptor>>> allEntityModels;
     private final Map<Class<?>, ModelModule<EntityDescriptor>> unambiguousEntityModels;
-    private final Map<Class, ServiceReference<?>> serviceReferences;
-    private final Map<Class, List<ServiceReference<?>>> servicesReferences;
+    private final Map<Type, ServiceReference<?>> serviceReferences;
+    private final Map<Type, List<ServiceReference<?>>> servicesReferences;
 
     /**
      * Create a new TypeLookup bound to the given ModuleInstance.
@@ -253,8 +254,8 @@ public class TypeLookup
         if( result == null )
         {
             result = concat(
-                allEntities().filter( new ExactTypeMatching<>( type ) ),
-                allEntities().filter( new AssignableFromTypeMatching<>( type ) )
+                allEntities().filter( ref -> new ExactTypeMatching<>( type ).test( ref.model() ) ),
+                allEntities().filter( ref -> new AssignableFromTypeMatching<>( type ).test( ref.model() ) )
             ).distinct().collect( Collectors.toList() );
             allEntityModels.put( type, result );
         }
@@ -283,7 +284,7 @@ public class TypeLookup
             serviceReference = first( lookupServiceReferences( serviceType ) );
             if( serviceReference != null )
             {
-                serviceReferences.put( (Class) serviceType, serviceReference );
+                serviceReferences.put( serviceType, serviceReference );
             }
         }
 
@@ -321,13 +322,12 @@ public class TypeLookup
         {
             serviceRefs = concat(
                 allServices()
-                    .filter( ref -> ref.types().anyMatch( clazz -> clazz.equals( type ) ) ),
+                    .filter( new ExactTypeMatching<>( type  ) ),
                 allServices()
-                    .filter( ref -> ref.types().anyMatch(
-                                 t -> !( t.equals( type ) ) && ((Class)type).isAssignableFrom( t ) )
+                    .filter( new AssignableFromTypeMatching<>( type )
                     )
             ).distinct().collect( Collectors.toList() );
-            servicesReferences.put( (Class) type, serviceRefs );
+            servicesReferences.put( type, serviceRefs );
         }
         List<ServiceReference<T>> result = new ArrayList<>();
         //noinspection unchecked
@@ -412,7 +412,7 @@ public class TypeLookup
     )
     {
         List<ModelModule<T>> models = modelModules.stream()
-            .filter( matching )
+            .filter( ref -> matching.test( ref.model() ) )
             .filter( new SameVisibility<>() )
             .distinct()
             .collect( Collectors.toList() );
@@ -428,8 +428,8 @@ public class TypeLookup
         return models.get( 0 );
     }
 
-    private static abstract class TypeMatching<T extends ModelDescriptor>
-        implements Predicate<ModelModule<T>>
+    private static abstract class TypeMatching<T extends HasTypes>
+        implements Predicate<T>
     {
         protected final Type lookedUpType;
 
@@ -439,11 +439,11 @@ public class TypeLookup
         }
 
         @Override
-        public final boolean test( ModelModule<T> model )
+        public final boolean test( T model )
         {
             if( lookedUpType instanceof Class )
             {
-                return model.model().types().anyMatch( checkMatch( lookedUpType ) );
+                return model.types().anyMatch( checkMatch( lookedUpType ) );
             }
             else
             {
@@ -453,12 +453,12 @@ public class TypeLookup
                     // First check Foo
                     ParameterizedType parameterizedType = (ParameterizedType) lookedUpType;
                     Type rawType = parameterizedType.getRawType();
-                    if( !model.model().types().anyMatch( checkMatch( rawType ) ) )
+                    if( !model.types().anyMatch( checkMatch( rawType ) ) )
                     {
                         return false;
                     }
                     // Then check Bar
-                    return interfacesOf( model.model().types() ).anyMatch( intf -> intf.equals( lookedUpType ) );
+                    return interfacesOf( model.types() ).anyMatch( intf -> intf.equals( lookedUpType ) );
                 }
                 else if( lookedUpType instanceof WildcardType )
                 {
@@ -471,7 +471,7 @@ public class TypeLookup
         protected abstract Predicate<Type> checkMatch( Type matchTo );
     }
 
-    private static final class ExactTypeMatching<T extends ModelDescriptor> extends TypeMatching<T>
+    private static final class ExactTypeMatching<T extends HasTypes> extends TypeMatching<T>
     {
         private ExactTypeMatching( Type lookedUpType )
         {
@@ -484,7 +484,7 @@ public class TypeLookup
         }
     }
 
-    private static final class AssignableFromTypeMatching<T extends ModelDescriptor> extends TypeMatching<T>
+    private static final class AssignableFromTypeMatching<T extends HasTypes> extends TypeMatching<T>
     {
         private AssignableFromTypeMatching( Type lookedUpType )
         {
