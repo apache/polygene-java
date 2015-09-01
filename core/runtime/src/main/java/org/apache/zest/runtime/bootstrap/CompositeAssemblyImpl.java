@@ -695,23 +695,23 @@ public abstract class CompositeAssemblyImpl
 
     protected Stream<Class<?>> mixinDeclarations( Class<?> type )
     {
-        Stream<? extends Type> types = typesOf( type );
-        return mixinDeclarations( types );
+        //Stream<? extends Type> types = typesOf( type );
+        return mixinDeclarations( Arrays.asList( type ).stream() );
     }
 
-    private Stream<Class<?>> mixinDeclarations( Stream<? extends Type> types )
+    private Stream<Class<?>> mixinDeclarations( Stream<? extends Class> types )
     {
         return types.flatMap( this::getTypes )
             .filter( mixinType -> Annotations.annotationOn( mixinType, Mixins.class ) != null )
             .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Mixins.class ).value() ) );
     }
 
-    private Stream<Type> getAllTypes()
+    private Stream<Class> getAllTypes()
     {
         return this.types.stream().flatMap( this::getTypes );
     }
 
-    private Stream<? extends Type> getTypes( Type type )
+    private Stream<Class> getTypes( Type type )
     {
         if( type instanceof Class )
         {
