@@ -30,6 +30,7 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.usecase.UsecaseBuilder;
+import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializer;
 import org.apache.zest.api.value.ValueSerializer.Options;
@@ -190,7 +191,8 @@ public interface ElasticSearchIndexer
             try
             {
                 json.put( "_identity", state.identity().identity() );
-                json.put( "_types", state.entityDescriptor().mixinTypes().collect( Collectors.toList() ) );
+                json.put( "_types", state.entityDescriptor().mixinTypes().map( Classes.toClassName() ).collect( Collectors
+                                                                                                                   .toList() ) );
             }
             catch( JSONException e )
             {
