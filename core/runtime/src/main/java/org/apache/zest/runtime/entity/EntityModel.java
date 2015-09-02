@@ -16,7 +16,6 @@ package org.apache.zest.runtime.entity;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
@@ -32,7 +31,6 @@ import org.apache.zest.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.runtime.composite.CompositeMethodsModel;
 import org.apache.zest.runtime.composite.CompositeModel;
-import org.apache.zest.runtime.property.PropertyModel;
 import org.apache.zest.runtime.structure.ModuleUnitOfWork;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityAlreadyExistsException;
@@ -77,7 +75,7 @@ public final class EntityModel extends CompositeModel
             .filter( Annotations.isType( Queryable.class ) )
             .map( annot -> ( (Queryable) annot ).value() )
             .findFirst()
-            .orElse( false );
+            .orElse( true );
     }
 
     @Override
