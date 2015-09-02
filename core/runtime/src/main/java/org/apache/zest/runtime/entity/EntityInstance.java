@@ -288,7 +288,7 @@ public final class EntityInstance
                         .stream() )
                     .filter( entity -> entity != null )
             )
-        ).distinct().forEach( unitOfWork::remove );
+        ).distinct().collect( Collectors.toList() ).stream().forEach( unitOfWork::remove );
     }
 
     public void checkConstraints()
