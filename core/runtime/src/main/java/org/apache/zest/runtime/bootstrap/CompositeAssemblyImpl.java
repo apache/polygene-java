@@ -701,7 +701,7 @@ public abstract class CompositeAssemblyImpl
 
     private Stream<Class<?>> mixinDeclarations( Stream<? extends Class> types )
     {
-        return types.flatMap( this::getTypes )
+        return types.flatMap( this::getTypes ).flatMap( Classes::typesOf )
             .filter( mixinType -> Annotations.annotationOn( mixinType, Mixins.class ) != null )
             .flatMap( mixinType -> Arrays.stream( Annotations.annotationOn( mixinType, Mixins.class ).value() ) );
     }
@@ -711,20 +711,15 @@ public abstract class CompositeAssemblyImpl
         return this.types.stream().flatMap( this::getTypes );
     }
 
-    private Stream<Class> getTypes( Type type )
+    private Stream<Class> getTypes( Class<?> clazz )
     {
-        if( type instanceof Class )
+        if( clazz.isInterface() )
         {
-            Class<?> clazz = (Class<?>) type;
-            if( clazz.isInterface() )
-            {
-                return typesOf( clazz ).map( Classes.RAW_CLASS );
-            }
-            else
-            {
-                return classHierarchy( clazz ).map( Classes.RAW_CLASS );
-            }
+            return typesOf( clazz ).map( Classes.RAW_CLASS );
         }
-        throw new UnsupportedOperationException( "Unable to handle type " + type.getTypeName() );
+        else
+        {
+            return classHierarchy( clazz ).map( Classes.RAW_CLASS );
+        }
     }
 }
