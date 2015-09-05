@@ -81,7 +81,7 @@ public class EntitySerializerTest
         EntityReference entityReference = new EntityReference( "test2" );
         Usecase usecase = UsecaseBuilder.newUsecase( "Test" );
         long currentTime = System.currentTimeMillis();
-        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, module, currentTime );
+        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, currentTime );
         EntityState entityState = unitOfWork.entityStateOf( module, entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );

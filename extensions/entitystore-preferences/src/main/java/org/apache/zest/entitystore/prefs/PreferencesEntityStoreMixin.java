@@ -65,7 +65,6 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.EntityStoreSPI;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
-import org.apache.zest.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
 import org.apache.zest.spi.entitystore.helpers.DefaultEntityState;
 import org.apache.zest.spi.module.ModelModule;
@@ -170,11 +169,9 @@ public class PreferencesEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSpi module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
     {
-        EntityStoreUnitOfWork storeUnitOfWork = new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecase, currentTime );
-        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
-        return storeUnitOfWork;
+        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecase, currentTime );
     }
 
     @Override
@@ -195,7 +192,7 @@ public class PreferencesEntityStoreMixin
                         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "zest.entitystore.preferences.visit" );
                         Usecase visitUsecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
                         final EntityStoreUnitOfWork uow =
-                            newUnitOfWork( visitUsecase, module, System.currentTimeMillis() );
+                            newUnitOfWork( visitUsecase, System.currentTimeMillis() );
 
                         try
                         {
@@ -429,6 +426,27 @@ public class PreferencesEntityStoreMixin
             );
         }
         catch( ValueSerializationException | BackingStoreException e )
+        {
+            throw new EntityStoreException( e );
+        }
+    }
+
+    @Override
+    public String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity )
+    {
+        try
+        {
+            if( !root.nodeExists( identity.identity() ) )
+            {
+                throw new NoSuchEntityException( identity, UnknownType.class, unitOfWork.usecase() );
+            }
+
+            Preferences entityPrefs = root.node( identity.identity() );
+
+            String version = entityPrefs.get( "version", "" );
+            return version;
+        }
+        catch( BackingStoreException e )
         {
             throw new EntityStoreException( e );
         }

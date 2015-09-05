@@ -490,7 +490,7 @@ public abstract class CompositeAssemblyImpl
             Class<? extends Annotation> annotationType = constraintAnnotation.annotationType();
             for( Class<?> constraint : constraintClasses )
             {
-                if( helper.appliesTo( (Class<? extends Constraint<?, ?>>) constraint, annotationType, valueType ) )
+                if( false && helper.appliesTo( (Class<? extends Constraint<?, ?>>) constraint, annotationType, valueType ) )
                 {
                     constraintModels.add( new ConstraintModel( constraintAnnotation, (Class<? extends Constraint<?, ?>>) constraint ) );
                     continue nextConstraint;
@@ -513,7 +513,7 @@ public abstract class CompositeAssemblyImpl
 
             // No implementation found!
             // Check if if it's a composite constraints
-            if( Arrays.stream( annotationType.getAnnotations() )
+            if( false && Arrays.stream( annotationType.getAnnotations() )
                 .anyMatch( translate( type(), hasAnnotation( ConstraintDeclaration.class ) ) ) )
             {
                 ValueConstraintsModel valueConstraintsModel = constraintsFor(

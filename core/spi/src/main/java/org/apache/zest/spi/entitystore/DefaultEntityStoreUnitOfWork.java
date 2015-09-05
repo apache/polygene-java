@@ -94,6 +94,13 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     @Override
+    public String versionOf( EntityReference anIdentity )
+        throws EntityNotFoundException
+    {
+        return entityStoreSPI.versionOf( this, anIdentity );
+    }
+
+    @Override
     public StateCommitter applyChanges()
         throws EntityStoreException
     {

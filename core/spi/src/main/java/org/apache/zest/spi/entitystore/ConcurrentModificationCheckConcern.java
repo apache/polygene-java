@@ -48,10 +48,10 @@ public abstract class ConcurrentModificationCheckConcern
     private ZestAPI api;
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSpi module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
     {
-        final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, module, currentTime );
-        return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), module, currentTime );
+        final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, currentTime );
+        return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), currentTime );
     }
 
     private static class ConcurrentCheckingEntityStoreUnitOfWork
@@ -68,7 +68,6 @@ public abstract class ConcurrentModificationCheckConcern
 
         public ConcurrentCheckingEntityStoreUnitOfWork( EntityStoreUnitOfWork uow,
                                                         EntityStateVersions versions,
-                                                        ModuleSpi module,
                                                         long currentTime
         )
         {
@@ -108,7 +107,7 @@ public abstract class ConcurrentModificationCheckConcern
 
             try
             {
-                versions.checkForConcurrentModification( loaded, module, currentTime );
+                versions.checkForConcurrentModification( loaded, currentTime );
 
                 final StateCommitter committer = uow.applyChanges();
 
@@ -186,6 +185,14 @@ public abstract class ConcurrentModificationCheckConcern
             {
                 lock.readLock().unlock();
             }
+        }
+
+
+        @Override
+        public String versionOf( EntityReference anIdentity )
+            throws EntityStoreException
+        {
+            return uow.versionOf( anIdentity );
         }
     }
 }

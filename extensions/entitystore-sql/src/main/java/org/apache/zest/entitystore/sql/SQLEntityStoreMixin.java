@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.zest.api.cache.CacheOptions;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
@@ -44,7 +43,6 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.usecase.Usecase;
-import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.entitystore.sql.internal.DatabaseSQLService;
 import org.apache.zest.entitystore.sql.internal.DatabaseSQLService.EntityValueResult;
@@ -65,7 +63,6 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.EntityStoreSPI;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
-import org.apache.zest.spi.entitystore.ModuleEntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
 import org.apache.zest.spi.entitystore.helpers.DefaultEntityState;
 import org.apache.zest.spi.entitystore.helpers.JSONKeys;
@@ -240,6 +237,23 @@ public class SQLEntityStoreMixin
     }
 
     @Override
+    public String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference entityRef )
+    {
+        EntityValueResult valueResult = getValue( entityRef );
+        Reader entityState = valueResult.getReader();
+        try
+        {
+            JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
+            final String version = jsonObject.getString( JSONKeys.VERSION );
+            return version;
+        }
+        catch( JSONException e )
+        {
+            throw new EntityStoreException( e );
+        }
+    }
+
+    @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
                                        ModuleSpi module,
                                        EntityReference entityRef,
@@ -250,12 +264,9 @@ public class SQLEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, ModuleSpi module, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
     {
-        EntityStoreUnitOfWork storeUnitOfWork =
-            new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), usecase, currentTime );
-        storeUnitOfWork = new ModuleEntityStoreUnitOfWork( module, storeUnitOfWork );
-        return storeUnitOfWork;
+        return new DefaultEntityStoreUnitOfWork( entityStoreSPI, newUnitOfWorkId(), usecase, currentTime );
     }
 
     @Override
@@ -295,12 +306,6 @@ public class SQLEntityStoreMixin
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "zest.entitystore.sql.visit" );
-        Usecase usecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
-
-        // TODO: This unit of work creation seem to not be cleaned up properly... CHECK!!!
-        final ModuleEntityStoreUnitOfWork uow =
-            (ModuleEntityStoreUnitOfWork) newUnitOfWork( usecase, module, System.currentTimeMillis() );
         try
         {
             connection = database.getConnection();

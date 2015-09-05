@@ -99,7 +99,6 @@ public interface ElasticSearchIndexer
 
             EntityStoreUnitOfWork uow = entityStore.newUnitOfWork(
                 UsecaseBuilder.newUsecase( "Load associations for indexing" ),
-                module,
                 System.currentTimeMillis()
             );
 
