@@ -200,6 +200,19 @@ public class JSONMapEntityStoreMixin
                                                    EntityReference identity
     )
     {
+        CacheState cacheState = cache.get( identity.identity() );
+        if( cacheState != null )
+        {
+            try
+            {
+                return cacheState.json.getString( JSONKeys.VERSION );
+            }
+            catch( JSONException e )
+            {
+                // Should not be able to happen, unless internal error in the cache system.
+                throw new EntityStoreException( e );
+            }
+        }
         // Get state
         Reader entityState = mapEntityStore.get( identity );
         try

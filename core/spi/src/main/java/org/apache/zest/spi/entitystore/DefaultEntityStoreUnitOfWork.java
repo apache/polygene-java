@@ -97,6 +97,11 @@ public final class DefaultEntityStoreUnitOfWork
     public String versionOf( EntityReference anIdentity )
         throws EntityNotFoundException
     {
+        EntityState entityState = states.get( anIdentity );
+        if( entityState != null )
+        {
+            return entityState.version();
+        }
         return entityStoreSPI.versionOf( this, anIdentity );
     }
 
