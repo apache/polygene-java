@@ -23,6 +23,7 @@ import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
@@ -53,103 +54,84 @@ public class AggregatedTest
         CompanyEntity companyEntity;
         PersonEntity personEntity, personEntity2;
         EmployeeEntity employeeEntity, employeeEntity2;
+        try( UnitOfWork unitOfWork = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Creation" ) ) )
         {
-            UnitOfWork unitOfWork = module.newUnitOfWork();
-            try
             {
-                {
-                    EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
-                    personEntity = builder.instance();
-                    personEntity.name().set( "Rickard" );
-                    personEntity = builder.newInstance();
-                }
-
-                {
-                    EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
-                    personEntity2 = builder.instance();
-                    personEntity2.name().set( "Niclas" );
-                    builder.newInstance();
-                }
-
-                {
-                    EntityBuilder<EmployeeEntity> builder = unitOfWork.newEntityBuilder( EmployeeEntity.class );
-                    employeeEntity = builder.instance();
-                    employeeEntity.person().set( personEntity );
-                    employeeEntity.salary().set( 50000 );
-                    employeeEntity.title().set( "Director" );
-                    employeeEntity = builder.newInstance();
-                }
-
-                {
-                    EntityBuilder<EmployeeEntity> builder = unitOfWork.newEntityBuilder( EmployeeEntity.class );
-                    employeeEntity2 = builder.instance();
-                    employeeEntity2.person().set( personEntity );
-                    employeeEntity2.salary().set( 40000 );
-                    employeeEntity2.title().set( "Developer" );
-                    employeeEntity2 = builder.newInstance();
-                }
-
-                {
-                    EntityBuilder<CompanyEntity> builder = unitOfWork.newEntityBuilder( CompanyEntity.class );
-                    companyEntity = builder.instance();
-                    companyEntity.director().set( employeeEntity );
-                    companyEntity.employees().add( 0, employeeEntity );
-                    companyEntity.employees().add( 0, employeeEntity2 );
-                    companyEntity = builder.newInstance();
-                }
-
-                unitOfWork.complete();
+                EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
+                personEntity = builder.instance();
+                personEntity.name().set( "Rickard" );
+                personEntity = builder.newInstance();
             }
-            finally
+
             {
-                unitOfWork.discard();
+                EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
+                personEntity2 = builder.instance();
+                personEntity2.name().set( "Niclas" );
+                builder.newInstance();
             }
+
+            {
+                EntityBuilder<EmployeeEntity> builder = unitOfWork.newEntityBuilder( EmployeeEntity.class );
+                employeeEntity = builder.instance();
+                employeeEntity.person().set( personEntity );
+                employeeEntity.salary().set( 50000 );
+                employeeEntity.title().set( "Director" );
+                employeeEntity = builder.newInstance();
+            }
+
+            {
+                EntityBuilder<EmployeeEntity> builder = unitOfWork.newEntityBuilder( EmployeeEntity.class );
+                employeeEntity2 = builder.instance();
+                employeeEntity2.person().set( personEntity );
+                employeeEntity2.salary().set( 40000 );
+                employeeEntity2.title().set( "Developer" );
+                employeeEntity2 = builder.newInstance();
+            }
+
+            {
+                EntityBuilder<CompanyEntity> builder = unitOfWork.newEntityBuilder( CompanyEntity.class );
+                companyEntity = builder.instance();
+                companyEntity.director().set( employeeEntity );
+                companyEntity.employees().add( 0, employeeEntity );
+                companyEntity.employees().add( 0, employeeEntity2 );
+                companyEntity = builder.newInstance();
+            }
+
+            unitOfWork.complete();
         }
 
+        try( UnitOfWork unitOfWork = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Removal" ) ) )
         {
-            UnitOfWork unitOfWork = module.newUnitOfWork();
-            try
-            {
-                companyEntity = unitOfWork.get( companyEntity );
-                unitOfWork.remove( companyEntity );
+            companyEntity = unitOfWork.get( companyEntity );
+            unitOfWork.remove( companyEntity );
 
-                unitOfWork.complete();
-            }
-            finally
-            {
-                unitOfWork.discard();
-            }
+            unitOfWork.complete();
         }
 
+        try( UnitOfWork unitOfWork = module.newUnitOfWork( UsecaseBuilder.newUsecase( "No 1st employee" ) ) )
         {
-            UnitOfWork unitOfWork = module.newUnitOfWork();
-            try
-            {
-                unitOfWork.get( employeeEntity );
-
-                fail( "Should not work" );
-
-                unitOfWork.complete();
-            }
-            catch( NoSuchEntityException e )
-            {
-                unitOfWork.discard();
-            }
+            unitOfWork.get( employeeEntity );
+            fail( "Should not work" );
+        }
+        catch( NoSuchEntityException e )
+        {
+            // Expected
         }
 
+        try( UnitOfWork unitOfWork = module.newUnitOfWork( UsecaseBuilder.newUsecase( "No 2nd employee" ) ) )
         {
-            UnitOfWork unitOfWork = module.newUnitOfWork();
-            try
-            {
-                unitOfWork.get( employeeEntity2 );
-                fail( "Should not work" );
+            unitOfWork.get( employeeEntity2 );
+            fail( "Should not work" );
+        }
+        catch( NoSuchEntityException e )
+        {
+            // Expected
+        }
 
-                unitOfWork.complete();
-            }
-            catch( NoSuchEntityException e )
-            {
-                unitOfWork.discard();
-            }
+        try( UnitOfWork unitOfWork = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Persons not removed" ) ) )
+        {
+            unitOfWork.get( personEntity );
+            unitOfWork.get( personEntity2 );
         }
     }
 

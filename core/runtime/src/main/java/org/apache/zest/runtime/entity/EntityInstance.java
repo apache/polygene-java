@@ -18,6 +18,7 @@ package org.apache.zest.runtime.entity;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.zest.api.association.AssociationDescriptor;
@@ -272,13 +273,13 @@ public final class EntityInstance
             stateDescriptor.associations()
                 .filter( AssociationDescriptor::isAggregated )
                 .map( association -> state.associationFor( association.accessor() ).get() )
-                .filter( entity -> entity != null ),
+                .filter( Objects::nonNull ),
 
             Stream.concat(
                 stateDescriptor.manyAssociations()
                     .filter( AssociationDescriptor::isAggregated )
                     .flatMap( association -> state.manyAssociationFor( association.accessor() ).toList().stream() )
-                    .filter( entity -> entity != null ),
+                    .filter( Objects::nonNull ),
 
                 stateDescriptor.namedAssociations()
                     .filter( AssociationDescriptor::isAggregated )
@@ -286,7 +287,7 @@ public final class EntityInstance
                         .toMap()
                         .values()
                         .stream() )
-                    .filter( entity -> entity != null )
+                    .filter( Objects::nonNull )
             )
         ).distinct().collect( Collectors.toList() ).stream().forEach( unitOfWork::remove );
     }
