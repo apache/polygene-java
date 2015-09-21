@@ -107,3 +107,5 @@ So, build the report, send it via the MailService.
 
 In this short introduction, we have covered the essence of Zest™. We have looked at what is a Composite, seen some of the
 Fragments in action, and how simple it is to turn a Composite into a persisted Composite, known as an EntityComposite.
+
+Next step, <<thirty-minutes-intro>>.
