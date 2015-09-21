@@ -72,3 +72,5 @@ tag=documentation
 . We create the Composite instance from the Module.
 
 *Done!*
+
+Next step, <<ten-minutes-intro>>.
