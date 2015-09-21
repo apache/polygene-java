@@ -30,8 +30,8 @@ this tutorial, run it and play with it.
 
 In this section you will find a comprehensive set of tutorials about Composite Oriented Programming using Zest™.
 
-[[tutorials-intro,Zest™ in 2 hours 42 minutes]]
-=== Zest™ in 2 hours 42 minutes ===
+[[tutorials-intro,Zest™ in 42 minutes]]
+=== Zest™ in 42 minutes ===
 
 This quite long introduction to Zest™ will start by brushing up an overview of the problems Zest™ solve, teach you what
 Composite Oriented Programming is and guide you through the process of writing a complete Application around an adapted
@@ -40,7 +40,7 @@ Hello World example.
 - <<two-minutes-intro>>
 - <<ten-minutes-intro>>
 - <<thirty-minutes-intro>>
-- <<two-hours-intro>>
+// - <<two-hours-intro>>
 
 === Getting real with Zest™ ===
 
@@ -91,9 +91,9 @@ include::../../../../tutorials/introduction/thirtyminutes/src/docs/thirty-minute
 
 :leveloffset: 2
 
-include::../../../../tutorials/introduction/twohours/src/docs/two-hours.txt[]
-
-:leveloffset: 2
+// include::../../../../tutorials/introduction/twohours/src/docs/two-hours.txt[]
+//
+// :leveloffset: 2
 
 include::../tutorials/howto-depend-on-zest.txt[]
 
