@@ -15,28 +15,17 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.qi4j.bootstrap.assembly;
 
-import org.junit.Test;
-import org.qi4j.api.activation.ActivationException;
-import org.qi4j.api.structure.Application;
+package org.qi4j.bootstrap.layered;
+
 import org.qi4j.bootstrap.AssemblyException;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
-public class LayeredApplicationAssemblerTest
+public class IllegalLayerAssemblerException extends AssemblyException
 {
-    @Test
-    public void validateThatAssemblerCreatesApplication()
-        throws AssemblyException, ActivationException
+    public IllegalLayerAssemblerException( String message )
     {
-        TestApplication assembler = new TestApplication( "Test Application", "1.0.1", Application.Mode.test );
-        assembler.initialize();
-        assembler.start();
-
-        assertThat( assembler.application().name(), equalTo("Test Application") );
-        assertThat( assembler.application().version(), equalTo("1.0.1") );
+        super( message );
     }
 }
