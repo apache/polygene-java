@@ -41,3 +41,9 @@ dependencies {
   testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
   testRuntime libraries.logback
 }
+
+task runSample( type: JavaExec, dependsOn: 'testClasses' ) {
+    classpath = sourceSets.test.runtimeClasspath
+    main = 'org.apache.zest.library.restlet.TestApplication'
+}
+
