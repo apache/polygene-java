@@ -32,11 +32,10 @@ dependencies {
   compile project( ":org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf" )
   compile libraries.servlet_api
 
-  runtime libraries.logback
-
   testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
 
   testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
+  testRuntime libraries.logback
 
 }
 
