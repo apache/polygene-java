@@ -26,14 +26,17 @@ dependencies {
   compile project( ":org.qi4j.core:org.qi4j.core.bootstrap" )
   compile project( ":org.qi4j.libraries:org.qi4j.library.rest-server" )
   compile project( ":org.qi4j.libraries:org.qi4j.library.fileconfig" )
-  compile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-file" )
   compile project( ":org.qi4j.extensions:org.qi4j.extension.valueserialization-orgjson" )
+  compile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-memory" )
+  compile project( ":org.qi4j.extensions:org.qi4j.extension.entitystore-file" )
+  compile project( ":org.qi4j.extensions:org.qi4j.extension.indexing-rdf" )
   compile libraries.servlet_api
+
+  runtime libraries.logback
 
   testCompile project( ":org.qi4j.core:org.qi4j.core.testsupport" )
 
   testRuntime project( ":org.qi4j.core:org.qi4j.core.runtime" )
-  testRuntime libraries.logback
 
 }
 

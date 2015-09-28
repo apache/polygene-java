@@ -27,6 +27,7 @@ import org.qi4j.api.structure.Module;
 import org.qi4j.samples.forum.context.Events;
 import org.qi4j.samples.forum.context.signup.Registration;
 
+import static org.qi4j.api.query.QueryExpressions.eq;
 import static org.qi4j.api.query.QueryExpressions.templateFor;
 
 /**
@@ -38,7 +39,9 @@ public interface Users
 {
     String USERS_ID = "users";
 
-    public Query<User> users();
+    Query<User> users();
+
+    User userNamed( String name );
 
     abstract class Mixin
         implements Users
@@ -46,11 +49,20 @@ public interface Users
         @Structure
         Module module;
 
+        @Override
         public Query<User> users()
         {
             return module.currentUnitOfWork()
                 .newQuery( module.newQueryBuilder( User.class ) )
                 .orderBy( templateFor( User.class ).realName() );
+        }
+
+        @Override
+        public User userNamed( String name )
+        {
+            return module.currentUnitOfWork().newQuery(
+                module.newQueryBuilder( User.class ).where( eq( templateFor( User.class ).name(), name ) )
+            ).find();
         }
 
         @Override

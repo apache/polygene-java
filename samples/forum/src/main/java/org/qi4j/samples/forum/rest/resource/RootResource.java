@@ -19,7 +19,6 @@
 package org.qi4j.samples.forum.rest.resource;
 
 import java.util.Collections;
-import org.qi4j.api.query.QueryExpressions;
 import org.qi4j.library.rest.server.api.ContextResource;
 import org.qi4j.library.rest.server.api.SubResource;
 import org.qi4j.library.rest.server.api.constraint.Requires;
@@ -62,12 +61,7 @@ public class RootResource
             throw new ResourceException( Status.CLIENT_ERROR_UNAUTHORIZED );
         }
 
-        User user = module.currentUnitOfWork().newQuery( module.newQueryBuilder( User.class ).where( QueryExpressions
-                                                                                                         .eq( QueryExpressions
-                                                                                                                  .templateFor( User.class )
-                                                                                                                  .name(), challenge
-                                                                                                             .getIdentifier() ) ) )
-            .find();
+        User user = select( Users.class, Users.USERS_ID ).userNamed( challenge.getIdentifier() );
         if( user == null || !user.isCorrectPassword( new String( challenge.getSecret() ) ) )
         {
             throw new ResourceException( Status.CLIENT_ERROR_UNAUTHORIZED );

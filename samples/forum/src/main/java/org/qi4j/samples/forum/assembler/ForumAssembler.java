@@ -32,24 +32,25 @@ import org.qi4j.bootstrap.ClassScanner;
 import org.qi4j.bootstrap.LayerAssembly;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.entitystore.file.assembly.FileEntityStoreAssembler;
-import org.qi4j.entitystore.memory.MemoryEntityStoreService;
+import org.qi4j.entitystore.memory.MemoryEntityStoreAssembler;
 import org.qi4j.functional.Function;
-import org.qi4j.library.fileconfig.FileConfigurationService;
+import org.qi4j.index.rdf.assembly.RdfNativeSesameStoreAssembler;
+import org.qi4j.library.fileconfig.FileConfigurationAssembler;
+import org.qi4j.library.rdf.repository.NativeConfiguration;
 import org.qi4j.library.rest.common.ValueAssembler;
 import org.qi4j.library.rest.server.assembler.RestServerAssembler;
 import org.qi4j.library.rest.server.restlet.RequestReaderDelegator;
 import org.qi4j.library.rest.server.restlet.ResponseWriterDelegator;
 import org.qi4j.library.rest.server.spi.CommandResult;
 import org.qi4j.samples.forum.context.Context;
+import org.qi4j.samples.forum.domainevent.DomainCommandResult;
+import org.qi4j.samples.forum.rest.resource.RootResource;
 import org.qi4j.samples.forum.context.EventsService;
 import org.qi4j.samples.forum.data.entity.User;
-import org.qi4j.samples.forum.domainevent.DomainCommandResult;
 import org.qi4j.samples.forum.domainevent.DomainEventValue;
 import org.qi4j.samples.forum.domainevent.ParameterValue;
 import org.qi4j.samples.forum.rest.ForumRestlet;
-import org.qi4j.samples.forum.rest.resource.RootResource;
 import org.qi4j.samples.forum.service.BootstrapData;
-import org.qi4j.spi.uuid.UuidIdentityGeneratorService;
 import org.qi4j.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.service.MetadataService;
 
@@ -76,17 +77,14 @@ public class ForumAssembler
         LayerAssembly configuration = assembly.layer( "Configuration" );
         {
             configModule = configuration.module( "Configuration" );
-            configModule.services( MemoryEntityStoreService.class );
-            configModule.services( UuidIdentityGeneratorService.class );
             new OrgJsonValueSerializationAssembler().assemble( configModule );
+            new MemoryEntityStoreAssembler().assemble( configModule );
+            new FileConfigurationAssembler().visibleIn( Visibility.application ).assemble( configModule );
         }
 
         LayerAssembly infrastructure = assembly.layer( "Infrastructure" ).uses( configuration );
         {
-            ModuleAssembly entityStore = infrastructure.module( "EntityStore" );
-            entityStore.services( FileConfigurationService.class );
-            new FileEntityStoreAssembler().withConfig( configModule, Visibility.application ).assemble( entityStore );
-            entityStore.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
+            ModuleAssembly serialization = infrastructure.module( "Serialization" );
             new OrgJsonValueSerializationAssembler().
                 visibleIn( Visibility.application ).
                 withValuesModuleFinder( new Function<Application, Module>()
@@ -97,7 +95,18 @@ public class ForumAssembler
                     return app.findModule( "REST", "Values" );
                 }
             } ).
-                assemble( entityStore );
+                assemble( serialization );
+
+            ModuleAssembly entityStore = infrastructure.module( "EntityStore" );
+            new FileEntityStoreAssembler()
+                .visibleIn( Visibility.application )
+                .withConfig( configModule, Visibility.application )
+                .assemble( entityStore );
+
+            ModuleAssembly indexQuery = infrastructure.module( "IndexQuery" );
+            new RdfNativeSesameStoreAssembler( Visibility.application, Visibility.application )
+                .assemble( indexQuery );
+            configModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         }
 
         LayerAssembly data = assembly.layer( "Data" ).uses( infrastructure );
