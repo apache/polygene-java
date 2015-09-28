@@ -19,11 +19,9 @@
 package org.apache.zest.sample.forum.assembler;
 
 import java.lang.reflect.Modifier;
-import java.util.function.Function;
+
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityComposite;
-import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.ApplicationAssembler;
 import org.apache.zest.bootstrap.ApplicationAssembly;
@@ -33,8 +31,10 @@ import org.apache.zest.bootstrap.ClassScanner;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.file.assembly.FileEntityStoreAssembler;
-import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
+import org.apache.zest.entitystore.memory.MemoryEntityStoreAssembler;
+import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
+import org.apache.zest.library.fileconfig.FileConfigurationAssembler;
+import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.library.rest.common.ValueAssembler;
 import org.apache.zest.library.rest.server.assembler.RestServerAssembler;
 import org.apache.zest.library.rest.server.restlet.RequestReaderDelegator;
@@ -49,7 +49,6 @@ import org.apache.zest.sample.forum.domainevent.DomainEventValue;
 import org.apache.zest.sample.forum.domainevent.ParameterValue;
 import org.apache.zest.sample.forum.rest.ForumRestlet;
 import org.apache.zest.sample.forum.service.BootstrapData;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
 import org.restlet.service.MetadataService;
 
@@ -75,21 +74,29 @@ public class ForumAssembler
         LayerAssembly configuration = assembly.layer( "Configuration" );
         {
             configModule = configuration.module( "Configuration" );
-            configModule.services( MemoryEntityStoreService.class );
-            configModule.services( UuidIdentityGeneratorService.class );
             new OrgJsonValueSerializationAssembler().assemble( configModule );
+            new MemoryEntityStoreAssembler().assemble( configModule );
+            new FileConfigurationAssembler().visibleIn( Visibility.application ).assemble( configModule );
         }
 
         LayerAssembly infrastructure = assembly.layer( "Infrastructure" ).uses( configuration );
         {
-            ModuleAssembly entityStore = infrastructure.module( "EntityStore" );
-            entityStore.services( FileConfigurationService.class );
-            new FileEntityStoreAssembler().withConfig( configModule, Visibility.application ).assemble( entityStore );
-            entityStore.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.application );
+            ModuleAssembly serialization = infrastructure.module( "Serialization" );
             new OrgJsonValueSerializationAssembler().
                 visibleIn( Visibility.application ).
                 withValuesModuleFinder( app -> app.findModule( "REST", "Values" ) ).
-                assemble( entityStore );
+                assemble( serialization );
+
+            ModuleAssembly entityStore = infrastructure.module( "EntityStore" );
+            new FileEntityStoreAssembler()
+                .visibleIn( Visibility.application )
+                .withConfig( configModule, Visibility.application )
+                .assemble( entityStore );
+
+            ModuleAssembly indexQuery = infrastructure.module( "IndexQuery" );
+            new RdfNativeSesameStoreAssembler( Visibility.application, Visibility.application )
+                .assemble( indexQuery );
+            configModule.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         }
 
         LayerAssembly data = assembly.layer( "Data" ).uses( infrastructure );

@@ -27,6 +27,7 @@ import org.apache.zest.api.structure.Module;
 import org.apache.zest.sample.forum.context.Events;
 import org.apache.zest.sample.forum.context.signup.Registration;
 
+import static org.apache.zest.api.query.QueryExpressions.eq;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 
 /**
@@ -38,7 +39,9 @@ public interface Users
 {
     String USERS_ID = "users";
 
-    public Query<User> users();
+    Query<User> users();
+
+    User userNamed( String name );
 
     abstract class Mixin
         implements Users
@@ -46,11 +49,20 @@ public interface Users
         @Structure
         Module module;
 
+        @Override
         public Query<User> users()
         {
             return module.currentUnitOfWork()
                 .newQuery( module.newQueryBuilder( User.class ) )
                 .orderBy( templateFor( User.class ).realName() );
+        }
+
+        @Override
+        public User userNamed( String name )
+        {
+            return module.currentUnitOfWork().newQuery(
+                module.newQueryBuilder( User.class ).where( eq( templateFor( User.class ).name(), name ) )
+            ).find();
         }
 
         @Override

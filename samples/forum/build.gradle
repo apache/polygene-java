@@ -26,18 +26,21 @@ dependencies {
   compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
   compile project( ":org.apache.zest.libraries:org.apache.zest.library.rest-server" )
   compile project( ":org.apache.zest.libraries:org.apache.zest.library.fileconfig" )
-  compile project( ":org.apache.zest.extensions:org.apache.zest.extension.entitystore-file" )
   compile project( ":org.apache.zest.extensions:org.apache.zest.extension.valueserialization-orgjson" )
+  compile project( ":org.apache.zest.extensions:org.apache.zest.extension.entitystore-memory" )
+  compile project( ":org.apache.zest.extensions:org.apache.zest.extension.entitystore-file" )
+  compile project( ":org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf" )
   compile libraries.servlet_api
+
+  runtime libraries.logback
 
   testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
 
   testRuntime project( ":org.apache.zest.core:org.apache.zest.core.runtime" )
-  testRuntime libraries.logback
 
 }
 
 task(runSample, dependsOn: 'testClasses', type: JavaExec) {
-    main = 'org.apache.zest.samples.forum.web.Main'
+    main = 'org.apache.zest.sample.forum.web.Main'
     classpath = sourceSets.test.runtimeClasspath
 }

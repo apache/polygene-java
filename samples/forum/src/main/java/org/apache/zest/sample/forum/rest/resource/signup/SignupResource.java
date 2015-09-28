@@ -40,6 +40,7 @@ public class SignupResource
         form.set( "name", "Rickard" );
         form.set( "realName", "Rickard Öberg" );
         form.set( "password", "rickard" );
+        form.set( "email", "rickard@zest" );
         return form;
     }
 }
