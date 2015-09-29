@@ -46,6 +46,7 @@ public abstract class LayeredApplicationAssembler
     private final HashMap<Class<? extends LayerAssembler>, LayerAssembler> assemblers = new HashMap<>();
 
     private ApplicationAssembly assembly;
+    protected ApplicationDescriptor model;
     protected Application application;
 
     public LayeredApplicationAssembler( String name, String version, Application.Mode mode )
@@ -60,7 +61,7 @@ public abstract class LayeredApplicationAssembler
     public void initialize()
         throws AssemblyException
     {
-        ApplicationDescriptor model = zest.newApplicationModel( this );
+        model = zest.newApplicationModel( this );
         onModelCreated( model );
         instantiateApplication( zest, model );
     }
@@ -71,7 +72,8 @@ public abstract class LayeredApplicationAssembler
     }
 
     /**
-     * This method is called from the constructor to instantiate the Zest application from the application model.
+     * This method is called from the <code>initialize</code> method to instantiate the Zest application from the
+     * application model.
      *
      * <p>
      * The default implementation simply calls;
@@ -102,6 +104,11 @@ public abstract class LayeredApplicationAssembler
      */
     protected void onModelCreated( ApplicationDescriptor model )
     {
+    }
+
+    public ApplicationDescriptor model()
+    {
+        return model;
     }
 
     public Application application()
@@ -274,10 +281,10 @@ public abstract class LayeredApplicationAssembler
     }
 
     /**
-     * Called from the constructor to assemble the layers in the applcation.
+     * Called from the <code>assemble</code> method to assemble the layers in the applcation.
      *
      * <p>
-     * This method must be implemented, and is typically a list of LayerAssmebler instantitations, followed
+     * This method must be implemented, and is typically a list of LayerAssembler instantitations, followed
      * by {@link LayerAssembly#uses(LayerAssembly...)} declarations.
      * </p>
      * <pre><code>
