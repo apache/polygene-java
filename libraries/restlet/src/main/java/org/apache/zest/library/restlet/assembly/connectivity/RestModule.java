@@ -15,9 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
  */
-
 package org.apache.zest.library.restlet.assembly.connectivity;
 
 import org.apache.zest.bootstrap.AssemblyException;
@@ -30,7 +28,7 @@ import org.apache.zest.library.restlet.resource.EntryPoint;
 public class RestModule
     implements ModuleAssembler
 {
-    public static String NAME;
+    public static final String NAME = "REST Module";
 
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )

@@ -15,30 +15,30 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
  */
-
 package org.apache.zest.library.restlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
+import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.library.restlet.metainfo.UserIdentity;
 import org.apache.zest.library.restlet.repository.RepositoryLocator;
+import org.apache.zest.library.restlet.resource.DefaultResourceFactoryImpl;
 import org.apache.zest.library.restlet.resource.NotPresentException;
 import org.apache.zest.library.restlet.resource.ResourceFactory;
 import org.apache.zest.library.restlet.resource.ServerResource;
@@ -59,6 +59,29 @@ import org.restlet.security.User;
 
 public class ZestEntityRestlet<T extends Identity> extends Restlet
 {
+    /**
+     * Creates a new ZestEntityRestlet instance for the given resource and entity classes.
+     * <p>
+     * This utility method should be used in your org.restlet.Application to create routes.
+     *
+     * @param <K>           Parameterized type of the resource
+     * @param <T>           Parameterized type of the entity
+     * @param module        Module to use for object instanciation
+     * @param router        Restlet Router
+     * @param resourceClass Resource class
+     * @param entityClass   Entity class
+     *
+     * @return The ZestEntityRestlet instance
+     */
+    public static <K extends Identity, T extends ServerResource<K>> Restlet newInstance(
+        Module module, Router router, Class<T> resourceClass, Class<K> entityClass
+    )
+    {
+        @SuppressWarnings( "unchecked" )
+        ResourceFactory<K, T> factory = module.newObject( DefaultResourceFactoryImpl.class, resourceClass, router );
+        return module.newObject( ZestEntityRestlet.class, factory, router, entityClass, new ZestConverter( module ) );
+    }
+
     @Structure
     private ValueBuilderFactory vbf;
 
@@ -253,18 +276,19 @@ public class ZestEntityRestlet<T extends Identity> extends Restlet
 
     private UnitOfWork createUnitOfWork( Request request )
     {
+        UsecaseBuilder usecaseBuilder = UsecaseBuilder.buildUsecase( request.getResourceRef().getIdentifier( true ) );
         User user = request.getClientInfo().getUser();
-        UserIdentity userIdentity = new UserIdentity( user.getIdentifier(),
-                                                      user.getName(),
-                                                      user.getEmail(),
-                                                      user.getFirstName(),
-                                                      user.getLastName()
-        );
-        Usecase usecase = UsecaseBuilder
-            .buildUsecase( request.getResourceRef().getIdentifier( true ) )
-            .withMetaInfo( userIdentity )
-            .newUsecase();
-        return uowf.newUnitOfWork( usecase );
+        if( user != null )
+        {
+            UserIdentity userIdentity = new UserIdentity( user.getIdentifier(),
+                                                          user.getName(),
+                                                          user.getEmail(),
+                                                          user.getFirstName(),
+                                                          user.getLastName()
+            );
+            usecaseBuilder.withMetaInfo( userIdentity );
+        }
+        return uowf.newUnitOfWork( usecaseBuilder.newUsecase() );
     }
 
     private <K> K convertToObject( Class<K> type, Request request )

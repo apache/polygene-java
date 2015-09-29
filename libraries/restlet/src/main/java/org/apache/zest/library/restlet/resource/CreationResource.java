@@ -37,10 +37,10 @@ import org.apache.zest.library.restlet.identity.IdentityManager;
 import org.apache.zest.library.restlet.repository.RepositoryLocator;
 import org.restlet.data.Method;
 
-@Mixins( CreationResource.CreateHostMixin.class )
+@Mixins( CreationResource.Mixin.class )
 public interface CreationResource<T extends Identity> extends ServerResource<T>
 {
-    abstract class CreateHostMixin<T extends Identity>
+    abstract class Mixin<T extends Identity>
         implements CreationResource<T>
     {
         @Structure

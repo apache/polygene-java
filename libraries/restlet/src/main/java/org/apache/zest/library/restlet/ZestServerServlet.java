@@ -15,16 +15,36 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
  */
-
 package org.apache.zest.library.restlet;
 
-import org.apache.zest.api.property.Property;
+import javax.servlet.Servlet;
 
-public interface RestLink extends HasDescription
+import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.mixin.Mixins;
+import org.apache.zest.api.structure.Module;
+import org.restlet.Context;
+import org.restlet.ext.servlet.ServerServlet;
+
+/**
+ * Restlet ServerServlet backed by a org.restlet.Application object.
+ */
+@Mixins( ZestServerServlet.Mixin.class )
+public interface ZestServerServlet
+    extends Servlet
 {
-    Property<String> method();
+    class Mixin
+        extends ServerServlet
+    {
+        private static final long serialVersionUID = 1L;
 
-    Property<String> path();
+        @Structure
+        private Module module;
+
+        @Override
+        protected org.restlet.Application createApplication( Context parentContext )
+        {
+            return module.newObject( org.restlet.Application.class, parentContext.createChildContext() );
+        }
+    }
 }

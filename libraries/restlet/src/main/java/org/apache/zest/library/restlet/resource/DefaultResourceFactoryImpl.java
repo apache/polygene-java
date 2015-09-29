@@ -86,7 +86,7 @@ public class DefaultResourceFactoryImpl<K extends Identity, T extends ServerReso
             Object id = attributes.get( "id" );
             if( id == null )
             {
-                throw new IllegalArgumentException( resourceType.getName() + " implements Identity and must have an {id} attribute in the path templatee." );
+                throw new IllegalArgumentException( resourceType.getName() + " implements Identity and must have an {id} attribute in the path template." );
             }
             return id;
         }

@@ -15,10 +15,10 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
  */
 package org.apache.zest.library.restlet.assembly;
 
+import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -46,16 +46,24 @@ public class RestletCrudConnectivityAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.values( EntryPointResource.class );
-        module.values( EntityListResource.class );
-        module.values( EntityResource.class );
-        module.values( CreationResource.class );
-        module.values( Command.class, FormField.class, RestForm.class, RestLink.class, EntityList.class, EntityRef.class );
-        module.objects( DefaultResourceFactoryImpl.class );
-        module.objects( JsonRepresentation.class );
-        module.objects( FormRepresentation.class );
-        module.objects( ZestEntityRestlet.class );
-        module.services( ResourceBuilder.class );
+        module.values( EntryPointResource.class,
+                       EntityListResource.class,
+                       EntityResource.class,
+                       CreationResource.class )
+            .visibleIn( Visibility.layer );
+        module.values( Command.class,
+                       FormField.class,
+                       RestForm.class,
+                       RestLink.class,
+                       EntityList.class,
+                       EntityRef.class )
+            .visibleIn( Visibility.layer );
+        module.objects( DefaultResourceFactoryImpl.class,
+                        JsonRepresentation.class,
+                        FormRepresentation.class,
+                        ZestEntityRestlet.class )
+            .visibleIn( Visibility.layer );
+        module.services( ResourceBuilder.class ).visibleIn( Visibility.layer );
         new JacksonValueSerializationAssembler().assemble( module );
     }
 }

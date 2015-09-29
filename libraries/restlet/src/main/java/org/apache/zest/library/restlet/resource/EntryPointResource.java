@@ -72,7 +72,7 @@ public interface EntryPointResource extends ServerResource<EntryPoint>
                     TemplateRoute route = (TemplateRoute) r;
                     Template template = route.getTemplate();
                     // Only include patterns that doesn't have variables, and has a proper name.
-                    if( template.getVariableNames().size() == 0 && route.getName().indexOf( '>' ) == -1 )
+                    if( template.getVariableNames().isEmpty() && route.getName().indexOf( '>' ) == -1 )
                     {
                         Reference hostRef = parameters.request().get().getOriginalRef();
                         Reference reference = new Reference( hostRef, template.getPattern() );

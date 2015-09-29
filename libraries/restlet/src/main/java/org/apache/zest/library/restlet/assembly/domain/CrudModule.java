@@ -15,9 +15,7 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
  */
-
 package org.apache.zest.library.restlet.assembly.domain;
 
 import org.apache.zest.bootstrap.AssemblyException;
@@ -29,6 +27,8 @@ import org.apache.zest.library.restlet.assembly.CrudServiceAssembler;
 public class CrudModule
     implements ModuleAssembler
 {
+    public static final String NAME = "CRUD Module";
+
     @Override
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException

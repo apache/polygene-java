@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-org.apache.zest.library.restlet.Qi4jConverter
+org.apache.zest.library.restlet.ZestConverter
