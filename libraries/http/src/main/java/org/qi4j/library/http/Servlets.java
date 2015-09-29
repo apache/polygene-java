@@ -26,7 +26,6 @@ import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContextListener;
-import org.qi4j.api.service.ServiceComposite;
 import org.qi4j.bootstrap.AssemblyException;
 import org.qi4j.bootstrap.ModuleAssembly;
 import org.qi4j.library.http.ConstraintInfo.Constraint;
@@ -77,17 +76,17 @@ public final class Servlets
     public static class ContextListenerDeclaration
     {
 
-        Class<? extends ServiceComposite> contextListener;
+        Class<? extends ServletContextListener> contextListener;
 
         Map<String, String> initParams = Collections.emptyMap();
 
-        public <T extends ServletContextListener & ServiceComposite> ContextListenerDeclaration with( Class<T> contextListener )
+        public <T extends ServletContextListener> ContextListenerDeclaration with( Class<T> contextListener )
         {
             this.contextListener = contextListener;
             return this;
         }
 
-        public Class<? extends ServiceComposite> contextListener()
+        public Class<? extends ServletContextListener> contextListener()
         {
             return contextListener;
         }
@@ -142,7 +141,7 @@ public final class Servlets
 
         String path;
 
-        Class<? extends ServiceComposite> servlet;
+        Class<? extends Servlet> servlet;
 
         Map<String, String> initParams = Collections.emptyMap();
 
@@ -151,7 +150,7 @@ public final class Servlets
             this.path = path;
         }
 
-        public <T extends Servlet & ServiceComposite> ServletDeclaration with( Class<T> servlet )
+        public <T extends Servlet> ServletDeclaration with( Class<T> servlet )
         {
             this.servlet = servlet;
             return this;
@@ -163,7 +162,7 @@ public final class Servlets
             return this;
         }
 
-        Class<? extends ServiceComposite> servlet()
+        Class<? extends Servlet> servlet()
         {
             return servlet;
         }
@@ -213,7 +212,7 @@ public final class Servlets
 
         String path;
 
-        Class<? extends ServiceComposite> filter;
+        Class<? extends Filter> filter;
 
         EnumSet<DispatcherType> dispatchers;
 
@@ -224,7 +223,7 @@ public final class Servlets
             this.path = path;
         }
 
-        public <T extends Filter & ServiceComposite> FilterAssembler through(
+        public <T extends Filter> FilterAssembler through(
                 Class<T> filter )
         {
             this.filter = filter;
@@ -261,7 +260,7 @@ public final class Servlets
             return this;
         }
 
-        Class<? extends ServiceComposite> filter()
+        Class<? extends Filter> filter()
         {
             return filter;
         }
