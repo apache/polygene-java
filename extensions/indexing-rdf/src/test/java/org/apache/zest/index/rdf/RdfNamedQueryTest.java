@@ -18,17 +18,13 @@
 package org.apache.zest.index.rdf;
 
 import java.util.function.Predicate;
+import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.Composite;
-import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.index.rdf.query.RdfQueryParserFactory;
+import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.zest.index.rdf.query.SesameExpressions;
-import org.apache.zest.library.rdf.entity.EntityStateSerializer;
-import org.apache.zest.library.rdf.entity.EntityTypeSerializer;
-import org.apache.zest.library.rdf.repository.MemoryRepositoryService;
 import org.apache.zest.test.indexing.AbstractNamedQueryTest;
-import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public class RdfNamedQueryTest extends AbstractNamedQueryTest
 {
@@ -49,10 +45,7 @@ public class RdfNamedQueryTest extends AbstractNamedQueryTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( MemoryRepositoryService.class, RdfQueryParserFactory.class ).instantiateOnStartup();
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
-        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
-        module.services( RdfIndexingEngineService.class );
+        new RdfMemoryStoreAssembler( Visibility.module, Visibility.module ).assemble( module );
     }
 
     private static String[] queryStrings =

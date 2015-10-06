@@ -21,28 +21,26 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
-import org.junit.Test;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.grammar.OrderBy;
-import org.apache.zest.bootstrap.AssemblyException;
-import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.spi.query.IndexExporter;
-import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.indexing.model.Domain;
 import org.apache.zest.test.indexing.model.Female;
 import org.apache.zest.test.indexing.model.Male;
 import org.apache.zest.test.indexing.model.Nameable;
 import org.apache.zest.test.indexing.model.Person;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 import static org.apache.zest.api.query.QueryExpressions.orderBy;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 import static org.apache.zest.test.indexing.NameableAssert.verifyOrderedResults;
 import static org.apache.zest.test.indexing.NameableAssert.verifyUnorderedResults;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 /**
  * Abstract satisfiedBy with tests for named queries against Index/Query engines.
@@ -51,14 +49,11 @@ public abstract class AbstractNamedQueryTest
     extends AbstractAnyQueryTest
 {
 
-    private final Map<String, Predicate<Composite>> queries = new HashMap<>();
+    protected final Map<String, Predicate<Composite>> queries = new HashMap<>();
 
-    @Override
-    public void assemble( ModuleAssembly module )
-        throws AssemblyException
+    @Before
+    public void assembleQueryStrings()
     {
-        super.assemble( module );
-        new EntityTestAssembler().assemble( module );
         String[] query = queryStrings();
         for( int i = 0; i < query.length; i++ )
         {

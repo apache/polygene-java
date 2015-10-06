@@ -17,6 +17,7 @@
  */
 package org.apache.zest.test.indexing;
 
+import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -48,21 +49,30 @@ public class AbstractAnyQueryTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        assembleEntities( module, Visibility.module );
+        assembleValues( module, Visibility.module );
+        new EntityTestAssembler().assemble( module );
+    }
+
+    protected void assembleEntities( ModuleAssembly module, Visibility visibility )
+    {
         module.entities( MaleEntity.class,
                          FemaleEntity.class,
                          CityEntity.class,
                          DomainEntity.class,
                          AccountEntity.class,
-                         CatEntity.class );
+                         CatEntity.class ). visibleIn( visibility );
+    }
+
+    protected void assembleValues( ModuleAssembly module, Visibility visibility )
+    {
         module.values( URL.class,
                        Address.class,
                        Protocol.class,
                        Host.class,
                        Port.class,
                        File.class,
-                       QueryParam.class );
-
-        new EntityTestAssembler().assemble( module );
+                       QueryParam.class ).visibleIn( visibility );
     }
 
     @Override
@@ -74,6 +84,7 @@ public class AbstractAnyQueryTest
 
         this.unitOfWork = this.module.newUnitOfWork();
     }
+
 
     @Override
     public void tearDown()

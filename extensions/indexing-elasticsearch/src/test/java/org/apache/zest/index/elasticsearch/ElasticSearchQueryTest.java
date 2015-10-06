@@ -40,7 +40,7 @@ public class ElasticSearchQueryTest
     extends AbstractQueryTest
 {
 
-    private static final File DATA_DIR = new File( "build/tmp/es-query-test" );
+    protected static final File DATA_DIR = new File( "build/tmp/es-query-test" );
     @Rule
     public final DelTreeAfter delTreeAfter = new DelTreeAfter( DATA_DIR );
 

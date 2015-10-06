@@ -19,24 +19,18 @@
 package org.apache.zest.index.rdf;
 
 import java.io.File;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
-import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.index.rdf.query.RdfQueryParserFactory;
-import org.apache.zest.library.fileconfig.FileConfigurationService;
-import org.apache.zest.library.rdf.entity.EntityStateSerializer;
-import org.apache.zest.library.rdf.entity.EntityTypeSerializer;
+import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
-import org.apache.zest.library.rdf.repository.NativeRepositoryService;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.indexing.AbstractQueryTest;
 import org.apache.zest.test.util.DelTreeAfter;
-import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class RdfQueryTest
     extends AbstractQueryTest
@@ -51,11 +45,7 @@ public class RdfQueryTest
         throws AssemblyException
     {
         super.assemble( module );
-        module.services( FileConfigurationService.class );
-        module.services( NativeRepositoryService.class, RdfQueryParserFactory.class ).instantiateOnStartup();
-        module.services( RdfIndexingEngineService.class ).instantiateOnStartup();
-        module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
-        module.objects( EntityStateSerializer.class, EntityTypeSerializer.class );
+        new RdfNativeSesameStoreAssembler( Visibility.module, Visibility.module ).assemble( module );
 
         ModuleAssembly config = module.layer().module( "Config" );
         config.entities( NativeConfiguration.class ).visibleIn( Visibility.layer );
