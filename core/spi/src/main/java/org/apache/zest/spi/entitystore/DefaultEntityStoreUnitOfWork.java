@@ -65,7 +65,7 @@ public final class DefaultEntityStoreUnitOfWork
     // EntityStore
 
     @Override
-    public EntityState newEntityState( ModuleSpi module, EntityReference anIdentity, EntityDescriptor descriptor )
+    public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor descriptor )
         throws EntityStoreException
     {
         EntityState entityState = states.get( anIdentity );

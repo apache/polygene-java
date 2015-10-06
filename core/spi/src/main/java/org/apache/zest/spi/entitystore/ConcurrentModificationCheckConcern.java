@@ -90,13 +90,12 @@ public abstract class ConcurrentModificationCheckConcern
         }
 
         @Override
-        public EntityState newEntityState( ModuleSpi module,
-                                           EntityReference anIdentity,
+        public EntityState newEntityState( EntityReference anIdentity,
                                            EntityDescriptor entityDescriptor
         )
             throws EntityStoreException
         {
-            return uow.newEntityState( module, anIdentity, entityDescriptor );
+            return uow.newEntityState( anIdentity, entityDescriptor );
         }
 
         @Override

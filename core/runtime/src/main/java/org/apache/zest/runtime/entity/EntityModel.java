@@ -115,7 +115,7 @@ public final class EntityModel extends CompositeModel
         try
         {
             // New EntityState
-            EntityState entityState = store.newEntityState( module, identity, this );
+            EntityState entityState = store.newEntityState( identity, this );
 
             // Set identity property
             PropertyDescriptor persistentPropertyDescriptor = state().propertyModelFor( IDENTITY_METHOD );

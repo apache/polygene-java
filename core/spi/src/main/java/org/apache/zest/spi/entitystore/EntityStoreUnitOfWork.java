@@ -42,7 +42,7 @@ public interface EntityStoreUnitOfWork
      *
      * @throws EntityStoreException Thrown if creational fails.
      */
-    EntityState newEntityState( ModuleSpi module, EntityReference anIdentity, EntityDescriptor entityDescriptor )
+    EntityState newEntityState( EntityReference anIdentity, EntityDescriptor entityDescriptor )
         throws EntityStoreException;
 
     /**
