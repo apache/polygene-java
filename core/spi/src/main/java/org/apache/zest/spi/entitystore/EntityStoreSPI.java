@@ -25,7 +25,6 @@ import org.apache.zest.spi.module.ModuleSpi;
 public interface EntityStoreSPI
 {
     EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
-                                ModuleSpi module,
                                 EntityReference identity, EntityDescriptor entityDescriptor
     );
 

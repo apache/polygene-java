@@ -255,7 +255,6 @@ public class SQLEntityStoreMixin
 
     @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
-                                       ModuleSpi module,
                                        EntityReference entityRef,
                                        EntityDescriptor entityDescriptor
     )

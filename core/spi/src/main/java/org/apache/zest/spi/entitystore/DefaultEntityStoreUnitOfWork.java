@@ -73,7 +73,7 @@ public final class DefaultEntityStoreUnitOfWork
         {
             throw new EntityAlreadyExistsException( anIdentity );
         }
-        EntityState state = entityStoreSPI.newEntityState( this, module, anIdentity, descriptor );
+        EntityState state = entityStoreSPI.newEntityState( this, anIdentity, descriptor );
         states.put( anIdentity, state );
         return state;
     }

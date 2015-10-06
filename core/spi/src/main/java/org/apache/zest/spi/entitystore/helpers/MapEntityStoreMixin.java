@@ -117,7 +117,6 @@ public class MapEntityStoreMixin
     // EntityStoreSPI
     @Override
     public EntityState newEntityState( EntityStoreUnitOfWork unitOfWork,
-                                       ModuleSpi module,
                                        EntityReference identity,
                                        EntityDescriptor entityDescriptor
     )
