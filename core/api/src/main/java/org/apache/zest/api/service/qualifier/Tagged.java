@@ -42,7 +42,7 @@ public @interface Tagged
      * Tagged Annotation Qualifier.
      * See {@link Tagged}.
      */
-    public final class TaggedQualifier
+    final class TaggedQualifier
         implements AnnotationQualifier<Tagged>
     {
         @Override
