@@ -36,7 +36,7 @@ import org.apache.zest.api.service.ServiceReference;
 @Qualifier( Tagged.TaggedQualifier.class )
 public @interface Tagged
 {
-    public abstract String[] value();
+    String[] value();
 
     /**
      * Tagged Annotation Qualifier.
