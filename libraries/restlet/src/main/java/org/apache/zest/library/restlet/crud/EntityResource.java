@@ -111,19 +111,18 @@ public interface EntityResource<T extends Identity> extends ServerResource<T>
                 {
                     throw new IllegalArgumentException( "Method '" + methodName + "' is not present on " + type.getName() );
                 }
+                Class entityType = parameters.entityType().get();
+                //noinspection unchecked
+                T entity = (T) locator.find( entityType ).get( identity() );
                 if( method.getParameterCount() == 1 )
                 {
-                    Class entityType = parameters.entityType().get();
-                    //noinspection unchecked
-                    T entity = (T) locator.find( entityType ).get( identity() );
-
                     Class argType = method.getParameterTypes()[ 0 ];
                     Object parameters = createParametersComposite( form, argType );
                     method.invoke( entity, parameters );
                 }
                 else
                 {
-                    method.invoke( me );
+                    method.invoke( entity );
                 }
             }
             catch( Exception e )
