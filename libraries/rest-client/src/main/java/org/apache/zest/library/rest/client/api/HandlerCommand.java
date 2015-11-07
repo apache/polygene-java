@@ -147,8 +147,8 @@ public abstract class HandlerCommand
         @Override
         HandlerCommand execute( ContextResourceClient client )
         {
-            return client.query( client.getResource()
-                                     .query( relation ), requestObject, responseHandler, processingErrorHandler );
+            Link link = client.getResource().query( relation );
+            return client.query( link, requestObject, responseHandler, processingErrorHandler );
         }
     }
 
@@ -184,8 +184,8 @@ public abstract class HandlerCommand
         @Override
         HandlerCommand execute( ContextResourceClient client )
         {
-            return client.command( client.getResource()
-                                       .command( relation ), requestObject, responseHandler, processingErrorHandler );
+            Link link = client.getResource().command( relation );
+            return client.command( link, requestObject, responseHandler, processingErrorHandler );
         }
     }
 
