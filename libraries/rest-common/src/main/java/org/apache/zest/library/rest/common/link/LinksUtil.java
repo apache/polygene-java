@@ -28,50 +28,24 @@ public final class LinksUtil
 {
    public static Predicate<Link> withId(final String id)
    {
-      return new Predicate<Link>()
-      {
-         @Override
-         public boolean test(Link link )
-         {
-            return link.id().get().equals(id);
-         }
-      };
+      return link -> link.id().get().equals( id);
    }
 
    public static Predicate<Link> withText(final String text)
    {
-      return new Predicate<Link>()
-      {
-         @Override
-         public boolean test(Link link )
-         {
-            return link.text().get().equals(text);
-         }
-      };
+      return link -> link.text().get().equals( text);
    }
 
    public static Predicate<Link> withRel(final String rel)
    {
-      return new Predicate<Link>()
-      {
-         @Override
-         public boolean test(Link link )
-         {
-            return link.rel().get().equals(rel);
-         }
-      };
+      return link -> link.rel().get().equals( rel);
    }
 
    public static Predicate<Link> withClass(final String clazz)
    {
-      return new Predicate<Link>()
-      {
-         @Override
-         public boolean test(Link link )
-         {
-             String classes = link.classes().get();
-             return classes != null && classes.contains( clazz );
-         }
+      return link -> {
+          String classes = link.classes().get();
+          return classes != null && classes.contains( clazz );
       };
    }
 
@@ -87,13 +61,6 @@ public final class LinksUtil
 
    public static Function<Link, String> toRel()
    {
-      return new Function<Link, String>()
-      {
-         @Override
-         public String apply(Link link )
-         {
-            return link.rel().get();
-         }
-      };
+      return link -> link.rel().get();
    }
 }
