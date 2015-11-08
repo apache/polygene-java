@@ -28,7 +28,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.joda.time.DateTime;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
@@ -45,6 +44,7 @@ import org.apache.zest.library.scheduler.schedule.ScheduleFactory;
 import org.apache.zest.library.scheduler.schedule.ScheduleTime;
 import org.apache.zest.library.scheduler.schedule.Schedules;
 import org.apache.zest.library.scheduler.schedule.cron.CronExpression;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,9 +225,9 @@ public class SchedulerMixin
         // or if workersCount less than or equal to zero,
         // or if corePoolSize greater than workersCount.
         taskExecutor = new ThreadPoolExecutor( corePoolSize, workersCount,
-            0, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<Runnable>( workQueueSize ),
-            threadFactory, rejectionHandler );
+                                               0, TimeUnit.MILLISECONDS,
+                                               new LinkedBlockingQueue<Runnable>( workQueueSize ),
+                                               threadFactory, rejectionHandler );
         taskExecutor.prestartAllCoreThreads();
         managementExecutor = new ScheduledThreadPoolExecutor( 2, threadFactory, rejectionHandler );
         loadSchedules();
@@ -336,11 +336,11 @@ public class SchedulerMixin
         {
             Usecase usecase = UsecaseBuilder.newUsecase( "ScheduleRunner" );
             UnitOfWork uow = module.newUnitOfWork( usecase );
+            Schedule schedule = null;
             try
             {
-                Schedule schedule = uow.get( Schedule.class, this.schedule.scheduleIdentity );
-                Task task = schedule.task().get();
                 schedule = uow.get( Schedule.class, this.schedule.scheduleIdentity );
+                Task task = schedule.task().get();
                 try
                 {
                     schedule.taskStarting();
@@ -351,7 +351,6 @@ public class SchedulerMixin
                 {
                     schedule.taskCompletedWithException( ex );
                 }
-                schedulerMixin.dispatchForExecution( schedule );
                 uow.complete();
             }
             catch( UnitOfWorkCompletionException ex )
@@ -359,6 +358,10 @@ public class SchedulerMixin
             }
             finally
             {
+                if( schedule != null )
+                {
+                    schedulerMixin.dispatchForExecution( schedule );
+                }
                 // What should we do if we can't manage the Running flag??
                 if( uow.isOpen() )
                 {
@@ -367,5 +370,4 @@ public class SchedulerMixin
             }
         }
     }
-
 }
