@@ -34,7 +34,7 @@ public final class InjectedParametersModel
 
     public InjectedParametersModel()
     {
-        parameterDependencies = new ArrayList<DependencyModel>();
+        parameterDependencies = new ArrayList<>();
     }
 
     @Override
