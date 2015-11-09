@@ -302,4 +302,10 @@ public class ZestEntityRestlet<T extends Identity> extends Restlet
             throw new ConversionException( request.getEntityAsText() );
         }
     }
+
+    @Override
+    public String toString()
+    {
+        return "ZestRestlet[" + identityType.getSimpleName() + ", " + resourceFactory +"]";
+    }
 }
