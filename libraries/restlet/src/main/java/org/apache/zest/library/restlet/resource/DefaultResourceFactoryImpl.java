@@ -96,6 +96,6 @@ public class DefaultResourceFactoryImpl<K extends Identity, T extends ServerReso
     @Override
     public String toString()
     {
-        return "factory[" + resourceType +"]";
+        return "factory[" + ( resourceType == null ? "<null>" : resourceType.getSimpleName()) + "]";
     }
 }

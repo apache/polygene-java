@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.Identity;
@@ -306,6 +305,6 @@ public class ZestEntityRestlet<T extends Identity> extends Restlet
     @Override
     public String toString()
     {
-        return "ZestRestlet[" + identityType.getSimpleName() + ", " + resourceFactory +"]";
+        return "ZestRestlet[" + ( identityType == null ? "<null>" : identityType.getSimpleName() ) + ", " + resourceFactory + "]";
     }
 }

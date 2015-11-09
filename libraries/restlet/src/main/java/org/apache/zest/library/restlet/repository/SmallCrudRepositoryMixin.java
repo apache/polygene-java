@@ -58,17 +58,17 @@ public class SmallCrudRepositoryMixin<T extends Identity>
     }
 
     @Override
-    public void create( String identity )
+    public void create( String idOrName )
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
-        uow.newEntity( entityType, identity );
+        uow.newEntity( entityType, identityManager.generate( entityType, idOrName ) );
     }
 
     @Override
-    public T get( String id )
+    public T get( String idOrName )
     {
         UnitOfWork uow = uowf.currentUnitOfWork();
-        return uow.get( entityType, id );
+        return uow.get( entityType, identityManager.generate( entityType, idOrName ) );
     }
 
     @Override
@@ -83,9 +83,9 @@ public class SmallCrudRepositoryMixin<T extends Identity>
     }
 
     @Override
-    public void delete( String nameToDelete )
+    public void delete( String idOrName )
     {
-        String id = identityManager.generate( entityType, nameToDelete );
+        String id = identityManager.generate( entityType, idOrName );
         UnitOfWork uow = uowf.currentUnitOfWork();
         try
         {
@@ -94,7 +94,7 @@ public class SmallCrudRepositoryMixin<T extends Identity>
         }
         catch( NoSuchEntityException | EntityTypeNotFoundException e )
         {
-            throw new IllegalArgumentException( "Entity  '" + nameToDelete + "' doesn't exist." );
+            throw new IllegalArgumentException( "Entity  '" + idOrName + "' doesn't exist." );
         }
     }
 
