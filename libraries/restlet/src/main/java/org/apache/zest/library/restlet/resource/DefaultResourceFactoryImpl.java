@@ -92,4 +92,10 @@ public class DefaultResourceFactoryImpl<K extends Identity, T extends ServerReso
         }
         return attributes.get( name );
     }
+
+    @Override
+    public String toString()
+    {
+        return "factory[" + resourceType +"]";
+    }
 }
