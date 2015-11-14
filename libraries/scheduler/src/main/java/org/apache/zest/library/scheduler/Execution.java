@@ -113,7 +113,6 @@ public interface Execution
                     catch( InterruptedException e )
                     {
                         // Ignore. Used to signal "Hey, wake up. Time to work..."
-                        System.out.println("Interrupted");
                     }
                 }
             }

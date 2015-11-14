@@ -199,7 +199,6 @@ public class SchedulerTest
             {
                 FooTask task = uow.get( FooTask.class, taskIdentity );
                 Integer count = task.runCounter().get();
-                System.out.println("Count reached: " + count);
                 uow.discard();
                 return count;
             }
