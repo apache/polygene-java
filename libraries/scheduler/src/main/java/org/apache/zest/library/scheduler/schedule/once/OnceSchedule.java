@@ -26,41 +26,38 @@ public interface OnceSchedule
     abstract class OnceScheduleMixin
         implements OnceSchedule
     {
-        private boolean running;
-
         @Override
         public void taskStarting()
         {
-            running = true;
+            running().set( true );
         }
 
         @Override
         public void taskCompletedSuccessfully()
         {
-            running = false;
+            running().set( false );
         }
 
         @Override
         public void taskCompletedWithException( RuntimeException ex )
         {
-            running = false;
-        }
-
-        @Override
-        public boolean isTaskRunning()
-        {
-            return running;
+            running().set( false );
         }
 
         @Override
         public long nextRun( long from )
         {
+            if( done().get() )
+            {
+                return Long.MIN_VALUE;
+            }
+            done().set( true );
             long runAt = start().get().getMillis();
             if( runAt >= from )
             {
                 return runAt;
             }
-            return -1;
+            return from;
         }
 
         @Override
@@ -69,5 +66,4 @@ public interface OnceSchedule
             return start().get().toString();
         }
     }
-
 }

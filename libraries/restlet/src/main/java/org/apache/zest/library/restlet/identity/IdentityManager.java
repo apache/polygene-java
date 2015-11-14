@@ -40,7 +40,7 @@ import static org.apache.zest.functional.Iterables.first;
 @Concerns( { UnitOfWorkConcern.class } )
 public interface IdentityManager
 {
-    char SEPARATOR = '~';
+    String SEPARATOR = "~";
     String IDENTITY_SIGNATURE = "[0-9][0-9]*~.*";
 
     boolean isIdentity( String candidate );
@@ -123,7 +123,7 @@ public interface IdentityManager
         @Override
         public Class extractType( String identity )
         {
-            if( isIdentity( identity ) )
+            if( !isIdentity( identity ) )
             {
                 throw new IllegalArgumentException( "Given argument '" + identity + "' is not an Identity" );
             }

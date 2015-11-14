@@ -20,17 +20,28 @@ package org.apache.zest.library.scheduler;
 
 import java.util.List;
 import org.apache.zest.api.common.UseDefaults;
+import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
+import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 
 /**
  * Compose an Entity using this type to be able to Schedule it.
+ *<p>
+ * A Task is associated from a {@link org.apache.zest.library.scheduler.schedule.Schedule}, and upon time to execute
+ * the SchedulerService will dispatch a TaskRunner in a new thread, and establish a UnitOfWork (Usecase name of "Task Runner").
+ *</p>
+ *<p>
+ * The {@code Task} type declares the {@link UnitOfWorkConcern} and therefor the {@code Task} implementation may
+ * declare the {@link UnitOfWorkPropagation} annotation with the
+ * {@link org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation.Propagation#REQUIRES_NEW} and a different
+ * {@link UnitOfWork} strategy, such as {@code Retries} and {@code DiscardOn}.
  *
- * A Task is wrapped in a {@link org.apache.zest.library.scheduler.SchedulerMixin.ScheduleRunner} before being run by an executor.
- * {@link org.apache.zest.library.scheduler.SchedulerMixin.ScheduleRunner} wrap a {@link UnitOfWork} around the {@link Task#run()} invocation.
+ *</p>
  *
  * Here is a simple example:
- * <pre>
+ * <pre><code>
  *  interface MyTask
  *      extends Task
  *  {
@@ -42,15 +53,18 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
  *      implements Runnable
  *  {
  *      &#64;This MyTaskEntity me;
+ *
  *      public void run()
  *      {
  *          me.customState().set( me.anotherEntity().get().doSomeStuff( me.customState().get() ) );
  *      }
  *  }
- * </pre>
+ * </code></pre>
+ *
  * Finaly, {@literal MyTask} must be assembled into an {@literal EntityComposite}.
  */
 // START SNIPPET: task
+@Concerns( UnitOfWorkConcern.class )
 public interface Task
     extends Runnable
 {
@@ -58,5 +72,6 @@ public interface Task
 
     @UseDefaults
     Property<List<String>> tags();
+
 }
 // END SNIPPET: task

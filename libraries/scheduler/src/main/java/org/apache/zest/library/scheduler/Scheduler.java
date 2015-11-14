@@ -45,10 +45,12 @@ import static org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation.Propa
  * By default, a {@link Schedule} is not durable. In other words, it do not survive an {@link Application} restart.
  * </p>
  * <p>
- * To make a {@link Schedule} durable, set it's durable property to true once its scheduled.
+ * All {@link Schedule}s are durable and stored in the visible {@link org.apache.zest.spi.entitystore.EntityStore} like
+ * any ordinary {@link org.apache.zest.api.entity.EntityComposite}. There is also a {@link org.apache.zest.library.scheduler.schedule.Schedules}
+ * entity composite that has Associations to all active, completed and cancelled schedules.
  * </p>
  * <p>
- * Durable {@link Schedule}s that have no future run are removed by {@code SchedulerGarbageCollector} (not implemented?).
+ *
  * </p>
  */
 @Concerns( UnitOfWorkConcern.class )
@@ -59,36 +61,33 @@ public interface Scheduler
      *
      * @param task                Task to be scheduled once
      * @param initialSecondsDelay Initial delay the Task will be run after, in seconds
-     * @param durable             true if this Schedule should survive a restart.
      *
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleOnce( Task task, int initialSecondsDelay, boolean durable );
+    Schedule scheduleOnce( Task task, int initialSecondsDelay );
 
     /**
      * Schedule a Task to be run after a given initial delay in seconds.
      *
-     * @param task    Task to be scheduled once
-     * @param runAt   The future point in time when the Schedule will be run.
-     * @param durable true if this Schedule should survive a restart.
+     * @param task  Task to be scheduled once
+     * @param runAt The future point in time when the Schedule will be run.
      *
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleOnce( Task task, DateTime runAt, boolean durable );
+    Schedule scheduleOnce( Task task, DateTime runAt );
 
     /**
      * Schedule a Task using a CronExpression.
      *
      * @param task           Task to be scheduled once
      * @param cronExpression CronExpression for creating the Schedule for the given Task
-     * @param durable        true if this Schedule should survive a restart.
      *
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleCron( Task task, @CronExpression String cronExpression, boolean durable );
+    Schedule scheduleCron( Task task, @CronExpression String cronExpression );
 
     /**
      * Schedule a Task using a CronExpression with a given initial delay in milliseconds.
@@ -96,12 +95,11 @@ public interface Scheduler
      * @param task           Task to be scheduled once
      * @param cronExpression CronExpression for creating the Schedule for the given Task
      * @param initialDelay   Initial delay the Schedule will be active after, in milliseconds
-     * @param durable        true if this Schedule should survive a restart.
      *
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleCron( Task task, @CronExpression String cronExpression, long initialDelay, boolean durable );
+    Schedule scheduleCron( Task task, @CronExpression String cronExpression, long initialDelay );
 
     /**
      * Schedule a Task using a CronExpression starting at a given date.
@@ -109,10 +107,35 @@ public interface Scheduler
      * @param task           Task to be scheduled once
      * @param cronExpression CronExpression for creating the Schedule for the given Task
      * @param start          Date from which the Schedule will become active
-     * @param durable        true if this Schedule should survive a restart.
      *
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleCron( Task task, @CronExpression String cronExpression, DateTime start, boolean durable );
+    Schedule scheduleCron( Task task, @CronExpression String cronExpression, DateTime start );
+
+    /** Schedules a custom Schedule.
+     *
+     *
+     * @param schedule The Schedule instance to be scheduled.
+     */
+    @UnitOfWorkPropagation( MANDATORY )
+    void scheduleCron( Schedule schedule );
+
+    /** Cancels a Schedule.
+     * Reads the Schedule from the EntityStore and calls {@link #cancelSchedule(Schedule)}.
+     *
+     * @param scheduleId The identity of the Schedule to be cancelled.
+     */
+    @UnitOfWorkPropagation( MANDATORY )
+    void cancelSchedule( String scheduleId );
+
+    /** Cancels the provided Schedule.
+     *
+     * Cancellation can be done before, while and after execution of the Schedule. If the execution
+     * is in progress, it will not be interrupted.
+     *
+     * @param schedule The schedule to be cancelled.
+     */
+    @UnitOfWorkPropagation( MANDATORY )
+    public void cancelSchedule( Schedule schedule );
 }

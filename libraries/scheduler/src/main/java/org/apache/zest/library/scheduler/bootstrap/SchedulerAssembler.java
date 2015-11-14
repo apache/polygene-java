@@ -18,6 +18,7 @@
  */
 package org.apache.zest.library.scheduler.bootstrap;
 
+import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.bootstrap.Assemblers;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.EntityDeclaration;
@@ -26,6 +27,7 @@ import org.apache.zest.bootstrap.ServiceDeclaration;
 import org.apache.zest.bootstrap.ValueDeclaration;
 import org.apache.zest.library.scheduler.SchedulerConfiguration;
 import org.apache.zest.library.scheduler.SchedulerService;
+import org.apache.zest.library.scheduler.TaskRunner;
 import org.apache.zest.library.scheduler.schedule.ScheduleFactory;
 import org.apache.zest.library.scheduler.schedule.Schedules;
 import org.apache.zest.library.scheduler.schedule.cron.CronSchedule;
@@ -55,6 +57,10 @@ import org.apache.zest.library.scheduler.timeline.TimelineSchedulerServiceMixin;
 public class SchedulerAssembler
     extends Assemblers.VisibilityConfig<SchedulerAssembler>
 {
+
+    private static final int DEFAULT_WORKERS_COUNT = Runtime.getRuntime().availableProcessors() + 1;
+    private static final int DEFAULT_WORKQUEUE_SIZE = 10;
+
     private boolean timeline;
 
     /**
@@ -82,6 +88,8 @@ public class SchedulerAssembler
             .visibleIn( visibility() )
             .instantiateOnStartup();
 
+        assembly.transients( Runnable.class ).withMixins( TaskRunner.class ).withConcerns( UnitOfWorkConcern.class );
+
         if( timeline )
         {
             scheduleEntities.withTypes( Timeline.class )
@@ -99,7 +107,11 @@ public class SchedulerAssembler
 
         if( hasConfig() )
         {
-            configModule().entities( SchedulerConfiguration.class ).visibleIn( configVisibility() );
+            configModule().entities( SchedulerConfiguration.class )
+                .visibleIn( configVisibility() );
+            SchedulerConfiguration defaults = assembly.forMixin( SchedulerConfiguration.class ).declareDefaults();
+            defaults.workersCount().set( DEFAULT_WORKERS_COUNT );
+            defaults.workQueueSize().set( DEFAULT_WORKQUEUE_SIZE );
         }
     }
 }

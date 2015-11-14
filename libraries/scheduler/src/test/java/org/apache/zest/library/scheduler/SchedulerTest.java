@@ -19,9 +19,6 @@
 package org.apache.zest.library.scheduler;
 
 import java.util.concurrent.Callable;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -30,18 +27,23 @@ import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.scheduler.bootstrap.SchedulerAssembler;
+import org.apache.zest.library.scheduler.schedule.Schedule;
 import org.apache.zest.library.scheduler.timeline.Timeline;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.jayway.awaitility.Awaitility.await;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.zest.functional.Iterables.count;
 import static org.apache.zest.library.scheduler.Constants.BAR;
 import static org.apache.zest.library.scheduler.Constants.BAZAR;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class SchedulerTest
     extends AbstractSchedulerTest
@@ -52,8 +54,12 @@ public class SchedulerTest
     protected void onAssembly( ModuleAssembly testAssembly )
         throws AssemblyException
     {
+        @SuppressWarnings( "UnnecessaryLocalVariable" )
         ModuleAssembly moduleAssembly = testAssembly;
+
+        @SuppressWarnings( "UnnecessaryLocalVariable" )
         ModuleAssembly configModuleAssembly = testAssembly;
+
         // START SNIPPET: assembly
         new SchedulerAssembler().visibleIn( Visibility.application )
             .withConfig( configModuleAssembly, Visibility.layer )
@@ -78,6 +84,7 @@ public class SchedulerTest
         try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
         {
             FooTask task = uow.get( FooTask.class, taskId );
+            assertThat( task.runCounter().get(), equalTo( 1 ) );
             assertThat( task.output().get(), equalTo( BAR ) );
         }
     }
@@ -98,7 +105,7 @@ public class SchedulerTest
             taskIdentity = task.identity().get();
 
             DateTime expectedRun = start.withMillisOfSecond( 0 ).withSecondOfMinute( 0 ).plusMinutes( 1 );
-            scheduler.scheduleCron( task, "@minutely", true );
+            scheduler.scheduleCron( task, "@minutely" );
 
             uow.complete();
 
@@ -106,10 +113,11 @@ public class SchedulerTest
             LOGGER.info( "Task scheduled on {} to be run at {}", start.getMillis(), expectedRun.getMillis() );
         }
 
-        await( usecase.name() ).
-            atMost( sleepMillis + 5000, MILLISECONDS ).
-            until( taskOutput( taskIdentity ), equalTo( BAR ) );
+        await( usecase.name() )
+            .atMost( sleepMillis + 5000, MILLISECONDS )
+            .until( taskOutput( taskIdentity ), equalTo( 1 ) );
 
+        //noinspection unused
         try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
         {
             Timeline timeline = module.findService( Timeline.class ).get();
@@ -135,38 +143,65 @@ public class SchedulerTest
 
     @Test
     public void testOnce()
-        throws UnitOfWorkCompletionException
+        throws UnitOfWorkCompletionException, InterruptedException
     {
+        System.setProperty( "zest.entity.print.state", Boolean.TRUE.toString() );
         final Usecase usecase = UsecaseBuilder.newUsecase( "TestOnce" );
         final String taskIdentity;
+        Scheduler scheduler = module.findService( Scheduler.class ).get();
+
+        Schedule schedule1;
+        Schedule schedule2;
+        Schedule schedule3;
+        Schedule schedule4;
         try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
         {
-            Scheduler scheduler = module.findService( Scheduler.class ).get();
-
             FooTask task = createFooTask( uow, usecase.name(), BAZAR );
             taskIdentity = task.identity().get();
 
-            scheduler.scheduleOnce( task, 2, true );
+            schedule1 = scheduler.scheduleOnce( task, 1 );
+            schedule2 = scheduler.scheduleOnce( task, 2 );
+            schedule3 = scheduler.scheduleOnce( task, 3 );
+            schedule4 = scheduler.scheduleOnce( task, 4 );
 
             uow.complete();
         }
+        Thread.sleep(5000);
+        await( usecase.name() )
+            .atMost( 30, SECONDS )
+            .until( taskOutput( taskIdentity ), equalTo( 4 ) );
 
-        await( usecase.name() ).until( taskOutput( taskIdentity ), equalTo( BAR ) );
+        try( UnitOfWork uow = module.newUnitOfWork( usecase ) )
+        {
+            schedule1 = uow.get( schedule1 );
+            schedule2 = uow.get( schedule2 );
+            schedule3 = uow.get( schedule3 );
+            schedule4 = uow.get( schedule4 );
+            assertThat(schedule1.cancelled().get(), equalTo( false ));
+            assertThat(schedule2.cancelled().get(), equalTo( false ));
+            assertThat(schedule3.cancelled().get(), equalTo( false ));
+            assertThat(schedule4.cancelled().get(), equalTo( false ));
+            assertThat(schedule1.done().get(), equalTo( true ));
+            assertThat(schedule2.done().get(), equalTo( true ));
+            assertThat(schedule3.done().get(), equalTo( true ));
+            assertThat(schedule4.done().get(), equalTo( true ));
+            assertThat(schedule1.running().get(), equalTo( false ));
+            assertThat(schedule2.running().get(), equalTo( false ));
+            assertThat(schedule3.running().get(), equalTo( false ));
+            assertThat(schedule4.running().get(), equalTo( false ));
+        }
     }
 
-    private Callable<String> taskOutput( final String taskIdentity )
+    private Callable<Integer> taskOutput( final String taskIdentity )
     {
-        return new Callable<String>()
-        {
-            @Override
-            public String call()
-                throws Exception
+        return () -> {
+            try( UnitOfWork uow = module.newUnitOfWork() )
             {
-                try( UnitOfWork uow = module.newUnitOfWork() )
-                {
-                    FooTask task = uow.get( FooTask.class, taskIdentity );
-                    return task == null ? null : task.output().get();
-                }
+                FooTask task = uow.get( FooTask.class, taskIdentity );
+                Integer count = task.runCounter().get();
+                System.out.println("Count reached: " + count);
+                uow.discard();
+                return count;
             }
         };
     }

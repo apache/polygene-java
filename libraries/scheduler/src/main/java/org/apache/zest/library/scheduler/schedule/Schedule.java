@@ -18,6 +18,8 @@
  */
 package org.apache.zest.library.scheduler.schedule;
 
+import org.apache.zest.api.common.UseDefaults;
+import org.apache.zest.api.entity.EntityComposite;
 import org.joda.time.DateTime;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.entity.Identity;
@@ -28,8 +30,7 @@ import org.apache.zest.library.scheduler.Task;
 /**
  * Represent the scheduling of a {@link Task}.
  */
-public interface Schedule
-    extends Identity
+public interface Schedule extends EntityComposite
 {
     /**
      * @return The Association to the Task to be executed when it is time.
@@ -42,6 +43,50 @@ public interface Schedule
      */
     @Immutable
     Property<DateTime> start();
+
+    /** Returns true if the Schedule has been cancelled.
+     *
+     * @return true if the Schedule has been cancelled.
+     */
+    @UseDefaults
+    Property<Boolean> cancelled();
+
+    /** Returns true if the Schedule is currently running.
+     *
+     * @return true if the Schedule is currently running.
+     */
+    @UseDefaults
+    Property<Boolean> running();
+
+    /** Returns the number of times the {@link Task} has been executed.
+     * <p>
+     * Each time the {@link Task#run} method completes, with or without an {@link Exception}, this
+     * counter is incremented by 1.
+     * </p>
+     *
+     * @return true the number of Exception that has occurred when running the {@link Task}.
+     */
+    @UseDefaults
+    Property<Long> executionCounter();
+
+    /** Returns the number of Exception that has occurred when running the {@link Task}.
+     * <p>
+     * Each time the {@link Task#run} method throws a {@link RuntimeException}, this property
+     * is incremenented by 1,
+     * </p>
+     *
+     * @return true the number of Exception that has occurred when running the {@link Task}.
+     */
+    @UseDefaults
+    Property<Long> exceptionCounter();
+
+    /** Returns true if the Schedule is done and will not be executed any more times.
+     *
+     * @return true if the Schedule is done and will not be executed any more times.
+     */
+    @UseDefaults
+    Property<Boolean> done();
+
 
     /**
      * Called just before the {@link org.apache.zest.library.scheduler.Task#run()} method is called.
@@ -62,11 +107,6 @@ public interface Schedule
     void taskCompletedWithException( RuntimeException ex );
 
     /**
-     * @return True if the associated {@link org.apache.zest.library.scheduler.Task} is currently running, false otherwise
-     */
-    boolean isTaskRunning();
-
-    /**
      * Compute the next time this schedule is to be run.
      *
      * @param from The starting time when to look for the next time it will run.
@@ -81,4 +121,5 @@ public interface Schedule
      * @return A String representing this schedule.
      */
     String presentationString();
+
 }

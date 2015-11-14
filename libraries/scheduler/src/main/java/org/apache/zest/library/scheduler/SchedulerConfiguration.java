@@ -33,13 +33,13 @@ public interface SchedulerConfiguration
     /**
      * @return Number of worker threads, optional and defaults to the number of available cores.
      */
-    @Optional
+    @Optional @UseDefaults
     Property<Integer> workersCount();
 
     /**
      * @return Size of the queue to use for holding tasks before they are run, optional and defaults to 10.
      */
-    @Optional
+    @Optional @UseDefaults
     Property<Integer> workQueueSize();
 
     /**

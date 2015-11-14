@@ -82,7 +82,6 @@ public final class DefaultEntityStoreUnitOfWork
     public EntityState entityStateOf( ModuleSpi module, EntityReference anIdentity )
         throws EntityNotFoundException
     {
-
         EntityState entityState = states.get( anIdentity );
         if( entityState != null )
         {

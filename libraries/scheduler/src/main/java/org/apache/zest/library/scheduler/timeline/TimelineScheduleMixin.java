@@ -15,6 +15,7 @@
  */
 package org.apache.zest.library.scheduler.timeline;
 
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -70,9 +71,9 @@ public class TimelineScheduleMixin
     }
 
     @Override
-    public Iterable<TimelineRecord> getRecords( DateTime from, DateTime to )
+    public Iterable<TimelineRecord> getRecords( ZonedDateTime from, ZonedDateTime to )
     {
-        return getRecords( from.getMillis(), to.getMillis() );
+        return getRecords( from.toInstant().toEpochMilli(), to.toInstant().toEpochMilli() );
     }
 
     @Override

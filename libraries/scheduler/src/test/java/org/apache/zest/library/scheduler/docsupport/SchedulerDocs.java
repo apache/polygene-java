@@ -41,7 +41,7 @@ public class SchedulerDocs
     public void method()
     {
         MyTaskEntity myTask = todo();
-        Schedule schedule = scheduler.scheduleOnce( myTask, 10, false );
+        Schedule schedule = scheduler.scheduleOnce( myTask, 10 );
         // myTask will be run in 10 seconds from now
     }
 

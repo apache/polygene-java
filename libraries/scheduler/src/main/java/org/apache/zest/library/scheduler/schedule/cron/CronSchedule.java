@@ -42,37 +42,29 @@ public interface CronSchedule
         implements CronSchedule
     {
         private static final Logger LOGGER = LoggerFactory.getLogger( Schedule.class );
-        private boolean running;
 
         @Override
         public void taskStarting()
         {
-            running = true;
+            running().set( true );
         }
 
         @Override
         public void taskCompletedSuccessfully()
         {
-            running = false;
+            running().set(false);
         }
 
         @Override
         public void taskCompletedWithException( RuntimeException ex )
         {
-            running = false;
+            running().set(false);
         }
 
         @Override
         public String presentationString()
         {
             return cronExpression().get();
-        }
-
-        @Override
-        public boolean isTaskRunning()
-        {
-            // See SchedulerMixin.ScheduleRunner::run
-            return false;
         }
 
         @Override
@@ -84,10 +76,14 @@ public interface CronSchedule
             {
                 actualFrom = firstRun;
             }
-            Long nextRun = new org.codeartisans.sked.cron.CronSchedule( cronExpression().get() )
-                .firstRunAfter( actualFrom );
+            Long nextRun = createCron().firstRunAfter( actualFrom );
             LOGGER.info( "CronSchedule::nextRun({}) is {}", from, firstRun );
             return nextRun;
+        }
+
+        private org.codeartisans.sked.cron.CronSchedule createCron()
+        {
+            return new org.codeartisans.sked.cron.CronSchedule( cronExpression().get() );
         }
     }
 

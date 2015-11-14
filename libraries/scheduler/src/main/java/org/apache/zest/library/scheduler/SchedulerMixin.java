@@ -18,16 +18,6 @@
  */
 package org.apache.zest.library.scheduler;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
@@ -37,11 +27,9 @@ import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
-import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.library.scheduler.schedule.Schedule;
 import org.apache.zest.library.scheduler.schedule.ScheduleFactory;
-import org.apache.zest.library.scheduler.schedule.ScheduleTime;
 import org.apache.zest.library.scheduler.schedule.Schedules;
 import org.apache.zest.library.scheduler.schedule.cron.CronExpression;
 import org.joda.time.DateTime;
@@ -52,16 +40,9 @@ public class SchedulerMixin
     implements Scheduler, ServiceActivation
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( Scheduler.class );
-    private static final int DEFAULT_WORKERS_COUNT = Runtime.getRuntime().availableProcessors() + 1;
-    private static final int DEFAULT_WORKQUEUE_SIZE = 10;
 
     @Service
     private ScheduleFactory scheduleFactory;
-
-    private final SortedSet<ScheduleTime> timingQueue = new TreeSet<>();
-
-    private ScheduledExecutorService managementExecutor;
-    private ThreadPoolExecutor taskExecutor;
 
     @Structure
     private Module module;
@@ -70,304 +51,137 @@ public class SchedulerMixin
     private SchedulerService me;
 
     @This
-    private ThreadFactory threadFactory;
+    private SchedulesHandler schedulesHandler;
 
     @This
-    private RejectedExecutionHandler rejectionHandler;
+    private Execution execution;
 
     @This
     private Configuration<SchedulerConfiguration> config;
 
-    private ScheduleHandler scheduleHandler;
+    public SchedulerMixin()
+    {
+    }
 
     @Override
-    public Schedule scheduleOnce( Task task, int initialSecondsDelay, boolean durable )
+    public Schedule scheduleOnce( Task task, int initialSecondsDelay )
     {
         long now = System.currentTimeMillis();
-        Schedule schedule = scheduleFactory.newOnceSchedule( task, new DateTime( now + initialSecondsDelay * 1000 ), durable );
-        if( durable )
-        {
-            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
-            schedules.schedules().add( schedule );
-        }
-        dispatchForExecution( schedule );
+        Schedule schedule = scheduleFactory.newOnceSchedule( task, new DateTime( now + initialSecondsDelay * 1000 ) );
+        saveAndDispatch( schedule );
         return schedule;
     }
 
     @Override
-    public Schedule scheduleOnce( Task task, DateTime runAt, boolean durable )
+    public Schedule scheduleOnce( Task task, DateTime runAt )
     {
-        Schedule schedule = scheduleFactory.newOnceSchedule( task, runAt, durable );
-        dispatchForExecution( schedule );
-        if( durable )
-        {
-            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
-            schedules.schedules().add( schedule );
-        }
+        Schedule schedule = scheduleFactory.newOnceSchedule( task, runAt );
+        saveAndDispatch( schedule );
         return schedule;
     }
 
     @Override
-    public Schedule scheduleCron( Task task, String cronExpression, boolean durable )
+    public Schedule scheduleCron( Task task, String cronExpression )
     {
         DateTime now = new DateTime();
-        Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, now, durable );
-        if( durable )
-        {
-            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
-            schedules.schedules().add( schedule );
-        }
-        dispatchForExecution( schedule );
+        Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, now );
+        saveAndDispatch( schedule );
         return schedule;
     }
 
     @Override
-    public Schedule scheduleCron( Task task, @CronExpression String cronExpression, DateTime start, boolean durable )
+    public Schedule scheduleCron( Task task, @CronExpression String cronExpression, DateTime start )
     {
-        Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start, durable );
-        if( durable )
-        {
-            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
-            schedules.schedules().add( schedule );
-        }
-        dispatchForExecution( schedule );
+        Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start );
+        saveAndDispatch( schedule );
         return schedule;
     }
 
     @Override
-    public Schedule scheduleCron( Task task, String cronExpression, long initialDelay, boolean durable )
+    public void scheduleCron( Schedule schedule )
+    {
+        saveAndDispatch( schedule );
+    }
+
+    @Override
+    public Schedule scheduleCron( Task task, String cronExpression, long initialDelay )
     {
         DateTime start = new DateTime( System.currentTimeMillis() + initialDelay );
-        Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start, durable );
-        if( durable )
-        {
-            Schedules schedules = module.currentUnitOfWork().get( Schedules.class, getSchedulesIdentity( me ) );
-            schedules.schedules().add( schedule );
-        }
-        dispatchForExecution( schedule );
+        Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start );
+        saveAndDispatch( schedule );
         return schedule;
     }
 
-    private void dispatchForExecution( Schedule schedule )
+    @Override
+    public void cancelSchedule( String scheduleId )
     {
-        long now = System.currentTimeMillis();
-        synchronized( timingQueue )
+        UnitOfWork uow = module.currentUnitOfWork();
+        Schedule schedule = null;
+        try
         {
-            if( timingQueue.size() == 0 )
-            {
-                long nextRun = schedule.nextRun( now );
-                if( nextRun < 0 )
-                {
-                    return;
-                }
-                timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
-                if( scheduleHandler == null )
-                {
-                    dispatchHandler();
-                }
-            }
-            else
-            {
-                ScheduleTime first = timingQueue.first();
-                long nextRun = schedule.nextRun( now );
-                if( nextRun < 0 )
-                {
-                    return;
-                }
-                timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
-                ScheduleTime newFirst = timingQueue.first();
-                if( !first.equals( newFirst ) )
-                {
-                    // We need to restart the managementThread, which is currently waiting for a 'later' event to
-                    // occur than the one that was just scheduled.
-                    if( scheduleHandler != null && scheduleHandler.future != null )
-                    {
-                        scheduleHandler.future.cancel( true );
-                    }
-                    dispatchHandler();
-                }
-            }
+            schedule = uow.get( Schedule.class, scheduleId );
+        }
+        catch( NoSuchEntityException e )
+        {
+            return;
+        }
+        cancelSchedule( schedule );
+    }
+
+    @Override
+    public void cancelSchedule( Schedule schedule )
+    {
+        Schedules active = schedulesHandler.getActiveSchedules();
+        if( active.schedules().remove( schedule ) )
+        {
+            schedule.cancelled().set( true );
         }
     }
 
-    private void dispatchHandler()
+    private void saveAndDispatch( Schedule schedule )
     {
-        scheduleHandler = new ScheduleHandler();
-        managementExecutor.schedule( scheduleHandler, timingQueue.first().nextTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS );
+        Schedules schedules = schedulesHandler.getActiveSchedules();
+        schedules.schedules().add( schedule );
+        execution.dispatchForExecution( schedule );
+    }
+
+    private void loadSchedules()
+        throws UnitOfWorkCompletionException
+    {
+        try (UnitOfWork ignored = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Initialize Schedules" ) ))
+        {
+            Schedules schedules = schedulesHandler.getActiveSchedules();
+            for( Schedule schedule : schedules.schedules() )
+            {
+                if( schedule.cancelled().get() || schedule.done().get() )
+                {
+                    schedules.schedules().remove( schedule );
+                }
+                else
+                {
+                    execution.dispatchForExecution( schedule );
+                }
+            }
+        }
     }
 
     @Override
     public void activateService()
         throws Exception
     {
-        // Handle configuration defaults
-        SchedulerConfiguration configuration = config.get();
-        Integer workersCount = configuration.workersCount().get();
-        Integer workQueueSize = configuration.workQueueSize().get();
-
-        if( workersCount == null )
-        {
-            workersCount = DEFAULT_WORKERS_COUNT;
-            LOGGER.debug( "Workers count absent from configuration, falled back to default: {} workers", DEFAULT_WORKERS_COUNT );
-        }
-        if( workQueueSize == null )
-        {
-            workQueueSize = DEFAULT_WORKQUEUE_SIZE;
-            LOGGER.debug( "WorkQueue size absent from configuration, falled back to default: {}", DEFAULT_WORKQUEUE_SIZE );
-        }
-
-        int corePoolSize = 2;
-        if( workersCount > 4 )
-        {
-            corePoolSize = workersCount / 4;
-        }
         // Throws IllegalArgument if corePoolSize or keepAliveTime less than zero,
         // or if workersCount less than or equal to zero,
         // or if corePoolSize greater than workersCount.
-        taskExecutor = new ThreadPoolExecutor( corePoolSize, workersCount,
-                                               0, TimeUnit.MILLISECONDS,
-                                               new LinkedBlockingQueue<Runnable>( workQueueSize ),
-                                               threadFactory, rejectionHandler );
-        taskExecutor.prestartAllCoreThreads();
-        managementExecutor = new ScheduledThreadPoolExecutor( 2, threadFactory, rejectionHandler );
         loadSchedules();
+        execution.start();
         LOGGER.debug( "Activated" );
-    }
-
-    private void loadSchedules()
-        throws UnitOfWorkCompletionException
-    {
-        UnitOfWork uow = module.newUnitOfWork();
-        try
-        {
-            Schedules schedules = uow.get( Schedules.class, getSchedulesIdentity( me ) );
-            for( Schedule schedule : schedules.schedules() )
-            {
-                dispatchForExecution( schedule );
-            }
-        }
-        catch( NoSuchEntityException e )
-        {
-            // Create a new Schedules entity for keeping track of them all.
-            uow.newEntity( Schedules.class, getSchedulesIdentity( me ) );
-            uow.complete();
-        }
-        finally
-        {
-            if( uow.isOpen() )
-            {
-                uow.discard();
-            }
-        }
-    }
-
-    public static String getSchedulesIdentity( SchedulerService service )
-    {
-        return "Schedules:" + service.identity().get();
     }
 
     @Override
     public void passivateService()
         throws Exception
     {
-        managementExecutor.shutdown();
-        taskExecutor.shutdown();
-
-        managementExecutor.awaitTermination( 5, TimeUnit.SECONDS );
-        managementExecutor.shutdownNow();
-
-        taskExecutor.awaitTermination( 5, TimeUnit.SECONDS );
-        taskExecutor.shutdownNow();
-
+        execution.stop();
         LOGGER.debug( "Passivated" );
-    }
-
-    /**
-     * This little bugger wakes up when it is time to dispatch a Task, creates the Runner and dispatches itself
-     * for the next run.
-     */
-    class ScheduleHandler
-        implements Runnable
-    {
-        private ScheduledFuture<?> future;
-
-        @Override
-        public void run()
-        {
-            synchronized( timingQueue )
-            {
-                ScheduleTime scheduleTime = timingQueue.first();
-                timingQueue.remove( scheduleTime );
-                ScheduleRunner scheduleRunner = new ScheduleRunner( scheduleTime, SchedulerMixin.this, module );
-                taskExecutor.submit( scheduleRunner );
-                if( timingQueue.size() == 0 )
-                {
-                    scheduleHandler = null;
-                }
-                else
-                {
-                    ScheduleTime nextTime = timingQueue.first();
-                    future = managementExecutor.schedule( scheduleHandler, nextTime.nextTime, TimeUnit.MILLISECONDS );
-                }
-            }
-        }
-    }
-
-    /**
-     * Handle {@link Task}'s {@link org.apache.zest.api.unitofwork.UnitOfWork} and {@link org.apache.zest.library.scheduler.timeline.TimelineRecord}s creation.
-     */
-    public static class ScheduleRunner
-        implements Runnable
-    {
-        private final Module module;
-        private final ScheduleTime schedule;
-        private final SchedulerMixin schedulerMixin;
-
-        public ScheduleRunner( ScheduleTime schedule, SchedulerMixin schedulerMixin, Module module )
-        {
-            this.schedule = schedule;
-            this.schedulerMixin = schedulerMixin;
-            this.module = module;
-        }
-
-        // WARN Watch this code, see if we can do better, maybe leverage @UnitOfWorkRetry
-        @Override
-        public void run()
-        {
-            Usecase usecase = UsecaseBuilder.newUsecase( "ScheduleRunner" );
-            UnitOfWork uow = module.newUnitOfWork( usecase );
-            Schedule schedule = null;
-            try
-            {
-                schedule = uow.get( Schedule.class, this.schedule.scheduleIdentity );
-                Task task = schedule.task().get();
-                try
-                {
-                    schedule.taskStarting();
-                    task.run();
-                    schedule.taskCompletedSuccessfully();
-                }
-                catch( RuntimeException ex )
-                {
-                    schedule.taskCompletedWithException( ex );
-                }
-                uow.complete();
-            }
-            catch( UnitOfWorkCompletionException ex )
-            {
-            }
-            finally
-            {
-                if( schedule != null )
-                {
-                    schedulerMixin.dispatchForExecution( schedule );
-                }
-                // What should we do if we can't manage the Running flag??
-                if( uow.isOpen() )
-                {
-                    uow.discard();
-                }
-            }
-        }
     }
 }

@@ -18,12 +18,16 @@
 package org.apache.zest.library.scheduler;
 
 import org.apache.zest.api.common.Optional;
+import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
+import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation.Propagation.REQUIRES_NEW;
 
 @Mixins( FooTask.Mixin.class )
 public interface FooTask
@@ -34,10 +38,12 @@ public interface FooTask
     @Optional
     Property<String> output();
 
-    public static abstract class Mixin
-        implements Runnable
-    {
+    @UseDefaults
+    Property<Integer> runCounter();
 
+    abstract class Mixin
+        implements Task
+    {
         private static final Logger LOGGER = LoggerFactory.getLogger( FooTask.class );
 
         @This
@@ -47,6 +53,12 @@ public interface FooTask
         public void run()
         {
             LOGGER.info( "FooTask.run({})", me.input().get() );
+            synchronized( this )
+            {
+                me.runCounter().set( me.runCounter().get() + 1 );
+                LOGGER.info( "Identity: " + me.identity().get() );
+                LOGGER.info( " Counter: " + me.runCounter().get() );
+            }
             if( me.input().get().equals( Constants.BAZAR ) )
             {
                 if( me.output().get() == null )
@@ -60,5 +72,4 @@ public interface FooTask
             }
         }
     }
-
 }

@@ -16,18 +16,17 @@
  */
 package org.apache.zest.library.scheduler.schedule;
 
+import org.apache.zest.api.util.NullArgumentException;
+
 public final class ScheduleTime
     implements Comparable<ScheduleTime>
 {
-    public String scheduleIdentity;
-    public long nextTime;
+    private String scheduleIdentity;
+    private long nextTime;
 
     public ScheduleTime( String scheduleIdentity, long nextTime )
     {
-        if( scheduleIdentity == null )
-        {
-            throw new IllegalArgumentException( "null not allowed: " + scheduleIdentity );
-        }
+        NullArgumentException.validateNotEmpty( "scheduleIdentity", scheduleIdentity );
         this.scheduleIdentity = scheduleIdentity;
         this.nextTime = nextTime;
     }
@@ -57,6 +56,16 @@ public final class ScheduleTime
         int result = scheduleIdentity.hashCode();
         result = 31 * result + (int) ( nextTime ^ ( nextTime >>> 32 ) );
         return result;
+    }
+
+    public long nextTime()
+    {
+        return nextTime;
+    }
+
+    public String scheduleIdentity()
+    {
+        return scheduleIdentity;
     }
 
     @Override

@@ -15,17 +15,16 @@
  */
 package org.apache.zest.library.scheduler.timeline;
 
+import java.time.ZonedDateTime;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import org.joda.time.DateTime;
-import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.functional.Iterables;
-import org.apache.zest.library.scheduler.SchedulerMixin;
 import org.apache.zest.library.scheduler.SchedulerService;
+import org.apache.zest.library.scheduler.SchedulesHandler;
 import org.apache.zest.library.scheduler.schedule.Schedule;
 import org.apache.zest.library.scheduler.schedule.Schedules;
 
@@ -39,17 +38,18 @@ public abstract class TimelineSchedulerServiceMixin
     @Structure
     private Module module;
 
-    @Service
+    @This
     private SchedulerService scheduler;
+
+    @This
+    private SchedulesHandler schedulesHandler;
 
     @Override
     public Iterable<TimelineRecord> getLastRecords( int maxResults )
     {
         SortedSet<TimelineRecord> result = new TreeSet<>();
 
-        UnitOfWork uow = module.currentUnitOfWork();
-        String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
-        Schedules schedules = uow.get( Schedules.class, schedulesName );
+        Schedules schedules = schedulesHandler.getActiveSchedules();
         for( Schedule schedule : schedules.schedules() )
         {
             Timeline timeline = (Timeline) schedule;
@@ -63,9 +63,7 @@ public abstract class TimelineSchedulerServiceMixin
     public Iterable<TimelineRecord> getNextRecords( int maxResults )
     {
         SortedSet<TimelineRecord> result = new TreeSet<>();
-        UnitOfWork uow = module.currentUnitOfWork();
-        String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
-        Schedules schedules = uow.get( Schedules.class, schedulesName );
+        Schedules schedules = schedulesHandler.getActiveSchedules();
         for( Schedule schedule : schedules.schedules() )
         {
             Timeline timeline = (Timeline) schedule;
@@ -76,13 +74,11 @@ public abstract class TimelineSchedulerServiceMixin
     }
 
     @Override
-    public Iterable<TimelineRecord> getRecords( DateTime from, DateTime to )
+    public Iterable<TimelineRecord> getRecords( ZonedDateTime from, ZonedDateTime to )
     {
         SortedSet<TimelineRecord> result = new TreeSet<>();
 
-        UnitOfWork uow = module.currentUnitOfWork();
-        String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
-        Schedules schedules = uow.get( Schedules.class, schedulesName );
+        Schedules schedules = schedulesHandler.getActiveSchedules();
         for( Schedule schedule : schedules.schedules() )
         {
             Timeline timeline = (Timeline) schedule;
@@ -97,9 +93,7 @@ public abstract class TimelineSchedulerServiceMixin
     {
         SortedSet<TimelineRecord> result = new TreeSet<>();
 
-        UnitOfWork uow = module.currentUnitOfWork();
-        String schedulesName = SchedulerMixin.getSchedulesIdentity( scheduler );
-        Schedules schedules = uow.get( Schedules.class, schedulesName );
+        Schedules schedules = schedulesHandler.getActiveSchedules();
         for( Schedule schedule : schedules.schedules() )
         {
             Timeline timeline = (Timeline) schedule;

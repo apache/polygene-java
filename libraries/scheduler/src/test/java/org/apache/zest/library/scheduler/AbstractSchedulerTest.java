@@ -18,12 +18,18 @@
 package org.apache.zest.library.scheduler;
 
 import org.apache.zest.api.entity.EntityBuilder;
+import org.apache.zest.api.entity.IdentityGenerator;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.ServiceDeclaration;
+import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
+import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 
 public abstract class AbstractSchedulerTest
     extends AbstractZestTest
@@ -34,7 +40,9 @@ public abstract class AbstractSchedulerTest
     {
         assembly.entities( FooTask.class );
 
-        new EntityTestAssembler().assemble( assembly );
+        assembly.services( MemoryEntityStoreService.class );
+        assembly.services( UuidIdentityGeneratorService.class).withMixins( CountingIdentityGeneratorService.class );
+        assembly.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         new RdfMemoryStoreAssembler().assemble( assembly );
 
         onAssembly( assembly );
@@ -50,5 +58,17 @@ public abstract class AbstractSchedulerTest
         task.name().set( name );
         task.input().set( input );
         return builder.newInstance();
+    }
+
+    public static class CountingIdentityGeneratorService
+        implements IdentityGenerator
+    {
+        int counter = 0;
+
+        @Override
+        public String generate( Class<?> compositeType )
+        {
+            return compositeType.getSimpleName() + ":" + counter++;
+        }
     }
 }
