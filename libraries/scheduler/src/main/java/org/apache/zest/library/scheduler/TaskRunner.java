@@ -55,7 +55,12 @@ public class TaskRunner
             }
             catch( RuntimeException ex )
             {
-                schedule.taskCompletedWithException( ex );
+                Throwable exception = ex;
+                while(exception instanceof UndeclaredThrowableException)
+                {
+                    exception = ((UndeclaredThrowableException) ex).getUndeclaredThrowable();
+                }
+                schedule.taskCompletedWithException( exception );
                 schedule.exceptionCounter().set( schedule.exceptionCounter().get() + 1 );
             }
             schedule.executionCounter().set( schedule.executionCounter().get() + 1 );

@@ -53,7 +53,7 @@ public abstract class TimelineForScheduleConcern
     }
 
     @Override
-    public void taskCompletedWithException( RuntimeException ex )
+    public void taskCompletedWithException( Throwable ex )
     {
         TimelineRecordStep step = TimelineRecordStep.FAILURE;
         String details = "Exception occurred:" + getStackTrace( ex );
@@ -78,7 +78,7 @@ public abstract class TimelineForScheduleConcern
         state.history().set( timelineRecords );
     }
 
-    private String getStackTrace( RuntimeException ex )
+    private String getStackTrace( Throwable ex )
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream( 1000 );
         BufferedOutputStream out = new BufferedOutputStream( baos );

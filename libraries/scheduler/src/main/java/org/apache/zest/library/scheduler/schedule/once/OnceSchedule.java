@@ -39,7 +39,7 @@ public interface OnceSchedule
         }
 
         @Override
-        public void taskCompletedWithException( RuntimeException ex )
+        public void taskCompletedWithException( Throwable ex )
         {
             running().set( false );
         }

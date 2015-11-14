@@ -18,14 +18,13 @@
  */
 package org.apache.zest.library.scheduler.schedule;
 
+import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.entity.EntityComposite;
-import org.joda.time.DateTime;
-import org.apache.zest.api.association.Association;
-import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.library.scheduler.Task;
+import org.joda.time.DateTime;
 
 /**
  * Represent the scheduling of a {@link Task}.
@@ -102,9 +101,10 @@ public interface Schedule extends EntityComposite
     /**
      * Called directly after the {@link org.apache.zest.library.scheduler.Task#run()} method has been completed but
      * threw a RuntimeException.
-     * @param ex
+     * @param ex The execption that was thrown in the Task. If the thrown Exception was an
+     *           {@link java.lang.reflect.UndeclaredThrowableException} then the underlying exception is passed here.
      */
-    void taskCompletedWithException( RuntimeException ex );
+    void taskCompletedWithException( Throwable ex );
 
     /**
      * Compute the next time this schedule is to be run.
