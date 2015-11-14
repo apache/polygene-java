@@ -46,19 +46,16 @@ public interface CronSchedule
         @Override
         public void taskStarting()
         {
-            running().set( true );
         }
 
         @Override
         public void taskCompletedSuccessfully()
         {
-            running().set(false);
         }
 
         @Override
         public void taskCompletedWithException( Throwable ex )
         {
-            running().set(false);
         }
 
         @Override

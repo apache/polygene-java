@@ -21,6 +21,7 @@
 package org.apache.zest.library.scheduler;
 
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.structure.Module;
@@ -32,6 +33,8 @@ import org.apache.zest.library.scheduler.schedule.ScheduleTime;
 public class TaskRunner
     implements Runnable
 {
+    private static ReentrantLock lock = new ReentrantLock();
+
     @Structure
     private Module module;
 
@@ -42,30 +45,37 @@ public class TaskRunner
     public void run()
     {
         // TODO: (niclas) I am NOT happy with this implementation, requiring 3 UnitOfWorks to be created. 15-20 milliseconds on my MacBook. If there is a better way to detect overrun, two of those might not be needed.
+        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner initialize" ) );
         try
         {
-            UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner initialize" ) );
+            lock.lock();
             Schedule schedule = uow.get( Schedule.class, this.schedule.scheduleIdentity() );
             if( !schedule.running().get() )  // check for overrun.
             {
                 try
                 {
                     schedule.taskStarting();
+                    schedule.running().set( true );
                     uow.complete();                     // This completion is needed to detect overrun
+                    lock.unlock();
+
                     uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner" ) );
                     schedule = uow.get( schedule );     // re-attach the entity to the new UnitOfWork
                     Task task = schedule.task().get();
                     task.run();
-                    uow.complete();                     // Need this to avoid ConcurrentModificationException when there has been an overrun.
+                    uow.complete();
+                    lock.lock();
                     uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner conclude" ) );
                     schedule = uow.get( schedule );     // re-attach the entity to the new UnitOfWork
+                    schedule.running().set( false );
                     schedule.taskCompletedSuccessfully();
+                    schedule.executionCounter().set( schedule.executionCounter().get() + 1 );
                 }
                 catch( RuntimeException ex )
                 {
+                    schedule.running().set( false );
                     processException( schedule, ex );
                 }
-                schedule.executionCounter().set( schedule.executionCounter().get() + 1 );
             }
             else
             {
@@ -75,7 +85,20 @@ public class TaskRunner
         }
         catch( Exception e )
         {
+            e.printStackTrace();
             throw new UndeclaredThrowableException( e );
+        }
+        finally
+        {
+            uow.discard();
+            try
+            {
+                lock.unlock();
+            }
+            catch( IllegalMonitorStateException e )
+            {
+                // ignore, as it may happen on certain exceptions.
+            }
         }
     }
 

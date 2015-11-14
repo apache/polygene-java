@@ -20,12 +20,10 @@
 
 package org.apache.zest.library.scheduler;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +35,6 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkRetry;
@@ -84,7 +81,7 @@ public interface Execution
         private final SortedSet<ScheduleTime> timingQueue = new TreeSet<>();
         private volatile boolean running;
         private ThreadPoolExecutor taskExecutor;
-        private Thread scheduleThread;
+        private volatile Thread scheduleThread;
 
         @Override
         @UnitOfWorkPropagation
@@ -114,6 +111,10 @@ public interface Execution
                     {
                         // Ignore. Used to signal "Hey, wake up. Time to work..."
                     }
+                    catch( Throwable e )
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -133,29 +134,21 @@ public interface Execution
         public void updateNextTime( ScheduleTime scheduleTime )
         {
             long now = System.currentTimeMillis();
-
-            try (UnitOfWork uow = module.newUnitOfWork())
+            UnitOfWork uow = module.currentUnitOfWork();
+            try
             {
-                try
+                Schedule schedule = uow.get( Schedule.class, scheduleTime.scheduleIdentity() );
+                long nextTime = schedule.nextRun( now + 1000 );
+                if( nextTime != Long.MIN_VALUE )
                 {
-                    Schedule schedule = uow.get( Schedule.class, scheduleTime.scheduleIdentity() );
-                    long nextTime = schedule.nextRun( now );
-                    if( nextTime != Long.MIN_VALUE )
-                    {
-                        scheduleTime = new ScheduleTime( schedule.identity().get(), nextTime );
-                        timingQueue.add( scheduleTime );
-                    }
+                    scheduleTime = new ScheduleTime( schedule.identity().get(), nextTime );
+                    timingQueue.add( scheduleTime );
                 }
-                catch( NoSuchEntityException e )
-                {
-                    // Schedule has been removed.
-                    scheduler.cancelSchedule( scheduleTime.scheduleIdentity() );
-                }
-                uow.complete();
             }
-            catch( UnitOfWorkCompletionException e )
+            catch( NoSuchEntityException e )
             {
-                throw new UndeclaredThrowableException( e );
+                // Schedule has been removed.
+                scheduler.cancelSchedule( scheduleTime.scheduleIdentity() );
             }
         }
 

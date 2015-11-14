@@ -172,8 +172,8 @@ public class SchedulerMixin
         // Throws IllegalArgument if corePoolSize or keepAliveTime less than zero,
         // or if workersCount less than or equal to zero,
         // or if corePoolSize greater than workersCount.
-        loadSchedules();
         execution.start();
+        loadSchedules();
         LOGGER.debug( "Activated" );
     }
 
