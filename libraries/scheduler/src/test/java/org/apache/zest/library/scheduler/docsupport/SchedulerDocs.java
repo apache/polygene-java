@@ -22,21 +22,25 @@ import org.apache.zest.api.association.Association;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.property.Property;
+import org.apache.zest.api.unitofwork.concern.UnitOfWorkDiscardOn;
+import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
+import org.apache.zest.api.unitofwork.concern.UnitOfWorkRetry;
 import org.apache.zest.library.scheduler.Scheduler;
 import org.apache.zest.library.scheduler.Task;
 import org.apache.zest.library.scheduler.schedule.Schedule;
 import org.apache.zest.library.scheduler.timeline.Timeline;
 
-
 public class SchedulerDocs
 {
 
-// START SNIPPET: timeline
-    @Service Timeline timeline;
+    // START SNIPPET: timeline
+    @Service
+    Timeline timeline;
 // END SNIPPET: timeline
 
-// START SNIPPET: 2
-    @Service Scheduler scheduler;
+    // START SNIPPET: 2
+    @Service
+    Scheduler scheduler;
 
     public void method()
     {
@@ -45,12 +49,13 @@ public class SchedulerDocs
         // myTask will be run in 10 seconds from now
     }
 
-// END SNIPPET: 2
-    MyTaskEntity todo() {
+    // END SNIPPET: 2
+    MyTaskEntity todo()
+    {
         return null;
     }
 
-// START SNIPPET: 1
+    // START SNIPPET: 1
     interface MyTaskEntity extends Task
     {
         Property<String> myTaskState();
@@ -60,19 +65,34 @@ public class SchedulerDocs
 
     class MyTaskMixin implements Runnable
     {
-        @This MyTaskEntity me;
+        @This
+        MyTaskEntity me;
 
         @Override
         public void run()
         {
-            me.myTaskState().set(me.anotherEntity().get().doSomeStuff(me.myTaskState().get()));
+            me.myTaskState().set( me.anotherEntity().get().doSomeStuff( me.myTaskState().get() ) );
         }
     }
 
-// END SNIPPET: 1
+    // END SNIPPET: 1
     interface AnotherEntity
     {
-        String doSomeStuff(String p);
+        String doSomeStuff( String p );
     }
 
+    public class MyTask implements Runnable
+    {
+
+        // START SNIPPET: strategy
+        @Override
+        @UnitOfWorkRetry( retries = 3 )
+        @UnitOfWorkDiscardOn( IllegalArgumentException.class )
+        @UnitOfWorkPropagation( value = UnitOfWorkPropagation.Propagation.REQUIRES_NEW, usecase = "Load Data" )
+        public void run()
+        {
+            // END SNIPPET: strategy
+
+        }
+    }
 }

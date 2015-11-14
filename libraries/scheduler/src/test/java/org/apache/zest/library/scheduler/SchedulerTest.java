@@ -166,9 +166,8 @@ public class SchedulerTest
 
             uow.complete();
         }
-        Thread.sleep(5000);
         await( usecase.name() )
-            .atMost( 30, SECONDS )
+            .atMost( 6, SECONDS )
             .until( taskOutput( taskIdentity ), equalTo( 4 ) );
 
         try( UnitOfWork uow = module.newUnitOfWork( usecase ) )

@@ -42,10 +42,5 @@ public interface SchedulerConfiguration
     @Optional @UseDefaults
     Property<Integer> workQueueSize();
 
-    /**
-     * @return If the scheduler must stop without waiting for running tasks, optional and defaults to false.
-     */
-    @UseDefaults
-    Property<Boolean> stopViolently();
 // END SNIPPET: configuration
 }

@@ -25,7 +25,7 @@
 source=libraries/scheduler/dev-status.xml
 --------------
 
-The Scheduler library provides an easy way to schedule tasks using cron expressions if needed.
+The Scheduler library provides an easy way to schedule tasks either for one time execution, CRON expression intervals or a custom algorithm.
 
 An optional Timeline allows you to browse past and future task runs.
 
@@ -39,7 +39,7 @@ The SLF4J Logger used by this library is named "org.apache.zest.library.schedule
 
 Use SchedulerAssembler to add the Scheduler service to your Application. This
 Assembler provide a fluent api to programmatically configure configuration defaults and activate the
-Timeline service assembly that allow to browse in past and future Task runs.
+Timeline service assembly that allow browsing of past and future Task runs.
 
 Here is a full example:
 
@@ -71,12 +71,12 @@ source=libraries/scheduler/src/main/java/org/apache/zest/library/scheduler/Task.
 tag=task
 ----
 
-Tasks have a mandatory name property and an optional tags property. Theses properties get copied in
+Tasks have a mandatory name property and an optional tags property. These properties get copied in
 each TimelineRecord created when the Timeline feature is activated.
 
 The run() method of Tasks is wrapped in a UnitOfWork when called by the Scheduler.
 Thanks to the UnitOfWork handling in Zest, you can split the work done in your Tasks in
-several UnitOfWorks, the one around the Task#run() invocation will then be paused.
+several UnitOfWorks. See UnitOfWork strategy below.
 
 Here is a simple example:
 
@@ -92,11 +92,11 @@ Tasks are scheduled using the Scheduler service. This creates a Schedule associa
 the Task that allows you to know if it is running, to change it's cron expression and set it's
 durability.
 
-By default, a Schedule is not durable. In other words, it do not survive an Application
-restart. To make a Schedule durable, set it's durable property to true once its scheduled.
+All Schedules are durable. In other words, it will survive an Application restart, and your application should
+not schedule it again, as the Schedules are when the SchedulerService is activated after bootstrap.
 
-There are two ways to schedule a Task using the Scheduler service: once or with a cron
-expression.
+There are three ways to schedule a Task using the Scheduler service: once or with a cron
+expression or providing your own Schedule instance.
 
 === Scheduling once ===
 
@@ -108,7 +108,8 @@ source=libraries/scheduler/src/test/java/org/apache/zest/library/scheduler/docsu
 tag=2
 -----------
 
-Note that there is no point in making such a Schedule durable because it won't be run repeatedly.
+Since all Schedules are durable, this "once" can be far into the future, and still be executed if the application
+has been restarted.
 
 
 === Scheduling using a cron expression ===
@@ -137,11 +138,37 @@ To sum up, cron expressions used here have a precision of one second. The follow
 - @annualy or @yearly
 
 
-== Durability ==
-Schedules can either be ethereal or durable, passed as an argument to the +Scheduler+. If it is a durable
-schedule, then the Task must be an Entity Composite.
+== Overrun ==
+If the Schedule is running when it is time to be executed, then the execution will be skipped. This means that
+the Task must complete within its period, or executions will be skipped. The sideeffect of that is that this
+reduces thread exhaustion.
 
-When the
+When the Task execution is skipped, the overrun() property on the Schedule is incremented by 1.
+
+== Durability ==
+All Schedules are durable and the Task must be an Entity Composite. It also means that Tasks should be schedule
+once and not on each reboot. The SchedulerService will load all Schedules on activation.
+
+While the Task is running, the Schedule will be held in the UnitOfWork of the TaskRunner. This means that IF the
+Schedule is updated, i.e. cancelled or directly manipulating Schedule properties, the UnitOfWork.complete() will fail.
+And if the Task is executing within the same UnitOfWork, any changes made will not take place.
+
+== UnitOfWork strategy ==
+The TaskRunner creates a UnitOfWork and the Task is excuted within that UnitOfWork. This may be very convenient, but
+as noted in Durability above, that UnitOfWork will fail if Schedule properties are updated while the Task is
+running. To avoid that the Task's operations suffers from this, OR if the Task wants a Retry/DiscardOn strategy
+different from the default one, then the Task can simply declare its own. such as;
+
+[snippet,java]
+-----------
+source=libraries/scheduler/src/test/java/org/apache/zest/library/scheduler/docsupport/SchedulerDocs.java
+tag=strategy
+-----------
+
+== Custom Schedules ==
+It is possible to implement Schedule directly. It must be declared as an EntityComposite in the assembly, and be
+visible from the SchedulerService. No other considerations should be necessary.
+
 == Observing the Timeline ==
 
 Timeline allow to browse in past and future Task runs. This feature is available only if you activate

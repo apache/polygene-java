@@ -218,7 +218,6 @@ public interface Execution
         public void stop()
             throws Exception
         {
-
             running = false;
             synchronized( this )
             {

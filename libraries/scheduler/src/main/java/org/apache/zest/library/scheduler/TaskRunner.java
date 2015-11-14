@@ -25,7 +25,7 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
+import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.library.scheduler.schedule.Schedule;
 import org.apache.zest.library.scheduler.schedule.ScheduleTime;
 
@@ -39,36 +39,54 @@ public class TaskRunner
     private ScheduleTime schedule;
 
     @Override
-    @UnitOfWorkPropagation( usecase = "Task Runner" )
     public void run()
     {
+        // TODO: (niclas) I am NOT happy with this implementation, requiring 3 UnitOfWorks to be created. 15-20 milliseconds on my MacBook. If there is a better way to detect overrun, two of those might not be needed.
         try
         {
-            UnitOfWork uow = module.currentUnitOfWork();
+            UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner initialize" ) );
             Schedule schedule = uow.get( Schedule.class, this.schedule.scheduleIdentity() );
-            Task task = schedule.task().get();
-            try
+            if( !schedule.running().get() )  // check for overrun.
             {
-                schedule.taskStarting();
-                task.run();
-                schedule.taskCompletedSuccessfully();
-            }
-            catch( RuntimeException ex )
-            {
-                Throwable exception = ex;
-                while(exception instanceof UndeclaredThrowableException)
+                try
                 {
-                    exception = ((UndeclaredThrowableException) ex).getUndeclaredThrowable();
+                    schedule.taskStarting();
+                    uow.complete();                     // This completion is needed to detect overrun
+                    uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner" ) );
+                    schedule = uow.get( schedule );     // re-attach the entity to the new UnitOfWork
+                    Task task = schedule.task().get();
+                    task.run();
+                    uow.complete();                     // Need this to avoid ConcurrentModificationException when there has been an overrun.
+                    uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner conclude" ) );
+                    schedule = uow.get( schedule );     // re-attach the entity to the new UnitOfWork
+                    schedule.taskCompletedSuccessfully();
                 }
-                schedule.taskCompletedWithException( exception );
-                schedule.exceptionCounter().set( schedule.exceptionCounter().get() + 1 );
+                catch( RuntimeException ex )
+                {
+                    processException( schedule, ex );
+                }
+                schedule.executionCounter().set( schedule.executionCounter().get() + 1 );
             }
-            schedule.executionCounter().set( schedule.executionCounter().get() + 1 );
+            else
+            {
+                schedule.overrun().set( schedule.overrun().get() + 1 );
+            }
             uow.complete();
         }
         catch( Exception e )
         {
             throw new UndeclaredThrowableException( e );
         }
+    }
+
+    private void processException( Schedule schedule, RuntimeException ex )
+    {
+        Throwable exception = ex;
+        while( exception instanceof UndeclaredThrowableException )
+        {
+            exception = ( (UndeclaredThrowableException) ex ).getUndeclaredThrowable();
+        }
+        schedule.taskCompletedWithException( exception );
+        schedule.exceptionCounter().set( schedule.exceptionCounter().get() + 1 );
     }
 }

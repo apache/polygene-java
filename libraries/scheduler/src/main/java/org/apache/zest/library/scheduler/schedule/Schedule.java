@@ -86,6 +86,12 @@ public interface Schedule extends EntityComposite
     @UseDefaults
     Property<Boolean> done();
 
+    /** Returns the number of times the Schedule has been skipped, due to the Task was still running.
+     *
+      * @return the number of times the Schedule has been skipped, due to the Task was still running.
+     */
+    @UseDefaults
+    Property<Long> overrun();
 
     /**
      * Called just before the {@link org.apache.zest.library.scheduler.Task#run()} method is called.
@@ -121,5 +127,4 @@ public interface Schedule extends EntityComposite
      * @return A String representing this schedule.
      */
     String presentationString();
-
 }
