@@ -20,15 +20,16 @@ package org.apache.zest.library.uowfile.internal;
 import java.util.Collections;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
+import org.apache.zest.api.usecase.Usecase;
 
 public class ConcurrentUoWFileModificationException
     extends ConcurrentEntityModificationException
 {
     private final Iterable<UoWFile> concurrentlyModifiedFiles;
 
-    ConcurrentUoWFileModificationException( Iterable<UoWFile> concurrentlyModifiedFiles )
+    ConcurrentUoWFileModificationException( Iterable<UoWFile> concurrentlyModifiedFiles, Usecase usecase )
     {
-        super( Collections.<EntityComposite>emptyList() );
+        super( Collections.<EntityComposite>emptyList(), usecase );
         this.concurrentlyModifiedFiles = concurrentlyModifiedFiles;
     }
 

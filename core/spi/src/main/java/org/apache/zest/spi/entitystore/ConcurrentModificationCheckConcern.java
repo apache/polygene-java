@@ -14,8 +14,7 @@
 
 package org.apache.zest.spi.entitystore;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.concern.ConcernOf;
@@ -59,10 +58,9 @@ public abstract class ConcurrentModificationCheckConcern
     {
         private final EntityStoreUnitOfWork uow;
         private EntityStateVersions versions;
-        private ModuleSpi module;
         private long currentTime;
 
-        private List<EntityState> loaded = new ArrayList<>();
+        private HashSet<EntityState> loaded = new HashSet<>();
 
         private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -73,7 +71,6 @@ public abstract class ConcurrentModificationCheckConcern
         {
             this.uow = uow;
             this.versions = versions;
-            this.module = module;
             this.currentTime = currentTime;
         }
 
@@ -134,6 +131,10 @@ public abstract class ConcurrentModificationCheckConcern
             catch( EntityStoreException e )
             {
                 lock.writeLock().unlock();
+                if( e instanceof ConcurrentEntityStateModificationException )
+                {
+                    ((ConcurrentEntityStateModificationException) e).setUsecase( usecase() );
+                }
                 throw e;
             }
         }

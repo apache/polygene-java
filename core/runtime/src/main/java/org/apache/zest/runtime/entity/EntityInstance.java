@@ -231,7 +231,14 @@ public final class EntityInstance
     @Override
     public String toString()
     {
-        return identity.toString();
+        if( Boolean.getBoolean( "zest.entity.print.state" ) )
+        {
+            return state.toString();
+        }
+        else
+        {
+            return identity.toString();
+        }
     }
 
     public void remove( UnitOfWork unitOfWork )
@@ -301,7 +308,11 @@ public final class EntityInstance
         catch( ConstraintViolationException e )
         {
             List<Class<?>> entityModelList = entityModel.types().collect( toList() );
-            throw new ConstraintViolationException( identity.identity(), entityModelList, e.mixinTypeName(), e.methodName(), e.constraintViolations() );
+            throw new ConstraintViolationException( identity.identity(),
+                                                    entityModelList,
+                                                    e.mixinTypeName(),
+                                                    e.methodName(),
+                                                    e.constraintViolations() );
         }
     }
 }

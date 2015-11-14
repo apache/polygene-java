@@ -371,7 +371,7 @@ public final class UnitOfWorkInstance
                             .filter( instance -> instance.identity().equals( modifiedEntityIdentity ) )
                             .forEach( instance -> modifiedEntities.add( instance.<EntityComposite>proxy() ) );
                     }
-                    throw new ConcurrentEntityModificationException( modifiedEntities );
+                    throw new ConcurrentEntityModificationException( modifiedEntities, ( (ConcurrentEntityStateModificationException) e ).getUsecase() );
                 }
                 else
                 {

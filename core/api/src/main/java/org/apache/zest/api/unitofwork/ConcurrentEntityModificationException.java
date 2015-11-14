@@ -15,6 +15,7 @@
 package org.apache.zest.api.unitofwork;
 
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.usecase.Usecase;
 
 /**
  * This exception is thrown by UnitOfWork.complete() if any entities that are being committed
@@ -27,9 +28,11 @@ public class ConcurrentEntityModificationException
 
     private final Iterable<EntityComposite> concurrentlyModifiedEntities;
 
-    public ConcurrentEntityModificationException( Iterable<EntityComposite> concurrentlyModifiedEntities )
+    public ConcurrentEntityModificationException( Iterable<EntityComposite> concurrentlyModifiedEntities,
+                                                  Usecase usecase
+    )
     {
-        super("Entities changed concurrently :" + concurrentlyModifiedEntities);
+        super( "Entities changed concurrently, and detected in usecase '" + usecase + "'\nModified entities : " + concurrentlyModifiedEntities );
         this.concurrentlyModifiedEntities = concurrentlyModifiedEntities;
     }
 

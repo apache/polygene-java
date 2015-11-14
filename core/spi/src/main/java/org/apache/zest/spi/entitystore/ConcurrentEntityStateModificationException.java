@@ -18,6 +18,7 @@ package org.apache.zest.spi.entitystore;
 
 import java.util.Collection;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.usecase.Usecase;
 
 /**
  * This exception should be thrown if the EntityStore detects that the entities being saved have been changed
@@ -27,15 +28,32 @@ public class ConcurrentEntityStateModificationException
     extends EntityStoreException
 {
     private Collection<EntityReference> modifiedEntities;
+    private Usecase usecase;
 
     public ConcurrentEntityStateModificationException( Collection<EntityReference> modifiedEntities )
     {
-        super("Entities changed concurrently:" + modifiedEntities);
+        super();
         this.modifiedEntities = modifiedEntities;
     }
 
     public Collection<EntityReference> modifiedEntities()
     {
         return modifiedEntities;
+    }
+
+    @Override
+    public String getMessage()
+    {
+        return "Entities changed concurrently. Changes detected in usecase '" + usecase + "\nModified entities are;\n" + modifiedEntities;
+    }
+
+    public Usecase getUsecase()
+    {
+        return usecase;
+    }
+
+    public void setUsecase( Usecase usecase )
+    {
+        this.usecase = usecase;
     }
 }

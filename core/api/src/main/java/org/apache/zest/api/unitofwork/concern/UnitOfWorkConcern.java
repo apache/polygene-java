@@ -18,6 +18,7 @@
 package org.apache.zest.api.unitofwork.concern;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import org.apache.zest.api.common.AppliesTo;
 import org.apache.zest.api.concern.GenericConcern;
 import org.apache.zest.api.injection.scope.Invocation;
@@ -66,6 +67,7 @@ public class UnitOfWorkConcern
         {
             if( module.isUnitOfWorkActive() )
             {
+                //noinspection ConstantConditions
                 return next.invoke( proxy, method, args );
             }
             else
@@ -86,6 +88,7 @@ public class UnitOfWorkConcern
             Usecase usecase = usecase();
             return invokeWithCommit( proxy, method, args, module.newUnitOfWork( usecase ) );
         }
+        //noinspection ConstantConditions
         return next.invoke( proxy, method, args );
     }
 
@@ -122,22 +125,31 @@ public class UnitOfWorkConcern
             int retry = 0;
             while( true )
             {
+                //noinspection ConstantConditions
                 Object result = next.invoke( proxy, method, args );
                 try
                 {
                     currentUnitOfWork.complete();
                     return result;
                 }
-                catch( ConcurrentEntityModificationException e )
+                catch( UndeclaredThrowableException e)
                 {
-                    if( retry >= maxTries )
+                    Throwable undeclared = e.getUndeclaredThrowable();
+                    if( undeclared instanceof ConcurrentEntityModificationException )
+                    {
+                        ConcurrentEntityModificationException ceme = (ConcurrentEntityModificationException) undeclared;
+                        currentUnitOfWork = checkRetry( maxTries, delayFactor, initialDelay, retry, ceme );
+                        retry++;
+                    }
+                    else
                     {
                         throw e;
                     }
-                    module.currentUnitOfWork().discard();
-                    Thread.sleep( initialDelay + retry * delayFactor );
+                }
+                catch( ConcurrentEntityModificationException e )
+                {
+                    currentUnitOfWork = checkRetry( maxTries, delayFactor, initialDelay, retry, e );
                     retry++;
-                    currentUnitOfWork = module.newUnitOfWork( usecase() );
                 }
             }
         }
@@ -147,6 +159,23 @@ public class UnitOfWorkConcern
             discardIfRequired( method, currentUnitOfWork, throwable );
             throw throwable;
         }
+    }
+
+    private UnitOfWork checkRetry( int maxTries,
+                                   long delayFactor,
+                                   long initialDelay,
+                                   int retry,
+                                   ConcurrentEntityModificationException e
+    )
+        throws ConcurrentEntityModificationException, InterruptedException
+    {
+        if( retry >= maxTries )
+        {
+            throw e;
+        }
+        module.currentUnitOfWork().discard();
+        Thread.sleep( initialDelay + retry * delayFactor );
+        return module.newUnitOfWork( usecase() );
     }
 
     /**

@@ -155,7 +155,7 @@ public interface UoWFileFactory
                         }
                         if( !concurrentlyModified.isEmpty() )
                         {
-                            throw new ConcurrentUoWFileModificationException( concurrentlyModified );
+                            throw new ConcurrentUoWFileModificationException( concurrentlyModified, uow.usecase() );
                         }
                     }
                 }
