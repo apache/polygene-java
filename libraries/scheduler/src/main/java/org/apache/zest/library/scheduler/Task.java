@@ -29,7 +29,7 @@ import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 /**
  * Compose an Entity using this type to be able to Schedule it.
  *<p>
- * A Task is associated from a {@link org.apache.zest.library.scheduler.schedule.Schedule}, and upon time to execute
+ * A Task is associated from a {@link Schedule}, and upon time to execute
  * the SchedulerService will dispatch a TaskRunner in a new thread, and establish a UnitOfWork (Usecase name of "Task Runner").
  *</p>
  *<p>

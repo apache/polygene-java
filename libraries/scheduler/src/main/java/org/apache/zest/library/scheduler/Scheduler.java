@@ -18,14 +18,13 @@
  */
 package org.apache.zest.library.scheduler;
 
+import org.apache.zest.library.scheduler.internal.Schedules;
 import org.joda.time.DateTime;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.zest.library.scheduler.bootstrap.SchedulerAssembler;
-import org.apache.zest.library.scheduler.schedule.Schedule;
-import org.apache.zest.library.scheduler.schedule.cron.CronExpression;
 import org.apache.zest.library.scheduler.timeline.Timeline;
 
 import static org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation.Propagation.MANDATORY;
@@ -46,7 +45,7 @@ import static org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation.Propa
  * </p>
  * <p>
  * All {@link Schedule}s are durable and stored in the visible {@link org.apache.zest.spi.entitystore.EntityStore} like
- * any ordinary {@link org.apache.zest.api.entity.EntityComposite}. There is also a {@link org.apache.zest.library.scheduler.schedule.Schedules}
+ * any ordinary {@link org.apache.zest.api.entity.EntityComposite}. There is also a {@link Schedules}
  * entity composite that has Associations to all active, completed and cancelled schedules.
  * </p>
  * <p>
@@ -87,7 +86,7 @@ public interface Scheduler
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleCron( Task task, @CronExpression String cronExpression );
+    Schedule scheduleCron( Task task, @CronSchedule.CronExpression String cronExpression );
 
     /**
      * Schedule a Task using a CronExpression with a given initial delay in milliseconds.
@@ -99,7 +98,7 @@ public interface Scheduler
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleCron( Task task, @CronExpression String cronExpression, long initialDelay );
+    Schedule scheduleCron( Task task, @CronSchedule.CronExpression String cronExpression, long initialDelay );
 
     /**
      * Schedule a Task using a CronExpression starting at a given date.
@@ -111,7 +110,7 @@ public interface Scheduler
      * @return The newly created Schedule
      */
     @UnitOfWorkPropagation( MANDATORY )
-    Schedule scheduleCron( Task task, @CronExpression String cronExpression, DateTime start );
+    Schedule scheduleCron( Task task, @CronSchedule.CronExpression String cronExpression, DateTime start );
 
     /** Schedules a custom Schedule.
      *

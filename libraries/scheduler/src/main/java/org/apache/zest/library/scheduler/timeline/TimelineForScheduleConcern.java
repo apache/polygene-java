@@ -26,7 +26,7 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueBuilder;
-import org.apache.zest.library.scheduler.schedule.Schedule;
+import org.apache.zest.library.scheduler.Schedule;
 
 public abstract class TimelineForScheduleConcern
     extends ConcernOf<Schedule>

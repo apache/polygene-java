@@ -23,6 +23,7 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceActivation;
 import org.apache.zest.library.scheduler.defaults.DefaultRejectionHandler;
 import org.apache.zest.library.scheduler.defaults.DefaultThreadFactory;
+import org.apache.zest.library.scheduler.internal.SchedulerMixin;
 
 @Mixins( { SchedulerMixin.class, DefaultThreadFactory.class, DefaultRejectionHandler.class } )
 public interface SchedulerService

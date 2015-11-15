@@ -28,7 +28,7 @@ import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
-import org.apache.zest.library.scheduler.schedule.Schedules;
+import org.apache.zest.library.scheduler.internal.Schedules;
 
 @Mixins(SchedulesHandler.SchedulesHandlerMixin.class)
 public interface SchedulesHandler

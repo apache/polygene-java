@@ -27,7 +27,6 @@ import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.library.scheduler.bootstrap.SchedulerAssembler;
-import org.apache.zest.library.scheduler.schedule.Schedule;
 import org.apache.zest.library.scheduler.timeline.Timeline;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;

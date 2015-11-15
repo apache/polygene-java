@@ -24,12 +24,13 @@ import org.apache.zest.api.association.Association;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
-import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -45,7 +46,8 @@ public class AssociationAssignmentTest extends AbstractZestTest
     {
         module.services( MemoryEntityStoreService.class );
         module.services( UuidIdentityGeneratorService.class );
-        new OrgJsonValueSerializationAssembler().assemble( module );
+        module.services( OrgJsonValueSerializationService.class )
+            .taggedWith( ValueSerialization.Formats.JSON );
         module.entities( TheAssociatedType.class );
         module.entities( TheMainType.class );
     }

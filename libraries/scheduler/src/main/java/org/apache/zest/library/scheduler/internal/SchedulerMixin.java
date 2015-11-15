@@ -1,22 +1,23 @@
 /*
- * Copyright (c) 2010-2012, Paul Merlin.
- * Copyright (c) 2012, Niclas Hedhman.
- *
- * Licensed  under the  Apache License,  Version 2.0  (the "License");
- * you may not use  this file  except in  compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed  under the  License is distributed on an "AS IS" BASIS,
- * WITHOUT  WARRANTIES OR CONDITIONS  OF ANY KIND, either  express  or
- * implied.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  *
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
-package org.apache.zest.library.scheduler;
+package org.apache.zest.library.scheduler.internal;
 
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.injection.scope.Service;
@@ -28,10 +29,14 @@ import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.usecase.UsecaseBuilder;
-import org.apache.zest.library.scheduler.schedule.Schedule;
-import org.apache.zest.library.scheduler.schedule.ScheduleFactory;
-import org.apache.zest.library.scheduler.schedule.Schedules;
-import org.apache.zest.library.scheduler.schedule.cron.CronExpression;
+import org.apache.zest.library.scheduler.Scheduler;
+import org.apache.zest.library.scheduler.SchedulerConfiguration;
+import org.apache.zest.library.scheduler.SchedulerService;
+import org.apache.zest.library.scheduler.SchedulesHandler;
+import org.apache.zest.library.scheduler.Task;
+import org.apache.zest.library.scheduler.CronSchedule;
+import org.apache.zest.library.scheduler.Schedule;
+import org.apache.zest.library.scheduler.ScheduleFactory;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +95,7 @@ public class SchedulerMixin
     }
 
     @Override
-    public Schedule scheduleCron( Task task, @CronExpression String cronExpression, DateTime start )
+    public Schedule scheduleCron( Task task, @CronSchedule.CronExpression String cronExpression, DateTime start )
     {
         Schedule schedule = scheduleFactory.newCronSchedule( task, cronExpression, start );
         saveAndDispatch( schedule );
@@ -153,15 +158,22 @@ public class SchedulerMixin
             Schedules schedules = schedulesHandler.getActiveSchedules();
             for( Schedule schedule : schedules.schedules() )
             {
-                if( schedule.cancelled().get() || schedule.done().get() )
-                {
-                    schedules.schedules().remove( schedule );
-                }
-                else
-                {
-                    execution.dispatchForExecution( schedule );
-                }
+                dispatch( schedule );
             }
+        }
+    }
+
+    private void dispatch( Schedule schedule )
+    {
+        try
+        {
+            if( !schedule.cancelled().get() && !schedule.done().get() )
+            {
+                execution.dispatchForExecution( schedule );
+            }
+        } catch( Exception e )
+        {
+            e.printStackTrace();
         }
     }
 

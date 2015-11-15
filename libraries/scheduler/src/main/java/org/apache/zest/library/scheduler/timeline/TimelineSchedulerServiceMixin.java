@@ -25,8 +25,8 @@ import org.apache.zest.api.structure.Module;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.scheduler.SchedulerService;
 import org.apache.zest.library.scheduler.SchedulesHandler;
-import org.apache.zest.library.scheduler.schedule.Schedule;
-import org.apache.zest.library.scheduler.schedule.Schedules;
+import org.apache.zest.library.scheduler.Schedule;
+import org.apache.zest.library.scheduler.internal.Schedules;
 
 /**
  * WARN TimelineService Mixin use SortedSets to keep records ordered and repeatedly search for the next run.

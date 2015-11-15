@@ -18,7 +18,7 @@
  *
  */
 
-package org.apache.zest.library.scheduler;
+package org.apache.zest.library.scheduler.internal;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -37,15 +37,19 @@ import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
-import org.apache.zest.api.unitofwork.concern.UnitOfWorkRetry;
-import org.apache.zest.library.scheduler.schedule.Schedule;
-import org.apache.zest.library.scheduler.schedule.ScheduleTime;
+import org.apache.zest.library.scheduler.Schedule;
+import org.apache.zest.library.scheduler.Scheduler;
+import org.apache.zest.library.scheduler.SchedulerConfiguration;
 
+/**
+ * This composite handles the Execution of Schedules.
+ *
+ * The composite is internal and should never be used by clients.
+ */
 @Mixins( Execution.ExecutionMixin.class )
 @Concerns( UnitOfWorkConcern.class )
 public interface Execution
 {
-
     void dispatchForExecution( Schedule schedule );
 
     void start()
@@ -54,14 +58,15 @@ public interface Execution
     void stop()
         throws Exception;
 
-    @UnitOfWorkPropagation
-    @UnitOfWorkRetry( retries = 3 )
-    void updateNextTime( ScheduleTime schedule );
+    @UnitOfWorkPropagation( usecase = "Schedule Next Time Update" )
+    void updateNextTime( ScheduleTime schedule );   // This method is public, only because the UnitOfWorkConcern is wanted.
 
     class ExecutionMixin
         implements Execution, Runnable
     {
-        private static final ThreadGroup TG = new ThreadGroup( "Zest Scheduling" );
+        public static final ThreadGroup TG = new ThreadGroup( "Zest Scheduling" );
+
+        private final Object lock = new Object();
 
         @Structure
         private Module module;
@@ -84,39 +89,51 @@ public interface Execution
         private volatile Thread scheduleThread;
 
         @Override
-        @UnitOfWorkPropagation
         public void run()
         {
-            synchronized( this )
+            running = true;
+            while( running )
             {
-                running = true;
-                while( running )
+                try
                 {
-                    try
+                    ScheduleTime scheduleTime = timing();
+                    if( scheduleTime != null )
                     {
-                        if( timingQueue.size() > 0 )
+                        waitFor( scheduleTime );
+
+                        if( isTime( scheduleTime ) ) // We might have been awakened to reschedule
                         {
-                            ScheduleTime scheduleTime = timingQueue.first();
-                            waitFor( scheduleTime );
-                            timingQueue.remove( scheduleTime );
                             updateNextTime( scheduleTime );
-                            submitTaskForExecution( scheduleTime );
-                        }
-                        else
-                        {
-                            this.wait( 100 );
                         }
                     }
-                    catch( InterruptedException e )
+                    else
                     {
-                        // Ignore. Used to signal "Hey, wake up. Time to work..."
-                    }
-                    catch( Throwable e )
-                    {
-                        e.printStackTrace();
+                        waitFor( 100 );
                     }
                 }
+                catch( Throwable e )
+                {
+                    e.printStackTrace();
+                }
             }
+        }
+
+        private ScheduleTime timing()
+        {
+            synchronized( lock )
+            {
+                if( timingQueue.size() == 0 )
+                {
+                    return null;
+                }
+                return timingQueue.first();
+            }
+        }
+
+        private boolean isTime( ScheduleTime scheduleTime )
+        {
+            long now = System.currentTimeMillis();
+            return scheduleTime.nextTime() <= now;
         }
 
         private void waitFor( ScheduleTime scheduleTime )
@@ -124,31 +141,59 @@ public interface Execution
         {
             long now = System.currentTimeMillis();
             long waitingTime = scheduleTime.nextTime() - now;
+            waitFor( waitingTime );
+        }
+
+        private void waitFor( long waitingTime )
+        {
             if( waitingTime > 0 )
             {
-                this.wait( waitingTime );
+                synchronized( lock )
+                {
+                    try
+                    {
+                        lock.wait( waitingTime );
+                    }
+                    catch( InterruptedException e )
+                    {
+                        // should be ignored.
+                    }
+                }
             }
         }
 
         @Override
-        public void updateNextTime( ScheduleTime scheduleTime )
+        public void updateNextTime( ScheduleTime oldScheduleTime )
         {
             long now = System.currentTimeMillis();
             UnitOfWork uow = module.currentUnitOfWork();
             try
             {
-                Schedule schedule = uow.get( Schedule.class, scheduleTime.scheduleIdentity() );
+                submitTaskForExecution( oldScheduleTime );
+                Schedule schedule = uow.get( Schedule.class, oldScheduleTime.scheduleIdentity() );
                 long nextTime = schedule.nextRun( now + 1000 );
                 if( nextTime != Long.MIN_VALUE )
                 {
-                    scheduleTime = new ScheduleTime( schedule.identity().get(), nextTime );
-                    timingQueue.add( scheduleTime );
+                    ScheduleTime newScheduleTime = new ScheduleTime( schedule.identity().get(), nextTime );
+                    synchronized( lock )
+                    {
+                        // Re-add to the Timing Queue, to re-position the sorting.
+                        timingQueue.remove( oldScheduleTime );
+                        timingQueue.add( newScheduleTime );
+                    }
+                }
+                else
+                {
+                    synchronized( lock )
+                    {
+                        timingQueue.remove( oldScheduleTime );
+                    }
                 }
             }
             catch( NoSuchEntityException e )
             {
-                // Schedule has been removed.
-                scheduler.cancelSchedule( scheduleTime.scheduleIdentity() );
+                e.printStackTrace();
+//                scheduler.cancelSchedule( oldScheduleTime.scheduleIdentity() );
             }
         }
 
@@ -161,13 +206,13 @@ public interface Execution
         public void dispatchForExecution( Schedule schedule )
         {
             long now = System.currentTimeMillis();
-            synchronized( this )
+            long nextRun = schedule.nextRun( now + 1000 );
+            if( nextRun > 0 )
             {
-                long nextRun = schedule.nextRun( now );
-                if( nextRun > 0 )
+                synchronized( lock )
                 {
                     timingQueue.add( new ScheduleTime( schedule.identity().get(), nextRun ) );
-                    scheduleThread.interrupt();
+                    lock.notifyAll();
                 }
             }
         }
@@ -182,7 +227,9 @@ public interface Execution
             createThreadPoolExecutor( workersCount, workQueueSize );
             taskExecutor.prestartAllCoreThreads();
 
-            scheduleThread = new Thread( TG, this, "Scheduler" );
+            SecurityManager sm = System.getSecurityManager();
+            ThreadGroup threadGroup = sm != null ? sm.getThreadGroup() : TG;
+            scheduleThread = new Thread( threadGroup, this, "Scheduler" );
             scheduleThread.start();
         }
 

@@ -22,6 +22,7 @@ package org.apache.zest.library.scheduler.defaults;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.zest.api.injection.scope.This;
+import org.apache.zest.library.scheduler.internal.Execution;
 import org.apache.zest.library.scheduler.SchedulerService;
 
 public class DefaultThreadFactory
@@ -35,7 +36,7 @@ public class DefaultThreadFactory
     protected DefaultThreadFactory( @This SchedulerService me )
     {
         SecurityManager sm = System.getSecurityManager();
-        group = ( sm != null ) ? sm.getThreadGroup() : Thread.currentThread().getThreadGroup();
+        group = ( sm != null ) ? sm.getThreadGroup() : Execution.ExecutionMixin.TG;
         namePrefix = me.identity().get() + "-P" + POOL_NUMBER.getAndIncrement() + "W";
     }
 

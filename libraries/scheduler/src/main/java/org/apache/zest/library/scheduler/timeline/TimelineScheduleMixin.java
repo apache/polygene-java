@@ -21,12 +21,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import org.joda.time.DateTime;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueBuilder;
-import org.apache.zest.library.scheduler.schedule.Schedule;
+import org.apache.zest.library.scheduler.Schedule;
 
 public class TimelineScheduleMixin
     implements Timeline

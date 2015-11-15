@@ -27,7 +27,7 @@ import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkRetry;
 import org.apache.zest.library.scheduler.Scheduler;
 import org.apache.zest.library.scheduler.Task;
-import org.apache.zest.library.scheduler.schedule.Schedule;
+import org.apache.zest.library.scheduler.Schedule;
 import org.apache.zest.library.scheduler.timeline.Timeline;
 
 public class SchedulerDocs
