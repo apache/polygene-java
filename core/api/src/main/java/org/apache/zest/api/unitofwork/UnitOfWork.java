@@ -378,9 +378,12 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *     }
      * </code></pre>
      *
-     * @param primaryType The shared type for which the properties and associations will
-     *                    be converted. Properties outside this type will be ignored.
+     * @param <T>             The generic shared type
+     * @param primaryType     The shared type for which the properties and associations will
+     *                        be converted. Properties outside this type will be ignored.
      * @param entityComposite The entity to be convered.
+     *
+     * @return The Value
      */
     <T extends Identity> T toValue( Class<T> primaryType, T entityComposite );
 
@@ -399,7 +402,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * <p>
      * If an Entity with the Identity in the ValueComposite already exists, then that
      * Entity is updated with the values from the ValueComposite. If an Entity of
-     * that Identity doesn't exist and new one is created.
+     * that Identity doesn't exist a new one is created.
      * </p>
      * <p>
      * For this to work, the Composites (both Entity and Value) must not declare the
@@ -419,11 +422,12 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      *     }
      * </code></pre>
      *
-     * @param primaryType The shared type for which the properties and associations will
-     *                    be converted. Properties outside this type will be ignored.
+     * @param <T>            The generic shared type
+     * @param primaryType    The shared type for which the properties and associations will
+     *                       be converted. Properties outside this type will be ignored.
      * @param valueComposite The Value to be convered into an Entity.
+     *
+     * @return The new or updated Entity
      */
     <T extends Identity> T toEntity( Class<T> primaryType, T valueComposite );
-
-
 }

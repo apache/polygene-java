@@ -18,7 +18,7 @@
  *
  */
 
-description = "Apache Zest™ Restlet Library provides utomatic CRUD resources as well as custom resources integrated to Zest."
+description = "Apache Zest™ Restlet Library provides automatic CRUD resources as well as custom resources integrated to Zest."
 
 jar { manifest { name = "Apache Zest™ Library - Restlet" } }
 

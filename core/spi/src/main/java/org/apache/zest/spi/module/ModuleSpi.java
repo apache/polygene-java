@@ -18,14 +18,9 @@ package org.apache.zest.spi.module;
 
 import java.util.stream.Stream;
 import org.apache.zest.api.composite.ModelDescriptor;
-import org.apache.zest.api.composite.TransientDescriptor;
-import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.IdentityGenerator;
-import org.apache.zest.api.object.ObjectDescriptor;
-import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.spi.entitystore.EntityStore;
 
