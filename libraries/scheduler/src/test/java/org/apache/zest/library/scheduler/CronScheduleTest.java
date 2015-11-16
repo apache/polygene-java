@@ -29,7 +29,7 @@ import org.apache.zest.test.EntityTestAssembler;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import static org.hamcrest.number.IsCloseTo.closeTo;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class CronScheduleTest extends AbstractZestTest
@@ -57,11 +57,12 @@ public class CronScheduleTest extends AbstractZestTest
         builder.instance().task().set( task );
         builder.instance().cronExpression().set( "*/15 * * * * *" );
         CronSchedule schedule = builder.newInstance();
-        long runAt = schedule.nextRun( System.currentTimeMillis() );
+        long nextRun = schedule.nextRun( System.currentTimeMillis() );
         for( int i = 0; i < 1000; i++ )
         {
-            long nextRun = schedule.nextRun( runAt + 1000 );  // Needs to push forward one second...
-            assertThat( "At:" + i, (double) nextRun, closeTo( runAt + 15000, 50 ) );
+            long previousRun = nextRun;
+            nextRun = schedule.nextRun( previousRun ); 
+            assertThat( "nextRun( previousRun + 1s ) @" + i, nextRun, is( previousRun + 15000 ) );
         }
         work.discard();
     }

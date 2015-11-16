@@ -171,7 +171,7 @@ public interface Execution
             {
                 submitTaskForExecution( oldScheduleTime );
                 Schedule schedule = uow.get( Schedule.class, oldScheduleTime.scheduleIdentity() );
-                long nextTime = schedule.nextRun( now + 1000 );
+                long nextTime = schedule.nextRun( now );
                 if( nextTime != Long.MIN_VALUE )
                 {
                     ScheduleTime newScheduleTime = new ScheduleTime( schedule.identity().get(), nextTime );
@@ -207,7 +207,7 @@ public interface Execution
         public void dispatchForExecution( Schedule schedule )
         {
             long now = System.currentTimeMillis();
-            long nextRun = schedule.nextRun( now + 1000 );
+            long nextRun = schedule.nextRun( now );
             if( nextRun > 0 )
             {
                 synchronized( lock )

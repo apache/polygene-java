@@ -83,7 +83,8 @@ public interface CronSchedule
             {
                 actualFrom = firstRun;
             }
-            Long nextRun = createCron().firstRunAfter( actualFrom );
+            // TODO:PM cron "next run" handling mismatch with the underlying cron library
+            Long nextRun = createCron().firstRunAfter( actualFrom + 1000 );
             LOGGER.info( "CronSchedule::nextRun({}) is {}", from, firstRun );
             return nextRun;
         }
