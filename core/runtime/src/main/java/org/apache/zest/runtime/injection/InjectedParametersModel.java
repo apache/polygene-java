@@ -15,14 +15,11 @@
 package org.apache.zest.runtime.injection;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.apache.zest.api.composite.InjectedParametersDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
-import org.apache.zest.runtime.composite.ConstructorModel;
 
 /**
  * JAVADOC
@@ -79,19 +76,6 @@ public final class InjectedParametersModel
             }
         }
         return visitor.visitLeave( this );
-    }
-
-    public Collection<DependencyModel> filter( Predicate<DependencyModel> specification )
-    {
-        ArrayList<DependencyModel> result = new ArrayList<DependencyModel>();
-        for( DependencyModel model : parameterDependencies )
-        {
-            if( specification.test( model ) )
-            {
-                result.add( model );
-            }
-        }
-        return result;
     }
 
     @Override
