@@ -22,13 +22,10 @@ package org.apache.zest.library.scheduler;
 
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
-import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.apache.zest.test.EntityTestAssembler;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
@@ -41,10 +38,7 @@ public class CronScheduleTest extends AbstractZestTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( OrgJsonValueSerializationService.class )
-            .taggedWith( ValueSerialization.Formats.JSON );
-        module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
+        new EntityTestAssembler().assemble( module );
         module.entities( CronSchedule.class );
         module.entities( Task.class ).withMixins( DummyTask.class );
     }
