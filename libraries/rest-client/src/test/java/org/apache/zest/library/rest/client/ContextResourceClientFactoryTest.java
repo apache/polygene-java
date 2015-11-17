@@ -21,6 +21,7 @@ package org.apache.zest.library.rest.client;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -598,7 +599,7 @@ public class ContextResourceClientFactoryTest
                     public void beforeCompletion()
                         throws UnitOfWorkCompletionException
                     {
-                        throw new ConcurrentEntityModificationException( Collections.<EntityComposite>emptyList(),
+                        throw new ConcurrentEntityModificationException( Collections.<EntityComposite, HasTypes>emptyMap(),
                                                                          UsecaseBuilder.newUsecase( "Testing" ) );
                     }
 

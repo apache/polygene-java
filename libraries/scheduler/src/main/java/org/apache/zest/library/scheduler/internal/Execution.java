@@ -36,7 +36,6 @@ import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
-import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.zest.library.scheduler.Schedule;
 import org.apache.zest.library.scheduler.Scheduler;
 import org.apache.zest.library.scheduler.SchedulerConfiguration;
@@ -47,7 +46,6 @@ import org.apache.zest.library.scheduler.SchedulerConfiguration;
  * The composite is internal and should never be used by clients.
  */
 @Mixins( Execution.ExecutionMixin.class )
-@Concerns( UnitOfWorkConcern.class )
 public interface Execution
 {
     void dispatchForExecution( Schedule schedule );
@@ -58,7 +56,6 @@ public interface Execution
     void stop()
         throws Exception;
 
-    @UnitOfWorkPropagation( usecase = "Schedule Next Time Update" )
     void updateNextTime( ScheduleTime schedule );   // This method is public, only because the UnitOfWorkConcern is wanted.
 
     class ExecutionMixin
@@ -166,15 +163,15 @@ public interface Execution
         public void updateNextTime( ScheduleTime oldScheduleTime )
         {
             long now = System.currentTimeMillis();
-            UnitOfWork uow = module.currentUnitOfWork();
-            try
+
+            try (UnitOfWork uow = module.newUnitOfWork()) // This will discard() the UoW when block is exited. We are only doing reads, so fine.
             {
                 submitTaskForExecution( oldScheduleTime );
                 Schedule schedule = uow.get( Schedule.class, oldScheduleTime.scheduleIdentity() );
                 long nextTime = schedule.nextRun( now + 1000 );
                 if( nextTime != Long.MIN_VALUE )
                 {
-                    ScheduleTime newScheduleTime = new ScheduleTime( schedule.identity().get(), nextTime );
+                    ScheduleTime newScheduleTime = new ScheduleTime( oldScheduleTime.scheduleIdentity(), nextTime );
                     synchronized( lock )
                     {
                         // Re-add to the Timing Queue, to re-position the sorting.
