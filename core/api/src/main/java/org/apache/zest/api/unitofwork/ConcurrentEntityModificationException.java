@@ -14,7 +14,10 @@
 
 package org.apache.zest.api.unitofwork;
 
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.usecase.Usecase;
 
 /**
@@ -26,17 +29,29 @@ public class ConcurrentEntityModificationException
 {
     private static final long serialVersionUID = 3872723845064767689L;
 
-    private final Iterable<EntityComposite> concurrentlyModifiedEntities;
+    private final Map<EntityComposite, HasTypes> concurrentlyModifiedEntities;
 
-    public ConcurrentEntityModificationException( Iterable<EntityComposite> concurrentlyModifiedEntities,
+    public ConcurrentEntityModificationException( Map<EntityComposite, HasTypes> concurrentlyModifiedEntities,
                                                   Usecase usecase
     )
     {
-        super( "Entities changed concurrently, and detected in usecase '" + usecase + "'\nModified entities : " + concurrentlyModifiedEntities );
+        super( "Entities changed concurrently, and detected in usecase '" + usecase + "'\nModified entities : " + format( concurrentlyModifiedEntities ) );
         this.concurrentlyModifiedEntities = concurrentlyModifiedEntities;
     }
 
-    public Iterable<EntityComposite> concurrentlyModifiedEntities()
+    private static String format( Map<EntityComposite, HasTypes> concurrentlyModifiedEntities )
+    {
+        return concurrentlyModifiedEntities.entrySet().stream()
+            .map( entry ->
+                      entry.getKey()
+                      + " : "
+                      + entry.getValue().types().map( Class::getSimpleName )
+                          .collect( Collectors.joining( "," ) )
+            )
+            .collect( Collectors.joining( "\n" ) );
+    }
+
+    public Map<EntityComposite, HasTypes> concurrentlyModifiedEntities()
     {
         return concurrentlyModifiedEntities;
     }

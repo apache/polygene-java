@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import org.apache.zest.api.common.MetaInfo;
@@ -32,6 +33,7 @@ import org.apache.zest.api.metrics.MetricsCounterFactory;
 import org.apache.zest.api.metrics.MetricsProvider;
 import org.apache.zest.api.metrics.MetricsTimer;
 import org.apache.zest.api.metrics.MetricsTimerFactory;
+import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
@@ -364,14 +366,14 @@ public final class UnitOfWorkInstance
                     // If we cancelled due to concurrent modification, then create the proper exception for it!
                     ConcurrentEntityStateModificationException mee = (ConcurrentEntityStateModificationException) e;
                     Collection<EntityReference> modifiedEntityIdentities = mee.modifiedEntities();
-                    Collection<EntityComposite> modifiedEntities = new ArrayList<>();
+                    Map<EntityComposite, HasTypes> modifiedEntities = new HashMap<>();
                     for( EntityReference modifiedEntityIdentity : modifiedEntityIdentities )
                     {
                         instanceCache.values().stream()
                             .filter( instance -> instance.identity().equals( modifiedEntityIdentity ) )
-                            .forEach( instance -> modifiedEntities.add( instance.<EntityComposite>proxy() ) );
+                            .forEach( instance -> modifiedEntities.put( instance.<EntityComposite>proxy(), instance ) );
                     }
-                    throw new ConcurrentEntityModificationException( modifiedEntities, ( (ConcurrentEntityStateModificationException) e ).getUsecase() );
+                    throw new ConcurrentEntityModificationException( modifiedEntities, usecase );
                 }
                 else
                 {

@@ -28,7 +28,6 @@ public class ConcurrentEntityStateModificationException
     extends EntityStoreException
 {
     private Collection<EntityReference> modifiedEntities;
-    private Usecase usecase;
 
     public ConcurrentEntityStateModificationException( Collection<EntityReference> modifiedEntities )
     {
@@ -44,16 +43,6 @@ public class ConcurrentEntityStateModificationException
     @Override
     public String getMessage()
     {
-        return "Entities changed concurrently. Changes detected in usecase '" + usecase + "\nModified entities are;\n" + modifiedEntities;
-    }
-
-    public Usecase getUsecase()
-    {
-        return usecase;
-    }
-
-    public void setUsecase( Usecase usecase )
-    {
-        this.usecase = usecase;
+        return "Entities changed concurrently.\nModified entities are;\n" + modifiedEntities;
     }
 }

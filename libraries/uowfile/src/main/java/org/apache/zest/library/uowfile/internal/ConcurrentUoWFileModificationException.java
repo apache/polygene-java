@@ -19,6 +19,7 @@ package org.apache.zest.library.uowfile.internal;
 
 import java.util.Collections;
 import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.usecase.Usecase;
 
@@ -29,7 +30,7 @@ public class ConcurrentUoWFileModificationException
 
     ConcurrentUoWFileModificationException( Iterable<UoWFile> concurrentlyModifiedFiles, Usecase usecase )
     {
-        super( Collections.<EntityComposite>emptyList(), usecase );
+        super( Collections.<EntityComposite,HasTypes>emptyMap(), usecase );
         this.concurrentlyModifiedFiles = concurrentlyModifiedFiles;
     }
 

@@ -19,7 +19,7 @@ package org.apache.zest.api.unitofwork;
  * fails, this exception will be thrown.
  */
 public class UnitOfWorkCompletionException
-    extends Exception
+    extends RuntimeException
 {
     private static final long serialVersionUID = 6531642131384516904L;
 

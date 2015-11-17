@@ -131,10 +131,6 @@ public abstract class ConcurrentModificationCheckConcern
             catch( EntityStoreException e )
             {
                 lock.writeLock().unlock();
-                if( e instanceof ConcurrentEntityStateModificationException )
-                {
-                    ((ConcurrentEntityStateModificationException) e).setUsecase( usecase() );
-                }
                 throw e;
             }
         }
