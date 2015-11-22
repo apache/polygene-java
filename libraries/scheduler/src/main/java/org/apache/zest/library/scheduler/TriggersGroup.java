@@ -18,22 +18,12 @@
  *
  */
 
-package org.apache.zest.library.scheduler.defaults;
+package org.apache.zest.library.scheduler;
 
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import org.apache.zest.library.scheduler.SchedulerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.zest.api.association.NamedAssociation;
+import org.apache.zest.api.entity.EntityComposite;
 
-public class DefaultRejectionHandler
-    implements RejectedExecutionHandler
+public interface TriggersGroup extends EntityComposite
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger( SchedulerService.class );
-
-    @Override
-    public void rejectedExecution( Runnable r, ThreadPoolExecutor executor )
-    {
-        LOGGER.error( "Runnable [" + r + "] was rejected by executor [" + executor + "]" );
-    }
+    NamedAssociation<TriggerWrapper> triggers();
 }

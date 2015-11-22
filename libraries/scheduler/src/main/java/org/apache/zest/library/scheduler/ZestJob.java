@@ -20,29 +20,17 @@
 
 package org.apache.zest.library.scheduler;
 
-import org.apache.zest.api.common.UseDefaults;
+import org.apache.zest.api.common.Optional;
+import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.property.Property;
+import org.apache.zest.library.constraints.annotation.Matches;
+import org.quartz.Job;
 
-public interface SchedulerConfiguration
+public interface ZestJob extends Job, EntityComposite
 {
-    @UseDefaults
-    Property<Long> batchTimeWindow();
+//    @Matches( "job://[a-zA-Z0-9_]+\\.[a-zA-Z0-9_]+" )
+//    Property<String> identity();
 
-    @UseDefaults
-    Property<Boolean> interrupOnShutdown();
-
-    @UseDefaults
-    Property<Boolean> interrupOnShutdownWithWait();
-
-    @UseDefaults
-    Property<Integer> maxBatchSize();
-
-    @UseDefaults
-    Property<Long> idleWaitTime();
-
-    @UseDefaults
-    Property<Integer> threadCount();
-
-    @UseDefaults
-    Property<Integer> threadPriority();
+    @Optional
+    Property<String> description();
 }

@@ -25,8 +25,7 @@ jar { manifest { name = "Apache Zest™ Library - Scheduler" }}
 dependencies {
     compile project( ":org.apache.zest.core:org.apache.zest.core.bootstrap" )
     compile project( ':org.apache.zest.libraries:org.apache.zest.library.constraints' )
-    compile libraries.sked
-    compile libraries.slf4j_api
+    compile libraries.quartz
 
     testCompile project( ":org.apache.zest.core:org.apache.zest.core.testsupport" )
     testCompile project( ":org.apache.zest.extensions:org.apache.zest.extension.indexing-rdf" )

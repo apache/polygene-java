@@ -54,13 +54,13 @@ def osgiVersion = '4.2.0' // 4.3.0 Fails to compile! - 5.0.0 exists
 def pdfboxVersion = '1.8.5'
 def postgresqlVersion = '9.4-1201-jdbc41'
 def prefuseVersion = '0.21'
+def quartzVersion = '2.2.1'
 def restletVersion = '2.3.4'
 def rdfVersion = '2.7.9'
 def riakVersion = '1.4.4' // 2.0.x Fails to compile!
 def scalaVersion = '2.11.6'
 def servletVersion = '3.1.0'
 def shiroVersion = '1.2.3'
-def skedVersion = '2.1'
 def slf4jVersion = '1.7.12'
 def solrVersion = "1.4.1" // 4.8.1 Fails to compile!
 def springVersion = '4.1.7.RELEASE'
@@ -189,46 +189,46 @@ rootProject.ext {
           wicket_stateless: "com.jolira:wicket-stateless:$wicketStatelessVersion",
 
           // Library & Extension dependencies
-          jackson_mapper: "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
-          jodamoney: "org.joda:joda-money:$jodaMoneyVersion",
-          jodatime: "joda-time:joda-time:$jodaTimeVersion",
+          bonecp: "com.jolbox:bonecp:$bonecpVersion",
+          bouncy_castle: "org.bouncycastle:bcprov-jdk15on:$bouncyVersion",
+          commons_dbcp: "commons-dbcp:commons-dbcp:$commonsDbcpVersion",
+          commons_lang: "commons-lang:commons-lang:$commonsLangVersion",
+          dnsjava: "dnsjava:dnsjava:$dnsJavaVersion",
           ehcache: "net.sf.ehcache:ehcache:$ehcacheVersion",
           elasticsearch: "org.elasticsearch:elasticsearch:$elasticsearchVersion",
+          freemarker: "org.freemarker:freemarker:$freemarkerVersion",
           h2: "com.h2database:h2:$h2Version",
           hazelcast: "com.hazelcast:hazelcast:$hazelcastVersion",
+          http_client: "org.apache.httpcomponents:httpclient:$httpClientVersion",
+          jackson_mapper: "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
+          javaSqlGenerator: "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
+          javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
           jclouds_core: "org.apache.jclouds:jclouds-core:$jcloudsVersion",
           jclouds_blobstore: "org.apache.jclouds:jclouds-allblobstore:$jcloudsVersion",
           jclouds_filesystem: "org.apache.jclouds.api:filesystem:$jcloudsVersion",
           jdbm: "jdbm:jdbm:$jdbmVersion",
           jedis: "redis.clients:jedis:$jedisVersion",
           jgoodies_looks: "com.jgoodies:jgoodies-looks:$jgoodiesLooksVersion",
+          jodamoney: "org.joda:joda-money:$jodaMoneyVersion",
+          jodatime: "joda-time:joda-time:$jodaTimeVersion",
+          jta: "javax.transaction:jta:$jtaVersion",
           leveldb_api: "org.iq80.leveldb:leveldb-api:$leveldbVersion",
           leveldb_java: "org.iq80.leveldb:leveldb:$leveldbVersion",
           leveldb_jni_all: "org.fusesource.leveldbjni:leveldbjni-all:$leveldbJniVersion",
-          mongodb: "org.mongodb:mongo-java-driver:$mongodbVersion",
-          riak: "com.basho.riak:riak-client:$riakVersion",
-          jta: "javax.transaction:jta:$jtaVersion",
-          javaSqlGenerator: "org.java-sql-generator:org.java-sql-generator.api:$javasqlgeneratorVersion",
-          javaSqlGeneratorImpl: "org.java-sql-generator:org.java-sql-generator.implementation:$javasqlgeneratorVersion",
-          velocity: "org.apache.velocity:velocity:$velocityVersion",
-          commons_dbcp: "commons-dbcp:commons-dbcp:$commonsDbcpVersion",
-          commons_lang: "commons-lang:commons-lang:$commonsLangVersion",
-          servlet_api: "javax.servlet:javax.servlet-api:$servletVersion",
-          http_client: "org.apache.httpcomponents:httpclient:$httpClientVersion",
-          woodstox: "org.codehaus.woodstox:woodstox-core-asl:$woodstoxVersion",
-          restlet_xml: "org.restlet.jee:org.restlet.ext.xml:$restletVersion",
-          bouncy_castle: "org.bouncycastle:bcprov-jdk15on:$bouncyVersion",
-          dnsjava: "dnsjava:dnsjava:$dnsJavaVersion",
-          freemarker: "org.freemarker:freemarker:$freemarkerVersion",
-          shiro: "org.apache.shiro:shiro-core:$shiroVersion",
-          shiro_web: "org.apache.shiro:shiro-web:$shiroVersion",
-          bonecp: "com.jolbox:bonecp:$bonecpVersion",
           liquibase: "org.liquibase:liquibase-core:$liquibaseVersion",
-          sked: "org.codeartisans:sked:$skedVersion",
-          yammer_metrics: "com.yammer.metrics:metrics-core:$yammerMetricsVersion",
+          mongodb: "org.mongodb:mongo-java-driver:$mongodbVersion",
           pdfbox: "org.apache.pdfbox:pdfbox:$pdfboxVersion",
           prefuse: "de.sciss:prefuse-core:$prefuseVersion",
+          quartz: "org.quartz-scheduler:quartz:$quartzVersion",
+          restlet_xml: "org.restlet.jee:org.restlet.ext.xml:$restletVersion",
+          riak: "com.basho.riak:riak-client:$riakVersion",
+          servlet_api: "javax.servlet:javax.servlet-api:$servletVersion",
+          shiro: "org.apache.shiro:shiro-core:$shiroVersion",
+          shiro_web: "org.apache.shiro:shiro-web:$shiroVersion",
           spymemcached: "net.spy:spymemcached:$spymemcachedVersion",
+          velocity: "org.apache.velocity:velocity:$velocityVersion",
+          woodstox: "org.codehaus.woodstox:woodstox-core-asl:$woodstoxVersion",
+          yammer_metrics: "com.yammer.metrics:metrics-core:$yammerMetricsVersion",
 
           // Testing
           junit: "junit:junit:$junitVersion",

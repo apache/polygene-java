@@ -17,12 +17,14 @@
  * under the License.
  *
  */
-package org.apache.zest.library.scheduler.internal;
 
-import org.apache.zest.api.association.ManyAssociation;
-import org.apache.zest.library.scheduler.Schedule;
+package org.apache.zest.library.scheduler;
 
-public interface Schedules
+import org.apache.zest.api.entity.EntityComposite;
+import org.apache.zest.api.property.Property;
+import org.quartz.Calendar;
+
+public interface CalendarWrapper extends EntityComposite
 {
-    ManyAssociation<Schedule> schedules();
+    Property<Calendar> calendar();
 }

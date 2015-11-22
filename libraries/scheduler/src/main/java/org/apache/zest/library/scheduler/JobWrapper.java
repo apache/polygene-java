@@ -20,29 +20,11 @@
 
 package org.apache.zest.library.scheduler;
 
-import org.apache.zest.api.common.UseDefaults;
+import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.property.Property;
+import org.quartz.JobDetail;
 
-public interface SchedulerConfiguration
+public interface JobWrapper extends EntityComposite
 {
-    @UseDefaults
-    Property<Long> batchTimeWindow();
-
-    @UseDefaults
-    Property<Boolean> interrupOnShutdown();
-
-    @UseDefaults
-    Property<Boolean> interrupOnShutdownWithWait();
-
-    @UseDefaults
-    Property<Integer> maxBatchSize();
-
-    @UseDefaults
-    Property<Long> idleWaitTime();
-
-    @UseDefaults
-    Property<Integer> threadCount();
-
-    @UseDefaults
-    Property<Integer> threadPriority();
+    Property<JobDetail> jobDetail();
 }

@@ -20,29 +20,12 @@
 
 package org.apache.zest.library.scheduler;
 
+import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.common.UseDefaults;
-import org.apache.zest.api.property.Property;
+import org.apache.zest.api.entity.EntityComposite;
 
-public interface SchedulerConfiguration
+public interface JobsGroups extends EntityComposite
 {
     @UseDefaults
-    Property<Long> batchTimeWindow();
-
-    @UseDefaults
-    Property<Boolean> interrupOnShutdown();
-
-    @UseDefaults
-    Property<Boolean> interrupOnShutdownWithWait();
-
-    @UseDefaults
-    Property<Integer> maxBatchSize();
-
-    @UseDefaults
-    Property<Long> idleWaitTime();
-
-    @UseDefaults
-    Property<Integer> threadCount();
-
-    @UseDefaults
-    Property<Integer> threadPriority();
+    NamedAssociation<JobsGroup> groups();
 }
