@@ -121,7 +121,7 @@ public class SchedulerMixin
     public void cancelSchedule( String scheduleId )
     {
         UnitOfWork uow = module.currentUnitOfWork();
-        Schedule schedule = null;
+        Schedule schedule;
         try
         {
             schedule = uow.get( Schedule.class, scheduleId );

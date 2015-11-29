@@ -24,8 +24,8 @@ import org.apache.zest.api.util.NullArgumentException;
 public final class ScheduleTime
     implements Comparable<ScheduleTime>
 {
-    private String scheduleIdentity;
-    private long nextTime;
+    private final String scheduleIdentity;
+    private final long nextTime;
 
     public ScheduleTime( String scheduleIdentity, long nextTime )
     {

@@ -22,11 +22,9 @@ package org.apache.zest.library.scheduler;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
-import org.apache.zest.library.scheduler.Schedule;
 import org.apache.zest.library.scheduler.defaults.DefaultScheduleFactoryMixin;
 import org.joda.time.DateTime;
 import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.library.scheduler.Task;
 
 import static org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation.Propagation.MANDATORY;
 

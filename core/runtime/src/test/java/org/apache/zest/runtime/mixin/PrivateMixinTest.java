@@ -12,7 +12,6 @@
  * limitations under the License.
  *
  */
-
 package org.apache.zest.runtime.mixin;
 
 import org.junit.Test;
@@ -33,6 +32,7 @@ import static org.junit.Assert.assertThat;
 public class PrivateMixinTest
     extends AbstractZestTest
 {
+    @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
@@ -43,10 +43,10 @@ public class PrivateMixinTest
      * Tests that private mixins are injected correctly.
      */
     @Test
-    public void privateMixinInjection()
+    public void privateMixinFieldAndConstructorInjection()
     {
         SpeakComposite test = module.newTransient( SpeakComposite.class );
-        assertThat( "Speak", test.speak(), is( equalTo( "I say it works" ) ) );
+        assertThat( "Speak", test.speak(), is( equalTo( "I say it works!" ) ) );
     }
 
     @Mixins( SpeakMixin.class )
@@ -58,21 +58,27 @@ public class PrivateMixinTest
     public static class SpeakMixin
         implements Speak
     {
-        @This
-        Word word;
+        private final Word word;
+        @This Punctuation punctuation;
 
+        public SpeakMixin( @This Word word )
+        {
+            this.word = word;
+        }
+
+        @Override
         public String speak()
         {
-            return "I say " + word.get();
+            return "I say " + word.get() + punctuation.punctuate();
         }
     }
 
-    @Mixins( { WordMixin.class } )
     public interface SpeakComposite
         extends Speak, TransientComposite
     {
     }
 
+    @Mixins( WordMixin.class )
     public interface Word
     {
         String get();
@@ -81,9 +87,27 @@ public class PrivateMixinTest
     public static class WordMixin
         implements Word
     {
+        @Override
         public String get()
         {
             return "it works";
         }
+    }
+
+    @Mixins( PunctuationMixin.class )
+    public interface Punctuation
+    {
+        String punctuate();
+    }
+
+    public static class PunctuationMixin
+        implements Punctuation
+    {
+        @Override
+        public String punctuate()
+        {
+            return "!";
+        }
+
     }
 }

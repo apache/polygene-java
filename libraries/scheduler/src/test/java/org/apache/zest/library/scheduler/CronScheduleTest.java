@@ -22,17 +22,14 @@ package org.apache.zest.library.scheduler;
 
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
-import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.apache.zest.test.EntityTestAssembler;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import static org.hamcrest.number.IsCloseTo.closeTo;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class CronScheduleTest extends AbstractZestTest
@@ -41,10 +38,7 @@ public class CronScheduleTest extends AbstractZestTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        module.services( OrgJsonValueSerializationService.class )
-            .taggedWith( ValueSerialization.Formats.JSON );
-        module.services( MemoryEntityStoreService.class );
-        module.services( UuidIdentityGeneratorService.class );
+        new EntityTestAssembler().assemble( module );
         module.entities( CronSchedule.class );
         module.entities( Task.class ).withMixins( DummyTask.class );
     }
@@ -63,11 +57,12 @@ public class CronScheduleTest extends AbstractZestTest
         builder.instance().task().set( task );
         builder.instance().cronExpression().set( "*/15 * * * * *" );
         CronSchedule schedule = builder.newInstance();
-        long runAt = schedule.nextRun( System.currentTimeMillis() );
+        long nextRun = schedule.nextRun( System.currentTimeMillis() );
         for( int i = 0; i < 1000; i++ )
         {
-            long nextRun = schedule.nextRun( runAt + 1000 );  // Needs to push forward one second...
-            assertThat( "At:" + i, (double) nextRun, closeTo( runAt + 15000, 50 ) );
+            long previousRun = nextRun;
+            nextRun = schedule.nextRun( previousRun ); 
+            assertThat( "nextRun( previousRun + 1s ) @" + i, nextRun, is( previousRun + 15000 ) );
         }
         work.discard();
     }

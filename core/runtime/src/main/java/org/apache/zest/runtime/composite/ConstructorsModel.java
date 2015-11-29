@@ -56,24 +56,24 @@ public final class ConstructorsModel
     implements Binder, Dependencies, VisitableHierarchy<Object, Object>
 {
     @SuppressWarnings( "raw" )
-    private final Class fragmentClass;
+    private final Class<?> fragmentClass;
     private final List<ConstructorModel> constructorModels;
     private List<ConstructorModel> boundConstructors;
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    public ConstructorsModel( Class fragmentClass )
+    public ConstructorsModel( Class<?> fragmentClass )
     {
         this.fragmentClass = fragmentClass;
         validate( fragmentClass );
         constructorModels = new ArrayList<>();
-        Constructor[] realConstructors = this.fragmentClass.getDeclaredConstructors();
-        Class injectionClass = FragmentClassLoader.getSourceClass( fragmentClass );
-        for( Constructor constructor : realConstructors )
+        Constructor<?>[] realConstructors = this.fragmentClass.getDeclaredConstructors();
+        Class<?> injectionClass = FragmentClassLoader.getSourceClass( fragmentClass );
+        for( Constructor<?> constructor : realConstructors )
         {
             constructor.setAccessible( true );
             try
             {
-                Constructor injectionConstructor = injectionClass.getDeclaredConstructor( constructor.getParameterTypes() );
+                Constructor<?> injectionConstructor = injectionClass.getDeclaredConstructor( constructor.getParameterTypes() );
                 injectionConstructor.setAccessible( true );
                 ConstructorModel constructorModel = newConstructorModel( this.fragmentClass, constructor,
                                                                          injectionConstructor );
@@ -91,7 +91,7 @@ public final class ConstructorsModel
     }
 
     @SuppressWarnings( "raw" )
-    private void validate( Class fragmentClass )
+    private void validate( Class<?> fragmentClass )
     {
         // Ensure that the fragment class is not an inner class, in which case we should give a reasonable exception
         if( fragmentClass.getDeclaringClass() == null )
@@ -113,23 +113,12 @@ public final class ConstructorsModel
             return constructorModels.stream().flatMap( ConstructorModel::dependencies );
         }
         return boundConstructors.stream().flatMap( ConstructorModel::dependencies );
-
-//        Function<ConstructorModel, Iterable<DependencyModel>> constructorDependencies = new Function<ConstructorModel, Iterable<DependencyModel>>()
-//        {
-//            @Override
-//            public Iterable<DependencyModel> apply( ConstructorModel constructorModel )
-//            {
-//                return constructorModel.dependencies();
-//            }
-//        };
-//
-//        return Iterables.flattenIterables( Iterables.map( constructorDependencies, boundConstructors == null ? constructorModels : boundConstructors ) );
     }
 
     @SuppressWarnings( "raw" )
-    private ConstructorModel newConstructorModel( Class fragmentClass,
-                                                  Constructor realConstructor,
-                                                  Constructor injectedConstructor
+    private ConstructorModel newConstructorModel( Class<?> fragmentClass,
+                                                  Constructor<?> realConstructor,
+                                                  Constructor<?> injectedConstructor
     )
     {
         int idx = 0;
