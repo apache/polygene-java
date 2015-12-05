@@ -129,7 +129,6 @@ public class ZestEntityRestlet<T extends Identity> extends Restlet
             {
                 put( request, response );
             }
-            response.setStatus( Status.SUCCESS_OK );
         }
         catch( RuntimeException e )
         {
@@ -182,7 +181,7 @@ public class ZestEntityRestlet<T extends Identity> extends Restlet
     {
         execute( request, response, resource -> {
             resource.delete();
-            response.setStatus( Status.SUCCESS_OK );
+            response.setStatus( Status.SUCCESS_NO_CONTENT );
         } );
     }
 
