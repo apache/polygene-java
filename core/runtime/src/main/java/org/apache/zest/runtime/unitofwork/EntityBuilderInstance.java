@@ -117,12 +117,10 @@ public final class EntityBuilderInstance<T>
     {
         checkValid();
 
-        String identity;
-
         // Figure out whether to use given or generated identity
-        identity = (String) entityState.propertyValueOf( IDENTITY_STATE_NAME );
-        EntityState newEntityState = model.newEntityState( store,
-                                                           EntityReference.parseEntityReference( identity ) );
+        String identity = (String) entityState.propertyValueOf( IDENTITY_STATE_NAME );
+        EntityReference entityReference = EntityReference.parseEntityReference( identity );
+        EntityState newEntityState = model.newEntityState( store, entityReference );
 
         prototypeInstance.invokeCreate();
 
