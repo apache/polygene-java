@@ -109,7 +109,7 @@ public final class EntityModel extends CompositeModel
         return ( (EntityMixinsModel) mixinsModel ).newMixin( entityInstance, entityState, mixins, method );
     }
 
-    public EntityState newEntityState( EntityStoreUnitOfWork store, ModuleSpi module, EntityReference identity )
+    public EntityState newEntityState( EntityStoreUnitOfWork store, EntityReference identity )
         throws ConstraintViolationException, EntityStoreException
     {
         try
