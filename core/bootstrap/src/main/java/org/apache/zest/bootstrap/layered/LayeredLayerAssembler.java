@@ -63,17 +63,20 @@ public abstract class LayeredLayerAssembler
     private ModuleAssembler instantiateAssembler( LayerAssembly layer,
                                                   Class<? extends ModuleAssembler> modulerAssemblerClass
     )
-        throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException
+        throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException
     {
         ModuleAssembler moduleAssembler;
         try
         {
-            Constructor<? extends ModuleAssembler> assemblyConstructor = modulerAssemblerClass.getConstructor( ModuleAssembly.class );
+            Constructor<? extends ModuleAssembler> assemblyConstructor = modulerAssemblerClass.getDeclaredConstructor( ModuleAssembly.class );
+            assemblyConstructor.setAccessible( true );
             moduleAssembler = assemblyConstructor.newInstance( layer );
         }
         catch( NoSuchMethodException e )
         {
-            moduleAssembler = modulerAssemblerClass.newInstance();
+            Constructor<? extends ModuleAssembler> assemblyConstructor = modulerAssemblerClass.getDeclaredConstructor();
+            assemblyConstructor.setAccessible( true );
+            moduleAssembler = assemblyConstructor.newInstance();
         }
         return moduleAssembler;
     }

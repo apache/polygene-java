@@ -23,8 +23,7 @@ import org.apache.zest.api.common.Optional;
 /**
  * JAVADOC Add JavaDoc
  */
-public interface Female
-    extends Person
+public interface Female extends Person
 {
     @Optional
     Association<Male> husband();

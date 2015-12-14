@@ -21,7 +21,6 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
 
 public interface Address
-    extends ValueComposite
 {
     Property<String> line1();
 

@@ -25,7 +25,6 @@ import org.apache.zest.api.value.ValueComposite;
  * JAVADOC Add JavaDoc.
  */
 public interface Port
-    extends ValueComposite
 {
     @Queryable( false )
     Property<Integer> value();

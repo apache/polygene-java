@@ -56,7 +56,7 @@ public abstract class AbstractComplexQueryTest
     public void showNetwork()
         throws IOException
     {
-        IndexExporter indexerExporter = module.<IndexExporter>findService( IndexExporter.class ).get();
+        IndexExporter indexerExporter = module.findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
     }
 

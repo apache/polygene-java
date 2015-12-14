@@ -22,8 +22,7 @@ import org.apache.zest.api.property.Property;
 /**
  * JAVADOC Add JavaDoc
  */
-public interface City
-    extends Nameable
+public interface City extends Nameable
 {
     Property<String> country();
 

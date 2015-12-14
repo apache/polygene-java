@@ -27,7 +27,6 @@ import org.apache.zest.api.value.ValueComposite;
  * JAVADOC Add JavaDoc.
  */
 public interface URL
-    extends ValueComposite
 {
     Property<Protocol> protocol();
 

@@ -20,7 +20,6 @@ package org.apache.zest.test.indexing.model;
 /**
  * JAVADOC Add JavaDoc
  */
-public interface Cat
-    extends Pet
+public interface Cat extends Pet
 {
 }

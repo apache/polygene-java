@@ -24,7 +24,6 @@ import org.apache.zest.api.value.ValueComposite;
  * JAVADOC Add JavaDoc.
  */
 public interface QueryParam
-    extends ValueComposite
 {
     Property<String> name();
 

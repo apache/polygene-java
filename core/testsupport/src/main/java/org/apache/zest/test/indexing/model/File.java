@@ -26,7 +26,6 @@ import org.apache.zest.api.value.ValueComposite;
  */
 @Queryable( false )
 public interface File
-    extends ValueComposite
 {
     Property<String> value();
 }

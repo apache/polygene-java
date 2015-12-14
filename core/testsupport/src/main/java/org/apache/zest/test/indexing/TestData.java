@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.zest.test.indexing.model.Dog;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -47,9 +48,9 @@ import static org.joda.time.DateTimeZone.UTC;
 /**
  * Utility class to populate Index/Query tests data.
  */
-class TestData
+public class TestData
 {
-    static void populate( Module module )
+    public static void populate( Module module )
         throws UnitOfWorkCompletionException
     {
         try( UnitOfWork unitOfWork = module.newUnitOfWork() )
@@ -238,6 +239,12 @@ class TestData
                 Cat felix = catBuilder.instance();
                 felix.name().set( "Felix" );
                 catBuilder.newInstance();
+            }
+            {
+                EntityBuilder<Dog> builder = unitOfWork.newEntityBuilder( Dog.class );
+                Dog snoopy = builder.instance();
+                snoopy.name().set( "Snoopy" );
+                builder.newInstance();
             }
             unitOfWork.complete();
         }

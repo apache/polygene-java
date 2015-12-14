@@ -22,8 +22,7 @@ import org.apache.zest.api.property.Property;
 /**
  * JAVADOC Add JavaDoc
  */
-public interface Domain
-    extends Nameable
+public interface Domain extends Nameable
 {
     Property<String> description();
 }
