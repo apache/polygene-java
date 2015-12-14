@@ -179,18 +179,9 @@ as every 1000 items. This may not be what you think a ProgressLog should look li
 how you can combine the general principles found in the Zest™ Core API package.
 
 == How to write a filter specification? ==
-The filter transform takes a specification implementation which has a very simple method, isSatisfiedBy() (read more
-about that in <<core-functional>>.
-
-[snippet,java]
---------------
-source=core/functional/src/main/java/org/apache/zest/functional/Specification.java
-tag=specification
---------------
-
-The only thing that the implementation need to do is return *true* or *false* for whether the item passed in is within
-the limits of the Specification. Let's say that you have a IntegerRangeSpecification, which could then be implemented
-as
+The filter transform takes a regular java.util.function.Predicate as an argument, where the implementation needs to
+return *true* or *false* for whether the item passed in is within
+the limits. Let's say that you have a IntegerRangeSpecification, which could then be implemented as
 
 [snippet,java]
 --------------
