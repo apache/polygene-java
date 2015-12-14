@@ -23,19 +23,19 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.apache.zest.test.indexing.model.Account;
 import org.apache.zest.test.indexing.model.Address;
+import org.apache.zest.test.indexing.model.Cat;
+import org.apache.zest.test.indexing.model.City;
+import org.apache.zest.test.indexing.model.Domain;
+import org.apache.zest.test.indexing.model.Female;
 import org.apache.zest.test.indexing.model.File;
 import org.apache.zest.test.indexing.model.Host;
+import org.apache.zest.test.indexing.model.Male;
 import org.apache.zest.test.indexing.model.Port;
 import org.apache.zest.test.indexing.model.Protocol;
 import org.apache.zest.test.indexing.model.QueryParam;
 import org.apache.zest.test.indexing.model.URL;
-import org.apache.zest.test.indexing.model.entities.AccountEntity;
-import org.apache.zest.test.indexing.model.entities.CatEntity;
-import org.apache.zest.test.indexing.model.entities.CityEntity;
-import org.apache.zest.test.indexing.model.entities.DomainEntity;
-import org.apache.zest.test.indexing.model.entities.FemaleEntity;
-import org.apache.zest.test.indexing.model.entities.MaleEntity;
 
 /**
  * Abstract satisfiedBy with tests for any queries against Index/Query engines.
@@ -56,12 +56,12 @@ public class AbstractAnyQueryTest
 
     protected void assembleEntities( ModuleAssembly module, Visibility visibility )
     {
-        module.entities( MaleEntity.class,
-                         FemaleEntity.class,
-                         CityEntity.class,
-                         DomainEntity.class,
-                         AccountEntity.class,
-                         CatEntity.class ). visibleIn( visibility );
+        module.entities( Male.class,
+                         Female.class,
+                         City.class,
+                         Domain.class,
+                         Account.class,
+                         Cat.class ). visibleIn( visibility );
     }
 
     protected void assembleValues( ModuleAssembly module, Visibility visibility )

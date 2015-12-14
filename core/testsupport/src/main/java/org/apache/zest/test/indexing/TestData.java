@@ -41,9 +41,6 @@ import org.apache.zest.test.indexing.model.Person;
 import org.apache.zest.test.indexing.model.Protocol;
 import org.apache.zest.test.indexing.model.QueryParam;
 import org.apache.zest.test.indexing.model.URL;
-import org.apache.zest.test.indexing.model.entities.CatEntity;
-import org.apache.zest.test.indexing.model.entities.FemaleEntity;
-import org.apache.zest.test.indexing.model.entities.MaleEntity;
 
 import static org.joda.time.DateTimeZone.UTC;
 
@@ -144,7 +141,7 @@ class TestData
 
             Female annDoe;
             {
-                EntityBuilder<FemaleEntity> femaleBuilder = unitOfWork.newEntityBuilder( FemaleEntity.class, "anndoe" );
+                EntityBuilder<Female> femaleBuilder = unitOfWork.newEntityBuilder( Female.class, "anndoe" );
                 annDoe = femaleBuilder.instance();
                 annDoe.name().set( "Ann Doe" );
                 annDoe.title().set( Person.Title.MRS );
@@ -161,7 +158,7 @@ class TestData
             }
 
             {
-                EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
+                EntityBuilder<Male> maleBuilder = unitOfWork.newEntityBuilder( Male.class );
                 Male joeDoe = maleBuilder.instance();
                 joeDoe.name().set( "Joe Doe" );
                 joeDoe.title().set( Person.Title.MR );
@@ -186,7 +183,7 @@ class TestData
             }
 
             {
-                EntityBuilder<MaleEntity> maleBuilder = unitOfWork.newEntityBuilder( MaleEntity.class );
+                EntityBuilder<Male> maleBuilder = unitOfWork.newEntityBuilder( Male.class );
                 Male jackDoe = maleBuilder.instance();
                 jackDoe.name().set( "Jack Doe" );
                 jackDoe.title().set( Person.Title.DR );
@@ -237,7 +234,7 @@ class TestData
             }
 
             {
-                EntityBuilder<CatEntity> catBuilder = unitOfWork.newEntityBuilder( CatEntity.class );
+                EntityBuilder<Cat> catBuilder = unitOfWork.newEntityBuilder( Cat.class );
                 Cat felix = catBuilder.instance();
                 felix.name().set( "Felix" );
                 catBuilder.newInstance();
