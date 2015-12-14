@@ -23,6 +23,7 @@ import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -46,7 +47,6 @@ import org.apache.zest.api.type.MapType;
 import org.apache.zest.api.type.Serialization;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
-import org.apache.zest.api.util.Base64Encoder;
 import org.apache.zest.api.util.Dates;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueDescriptor;
@@ -814,7 +814,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         throws Exception
     {
         byte[] bytes = inputString.getBytes( UTF_8 );
-        bytes = Base64Encoder.decode( bytes );
+        bytes = Base64.getDecoder().decode( bytes );
         Object result;
         try (ObjectInputStream oin = new ObjectInputStream( new ByteArrayInputStream( bytes ) ))
         {

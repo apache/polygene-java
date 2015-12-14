@@ -22,6 +22,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +37,6 @@ import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.api.util.Base64Encoder;
 import org.apache.zest.api.util.Dates;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
@@ -513,7 +513,7 @@ public abstract class ValueSerializerAdapter<OutputType>
         {
             out.writeUnshared( object );
         }
-        byte[] bytes = Base64Encoder.encode( bout.toByteArray(), true );
+        byte[] bytes = Base64.getEncoder().encode( bout.toByteArray() );
         return new String( bytes, UTF_8 );
     }
 

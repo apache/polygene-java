@@ -21,11 +21,11 @@ package org.apache.zest.sample.forum.data.entity;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.api.util.Base64Encoder;
 
 /**
  * TODO
@@ -59,8 +59,7 @@ public interface User
                 md.update( password.getBytes( "UTF-8" ) );
                 byte raw[] = md.digest();
 
-                String hash = new String( Base64Encoder.encode( raw, false ) );
-                return hash;
+                return Base64.getEncoder().encodeToString( raw );
             }
             catch( NoSuchAlgorithmException e )
             {
