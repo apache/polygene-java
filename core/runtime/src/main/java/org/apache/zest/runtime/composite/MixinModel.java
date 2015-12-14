@@ -77,10 +77,8 @@ public final class MixinModel
 
     public Stream<DependencyModel> dependencies()
     {
-        return Stream.of( constructorsModel, injectedFieldsModel, injectedMethodsModel )
-            .flatMap( Dependencies::dependencies );
-//        return Iterables.flatten( constructorsModel.dependencies(), injectedFieldsModel.dependencies(), injectedMethodsModel
-//            .dependencies() );
+        Stream<? extends Dependencies> models = Stream.of( constructorsModel, injectedFieldsModel, injectedMethodsModel );
+        return models.flatMap( Dependencies::dependencies );
     }
 
     @Override
@@ -178,5 +176,4 @@ public final class MixinModel
     {
         return mixinClass.getName();
     }
-
 }

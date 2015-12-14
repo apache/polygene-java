@@ -70,8 +70,8 @@ public abstract class AbstractModifierModel
     @SuppressWarnings( "unchecked" )
     public Stream<DependencyModel> dependencies()
     {
-        return Stream.of( constructorsModel, injectedFieldsModel, injectedMethodsModel )
-            .flatMap( Dependencies::dependencies );
+        Stream<? extends Dependencies> models = Stream.of( this.constructorsModel, injectedFieldsModel, injectedMethodsModel );
+        return models.flatMap( Dependencies::dependencies );
 //        return flattenIterables( map( DEPENDENCIES_FUNCTION, iterable( constructorsModel, injectedFieldsModel, injectedMethodsModel ) ) );
     }
 
