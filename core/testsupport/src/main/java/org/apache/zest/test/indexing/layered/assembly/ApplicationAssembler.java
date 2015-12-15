@@ -18,21 +18,27 @@
  *
  */
 
-package org.apache.zest.test.indexing.layered;
+package org.apache.zest.test.indexing.layered.assembly;
 
+import java.lang.reflect.InvocationTargetException;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
+import org.apache.zest.bootstrap.layered.IllegalLayerAssemblerException;
+import org.apache.zest.bootstrap.layered.LayerAssembler;
 import org.apache.zest.bootstrap.layered.LayeredApplicationAssembler;
 
-class ApplicationAssembler extends LayeredApplicationAssembler
+public class ApplicationAssembler extends LayeredApplicationAssembler
 {
 
-    public ApplicationAssembler( String name, String version, Application.Mode mode )
+    private final Class<?> testClass;
+
+    public ApplicationAssembler( String name, String version, Application.Mode mode, Class<?> testClass )
         throws AssemblyException
     {
         super( name, version, mode );
+        this.testClass = testClass;
     }
 
     @Override
@@ -48,5 +54,18 @@ class ApplicationAssembler extends LayeredApplicationAssembler
         domainLayer.uses( persistenceLayer, indexingLayer );
         persistenceLayer.uses( configLayer );
         indexingLayer.uses( configLayer );
+    }
+
+    @Override
+    protected <T extends LayerAssembler> LayerAssembler instantiateLayerAssembler( Class<T> layerAssemblerClass,
+                                                                                   LayerAssembly layer
+    )
+        throws InstantiationException, IllegalAccessException, InvocationTargetException, IllegalLayerAssemblerException
+    {
+        if( layerAssemblerClass.equals( AccessLayer.class ))
+        {
+            return new AccessLayer( testClass );
+        }
+        return super.instantiateLayerAssembler( layerAssemblerClass, layer );
     }
 }

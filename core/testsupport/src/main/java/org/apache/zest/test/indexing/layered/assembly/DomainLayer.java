@@ -18,20 +18,21 @@
  *
  */
 
-package org.apache.zest.test.indexing.layered;
+package org.apache.zest.test.indexing.layered.assembly;
 
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
 
-class IndexingLayer extends LayeredLayerAssembler
+class DomainLayer extends LayeredLayerAssembler
 {
 
     @Override
     public LayerAssembly assemble( LayerAssembly layer )
         throws AssemblyException
     {
-        createModule( layer, AbstractMultiLayeredIndexingTest.indexingAssembler );
+        createModule( layer, FamilyModule.class );
+        createModule( layer, AccountModule.class );
         return layer;
     }
 }

@@ -34,7 +34,7 @@ import org.apache.zest.test.indexing.model.Person;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class TestCase1
+public class Suite1Case2
     implements TestCase
 {
     @Structure

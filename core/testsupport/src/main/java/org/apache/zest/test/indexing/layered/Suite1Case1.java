@@ -34,7 +34,7 @@ import org.apache.zest.test.indexing.model.Person;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class TestCase2
+public class Suite1Case1
     implements TestCase
 {
     @Structure
@@ -57,7 +57,6 @@ public class TestCase2
     }
 
     @Override
-    @UnitOfWorkPropagation
     public void when()
         throws Exception
     {
@@ -72,5 +71,6 @@ public class TestCase2
         assertThat( query.count(), equalTo(1) );
         Male male = query.find();
         assertThat( male.title().get(), equalTo( Person.Title.MR ));
+        assertThat( male.name().get(), equalTo( "Joe Doe" ));
     }
 }

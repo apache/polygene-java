@@ -60,7 +60,7 @@ public abstract class LayeredLayerAssembler
         return moduleName;
     }
 
-    private ModuleAssembler instantiateAssembler( LayerAssembly layer,
+    protected ModuleAssembler instantiateAssembler( LayerAssembly layer,
                                                   Class<? extends ModuleAssembler> modulerAssemblerClass
     )
         throws InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException, NoSuchMethodException

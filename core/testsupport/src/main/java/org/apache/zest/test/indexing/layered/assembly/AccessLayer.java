@@ -18,22 +18,48 @@
  *
  */
 
-package org.apache.zest.test.indexing.layered;
+package org.apache.zest.test.indexing.layered.assembly;
 
+import java.lang.reflect.InvocationTargetException;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.zest.bootstrap.layered.ModuleAssembler;
 
 class AccessLayer extends LayeredLayerAssembler
 {
+
+    private final Class<?> testClass;
+
+    AccessLayer( Class<?> testClass )
+    {
+        this.testClass = testClass;
+    }
 
     @Override
     public LayerAssembly assemble( LayerAssembly layer )
         throws AssemblyException
     {
+        createModule( layer, TestExecutionModule.class );
         createModule( layer, TestSuite1Module.class );
         createModule( layer, TestSuite2Module.class );
         createModule( layer, TestSuite3Module.class );
         return layer;
+    }
+
+    @Override
+    protected ModuleAssembler instantiateAssembler( LayerAssembly layer,
+                                                    Class<? extends ModuleAssembler> moduleAssemblerClass
+    )
+        throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
+    {
+        if( moduleAssemblerClass.equals(TestExecutionModule.class))
+        {
+            return new TestExecutionModule( testClass );
+        }
+        else
+        {
+            return super.instantiateAssembler( layer, moduleAssemblerClass );
+        }
     }
 }

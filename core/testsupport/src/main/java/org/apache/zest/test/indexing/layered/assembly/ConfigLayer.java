@@ -18,24 +18,20 @@
  *
  */
 
-package org.apache.zest.test.indexing.layered;
+package org.apache.zest.test.indexing.layered.assembly;
 
-import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.layered.ModuleAssembler;
-import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
+import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
 
-class ConfigModule
-    implements ModuleAssembler
+class ConfigLayer extends LayeredLayerAssembler
 {
 
     @Override
-    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
+    public LayerAssembly assemble( LayerAssembly layer )
         throws AssemblyException
     {
-        module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
-        return module;
+        createModule( layer, ConfigModule.class );
+        return layer;
     }
 }

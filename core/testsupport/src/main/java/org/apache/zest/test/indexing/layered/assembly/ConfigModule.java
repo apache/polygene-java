@@ -18,22 +18,16 @@
  *
  */
 
-package org.apache.zest.test.indexing.layered;
+package org.apache.zest.test.indexing.layered.assembly;
 
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.layered.ModuleAssembler;
-import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
-import org.apache.zest.test.indexing.model.Address;
-import org.apache.zest.test.indexing.model.Cat;
-import org.apache.zest.test.indexing.model.City;
-import org.apache.zest.test.indexing.model.Dog;
-import org.apache.zest.test.indexing.model.Female;
-import org.apache.zest.test.indexing.model.Male;
+import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 
-class FamilyModule
+class ConfigModule
     implements ModuleAssembler
 {
 
@@ -41,14 +35,7 @@ class FamilyModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        module.entities( Male.class,
-                         Female.class,
-                         City.class,
-                         Cat.class,
-                         Dog.class ).visibleIn( Visibility.application );
-
-        module.values( Address.class ).visibleIn( Visibility.application );
-        module.services( UuidIdentityGeneratorService.class );
+        module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
         return module;
     }
 }

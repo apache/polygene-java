@@ -18,23 +18,21 @@
  *
  */
 
-package org.apache.zest.test.indexing.layered;
+package org.apache.zest.test.indexing.layered.assembly;
 
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
-import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.layered.ModuleAssembler;
+import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.zest.test.indexing.layered.AbstractMultiLayeredIndexingTest;
 
-class TestSuite1Module
-    implements ModuleAssembler
+class IndexingLayer extends LayeredLayerAssembler
 {
 
     @Override
-    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
+    public LayerAssembly assemble( LayerAssembly layer )
         throws AssemblyException
     {
-        module.services( TestCase.class ).withMixins( TestCase1.class );
-        module.services( TestCase.class ).withMixins( TestCase2.class );
-        return module;
+        createModule( layer, AbstractMultiLayeredIndexingTest.indexingAssembler );
+        return layer;
     }
 }

@@ -18,16 +18,20 @@
  *
  */
 
-package org.apache.zest.test.indexing.layered;
+package org.apache.zest.test.indexing.layered.assembly;
 
-public interface TestCase
+import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.LayerAssembly;
+import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
+
+class PersistenceLayer extends LayeredLayerAssembler
 {
-    void given()
-        throws Exception;
 
-    void when()
-        throws Exception;
-
-    void expect()
-        throws Exception;
+    @Override
+    public LayerAssembly assemble( LayerAssembly layer )
+        throws AssemblyException
+    {
+        createModule( layer, PersistenceModule.class );
+        return layer;
+    }
 }

@@ -18,20 +18,21 @@
  *
  */
 
-package org.apache.zest.test.indexing.layered;
+package org.apache.zest.test.indexing.layered.assembly;
 
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
-import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.layered.ModuleAssembler;
 
-class ConfigLayer extends LayeredLayerAssembler
+class TestSuite2Module
+    implements ModuleAssembler
 {
 
     @Override
-    public LayerAssembly assemble( LayerAssembly layer )
+    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        createModule( layer, ConfigModule.class );
-        return layer;
+        return module;
     }
 }

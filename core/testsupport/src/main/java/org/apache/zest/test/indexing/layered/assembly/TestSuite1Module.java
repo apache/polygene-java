@@ -18,21 +18,36 @@
  *
  */
 
-package org.apache.zest.test.indexing.layered;
+package org.apache.zest.test.indexing.layered.assembly;
 
+import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
-import org.apache.zest.bootstrap.layered.LayeredLayerAssembler;
+import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.layered.ModuleAssembler;
+import org.apache.zest.test.indexing.layered.Suite1Case1;
+import org.apache.zest.test.indexing.layered.Suite1Case2;
+import org.apache.zest.test.indexing.layered.TestCase;
 
-class DomainLayer extends LayeredLayerAssembler
+class TestSuite1Module
+    implements ModuleAssembler
 {
 
     @Override
-    public LayerAssembly assemble( LayerAssembly layer )
+    public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        createModule( layer, FamilyModule.class );
-        createModule( layer, AccountModule.class );
-        return layer;
+        declareTestCase( module, Suite1Case1.class );
+        declareTestCase( module, Suite1Case2.class );
+        return module;
+    }
+
+    private void declareTestCase( ModuleAssembly module, Class<?> testcaseMixin )
+    {
+        module.services( TestCase.class )
+            .withMixins( testcaseMixin )
+            .visibleIn( Visibility.layer )
+            .taggedWith( testcaseMixin.getSimpleName() );
+
     }
 }

@@ -21,23 +21,51 @@
 package org.apache.zest.test.indexing.layered;
 
 import org.apache.zest.api.activation.ActivationException;
+import org.apache.zest.api.common.Optional;
+import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.layered.ModuleAssembler;
 import org.apache.zest.test.indexing.TestData;
+import org.apache.zest.test.indexing.layered.assembly.ApplicationAssembler;
 import org.junit.Before;
 import org.junit.Test;
 
 public abstract class AbstractMultiLayeredIndexingTest
 {
-    static Class<? extends ModuleAssembler> indexingAssembler;
+    public static Class<? extends ModuleAssembler> indexingAssembler;
 
     protected Application application;
-    private Iterable<ServiceReference<TestCase>> suite1;
-    private Iterable<ServiceReference<TestCase>> suite2;
-    private Iterable<ServiceReference<TestCase>> suite3;
+
+    @Structure
+    private UnitOfWorkFactory uowf;
+
+    @Optional
+    @Service
+    @Tagged( "Suite1Case1" )
+    private ServiceReference<TestCase> suite1Case1;
+
+    @Optional
+    @Service
+    @Tagged( "Suite1Case2" )
+    private ServiceReference<TestCase> suite1Case2;
+
+    @Optional
+    @Service
+    @Tagged( "Suite2Case1" )
+    private ServiceReference<TestCase> suite2Case1;
+
+    @Optional
+    @Service
+    @Tagged( "Suite3Case1" )
+    private ServiceReference<TestCase> suite3Case1;
 
     public AbstractMultiLayeredIndexingTest( Class<? extends ModuleAssembler> indexingAssembler )
     {
@@ -49,53 +77,61 @@ public abstract class AbstractMultiLayeredIndexingTest
         throws AssemblyException, ActivationException
     {
         ApplicationAssembler assembler =
-            new ApplicationAssembler( "Multi Layered Indexing Test", "1.0", Application.Mode.development );
+            new ApplicationAssembler( "Multi Layered Indexing Test", "1.0", Application.Mode.development, getClass() );
         assembler.initialize();
         assembler.start();
         application = assembler.application();
         Module familyModule = application.findModule( "Domain Layer", "Family Module" );
         TestData.populate( familyModule );
-        Module suite1Module = application.findModule( "Access Layer", "TestSuite1 Module" );
-        suite1 = suite1Module.findServices( TestCase.class );
-
-        Module suite2Module = application.findModule( "Access Layer", "TestSuite2 Module" );
-        suite2 = suite2Module.findServices( TestCase.class );
-
-        Module suite3Module = application.findModule( "Access Layer", "TestSuite3 Module" );
-        suite3 = suite3Module.findServices( TestCase.class );
+        Module executionModule = application.findModule( "Access Layer", "TestExecution Module" );
+        executionModule.injectTo( this );
     }
 
     @Test
-    public void suite1Tests()
+    public void suite1Case1()
         throws Exception
     {
-        Iterable<ServiceReference<TestCase>> suite = this.suite1;
-        runTest( suite );
+        runTest( suite1Case1, "suite1Case1" );
     }
 
     @Test
-    public void suite2Tests()
+    public void suite1Case2()
         throws Exception
     {
-        runTest( suite2 );
+        runTest( suite1Case2, "suite1Case2"  );
     }
 
     @Test
-    public void suite3Tests()
+    public void suite2Case1()
         throws Exception
     {
-        runTest( suite3 );
+        runTest( suite2Case1, "suite2Case1"  );
     }
 
-    private void runTest( Iterable<ServiceReference<TestCase>> suite )
+    @Test
+    public void suite3Case1()
         throws Exception
     {
-        for( ServiceReference<TestCase> ref : suite )
+        runTest( suite3Case1, "suite3Case1"  );
+    }
+
+    private void runTest( ServiceReference<TestCase> testCaseRef, String testName )
+        throws Exception
+    {
+        if( testCaseRef == null )
         {
-            TestCase testCase = ref.get();
-            testCase.when();
-            testCase.given();
-            testCase.expect();
+            System.err.println( "TestCase is not defined." );
+        }
+        else
+        {
+            TestCase testCase = testCaseRef.get();
+            try(UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( testName ) ))
+            {
+                testCase.given();
+                testCase.when();
+                testCase.expect();
+                uow.complete();
+            }
         }
     }
 }
