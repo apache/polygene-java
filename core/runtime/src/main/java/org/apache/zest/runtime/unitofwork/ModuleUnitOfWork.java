@@ -1,19 +1,24 @@
 /*
- * Copyright (c) 2009, Rickard Öberg. All Rights Reserved.
- * Copyright (c) 2013-2015, Niclas Hedhman. All Rights Reserved.
- * Copyright (c) 2013-2015, Paul Merlin. All Rights Reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  *
  */
-package org.apache.zest.runtime.structure;
+
+package org.apache.zest.runtime.unitofwork;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +37,9 @@ import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.entity.IdentityGenerator;
 import org.apache.zest.api.entity.LifecycleException;
+import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.property.StateHolder;
@@ -40,6 +48,7 @@ import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.QueryExecutionException;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.service.NoSuchServiceException;
+import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
@@ -59,14 +68,13 @@ import org.apache.zest.runtime.composite.FunctionStateResolver;
 import org.apache.zest.runtime.entity.EntityInstance;
 import org.apache.zest.runtime.entity.EntityModel;
 import org.apache.zest.runtime.property.PropertyModel;
-import org.apache.zest.runtime.unitofwork.EntityBuilderInstance;
-import org.apache.zest.runtime.unitofwork.UnitOfWorkInstance;
 import org.apache.zest.runtime.value.ValueInstance;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entity.NamedAssociationState;
 import org.apache.zest.spi.entitystore.EntityStore;
-import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.spi.structure.ModelModule;
+import org.apache.zest.spi.module.ModuleSpi;
 import org.apache.zest.spi.query.EntityFinder;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.spi.query.QueryBuilderSPI;
@@ -94,16 +102,16 @@ public class ModuleUnitOfWork
         }
     }
 
-    private final UnitOfWorkInstance uow;
-    private final ModuleInstance module;
+    @Uses
+    private UnitOfWorkInstance uow;
 
-    ModuleUnitOfWork( ModuleInstance module, UnitOfWorkInstance uow )
-    {
-        this.module = module;
-        this.uow = uow;
-    }
+    @Structure
+    private ModuleSpi module;
 
-    public ModuleInstance module()
+    @Service
+    private UnitOfWorkFactory unitOfWorkFactory;
+
+    public Module module()
     {
         return module;
     }
@@ -116,7 +124,7 @@ public class ModuleUnitOfWork
     @Override
     public UnitOfWorkFactory unitOfWorkFactory()
     {
-        return module;
+        return unitOfWorkFactory;
     }
 
     @Override
@@ -187,12 +195,12 @@ public class ModuleUnitOfWork
             );
         }
 
-        EntityStore entityStore = model.module().entityStore();
+        EntityStore entityStore = ((ModuleSpi) model.module()).entityStore();
 
         // Generate id if necessary
         if( identity == null )
         {
-            IdentityGenerator idGen = model.module().identityGenerator();
+            IdentityGenerator idGen = ((ModuleSpi) model.module()).identityGenerator();
             if( idGen == null )
             {
                 throw new NoSuchServiceException( IdentityGenerator.class.getName(), model.module().name() );
@@ -290,7 +298,7 @@ public class ModuleUnitOfWork
         {
             throw new EntityTypeNotFoundException( type.getName(),
                                                    module.name(),
-                                                   module.findVisibleEntityTypes().map( ModelModule.toStringFunction )
+                                                   ((ModuleSpi) module).findVisibleEntityTypes().map( ModelModule.toStringFunction )
             );
         }
 

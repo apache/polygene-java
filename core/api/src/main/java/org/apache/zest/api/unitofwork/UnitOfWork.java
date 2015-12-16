@@ -18,6 +18,7 @@ package org.apache.zest.api.unitofwork;
 import java.util.Map;
 import java.util.function.Function;
 import org.apache.zest.api.association.AssociationDescriptor;
+import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.AmbiguousTypeException;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityReference;
@@ -147,7 +148,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @throws AmbiguousTypeException      If several mixins implement the given type
      * @throws LifecycleException          if the entity cannot be created
      */
-    <T> T newEntity( Class<T> type, String identity )
+    <T> T newEntity( Class<T> type, @Optional String identity )
         throws EntityTypeNotFoundException, AmbiguousTypeException, LifecycleException;
 
     /**
@@ -180,7 +181,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @throws EntityTypeNotFoundException if no EntityComposite type of the given mixin type has been registered
      * @throws AmbiguousTypeException      If several mixins implement the given type
      */
-    <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
+    <T> EntityBuilder<T> newEntityBuilder( Class<T> type, @Optional String identity )
         throws EntityTypeNotFoundException, AmbiguousTypeException;
 
     /**
@@ -229,7 +230,7 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @throws EntityTypeNotFoundException If no mixins implements the given type
      * @throws AmbiguousTypeException      If several mixins implement the given type
      */
-    <T> EntityBuilder<T> newEntityBuilderWithState( Class<T> type, String identity,
+    <T> EntityBuilder<T> newEntityBuilderWithState( Class<T> type, @Optional String identity,
                                                     Function<PropertyDescriptor, Object> propertyFunction,
                                                     Function<AssociationDescriptor, EntityReference> associationFunction,
                                                     Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,

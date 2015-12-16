@@ -22,7 +22,7 @@ import java.util.Date;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.property.Numbers;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.library.rest.server.api.ResourceIndex;
 import org.apache.zest.library.rest.server.api.dci.Role;
 import org.apache.zest.sample.forum.data.entity.Post;
@@ -62,14 +62,14 @@ public class ViewPost
         extends Role<Topic>
     {
         @Structure
-        Module module;
+        UnitOfWorkFactory uowf;
 
         public Post reply( String message, PostView viewPost )
         {
-            Post post = module.currentUnitOfWork().newEntity( Post.class );
+            Post post = uowf.currentUnitOfWork().newEntity( Post.class );
             post.message().set( message );
             post.createdBy().set( poster.self() );
-            post.createdOn().set( new Date( module.currentUnitOfWork().currentTime() ) );
+            post.createdOn().set( new Date( uowf.currentUnitOfWork().currentTime() ) );
             post.replyTo().set( viewPost.self() );
 
             self().lastPost().set( post );

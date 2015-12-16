@@ -46,7 +46,7 @@ public class ParseHandlingEventDataTest extends TestApplication
     {
         super.prepareTest();
         TestApplication.setup();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
         // Create new cargo
@@ -60,7 +60,7 @@ public class ParseHandlingEventDataTest extends TestApplication
 
         // Start ParseHandlingEventData service
         ServiceReference<ParseHandlingEventData> ParseHandlingEventDataRef =
-            module.findService( ParseHandlingEventData.class );
+            serviceFinder.findService( ParseHandlingEventData.class );
         handlingEventParser = ParseHandlingEventDataRef.get();
     }
 

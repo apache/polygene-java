@@ -56,7 +56,7 @@ public class SetAssociationInSideEffectTest
     @Test
     public void whenSettingAnAssociationInASideEffectExpectItToWork()
     {
-        try( UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Purchase Steinway" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Purchase Steinway" ) ) )
         {
             Pianist chris = uow.newEntity( Pianist.class, "Chris" );
             Steinway modelD = uow.newEntity( Steinway.class, "ModelD-274" );

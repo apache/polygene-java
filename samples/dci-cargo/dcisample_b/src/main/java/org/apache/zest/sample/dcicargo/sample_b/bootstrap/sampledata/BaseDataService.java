@@ -28,10 +28,11 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.sample.dcicargo.pathfinder_b.api.GraphTraversalService;
 import org.apache.zest.sample.dcicargo.pathfinder_b.api.TransitEdge;
 import org.apache.zest.sample.dcicargo.pathfinder_b.api.TransitPath;
@@ -51,8 +52,8 @@ import static org.apache.zest.api.usecase.UsecaseBuilder.newUsecase;
 /**
  * Create basic sample data on startup of application.
  */
-@Mixins(BaseDataService.Mixin.class)
-@Activators(BaseDataService.Activator.class)
+@Mixins( BaseDataService.Mixin.class )
+@Activators( BaseDataService.Activator.class )
 public interface BaseDataService
     extends ServiceComposite
 {
@@ -76,14 +77,17 @@ public interface BaseDataService
         extends BaseData
         implements BaseDataService
     {
+        @Structure
+        UnitOfWorkFactory uowf;
+
         @Service
         GraphTraversalService graphTraversalService;
 
         private static final Logger logger = LoggerFactory.getLogger( BaseDataService.class );
 
-        protected Mixin( @Structure Module module )
+        protected Mixin( @Structure ValueBuilderFactory vbf )
         {
-            super( module );
+            super( vbf );
         }
 
         @Override
@@ -92,7 +96,7 @@ public interface BaseDataService
         {
             logger.debug( "CREATING BASIC DATA..." );
 
-            UnitOfWork uow = module.newUnitOfWork( newUsecase( "Create base data" ) );
+            UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "Create base data" ) );
 
             // Create locations
             location( unlocode( "AUMEL" ), "Melbourne" );
@@ -125,7 +129,7 @@ public interface BaseDataService
                         carrierMovements.add( carrierMovement( from, to, voyageEdge.getFromDate(), voyageEdge.getToDate() ) );
                     }
 
-                    ValueBuilder<Schedule> schedule = module.newValueBuilder( Schedule.class );
+                    ValueBuilder<Schedule> schedule = vbf.newValueBuilder( Schedule.class );
                     schedule.prototype().carrierMovements().set( carrierMovements );
                     voyage( voyageNumber, schedule.newInstance() );
                 }
@@ -154,14 +158,14 @@ public interface BaseDataService
 
         protected UnLocode unlocode( String unlocodeString )
         {
-            ValueBuilder<UnLocode> unlocode = module.newValueBuilder( UnLocode.class );
+            ValueBuilder<UnLocode> unlocode = vbf.newValueBuilder( UnLocode.class );
             unlocode.prototype().code().set( unlocodeString );
             return unlocode.newInstance();
         }
 
         protected Location location( UnLocode unlocode, String locationStr )
         {
-            UnitOfWork uow = module.currentUnitOfWork();
+            UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<Location> location = uow.newEntityBuilder( Location.class, unlocode.code().get() );
             location.instance().unLocode().set( unlocode );
             location.instance().name().set( locationStr );
@@ -170,11 +174,11 @@ public interface BaseDataService
 
         protected Voyage voyage( String voyageNumberStr, Schedule schedule )
         {
-            UnitOfWork uow = module.currentUnitOfWork();
+            UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<Voyage> voyage = uow.newEntityBuilder( Voyage.class, voyageNumberStr );
 
             // VoyageNumber
-            ValueBuilder<VoyageNumber> voyageNumber = module.newValueBuilder( VoyageNumber.class );
+            ValueBuilder<VoyageNumber> voyageNumber = vbf.newValueBuilder( VoyageNumber.class );
             voyageNumber.prototype().number().set( voyageNumberStr );
             voyage.instance().voyageNumber().set( voyageNumber.newInstance() );
 

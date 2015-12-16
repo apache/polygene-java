@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.parsing.dto.ParsedHandlingEventData;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.Delivery;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.delivery.NextHandlingEvent;
@@ -57,23 +57,23 @@ public abstract class BaseData
     protected UnLocode USCHI;
     protected UnLocode USDAL;
     protected UnLocode USNYC;
-    protected final Module module;
+    protected ValueBuilderFactory vbf;
 
-    protected BaseData( Module module )
+    protected BaseData( ValueBuilderFactory vbf )
     {
-        this.module = module;
+        this.vbf = vbf;
     }
 
     protected UnLocode unlocode( String unlocodeString )
     {
-        ValueBuilder<UnLocode> unlocode = module.newValueBuilder( UnLocode.class );
+        ValueBuilder<UnLocode> unlocode = vbf.newValueBuilder( UnLocode.class );
         unlocode.prototype().code().set( unlocodeString );
         return unlocode.newInstance();
     }
 
     protected CarrierMovement carrierMovement( Location depLoc, Location arrLoc, Date depTime, Date arrTime )
     {
-        ValueBuilder<CarrierMovement> carrierMovement = module.newValueBuilder( CarrierMovement.class );
+        ValueBuilder<CarrierMovement> carrierMovement = vbf.newValueBuilder( CarrierMovement.class );
         carrierMovement.prototype().departureLocation().set( depLoc );
         carrierMovement.prototype().arrivalLocation().set( arrLoc );
         carrierMovement.prototype().departureTime().set( depTime );
@@ -83,7 +83,7 @@ public abstract class BaseData
 
     protected Schedule schedule( CarrierMovement... carrierMovements )
     {
-        ValueBuilder<Schedule> schedule = module.newValueBuilder( Schedule.class );
+        ValueBuilder<Schedule> schedule = vbf.newValueBuilder( Schedule.class );
         List<CarrierMovement> cm = new ArrayList<>();
         cm.addAll( Arrays.asList( carrierMovements ) );
         schedule.prototype().carrierMovements().set( cm );
@@ -92,7 +92,7 @@ public abstract class BaseData
 
     protected Leg leg( Voyage voyage, Location load, Location unload, Date loadTime, Date unloadTime )
     {
-        ValueBuilder<Leg> leg = module.newValueBuilder( Leg.class );
+        ValueBuilder<Leg> leg = vbf.newValueBuilder( Leg.class );
         leg.prototype().voyage().set( voyage );
         leg.prototype().loadLocation().set( load );
         leg.prototype().unloadLocation().set( unload );
@@ -103,7 +103,7 @@ public abstract class BaseData
 
     protected Itinerary itinerary( Leg... legArray )
     {
-        ValueBuilder<Itinerary> itinerary = module.newValueBuilder( Itinerary.class );
+        ValueBuilder<Itinerary> itinerary = vbf.newValueBuilder( Itinerary.class );
         List<Leg> legs = new ArrayList<>();
         legs.addAll( Arrays.asList( legArray ) );
         itinerary.prototype().legs().set( legs );
@@ -121,7 +121,7 @@ public abstract class BaseData
         NextHandlingEvent nextHandlingEvent
     )
     {
-        ValueBuilder<Delivery> delivery = module.newValueBuilder( Delivery.class );
+        ValueBuilder<Delivery> delivery = vbf.newValueBuilder( Delivery.class );
         delivery.prototype().timestamp().set( new Date() );
         delivery.prototype().lastHandlingEvent().set( lastHandlingEvent );
         delivery.prototype().transportStatus().set( transportStatus );
@@ -141,7 +141,7 @@ public abstract class BaseData
                                  Integer itineraryProgressIndex
     )
     {
-        ValueBuilder<Delivery> delivery = module.newValueBuilder( Delivery.class );
+        ValueBuilder<Delivery> delivery = vbf.newValueBuilder( Delivery.class );
         delivery.prototype().timestamp().set( date );
         delivery.prototype().transportStatus().set( transportStatus );
         delivery.prototype().routingStatus().set( routingStatus );
@@ -155,7 +155,7 @@ public abstract class BaseData
                                                    Voyage voyage
     )
     {
-        ValueBuilder<NextHandlingEvent> nextHandlingEvent = module.newValueBuilder( NextHandlingEvent.class );
+        ValueBuilder<NextHandlingEvent> nextHandlingEvent = vbf.newValueBuilder( NextHandlingEvent.class );
         nextHandlingEvent.prototype().handlingEventType().set( handlingEventType );
         nextHandlingEvent.prototype().location().set( location );
         nextHandlingEvent.prototype().time().set( time );
@@ -172,7 +172,7 @@ public abstract class BaseData
     )
         throws Exception
     {
-        ValueBuilder<ParsedHandlingEventData> attempt = module.newValueBuilder( ParsedHandlingEventData.class );
+        ValueBuilder<ParsedHandlingEventData> attempt = vbf.newValueBuilder( ParsedHandlingEventData.class );
         attempt.prototype().registrationTime().set( registrationTime );
         attempt.prototype().completionTime().set( completionTime );
         attempt.prototype().trackingIdString().set( trackingIdString );

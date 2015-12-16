@@ -81,7 +81,7 @@ public final class StructureInjectionProviderFactory
             }
             else if( clazz.equals( UnitOfWorkFactory.class ) )
             {
-                return context.module();
+                return context.module().unitOfWorkFactory();
             }
             else if( clazz.equals( QueryBuilderFactory.class ) )
             {

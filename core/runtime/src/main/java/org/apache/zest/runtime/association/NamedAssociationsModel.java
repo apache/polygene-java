@@ -28,7 +28,7 @@ import org.apache.zest.api.association.NamedAssociation;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
-import org.apache.zest.runtime.structure.ModuleUnitOfWork;
+import org.apache.zest.runtime.unitofwork.ModuleUnitOfWork;
 import org.apache.zest.runtime.value.ValueStateInstance;
 import org.apache.zest.spi.entity.EntityState;
 

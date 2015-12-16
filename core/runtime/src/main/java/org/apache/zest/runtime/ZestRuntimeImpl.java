@@ -62,7 +62,7 @@ import org.apache.zest.runtime.property.PropertyInstance;
 import org.apache.zest.runtime.service.ImportedServiceReferenceInstance;
 import org.apache.zest.runtime.service.ServiceInstance;
 import org.apache.zest.runtime.service.ServiceReferenceInstance;
-import org.apache.zest.runtime.structure.ModuleUnitOfWork;
+import org.apache.zest.runtime.unitofwork.ModuleUnitOfWork;
 import org.apache.zest.runtime.value.ValueInstance;
 import org.apache.zest.spi.ZestSPI;
 import org.apache.zest.spi.entity.EntityState;

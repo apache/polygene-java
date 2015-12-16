@@ -31,7 +31,7 @@ import org.apache.zest.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.runtime.composite.CompositeMethodsModel;
 import org.apache.zest.runtime.composite.CompositeModel;
-import org.apache.zest.runtime.structure.ModuleUnitOfWork;
+import org.apache.zest.runtime.unitofwork.ModuleUnitOfWork;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityAlreadyExistsException;
 import org.apache.zest.spi.entitystore.EntityStoreException;

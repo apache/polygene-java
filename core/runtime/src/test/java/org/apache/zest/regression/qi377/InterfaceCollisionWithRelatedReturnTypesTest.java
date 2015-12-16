@@ -52,14 +52,14 @@ public class InterfaceCollisionWithRelatedReturnTypesTest
         throws UnitOfWorkCompletionException
     {
         String identity;
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             Company startUp = uow.newEntity( Company.class );
             startUp.name().set( "Acme" );
             identity = ( (Identity) startUp ).identity().get();
             uow.complete();
         }
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             Company startUp = uow.get( Company.class, identity );
             assertThat( startUp.name().get(), equalTo( "Acme" ) );
@@ -77,7 +77,7 @@ public class InterfaceCollisionWithRelatedReturnTypesTest
         throws UnitOfWorkCompletionException
     {
         String identity;
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             Company startUp = uow.newEntity( Company.class );
             Employee niclas = uow.newEntity( Employee.class );
@@ -87,7 +87,7 @@ public class InterfaceCollisionWithRelatedReturnTypesTest
 
             uow.complete();
         }
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             Company startUp = uow.get( Company.class, identity );
             Employee niclas = startUp.lead().get();
@@ -104,7 +104,7 @@ public class InterfaceCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToSetLeadToTheSalesTeam()
     {
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             SalesTeam startUp = uow.newEntity( SalesTeam.class );
             Employee niclas = uow.newEntity( Employee.class );
@@ -116,7 +116,7 @@ public class InterfaceCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToSetLeadToTheResearchTeam()
     {
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             ResearchTeam startUp = uow.newEntity( ResearchTeam.class );
             Employee niclas = uow.newEntity( Employee.class );
@@ -128,7 +128,7 @@ public class InterfaceCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToAddEmployeesToTheCompany()
     {
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             Company startUp = uow.newEntity( Company.class );
             Employee niclas = uow.newEntity( Employee.class );
@@ -142,7 +142,7 @@ public class InterfaceCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToAddEmployeesToTheSalesTeam()
     {
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             SalesTeam startUp = uow.newEntity( SalesTeam.class );
             Employee niclas = uow.newEntity( Employee.class );
@@ -154,7 +154,7 @@ public class InterfaceCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToAddEmployeesToTheResearchTeam()
     {
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             ResearchTeam startUp = uow.newEntity( ResearchTeam.class );
             Employee niclas = uow.newEntity( Employee.class );

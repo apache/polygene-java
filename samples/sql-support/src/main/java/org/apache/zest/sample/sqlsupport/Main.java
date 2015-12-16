@@ -72,14 +72,14 @@ public class Main
 
         try {
 
-            UnitOfWork uow = domainModule.newUnitOfWork();
+            UnitOfWork uow = domainModule.unitOfWorkFactory().newUnitOfWork();
             EntityBuilder<PretextEntity> builder = uow.newEntityBuilder( PretextEntity.class );
             PretextEntity pretext = builder.instance();
             pretext.reason().set( "Testing purpose" );
             builder.newInstance();
             uow.complete();
 
-            uow = domainModule.newUnitOfWork();
+            uow = domainModule.unitOfWorkFactory().newUnitOfWork();
             QueryBuilder<PretextEntity> queryBuilder = domainModule.newQueryBuilder( PretextEntity.class );
             queryBuilder = queryBuilder.where( eq( templateFor( PretextEntity.class ).reason(), "Testing purpose" ) );
             Query<PretextEntity> query = uow.newQuery( queryBuilder );
@@ -107,7 +107,7 @@ public class Main
     {
         // EntityStore Data
         {
-            UnitOfWork uow = persistenceModule.newUnitOfWork();
+            UnitOfWork uow = persistenceModule.unitOfWorkFactory().newUnitOfWork();
             try {
                 SQLConfiguration config = uow.get( SQLConfiguration.class,
                                                    PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
@@ -134,7 +134,7 @@ public class Main
 
         // Indexing Data
         {
-            UnitOfWork uow = persistenceModule.newUnitOfWork();
+            UnitOfWork uow = persistenceModule.unitOfWorkFactory().newUnitOfWork();
             try {
                 SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLIndexQueryAssembler.DEFAULT_IDENTITY );
                 Connection connection = persistenceModule.findService( DataSource.class ).get().getConnection();

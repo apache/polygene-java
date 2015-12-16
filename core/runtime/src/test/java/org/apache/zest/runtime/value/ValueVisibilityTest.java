@@ -16,6 +16,8 @@
 
 package org.apache.zest.runtime.value;
 
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,6 +46,7 @@ public class ValueVisibilityTest
     private Energy4Java zest;
     private Module module;
     private Application app;
+    private UnitOfWorkFactory uowf;
 
     @Before
     public void setup()
@@ -77,6 +80,7 @@ public class ValueVisibilityTest
         } );
         app.activate();
         module = app.findModule( "From Layer", "From" );
+        uowf = module.unitOfWorkFactory();
     }
 
     @After
@@ -173,7 +177,7 @@ public class ValueVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -191,7 +195,7 @@ public class ValueVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleLayerVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -209,7 +213,7 @@ public class ValueVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleModuleVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -227,7 +231,7 @@ public class ValueVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBesideApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -245,7 +249,7 @@ public class ValueVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBesideLayerVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -263,7 +267,7 @@ public class ValueVisibilityTest
     @Test( expected = NoSuchValueException.class )
     public void givenFromEntityWhenAccessingBesideModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -281,7 +285,7 @@ public class ValueVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBelowApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -299,7 +303,7 @@ public class ValueVisibilityTest
     @Test( expected = NoSuchValueException.class )
     public void givenFromEntityWhenAccessingBelowLayerVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -317,7 +321,7 @@ public class ValueVisibilityTest
     @Test( expected = NoSuchValueException.class )
     public void givenFromEntityWhenAccessingBelowModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -335,7 +339,7 @@ public class ValueVisibilityTest
     @Test( expected = NoSuchValueException.class )
     public void givenFromEntityWhenAccessingAboveApplicationVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -353,7 +357,7 @@ public class ValueVisibilityTest
     @Test( expected = NoSuchValueException.class )
     public void givenFromEntityWhenAccessingAboveLayerVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -371,7 +375,7 @@ public class ValueVisibilityTest
     @Test( expected = NoSuchValueException.class )
     public void givenFromEntityWhenAccessingAboveModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -656,6 +660,8 @@ public class ValueVisibilityTest
             module.values( ModuleApplicationVisible.class ).visibleIn( Visibility.application );
             module.values( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
             module.values( ModuleModuleVisible.class ).visibleIn( Visibility.module );
+
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -673,6 +679,7 @@ public class ValueVisibilityTest
             module.values( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             new EntityTestAssembler().visibleIn( Visibility.application ).assemble( module );
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -688,6 +695,8 @@ public class ValueVisibilityTest
             module.values( AboveApplicationVisible.class ).visibleIn( Visibility.application );
             module.values( AboveLayerVisible.class ).visibleIn( Visibility.layer );
             module.values( AboveModuleVisible.class ).visibleIn( Visibility.module );
+
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -702,6 +711,8 @@ public class ValueVisibilityTest
             module.values( BesideApplicationVisible.class ).visibleIn( Visibility.application );
             module.values( BesideLayerVisible.class ).visibleIn( Visibility.layer );
             module.values( BesideModuleVisible.class ).visibleIn( Visibility.module );
+
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 

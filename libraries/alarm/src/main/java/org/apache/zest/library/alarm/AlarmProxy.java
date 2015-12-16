@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.TransientBuilder;
+import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.injection.scope.Service;
@@ -27,9 +28,9 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 
@@ -38,9 +39,9 @@ import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 public interface AlarmProxy extends AlarmPoint, TransientComposite
 {
     @Mixins( FactoryMixin.class )
-    public interface Factory extends ServiceComposite
+    interface Factory extends ServiceComposite
     {
-        @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.REQUIRED)
+        @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.REQUIRED )
         AlarmProxy create( String identity, String systemName, String categoryName, AlarmClass alarmClass );
     }
 
@@ -48,7 +49,10 @@ public interface AlarmProxy extends AlarmPoint, TransientComposite
         implements Factory
     {
         @Structure
-        private Module module;
+        private TransientBuilderFactory tbf;
+
+        @Structure
+        private UnitOfWorkFactory uowf;
 
         @Service
         private AlarmPointFactory factory;
@@ -56,7 +60,7 @@ public interface AlarmProxy extends AlarmPoint, TransientComposite
         @Override
         public AlarmProxy create( String identity, String systemName, String categoryName, AlarmClass alarmClass )
         {
-            UnitOfWork unitOfWork = module.currentUnitOfWork();
+            UnitOfWork unitOfWork = uowf.currentUnitOfWork();
             AlarmPoint alarmPoint;
             try
             {
@@ -66,7 +70,7 @@ public interface AlarmProxy extends AlarmPoint, TransientComposite
             {
                 alarmPoint = factory.create( identity, systemName, categoryName, alarmClass );
             }
-            TransientBuilder<AlarmProxy> builder = module.newTransientBuilder( AlarmProxy.class );
+            TransientBuilder<AlarmProxy> builder = tbf.newTransientBuilder( AlarmProxy.class );
             builder.prototype().category().set( alarmPoint.category().get() );
             builder.prototype().alarmClass().set( alarmClass );
             builder.use( identity );
@@ -79,7 +83,7 @@ public interface AlarmProxy extends AlarmPoint, TransientComposite
     {
 
         @Structure
-        private Module module;
+        private UnitOfWorkFactory uowf;
 
         @Uses
         String identity;
@@ -199,7 +203,7 @@ public interface AlarmProxy extends AlarmPoint, TransientComposite
 
         private AlarmPoint findAlarmPoint()
         {
-            return module.currentUnitOfWork().get( AlarmPoint.class, identity );
+            return uowf.currentUnitOfWork().get( AlarmPoint.class, identity );
         }
     }
 }

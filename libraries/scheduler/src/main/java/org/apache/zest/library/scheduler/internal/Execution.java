@@ -27,15 +27,14 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.apache.zest.api.concern.Concerns;
+import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.api.unitofwork.concern.UnitOfWorkConcern;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.library.scheduler.Schedule;
 import org.apache.zest.library.scheduler.Scheduler;
 import org.apache.zest.library.scheduler.SchedulerConfiguration;
@@ -66,7 +65,10 @@ public interface Execution
         private final Object lock = new Object();
 
         @Structure
-        private Module module;
+        private UnitOfWorkFactory uowf;
+
+        @Structure
+        private TransientBuilderFactory tbf;
 
         @This
         private Scheduler scheduler;
@@ -164,7 +166,7 @@ public interface Execution
         {
             long now = System.currentTimeMillis();
 
-            try (UnitOfWork uow = module.newUnitOfWork()) // This will discard() the UoW when block is exited. We are only doing reads, so fine.
+            try (UnitOfWork uow = uowf.newUnitOfWork()) // This will discard() the UoW when block is exited. We are only doing reads, so fine.
             {
                 submitTaskForExecution( oldScheduleTime );
                 Schedule schedule = uow.get( Schedule.class, oldScheduleTime.scheduleIdentity() );
@@ -196,7 +198,7 @@ public interface Execution
 
         private void submitTaskForExecution( ScheduleTime scheduleTime )
         {
-            Runnable taskRunner = module.newTransient( Runnable.class, scheduleTime );
+            Runnable taskRunner = tbf.newTransient( Runnable.class, scheduleTime );
             this.taskExecutor.submit( taskRunner );
         }
 

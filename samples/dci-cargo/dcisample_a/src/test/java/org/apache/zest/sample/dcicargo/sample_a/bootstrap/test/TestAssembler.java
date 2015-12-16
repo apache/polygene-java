@@ -66,10 +66,10 @@ import static org.apache.zest.api.structure.Application.Mode.test;
  */
 @SuppressWarnings( "unchecked" )
 public class TestAssembler
-      implements ApplicationAssembler
+    implements ApplicationAssembler
 {
     public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-          throws AssemblyException
+        throws AssemblyException
     {
         // Application assembly
         ApplicationAssembly assembly = applicationFactory.newApplicationAssembly();
@@ -85,17 +85,17 @@ public class TestAssembler
 
         // Layer dependencies
         bootstrapLayer.uses(
-              contextLayer,
-              domainLayer,
-              infrastructureLayer );
+            contextLayer,
+            domainLayer,
+            infrastructureLayer );
 
         contextLayer.uses(
-              domainLayer,
-              infrastructureLayer );
+            domainLayer,
+            infrastructureLayer );
 
         domainLayer.uses(
-              contextLayer,
-              infrastructureLayer
+            contextLayer,
+            infrastructureLayer
         );
 
         // Assemble
@@ -107,120 +107,125 @@ public class TestAssembler
         return assembly;
     }
 
-    private void assembleBootstrapLayer( LayerAssembly bootstrapLayer ) throws AssemblyException
+    private void assembleBootstrapLayer( LayerAssembly bootstrapLayer )
+        throws AssemblyException
     {
-        ModuleAssembly bootstrapModule = bootstrapLayer.module( "BOOTSTRAP-Bootstrap" );
+        ModuleAssembly bootstrapModule = bootstrapLayer.module( "BOOTSTRAP-Bootstrap" ).withDefaultUnitOfWorkFactory();
 
         // Load base data on startup
         bootstrapModule
-              .addServices(
-                    BaseDataService.class )
-              .visibleIn( application )
-              .instantiateOnStartup();
+            .addServices(
+                BaseDataService.class )
+            .visibleIn( application )
+            .instantiateOnStartup();
     }
 
-    private void assembleContextLayer( LayerAssembly contextLayer ) throws AssemblyException
+    private void assembleContextLayer( LayerAssembly contextLayer )
+        throws AssemblyException
     {
         // Role-playing entities
-        ModuleAssembly entityRoleModule = contextLayer.module( "CONTEXT-EntityRole" );
+        ModuleAssembly entityRoleModule = contextLayer.module( "CONTEXT-EntityRole" ).withDefaultUnitOfWorkFactory();
         entityRoleModule
-              .entities(
-                    CargoRoleMap.class,
-                    CargosRoleMap.class,
-                    HandlingEventRoleMap.class,
-                    HandlingEventsRoleMap.class )
-              .visibleIn( application );
-
+            .entities(
+                CargoRoleMap.class,
+                CargosRoleMap.class,
+                HandlingEventRoleMap.class,
+                HandlingEventsRoleMap.class )
+            .visibleIn( application );
 
         // Role-playing values
-        ModuleAssembly valueRoleModule = contextLayer.module( "CONTEXT-ValueRole" );
+        ModuleAssembly valueRoleModule = contextLayer.module( "CONTEXT-ValueRole" ).withDefaultUnitOfWorkFactory();
         valueRoleModule
-              .values(
-                    ItineraryRoleMap.class,
-                    RouteSpecificationRoleMap.class )
-              .visibleIn( application );
+            .values(
+                ItineraryRoleMap.class,
+                RouteSpecificationRoleMap.class )
+            .visibleIn( application );
 
-
-        ModuleAssembly contextSupportModule = contextLayer.module( "CONTEXT-ContextSupport" );
+        ModuleAssembly contextSupportModule = contextLayer.module( "CONTEXT-ContextSupport" )
+            .withDefaultUnitOfWorkFactory();
         contextSupportModule
-              .addServices(
-                    RoutingService.class,
-                    ApplicationEvents.class )
-              .visibleIn( application );
+            .addServices(
+                RoutingService.class,
+                ApplicationEvents.class )
+            .visibleIn( application );
 
         contextSupportModule
-              .values(
-                    RegisterHandlingEventAttemptDTO.class )
-              .visibleIn( application );
+            .values(
+                RegisterHandlingEventAttemptDTO.class )
+            .visibleIn( application );
     }
 
-    private void assembleDomainLayer( LayerAssembly domainLayer ) throws AssemblyException
+    private void assembleDomainLayer( LayerAssembly domainLayer )
+        throws AssemblyException
     {
         // Non-role-playing entities
-        ModuleAssembly entityModule = domainLayer.module( "DOMAIN-Entity" );
+        ModuleAssembly entityModule = domainLayer.module( "DOMAIN-Entity" ).withDefaultUnitOfWorkFactory();
         entityModule
-              .entities(
-                    LocationEntity.class,
-                    VoyageEntity.class )
-              .visibleIn( application );
-
+            .entities(
+                LocationEntity.class,
+                VoyageEntity.class )
+            .visibleIn( application );
 
         // Non-role-playing values
-        ModuleAssembly dataModule = domainLayer.module( "DOMAIN-Data" );
+        ModuleAssembly dataModule = domainLayer.module( "DOMAIN-Data" ).withDefaultUnitOfWorkFactory();
         dataModule
-              .values(
-                    TrackingId.class,
-                    Delivery.class,
-                    ExpectedHandlingEvent.class,
-                    UnLocode.class,
-                    Leg.class,
-                    CarrierMovement.class,
-                    Schedule.class,
-                    VoyageNumber.class )
-              .visibleIn( application );
+            .values(
+                TrackingId.class,
+                Delivery.class,
+                ExpectedHandlingEvent.class,
+                UnLocode.class,
+                Leg.class,
+                CarrierMovement.class,
+                Schedule.class,
+                VoyageNumber.class )
+            .visibleIn( application );
     }
 
-    private void assembleInfrastructureLayer( LayerAssembly infrastructureLayer ) throws AssemblyException
+    private void assembleInfrastructureLayer( LayerAssembly infrastructureLayer )
+        throws AssemblyException
     {
-        ModuleAssembly serializationModule = infrastructureLayer.module( "INFRASTRUCTURE-Serialization" );
+        ModuleAssembly serializationModule = infrastructureLayer.module( "INFRASTRUCTURE-Serialization" )
+            .withDefaultUnitOfWorkFactory();
         serializationModule
             .services( OrgJsonValueSerializationService.class )
             .taggedWith( ValueSerialization.Formats.JSON )
             .setMetaInfo( new Function<Application, Module>()
-        {
-            @Override
-            public Module apply( Application application )
             {
-                return application.findModule( "CONTEXT", "CONTEXT-ContextSupport" );
-            }
-        } )
-        .visibleIn( application );
+                @Override
+                public Module apply( Application application )
+                {
+                    return application.findModule( "CONTEXT", "CONTEXT-ContextSupport" );
+                }
+            } )
+            .visibleIn( application );
 
-        ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" );
+        ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" )
+            .withDefaultUnitOfWorkFactory();
         indexingModule
-              .objects(
-                    EntityStateSerializer.class,
-                    EntityTypeSerializer.class );
+            .objects(
+                EntityStateSerializer.class,
+                EntityTypeSerializer.class );
 
         indexingModule
-              .addServices(
-                    MemoryRepositoryService.class,
-                    RdfIndexingEngineService.class )
-              .visibleIn( application );
+            .addServices(
+                MemoryRepositoryService.class,
+                RdfIndexingEngineService.class )
+            .visibleIn( application );
 
-
-        ModuleAssembly entityStoreModule = infrastructureLayer.module( "INFRASTRUCTURE-EntityStore" );
+        ModuleAssembly entityStoreModule = infrastructureLayer.module( "INFRASTRUCTURE-EntityStore" )
+            .withDefaultUnitOfWorkFactory();
         entityStoreModule
-              .addServices(
-                    MemoryEntityStoreService.class,
-                    UuidIdentityGeneratorService.class )
-              .visibleIn( application );
+            .addServices(
+                MemoryEntityStoreService.class,
+                UuidIdentityGeneratorService.class )
+            .visibleIn( application );
 
-        ModuleAssembly externalServiceModule = infrastructureLayer.module( "INFRASTRUCTURE-ExternalService" );
+        ModuleAssembly externalServiceModule = infrastructureLayer.module( "INFRASTRUCTURE-ExternalService" )
+            .withDefaultUnitOfWorkFactory();
         externalServiceModule
-              .importedServices(
-                    GraphTraversalService.class )
-              .setMetaInfo( new GraphTraversalServiceImpl( new GraphDAO() ) )
-              .visibleIn( application );
+            .importedServices(
+                GraphTraversalService.class )
+            .setMetaInfo( new GraphTraversalServiceImpl( new GraphDAO() ) )
+            .visibleIn( application );
     }
 }

@@ -41,6 +41,7 @@ class FamilyModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
+        module.withDefaultUnitOfWorkFactory();
         module.entities( Male.class,
                          Female.class,
                          City.class,

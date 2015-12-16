@@ -27,8 +27,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -42,14 +40,19 @@ import org.apache.zest.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.test.AbstractZestTest;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 public class RestTest
     extends AbstractZestTest
@@ -59,18 +62,20 @@ public class RestTest
     protected ApplicationDescriptor newApplication()
         throws AssemblyException
     {
-        return zest.newApplicationModel( new ApplicationAssemblerAdapter( new Assembler[][][]
-            {
+        return zest.newApplicationModel( new ApplicationAssemblerAdapter(
+            new Assembler[][][]
                 {
                     {
-                        RestTest.this,
-                        new RestAssembler(),
-                        new RdfMemoryStoreAssembler()
+                        {
+                            RestTest.this,
+                            new RestAssembler(),
+                            new RdfMemoryStoreAssembler(),
+                            new DefaultUnitOfWorkAssembler()
+                        }
                     }
-                }
-            } )
-        {
-        } );
+                } )
+        {}  // subclassing ApplicationAssemblerAdapter
+        );
     }
 
     @Override
@@ -90,7 +95,7 @@ public class RestTest
         throws Exception
     {
         super.setUp();
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder1 = uow.newEntityBuilder( PersonEntity.class, "P2" );
@@ -141,7 +146,7 @@ public class RestTest
         properties.put( "firstname", "Jack" );
         properties.put( "lastname", "Doe" );
         restTester.putEntity( "P1", properties );
-        UnitOfWork work = module.newUnitOfWork();
+        UnitOfWork work = uowf.newUnitOfWork();
         try
         {
             PersonEntity entity = work.get( PersonEntity.class, "P1" );
@@ -161,7 +166,7 @@ public class RestTest
     {
         RestTester restTester = module.newObject( RestTester.class );
         restTester.deleteEntity( "P1" );
-        UnitOfWork work = module.newUnitOfWork();
+        UnitOfWork work = uowf.newUnitOfWork();
         try
         {
             PersonEntity entity = null;
@@ -191,10 +196,10 @@ public class RestTest
         assertThat(
             "Returned RDF", result,
             anyOf(
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n</rdf:RDF>\n" ),
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\\\"no\\\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n</rdf:RDF>\n" ),
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n</rdf:RDF>\n" ),
-            equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\\\"no\\\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n</rdf:RDF>\n" ) ) );
+                equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n</rdf:RDF>\n" ),
+                equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\\\"no\\\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n</rdf:RDF>\n" ),
+                equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n</rdf:RDF>\n" ),
+                equalTo( "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\\\"no\\\"?>\n<rdf:RDF\n\txmlns=\"urn:zest:\"\n\txmlns:zest=\"http://zest.apache.org/rdf/model/1.0/\"\n\txmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n\txmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\">\n<zest:entity rdf:about=\"/entity/P1.rdf\"/>\n<zest:entity rdf:about=\"/entity/P2.rdf\"/>\n</rdf:RDF>\n" ) ) );
     }
 
     public static class RestTester
@@ -214,7 +219,8 @@ public class RestTest
                 int status = client.executeMethod( method );
                 if( status != 200 )
                 {
-                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method.getStatusText() + "'" );
+                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method
+                        .getStatusText() + "'" );
                 }
                 InputStream input = method.getResponseBodyAsStream();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -241,7 +247,8 @@ public class RestTest
                 int status = client.executeMethod( method );
                 if( status != 205 )
                 {
-                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method.getStatusText() + "'" );
+                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method
+                        .getStatusText() + "'" );
                 }
             }
             finally
@@ -260,7 +267,8 @@ public class RestTest
                 int status = client.executeMethod( method );
                 if( status != 204 )
                 {
-                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method.getStatusText() + "'" );
+                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method
+                        .getStatusText() + "'" );
                 }
             }
             finally
@@ -280,7 +288,8 @@ public class RestTest
                 int status = client.executeMethod( method );
                 if( status != 200 )
                 {
-                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method.getStatusText() + "'" );
+                    throw new RuntimeException( "EntityResource returned status code: '" + status + "' and message: '" + method
+                        .getStatusText() + "'" );
                 }
                 InputStream input = method.getResponseBodyAsStream();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -320,5 +329,4 @@ public class RestTest
         @Optional
         Association<Person> mother();
     }
-
 }

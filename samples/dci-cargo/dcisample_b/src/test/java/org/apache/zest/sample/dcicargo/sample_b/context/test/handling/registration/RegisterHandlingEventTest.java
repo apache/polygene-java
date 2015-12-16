@@ -60,7 +60,7 @@ public class RegisterHandlingEventTest extends TestApplication
         throws Exception
     {
         super.prepareTest();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         HANDLING_EVENTS = uow.get( HandlingEventAggregateRoot.class, HandlingEventAggregateRoot.HANDLING_EVENTS_ID );
         CargoAggregateRoot CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
@@ -129,11 +129,11 @@ public class RegisterHandlingEventTest extends TestApplication
         throws Exception
     {
         deviation_3c_VoyageNumber_Unknown();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
 
         // Receive 1st time (store event so that it turns up in query)
         uow.complete();
-        tempUow = module.newUnitOfWork();
+        tempUow = uowf.newUnitOfWork();
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, RECEIVE, HONGKONG, noVoyage );
         tempUow.complete();
 
@@ -148,11 +148,11 @@ public class RegisterHandlingEventTest extends TestApplication
         throws Exception
     {
         deviation_4a_DuplicateEvent_Receive();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
 
         uow.complete();
         // In customs 1st time
-        tempUow = module.newUnitOfWork();
+        tempUow = uowf.newUnitOfWork();
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, CUSTOMS, HONGKONG, noVoyage );
         tempUow.complete();
 
@@ -167,11 +167,11 @@ public class RegisterHandlingEventTest extends TestApplication
         throws Exception
     {
         deviation_4a_DuplicateEvent_Customs();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
 
         uow.complete();
         // Claimed 1st time
-        tempUow = module.newUnitOfWork();
+        tempUow = uowf.newUnitOfWork();
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( DAY1, DAY1, trackingId, CLAIM, HONGKONG, noVoyage );
         tempUow.complete();
 
@@ -200,8 +200,8 @@ public class RegisterHandlingEventTest extends TestApplication
         deviation_5a_NoHandlingAfterClaim();
 
         // Delete handling events from memory
-        tempUow = module.newUnitOfWork();
-        Query<HandlingEventEntity> events = tempUow.newQuery( module.newQueryBuilder( HandlingEventEntity.class ) );
+        tempUow = uowf.newUnitOfWork();
+        Query<HandlingEventEntity> events = tempUow.newQuery( qbf.newQueryBuilder( HandlingEventEntity.class ) );
         for( HandlingEvent event : events )
         {
             tempUow.remove( event );

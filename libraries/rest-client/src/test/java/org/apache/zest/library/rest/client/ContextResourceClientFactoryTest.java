@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import org.apache.zest.api.type.HasTypes;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.UsecaseBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
@@ -391,7 +393,7 @@ public class ContextResourceClientFactoryTest
         @Override
         protected Uniform createRoot( Request request, Response response )
         {
-            return module.newObject( RootResource.class, this );
+            return objectFactory.newObject( RootResource.class, this );
         }
     }
 
@@ -554,16 +556,19 @@ public class ContextResourceClientFactoryTest
         private static int count = 0;
 
         @Structure
-        Module module;
+        UnitOfWorkFactory uowf;
+
+        @Structure
+        ValueBuilderFactory vbf;
 
         public TestResult queryWithValue( TestQuery query )
         {
-            return module.newValueFromSerializedState( TestResult.class, "{'xyz':'"+query.abc().get()+"'}" );
+            return vbf.newValueFromSerializedState( TestResult.class, "{'xyz':'"+query.abc().get()+"'}" );
         }
 
         public TestResult queryWithoutValue()
         {
-            return module.newValueFromSerializedState( TestResult.class, "{'xyz':'bar'}" );
+            return vbf.newValueFromSerializedState( TestResult.class, "{'xyz':'bar'}" );
         }
 
         public String queryWithStringResult( TestQuery query )
@@ -594,7 +599,7 @@ public class ContextResourceClientFactoryTest
             count++;
             if( count % 3 != 0 )
             {
-                module.currentUnitOfWork().addUnitOfWorkCallback( new UnitOfWorkCallback()
+                uowf.currentUnitOfWork().addUnitOfWorkCallback( new UnitOfWorkCallback()
                 {
                     public void beforeCompletion()
                         throws UnitOfWorkCompletionException

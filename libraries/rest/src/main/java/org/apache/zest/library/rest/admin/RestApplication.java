@@ -19,9 +19,17 @@ package org.apache.zest.library.rest.admin;
 
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
-import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.unitofwork.*;
-import org.restlet.*;
+import org.apache.zest.api.object.ObjectFactory;
+import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
+import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.restlet.Application;
+import org.restlet.Context;
+import org.restlet.Request;
+import org.restlet.Response;
+import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.restlet.resource.Finder;
@@ -34,7 +42,10 @@ public class RestApplication
     public static final MediaType APPLICATION_SPARQL_JSON = new MediaType( "application/sparql-results+json", "SPARQL JSON" );
 
     @Structure
-    private Module module;
+    private ObjectFactory objectFactory;
+
+    @Structure
+    private UnitOfWorkFactory uowf;
 
     public RestApplication( @Uses Context parentContext )
     {
@@ -48,7 +59,7 @@ public class RestApplication
     @Override
     public void handle( Request request, Response response )
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             super.handle( request, response );
@@ -96,7 +107,7 @@ public class RestApplication
 
     private Finder newFinder( Class<? extends ServerResource> resource )
     {
-        Finder finder = module.newObject( Finder.class );
+        Finder finder = objectFactory.newObject( Finder.class );
         finder.setTargetClass( resource );
         return finder;
     }

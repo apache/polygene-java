@@ -15,11 +15,14 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
-package org.apache.zest.spi.module;
+
+package org.apache.zest.spi.structure;
 
 import java.util.function.Function;
 import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * TODO
@@ -28,10 +31,11 @@ public class ModelModule<T extends ModelDescriptor>
 {
 
     public static Function<ModelModule<?>, String> toStringFunction = item -> item.model()
-               .types()
-               .iterator()
-               .next()
-               .getName() + "[" + item.module().name() + "]";
+                                                                                  .types()
+                                                                                  .iterator()
+                                                                                  .next()
+                                                                                  .getName() + "[" + item.module()
+                                                                                  .name() + "]";
 
     public static <T extends ModelDescriptor> Function<T, ModelModule<T>> modelModuleFunction( final ModuleSpi module )
     {
@@ -40,13 +44,8 @@ public class ModelModule<T extends ModelDescriptor>
 
     public static Function<ModelModule<? extends ModelDescriptor>, ModelDescriptor> modelFunction()
     {
-        return new Function<ModelModule<? extends ModelDescriptor>, ModelDescriptor>()
-        {
-            @Override
-            public ModelDescriptor apply( ModelModule<? extends ModelDescriptor> modelModule )
-            {
-                return modelModule.model();
-            }
+        return modelModule -> {
+            return modelModule.model();
         };
     }
 
@@ -83,6 +82,7 @@ public class ModelModule<T extends ModelDescriptor>
 
         ModelModule that = (ModelModule) o;
 
+        //noinspection SimplifiableIfStatement
         if( model != null ? !model.equals( that.model ) : that.model != null )
         {
             return false;

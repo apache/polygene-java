@@ -42,7 +42,7 @@ public class NonQueryableTest
     @Test
     public void whenQuerableIsFalseOnPropertyThenExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             QueryBuilder<Abc> builder = module.newQueryBuilder( Abc.class );
@@ -63,7 +63,7 @@ public class NonQueryableTest
     @Test
     public void testQueryIterable()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             module.newQueryBuilder( Abc2.class );

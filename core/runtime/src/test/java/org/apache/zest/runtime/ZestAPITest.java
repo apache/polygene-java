@@ -45,7 +45,7 @@ public class ZestAPITest
     public void testGetModuleOfComposite()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         TestEntity testEntity = unitOfWork.newEntity( TestEntity.class );
 
         api.moduleOf( testEntity );

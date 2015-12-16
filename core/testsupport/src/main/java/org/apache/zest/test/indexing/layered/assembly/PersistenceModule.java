@@ -37,6 +37,7 @@ class PersistenceModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
+        module.withDefaultUnitOfWorkFactory();
         module.services( OrgJsonValueSerializationService.class ).taggedWith( ValueSerialization.Formats.JSON );
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
         return module;

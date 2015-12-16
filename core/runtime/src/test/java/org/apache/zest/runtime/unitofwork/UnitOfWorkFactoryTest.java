@@ -50,7 +50,7 @@ public class UnitOfWorkFactoryTest
     public void testUnitOfWork()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
 
         // Create product
         EntityBuilder<ProductEntity> cb = unitOfWork.newEntityBuilder( ProductEntity.class );

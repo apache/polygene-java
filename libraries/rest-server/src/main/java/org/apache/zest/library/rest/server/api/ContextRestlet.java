@@ -1,12 +1,11 @@
 /**
- *
  * Copyright 2009-2011 Rickard Öberg AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,9 +23,10 @@ import java.util.Map;
 import org.apache.zest.api.cache.CacheOptions;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.object.ObjectFactory;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.library.rest.server.restlet.ResponseWriterDelegator;
@@ -53,7 +53,10 @@ public abstract class ContextRestlet
     extends Restlet
 {
     @Structure
-    protected Module module;
+    protected ObjectFactory objectFactory;
+
+    @Structure
+    protected UnitOfWorkFactory uowf;
 
     @Service
     private CommandResult commandResult;
@@ -61,7 +64,7 @@ public abstract class ContextRestlet
     @Service
     private ResponseWriterDelegator responseWriter;
 
-    private Map<Class, Uniform> subResources = Collections.synchronizedMap( new HashMap<Class, Uniform>() );
+    private Map<Class, Uniform> subResources = Collections.synchronizedMap( new HashMap<>() );
 
     @Override
     public void handle( Request request, Response response )
@@ -83,7 +86,7 @@ public abstract class ContextRestlet
                 Reference ref = request.getResourceRef();
                 List<String> segments = ref.getScheme()
                                             .equals( "riap" ) ? ref.getRelativeRef( new Reference( "riap://application/" ) )
-                    .getSegments() : ref.getRelativeRef().getSegments();
+                                            .getSegments() : ref.getRelativeRef().getSegments();
 
                 // Handle conversion of verbs into standard interactions
                 if( segments.get( segments.size() - 1 ).equals( "" ) )
@@ -106,7 +109,7 @@ public abstract class ContextRestlet
                 Usecase usecase = UsecaseBuilder.buildUsecase( getUsecaseName( request ) )
                     .withMetaInfo( request.getMethod().isSafe() ? CacheOptions.ALWAYS : CacheOptions.NEVER )
                     .newUsecase();
-                UnitOfWork uow = module.newUnitOfWork( usecase );
+                UnitOfWork uow = uowf.newUnitOfWork( usecase );
 
                 ObjectSelection.newSelection();
 
@@ -194,7 +197,7 @@ public abstract class ContextRestlet
                                 // Check if last modified and tag should be set
                                 if( validity != null )
                                 {
-                                    UnitOfWork lastModifiedUoW = module.newUnitOfWork();
+                                    UnitOfWork lastModifiedUoW = uowf.newUnitOfWork();
 
                                     try
                                     {
@@ -244,7 +247,7 @@ public abstract class ContextRestlet
         if( subResource == null )
         {
             // Instantiate and store subresource instance
-            subResource = module.newObject( subResourceClass, this );
+            subResource = objectFactory.newObject( subResourceClass, this );
             subResources.put( subResourceClass, subResource );
         }
 

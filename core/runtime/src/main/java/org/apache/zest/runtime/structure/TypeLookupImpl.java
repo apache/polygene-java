@@ -39,7 +39,8 @@ import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.spi.structure.ModelModule;
+import org.apache.zest.spi.structure.TypeLookup;
 
 import static java.util.stream.Stream.concat;
 import static org.apache.zest.api.common.Visibility.application;
@@ -52,7 +53,8 @@ import static org.apache.zest.functional.Iterables.first;
 /**
  * Central place for Composite Type lookups.
  */
-public class TypeLookup
+public class TypeLookupImpl
+    implements TypeLookup
 {
 
     // Constructor parameters
@@ -71,7 +73,7 @@ public class TypeLookup
      *
      * @param moduleInstance ModuleInstance bound to this TypeLookup
      */
-    TypeLookup( ModuleInstance moduleInstance )
+    TypeLookupImpl( ModuleInstance moduleInstance )
     {
         // Constructor parameters
         this.moduleInstance = moduleInstance;
@@ -206,7 +208,8 @@ public class TypeLookup
      *
      * @return First matching Entity Model
      */
-    ModelModule<EntityDescriptor> lookupEntityModel( final Class type )
+    @Override
+    public ModelModule<EntityDescriptor> lookupEntityModel( final Class type )
     {
         ModelModule<EntityDescriptor> model = unambiguousEntityModels.get( type );
 
@@ -248,7 +251,8 @@ public class TypeLookup
      *
      * @return All matching Entity Models
      */
-    Iterable<ModelModule<EntityDescriptor>> lookupEntityModels( final Class type )
+    @Override
+    public Iterable<ModelModule<EntityDescriptor>> lookupEntityModels( final Class type )
     {
         List<ModelModule<EntityDescriptor>> result = allEntityModels.get( type );
         if( result == null )
@@ -274,7 +278,8 @@ public class TypeLookup
      *
      * @return First matching ServiceReference
      */
-    <T> ServiceReference<T> lookupServiceReference( Type serviceType )
+    @Override
+    public <T> ServiceReference<T> lookupServiceReference( Type serviceType )
     {
         @SuppressWarnings( "unchecked" )
         ServiceReference<T> serviceReference = (ServiceReference<T>) serviceReferences.get( serviceType );
@@ -315,7 +320,8 @@ public class TypeLookup
      *
      * @return All matching ServiceReferences
      */
-    <T> List<ServiceReference<T>> lookupServiceReferences( final Type type )
+    @Override
+    public <T> List<ServiceReference<T>> lookupServiceReferences( final Type type )
     {
         List<ServiceReference<?>> serviceRefs = servicesReferences.get( type );
         if( serviceRefs == null )
@@ -335,12 +341,14 @@ public class TypeLookup
         return result;
     }
 
+    @Override
     public Stream<Class<?>> allVisibleObjects()
     {
         return allObjects().flatMap( model -> model.model().types() );
     }
 
-    private Stream<ModelModule<ObjectDescriptor>> allObjects()
+    @Override
+    public Stream<ModelModule<ObjectDescriptor>> allObjects()
     {
         return concat( moduleInstance.visibleObjects( module ),
                        concat(
@@ -353,7 +361,8 @@ public class TypeLookup
         );
     }
 
-    private Stream<ModelModule<TransientDescriptor>> allTransients()
+    @Override
+    public Stream<ModelModule<TransientDescriptor>> allTransients()
     {
         return concat( moduleInstance.visibleTransients( module ),
                        concat(
@@ -366,7 +375,8 @@ public class TypeLookup
         );
     }
 
-    private Stream<ModelModule<ValueDescriptor>> allValues()
+    @Override
+    public Stream<ModelModule<ValueDescriptor>> allValues()
     {
         return concat( moduleInstance.visibleValues( module ),
                        concat(
@@ -379,7 +389,8 @@ public class TypeLookup
         );
     }
 
-    private Stream<ModelModule<EntityDescriptor>> allEntities()
+    @Override
+    public Stream<ModelModule<EntityDescriptor>> allEntities()
     {
         return concat( moduleInstance.visibleEntities( module ),
                        concat(
@@ -392,7 +403,8 @@ public class TypeLookup
         );
     }
 
-    private Stream<ServiceReference<?>> allServices()
+    @Override
+    public Stream<ServiceReference<?>> allServices()
     {
         return concat( moduleInstance.visibleServices( module ),
                        concat(

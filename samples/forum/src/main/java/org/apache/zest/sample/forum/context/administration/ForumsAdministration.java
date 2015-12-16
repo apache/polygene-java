@@ -22,7 +22,7 @@ import org.apache.zest.api.constraint.Name;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.query.Query;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.library.rest.server.api.ResourceIndex;
 import org.apache.zest.library.rest.server.api.dci.Role;
 import org.apache.zest.sample.forum.data.entity.Forum;
@@ -36,7 +36,7 @@ public class ForumsAdministration
     implements ResourceIndex<Query<Forum>>
 {
     @Structure
-    Module module;
+    UnitOfWorkFactory uowf;
 
     ForumsAdmin forumsAdmin = new ForumsAdmin();
     Administrator administrator = new Administrator();
@@ -68,7 +68,7 @@ public class ForumsAdministration
 
         public Forum createForum( String name )
         {
-            Forum forum = module.currentUnitOfWork().newEntity( Forum.class );
+            Forum forum = uowf.currentUnitOfWork().newEntity( Forum.class );
             forum.name().set( name );
             administrator.makeModerator( forum );
             return forum;

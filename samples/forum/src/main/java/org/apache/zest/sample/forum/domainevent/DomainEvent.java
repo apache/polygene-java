@@ -26,11 +26,12 @@ import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.concern.GenericConcern;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCallback;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.rest.server.api.ObjectSelection;
 import org.restlet.Request;
@@ -46,7 +47,10 @@ public @interface DomainEvent
         extends GenericConcern
     {
         @Structure
-        Module module;
+        ValueBuilderFactory vbf;
+
+        @Structure
+        UnitOfWorkFactory uowf;
 
         @Structure
         Application application;
@@ -57,9 +61,9 @@ public @interface DomainEvent
         {
             Object result = next.invoke( proxy, method, args );
 
-            UnitOfWork unitOfWork = module.currentUnitOfWork();
+            UnitOfWork unitOfWork = uowf.currentUnitOfWork();
 
-            ValueBuilder<DomainEventValue> builder = module.newValueBuilder( DomainEventValue.class );
+            ValueBuilder<DomainEventValue> builder = vbf.newValueBuilder( DomainEventValue.class );
             DomainEventValue prototype = builder.prototype();
             prototype.version().set( application.version() );
             prototype.timestamp().set( unitOfWork.currentTime() );
@@ -71,7 +75,7 @@ public @interface DomainEvent
             {
                 idx++;
                 String name = "param" + idx;
-                ValueBuilder<ParameterValue> parameterBuilder = module.newValueBuilder( ParameterValue.class );
+                ValueBuilder<ParameterValue> parameterBuilder = vbf.newValueBuilder( ParameterValue.class );
                 parameterBuilder.prototype().name().set( name );
                 parameterBuilder.prototype().value().set( arg );
                 prototype.parameters().get().add( parameterBuilder.newInstance() );

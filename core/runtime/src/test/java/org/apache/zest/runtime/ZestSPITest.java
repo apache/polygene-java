@@ -53,7 +53,7 @@ public class ZestSPITest
     public void givenEntityWhenGettingStateThenGetCorrectState()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         TestEntity testEntity;
         try
         {
@@ -72,7 +72,7 @@ public class ZestSPITest
             unitOfWork.discard();
         }
 
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             testEntity = uow.get( testEntity );

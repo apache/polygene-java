@@ -143,7 +143,7 @@ public class ContainsTest extends AbstractZestTest
             string
             )
       );
-      return this.module.currentUnitOfWork().newQuery( builder ).find();
+      return this.uowf.currentUnitOfWork().newQuery( builder ).find();
 
    }
 
@@ -167,17 +167,17 @@ public class ContainsTest extends AbstractZestTest
             )
          );
 
-      return this.module.currentUnitOfWork().newQuery( builder);
+      return this.uowf.currentUnitOfWork().newQuery( builder);
    }
 
    private ExampleEntity performContainsStringTest(Set<String> entityStrings, String queryableString) throws Exception
    {
-      UnitOfWork creatingUOW = this.module.newUnitOfWork();
+      UnitOfWork creatingUOW = this.uowf.newUnitOfWork();
       String[] entityStringsArray = new String[entityStrings.size()];
       ContainsAllTest.createEntityWithStrings(creatingUOW, this.module, entityStrings.toArray(entityStringsArray));
       creatingUOW.complete();
 
-      UnitOfWork queryingUOW = this.module.newUnitOfWork();
+      UnitOfWork queryingUOW = this.uowf.newUnitOfWork();
       try
       {
          ExampleEntity entity = this.findEntity(queryableString);
@@ -191,12 +191,12 @@ public class ContainsTest extends AbstractZestTest
 
    private ExampleEntity performContainsStringValueTest(Set<String> entityStrings, String queryableString) throws Exception
    {
-      UnitOfWork creatingUOW = this.module.newUnitOfWork();
+      UnitOfWork creatingUOW = this.uowf.newUnitOfWork();
       String[] entityStringsArray = new String[entityStrings.size()];
       ContainsAllTest.createEntityWithComplexValues(creatingUOW, this.module, entityStrings.toArray(entityStringsArray));
       creatingUOW.complete();
 
-      UnitOfWork queryingUOW = this.module.newUnitOfWork();
+      UnitOfWork queryingUOW = this.uowf.newUnitOfWork();
       try
       {
          ExampleEntity entity = this.findEntityBasedOnValueString(queryableString);

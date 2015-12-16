@@ -25,11 +25,12 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCallback;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.library.rest.server.api.ObjectSelection;
 import org.apache.zest.sample.forum.domainevent.DomainEventValue;
@@ -47,7 +48,11 @@ public interface EventsService
         implements InvocationHandler
     {
         @Structure
-        Module module;
+        UnitOfWorkFactory uowf;
+
+        @Structure
+        ValueBuilderFactory vbf;
+
         @Structure
         Application application;
 
@@ -55,9 +60,9 @@ public interface EventsService
         public Object invoke( Object proxy, Method method, Object[] args )
             throws Throwable
         {
-            UnitOfWork unitOfWork = module.currentUnitOfWork();
+            UnitOfWork unitOfWork = uowf.currentUnitOfWork();
 
-            ValueBuilder<DomainEventValue> builder = module.newValueBuilder( DomainEventValue.class );
+            ValueBuilder<DomainEventValue> builder = vbf.newValueBuilder( DomainEventValue.class );
             DomainEventValue prototype = builder.prototype();
             prototype.version().set( application.version() );
             prototype.timestamp().set( unitOfWork.currentTime() );
@@ -69,7 +74,7 @@ public interface EventsService
             {
                 idx++;
                 String name = "param" + idx;
-                ValueBuilder<ParameterValue> parameterBuilder = module.newValueBuilder( ParameterValue.class );
+                ValueBuilder<ParameterValue> parameterBuilder = vbf.newValueBuilder( ParameterValue.class );
                 parameterBuilder.prototype().name().set( name );
                 parameterBuilder.prototype().value().set( arg );
                 prototype.parameters().get().add( parameterBuilder.newInstance() );

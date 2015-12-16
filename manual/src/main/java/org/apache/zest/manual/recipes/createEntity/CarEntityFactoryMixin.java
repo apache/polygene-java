@@ -20,29 +20,30 @@ package org.apache.zest.manual.recipes.createEntity;
 
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 
 // START SNIPPET: carFactoryMixin2
 // START SNIPPET: carFactoryMixin1
 public class CarEntityFactoryMixin
-        implements CarEntityFactory
+    implements CarEntityFactory
 {
 
-// END SNIPPET: carFactoryMixin1
+    // END SNIPPET: carFactoryMixin1
     @Structure
-    Module module;
-// END SNIPPET: carFactoryMixin2
+    UnitOfWorkFactory unitOfWorkFactory;
+
+    // END SNIPPET: carFactoryMixin2
 // START SNIPPET: carFactoryMixin3
-    public CarEntityFactoryMixin( @Structure Module module )
+    public CarEntityFactoryMixin( @Structure UnitOfWorkFactory unitOfWorkFactory )
     {
     }
 
-// END SNIPPET: carFactoryMixin3
+    // END SNIPPET: carFactoryMixin3
 // START SNIPPET: createCar
-    public Car create(Manufacturer manufacturer, String model)
+    public Car create( Manufacturer manufacturer, String model )
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
 
         Car prototype = builder.instance();

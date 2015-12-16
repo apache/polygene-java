@@ -67,16 +67,16 @@ public class AlarmServiceTest
         throws Exception
     {
         super.setUp();
-        module.newUnitOfWork();
+        uowf.newUnitOfWork();
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        if (module.isUnitOfWorkActive())
+        if (uowf.isUnitOfWorkActive())
         {
-            UnitOfWork uow = module.currentUnitOfWork();
+            UnitOfWork uow = uowf.currentUnitOfWork();
             uow.discard();
         }
         super.tearDown();

@@ -77,7 +77,7 @@ public class DomainEventSourceResourceSample
         component.getDefaultHost().attach( "/ping", assembler.module().newObject( PingResource.class ) );
         component.start();
 
-        generateTestData(assembler.module());
+        generateTestData(assembler.module().unitOfWorkFactory());
     }
 
     private static void generateTestData(UnitOfWorkFactory unitOfWorkFactory) throws UnitOfWorkCompletionException

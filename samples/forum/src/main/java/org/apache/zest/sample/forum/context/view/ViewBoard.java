@@ -20,14 +20,14 @@ package org.apache.zest.sample.forum.context.view;
 
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.library.rest.server.api.ResourceIndex;
 import org.apache.zest.library.rest.server.api.dci.Role;
 import org.apache.zest.sample.forum.data.Moderators;
 import org.apache.zest.sample.forum.data.entity.Board;
-import org.apache.zest.sample.forum.data.entity.Topic;
 import org.apache.zest.sample.forum.data.entity.Forum;
 import org.apache.zest.sample.forum.data.entity.Post;
+import org.apache.zest.sample.forum.data.entity.Topic;
 import org.apache.zest.sample.forum.data.entity.User;
 
 import static org.apache.zest.api.property.Numbers.add;
@@ -94,15 +94,15 @@ public class ViewBoard
         extends Role<Board>
     {
         @Structure
-        Module module;
+        UnitOfWorkFactory uowf;
 
         Topic createTopic( String subject, String message, BoardViewer poster )
         {
-            Topic topic = module.currentUnitOfWork().newEntity( Topic.class );
+            Topic topic = uowf.currentUnitOfWork().newEntity( Topic.class );
 
             topic.subject().set( subject );
 
-            Post post = module.currentUnitOfWork().newEntity( Post.class );
+            Post post = uowf.currentUnitOfWork().newEntity( Post.class );
             post.message().set( message );
 
             // Moderation checks

@@ -18,6 +18,7 @@
  */
 package org.apache.zest.bootstrap;
 
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
@@ -48,6 +49,7 @@ public class ClassScannerTest
                 for( Class aClass : filter( matches( ".*Value" ), findClasses( TestValue.class ) ) )
                 {
                     module.values( aClass );
+                    new DefaultUnitOfWorkAssembler().assemble( module );
                 }
             }
         };

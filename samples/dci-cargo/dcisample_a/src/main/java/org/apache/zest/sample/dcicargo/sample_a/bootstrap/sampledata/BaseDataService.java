@@ -79,7 +79,7 @@ public interface BaseDataService
         	throws Exception
         {
             logger.debug( "CREATING BASIC DATA..." );
-            UnitOfWork uow = module.newUnitOfWork( newUsecase( "Open uow for " ) );
+            UnitOfWork uow = module.unitOfWorkFactory().newUnitOfWork( newUsecase( "Open uow for " ) );
             try
             {
 	            // UnLocode value objects
@@ -154,7 +154,7 @@ public interface BaseDataService
 
         private Location location( UnLocode unlocode, String locationStr )
         {
-            UnitOfWork uow = module.currentUnitOfWork();
+            UnitOfWork uow = module.unitOfWorkFactory().currentUnitOfWork();
             EntityBuilder<Location> location = uow.newEntityBuilder( Location.class, unlocode.code().get() );
             location.instance().unLocode().set( unlocode );
             location.instance().name().set( locationStr );
@@ -163,7 +163,7 @@ public interface BaseDataService
 
         private Voyage voyage( String voyageNumberStr, Schedule schedule )
         {
-            UnitOfWork uow = module.currentUnitOfWork();
+            UnitOfWork uow = module.unitOfWorkFactory().currentUnitOfWork();
             EntityBuilder<Voyage> voyage = uow.newEntityBuilder( Voyage.class, voyageNumberStr );
 
             // VoyageNumber

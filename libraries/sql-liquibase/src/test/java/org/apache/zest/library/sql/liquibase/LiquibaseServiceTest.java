@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import javax.sql.DataSource;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationEvent;
 import org.apache.zest.api.activation.ActivationEventListener;
@@ -86,6 +87,8 @@ public class LiquibaseServiceTest
                 // END SNIPPET: assembly
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().enabled().set( true );
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().changeLog().set( "changelog.xml" );
+
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
             @Override

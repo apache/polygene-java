@@ -1,12 +1,11 @@
 /**
- *
  * Copyright 2009-2011 Rickard Öberg AB
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,10 +36,10 @@ import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
-import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
@@ -82,6 +81,9 @@ public class ContextResource
     public static final String RESOURCE_VALIDITY = "validity";
 
     // API fields
+    @Structure
+    private UnitOfWorkFactory uowf;
+
     @Structure
     protected Module module;
 
@@ -203,7 +205,7 @@ public class ContextResource
     {
         try
         {
-            T composite = module.currentUnitOfWork().get( entityClass, id );
+            T composite = uowf.currentUnitOfWork().get( entityClass, id );
             current().select( composite );
             return composite;
         }
@@ -216,7 +218,7 @@ public class ContextResource
     protected <T> T selectFromManyAssociation( ManyAssociation<T> manyAssociation, String id )
         throws ResourceException
     {
-        T entity = (T) module.currentUnitOfWork().get( Object.class, id );
+        T entity = (T) uowf.currentUnitOfWork().get( Object.class, id );
         if( !manyAssociation.contains( entity ) )
         {
             throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
@@ -225,13 +227,13 @@ public class ContextResource
         current().select( entity );
         return entity;
     }
-    
+
     protected <T> T selectFromNamedAssociation( NamedAssociation<T> namedAssociation, String id )
         throws ResourceException
     {
-        T entity = (T) module.currentUnitOfWork().get( Object.class, id );
+        T entity = (T) uowf.currentUnitOfWork().get( Object.class, id );
         String name = namedAssociation.nameOf( entity );
-        if(name == null)
+        if( name == null )
         {
             throw new ResourceException( Status.CLIENT_ERROR_NOT_FOUND );
         }
@@ -677,7 +679,7 @@ public class ContextResource
                                                                                    .isAvailable() || request
                                                                                                          .getResourceRef()
                                                                                                          .getQuery() != null || queryMethod
-                .getParameterTypes()[ 0 ].equals( Response.class ) ) ) )
+                                                                                   .getParameterTypes()[ 0 ].equals( Response.class ) ) ) )
         {
             // Show form
             try
@@ -871,7 +873,7 @@ public class ContextResource
         {
             ValueDescriptor valueDescriptor = module.valueDescriptor( valueType.getName() );
 
-            valueDescriptor.state().properties().forEach(propertyDescriptor -> {
+            valueDescriptor.state().properties().forEach( propertyDescriptor -> {
                 String value = getValue( propertyDescriptor.qualifiedName().name(), queryAsForm, entityAsForm );
                 if( value == null )
                 {
@@ -882,7 +884,7 @@ public class ContextResource
                     }
                 }
                 form.add( propertyDescriptor.qualifiedName().name(), value );
-            });
+            } );
         }
         else if( valueType.isInterface() && interactionMethod.getParameterTypes().length == 1 )
         {

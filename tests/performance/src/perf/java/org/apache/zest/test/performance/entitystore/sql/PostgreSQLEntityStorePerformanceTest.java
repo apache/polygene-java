@@ -115,7 +115,7 @@ public class PostgreSQLEntityStorePerformanceTest
             application.activate();
 
             Module moduleInstance = application.findModule( "Layer 1", "config" );
-            UnitOfWorkFactory uowf = moduleInstance;
+            UnitOfWorkFactory uowf = moduleInstance.unitOfWorkFactory();
             UnitOfWork uow = uowf.newUnitOfWork();
             try
             {

@@ -117,18 +117,18 @@ public class ImmenseTermTest
     {
         long count = 10_000L;
         TestEntity testEntity;
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             testEntity = uow.newEntity( TestEntity.class );
             for( long i = 0; i < count; i++ )
             {
-                TestEntity2 testEntity2 = module.currentUnitOfWork().newEntity( TestEntity2.class );
+                TestEntity2 testEntity2 = uowf.currentUnitOfWork().newEntity( TestEntity2.class );
                 testEntity2.property().set( "test" );
                 testEntity.manyAssociation().add( testEntity2 );
             }
             uow.complete();
         }
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             testEntity = uow.get( testEntity );
             Query<TestEntity2> query = uow.newQuery(

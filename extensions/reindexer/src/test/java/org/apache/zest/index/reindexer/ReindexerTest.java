@@ -93,7 +93,7 @@ public class ReindexerTest
 
         // ----> Create data and wipe index
 
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
 
         EntityBuilder<MyEntity> eBuilder = uow.newEntityBuilder( MyEntity.class );
         MyEntity e = eBuilder.instance();
@@ -110,7 +110,7 @@ public class ReindexerTest
 
         module.<ReindexerService>findService( ReindexerService.class ).get().reindex(); // Reindex
 
-        uow = module.newUnitOfWork();
+        uow = uowf.newUnitOfWork();
 
         QueryBuilder<MyEntity> qBuilder = module.newQueryBuilder( MyEntity.class );
         qBuilder = qBuilder.where( eq( templateFor( MyEntity.class ).name(), TEST_NAME ) );

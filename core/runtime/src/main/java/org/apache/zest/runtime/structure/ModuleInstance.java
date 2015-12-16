@@ -23,9 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -42,7 +40,6 @@ import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.NoSuchTransientException;
 import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.api.composite.TransientDescriptor;
-import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.IdentityGenerator;
@@ -58,10 +55,8 @@ import org.apache.zest.api.service.NoSuchServiceException;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.api.value.NoSuchValueException;
 import org.apache.zest.api.value.ValueBuilder;
@@ -73,13 +68,10 @@ import org.apache.zest.runtime.activation.ActivationDelegate;
 import org.apache.zest.runtime.composite.FunctionStateResolver;
 import org.apache.zest.runtime.composite.StateResolver;
 import org.apache.zest.runtime.composite.TransientBuilderInstance;
-import org.apache.zest.runtime.composite.TransientModel;
 import org.apache.zest.runtime.composite.TransientStateInstance;
 import org.apache.zest.runtime.composite.TransientsModel;
 import org.apache.zest.runtime.composite.UsesInstance;
 import org.apache.zest.runtime.entity.EntitiesModel;
-import org.apache.zest.runtime.entity.EntityInstance;
-import org.apache.zest.runtime.entity.EntityModel;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.object.ObjectModel;
 import org.apache.zest.runtime.object.ObjectsModel;
@@ -90,21 +82,18 @@ import org.apache.zest.runtime.service.ImportedServicesInstance;
 import org.apache.zest.runtime.service.ImportedServicesModel;
 import org.apache.zest.runtime.service.ServicesInstance;
 import org.apache.zest.runtime.service.ServicesModel;
-import org.apache.zest.runtime.unitofwork.UnitOfWorkInstance;
 import org.apache.zest.runtime.value.ValueBuilderInstance;
 import org.apache.zest.runtime.value.ValueBuilderWithPrototype;
 import org.apache.zest.runtime.value.ValueBuilderWithState;
 import org.apache.zest.runtime.value.ValueInstance;
-import org.apache.zest.runtime.value.ValueModel;
 import org.apache.zest.runtime.value.ValuesModel;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.metrics.MetricsProviderAdapter;
-import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
+import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerialization;
 
 import static java.util.stream.Stream.concat;
-import static org.apache.zest.api.util.Classes.RAW_CLASS;
 import static org.apache.zest.api.util.Classes.modelTypeSpecification;
 import static org.apache.zest.functional.Iterables.iterable;
 import static org.apache.zest.runtime.legacy.Specifications.translate;
@@ -126,15 +115,15 @@ public class ModuleInstance
     private final ImportedServicesInstance importedServices;
     // Eager instance objects
     private final ActivationDelegate activation;
-    private final TypeLookup typeLookup;
+    private final TypeLookupImpl typeLookup;
     private final QueryBuilderFactory queryBuilderFactory;
     private final ClassLoader classLoader;
-    private final EntityFunction entityFunction;
     // Lazy assigned on accessors
     private EntityStore store;
     private IdentityGenerator generator;
     private ValueSerialization valueSerialization;
     private MetricsProvider metrics;
+    private UnitOfWorkFactory uowf;
 
     @SuppressWarnings( "LeakingThisInConstructor" )
     public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, TransientsModel transientsModel,
@@ -147,17 +136,16 @@ public class ModuleInstance
         layer = layerInstance;
         transients = transientsModel;
         values = valuesModel;
-        objects = objectsModel;
         entities = entitiesModel;
         services = servicesModel.newInstance( this );
+        objects = objectsModel;
         importedServices = importedServicesModel.newInstance( this );
 
         // Eager instance objects
         activation = new ActivationDelegate( this );
-        typeLookup = new TypeLookup( this );
+        typeLookup = new TypeLookupImpl( this );
         queryBuilderFactory = new QueryBuilderFactoryImpl( this );
         classLoader = new ModuleClassLoader( this, Thread.currentThread().getContextClassLoader() );
-        entityFunction = new EntityFunction( this );
 
         // Activation
         services.registerActivationEventListener( activation );
@@ -316,7 +304,7 @@ public class ModuleInstance
         }
 
         InjectionContext injectionContext = new InjectionContext( modelModule.module(), UsesInstance.EMPTY_USES.use( uses ) );
-        return mixinType.cast( ((ObjectModel) modelModule.model()).newInstance( injectionContext ) );
+        return mixinType.cast( ( (ObjectModel) modelModule.model() ).newInstance( injectionContext ) );
     }
 
     @Override
@@ -332,7 +320,7 @@ public class ModuleInstance
         }
 
         InjectionContext injectionContext = new InjectionContext( modelModule.module(), UsesInstance.EMPTY_USES.use( uses ) );
-        ((ObjectModel) modelModule.model()).inject( injectionContext, instance );
+        ( (ObjectModel) modelModule.model() ).inject( injectionContext, instance );
     }
 
     // Implementation of TransientBuilderFactory
@@ -352,7 +340,7 @@ public class ModuleInstance
         modelModule.model().state().properties().forEach(
             propertyModel ->
             {
-                Property<?> property = new PropertyInstance<>( ((PropertyModel) propertyModel).getBuilderInfo(),
+                Property<?> property = new PropertyInstance<>( ( (PropertyModel) propertyModel ).getBuilderInfo(),
                                                                propertyModel.initialValue( modelModule.module() ) );
                 properties.put( propertyModel.accessor(), property );
             } );
@@ -495,57 +483,6 @@ public class ModuleInstance
         }
     }
 
-    // Implementation of UnitOfWorkFactory
-    @Override
-    public UnitOfWork newUnitOfWork()
-    {
-        return newUnitOfWork( Usecase.DEFAULT );
-    }
-
-    @Override
-    public UnitOfWork newUnitOfWork( long currentTime )
-    {
-        return newUnitOfWork( Usecase.DEFAULT, currentTime );
-    }
-
-    @Override
-    public UnitOfWork newUnitOfWork( Usecase usecase )
-    {
-        return newUnitOfWork( usecase == null ? Usecase.DEFAULT : usecase, System.currentTimeMillis() );
-    }
-
-    @Override
-    public UnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
-    {
-        UnitOfWorkInstance unitOfWorkInstance = new UnitOfWorkInstance( usecase, currentTime, metricsProvider() );
-        return new ModuleUnitOfWork( ModuleInstance.this, unitOfWorkInstance );
-    }
-
-    @Override
-    public boolean isUnitOfWorkActive()
-    {
-        Stack<UnitOfWorkInstance> stack = UnitOfWorkInstance.getCurrent();
-        return !stack.isEmpty();
-    }
-
-    @Override
-    public UnitOfWork currentUnitOfWork()
-    {
-        Stack<UnitOfWorkInstance> stack = UnitOfWorkInstance.getCurrent();
-        if( stack.size() == 0 )
-        {
-            throw new IllegalStateException( "No current UnitOfWork active" );
-        }
-        return new ModuleUnitOfWork( ModuleInstance.this, stack.peek() );
-    }
-
-    @Override
-    public UnitOfWork getUnitOfWork( EntityComposite entity )
-    {
-        EntityInstance instance = EntityInstance.entityInstanceOf( entity );
-        return instance.unitOfWork();
-    }
-
     // Implementation of QueryBuilderFactory
     @Override
     public <T> QueryBuilder<T> newQueryBuilder( final Class<T> resultType )
@@ -617,32 +554,10 @@ public class ModuleInstance
         return layer;
     }
 
-    public TypeLookup typeLookup()
+    @Override
+    public TypeLookupImpl typeLookup()
     {
         return typeLookup;
-    }
-
-    public BiFunction<EntityReference, Type, Object> getEntityFunction()
-    {
-        return entityFunction;
-    }
-
-    private static class EntityFunction
-        implements BiFunction<EntityReference, Type, Object>
-    {
-
-        private final UnitOfWorkFactory uowf;
-
-        private EntityFunction( UnitOfWorkFactory uowf )
-        {
-            this.uowf = uowf;
-        }
-
-        @Override
-        public Object apply( EntityReference entityReference, Type type )
-        {
-            return uowf.currentUnitOfWork().get( RAW_CLASS.apply( type ), entityReference.identity() );
-        }
     }
 
     public EntityStore entityStore()
@@ -651,8 +566,12 @@ public class ModuleInstance
         {
             if( store == null )
             {
-                ServiceReference<EntityStore> service = findService( EntityStore.class );
-                if( service == null )
+                ServiceReference<EntityStore> service = null;
+                try
+                {
+                    service = findService( EntityStore.class );
+                }
+                catch( NoSuchServiceException e )
                 {
                     throw new UnitOfWorkException( "No EntityStore service available in module " + name() );
                 }
@@ -660,6 +579,27 @@ public class ModuleInstance
             }
         }
         return store;
+    }
+
+    public UnitOfWorkFactory unitOfWorkFactory()
+    {
+        synchronized( this )
+        {
+            if( uowf == null )
+            {
+                ServiceReference<UnitOfWorkFactory> service = null;
+                try
+                {
+                    service = findService( UnitOfWorkFactory.class );
+                }
+                catch( NoSuchServiceException e )
+                {
+                    throw new UnitOfWorkException( "No UnitOfWorkFactory service available in module " + name() );
+                }
+                uowf = service.get();
+            }
+        }
+        return uowf;
     }
 
     public IdentityGenerator identityGenerator()
@@ -695,7 +635,7 @@ public class ModuleInstance
         return valueSerialization;
     }
 
-    /* package */ MetricsProvider metricsProvider()
+    public MetricsProvider metricsProvider()
     {
         synchronized( this )
         {

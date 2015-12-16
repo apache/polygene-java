@@ -52,7 +52,7 @@ public class NestedValuesConversionTest
     public void testNestedValuesConversion()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             FooEntity fooEntity = createFooEntity( uow, "Test nested values conversion" );

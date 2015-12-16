@@ -18,6 +18,7 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.zest.spi.query.IndexExporter;
 import org.apache.zest.test.EntityTestAssembler;
@@ -84,11 +85,12 @@ public class HelloWorldCompositeTest
 
                 new EntityTestAssembler().assemble( module );
                 new RdfMemoryStoreAssembler().assemble( module );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 
         // Create and update Entity
-        UnitOfWork uow = assembler.module().newUnitOfWork();
+        UnitOfWork uow = assembler.module().unitOfWorkFactory().newUnitOfWork();
         try
         {
             Commands entity = uow.newEntity( Commands.class );
@@ -106,7 +108,7 @@ public class HelloWorldCompositeTest
         assembler.module().findService( IndexExporter.class ).get().exportReadableToStream( System.out );
 
         // Find it
-        uow = assembler.module().newUnitOfWork();
+        uow = assembler.module().unitOfWorkFactory().newUnitOfWork();
         try
         {
             Data data = uow.newQuery( assembler.module()

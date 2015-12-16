@@ -1,20 +1,23 @@
 /*
- * Copyright (c) 2007-2013, Niclas Hedhman. All Rights Reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied.
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
+
 package org.apache.zest.runtime.unitofwork;
 
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
+import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCallback;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.unitofwork.UnitOfWorkException;
@@ -44,7 +48,6 @@ import org.apache.zest.api.unitofwork.UnitOfWorkOptions;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.runtime.entity.EntityInstance;
 import org.apache.zest.runtime.entity.EntityModel;
-import org.apache.zest.runtime.structure.ModuleUnitOfWork;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entitystore.ConcurrentEntityStateModificationException;
@@ -53,8 +56,8 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
 import org.apache.zest.spi.metrics.DefaultMetric;
-import org.apache.zest.spi.module.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
+import org.apache.zest.spi.structure.ModelModule;
 
 import static org.apache.zest.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.apache.zest.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
@@ -123,7 +126,7 @@ public final class UnitOfWorkInstance
     }
 
     public <T> T get( EntityReference identity,
-                      ModuleUnitOfWork uow,
+                      UnitOfWork uow,
                       Iterable<ModelModule<EntityDescriptor>> potentialModels,
                       Class<T> mixinType
     )
@@ -175,10 +178,8 @@ public final class UnitOfWorkInstance
                     );
                 }
             }
-
             // Create instance
             entityInstance = new EntityInstance( uow, module, model, entityState );
-
             instanceCache.put( identity, entityInstance );
         }
         else
@@ -390,10 +391,7 @@ public final class UnitOfWorkInstance
         // Notify explicitly registered callbacks
         if( callbacks != null )
         {
-            for( UnitOfWorkCallback callback : callbacks )
-            {
-                callback.beforeCompletion();
-            }
+            callbacks.forEach( UnitOfWorkCallback::beforeCompletion );
         }
 
         // Notify entities

@@ -14,6 +14,8 @@
 
 package org.apache.zest.dci.moneytransfer.test;
 
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -44,6 +46,7 @@ public class TransferMoneyTest2
     public static final String CHECKING_ACCOUNT_ID = "CheckingAccountId";
     public static final String CREDITOR_ID1 = "BakerAccount";
     public static final String CREDITOR_ID2 = "ButcherAccount";
+    private static UnitOfWorkFactory uowf;
 
     @BeforeClass
     public static void setup()
@@ -54,6 +57,7 @@ public class TransferMoneyTest2
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
+                module.withDefaultUnitOfWorkFactory();
                 module.entities(
                     CheckingAccountEntity.class,
                     SavingsAccountEntity.class,
@@ -67,7 +71,7 @@ public class TransferMoneyTest2
         };
 
         module = assembler.module();
-
+        uowf = module.unitOfWorkFactory();
         bootstrapData();
     }
 
@@ -89,7 +93,7 @@ public class TransferMoneyTest2
 
     private void printBalances()
     {
-        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Print balances" ) );
+        UnitOfWork uow = module.unitOfWorkFactory().newUnitOfWork( UsecaseBuilder.newUsecase( "Print balances" ) );
 
         try
         {
@@ -109,7 +113,7 @@ public class TransferMoneyTest2
     private static void bootstrapData()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork( newUsecase( "Bootstrap data" ) );
+        UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "Bootstrap data" ) );
         try
         {
             SavingsAccountEntity account = uow.newEntity( SavingsAccountEntity.class, SAVINGS_ACCOUNT_ID );
@@ -138,7 +142,7 @@ public class TransferMoneyTest2
     public void transferHalfOfMoneyFromSavingsToChecking()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
+        UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
 
         try
         {
@@ -166,7 +170,7 @@ public class TransferMoneyTest2
     public void transferTwiceOfMoneyFromSavingsToChecking()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
+        UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Transfer from savings to checking" ) );
 
         try
         {
@@ -194,7 +198,7 @@ public class TransferMoneyTest2
     public void payAllBills()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork( newUsecase( "Pay all bills from checking to creditors" ) );
+        UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "Pay all bills from checking to creditors" ) );
         try
         {
             BalanceData source = uow.get( BalanceData.class, CHECKING_ACCOUNT_ID );

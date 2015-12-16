@@ -75,7 +75,7 @@ public class EnvisageSample
 
     public void createTestData()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             createCar( "Volvo", "S80", 2007 );
@@ -101,7 +101,7 @@ public class EnvisageSample
 
     private String createCar( String manufacturer, String model, int year )
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
         Car prototype = builder.instanceFor( CarEntity.class );
         prototype.manufacturer().set( manufacturer );
@@ -113,7 +113,7 @@ public class EnvisageSample
 
     private String createAnimal( String name, String sound )
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         EntityBuilder<Animal> builder = uow.newEntityBuilder( Animal.class );
         Animal prototype = builder.instanceFor( AnimalEntity.class );
         prototype.name().set( name );

@@ -87,17 +87,17 @@ public class DerbySQLEntityStorePerformanceTest
     protected void cleanUp()
         throws Exception
     {
-        if( module == null )
+        if( uowf == null )
         {
             return;
         }
-        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase(
+        UnitOfWork uow = this.uowf.newUnitOfWork( UsecaseBuilder.newUsecase(
             "Delete " + getClass().getSimpleName() + " test data" ) );
         try
         {
             SQLConfiguration config = uow.get( SQLConfiguration.class,
                                                DerbySQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
-            Connection connection = module.findService( DataSource.class ).get().getConnection();
+            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
             String schemaName = config.schemaName().get();
             if( schemaName == null )
             {

@@ -59,7 +59,7 @@ public class NoMetricsInstalledTest extends AbstractZestTest
 
     private void readEntity( int id )
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             Person p = uow.get( Person.class, "" + id );
@@ -74,7 +74,7 @@ public class NoMetricsInstalledTest extends AbstractZestTest
     private void createEntity( int id )
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             uow.newEntity( Person.class, "" + id );

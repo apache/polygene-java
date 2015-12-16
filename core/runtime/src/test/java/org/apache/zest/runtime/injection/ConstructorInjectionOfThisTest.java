@@ -15,6 +15,7 @@
  */
 package org.apache.zest.runtime.injection;
 
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.UseDefaults;
@@ -49,6 +50,7 @@ public class ConstructorInjectionOfThisTest
                 throws AssemblyException
             {
                 module.values( Does.class ).withMixins( DoesMixin.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
         Module module = singletonAssembler.application().findModule( "Layer 1", "Module 1" );

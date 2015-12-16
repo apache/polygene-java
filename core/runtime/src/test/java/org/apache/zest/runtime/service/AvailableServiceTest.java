@@ -14,6 +14,7 @@
 
 package org.apache.zest.runtime.service;
 
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.Optional;
@@ -50,6 +51,7 @@ public class AvailableServiceTest
                 throws AssemblyException
             {
                 module.services( TestServiceComposite1.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 
@@ -72,6 +74,7 @@ public class AvailableServiceTest
                 module.entities( TestServiceConfiguration.class );
 
                 new EntityTestAssembler().assemble( module );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 
@@ -100,6 +103,7 @@ public class AvailableServiceTest
                 module.entities( TestServiceConfiguration.class );
 
                 new EntityTestAssembler().assemble( module );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 

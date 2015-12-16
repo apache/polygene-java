@@ -54,7 +54,7 @@ public class AutoCloseableUoWTest
     public void givenGoodAutoCloseableUoWWhenTryWithResourceExpectSuccess()
         throws UnitOfWorkCompletionException
     {
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class );
             builder.instance().mandatory().set( "Mandatory property" );
@@ -67,7 +67,7 @@ public class AutoCloseableUoWTest
     public void givenWrongAutoCloseableUoWWhenTryWithResourceExpectSuccess()
         throws UnitOfWorkCompletionException
     {
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             uow.newEntity( TestEntity.class );
             uow.complete();
@@ -77,7 +77,7 @@ public class AutoCloseableUoWTest
     @After
     public void afterEachTest()
     {
-        assertThat( module.isUnitOfWorkActive(), is( false ) );
+        assertThat( uowf.isUnitOfWorkActive(), is( false ) );
     }
 
 }

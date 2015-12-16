@@ -49,7 +49,7 @@ public class PropertyTypeTest
     public void givenEntityWithPropertyConstraintsWhenInstantiatedThenPropertiesWork()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );

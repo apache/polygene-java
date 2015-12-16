@@ -19,7 +19,10 @@ package org.apache.zest.sample.dcicargo.sample_b.infrastructure.model;
 
 import org.apache.wicket.model.IModel;
 import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.conversion.EntityToDTOService;
 
 /**
@@ -34,7 +37,9 @@ public abstract class ReadOnlyModel<T>
 
     static protected EntityToDTOService valueConverter;
     static protected ZestAPI api;
-    static protected Module module;
+    static protected ServiceFinder serviceFinder;
+    static protected UnitOfWorkFactory uowf;
+    static protected ValueBuilderFactory vbf;
 
     /**
      * This default implementation of setObject unconditionally throws an
@@ -64,7 +69,9 @@ public abstract class ReadOnlyModel<T>
                                               EntityToDTOService entityToDTO
     )
     {
-        module = m;
+        uowf = m.unitOfWorkFactory();
+        serviceFinder = m;
+        vbf = m;
         ReadOnlyModel.api = api;
         valueConverter = entityToDTO;
     }

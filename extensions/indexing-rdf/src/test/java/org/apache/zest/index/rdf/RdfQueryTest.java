@@ -22,6 +22,7 @@ import java.io.File;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.spi.query.EntityFinderException;
@@ -51,6 +52,7 @@ public class RdfQueryTest
         config.entities( NativeConfiguration.class ).visibleIn( Visibility.layer );
         config.forMixin( NativeConfiguration.class ).declareDefaults().dataDirectory().set( DATA_DIR.getAbsolutePath() );
         new EntityTestAssembler().assemble( config );
+        new DefaultUnitOfWorkAssembler().assemble( config );
     }
 
     @Test

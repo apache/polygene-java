@@ -21,7 +21,6 @@ import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
 import org.apache.zest.api.common.Visibility;
-import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.object.ObjectDescriptor;
@@ -30,7 +29,7 @@ import org.apache.zest.api.structure.Layer;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.runtime.activation.ActivationDelegate;
-import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.spi.structure.ModelModule;
 
 /**
  * Instance of a Zest application layer. Contains a list of modules which are managed by this layer.

@@ -183,7 +183,7 @@ public class ValueCompositeTest
         builder.prototype().number().set( 42L );
         SomeValue some = builder.newInstance();
 
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         EntityBuilder<SomeEntity> entityBuilder = unitOfWork.newEntityBuilder( SomeEntity.class );
         entityBuilder.instance().someValue().set( some );
         SomeEntity entity = entityBuilder.newInstance();

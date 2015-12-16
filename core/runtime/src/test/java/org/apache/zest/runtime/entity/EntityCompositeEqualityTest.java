@@ -49,7 +49,7 @@ public class EntityCompositeEqualityTest
         throws Exception
     {
         super.setUp();
-        unitOfWork = this.module.newUnitOfWork();
+        unitOfWork = this.uowf.newUnitOfWork();
         myCompositeBuilder = unitOfWork.newEntityBuilder( MyComposite.class );
     }
 

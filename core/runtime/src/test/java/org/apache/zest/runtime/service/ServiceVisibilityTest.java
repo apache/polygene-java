@@ -16,6 +16,8 @@
 
 package org.apache.zest.runtime.service;
 
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +44,7 @@ public class ServiceVisibilityTest
     private Energy4Java zest;
     private Module module;
     private Application app;
+    private UnitOfWorkFactory uowf;
 
     @Before
     public void setup()
@@ -75,6 +78,7 @@ public class ServiceVisibilityTest
         } );
         app.activate();
         module = app.findModule( "From Layer", "From" );
+        uowf = module.unitOfWorkFactory();
     }
 
     @After
@@ -171,7 +175,7 @@ public class ServiceVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -189,7 +193,7 @@ public class ServiceVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleLayerVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -207,7 +211,7 @@ public class ServiceVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleModuleVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -225,7 +229,7 @@ public class ServiceVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBesideApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -243,7 +247,7 @@ public class ServiceVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBesideLayerVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -261,7 +265,7 @@ public class ServiceVisibilityTest
     @Test( expected = NoSuchServiceException.class )
     public void givenFromEntityWhenAccessingBesideModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -279,7 +283,7 @@ public class ServiceVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBelowApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -297,7 +301,7 @@ public class ServiceVisibilityTest
     @Test( expected = NoSuchServiceException.class )
     public void givenFromEntityWhenAccessingBelowLayerVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -315,7 +319,7 @@ public class ServiceVisibilityTest
     @Test( expected = NoSuchServiceException.class )
     public void givenFromEntityWhenAccessingBelowModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -333,7 +337,7 @@ public class ServiceVisibilityTest
     @Test( expected = NoSuchServiceException.class )
     public void givenFromEntityWhenAccessingAboveApplicationVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -351,7 +355,7 @@ public class ServiceVisibilityTest
     @Test( expected = NoSuchServiceException.class )
     public void givenFromEntityWhenAccessingAboveLayerVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -369,7 +373,7 @@ public class ServiceVisibilityTest
     @Test( expected = NoSuchServiceException.class )
     public void givenFromEntityWhenAccessingAboveModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -654,6 +658,8 @@ public class ServiceVisibilityTest
             module.services( ModuleApplicationVisible.class ).visibleIn( Visibility.application );
             module.services( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
             module.services( ModuleModuleVisible.class ).visibleIn( Visibility.module );
+
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -671,6 +677,7 @@ public class ServiceVisibilityTest
             module.services( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             new EntityTestAssembler().visibleIn( Visibility.application ).assemble( module );
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -686,6 +693,7 @@ public class ServiceVisibilityTest
             module.services( AboveApplicationVisible.class ).visibleIn( Visibility.application );
             module.services( AboveLayerVisible.class ).visibleIn( Visibility.layer );
             module.services( AboveModuleVisible.class ).visibleIn( Visibility.module );
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -700,6 +708,7 @@ public class ServiceVisibilityTest
             module.services( BesideApplicationVisible.class ).visibleIn( Visibility.application );
             module.services( BesideLayerVisible.class ).visibleIn( Visibility.layer );
             module.services( BesideModuleVisible.class ).visibleIn( Visibility.module );
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 

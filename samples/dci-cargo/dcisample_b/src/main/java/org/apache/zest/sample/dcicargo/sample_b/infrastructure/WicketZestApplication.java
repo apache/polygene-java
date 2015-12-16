@@ -23,13 +23,17 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.query.QueryBuilderFactory;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.UsecaseBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.bootstrap.ApplicationAssembler;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.sample.dcicargo.sample_b.infrastructure.conversion.EntityToDTOService;
@@ -54,7 +58,16 @@ public class WicketZestApplication
     protected Module zestModule;
 
     @Structure
-    protected Module module;
+    protected UnitOfWorkFactory uowf;
+
+    @Structure
+    protected ValueBuilderFactory vbf;
+
+    @Structure
+    protected TransientBuilderFactory tbf;
+
+    @Structure
+    protected QueryBuilderFactory qbf;
 
     @Structure
     protected ZestAPI api;
@@ -118,10 +131,10 @@ public class WicketZestApplication
         startZest();
         handleUnitOfWork();
 
-        Context.prepareContextBaseClass( module );
-        BaseWebPage.prepareBaseWebPageClass( module );
+        Context.prepareContextBaseClass( uowf, vbf );
+        BaseWebPage.prepareBaseWebPageClass( tbf );
         ReadOnlyModel.prepareModelBaseClass( zestModule, api, valueConverter );
-        Queries.prepareQueriesBaseClass( module, module );
+        Queries.prepareQueriesBaseClass( uowf, qbf );
 
         wicketInit();
     }
@@ -163,14 +176,14 @@ public class WicketZestApplication
                 logger.debug( requestCycle.getRequest().toString() );
                 logger.debug( requestCycle.getRequest().getRequestParameters().toString() );
 
-                UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "REQUEST" ) );
+                UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "REQUEST" ) );
                 logger.debug( "  ### NEW " + uow + "   ### MODULE: " + zestModule );
             }
 
             @Override
             public void onEndRequest( final RequestCycle requestCycle )
             {
-                UnitOfWork uow = module.currentUnitOfWork();
+                UnitOfWork uow = uowf.currentUnitOfWork();
                 if( uow != null )
                 {
                     try

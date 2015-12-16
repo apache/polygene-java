@@ -312,7 +312,7 @@ public class ContainsAllTest
         builder = builder.where( QueryExpressions.containsAll(
                 QueryExpressions.templateFor( ExampleEntity.class ).strings(),
                 Iterables.iterable( strings ) ) );
-        return this.module.currentUnitOfWork().newQuery( builder ).find();
+        return this.uowf.currentUnitOfWork().newQuery( builder ).find();
     }
 
     private ExampleEntity findEntityBasedOnValueStrings( String... valueStrings )
@@ -340,18 +340,18 @@ public class ContainsAllTest
         )
         );
 
-        return this.module.currentUnitOfWork().newQuery( builder );
+        return this.uowf.currentUnitOfWork().newQuery( builder );
     }
 
     private ExampleEntity performContainsAllStringsTest( Set<String> entityStrings, Set<String> queryableStrings )
         throws Exception
     {
-        UnitOfWork creatingUOW = this.module.newUnitOfWork();
+        UnitOfWork creatingUOW = this.uowf.newUnitOfWork();
         String[] entityStringsArray = new String[entityStrings.size()];
         createEntityWithStrings( creatingUOW, this.module, entityStrings.toArray( entityStringsArray ) );
         creatingUOW.complete();
 
-        UnitOfWork queryingUOW = this.module.newUnitOfWork();
+        UnitOfWork queryingUOW = this.uowf.newUnitOfWork();
         try
         {
             String[] queryableStringsArray = new String[queryableStrings.size()];
@@ -367,12 +367,12 @@ public class ContainsAllTest
     private ExampleEntity performContainsAllStringValueTest( Set<String> entityStrings, Set<String> queryableStrings )
         throws Exception
     {
-        UnitOfWork creatingUOW = this.module.newUnitOfWork();
+        UnitOfWork creatingUOW = this.uowf.newUnitOfWork();
         String[] entityStringsArray = new String[entityStrings.size()];
         createEntityWithComplexValues( creatingUOW, this.module, entityStrings.toArray( entityStringsArray ) );
         creatingUOW.complete();
 
-        UnitOfWork queryingUOW = this.module.newUnitOfWork();
+        UnitOfWork queryingUOW = this.uowf.newUnitOfWork();
         try
         {
             String[] queryableStringsArray = new String[queryableStrings.size()];

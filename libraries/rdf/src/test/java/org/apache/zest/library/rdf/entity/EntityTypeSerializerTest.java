@@ -81,7 +81,7 @@ public class EntityTypeSerializerTest
 
     void createDummyData() throws UnitOfWorkCompletionException
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             ValueBuilder<Test2Value> vb2 = module.newValueBuilder( Test2Value.class );

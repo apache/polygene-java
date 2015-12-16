@@ -18,6 +18,7 @@
  */
 package org.apache.zest.library.rest.client;
 
+import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
@@ -372,7 +373,7 @@ public class ContinuousIntegrationTest
         @Override
         protected Uniform createRoot( Request request, Response response )
         {
-            return module.newObject( RootResource.class, this );
+            return objectFactory.newObject( RootResource.class, this );
         }
     }
 

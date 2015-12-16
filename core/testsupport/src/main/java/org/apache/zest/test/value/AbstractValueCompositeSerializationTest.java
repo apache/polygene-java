@@ -92,7 +92,7 @@ public abstract class AbstractValueCompositeSerializationTest
     public void givenValueCompositeWhenSerializingAndDeserializingExpectEquals()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             SomeValue some = buildSomeValue();
@@ -214,7 +214,7 @@ public abstract class AbstractValueCompositeSerializationTest
 
     private BarEntity buildBarEntity( String cathedral )
     {
-        EntityBuilder<BarEntity> barBuilder = module.currentUnitOfWork().newEntityBuilder( BarEntity.class );
+        EntityBuilder<BarEntity> barBuilder = uowf.currentUnitOfWork().newEntityBuilder( BarEntity.class );
         barBuilder.instance().cathedral().set( cathedral );
         return barBuilder.newInstance();
     }

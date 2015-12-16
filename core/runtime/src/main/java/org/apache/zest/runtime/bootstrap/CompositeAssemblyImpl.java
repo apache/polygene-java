@@ -18,9 +18,31 @@
  */
 package org.apache.zest.runtime.bootstrap;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
-import org.apache.zest.api.common.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Optional;
+import org.apache.zest.api.common.QualifiedName;
+import org.apache.zest.api.common.UseDefaults;
+import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.InvalidCompositeException;
 import org.apache.zest.api.concern.Concerns;
 import org.apache.zest.api.constraint.Constraint;
@@ -42,24 +64,40 @@ import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.util.Fields;
 import org.apache.zest.bootstrap.StateDeclarations;
 import org.apache.zest.functional.HierarchicalVisitorAdapter;
-import org.apache.zest.runtime.composite.*;
+import org.apache.zest.runtime.composite.AbstractConstraintModel;
+import org.apache.zest.runtime.composite.CompositeConstraintModel;
+import org.apache.zest.runtime.composite.CompositeMethodModel;
+import org.apache.zest.runtime.composite.CompositeMethodsModel;
+import org.apache.zest.runtime.composite.ConcernModel;
+import org.apache.zest.runtime.composite.ConcernsModel;
+import org.apache.zest.runtime.composite.ConstraintModel;
+import org.apache.zest.runtime.composite.ConstraintsModel;
+import org.apache.zest.runtime.composite.Genericpredicate;
+import org.apache.zest.runtime.composite.MixinModel;
+import org.apache.zest.runtime.composite.MixinsModel;
+import org.apache.zest.runtime.composite.SideEffectModel;
+import org.apache.zest.runtime.composite.SideEffectsModel;
+import org.apache.zest.runtime.composite.StateModel;
+import org.apache.zest.runtime.composite.ValueConstraintsInstance;
+import org.apache.zest.runtime.composite.ValueConstraintsModel;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.property.PropertiesModel;
 import org.apache.zest.runtime.property.PropertyModel;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static java.util.stream.Stream.concat;
-import static org.apache.zest.api.util.Annotations.*;
-import static org.apache.zest.api.util.Classes.*;
-import static org.apache.zest.functional.Iterables.*;
+import static org.apache.zest.api.util.Annotations.hasAnnotation;
+import static org.apache.zest.api.util.Annotations.isType;
+import static org.apache.zest.api.util.Annotations.type;
+import static org.apache.zest.api.util.Classes.classHierarchy;
+import static org.apache.zest.api.util.Classes.interfacesOf;
+import static org.apache.zest.api.util.Classes.isAssignableFrom;
+import static org.apache.zest.api.util.Classes.typeOf;
+import static org.apache.zest.api.util.Classes.typesOf;
+import static org.apache.zest.api.util.Classes.wrapperClass;
+import static org.apache.zest.functional.Iterables.filter;
+import static org.apache.zest.functional.Iterables.first;
+import static org.apache.zest.functional.Iterables.iterable;
 import static org.apache.zest.runtime.legacy.Specifications.translate;
 
 /**
@@ -211,15 +249,15 @@ public abstract class CompositeAssemblyImpl
 
                     interfacesOf( mixinModel.mixinClass() )
                         .map( Classes.RAW_CLASS )
-                        .filter( clazz -> Stream.of( Initializable.class, Lifecycle.class, InvocationHandler.class ).noneMatch( c -> c
-                            .equals( clazz ) ) )
+                        .filter( clazz -> Stream.of( Initializable.class, Lifecycle.class, InvocationHandler.class )
+                            .noneMatch( c -> c
+                                .equals( clazz ) ) )
                         .forEach( thisDependencies::add );
 
 //                    // Implement @This references
 //                    Iterable<Class<?>> map = map( new DependencyModel.InjectionTypeFunction(),
 //                                                  filter( new DependencyModel.ScopeSpecification( This.class ),
 //                                                          methodComposite.dependencies() ) );
-
 
 //                    Iterable<Class<?>> map1 = map( new DependencyModel.InjectionTypeFunction(),
 //                                                   filter( new DependencyModel.ScopeSpecification( This.class ),
@@ -257,10 +295,10 @@ public abstract class CompositeAssemblyImpl
                 mixinDeclarations( thisDependency ) );
             List<? extends Class<?>> singleton = Collections.singletonList( thisDependency );
             implementMixinType( singleton,
-                                toList(typeConstraintClasses),
-                                toList(typeConcernClasses),
-                                toList(typeSideEffectClasses),
-                                toList(typeMixinClasses)
+                                toList( typeConstraintClasses ),
+                                toList( typeConcernClasses ),
+                                toList( typeSideEffectClasses ),
+                                toList( typeMixinClasses )
             );
         } );
     }
@@ -393,15 +431,15 @@ public abstract class CompositeAssemblyImpl
                                               List<Class<?>> constraintClasses
     )
     {
-        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn(accessor);
-        boolean optional = annotations.stream().anyMatch(isType(Optional.class));
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
+        boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
         ValueConstraintsModel valueConstraintsModel = constraintsFor(
-                annotations.stream(),
-                GenericPropertyInfo.propertyTypeOf(accessor),
-                ((Member) accessor).getName(),
-                optional,
-                constraintClasses,
-                accessor);
+            annotations.stream(),
+            GenericPropertyInfo.propertyTypeOf( accessor ),
+            ( (Member) accessor ).getName(),
+            optional,
+            constraintClasses,
+            accessor );
         ValueConstraintsInstance valueConstraintsInstance = null;
         if( valueConstraintsModel.isConstrained() )
         {
@@ -552,7 +590,7 @@ public abstract class CompositeAssemblyImpl
         concernClasses.forEach( concern -> {
             if( helper.appliesTo( concern, method, types, mixinClass ) )
             {
-                concernsFor.add( helper.getConcernModel( concern ) );
+                addConcernIfNotExists( concernsFor, helper.getConcernModel( concern ) );
             }
             else
             {
@@ -564,7 +602,7 @@ public abstract class CompositeAssemblyImpl
                         Method mixinMethod = mixinClass.getMethod( method.getName(), method.getParameterTypes() );
                         if( helper.appliesTo( concern, mixinMethod, types, mixinClass ) )
                         {
-                            concernsFor.add( helper.getConcernModel( concern ) );
+                            addConcernIfNotExists( concernsFor, helper.getConcernModel( concern ) );
                         }
                     }
                     catch( NoSuchMethodException e )
@@ -586,7 +624,8 @@ public abstract class CompositeAssemblyImpl
                 {
                     if( helper.appliesTo( concern, method, types, mixinClass ) )
                     {
-                        concernsFor.add( helper.getConcernModel( concern ) );
+                        ConcernModel concernModel = helper.getConcernModel( concern );
+                        addConcernIfNotExists( concernsFor, concernModel );
                     }
                 }
             }
@@ -602,6 +641,14 @@ public abstract class CompositeAssemblyImpl
         }
     }
 
+    private void addConcernIfNotExists( List<ConcernModel> concernsFor, ConcernModel concernModel )
+    {
+        if( !concernsFor.contains( concernModel ) )
+        {
+            concernsFor.add( concernModel );
+        }
+    }
+
     private SideEffectsModel sideEffectsFor( Method method,
                                              Class<?> mixinClass,
                                              Stream<Class<?>> sideEffectClasses
@@ -609,9 +656,10 @@ public abstract class CompositeAssemblyImpl
     {
         List<SideEffectModel> sideEffectsFor = new ArrayList<>();
         sideEffectClasses.forEach( sideEffect -> {
+            SideEffectModel sideEffectModel = helper.getSideEffectModel( sideEffect );
             if( helper.appliesTo( sideEffect, method, types, mixinClass ) )
             {
-                sideEffectsFor.add( helper.getSideEffectModel( sideEffect ) );
+                addSideEffectIfNotExists( sideEffectsFor, sideEffectModel );
             }
             else
             {
@@ -623,7 +671,7 @@ public abstract class CompositeAssemblyImpl
                         Method mixinMethod = mixinClass.getMethod( method.getName(), method.getParameterTypes() );
                         if( helper.appliesTo( sideEffect, mixinMethod, types, mixinClass ) )
                         {
-                            sideEffectsFor.add( helper.getSideEffectModel( sideEffect ) );
+                            addSideEffectIfNotExists( sideEffectsFor, sideEffectModel );
                         }
                     }
                     catch( NoSuchMethodException e )
@@ -634,6 +682,25 @@ public abstract class CompositeAssemblyImpl
             }
         } );
 
+        // Check annotations on method that have @Concerns annotations themselves
+        for( Annotation annotation : method.getAnnotations() )
+        {
+            @SuppressWarnings( "raw" )
+            SideEffects sideEffects = annotation.annotationType().getAnnotation( SideEffects.class );
+            if( sideEffects != null )
+            {
+                for( Class<?> sideEffect : sideEffects.value() )
+                {
+                    if( helper.appliesTo( sideEffect, method, types, mixinClass ) )
+                    {
+                        SideEffectModel sideEffectModel = helper.getSideEffectModel( sideEffect );
+                        addSideEffectIfNotExists( sideEffectsFor, sideEffectModel );
+                    }
+                }
+            }
+        }
+
+
         if( sideEffectsFor.isEmpty() )
         {
             return SideEffectsModel.EMPTY_SIDEEFFECTS;
@@ -641,6 +708,14 @@ public abstract class CompositeAssemblyImpl
         else
         {
             return new SideEffectsModel( sideEffectsFor );
+        }
+    }
+
+    private void addSideEffectIfNotExists( List<SideEffectModel> sideEffectsFor, SideEffectModel sideEffectModel )
+    {
+        if( !sideEffectsFor.contains( sideEffectModel ) )
+        {
+            sideEffectsFor.add( sideEffectModel );
         }
     }
 

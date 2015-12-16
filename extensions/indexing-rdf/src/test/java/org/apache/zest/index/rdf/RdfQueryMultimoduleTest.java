@@ -25,6 +25,7 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.index.rdf.assembly.RdfNativeSesameStoreAssembler;
 import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.test.EntityTestAssembler;
@@ -49,9 +50,11 @@ public class RdfQueryMultimoduleTest
         ModuleAssembly storeModule = layer.module( "store" );
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( storeModule );
         assembleValues( storeModule, Visibility.module );
+        new DefaultUnitOfWorkAssembler().assemble( storeModule );
 
         ModuleAssembly indexModule = layer.module( "index" );
         new RdfNativeSesameStoreAssembler( Visibility.layer, Visibility.module ).assemble( indexModule );
+        new DefaultUnitOfWorkAssembler().assemble( indexModule );
 
         LayerAssembly configLayer = module.layer().application().layer( "config" );
         module.layer().uses( configLayer );
@@ -59,6 +62,7 @@ public class RdfQueryMultimoduleTest
         config.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
         config.forMixin( NativeConfiguration.class ).declareDefaults().dataDirectory().set( DATA_DIR.getAbsolutePath() );
         new EntityTestAssembler().assemble( config );
+        new DefaultUnitOfWorkAssembler().assemble( config );
     }
 
 }

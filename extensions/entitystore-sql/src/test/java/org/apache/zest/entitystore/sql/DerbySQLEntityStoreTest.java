@@ -75,7 +75,7 @@ public class DerbySQLEntityStoreTest
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = this.module.newUnitOfWork( UsecaseBuilder.newUsecase(
+        UnitOfWork uow = this.uowf.newUnitOfWork( UsecaseBuilder.newUsecase(
             "Delete " + getClass().getSimpleName() + " test data" ) );
         try
         {

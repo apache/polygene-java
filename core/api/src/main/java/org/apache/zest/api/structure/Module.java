@@ -16,11 +16,8 @@ package org.apache.zest.api.structure;
 
 import java.util.stream.Stream;
 import org.apache.zest.api.activation.ActivationEventListenerRegistration;
-import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.TransientBuilderFactory;
-import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.composite.TransientDescriptor;
-import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.object.ObjectDescriptor;
@@ -44,7 +41,6 @@ public interface Module
             ObjectFactory,
             TransientBuilderFactory,
             ValueBuilderFactory,
-            UnitOfWorkFactory,
             QueryBuilderFactory,
             ServiceFinder
 {
@@ -61,32 +57,43 @@ public interface Module
 
     /**
      * @param typeName name of a transient composite type
+     *
      * @return the descriptor for a transient composite or null if the class could not be found or the transient composite is not visible
      */
     TransientDescriptor transientDescriptor( String typeName );
 
     /**
      * @param typeName name of an entity composite type
+     *
      * @return the descriptor for an entity composite or null if the class could not be found or the entity composite is not visible
      */
     EntityDescriptor entityDescriptor( String typeName );
 
     /**
      * @param typeName name of an object type
+     *
      * @return the descriptor for an object or null if the class could not be found or the object is not visible
      */
     ObjectDescriptor objectDescriptor( String typeName );
 
     /**
      * @param typeName name of a value composite type
+     *
      * @return the descriptor for a value composite or null if the class could not be found or the value composite is not visible
      */
     ValueDescriptor valueDescriptor( String typeName );
 
     Stream<? extends TransientDescriptor> transientComposites();
+
     Stream<? extends ValueDescriptor> valueComposites();
+
     Stream<? extends ServiceDescriptor> serviceComposites();
+
     Stream<? extends EntityDescriptor> entityComposites();
+
     Stream<? extends ImportedServiceDescriptor> importedServices();
+
     Stream<? extends ObjectDescriptor> objects();
+
+    UnitOfWorkFactory unitOfWorkFactory();
 }

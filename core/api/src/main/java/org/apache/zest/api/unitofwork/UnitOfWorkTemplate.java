@@ -58,7 +58,7 @@ public abstract class UnitOfWorkTemplate<RESULT, ThrowableType extends Throwable
         ThrowableType ex = null;
         do
         {
-            UnitOfWork uow = module.newUnitOfWork( usecase );
+            UnitOfWork uow = module.unitOfWorkFactory().newUnitOfWork( usecase );
 
             try
             {

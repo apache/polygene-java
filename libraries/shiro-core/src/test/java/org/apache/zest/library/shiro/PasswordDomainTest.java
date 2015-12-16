@@ -17,6 +17,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.subject.Subject;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -65,7 +66,7 @@ public class PasswordDomainTest
     {
 
         @Structure
-        private Module module;
+        private UnitOfWorkFactory uowf;
 
         @Service
         private PasswordService passwordService;
@@ -73,7 +74,7 @@ public class PasswordDomainTest
         @Override
         public User createNewUser( String username, String password )
         {
-            EntityBuilder<User> userBuilder = module.currentUnitOfWork().newEntityBuilder( User.class );
+            EntityBuilder<User> userBuilder = uowf.currentUnitOfWork().newEntityBuilder( User.class );
             User user = userBuilder.instance();
             user.subjectIdentifier().set( username );
             user.password().set( passwordService.encryptPassword( password ) );
@@ -116,7 +117,7 @@ public class PasswordDomainTest
             throws UnitOfWorkCompletionException
     {
 
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
 
         UserFactory userFactory = module.findService( UserFactory.class ).get();
         // START SNIPPET: usage
@@ -125,7 +126,7 @@ public class PasswordDomainTest
         // END SNIPPET: usage
         uow.complete();
 
-        uow = module.newUnitOfWork();
+        uow = uowf.newUnitOfWork();
 
         // START SNIPPET: usage
         Subject currentUser = SecurityUtils.getSubject();

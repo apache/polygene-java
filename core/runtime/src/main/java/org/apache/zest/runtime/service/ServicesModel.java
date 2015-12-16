@@ -68,4 +68,16 @@ public class ServicesModel
     {
         return serviceModels.stream();
     }
+
+    public boolean contains( Class<?> type )
+    {
+        for( ServiceModel model : serviceModels )
+        {
+            if( model.hasType( type ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }

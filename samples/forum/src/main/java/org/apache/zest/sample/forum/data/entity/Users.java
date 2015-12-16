@@ -23,7 +23,8 @@ import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.query.Query;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.query.QueryBuilderFactory;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.sample.forum.context.Events;
 import org.apache.zest.sample.forum.context.signup.Registration;
 
@@ -47,28 +48,31 @@ public interface Users
         implements Users
     {
         @Structure
-        Module module;
+        UnitOfWorkFactory uowf;
+
+        @Structure
+        QueryBuilderFactory qbf;
 
         @Override
         public Query<User> users()
         {
-            return module.currentUnitOfWork()
-                .newQuery( module.newQueryBuilder( User.class ) )
+            return uowf.currentUnitOfWork()
+                .newQuery( qbf.newQueryBuilder( User.class ) )
                 .orderBy( templateFor( User.class ).realName() );
         }
 
         @Override
         public User userNamed( String name )
         {
-            return module.currentUnitOfWork().newQuery(
-                module.newQueryBuilder( User.class ).where( eq( templateFor( User.class ).name(), name ) )
+            return uowf.currentUnitOfWork().newQuery(
+                qbf.newQueryBuilder( User.class ).where( eq( templateFor( User.class ).name(), name ) )
             ).find();
         }
 
         @Override
         public void signedup( Registration registration )
         {
-            EntityBuilder<User> builder = module.currentUnitOfWork().newEntityBuilder( User.class );
+            EntityBuilder<User> builder = uowf.currentUnitOfWork().newEntityBuilder( User.class );
             builder.instance().name().set( registration.name().get() );
             builder.instance().realName().set( registration.realName().get() );
             builder.instance().email().set( registration.email().get() );

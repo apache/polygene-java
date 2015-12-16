@@ -121,5 +121,4 @@ public abstract class AbstractCachePoolTest
         cache = cachePool.fetchCache( "1", String.class );
         assertNull( "Value not missing", cache.get( "Habba" ) );
     }
-
 }

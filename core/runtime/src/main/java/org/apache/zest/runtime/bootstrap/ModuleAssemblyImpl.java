@@ -57,6 +57,7 @@ import org.apache.zest.bootstrap.TransientAssembly;
 import org.apache.zest.bootstrap.TransientDeclaration;
 import org.apache.zest.bootstrap.ValueAssembly;
 import org.apache.zest.bootstrap.ValueDeclaration;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.composite.TransientModel;
@@ -141,6 +142,14 @@ public final class ModuleAssemblyImpl
     public final ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators )
     {
         this.activators.addAll( Arrays.asList( activators ) );
+        return this;
+    }
+
+    @Override
+    public ModuleAssembly withDefaultUnitOfWorkFactory()
+        throws AssemblyException
+    {
+        new DefaultUnitOfWorkAssembler().assemble( this );
         return this;
     }
 
@@ -603,7 +612,8 @@ public final class ModuleAssemblyImpl
     private String generateId( Stream<Class<?>> serviceTypes )
     {
         // Find service identity that is not yet used
-        Class<?> serviceType = serviceTypes.findFirst().orElse( null ); // Use the first, which *SHOULD* be the main serviceType
+        Class<?> serviceType = serviceTypes.findFirst()
+            .orElse( null ); // Use the first, which *SHOULD* be the main serviceType
         int idx = 0;
         String id = serviceType.getSimpleName();
         boolean invalid;

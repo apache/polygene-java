@@ -73,7 +73,7 @@ public class SolrQueryServiceTest
         throws UnitOfWorkCompletionException, InterruptedException
     {
         // Create and index an entity
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         TestEntity test = uow.newEntity( TestEntity.class );
         test.name().set( "Hello World" );
         uow.complete();
@@ -85,7 +85,7 @@ public class SolrQueryServiceTest
         throws UnitOfWorkCompletionException
     {
         // Search for it
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         Query<TestEntity> query = uow.newQuery( module.newQueryBuilder( TestEntity.class ).where( SolrExpressions.search( "hello" ) ) );
 
         TestEntity test = query.find();

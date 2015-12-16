@@ -20,9 +20,14 @@ package org.apache.zest.sample.forum.context.login;
 
 import org.apache.zest.api.constraint.Name;
 import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.query.QueryBuilder;
+import org.apache.zest.api.query.QueryBuilderFactory;
 import org.apache.zest.api.query.QueryExpressions;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.sample.forum.data.entity.User;
+
+import static org.apache.zest.api.query.QueryExpressions.*;
 
 /**
  * TODO
@@ -30,13 +35,18 @@ import org.apache.zest.sample.forum.data.entity.User;
 public class Login
 {
     @Structure
-    Module module;
+    UnitOfWorkFactory uowf;
+
+    @Structure
+    QueryBuilderFactory qbf;
 
     public void login( @Name( "name" ) String name, @Name( "password" ) String password )
     {
-        User user = module.currentUnitOfWork()
-            .newQuery( module.newQueryBuilder( User.class )
-                           .where( QueryExpressions.eq( QueryExpressions.templateFor( User.class ).name(), name ) ) )
+        QueryBuilder<User> builder = qbf.newQueryBuilder( User.class )
+            .where( eq( templateFor( User.class ).name(), name ) );
+
+        User user = uowf.currentUnitOfWork()
+            .newQuery( builder )
             .find();
 
         if( user == null || !user.isCorrectPassword( password ) )

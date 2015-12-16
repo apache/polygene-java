@@ -36,7 +36,7 @@ public abstract class EntityBuilderTemplate<T>
 
     public T newInstance( Module module )
     {
-        EntityBuilder<T> builder = module.currentUnitOfWork().newEntityBuilder( type );
+        EntityBuilder<T> builder = module.unitOfWorkFactory().currentUnitOfWork().newEntityBuilder( type );
         build( builder.instance() );
         return builder.newInstance();
     }

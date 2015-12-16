@@ -23,8 +23,8 @@ import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.functional.Iterables;
 
 @Mixins( RoleFactory.Mixin.class )
@@ -41,7 +41,7 @@ public interface RoleFactory
     {
 
         @Structure
-        private Module module;
+        private UnitOfWorkFactory uowf;
 
         @Override
         public Role create( String name, String... permissions )
@@ -52,7 +52,7 @@ public interface RoleFactory
         @Override
         public Role create( String name, Iterable<String> permissions )
         {
-            UnitOfWork uow = module.currentUnitOfWork();
+            UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<Role> roleBuilder = uow.newEntityBuilder( Role.class );
             Role role = roleBuilder.instance();
             role.name().set( name );

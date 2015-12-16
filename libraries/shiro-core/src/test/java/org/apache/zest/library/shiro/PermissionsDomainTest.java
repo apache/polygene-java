@@ -17,6 +17,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.PasswordService;
 import org.apache.shiro.subject.Subject;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
@@ -69,7 +70,7 @@ public class PermissionsDomainTest
     {
 
         @Structure
-        private Module module;
+        private UnitOfWorkFactory uowf;
 
         @Service
         private PasswordService passwordService;
@@ -77,7 +78,7 @@ public class PermissionsDomainTest
         @Override
         public User createNewUser( String username, String password )
         {
-            EntityBuilder<User> userBuilder = module.currentUnitOfWork().newEntityBuilder( User.class );
+            EntityBuilder<User> userBuilder = uowf.currentUnitOfWork().newEntityBuilder( User.class );
             User user = userBuilder.instance();
             user.subjectIdentifier().set( username );
             user.password().set( passwordService.encryptPassword( password ) );
@@ -129,7 +130,7 @@ public class PermissionsDomainTest
             throws UnitOfWorkCompletionException
     {
         // START SNIPPET: usage
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
 
         User user = userFactory.createNewUser( "foo", "bar" );
         Role role = roleFactory.create( "role-one", "permission-one", "permission-two" );
@@ -139,7 +140,7 @@ public class PermissionsDomainTest
 
         // END SNIPPET: usage
         // START SNIPPET: usage
-        uow = module.newUnitOfWork();
+        uow = uowf.newUnitOfWork();
 
         Subject currentUser = SecurityUtils.getSubject();
         currentUser.login( new UsernamePasswordToken( "foo", "bar" ) );

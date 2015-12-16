@@ -35,7 +35,8 @@ import org.apache.zest.runtime.composite.StateResolver;
 import org.apache.zest.runtime.property.PropertyInfo;
 import org.apache.zest.runtime.property.PropertyInstance;
 import org.apache.zest.runtime.structure.ModuleInstance;
-import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.runtime.unitofwork.EntityFunction;
+import org.apache.zest.spi.structure.ModelModule;
 
 /**
  * TODO
@@ -65,6 +66,8 @@ public final class ValueStateInstance
                                StateResolver stateResolver
     )
     {
+        EntityFunction entityFunction = new EntityFunction( currentModule.unitOfWorkFactory() );
+
         ValueModel valueModel = (ValueModel) compositeModelModule.model();
         this.properties = new LinkedHashMap<>();
         valueModel.state().properties().forEach( propertyDescriptor -> {
@@ -80,7 +83,7 @@ public final class ValueStateInstance
             EntityReference value = stateResolver.getAssociationState( associationDescriptor );
             AssociationInstance<Object> associationInstance1 = new AssociationInstance<>(
                 builderInfo,
-                currentModule.getEntityFunction(),
+                entityFunction,
                 new ReferenceProperty( value ) );
             associations.put( associationDescriptor.accessor(), associationInstance1 );
         } );
@@ -93,7 +96,7 @@ public final class ValueStateInstance
             ManyAssociationValueState manyAssociationState = new ManyAssociationValueState( value );
             ManyAssociationInstance<Object> associationInstance = new ManyAssociationInstance<>(
                 builderInfo,
-                currentModule.getEntityFunction(),
+                entityFunction,
                 manyAssociationState );
             manyAssociations.put( associationDescriptor.accessor(), associationInstance );
         } );
@@ -106,7 +109,7 @@ public final class ValueStateInstance
             NamedAssociationValueState namedAssociationState = new NamedAssociationValueState( value );
             NamedAssociationInstance<Object> associationInstance = new NamedAssociationInstance<>(
                 builderInfo,
-                currentModule.getEntityFunction(),
+                entityFunction,
                 namedAssociationState );
             namedAssociations.put( associationDescriptor.accessor(), associationInstance );
         } );

@@ -55,7 +55,7 @@ import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.EntityStoreSPI;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
-import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
 import org.json.JSONArray;
 import org.json.JSONException;

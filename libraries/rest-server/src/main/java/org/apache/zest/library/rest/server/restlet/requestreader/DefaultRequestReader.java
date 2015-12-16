@@ -32,9 +32,10 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.service.qualifier.Tagged;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.util.Dates;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.api.value.ValueSerialization;
@@ -72,7 +73,10 @@ public class DefaultRequestReader
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( DefaultRequestReader.class );
     @Structure
-    private Module module;
+    private UnitOfWorkFactory uowf;
+
+    @Structure
+    private ValueBuilderFactory vbf;
 
     @Service
     @Tagged( ValueSerialization.Formats.JSON )
@@ -187,7 +191,7 @@ public class DefaultRequestReader
                                                          "Bug in Restlet encountered; notify developers!" );
                         }
 
-                        Object command = module.newValueFromSerializedState( commandType, json );
+                        Object command = vbf.newValueFromSerializedState( commandType, json );
                         args[0] = command;
                         return args;
                     }
@@ -209,8 +213,7 @@ public class DefaultRequestReader
 
                         Form queryAsForm = Request.getCurrent().getResourceRef().getQueryAsForm();
                         Form entityAsForm;
-                        if( representation != null
-                            && !EmptyRepresentation.class.isInstance( representation )
+                        if( !EmptyRepresentation.class.isInstance( representation )
                             && representation.isAvailable() )
                         {
                             entityAsForm = new Form( representation );
@@ -234,8 +237,7 @@ public class DefaultRequestReader
                 {
                     Form queryAsForm = Request.getCurrent().getResourceRef().getQueryAsForm();
                     Form entityAsForm;
-                    if( representation != null
-                        && !EmptyRepresentation.class.isInstance( representation )
+                    if( !EmptyRepresentation.class.isInstance( representation )
                         && representation.isAvailable() )
                     {
                         entityAsForm = new Form( representation );
@@ -245,8 +247,8 @@ public class DefaultRequestReader
                         entityAsForm = new Form();
                     }
 
-                    args[0] = module.currentUnitOfWork().get( method.getParameterTypes()[0],
-                                                              getValue( "entity", queryAsForm, entityAsForm ) );
+                    args[0] = uowf.currentUnitOfWork().get( method.getParameterTypes()[0],
+                                                           getValue( "entity", queryAsForm, entityAsForm ) );
 
                     return args;
                 }
@@ -254,8 +256,7 @@ public class DefaultRequestReader
                 {
                     Form queryAsForm = Request.getCurrent().getResourceRef().getQueryAsForm();
                     Form entityAsForm;
-                    if( representation != null
-                        && !EmptyRepresentation.class.isInstance( representation )
+                    if( !EmptyRepresentation.class.isInstance( representation )
                         && representation.isAvailable() )
                     {
                         entityAsForm = new Form( representation );
@@ -278,13 +279,9 @@ public class DefaultRequestReader
                                              final Form entityAsForm
     )
     {
-        ValueBuilder<? extends ValueComposite> builder = module.newValueBuilderWithState(
+        ValueBuilder<? extends ValueComposite> builder = vbf.newValueBuilderWithState(
             valueType,
-            new Function<PropertyDescriptor, Object>()
-        {
-            @Override
-            public Object apply( PropertyDescriptor propertyDescriptor )
-            {
+            (Function<PropertyDescriptor, Object>) propertyDescriptor -> {
                 Parameter param = queryAsForm.getFirst( propertyDescriptor.qualifiedName().name() );
 
                 if( param == null )
@@ -309,38 +306,27 @@ public class DefaultRequestReader
                 }
 
                 return null;
-            }
             },
-            new Function<AssociationDescriptor, EntityReference>()
-            {
-                @Override
-                public EntityReference apply( AssociationDescriptor associationDescriptor )
+            (Function<AssociationDescriptor, EntityReference>) associationDescriptor -> {
+                Parameter param = queryAsForm.getFirst( associationDescriptor.qualifiedName().name() );
+
+                if( param == null )
                 {
-                    Parameter param = queryAsForm.getFirst( associationDescriptor.qualifiedName().name() );
+                    param = entityAsForm.getFirst( associationDescriptor.qualifiedName().name() );
+                }
 
-                    if( param == null )
-                    {
-                        param = entityAsForm.getFirst( associationDescriptor.qualifiedName().name() );
-                    }
-
-                    if( param != null )
-                    {
-                        return EntityReference.parseEntityReference( param.getValue() );
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                if( param != null )
+                {
+                    return EntityReference.parseEntityReference( param.getValue() );
+                }
+                else
+                {
+                    return null;
                 }
             },
-            new Function<AssociationDescriptor, Iterable<EntityReference>>()
-            {
-                @Override
-                public Iterable<EntityReference> apply( AssociationDescriptor associationDescriptor )
-                {
-                    // TODO
-                    return Iterables.empty();
-                }
+            (Function<AssociationDescriptor, Iterable<EntityReference>>) associationDescriptor -> {
+                // TODO
+                return Iterables.empty();
             },
             new Function<AssociationDescriptor, Map<String, EntityReference>>()
             {
@@ -470,7 +456,7 @@ public class DefaultRequestReader
             }
             else if( parameterType.isInterface() )
             {
-                arg = module.currentUnitOfWork().get( parameterType, argString );
+                arg = uowf.currentUnitOfWork().get( parameterType, argString );
             }
             else
             {

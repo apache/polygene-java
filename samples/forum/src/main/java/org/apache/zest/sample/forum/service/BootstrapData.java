@@ -25,10 +25,10 @@ import org.apache.zest.api.mixin.InitializationException;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.sample.forum.data.entity.Forums;
 import org.apache.zest.sample.forum.data.entity.Users;
 
@@ -40,28 +40,27 @@ import org.apache.zest.sample.forum.data.entity.Users;
 public interface BootstrapData
     extends ServiceComposite
 {
-    
+
     void insertInitialData()
-            throws Exception;
+        throws Exception;
 
     class Activator
-            extends ActivatorAdapter<ServiceReference<BootstrapData>>
+        extends ActivatorAdapter<ServiceReference<BootstrapData>>
     {
 
         @Override
         public void afterActivation( ServiceReference<BootstrapData> activated )
-                throws Exception
+            throws Exception
         {
             activated.get().insertInitialData();
         }
-
     }
-    
+
     abstract class Mixin
         implements BootstrapData
     {
         @Structure
-        Module module;
+        private UnitOfWorkFactory module;
 
         @Override
         public void insertInitialData()
@@ -96,6 +95,5 @@ public interface BootstrapData
                 throw new InitializationException( e );
             }
         }
-
     }
 }

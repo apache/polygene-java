@@ -145,8 +145,8 @@ public abstract class CompositeModel
     @Override
     public Stream<DependencyModel> dependencies()
     {
-        return Stream.of( mixinsModel, compositeMethodsModel ).flatMap( Dependencies::dependencies );
-//        return Iterables.flatten( mixinsModel.dependencies(), compositeMethodsModel.dependencies() );
+        Stream<Dependencies> models = Stream.of( this.mixinsModel, compositeMethodsModel );
+        return models.flatMap( Dependencies::dependencies );
     }
 
     @Override
@@ -219,7 +219,6 @@ public abstract class CompositeModel
         Class<?> mainType = first( types );
         if( mainType.isInterface() )
         {
-
             try
             {
                 return Composite.class.cast( proxyConstructor.newInstance( invocationHandler ) );

@@ -14,6 +14,7 @@
  */
 package org.apache.zest.api.type;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;

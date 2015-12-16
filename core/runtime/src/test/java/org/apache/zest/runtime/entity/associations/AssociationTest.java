@@ -52,7 +52,7 @@ public class AssociationTest
     @Test
     public void testAssociation()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
 
         try
         {

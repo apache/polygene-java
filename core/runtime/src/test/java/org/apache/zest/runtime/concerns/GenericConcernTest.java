@@ -42,7 +42,7 @@ public class GenericConcernTest
     @Test
     public void testNestedUnitOfWork()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         Some some = module.newTransient( Some.class );
         some.doStuff();
         uow.discard();

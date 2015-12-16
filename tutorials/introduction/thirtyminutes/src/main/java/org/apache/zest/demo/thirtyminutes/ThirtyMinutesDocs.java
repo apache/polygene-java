@@ -33,10 +33,11 @@ import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.Query;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.query.QueryBuilderFactory;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.demo.tenminute.Confirmable;
 import org.apache.zest.demo.tenminute.HasCustomer;
@@ -56,7 +57,9 @@ import org.apache.zest.api.query.QueryBuilder;
 // END SNIPPET: 6
 public class ThirtyMinutesDocs
 {
-    Module module;
+    private QueryBuilderFactory queryBuilderFactory;
+    private ValueBuilderFactory valueBuilderFactory;
+    private UnitOfWorkFactory unitOfWorkFactory;
 
 // START SNIPPET: 6
     @Structure private UnitOfWorkFactory uowFactory; //Injected
@@ -65,7 +68,7 @@ public class ThirtyMinutesDocs
     {
 // START SNIPPET: 6
         UnitOfWork uow = uowFactory.currentUnitOfWork();
-        QueryBuilder<Order> builder = module.newQueryBuilder( Order.class );
+        QueryBuilder<Order> builder = queryBuilderFactory.newQueryBuilder( Order.class );
 
         String orderNumber = "12345";
         HasSequenceNumber template = templateFor( HasSequenceNumber.class );
@@ -94,10 +97,10 @@ public class ThirtyMinutesDocs
 
     {
         Report report = null;
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
 
 // START SNIPPET: 7
-        QueryBuilder<Order> builder = module.newQueryBuilder( Order.class );
+        QueryBuilder<Order> builder = queryBuilderFactory.newQueryBuilder( Order.class );
 
         Calendar cal = Calendar.getInstance();
         cal.setTime( new Date() );
@@ -116,10 +119,10 @@ public class ThirtyMinutesDocs
 
     {
         Report report = null;
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = unitOfWorkFactory.currentUnitOfWork();
 
 // START SNIPPET: 8
-        QueryBuilder<HasCustomer> builder = module.newQueryBuilder( HasCustomer.class );
+        QueryBuilder<HasCustomer> builder = queryBuilderFactory.newQueryBuilder( HasCustomer.class );
 
         Calendar cal = Calendar.getInstance();
         cal.setTime( new Date() );
@@ -200,7 +203,7 @@ public class ThirtyMinutesDocs
         private Action<M> addAction( M item, Action.Type type )
         {
             ValueBuilder<Action> builder =
-                    module.newValueBuilder(Action.class);       // [4]
+                    valueBuilderFactory.newValueBuilder( Action.class);       // [4]
             Action<M> prototype = builder.prototypeFor( Action.class );
             prototype.item().set( item );
             prototype.action().set( type );

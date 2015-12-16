@@ -14,20 +14,19 @@
 
 package org.apache.zest.test;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.ApplicationAssembler;
-import org.apache.zest.bootstrap.ApplicationAssembly;
-import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.spi.ZestSPI;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * Base class for Zest scenario tests. This will create one Zest application per class instead of per test.
@@ -45,6 +44,7 @@ public abstract class AbstractZestScenarioTest
     static protected Module module;
 
     static protected Assembler assembler; // Initialize this in static block of subclass
+    private static UnitOfWorkFactory uowf;
 
     @BeforeClass
     public static void setUp()
@@ -64,6 +64,7 @@ public abstract class AbstractZestScenarioTest
 
         // Assume only one module
         module = application.findModule( "Layer 1", "Module 1" );
+        uowf = module.unitOfWorkFactory();
     }
 
     static protected ApplicationDescriptor newApplication()
@@ -71,15 +72,7 @@ public abstract class AbstractZestScenarioTest
     {
         final Assembler asm = assembler;
 
-        ApplicationAssembler assembler = new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                return applicationFactory.newApplicationAssembly( asm );
-            }
-        };
+        ApplicationAssembler assembler = applicationFactory -> applicationFactory.newApplicationAssembly( asm );
         try
         {
             return zest.newApplicationModel( assembler );
@@ -116,11 +109,11 @@ public abstract class AbstractZestScenarioTest
     public void tearDown()
         throws Exception
     {
-        if( module != null && module.isUnitOfWorkActive() )
+        if( uowf != null && uowf.isUnitOfWorkActive() )
         {
-            while( module.isUnitOfWorkActive() )
+            while( uowf.isUnitOfWorkActive() )
             {
-                UnitOfWork uow = module.currentUnitOfWork();
+                UnitOfWork uow = uowf.currentUnitOfWork();
                 if( uow.isOpen() )
                 {
                     uow.discard();

@@ -30,10 +30,10 @@ import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceActivation;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCallback;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.library.fileconfig.FileConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public interface UoWFileFactory
         private Application app;
 
         @Structure
-        private Module module;
+        private UnitOfWorkFactory module;
 
         @This
         private ServiceComposite me;
@@ -181,5 +181,4 @@ public interface UoWFileFactory
             return uowMeta;
         }
     }
-
 }

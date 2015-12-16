@@ -62,7 +62,7 @@ import org.apache.zest.api.query.grammar.PropertyNotNullPredicate;
 import org.apache.zest.api.query.grammar.PropertyNullPredicate;
 import org.apache.zest.api.query.grammar.Variable;
 import org.apache.zest.api.service.ServiceDescriptor;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.index.sql.support.api.SQLQuerying;
@@ -108,7 +108,7 @@ public abstract class AbstractSQLQuerying
     private PostgreSQLTypeHelper _typeHelper;
 
     @Structure
-    private Module module;
+    private UnitOfWorkFactory uowf;
 
     @Structure
     private ZestSPI spi;
@@ -1052,7 +1052,7 @@ public abstract class AbstractSQLQuerying
                     // EntityComposite?
                     if( value instanceof EntityComposite )
                     {
-                        value = module.currentUnitOfWork().get(
+                        value = uowf.currentUnitOfWork().get(
                             (EntityComposite) value ).identity().get();
                     }
                     else
@@ -1853,7 +1853,7 @@ public abstract class AbstractSQLQuerying
                                                               fromClause, groupBy, having, qNameJoins, variables, values, valueSQLTypes );
                 } );
 
-                          // @formatter:on
+            // @formatter:on
         }
         else
         {

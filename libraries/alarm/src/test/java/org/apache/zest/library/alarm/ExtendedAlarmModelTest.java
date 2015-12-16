@@ -67,14 +67,14 @@ public class ExtendedAlarmModelTest
         throws Exception
     {
         super.setUp();
-        module.newUnitOfWork();
+        uowf.newUnitOfWork();
     }
 
     @Override
     public void tearDown()
         throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         if( uow != null )
         {
             uow.discard();
@@ -942,7 +942,7 @@ public class ExtendedAlarmModelTest
 
     private AlarmPoint createAlarm( String name )
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         EntityBuilder<AlarmPoint> builder = uow.newEntityBuilder( AlarmPoint.class );
         builder.instance().category().set( createCategory( "Testing" ) );
         AlarmPoint.AlarmState state = builder.instanceFor( AlarmPoint.AlarmState.class );
@@ -961,7 +961,7 @@ public class ExtendedAlarmModelTest
 
     private AlarmPoint getAlarm( String identity )
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         return uow.get( AlarmPoint.class, identity );
     }
 

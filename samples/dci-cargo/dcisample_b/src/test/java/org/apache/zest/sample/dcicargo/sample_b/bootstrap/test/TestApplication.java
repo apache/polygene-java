@@ -19,6 +19,9 @@ package org.apache.zest.sample.dcicargo.sample_b.bootstrap.test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.apache.zest.api.query.QueryBuilderFactory;
+import org.apache.zest.api.service.ServiceFinder;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -65,6 +68,10 @@ import static org.junit.Assert.*;
 public class TestApplication
       extends BaseData
 {
+    protected static ServiceFinder serviceFinder;
+    protected static UnitOfWorkFactory uowf;
+    protected static QueryBuilderFactory qbf;
+
     // Logger for sub classes
     protected Logger logger = LoggerFactory.getLogger( getClass() );
 
@@ -157,7 +164,11 @@ public class TestApplication
         System.out.println( "\n@@@@@@@@@@@  TEST SUITE  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" );
         app = new Energy4Java().newApplication( new TestAssembler() );
         app.activate();
-        Context.prepareContextBaseClass( findHostingModule() );
+        Module module = findHostingModule();
+        serviceFinder = module;
+        qbf = module;
+        uowf = module.unitOfWorkFactory();
+        Context.prepareContextBaseClass( module.unitOfWorkFactory(), module );
 
     }
 
@@ -175,11 +186,11 @@ public class TestApplication
     {
         logger.info( name.getMethodName() );
         Usecase usecase = UsecaseBuilder.newUsecase( "Usecase:" + name );
-        UnitOfWork uow = module.newUnitOfWork(usecase);
+        UnitOfWork uow = uowf.newUnitOfWork( usecase);
         populateTestData();
 
         ServiceReference<RouteSpecificationFactoryService> routeSpecFactoryServiceRef =
-            module.findService( RouteSpecificationFactoryService.class );
+            serviceFinder.findService( RouteSpecificationFactoryService.class );
         routeSpecFactory = routeSpecFactoryServiceRef.get();
 
         // Separate test suites in console output
@@ -189,16 +200,16 @@ public class TestApplication
     @After
     public void concludeTests()
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         if (uow != null)
         {
             uow.discard();
         }
-        if( module.isUnitOfWorkActive() )
+        if( uowf.isUnitOfWorkActive() )
         {
-            while( module.isUnitOfWorkActive() )
+            while( uowf.isUnitOfWorkActive() )
             {
-                uow = module.currentUnitOfWork();
+                uow = uowf.currentUnitOfWork();
                 if( uow.isOpen() )
                 {
                     System.err.println( "UnitOfWork not cleaned up:" + uow.usecase().name() );
@@ -247,7 +258,7 @@ public class TestApplication
         USDAL = unlocode( "USDAL" ); // Dallas
         USNYC = unlocode( "USNYC" ); // New York
 
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
 
         // Get locations created in BaseDataService on startup
         MELBOURNE = uow.get( Location.class, "AUMEL" );
@@ -430,11 +441,11 @@ public class TestApplication
 
     protected Voyage voyage( String voyageNumberStr, Schedule schedule )
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         EntityBuilder<Voyage> voyage = uow.newEntityBuilder( Voyage.class, voyageNumberStr );
 
         // VoyageNumber
-        ValueBuilder<VoyageNumber> voyageNumber = module.newValueBuilder( VoyageNumber.class );
+        ValueBuilder<VoyageNumber> voyageNumber = vbf.newValueBuilder( VoyageNumber.class );
         voyageNumber.prototype().number().set( voyageNumberStr );
         voyage.instance().voyageNumber().set( voyageNumber.newInstance() );
 

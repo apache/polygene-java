@@ -18,6 +18,10 @@
  */
 package org.apache.zest.runtime.composite;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import org.apache.zest.api.concern.ConcernOf;
+import org.apache.zest.api.concern.Concerns;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -30,15 +34,27 @@ import static org.junit.Assert.assertThat;
 /**
  * Test for QI-298.
  */
-@Ignore( "Awaiting QI-298" )
 public class TransientAsClassTest
     extends AbstractZestTest
 {
+    public static class UnderTestConcern extends ConcernOf<InvocationHandler>
+        implements InvocationHandler
+    {
+
+        @Override
+        public Object invoke( Object proxy, Method method, Object[] args )
+            throws Throwable
+        {
+            return next.invoke( proxy, method, args ) + " bar";
+        }
+    }
+
+    @Concerns(UnderTestConcern.class)
     public static class UnderTest
     {
         public String foo()
         {
-            return "bar";
+            return "foo";
         }
     }
 
@@ -53,6 +69,6 @@ public class TransientAsClassTest
     public void test()
     {
         UnderTest underTest = module.newTransient( UnderTest.class );
-        assertThat( underTest.foo(), equalTo( "bar" ) );
+        assertThat( underTest.foo(), equalTo( "foo bar" ) );
     }
 }

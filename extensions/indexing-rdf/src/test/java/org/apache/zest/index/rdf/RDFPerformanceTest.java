@@ -89,7 +89,7 @@ public class RDFPerformanceTest extends AbstractZestTest
         List<ExampleEntity> entities = new ArrayList<ExampleEntity>();
         for (Integer x = 0; x < howMany; ++x)
         {
-            ExampleEntity exampleEntity = this.module.currentUnitOfWork().newEntity( ExampleEntity.class, "entity" + x );
+            ExampleEntity exampleEntity = this.uowf.currentUnitOfWork().newEntity( ExampleEntity.class, "entity" + x );
 
             for (ExampleEntity entity : entities)
             {
@@ -110,14 +110,14 @@ public class RDFPerformanceTest extends AbstractZestTest
     {
         for (ExampleEntity entity : entities)
         {
-            this.module.currentUnitOfWork().remove( this.module.currentUnitOfWork().get( entity ) );
+            this.uowf.currentUnitOfWork().remove( this.uowf.currentUnitOfWork().get( entity ) );
         }
     }
 
     private List<ExampleEntity> doList( int howMany )
     {
         List<ExampleEntity> list = new ArrayList<ExampleEntity>();
-        UnitOfWork uow = this.module.newUnitOfWork();
+        UnitOfWork uow = this.uowf.newUnitOfWork();
         Iterator<ExampleEntity> iter = uow.newQuery( this.module.newQueryBuilder( ExampleEntity.class ) ).iterator();
         int found = 0;
         while (iter.hasNext())
@@ -141,11 +141,11 @@ public class RDFPerformanceTest extends AbstractZestTest
 
     private void doRemove( int howMany )
     {
-        Iterator<ExampleEntity> iter = this.module.currentUnitOfWork().newQuery( this.module.newQueryBuilder( ExampleEntity.class )).maxResults( howMany ).iterator();
+        Iterator<ExampleEntity> iter = this.uowf.currentUnitOfWork().newQuery( this.module.newQueryBuilder( ExampleEntity.class )).maxResults( howMany ).iterator();
         Integer removed = 0;
         while (iter.hasNext())
         {
-            this.module.currentUnitOfWork().remove( iter.next() );
+            this.uowf.currentUnitOfWork().remove( iter.next() );
             ++removed;
         }
 
@@ -159,7 +159,7 @@ public class RDFPerformanceTest extends AbstractZestTest
     {
         long startTest = System.currentTimeMillis();
 
-        UnitOfWork creatingUOW = this.module.newUnitOfWork();
+        UnitOfWork creatingUOW = this.uowf.newUnitOfWork();
         Long startingTime = System.currentTimeMillis();
         List<ExampleEntity> entities = this.doCreate( howMany );
         LOG.info( "Time to create " + howMany + " entities (ms): " + (System.currentTimeMillis() - startingTime) );
@@ -172,7 +172,7 @@ public class RDFPerformanceTest extends AbstractZestTest
         List<ExampleEntity> entityList = this.doList( howMany );
 
         startingTime = System.currentTimeMillis();
-        UnitOfWork uow = this.module.newUnitOfWork();
+        UnitOfWork uow = this.uowf.newUnitOfWork();
         for (int i = 0; i < 1000; i++)
         {
             Query<ExampleEntity> query = uow.newQuery( this.module.newQueryBuilder( ExampleEntity.class ).
@@ -183,7 +183,7 @@ public class RDFPerformanceTest extends AbstractZestTest
         long endTest = System.currentTimeMillis();
         LOG.info( "Time to query " + howMany + " entities (ms): " + (endTest - startingTime) );
 
-        UnitOfWork deletingUOW = this.module.newUnitOfWork();
+        UnitOfWork deletingUOW = this.uowf.newUnitOfWork();
         startingTime = System.currentTimeMillis();
         this.doRemoveAll( entityList );
 //      this.doRemove(200);

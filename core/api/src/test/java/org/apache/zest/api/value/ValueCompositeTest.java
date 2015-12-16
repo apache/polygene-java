@@ -184,7 +184,7 @@ public class ValueCompositeTest
         builder.prototype().number().set( 42L );
         SomeValue some = builder.newInstance();
 
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<SomeEntity> entityBuilder = unitOfWork.newEntityBuilder( SomeEntity.class );
@@ -213,7 +213,7 @@ public class ValueCompositeTest
         builder.prototype().number().set( 42L );
         SomeValue some = builder.newInstance();
 
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         AssociationValue associationValue;
         try
         {
@@ -229,7 +229,7 @@ public class ValueCompositeTest
 
             unitOfWork.complete();
 
-            unitOfWork = module.newUnitOfWork();
+            unitOfWork = uowf.newUnitOfWork();
 
             AssociationValue newAssociationValue = module.newValueFromSerializedState( AssociationValue.class, json );
 

@@ -58,7 +58,7 @@ public class ConfigurationTest
     {
         module.injectTo( this );
 
-        UnitOfWork unit = module.newUnitOfWork();
+        UnitOfWork unit = uowf.newUnitOfWork();
         EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service
             .identity() );
         HelloWorldConfiguration config = entityBuilder.instance();
@@ -88,7 +88,7 @@ public class ConfigurationTest
         HelloWorldConfiguration config;
 
         {
-            UnitOfWork unit = module.newUnitOfWork();
+            UnitOfWork unit = uowf.newUnitOfWork();
             EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service
                 .identity() );
             config = entityBuilder.instance();
@@ -101,7 +101,7 @@ public class ConfigurationTest
         assertThat( "result is correct", service.get().sayHello(), equalTo( "Hello World" ) );
 
         {
-            UnitOfWork unit = module.newUnitOfWork();
+            UnitOfWork unit = uowf.newUnitOfWork();
             config = unit.get( config );
             config.phrase().set( "Hey" );
             config.name().set( "Universe" );

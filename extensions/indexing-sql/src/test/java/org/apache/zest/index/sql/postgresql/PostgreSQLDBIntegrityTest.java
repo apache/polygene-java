@@ -80,11 +80,11 @@ public class PostgreSQLDBIntegrityTest
     public void createAndRemoveEntityAndVerifyNoExtraDataLeftInDB()
         throws Exception
     {
-        UnitOfWork uow = this.module.newUnitOfWork();
+        UnitOfWork uow = this.uowf.newUnitOfWork();
         TestEntity entity = uow.newEntity( TestEntity.class );
         uow.complete();
 
-        uow = this.module.newUnitOfWork();
+        uow = this.uowf.newUnitOfWork();
         entity = uow.get( entity );
         SQLConfiguration config = uow.get( SQLConfiguration.class, PostgreSQLIndexQueryAssembler.DEFAULT_IDENTITY );
         String schemaName = config.schemaName().get();
@@ -127,16 +127,16 @@ public class PostgreSQLDBIntegrityTest
     public void createAndModifyEntity()
         throws Exception
     {
-        UnitOfWork uow = this.module.newUnitOfWork();
+        UnitOfWork uow = this.uowf.newUnitOfWork();
         TestEntity entity = uow.newEntity( TestEntity.class );
         uow.complete();
 
-        uow = this.module.newUnitOfWork();
+        uow = this.uowf.newUnitOfWork();
         entity = uow.get( entity );
         entity.testString().set( "NewTestString" );
         uow.complete();
 
-        uow = this.module.newUnitOfWork();
+        uow = this.uowf.newUnitOfWork();
         entity = uow.get( entity );
         Assert.assertEquals( "New value did not store in indexing.", "NewTestString", entity
             .testString().get() );

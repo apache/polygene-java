@@ -52,7 +52,7 @@ public class Qi173IssueTest
     @Test
     public void testPersistence()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             createCar( "Volvo", "S80", 2007 );
@@ -73,7 +73,7 @@ public class Qi173IssueTest
             e.printStackTrace();
         }
 
-        uow = module.newUnitOfWork();
+        uow = uowf.newUnitOfWork();
         QueryBuilder<Car> qb = module.newQueryBuilder( Car.class );
         Car template = QueryExpressions.templateFor( Car.class );
         qb = qb.where( QueryExpressions.eq( template.year(), 2007 ) );
@@ -104,7 +104,7 @@ public class Qi173IssueTest
 
     private String createCar( String manufacturer, String model, int year )
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         EntityBuilder<Car> builder = uow.newEntityBuilder( Car.class );
         Car prototype = builder.instanceFor( Car.class );
         prototype.manufacturer().set( manufacturer );

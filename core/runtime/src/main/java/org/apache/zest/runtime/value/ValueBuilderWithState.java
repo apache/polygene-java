@@ -18,7 +18,7 @@ import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.runtime.composite.StateResolver;
-import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.runtime.structure.ModuleInstance;
 
 public class ValueBuilderWithState<T> implements ValueBuilder<T>

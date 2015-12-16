@@ -58,7 +58,6 @@ public class TransientInstantiationTests
     public static class MyMixin
         implements My
     {
-
         public String doSomething()
         {
             return "Niclas";

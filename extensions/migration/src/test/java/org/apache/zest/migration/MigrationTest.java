@@ -16,6 +16,7 @@ package org.apache.zest.migration;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +54,7 @@ public class MigrationTest
         throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
+        new DefaultUnitOfWorkAssembler().assemble( module );
 
         module.objects( MigrationEventLogger.class );
         module.importedServices( MigrationEventLogger.class ).importedBy( NewObjectImporter.class );
@@ -110,7 +112,7 @@ public class MigrationTest
                 }
             };
 
-            UnitOfWork uow = v1.module().newUnitOfWork();
+            UnitOfWork uow = v1.module().unitOfWorkFactory().newUnitOfWork();
             TestEntity1_0 entity = uow.newEntity( TestEntity1_0.class );
             entity.foo().set( "Some value" );
             entity.fooManyAssoc().add( entity );
@@ -141,7 +143,7 @@ public class MigrationTest
             BackupRestore testData = v1_1.module().findService( BackupRestore.class ).get();
             data_v1.transferTo( testData.restore() );
 
-            UnitOfWork uow = v1_1.module().newUnitOfWork();
+            UnitOfWork uow = v1_1.module().unitOfWorkFactory().newUnitOfWork();
             TestEntity1_1 entity = uow.get( TestEntity1_1.class, id );
             assertThat( "Property has been renamed", entity.newFoo().get(), CoreMatchers.equalTo( "Some value" ) );
             assertThat( "ManyAssociation has been renamed", entity.newFooManyAssoc().count(), CoreMatchers.equalTo( 1 ) );
@@ -169,7 +171,7 @@ public class MigrationTest
             // Test migration from 1.0 -> 2.0
             {
                 data_v1.transferTo( testData.restore() );
-                UnitOfWork uow = v2_0.module().newUnitOfWork();
+                UnitOfWork uow = v2_0.module().unitOfWorkFactory().newUnitOfWork();
                 TestEntity2_0 entity = uow.get( TestEntity2_0.class, id );
                 assertThat( "Property has been created", entity.bar().get(), CoreMatchers.equalTo( "Some value" ) );
                 assertThat( "Custom Property has been created", entity.customBar().get(), CoreMatchers.equalTo( "Hello Some value" ) );
@@ -198,7 +200,7 @@ public class MigrationTest
             // Test migration from 1.0 -> 3.0
             {
                 data_v1.transferTo( testData.restore() );
-                UnitOfWork uow = v3_0.module().newUnitOfWork();
+                UnitOfWork uow = v3_0.module().unitOfWorkFactory().newUnitOfWork();
                 org.apache.zest.migration.moved.TestEntity2_0 entity = uow.get( org.apache.zest.migration.moved.TestEntity2_0.class, id );
                 uow.complete();
             }

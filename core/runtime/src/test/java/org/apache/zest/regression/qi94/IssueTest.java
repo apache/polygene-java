@@ -44,7 +44,7 @@ public class IssueTest
     @Test
     public void entityBuilderAssociationTypeIsNotNull()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<Item> builder = uow.newEntityBuilder( Item.class );

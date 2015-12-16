@@ -68,7 +68,7 @@ import org.apache.zest.spi.entitystore.helpers.DefaultEntityState;
 import org.apache.zest.spi.entitystore.helpers.JSONKeys;
 import org.apache.zest.spi.entitystore.helpers.Migration;
 import org.apache.zest.spi.entitystore.helpers.StateStore;
-import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
 import org.json.JSONArray;
 import org.json.JSONException;

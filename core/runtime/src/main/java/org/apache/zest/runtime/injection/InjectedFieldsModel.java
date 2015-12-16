@@ -57,23 +57,24 @@ public final class InjectedFieldsModel
         Type genericType = field.getGenericType();
         if( genericType instanceof ParameterizedType )
         {
-            genericType = new ParameterizedTypeInstance( ( (ParameterizedType) genericType ).getActualTypeArguments(), ( (ParameterizedType) genericType )
-                .getRawType(), ( (ParameterizedType) genericType ).getOwnerType() );
+            Type[] actualTypeArguments = ( (ParameterizedType) genericType ).getActualTypeArguments();
+            Type rawType = ( (ParameterizedType) genericType ).getRawType();
+            Type ownerType = ( (ParameterizedType) genericType ).getOwnerType();
+            genericType = new ParameterizedTypeInstance( actualTypeArguments, rawType, ownerType );
 
-            for( int i = 0; i < ( (ParameterizedType) genericType ).getActualTypeArguments().length; i++ )
+            for( int i = 0; i < actualTypeArguments.length; i++ )
             {
-                Type type = ( (ParameterizedType) genericType ).getActualTypeArguments()[ i ];
+                Type type = actualTypeArguments[ i ];
                 if( type instanceof TypeVariable )
                 {
                     type = Classes.resolveTypeVariable( (TypeVariable) type, field.getDeclaringClass(), fragmentClass );
-                    ( (ParameterizedType) genericType ).getActualTypeArguments()[ i ] = type;
+                    actualTypeArguments[ i ] = type;
                 }
             }
         }
 
         boolean optional = DependencyModel.isOptional( injectionAnnotation, field.getAnnotations() );
-        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, genericType, fragmentClass, optional, field
-            .getAnnotations() );
+        DependencyModel dependencyModel = new DependencyModel( injectionAnnotation, genericType, fragmentClass, optional, field.getAnnotations() );
         InjectedFieldModel injectedFieldModel = new InjectedFieldModel( field, dependencyModel );
         this.fields.add( injectedFieldModel );
     }
@@ -82,14 +83,6 @@ public final class InjectedFieldsModel
     public Stream<DependencyModel> dependencies()
     {
         return fields.stream().flatMap( Dependencies::dependencies );
-//        return Iterables.map( new Function<InjectedFieldModel, DependencyModel>()
-//        {
-//            @Override
-//            public DependencyModel apply( InjectedFieldModel injectedFieldModel )
-//            {
-//                return injectedFieldModel.dependency();
-//            }
-//        }, fields );
     }
 
     @Override

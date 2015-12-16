@@ -19,6 +19,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.entity.Lifecycle;
 import org.apache.zest.api.mixin.Initializable;
 import org.apache.zest.api.util.Methods;
@@ -160,7 +161,7 @@ import static org.objectweb.asm.Type.getInternalName;
         AnnotationVisitor av0;
 
         // Class definition start
-        cw.visit( JDK_VERSION, ACC_PUBLIC + ACC_SUPER, classSlash, null, baseClassSlash, null );
+        cw.visit( JDK_VERSION, ACC_PUBLIC + ACC_SUPER, classSlash, null, baseClassSlash, new String[] { "org/apache/zest/api/composite/Composite" } );
 
         // Composite reference
         {

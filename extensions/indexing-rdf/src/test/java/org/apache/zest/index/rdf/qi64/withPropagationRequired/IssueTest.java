@@ -49,12 +49,12 @@ public final class IssueTest
         String id = newZestAccount();
 
         // Make sure there's no unit of work
-        assertFalse( module.isUnitOfWorkActive() );
+        assertFalse( uowf.isUnitOfWorkActive() );
 
         AccountComposite account = accountService.getAccountById( id );
         assertNotNull( account );
 
-        assertFalse( module.isUnitOfWorkActive() );
+        assertFalse( uowf.isUnitOfWorkActive() );
     }
 
     @Test
@@ -65,14 +65,14 @@ public final class IssueTest
         String id = newZestAccount();
 
         // Make sure there's no unit of work
-        assertFalse( module.isUnitOfWorkActive() );
+        assertFalse( uowf.isUnitOfWorkActive() );
 
-        UnitOfWork parentUnitOfWork = module.newUnitOfWork();
+        UnitOfWork parentUnitOfWork = uowf.newUnitOfWork();
 
         AccountComposite account = accountService.getAccountById( id );
         assertNotNull( account );
 
-        UnitOfWork currentUnitOfWork = module.currentUnitOfWork();
+        UnitOfWork currentUnitOfWork = uowf.currentUnitOfWork();
         assertEquals( parentUnitOfWork, currentUnitOfWork );
 
         assertTrue( currentUnitOfWork.isOpen() );

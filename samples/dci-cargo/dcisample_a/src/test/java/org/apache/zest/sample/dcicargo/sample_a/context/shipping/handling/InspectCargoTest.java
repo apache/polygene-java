@@ -17,6 +17,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.context.shipping.handling;
 
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -55,12 +56,14 @@ public class InspectCargoTest
     private Voyage V200T;
     private Voyage V300A;
     private HandlingEvent handlingEvent;
+    private UnitOfWorkFactory uowf;
 
     @Before
     public void beforeEachTest()
         throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        uowf = module.unitOfWorkFactory();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         SHANGHAI = uow.get( Location.class, CNSHA.code().get() );
@@ -89,7 +92,7 @@ public class InspectCargoTest
         throws Exception
     {
         // Create misdirected handling event for cargo (receipt in Shanghai is unexpected)
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 0 ), day( 0 ), trackingId, HandlingEventType.RECEIVE, SHANGHAI, null );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -106,7 +109,7 @@ public class InspectCargoTest
     public void deviation_3b_CargoHasArrived()
         throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 15 ), day( 15 ), trackingId, HandlingEventType.UNLOAD, STOCKHOLM, V300A );
         Delivery delivery = new BuildDeliverySnapshot( cargo, handlingEvent ).get();
@@ -124,7 +127,7 @@ public class InspectCargoTest
         throws Exception
     {
         logger.info( "  Handling cargo 'ABC' (unloaded in Dallas):" );
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         HandlingEventsEntity HANDLING_EVENTS = uow.get( HandlingEventsEntity.class, HandlingEventsEntity.HANDLING_EVENTS_ID );
         handlingEvent = HANDLING_EVENTS.createHandlingEvent( day( 12 ), day( 12 ), trackingId, HandlingEventType.UNLOAD, DALLAS, V200T );
         cargo.delivery().set( new BuildDeliverySnapshot( cargo, handlingEvent ).get() );

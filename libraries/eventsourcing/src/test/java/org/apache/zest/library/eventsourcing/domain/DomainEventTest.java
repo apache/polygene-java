@@ -78,7 +78,7 @@ public class DomainEventTest
         };
 
         // Perform UoW with usecase defined
-        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
+        UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Change description" ));
         uow.setMetaInfo( administratorPrincipal );
 
         TestEntity entity = uow.newEntity( TestEntity.class );

@@ -18,6 +18,7 @@ import java.beans.PropertyVetoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
@@ -68,7 +69,7 @@ public class DataSourceConfigurationManagerServiceTest
     public void testDataSources()
         throws ActivationException, AssemblyException
     {
-        SingletonAssembler assembler = new SingletonAssembler()
+        new SingletonAssembler()
         {
             @Override
             public void assemble( ModuleAssembly module )
@@ -79,11 +80,13 @@ public class DataSourceConfigurationManagerServiceTest
                 // Create in-memory store for configurations
                 new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module );
 
+                new DefaultUnitOfWorkAssembler().assemble( module );
+
                 // Set up DataSource service that will manage the connection pools
                 new DBCPDataSourceServiceAssembler().identifiedBy( "datasource-service" ).visibleIn( Visibility.layer ).assemble( module );
 
                 {
-                    ModuleAssembly testModule = module.layer().module( "TestDS" );
+                    ModuleAssembly testModule = module.layer().module( "TestDS" ).withDefaultUnitOfWorkFactory();
 
                     // Create a specific DataSource that uses the "datasource" service to do the main work
                     new DataSourceAssembler().
@@ -101,7 +104,7 @@ public class DataSourceConfigurationManagerServiceTest
                 }
 
                 {
-                    ModuleAssembly testModule2 = module.layer().module( "TestDS2" );
+                    ModuleAssembly testModule2 = module.layer().module( "TestDS2" ).withDefaultUnitOfWorkFactory();
 
                     // Create another specific DataSource that uses the "datasource" service to do the main work
                     // Use DataSourceAssembler to assemble the DataSource.

@@ -23,9 +23,9 @@ import org.apache.zest.api.common.AppliesTo;
 import org.apache.zest.api.concern.GenericConcern;
 import org.apache.zest.api.injection.scope.Invocation;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 
@@ -42,10 +42,10 @@ public class UnitOfWorkConcern
     private static final Class<?>[] DEFAULT_DISCARD_CLASSES = new Class[]{ Throwable.class };
 
     @Structure
-    Module module;
+    private UnitOfWorkFactory uowf;
 
     @Invocation
-    UnitOfWorkPropagation propagation;
+    private UnitOfWorkPropagation propagation;
 
     /**
      * Handles method with {@code UnitOfWorkPropagation} annotation.
@@ -65,7 +65,7 @@ public class UnitOfWorkConcern
         UnitOfWorkPropagation.Propagation propagationPolicy = propagation.value();
         if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRED )
         {
-            if( module.isUnitOfWorkActive() )
+            if( uowf.isUnitOfWorkActive() )
             {
                 //noinspection ConstantConditions
                 return next.invoke( proxy, method, args );
@@ -73,12 +73,12 @@ public class UnitOfWorkConcern
             else
             {
                 Usecase usecase = usecase();
-                return invokeWithCommit( proxy, method, args, module.newUnitOfWork( usecase ) );
+                return invokeWithCommit( proxy, method, args, uowf.newUnitOfWork( usecase ) );
             }
         }
         else if( propagationPolicy == UnitOfWorkPropagation.Propagation.MANDATORY )
         {
-            if( !module.isUnitOfWorkActive() )
+            if( !uowf.isUnitOfWorkActive() )
             {
                 throw new IllegalStateException( "UnitOfWork was required but there is no available unit of work." );
             }
@@ -86,7 +86,7 @@ public class UnitOfWorkConcern
         else if( propagationPolicy == UnitOfWorkPropagation.Propagation.REQUIRES_NEW )
         {
             Usecase usecase = usecase();
-            return invokeWithCommit( proxy, method, args, module.newUnitOfWork( usecase ) );
+            return invokeWithCommit( proxy, method, args, uowf.newUnitOfWork( usecase ) );
         }
         //noinspection ConstantConditions
         return next.invoke( proxy, method, args );
@@ -132,7 +132,7 @@ public class UnitOfWorkConcern
                     currentUnitOfWork.complete();
                     return result;
                 }
-                catch( UndeclaredThrowableException e)
+                catch( UndeclaredThrowableException e )
                 {
                     Throwable undeclared = e.getUndeclaredThrowable();
                     if( undeclared instanceof ConcurrentEntityModificationException )
@@ -173,9 +173,9 @@ public class UnitOfWorkConcern
         {
             throw e;
         }
-        module.currentUnitOfWork().discard();
+        uowf.currentUnitOfWork().discard();
         Thread.sleep( initialDelay + retry * delayFactor );
-        return module.newUnitOfWork( usecase() );
+        return uowf.newUnitOfWork( usecase() );
     }
 
     /**

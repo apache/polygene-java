@@ -19,8 +19,9 @@ package org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,8 @@ public abstract class Context
      *
      * All entities should be created through aggregate r
      */
-    private static Module module;
+    private static ValueBuilderFactory vbf;
+    private static UnitOfWorkFactory uowf;
 
     protected Context()
     {
@@ -122,22 +124,23 @@ public abstract class Context
 
     protected <T, U> T rolePlayer( Class<T> roleClass, Class<U> dataClass, String entityId )
     {
-        U dataObject = module.currentUnitOfWork().get( dataClass, entityId );
+        U dataObject = uowf.currentUnitOfWork().get( dataClass, entityId );
         return rolePlayer( roleClass, dataObject );
     }
 
     protected static <T> T loadEntity( Class<T> entityRoleClass, String entityId )
     {
-        return module.currentUnitOfWork().get( entityRoleClass, entityId );
+        return uowf.currentUnitOfWork().get( entityRoleClass, entityId );
     }
 
     protected static <T extends ValueComposite> ValueBuilder<T> valueBuilder( Class<T> valueClass )
     {
-        return module.newValueBuilder( valueClass );
+        return vbf.newValueBuilder( valueClass );
     }
 
-    public static void prepareContextBaseClass( Module module )
+    public static void prepareContextBaseClass( UnitOfWorkFactory uowf, ValueBuilderFactory vbf )
     {
-        Context.module = module;
+        Context.uowf = uowf;
+        Context.vbf = vbf;
     }
 }

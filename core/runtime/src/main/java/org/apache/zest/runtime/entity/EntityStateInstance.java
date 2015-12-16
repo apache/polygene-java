@@ -62,14 +62,7 @@ public final class EntityStateInstance
         this.stateModel = stateModel;
         this.entityState = entityState;
 
-        entityFunction = new BiFunction<EntityReference, Type, Object>()
-        {
-            @Override
-            public Object apply( EntityReference entityReference, Type type )
-            {
-                return uow.get( Classes.RAW_CLASS.apply( type ), entityReference.identity() );
-            }
-        };
+        entityFunction = ( entityReference, type ) -> uow.get( Classes.RAW_CLASS.apply( type ), entityReference.identity() );
     }
 
     @Override

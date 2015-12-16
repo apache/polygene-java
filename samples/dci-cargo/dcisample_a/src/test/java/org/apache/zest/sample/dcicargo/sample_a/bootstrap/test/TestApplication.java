@@ -17,6 +17,7 @@
  */
 package org.apache.zest.sample.dcicargo.sample_a.bootstrap.test;
 
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -58,7 +59,7 @@ public class TestApplication extends BaseData
     public TestApplication()
     {
         super(app.findModule( "BOOTSTRAP", "BOOTSTRAP-Bootstrap" ));
-        Context.prepareContextBaseClass( module );
+        Context.prepareContextBaseClass( module.unitOfWorkFactory() );
     }
 
     // Printing current test method name to console
@@ -71,20 +72,25 @@ public class TestApplication extends BaseData
     {
         logger.info( name.getMethodName() );
         Usecase usecase = UsecaseBuilder.newUsecase( "Usecase: " + name );
-        module.newUnitOfWork(usecase);
+        module.unitOfWorkFactory().newUnitOfWork(usecase);
     }
 
     @After
     public void concludeTest()
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        if( module == null )
+        {
+            return;
+        }
+        UnitOfWorkFactory uowf = module.unitOfWorkFactory();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         if( uow != null && uow.isOpen() )
             uow.discard();
-        if( module != null && module.isUnitOfWorkActive() )
+        if( uowf.isUnitOfWorkActive() )
         {
-            while( module.isUnitOfWorkActive() )
+            while( uowf.isUnitOfWorkActive() )
             {
-                uow = module.currentUnitOfWork();
+                uow = uowf.currentUnitOfWork();
                 if( uow.isOpen() )
                 {
                     System.err.println( "UnitOfWork not cleaned up:" + uow.usecase().name() );

@@ -19,6 +19,7 @@ package org.apache.zest.sample.dcicargo.sample_a.context.shipping.booking;
 
 import java.util.Date;
 import java.util.List;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -52,19 +53,20 @@ public class BookNewCargoTest
 {
 
     private static final Date TODAY = new Date();
+    private UnitOfWorkFactory uowf;
 
     @Before
     public void prepareTest()
         throws Exception
     {
         super.prepareTest();
-
+        uowf = module.unitOfWorkFactory();
     }
 
     @Test( expected = RouteException.class )
     public void deviation2a_OriginAndDestinationSame() throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
         new BookNewCargo( CARGOS, HONGKONG, HONGKONG, day( 17 ) ).book();
@@ -73,7 +75,7 @@ public class BookNewCargoTest
     @Test( expected = RouteException.class )
     public void deviation_2b_1_DeadlineInThePastNotAccepted() throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
@@ -83,7 +85,7 @@ public class BookNewCargoTest
     @Test( expected = RouteException.class )
     public void deviation_2b_2_DeadlineTodayIsTooEarly() throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
@@ -93,7 +95,7 @@ public class BookNewCargoTest
     @Test
     public void deviation_2b_3_DeadlineTomorrowIsOkay() throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
@@ -103,7 +105,7 @@ public class BookNewCargoTest
     @Test
     public void step_2_CreateNewCargo() throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
@@ -143,7 +145,7 @@ public class BookNewCargoTest
     @Test( expected = FoundNoRoutesException.class )
     public void deviation_3a_NoRoutesCanBeThatFast() throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
@@ -157,7 +159,7 @@ public class BookNewCargoTest
     @Test
     public void step_3_CalculatePossibleRoutes() throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );
@@ -187,7 +189,7 @@ public class BookNewCargoTest
     @Test
     public void step_5_AssignCargoToRoute() throws Exception
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         Location HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         Location STOCKHOLM = uow.get( Location.class, SESTO.code().get() );
         Cargos CARGOS = uow.get( Cargos.class, CargosEntity.CARGOS_ID );

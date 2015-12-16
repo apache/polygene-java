@@ -39,11 +39,12 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.ZestSPI;
-import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
 
 import static org.apache.zest.library.conversion.values.Shared.STRING_COLLECTION_TYPE_SPEC;
@@ -123,6 +124,9 @@ public class ValueToEntityMixin
 
     @Structure
     private ZestSPI spi;
+
+    @Structure
+    private UnitOfWorkFactory uowf;
 
     @Structure
     private ModuleSpi module;
@@ -299,7 +303,7 @@ public class ValueToEntityMixin
                 }
             }
         };
-        return module.currentUnitOfWork().newEntityBuilderWithState(
+        return uowf.currentUnitOfWork().newEntityBuilderWithState(
             entityType, identity, props, assocs, manyAssocs, namedAssocs
         );
     }
@@ -405,7 +409,7 @@ public class ValueToEntityMixin
                 }
             }
         };
-        return module.currentUnitOfWork().newEntityBuilderWithState(
+        return uowf.currentUnitOfWork().newEntityBuilderWithState(
             entityType, identity, props, assocs, manyAssocs, namedAssocs
         );
     }
@@ -484,7 +488,7 @@ public class ValueToEntityMixin
                         String assocId = (String) vState.propertyFor( vPropDesc.accessor() ).get();
                         if( assocId != null )
                         {
-                            eAssoc.set( module.currentUnitOfWork().get( (Class) eAssocDesc.type(), assocId ) );
+                            eAssoc.set( uowf.currentUnitOfWork().get( (Class) eAssocDesc.type(), assocId ) );
                         }
                         else
                         {
@@ -526,7 +530,7 @@ public class ValueToEntityMixin
                             for( String eachAssoc : vAssocState )
                             {
                                 eManyAssoc.add(
-                                    module.currentUnitOfWork().get( (Class) eAssocDesc.type(), eachAssoc )
+                                    uowf.currentUnitOfWork().get( (Class) eAssocDesc.type(), eachAssoc )
                                 );
                             }
                         }
@@ -570,7 +574,7 @@ public class ValueToEntityMixin
                             {
                                 eNamedAssoc.put(
                                     assocEntry.getKey(),
-                                    module.currentUnitOfWork().get( (Class) eAssocDesc.type(), assocEntry.getValue() )
+                                    uowf.currentUnitOfWork().get( (Class) eAssocDesc.type(), assocEntry.getValue() )
                                 );
                             }
                         }
@@ -624,7 +628,7 @@ public class ValueToEntityMixin
                         String assocId = (String) vState.propertyFor( vPropDesc.accessor() ).get();
                         if( assocId != null )
                         {
-                            eAssoc.set( module.currentUnitOfWork().get( (Class) eAssocDesc.type(), assocId ) );
+                            eAssoc.set( uowf.currentUnitOfWork().get( (Class) eAssocDesc.type(), assocId ) );
                         }
                         else
                         {
@@ -666,7 +670,7 @@ public class ValueToEntityMixin
                             vAssocState.forEach( eachAssoc ->
                             {
                                 eManyAssoc.add(
-                                    module.currentUnitOfWork().get( (Class<?>) eAssocDesc.type(), eachAssoc )
+                                    uowf.currentUnitOfWork().get( (Class<?>) eAssocDesc.type(), eachAssoc )
                                 );
                             } );
                         }
@@ -711,7 +715,7 @@ public class ValueToEntityMixin
                             {
                                 eNamedAssoc.put(
                                     assocEntry.getKey(),
-                                    module.currentUnitOfWork().get( (Class) eAssocDesc.type(), assocEntry.getValue() )
+                                    uowf.currentUnitOfWork().get( (Class) eAssocDesc.type(), assocEntry.getValue() )
                                 );
                             }
                         }

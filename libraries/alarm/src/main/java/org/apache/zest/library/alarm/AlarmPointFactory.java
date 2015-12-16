@@ -20,27 +20,32 @@ import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 
-@Mixins(AlarmPointFactory.Mixin.class)
+@Mixins( AlarmPointFactory.Mixin.class )
 public interface AlarmPointFactory extends ServiceComposite
 {
-    AlarmPoint create(String identity, String systemName, String categoryName, AlarmClass alarmClass );
-    
+    AlarmPoint create( String identity, String systemName, String categoryName, AlarmClass alarmClass );
+
     abstract class Mixin
-        implements AlarmPointFactory {
+        implements AlarmPointFactory
+    {
 
         @Structure
-        private Module module;
-        
+        private UnitOfWorkFactory uowf;
+
+        @Structure
+        private ValueBuilderFactory vbf;
+
         @Override
         public AlarmPoint create( String identity, String systemName, String categoryName, AlarmClass alarmClass )
         {
-            UnitOfWork uow = module.currentUnitOfWork();
+            UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<AlarmPoint> builder = uow.newEntityBuilder( AlarmPoint.class, identity );
-            builder.instance().category().set( createCategory(categoryName) );
+            builder.instance().category().set( createCategory( categoryName ) );
             builder.instance().alarmClass().set( alarmClass );
 
             AlarmPoint.AlarmState prototype = builder.instanceFor( AlarmPoint.AlarmState.class );
@@ -53,14 +58,14 @@ public interface AlarmPointFactory extends ServiceComposite
 
         private AlarmStatus createNormalAlarmStatus()
         {
-            ValueBuilder<AlarmStatus> builder = module.newValueBuilder( AlarmStatus.class );
-            builder.prototypeFor(AlarmStatus.State.class).name().set( AlarmPoint.STATUS_NORMAL );
+            ValueBuilder<AlarmStatus> builder = vbf.newValueBuilder( AlarmStatus.class );
+            builder.prototypeFor( AlarmStatus.State.class ).name().set( AlarmPoint.STATUS_NORMAL );
             return builder.newInstance();
         }
 
         private AlarmCategory createCategory( String categoryName )
         {
-            ValueBuilder<AlarmCategory> builder = module.newValueBuilder( AlarmCategory.class );
+            ValueBuilder<AlarmCategory> builder = vbf.newValueBuilder( AlarmCategory.class );
             builder.prototype().name().set( categoryName );
             return builder.newInstance();
         }

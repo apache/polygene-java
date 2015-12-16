@@ -33,9 +33,10 @@ import org.apache.zest.api.configuration.Configuration;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.query.QueryBuilder;
+import org.apache.zest.api.query.QueryBuilderFactory;
 import org.apache.zest.api.service.ServiceActivation;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.library.shiro.Shiro;
 import org.apache.zest.library.shiro.domain.permissions.RoleAssignee;
 import org.slf4j.Logger;
@@ -45,14 +46,17 @@ import static org.apache.zest.api.query.QueryExpressions.eq;
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
 
 public class PasswordRealmMixin
-        extends AuthorizingRealm
-        implements Realm, Authorizer, PasswordService, ServiceActivation
+    extends AuthorizingRealm
+    implements Realm, Authorizer, PasswordService, ServiceActivation
 {
 
     private static final Logger LOG = LoggerFactory.getLogger( Shiro.LOGGER_NAME );
 
     @Structure
-    private Module module;
+    private UnitOfWorkFactory uowf;
+
+    @Structure
+    private QueryBuilderFactory qbf;
 
     @This
     private Configuration<PasswordRealmConfiguration> configuration;
@@ -70,18 +74,21 @@ public class PasswordRealmMixin
 
     @Override
     public void activateService()
-            throws Exception
+        throws Exception
     {
         configuration.refresh();
         PasswordRealmConfiguration config = configuration.get();
         String algorithm = config.hashAlgorithmName().get();
         Integer iterations = config.hashIterationsCount().get();
-        if ( algorithm != null || iterations != null ) {
-            DefaultHashService hashService = ( DefaultHashService ) passwordService.getHashService();
-            if ( algorithm != null ) {
+        if( algorithm != null || iterations != null )
+        {
+            DefaultHashService hashService = (DefaultHashService) passwordService.getHashService();
+            if( algorithm != null )
+            {
                 hashService.setHashAlgorithmName( algorithm );
             }
-            if ( iterations != null ) {
+            if( iterations != null )
+            {
                 hashService.setHashIterations( iterations );
             }
         }
@@ -89,13 +96,13 @@ public class PasswordRealmMixin
 
     @Override
     public void passivateService()
-            throws Exception
+        throws Exception
     {
     }
 
     @Override
     public String encryptPassword( Object plaintextPassword )
-            throws IllegalArgumentException
+        throws IllegalArgumentException
     {
         return passwordService.encryptPassword( plaintextPassword );
     }
@@ -108,21 +115,25 @@ public class PasswordRealmMixin
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo( AuthenticationToken token )
-            throws AuthenticationException
+        throws AuthenticationException
     {
-        UnitOfWork uow = module.newUnitOfWork();
-        try {
+        UnitOfWork uow = uowf.newUnitOfWork();
+        try
+        {
 
-            String username = ( ( UsernamePasswordToken ) token ).getUsername();
+            String username = ( (UsernamePasswordToken) token ).getUsername();
             PasswordSecurable account = findPasswordSecurable( uow, username );
-            if ( account == null ) {
+            if( account == null )
+            {
                 LOG.debug( "Unknown subject identifier: {}" + username );
                 return null;
             }
             LOG.debug( "Found account for {}: {}", username, account );
-            return new SimpleAuthenticationInfo( account.subjectIdentifier().get(), account.password().get(), getName() );
-
-        } finally {
+            return new SimpleAuthenticationInfo( account.subjectIdentifier().get(), account.password()
+                .get(), getName() );
+        }
+        finally
+        {
             uow.discard();
         }
     }
@@ -130,12 +141,14 @@ public class PasswordRealmMixin
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo( PrincipalCollection principals )
     {
-        UnitOfWork uow = module.newUnitOfWork();
-        try {
+        UnitOfWork uow = uowf.newUnitOfWork();
+        try
+        {
 
             String username = getAvailablePrincipal( principals ).toString();
             RoleAssignee roleAssignee = findRoleAssignee( uow, username );
-            if ( roleAssignee == null ) {
+            if( roleAssignee == null )
+            {
                 LOG.debug( "No authorization info for {}", username );
                 return null;
             }
@@ -147,24 +160,24 @@ public class PasswordRealmMixin
             SimpleAuthorizationInfo atzInfo = new SimpleAuthorizationInfo( roleNames );
             atzInfo.setStringPermissions( permissionStrings );
             return atzInfo;
-
-        } finally {
+        }
+        finally
+        {
             uow.discard();
         }
     }
 
     private PasswordSecurable findPasswordSecurable( UnitOfWork uow, String username )
     {
-        QueryBuilder<PasswordSecurable> builder = module.newQueryBuilder( PasswordSecurable.class );
+        QueryBuilder<PasswordSecurable> builder = qbf.newQueryBuilder( PasswordSecurable.class );
         builder = builder.where( eq( templateFor( PasswordSecurable.class ).subjectIdentifier(), username ) );
         return uow.newQuery( builder ).find();
     }
 
     private RoleAssignee findRoleAssignee( UnitOfWork uow, String username )
     {
-        QueryBuilder<RoleAssignee> builder = module.newQueryBuilder( RoleAssignee.class );
+        QueryBuilder<RoleAssignee> builder = qbf.newQueryBuilder( RoleAssignee.class );
         builder = builder.where( eq( templateFor( RoleAssignee.class ).subjectIdentifier(), username ) );
         return uow.newQuery( builder ).find();
     }
-
 }

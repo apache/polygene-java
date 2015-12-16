@@ -16,9 +16,6 @@
 
 package org.apache.zest.runtime.transients;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.NoSuchTransientException;
 import org.apache.zest.api.composite.TransientBuilder;
@@ -30,19 +27,25 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TransientVisibilityTest
 {
     private Energy4Java zest;
     private Module module;
     private Application app;
+    private UnitOfWorkFactory uowf;
 
     @Before
     public void setup()
@@ -60,7 +63,7 @@ public class TransientVisibilityTest
                 { // Layer From
                   { // From Module
                     new FromAssembler(),
-                  },
+                    },
                   { // Beside Module
                     new BesideAssembler()
                   }
@@ -76,6 +79,7 @@ public class TransientVisibilityTest
         } );
         app.activate();
         module = app.findModule( "From Layer", "From" );
+        uowf = module.unitOfWorkFactory();
     }
 
     @After
@@ -172,7 +176,7 @@ public class TransientVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -190,7 +194,7 @@ public class TransientVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleLayerVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -208,7 +212,7 @@ public class TransientVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleModuleVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -226,7 +230,7 @@ public class TransientVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBesideApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -244,7 +248,7 @@ public class TransientVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBesideLayerVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -262,7 +266,7 @@ public class TransientVisibilityTest
     @Test( expected = NoSuchTransientException.class )
     public void givenFromEntityWhenAccessingBesideModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -280,7 +284,7 @@ public class TransientVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBelowApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -298,7 +302,7 @@ public class TransientVisibilityTest
     @Test( expected = NoSuchTransientException.class )
     public void givenFromEntityWhenAccessingBelowLayerVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -316,7 +320,7 @@ public class TransientVisibilityTest
     @Test( expected = NoSuchTransientException.class )
     public void givenFromEntityWhenAccessingBelowModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -334,7 +338,7 @@ public class TransientVisibilityTest
     @Test( expected = NoSuchTransientException.class )
     public void givenFromEntityWhenAccessingAboveApplicationVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -352,7 +356,7 @@ public class TransientVisibilityTest
     @Test( expected = NoSuchTransientException.class )
     public void givenFromEntityWhenAccessingAboveLayerVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -370,7 +374,7 @@ public class TransientVisibilityTest
     @Test( expected = NoSuchTransientException.class )
     public void givenFromEntityWhenAccessingAboveModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -655,6 +659,8 @@ public class TransientVisibilityTest
             module.transients( ModuleApplicationVisible.class ).visibleIn( Visibility.application );
             module.transients( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
             module.transients( ModuleModuleVisible.class ).visibleIn( Visibility.module );
+
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -672,6 +678,8 @@ public class TransientVisibilityTest
             module.transients( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             new EntityTestAssembler().visibleIn( Visibility.application ).assemble( module );
+
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -687,6 +695,8 @@ public class TransientVisibilityTest
             module.transients( AboveApplicationVisible.class ).visibleIn( Visibility.application );
             module.transients( AboveLayerVisible.class ).visibleIn( Visibility.layer );
             module.transients( AboveModuleVisible.class ).visibleIn( Visibility.module );
+
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -701,6 +711,8 @@ public class TransientVisibilityTest
             module.transients( BesideApplicationVisible.class ).visibleIn( Visibility.application );
             module.transients( BesideLayerVisible.class ).visibleIn( Visibility.layer );
             module.transients( BesideModuleVisible.class ).visibleIn( Visibility.module );
+
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 

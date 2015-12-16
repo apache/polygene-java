@@ -14,7 +14,6 @@
 
 package org.apache.zest.runtime.unitofwork;
 
-import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -31,17 +30,14 @@ import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
-import org.apache.zest.bootstrap.ApplicationAssembler;
-import org.apache.zest.bootstrap.ApplicationAssembly;
-import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.Assembler;
-import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
-import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Test;
 
-import static org.junit.Assert.fail;
 import static org.apache.zest.api.common.Visibility.application;
+import static org.junit.Assert.fail;
 
 /**
  * JAVADOC
@@ -58,42 +54,29 @@ public class PrivateEntityUnitOfWorkTest
         System.setProperty( "zest.compacttrace", "off" );
 
         Energy4Java is = new Energy4Java();
-        Application app = is.newApplication( new ApplicationAssembler()
-        {
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                return applicationFactory.newApplicationAssembly( new Assembler[][][]{
+        Application app = is.newApplication(
+            applicationFactory ->
+                applicationFactory.newApplicationAssembly( new Assembler[][][]{
                     {
                         {
-                            new Assembler()
-                            {
-                                public void assemble( ModuleAssembly module )
-                                    throws AssemblyException
-                                {
-                                    module.objects( PrivateEntityUnitOfWorkTest.class );
-                                }
+                            module -> {
+                                module.objects( PrivateEntityUnitOfWorkTest.class );
+                                new DefaultUnitOfWorkAssembler().assemble( module );
                             }
                         }
                     },
                     {
                         {
-                            new Assembler()
-                            {
-                                public void assemble( ModuleAssembly module )
-                                    throws AssemblyException
-                                {
-                                    module.entities( ProductEntity.class );
-                                    module.entities( ProductCatalogEntity.class ).visibleIn( application );
-                                    module.values( ProductInfo.class );
-                                    new EntityTestAssembler().assemble( module );
-                                }
+                            module -> {
+                                module.entities( ProductEntity.class );
+                                module.entities( ProductCatalogEntity.class ).visibleIn( application );
+                                module.values( ProductInfo.class );
+                                new EntityTestAssembler().assemble( module );
+                                new DefaultUnitOfWorkAssembler().assemble( module );
                             }
                         }
                     }
-                } );
-            }
-        } );
+                } ) );
         app.activate();
 
         Module module = app.findModule( "Layer 1", "Module 1" );
@@ -126,7 +109,7 @@ public class PrivateEntityUnitOfWorkTest
             unitOfWork.discard();
         }
 
-        unitOfWork = module.newUnitOfWork();
+        unitOfWork = uowf.newUnitOfWork();
         try
         {
             ProductCatalog catalog = unitOfWork.get( ProductCatalog.class, "1" );

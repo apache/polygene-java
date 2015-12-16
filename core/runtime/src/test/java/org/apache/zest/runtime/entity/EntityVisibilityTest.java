@@ -16,6 +16,8 @@
 
 package org.apache.zest.runtime.entity;
 
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +45,7 @@ public class EntityVisibilityTest
     private Energy4Java zest;
     private Module module;
     private Application app;
+    private UnitOfWorkFactory uowf;
 
     @Before
     public void setup()
@@ -76,6 +79,7 @@ public class EntityVisibilityTest
         } );
         app.activate();
         module = app.findModule( "From Layer", "From" );
+        uowf = module.unitOfWorkFactory();
     }
 
     @After
@@ -172,7 +176,7 @@ public class EntityVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -190,7 +194,7 @@ public class EntityVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleLayerVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -208,7 +212,7 @@ public class EntityVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingModuleModuleVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -226,7 +230,7 @@ public class EntityVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBesideApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -244,7 +248,7 @@ public class EntityVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBesideLayerVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -262,7 +266,7 @@ public class EntityVisibilityTest
     @Test( expected = EntityTypeNotFoundException.class )
     public void givenFromEntityWhenAccessingBesideModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -280,7 +284,7 @@ public class EntityVisibilityTest
     @Test
     public void givenFromEntityWhenAccessingBelowApplicationVisibleExpectSuccess()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -298,7 +302,7 @@ public class EntityVisibilityTest
     @Test( expected = EntityTypeNotFoundException.class )
     public void givenFromEntityWhenAccessingBelowLayerVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -316,7 +320,7 @@ public class EntityVisibilityTest
     @Test( expected = EntityTypeNotFoundException.class )
     public void givenFromEntityWhenAccessingBelowModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -334,7 +338,7 @@ public class EntityVisibilityTest
     @Test( expected = EntityTypeNotFoundException.class )
     public void givenFromEntityWhenAccessingAboveApplicationVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -352,7 +356,7 @@ public class EntityVisibilityTest
     @Test( expected = EntityTypeNotFoundException.class )
     public void givenFromEntityWhenAccessingAboveLayerVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -370,7 +374,7 @@ public class EntityVisibilityTest
     @Test( expected = EntityTypeNotFoundException.class )
     public void givenFromEntityWhenAccessingAboveModuleVisibleExpectException()
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             FromEntity entity = unitOfWork.newEntity( FromEntity.class, "123" );
@@ -655,6 +659,7 @@ public class EntityVisibilityTest
             module.entities( ModuleApplicationVisible.class ).visibleIn( Visibility.application );
             module.entities( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
             module.entities( ModuleModuleVisible.class ).visibleIn( Visibility.module );
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -672,6 +677,7 @@ public class EntityVisibilityTest
             module.entities( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             new EntityTestAssembler().visibleIn( Visibility.application ).assemble( module );
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -687,6 +693,7 @@ public class EntityVisibilityTest
             module.entities( AboveApplicationVisible.class ).visibleIn( Visibility.application );
             module.entities( AboveLayerVisible.class ).visibleIn( Visibility.layer );
             module.entities( AboveModuleVisible.class ).visibleIn( Visibility.module );
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -701,6 +708,7 @@ public class EntityVisibilityTest
             module.entities( BesideApplicationVisible.class ).visibleIn( Visibility.application );
             module.entities( BesideLayerVisible.class ).visibleIn( Visibility.layer );
             module.entities( BesideModuleVisible.class ).visibleIn( Visibility.module );
+            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -756,12 +764,12 @@ public class EntityVisibilityTest
         implements From
     {
         @Structure
-        private Module module;
+        private UnitOfWorkFactory uowf;
 
         @Override
         public void moduleApplicationVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 ModuleApplicationVisible entity = uow.newEntity( ModuleApplicationVisible.class );
@@ -778,7 +786,7 @@ public class EntityVisibilityTest
         @Override
         public void moduleLayerVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 ModuleLayerVisible entity = uow.newEntity( ModuleLayerVisible.class );
@@ -795,7 +803,7 @@ public class EntityVisibilityTest
         @Override
         public void moduleModuleVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 ModuleModuleVisible entity = uow.newEntity( ModuleModuleVisible.class );
@@ -812,7 +820,7 @@ public class EntityVisibilityTest
         @Override
         public void besideApplicationVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 BesideApplicationVisible entity = uow.newEntity( BesideApplicationVisible.class );
@@ -829,7 +837,7 @@ public class EntityVisibilityTest
         @Override
         public void besideLayerVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 BesideLayerVisible entity = uow.newEntity( BesideLayerVisible.class );
@@ -846,7 +854,7 @@ public class EntityVisibilityTest
         @Override
         public void besideModuleVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 BesideModuleVisible entity = uow.newEntity( BesideModuleVisible.class );
@@ -863,7 +871,7 @@ public class EntityVisibilityTest
         @Override
         public void belowApplicationVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 BelowApplicationVisible entity = uow.newEntity( BelowApplicationVisible.class );
@@ -880,7 +888,7 @@ public class EntityVisibilityTest
         @Override
         public void belowLayerVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 BelowLayerVisible entity = uow.newEntity( BelowLayerVisible.class );
@@ -897,7 +905,7 @@ public class EntityVisibilityTest
         @Override
         public void belowModuleVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 BelowModuleVisible entity = uow.newEntity( BelowModuleVisible.class );
@@ -914,7 +922,7 @@ public class EntityVisibilityTest
         @Override
         public void aboveApplicationVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 AboveApplicationVisible entity = uow.newEntity( AboveApplicationVisible.class );
@@ -931,7 +939,7 @@ public class EntityVisibilityTest
         @Override
         public void aboveLayerVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 AboveLayerVisible entity = uow.newEntity( AboveLayerVisible.class );
@@ -948,7 +956,7 @@ public class EntityVisibilityTest
         @Override
         public void aboveModuleVisible()
         {
-            UnitOfWork uow = module.newUnitOfWork();
+            UnitOfWork uow = uowf.newUnitOfWork();
             try
             {
                 AboveModuleVisible entity = uow.newEntity( AboveModuleVisible.class );

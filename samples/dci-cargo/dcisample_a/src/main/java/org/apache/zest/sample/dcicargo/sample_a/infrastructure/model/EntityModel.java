@@ -67,10 +67,10 @@ public class EntityModel<T extends DTO, U extends EntityComposite>
 
     private U loadEntity()
     {
-        U entity = module.currentUnitOfWork().get( entityClass, identity );
+        U entity = module.unitOfWorkFactory().currentUnitOfWork().get( entityClass, identity );
         if( entity == null )
         {
-            Usecase usecase = module.currentUnitOfWork().usecase();
+            Usecase usecase = module.unitOfWorkFactory().currentUnitOfWork().usecase();
             throw new NoSuchEntityException( EntityReference.parseEntityReference( identity ), entityClass, usecase );
         }
         return entity;

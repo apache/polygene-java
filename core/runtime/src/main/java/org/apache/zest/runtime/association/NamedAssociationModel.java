@@ -45,12 +45,9 @@ import org.apache.zest.functional.Visitor;
 import org.apache.zest.runtime.composite.ValueConstraintsInstance;
 import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
-import org.apache.zest.runtime.structure.ModuleUnitOfWork;
+import org.apache.zest.runtime.unitofwork.ModuleUnitOfWork;
 import org.apache.zest.runtime.unitofwork.BuilderEntityState;
 import org.apache.zest.spi.entity.EntityState;
-
-import static org.apache.zest.functional.Iterables.empty;
-import static org.apache.zest.functional.Iterables.first;
 
 /**
  * Model for a NamedAssociation.

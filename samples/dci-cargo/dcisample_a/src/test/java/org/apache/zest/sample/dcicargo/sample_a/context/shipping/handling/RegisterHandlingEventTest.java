@@ -64,7 +64,7 @@ public class RegisterHandlingEventTest
 
     @Before
     public void beforeEachTest() throws Exception {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = module.unitOfWorkFactory().currentUnitOfWork();
         CARGOS = uow.get(Cargos.class,  CargosEntity.CARGOS_ID );
         HONGKONG = uow.get( Location.class, CNHKG.code().get() );
         STOCKHOLM = uow.get( Location.class, SESTO.code().get() );

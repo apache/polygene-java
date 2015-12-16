@@ -17,6 +17,7 @@
  */
 package org.apache.zest.regression.qi382;
 
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.entity.EntityBuilder;
@@ -26,7 +27,6 @@ import org.apache.zest.api.entity.LifecycleException;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.value.ValueSerialization;
@@ -56,12 +56,12 @@ public class Qi382Test extends AbstractZestTest
     public void givenCreationOfTwoEntitiesWhenAssigningOneToOtherExpectCompletionToSucceed()
         throws UnitOfWorkCompletionException
     {
-        try( UnitOfWork unitOfWork = module.newUnitOfWork() )
+        try( UnitOfWork unitOfWork = uowf.newUnitOfWork() )
         {
             Car car = unitOfWork.newEntity( Car.class, "Ferrari" );
             unitOfWork.complete();
         }
-        try( UnitOfWork unitOfWork = module.newUnitOfWork() )
+        try( UnitOfWork unitOfWork = uowf.newUnitOfWork() )
         {
             Car car = unitOfWork.get( Car.class, "Ferrari" );
             assertThat( car, notNullValue() );
@@ -81,13 +81,13 @@ public class Qi382Test extends AbstractZestTest
             private Car me;
 
             @Structure
-            private Module module;
+            private UnitOfWorkFactory uowf;
 
             @Override
             public void create()
                 throws LifecycleException
             {
-                UnitOfWork unitOfWork = module.currentUnitOfWork();
+                UnitOfWork unitOfWork = uowf.currentUnitOfWork();
                 EntityBuilder<Person> builder = unitOfWork.newEntityBuilder( Person.class, "Niclas" );
                 builder.instance().car().set( me );
                 builder.newInstance();

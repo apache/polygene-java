@@ -49,7 +49,7 @@ public class Qi66IssueTest
     {
         String accountIdentity = newZestAccount();
 
-        UnitOfWork work = module.newUnitOfWork();
+        UnitOfWork work = uowf.newUnitOfWork();
         AccountComposite account = work.get( AccountComposite.class, accountIdentity );
         assertNotNull( account );
 
@@ -74,7 +74,7 @@ public class Qi66IssueTest
     private String newZestAccount()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork work = module.newUnitOfWork();
+        UnitOfWork work = uowf.newUnitOfWork();
         EntityBuilder<AccountComposite> entityBuilder = work.newEntityBuilder( AccountComposite.class );
         AccountComposite accountComposite = entityBuilder.instance();
         accountComposite.name().set( ACCOUNT_NAME );

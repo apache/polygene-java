@@ -50,7 +50,7 @@ public class BookNewCargoTest extends TestApplication
         throws Exception
     {
         super.prepareTest();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         CARGOS = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
     }
 
@@ -101,7 +101,7 @@ public class BookNewCargoTest extends TestApplication
         throws Exception
     {
         deviation_2b_DeadlineTomorrowIsOkay();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).getTrackingId();
         cargo = uow.get( CargoEntity.class, trackingId.id().get() );
         assertThat( cargo.routeSpecification().get().origin().get(), is( equalTo( HONGKONG ) ) );
@@ -114,7 +114,7 @@ public class BookNewCargoTest extends TestApplication
         throws Exception
     {
         step_2_CanCreateRouteSpecification();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).getTrackingId();
         cargo = uow.get( CargoEntity.class, trackingId.id().get() );
         assertDelivery( null, null, null, null,
@@ -137,7 +137,7 @@ public class BookNewCargoTest extends TestApplication
         throws Exception
     {
         deviation_4a_TrackingIdTooShort();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "yes" );
         cargo = uow.get( CargoEntity.class, trackingId.id().get() );
         assertThat( cargo.trackingId().get().id().get(), is( equalTo( "yes" ) ) );
@@ -157,7 +157,7 @@ public class BookNewCargoTest extends TestApplication
         throws Exception
     {
         deviation_4a_TrackingIdTooLong();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "123456789012345678901234567890" );
         cargo = uow.get( CargoEntity.class, trackingId.id().get() );
         assertThat( cargo.trackingId().get().id().get(), is( equalTo( "123456789012345678901234567890" ) ) );
@@ -202,7 +202,7 @@ public class BookNewCargoTest extends TestApplication
         throws Exception
     {
         step_4_CanAutoCreateTrackingIdFromNull();
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         trackingId = new BookNewCargo( CARGOS, HONGKONG, STOCKHOLM, DAY24 ).withTrackingId( "ABC" );
         cargo = uow.get( CargoEntity.class, trackingId.id().get() );
 

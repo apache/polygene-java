@@ -82,7 +82,7 @@ public class AbstractAnyQueryTest
         super.setUp();
         TestData.populate( module );
 
-        this.unitOfWork = this.module.newUnitOfWork();
+        this.unitOfWork = this.module.unitOfWorkFactory().newUnitOfWork();
     }
 
 

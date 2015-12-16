@@ -19,6 +19,8 @@
 package org.apache.zest.api;
 
 import java.util.function.Predicate;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
@@ -58,10 +60,12 @@ public class OperatorsTest
                 module.values( TestValue.class );
                 module.forMixin( TestEntity.class ).declareDefaults().foo().set( "Bar" );
                 module.forMixin( TestValue.class ).declareDefaults().bar().set( "Xyz" );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 
-        UnitOfWork uow = assembler.module().newUnitOfWork();
+        UnitOfWorkFactory uowf = assembler.module().unitOfWorkFactory();
+        UnitOfWork uow = uowf.newUnitOfWork();
 
         try
         {
@@ -70,7 +74,7 @@ public class OperatorsTest
             TestEntity testEntity = entityBuilder.newInstance();
 
             uow.complete();
-            uow = assembler.module().newUnitOfWork();
+            uow = uowf.newUnitOfWork();
 
             Iterable<TestEntity> entities = Iterables.iterable( testEntity = uow.get( testEntity ) );
 

@@ -43,6 +43,7 @@ class AccountModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
+        module.withDefaultUnitOfWorkFactory();
         module.entities( Account.class, Domain.class ).visibleIn( Visibility.layer );
         module.values( File.class, Host.class, Port.class, Protocol.class, QueryParam.class, URL.class )
             .visibleIn( Visibility.layer );

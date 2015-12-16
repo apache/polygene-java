@@ -35,7 +35,7 @@ public class JSONModel<T, U extends ValueComposite>
     @SuppressWarnings( "unchecked" )
     public JSONModel( T valueComposite, Class<U> valueCompositeClass )
     {
-        json = module.findService( ValueSerializer.class ).get().serialize( (U) valueComposite );;
+        json = serviceFinder.findService( ValueSerializer.class ).get().serialize( (U) valueComposite );;
         this.valueCompositeClass = valueCompositeClass;
     }
 
@@ -59,7 +59,7 @@ public class JSONModel<T, U extends ValueComposite>
         if( valueComposite == null && json != null )
         {
             // De-serialize
-            valueComposite = (T) module.newValueFromSerializedState( valueCompositeClass, json ); // Unchecked cast
+            valueComposite = (T) vbf.newValueFromSerializedState( valueCompositeClass, json ); // Unchecked cast
         }
         return valueComposite;
     }

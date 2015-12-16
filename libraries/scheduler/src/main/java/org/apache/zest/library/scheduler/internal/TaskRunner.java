@@ -24,11 +24,11 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.locks.ReentrantLock;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.UsecaseBuilder;
-import org.apache.zest.library.scheduler.Task;
 import org.apache.zest.library.scheduler.Schedule;
+import org.apache.zest.library.scheduler.Task;
 
 public class TaskRunner
     implements Runnable
@@ -36,7 +36,7 @@ public class TaskRunner
     private static ReentrantLock lock = new ReentrantLock();
 
     @Structure
-    private Module module;
+    private UnitOfWorkFactory uowf;
 
     @Uses
     private ScheduleTime schedule;
@@ -45,7 +45,7 @@ public class TaskRunner
     public void run()
     {
         // TODO: (niclas) I am NOT happy with this implementation, requiring 3 UnitOfWorks to be created. 15-20 milliseconds on my MacBook. If there is a better way to detect overrun, two of those might not be needed.
-        UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner initialize" ) );
+        UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner initialize" ) );
         try
         {
             lock.lock();
@@ -58,14 +58,14 @@ public class TaskRunner
                     schedule.running().set( true );
                     uow.complete();                     // This completion is needed to detect overrun
 
-                    uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner" ) );
+                    uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner" ) );
                     schedule = uow.get( schedule );     // re-attach the entity to the new UnitOfWork
                     Task task = schedule.task().get();
                     lock.unlock();
                     task.run();
                     lock.lock();
                     uow.complete();
-                    uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner conclude" ) );
+                    uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Task Runner conclude" ) );
                     schedule = uow.get( schedule );     // re-attach the entity to the new UnitOfWork
                     schedule.running().set( false );
                     schedule.taskCompletedSuccessfully();

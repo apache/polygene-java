@@ -48,9 +48,6 @@ import static org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation.Propa
  * any ordinary {@link org.apache.zest.api.entity.EntityComposite}. There is also a {@link Schedules}
  * entity composite that has Associations to all active, completed and cancelled schedules.
  * </p>
- * <p>
- *
- * </p>
  */
 @Concerns( UnitOfWorkConcern.class )
 public interface Scheduler

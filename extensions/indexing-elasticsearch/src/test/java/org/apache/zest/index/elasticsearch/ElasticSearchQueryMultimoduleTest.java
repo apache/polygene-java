@@ -25,6 +25,7 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.index.elasticsearch.assembly.ESFilesystemIndexQueryAssembler;
 import org.apache.zest.library.fileconfig.FileConfigurationOverride;
 import org.apache.zest.library.fileconfig.FileConfigurationService;
@@ -46,6 +47,7 @@ public class ElasticSearchQueryMultimoduleTest extends ElasticSearchQueryTest
 
         module = module.layer().module( "module2" );
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module );
+        new DefaultUnitOfWorkAssembler().assemble( module );
 
         // Config module
         LayerAssembly configLayer = module.layer().application().layer( "config" );

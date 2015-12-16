@@ -40,6 +40,7 @@ public class TestExecutionModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
+        module.withDefaultUnitOfWorkFactory();
         module.objects( testClass ).visibleIn( Visibility.layer );
         return module;
     }

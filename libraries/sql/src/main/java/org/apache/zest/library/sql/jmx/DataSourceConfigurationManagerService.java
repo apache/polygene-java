@@ -54,6 +54,7 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.library.sql.datasource.DataSourceConfiguration;
 import org.apache.zest.spi.ZestSPI;
 
@@ -98,7 +99,7 @@ public interface DataSourceConfigurationManagerService
     {
 
         @Structure
-        Module module;
+        UnitOfWorkFactory uowf;
 
         @Service
         MBeanServer server;
@@ -177,7 +178,7 @@ public interface DataSourceConfigurationManagerService
             public Object getAttribute( String name )
                     throws AttributeNotFoundException, MBeanException, ReflectionException
             {
-                UnitOfWork uow = module.newUnitOfWork();
+                UnitOfWork uow = uowf.newUnitOfWork();
                 try {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
                     AssociationStateHolder state = spi.stateOf( configuration );
@@ -195,7 +196,7 @@ public interface DataSourceConfigurationManagerService
             public void setAttribute( Attribute attribute )
                     throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException
             {
-                UnitOfWork uow = module.newUnitOfWork();
+                UnitOfWork uow = uowf.newUnitOfWork();
                 try {
                     EntityComposite configuration = uow.get( EntityComposite.class, identity );
                     AssociationStateHolder state = spi.stateOf( configuration );

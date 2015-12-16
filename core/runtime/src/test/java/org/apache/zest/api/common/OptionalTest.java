@@ -95,7 +95,7 @@ public class OptionalTest
     public void givenOptionalAssociationWhenOptionalMissingThenNoException()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             TestComposite4 ref = unitOfWork.newEntity( TestComposite4.class );
@@ -116,7 +116,7 @@ public class OptionalTest
     public void givenOptionalAssociationWhenOptionalSetThenNoException()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             TestComposite4 ref = unitOfWork.newEntity( TestComposite4.class );
@@ -138,7 +138,7 @@ public class OptionalTest
     public void givenMandatoryAssociationWhenMandatoryMissingThenException()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             TestComposite4 ref = unitOfWork.newEntity( TestComposite4.class );

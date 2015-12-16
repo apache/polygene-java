@@ -23,14 +23,14 @@ package org.apache.zest.library.scheduler.defaults;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.library.scheduler.SchedulerService;
-import org.apache.zest.library.scheduler.Task;
-import org.apache.zest.library.scheduler.Schedule;
-import org.apache.zest.library.scheduler.ScheduleFactory;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.library.scheduler.CronSchedule;
 import org.apache.zest.library.scheduler.OnceSchedule;
+import org.apache.zest.library.scheduler.Schedule;
+import org.apache.zest.library.scheduler.ScheduleFactory;
+import org.apache.zest.library.scheduler.SchedulerService;
+import org.apache.zest.library.scheduler.Task;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public class DefaultScheduleFactoryMixin
     private static final Logger logger = LoggerFactory.getLogger( ScheduleFactory.class );
 
     @Structure
-    private Module module;
+    private UnitOfWorkFactory uowf;
 
     @Service
     private SchedulerService scheduler;
@@ -64,7 +64,7 @@ public class DefaultScheduleFactoryMixin
 
     private CronSchedule newPersistentCronSchedule( Task task, String cronExpression, DateTime start )
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         EntityBuilder<CronSchedule> builder = uow.newEntityBuilder( CronSchedule.class );
         CronSchedule instance = builder.instance();
         instance.task().set( task );
@@ -78,7 +78,7 @@ public class DefaultScheduleFactoryMixin
 
     private Schedule newPersistentOnceSchedule( Task task, DateTime runAt )
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         EntityBuilder<OnceSchedule> builder = uow.newEntityBuilder( OnceSchedule.class );
         OnceSchedule builderInstance = builder.instance();
         builderInstance.task().set( task );

@@ -14,6 +14,9 @@
 
 package org.apache.zest.test;
 
+import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
 import org.junit.Before;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -30,6 +33,9 @@ import org.apache.zest.spi.module.ModuleSpi;
 public abstract class AbstractZestTest extends AbstractZestBaseTest
     implements Assembler
 {
+    @Structure
+    protected UnitOfWorkFactory uowf;
+
     protected ModuleSpi module;
 
     @Before
@@ -52,6 +58,7 @@ public abstract class AbstractZestTest extends AbstractZestBaseTest
     {
         LayerAssembly layer = applicationAssembly.layer( "Layer 1" );
         ModuleAssembly module = layer.module( "Module 1" );
+        new DefaultUnitOfWorkAssembler().assemble( module );
         module.objects( AbstractZestTest.this.getClass() );
         assemble( module );
     }
@@ -61,11 +68,11 @@ public abstract class AbstractZestTest extends AbstractZestBaseTest
     public void tearDown()
         throws Exception
     {
-        if( module != null && module.isUnitOfWorkActive() )
+        if( uowf != null && uowf.isUnitOfWorkActive() )
         {
-            while( module.isUnitOfWorkActive() )
+            while( uowf.isUnitOfWorkActive() )
             {
-                UnitOfWork uow = module.currentUnitOfWork();
+                UnitOfWork uow = uowf.currentUnitOfWork();
                 if( uow.isOpen() )
                 {
                     System.err.println( "UnitOfWork not cleaned up:" + uow.usecase().name() );

@@ -22,23 +22,23 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.apache.zest.api.activation.ActivatorAdapter;
 import org.apache.zest.api.activation.Activators;
+import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
+import org.apache.zest.api.query.QueryBuilderFactory;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueBuilder;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.booking.BookNewCargo;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.booking.routing.AssignCargoToRoute;
 import org.apache.zest.sample.dcicargo.sample_b.context.interaction.handling.ProcessHandlingEvent;
@@ -55,6 +55,9 @@ import org.apache.zest.sample.dcicargo.sample_b.data.structure.itinerary.Itinera
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.location.Location;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.CarrierMovement;
 import org.apache.zest.sample.dcicargo.sample_b.data.structure.voyage.Voyage;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,8 +74,8 @@ import static org.apache.zest.sample.dcicargo.sample_b.infrastructure.dci.Contex
  *
  * Add more cases if needed in the loop below.
  */
-@Mixins(SampleDataService.Mixin.class)
-@Activators(SampleDataService.Activator.class)
+@Mixins( SampleDataService.Mixin.class )
+@Activators( SampleDataService.Activator.class )
 public interface SampleDataService
     extends ServiceComposite
 {
@@ -91,11 +94,20 @@ public interface SampleDataService
         }
     }
 
-    public abstract class Mixin
+    abstract class Mixin
         implements SampleDataService
     {
         @Structure
-        Module module;
+        UnitOfWorkFactory uowf;
+
+        @Structure
+        ValueBuilderFactory vbf;
+
+        @Structure
+        QueryBuilderFactory qbf;
+
+        @Structure
+        TransientBuilderFactory tbf;
 
         @Service
         RoutingService routingService;
@@ -112,7 +124,7 @@ public interface SampleDataService
         public void insertSampleData()
             throws Exception
         {
-            prepareContextBaseClass( module );
+            prepareContextBaseClass( uowf, vbf );
 
             logger.info( "######  CREATING SAMPLE DATA...  ##########################################" );
 
@@ -120,11 +132,11 @@ public interface SampleDataService
             populateRandomCargos( 12 );
 
             // Handle cargos
-            UnitOfWork uow = module.newUnitOfWork( newUsecase( "Create sample data" ) );
+            UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "Create sample data" ) );
             try
             {
                 int i = 11; // starting at 11 for sortable tracking id prefix in lists
-                QueryBuilder<Cargo> qb = module.newQueryBuilder( Cargo.class );
+                QueryBuilder<Cargo> qb = qbf.newQueryBuilder( Cargo.class );
                 for( Cargo cargo : uow.newQuery( qb ) )
 
                 {
@@ -157,7 +169,7 @@ public interface SampleDataService
                         Location origin = routeSpec.origin().get();
                         Location dest = routeSpec.destination().get();
                         Location badDest = null;
-                        Query<Location> locations = uow.newQuery( module.newQueryBuilder( Location.class ) );
+                        Query<Location> locations = uow.newQuery( qbf.newQueryBuilder( Location.class ) );
                         for( Location loc : locations )
                         {
                             if( !origin.equals( loc ) && !dest.equals( loc ) )
@@ -193,8 +205,8 @@ public interface SampleDataService
                         voyageNumber = nextEvent.voyage().get().voyageNumber().get().number().get();
 
                         // Find earliest wrong carrier movement (voyage) with same departure location
-                        final Query<Voyage> voyages = module.currentUnitOfWork()
-                            .newQuery( module.newQueryBuilder( Voyage.class ) );
+                        final Query<Voyage> voyages = uowf.currentUnitOfWork()
+                            .newQuery( qbf.newQueryBuilder( Voyage.class ) );
                         int depth = 0;
                         do
                         {
@@ -341,11 +353,11 @@ public interface SampleDataService
         private void populateRandomCargos( int numberOfCargos )
         {
             Usecase usecase = UsecaseBuilder.newUsecase( "Populate Random Cargos" );
-            UnitOfWork uow = module.newUnitOfWork( usecase );
+            UnitOfWork uow = uowf.newUnitOfWork( usecase );
 
             CargoAggregateRoot cargos = uow.get( CargoAggregateRoot.class, CargoAggregateRoot.CARGOS_ID );
 
-            Query<Location> allLocations = uow.newQuery( module.newQueryBuilder( Location.class ) );
+            Query<Location> allLocations = uow.newQuery( qbf.newQueryBuilder( Location.class ) );
             int locationSize = (int) allLocations.count();
 
             // Make array for selection of location with random index
@@ -402,7 +414,7 @@ public interface SampleDataService
         )
             throws Exception
         {
-            ValueBuilder<ParsedHandlingEventData> event = module.newValueBuilder( ParsedHandlingEventData.class );
+            ValueBuilder<ParsedHandlingEventData> event = vbf.newValueBuilder( ParsedHandlingEventData.class );
             event.prototype().registrationTime().set( registrationTime );
             event.prototype().completionTime().set( completionTime );
             event.prototype().trackingIdString().set( trackingIdString );
@@ -410,7 +422,7 @@ public interface SampleDataService
             event.prototype().unLocodeString().set( unLocodeString );
             event.prototype().voyageNumberString().set( voyageNumberString );
 
-            module.newTransient( ProcessHandlingEvent.class ).register( event.newInstance() );
+            tbf.newTransient( ProcessHandlingEvent.class ).register( event.newInstance() );
         }
     }
 }

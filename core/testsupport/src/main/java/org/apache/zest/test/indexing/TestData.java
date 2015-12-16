@@ -22,10 +22,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.zest.test.indexing.model.Dog;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -42,6 +38,9 @@ import org.apache.zest.test.indexing.model.Person;
 import org.apache.zest.test.indexing.model.Protocol;
 import org.apache.zest.test.indexing.model.QueryParam;
 import org.apache.zest.test.indexing.model.URL;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import static org.joda.time.DateTimeZone.UTC;
 
@@ -53,7 +52,7 @@ public class TestData
     public static void populate( Module module )
         throws UnitOfWorkCompletionException
     {
-        try( UnitOfWork unitOfWork = module.newUnitOfWork() )
+        try (UnitOfWork unitOfWork = module.unitOfWorkFactory().newUnitOfWork())
         {
             NameableAssert.clear();
             Domain gaming;
@@ -239,12 +238,6 @@ public class TestData
                 Cat felix = catBuilder.instance();
                 felix.name().set( "Felix" );
                 catBuilder.newInstance();
-            }
-            {
-                EntityBuilder<Dog> builder = unitOfWork.newEntityBuilder( Dog.class );
-                Dog snoopy = builder.instance();
-                snoopy.name().set( "Snoopy" );
-                builder.newInstance();
             }
             unitOfWork.complete();
         }

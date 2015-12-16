@@ -44,7 +44,7 @@ public class ImmutableAssociationTest
     public void givenEntityWithImmutableAssociationWhenBuildingThenNoException()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             PersonEntity father = unitOfWork.newEntity( PersonEntity.class );
@@ -64,7 +64,7 @@ public class ImmutableAssociationTest
     public void givenEntityWithImmutableAssociationWhenChangingValueThenThrowException()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
@@ -89,7 +89,7 @@ public class ImmutableAssociationTest
     public void givenEntityWithImmutableManyAssociationWhenBuildingThenNoException()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );
@@ -111,7 +111,7 @@ public class ImmutableAssociationTest
     public void givenEntityWithImmutableManyAssociationWhenChangingValueThenThrowException()
         throws Exception
     {
-        UnitOfWork unitOfWork = module.newUnitOfWork();
+        UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<PersonEntity> builder = unitOfWork.newEntityBuilder( PersonEntity.class );

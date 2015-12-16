@@ -22,7 +22,8 @@ import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.query.Query;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.query.QueryBuilderFactory;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.sample.forum.data.Administrators;
 
 import static org.apache.zest.api.query.QueryExpressions.templateFor;
@@ -42,12 +43,15 @@ public interface Forums
         implements Forums
     {
         @Structure
-        Module module;
+        UnitOfWorkFactory uowf;
+
+        @Structure
+        QueryBuilderFactory qbf;
 
         public Query<Forum> forums()
         {
-            return module.currentUnitOfWork()
-                .newQuery( module.newQueryBuilder( Forum.class ) )
+            return uowf.currentUnitOfWork()
+                .newQuery( qbf.newQueryBuilder( Forum.class ) )
                 .orderBy( templateFor( Forum.class ).name() );
         }
     }

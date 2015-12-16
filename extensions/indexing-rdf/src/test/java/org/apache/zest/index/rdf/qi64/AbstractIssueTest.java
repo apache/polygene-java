@@ -41,7 +41,7 @@ public abstract class AbstractIssueTest
     protected final String newZestAccount()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork work = module.newUnitOfWork();
+        UnitOfWork work = uowf.newUnitOfWork();
         EntityBuilder<AccountComposite> entityBuilder = work.newEntityBuilder( AccountComposite.class );
         AccountComposite accountComposite = entityBuilder.instance();
         accountComposite.name().set( DEFAULT_ACCOUNT_NAME );

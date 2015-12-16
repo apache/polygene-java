@@ -18,6 +18,7 @@
  */
 package org.apache.zest.api.type;
 
+import java.lang.reflect.Type;
 import java.util.stream.Stream;
 
 /**
@@ -26,4 +27,9 @@ import java.util.stream.Stream;
 public interface HasTypes
 {
     Stream<Class<?>> types();
+
+    default boolean hasType( Type type )
+    {
+        return types().anyMatch( type::equals );
+    }
 }

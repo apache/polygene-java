@@ -33,6 +33,6 @@ public class ForumRestlet
     @Override
     protected Uniform createRoot( Request request, Response response )
     {
-        return module.newObject( RootResource.class, this );
+        return objectFactory.newObject( RootResource.class, this );
     }
 }

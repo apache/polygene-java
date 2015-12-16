@@ -84,7 +84,7 @@ public class AssociationEqualityTest
     @Test
     public void givenValuesOfTheSameTypeAndSameStateWhenTestingAssociationDescriptorEqualityExpectEquals()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             AnEntity anEntity = uow.newEntity( AnEntity.class );
@@ -127,7 +127,7 @@ public class AssociationEqualityTest
     @Test
     public void givenValuesOfTheSameTypeAndDifferentStateWhenTestingAssociationDescriptorEqualityExpectEquals()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             SomeWithAssociations some = buildSomeWithAssociation( uow.newEntity( AnEntity.class ) );
@@ -168,7 +168,7 @@ public class AssociationEqualityTest
     @Test
     public void givenValuesOfDifferentTypeAndSameStateWhenTestingAssociationDescriptorEqualityExpectNotEquals()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             AnEntity anEntity = uow.newEntity( AnEntity.class );
@@ -214,7 +214,7 @@ public class AssociationEqualityTest
     @Test
     public void givenValuesOfSameTypeAndDifferentStateWhenTestingAssociationStateEqualityExpectNotEquals()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             SomeWithAssociations some = buildSomeWithAssociation( uow.newEntity( AnEntity.class ) );
@@ -248,7 +248,7 @@ public class AssociationEqualityTest
     @Test
     public void givenValuesOfDifferentTypesAndSameStateWhenTestingAssociationStateEqualityExpectEquals()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             AnEntity anEntity = uow.newEntity( AnEntity.class );
@@ -287,7 +287,7 @@ public class AssociationEqualityTest
     @Test
     public void givenValuesOfTheSameTypeAndSameStateWhenTestingAssociationEqualityExpectEquals()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             AnEntity anEntity = uow.newEntity( AnEntity.class );
@@ -323,7 +323,7 @@ public class AssociationEqualityTest
     @Test
     public void givenValuesOfTheSameTypeAndDifferentStateWhenTestingAssociationEqualityExpectNotEquals()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             SomeWithAssociations some = buildSomeWithAssociation( uow.newEntity( AnEntity.class ) );
@@ -357,7 +357,7 @@ public class AssociationEqualityTest
     @Test
     public void givenValuesOfDifferentTypesAndSameStateWhenTestingAssociationEqualityExpectNotEquals()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             AnEntity anEntity = uow.newEntity( AnEntity.class );
@@ -393,7 +393,7 @@ public class AssociationEqualityTest
     @Test
     public void givenValuesOfDifferentTypesAndDifferentStateWhenTestingAssociationEqualityExpectNotEquals()
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             SomeWithAssociations some = buildSomeWithAssociation( uow.newEntity( AnEntity.class ) );

@@ -35,7 +35,6 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkException;
 import org.apache.zest.runtime.composite.CompositeMethodInstance;
 import org.apache.zest.runtime.composite.MixinsInstance;
-import org.apache.zest.runtime.structure.ModuleUnitOfWork;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.module.ModuleSpi;
@@ -54,7 +53,7 @@ public final class EntityInstance
     }
 
     private final EntityComposite proxy;
-    private final ModuleUnitOfWork uow;
+    private final UnitOfWork uow;
     private final ModuleSpi moduleInstance;
     private final EntityModel entityModel;
     private final EntityReference identity;
@@ -63,7 +62,7 @@ public final class EntityInstance
     private Object[] mixins;
     private EntityStateInstance state;
 
-    public EntityInstance( ModuleUnitOfWork uow,
+    public EntityInstance( UnitOfWork uow,
                            ModuleSpi moduleInstance,
                            EntityModel entityModel,
                            EntityState entityState

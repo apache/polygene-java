@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Rule;
 import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
@@ -61,7 +62,7 @@ public class Qi95IssueTest
         {
             application.activate();
             Module domain = application.findModule( "Domain", "Domain" );
-            UnitOfWorkFactory unitOfWorkFactory = domain;
+            UnitOfWorkFactory unitOfWorkFactory = domain.unitOfWorkFactory();
             createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain );
         }
         finally
@@ -79,7 +80,7 @@ public class Qi95IssueTest
         {
             application.activate();
             Module domain = application.findModule( "Domain", "Domain" );
-            UnitOfWorkFactory unitOfWorkFactory = domain;
+            UnitOfWorkFactory unitOfWorkFactory = domain.unitOfWorkFactory();
             createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain );
         }
         finally
@@ -97,7 +98,7 @@ public class Qi95IssueTest
         {
             application.activate();
             Module domain = application.findModule( "Domain", "Domain" );
-            UnitOfWorkFactory unitOfWorkFactory = domain;
+            UnitOfWorkFactory unitOfWorkFactory = domain.unitOfWorkFactory();
             createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain );
         }
         finally
@@ -116,7 +117,7 @@ public class Qi95IssueTest
             application.activate();
 
             Module domain = application.findModule( "Domain", "Domain" );
-            UnitOfWorkFactory unitOfWorkFactory = domain;
+            UnitOfWorkFactory unitOfWorkFactory = domain.unitOfWorkFactory();
             createABunchOfStuffAndDoQueries( unitOfWorkFactory, domain );
         }
         finally
@@ -278,6 +279,7 @@ public class Qi95IssueTest
                     throws AssemblyException
                 {
                     module.entities( ItemTypeEntity.class );
+                    new DefaultUnitOfWorkAssembler().assemble( module );
                 }
             } );
             return domainLayer;
@@ -293,6 +295,7 @@ public class Qi95IssueTest
                 throws AssemblyException
             {
                 new EntityTestAssembler().assemble( module );
+                new DefaultUnitOfWorkAssembler().assemble( module );
 
                 module.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
                 module.forMixin( NativeConfiguration.class )
@@ -320,6 +323,7 @@ public class Qi95IssueTest
             {
                 new OrgJsonValueSerializationAssembler().assemble( module );
                 new JdbmEntityStoreAssembler().visibleIn( Visibility.application ).assemble( module );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
     }
@@ -329,6 +333,7 @@ public class Qi95IssueTest
     {
         ModuleAssembly moduleAssembly = layerAssembly.module( name );
         assembler.assemble( moduleAssembly );
+        new DefaultUnitOfWorkAssembler().assemble( moduleAssembly );
         return moduleAssembly;
     }
 

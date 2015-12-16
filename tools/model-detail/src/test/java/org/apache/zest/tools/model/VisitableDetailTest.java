@@ -51,24 +51,18 @@ public class VisitableDetailTest
         throws AssemblyException, ActivationException
     {
         ApplicationDescriptor application = new Energy4Java().newApplicationModel(
-            new ApplicationAssembler()
-            {
-                @Override
-                public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-                {
-                    ApplicationAssembly app = applicationFactory.newApplicationAssembly();
-                    app.setName( "UnderTestApp" );
-                    app.withActivators( ApplicationActivator.class );
+            applicationFactory -> {
+                ApplicationAssembly app = applicationFactory.newApplicationAssembly();
+                app.setName( "UnderTestApp" );
+                app.withActivators( ApplicationActivator.class );
 
-                    LayerAssembly layer = app.layer( "LayerName" );
-                    layer.withActivators( LayerActivator.class );
+                LayerAssembly layer = app.layer( "LayerName" );
+                layer.withActivators( LayerActivator.class );
 
-                    ModuleAssembly module = layer.module( "ModuleName" );
-                    module.withActivators( ModuleActivator.class );
+                ModuleAssembly module = layer.module( "ModuleName" );
+                module.withActivators( ModuleActivator.class );
 
-                    return app;
-                }
+                return app;
             }
         );
         ApplicationDetailDescriptor detail = createApplicationDetailDescriptor( application );

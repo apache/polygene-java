@@ -14,6 +14,8 @@
 package org.apache.zest.runtime.structure;
 
 import java.util.Iterator;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.composite.AmbiguousTypeException;
@@ -96,6 +98,7 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.objects( SomeOtherFooImpl.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -117,6 +120,7 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.objects( SomeOtherFooImpl.class, BasicFooImpl.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -146,6 +150,7 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.transients( SomeOtherFoo.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -167,6 +172,7 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.transients( SomeOtherFoo.class, BasicFoo.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -196,6 +202,7 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.values( SomeOtherFoo.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -217,6 +224,7 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.values( SomeOtherFoo.class, BasicFoo.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -238,7 +246,7 @@ public class TypeToCompositeLookupTest
     public void entities()
         throws UnitOfWorkCompletionException, ActivationException, AssemblyException
     {
-        Module module = new SingletonAssembler()
+        UnitOfWorkFactory uowf = new SingletonAssembler()
         {
 
             @Override
@@ -247,11 +255,12 @@ public class TypeToCompositeLookupTest
             {
                 new EntityTestAssembler().assemble( module );
                 module.entities( SomeOtherFoo.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
-        }.module();
+        }.module().unitOfWorkFactory();
 
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
 
         SomeOtherFoo someOtherFoo = uow.newEntityBuilder( SomeOtherFoo.class ).newInstance();
         BasicFoo basicFoo = uow.newEntityBuilder( BasicFoo.class ).newInstance();
@@ -267,7 +276,7 @@ public class TypeToCompositeLookupTest
 
         uow.complete();
 
-        uow = module.newUnitOfWork();
+        uow = uowf.newUnitOfWork();
 
         uow.get( SomeOtherFoo.class, someOtherFooIdentity );
         uow.get( BasicFoo.class, basicFooIdentity );
@@ -280,7 +289,7 @@ public class TypeToCompositeLookupTest
     public void entitiesAmbiguousDeclaration()
         throws UnitOfWorkCompletionException, ActivationException, AssemblyException
     {
-        Module module = new SingletonAssembler()
+        UnitOfWorkFactory uowf = new SingletonAssembler()
         {
 
             @Override
@@ -289,11 +298,12 @@ public class TypeToCompositeLookupTest
             {
                 new EntityTestAssembler().assemble( module );
                 module.entities( SomeOtherFoo.class, BasicFoo.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
-        }.module();
+        }.module().unitOfWorkFactory();
 
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
 
         SomeOtherFoo someOtherFoo = uow.newEntityBuilder( SomeOtherFoo.class ).newInstance();
         BasicFoo basicFoo = uow.newEntityBuilder( BasicFoo.class ).newInstance();
@@ -317,7 +327,7 @@ public class TypeToCompositeLookupTest
 
         uow.complete();
 
-        uow = module.newUnitOfWork();
+        uow = uowf.newUnitOfWork();
 
         assertEquals( CATHEDRAL, uow.get( SomeOtherFoo.class, someOtherFooIdentity ).bar() );
         assertEquals( BAZAR, uow.get( BasicFoo.class, basicFooIdentity ).bar() );

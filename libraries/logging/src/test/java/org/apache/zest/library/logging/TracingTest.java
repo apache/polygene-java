@@ -70,7 +70,7 @@ public class TracingTest
         SomeService sc = module.findService( SomeService.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 456, sc.doSomethingLessImportant() );
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = module.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??
@@ -91,7 +91,7 @@ public class TracingTest
         SomeService2 sc = module.findService( SomeService2.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 456, sc.doSomethingLessImportant() );
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = module.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??
@@ -115,7 +115,7 @@ public class TracingTest
         SomeService sc = module.findService( SomeService.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 789, sc.doSomethingModeratelyImportant() );
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             QueryBuilder<TraceRecord> builder = module.newQueryBuilder( TraceRecord.class );
@@ -154,7 +154,7 @@ public class TracingTest
         SomeService sc = module.findService( SomeService.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 753, sc.doSomethingInsanelyImportant() );
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         QueryBuilder<TraceRecord> builder = module.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??

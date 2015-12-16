@@ -24,10 +24,10 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceActivation;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.library.scheduler.Scheduler;
 import org.apache.zest.library.scheduler.SchedulerConfiguration;
@@ -50,7 +50,7 @@ public class SchedulerMixin
     private ScheduleFactory scheduleFactory;
 
     @Structure
-    private Module module;
+    private UnitOfWorkFactory uowf;
 
     @This
     private SchedulerService me;
@@ -120,7 +120,7 @@ public class SchedulerMixin
     @Override
     public void cancelSchedule( String scheduleId )
     {
-        UnitOfWork uow = module.currentUnitOfWork();
+        UnitOfWork uow = uowf.currentUnitOfWork();
         Schedule schedule;
         try
         {
@@ -153,7 +153,7 @@ public class SchedulerMixin
     private void loadSchedules()
         throws UnitOfWorkCompletionException
     {
-        try (UnitOfWork ignored = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Initialize Schedules" ) ))
+        try (UnitOfWork ignored = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Initialize Schedules" ) ))
         {
             Schedules schedules = schedulesHandler.getActiveSchedules();
             for( Schedule schedule : schedules.schedules() )

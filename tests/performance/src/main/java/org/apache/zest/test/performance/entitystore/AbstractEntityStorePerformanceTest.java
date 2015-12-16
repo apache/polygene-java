@@ -25,16 +25,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.Callable;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.zest.bootstrap.Assembler;
-import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
-import org.apache.zest.bootstrap.ModuleAssembly;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +49,8 @@ public abstract class AbstractEntityStorePerformanceTest
     private final Assembler infrastructure;
     private final Logger logger;
     private Application application;
-    protected Module module;
+    protected UnitOfWorkFactory uowf;
+    protected ServiceFinder serviceFinder;
 
     private final int ITERATIONS = 20000;
 
@@ -66,23 +67,15 @@ public abstract class AbstractEntityStorePerformanceTest
     {
         try
         {
-            Assembler assembler = new Assembler()
-            {
-                @Override
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    module.entities( SimpleProduct.class );
-                }
-            };
+            Assembler assembler = module -> module.entities( SimpleProduct.class );
             createZestRuntime( assembler );
 
             for( int i = 0; i < 10000; i++ )
             {
-                try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "Warmup " + i ) ) )
+                try (UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "Warmup " + i ) ))
                 {
                     SimpleProduct product = uow.newEntity( SimpleProduct.class );
-                    String id = product.identity().get();
+                    product.identity().get();
                 }
             }
         }
@@ -103,42 +96,28 @@ public abstract class AbstractEntityStorePerformanceTest
     {
         try
         {
-            Assembler assembler = new Assembler()
-            {
-                @Override
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    module.entities( SimpleProduct.class );
-                }
-            };
+            Assembler assembler = module -> module.entities( SimpleProduct.class );
             createZestRuntime( assembler );
 
-            profile( new Callable<Void>()
-            {
-                @Override
-                public Void call()
-                    throws Exception
+            profile( () -> {
+                Report report = new Report( storeName );
+                report.start( "createEntityWithSingleProperty" );
+                for( int i = 0; i < ITERATIONS; i++ )
                 {
-                    Report report = new Report( storeName );
-                    report.start( "createEntityWithSingleProperty" );
-                    for( int i = 0; i < ITERATIONS; i++ )
+                    try (UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "createEntityWithSingleProperty " + i ) ))
                     {
-                        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "createEntityWithSingleProperty " + i ) ) )
-                        {
-                            SimpleProduct product = uow.newEntity( SimpleProduct.class );
-                            String id = product.identity().get();
-                            uow.complete();
-                        }
-                        if( i % 1000 == 0 )
-                        {
-                            logger.info( "Iteration {}", i );
-                        }
+                        SimpleProduct product = uow.newEntity( SimpleProduct.class );
+                        product.identity().get();
+                        uow.complete();
                     }
-                    report.stop( ITERATIONS );
-                    writeReport( report );
-                    return null;
+                    if( i % 1000 == 0 )
+                    {
+                        logger.info( "Iteration {}", i );
+                    }
                 }
+                report.stop( ITERATIONS );
+                writeReport( report );
+                return null;
             } );
         }
         finally
@@ -153,42 +132,28 @@ public abstract class AbstractEntityStorePerformanceTest
     {
         try
         {
-            Assembler assembler = new Assembler()
-            {
-                @Override
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    module.entities( SimpleProduct.class );
-                }
-            };
+            Assembler assembler = module -> module.entities( SimpleProduct.class );
             createZestRuntime( assembler );
-            profile( new Callable<Void>()
-            {
-                @Override
-                public Void call()
-                    throws Exception
+            profile( () -> {
+                Report report = new Report( storeName );
+                report.start( "createEntityInBulkWithSingleProperty" );
+                int bulk = 0;
+                UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "createEntityInBulkWithSingleProperty " + bulk ) );
+                for( int i = 0; i < ITERATIONS; i++ )
                 {
-                    Report report = new Report( storeName );
-                    report.start( "createEntityInBulkWithSingleProperty" );
-                    int bulk = 0;
-                    UnitOfWork uow = module.newUnitOfWork( newUsecase( "createEntityInBulkWithSingleProperty " + bulk ) );
-                    for( int i = 0; i < ITERATIONS; i++ )
+                    SimpleProduct product = uow.newEntity( SimpleProduct.class );
+                    product.identity().get();
+                    if( i % 1000 == 0 )
                     {
-                        SimpleProduct product = uow.newEntity( SimpleProduct.class );
-                        String id = product.identity().get();
-                        if( i % 1000 == 0 )
-                        {
-                            uow.complete();
-                            bulk++;
-                            uow = module.newUnitOfWork( newUsecase( "createEntityInBulkWithSingleProperty " + bulk ) );
-                        }
+                        uow.complete();
+                        bulk++;
+                        uow = uowf.newUnitOfWork( newUsecase( "createEntityInBulkWithSingleProperty " + bulk ) );
                     }
-                    uow.complete();
-                    report.stop( ITERATIONS );
-                    writeReport( report );
-                    return null;
                 }
+                uow.complete();
+                report.stop( ITERATIONS );
+                writeReport( report );
+                return null;
             } );
         }
         finally
@@ -203,37 +168,23 @@ public abstract class AbstractEntityStorePerformanceTest
     {
         try
         {
-            Assembler assembler = new Assembler()
-            {
-                @Override
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    module.entities( ComplexProduct.class );
-                }
-            };
+            Assembler assembler = module -> module.entities( ComplexProduct.class );
             createZestRuntime( assembler );
-            profile( new Callable<Void>()
-            {
-                @Override
-                public Void call()
-                    throws Exception
+            profile( () -> {
+                Report report = new Report( storeName );
+                report.start( "createEntityWithComplexType" );
+                for( int i = 0; i < ITERATIONS; i++ )
                 {
-                    Report report = new Report( storeName );
-                    report.start( "createEntityWithComplexType" );
-                    for( int i = 0; i < ITERATIONS; i++ )
+                    try (UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "createEntityWithComplexType " + i ) ))
                     {
-                        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "createEntityWithComplexType " + i ) ) )
-                        {
-                            ComplexProduct product = uow.newEntity( ComplexProduct.class );
-                            String id = product.identity().get();
-                            uow.complete();
-                        }
+                        ComplexProduct product = uow.newEntity( ComplexProduct.class );
+                        product.identity().get();
+                        uow.complete();
                     }
-                    report.stop( ITERATIONS );
-                    writeReport( report );
-                    return null;
                 }
+                report.stop( ITERATIONS );
+                writeReport( report );
+                return null;
             } );
         }
         finally
@@ -248,42 +199,28 @@ public abstract class AbstractEntityStorePerformanceTest
     {
         try
         {
-            Assembler assembler = new Assembler()
-            {
-                @Override
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    module.entities( ComplexProduct.class );
-                }
-            };
+            Assembler assembler = module -> module.entities( ComplexProduct.class );
             createZestRuntime( assembler );
-            profile( new Callable<Void>()
-            {
-                @Override
-                public Void call()
-                    throws Exception
+            profile( () -> {
+                Report report = new Report( storeName );
+                report.start( "createEntityInBulkWithComplexType" );
+                int bulk = 0;
+                UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "createEntityInBulkWithComplexType " + bulk ) );
+                for( int i = 0; i < ITERATIONS; i++ )
                 {
-                    Report report = new Report( storeName );
-                    report.start( "createEntityInBulkWithComplexType" );
-                    int bulk = 0;
-                    UnitOfWork uow = module.newUnitOfWork( newUsecase( "createEntityInBulkWithComplexType " + bulk ) );
-                    for( int i = 0; i < ITERATIONS; i++ )
+                    ComplexProduct product = uow.newEntity( ComplexProduct.class );
+                    product.identity().get();
+                    if( i % 1000 == 0 )
                     {
-                        ComplexProduct product = uow.newEntity( ComplexProduct.class );
-                        String id = product.identity().get();
-                        if( i % 1000 == 0 )
-                        {
-                            uow.complete();
-                            bulk++;
-                            uow = module.newUnitOfWork( newUsecase( "createEntityInBulkWithComplexType " + bulk ) );
-                        }
+                        uow.complete();
+                        bulk++;
+                        uow = uowf.newUnitOfWork( newUsecase( "createEntityInBulkWithComplexType " + bulk ) );
                     }
-                    uow.complete();
-                    report.stop( ITERATIONS );
-                    writeReport( report );
-                    return null;
                 }
+                uow.complete();
+                report.stop( ITERATIONS );
+                writeReport( report );
+                return null;
             } );
         }
         finally
@@ -298,19 +235,11 @@ public abstract class AbstractEntityStorePerformanceTest
     {
         try
         {
-            Assembler assembler = new Assembler()
-            {
-                @Override
-                public void assemble( ModuleAssembly module )
-                    throws AssemblyException
-                {
-                    module.entities( ComplexProduct.class );
-                }
-            };
+            Assembler assembler = module -> module.entities( ComplexProduct.class );
             createZestRuntime( assembler );
             {
                 int bulk = 0;
-                UnitOfWork uow = module.newUnitOfWork( newUsecase( "readEntityWithComplexType PREPARE " + bulk ) );
+                UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "readEntityWithComplexType PREPARE " + bulk ) );
                 for( int i = 0; i < ITERATIONS; i++ )
                 {
                     ComplexProduct product = uow.newEntity( ComplexProduct.class, "product" + i );
@@ -320,42 +249,34 @@ public abstract class AbstractEntityStorePerformanceTest
                     {
                         uow.complete();
                         bulk++;
-                        uow = module.newUnitOfWork( newUsecase( "readEntityWithComplexType PREPARE " + bulk ) );
+                        uow = uowf.newUnitOfWork( newUsecase( "readEntityWithComplexType PREPARE " + bulk ) );
                     }
                 }
                 uow.complete();
             }
 
-            profile( new Callable<Void>()
-            {
-                @Override
-                public Void call()
-                    throws Exception
+            profile( () -> {
+                Report report = new Report( storeName );
+                int bulk = 0;
+                UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "readEntityWithComplexType " + bulk ) );
+                Random rnd = new Random();
+                report.start( "readEntityWithComplexType" );
+                String id = rnd.nextInt( ITERATIONS ) + "";
+                for( int i = 0; i < ITERATIONS; i++ )
                 {
-                    Report report = new Report( storeName );
-                    int bulk = 0;
-                    UnitOfWork uow = module.newUnitOfWork( newUsecase( "readEntityWithComplexType " + bulk ) );
-                    Random rnd = new Random();
-                    report.start( "readEntityWithComplexType" );
-                    String id = rnd.nextInt( ITERATIONS ) + "";
-                    for( int i = 0; i < ITERATIONS; i++ )
+                    ComplexProduct product = uow.get( ComplexProduct.class, "product" + id );
+                    product.name().get();
+                    if( i % 100 == 0 )
                     {
-                        ComplexProduct product = uow.get( ComplexProduct.class, "product" + id );
-
-                        String name = product.name().get();
-
-                        if( i % 100 == 0 )
-                        {
-                            uow.discard();
-                            bulk++;
-                            uow = module.newUnitOfWork( newUsecase( "readEntityWithComplexType " + bulk ) );
-                        }
+                        uow.discard();
+                        bulk++;
+                        uow = uowf.newUnitOfWork( newUsecase( "readEntityWithComplexType " + bulk ) );
                     }
-                    uow.complete();
-                    report.stop( ITERATIONS );
-                    writeReport( report );
-                    return null;
                 }
+                uow.complete();
+                report.stop( ITERATIONS );
+                writeReport( report );
+                return null;
             } );
         }
         finally
@@ -376,10 +297,13 @@ public abstract class AbstractEntityStorePerformanceTest
         throws IOException
     {
         File dir = new File( "build/reports/perf/" );
-        dir.mkdirs();
+        if( !dir.mkdirs() )
+        {
+            System.out.println( "Couldn't create Performance result directory." );
+        }
         String name = dir.getAbsolutePath() + "/result-" + report.name() + ".xml";
         FileWriter writer = new FileWriter( name, true );
-        try( BufferedWriter out = new BufferedWriter( writer ) )
+        try (BufferedWriter out = new BufferedWriter( writer ))
         {
             report.writeTo( out );
             out.flush();
@@ -392,20 +316,21 @@ public abstract class AbstractEntityStorePerformanceTest
     {
         Energy4Java zest = new Energy4Java();
         Assembler[][][] assemblers = new Assembler[][][]
-        {
             {
                 {
-                    infrastructure, testSetup
+                    {
+                        infrastructure, testSetup
+                    }
                 }
-            }
-        };
+            };
         application = zest.newApplication( new ApplicationAssemblerAdapter( assemblers )
         {
         } );
         application.activate();
 
         Module moduleInstance = application.findModule( "Layer 1", "Module 1" );
-        module = moduleInstance;
+        uowf = moduleInstance.unitOfWorkFactory();
+        serviceFinder = moduleInstance;
     }
 
     protected void cleanUp()
@@ -413,10 +338,10 @@ public abstract class AbstractEntityStorePerformanceTest
     {
         try
         {
-            if( module != null && module.isUnitOfWorkActive() )
+            if( uowf != null && uowf.isUnitOfWorkActive() )
             {
                 UnitOfWork current;
-                while( module.isUnitOfWorkActive() && ( current = module.currentUnitOfWork() ) != null )
+                while( uowf.isUnitOfWorkActive() && ( current = uowf.currentUnitOfWork() ) != null )
                 {
                     if( current.isOpen() )
                     {

@@ -28,25 +28,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.type.CollectionType;
-import org.apache.zest.bootstrap.ApplicationAssembler;
-import org.apache.zest.bootstrap.ApplicationAssembly;
-import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.io.Inputs;
 import org.apache.zest.io.Outputs;
 import org.apache.zest.io.Transforms;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -82,6 +80,7 @@ public class DocumentationSupport
         module.values( SomeValue.class ); // (2)
         // END SNIPPET: default
         new OrgJsonValueSerializationAssembler().assemble( module ); // (3)
+        new DefaultUnitOfWorkAssembler().assemble( module );
         // START SNIPPET: default
     }
     // END SNIPPET: default
@@ -101,6 +100,7 @@ public class DocumentationSupport
 
         // START SNIPPET: default
     }
+
     // END SNIPPET: default
     // START SNIPPET: service
     @Service
@@ -217,56 +217,39 @@ public class DocumentationSupport
     public void assembledWithValuesModuleSerialization()
         throws Exception
     {
-        Application app = new Energy4Java().newApplication( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory applicationFactory )
-                throws AssemblyException
-            {
-                Assembler[][][] pancakes = new Assembler[][][]
+        Application app = new Energy4Java().newApplication( applicationFactory -> {
+            Assembler[][][] pancakes = new Assembler[][][]
                 {
                     {
                         {
-                            new Assembler()
-                            {
-                                @Override
-                                public void assemble( ModuleAssembly valuesModule )
-                                    throws AssemblyException
-                                {
-                                    valuesModule.layer().setName( "SINGLE-Layer" );
-                                    valuesModule.setName( "VALUES-Module" );
+                            valuesModule -> {
+                                valuesModule.layer().setName( "SINGLE-Layer" );
+                                valuesModule.setName( "VALUES-Module" );
 
-                                    valuesModule.values( SomeValue.class );
-                                }
+                                valuesModule.values( SomeValue.class );
+                                new DefaultUnitOfWorkAssembler().assemble( valuesModule );
                             }
                         },
                         {
-                            new Assembler()
-                            {
-                                @Override
-                                public void assemble( ModuleAssembly servicesModule )
-                                    throws AssemblyException
-                                {
-                                    servicesModule.setName( "SERVICES-Module" );
+                            servicesModule -> {
+                                servicesModule.setName( "SERVICES-Module" );
 
-                                    Function<Application, Module> valuesModuleFinder = new Function<Application, Module>()
+                                Function<Application, Module> valuesModuleFinder = new Function<Application, Module>()
+                                {
+                                    @Override
+                                    public Module apply( Application app1 )
                                     {
-                                        @Override
-                                        public Module apply( Application app )
-                                        {
-                                            return app.findModule( "SINGLE-Layer", "VALUES-Module" );
-                                        }
-                                    };
-                                    new OrgJsonValueSerializationAssembler().
-                                        withValuesModuleFinder( valuesModuleFinder ).
-                                        assemble( servicesModule );
-                                }
+                                        return app1.findModule( "SINGLE-Layer", "VALUES-Module" );
+                                    }
+                                };
+                                new OrgJsonValueSerializationAssembler().
+                                    withValuesModuleFinder( valuesModuleFinder ).
+                                    assemble( servicesModule );
                             }
                         }
                     }
                 };
-                return applicationFactory.newApplicationAssembly( pancakes );
-            }
+            return applicationFactory.newApplicationAssembly( pancakes );
         } );
         app.activate();
         try

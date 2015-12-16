@@ -27,10 +27,10 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.ServiceImporterException;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.library.circuitbreaker.CircuitBreaker;
 import org.apache.zest.library.conversion.values.EntityToValue;
@@ -43,14 +43,14 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
 
     protected static final Logger LOGGER = LoggerFactory.getLogger( AbstractDataSourceServiceImporterMixin.class );
 
-    private final Map<String, DataSourceConfigurationValue> configs = new HashMap<String, DataSourceConfigurationValue>();
+    private final Map<String, DataSourceConfigurationValue> configs = new HashMap<>();
 
-    private final Map<String, PooledDataSourceType> pools = new HashMap<String, PooledDataSourceType>();
+    private final Map<String, PooledDataSourceType> pools = new HashMap<>();
 
-    private final Map<DataSource, CircuitBreaker> circuitBreakers = new HashMap<DataSource, CircuitBreaker>();
+    private final Map<DataSource, CircuitBreaker> circuitBreakers = new HashMap<>();
 
     @Structure
-    protected Module module;
+    protected UnitOfWorkFactory uowf;
 
     @Service
     private EntityToValue entityToValue;
@@ -126,7 +126,7 @@ public abstract class AbstractDataSourceServiceImporterMixin<PooledDataSourceTyp
     {
         DataSourceConfigurationValue config = configs.get( identity );
         if ( config == null ) {
-            UnitOfWork uow = module.newUnitOfWork( UsecaseBuilder.newUsecase( "Create DataSource pool configuration" ) );
+            UnitOfWork uow = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "Create DataSource pool configuration" ) );
 
             try {
                 DataSourceConfiguration configEntity = uow.get( DataSourceConfiguration.class, identity );

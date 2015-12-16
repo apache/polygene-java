@@ -159,7 +159,7 @@ public class ElasticSearchTest
     {
         String title = "Foo Bar Bazar!";
 
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
 
         EntityBuilder<Author> authorBuilder = uow.newEntityBuilder( Author.class );
         Author author = authorBuilder.instance();
@@ -199,7 +199,7 @@ public class ElasticSearchTest
 
         uow.complete();
 
-        uow = module.newUnitOfWork();
+        uow = uowf.newUnitOfWork();
 
         QueryBuilder<Post> queryBuilder = module.newQueryBuilder( Post.class );
         Query<Post> query = uow.newQuery( queryBuilder );

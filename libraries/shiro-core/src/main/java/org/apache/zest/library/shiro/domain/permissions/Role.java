@@ -21,8 +21,8 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.Property;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 
 @Mixins( Role.Mixin.class )
 public interface Role
@@ -41,7 +41,7 @@ public interface Role
     {
 
         @Structure
-        private Module module;
+        private UnitOfWorkFactory uowf;
 
         @This
         private Role role;
@@ -49,7 +49,7 @@ public interface Role
         @Override
         public RoleAssignment assignTo( RoleAssignee assignee )
         {
-            UnitOfWork uow = module.currentUnitOfWork();
+            UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<RoleAssignment> builder = uow.newEntityBuilder( RoleAssignment.class );
             RoleAssignment assignment = builder.instance();
             assignment.assignee().set( assignee );

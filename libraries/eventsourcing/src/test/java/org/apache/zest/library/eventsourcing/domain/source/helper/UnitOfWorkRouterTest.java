@@ -18,6 +18,7 @@
  */
 package org.apache.zest.library.eventsourcing.domain.source.helper;
 
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,6 +54,7 @@ public class UnitOfWorkRouterTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.values( UnitOfWorkDomainEventsValue.class, DomainEventValue.class );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 

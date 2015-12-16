@@ -33,6 +33,7 @@ class TestSuite2Module
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
+        module.withDefaultUnitOfWorkFactory();
         return module;
     }
 }

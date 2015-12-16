@@ -21,12 +21,13 @@ package org.apache.zest.manual.recipes.assemble;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
 
 public class Docs
 {
     @This
-    Module module;
+    UnitOfWorkFactory module;
 
     public void showUsage()
     {

@@ -16,7 +16,6 @@
 */
 package org.apache.zest.runtime.visibility;
 
-import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
@@ -25,17 +24,18 @@ import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueSerialization;
-import org.apache.zest.bootstrap.ApplicationAssembler;
 import org.apache.zest.bootstrap.ApplicationAssembly;
-import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.junit.Test;
 
 public class VisibilityInUnitOfWorkTest
 {
@@ -60,19 +60,19 @@ public class VisibilityInUnitOfWorkTest
             implements YourService
         {
             @Structure
-            private Module module;
+            private UnitOfWorkFactory uowf;
 
             @Override
             public void create()
             {
-                UnitOfWork uow = module.currentUnitOfWork();
+                UnitOfWork uow = uowf.currentUnitOfWork();
                 YourEntity entity = uow.newEntity( YourEntity.class, "345" );
             }
 
             @Override
             public YourEntity get()
             {
-                UnitOfWork uow = module.currentUnitOfWork();
+                UnitOfWork uow = uowf.currentUnitOfWork();
                 return uow.get( YourEntity.class, "345" );
             }
         }
@@ -114,12 +114,12 @@ public class VisibilityInUnitOfWorkTest
             private YourService service;
 
             @Structure
-            private Module module;
+            private UnitOfWorkFactory uowf;
 
             @Override
             public void create()
             {
-                try (UnitOfWork uow = module.newUnitOfWork())
+                try (UnitOfWork uow = uowf.newUnitOfWork())
                 {
                     uow.newEntity( MyEntity.class, "123" );
                     MyEntity entity1 = uow.get( MyEntity.class, "123" );
@@ -134,26 +134,25 @@ public class VisibilityInUnitOfWorkTest
         throws AssemblyException
     {
         Energy4Java zest = new Energy4Java();
-        return zest.newApplication( new ApplicationAssembler()
-        {
-            @Override
-            public ApplicationAssembly assemble( ApplicationAssemblyFactory appFactory )
-                throws AssemblyException
-            {
-                ApplicationAssembly appAssembly = appFactory.newApplicationAssembly();
-                LayerAssembly layer1 = appAssembly.layer( "layer1" );
-                ModuleAssembly myModule = layer1.module( "My Module" );
-                ModuleAssembly yourModule = layer1.module( "Your Module" );
-                ModuleAssembly infraModule = layer1.module( "Infra Module" );
-                myModule.services( MyService.class );
-                myModule.entities( MyEntity.class );
-                yourModule.entities( YourEntity.class );
-                yourModule.services( YourService.class ).visibleIn( Visibility.layer );
-                infraModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
-                infraModule.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.layer );
-                infraModule.services( OrgJsonValueSerializationService.class ).visibleIn( Visibility.layer).taggedWith( ValueSerialization.Formats.JSON );
-                return appAssembly;
-            }
+        return zest.newApplication( appFactory -> {
+            ApplicationAssembly appAssembly = appFactory.newApplicationAssembly();
+            LayerAssembly layer1 = appAssembly.layer( "layer1" );
+            ModuleAssembly myModule = layer1.module( "My Module" );
+            ModuleAssembly yourModule = layer1.module( "Your Module" );
+            ModuleAssembly infraModule = layer1.module( "Infra Module" );
+            myModule.services( MyService.class );
+            myModule.entities( MyEntity.class );
+            new DefaultUnitOfWorkAssembler().assemble( myModule );
+            yourModule.entities( YourEntity.class );
+            yourModule.services( YourService.class ).visibleIn( Visibility.layer );
+            new DefaultUnitOfWorkAssembler().assemble( yourModule );
+            infraModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
+            infraModule.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.layer );
+            infraModule.services( OrgJsonValueSerializationService.class )
+                .visibleIn( Visibility.layer )
+                .taggedWith( ValueSerialization.Formats.JSON );
+            new DefaultUnitOfWorkAssembler().assemble( infraModule );
+            return appAssembly;
         } );
     }
 }

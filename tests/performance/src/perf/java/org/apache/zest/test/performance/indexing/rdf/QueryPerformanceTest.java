@@ -20,6 +20,8 @@ package org.apache.zest.test.performance.indexing.rdf;
 
 import java.io.File;
 import org.apache.derby.iapi.services.io.FileUtil;
+import org.apache.zest.api.query.QueryBuilderFactory;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,6 +72,7 @@ public class QueryPerformanceTest
 
     private Application application;
     private Module module;
+    private UnitOfWorkFactory uowf;
     private static final String QUERY1 = "PREFIX ns0: <urn:zest:type:org.apache.zest.api.entity.Identity#> \n"
                                          + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
                                          + "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"
@@ -136,6 +139,7 @@ public class QueryPerformanceTest
         module = application.findModule( LAYER_DOMAIN, MODULE_DOMAIN );
         application.activate();
         indexingDataDir = module.findService( RdfIndexingService.class ).get().dataDir();
+        uowf = module.unitOfWorkFactory();
     }
 
     @After
@@ -196,7 +200,7 @@ public class QueryPerformanceTest
     private LeadRepository populateEntityStore()
         throws UnitOfWorkCompletionException
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             LeadRepository leadRepo = module.findService( LeadRepositoryService.class ).get();
@@ -212,7 +216,7 @@ public class QueryPerformanceTest
                     {
                         System.out.print( "\r" + i );
                         uow.complete();
-                        uow = module.newUnitOfWork();
+                        uow = uowf.newUnitOfWork();
                     }
                     leadFactory.create( "Lead" + i );
                 }
@@ -237,7 +241,7 @@ public class QueryPerformanceTest
     {
         long start;
         long end;
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             start = System.currentTimeMillis();
             Lead lead = leadRepo.findByName( nameOfEntity );
@@ -258,7 +262,7 @@ public class QueryPerformanceTest
     {
         long start;
         long end;
-        try( UnitOfWork uow = module.newUnitOfWork() )
+        try( UnitOfWork uow = uowf.newUnitOfWork() )
         {
             start = System.currentTimeMillis();
             Lead lead = leadRepo.findByFixedQuery( queryName );
@@ -338,12 +342,12 @@ public class QueryPerformanceTest
         implements LeadEntityFactory
     {
         @Structure
-        private Module module;
+        private UnitOfWorkFactory uowf;
 
         @Override
         public Lead create( String name )
         {
-            UnitOfWork uow = module.currentUnitOfWork();
+            UnitOfWork uow = uowf.currentUnitOfWork();
             EntityBuilder<LeadEntity> builder = uow.newEntityBuilder( LeadEntity.class );
             Lead prototype = builder.instanceFor( LeadEntity.class );
             prototype.name().set( name );
@@ -368,21 +372,24 @@ public class QueryPerformanceTest
         implements LeadRepository
     {
         @Structure
-        private Module module;
+        private QueryBuilderFactory qbf;
+
+        @Structure
+        private UnitOfWorkFactory uowf;
 
         @Override
         public Lead findByFixedQuery( String queryString )
         {
-            UnitOfWork uow = module.currentUnitOfWork();
-            Query<Lead> query = uow.newQuery( module.newQueryBuilder( Lead.class ).where( SesameExpressions.sparql( queryString ) ) );
+            UnitOfWork uow = uowf.currentUnitOfWork();
+            Query<Lead> query = uow.newQuery( qbf.newQueryBuilder( Lead.class ).where( SesameExpressions.sparql( queryString ) ) );
             return query.find();
         }
 
         @Override
         public Lead findByName( String name )
         {
-            UnitOfWork uow = module.currentUnitOfWork();
-            QueryBuilder<Lead> builder = module.newQueryBuilder( Lead.class );
+            UnitOfWork uow = uowf.currentUnitOfWork();
+            QueryBuilder<Lead> builder = qbf.newQueryBuilder( Lead.class );
             Lead template = templateFor( Lead.class );
 
             Query<Lead> query = uow.newQuery( builder.where( eq( template.name(), name ) ) );

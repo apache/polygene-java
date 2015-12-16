@@ -19,7 +19,7 @@ import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.runtime.property.PropertyInstance;
-import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
 
 /**

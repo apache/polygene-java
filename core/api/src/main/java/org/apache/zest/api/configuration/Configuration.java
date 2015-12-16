@@ -36,6 +36,7 @@ import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueSerialization;
@@ -163,7 +164,7 @@ public interface Configuration<T>
         private ServiceComposite me;
 
         @Structure
-        private Module module;
+        private UnitOfWorkFactory uowf;
 
         @Service
         private Iterable<ServiceReference<ValueSerialization>> valueSerialization;
@@ -178,7 +179,7 @@ public interface Configuration<T>
             if( configuration == null )
             {
                 Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
-                uow = module.newUnitOfWork( usecase );
+                uow = uowf.newUnitOfWork( usecase );
                 try
                 {
                     configuration = this.findConfigurationInstanceFor( me, uow );
@@ -253,7 +254,7 @@ public interface Configuration<T>
         {
             Module module = api.moduleOf( serviceComposite );
             Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
-            UnitOfWork buildUow = module.newUnitOfWork( usecase );
+            UnitOfWork buildUow = module.unitOfWorkFactory().newUnitOfWork( usecase );
 
             Class<?> type = api.serviceDescriptorFor( serviceComposite ).types().findFirst().orElse( null );
             Class<V> configType = serviceModel.configurationType();

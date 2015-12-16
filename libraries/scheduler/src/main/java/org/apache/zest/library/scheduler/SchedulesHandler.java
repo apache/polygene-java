@@ -24,19 +24,19 @@ import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
-import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.unitofwork.concern.UnitOfWorkPropagation;
 import org.apache.zest.library.scheduler.internal.Schedules;
 
-@Mixins(SchedulesHandler.SchedulesHandlerMixin.class)
+@Mixins( SchedulesHandler.SchedulesHandlerMixin.class )
 public interface SchedulesHandler
 {
-    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY)
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
     Schedules getActiveSchedules();
 
-    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY)
+    @UnitOfWorkPropagation( UnitOfWorkPropagation.Propagation.MANDATORY )
     Schedules getCancelledSchedules();
 
     class SchedulesHandlerMixin implements SchedulesHandler
@@ -45,18 +45,18 @@ public interface SchedulesHandler
         private Identity me;
 
         @Structure
-        private Module module;
+        private UnitOfWorkFactory module;
 
         @Override
         public Schedules getActiveSchedules()
         {
-            return getOrCreateSchedules(getActiveSchedulesIdentity());
+            return getOrCreateSchedules( getActiveSchedulesIdentity() );
         }
 
         @Override
         public Schedules getCancelledSchedules()
         {
-            return getOrCreateSchedules(getCancelledSchedulesIdentity());
+            return getOrCreateSchedules( getCancelledSchedulesIdentity() );
         }
 
         public String getActiveSchedulesIdentity()
@@ -69,7 +69,8 @@ public interface SchedulesHandler
             return "Schedules-Cancelled:" + me.identity().get();
         }
 
-        private Schedules getOrCreateSchedules( String identity ){
+        private Schedules getOrCreateSchedules( String identity )
+        {
             UnitOfWork uow = module.currentUnitOfWork();
             Schedules schedules;
             try
@@ -82,8 +83,6 @@ public interface SchedulesHandler
                 schedules = uow.newEntity( Schedules.class, identity );
             }
             return schedules;
-
         }
-
     }
 }

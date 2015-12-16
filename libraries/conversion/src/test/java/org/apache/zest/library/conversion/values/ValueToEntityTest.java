@@ -76,7 +76,7 @@ public class ValueToEntityTest
     {
         // See http://en.wikipedia.org/wiki/Template:Flintstones_family_tree
         someBirthDate = createBirthDate( 1, 1, 1 );
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "InitialData" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "InitialData" ) ) )
         {
             ednaIdentity = createPerson( uow, "Edna", "Flintstone", someBirthDate ).identity().get();
             zekeIdentity = createPerson( uow, "Zeke", "Flintstone", someBirthDate ).identity().get();
@@ -96,7 +96,7 @@ public class ValueToEntityTest
         builder.prototype().spouse().set( ednaIdentity );
         builder.prototype().children().set( Arrays.asList( zekeIdentity, fredIdentity ) );
         PersonValue edValue = builder.newInstance();
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "CreatingEntityFromQualifiedValue" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreatingEntityFromQualifiedValue" ) ) )
         {
             // START SNIPPET: creation
             ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
@@ -129,7 +129,7 @@ public class ValueToEntityTest
         builder.prototype().spouse().set( ednaIdentity );
         builder.prototype().children().set( Arrays.asList( zekeIdentity, fredIdentity ) );
         PersonValue2 edValue = builder.newInstance();
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "CreatingEntityFromUnqualifiedValue" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreatingEntityFromUnqualifiedValue" ) ) )
         {
             ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
 
@@ -163,7 +163,7 @@ public class ValueToEntityTest
         builder.prototype().spouse().set( ednaIdentity );
         builder.prototype().children().set( Arrays.asList( zekeIdentity, fredIdentity ) );
         PersonValue3 edValue = builder.newInstance();
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "CreatingEntityFromUnqualifiedValue" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreatingEntityFromUnqualifiedValue" ) ) )
         {
             ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
 
@@ -197,7 +197,7 @@ public class ValueToEntityTest
         builder.prototype().spouse().set( ednaIdentity );
         builder.prototype().children().set( Arrays.asList( zekeIdentity, fredIdentity ) );
         PersonValue4 edValue = builder.newInstance();
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "CreatingEntityFromUnqualifiedValue" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreatingEntityFromUnqualifiedValue" ) ) )
         {
             ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
 
@@ -213,7 +213,7 @@ public class ValueToEntityTest
         throws UnitOfWorkCompletionException
     {
         String rickyIdentity;
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "CreateRickySlaghoopleWithTypo" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreateRickySlaghoopleWithTypo" ) ) )
         {
             PersonEntity ricky = createPerson( uow, "Ricky", "Slaghople", someBirthDate );
             ricky.spouse().set( uow.get( PersonEntity.class, ednaIdentity ) );
@@ -228,7 +228,7 @@ public class ValueToEntityTest
         builder.prototype().lastName().set( "Slaghoople" );
         builder.prototype().dateOfBirth().set( someBirthDate );
         PersonValue rickyNewStateValue = builder.newInstance();
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "UpdateRickySlaghoople" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "UpdateRickySlaghoople" ) ) )
         {
             PersonEntity rickyEntity = uow.get( PersonEntity.class, rickyIdentity );
             // START SNIPPET: update
@@ -249,7 +249,7 @@ public class ValueToEntityTest
         throws UnitOfWorkCompletionException
     {
         String rickyIdentity;
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "CreateRickySlaghoopleWithTypo" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreateRickySlaghoopleWithTypo" ) ) )
         {
             PersonEntity ricky = createPerson( uow, "Ricky", "Slaghople", someBirthDate );
             ricky.spouse().set( uow.get( PersonEntity.class, ednaIdentity ) );
@@ -264,7 +264,7 @@ public class ValueToEntityTest
         builder.prototype().lastName().set( "Slaghoople" );
         builder.prototype().dateOfBirth().set( someBirthDate );
         PersonValue2 newStateValue = builder.newInstance();
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "UpdateRickySlaghoople" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "UpdateRickySlaghoople" ) ) )
         {
             PersonEntity ricky = uow.get( PersonEntity.class, rickyIdentity );
 
@@ -284,7 +284,7 @@ public class ValueToEntityTest
         throws UnitOfWorkCompletionException
     {
         String rickyIdentity;
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "CreateRickySlaghoopleWithTypo" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreateRickySlaghoopleWithTypo" ) ) )
         {
             PersonEntity ricky = createPerson( uow, "Ricky", "Slaghople", someBirthDate );
             ricky.spouse().set( uow.get( PersonEntity.class, ednaIdentity ) );
@@ -299,7 +299,7 @@ public class ValueToEntityTest
         builder.prototype().lastName().set( "Slaghoople" );
         builder.prototype().dateOfBirth().set( someBirthDate );
         PersonValue3 newStateValue = builder.newInstance();
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "UpdateRickySlaghoople" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "UpdateRickySlaghoople" ) ) )
         {
             PersonEntity ricky = uow.get( PersonEntity.class, rickyIdentity );
 
@@ -319,7 +319,7 @@ public class ValueToEntityTest
         throws UnitOfWorkCompletionException
     {
         String rickyIdentity;
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "CreateRickySlaghoopleWithTypo" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreateRickySlaghoopleWithTypo" ) ) )
         {
             PersonEntity ricky = createPerson( uow, "Ricky", "Slaghople", someBirthDate );
             ricky.spouse().set( uow.get( PersonEntity.class, ednaIdentity ) );
@@ -334,7 +334,7 @@ public class ValueToEntityTest
         builder.prototype().lastName().set( "Slaghoople" );
         builder.prototype().dateOfBirth().set( someBirthDate );
         PersonValue4 newStateValue = builder.newInstance();
-        try( UnitOfWork uow = module.newUnitOfWork( newUsecase( "UpdateRickySlaghoopleWontWork" ) ) )
+        try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "UpdateRickySlaghoopleWontWork" ) ) )
         {
             PersonEntity ricky = uow.get( PersonEntity.class, rickyIdentity );
 

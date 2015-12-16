@@ -43,7 +43,7 @@ public class RemovalTest
     public void givenEntityIsCreatedAndUnitOfWorkIsNotCompletedWhenEntityIsRemoveThenSuccessfulRemoval()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<TestEntity> builder = uow.newEntityBuilder( TestEntity.class, "123" );
@@ -62,7 +62,7 @@ public class RemovalTest
     public void givenStandardPidRegulatorWhenNoChangeInInputExpectOutputToGoTowardsMinimum()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         PidRegulator regulator = null;
         try
         {

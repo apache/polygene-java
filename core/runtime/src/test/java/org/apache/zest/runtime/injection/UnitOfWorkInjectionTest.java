@@ -47,15 +47,15 @@ public class UnitOfWorkInjectionTest
         throws Exception
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "usecase1" );
-        UnitOfWork uow = module.newUnitOfWork( usecase );
+        UnitOfWork uow = uowf.newUnitOfWork( usecase );
         try
         {
             Trial trial = uow.newEntity( Trial.class, "123" );
             trial.doSomething();
             uow.complete();
-            uow = module.newUnitOfWork( usecase );
+            uow = uowf.newUnitOfWork( usecase );
             usecase = UsecaseBuilder.newUsecase( "usecase2" );
-            UnitOfWork uow2 = module.newUnitOfWork( usecase );
+            UnitOfWork uow2 = uowf.newUnitOfWork( usecase );
             trial = uow.get( trial );
             trial.doSomething();
             assertEquals( "123", ( (EntityComposite) trial ).identity().get() );
@@ -70,9 +70,9 @@ public class UnitOfWorkInjectionTest
         {
             try
             {
-                while( module.isUnitOfWorkActive() )
+                while( uowf.isUnitOfWorkActive() )
                 {
-                    uow = module.currentUnitOfWork();
+                    uow = uowf.currentUnitOfWork();
                     uow.discard();
                 }
             }

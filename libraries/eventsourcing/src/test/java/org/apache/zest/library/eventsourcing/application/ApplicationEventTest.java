@@ -103,21 +103,21 @@ public class ApplicationEventTest
             }
         };
 
-        UnitOfWork uow1 = module.newUnitOfWork( UsecaseBuilder.newUsecase( "User signup" ) );
+        UnitOfWork uow1 = uowf.newUnitOfWork( UsecaseBuilder.newUsecase( "User signup" ) );
         uow1.setMetaInfo( administratorPrincipal );
         users.signup( null, "user1", Arrays.asList( "news-a", "news-b" ) );
         uow1.complete();
 
         Thread.sleep( 1 ); // For UoWs not getting the same `currentTime`
 
-        UnitOfWork uow2 = module.newUnitOfWork();
+        UnitOfWork uow2 = uowf.newUnitOfWork();
         uow2.setMetaInfo( administratorPrincipal );
         users.signup( null, "user2", Collections.EMPTY_LIST );
         uow2.complete();
 
         Thread.sleep( 1 ); // For UoWs not getting the same `currentTime`
 
-        UnitOfWork uow3 = module.newUnitOfWork();
+        UnitOfWork uow3 = uowf.newUnitOfWork();
         uow3.setMetaInfo( administratorPrincipal );
         users.signup( null, "user3", Collections.singletonList( "news-c" ) );
         uow3.complete();

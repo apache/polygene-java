@@ -20,6 +20,7 @@ package org.apache.zest.runtime.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -89,12 +90,13 @@ public class IterableQuerySourceTest
 
                 module.values( ContactsValue.class, ContactValue.class );
                 new EntityTestAssembler().assemble( module );
+                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
-        uow = assembler.module().newUnitOfWork();
+        uow = assembler.module().unitOfWorkFactory().newUnitOfWork();
         Network.populate( uow, assembler.module() );
         uow.complete();
-        uow = assembler.module().newUnitOfWork();
+        uow = assembler.module().unitOfWorkFactory().newUnitOfWork();
         Network.refresh( uow );
         qbf = assembler.module();
     }

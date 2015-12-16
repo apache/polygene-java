@@ -46,14 +46,14 @@ public class RemovalTest
     public void givenUnitOfWorkHasBeenCreateWhenCreatingNewEntityThenFindNewEntityWithGet()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, "123" );
             builder.instance().name().set( "Niclas" );
             builder.newInstance();
             uow.complete();
-            uow = module.newUnitOfWork();
+            uow = uowf.newUnitOfWork();
             Abc abc = uow.get( Abc.class, "123" );
             assertEquals( "Niclas", abc.name().get() );
         }
@@ -67,19 +67,19 @@ public class RemovalTest
     public void givenEntityCreatedWhenRemovingEntityThenFindNewEntityShouldNotExist()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, "123" );
             builder.instance().name().set( "Niclas" );
             builder.newInstance();
             uow.complete();
-            uow = module.newUnitOfWork();
+            uow = uowf.newUnitOfWork();
             Abc abc = uow.get( Abc.class, "123" );
             assertEquals( "Niclas", abc.name().get() );
             uow.remove( abc );
             uow.complete();
-            uow = module.newUnitOfWork();
+            uow = uowf.newUnitOfWork();
             uow.get( Abc.class, "123" );
             fail( "This '123' entity should not exist." );
         }
@@ -97,18 +97,18 @@ public class RemovalTest
     public void givenDetachedEntityWhenRemovingEntityThenFindNewEntityShouldNotExist()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, "123" );
             builder.instance().name().set( "Niclas" );
             Abc abc = builder.newInstance();
             uow.complete();
-            uow = module.newUnitOfWork();
+            uow = uowf.newUnitOfWork();
             abc = uow.get( abc );  // Attach the detached entity to 'uow' session.
             uow.remove( abc );
             uow.complete();
-            uow = module.newUnitOfWork();
+            uow = uowf.newUnitOfWork();
             uow.get( Abc.class, "123" );
             fail( "This '123' entity should not exist." );
         }
@@ -126,7 +126,7 @@ public class RemovalTest
     public void givenEntityCreatedWhenRemovingEntityBeforeCompletingUowThenFindNewEntityShouldNotExist()
         throws Exception
     {
-        UnitOfWork uow = module.newUnitOfWork();
+        UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
             EntityBuilder<Abc> builder = uow.newEntityBuilder( Abc.class, "123" );
@@ -134,7 +134,7 @@ public class RemovalTest
             Abc abc = builder.newInstance();
             uow.remove( abc );
             uow.complete();
-            uow = module.newUnitOfWork();
+            uow = uowf.newUnitOfWork();
             uow.get( Abc.class, "123" );
             fail( "This '123' entity should not exist." );
         }

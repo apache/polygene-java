@@ -38,7 +38,7 @@ import org.apache.zest.runtime.composite.MixinsModel;
 import org.apache.zest.runtime.composite.StateResolver;
 import org.apache.zest.runtime.composite.UsesInstance;
 import org.apache.zest.runtime.injection.InjectionContext;
-import org.apache.zest.spi.module.ModelModule;
+import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.runtime.structure.ModuleInstance;
 
 /**
