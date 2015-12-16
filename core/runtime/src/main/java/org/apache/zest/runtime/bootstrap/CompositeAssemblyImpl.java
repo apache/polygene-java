@@ -590,7 +590,7 @@ public abstract class CompositeAssemblyImpl
         concernClasses.forEach( concern -> {
             if( helper.appliesTo( concern, method, types, mixinClass ) )
             {
-                addConcernIfNotExists( concernsFor, helper.getConcernModel( concern ) );
+                addConcernOrRepositionIfExists( concernsFor, helper.getConcernModel( concern ) );
             }
             else
             {
@@ -602,7 +602,7 @@ public abstract class CompositeAssemblyImpl
                         Method mixinMethod = mixinClass.getMethod( method.getName(), method.getParameterTypes() );
                         if( helper.appliesTo( concern, mixinMethod, types, mixinClass ) )
                         {
-                            addConcernIfNotExists( concernsFor, helper.getConcernModel( concern ) );
+                            addConcernOrRepositionIfExists( concernsFor, helper.getConcernModel( concern ) );
                         }
                     }
                     catch( NoSuchMethodException e )
@@ -625,7 +625,7 @@ public abstract class CompositeAssemblyImpl
                     if( helper.appliesTo( concern, method, types, mixinClass ) )
                     {
                         ConcernModel concernModel = helper.getConcernModel( concern );
-                        addConcernIfNotExists( concernsFor, concernModel );
+                        addConcernOrRepositionIfExists( concernsFor, concernModel );
                     }
                 }
             }
@@ -641,12 +641,11 @@ public abstract class CompositeAssemblyImpl
         }
     }
 
-    private void addConcernIfNotExists( List<ConcernModel> concernsFor, ConcernModel concernModel )
+    private void addConcernOrRepositionIfExists( List<ConcernModel> concernsFor, ConcernModel concernModel )
     {
-        if( !concernsFor.contains( concernModel ) )
-        {
-            concernsFor.add( concernModel );
-        }
+        // This remove/add is to allow re-ordering of the concerns
+        concernsFor.remove( concernModel );
+        concernsFor.add( concernModel );
     }
 
     private SideEffectsModel sideEffectsFor( Method method,
@@ -659,7 +658,7 @@ public abstract class CompositeAssemblyImpl
             SideEffectModel sideEffectModel = helper.getSideEffectModel( sideEffect );
             if( helper.appliesTo( sideEffect, method, types, mixinClass ) )
             {
-                addSideEffectIfNotExists( sideEffectsFor, sideEffectModel );
+                addSideEffectOrRepositionIfExists( sideEffectsFor, sideEffectModel );
             }
             else
             {
@@ -671,7 +670,7 @@ public abstract class CompositeAssemblyImpl
                         Method mixinMethod = mixinClass.getMethod( method.getName(), method.getParameterTypes() );
                         if( helper.appliesTo( sideEffect, mixinMethod, types, mixinClass ) )
                         {
-                            addSideEffectIfNotExists( sideEffectsFor, sideEffectModel );
+                            addSideEffectOrRepositionIfExists( sideEffectsFor, sideEffectModel );
                         }
                     }
                     catch( NoSuchMethodException e )
@@ -694,12 +693,11 @@ public abstract class CompositeAssemblyImpl
                     if( helper.appliesTo( sideEffect, method, types, mixinClass ) )
                     {
                         SideEffectModel sideEffectModel = helper.getSideEffectModel( sideEffect );
-                        addSideEffectIfNotExists( sideEffectsFor, sideEffectModel );
+                        addSideEffectOrRepositionIfExists( sideEffectsFor, sideEffectModel );
                     }
                 }
             }
         }
-
 
         if( sideEffectsFor.isEmpty() )
         {
@@ -711,12 +709,11 @@ public abstract class CompositeAssemblyImpl
         }
     }
 
-    private void addSideEffectIfNotExists( List<SideEffectModel> sideEffectsFor, SideEffectModel sideEffectModel )
+    private void addSideEffectOrRepositionIfExists( List<SideEffectModel> sideEffectsFor, SideEffectModel sideEffectModel )
     {
-        if( !sideEffectsFor.contains( sideEffectModel ) )
-        {
-            sideEffectsFor.add( sideEffectModel );
-        }
+        // This add/remove is to allow reording of SideEffects.
+        sideEffectsFor.remove( sideEffectModel );
+        sideEffectsFor.add( sideEffectModel );
     }
 
     @SuppressWarnings( "unchecked" )
