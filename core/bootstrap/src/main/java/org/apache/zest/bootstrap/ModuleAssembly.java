@@ -110,6 +110,7 @@ public interface ModuleAssembly
      * albeit those Mixins are in the Core Runtime and since Core Runtime is not a direct dependency of any
      * other module, the classes are loaded with reflection. This may change in the future.
      */
+    @Deprecated
     ModuleAssembly withDefaultUnitOfWorkFactory()
         throws AssemblyException;
 
