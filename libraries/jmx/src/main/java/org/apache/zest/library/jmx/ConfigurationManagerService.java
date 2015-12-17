@@ -61,6 +61,7 @@ import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.EnumType;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
@@ -150,7 +151,7 @@ public interface ConfigurationManagerService
                 String serviceClass = compositeInstance.types().findFirst().get().getName();
                 String name = configurableService.identity();
                 ServiceDescriptor serviceDescriptor = spi.serviceDescriptorFor( configurableService );
-                Module module = spi.moduleOf( configurableService );
+                ModuleDescriptor module = spi.moduleOf( configurableService );
                 Class<Object> configurationClass = serviceDescriptor.configurationType();
                 if( configurationClass != null )
                 {

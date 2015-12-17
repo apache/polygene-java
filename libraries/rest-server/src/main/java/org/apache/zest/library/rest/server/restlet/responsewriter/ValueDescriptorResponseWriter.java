@@ -25,12 +25,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueDescriptor;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
@@ -46,7 +46,7 @@ public class ValueDescriptorResponseWriter extends AbstractResponseWriter
     private static final List<MediaType> supportedMediaTypes = Arrays.asList( MediaType.TEXT_HTML, MediaType.APPLICATION_JSON );
 
     @Structure
-    private Module module;
+    private ModuleDescriptor module;
 
     @Service
     private Configuration cfg;

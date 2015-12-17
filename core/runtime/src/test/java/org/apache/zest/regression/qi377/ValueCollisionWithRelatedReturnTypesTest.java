@@ -42,7 +42,7 @@ public class ValueCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToSetNameToTheCompany()
     {
-        ValueBuilder<Company> builder = module.newValueBuilder( Company.class );
+        ValueBuilder<Company> builder = valueBuilderFactory.newValueBuilder( Company.class );
         builder.prototype().name().set( "Acme" );
         Company startUp = builder.newInstance();
     }
@@ -50,8 +50,8 @@ public class ValueCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToSetLeadToTheCompany()
     {
-        Company startUp = module.newValue( Company.class );
-        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        Company startUp = valueBuilderFactory.newValue( Company.class );
+        ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
         builder.prototype().identity().set( "niclas" );
         Employee niclas = builder.newInstance();
         startUp.lead().set( niclas );
@@ -60,8 +60,8 @@ public class ValueCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToSetLeadToTheSalesTeam()
     {
-        SalesTeam startUp = module.newValue( SalesTeam.class );
-        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        SalesTeam startUp = valueBuilderFactory.newValue( SalesTeam.class );
+        ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
         builder.prototype().identity().set( "niclas" );
         Employee niclas = builder.newInstance();
         startUp.lead().set( niclas );
@@ -70,8 +70,8 @@ public class ValueCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToSetLeadToTheResearchTeam()
     {
-        ResearchTeam startUp = module.newValue( ResearchTeam.class );
-        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        ResearchTeam startUp = valueBuilderFactory.newValue( ResearchTeam.class );
+        ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
         builder.prototype().identity().set( "niclas" );
         Employee niclas = builder.newInstance();
         startUp.lead().set( niclas );
@@ -80,8 +80,8 @@ public class ValueCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToAddEmployeesToTheCompany()
     {
-        Company startUp = module.newValue( Company.class );
-        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        Company startUp = valueBuilderFactory.newValue( Company.class );
+        ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
         builder.prototype().identity().set( "niclas" );
         Employee niclas = builder.newInstance();
         startUp.employees().add( niclas );
@@ -90,8 +90,8 @@ public class ValueCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToAddEmployeesToTheSalesTeam()
     {
-        SalesTeam startUp = module.newValue( SalesTeam.class );
-        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        SalesTeam startUp = valueBuilderFactory.newValue( SalesTeam.class );
+        ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
         builder.prototype().identity().set( "niclas" );
         Employee niclas = builder.newInstance();
         startUp.employees().add( niclas );
@@ -100,8 +100,8 @@ public class ValueCollisionWithRelatedReturnTypesTest
     @Test
     public void shouldBeAbleToAddEmployeesToTheResearchTeam()
     {
-        ResearchTeam startUp = module.newValue( ResearchTeam.class );
-        ValueBuilder<Employee> builder = module.newValueBuilder( Employee.class );
+        ResearchTeam startUp = valueBuilderFactory.newValue( ResearchTeam.class );
+        ValueBuilder<Employee> builder = valueBuilderFactory.newValueBuilder( Employee.class );
         builder.prototype().identity().set( "niclas" );
         Employee niclas = builder.newInstance();
         startUp.employees().add( niclas );

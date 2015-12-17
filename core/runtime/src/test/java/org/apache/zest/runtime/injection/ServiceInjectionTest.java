@@ -77,12 +77,12 @@ public class ServiceInjectionTest
 
         assertEquals( "X", user.testSingle() );
         assertEquals( "Foo", user.testIdentity() );
-        assertEquals( "XX", user.testIterable() );
         assertEquals( "FooX", user.testServiceReference() );
-        assertEquals( "FooXBarX", user.testIterableServiceReferences() );
         assertEquals( "Bar", user.testQualifier() );
         assertEquals( "A", user.testStringIterable() );
         assertEquals( new Long( 1L ), user.testLongIterable() );
+        assertEquals( "FooXBarX", user.testIterableServiceReferences() );
+        assertEquals( "XX", user.testIterable() );
     }
 
     @Test
@@ -192,12 +192,16 @@ public class ServiceInjectionTest
     {
         @Service
         MyService service;
+
         @Service
         MyServiceComposite serviceComposite;
+
         @Service
         Iterable<MyService> services;
+
         @Service
         ServiceReference<MyService> serviceRef;
+
         @Service
         Iterable<ServiceReference<MyService>> serviceRefs;
 

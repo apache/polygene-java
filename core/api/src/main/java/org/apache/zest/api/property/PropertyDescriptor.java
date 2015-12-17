@@ -19,6 +19,7 @@ import java.lang.reflect.Type;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.structure.MetaInfoHolder;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueType;
 
 /**
@@ -48,7 +49,7 @@ public interface PropertyDescriptor extends MetaInfoHolder
 
     AccessibleObject accessor();
 
-    Object initialValue( Module module );
+    Object initialValue( ModuleDescriptor module );
 
     ValueType valueType();
 

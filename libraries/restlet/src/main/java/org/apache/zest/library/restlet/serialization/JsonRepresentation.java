@@ -26,6 +26,7 @@ import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializer;
 import org.apache.zest.spi.ZestSPI;
@@ -48,6 +49,9 @@ public class JsonRepresentation<T> extends OutputRepresentation
 
     @Service
     private ValueSerialization serializer;
+
+    @Structure
+    private ModuleDescriptor module;
 
     /**
      * The (parsed) object to format.
@@ -94,7 +98,7 @@ public class JsonRepresentation<T> extends OutputRepresentation
         }
         else if( this.representation != null )
         {
-            result = serializer.deserialize( objectClass, this.representation.getStream() );
+            result = serializer.deserialize( module, objectClass, this.representation.getStream() );
         }
         return result;
     }

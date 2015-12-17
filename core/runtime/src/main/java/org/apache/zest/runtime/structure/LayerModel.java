@@ -16,10 +16,17 @@
 package org.apache.zest.runtime.structure;
 
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.MetaInfo;
+import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.api.composite.TransientDescriptor;
+import org.apache.zest.api.entity.EntityDescriptor;
+import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.structure.Layer;
 import org.apache.zest.api.structure.LayerDescriptor;
+import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
@@ -37,6 +44,7 @@ public final class LayerModel
     private final UsedLayersModel usedLayersModel;
     private final ActivatorsModel<Layer> activatorsModel;
     private final List<ModuleModel> modules;
+    private LayerInstance layerInstance;
 
     public LayerModel( String name,
                        MetaInfo metaInfo,
@@ -100,18 +108,55 @@ public final class LayerModel
         return modelVisitor.visitLeave( this );
     }
 
-    // Context
-    public LayerInstance newInstance( ApplicationInstance applicationInstance, UsedLayersInstance usedLayerInstance )
+    @Override
+    public Layer instance()
     {
-        LayerInstance layerInstance = new LayerInstance( this, applicationInstance, usedLayerInstance );
-        for( ModuleModel module : modules )
-        {
-            ModuleInstance moduleInstance = module.newInstance( layerInstance );
-            layerInstance.addModule( moduleInstance );
-        }
-
         return layerInstance;
     }
+
+    public LayerInstance newInstance( ApplicationInstance applicationInstance )
+    {
+        layerInstance = new LayerInstance( this, applicationInstance );
+        for( ModuleModel module : modules )
+        {
+            ModuleInstance moduleInstance = module.newInstance( this );
+            layerInstance.addModule( moduleInstance );
+        }
+        return layerInstance;
+    }
+
+    @Override
+    public Stream<? extends ObjectDescriptor> visibleObjects( final Visibility visibility )
+    {
+        return modules.stream().flatMap( module -> module.visibleObjects( visibility ) );
+    }
+
+    @Override
+    public Stream<? extends TransientDescriptor> visibleTransients( final Visibility visibility )
+    {
+        return modules.stream().flatMap( module -> module.visibleTransients( visibility ) );
+    }
+
+    @Override
+    public Stream<? extends EntityDescriptor> visibleEntities( final Visibility visibility )
+    {
+        return modules.stream().flatMap( module -> module.visibleEntities( visibility ) );
+    }
+
+    /* package */
+    @Override
+    public Stream<? extends ValueDescriptor> visibleValues( final Visibility visibility )
+    {
+        return modules.stream().flatMap( module -> module.visibleValues( visibility ) );
+    }
+
+    /* package */
+    @Override
+    public Stream<? extends ModelDescriptor> visibleServices( final Visibility visibility )
+    {
+        return modules.stream().flatMap( module -> module.visibleServices( visibility ) );
+    }
+
 
     @Override
     public String toString()

@@ -33,14 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.apache.zest.api.entity.EntityReference;
-import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.EnumType;
 import org.apache.zest.api.type.MapType;
@@ -105,10 +100,6 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     private static final String UTF_8 = "UTF-8";
     private final Map<Class<?>, Function<Object, Object>> deserializers = new HashMap<>( 16 );
     private final Map<Class<?>, ComplexDeserializer<Object, InputType, InputNodeType>> complexDeserializers = new HashMap<>( 2 );
-    private final Application application;
-    private final Module module;
-    private Function<Application, Module> valuesModuleFinder;
-    private Module valuesModule;
 
     /**
      * Register a Plain Value type deserialization Function.
@@ -131,24 +122,8 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         complexDeserializers.put( type, (ComplexDeserializer<Object, InputType, InputNodeType>) deserializer );
     }
 
-    @SuppressWarnings( "unchecked" )
-    public ValueDeserializerAdapter( @Structure Application application,
-                                     @Structure Module module,
-                                     @Service ServiceReference<ValueDeserializer> serviceRef
-    )
+    protected ValueDeserializerAdapter()
     {
-        this( application, module, serviceRef.metaInfo( Function.class ) );
-    }
-
-    protected ValueDeserializerAdapter( Application application,
-                                        Module module,
-                                        Function<Application, Module> valuesModuleFinder
-    )
-    {
-
-        this.application = application;
-        this.module = module;
-        setValuesModuleFinder( valuesModuleFinder );
 
         // Primitive Value types
         registerDeserializer( String.class, Object::toString );
@@ -189,84 +164,58 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         registerDeserializer( EntityReference.class, input -> EntityReference.parseEntityReference( input.toString() ) );
     }
 
-    private void setValuesModuleFinder( Function<Application, Module> valuesModuleFinder )
-    {
-        this.valuesModuleFinder = valuesModuleFinder;
-        this.valuesModule = null;
-    }
-
-    private Module valuesModule()
-    {
-        if( valuesModule == null )
-        {
-            if( valuesModuleFinder == null )
-            {
-                valuesModule = module;
-            }
-            else
-            {
-                valuesModule = valuesModuleFinder.apply( application );
-                if( valuesModule == null )
-                {
-                    throw new ValueSerializationException( "Values Module provided by the finder Function was null." );
-                }
-            }
-        }
-        return valuesModule;
-    }
-
     @Override
-    public <T> Function<String, T> deserialize( Class<T> type )
+    public <T> Function<String, T> deserialize( ModuleDescriptor module, Class<T> type )
     {
         if( CollectionType.isCollection( type ) )
         {
             ValueType objectValueType = new ValueType( Object.class );
-            return deserialize( new CollectionType( type, objectValueType ) );
+            return deserialize( module, new CollectionType( type, objectValueType ) );
         }
         if( MapType.isMap( type ) )
         {
             ValueType objectValueType = new ValueType( Object.class );
-            return deserialize( new MapType( type, objectValueType, objectValueType ) );
+            return deserialize( module, new MapType( type, objectValueType, objectValueType ) );
         }
-        return deserialize( new ValueType( type ) );
+        return deserialize( module, new ValueType( type ) );
     }
 
     @Override
-    public final <T> Function<String, T> deserialize( final ValueType valueType )
+    public final <T> Function<String, T> deserialize( ModuleDescriptor module, ValueType valueType )
     {
-        return input -> deserialize( valueType, input );
+        return input -> deserialize( module, valueType, input );
     }
 
-    @Override
-    public final <T> BiFunction<ValueType, String, T> deserialize()
-    {
-        return this::deserialize;
-    }
+//    @Override
+//    public final <T> BiFunction<ValueType, String, T> deserialize()
+//    {
+//        return this::deserialize;
+//    }
 
     @Override
-    public final <T> T deserialize( Class<?> type, String input )
+    public final <T> T deserialize( ModuleDescriptor module, Class<?> type, String input )
         throws ValueSerializationException
     {
         if( CollectionType.isCollection( type ) )
         {
             ValueType objectValueType = new ValueType( Object.class );
-            return deserialize( new CollectionType( type, objectValueType ), input );
+            return deserialize( module, new CollectionType( type, objectValueType ), input );
         }
         if( MapType.isMap( type ) )
         {
             ValueType objectValueType = new ValueType( Object.class );
-            return deserialize( new MapType( type, objectValueType, objectValueType ), input );
+            return deserialize( module, new MapType( type, objectValueType, objectValueType ), input );
         }
-        return deserialize( new ValueType( type ), input );
+        return deserialize( module, new ValueType( type ), input );
     }
 
     @Override
-    public final <T> T deserialize( ValueType valueType, String input )
+    public final <T> T deserialize( ModuleDescriptor module, ValueType valueType, String input )
         throws ValueSerializationException
     {
         try
         {
-            return deserializeRoot( valueType, new ByteArrayInputStream( input.getBytes( UTF_8 ) ) );
+            return deserializeRoot( module, valueType, new ByteArrayInputStream( input.getBytes( UTF_8 ) ) );
         }
         catch( ValueSerializationException ex )
         {
@@ -279,29 +228,29 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     }
 
     @Override
-    public final <T> T deserialize( Class<?> type, InputStream input )
+    public final <T> T deserialize( ModuleDescriptor module, Class<?> type, InputStream input )
         throws ValueSerializationException
     {
         if( CollectionType.isCollection( type ) )
         {
             ValueType objectValueType = new ValueType( Object.class );
-            return deserialize( new CollectionType( type, objectValueType ), input );
+            return deserialize( module, new CollectionType( type, objectValueType ), input );
         }
         if( MapType.isMap( type ) )
         {
             ValueType objectValueType = new ValueType( Object.class );
-            return deserialize( new MapType( type, objectValueType, objectValueType ), input );
+            return deserialize( module, new MapType( type, objectValueType, objectValueType ), input );
         }
-        return deserialize( new ValueType( type ), input );
+        return deserialize( module, new ValueType( type ), input );
     }
 
     @Override
-    public final <T> T deserialize( ValueType valueType, InputStream input )
+    public final <T> T deserialize( ModuleDescriptor module, ValueType valueType, InputStream input )
         throws ValueSerializationException
     {
         try
         {
-            return deserializeRoot( valueType, input );
+            return deserializeRoot( module, valueType, input );
         }
         catch( ValueSerializationException ex )
         {
@@ -314,7 +263,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     }
 
     @SuppressWarnings( "unchecked" )
-    private <T> T deserializeRoot( ValueType valueType, InputStream input )
+    private <T> T deserializeRoot( ModuleDescriptor module, ValueType valueType, InputStream input )
         throws Exception
     {
         final Class<?> type = valueType.types().findFirst().orElse( null );
@@ -338,27 +287,27 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                     return null;
                 }
                 String string = scanner.next();
-                return (T) deserializeBase64Serialized( string );
+                return (T) deserializeBase64Serialized( module, string );
             }
             else // Complex ValueType
             {
-                InputType adaptedInput = adaptInput( input );
-                onDeserializationStart( valueType, adaptedInput );
-                T deserialized = doDeserialize( valueType, adaptedInput );
-                onDeserializationEnd( valueType, adaptedInput );
+                InputType adaptedInput = adaptInput( module, input );
+                onDeserializationStart( module, valueType, adaptedInput );
+                T deserialized = doDeserialize( module, valueType, adaptedInput );
+                onDeserializationEnd( module, valueType, adaptedInput );
                 return deserialized;
             }
     }
 
     @SuppressWarnings( "unchecked" )
-    private <T> T doDeserialize( ValueType valueType, InputType input )
+    private <T> T doDeserialize( ModuleDescriptor module, ValueType valueType, InputType input )
         throws Exception
     {
         final Class<?> type = valueType.types().findFirst().orElse( null );
         // Registered deserializers
         if( deserializers.get( type ) != null )
         {
-            Object value = readPlainValue( input );
+            Object value = readPlainValue( module, input );
             if( value == null )
             {
                 return null;
@@ -372,38 +321,38 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         else // Explicit ValueComposite
             if( ValueCompositeType.class.isAssignableFrom( valueType.getClass() ) )
             {
-                return (T) deserializeValueComposite( valueType, input );
+                return (T) deserializeValueComposite( module, valueType, input );
             }
             else // Explicit Collections
                 if( CollectionType.class.isAssignableFrom( valueType.getClass() ) )
                 {
-                    return (T) deserializeCollection( (CollectionType) valueType, input );
+                    return (T) deserializeCollection( module, (CollectionType) valueType, input );
                 }
                 else // Explicit Map
                     if( MapType.class.isAssignableFrom( valueType.getClass() ) )
                     {
-                        return (T) deserializeMap( (MapType) valueType, input );
+                        return (T) deserializeMap( module, (MapType) valueType, input );
                     }
                     else // Enum
                         if( EnumType.class.isAssignableFrom( valueType.getClass() ) || type.isEnum() )
                         {
-                            return (T) Enum.valueOf( (Class) type, readPlainValue( input ).toString() );
+                            return (T) Enum.valueOf( (Class) type, readPlainValue( module, input ).toString() );
                         }
                         else // Array
                             if( type.isArray() )
                             {
-                                return (T) deserializeBase64Serialized( readPlainValue( input ).toString() );
+                                return (T) deserializeBase64Serialized( module, readPlainValue( module, input ).toString() );
                             }
         // Guessed Deserialization
-        return (T) deserializeGuessed( valueType, input );
+        return (T) deserializeGuessed( module, valueType, input );
     }
 
-    private <T> Function<InputType, T> buildDeserializeInputFunction( final ValueType valueType )
+    private <T> Function<InputType, T> buildDeserializeInputFunction( ModuleDescriptor module, ValueType valueType )
     {
         return input -> {
             try
             {
-                return doDeserialize( valueType, input );
+                return doDeserialize( module, valueType, input );
             }
             catch( ValueSerializationException ex )
             {
@@ -416,7 +365,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         };
     }
 
-    private <T> Collection<T> deserializeCollection( CollectionType collectionType, InputType input )
+    private <T> Collection<T> deserializeCollection( ModuleDescriptor module, CollectionType collectionType, InputType input )
         throws Exception
     {
         Collection<T> collection;
@@ -429,43 +378,46 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         {
             collection = new ArrayList<>();
         }
-        return readArrayInCollection( input,
-                                      this.<T>buildDeserializeInputFunction( collectionType.collectedType() ),
+        return readArrayInCollection( module,
+                                      input,
+                                      this.<T>buildDeserializeInputFunction( module, collectionType.collectedType() ),
                                       collection );
     }
 
-    private <K, V> Map<K, V> deserializeMap( MapType mapType, InputType input )
+    private <K, V> Map<K, V> deserializeMap( ModuleDescriptor module, MapType mapType, InputType input )
         throws Exception
     {
-        return readMapInMap( input,
-                             this.<K>buildDeserializeInputFunction( mapType.keyType() ),
-                             this.<V>buildDeserializeInputFunction( mapType.valueType() ),
+        return readMapInMap( module,
+                             input,
+                             this.<K>buildDeserializeInputFunction( module, mapType.keyType() ),
+                             this.<V>buildDeserializeInputFunction( module, mapType.valueType() ),
                              new HashMap<>() );
     }
 
-    private <T> T deserializeValueComposite( ValueType valueType, InputType input )
+    private <T> T deserializeValueComposite( ModuleDescriptor module, ValueType valueType, InputType input )
         throws Exception
     {
-        InputNodeType inputNode = readObjectTree( input );
+        InputNodeType inputNode = readObjectTree( module, input );
         if( inputNode == null )
         {
             return null;
         }
-        return deserializeNodeValueComposite( valueType, inputNode );
+        return deserializeNodeValueComposite( module, valueType, inputNode );
     }
 
-    private <T> T deserializeNodeValueComposite( ValueType valueType, InputNodeType inputNode )
+    private <T> T deserializeNodeValueComposite( ModuleDescriptor module, ValueType valueType, InputNodeType inputNode )
         throws Exception
     {
         ValueCompositeType valueCompositeType = (ValueCompositeType) valueType;
         Class<?> valueBuilderType = valueCompositeType.types().findFirst().orElse( null );
         String typeInfo = this.getObjectFieldValue(
+            module,
             inputNode,
             "_type",
-            this.<String>buildDeserializeInputNodeFunction( new ValueType( String.class ) ) );
+            this.<String>buildDeserializeInputNodeFunction( module, new ValueType( String.class ) ) );
         if( typeInfo != null )
         {
-            ValueDescriptor valueDescriptor = valuesModule().valueDescriptor( typeInfo );
+            ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
             if( valueDescriptor == null )
             {
                 throw new ValueSerializationException( "Specified value type could not be resolved: " + typeInfo );
@@ -473,11 +425,12 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             valueCompositeType = valueDescriptor.valueType();
             valueBuilderType = Class.forName( typeInfo );
         }
-        return deserializeValueComposite( valueCompositeType, valueBuilderType, inputNode );
+        return deserializeValueComposite( module, valueCompositeType, valueBuilderType, inputNode );
     }
 
     @SuppressWarnings( "unchecked" )
-    private <T> T deserializeValueComposite( ValueCompositeType valueCompositeType,
+    private <T> T deserializeValueComposite( ModuleDescriptor module,
+                                             ValueCompositeType valueCompositeType,
                                              Class<?> valueBuilderType,
                                              InputNodeType inputNode
     )
@@ -492,12 +445,13 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             try
             {
                 propertyName = property.qualifiedName().name();
-                if( objectHasField( inputNode, propertyName ) )
+                if( objectHasField( module, inputNode, propertyName ) )
                 {
                     value = getObjectFieldValue(
+                        module,
                         inputNode,
                         propertyName,
-                        buildDeserializeInputNodeFunction( property.valueType() ) );
+                        buildDeserializeInputNodeFunction( module, property.valueType() ) );
                     if( property.isImmutable() )
                     {
                         if( value instanceof Set )
@@ -517,7 +471,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 else
                 {
                     // Serialized object does not contain the field, try to default it
-                    value = property.initialValue( valuesModule() );
+                    value = property.initialValue( module );
                 }
             }
             catch( Exception e )
@@ -532,12 +486,13 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             try
             {
                 String associationName = association.qualifiedName().name();
-                if( objectHasField( inputNode, associationName ) )
+                if( objectHasField( module, inputNode, associationName ) )
                 {
                     Object value = getObjectFieldValue(
+                        module,
                         inputNode,
                         associationName,
-                        buildDeserializeInputNodeFunction( new ValueType( EntityReference.class ) ) );
+                        buildDeserializeInputNodeFunction( module, new ValueType( EntityReference.class ) ) );
                     stateMap.put( associationName, value );
                 }
             }
@@ -552,14 +507,17 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             try
             {
                 String manyAssociationName = manyAssociation.qualifiedName().name();
-                if( objectHasField( inputNode, manyAssociationName ) )
+                if( objectHasField( module, inputNode, manyAssociationName ) )
                 {
                     Object value = getObjectFieldValue(
+                        module,
                         inputNode,
                         manyAssociationName,
-                        buildDeserializeInputNodeFunction( new CollectionType(
-                            Collection.class,
-                            new ValueType( EntityReference.class ) ) ) );
+                        buildDeserializeInputNodeFunction(
+                            module,
+                            new CollectionType(
+                                Collection.class,
+                                new ValueType( EntityReference.class ) ) ) );
                     stateMap.put( manyAssociationName, value );
                 }
             }
@@ -574,12 +532,13 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             try
             {
                 String namedAssociationName = namedAssociation.qualifiedName().name();
-                if( objectHasField( inputNode, namedAssociationName ) )
+                if( objectHasField( module, inputNode, namedAssociationName ) )
                 {
                     Object value = getObjectFieldValue(
+                        module,
                         inputNode,
                         namedAssociationName,
-                        buildDeserializeInputNodeFunction( MapType.of( String.class, EntityReference.class, Serialization.Variant.object ) ) );
+                        buildDeserializeInputNodeFunction( module, MapType.of( String.class, EntityReference.class, Serialization.Variant.object ) ) );
                     stateMap.put( namedAssociationName, value );
                 }
             }
@@ -589,16 +548,16 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             }
         } );
 
-        ValueBuilder<?> valueBuilder = buildNewValueBuilderWithState( valueBuilderType, stateMap );
+        ValueBuilder<?> valueBuilder = buildNewValueBuilderWithState( module, valueBuilderType, stateMap );
         return (T) valueBuilder.newInstance(); // Unchecked cast because the builder could use a type != T
     }
 
-    private <T> Function<InputNodeType, T> buildDeserializeInputNodeFunction( final ValueType valueType )
+    private <T> Function<InputNodeType, T> buildDeserializeInputNodeFunction( ModuleDescriptor module, final ValueType valueType )
     {
         return inputNode -> {
             try
             {
-                return doDeserializeInputNodeValue( valueType, inputNode );
+                return doDeserializeInputNodeValue( module, valueType, inputNode );
             }
             catch( ValueSerializationException ex )
             {
@@ -612,7 +571,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     }
 
     @SuppressWarnings( "unchecked" )
-    private <T> T doDeserializeInputNodeValue( ValueType valueType, InputNodeType inputNode )
+    private <T> T doDeserializeInputNodeValue( ModuleDescriptor module, ValueType valueType, InputNodeType inputNode )
         throws Exception
     {
         if( inputNode == null )
@@ -623,7 +582,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         // Registered deserializers
         if( deserializers.get( type ) != null )
         {
-            Object value = asSimpleValue( inputNode );
+            Object value = asSimpleValue( module, inputNode );
             if( value == null )
             {
                 return null;
@@ -637,12 +596,12 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         else // Explicit ValueComposite
             if( ValueCompositeType.class.isAssignableFrom( valueType.getClass() ) )
             {
-                return (T) deserializeNodeValueComposite( valueType, inputNode );
+                return (T) deserializeNodeValueComposite( module, valueType, inputNode );
             }
             else // Explicit Collections
                 if( CollectionType.class.isAssignableFrom( valueType.getClass() ) )
                 {
-                    return (T) deserializeNodeCollection( (CollectionType) valueType, inputNode );
+                    return (T) deserializeNodeCollection( module, (CollectionType) valueType, inputNode );
                 }
                 else // Explicit Map
                     if( MapType.class.isAssignableFrom( valueType.getClass() ) )
@@ -650,17 +609,17 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                         MapType mapType = (MapType) valueType;
                         if( mapType.variant().equals( Serialization.Variant.entry ) )
                         {
-                            return (T) deserializeNodeEntryMap( (MapType) valueType, inputNode );
+                            return (T) deserializeNodeEntryMap( module, (MapType) valueType, inputNode );
                         }
                         else
                         {
-                            return (T) deserializeNodeObjectMap( (MapType) valueType, inputNode );
+                            return (T) deserializeNodeObjectMap( module, (MapType) valueType, inputNode );
                         }
                     }
                     else // Enum
                         if( EnumType.class.isAssignableFrom( valueType.getClass() ) || type.isEnum() )
                         {
-                            Object value = asSimpleValue( inputNode );
+                            Object value = asSimpleValue( module, inputNode );
                             if( value == null )
                             {
                                 return null;
@@ -668,12 +627,15 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                             return (T) Enum.valueOf( (Class) type, value.toString() );
                         }
         // Guessed deserialization
-        return (T) deserializeNodeGuessed( valueType, inputNode );
+        return (T) deserializeNodeGuessed( module, valueType, inputNode );
     }
 
-    private ValueBuilder<?> buildNewValueBuilderWithState( Class<?> type, final Map<String, Object> stateMap )
+    private ValueBuilder<?> buildNewValueBuilderWithState( ModuleDescriptor module,
+                                                           Class<?> type,
+                                                           final Map<String, Object> stateMap
+    )
     {
-        return valuesModule().newValueBuilderWithState(
+        return module.instance().newValueBuilderWithState(
             type,
             property -> stateMap.get( property.qualifiedName().name() ),
             association -> {
@@ -705,18 +667,21 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     }
 
     @SuppressWarnings( "unchecked" )
-    private <T> T deserializeGuessed( ValueType valueType, InputType input )
+    private <T> T deserializeGuessed( ModuleDescriptor module, ValueType valueType, InputType input )
         throws Exception
     {
-        InputNodeType inputNode = readObjectTree( input );
+        InputNodeType inputNode = readObjectTree( module, input );
         if( inputNode == null )
         {
             return null;
         }
-        return deserializeNodeGuessed( valueType, inputNode );
+        return deserializeNodeGuessed( module, valueType, inputNode );
     }
 
-    private <T> Collection<T> deserializeNodeCollection( CollectionType collectionType, InputNodeType inputNode )
+    private <T> Collection<T> deserializeNodeCollection( ModuleDescriptor module,
+                                                         CollectionType collectionType,
+                                                         InputNodeType inputNode
+    )
         throws Exception
     {
         Collection<T> collection;
@@ -729,48 +694,52 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
         {
             collection = new ArrayList<>();
         }
-        putArrayNodeInCollection( inputNode,
-                                  this.<T>buildDeserializeInputNodeFunction( collectionType.collectedType() ),
+        putArrayNodeInCollection( module,
+                                  inputNode,
+                                  this.<T>buildDeserializeInputNodeFunction( module, collectionType.collectedType() ),
                                   collection );
         return collection;
     }
 
-    private <K, V> Map<K, V> deserializeNodeEntryMap( MapType mapType, InputNodeType inputNode )
+    private <K, V> Map<K, V> deserializeNodeEntryMap( ModuleDescriptor module, MapType mapType, InputNodeType inputNode )
         throws Exception
     {
         Map<K, V> map = new HashMap<>();
-        putArrayNodeInMap( inputNode,
-                           this.<K>buildDeserializeInputNodeFunction( mapType.keyType() ),
-                           this.<V>buildDeserializeInputNodeFunction( mapType.valueType() ),
+        putArrayNodeInMap( module,
+                           inputNode,
+                           this.<K>buildDeserializeInputNodeFunction( module, mapType.keyType() ),
+                           this.<V>buildDeserializeInputNodeFunction( module, mapType.valueType() ),
                            map );
         return map;
     }
 
-    private <V> Map<String, V> deserializeNodeObjectMap( MapType mapType, InputNodeType inputNode )
+    private <V> Map<String, V> deserializeNodeObjectMap( ModuleDescriptor module, MapType mapType, InputNodeType inputNode )
         throws Exception
     {
         Map<String, V> map = new HashMap<>();
-        putObjectNodeInMap( inputNode,
-                            this.<V>buildDeserializeInputNodeFunction( mapType.valueType() ),
+        putObjectNodeInMap( module,
+                            inputNode,
+                            this.<V>buildDeserializeInputNodeFunction( module, mapType.valueType() ),
                             map );
         return map;
     }
 
     @SuppressWarnings( "unchecked" )
-    private <T> T deserializeNodeGuessed( ValueType valueType, InputNodeType inputNode )
+    private <T> T deserializeNodeGuessed( ModuleDescriptor module, ValueType valueType, InputNodeType inputNode )
         throws Exception
     {
-        if( isObjectValue( inputNode ) )
+        if( isObjectValue( module, inputNode ) )
         {
             // Attempt ValueComposite deserialization
             ValueCompositeType valueCompositeType;
-            if( objectHasField( inputNode, "_type" ) ) // with _type info
+            if( objectHasField( module, inputNode, "_type" ) ) // with _type info
             {
                 String typeInfo = this.getObjectFieldValue(
+                    module,
                     inputNode,
                     "_type",
-                    this.<String>buildDeserializeInputNodeFunction( new ValueType( String.class ) ) );
-                ValueDescriptor valueDescriptor = valuesModule().valueDescriptor( typeInfo );
+                    this.<String>buildDeserializeInputNodeFunction( module, new ValueType( String.class ) ) );
+                ValueDescriptor valueDescriptor = module.valueDescriptor( typeInfo );
                 if( valueDescriptor == null )
                 {
                     throw new ValueSerializationException( "Specified value type could not be resolved: " + typeInfo );
@@ -779,10 +748,10 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
             }
             else // without _type info
             {
-                ValueDescriptor valueDescriptor = valuesModule().valueDescriptor( valueType.types()
-                                                                                      .findFirst()
-                                                                                      .get()
-                                                                                      .getName() );
+                ValueDescriptor valueDescriptor = module.valueDescriptor( valueType.types()
+                                                                              .findFirst()
+                                                                              .get()
+                                                                              .getName() );
                 if( valueDescriptor == null )
                 {
                     throw new ValueSerializationException( "Don't know how to deserialize " + inputNode );
@@ -790,27 +759,27 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
                 valueCompositeType = valueDescriptor.valueType();
             }
             Class<?> valueBuilderType = valueCompositeType.types().findFirst().orElse( null );
-            return deserializeValueComposite( valueCompositeType, valueBuilderType, inputNode );
+            return deserializeValueComposite( module, valueCompositeType, valueBuilderType, inputNode );
         }
         // Last resort : base64 java deserialization
-        return (T) deserializeBase64Serialized( inputNode );
+        return (T) deserializeBase64Serialized( module, inputNode );
     }
 
     @SuppressWarnings( "unchecked" )
-    private <T> T deserializeBase64Serialized( InputNodeType inputNode )
+    private <T> T deserializeBase64Serialized( ModuleDescriptor module, InputNodeType inputNode )
         throws Exception
     {
-        Object value = asSimpleValue( inputNode );
+        Object value = asSimpleValue( module, inputNode );
         if( value == null )
         {
             return null;
         }
         String base64 = value.toString();
-        return deserializeBase64Serialized( base64 );
+        return deserializeBase64Serialized( module, base64 );
     }
 
     @SuppressWarnings( "unchecked" )
-    private <T> T deserializeBase64Serialized( String inputString )
+    private <T> T deserializeBase64Serialized( ModuleDescriptor module, String inputString )
         throws Exception
     {
         byte[] bytes = inputString.getBytes( UTF_8 );
@@ -828,7 +797,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
     //
 
     /**
-     * Called by the adapter on deserialization start, after {@link #adaptInput(java.io.InputStream)}.
+     * Called by the adapter on deserialization start, after {@link #adaptInput(ModuleDescriptor, java.io.InputStream)}.
      *
      * @param valueType ValueType
      * @param input     Input
@@ -836,7 +805,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
     @SuppressWarnings( "UnusedParameters" )
-    protected void onDeserializationStart( ValueType valueType, InputType input )
+    protected void onDeserializationStart( ModuleDescriptor module, ValueType valueType, InputType input )
         throws Exception
     {
         // NOOP
@@ -850,7 +819,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      *
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
-    protected void onDeserializationEnd( ValueType valueType, InputType input )
+    protected void onDeserializationEnd( ModuleDescriptor module, ValueType valueType, InputType input )
         throws Exception
     {
         // NOOP
@@ -869,7 +838,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      *
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
-    protected abstract InputType adaptInput( InputStream input )
+    protected abstract InputType adaptInput( ModuleDescriptor module, InputStream input )
         throws Exception;
 
     /**
@@ -879,7 +848,7 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      *
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
-    protected abstract Object readPlainValue( InputType input )
+    protected abstract Object readPlainValue( ModuleDescriptor module, InputType input )
         throws Exception;
 
     /**
@@ -892,7 +861,8 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      *
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
-    protected abstract <T> Collection<T> readArrayInCollection( InputType input,
+    protected abstract <T> Collection<T> readArrayInCollection( ModuleDescriptor module,
+                                                                InputType input,
                                                                 Function<InputType, T> deserializer,
                                                                 Collection<T> collection
     )
@@ -926,7 +896,8 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      *
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
-    protected abstract <K, V> Map<K, V> readMapInMap( InputType input,
+    protected abstract <K, V> Map<K, V> readMapInMap( ModuleDescriptor module,
+                                                      InputType input,
                                                       Function<InputType, K> keyDeserializer,
                                                       Function<InputType, V> valueDeserializer,
                                                       Map<K, V> map
@@ -940,19 +911,19 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      *
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
-    protected abstract InputNodeType readObjectTree( InputType input )
+    protected abstract InputNodeType readObjectTree( ModuleDescriptor module, InputType input )
         throws Exception;
 
     //
     // Tree Parsing Deserialization
     //
-    protected abstract Object asSimpleValue( InputNodeType inputNode )
+    protected abstract Object asSimpleValue( ModuleDescriptor module, InputNodeType inputNode )
         throws Exception;
 
-    protected abstract boolean isObjectValue( InputNodeType inputNode )
+    protected abstract boolean isObjectValue( ModuleDescriptor module, InputNodeType inputNode )
         throws Exception;
 
-    protected abstract boolean objectHasField( InputNodeType inputNode, String key )
+    protected abstract boolean objectHasField( ModuleDescriptor module, InputNodeType inputNode, String key )
         throws Exception;
 
     /**
@@ -967,26 +938,30 @@ public abstract class ValueDeserializerAdapter<InputType, InputNodeType>
      *
      * @throws Exception that will be wrapped in a {@link ValueSerializationException}
      */
-    protected abstract <T> T getObjectFieldValue( InputNodeType inputNode,
+    protected abstract <T> T getObjectFieldValue( ModuleDescriptor module,
+                                                  InputNodeType inputNode,
                                                   String key,
                                                   Function<InputNodeType, T> valueDeserializer
     )
         throws Exception;
 
-    protected abstract <T> void putArrayNodeInCollection( InputNodeType inputNode,
+    protected abstract <T> void putArrayNodeInCollection( ModuleDescriptor module,
+                                                          InputNodeType inputNode,
                                                           Function<InputNodeType, T> deserializer,
                                                           Collection<T> collection
     )
         throws Exception;
 
-    protected abstract <K, V> void putArrayNodeInMap( InputNodeType inputNode,
+    protected abstract <K, V> void putArrayNodeInMap( ModuleDescriptor module,
+                                                      InputNodeType inputNode,
                                                       Function<InputNodeType, K> keyDeserializer,
                                                       Function<InputNodeType, V> valueDeserializer,
                                                       Map<K, V> map
     )
         throws Exception;
 
-    protected abstract <V> void putObjectNodeInMap( InputNodeType inputNode,
+    protected abstract <V> void putObjectNodeInMap( ModuleDescriptor module,
+                                                    InputNodeType inputNode,
                                                     Function<InputNodeType, V> valueDeserializer,
                                                     Map<String, V> map
     )

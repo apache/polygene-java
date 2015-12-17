@@ -42,7 +42,7 @@ import org.apache.zest.api.property.StateHolder;
 import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
@@ -128,7 +128,7 @@ public final class ZestRuntimeImpl
     }
 
     @Override
-    public Module moduleOf( Object compositeOrServiceReferenceOrUow )
+    public ModuleDescriptor moduleOf( Object compositeOrServiceReferenceOrUow )
     {
         if( compositeOrServiceReferenceOrUow instanceof TransientComposite )
         {

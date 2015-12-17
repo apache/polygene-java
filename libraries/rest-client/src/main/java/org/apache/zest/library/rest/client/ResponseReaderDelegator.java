@@ -54,7 +54,7 @@ public class ResponseReaderDelegator
       {
          try
          {
-            Class readerClass = module.classLoader().loadClass( className.trim() );
+            Class readerClass = module.descriptor().classLoader().loadClass( className.trim() );
             ResponseReader reader = (ResponseReader) module.newObject( readerClass );
             registerResponseReader( reader );
          } catch (ClassNotFoundException e)

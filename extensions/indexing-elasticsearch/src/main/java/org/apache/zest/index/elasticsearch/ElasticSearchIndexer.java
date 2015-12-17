@@ -28,6 +28,7 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.service.qualifier.Tagged;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.util.Classes;
@@ -41,7 +42,6 @@ import org.apache.zest.spi.entity.NamedAssociationState;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateChangeListener;
-import org.apache.zest.spi.module.ModuleSpi;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.json.JSONArray;
@@ -67,7 +67,7 @@ public interface ElasticSearchIndexer
         private static final Logger LOGGER = LoggerFactory.getLogger( ElasticSearchIndexer.class );
 
         @Structure
-        private ModuleSpi module;
+        private ModuleDescriptor module;
 
         @Service
         private EntityStore entityStore;
@@ -98,7 +98,7 @@ public interface ElasticSearchIndexer
             }
 
             EntityStoreUnitOfWork uow = entityStore.newUnitOfWork(
-                UsecaseBuilder.newUsecase( "Load associations for indexing" ),
+                module, UsecaseBuilder.newUsecase( "Load associations for indexing" ),
                 System.currentTimeMillis()
             );
 
@@ -190,8 +190,11 @@ public interface ElasticSearchIndexer
             try
             {
                 json.put( "_identity", state.identity().identity() );
-                json.put( "_types", state.entityDescriptor().mixinTypes().map( Classes.toClassName() ).collect( Collectors
-                                                                                                                   .toList() ) );
+                json.put( "_types", state.entityDescriptor()
+                    .mixinTypes()
+                    .map( Classes.toClassName() )
+                    .collect( Collectors
+                                  .toList() ) );
             }
             catch( JSONException e )
             {

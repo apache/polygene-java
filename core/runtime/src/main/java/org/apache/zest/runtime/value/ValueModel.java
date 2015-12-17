@@ -18,6 +18,7 @@ import java.util.List;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.constraint.ConstraintViolationException;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.runtime.composite.CompositeMethodsModel;
@@ -27,7 +28,6 @@ import org.apache.zest.runtime.composite.MixinsModel;
 import org.apache.zest.runtime.composite.UsesInstance;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.unitofwork.UnitOfWorkInstance;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Model for ValueComposites
@@ -37,7 +37,8 @@ public final class ValueModel extends CompositeModel
 {
     private ValueCompositeType valueType;
 
-    public ValueModel( final List<Class<?>> types,
+    public ValueModel( final ModuleDescriptor module,
+                       final List<Class<?>> types,
                        final Visibility visibility,
                        final MetaInfo metaInfo,
                        final MixinsModel mixinsModel,
@@ -45,7 +46,7 @@ public final class ValueModel extends CompositeModel
                        final CompositeMethodsModel compositeMethodsModel
     )
     {
-        super( types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        super( module, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
         valueType = new ValueCompositeType( this );
     }
@@ -88,13 +89,11 @@ public final class ValueModel extends CompositeModel
         );
     }
 
-    public ValueInstance newValueInstance( ModuleSpi moduleInstance,
-                                           ValueStateInstance state
-    )
+    public ValueInstance newValueInstance( ValueStateInstance state )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
-        ValueInstance instance = new ValueInstance( this, moduleInstance, mixins, state );
+        ValueInstance instance = new ValueInstance( this, mixins, state );
 
         // Instantiate all mixins
         int i = 0;

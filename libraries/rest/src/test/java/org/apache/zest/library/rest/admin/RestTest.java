@@ -123,7 +123,7 @@ public class RestTest
     public void givenAnIdentityWhenExecutingGetCommandThenExpectTheCorrectRdf()
         throws Exception
     {
-        RestTester restTester = module.newObject( RestTester.class );
+        RestTester restTester = objectFactory.newObject( RestTester.class );
         String rdf = restTester.getEntity( "P1" );
         // System.out.println( rdf.replaceAll( "\n", "\\\\n" ).replaceAll( "\"", "\\\\\"" ) );
         assertThat( "Incorrect RDF produced", rdf, anyOf(
@@ -140,7 +140,7 @@ public class RestTest
     public void givenExistingIdentityWhenExecutingPutCommandThenNewValuesInEntity()
         throws Throwable
     {
-        RestTester restTester = module.newObject( RestTester.class );
+        RestTester restTester = objectFactory.newObject( RestTester.class );
         Map<String, String> properties = new HashMap<String, String>();
         properties.put( "identity", "P1" );
         properties.put( "firstname", "Jack" );
@@ -164,7 +164,7 @@ public class RestTest
     public void givenExistingIdentityWhenExecutingDeleteCommandThenEntityIsRemoved()
         throws Throwable
     {
-        RestTester restTester = module.newObject( RestTester.class );
+        RestTester restTester = objectFactory.newObject( RestTester.class );
         restTester.deleteEntity( "P1" );
         UnitOfWork work = uowf.newUnitOfWork();
         try
@@ -191,7 +191,7 @@ public class RestTest
     public void givenExistingEntitiesWhenExecutingGetCommandThenExpectTheCorrectRdf()
         throws Exception
     {
-        final RestTester restTester = module.newObject( RestTester.class );
+        final RestTester restTester = objectFactory.newObject( RestTester.class );
         final String result = restTester.getEntities().replace( "\r", "" );
         assertThat(
             "Returned RDF", result,

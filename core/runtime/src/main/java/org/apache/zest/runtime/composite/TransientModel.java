@@ -19,6 +19,7 @@ import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.constraint.ConstraintViolationException;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.spi.module.ModuleSpi;
 
@@ -28,23 +29,23 @@ import org.apache.zest.spi.module.ModuleSpi;
 public class TransientModel extends CompositeModel
     implements TransientDescriptor
 {
-    public TransientModel( List<Class<?>> types, final Visibility visibility,
+    public TransientModel( ModuleDescriptor module,
+                           List<Class<?>> types, final Visibility visibility,
                            final MetaInfo metaInfo,
                            final MixinsModel mixinsModel,
                            final StateModel stateModel,
                            final CompositeMethodsModel compositeMethodsModel
     )
     {
-        super( types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        super( module, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
     }
 
-    public TransientInstance newInstance( ModuleSpi moduleInstance,
-                                          UsesInstance uses,
+    public TransientInstance newInstance( UsesInstance uses,
                                           TransientStateInstance state
     )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
-        TransientInstance compositeInstance = new TransientInstance( this, moduleInstance, mixins, state );
+        TransientInstance compositeInstance = new TransientInstance( this, mixins, state );
 
         // Instantiate all mixins
         int i = 0;

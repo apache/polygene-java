@@ -15,10 +15,21 @@
  */
 package org.apache.zest.runtime.structure;
 
+import java.util.stream.Stream;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.MetaInfo;
+import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.api.composite.TransientDescriptor;
+import org.apache.zest.api.entity.EntityDescriptor;
+import org.apache.zest.api.object.ObjectDescriptor;
+import org.apache.zest.api.service.ImportedServiceDescriptor;
+import org.apache.zest.api.service.ServiceDescriptor;
+import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.structure.ModuleDescriptor;
+import org.apache.zest.api.structure.TypeLookup;
+import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
@@ -30,12 +41,18 @@ import org.apache.zest.runtime.service.ImportedServicesModel;
 import org.apache.zest.runtime.service.ServicesModel;
 import org.apache.zest.runtime.value.ValuesModel;
 
+import static java.util.stream.Stream.concat;
+import static org.apache.zest.api.common.Visibility.application;
+import static org.apache.zest.api.common.Visibility.layer;
+import static org.apache.zest.api.common.Visibility.module;
+
 /**
  * JAVADOC
  */
 public class ModuleModel
     implements ModuleDescriptor, VisitableHierarchy<Object, Object>
 {
+    private final LayerDescriptor layerModel;
     private final ActivatorsModel<Module> activatorsModel;
     private final TransientsModel transientsModel;
     private final EntitiesModel entitiesModel;
@@ -43,12 +60,16 @@ public class ModuleModel
     private final ValuesModel valuesModel;
     private final ServicesModel servicesModel;
     private final ImportedServicesModel importedServicesModel;
+    private final TypeLookupImpl typeLookup;
+    private final ClassLoader classLoader;
 
     private final String name;
     private final MetaInfo metaInfo;
+    private ModuleInstance moduleInstance;
 
     public ModuleModel( String name,
                         MetaInfo metaInfo,
+                        LayerDescriptor layerModel,
                         ActivatorsModel<Module> activatorsModel,
                         TransientsModel transientsModel,
                         EntitiesModel entitiesModel,
@@ -60,6 +81,7 @@ public class ModuleModel
     {
         this.name = name;
         this.metaInfo = metaInfo;
+        this.layerModel = layerModel;
         this.activatorsModel = activatorsModel;
         this.transientsModel = transientsModel;
         this.entitiesModel = entitiesModel;
@@ -67,6 +89,8 @@ public class ModuleModel
         this.valuesModel = valuesModel;
         this.servicesModel = servicesModel;
         this.importedServicesModel = importedServicesModel;
+        typeLookup = new TypeLookupImpl( this );
+        classLoader = new ModuleClassLoader( this, Thread.currentThread().getContextClassLoader() );
     }
 
     @Override
@@ -80,10 +104,253 @@ public class ModuleModel
         return metaInfo.get( infoType );
     }
 
+    @Override
+    public LayerDescriptor layer()
+    {
+        return layerModel;
+    }
+
+    @Override
+    public ClassLoader classLoader()
+    {
+        return classLoader;
+    }
+
     public ActivatorsInstance<Module> newActivatorsInstance()
         throws ActivationException
     {
         return new ActivatorsInstance<>( activatorsModel.newInstances() );
+    }
+
+    @Override
+    public EntityDescriptor entityDescriptor( String name )
+    {
+        try
+        {
+            Class<?> type = classLoader().loadClass( name );
+            EntityDescriptor entityModel = typeLookup.lookupEntityModel( type );
+            if( entityModel == null )
+            {
+                return null;
+            }
+            return entityModel;
+        }
+        catch( ClassNotFoundException e )
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public ObjectDescriptor objectDescriptor( String typeName )
+    {
+        try
+        {
+            Class<?> type = classLoader().loadClass( typeName );
+            ObjectDescriptor objectModel = typeLookup.lookupObjectModel( type );
+            if( objectModel == null )
+            {
+                return null;
+            }
+            return objectModel;
+        }
+        catch( ClassNotFoundException e )
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public TransientDescriptor transientDescriptor( String name )
+    {
+        try
+        {
+            Class<?> type = classLoader().loadClass( name );
+            TransientDescriptor transientModel = typeLookup.lookupTransientModel( type );
+            if( transientModel == null )
+            {
+                return null;
+            }
+            return transientModel;
+        }
+        catch( ClassNotFoundException e )
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public ValueDescriptor valueDescriptor( String name )
+    {
+        try
+        {
+            Class<?> type = classLoader().loadClass( name );
+            ValueDescriptor valueModel = typeLookup.lookupValueModel( type );
+            if( valueModel == null )
+            {
+                return null;
+            }
+            return valueModel;
+        }
+        catch( ClassNotFoundException e )
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public Module instance()
+    {
+        return moduleInstance;
+    }
+
+    @Override
+    public TypeLookup typeLookup()
+    {
+        return typeLookup;
+    }
+
+    public ModuleInstance newInstance( LayerDescriptor layerInstance )
+    {
+        moduleInstance = new ModuleInstance( this, layerInstance, typeLookup, servicesModel, importedServicesModel );
+        return moduleInstance;
+    }
+
+    @Override
+    public Stream<? extends TransientDescriptor> transientComposites()
+    {
+        return transientsModel.stream();
+    }
+
+    @Override
+    public Stream<? extends ValueDescriptor> valueComposites()
+    {
+        return valuesModel.stream();
+    }
+
+    @Override
+    public Stream<? extends ServiceDescriptor> serviceComposites()
+    {
+        return servicesModel.models();
+    }
+
+    @Override
+    public Stream<? extends EntityDescriptor> entityComposites()
+    {
+        return entitiesModel.stream();
+    }
+
+    @Override
+    public Stream<? extends ImportedServiceDescriptor> importedServices()
+    {
+        return importedServicesModel.models();
+    }
+
+    @Override
+    public Stream<? extends ObjectDescriptor> objects()
+    {
+        return objectsModel.models();
+    }
+
+    public Stream<? extends ValueDescriptor> findVisibleValueTypes()
+    {
+        return concat( visibleValues( module ),
+                       concat(
+                           layer().visibleValues( layer ),
+                           concat(
+                               layer().visibleValues( application ),
+                               layer().usedLayers().layers().flatMap( layer1 -> layer1.visibleValues( application ) )
+                           )
+                       )
+        );
+    }
+
+    public Stream<? extends EntityDescriptor> findVisibleEntityTypes()
+    {
+        return concat( visibleEntities( module ),
+                       concat(
+                           layer().visibleEntities( layer ),
+                           concat(
+                               layer().visibleEntities( application ),
+                               layer().usedLayers().layers().flatMap( layer1 -> layer1.visibleEntities( application ) )
+                           )
+                       )
+        );
+    }
+
+    public Stream<? extends TransientDescriptor> findVisibleTransientTypes()
+    {
+        return concat( visibleTransients( module ),
+                       concat(
+                           layer().visibleTransients( layer ),
+                           concat(
+                               layer().visibleTransients( application ),
+                               layer().usedLayers()
+                                   .layers()
+                                   .flatMap( layer1 -> layer1.visibleTransients( application ) )
+                           )
+                       )
+        );
+    }
+
+    public Stream<? extends ModelDescriptor> findVisibleServiceTypes()
+    {
+        return concat( visibleServices( module ),
+                       concat(
+                           layer().visibleServices( layer ),
+                           concat(
+                               layer().visibleServices( application ),
+                               layer().usedLayers().layers().flatMap( layer1 -> layer1.visibleServices( application ) )
+                           )
+                       )
+        );
+    }
+
+    public Stream<? extends ObjectDescriptor> findVisibleObjectTypes()
+    {
+        return concat( visibleObjects( module ),
+                       concat(
+                           layer().visibleObjects( layer ),
+                           concat(
+                               layer().visibleObjects( application ),
+                               layer().usedLayers().layers().flatMap( layer -> layer.visibleObjects( application ) )
+                           )
+                       )
+        );
+    }
+
+    public Stream<? extends ObjectDescriptor> visibleObjects( Visibility visibility )
+    {
+        return objectsModel.models()
+            .filter( new Visibilitypredicate( visibility ) );
+    }
+
+    public Stream<? extends TransientDescriptor> visibleTransients( Visibility visibility )
+    {
+        return transientsModel.models()
+            .filter( new Visibilitypredicate( visibility ) );
+    }
+
+    public Stream<? extends EntityDescriptor> visibleEntities( Visibility visibility )
+    {
+        return entitiesModel.models()
+            .filter( new Visibilitypredicate( visibility ) );
+    }
+
+    public Stream<? extends ValueDescriptor> visibleValues( Visibility visibility )
+    {
+        return valuesModel.models()
+            .filter( new Visibilitypredicate( visibility ) );
+    }
+
+    public Stream<? extends ModelDescriptor> visibleServices( Visibility visibility )
+    {
+        return concat(
+            servicesModel.models()
+                .filter( new Visibilitypredicate( visibility ) ),
+            importedServicesModel.models()
+                .filter( new Visibilitypredicate( visibility ) )
+        );
     }
 
     @Override
@@ -113,13 +380,6 @@ public class ModuleModel
             }
         }
         return modelVisitor.visitLeave( this );
-    }
-
-    // Context
-
-    public ModuleInstance newInstance( LayerInstance layerInstance )
-    {
-        return new ModuleInstance( this, layerInstance, transientsModel, entitiesModel, objectsModel, valuesModel, servicesModel, importedServicesModel );
     }
 
     @Override

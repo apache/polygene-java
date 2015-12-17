@@ -79,7 +79,7 @@ public class ValueNestedBuilderTest
     @Test
     public void testInner()
     {
-        ValueBuilder<InnerValue> innerBuilder = module.newValueBuilder( InnerValue.class );
+        ValueBuilder<InnerValue> innerBuilder = valueBuilderFactory.newValueBuilder( InnerValue.class );
         InnerValue inner = innerBuilder.prototype();
         inner.listProp().set( new ArrayList<String>() );
         inner.mapProp().set( new HashMap<String, String>() );
@@ -90,12 +90,12 @@ public class ValueNestedBuilderTest
     @Test
     public void testOuter()
     {
-        ValueBuilder<InnerValue> innerBuilder = module.newValueBuilder( InnerValue.class );
+        ValueBuilder<InnerValue> innerBuilder = valueBuilderFactory.newValueBuilder( InnerValue.class );
         InnerValue inner = innerBuilder.prototype();
         inner.listProp().set( new ArrayList<String>() );
         inner.mapProp().set( new HashMap<String, String>() );
         inner = innerBuilder.newInstance();
-        ValueBuilder<OuterValue> outerBuilder = module.newValueBuilder( OuterValue.class );
+        ValueBuilder<OuterValue> outerBuilder = valueBuilderFactory.newValueBuilder( OuterValue.class );
         OuterValue outer = outerBuilder.prototype();
         List<InnerValue> inners = new ArrayList<InnerValue>();
         inners.add( inner );
@@ -108,7 +108,7 @@ public class ValueNestedBuilderTest
     @Test
     public void testDefaultedInner()
     {
-        ValueBuilder<InnerDefaultedValue> innerBuilder = module.newValueBuilder( InnerDefaultedValue.class );
+        ValueBuilder<InnerDefaultedValue> innerBuilder = valueBuilderFactory.newValueBuilder( InnerDefaultedValue.class );
         InnerDefaultedValue inner = innerBuilder.newInstance();
         // If we reach this point, value creation went well
     }
@@ -116,9 +116,9 @@ public class ValueNestedBuilderTest
     @Test
     public void testDefaultedOuter()
     {
-        ValueBuilder<InnerDefaultedValue> innerBuilder = module.newValueBuilder( InnerDefaultedValue.class );
+        ValueBuilder<InnerDefaultedValue> innerBuilder = valueBuilderFactory.newValueBuilder( InnerDefaultedValue.class );
         InnerDefaultedValue inner = innerBuilder.newInstance();
-        ValueBuilder<OuterDefaultedValue> outerBuilder = module.newValueBuilder( OuterDefaultedValue.class );
+        ValueBuilder<OuterDefaultedValue> outerBuilder = valueBuilderFactory.newValueBuilder( OuterDefaultedValue.class );
         OuterDefaultedValue outer = outerBuilder.prototype();
         List<InnerDefaultedValue> inners = new ArrayList<InnerDefaultedValue>();
         inners.add( inner );

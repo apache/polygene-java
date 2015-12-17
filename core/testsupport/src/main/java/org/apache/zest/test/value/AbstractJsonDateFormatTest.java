@@ -49,12 +49,6 @@ public class AbstractJsonDateFormatTest
     {
     }
 
-    @Before
-    public void before()
-    {
-        module.injectTo( this );
-    }
-
     @Service
     protected ValueDeserializer valueDeserializer;
 
@@ -63,7 +57,7 @@ public class AbstractJsonDateFormatTest
         throws Exception
     {
         CollectionType collectionType = new CollectionType( List.class, dateType );
-        List<Date> value = valueDeserializer.deserialize( collectionType, "[\"2009-08-12T14:54:27.895+0800\"]" );
+        List<Date> value = valueDeserializer.deserialize( module, collectionType, "[\"2009-08-12T14:54:27.895+0800\"]" );
         assertEquals( new DateTime( "2009-08-12T06:54:27.895Z", DateTimeZone.UTC ).toDate(), value.get( 0 ) );
     }
 
@@ -73,7 +67,7 @@ public class AbstractJsonDateFormatTest
     {
         long tstamp = System.currentTimeMillis();
         CollectionType collectionType = new CollectionType( List.class, dateType );
-        List<Date> value = valueDeserializer.deserialize( collectionType, "[\"@" + tstamp + "@\"]" );
+        List<Date> value = valueDeserializer.deserialize( module, collectionType, "[\"@" + tstamp + "@\"]" );
         assertEquals( new Date( tstamp ), value.get( 0 ) );
     }
 
@@ -83,7 +77,7 @@ public class AbstractJsonDateFormatTest
     {
         long tstamp = System.currentTimeMillis();
         CollectionType collectionType = new CollectionType( List.class, dateType );
-        List<Date> value = valueDeserializer.deserialize( collectionType, "[\"/Date(" + tstamp + ")/\"]" );
+        List<Date> value = valueDeserializer.deserialize( module, collectionType, "[\"/Date(" + tstamp + ")/\"]" );
         assertEquals( new Date( tstamp ), value.get( 0 ) );
     }
 }

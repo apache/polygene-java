@@ -59,7 +59,7 @@ public class PropertyTest
     {
         Company company;
         {
-            TransientBuilder<Company> builder = module.newTransientBuilder( Company.class );
+            TransientBuilder<Company> builder = transientBuilderFactory.newTransientBuilder( Company.class );
             builder.prototype().name().set( "JayWay" );
             company = builder.newInstance();
         }

@@ -36,7 +36,6 @@ import org.apache.zest.runtime.property.PropertyInfo;
 import org.apache.zest.runtime.property.PropertyInstance;
 import org.apache.zest.runtime.structure.ModuleInstance;
 import org.apache.zest.runtime.unitofwork.EntityFunction;
-import org.apache.zest.spi.structure.ModelModule;
 
 /**
  * TODO
@@ -61,14 +60,14 @@ public final class ValueStateInstance
         this.namedAssociations = namedAssociations;
     }
 
-    public ValueStateInstance( ModelModule<ValueDescriptor> compositeModelModule,
+    public ValueStateInstance( ValueDescriptor compositeModelModule,
                                ModuleInstance currentModule,
                                StateResolver stateResolver
     )
     {
         EntityFunction entityFunction = new EntityFunction( currentModule.unitOfWorkFactory() );
 
-        ValueModel valueModel = (ValueModel) compositeModelModule.model();
+        ValueModel valueModel = (ValueModel) compositeModelModule;
         this.properties = new LinkedHashMap<>();
         valueModel.state().properties().forEach( propertyDescriptor -> {
             PropertyInfo builderInfo = propertyDescriptor.getBuilderInfo();

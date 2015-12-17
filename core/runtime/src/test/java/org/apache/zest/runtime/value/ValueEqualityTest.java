@@ -61,10 +61,10 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfTheSameTypeWhenTestingValueDescriptorEqualityExpectEquals()
     {
-        Some some = buildSomeValue( module );
+        Some some = buildSomeValue(valueBuilderFactory);
         ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
 
-        Some other = buildSomeValue( module );
+        Some other = buildSomeValue( valueBuilderFactory );
         ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
 
         assertThat( "ValueDescriptors equal",
@@ -78,10 +78,10 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfCommonTypesWhenTestingValueDescriptorEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
         ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
 
-        PrimitivesValue primitive = buildPrimitivesValue( module );
+        PrimitivesValue primitive = buildPrimitivesValue( valueBuilderFactory );
         ValueDescriptor primitiveDescriptor = zest.api().valueDescriptorFor( primitive );
 
         assertThat( "ValueDescriptors not equal",
@@ -95,10 +95,10 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfDifferentTypesWhenTestingValueDescriptorEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
         ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
 
-        Other other = buildOtherValue( module );
+        Other other = buildOtherValue( valueBuilderFactory );
         ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
 
         assertThat( "ValueDescriptors not equal",
@@ -115,10 +115,10 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfSameTypesAndSameStateWhenTestingValueStateEqualityExpectEquals()
     {
-        Some some = buildSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
         AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
 
-        Some some2 = buildSomeValue( module );
+        Some some2 = buildSomeValue( valueBuilderFactory );
         AssociationStateHolder some2State = zest.spi().stateOf( (ValueComposite) some2 );
 
         assertThat( "ValueStates equal",
@@ -132,10 +132,10 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfSameTypesAndDifferentStateWhenTestingValueStateEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
         AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
 
-        Some some2 = buildSomeValueWithDifferentState( module );
+        Some some2 = buildSomeValueWithDifferentState( valueBuilderFactory );
         AssociationStateHolder some2State = zest.spi().stateOf( (ValueComposite) some2 );
 
         assertThat( "ValueStates not equal",
@@ -149,10 +149,10 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfDifferentTypesAndSameStateWhenTestingValueStateEqualityExpectEquals()
     {
-        Some some = buildSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
         AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
 
-        AnotherSome anotherSome = buildAnotherSomeValue( module );
+        AnotherSome anotherSome = buildAnotherSomeValue( valueBuilderFactory );
         AssociationStateHolder anotherSomeState = zest.spi().stateOf( (ValueComposite) anotherSome );
 
         assertThat( "ValueStates equal",
@@ -166,10 +166,10 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfDifferentTypesAndDifferentStateWhenTestingValueStateEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
         AssociationStateHolder someState = zest.spi().stateOf( (ValueComposite) some );
 
-        AnotherSome anotherSome = buildAnotherSomeValueWithDifferentState( module );
+        AnotherSome anotherSome = buildAnotherSomeValueWithDifferentState( valueBuilderFactory );
         AssociationStateHolder anotherSomeState = zest.spi().stateOf( (ValueComposite) anotherSome );
 
         assertThat( "ValueStates not equal",
@@ -186,8 +186,8 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfSameTypesAndSameStateWhenTestingValueEqualityExpectEquals()
     {
-        Some some = buildSomeValue( module );
-        Some some2 = buildSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
+        Some some2 = buildSomeValue( valueBuilderFactory );
         assertThat( "Values equal",
                     some,
                     equalTo( some2 ) );
@@ -199,8 +199,8 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfTheSameTypeWithDifferentStateWhenTestingValueEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
-        Some some2 = buildSomeValueWithDifferentState( module );
+        Some some = buildSomeValue( valueBuilderFactory );
+        Some some2 = buildSomeValueWithDifferentState( valueBuilderFactory );
         assertThat( "Values not equals",
                     some,
                     not( equalTo( some2 ) ) );
@@ -212,8 +212,8 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfDifferentTypesAndSameStateWhenTestingValueEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
-        Some anotherSome = buildAnotherSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
+        Some anotherSome = buildAnotherSomeValue( valueBuilderFactory );
 
         assertThat( "Values not equal",
                     some,
@@ -226,8 +226,8 @@ public class ValueEqualityTest
     @Test
     public void givenValuesOfDifferentTypesAndDifferentStateWhenTestingValueEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
-        Some anotherSome = buildAnotherSomeValueWithDifferentState( module );
+        Some some = buildSomeValue( valueBuilderFactory );
+        Some anotherSome = buildAnotherSomeValueWithDifferentState( valueBuilderFactory );
         assertThat( "Values not equal",
                     some,
                     not( equalTo( anotherSome ) ) );

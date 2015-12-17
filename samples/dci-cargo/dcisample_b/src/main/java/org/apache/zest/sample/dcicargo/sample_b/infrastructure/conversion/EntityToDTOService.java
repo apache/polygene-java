@@ -33,7 +33,7 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.value.NoSuchValueException;
 import org.apache.zest.api.value.ValueBuilder;
@@ -68,7 +68,7 @@ public interface EntityToDTOService
         private ZestSPI spi;
 
         @Structure
-        private Module module;
+        private ModuleDescriptor module;
 
         @Override
         public <T> T convert( final Class<T> valueType, Object entity )
@@ -111,7 +111,8 @@ public interface EntityToDTOService
                                 {
                                     return null;
                                 }
-                                Object entity = associationState.associationFor( associationDescriptor.accessor() ).get();
+                                Object entity = associationState.associationFor( associationDescriptor.accessor() )
+                                    .get();
                                 if( entity != null )
                                 {
                                     return ( (Identity) entity ).identity().get();
@@ -122,7 +123,9 @@ public interface EntityToDTOService
                                 }
                             }
                             else if( descriptor.valueType() instanceof CollectionType
-                                     && ( (CollectionType) descriptor.valueType() ).collectedType().mainType().equals( String.class ) )
+                                     && ( (CollectionType) descriptor.valueType() ).collectedType()
+                                         .mainType()
+                                         .equals( String.class ) )
                             {
                                 AssociationDescriptor associationDescriptor;
                                 try
@@ -208,7 +211,8 @@ public interface EntityToDTOService
                                     return null;
                                 }
 
-                                Object entity = associationState.associationFor( associationDescriptor.accessor() ).get();
+                                Object entity = associationState.associationFor( associationDescriptor.accessor() )
+                                    .get();
                                 if( entity != null )
                                 {
                                     return ( (Identity) entity ).identity().get();
@@ -216,7 +220,9 @@ public interface EntityToDTOService
                                 return null;
                             }
                             else if( descriptor.valueType() instanceof CollectionType
-                                     && ( (CollectionType) descriptor.valueType() ).collectedType().mainType().equals( String.class ) )
+                                     && ( (CollectionType) descriptor.valueType() ).collectedType()
+                                         .mainType()
+                                         .equals( String.class ) )
                             {
                                 AssociationDescriptor associationDescriptor;
                                 try
@@ -255,7 +261,8 @@ public interface EntityToDTOService
                                     return null;
                                 }
 
-                                Object entity = associationState.associationFor( associationDescriptor.accessor() ).get();
+                                Object entity = associationState.associationFor( associationDescriptor.accessor() )
+                                    .get();
                                 if( entity != null )
                                 {
                                     return convert( type, entity );
@@ -282,7 +289,8 @@ public interface EntityToDTOService
                         }
 
                         return EntityReference.entityReferenceFor( associationState
-                            .associationFor( associationDescriptor.accessor() ).get() );
+                                                                       .associationFor( associationDescriptor.accessor() )
+                                                                       .get() );
                     }
                 }, new Function<AssociationDescriptor, Iterable<EntityReference>>()
                 {
@@ -321,5 +329,4 @@ public interface EntityToDTOService
             return (T) builder.newInstance();
         }
     }
-
 }

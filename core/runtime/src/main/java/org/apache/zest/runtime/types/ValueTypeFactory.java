@@ -66,7 +66,7 @@ public class ValueTypeFactory
                                    Serialization.Variant variant
     )
     {
-        ValueType valueType = null;
+        ValueType valueType;
         if( CollectionType.isCollection( type ) )
         {
             if( type instanceof ParameterizedType )
@@ -132,7 +132,7 @@ public class ValueTypeFactory
                                                                            new AssociationsModel(),
                                                                            new ManyAssociationsModel(),
                                                                            new NamedAssociationsModel() );
-                    model = new ValueModel( valueComposite, Visibility.application, new MetaInfo(),
+                    model = new ValueModel( module, valueComposite, Visibility.application, new MetaInfo(),
                                             mixinsModel, valueStateModel, new CompositeMethodsModel( mixinsModel ) );
                 }
                 else

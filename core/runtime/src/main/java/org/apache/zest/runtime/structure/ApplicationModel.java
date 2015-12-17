@@ -25,6 +25,7 @@ import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
+import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.bootstrap.ZestRuntime;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
@@ -124,31 +125,33 @@ public final class ApplicationModel
         ApplicationInstance applicationInstance = new ApplicationInstance( this, (ZestRuntime) runtime, instanceMetaInfo );
 
         // Create layer instances
-        Map<LayerModel, LayerInstance> layerInstanceMap = new HashMap<>();
-        Map<LayerModel, List<LayerInstance>> usedLayers = new HashMap<>();
+        Map<LayerDescriptor, LayerDescriptor> layerInstanceMap = new HashMap<>();
+        Map<LayerDescriptor, List<LayerDescriptor>> usedLayers = new HashMap<>();
         for( LayerModel layer : layers )
         {
-            List<LayerInstance> usedLayerInstances = new ArrayList<>();
+            List<LayerDescriptor> usedLayerInstances = new ArrayList<>();
             usedLayers.put( layer, usedLayerInstances );
             UsedLayersInstance usedLayersInstance = layer.usedLayers().newInstance( usedLayerInstances );
-            LayerInstance layerInstance = layer.newInstance( applicationInstance, usedLayersInstance );
+            LayerInstance layerInstance = layer.newInstance( applicationInstance );
             applicationInstance.addLayer( layerInstance );
-            layerInstanceMap.put( layer, layerInstance );
+            layerInstanceMap.put( layer, layerInstance.descriptor() );
         }
 
         // Resolve used layer instances
         for( LayerModel layer : layers )
         {
-            List<LayerInstance> usedLayerInstances = usedLayers.get( layer );
-            for( LayerModel usedLayer : layer.usedLayers().layers() )
-            {
-                LayerInstance layerInstance = layerInstanceMap.get( usedLayer );
-                if( layerInstance == null )
+            List<LayerDescriptor> usedLayerInstances = usedLayers.get( layer );
+            layer.usedLayers().layers().forEach(
+                usedLayer ->
                 {
-                    throw new InvalidApplicationException( "Could not find used layer:" + usedLayer.name() );
-                }
-                usedLayerInstances.add( layerInstance );
-            }
+                    LayerDescriptor layerDescriptor = layerInstanceMap.get( usedLayer );
+                    if( layerDescriptor == null )
+                    {
+                        throw new InvalidApplicationException( "Could not find used layer:" + usedLayer
+                            .name() );
+                    }
+                    usedLayerInstances.add( layerDescriptor );
+                } );
         }
 
         return applicationInstance;
@@ -162,12 +165,10 @@ public final class ApplicationModel
     @Override
     public String toString()
     {
-        final StringBuilder sb = new StringBuilder();
-        sb.append( "ApplicationModel" );
-        sb.append( "{name='" ).append( name ).append( '\'' );
-        sb.append( ", version='" ).append( version ).append( '\'' );
-        sb.append( ", mode=" ).append( mode );
-        sb.append( '}' );
-        return sb.toString();
+        return "ApplicationModel" +
+               "{name='" + name + '\'' +
+               ", version='" + version + '\'' +
+               ", mode=" + mode +
+               '}';
     }
 }

@@ -45,21 +45,21 @@ public class MixinPrecedenceTest
     @Test
     public void whenMultipleTypedMixinsPrecedence()
     {
-        TestComposite1 instance = module.newTransient( TestComposite1.class );
+        TestComposite1 instance = transientBuilderFactory.newTransient( TestComposite1.class );
         assertThat( "Mixin precedence", instance.AMethod(), equalTo( "A1" ) );
     }
 
     @Test
     public void whenGenericAndTypedMixinPrecedence()
     {
-        TestComposite2 instance = module.newTransient( TestComposite2.class );
+        TestComposite2 instance = transientBuilderFactory.newTransient( TestComposite2.class );
         assertThat( "Typed mixin is chosen over generic mixin", instance.AMethod(), equalTo( "A1" ) );
     }
 
     @Test
     public void whenMultipleGenericMixinsPrecedence()
     {
-        TestComposite3 instance = module.newTransient( TestComposite3.class );
+        TestComposite3 instance = transientBuilderFactory.newTransient( TestComposite3.class );
         assertEquals( "GM1", instance.AMethod() );
     }
 

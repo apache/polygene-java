@@ -51,7 +51,7 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
@@ -124,7 +124,7 @@ public interface DataSourceConfigurationManagerService
         {
             for ( ServiceReference<DataSource> dataSource : dataSources ) {
                 String name = dataSource.identity();
-                Module module = spi.moduleOf( dataSource );
+                ModuleDescriptor module = spi.moduleOf( dataSource );
                 EntityDescriptor descriptor = module.entityDescriptor( DataSourceConfiguration.class.getName() );
                 List<MBeanAttributeInfo> attributes = new ArrayList<>();
                 Map<String, AccessibleObject> properties = new LinkedHashMap<>();

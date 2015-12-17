@@ -26,6 +26,7 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.index.reindexer.Reindexer;
 import org.apache.zest.index.reindexer.ReindexerConfiguration;
 import org.apache.zest.io.Output;
@@ -34,7 +35,6 @@ import org.apache.zest.io.Sender;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.StateChangeListener;
-import org.apache.zest.spi.module.ModuleSpi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +65,7 @@ public class ReindexerMixin
     private Iterable<ServiceReference<StateChangeListener>> listeners;
 
     @Structure
-    private ModuleSpi module;
+    private ModuleDescriptor module;
 
     private Logger logger = LoggerFactory.getLogger( Reindexer.class );
 

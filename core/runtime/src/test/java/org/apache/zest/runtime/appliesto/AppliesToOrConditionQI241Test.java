@@ -61,7 +61,7 @@ public class AppliesToOrConditionQI241Test
 
         try
         {
-            ServiceReference<SomeServiceCompositeWithFirstAnnotation> refWithFirst = module.findService(
+            ServiceReference<SomeServiceCompositeWithFirstAnnotation> refWithFirst = serviceFinder.findService(
                 SomeServiceCompositeWithFirstAnnotation.class );
             SomeServiceCompositeWithFirstAnnotation someWithFirst = refWithFirst.get();
             someWithFirst.doStuff();
@@ -80,7 +80,7 @@ public class AppliesToOrConditionQI241Test
 
         try
         {
-            ServiceReference<SomeServiceCompositeWithSecondAnnotation> refWithSecond = module.findService(
+            ServiceReference<SomeServiceCompositeWithSecondAnnotation> refWithSecond = serviceFinder.findService(
                 SomeServiceCompositeWithSecondAnnotation.class );
             SomeServiceCompositeWithSecondAnnotation someWithSecond = refWithSecond.get();
             someWithSecond.doStuff();
@@ -99,7 +99,7 @@ public class AppliesToOrConditionQI241Test
 
         try
         {
-            ServiceReference<SomeServiceCompositeWithTwoAnnotations> refWithTwo = module.findService(
+            ServiceReference<SomeServiceCompositeWithTwoAnnotations> refWithTwo = serviceFinder.findService(
                 SomeServiceCompositeWithTwoAnnotations.class );
             SomeServiceCompositeWithTwoAnnotations someWithTwo = refWithTwo.get();
             someWithTwo.doStuff();

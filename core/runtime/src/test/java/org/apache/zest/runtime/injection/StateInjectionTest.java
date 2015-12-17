@@ -52,7 +52,7 @@ public class StateInjectionTest
         throws Exception
     {
         TransientBuilder<PropertyFieldInjectionComposite> pficBuilder =
-            module.newTransientBuilder( StateInjectionTest.PropertyFieldInjectionComposite.class );
+            transientBuilderFactory.newTransientBuilder( StateInjectionTest.PropertyFieldInjectionComposite.class );
         pficBuilder.prototype().testField().set( "X" );
         PropertyFieldInjectionComposite pfic = pficBuilder.newInstance();
         assertThat( "Test field", pfic.testField().get(), is( equalTo( "X" ) ) );

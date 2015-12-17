@@ -68,7 +68,7 @@ public class EntityToValueTest
             PersonEntity entity = setupPersonEntities( uow );
 
             // START SNIPPET: conversion
-            EntityToValueService conversion = module.findService( EntityToValueService.class ).get();
+            EntityToValueService conversion = serviceFinder.findService( EntityToValueService.class ).get();
             PersonValue value = conversion.convert( PersonValue.class, entity );
             // END SNIPPET: conversion
             assertEquals( "Niclas", value.firstName().get() );
@@ -92,7 +92,7 @@ public class EntityToValueTest
         {
             PersonEntity niclas = setupPersonEntities( uow );
 
-            ServiceReference<EntityToValueService> reference = module.findService( EntityToValueService.class );
+            ServiceReference<EntityToValueService> reference = serviceFinder.findService( EntityToValueService.class );
             EntityToValueService service = reference.get();
 
             PersonValue2 niclasValue = service.convert( PersonValue2.class, niclas );
@@ -117,7 +117,7 @@ public class EntityToValueTest
         {
             PersonEntity niclas = setupPersonEntities( uow );
 
-            ServiceReference<EntityToValueService> reference = module.findService( EntityToValueService.class );
+            ServiceReference<EntityToValueService> reference = serviceFinder.findService( EntityToValueService.class );
             EntityToValueService service = reference.get();
 
             PersonValue3 niclasValue = service.convert( PersonValue3.class, niclas );
@@ -142,7 +142,7 @@ public class EntityToValueTest
         {
             PersonEntity niclas = setupPersonEntities( uow );
 
-            ServiceReference<EntityToValueService> reference = module.findService( EntityToValueService.class );
+            ServiceReference<EntityToValueService> reference = serviceFinder.findService( EntityToValueService.class );
             EntityToValueService service = reference.get();
 
             PersonValue4 niclasValue = service.convert( PersonValue4.class, niclas );
@@ -164,7 +164,7 @@ public class EntityToValueTest
             PersonEntity entity = setupPersonEntities( uow );
 
             // START SNIPPET: prototypeOpportunity
-            EntityToValueService conversion = module.findService( EntityToValueService.class ).get();
+            EntityToValueService conversion = serviceFinder.findService( EntityToValueService.class ).get();
             PersonValue value = conversion.convert( PersonValue.class, entity, new Function<PersonValue, PersonValue>()
             {
                 @Override

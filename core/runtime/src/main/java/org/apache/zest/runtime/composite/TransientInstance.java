@@ -25,10 +25,8 @@ import org.apache.zest.api.ZestAPI;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.property.StateHolder;
-import org.apache.zest.api.structure.Layer;
-import org.apache.zest.api.structure.Module;
-import org.apache.zest.runtime.structure.ModuleInstance;
-import org.apache.zest.spi.module.ModuleSpi;
+import org.apache.zest.api.structure.LayerDescriptor;
+import org.apache.zest.api.structure.ModuleDescriptor;
 
 /**
  * InvocationHandler for proxy objects.
@@ -46,16 +44,13 @@ public class TransientInstance
     protected final Object[] mixins;
     protected StateHolder state;
     protected final CompositeModel compositeModel;
-    private final ModuleSpi moduleInstance;
 
     public TransientInstance( CompositeModel compositeModel,
-                              ModuleSpi moduleInstance,
                               Object[] mixins,
                               StateHolder state
     )
     {
         this.compositeModel = compositeModel;
-        this.moduleInstance = moduleInstance;
         this.mixins = mixins;
         this.state = state;
 
@@ -66,7 +61,7 @@ public class TransientInstance
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        return compositeModel.invoke( this, proxy, method, args, moduleInstance );
+        return compositeModel.invoke( this, proxy, method, args );
     }
 
     @Override
@@ -87,7 +82,7 @@ public class TransientInstance
     public Object invokeComposite( Method method, Object[] args )
         throws Throwable
     {
-        return compositeModel.invoke( this, proxy, method, args, moduleInstance );
+        return compositeModel.invoke( this, proxy, method, args );
     }
 
     @Override
@@ -109,14 +104,14 @@ public class TransientInstance
     }
 
     @Override
-    public Module module()
+    public ModuleDescriptor module()
     {
-        return moduleInstance;
+        return compositeModel.module();
     }
 
-    public Layer layer()
+    public LayerDescriptor layer()
     {
-        return ( (ModuleInstance) moduleInstance ).layerInstance();
+        return compositeModel.module().layer();
     }
 
     @Override
@@ -217,7 +212,7 @@ public class TransientInstance
                    "mixins=" + Arrays.asList( mixins ) +
                    ", state=" + state +
                    ", compositeModel=" + compositeModel +
-                   ", module=" + moduleInstance +
+                   ", module=" + module() +
                    '}';
         }
         return buffer.toString();

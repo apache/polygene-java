@@ -83,7 +83,7 @@ public final class ApplicationModelFactoryImpl
 
             for( ModuleAssemblyImpl moduleAssembly : layerAssembly.moduleAssemblies() )
             {
-                moduleModels.add( moduleAssembly.assembleModule( helper ) );
+                moduleModels.add( moduleAssembly.assembleModule( layerModel, helper ) );
             }
             mapAssemblyModel.put( layerAssembly, layerModel );
             layerModels.add( layerModel );

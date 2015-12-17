@@ -47,7 +47,7 @@ public final class ImmutablePropertyTest
 
     private Location createLocation( String locationName )
     {
-        TransientBuilder<Location> locationBuilder = module.newTransientBuilder( Location.class );
+        TransientBuilder<Location> locationBuilder = transientBuilderFactory.newTransientBuilder( Location.class );
         Location locState = locationBuilder.prototypeFor( Location.class );
         locState.name().set( locationName );
         return locationBuilder.newInstance();
@@ -62,7 +62,7 @@ public final class ImmutablePropertyTest
     @Test
     public final void testCreationWithStateOfComposite()
     {
-        TransientBuilder<Location> locationBuilder = module.newTransientBuilder( Location.class );
+        TransientBuilder<Location> locationBuilder = transientBuilderFactory.newTransientBuilder( Location.class );
         Location locState = locationBuilder.prototype();
         locState.name().set( KUALA_LUMPUR );
         Location location = locationBuilder.newInstance();

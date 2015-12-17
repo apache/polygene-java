@@ -37,6 +37,7 @@ import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.property.PropertyDescriptor;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
@@ -44,8 +45,6 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.spi.ZestSPI;
-import org.apache.zest.spi.structure.ModelModule;
-import org.apache.zest.spi.module.ModuleSpi;
 
 import static org.apache.zest.library.conversion.values.Shared.STRING_COLLECTION_TYPE_SPEC;
 import static org.apache.zest.library.conversion.values.Shared.STRING_MAP_TYPE_SPEC;
@@ -129,7 +128,7 @@ public class ValueToEntityMixin
     private UnitOfWorkFactory uowf;
 
     @Structure
-    private ModuleSpi module;
+    private ModuleDescriptor module;
 
     @Override
     public <T> T create( Class<T> entityType, Object value )
@@ -187,11 +186,7 @@ public class ValueToEntityMixin
         EntityDescriptor eDesc = module.entityDescriptor( entityType.getName() );
         if( eDesc == null )
         {
-            throw new EntityTypeNotFoundException( entityType.getName(),
-                                                   module.name(),
-                                                   module.findVisibleEntityTypes()
-                                                       .map( ModelModule.toStringFunction )
-            );
+            throw EntityTypeNotFoundException.create( entityType.getName(), module );
         }
 
         ValueComposite vComposite = (ValueComposite) value;

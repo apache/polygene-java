@@ -37,6 +37,7 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
@@ -871,13 +872,13 @@ public class ContextResource
         Class<?> valueType = interactionMethod.getParameterTypes()[ 0 ];
         if( ValueComposite.class.isAssignableFrom( valueType ) )
         {
-            ValueDescriptor valueDescriptor = module.valueDescriptor( valueType.getName() );
+            ValueDescriptor valueDescriptor = module.descriptor().valueDescriptor( valueType.getName() );
 
             valueDescriptor.state().properties().forEach( propertyDescriptor -> {
                 String value = getValue( propertyDescriptor.qualifiedName().name(), queryAsForm, entityAsForm );
                 if( value == null )
                 {
-                    Object initialValue = propertyDescriptor.initialValue( module );
+                    Object initialValue = propertyDescriptor.initialValue( module.descriptor() );
                     if( initialValue != null )
                     {
                         value = initialValue.toString();

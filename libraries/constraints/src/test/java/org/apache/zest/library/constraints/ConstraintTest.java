@@ -38,7 +38,7 @@ public class ConstraintTest
     @Test( expected = ConstraintViolationException.class )
     public void testContainsFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().containsString().set( "bar" );
     }
@@ -46,7 +46,7 @@ public class ConstraintTest
     @Test
     public void testContainsOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().containsString().set( "foo" );
         cb.prototype().containsString().set( "xxxfooyyy" );
@@ -55,7 +55,7 @@ public class ConstraintTest
     @Test( expected = ConstraintViolationException.class )
     public void testEmailFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().email().set( "foo.com" );
     }
@@ -63,7 +63,7 @@ public class ConstraintTest
     @Test
     public void testEmailOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().email().set( "rickard@gmail.com" );
     }
@@ -71,35 +71,35 @@ public class ConstraintTest
     @Test( expected = ConstraintViolationException.class )
     public void testURLFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
         cb.prototype().url().set( "this is no url" );
     }
 
     @Test
     public void testURLOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
         cb.prototype().url().set( "http://zest.apache.org/path?query=string#fragment" );
     }
 
     @Test( expected = ConstraintViolationException.class )
     public void testURIFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
         cb.prototype().uri().set( "" );
     }
 
     @Test
     public void testURIOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
         cb.prototype().uri().set( "http://zest.apache.org/path?query=string#fragment" );
     }
 
     @Test( expected = ConstraintViolationException.class )
     public void testGreaterThanFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().greaterThan().set( 10 );
     }
@@ -107,7 +107,7 @@ public class ConstraintTest
     @Test
     public void testGreaterThanOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().greaterThan().set( 11 );
     }
@@ -115,7 +115,7 @@ public class ConstraintTest
     @Test( expected = ConstraintViolationException.class )
     public void testInstanceOfFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().instanceOf().set( new HashSet() );
     }
@@ -123,7 +123,7 @@ public class ConstraintTest
     @Test
     public void testInstanceOfOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().instanceOf().set( new ArrayList() );
     }
@@ -131,7 +131,7 @@ public class ConstraintTest
     @Test( expected = ConstraintViolationException.class )
     public void testLessThanFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().lessThan().set( 10 );
     }
@@ -139,7 +139,7 @@ public class ConstraintTest
     @Test
     public void testLessThanOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().lessThan().set( 9 );
     }
@@ -147,7 +147,7 @@ public class ConstraintTest
     @Test( expected = ConstraintViolationException.class )
     public void testMatchesFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().matches().set( "cba" );
     }
@@ -155,7 +155,7 @@ public class ConstraintTest
     @Test
     public void testMatchesOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().matches().set( "abbccc" );
     }
@@ -163,7 +163,7 @@ public class ConstraintTest
     @Test( expected = ConstraintViolationException.class )
     public void testMaxLengthFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().maxLength().set( "xxxxx" );
     }
@@ -171,7 +171,7 @@ public class ConstraintTest
     @Test
     public void testMaxLengthOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().maxLength().set( "xxx" );
     }
@@ -179,7 +179,7 @@ public class ConstraintTest
     @Test( expected = ConstraintViolationException.class )
     public void testMinLengthFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().minLength().set( "xx" );
     }
@@ -187,7 +187,7 @@ public class ConstraintTest
     @Test
     public void testMinLengthOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().minLength().set( "xxx" );
     }
@@ -195,7 +195,7 @@ public class ConstraintTest
     @Test
     public void testNotEmptyFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
         try
         {
             cb.prototype().notEmptyString().set( "" );
@@ -227,7 +227,7 @@ public class ConstraintTest
     @Test
     public void testNotEmptyOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
         cb.prototype().notEmptyString().set( "X" );
         cb.prototype().notEmptyCollection().set( Arrays.asList( "X" ) );
         cb.prototype().notEmptyList().set( Arrays.asList( "X" ) );
@@ -236,7 +236,7 @@ public class ConstraintTest
     @Test( expected = ConstraintViolationException.class )
     public void testOneOfFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().oneOf().set( "Foo" );
     }
@@ -244,7 +244,7 @@ public class ConstraintTest
     @Test
     public void testOneOfOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().oneOf().set( "Bar" );
     }
@@ -252,7 +252,7 @@ public class ConstraintTest
     @Test( expected = ConstraintViolationException.class )
     public void testRangeFail()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().range().set( 101 );
     }
@@ -260,7 +260,7 @@ public class ConstraintTest
     @Test
     public void testRangeOk()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
 
         cb.prototype().range().set( 0 );
         cb.prototype().range().set( 50 );
@@ -270,7 +270,7 @@ public class ConstraintTest
     @Test
     public void testMethodParameters()
     {
-        TransientBuilder<TestCaseComposite> cb = module.newTransientBuilder( TestCaseComposite.class );
+        TransientBuilder<TestCaseComposite> cb = transientBuilderFactory.newTransientBuilder( TestCaseComposite.class );
         cb.prototype().testParameters( 15 );
     }
 

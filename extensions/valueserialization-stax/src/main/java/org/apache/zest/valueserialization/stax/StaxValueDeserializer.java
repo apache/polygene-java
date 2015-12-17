@@ -35,12 +35,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.value.ValueDeserializer;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueSerializationException;
 import org.apache.zest.spi.value.ValueDeserializerAdapter;
 import org.w3c.dom.Document;
@@ -58,11 +53,8 @@ public class StaxValueDeserializer
     private final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
     private final TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
-    public StaxValueDeserializer( @Structure Application application,
-                                  @Structure Module module,
-                                  @Service ServiceReference<ValueDeserializer> serviceRef )
+    public StaxValueDeserializer()
     {
-        super( application, module, serviceRef );
         // Input Factory setup
         inputFactory.setProperty( "javax.xml.stream.isValidating", Boolean.FALSE );
         inputFactory.setProperty( "javax.xml.stream.isNamespaceAware", Boolean.FALSE );
@@ -72,14 +64,14 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected XMLEventReader adaptInput( InputStream input )
+    protected XMLEventReader adaptInput( ModuleDescriptor module, InputStream input )
         throws Exception
     {
         return inputFactory.createXMLEventReader( input, "UTF-8" );
     }
 
     @Override
-    protected Object readPlainValue( XMLEventReader input )
+    protected Object readPlainValue( ModuleDescriptor module, XMLEventReader input )
         throws Exception
     {
         if( !input.hasNext() )
@@ -102,9 +94,11 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected <T> Collection<T> readArrayInCollection( XMLEventReader input,
+    protected <T> Collection<T> readArrayInCollection( ModuleDescriptor module,
+                                                       XMLEventReader input,
                                                        Function<XMLEventReader, T> deserializer,
-                                                       Collection<T> collection )
+                                                       Collection<T> collection
+    )
         throws Exception
     {
         if( !input.hasNext() )
@@ -130,10 +124,10 @@ public class StaxValueDeserializer
                 String endElementName = currentTag.asEndElement().getName().getLocalPart();
                 switch( endElementName )
                 {
-                    case "array":
-                        break WHILE;
-                    case "value":
-                        continue;
+                case "array":
+                    break WHILE;
+                case "value":
+                    continue;
                 }
             }
             if( !"value".equals( currentTag.asStartElement().getName().getLocalPart() ) )
@@ -147,10 +141,12 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected <K, V> Map<K, V> readMapInMap( XMLEventReader input,
+    protected <K, V> Map<K, V> readMapInMap( ModuleDescriptor module,
+                                             XMLEventReader input,
                                              Function<XMLEventReader, K> keyDeserializer,
                                              Function<XMLEventReader, V> valueDeserializer,
-                                             Map<K, V> map )
+                                             Map<K, V> map
+    )
         throws Exception
     {
         if( !input.hasNext() )
@@ -170,14 +166,18 @@ public class StaxValueDeserializer
         XMLEvent currentTag = input.nextTag(); // <object>
         while( !currentTag.isEndElement() || !"array".equals( currentTag.asEndElement().getName().getLocalPart() ) )
         {
-            if( !currentTag.isStartElement() || !"object".equals( currentTag.asStartElement().getName().getLocalPart() ) )
+            if( !currentTag.isStartElement() || !"object".equals( currentTag.asStartElement()
+                                                                      .getName()
+                                                                      .getLocalPart() ) )
             {
                 throw new ValueSerializationException( "Expected an <object/> but got: " + nextTag );
             }
             currentTag = input.nextTag(); // <field>
             K key = null;
             V value = null;
-            while( !currentTag.isEndElement() || !"object".equals( currentTag.asEndElement().getName().getLocalPart() ) )
+            while( !currentTag.isEndElement() || !"object".equals( currentTag.asEndElement()
+                                                                       .getName()
+                                                                       .getLocalPart() ) )
             {
                 input.nextTag(); // <name>
                 String keyOrValue = input.nextEvent().asCharacters().getData();
@@ -185,15 +185,15 @@ public class StaxValueDeserializer
                 input.nextTag(); // <value>
                 switch( keyOrValue )
                 {
-                    case "key":
-                        key = keyDeserializer.apply( input );
-                        break;
-                    case "value":
-                        value = valueDeserializer.apply( input );
-                        break;
-                    default:
-                        readObjectTree( input );
-                        break;
+                case "key":
+                    key = keyDeserializer.apply( input );
+                    break;
+                case "value":
+                    value = valueDeserializer.apply( input );
+                    break;
+                default:
+                    readObjectTree( module, input );
+                    break;
                 }
                 input.nextTag(); // </value>
                 input.nextTag(); // </field>
@@ -209,7 +209,7 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected Node readObjectTree( XMLEventReader input )
+    protected Node readObjectTree( ModuleDescriptor module, XMLEventReader input )
         throws Exception
     {
         XMLEvent peek = input.peek();
@@ -224,7 +224,6 @@ public class StaxValueDeserializer
         DOMResult domResult = new DOMResult();
         transformer.transform( new StreamSource( new StringReader( elementBody ) ), domResult );
         return ( (Document) domResult.getNode() ).getDocumentElement();
-
     }
 
     private static String readElementBody( XMLEventReader input )
@@ -259,7 +258,7 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected Object asSimpleValue( Node inputNode )
+    protected Object asSimpleValue( ModuleDescriptor module, Node inputNode )
         throws Exception
     {
         if( inputNode == null )
@@ -279,7 +278,8 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected boolean isObjectValue( Node inputNode )
+    @SuppressWarnings( "SimplifiableIfStatement" )
+    protected boolean isObjectValue( ModuleDescriptor module, Node inputNode )
         throws Exception
     {
         if( inputNode == null )
@@ -298,7 +298,7 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected boolean objectHasField( Node inputNode, String key )
+    protected boolean objectHasField( ModuleDescriptor module, Node inputNode, String key )
         throws Exception
     {
         if( inputNode == null )
@@ -327,9 +327,11 @@ public class StaxValueDeserializer
 
     @Override
     @SuppressWarnings( "unchecked" )
-    protected <T> T getObjectFieldValue( Node inputNode,
+    protected <T> T getObjectFieldValue( ModuleDescriptor module,
+                                         Node inputNode,
                                          String key,
-                                         Function<Node, T> valueDeserializer )
+                                         Function<Node, T> valueDeserializer
+    )
         throws Exception
     {
         if( inputNode == null )
@@ -359,6 +361,10 @@ public class StaxValueDeserializer
             return null;
         }
         Node valueElement = getDirectChildNode( fieldNode, "value" );
+        if( valueElement == null )
+        {
+            return null;
+        }
         Node valueNode = valueElement.getFirstChild();
         if( valueNode == null )
         {
@@ -368,14 +374,15 @@ public class StaxValueDeserializer
         {
             return null;
         }
-        T value = valueDeserializer.apply( valueNode );
-        return value;
+        return valueDeserializer.apply( valueNode );
     }
 
     @Override
-    protected <T> void putArrayNodeInCollection( Node inputNode,
+    protected <T> void putArrayNodeInCollection( ModuleDescriptor module,
+                                                 Node inputNode,
                                                  Function<Node, T> deserializer,
-                                                 Collection<T> collection )
+                                                 Collection<T> collection
+    )
         throws Exception
     {
         if( inputNode == null )
@@ -396,9 +403,11 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected <K, V> void putArrayNodeInMap( Node inputNode,
+    protected <K, V> void putArrayNodeInMap( ModuleDescriptor module,
+                                             Node inputNode,
                                              Function<Node, K> keyDeserializer,
-                                             Function<Node, V> valueDeserializer, Map<K, V> map )
+                                             Function<Node, V> valueDeserializer, Map<K, V> map
+    )
         throws Exception
     {
         if( inputNode == null )
@@ -413,8 +422,8 @@ public class StaxValueDeserializer
         for( int idx = 0; idx < entriesNodes.getLength(); idx++ )
         {
             Node entryNode = entriesNodes.item( idx );
-            K key = getObjectFieldValue( entryNode, "key", keyDeserializer );
-            V value = getObjectFieldValue( entryNode, "value", valueDeserializer );
+            K key = getObjectFieldValue( module, entryNode, "key", keyDeserializer );
+            V value = getObjectFieldValue( module, entryNode, "value", valueDeserializer );
             if( key != null )
             {
                 map.put( key, value );
@@ -423,9 +432,11 @@ public class StaxValueDeserializer
     }
 
     @Override
-    protected <V> void putObjectNodeInMap( Node inputNode,
+    protected <V> void putObjectNodeInMap( ModuleDescriptor module,
+                                           Node inputNode,
                                            Function<Node, V> valueDeserializer,
-                                           Map<String, V> map )
+                                           Map<String, V> map
+    )
         throws Exception
     {
         if( inputNode == null )
@@ -440,10 +451,11 @@ public class StaxValueDeserializer
         for( int idx = 0; idx < fieldsNodes.getLength(); idx++ )
         {
             Node fieldNode = fieldsNodes.item( idx );
-            String key = getDirectChildNode( fieldNode, "name" ).getTextContent();
+            Node node = getDirectChildNode( fieldNode, "name" );
+            String key = node != null ? node.getTextContent() : null;
             if( key != null && key.length() > 0 )
             {
-                V value = getObjectFieldValue( inputNode, key, valueDeserializer );
+                V value = getObjectFieldValue( module, inputNode, key, valueDeserializer );
                 map.put( key, value );
             }
         }

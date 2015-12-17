@@ -18,17 +18,17 @@
 package org.apache.zest.library.rest.client.responsereader;
 
 import java.util.Iterator;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.service.qualifier.Tagged;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.library.rest.client.spi.ResponseReader;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.restlet.Response;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -41,7 +41,7 @@ public class JSONResponseReader
    implements ResponseReader
 {
    @Structure
-   private Module module;
+   private ModuleDescriptor module;
 
    @Service
    @Tagged( ValueSerialization.Formats.JSON )
@@ -56,7 +56,7 @@ public class JSONResponseReader
          {
             String jsonValue = response.getEntityAsText();
             ValueCompositeType valueType = module.valueDescriptor( resultType.getName() ).valueType();
-            return valueDeserializer.deserialize( valueType, jsonValue );
+            return valueDeserializer.deserialize( module, valueType, jsonValue );
          }
          else if (resultType.equals(Form.class))
          {

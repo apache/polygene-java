@@ -180,7 +180,7 @@ public class ElasticSearchTest
         Post post = postBuilder.instance();
         post.title().set( title );
         post.author().set( author );
-        post.tagline().set( module.newValue( Tagline.class ) );
+        post.tagline().set( valueBuilderFactory.newValue( Tagline.class ) );
         post.comments().add( comment1 );
         post.comments().add( comment2 );
         post = postBuilder.newInstance();
@@ -189,7 +189,7 @@ public class ElasticSearchTest
         Page page = pageBuilder.instance();
         page.title().set( title );
         page.author().set( author );
-        page.tagline().set( module.newValue( Tagline.class ) );
+        page.tagline().set( valueBuilderFactory.newValue( Tagline.class ) );
         page = pageBuilder.newInstance();
 
         System.out.println( "########################################" );
@@ -201,7 +201,7 @@ public class ElasticSearchTest
 
         uow = uowf.newUnitOfWork();
 
-        QueryBuilder<Post> queryBuilder = module.newQueryBuilder( Post.class );
+        QueryBuilder<Post> queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class );
         Query<Post> query = uow.newQuery( queryBuilder );
         assertEquals( 1, query.count() );
         post = query.find();
@@ -209,7 +209,7 @@ public class ElasticSearchTest
         assertEquals( title, post.title().get() );
 
         post = templateFor( Post.class );
-        queryBuilder = module.newQueryBuilder( Post.class ).where( eq( post.title(), title ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( eq( post.title(), title ) );
         query = uow.newQuery( queryBuilder );
         assertEquals( 1, query.count() );
         post = query.find();
@@ -217,24 +217,24 @@ public class ElasticSearchTest
         assertEquals( title, post.title().get() );
 
         post = templateFor( Post.class );
-        queryBuilder = module.newQueryBuilder( Post.class ).where( eq( post.title(), "Not available" ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( eq( post.title(), "Not available" ) );
         query = uow.newQuery( queryBuilder );
         assertEquals( 0, query.count() );
 
         post = templateFor( Post.class );
-        queryBuilder = module.newQueryBuilder( Post.class ).where( ne( post.title(), "Not available" ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( ne( post.title(), "Not available" ) );
         query = uow.newQuery( queryBuilder );
         assertEquals( 1, query.count() );
 
         post = templateFor( Post.class );
-        queryBuilder = module.newQueryBuilder( Post.class ).where( not( eq( post.title(), "Not available" ) ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( not( eq( post.title(), "Not available" ) ) );
         query = uow.newQuery( queryBuilder );
         post = query.find();
         assertNotNull( post );
         assertEquals( title, post.title().get() );
 
         post = templateFor( Post.class );
-        queryBuilder = module.newQueryBuilder( Post.class ).where( eq( post.author().get().nickname(), "eskatos" ) );
+        queryBuilder = queryBuilderFactory.newQueryBuilder( Post.class ).where( eq( post.author().get().nickname(), "eskatos" ) );
         query = uow.newQuery( queryBuilder );
         assertEquals( 1, query.count() );
         post = query.find();

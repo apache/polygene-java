@@ -73,7 +73,7 @@ public class PropertyTypeTest
     public void givenCompositeWithPropertyConstraintsWhenInstantiatedThenPropertiesWork()
         throws Exception
     {
-        TransientBuilder<PersonComposite> builder = module.newTransientBuilder( PersonComposite.class );
+        TransientBuilder<PersonComposite> builder = transientBuilderFactory.newTransientBuilder( PersonComposite.class );
         PersonComposite personComposite = builder.prototype();
         personComposite.givenName().set( "Rickard" );
         personComposite.familyName().set( "Öberg" );

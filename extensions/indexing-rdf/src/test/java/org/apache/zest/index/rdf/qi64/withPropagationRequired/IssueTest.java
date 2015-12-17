@@ -38,7 +38,7 @@ public final class IssueTest
     {
         super.setUp();
 
-        accountService = module.findService( AccountService.class ).get();
+        accountService = serviceFinder.findService( AccountService.class ).get();
     }
 
     @Test

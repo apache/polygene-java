@@ -108,11 +108,11 @@ public class ReindexerTest
 
         // ----> Reindex and assert data
 
-        module.<ReindexerService>findService( ReindexerService.class ).get().reindex(); // Reindex
+        serviceFinder.findService( ReindexerService.class ).get().reindex(); // Reindex
 
         uow = uowf.newUnitOfWork();
 
-        QueryBuilder<MyEntity> qBuilder = module.newQueryBuilder( MyEntity.class );
+        QueryBuilder<MyEntity> qBuilder = queryBuilderFactory.newQueryBuilder( MyEntity.class );
         qBuilder = qBuilder.where( eq( templateFor( MyEntity.class ).name(), TEST_NAME ) );
         Query<MyEntity> q = uow.newQuery( qBuilder );
 

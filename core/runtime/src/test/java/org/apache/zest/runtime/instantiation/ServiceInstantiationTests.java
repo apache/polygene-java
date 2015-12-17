@@ -46,7 +46,7 @@ public class ServiceInstantiationTests
     public void whenCreatingServiceCompositeGivenAServiceCompositeThenSucceed()
         throws Exception
     {
-        ServiceReference<My> service = module.findService( My.class );
+        ServiceReference<My> service = serviceFinder.findService( My.class );
         Assert.assertEquals( "HabbaZout", service.get().doSomething() );
     }
 

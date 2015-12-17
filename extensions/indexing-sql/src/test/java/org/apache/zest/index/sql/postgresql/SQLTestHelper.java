@@ -16,6 +16,7 @@ package org.apache.zest.index.sql.postgresql;
 
 import java.sql.Connection;
 import javax.sql.DataSource;
+import org.apache.zest.api.service.ServiceFinder;
 import org.junit.Assume;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.structure.Module;
@@ -87,13 +88,13 @@ public class SQLTestHelper
             visibleIn( Visibility.layer );
     }
 
-    public static void setUpTest( Module module )
+    public static void setUpTest( ServiceFinder serviceFinder )
     {
         Connection connection = null;
         try
         {
 
-            DataSource ds = module.findService( DataSource.class ).get();
+            DataSource ds = serviceFinder.findService( DataSource.class ).get();
             connection = ds.getConnection();
             Assume.assumeNotNull( connection );
 

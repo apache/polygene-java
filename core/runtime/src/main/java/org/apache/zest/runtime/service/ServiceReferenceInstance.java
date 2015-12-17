@@ -34,9 +34,8 @@ import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.ServiceUnavailableException;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.runtime.activation.ActivationDelegate;
-import org.apache.zest.runtime.structure.ModuleInstance;
 
 /**
  * Implementation of ServiceReference.
@@ -54,12 +53,12 @@ public final class ServiceReferenceInstance<T>
 {
     private volatile ServiceInstance instance;
     private final T serviceProxy;
-    private final ModuleInstance module;
+    private final ModuleDescriptor module;
     private final ServiceModel serviceModel;
     private final ActivationDelegate activation = new ActivationDelegate( this );
     private boolean active = false;
 
-    public ServiceReferenceInstance( ServiceModel serviceModel, ModuleInstance module )
+    public ServiceReferenceInstance( ServiceModel serviceModel, ModuleDescriptor module )
     {
         this.module = module;
         this.serviceModel = serviceModel;
@@ -103,7 +102,7 @@ public final class ServiceReferenceInstance<T>
         return getInstance().isAvailable();
     }
 
-    public Module module()
+    public ModuleDescriptor module()
     {
         return module;
     }
@@ -276,7 +275,7 @@ public final class ServiceReferenceInstance<T>
         }
 
         @Override
-        public Module module()
+        public ModuleDescriptor module()
         {
             return module;
         }

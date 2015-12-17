@@ -30,8 +30,7 @@ import org.apache.zest.test.EntityTestAssembler;
 /**
  * JAVADOC
  */
-public class NativeRepositoryTest
-        extends AbstractZestTest
+public class NativeRepositoryTest extends AbstractZestTest
 {
    @Service
    Repository repository;
@@ -48,12 +47,8 @@ public class NativeRepositoryTest
    @Test
    public void testNativeRepository() throws RepositoryException
    {
-      module.injectTo(this);
-
       RepositoryConnection conn = repository.getConnection();
-
       Assert.assertThat("repository is open", conn.isOpen(), CoreMatchers.equalTo(true));
-
       conn.close();
    }
 }

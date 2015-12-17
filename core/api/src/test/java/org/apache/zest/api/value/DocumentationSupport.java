@@ -59,12 +59,6 @@ public class DocumentationSupport
     extends AbstractZestTest
 {
 
-    @Before
-    public void injectToThis()
-    {
-        module.injectTo( this );
-    }
-
     // START SNIPPET: default
     // START SNIPPET: service
     public interface SomeValue // (1)
@@ -90,9 +84,9 @@ public class DocumentationSupport
     // START SNIPPET: default
     public void defaultValueSerialization()
     {
-        SomeValue someValue = someNewValueInstance( module ); // (3)
+        SomeValue someValue = someNewValueInstance(); // (3)
         String json = someValue.toString(); // (4)
-        SomeValue someNewValue = module.newValueFromSerializedState( SomeValue.class, json ); // (5)
+        SomeValue someNewValue = valueBuilderFactory.newValueFromSerializedState( SomeValue.class, json ); // (5)
         // END SNIPPET: default
 
         assertThat( json, equalTo( "{\"foo\":\"bar\"}" ) );
@@ -113,9 +107,9 @@ public class DocumentationSupport
     // START SNIPPET: service
     public void assembledDefaultServiceSerialization()
     {
-        SomeValue someValue = someNewValueInstance( module ); // (5)
+        SomeValue someValue = someNewValueInstance(); // (5)
         String json = valueSerializer.serialize( someValue ); // (6)
-        SomeValue someNewValue = valueDeserializer.deserialize( SomeValue.class, json ); // (7)
+        SomeValue someNewValue = valueDeserializer.deserialize( module, SomeValue.class, json ); // (7)
         // END SNIPPET: service
 
         assertThat( json, equalTo( "{\"foo\":\"bar\"}" ) );
@@ -157,7 +151,7 @@ public class DocumentationSupport
         InputStream input = sourceStream; // Eg. reading incoming JSON
 
         // (4)
-        List<AcmeValue> values = valueDeserializer.deserialize( CollectionType.listOf( AcmeValue.class ), input );
+        List<AcmeValue> values = valueDeserializer.deserialize( module, CollectionType.listOf( AcmeValue.class ), input );
         // END SNIPPET: stream
 
         assertThat( values, equalTo( dataSource ) );
@@ -197,7 +191,7 @@ public class DocumentationSupport
         List<AcmeValue> values = new ArrayList<AcmeValue>();
 
         // (5)
-        Function<String, AcmeValue> deserialize = valueDeserializer.deserialize( AcmeValue.class );
+        Function<String, AcmeValue> deserialize = valueDeserializer.deserialize( module, AcmeValue.class );
 
         // Deserialization of a collection of AcmeValue from a String.
         // One serialized AcmeValue per line.
@@ -255,7 +249,7 @@ public class DocumentationSupport
         try
         {
             Module valuesModule = app.findModule( "SINGLE-Layer", "VALUES-Module" );
-            SomeValue someValue = someNewValueInstance( valuesModule );
+            SomeValue someValue = someNewValueInstance();
 
             Module servicesModule = app.findModule( "SINGLE-Layer", "SERVICES-Module" );
             ValueSerialization valueSerialization = servicesModule.findService( ValueSerialization.class ).get();
@@ -263,7 +257,7 @@ public class DocumentationSupport
             String json = valueSerialization.serialize( someValue );
             assertThat( json, equalTo( "{\"foo\":\"bar\"}" ) );
 
-            SomeValue someNewValue = valueSerialization.deserialize( SomeValue.class, json );
+            SomeValue someNewValue = valueSerialization.deserialize( module, SomeValue.class, json );
             assertThat( someNewValue, equalTo( someValue ) );
         }
         finally
@@ -272,9 +266,9 @@ public class DocumentationSupport
         }
     }
 
-    private SomeValue someNewValueInstance( Module module )
+    private SomeValue someNewValueInstance(  )
     {
-        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototype().foo().set( "bar" );
         return builder.newInstance();
     }

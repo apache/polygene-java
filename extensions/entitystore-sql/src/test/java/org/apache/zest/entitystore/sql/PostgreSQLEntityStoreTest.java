@@ -119,7 +119,7 @@ public class PostgreSQLEntityStoreTest
         {
             SQLConfiguration config = uow.get( SQLConfiguration.class,
                                                PostgreSQLEntityStoreAssembler.DEFAULT_ENTITYSTORE_IDENTITY );
-            Connection connection = module.findService( DataSource.class ).get().getConnection();
+            Connection connection = serviceFinder.findService( DataSource.class ).get().getConnection();
             connection.setAutoCommit( false );
             String schemaName = config.schemaName().get();
             if( schemaName == null )

@@ -19,6 +19,7 @@ package org.apache.zest.runtime.property;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -123,11 +124,11 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfTheSameTypeWhenTestingPropertyDescriptorEqualityExpectEquals()
     {
-        Some some = buildSomeValue( module );
+        Some some = buildSomeValue(valueBuilderFactory);
         ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
         PropertyDescriptor someCharPropDesc = someDescriptor.state().findPropertyModelByName( "characterProperty" );
 
-        Some other = buildSomeValue( module );
+        Some other = buildSomeValue( valueBuilderFactory );
         ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
         PropertyDescriptor otherCharPropDesc = otherDescriptor.state().findPropertyModelByName( "characterProperty" );
 
@@ -142,11 +143,11 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfCommonTypesWhenTestingPropertyDescriptorEqualityExpectEquals()
     {
-        Some some = buildSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
         ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
         PropertyDescriptor someCharPropDesc = someDescriptor.state().findPropertyModelByName( "characterProperty" );
 
-        PrimitivesValue primitive = buildPrimitivesValue( module );
+        PrimitivesValue primitive = buildPrimitivesValue( valueBuilderFactory );
         ValueDescriptor primitiveDescriptor = zest.api().valueDescriptorFor( primitive );
         PropertyDescriptor primitiveCharPropDesc = primitiveDescriptor.state().findPropertyModelByName( "characterProperty" );
 
@@ -161,11 +162,11 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfDifferentTypesWhenTestingPropertyDescriptorEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
         ValueDescriptor someDescriptor = zest.api().valueDescriptorFor( some );
         PropertyDescriptor someCharPropDesc = someDescriptor.state().findPropertyModelByName( "characterProperty" );
 
-        Other other = buildOtherValue( module );
+        Other other = buildOtherValue( valueBuilderFactory );
         ValueDescriptor otherDescriptor = zest.api().valueDescriptorFor( other );
         PropertyDescriptor otherCharPropDesc = otherDescriptor.state().findPropertyModelByName( "characterProperty" );
 
@@ -183,10 +184,10 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfDifferentTypesAndSameStateWhenTestingPropertyStateEqualityExpectEquals()
     {
-        PrimitivesValue primitives = buildPrimitivesValue( module );
-        Some some = buildSomeValue( module );
-        Some some2 = buildSomeValue( module );
-        Other other = buildOtherValue( module );
+        PrimitivesValue primitives = buildPrimitivesValue( valueBuilderFactory );
+        Some some = buildSomeValue( valueBuilderFactory );
+        Some some2 = buildSomeValue( valueBuilderFactory );
+        Other other = buildOtherValue( valueBuilderFactory );
         assertThat( "Property state equal",
                     'q',
                     allOf( equalTo( primitives.characterProperty().get() ),
@@ -207,8 +208,8 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfTheSameTypeAndSameStateWhenTestingPropertyEqualityExpectEquals()
     {
-        Some some = buildSomeValue( module );
-        Some some2 = buildSomeValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
+        Some some2 = buildSomeValue( valueBuilderFactory );
         assertThat( "Property equals",
                     some.characterProperty(),
                     equalTo( some2.characterProperty() ) );
@@ -220,8 +221,8 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfTheSameTypeWithDifferentStateWhenTestingPropertyEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
-        Some some2 = buildSomeValueWithDifferentState( module );
+        Some some = buildSomeValue( valueBuilderFactory );
+        Some some2 = buildSomeValueWithDifferentState( valueBuilderFactory );
         assertThat( "Property not equals",
                     some.characterProperty(),
                     not( equalTo( some2.characterProperty() ) ) );
@@ -233,8 +234,8 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfCommonTypesAndSameStateWhenTestingPropertyEqualityExpectEquals()
     {
-        Some some = buildSomeValue( module );
-        PrimitivesValue primitive = buildPrimitivesValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
+        PrimitivesValue primitive = buildPrimitivesValue( valueBuilderFactory );
         assertThat( "Property equal",
                     some.characterProperty(),
                     equalTo( primitive.characterProperty() ) );
@@ -243,8 +244,8 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfCommonTypesWithDifferentStateWhenTestingPropertyEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
-        PrimitivesValue primitive = buildPrimitivesValueWithDifferentState( module );
+        Some some = buildSomeValue( valueBuilderFactory );
+        PrimitivesValue primitive = buildPrimitivesValueWithDifferentState( valueBuilderFactory );
         assertThat( "Property not equal",
                     some.characterProperty(),
                     not( equalTo( primitive.characterProperty() ) ) );
@@ -253,8 +254,8 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfDifferentTypesAndSameStateWhenTestingPropertyEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
-        Other other = buildOtherValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
+        Other other = buildOtherValue( valueBuilderFactory );
         assertThat( "Property not equal",
                     some.characterProperty(),
                     not( equalTo( other.characterProperty() ) ) );
@@ -263,8 +264,8 @@ public class PropertyEqualityTest
     @Test
     public void givenValuesOfDifferentTypesWithDifferentStateWhenTestingPropertyEqualityExpectNotEquals()
     {
-        Some some = buildSomeValue( module );
-        Other other = buildOtherValue( module );
+        Some some = buildSomeValue( valueBuilderFactory );
+        Other other = buildOtherValue( valueBuilderFactory );
         assertThat( "Property not equal",
                     some.characterProperty(),
                     not( equalTo( other.characterProperty() ) ) );
@@ -273,11 +274,11 @@ public class PropertyEqualityTest
     //
     // -----------------------------------:: Values factory methods ::--------------------------------------------------
     //
-    public static PrimitivesValue buildPrimitivesValue( Module module )
+    public static PrimitivesValue buildPrimitivesValue( ValueBuilderFactory vbf )
     {
         PrimitivesValue primitive;
         {
-            ValueBuilder<PrimitivesValue> builder = module.newValueBuilder( PrimitivesValue.class );
+            ValueBuilder<PrimitivesValue> builder = vbf.newValueBuilder( PrimitivesValue.class );
             builder.prototype().characterProperty().set( 'q' );
             builder.prototype().stringProperty().set( "foo" );
             builder.prototype().booleanProperty().set( true );
@@ -293,11 +294,11 @@ public class PropertyEqualityTest
         return primitive;
     }
 
-    public static PrimitivesValue buildPrimitivesValueWithDifferentState( Module module )
+    public static PrimitivesValue buildPrimitivesValueWithDifferentState( ValueBuilderFactory vbf )
     {
         PrimitivesValue primitive;
         {
-            ValueBuilder<PrimitivesValue> builder = module.newValueBuilder( PrimitivesValue.class );
+            ValueBuilder<PrimitivesValue> builder = vbf.newValueBuilder( PrimitivesValue.class );
             builder.prototype().characterProperty().set( 'i' );
             builder.prototype().stringProperty().set( "bar" );
             builder.prototype().booleanProperty().set( false );
@@ -313,11 +314,11 @@ public class PropertyEqualityTest
         return primitive;
     }
 
-    public static Some buildSomeValue( Module module )
+    public static Some buildSomeValue(ValueBuilderFactory vbf)
     {
         Some some;
         {
-            ValueBuilder<Some> builder = module.newValueBuilder( Some.class );
+            ValueBuilder<Some> builder = vbf.newValueBuilder( Some.class );
             builder.prototype().characterProperty().set( 'q' );
             builder.prototype().stringProperty().set( "foo" );
             builder.prototype().booleanProperty().set( true );
@@ -339,11 +340,11 @@ public class PropertyEqualityTest
         return some;
     }
 
-    public static Some buildSomeValueWithDifferentState( Module module )
+    public static Some buildSomeValueWithDifferentState( ValueBuilderFactory vbf )
     {
         Some some;
         {
-            ValueBuilder<Some> builder = module.newValueBuilder( Some.class );
+            ValueBuilder<Some> builder = vbf.newValueBuilder( Some.class );
             builder.prototype().characterProperty().set( 'i' );
             builder.prototype().stringProperty().set( "bar" );
             builder.prototype().booleanProperty().set( false );
@@ -365,11 +366,11 @@ public class PropertyEqualityTest
         return some;
     }
 
-    public static AnotherSome buildAnotherSomeValue( Module module )
+    public static AnotherSome buildAnotherSomeValue( ValueBuilderFactory vbf )
     {
         AnotherSome anotherSome;
         {
-            ValueBuilder<AnotherSome> builder = module.newValueBuilder( AnotherSome.class );
+            ValueBuilder<AnotherSome> builder = vbf.newValueBuilder( AnotherSome.class );
             builder.prototype().characterProperty().set( 'q' );
             builder.prototype().stringProperty().set( "foo" );
             builder.prototype().booleanProperty().set( true );
@@ -391,11 +392,11 @@ public class PropertyEqualityTest
         return anotherSome;
     }
 
-    public static AnotherSome buildAnotherSomeValueWithDifferentState( Module module )
+    public static AnotherSome buildAnotherSomeValueWithDifferentState( ValueBuilderFactory vbf )
     {
         AnotherSome anotherSome;
         {
-            ValueBuilder<AnotherSome> builder = module.newValueBuilder( AnotherSome.class );
+            ValueBuilder<AnotherSome> builder = vbf.newValueBuilder( AnotherSome.class );
             builder.prototype().characterProperty().set( 'i' );
             builder.prototype().stringProperty().set( "bar" );
             builder.prototype().booleanProperty().set( false );
@@ -417,11 +418,11 @@ public class PropertyEqualityTest
         return anotherSome;
     }
 
-    public static Other buildOtherValue( Module module )
+    public static Other buildOtherValue( ValueBuilderFactory vbf )
     {
         Other other;
         {
-            ValueBuilder<Other> builder = module.newValueBuilder( Other.class );
+            ValueBuilder<Other> builder = vbf.newValueBuilder( Other.class );
             builder.prototype().characterProperty().set( 'q' );
             other = builder.newInstance();
         }

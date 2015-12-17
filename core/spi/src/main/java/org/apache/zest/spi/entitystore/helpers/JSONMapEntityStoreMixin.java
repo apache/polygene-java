@@ -39,6 +39,7 @@ import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.structure.Application;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.value.ValueSerialization;
@@ -58,8 +59,6 @@ import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.EntityStoreSPI;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
-import org.apache.zest.spi.structure.ModelModule;
-import org.apache.zest.spi.module.ModuleSpi;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -139,9 +138,9 @@ public class JSONMapEntityStoreMixin
     // EntityStore
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecaseMetaInfo, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
+        return new DefaultEntityStoreUnitOfWork( module, entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
     }
 
     // EntityStoreSPI
@@ -164,8 +163,14 @@ public class JSONMapEntityStoreMixin
             state.put( JSONKeys.ASSOCIATIONS, new JSONObject() );
             state.put( JSONKeys.MANY_ASSOCIATIONS, new JSONObject() );
             state.put( JSONKeys.NAMED_ASSOCIATIONS, new JSONObject() );
-            return new JSONEntityState( unitOfWork.currentTime(), valueSerialization,
-                                        identity, entityDescriptor, state );
+            return new JSONEntityState( entityDescriptor.module(),
+                                        valueSerialization,
+                                        "",
+                                        unitOfWork.currentTime(),
+                                        identity,
+                                        EntityStatus.NEW,
+                                        entityDescriptor,
+                                        state );
         }
         catch( JSONException e )
         {
@@ -175,7 +180,7 @@ public class JSONMapEntityStoreMixin
 
     @Override
     public synchronized EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork,
-                                                   ModuleSpi module,
+                                                   ModuleDescriptor module,
                                                    EntityReference identity
     )
     {
@@ -196,7 +201,7 @@ public class JSONMapEntityStoreMixin
 
     @Override
     public synchronized String versionOf( EntityStoreUnitOfWork unitOfWork,
-                                                   EntityReference identity
+                                          EntityReference identity
     )
     {
         CacheState cacheState = cache.get( identity.identity() );
@@ -298,7 +303,7 @@ public class JSONMapEntityStoreMixin
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final ModuleSpi module )
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleDescriptor module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -417,7 +422,7 @@ public class JSONMapEntityStoreMixin
         }
     }
 
-    protected JSONEntityState readEntityState( ModuleSpi module, Reader entityState )
+    protected JSONEntityState readEntityState( ModuleDescriptor module, Reader entityState )
         throws EntityStoreException
     {
         try
@@ -457,14 +462,11 @@ public class JSONMapEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new EntityTypeNotFoundException( type,
-                                                       module.name(),
-                                                       module.findVisibleEntityTypes()
-                                                           .map( ModelModule.toStringFunction )
-                );
+                throw EntityTypeNotFoundException.create( type, module );
             }
 
-            return new JSONEntityState( valueSerialization,
+            return new JSONEntityState( module,
+                                        valueSerialization,
                                         version,
                                         modified,
                                         EntityReference.parseEntityReference( identity ),
@@ -493,7 +495,7 @@ public class JSONMapEntityStoreMixin
         }
     }
 
-    private EntityState fetchCachedState( EntityReference identity, ModuleSpi module, long currentTime )
+    private EntityState fetchCachedState( EntityReference identity, ModuleDescriptor module, long currentTime )
     {
         CacheState cacheState = cache.get( identity.identity() );
         if( cacheState != null )
@@ -503,7 +505,7 @@ public class JSONMapEntityStoreMixin
             {
                 String type = data.getString( JSONKeys.TYPE );
                 EntityDescriptor entityDescriptor = module.entityDescriptor( type );
-                return new JSONEntityState( valueSerialization, data.getString( JSONKeys.VERSION ), data.getLong( JSONKeys.MODIFIED ), identity, EntityStatus.LOADED, entityDescriptor, data );
+                return new JSONEntityState( module, valueSerialization, data.getString( JSONKeys.VERSION ), data.getLong( JSONKeys.MODIFIED ), identity, EntityStatus.LOADED, entityDescriptor, data );
             }
             catch( JSONException e )
             {

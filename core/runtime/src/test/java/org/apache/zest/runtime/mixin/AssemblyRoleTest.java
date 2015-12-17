@@ -48,14 +48,14 @@ public class AssemblyRoleTest
     @Test
     public void testAssemblyTypesCustomMixin()
     {
-        FooComposite2 composite2 = module.newTransient( FooComposite2.class );
+        FooComposite2 composite2 = transientBuilderFactory.newTransient( FooComposite2.class );
         assertThat( "Custom mixin has executed", ( (Foo) composite2 ).test( "Foo", 42 ), equalTo( "Foo/42" ) );
     }
 
     @Test
     public void testAssemblyTypesDefaultMixin()
     {
-        FooComposite composite = module.newTransient( FooComposite.class );
+        FooComposite composite = transientBuilderFactory.newTransient( FooComposite.class );
         assertThat( "Default mixin has executed", ( (Foo) composite ).test( "Foo", 42 ), equalTo( "Foo 42" ) );
     }
 

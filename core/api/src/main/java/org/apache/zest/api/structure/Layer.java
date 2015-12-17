@@ -30,5 +30,9 @@ public interface Layer
      */
     String name();
 
+    Application application();
+
     Stream<? extends Module> modules();
+
+    LayerDescriptor descriptor();
 }

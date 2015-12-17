@@ -30,6 +30,7 @@ import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.entity.LifecycleException;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkException;
@@ -37,7 +38,6 @@ import org.apache.zest.runtime.composite.CompositeMethodInstance;
 import org.apache.zest.runtime.composite.MixinsInstance;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
-import org.apache.zest.spi.module.ModuleSpi;
 
 import static java.util.stream.Collectors.toList;
 
@@ -54,7 +54,6 @@ public final class EntityInstance
 
     private final EntityComposite proxy;
     private final UnitOfWork uow;
-    private final ModuleSpi moduleInstance;
     private final EntityModel entityModel;
     private final EntityReference identity;
     private final EntityState entityState;
@@ -63,13 +62,11 @@ public final class EntityInstance
     private EntityStateInstance state;
 
     public EntityInstance( UnitOfWork uow,
-                           ModuleSpi moduleInstance,
                            EntityModel entityModel,
                            EntityState entityState
     )
     {
         this.uow = uow;
-        this.moduleInstance = moduleInstance;
         this.entityModel = entityModel;
         this.identity = entityState.identity();
         this.entityState = entityState;
@@ -81,7 +78,7 @@ public final class EntityInstance
     public Object invoke( Object proxy, Method method, Object[] args )
         throws Throwable
     {
-        return entityModel.invoke( this, this.proxy, method, args, moduleInstance );
+        return entityModel.invoke( this, this.proxy, method, args );
     }
 
     public EntityReference identity()
@@ -113,7 +110,7 @@ public final class EntityInstance
     public Object invokeComposite( Method method, Object[] args )
         throws Throwable
     {
-        return entityModel.invoke( this, proxy, method, args, moduleInstance );
+        return entityModel.invoke( this, proxy, method, args );
     }
 
     @Override
@@ -134,9 +131,9 @@ public final class EntityInstance
     }
 
     @Override
-    public ModuleSpi module()
+    public ModuleDescriptor module()
     {
-        return moduleInstance;
+        return entityModel.module();
     }
 
     public UnitOfWork unitOfWork()

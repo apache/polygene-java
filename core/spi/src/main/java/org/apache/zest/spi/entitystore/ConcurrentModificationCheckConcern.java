@@ -22,9 +22,9 @@ import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.spi.entity.EntityState;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Concern that helps EntityStores do concurrent modification checks.
@@ -47,9 +47,9 @@ public abstract class ConcurrentModificationCheckConcern
     private ZestAPI api;
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, long currentTime )
     {
-        final EntityStoreUnitOfWork uow = next.newUnitOfWork( usecase, currentTime );
+        final EntityStoreUnitOfWork uow = next.newUnitOfWork( module, usecase, currentTime );
         return new ConcurrentCheckingEntityStoreUnitOfWork( uow, api.dereference( versions ), currentTime );
     }
 
@@ -163,9 +163,15 @@ public abstract class ConcurrentModificationCheckConcern
             return uow.usecase();
         }
 
+        @Override
+        public ModuleDescriptor module()
+        {
+            return uow.module();
+        }
+
         @SuppressWarnings( "DuplicateThrows" )
         @Override
-        public EntityState entityStateOf( ModuleSpi module, EntityReference anIdentity )
+        public EntityState entityStateOf( ModuleDescriptor module, EntityReference anIdentity )
             throws EntityStoreException, EntityNotFoundException
         {
             lock.readLock().lock();

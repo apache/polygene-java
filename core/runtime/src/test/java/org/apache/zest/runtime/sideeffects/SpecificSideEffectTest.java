@@ -46,7 +46,7 @@ public class SpecificSideEffectTest
     @Test
     public void specificSideEffect()
     {
-        SomeComposite some = module.newTransient( SomeComposite.class );
+        SomeComposite some = transientBuilderFactory.newTransient( SomeComposite.class );
         Property<Integer> count = some.count();
         assertThat( "count is zero", count.get(), equalTo( 0 ) );
         some.doStuff();

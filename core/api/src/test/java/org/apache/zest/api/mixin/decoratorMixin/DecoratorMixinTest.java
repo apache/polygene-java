@@ -76,7 +76,7 @@ public class DecoratorMixinTest extends AbstractZestTest
     // START SNIPPET: create
     public View1 createView1( FooModel model )
     {
-        TransientBuilder<View1> builder = module.newTransientBuilder( View1.class );
+        TransientBuilder<View1> builder = transientBuilderFactory.newTransientBuilder( View1.class );
         builder.use( model );
         return builder.newInstance();
     }
@@ -84,7 +84,7 @@ public class DecoratorMixinTest extends AbstractZestTest
 
     public View2 createView2( FooModel model )
     {
-        TransientBuilder<View2> builder = module.newTransientBuilder( View2.class );
+        TransientBuilder<View2> builder = transientBuilderFactory.newTransientBuilder( View2.class );
         builder.use( model );
         return builder.newInstance();
     }

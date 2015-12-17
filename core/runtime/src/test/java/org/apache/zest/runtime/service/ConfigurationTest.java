@@ -56,8 +56,6 @@ public class ConfigurationTest
     public void whenConfiguredThenSayHelloWorks()
         throws Exception
     {
-        module.injectTo( this );
-
         UnitOfWork unit = uowf.newUnitOfWork();
         EntityBuilder<HelloWorldConfiguration> entityBuilder = unit.newEntityBuilder( HelloWorldConfiguration.class, service
             .identity() );
@@ -74,8 +72,6 @@ public class ConfigurationTest
     public void whenUnconfiguredThenSayHelloGivesDefaults()
         throws Exception
     {
-        module.injectTo( this );
-
         assertThat( "result is correct", service.get().sayHello(), equalTo( "Hello World" ) );
     }
 
@@ -83,8 +79,6 @@ public class ConfigurationTest
     public void givenConfiguredServiceWhenReconfiguredAndRefreshedThenNewConfigurationIsUsed()
         throws Exception
     {
-        module.injectTo( this );
-
         HelloWorldConfiguration config;
 
         {

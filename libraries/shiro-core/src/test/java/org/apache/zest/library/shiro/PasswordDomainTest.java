@@ -119,7 +119,7 @@ public class PasswordDomainTest
 
         UnitOfWork uow = uowf.newUnitOfWork();
 
-        UserFactory userFactory = module.findService( UserFactory.class ).get();
+        UserFactory userFactory = serviceFinder.findService( UserFactory.class ).get();
         // START SNIPPET: usage
         User user = userFactory.createNewUser( "foo", "bar" );
 

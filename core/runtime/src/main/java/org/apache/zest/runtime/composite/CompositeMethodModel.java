@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.composite.MethodDescriptor;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.util.NullArgumentException;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
@@ -99,12 +100,12 @@ public final class CompositeMethodModel
     }
 
     // Context
-    public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleSpi moduleInstance )
+    public Object invoke( Object composite, Object[] params, MixinsInstance mixins, ModuleDescriptor module )
         throws Throwable
     {
         constraintsInstance.checkValid( composite, method, params );
 
-        CompositeMethodInstance methodInstance = getInstance( moduleInstance );
+        CompositeMethodInstance methodInstance = getInstance( module );
         try
         {
             return mixins.invoke( composite, params, methodInstance );
@@ -115,30 +116,30 @@ public final class CompositeMethodModel
         }
     }
 
-    private CompositeMethodInstance getInstance( ModuleSpi moduleInstance )
+    private CompositeMethodInstance getInstance( ModuleDescriptor module )
     {
         CompositeMethodInstance methodInstance = instancePool.obtainInstance();
         if( methodInstance == null )
         {
-            methodInstance = newCompositeMethodInstance( moduleInstance );
+            methodInstance = newCompositeMethodInstance( module );
         }
 
         return methodInstance;
     }
 
-    private CompositeMethodInstance newCompositeMethodInstance( ModuleSpi moduleInstance )
+    private CompositeMethodInstance newCompositeMethodInstance( ModuleDescriptor module )
         throws ConstructionException
     {
         FragmentInvocationHandler mixinInvocationHandler = mixins.newInvocationHandler( method );
         InvocationHandler invoker = mixinInvocationHandler;
         if( concerns != ConcernsModel.EMPTY_CONCERNS )
         {
-            ConcernsInstance concernsInstance = concerns.newInstance( method, moduleInstance, mixinInvocationHandler );
+            ConcernsInstance concernsInstance = concerns.newInstance( method, module, mixinInvocationHandler );
             invoker = concernsInstance;
         }
         if( sideEffects != SideEffectsModel.EMPTY_SIDEEFFECTS )
         {
-            SideEffectsInstance sideEffectsInstance = sideEffects.newInstance( method, moduleInstance, invoker );
+            SideEffectsInstance sideEffectsInstance = sideEffects.newInstance( method, module, invoker );
             invoker = sideEffectsInstance;
         }
 

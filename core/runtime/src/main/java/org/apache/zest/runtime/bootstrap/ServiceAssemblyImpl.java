@@ -31,6 +31,7 @@ import org.apache.zest.bootstrap.StateDeclarations;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.service.ServiceModel;
+import org.apache.zest.runtime.structure.ModuleModel;
 
 /**
  * Assembly of a Service.
@@ -59,14 +60,14 @@ public final class ServiceAssemblyImpl extends CompositeAssemblyImpl
     }
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    ServiceModel newServiceModel( StateDeclarations stateDeclarations, AssemblyHelper helper )
+    ServiceModel newServiceModel( ModuleModel module, StateDeclarations stateDeclarations, AssemblyHelper helper )
     {
         try
         {
             buildComposite( helper, stateDeclarations );
             List<Class<? extends Activator<?>>> activatorClasses = Iterables.toList(
                 Iterables.<Class<? extends Activator<?>>>flatten( activators, activatorsDeclarations( types.stream() ) ) );
-            return new ServiceModel( types, visibility, metaInfo,
+            return new ServiceModel( module, types, visibility, metaInfo,
                                      new ActivatorsModel( activatorClasses ),
                                      mixinsModel, stateModel, compositeMethodsModel,
                                      identity, instantiateOnStartup );

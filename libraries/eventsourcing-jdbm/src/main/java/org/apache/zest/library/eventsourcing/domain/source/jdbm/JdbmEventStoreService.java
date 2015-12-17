@@ -125,7 +125,7 @@ public interface JdbmEventStoreService
                 @Override
                 public UnitOfWorkDomainEventsValue apply( String item )
                 {
-                    return valueSerialization.<UnitOfWorkDomainEventsValue>deserialize( eventsType, item );
+                    return valueSerialization.<UnitOfWorkDomainEventsValue>deserialize( module, eventsType, item );
                 }
             }, storeEvents0() ) );
 
@@ -251,7 +251,7 @@ public interface JdbmEventStoreService
         {
             byte[] eventData = (byte[]) tuple.getValue();
             String eventJson = new String( eventData, "UTF-8" );
-            return valueSerialization.<UnitOfWorkDomainEventsValue>deserialize( eventsType, eventJson );
+            return valueSerialization.<UnitOfWorkDomainEventsValue>deserialize( module, eventsType, eventJson );
         }
     }
 }

@@ -67,11 +67,11 @@ public class TracingTest
     public void whenTraceOnMixinTypeMethodExpectOneEntryInEntityStore()
         throws Exception
     {
-        SomeService sc = module.findService( SomeService.class ).get();
+        SomeService sc = serviceFinder.findService( SomeService.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 456, sc.doSomethingLessImportant() );
         UnitOfWork uow = uowf.newUnitOfWork();
-        QueryBuilder<TraceRecord> builder = module.newQueryBuilder( TraceRecord.class );
+        QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??
 //        TraceRecord template = templateFor( TraceRecord.class );
@@ -88,11 +88,11 @@ public class TracingTest
     public void whenTraceAllOnCompositeTypeExpectTwoEntryInEntityStore()
         throws Exception
     {
-        SomeService2 sc = module.findService( SomeService2.class ).get();
+        SomeService2 sc = serviceFinder.findService( SomeService2.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 456, sc.doSomethingLessImportant() );
         UnitOfWork uow = uowf.newUnitOfWork();
-        QueryBuilder<TraceRecord> builder = module.newQueryBuilder( TraceRecord.class );
+        QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??
 //        TraceRecord template = templateFor( TraceRecord.class );
@@ -112,13 +112,13 @@ public class TracingTest
     public void whenTraceOnMixinImplExpectTwoEntryInEntityStore()
         throws Exception
     {
-        SomeService sc = module.findService( SomeService.class ).get();
+        SomeService sc = serviceFinder.findService( SomeService.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 789, sc.doSomethingModeratelyImportant() );
         UnitOfWork uow = uowf.newUnitOfWork();
         try
         {
-            QueryBuilder<TraceRecord> builder = module.newQueryBuilder( TraceRecord.class );
+            QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
             Query<TraceRecord> query = uow.newQuery( builder );
             // IS sorting needed??
             TraceRecord template = templateFor( TraceRecord.class );
@@ -151,11 +151,11 @@ public class TracingTest
     {
         // It is not possible to put Annotation on Concern Methods, so it should only record one.
 
-        SomeService sc = module.findService( SomeService.class ).get();
+        SomeService sc = serviceFinder.findService( SomeService.class ).get();
         assertEquals( 123, sc.doSomethingImportant() );
         assertEquals( 753, sc.doSomethingInsanelyImportant() );
         UnitOfWork uow = uowf.newUnitOfWork();
-        QueryBuilder<TraceRecord> builder = module.newQueryBuilder( TraceRecord.class );
+        QueryBuilder<TraceRecord> builder = queryBuilderFactory.newQueryBuilder( TraceRecord.class );
         Query<TraceRecord> query = uow.newQuery( builder );
         // IS sorting needed??
 //        TraceRecord template = templateFor( TraceRecord.class );

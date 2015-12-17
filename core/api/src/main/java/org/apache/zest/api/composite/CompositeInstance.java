@@ -17,7 +17,7 @@ package org.apache.zest.api.composite;
 import java.lang.reflect.InvocationHandler;
 import org.apache.zest.api.property.StateHolder;
 import org.apache.zest.api.structure.MetaInfoHolder;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.HasTypes;
 
 /**
@@ -31,7 +31,7 @@ public interface CompositeInstance
     <T> T newProxy( Class<T> mixinType )
         throws IllegalArgumentException;
 
-    Module module();
+    ModuleDescriptor module();
 
     CompositeDescriptor descriptor();
 

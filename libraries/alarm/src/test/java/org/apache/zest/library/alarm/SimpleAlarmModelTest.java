@@ -113,7 +113,7 @@ public class SimpleAlarmModelTest
     public void testTriggers()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
         List<String> triggers = provider.alarmTriggers();
         assertEquals( 2, triggers.size() );
@@ -157,7 +157,7 @@ public class SimpleAlarmModelTest
     public void testStateChangeFromNormal()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint alarm = createAlarm( "Another 1" );
         AlarmEvent event1 = provider.evaluate( alarm, AlarmPoint.TRIGGER_ACTIVATE );
         assertEquals( AlarmPoint.EVENT_ACTIVATION, event1.systemName().get() );
@@ -183,7 +183,7 @@ public class SimpleAlarmModelTest
     public void testStateChangeFromActivated()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
         AlarmPoint alarm = createAlarm( "Another 1" );
         alarm.activate();
 
@@ -202,7 +202,7 @@ public class SimpleAlarmModelTest
     {
         try
         {
-            AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
+            AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
             AlarmPoint underTest = createAlarm( "Test AlarmPoint" );
             provider.evaluate( underTest, "my-trigger" );
             fail( "IllegalArgumentException not thrown." );
@@ -301,7 +301,7 @@ public class SimpleAlarmModelTest
     public void testComputeCondition()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
         AlarmStatus s1 = createStatus( AlarmPoint.STATUS_NORMAL );
         assertFalse( provider.computeCondition( s1 ) );
         AlarmStatus s2 = createStatus( AlarmPoint.STATUS_ACTIVATED );
@@ -312,7 +312,7 @@ public class SimpleAlarmModelTest
     public void testComputeTrigger()
         throws Exception
     {
-        AlarmModel provider = (AlarmModel) module.findService( AlarmModel.class ).get();
+        AlarmModel provider = (AlarmModel) serviceFinder.findService( AlarmModel.class ).get();
         AlarmStatus s1 = createStatus( AlarmPoint.STATUS_NORMAL );
         AlarmStatus s2 = createStatus( AlarmPoint.STATUS_ACTIVATED );
         String trigger1 = provider.computeTrigger( s1, true );
@@ -339,7 +339,7 @@ public class SimpleAlarmModelTest
 
     private AlarmCategory createCategory( String name )
     {
-        ValueBuilder<AlarmCategory> builder = module.newValueBuilder( AlarmCategory.class );
+        ValueBuilder<AlarmCategory> builder = valueBuilderFactory.newValueBuilder( AlarmCategory.class );
         builder.prototype().name().set( name );
         return builder.newInstance();
     }
@@ -352,7 +352,7 @@ public class SimpleAlarmModelTest
 
     private AlarmStatus createStatus( String status )
     {
-        ValueBuilder<AlarmStatus> builder = module.newValueBuilder( AlarmStatus.class );
+        ValueBuilder<AlarmStatus> builder = valueBuilderFactory.newValueBuilder( AlarmStatus.class );
         AlarmStatus.State statePrototype = builder.prototypeFor( AlarmStatus.State.class );
         statePrototype.name().set( status );
         statePrototype.creationDate().set( new Date() );

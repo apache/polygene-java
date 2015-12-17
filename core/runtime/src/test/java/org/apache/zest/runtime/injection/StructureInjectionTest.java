@@ -51,7 +51,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForCompositeBuilderFactory()
     {
-        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected CompositeBuilderFactory", sic.getCompositeBuilderFactory(), is( notNullValue() ) );
     }
 
@@ -61,7 +61,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForObjectBuilderFactory()
     {
-        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected ObjectBuilderFactory", sic.getObjectFactory(), is( notNullValue() ) );
     }
 
@@ -71,7 +71,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForUnitOfWorkFactory()
     {
-        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected UnitOfWorkFactory", sic.getUnitOfWorkFactory(), is( notNullValue() ) );
     }
 
@@ -81,7 +81,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForServiceLocator()
     {
-        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected ServiceLocator", sic.getServiceLocator(), is( notNullValue() ) );
     }
 
@@ -91,7 +91,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForModuleBinding()
     {
-        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected Module", sic.getModule(), is( notNullValue() ) );
     }
 
@@ -101,7 +101,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForZest()
     {
-        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected Zest", sic.getZest(), is( notNullValue() ) );
     }
 
@@ -111,7 +111,7 @@ public class StructureInjectionTest
     @Test
     public void injectedStructureForZestSpi()
     {
-        StructureInjectionComposite sic = module.newTransient( StructureInjectionComposite.class );
+        StructureInjectionComposite sic = transientBuilderFactory.newTransient( StructureInjectionComposite.class );
         assertThat( "Injected ZestSPI", sic.getZestSpi(), is( notNullValue() ) );
     }
 

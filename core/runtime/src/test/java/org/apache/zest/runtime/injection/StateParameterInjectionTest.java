@@ -50,7 +50,7 @@ public class StateParameterInjectionTest
         throws Exception
     {
         TransientBuilder<PropertyParameterInjectionComposite> pficBuilder =
-            module.newTransientBuilder( PropertyParameterInjectionComposite.class );
+            transientBuilderFactory.newTransientBuilder( PropertyParameterInjectionComposite.class );
         pficBuilder.prototype().testField().set( "X" );
         pficBuilder.prototype().namedField().set( "Y" );
         PropertyParameterInjectionComposite pfic = pficBuilder.newInstance();

@@ -26,8 +26,8 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporter;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.util.Classes;
-import org.apache.zest.functional.Iterables;
 
 /**
  * XXX Workaround for inconsistency in Zest core-api/spi
@@ -47,6 +47,12 @@ public class ImportedServiceCompositeDescriptor
     public ImportedServiceDescriptor importedService()
     {
         return importedService;
+    }
+
+    @Override
+    public ModuleDescriptor module()
+    {
+        return importedService.module();
     }
 
     @Override

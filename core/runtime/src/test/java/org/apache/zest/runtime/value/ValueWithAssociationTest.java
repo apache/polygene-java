@@ -113,7 +113,7 @@ public class ValueWithAssociationTest extends AbstractZestTest
     public void givenNewValueWhenConvertingToEntityExpectNewEntityInStore()
         throws UnitOfWorkCompletionException
     {
-        ValueBuilder<DualFaced> builder = module.newValueBuilder( DualFaced.class );
+        ValueBuilder<DualFaced> builder = valueBuilderFactory.newValueBuilder( DualFaced.class );
         builder.prototype().identity().set( "1234" );
         builder.prototype().name().set( "Hedhman" );
         DualFaced value = builder.newInstance();
@@ -156,12 +156,12 @@ public class ValueWithAssociationTest extends AbstractZestTest
             identity2 = faced.identity().get();
             uow.complete();
         }
-        ValueBuilder<SimpleName> vb1 = module.newValueBuilder( SimpleName.class );
+        ValueBuilder<SimpleName> vb1 = valueBuilderFactory.newValueBuilder( SimpleName.class );
         vb1.prototype().identity().set( identity1 );
         vb1.prototype().name().set( "Paul" );
         SimpleName simpleValue = vb1.newInstance();
 
-        ValueBuilder<DualFaced> vb2 = module.newValueBuilder( DualFaced.class );
+        ValueBuilder<DualFaced> vb2 = valueBuilderFactory.newValueBuilder( DualFaced.class );
         vb2.prototype().identity().set( identity2 );
         vb2.prototype().name().set( "Merlin" );
         vb2.prototype().simple().set( simpleValue );

@@ -44,7 +44,7 @@ public class CompositeFactoryImplTest
         throws Exception
     {
         Class aClass = FirstComposite.class;
-        TransientBuilder builder = module.newTransientBuilder( aClass );
+        TransientBuilder builder = transientBuilderFactory.newTransientBuilder( aClass );
         builder.newInstance();
     }
 
@@ -54,7 +54,7 @@ public class CompositeFactoryImplTest
     {
         try
         {
-            TransientBuilder<SecondComposite> builder = module.newTransientBuilder(
+            TransientBuilder<SecondComposite> builder = transientBuilderFactory.newTransientBuilder(
                 SecondComposite.class );
             SecondComposite composition9 = builder.newInstance();
             composition9.setValue( "satisfiedBy value" );

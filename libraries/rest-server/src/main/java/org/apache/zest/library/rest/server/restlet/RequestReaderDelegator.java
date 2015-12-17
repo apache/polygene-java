@@ -68,7 +68,7 @@ public class RequestReaderDelegator
         {
             try
             {
-                Class readerClass = module.classLoader().loadClass( className.trim() );
+                Class readerClass = module.descriptor().classLoader().loadClass( className.trim() );
                 RequestReader writer = (RequestReader) module.newObject( readerClass );
                 registerRequestReader( writer );
             }

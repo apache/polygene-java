@@ -68,7 +68,7 @@ public class TransientAsClassTest
     @Test
     public void test()
     {
-        UnderTest underTest = module.newTransient( UnderTest.class );
+        UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
         assertThat( underTest.foo(), equalTo( "foo bar" ) );
     }
 }

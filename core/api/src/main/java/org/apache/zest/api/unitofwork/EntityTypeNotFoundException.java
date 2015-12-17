@@ -17,8 +17,8 @@ package org.apache.zest.api.unitofwork;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.util.stream.StreamSupport.stream;
+import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.api.structure.ModuleDescriptor;
 
 /**
  * Zest exception to be thrown in case that an entity composite
@@ -29,7 +29,7 @@ public class EntityTypeNotFoundException
 {
     private final String compositeType;
 
-    public EntityTypeNotFoundException( String entityType, String moduleName, Stream<String> visibility )
+    private EntityTypeNotFoundException( String entityType, String moduleName, Stream<String> visibility )
     {
         super( "Could not find an EntityComposite of type " + entityType + " in module [" + moduleName + "].\n" +
                "\tThe following entity types are visible:\n" + visibility.collect( Collectors.joining( "\n" ) ) );
@@ -39,5 +39,18 @@ public class EntityTypeNotFoundException
     public String compositeType()
     {
         return compositeType;
+    }
+
+    public static EntityTypeNotFoundException create( String type, ModuleDescriptor module )
+    {
+        return new EntityTypeNotFoundException( type,
+                                                module.name(),
+                                                module.findVisibleEntityTypes()
+                                                    .map( item -> item.types()
+                                                                      .iterator()
+                                                                      .next()
+                                                                      .getName() + "[" + item.module()
+                                                                      .name() + "]" )
+        );
     }
 }

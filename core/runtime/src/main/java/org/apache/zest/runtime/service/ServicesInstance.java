@@ -51,9 +51,9 @@ public class ServicesInstance
         }
     }
 
-    public Stream<ServiceModel> models()
+    public Stream<? extends ServiceDescriptor> models()
     {
-        return servicesModel.stream();
+        return servicesModel.models();
     }
 
     @Override
@@ -105,8 +105,13 @@ public class ServicesInstance
         activation.deregisterActivationEventListener( listener );
     }
 
-    public Stream<? extends ServiceDescriptor> stream()
+    public Stream<? extends ServiceDescriptor> descriptors()
     {
-        return servicesModel.stream();
+        return servicesModel.models();
+    }
+
+    public Stream<ServiceReference<?>> references()
+    {
+        return serviceReferences.stream();
     }
 }

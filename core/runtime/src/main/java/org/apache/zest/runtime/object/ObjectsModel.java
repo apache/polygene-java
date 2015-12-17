@@ -49,7 +49,7 @@ public class ObjectsModel
         return visitor.visitLeave( this );
     }
 
-    public Stream<ObjectModel> stream()
+    public Stream<ObjectModel> models()
     {
         return objectModels.stream();
     }

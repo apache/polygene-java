@@ -56,7 +56,7 @@ public class ValueInjectionDeserializationTest
         UnitOfWork uow = null;
         try
         {
-            ValueBuilder<Some> builder = module.newValueBuilder( Some.class );
+            ValueBuilder<Some> builder = valueBuilderFactory.newValueBuilder( Some.class );
             builder.prototype().data().set( "Niclas" );
             Some value = builder.newInstance();
 

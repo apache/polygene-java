@@ -134,7 +134,7 @@ public class JDKMixinTest
     {
         List<ServiceReference<JSONSerializableMap>> services = toList(
             filter( EXTENDS_IDENTITY_SPEC,
-                    module.findServices( JSONSerializableMap.class ) ) );
+                    serviceFinder.findServices( JSONSerializableMap.class ) ) );
 
         assertThat( services.size(), equalTo( 1 ) );
         assertThat( services.get( 0 ).identity(), equalTo( EXTENDS_IDENTITY ) );
@@ -154,7 +154,7 @@ public class JDKMixinTest
     {
         List<ServiceReference<JSONSerializableMap>> services = toList(
             filter( COMPOSE_IDENTITY_SPEC,
-                    module.findServices( JSONSerializableMap.class ) ) );
+                    serviceFinder.findServices( JSONSerializableMap.class ) ) );
 
         assertThat( services.size(), equalTo( 1 ) );
         assertThat( services.get( 0 ).identity(), equalTo( COMPOSE_IDENTITY ) );

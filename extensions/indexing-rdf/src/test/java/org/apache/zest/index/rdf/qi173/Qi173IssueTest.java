@@ -74,7 +74,7 @@ public class Qi173IssueTest
         }
 
         uow = uowf.newUnitOfWork();
-        QueryBuilder<Car> qb = module.newQueryBuilder( Car.class );
+        QueryBuilder<Car> qb = queryBuilderFactory.newQueryBuilder( Car.class );
         Car template = QueryExpressions.templateFor( Car.class );
         qb = qb.where( QueryExpressions.eq( template.year(), 2007 ) );
 

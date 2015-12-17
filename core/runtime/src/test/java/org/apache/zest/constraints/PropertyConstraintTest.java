@@ -41,7 +41,7 @@ public class PropertyConstraintTest
     public void givenConstraintOnPropertyWhenInvalidValueThenThrowException()
         throws Throwable
     {
-        TransientBuilder<Test> builder = module.newTransientBuilder( Test.class );
+        TransientBuilder<Test> builder = transientBuilderFactory.newTransientBuilder( Test.class );
         builder.prototype().test().set( "XXXXXX" );
         Test test = builder.newInstance();
         try

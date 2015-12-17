@@ -68,7 +68,7 @@ public final class JettyServiceTest
     public final void testInstantiation()
         throws Throwable
     {
-        Iterable<ServiceReference<JettyService>> services = module.findServices( JettyService.class );
+        Iterable<ServiceReference<JettyService>> services = serviceFinder.findServices( JettyService.class );
         assertNotNull( services );
 
         Iterator<ServiceReference<JettyService>> iterator = services.iterator();

@@ -70,10 +70,10 @@ public class DebuggingTest
 //            QueryBuilder<DebugRecord> builder = module.newQueryBuilder( DebugRecord.class );
 //            Query<DebugRecord> query = builder.newQuery( uow );
 //            assertEquals( 0, query.count() );
-            Some service = (Some) module.findService( Some.class ).get();
+            Some service = (Some) serviceFinder.findService( Some.class ).get();
             String message = service.doSomething( "World!", 10 );
             assertEquals( message, "Hello!" );
-            EntityStore es = (EntityStore) module.findService( EntityStore.class ).get();
+            EntityStore es = (EntityStore) serviceFinder.findService( EntityStore.class ).get();
             final String[] result = new String[1];
             es.entityStates( module ).transferTo( Transforms.map( new Function<EntityState, EntityState>()
                     {

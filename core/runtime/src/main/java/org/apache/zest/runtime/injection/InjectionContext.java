@@ -16,17 +16,16 @@ package org.apache.zest.runtime.injection;
 
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.property.StateHolder;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.runtime.composite.ProxyReferenceInvocationHandler;
 import org.apache.zest.runtime.composite.UsesInstance;
-import org.apache.zest.runtime.structure.ModuleInstance;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * JAVADOC
  */
 public final class InjectionContext
 {
-    private final ModuleSpi moduleInstance;
+    private final ModuleDescriptor module;
     private CompositeInstance compositeInstance;
     private UsesInstance uses;
     private StateHolder state;
@@ -38,37 +37,37 @@ public final class InjectionContext
 
     public InjectionContext( CompositeInstance compositeInstance, UsesInstance uses, StateHolder state )
     {
-        this.moduleInstance = (ModuleInstance) compositeInstance.module();
+        this.module = compositeInstance.module();
         this.compositeInstance = compositeInstance;
         this.uses = uses;
         this.state = state;
     }
 
     // For concerns and side-effects
-    public InjectionContext( ModuleSpi moduleInstance, Object next, ProxyReferenceInvocationHandler proxyHandler )
+    public InjectionContext( ModuleDescriptor module, Object next, ProxyReferenceInvocationHandler proxyHandler )
     {
-        this.moduleInstance = moduleInstance;
+        this.module = module;
         this.next = next;
         this.proxyHandler = proxyHandler;
     }
 
-    public InjectionContext( ModuleSpi moduleInstance, UsesInstance uses )
+    public InjectionContext( ModuleDescriptor module, UsesInstance uses )
     {
-        this.moduleInstance = moduleInstance;
+        this.module = module;
         this.uses = uses;
     }
 
     // For inner classes
-    public InjectionContext( ModuleSpi moduleInstance, UsesInstance uses, Object instance )
+    public InjectionContext( ModuleDescriptor module, UsesInstance uses, Object instance )
     {
-        this.moduleInstance = moduleInstance;
+        this.module = module;
         this.uses = uses;
         this.instance = instance;
     }
 
-    public ModuleSpi module()
+    public ModuleDescriptor module()
     {
-        return moduleInstance;
+        return module;
     }
 
     public CompositeInstance compositeInstance()
@@ -111,7 +110,7 @@ public final class InjectionContext
     {
         return "InjectionContext{" +
                "compositeInstance=" + compositeInstance +
-               ", module=" + moduleInstance +
+               ", module=" + module +
                ", uses=" + uses +
                ", state=" + state +
                ", next=" + next +

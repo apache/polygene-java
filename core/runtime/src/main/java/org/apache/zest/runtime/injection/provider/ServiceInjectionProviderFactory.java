@@ -196,11 +196,11 @@ public final class ServiceInjectionProviderFactory
             {
                 if( serviceQualifier == null )
                 {
-                    return context.module().findService( serviceType );
+                    return context.module().instance().findService( serviceType );
                 }
                 else
                 {
-                    return Iterables.first( Iterables.filter( serviceQualifier, context.module()
+                    return Iterables.first( Iterables.filter( serviceQualifier, context.module().instance()
                         .findServices( serviceType ) ) );
                 }
             }
@@ -214,11 +214,11 @@ public final class ServiceInjectionProviderFactory
         {
             if( serviceQualifier == null )
             {
-                return context.module().findServices( serviceType );
+                return context.module().instance().findServices( serviceType );
             }
             else
             {
-                return Iterables.filter( serviceQualifier, context.module().findServices( serviceType ) );
+                return Iterables.filter( serviceQualifier, context.module().instance().findServices( serviceType ) );
             }
         }
     }

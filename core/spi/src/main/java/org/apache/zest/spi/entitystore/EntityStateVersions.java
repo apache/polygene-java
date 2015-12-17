@@ -21,9 +21,11 @@ import java.util.WeakHashMap;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
+import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Entity versions state.
@@ -81,7 +83,7 @@ public interface EntityStateVersions
                 String storeVersion = versions.get( entityState.identity() );
                 if( storeVersion == null )
                 {
-                    EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( Usecase.DEFAULT, currentTime );
+                    EntityStoreUnitOfWork unitOfWork = store.newUnitOfWork( entityState.entityDescriptor().module(), Usecase.DEFAULT, currentTime );
                     storeVersion = unitOfWork.versionOf( entityState.identity() );
                     unitOfWork.discard();
                 }

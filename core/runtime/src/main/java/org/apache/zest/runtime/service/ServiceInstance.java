@@ -25,7 +25,6 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.runtime.composite.TransientInstance;
 import org.apache.zest.runtime.composite.TransientStateInstance;
-import org.apache.zest.runtime.structure.ModuleInstance;
 
 /**
  * JAVADOC
@@ -43,12 +42,11 @@ public class ServiceInstance
     private final boolean hasEnabledConfiguration;
 
     public ServiceInstance( ServiceModel compositeModel,
-                            ModuleInstance moduleInstance,
                             Object[] mixins,
                             TransientStateInstance state
     )
     {
-        super( compositeModel, moduleInstance, mixins, state );
+        super( compositeModel, mixins, state );
 
         implementsServiceAvailable =
             Classes.assignableTypeSpecification( Availability.class ).test( descriptor() );

@@ -51,7 +51,7 @@ public class OSGiServiceTest
     @Test
     public void givenFelixFrameworkWhenStartingZestApplicationExpectServiceToBeRegisteredToOsgiBundleContext()
     {
-        MyService service = module.findService( MyService.class ).get();
+        MyService service = serviceFinder.findService( MyService.class ).get();
         service.value().set( 15 );
         assertEquals( (Integer) 15, service.value().get() );
         String[] expectedClasses = new String[]

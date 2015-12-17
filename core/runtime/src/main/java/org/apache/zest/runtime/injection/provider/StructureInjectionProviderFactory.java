@@ -24,8 +24,11 @@ import org.apache.zest.api.object.ObjectFactory;
 import org.apache.zest.api.query.QueryBuilderFactory;
 import org.apache.zest.api.service.ServiceFinder;
 import org.apache.zest.api.structure.Application;
+import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.Layer;
+import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.bootstrap.InvalidInjectionException;
@@ -34,8 +37,7 @@ import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.injection.InjectionProvider;
 import org.apache.zest.runtime.injection.InjectionProviderFactory;
 import org.apache.zest.runtime.model.Resolution;
-import org.apache.zest.runtime.structure.ModuleInstance;
-import org.apache.zest.spi.module.ModuleSpi;
+import org.apache.zest.runtime.structure.ApplicationInstance;
 
 public final class StructureInjectionProviderFactory
     implements InjectionProviderFactory
@@ -69,49 +71,56 @@ public final class StructureInjectionProviderFactory
             Class clazz = (Class) type1;
             if( clazz.equals( TransientBuilderFactory.class ) )
             {
-                return context.module();
+                return context.module().instance();
             }
             else if( clazz.equals( ObjectFactory.class ) )
             {
-                return context.module();
+                return context.module().instance();
             }
             else if( clazz.equals( ValueBuilderFactory.class ) )
             {
-                return context.module();
+                return context.module().instance();
             }
             else if( clazz.equals( UnitOfWorkFactory.class ) )
             {
-                return context.module().unitOfWorkFactory();
+                return context.module().instance().unitOfWorkFactory();
             }
             else if( clazz.equals( QueryBuilderFactory.class ) )
             {
-                return context.module();
+                return context.module().instance();
             }
             else if( clazz.equals( ServiceFinder.class ) )
             {
-                return context.module();
+                return context.module().instance();
             }
             else if( Module.class.isAssignableFrom( clazz ) )
             {
-                return context.module();
+                return context.module().instance();
             }
-            else if( ModuleSpi.class.isAssignableFrom( clazz ) )
+            else if( ModuleDescriptor.class.isAssignableFrom( clazz ) )
             {
                 return context.module();
             }
             else if( Layer.class.isAssignableFrom( clazz ) )
             {
-                return (( ModuleInstance) context.module()).layerInstance();
+                return context.module().layer().instance();
+            }
+            else if( LayerDescriptor.class.isAssignableFrom( clazz ) )
+            {
+                return context.module().layer();
             }
             else if( Application.class.isAssignableFrom( clazz ) )
             {
-                return (( ModuleInstance) context.module()).layerInstance().applicationInstance();
+                return context.module().layer().instance().application();
+            }
+            else if( ApplicationDescriptor.class.isAssignableFrom( clazz ) )
+            {
+                return context.module().layer().instance().application().descriptor();
             }
             else if( ZestAPI.class.isAssignableFrom( clazz ) )
             {
-                return (( ModuleInstance) context.module()).layerInstance().applicationInstance().runtime();
+                return (( ApplicationInstance) context.module().layer().instance().application()).runtime();
             }
-
             return null;
         }
     }

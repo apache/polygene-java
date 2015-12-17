@@ -21,6 +21,7 @@ import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.Composite;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.bootstrap.ObjectAssembly;
 import org.apache.zest.runtime.object.ObjectModel;
 
@@ -51,11 +52,11 @@ public final class ObjectAssemblyImpl
         return Stream.of( objectType );
     }
 
-    void addObjectModel( List<ObjectModel> objectModels )
+    void addObjectModel( ModuleDescriptor module, List<ObjectModel> objectModels )
     {
         try
         {
-            ObjectModel objectModel = new ObjectModel( objectType, visibility, metaInfo );
+            ObjectModel objectModel = new ObjectModel( module, objectType, visibility, metaInfo );
             objectModels.add( objectModel );
         }
         catch( Throwable e )

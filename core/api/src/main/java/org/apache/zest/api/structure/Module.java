@@ -50,50 +50,14 @@ public interface Module
      */
     String name();
 
-    /**
-     * @return the Module's ClassLoader
-     */
-    ClassLoader classLoader();
+    ModuleDescriptor descriptor();
 
     /**
-     * @param typeName name of a transient composite type
      *
-     * @return the descriptor for a transient composite or null if the class could not be found or the transient composite is not visible
+     * @return the Layer that the Module is declared in.
      */
-    TransientDescriptor transientDescriptor( String typeName );
+    LayerDescriptor layer();
 
-    /**
-     * @param typeName name of an entity composite type
-     *
-     * @return the descriptor for an entity composite or null if the class could not be found or the entity composite is not visible
-     */
-    EntityDescriptor entityDescriptor( String typeName );
-
-    /**
-     * @param typeName name of an object type
-     *
-     * @return the descriptor for an object or null if the class could not be found or the object is not visible
-     */
-    ObjectDescriptor objectDescriptor( String typeName );
-
-    /**
-     * @param typeName name of a value composite type
-     *
-     * @return the descriptor for a value composite or null if the class could not be found or the value composite is not visible
-     */
-    ValueDescriptor valueDescriptor( String typeName );
-
-    Stream<? extends TransientDescriptor> transientComposites();
-
-    Stream<? extends ValueDescriptor> valueComposites();
-
-    Stream<? extends ServiceDescriptor> serviceComposites();
-
-    Stream<? extends EntityDescriptor> entityComposites();
-
-    Stream<? extends ImportedServiceDescriptor> importedServices();
-
-    Stream<? extends ObjectDescriptor> objects();
 
     UnitOfWorkFactory unitOfWorkFactory();
 }

@@ -14,12 +14,12 @@
 
 package org.apache.zest.runtime.composite;
 
-import org.junit.Test;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
+import org.junit.Test;
 
 /**
  * JAVADOC
@@ -38,40 +38,40 @@ public class QI256Test
     }
 
     @Mixins( { TestTransient.TestTransientMixin.class } )
-    public static interface TestTransient
+    public interface TestTransient
         extends TransientComposite
     {
-        public void declaredMethodThatThrowsCustomException();
+        void declaredMethodThatThrowsCustomException();
 
-        public void invokeDeclaredPublicMethodThatThrowsCustomException();
+        void invokeDeclaredPublicMethodThatThrowsCustomException();
 
-        public void invokePrivateMethodThatThrowsCustomException();
+        void invokePrivateMethodThatThrowsCustomException();
 
-        public void invokeProtectedMethodThatThrowsCustomException();
+        void invokeProtectedMethodThatThrowsCustomException();
 
-        public void invokeUndeclaredPublicMethodThatThrowsCustomException();
+        void invokeUndeclaredPublicMethodThatThrowsCustomException();
 
-        public void declaredMethodThatThrowsBuiltinInheritedException();
+        void declaredMethodThatThrowsBuiltinInheritedException();
 
-        public void invokeDeclaredPublicMethodThatThrowsBuiltinInheritedException();
+        void invokeDeclaredPublicMethodThatThrowsBuiltinInheritedException();
 
-        public void invokePrivateMethodThatThrowsBuiltinInheritedException();
+        void invokePrivateMethodThatThrowsBuiltinInheritedException();
 
-        public void invokeProtectedMethodThatThrowsBuiltinInheritedException();
+        void invokeProtectedMethodThatThrowsBuiltinInheritedException();
 
-        public void invokeUndeclaredPublicMethodThatThrowsBuiltinInheritedException();
+        void invokeUndeclaredPublicMethodThatThrowsBuiltinInheritedException();
 
-        public void declaredMethodThatThrowsBuiltinException();
+        void declaredMethodThatThrowsBuiltinException();
 
-        public void invokeDeclaredPublicMethodThatThrowsBuiltinException();
+        void invokeDeclaredPublicMethodThatThrowsBuiltinException();
 
-        public void invokePrivateMethodThatThrowsBuiltinException();
+        void invokePrivateMethodThatThrowsBuiltinException();
 
-        public void invokeProtectedMethodThatThrowsBuiltinException();
+        void invokeProtectedMethodThatThrowsBuiltinException();
 
-        public void invokeUndeclaredPublicMethodThatThrowsBuiltinException();
+        void invokeUndeclaredPublicMethodThatThrowsBuiltinException();
 
-        public abstract class TestTransientMixin
+        abstract class TestTransientMixin
             implements TestTransient
         {
             public void declaredMethodThatThrowsCustomException()
@@ -209,14 +209,14 @@ public class QI256Test
     public void invokeCustomExceptionThrowingMethod()
         throws Throwable
     {
-        this.module.newTransient( TestTransient.class ).declaredMethodThatThrowsCustomException();
+        this.transientBuilderFactory.newTransient( TestTransient.class ).declaredMethodThatThrowsCustomException();
     }
 
     @Test( expected = TestException.class )
     public void invokeDeclaredPublicMethodWhichInvokesCustomExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokeDeclaredPublicMethodThatThrowsCustomException();
     }
@@ -225,7 +225,7 @@ public class QI256Test
     public void invokeUndeclaredPublicMethodWhichInvokesCustomExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokeUndeclaredPublicMethodThatThrowsCustomException();
     }
@@ -234,14 +234,14 @@ public class QI256Test
     public void invokePrivateMethodWhichInvokesCustomExceptionThrowingMethod()
         throws Throwable
     {
-        this.module.newTransient( TestTransient.class ).invokePrivateMethodThatThrowsCustomException();
+        this.transientBuilderFactory.newTransient( TestTransient.class ).invokePrivateMethodThatThrowsCustomException();
     }
 
     @Test( expected = TestException.class )
     public void invokeProtectedMethodWhichInvokesCustomExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokeProtectedMethodThatThrowsCustomException();
     }
@@ -250,7 +250,7 @@ public class QI256Test
     public void invokeBuiltinInheritedExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .declaredMethodThatThrowsBuiltinInheritedException();
     }
@@ -259,7 +259,7 @@ public class QI256Test
     public void invokeDeclaredPublicMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokeDeclaredPublicMethodThatThrowsBuiltinInheritedException();
     }
@@ -268,7 +268,7 @@ public class QI256Test
     public void invokeUndeclaredPublicMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokeUndeclaredPublicMethodThatThrowsBuiltinInheritedException();
     }
@@ -277,7 +277,7 @@ public class QI256Test
     public void invokePrivateMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokePrivateMethodThatThrowsBuiltinInheritedException();
     }
@@ -286,7 +286,7 @@ public class QI256Test
     public void invokeProtectedMethodWhichInvokesBuiltinInheritedExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokeProtectedMethodThatThrowsBuiltinInheritedException();
     }
@@ -295,7 +295,7 @@ public class QI256Test
     public void invokeBuiltinExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .declaredMethodThatThrowsBuiltinInheritedException();
     }
@@ -304,7 +304,7 @@ public class QI256Test
     public void invokeDeclaredPublicMethodWhichInvokesBuiltinExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokeDeclaredPublicMethodThatThrowsBuiltinInheritedException();
     }
@@ -313,7 +313,7 @@ public class QI256Test
     public void invokeUndeclaredPublicMethodWhichInvokesBuiltinExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokeUndeclaredPublicMethodThatThrowsBuiltinInheritedException();
     }
@@ -322,7 +322,7 @@ public class QI256Test
     public void invokePrivateMethodWhichInvokesBuiltinExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokePrivateMethodThatThrowsBuiltinInheritedException();
     }
@@ -331,7 +331,7 @@ public class QI256Test
     public void invokeProtectedMethodWhichInvokesBuiltinExceptionThrowingMethod()
         throws Throwable
     {
-        this.module
+        this.transientBuilderFactory
             .newTransient( TestTransient.class )
             .invokeProtectedMethodThatThrowsBuiltinInheritedException();
     }

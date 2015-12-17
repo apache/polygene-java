@@ -33,7 +33,7 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.mixin.Mixins;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.service.ServiceComposite;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.value.NoSuchValueException;
 import org.apache.zest.api.value.ValueBuilder;
@@ -68,7 +68,7 @@ public interface EntityToDTOService
         private ZestSPI spi;
 
         @Structure
-        private Module module;
+        private ModuleDescriptor module;
 
         @Override
         public <T> T convert( final Class<T> valueType, Object entity )

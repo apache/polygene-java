@@ -43,7 +43,7 @@ public class ValueCompositeBasicsTest
     @Test
     public void testEqualsForValueComposite()
     {
-        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas" );
         assertEquals("Niclas", builder.prototype().name());
         SomeValue value1 = builder.newInstance();
@@ -57,7 +57,7 @@ public class ValueCompositeBasicsTest
     @Test
     public void testToStringForValueComposite()
     {
-        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas" );
         SomeValue underTest = builder.newInstance();
         assertEquals( "{\"name\":\"Niclas\"}", underTest.toString() );
@@ -66,7 +66,7 @@ public class ValueCompositeBasicsTest
     @Test
     public void testToJSonForValueComposite()
     {
-        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = valueBuilderFactory.newValueBuilder( SomeValue.class );
         builder.prototypeFor( SomeInternalState.class ).name().set( "Niclas" );
         SomeValue underTest = builder.newInstance();
         assertEquals( "{\"name\":\"Niclas\"}", underTest.toString() );

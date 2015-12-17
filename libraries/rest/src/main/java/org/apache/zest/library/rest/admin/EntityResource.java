@@ -33,6 +33,7 @@ import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.Uses;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.api.value.ValueSerialization;
@@ -48,7 +49,6 @@ import org.apache.zest.spi.entitystore.EntityNotFoundException;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.helpers.JSONEntityState;
-import org.apache.zest.spi.module.ModuleSpi;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFHandlerException;
 import org.restlet.data.CharacterSet;
@@ -77,7 +77,7 @@ public class EntityResource
     private ValueSerialization valueSerialization;
 
     @Structure
-    private ModuleSpi module;
+    private ModuleDescriptor module;
 
     @Uses
     private EntityStateSerializer entitySerializer;
@@ -108,7 +108,7 @@ public class EntityResource
         throws ResourceException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Remove entity" );
-        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( usecase, System.currentTimeMillis() );
+        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( module, usecase, System.currentTimeMillis() );
         try
         {
             EntityReference identityRef = EntityReference.parseEntityReference( identity );
@@ -129,7 +129,7 @@ public class EntityResource
     protected Representation get( Variant variant )
         throws ResourceException
     {
-        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( UsecaseBuilder.newUsecase( "Get entity" ),
+        EntityStoreUnitOfWork uow = entityStore.newUnitOfWork( module, UsecaseBuilder.newUsecase( "Get entity" ),
                                                                System.currentTimeMillis() );
 
         try
@@ -349,7 +349,7 @@ public class EntityResource
         throws ResourceException
     {
         Usecase usecase = UsecaseBuilder.newUsecase( "Update entity" );
-        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, System.currentTimeMillis() );
+        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( module, usecase, System.currentTimeMillis() );
         EntityState entity = getEntityState( unitOfWork );
 
         Form form = new Form( entityRepresentation );
@@ -371,7 +371,7 @@ public class EntityResource
                     {
                         entity.setPropertyValue(
                             persistentProperty.qualifiedName(),
-                            valueSerialization.deserialize( persistentProperty.valueType(), formValue ) );
+                            valueSerialization.deserialize( module, persistentProperty.valueType(), formValue ) );
                     }
                 }
             } );

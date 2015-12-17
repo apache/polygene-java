@@ -104,7 +104,7 @@ public class ModuleTest
         Application app = givenFixture1();
 
         Module module = app.findModule( "Layer 1", "Module 1" ).newTransient( TestComposite1.class ).getModule();
-        module.classLoader().loadClass( TestComposite2.class.getName() );
+        module.descriptor().classLoader().loadClass( TestComposite2.class.getName() );
     }
 
     @Mixins( TestMixin1.class )

@@ -52,11 +52,11 @@ public class ZestAPITest
 
         unitOfWork.discard();
 
-        api.moduleOf( module.newValue( TestValue.class ) );
+        api.moduleOf( valueBuilderFactory.newValue( TestValue.class ) );
 
-        api.moduleOf( module.newTransient( TestTransient.class ) );
+        api.moduleOf( transientBuilderFactory.newTransient( TestTransient.class ) );
 
-        api.moduleOf( module.findService( TestService.class ).get() );
+        api.moduleOf( serviceFinder.findService( TestService.class ).get() );
     }
 
     public interface TestTransient

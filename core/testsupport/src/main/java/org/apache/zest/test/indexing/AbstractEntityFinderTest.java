@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.structure.Module;
 import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.composite.Composite;
@@ -81,6 +83,10 @@ public abstract class AbstractEntityFinderTest
 
     private static final String ANN = "Ann Doe";
 
+    @Structure
+    Module moduleInstance;
+
+
     private EntityFinder entityFinder;
 
     @Before
@@ -89,14 +95,14 @@ public abstract class AbstractEntityFinderTest
         throws Exception
     {
         super.setUp();
-        entityFinder = this.module.findService( EntityFinder.class ).get();
+        entityFinder = this.moduleInstance.findService( EntityFinder.class ).get();
     }
 
     @Test
     public void showNetwork()
         throws IOException
     {
-        final ServiceReference<IndexExporter> indexerService = this.module.findService( IndexExporter.class );
+        final ServiceReference<IndexExporter> indexerService = this.moduleInstance.findService( IndexExporter.class );
         final IndexExporter exporter = indexerService.get();
         exporter.exportReadableToStream( System.out );
         // todo asserts

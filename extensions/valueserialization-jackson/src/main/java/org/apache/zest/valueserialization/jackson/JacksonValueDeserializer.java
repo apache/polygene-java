@@ -27,13 +27,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
-import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueType;
-import org.apache.zest.api.value.ValueDeserializer;
 import org.apache.zest.api.value.ValueSerializationException;
 import org.apache.zest.spi.value.ValueDeserializerAdapter;
 
@@ -46,29 +41,22 @@ public class JacksonValueDeserializer
 
     private final JsonFactory jsonFactory = new MappingJsonFactory();
 
-    public JacksonValueDeserializer( @Structure Application application,
-                                     @Structure Module module,
-                                     @Service ServiceReference<ValueDeserializer> serviceRef )
-    {
-        super( application, module, serviceRef );
-    }
-
     @Override
-    protected JsonParser adaptInput( InputStream input )
+    protected JsonParser adaptInput( ModuleDescriptor module, InputStream input )
         throws Exception
     {
         return jsonFactory.createParser( input );
     }
 
     @Override
-    protected void onDeserializationEnd( ValueType valueType, JsonParser input )
+    protected void onDeserializationEnd( ModuleDescriptor module, ValueType valueType, JsonParser input )
         throws Exception
     {
         input.close();
     }
 
     @Override
-    protected Object readPlainValue( JsonParser input )
+    protected Object readPlainValue( ModuleDescriptor module, JsonParser input )
         throws Exception
     {
         JsonNode jsonNode = input.readValueAsTree();
@@ -101,9 +89,11 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected <T> Collection<T> readArrayInCollection( JsonParser input,
+    protected <T> Collection<T> readArrayInCollection( ModuleDescriptor module,
+                                                       JsonParser input,
                                                        Function<JsonParser, T> deserializer,
-                                                       Collection<T> collection )
+                                                       Collection<T> collection
+    )
         throws Exception
     {
         JsonToken token = input.getCurrentToken();
@@ -133,10 +123,12 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected <K, V> Map<K, V> readMapInMap( JsonParser input,
+    protected <K, V> Map<K, V> readMapInMap( ModuleDescriptor module,
+                                             JsonParser input,
                                              Function<JsonParser, K> keyDeserializer,
                                              Function<JsonParser, V> valueDeserializer,
-                                             Map<K, V> map )
+                                             Map<K, V> map
+    )
         throws Exception
     {
         JsonToken token = input.getCurrentToken();
@@ -197,7 +189,7 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected ObjectNode readObjectTree( JsonParser input )
+    protected ObjectNode readObjectTree( ModuleDescriptor module, JsonParser input )
         throws Exception
     {
         JsonToken token = input.getCurrentToken();
@@ -218,7 +210,7 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected Object asSimpleValue( JsonNode inputNode )
+    protected Object asSimpleValue( ModuleDescriptor module, JsonNode inputNode )
         throws Exception
     {
         if( isNullOrMissing( inputNode ) )
@@ -249,7 +241,8 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected boolean isObjectValue( JsonNode inputNode )
+    @SuppressWarnings( "SimplifiableIfStatement" )
+    protected boolean isObjectValue( ModuleDescriptor module, JsonNode inputNode )
         throws Exception
     {
         if( isNullOrMissing( inputNode ) )
@@ -260,7 +253,7 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected boolean objectHasField( JsonNode inputNode, String key )
+    protected boolean objectHasField( ModuleDescriptor module, JsonNode inputNode, String key )
         throws Exception
     {
         if( isNullOrMissing( inputNode ) )
@@ -275,7 +268,11 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected <T> T getObjectFieldValue( JsonNode inputNode, String key, Function<JsonNode, T> valueDeserializer )
+    protected <T> T getObjectFieldValue( ModuleDescriptor module,
+                                         JsonNode inputNode,
+                                         String key,
+                                         Function<JsonNode, T> valueDeserializer
+    )
         throws Exception
     {
         JsonNode valueNode = inputNode.get( key );
@@ -283,14 +280,15 @@ public class JacksonValueDeserializer
         {
             return null;
         }
-        T value = valueDeserializer.apply( valueNode );
-        return value;
+        return valueDeserializer.apply( valueNode );
     }
 
     @Override
-    protected <T> void putArrayNodeInCollection( JsonNode inputNode,
+    protected <T> void putArrayNodeInCollection( ModuleDescriptor module,
+                                                 JsonNode inputNode,
                                                  Function<JsonNode, T> deserializer,
-                                                 Collection<T> collection )
+                                                 Collection<T> collection
+    )
         throws Exception
     {
         if( isNullOrMissing( inputNode ) )
@@ -310,10 +308,12 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected <K, V> void putArrayNodeInMap( JsonNode inputNode,
+    protected <K, V> void putArrayNodeInMap( ModuleDescriptor module,
+                                             JsonNode inputNode,
                                              Function<JsonNode, K> keyDeserializer,
                                              Function<JsonNode, V> valueDeserializer,
-                                             Map<K, V> map )
+                                             Map<K, V> map
+    )
         throws Exception
     {
         if( isNullOrMissing( inputNode ) )
@@ -343,7 +343,8 @@ public class JacksonValueDeserializer
     }
 
     @Override
-    protected <V> void putObjectNodeInMap( JsonNode inputNode,
+    protected <V> void putObjectNodeInMap( ModuleDescriptor module,
+                                           JsonNode inputNode,
                                            Function<JsonNode, V> valueDeserializer,
                                            Map<String, V> map
     )

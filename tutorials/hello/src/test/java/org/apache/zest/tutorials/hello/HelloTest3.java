@@ -37,7 +37,7 @@ public class HelloTest3 extends AbstractZestTest
     @Test
     public void givenHelloValueInitializedToHelloWorldWhenCallingSayExpectHelloWorld()
     {
-        ServiceReference<Hello> service = module.findService( Hello.class );
+        ServiceReference<Hello> service = serviceFinder.findService( Hello.class );
         String result = service.get().say();
         assertThat( result, equalTo( "Hello World" ) );
     }

@@ -116,7 +116,7 @@ public class ContinuousIntegrationTest
         throws Exception
     {
         server = new Server( Protocol.HTTP, 8888 );
-        ContextRestlet restlet = module.newObject( ContextRestlet.class, new org.restlet.Context() );
+        ContextRestlet restlet = objectFactory.newObject( ContextRestlet.class, new org.restlet.Context() );
 
         ChallengeAuthenticator guard = new ChallengeAuthenticator( null, ChallengeScheme.HTTP_BASIC, "testRealm" );
         MapVerifier mapVerifier = new MapVerifier();
@@ -131,7 +131,7 @@ public class ContinuousIntegrationTest
         //START SNIPPET: client-create1
         Client client = new Client( Protocol.HTTP );
 
-        ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client );
+        ContextResourceClientFactory contextResourceClientFactory = objectFactory.newObject( ContextResourceClientFactory.class, client );
         contextResourceClientFactory.setAcceptedMediaTypes( MediaType.APPLICATION_JSON );
         //END SNIPPET: client-create1
 
@@ -225,7 +225,7 @@ public class ContinuousIntegrationTest
             @Override
             public HandlerCommand handleResult( BuildSpec result, ContextResourceClient client )
             {
-                ValueBuilder<BuildSpec> builder = module.newValueBuilderWithPrototype( result );
+                ValueBuilder<BuildSpec> builder = valueBuilderFactory.newValueBuilderWithPrototype( result );
 
                 builder.prototype().buildNo().set( "#28" );
 

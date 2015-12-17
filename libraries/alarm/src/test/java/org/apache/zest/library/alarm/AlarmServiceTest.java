@@ -85,7 +85,7 @@ public class AlarmServiceTest
     @Test
     public void testGetAlarmModels()
     {
-        AlarmSystem alarmService = (AlarmSystem) module.findService( AlarmSystem.class ).get();
+        AlarmSystem alarmService = (AlarmSystem) serviceFinder.findService( AlarmSystem.class ).get();
         List<AlarmModelDescriptor> models = alarmService.alarmModels();
         assertNotNull( models );
         assertEquals( 2, models.size() );
@@ -95,7 +95,7 @@ public class AlarmServiceTest
     public void testDefaultModel()
         throws Exception
     {
-        AlarmSystem alarmService = (AlarmSystem) module.findService( AlarmSystem.class ).get();
+        AlarmSystem alarmService = (AlarmSystem) serviceFinder.findService( AlarmSystem.class ).get();
         List<AlarmModelDescriptor> models = alarmService.alarmModels();
         assertNotNull( models );
         assertEquals( 2, models.size() );
@@ -108,7 +108,7 @@ public class AlarmServiceTest
     public void testListeners()
         throws Exception
     {
-        AlarmSystem alarmService = (AlarmSystem) module.findService( AlarmSystem.class ).get();
+        AlarmSystem alarmService = (AlarmSystem) serviceFinder.findService( AlarmSystem.class ).get();
         AlarmPoint alarm = alarmService.createAlarm( "TestAlarm", createCategory("AlarmServiceTest") );
 
         CountingListener listener1 = new CountingListener();
@@ -175,7 +175,7 @@ public class AlarmServiceTest
 
     private AlarmCategory createCategory( String name )
     {
-        ValueBuilder<AlarmCategory> builder = module.newValueBuilder( AlarmCategory.class );
+        ValueBuilder<AlarmCategory> builder = valueBuilderFactory.newValueBuilder( AlarmCategory.class );
         builder.prototype().name().set( name );
         return builder.newInstance();
     }

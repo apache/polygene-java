@@ -51,7 +51,7 @@ public class PostgreSQLEntityFinderTest
             // Let's check if exception was because database was not available
             if( this.module != null )
             {
-                SQLTestHelper.setUpTest( this.module );
+                SQLTestHelper.setUpTest( this.serviceFinder );
             }
 
             // If we got this far, the database must have been available, and exception must have

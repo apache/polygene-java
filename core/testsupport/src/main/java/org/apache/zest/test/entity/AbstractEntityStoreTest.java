@@ -25,11 +25,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.structure.Module;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
@@ -69,6 +70,9 @@ public abstract class AbstractEntityStoreTest
     @Service
     private EntityStore store;
 
+    @Structure
+    private Module moduleInstance;
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -77,12 +81,6 @@ public abstract class AbstractEntityStoreTest
         module.entities( TestEntity.class );
         module.values( TestValue.class, TestValue2.class, TjabbaValue.class );
         module.objects( getClass() );
-    }
-
-    @Before
-    public void init()
-    {
-        module.injectTo( this );
     }
 
     @Override
@@ -115,23 +113,23 @@ public abstract class AbstractEntityStoreTest
         instance.localDateValue().set( new LocalDate( "2020-03-04" ) );
         instance.association().set( instance );
 
-        ValueBuilder<Tjabba> valueBuilder4 = module.newValueBuilder( Tjabba.class );
+        ValueBuilder<Tjabba> valueBuilder4 = moduleInstance.newValueBuilder( Tjabba.class );
         final Tjabba prototype4 = valueBuilder4.prototype();
         prototype4.bling().set( "BlinkLjus" );
 
         // Set value
-        ValueBuilder<TestValue2> valueBuilder2 = module.newValueBuilder( TestValue2.class );
+        ValueBuilder<TestValue2> valueBuilder2 = moduleInstance.newValueBuilder( TestValue2.class );
         TestValue2 prototype2 = valueBuilder2.prototype();
         prototype2.stringValue().set( "Bar" );
         Tjabba newValue = valueBuilder4.newInstance();
         prototype2.anotherValue().set( newValue );
         prototype2.anotherValue().set( newValue );
 
-        ValueBuilder<Tjabba> valueBuilder3 = module.newValueBuilder( Tjabba.class );
+        ValueBuilder<Tjabba> valueBuilder3 = moduleInstance.newValueBuilder( Tjabba.class );
         final Tjabba prototype3 = valueBuilder3.prototype();
         prototype3.bling().set( "Brakfis" );
 
-        ValueBuilder<TestValue> valueBuilder1 = module.newValueBuilder( TestValue.class );
+        ValueBuilder<TestValue> valueBuilder1 = moduleInstance.newValueBuilder( TestValue.class );
         TestValue prototype = valueBuilder1.prototype();
         prototype.enumProperty().set( TestEnum.VALUE3 );
         prototype.listProperty().get().add( "Foo" );

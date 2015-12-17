@@ -39,7 +39,7 @@ public class TransientInstantiationTests
     public void whenCreatingServiceCompositeGivenAServiceCompositeThenSucceed()
         throws Exception
     {
-        TransientBuilder<My> builder = module.newTransientBuilder( My.class );
+        TransientBuilder<My> builder = transientBuilderFactory.newTransientBuilder( My.class );
         My my = builder.newInstance();
         Assert.assertEquals( "Niclas", my.doSomething() );
     }

@@ -73,7 +73,7 @@ public class MongoMapEntityStoreTest
         throws Exception
     {
         super.setUp();
-        MongoMapEntityStoreService es = module.findService( MongoMapEntityStoreService.class ).get();
+        MongoMapEntityStoreService es = serviceFinder.findService( MongoMapEntityStoreService.class ).get();
         mongo = es.mongoInstanceUsed();
         dbName = es.dbInstanceUsed().getName();
 

@@ -27,12 +27,12 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.CompositeDescriptor;
 import org.apache.zest.api.composite.InvalidCompositeException;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
-import org.apache.zest.spi.module.ModuleSpi;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.apache.zest.functional.Iterables.first;
@@ -53,8 +53,10 @@ public abstract class CompositeModel
     private volatile Class<?> primaryType;
     protected Class<? extends Composite> proxyClass;
     protected Constructor<? extends Composite> proxyConstructor;
+    protected ModuleDescriptor module;
 
-    protected CompositeModel( final List<Class<?>> types,
+    protected CompositeModel( final ModuleDescriptor module,
+                              final List<Class<?>> types,
                               final Visibility visibility,
                               final MetaInfo metaInfo,
                               final MixinsModel mixinsModel,
@@ -62,6 +64,7 @@ public abstract class CompositeModel
                               final CompositeMethodsModel compositeMethodsModel
     )
     {
+        this.module = module;
         this.types = new LinkedHashSet<>( types );
         this.visibility = visibility;
         this.metaInfo = metaInfo;
@@ -205,12 +208,17 @@ public abstract class CompositeModel
     public final Object invoke( MixinsInstance mixins,
                                 Object proxy,
                                 Method method,
-                                Object[] args,
-                                ModuleSpi moduleInstance
+                                Object[] args
     )
         throws Throwable
     {
-        return compositeMethodsModel.invoke( mixins, proxy, method, args, moduleInstance );
+        return compositeMethodsModel.invoke( mixins, proxy, method, args, module );
+    }
+
+    @Override
+    public ModuleDescriptor module()
+    {
+        return module;
     }
 
     public Composite newProxy( InvocationHandler invocationHandler )

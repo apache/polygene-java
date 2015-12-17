@@ -252,7 +252,7 @@ public interface Configuration<T>
         )
             throws InstantiationException
         {
-            Module module = api.moduleOf( serviceComposite );
+            Module module = api.moduleOf( serviceComposite ).instance();
             Usecase usecase = UsecaseBuilder.newUsecase( "Configuration:" + me.identity().get() );
             UnitOfWork buildUow = module.unitOfWorkFactory().newUnitOfWork( usecase );
 
@@ -384,7 +384,7 @@ public interface Configuration<T>
                     InputStream asStream = getResource( compositeType, resourceName );
                     if( asStream != null )
                     {
-                        V configObject = serializerRef.get().deserialize( configType, asStream );
+                        V configObject = serializerRef.get().deserialize( uow.module(), configType, asStream );
                         return uow.toEntity( configType, configObject );
                     }
                 }

@@ -55,7 +55,7 @@ public class ImportedServicesInstance
 
     public Stream<ImportedServiceModel> models()
     {
-        return servicesModel.stream();
+        return servicesModel.models();
     }
 
     @Override
@@ -112,6 +112,6 @@ public class ImportedServicesInstance
 
     public Stream<? extends ImportedServiceDescriptor> stream()
     {
-        return servicesModel.stream();
+        return servicesModel.models();
     }
 }

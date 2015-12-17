@@ -32,6 +32,7 @@ import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.service.qualifier.Tagged;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.util.Dates;
 import org.apache.zest.api.value.ValueBuilder;
@@ -74,6 +75,9 @@ public class DefaultRequestReader
     private static final Logger LOGGER = LoggerFactory.getLogger( DefaultRequestReader.class );
     @Structure
     private UnitOfWorkFactory uowf;
+
+    @Structure
+    private ModuleDescriptor module;
 
     @Structure
     private ValueBuilderFactory vbf;
@@ -296,7 +300,7 @@ public class DefaultRequestReader
                     {
                         try
                         {
-                            return valueDeserializer.deserialize( propertyDescriptor.valueType(), value );
+                            return valueDeserializer.deserialize( module, propertyDescriptor.valueType(), value );
                         }
                         catch( ValueSerializationException e )
                         {

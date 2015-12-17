@@ -19,15 +19,14 @@ package org.apache.zest.test.value;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.test.AbstractZestTest;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.junit.Test;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
@@ -43,11 +42,6 @@ public abstract class AbstractPlainValueSerializationTest
     extends AbstractZestTest
 {
 
-    @Before
-    public void before()
-    {
-        module.injectTo( this );
-    }
     @Service
     @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;
@@ -58,7 +52,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( 'q' );
         assertThat( "Serialized", serialized, equalTo( "q" ) );
 
-        Character deserialized = valueSerialization.deserialize( Character.class, serialized );
+        Character deserialized = valueSerialization.deserialize( module, Character.class, serialized );
         assertThat( "Deserialized", deserialized, equalTo( 'q' ) );
     }
 
@@ -68,7 +62,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( "" );
         assertThat( "Serialized", serialized, equalTo( "" ) );
 
-        String deserialized = valueSerialization.deserialize( String.class, serialized );
+        String deserialized = valueSerialization.deserialize( module, String.class, serialized );
         assertThat( "Deserialized", deserialized, equalTo( "" ) );
     }
 
@@ -78,7 +72,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( "test" );
         assertThat( serialized, equalTo( "test" ) );
 
-        String deserialized = valueSerialization.deserialize( String.class, serialized );
+        String deserialized = valueSerialization.deserialize( module, String.class, serialized );
         assertThat( deserialized, equalTo( "test" ) );
     }
 
@@ -88,7 +82,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( Boolean.TRUE );
         assertThat( serialized, equalTo( "true" ) );
 
-        Boolean deserialized = valueSerialization.deserialize( Boolean.class, serialized );
+        Boolean deserialized = valueSerialization.deserialize( module, Boolean.class, serialized );
         assertThat( deserialized, equalTo( Boolean.TRUE ) );
     }
 
@@ -97,7 +91,7 @@ public abstract class AbstractPlainValueSerializationTest
     {
         String serialized = valueSerialization.serialize( 42 );
         assertThat( serialized, equalTo( "42" ) );
-        Integer deserialized = valueSerialization.deserialize( Integer.class, serialized );
+        Integer deserialized = valueSerialization.deserialize( module, Integer.class, serialized );
         assertThat( deserialized, equalTo( 42 ) );
     }
 
@@ -107,7 +101,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( 42L );
         assertThat( serialized, equalTo( "42" ) );
 
-        Long deserialized = valueSerialization.deserialize( Long.class, serialized );
+        Long deserialized = valueSerialization.deserialize( module, Long.class, serialized );
         assertThat( deserialized, equalTo( 42L ) );
     }
 
@@ -117,7 +111,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( (short) 42 );
         assertThat( serialized, equalTo( "42" ) );
 
-        Short deserialized = valueSerialization.deserialize( Short.class, serialized );
+        Short deserialized = valueSerialization.deserialize( module, Short.class, serialized );
         assertThat( deserialized, equalTo( (short) 42 ) );
     }
 
@@ -126,7 +120,7 @@ public abstract class AbstractPlainValueSerializationTest
     {
         String serialized = valueSerialization.serialize( (byte) 42 );
         assertThat( serialized, equalTo( "42" ) );
-        Byte deserialized = valueSerialization.deserialize( Byte.class, serialized );
+        Byte deserialized = valueSerialization.deserialize( module, Byte.class, serialized );
         assertThat( deserialized, equalTo( (byte) 42 ) );
     }
 
@@ -136,7 +130,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( 42F );
         assertThat( serialized, equalTo( "42.0" ) );
 
-        Float deserialized = valueSerialization.deserialize( Float.class, serialized );
+        Float deserialized = valueSerialization.deserialize( module, Float.class, serialized );
         assertThat( deserialized, equalTo( 42F ) );
     }
 
@@ -146,7 +140,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( 42D );
         assertThat( serialized, equalTo( "42.0" ) );
 
-        Double deserialized = valueSerialization.deserialize( Double.class, serialized );
+        Double deserialized = valueSerialization.deserialize( module, Double.class, serialized );
         assertThat( deserialized, equalTo( 42D ) );
     }
 
@@ -159,7 +153,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( bigInteger );
         assertThat( serialized, equalTo( "42424242424242424242424242" ) );
 
-        BigInteger deserialized = valueSerialization.deserialize( BigInteger.class, serialized );
+        BigInteger deserialized = valueSerialization.deserialize( module, BigInteger.class, serialized );
         assertThat( deserialized, equalTo( bigInteger ) );
     }
 
@@ -172,7 +166,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( bigDecimal );
         assertThat( serialized, equalTo( "4.22376931348623157E+310" ) );
 
-        BigDecimal deserialized = valueSerialization.deserialize( BigDecimal.class, serialized );
+        BigDecimal deserialized = valueSerialization.deserialize( module, BigDecimal.class, serialized );
         assertThat( deserialized, equalTo( bigDecimal ) );
     }
 
@@ -182,7 +176,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( new DateTime( "2020-03-04T13:24:35", forID( "CET" ) ).toDate() );
         assertThat( serialized, equalTo( "2020-03-04T12:24:35.000Z" ) );
 
-        Date deserialized = valueSerialization.deserialize( Date.class, serialized );
+        Date deserialized = valueSerialization.deserialize( module, Date.class, serialized );
         assertThat( deserialized, equalTo( new DateTime( "2020-03-04T13:24:35", forID( "CET" ) ).toDate() ) );
         assertThat( deserialized, equalTo( new DateTime( "2020-03-04T12:24:35", UTC ).toDate() ) );
     }
@@ -194,7 +188,7 @@ public abstract class AbstractPlainValueSerializationTest
         // See https://github.com/JodaOrg/joda-time/issues/106
         String serialized = valueSerialization.serialize( new DateTime( "2020-03-04T13:24:35", forOffsetHours( 1 ) ) );
         assertThat( serialized, equalTo( "2020-03-04T13:24:35.000+01:00" ) );
-        DateTime deserialized = valueSerialization.deserialize( DateTime.class, serialized );
+        DateTime deserialized = valueSerialization.deserialize( module, DateTime.class, serialized );
         assertThat( deserialized, equalTo( new DateTime( "2020-03-04T13:24:35", forOffsetHours( 1 ) ) ) );
     }
 
@@ -205,7 +199,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( new LocalDateTime( "2020-03-04T13:23:00", forID( "CET" ) ) );
         assertThat( serialized, equalTo( "2020-03-04T13:23:00.000" ) );
 
-        LocalDateTime deserialized = valueSerialization.deserialize( LocalDateTime.class, serialized );
+        LocalDateTime deserialized = valueSerialization.deserialize( module, LocalDateTime.class, serialized );
         assertThat( deserialized, equalTo( new LocalDateTime( "2020-03-04T13:23:00", UTC ) ) );
     }
 
@@ -215,7 +209,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( new LocalDate( "2020-03-04" ) );
         assertThat( serialized, equalTo( "2020-03-04" ) );
 
-        LocalDate deserialized = valueSerialization.deserialize( LocalDate.class, serialized );
+        LocalDate deserialized = valueSerialization.deserialize( module, LocalDate.class, serialized );
         assertThat( deserialized, equalTo( new LocalDate( "2020-03-04" ) ) );
     }
 
@@ -225,7 +219,7 @@ public abstract class AbstractPlainValueSerializationTest
         String serialized = valueSerialization.serialize( EntityReference.parseEntityReference( "ABCD-1234" ) );
         assertThat( serialized, equalTo( "ABCD-1234" ) );
 
-        EntityReference deserialized = valueSerialization.deserialize( EntityReference.class, serialized );
+        EntityReference deserialized = valueSerialization.deserialize( module, EntityReference.class, serialized );
         assertThat( deserialized, equalTo( EntityReference.parseEntityReference( "ABCD-1234" ) ) );
     }
 }

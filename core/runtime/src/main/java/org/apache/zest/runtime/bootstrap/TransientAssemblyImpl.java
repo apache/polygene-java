@@ -16,6 +16,7 @@ package org.apache.zest.runtime.bootstrap;
 
 import org.apache.zest.api.common.InvalidApplicationException;
 import org.apache.zest.api.composite.TransientComposite;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.bootstrap.StateDeclarations;
 import org.apache.zest.bootstrap.TransientAssembly;
 import org.apache.zest.runtime.composite.TransientModel;
@@ -43,15 +44,16 @@ public final class TransientAssemblyImpl extends CompositeAssemblyImpl
         }
     }
 
-    TransientModel newTransientModel( StateDeclarations stateDeclarations, AssemblyHelper helper )
+    TransientModel newTransientModel( ModuleDescriptor module,
+                                      StateDeclarations stateDeclarations,
+                                      AssemblyHelper helper
+    )
     {
         try
         {
             buildComposite( helper, stateDeclarations );
-            TransientModel transientModel = new TransientModel(
-                types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
-
-            return transientModel;
+            return new TransientModel(
+                module, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
         }
         catch( Exception e )
         {

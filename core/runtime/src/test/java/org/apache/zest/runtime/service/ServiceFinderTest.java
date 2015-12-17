@@ -43,7 +43,7 @@ public class ServiceFinderTest extends AbstractZestTest
     @Test
     public void givenServiceCompileTimeWeavingWhenFindingServiceBySuperTypeExceptServiceToBeFound()
     {
-        ServiceReference<MyCompileTimeService> service = module.findService( MyCompileTimeService.class );
+        ServiceReference<MyCompileTimeService> service = serviceFinder.findService( MyCompileTimeService.class );
         assertThat( service, notNullValue() );
         assertThat( service.get(), notNullValue() );
         assertThat( service.get().doSomething(), equalTo( "Niclas" ) );
@@ -52,7 +52,7 @@ public class ServiceFinderTest extends AbstractZestTest
     @Test
     public void givenServiceRuntimeWeavingWhenFindingServiceBySuperTypeExceptServiceToBeFound()
     {
-        ServiceReference<MyRuntimeService> service = module.findService( MyRuntimeService.class );
+        ServiceReference<MyRuntimeService> service = serviceFinder.findService( MyRuntimeService.class );
         assertThat( service, notNullValue() );
         assertThat( service.get(), notNullValue() );
         assertThat( service.get().doSomething(), equalTo( "Niclas" ) );

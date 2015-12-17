@@ -45,7 +45,7 @@ public abstract class AbstractCachePoolTest
         throws Exception
     {
         super.setUp();
-        cachePool = module.findService( CachePool.class ).get();
+        cachePool = module.instance().findService( CachePool.class ).get();
         cache = cachePool.fetchCache( "1", String.class );
     }
 

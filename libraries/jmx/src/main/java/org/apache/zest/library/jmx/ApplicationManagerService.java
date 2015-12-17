@@ -17,6 +17,7 @@ package org.apache.zest.library.jmx;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -242,11 +243,10 @@ public interface ApplicationManagerService
             this.layer = layer;
             this.layerDescriptor = layerDescriptor;
 
-            uses = "Uses: ";
-            for( LayerDescriptor usedLayer : layerDescriptor.usedLayers().layers() )
-            {
-                uses += usedLayer.name() + " ";
-            }
+            uses = layerDescriptor.usedLayers()
+                .layers()
+                .map( LayerDescriptor::name )
+                .collect( Collectors.joining(" ", "Uses: ", "") );
         }
 
         public String getUses()

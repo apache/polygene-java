@@ -45,7 +45,7 @@ public class BreaksCircuitOnThrowableTest
     @Test
     public void testSuccess()
     {
-        TestService service = ( TestService ) module.findService( TestService.class ).get();
+        TestService service = ( TestService ) serviceFinder.findService( TestService.class ).get();
         service.successfulMethod();
         service.successfulMethod();
         service.successfulMethod();
@@ -54,7 +54,7 @@ public class BreaksCircuitOnThrowableTest
     @Test
     public void testThrowable()
     {
-        ServiceReference<TestService> serviceReference = module.findService( TestService.class );
+        ServiceReference<TestService> serviceReference = serviceFinder.findService( TestService.class );
         TestService service = serviceReference.get();
         try {
             service.throwingMethod();

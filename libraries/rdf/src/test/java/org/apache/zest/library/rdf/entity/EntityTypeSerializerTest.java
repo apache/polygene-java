@@ -59,10 +59,7 @@ public class EntityTypeSerializerTest
     public void setUp() throws Exception
     {
         super.setUp();
-
         createDummyData();
-
-        module.injectTo( this );
     }
 
     @Test
@@ -84,10 +81,10 @@ public class EntityTypeSerializerTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            ValueBuilder<Test2Value> vb2 = module.newValueBuilder( Test2Value.class );
+            ValueBuilder<Test2Value> vb2 = valueBuilderFactory.newValueBuilder( Test2Value.class );
             vb2.prototype().data().set( "Zout" );
 
-            ValueBuilder<TestValue> valueBuilder = module.newValueBuilder( TestValue.class );
+            ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
             valueBuilder.prototype().test1().set( 4L );
             valueBuilder.prototype().test3().set( vb2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
@@ -108,7 +105,7 @@ public class EntityTypeSerializerTest
             niclasTemplate.group().add( 0, testEntity );
             niclasTemplate.group().add( 0, testEntity );
             niclasTemplate.group().add( 0, testEntity );
-            valueBuilder = module.newValueBuilderWithPrototype( testValue );
+            valueBuilder = valueBuilderFactory.newValueBuilderWithPrototype( testValue );
             valueBuilder.prototype().test1().set( 5L );
             testValue = valueBuilder.newInstance();
             niclasTemplate.value().set( testValue );

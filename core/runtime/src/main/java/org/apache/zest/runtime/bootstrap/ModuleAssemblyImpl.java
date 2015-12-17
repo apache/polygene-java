@@ -70,6 +70,7 @@ import org.apache.zest.runtime.service.ImportedServiceModel;
 import org.apache.zest.runtime.service.ImportedServicesModel;
 import org.apache.zest.runtime.service.ServiceModel;
 import org.apache.zest.runtime.service.ServicesModel;
+import org.apache.zest.runtime.structure.LayerModel;
 import org.apache.zest.runtime.structure.ModuleModel;
 import org.apache.zest.runtime.value.ValueModel;
 import org.apache.zest.runtime.value.ValuesModel;
@@ -504,7 +505,7 @@ public final class ModuleAssemblyImpl
         }
     }
 
-    ModuleModel assembleModule( AssemblyHelper helper )
+    ModuleModel assembleModule( LayerModel layerModel, AssemblyHelper helper )
         throws AssemblyException
     {
         List<TransientModel> transientModels = new ArrayList<>();
@@ -512,6 +513,18 @@ public final class ModuleAssemblyImpl
         List<ValueModel> valueModels = new ArrayList<>();
         List<ServiceModel> serviceModels = new ArrayList<>();
         List<ImportedServiceModel> importedServiceModels = new ArrayList<>();
+        List<EntityModel> entityModels = new ArrayList<>();
+
+        ModuleModel moduleModel = new ModuleModel( name,
+                                                   metaInfo,
+                                                   layerModel,
+                                                   new ActivatorsModel<>( activators ),
+                                                   new TransientsModel( transientModels ),
+                                                   new EntitiesModel( entityModels ),
+                                                   new ObjectsModel( objectModels ),
+                                                   new ValuesModel( valueModels ),
+                                                   new ServicesModel( serviceModels ),
+                                                   new ImportedServicesModel( importedServiceModels ) );
 
         if( name == null )
         {
@@ -520,18 +533,18 @@ public final class ModuleAssemblyImpl
 
         for( TransientAssemblyImpl compositeDeclaration : transientAssemblies.values() )
         {
-            transientModels.add( compositeDeclaration.newTransientModel( metaInfoDeclaration, helper ) );
+            transientModels.add( compositeDeclaration.newTransientModel( moduleModel, metaInfoDeclaration, helper ) );
         }
 
         for( ValueAssemblyImpl valueDeclaration : valueAssemblies.values() )
         {
-            valueModels.add( valueDeclaration.newValueModel( metaInfoDeclaration, helper ) );
+            valueModels.add( valueDeclaration.newValueModel( moduleModel, metaInfoDeclaration, helper ) );
         }
 
-        List<EntityModel> entityModels = new ArrayList<>();
         for( EntityAssemblyImpl entityDeclaration : entityAssemblies.values() )
         {
-            entityModels.add( entityDeclaration.newEntityModel( metaInfoDeclaration,
+            entityModels.add( entityDeclaration.newEntityModel( moduleModel,
+                                                                metaInfoDeclaration,
                                                                 metaInfoDeclaration,
                                                                 metaInfoDeclaration,
                                                                 metaInfoDeclaration,
@@ -540,7 +553,7 @@ public final class ModuleAssemblyImpl
 
         for( ObjectAssemblyImpl objectDeclaration : objectAssemblies.values() )
         {
-            objectDeclaration.addObjectModel( objectModels );
+            objectDeclaration.addObjectModel( moduleModel, objectModels );
         }
 
         for( ServiceAssemblyImpl serviceDeclaration : serviceAssemblies )
@@ -550,23 +563,13 @@ public final class ModuleAssemblyImpl
                 serviceDeclaration.identity = generateId( serviceDeclaration.types() );
             }
 
-            serviceModels.add( serviceDeclaration.newServiceModel( metaInfoDeclaration, helper ) );
+            serviceModels.add( serviceDeclaration.newServiceModel( moduleModel, metaInfoDeclaration, helper ) );
         }
 
         for( ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values() )
         {
             importedServiceDeclaration.addImportedServiceModel( importedServiceModels );
         }
-
-        ModuleModel moduleModel = new ModuleModel( name,
-                                                   metaInfo,
-                                                   new ActivatorsModel<>( activators ),
-                                                   new TransientsModel( transientModels ),
-                                                   new EntitiesModel( entityModels ),
-                                                   new ObjectsModel( objectModels ),
-                                                   new ValuesModel( valueModels ),
-                                                   new ServicesModel( serviceModels ),
-                                                   new ImportedServicesModel( importedServiceModels ) );
 
         // Check for duplicate service identities
         Set<String> identities = new HashSet<>();
@@ -601,7 +604,7 @@ public final class ModuleAssemblyImpl
                 )
             {
                 Class<? extends ServiceImporter> serviceFactoryType = importedServiceModel.serviceImporter();
-                ObjectModel objectModel = new ObjectModel( serviceFactoryType, Visibility.module, new MetaInfo() );
+                ObjectModel objectModel = new ObjectModel( moduleModel, serviceFactoryType, Visibility.module, new MetaInfo() );
                 objectModels.add( objectModel );
             }
         }

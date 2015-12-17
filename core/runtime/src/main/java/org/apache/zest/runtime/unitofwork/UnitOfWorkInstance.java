@@ -36,6 +36,7 @@ import org.apache.zest.api.metrics.MetricsCounterFactory;
 import org.apache.zest.api.metrics.MetricsProvider;
 import org.apache.zest.api.metrics.MetricsTimer;
 import org.apache.zest.api.metrics.MetricsTimerFactory;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
@@ -57,7 +58,6 @@ import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
 import org.apache.zest.spi.metrics.DefaultMetric;
 import org.apache.zest.spi.module.ModuleSpi;
-import org.apache.zest.spi.structure.ModelModule;
 
 import static org.apache.zest.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.COMPLETED;
 import static org.apache.zest.api.unitofwork.UnitOfWorkCallback.UnitOfWorkStatus.DISCARDED;
@@ -79,6 +79,7 @@ public final class UnitOfWorkInstance
         return current.get();
     }
 
+    private final ModuleSpi module;
     private long currentTime;
     private MetricsProvider metrics;
     final HashMap<EntityReference, EntityInstance> instanceCache;
@@ -97,8 +98,9 @@ public final class UnitOfWorkInstance
 
     private List<UnitOfWorkCallback> callbacks;
 
-    public UnitOfWorkInstance( Usecase usecase, long currentTime, MetricsProvider metrics )
+    public UnitOfWorkInstance( ModuleSpi module, Usecase usecase, long currentTime, MetricsProvider metrics )
     {
+        this.module = module;
         this.currentTime = currentTime;
         this.open = true;
         instanceCache = new HashMap<>();
@@ -119,7 +121,7 @@ public final class UnitOfWorkInstance
         EntityStoreUnitOfWork uow = storeUnitOfWork.get( store );
         if( uow == null )
         {
-            uow = store.newUnitOfWork( usecase, currentTime );
+            uow = store.newUnitOfWork( module.descriptor(), usecase, currentTime );
             storeUnitOfWork.put( store, uow );
         }
         return uow;
@@ -127,7 +129,7 @@ public final class UnitOfWorkInstance
 
     public <T> T get( EntityReference identity,
                       UnitOfWork uow,
-                      Iterable<ModelModule<EntityDescriptor>> potentialModels,
+                      Iterable<? extends EntityDescriptor> potentialModels,
                       Class<T> mixinType
     )
         throws EntityTypeNotFoundException, NoSuchEntityException
@@ -141,11 +143,11 @@ public final class UnitOfWorkInstance
             // Check if this is a root UoW, or if no parent UoW knows about this entity
             EntityState entityState = null;
             EntityModel model = null;
-            ModuleSpi module = null;
+            ModuleDescriptor module = null;
             // Figure out what EntityStore to use
-            for( ModelModule<EntityDescriptor> potentialModel : potentialModels )
+            for( EntityDescriptor potentialModel : potentialModels )
             {
-                EntityStore store = potentialModel.module().entityStore();
+                EntityStore store = ((ModuleSpi) potentialModel.module().instance()).entityStore();
                 EntityStoreUnitOfWork storeUow = getEntityStoreUnitOfWork( store );
                 try
                 {
@@ -171,15 +173,11 @@ public final class UnitOfWorkInstance
                 }
                 else
                 {
-                    throw new EntityTypeNotFoundException( mixinType.getName(),
-                                                           module.name(),
-                                                           module.findVisibleEntityTypes()
-                                                               .map( ModelModule.toStringFunction )
-                    );
+                    throw EntityTypeNotFoundException.create( mixinType.getName(), module );
                 }
             }
             // Create instance
-            entityInstance = new EntityInstance( uow, module, model, entityState );
+            entityInstance = new EntityInstance( uow, model, entityState );
             instanceCache.put( identity, entityInstance );
         }
         else

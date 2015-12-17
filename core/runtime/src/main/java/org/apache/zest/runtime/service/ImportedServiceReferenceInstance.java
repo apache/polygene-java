@@ -27,7 +27,7 @@ import org.apache.zest.api.activation.PassivationException;
 import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.ServiceUnavailableException;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.runtime.activation.ActivationDelegate;
 
 /**
@@ -37,6 +37,7 @@ import org.apache.zest.runtime.activation.ActivationDelegate;
  * to handle service passivation and unavailability correctly, any proxying must be done in the
  * service importer.
  * </p>
+ *
  * @param <T> Service Type
  */
 public final class ImportedServiceReferenceInstance<T>
@@ -44,12 +45,12 @@ public final class ImportedServiceReferenceInstance<T>
 {
     private volatile ImportedServiceInstance<T> serviceInstance;
     private T instance;
-    private final Module module;
+    private final ModuleDescriptor module;
     private final ImportedServiceModel serviceModel;
     private final ActivationDelegate activation = new ActivationDelegate( this );
     private boolean active = false;
 
-    public ImportedServiceReferenceInstance( ImportedServiceModel serviceModel, Module module )
+    public ImportedServiceReferenceInstance( ImportedServiceModel serviceModel, ModuleDescriptor module )
     {
         this.module = module;
         this.serviceModel = serviceModel;
@@ -68,7 +69,7 @@ public final class ImportedServiceReferenceInstance<T>
     }
 
     @Override
-    public <T> T metaInfo( Class<T> infoType )
+    public <M> M metaInfo( Class<M> infoType )
     {
         return serviceModel.metaInfo( infoType );
     }
@@ -102,14 +103,7 @@ public final class ImportedServiceReferenceInstance<T>
         {
             try
             {
-                activation.passivate( new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        active = false;
-                    }
-                } );
+                activation.passivate( () -> active = false );
             }
             finally
             {
@@ -139,7 +133,7 @@ public final class ImportedServiceReferenceInstance<T>
         }
     }
 
-    public Module module()
+    public ModuleDescriptor module()
     {
         return module;
     }
@@ -159,14 +153,12 @@ public final class ImportedServiceReferenceInstance<T>
 
                     try
                     {
-                        activation.activate( serviceModel.newActivatorsInstance( module ), serviceInstance, new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
+                        activation.activate(
+                            serviceModel.newActivatorsInstance( module ),
+                            serviceInstance, () -> {
                                 active = true;
                             }
-                        } );
+                        );
                     }
                     catch( Exception e )
                     {

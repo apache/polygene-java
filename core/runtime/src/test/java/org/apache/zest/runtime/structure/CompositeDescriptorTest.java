@@ -36,7 +36,7 @@ public class CompositeDescriptorTest
         throws Throwable
     {
         // Test with Standard composite
-        AddressComposite address = module.newTransient( AddressComposite.class );
+        AddressComposite address = transientBuilderFactory.newTransient( AddressComposite.class );
         TransientDescriptor addressDescriptor = spi.transientDescriptorFor( address );
 
         assertNotNull( addressDescriptor );

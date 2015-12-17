@@ -71,7 +71,7 @@ public final class UsesInjectionProviderFactory
             {
                 // No @Uses object provided
                 // Try instantiating a Transient or Object for the given type
-                Module moduleInstance = context.module();
+                Module moduleInstance = context.module().instance();
 
                 try
                 {

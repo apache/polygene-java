@@ -34,7 +34,7 @@ public class HelloTest2 extends AbstractZestTest
     @Test
     public void givenHelloValueInitializedToHelloWorldWhenCallingSayExpectHelloWorld()
     {
-        TransientBuilder<Hello> builder = module.newTransientBuilder( Hello.class );
+        TransientBuilder<Hello> builder = transientBuilderFactory.newTransientBuilder( Hello.class );
         builder.prototypeFor( Hello.State.class ).phrase().set( "Hello" );
         builder.prototypeFor( Hello.State.class ).name().set( "World" );
         Hello underTest = builder.newInstance();

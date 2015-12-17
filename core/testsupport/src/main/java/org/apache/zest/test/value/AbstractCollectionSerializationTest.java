@@ -26,8 +26,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.property.Property;
@@ -41,13 +39,15 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.test.AbstractZestTest;
+import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.apache.zest.io.Inputs.iterable;
 import static org.apache.zest.io.Inputs.text;
 import static org.apache.zest.io.Outputs.collection;
 import static org.apache.zest.io.Outputs.text;
 import static org.apache.zest.io.Transforms.map;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Assert that ValueSerialization behaviour on Collections and Maps is correct.
@@ -64,12 +64,6 @@ public class AbstractCollectionSerializationTest
         module.values( SomeValue.class );
     }
 
-    @Before
-    public void before()
-    {
-        module.injectTo( this );
-    }
-
     @Service
     @SuppressWarnings( "ProtectedField" )
     protected ValueSerialization valueSerialization;
@@ -82,8 +76,8 @@ public class AbstractCollectionSerializationTest
         iterable( byteCollection() ).transferTo( map( valueSerialization.serialize(), text( sb ) ) );
         String output = sb.toString();
 
-        List<Byte> list = new ArrayList<Byte>();
-        text( output ).transferTo( map( valueSerialization.deserialize( Byte.class ), collection( list ) ) );
+        List<Byte> list = new ArrayList<>();
+        text( output ).transferTo( map( valueSerialization.deserialize( module, Byte.class ), collection( list ) ) );
         assertEquals( byteCollection(), list );
     }
 
@@ -96,7 +90,7 @@ public class AbstractCollectionSerializationTest
             23, 42, -23, -42
         };
         String output = valueSerialization.serialize( primitiveArray );
-        int[] deserialized = valueSerialization.deserialize( int[].class, output );
+        int[] deserialized = valueSerialization.deserialize( module, int[].class, output );
         assertArrayEquals( primitiveArray, deserialized );
     }
 
@@ -109,7 +103,7 @@ public class AbstractCollectionSerializationTest
             9, null, -12, -12, 127, -128, 73
         };
         String output = valueSerialization.serialize( array );
-        Byte[] deserialized = valueSerialization.deserialize( Byte[].class, output );
+        Byte[] deserialized = valueSerialization.deserialize( module, Byte[].class, output );
         assertArrayEquals( array, deserialized );
     }
 
@@ -119,7 +113,7 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( Iterables.iterable( byteCollection().toArray() ) );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( Byte.class ) );
-        List<Byte> list = valueSerialization.deserialize( collectionType, output );
+        List<Byte> list = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( byteCollection(), list );
     }
 
@@ -129,8 +123,8 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( byteCollection() );
         CollectionType collectionType = new CollectionType( Set.class, new ValueType( Byte.class ) );
-        Set<Byte> list = valueSerialization.deserialize( collectionType, output );
-        assertEquals( new LinkedHashSet<Byte>( byteCollection() ), list );
+        Set<Byte> list = valueSerialization.deserialize( module, collectionType, output );
+        assertEquals( new LinkedHashSet<>( byteCollection() ), list );
     }
 
     @Test
@@ -139,7 +133,7 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( characterCollection() );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( Character.class ) );
-        List<Character> list = valueSerialization.deserialize( collectionType, output );
+        List<Character> list = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( characterCollection(), list );
     }
 
@@ -149,7 +143,7 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( shortCollection() );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( Short.class ) );
-        List<Short> list = valueSerialization.deserialize( collectionType, output );
+        List<Short> list = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( shortCollection(), list );
     }
 
@@ -159,7 +153,7 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( integerCollection() );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( Integer.class ) );
-        List<Integer> list = valueSerialization.deserialize( collectionType, output );
+        List<Integer> list = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( integerCollection(), list );
     }
 
@@ -169,7 +163,7 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( longCollection() );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( Long.class ) );
-        List<Long> list = valueSerialization.deserialize( collectionType, output );
+        List<Long> list = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( longCollection(), list );
     }
 
@@ -179,7 +173,7 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( floatCollection() );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( Float.class ) );
-        List<Float> list = valueSerialization.deserialize( collectionType, output );
+        List<Float> list = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( floatCollection(), list );
     }
 
@@ -189,7 +183,7 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( doubleCollection() );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( Double.class ) );
-        List<Double> list = valueSerialization.deserialize( collectionType, output );
+        List<Double> list = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( doubleCollection(), list );
 
     }
@@ -200,7 +194,7 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( bigIntegerCollection() );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( BigInteger.class ) );
-        List<BigInteger> list = valueSerialization.deserialize( collectionType, output );
+        List<BigInteger> list = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( bigIntegerCollection(), list );
     }
 
@@ -210,7 +204,7 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( bigDecimalCollection() );
         CollectionType collectionType = new CollectionType( Collection.class, new ValueType( BigDecimal.class ) );
-        Collection<BigDecimal> collection = valueSerialization.deserialize( collectionType, output );
+        Collection<BigDecimal> collection = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( bigDecimalCollection(), collection );
     }
 
@@ -220,7 +214,7 @@ public class AbstractCollectionSerializationTest
     {
         String output = valueSerialization.serialize( stringByteMap() );
         MapType mapType = new MapType( Map.class, new ValueType( String.class ), new ValueType( Byte.class ) );
-        Map<String, Byte> value = valueSerialization.deserialize( mapType, output );
+        Map<String, Byte> value = valueSerialization.deserialize( module, mapType, output );
         assertEquals( stringByteMap(), value );
     }
 
@@ -231,7 +225,7 @@ public class AbstractCollectionSerializationTest
         String output = valueSerialization.serialize( stringMultiMap() );
         CollectionType collectionType = new CollectionType( List.class, new ValueType( String.class ) );
         MapType mapType = new MapType( Map.class, new ValueType( String.class ), collectionType );
-        Map<String, List<String>> value = valueSerialization.deserialize( mapType, output );
+        Map<String, List<String>> value = valueSerialization.deserialize( module, mapType, output );
         assertEquals( stringMultiMap(), value );
     }
 
@@ -242,7 +236,7 @@ public class AbstractCollectionSerializationTest
         String output = valueSerialization.serialize( stringListOfMaps() );
         ValueType stringType = new ValueType( String.class );
         CollectionType collectionType = new CollectionType( List.class, new MapType( Map.class, stringType, stringType ) );
-        List<Map<String, String>> value = valueSerialization.deserialize( collectionType, output );
+        List<Map<String, String>> value = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( stringListOfMaps(), value );
     }
 
@@ -253,13 +247,13 @@ public class AbstractCollectionSerializationTest
         String output = valueSerialization.serialize( valueCompositesList() );
         ValueCompositeType valueType = module.valueDescriptor( SomeValue.class.getName() ).valueType();
         CollectionType collectionType = new CollectionType( List.class, valueType );
-        List<SomeValue> value = valueSerialization.deserialize( collectionType, output );
+        List<SomeValue> value = valueSerialization.deserialize( module, collectionType, output );
         assertEquals( valueCompositesList(), value );
     }
 
     private ArrayList<Byte> byteCollection()
     {
-        ArrayList<Byte> value = new ArrayList<Byte>();
+        ArrayList<Byte> value = new ArrayList<>();
         value.add( (byte) 9 );
         value.add( null );
         value.add( (byte) -12 );
@@ -272,7 +266,7 @@ public class AbstractCollectionSerializationTest
 
     private List<Character> characterCollection()
     {
-        List<Character> value = new ArrayList<Character>();
+        List<Character> value = new ArrayList<>();
         value.add( 'Q' );
         value.add( 'i' );
         value.add( null );
@@ -283,7 +277,7 @@ public class AbstractCollectionSerializationTest
 
     private Collection<Short> shortCollection()
     {
-        Collection<Short> value = new ArrayList<Short>();
+        Collection<Short> value = new ArrayList<>();
         value.add( (short) -32768 );
         value.add( (short) 32767 );
         value.add( (short) -82 );
@@ -293,7 +287,7 @@ public class AbstractCollectionSerializationTest
 
     private Collection<Integer> integerCollection()
     {
-        Collection<Integer> value = new ArrayList<Integer>();
+        Collection<Integer> value = new ArrayList<>();
         value.add( Integer.MAX_VALUE );
         value.add( -283 );
         value.add( null );
@@ -304,7 +298,7 @@ public class AbstractCollectionSerializationTest
 
     private Collection<Long> longCollection()
     {
-        Collection<Long> value = new ArrayList<Long>();
+        Collection<Long> value = new ArrayList<>();
         value.add( 98239723L );
         value.add( -1298233L );
         value.add( -1L );
@@ -318,7 +312,7 @@ public class AbstractCollectionSerializationTest
 
     private Collection<Float> floatCollection()
     {
-        Collection<Float> value = new ArrayList<Float>();
+        Collection<Float> value = new ArrayList<>();
         value.add( -1f );
         value.add( 1f );
         value.add( 1f );
@@ -333,7 +327,7 @@ public class AbstractCollectionSerializationTest
 
     private Collection<Double> doubleCollection()
     {
-        Collection<Double> value = new ArrayList<Double>();
+        Collection<Double> value = new ArrayList<>();
         value.add( -1.0 );
         value.add( 1.0 );
         value.add( 0.0 );
@@ -347,7 +341,7 @@ public class AbstractCollectionSerializationTest
 
     private Collection<BigInteger> bigIntegerCollection()
     {
-        Collection<BigInteger> value = new ArrayList<BigInteger>();
+        Collection<BigInteger> value = new ArrayList<>();
         value.add( new BigInteger( "-1" ) );
         value.add( BigInteger.ZERO );
         value.add( BigInteger.ONE );
@@ -360,7 +354,7 @@ public class AbstractCollectionSerializationTest
 
     private Collection<BigDecimal> bigDecimalCollection()
     {
-        Collection<BigDecimal> value = new ArrayList<BigDecimal>();
+        Collection<BigDecimal> value = new ArrayList<>();
         value.add( new BigDecimal( "1.2" ) );
         value.add( new BigDecimal( "3.4" ) );
         value.add( null );
@@ -370,7 +364,7 @@ public class AbstractCollectionSerializationTest
 
     private Map<String, Byte> stringByteMap()
     {
-        Map<String, Byte> value = new LinkedHashMap<String, Byte>();
+        Map<String, Byte> value = new LinkedHashMap<>();
         value.put( "a", (byte) 9 );
         value.put( "b", null );
         value.put( "c", (byte) -12 );
@@ -379,8 +373,8 @@ public class AbstractCollectionSerializationTest
 
     private Map<String, List<String>> stringMultiMap()
     {
-        Map<String, List<String>> value = new LinkedHashMap<String, List<String>>();
-        List<String> list = new ArrayList<String>();
+        Map<String, List<String>> value = new LinkedHashMap<>();
+        List<String> list = new ArrayList<>();
         list.add( "foo" );
         list.add( "bar" );
         list.add( null );
@@ -394,8 +388,8 @@ public class AbstractCollectionSerializationTest
 
     private List<Map<String, String>> stringListOfMaps()
     {
-        List<Map<String, String>> value = new ArrayList<Map<String, String>>();
-        Map<String, String> map = new LinkedHashMap<String, String>();
+        List<Map<String, String>> value = new ArrayList<>();
+        Map<String, String> map = new LinkedHashMap<>();
         map.put( "foo", "bar" );
         map.put( "cathedral", "bazar" );
         map.put( "yield", null );
@@ -408,14 +402,14 @@ public class AbstractCollectionSerializationTest
 
     private List<SomeValue> valueCompositesList()
     {
-        List<SomeValue> list = new ArrayList<SomeValue>();
+        List<SomeValue> list = new ArrayList<>();
         list.add( newSomeValue( "", "bazar" ) );
         list.add( null );
         list.add( newSomeValue( "bar", null ) );
         return list;
     }
 
-    public static interface SomeValue
+    public interface SomeValue
     {
 
         Property<String> foo();
@@ -426,7 +420,7 @@ public class AbstractCollectionSerializationTest
 
     private SomeValue newSomeValue( String foo, String cathedral )
     {
-        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = module.instance().newValueBuilder( SomeValue.class );
         SomeValue value = builder.prototype();
         value.foo().set( foo );
         if( cathedral != null )

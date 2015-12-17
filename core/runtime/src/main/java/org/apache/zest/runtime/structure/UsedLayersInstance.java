@@ -17,50 +17,51 @@ package org.apache.zest.runtime.structure;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.object.ObjectDescriptor;
 import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.spi.structure.ModelModule;
 
 /**
  * JAVADOC
  */
 public final class UsedLayersInstance
 {
-    private final List<LayerInstance> usedLayerInstances;
+    private final List<LayerDescriptor> usedLayerInstances;
 
-    public UsedLayersInstance( List<LayerInstance> usedLayerInstances )
+    public UsedLayersInstance( List<LayerDescriptor> usedLayerInstances )
     {
         this.usedLayerInstances = usedLayerInstances;
     }
 
-    /* package */ Stream<ModelModule<ObjectDescriptor>> visibleObjects()
+    Stream<? extends ObjectDescriptor> visibleObjects()
     {
         return usedLayerInstances.stream()
             .flatMap( layerInstance -> layerInstance.visibleObjects( Visibility.application ) );
     }
 
-    /* package */ Stream<ModelModule<TransientDescriptor>> visibleTransients()
+    Stream<? extends TransientDescriptor> visibleTransients()
     {
         return usedLayerInstances.stream()
             .flatMap( layerInstance -> layerInstance.visibleTransients( Visibility.application ) );
     }
 
-    /* package */ Stream<ModelModule<EntityDescriptor>> visibleEntities()
+    Stream<? extends EntityDescriptor> visibleEntities()
     {
         return usedLayerInstances.stream()
             .flatMap( layerInstance -> layerInstance.visibleEntities( Visibility.application ) );
     }
 
-    /* package */ Stream<ModelModule<ValueDescriptor>> visibleValues()
+    Stream<? extends ValueDescriptor> visibleValues()
     {
         return usedLayerInstances.stream()
             .flatMap( layerInstance -> layerInstance.visibleValues( Visibility.application ) );
     }
 
-    /* package */ Stream<ServiceReference<?>> visibleServices()
+    Stream<? extends ModelDescriptor> visibleServices()
     {
         return usedLayerInstances.stream()
             .flatMap( layerInstance -> layerInstance.visibleServices( Visibility.application ) );

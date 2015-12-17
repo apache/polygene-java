@@ -29,6 +29,7 @@ import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueBuilderFactory;
@@ -59,7 +60,7 @@ public abstract class AbstractApplicationEventStoreMixin
     protected Lock lock = new ReentrantLock();
 
     @Structure
-    protected Module module;
+    protected ModuleDescriptor module;
 
     @Structure
     private ValueBuilderFactory vbf;

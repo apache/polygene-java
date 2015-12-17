@@ -45,6 +45,7 @@ public abstract class AbstractConfigurationDeserializationTest extends AbstractZ
         throws AssemblyException
     {
 //        ModuleAssembly storageModule = module.layer().module( "storage" );
+        @SuppressWarnings( "UnnecessaryLocalVariable" )
         ModuleAssembly storageModule = module; // Disable the more complex set up. The entire value serialization has gotten the deserialization type lookup problem wrong.
         module.configurations( ConfigSerializationConfig.class );
         module.values( Host.class );
@@ -57,7 +58,7 @@ public abstract class AbstractConfigurationDeserializationTest extends AbstractZ
     @Test
     public void givenServiceWhenInitializingExpectCorrectDeserialization()
     {
-        ServiceReference<MyService> ref = module.findService( MyService.class );
+        ServiceReference<MyService> ref = module.instance().findService( MyService.class );
         assertThat( ref, notNullValue() );
         assertThat( ref.isAvailable(), equalTo( true ) );
         MyService myService = ref.get();

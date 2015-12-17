@@ -37,6 +37,7 @@ import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.structure.Application;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.usecase.Usecase;
@@ -55,8 +56,6 @@ import org.apache.zest.spi.entitystore.EntityStoreException;
 import org.apache.zest.spi.entitystore.EntityStoreSPI;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
-import org.apache.zest.spi.structure.ModelModule;
-import org.apache.zest.spi.module.ModuleSpi;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -109,9 +108,9 @@ public class MapEntityStoreMixin
 
     // EntityStore
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecaseMetaInfo, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecaseMetaInfo, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
+        return new DefaultEntityStoreUnitOfWork( module, entityStoreSpi, newUnitOfWorkId(), usecaseMetaInfo, currentTime );
     }
 
     // EntityStoreSPI
@@ -126,7 +125,7 @@ public class MapEntityStoreMixin
 
     @Override
     public synchronized EntityState entityStateOf( EntityStoreUnitOfWork unitofwork,
-                                                   ModuleSpi module,
+                                                   ModuleDescriptor module,
                                                    EntityReference identity
     )
     {
@@ -136,7 +135,7 @@ public class MapEntityStoreMixin
 
     @Override
     public synchronized String versionOf( EntityStoreUnitOfWork unitofwork,
-                                                   EntityReference identity
+                                          EntityReference identity
     )
     {
         Reader in = mapEntityStore.get( identity );
@@ -202,7 +201,7 @@ public class MapEntityStoreMixin
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final ModuleSpi module )
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleDescriptor module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -379,13 +378,13 @@ public class MapEntityStoreMixin
         }
     }
 
-    protected EntityState readEntityState( ModuleSpi module, Reader entityState )
+    protected EntityState readEntityState( ModuleDescriptor module, Reader entityState )
         throws EntityStoreException
     {
         try
         {
             JSONObject jsonObject = new JSONObject( new JSONTokener( entityState ) );
-            final EntityStatus[] status = {EntityStatus.LOADED};
+            final EntityStatus[] status = { EntityStatus.LOADED };
 
             String version = jsonObject.getString( JSONKeys.VERSION );
             long modified = jsonObject.getLong( JSONKeys.MODIFIED );
@@ -405,7 +404,7 @@ public class MapEntityStoreMixin
                     jsonObject.put( JSONKeys.APPLICATION_VERSION, application.version() );
                 }
                 // State changed
-                status[0] = EntityStatus.UPDATED;
+                status[ 0 ] = EntityStatus.UPDATED;
             }
 
             String type = jsonObject.getString( JSONKeys.TYPE );
@@ -413,11 +412,7 @@ public class MapEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new EntityTypeNotFoundException( type,
-                                                       module.name(),
-                                                       module.findVisibleEntityTypes()
-                                                           .map( ModelModule.toStringFunction )
-                );
+                throw EntityTypeNotFoundException.create( type, module );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();
@@ -433,7 +428,8 @@ public class MapEntityStoreMixin
                     }
                     else
                     {
-                        Object value = valueSerialization.deserialize( propertyDescriptor.valueType(), jsonValue.toString() );
+                        Object value = valueSerialization.deserialize( module, propertyDescriptor.valueType(), jsonValue
+                            .toString() );
                         properties.put( propertyDescriptor.qualifiedName(), value );
                     }
                 }
@@ -442,7 +438,7 @@ public class MapEntityStoreMixin
                     // Value not found, default it
                     Object initialValue = propertyDescriptor.initialValue( module );
                     properties.put( propertyDescriptor.qualifiedName(), initialValue );
-                    status[0] = EntityStatus.UPDATED;
+                    status[ 0 ] = EntityStatus.UPDATED;
                 }
             } );
 
@@ -461,7 +457,7 @@ public class MapEntityStoreMixin
                 {
                     // Association not found, default it to null
                     associations.put( associationType.qualifiedName(), null );
-                    status[0] = EntityStatus.UPDATED;
+                    status[ 0 ] = EntityStatus.UPDATED;
                 }
             } );
 
@@ -516,12 +512,12 @@ public class MapEntityStoreMixin
                     // NamedAssociation not found, default to empty one
                     namedAssociations.put( namedAssociationType.qualifiedName(), references );
                 }
-            }  );
+            } );
 
             return new DefaultEntityState( version,
                                            modified,
                                            EntityReference.parseEntityReference( identity ),
-                                           status[0],
+                                           status[ 0 ],
                                            entityDescriptor,
                                            properties,
                                            associations,

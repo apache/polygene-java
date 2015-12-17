@@ -37,7 +37,7 @@ public class ObjectBuilderTest
     @Test
     public void testNotProvidedUses()
     {
-        A a = module.newObject( A.class );
+        A a = objectFactory.newObject( A.class );
         assertNotNull( a );
         assertNotNull( a.b );
         assertNotNull( a.b.c );

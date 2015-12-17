@@ -19,8 +19,6 @@ import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.runtime.property.PropertyInstance;
-import org.apache.zest.spi.structure.ModelModule;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * JAVADOC
@@ -28,7 +26,6 @@ import org.apache.zest.spi.module.ModuleSpi;
 public final class TransientBuilderInstance<T>
     implements TransientBuilder<T>
 {
-    private ModuleSpi module;
     private TransientModel model;
 
     // lazy initialized in accessor
@@ -39,13 +36,12 @@ public final class TransientBuilderInstance<T>
 
     private TransientStateInstance state;
 
-    public TransientBuilderInstance( ModelModule<TransientDescriptor> modelModule,
+    public TransientBuilderInstance( TransientDescriptor model,
                                      TransientStateInstance state,
                                      UsesInstance uses
     )
     {
-        this.model = (TransientModel) modelModule.model();
-        this.module = modelModule.module();
+        this.model = (TransientModel) model;
         this.state = state;
         this.uses = uses;
     }
@@ -63,7 +59,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = model.newInstance( module, uses, state );
+            prototypeInstance = model.newInstance( uses, state );
         }
 
         return prototypeInstance.<T>proxy();
@@ -75,7 +71,7 @@ public final class TransientBuilderInstance<T>
         // Instantiate given value type
         if( prototypeInstance == null )
         {
-            prototypeInstance = model.newInstance( module, uses, state );
+            prototypeInstance = model.newInstance( uses, state );
         }
 
         return prototypeInstance.newProxy( mixinType );
@@ -94,8 +90,7 @@ public final class TransientBuilderInstance<T>
 
         model.checkConstraints( state );
 
-        CompositeInstance compositeInstance =
-            model.newInstance( module, uses, state );
+        CompositeInstance compositeInstance = model.newInstance( uses, state );
         return compositeInstance.<T>proxy();
     }
 }

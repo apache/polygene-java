@@ -22,9 +22,7 @@ package org.apache.zest.runtime.structure;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -35,18 +33,14 @@ import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.TransientDescriptor;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.object.ObjectDescriptor;
-import org.apache.zest.api.service.NoSuchServiceException;
-import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.api.structure.ModuleDescriptor;
+import org.apache.zest.api.structure.TypeLookup;
 import org.apache.zest.api.type.HasTypes;
 import org.apache.zest.api.value.ValueDescriptor;
-import org.apache.zest.spi.structure.ModelModule;
-import org.apache.zest.spi.structure.TypeLookup;
 
 import static java.util.stream.Stream.concat;
 import static org.apache.zest.api.common.Visibility.application;
 import static org.apache.zest.api.common.Visibility.layer;
-import static org.apache.zest.api.common.Visibility.module;
-import static org.apache.zest.api.util.Classes.RAW_CLASS;
 import static org.apache.zest.api.util.Classes.interfacesOf;
 import static org.apache.zest.functional.Iterables.first;
 
@@ -58,25 +52,26 @@ public class TypeLookupImpl
 {
 
     // Constructor parameters
-    private final ModuleInstance moduleInstance;
+    private final ModuleDescriptor moduleModel;
+
     // Eager instance objects
-    private final Map<Class<?>, ModelModule<ObjectDescriptor>> objectModels;
-    private final Map<Class<?>, ModelModule<TransientDescriptor>> transientModels;
-    private final Map<Class<?>, ModelModule<ValueDescriptor>> valueModels;
-    private final Map<Class<?>, List<ModelModule<EntityDescriptor>>> allEntityModels;
-    private final Map<Class<?>, ModelModule<EntityDescriptor>> unambiguousEntityModels;
-    private final Map<Type, ServiceReference<?>> serviceReferences;
-    private final Map<Type, List<ServiceReference<?>>> servicesReferences;
+    private final ConcurrentHashMap<Class<?>, ObjectDescriptor> objectModels;
+    private final ConcurrentHashMap<Class<?>, TransientDescriptor> transientModels;
+    private final ConcurrentHashMap<Class<?>, ValueDescriptor> valueModels;
+    private final ConcurrentHashMap<Class<?>, List<? extends EntityDescriptor>> allEntityModels;
+    private final ConcurrentHashMap<Class<?>, EntityDescriptor> unambiguousEntityModels;
+    private final ConcurrentHashMap<Type, ModelDescriptor> serviceModels;
+    private final ConcurrentHashMap<Type, List<ModelDescriptor>> servicesReferences;
 
     /**
-     * Create a new TypeLookup bound to the given ModuleInstance.
+     * Create a new TypeLookup bound to the given moduleModel.
      *
-     * @param moduleInstance ModuleInstance bound to this TypeLookup
+     * @param module ModuleModel bound to this TypeLookup
      */
-    TypeLookupImpl( ModuleInstance moduleInstance )
+    TypeLookupImpl( ModuleModel module )
     {
         // Constructor parameters
-        this.moduleInstance = moduleInstance;
+        this.moduleModel = module;
 
         // Eager instance objects
         objectModels = new ConcurrentHashMap<>();
@@ -84,7 +79,7 @@ public class TypeLookupImpl
         valueModels = new ConcurrentHashMap<>();
         allEntityModels = new ConcurrentHashMap<>();
         unambiguousEntityModels = new ConcurrentHashMap<>();
-        serviceReferences = new ConcurrentHashMap<>();
+        serviceModels = new ConcurrentHashMap<>();
         servicesReferences = new ConcurrentHashMap<>();
     }
 
@@ -103,23 +98,19 @@ public class TypeLookupImpl
      *
      * @return First matching Object Model
      */
-    ModelModule<ObjectDescriptor> lookupObjectModel( final Class type )
+    @Override
+    public ObjectDescriptor lookupObjectModel( final Class<?> type )
     {
-        ModelModule<ObjectDescriptor> model = objectModels.get( type );
-        if( model == null )
+        return objectModels.computeIfAbsent( type, key ->
         {
-            List<ModelModule<ObjectDescriptor>> allModels = allObjects().collect( Collectors.toList() );
-            model = ambiguityMatching( type, allModels, new ExactTypeMatching<>( type ) );
+            List<ObjectDescriptor> allModels = allObjects().collect( Collectors.toList() );
+            ObjectDescriptor model = ambiguityMatching( key, allModels, new ExactTypeMatching<>( key ) );
             if( model == null )
             {
-                model = ambiguityMatching( type, allModels, new AssignableFromTypeMatching<>( type ) );
+                model = ambiguityMatching( key, allModels, new AssignableFromTypeMatching<>( key ) );
             }
-            if( model != null )
-            {
-                objectModels.put( type, model );
-            }
-        }
-        return model;
+            return model;
+        } );
     }
 
     /**
@@ -137,23 +128,19 @@ public class TypeLookupImpl
      *
      * @return First matching Transient Model
      */
-    ModelModule<TransientDescriptor> lookupTransientModel( final Class type )
+    @Override
+    public TransientDescriptor lookupTransientModel( final Class<?> type )
     {
-        ModelModule<TransientDescriptor> model = transientModels.get( type );
-        if( model == null )
+        return transientModels.computeIfAbsent( type, key ->
         {
-            List<ModelModule<TransientDescriptor>> allModels = allTransients().collect( Collectors.toList() );
-            model = ambiguityMatching( type, allModels, new ExactTypeMatching<>( type ) );
+            List<TransientDescriptor> allModels = allTransients().collect( Collectors.toList() );
+            TransientDescriptor model = ambiguityMatching( key, allModels, new ExactTypeMatching<>( key ) );
             if( model == null )
             {
-                model = ambiguityMatching( type, allModels, new AssignableFromTypeMatching<>( type ) );
+                model = ambiguityMatching( key, allModels, new AssignableFromTypeMatching<>( key ) );
             }
-            if( model != null )
-            {
-                transientModels.put( type, model );
-            }
-        }
-        return model;
+            return model;
+        } );
     }
 
     /**
@@ -171,23 +158,19 @@ public class TypeLookupImpl
      *
      * @return First matching Value Model
      */
-    public ModelModule<ValueDescriptor> lookupValueModel( final Class type )
+    @Override
+    public ValueDescriptor lookupValueModel( final Class<?> type )
     {
-        ModelModule<ValueDescriptor> model = valueModels.get( type );
-        if( model == null )
+        return valueModels.computeIfAbsent( type, key ->
         {
-            List<ModelModule<ValueDescriptor>> allModels = allValues().collect( Collectors.toList() );
-            model = ambiguityMatching( type, allModels, new ExactTypeMatching<>( type ) );
+            List<ValueDescriptor> allModels = allValues().collect( Collectors.toList() );
+            ValueDescriptor model = ambiguityMatching( key, allModels, new ExactTypeMatching<>( key ) );
             if( model == null )
             {
-                model = ambiguityMatching( type, allModels, new AssignableFromTypeMatching<>( type ) );
+                model = ambiguityMatching( key, allModels, new AssignableFromTypeMatching<>( key ) );
             }
-            if( model != null )
-            {
-                valueModels.put( type, model );
-            }
-        }
-        return model;
+            return model;
+        } );
     }
 
     /**
@@ -209,24 +192,18 @@ public class TypeLookupImpl
      * @return First matching Entity Model
      */
     @Override
-    public ModelModule<EntityDescriptor> lookupEntityModel( final Class type )
+    public EntityDescriptor lookupEntityModel( final Class<?> type )
     {
-        ModelModule<EntityDescriptor> model = unambiguousEntityModels.get( type );
-
-        if( model == null )
+        return unambiguousEntityModels.computeIfAbsent( type, key ->
         {
-            List<ModelModule<EntityDescriptor>> allModels = allEntities().collect( Collectors.toList() );
-            model = ambiguityMatching( type, allModels, new ExactTypeMatching<>( type ) );
+            List<EntityDescriptor> allModels = allEntities().collect( Collectors.toList() );
+            EntityDescriptor model = ambiguityMatching( key, allModels, new ExactTypeMatching<>( key ) );
             if( model == null )
             {
-                model = ambiguityMatching( type, allModels, new AssignableFromTypeMatching<>( type ) );
+                model = ambiguityMatching( key, allModels, new AssignableFromTypeMatching<>( key ) );
             }
-            if( model != null )
-            {
-                unambiguousEntityModels.put( type, model );
-            }
-        }
-        return model;
+            return model;
+        } );
     }
 
     /**
@@ -252,179 +229,161 @@ public class TypeLookupImpl
      * @return All matching Entity Models
      */
     @Override
-    public Iterable<ModelModule<EntityDescriptor>> lookupEntityModels( final Class type )
+    public Iterable<? extends EntityDescriptor> lookupEntityModels( final Class type )
     {
-        List<ModelModule<EntityDescriptor>> result = allEntityModels.get( type );
-        if( result == null )
-        {
-            result = concat(
-                allEntities().filter( ref -> new ExactTypeMatching<>( type ).test( ref.model() ) ),
-                allEntities().filter( ref -> new AssignableFromTypeMatching<>( type ).test( ref.model() ) )
-            ).distinct().collect( Collectors.toList() );
-            allEntityModels.put( type, result );
-        }
-        return result;
+        return allEntityModels.computeIfAbsent( type, key ->
+            concat(
+                allEntities().filter( ref -> new ExactTypeMatching<>( key ).test( ref ) ),
+                allEntities().filter( ref -> new AssignableFromTypeMatching<>( key ).test( ref ) )
+            ).distinct().collect( Collectors.toList() )
+        );
     }
 
-    /**
-     * Lookup first ServiceReference matching the given Type.
-     *
-     * <p>Type lookup is done lazily and cached.</p>
-     *
-     * <p>See {@link #lookupServiceReferences(Type)}.</p>
-     *
-     * @param <T>         Service Type
-     * @param serviceType Looked up Type
-     *
-     * @return First matching ServiceReference
-     */
     @Override
-    public <T> ServiceReference<T> lookupServiceReference( Type serviceType )
+    public ModelDescriptor lookupServiceModel( Type serviceType1 )
     {
-        @SuppressWarnings( "unchecked" )
-        ServiceReference<T> serviceReference = (ServiceReference<T>) serviceReferences.get( serviceType );
-        if( serviceReference == null )
-        {
-            // Lazily resolve ServiceReference
-            serviceReference = first( lookupServiceReferences( serviceType ) );
-            if( serviceReference != null )
-            {
-                serviceReferences.put( serviceType, serviceReference );
-            }
-        }
-
-        if( serviceReference == null )
-        {
-            throw new NoSuchServiceException( RAW_CLASS.apply( serviceType ).getName(), moduleInstance.name() );
-        }
-        return serviceReference;
+        return serviceModels.computeIfAbsent( serviceType1, key -> first( lookupServiceModels( key ) ) );
     }
 
-    /**
-     * Lookup all ServiceReferences matching the given Type.
-     *
-     * <p>Returned Iterable contains, in order, ServiceReferences that: </p>
-     *
-     * <ul>
-     * <li>exactly match the given type, in Visibility then Assembly order ;</li>
-     * <li>match a type assignable to the given type, in Visibility then Assembly order.</li>
-     * </ul>
-     *
-     * <p>Multiple <b>exact</b> matches with the same Visibility are <b>allowed</b> to enable polymorphic lookup/injection.</p>
-     * <p>Multiple <b>assignable</b> matches with the same Visibility are <b>allowed</b> for the very same reason.</p>
-     *
-     * <p>Type lookup is done lazily and cached.</p>
-     *
-     * @param <T>  Service Type
-     * @param type Looked up Type
-     *
-     * @return All matching ServiceReferences
-     */
     @Override
-    public <T> List<ServiceReference<T>> lookupServiceReferences( final Type type )
+    public List<? extends ModelDescriptor> lookupServiceModels( Type type1 )
     {
-        List<ServiceReference<?>> serviceRefs = servicesReferences.get( type );
-        if( serviceRefs == null )
+        return servicesReferences.computeIfAbsent( type1, type ->
         {
-            serviceRefs = concat(
-                allServices()
-                    .filter( new ExactTypeMatching<>( type  ) ),
-                allServices()
-                    .filter( new AssignableFromTypeMatching<>( type )
-                    )
-            ).distinct().collect( Collectors.toList() );
-            servicesReferences.put( type, serviceRefs );
-        }
-        List<ServiceReference<T>> result = new ArrayList<>();
-        //noinspection unchecked
-        serviceRefs.forEach( ref -> result.add( (ServiceReference<T>) ref ) );
-        return result;
+            List<ModelDescriptor> models =
+                allServices().filter(
+                    new ExactTypeMatching<>( type ).or( new AssignableFromTypeMatching<>( type ) )
+                )
+                    .distinct()
+                    .collect( Collectors.toList() );
+
+            // TODO: Needed??
+//            List<T> result = new ArrayList<>();
+//            //noinspection unchecked
+//            serviceRefs.forEach( descriptor -> result.add( (T) descriptor ) );
+
+            return models;
+        } );
     }
 
     @Override
     public Stream<Class<?>> allVisibleObjects()
     {
-        return allObjects().flatMap( model -> model.model().types() );
+        return allObjects().flatMap( HasTypes::types );
     }
 
     @Override
-    public Stream<ModelModule<ObjectDescriptor>> allObjects()
+    public Stream<? extends ObjectDescriptor> allObjects()
     {
-        return concat( moduleInstance.visibleObjects( module ),
+        return concat( moduleModel.objects(),
                        concat(
-                           moduleInstance.layerInstance().visibleObjects( layer ),
                            concat(
-                               moduleInstance.layerInstance().visibleObjects( application ),
-                               moduleInstance.layerInstance().usedLayersInstance().visibleObjects()
-                           )
+                               moduleModel.layer().visibleObjects( layer ),
+                               moduleModel.layer().visibleObjects( application )
+                           ),
+                           moduleModel.layer()
+                               .usedLayers()
+                               .layers()
+                               .flatMap( layer -> layer.visibleObjects( application ) )
                        )
         );
     }
 
     @Override
-    public Stream<ModelModule<TransientDescriptor>> allTransients()
+    public Stream<? extends TransientDescriptor> allTransients()
     {
-        return concat( moduleInstance.visibleTransients( module ),
+        return concat( moduleModel.transientComposites(),
                        concat(
-                           moduleInstance.layerInstance().visibleTransients( layer ),
                            concat(
-                               moduleInstance.layerInstance().visibleTransients( application ),
-                               moduleInstance.layerInstance().usedLayersInstance().visibleTransients()
-                           )
+                               moduleModel.layer().visibleTransients( layer ),
+                               moduleModel.layer().visibleTransients( application )
+                           ),
+                           moduleModel.layer()
+                               .usedLayers()
+                               .layers()
+                               .flatMap( layer -> layer.visibleTransients( application ) )
                        )
         );
     }
 
     @Override
-    public Stream<ModelModule<ValueDescriptor>> allValues()
+    public Stream<? extends ValueDescriptor> allValues()
     {
-        return concat( moduleInstance.visibleValues( module ),
+
+        return concat( moduleModel.valueComposites(),
                        concat(
-                           moduleInstance.layerInstance().visibleValues( layer ),
-                           concat(
-                               moduleInstance.layerInstance().visibleValues( application ),
-                               moduleInstance.layerInstance().usedLayersInstance().visibleValues()
-                           )
+                           concat( moduleModel.layer().visibleValues( layer ),
+                                   moduleModel.layer().visibleValues( application )
+                           ),
+                           moduleModel.layer()
+                               .usedLayers()
+                               .layers()
+                               .flatMap( layer1 -> layer1.visibleValues( application ) )
                        )
         );
     }
 
     @Override
-    public Stream<ModelModule<EntityDescriptor>> allEntities()
+    public Stream<? extends EntityDescriptor> allEntities()
     {
-        return concat( moduleInstance.visibleEntities( module ),
+        return concat( moduleModel.entityComposites(),
                        concat(
-                           moduleInstance.layerInstance().visibleEntities( layer ),
                            concat(
-                               moduleInstance.layerInstance().visibleEntities( application ),
-                               moduleInstance.layerInstance().usedLayersInstance().visibleEntities()
-                           )
+                               moduleModel.layer().visibleEntities( layer ),
+                               moduleModel.layer().visibleEntities( application )
+                           ),
+                           moduleModel.layer()
+                               .usedLayers()
+                               .layers()
+                               .flatMap( layer -> layer.visibleEntities( application ) )
                        )
         );
     }
 
     @Override
-    public Stream<ServiceReference<?>> allServices()
+    public Stream<? extends ModelDescriptor> allServices()
     {
-        return concat( moduleInstance.visibleServices( module ),
-                       concat(
-                           moduleInstance.layerInstance().visibleServices( layer ),
-                           concat(
-                               moduleInstance.layerInstance().visibleServices( application ),
-                               moduleInstance.layerInstance().usedLayersInstance().visibleServices()
-                           )
-                       )
-        );
+        Stream<? extends ModelDescriptor> managedServices =
+            concat( moduleModel.serviceComposites(),
+                    concat(
+                        concat(
+                            moduleModel.layer()
+                                .visibleServices( layer ),
+                            moduleModel.layer()
+                                .visibleServices( application )
+                        ),
+                        moduleModel.layer()
+                            .usedLayers()
+                            .layers()
+                            .flatMap( layer -> layer.visibleServices( application ) )
+                    )
+            );
+        Stream<? extends ModelDescriptor> importedServices =
+            concat( moduleModel.serviceComposites(),
+                    concat(
+                        concat(
+                            moduleModel.layer()
+                                .visibleServices( layer ),
+                            moduleModel.layer()
+                                .visibleServices( application )
+                        ),
+                        moduleModel.layer()
+                            .usedLayers()
+                            .layers()
+                            .flatMap( layer -> layer.visibleServices( application ) )
+                    )
+            );
+        return concat( managedServices, importedServices );
     }
 
-    private <T extends ModelDescriptor> ModelModule<T> ambiguityMatching(
+    private <T extends ModelDescriptor> T ambiguityMatching(
         Class type,
-        List<ModelModule<T>> modelModules,
+        List<T> modelModules,
         TypeMatching<T> matching
     )
     {
-        List<ModelModule<T>> models = modelModules.stream()
-            .filter( ref -> matching.test( ref.model() ) )
+        List<T> models = modelModules.stream()
+            .filter( matching )
             .filter( new SameVisibility<>() )
             .distinct()
             .collect( Collectors.toList() );
@@ -520,19 +479,19 @@ public class TypeLookupImpl
      * This Predicate will filter out all Models that doesn't have the same visisbility as the first one.
      */
     private class SameVisibility<T extends ModelDescriptor>
-        implements Predicate<ModelModule<T>>
+        implements Predicate<T>
     {
         private Visibility current = null;
 
         @Override
-        public boolean test( ModelModule<T> model )
+        public boolean test( T model )
         {
             if( current == null )
             {
-                current = model.model().visibility();
+                current = model.visibility();
                 return true;
             }
-            return current == model.model().visibility();
+            return current == model.visibility();
         }
     }
 }

@@ -15,6 +15,8 @@
 package org.apache.zest.runtime.structure;
 
 import java.util.List;
+import java.util.stream.Stream;
+import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.UsedLayersDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
@@ -33,9 +35,9 @@ public final class UsedLayersModel
     }
 
     @Override
-    public Iterable<LayerModel> layers()
+    public Stream<? extends LayerDescriptor> layers()
     {
-        return usedLayers;
+        return usedLayers.stream();
     }
 
     @Override
@@ -56,7 +58,7 @@ public final class UsedLayersModel
         return visitor.visitLeave( this );
     }
 
-    public UsedLayersInstance newInstance( List<LayerInstance> usedLayerInstances )
+    public UsedLayersInstance newInstance( List<LayerDescriptor> usedLayerInstances )
     {
         return new UsedLayersInstance( usedLayerInstances );
     }

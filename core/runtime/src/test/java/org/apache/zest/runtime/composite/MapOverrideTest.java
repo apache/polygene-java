@@ -56,7 +56,7 @@ public class MapOverrideTest
     @Test
     public void givenReadOnlyAnnotatedHashMapWhenCallingSizeExpectSuccess()
     {
-        ValueBuilder<Map> builder = module.newValueBuilder( Map.class );
+        ValueBuilder<Map> builder = valueBuilderFactory.newValueBuilder( Map.class );
         Map<String, String> prototype = builder.prototype();
         prototype.put( "Niclas", "Hedhman" );
         Map<String, String> underTest = builder.newInstance();
@@ -66,7 +66,7 @@ public class MapOverrideTest
     @Test
     public void givenReadOnlyAnnotatedHashMapWhenCallingIsEmptyExpectSuccess()
     {
-        ValueBuilder<Map> builder = module.newValueBuilder( Map.class );
+        ValueBuilder<Map> builder = valueBuilderFactory.newValueBuilder( Map.class );
         Map<String, String> prototype = builder.prototype();
         prototype.put( "Niclas", "Hedhman" );
         Map<String, String> underTest = builder.newInstance();
@@ -76,7 +76,7 @@ public class MapOverrideTest
     @Test
     public void givenReadOnlyAnnotatedHashMapWhenCallingContainsKeyExpectSuccess()
     {
-        ValueBuilder<Map> builder = module.newValueBuilder( Map.class );
+        ValueBuilder<Map> builder = valueBuilderFactory.newValueBuilder( Map.class );
         Map<String, String> prototype = builder.prototype();
         prototype.put( "Niclas", "Hedhman" );
         Map<String, String> underTest = builder.newInstance();
@@ -86,7 +86,7 @@ public class MapOverrideTest
     @Test
     public void givenReadOnlyAnnotatedHashMapWhenCallingContainsValueExpectSuccess()
     {
-        ValueBuilder<Map> builder = module.newValueBuilder( Map.class );
+        ValueBuilder<Map> builder = valueBuilderFactory.newValueBuilder( Map.class );
         Map<String, String> prototype = builder.prototype();
         prototype.put( "Niclas", "Hedhman" );
         Map<String, String> underTest = builder.newInstance();
@@ -96,7 +96,7 @@ public class MapOverrideTest
     @Test
     public void givenReadOnlyAnnotatedHashMapWhenCallingGetExpectSuccess()
     {
-        ValueBuilder<Map> builder = module.newValueBuilder( Map.class );
+        ValueBuilder<Map> builder = valueBuilderFactory.newValueBuilder( Map.class );
         Map<String, String> prototype = builder.prototype();
         prototype.put( "Niclas", "Hedhman" );
         Map<String, String> underTest = builder.newInstance();
@@ -106,7 +106,7 @@ public class MapOverrideTest
     @Test
     public void givenReadOnlyAnnotatedHashMapWhenCallingKeySetExpectSuccess()
     {
-        ValueBuilder<Map> builder = module.newValueBuilder( Map.class );
+        ValueBuilder<Map> builder = valueBuilderFactory.newValueBuilder( Map.class );
         Map<String, String> prototype = builder.prototype();
         prototype.put( "Niclas", "Hedhman" );
         Map<String, String> underTest = builder.newInstance();
@@ -122,7 +122,7 @@ public class MapOverrideTest
     @Test
     public void givenReadOnlyAnnotatedHashMapWhenCallingValuesExpectSuccess()
     {
-        ValueBuilder<Map> builder = module.newValueBuilder( Map.class );
+        ValueBuilder<Map> builder = valueBuilderFactory.newValueBuilder( Map.class );
         Map<String, String> prototype = builder.prototype();
         prototype.put( "Niclas", "Hedhman" );
         Map<String, String> underTest = builder.newInstance();

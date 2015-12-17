@@ -27,6 +27,7 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.PropertyDescriptor;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
@@ -191,6 +192,12 @@ import org.slf4j.LoggerFactory;
         private CompatEntityDescriptorWrapper( EntityDescriptor wrappedEntityDescriptor )
         {
             this.wrappedEntityDescriptor = wrappedEntityDescriptor;
+        }
+
+        @Override
+        public ModuleDescriptor module()
+        {
+            return wrappedEntityDescriptor.module();
         }
 
         @Override

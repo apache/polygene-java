@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.composite.UsesInstance;
@@ -82,13 +83,13 @@ public class ActivatorsModel<ActivateeType>
         return activators;
     }
 
-    public Iterable<Activator<ActivateeType>> newInstances( Module module )
+    public Iterable<Activator<ActivateeType>> newInstances( ModuleDescriptor module )
         throws ActivationException
     {
         List<Activator<ActivateeType>> activators = new ArrayList<>();
         for( ActivatorModel<ActivateeType> activatorModel : activatorModels )
         {
-            InjectionContext injectionContext = new InjectionContext( (ModuleInstance) module, UsesInstance.EMPTY_USES );
+            InjectionContext injectionContext = new InjectionContext( module, UsesInstance.EMPTY_USES );
             activators.add( activatorModel.newInstance( injectionContext ) );
         }
         return activators;

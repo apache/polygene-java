@@ -19,28 +19,24 @@ package org.apache.zest.runtime.structure;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
 import org.apache.zest.api.association.AssociationDescriptor;
 import org.apache.zest.api.common.ConstructionException;
-import org.apache.zest.api.common.Visibility;
-import org.apache.zest.api.composite.AmbiguousTypeException;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.composite.NoSuchTransientException;
 import org.apache.zest.api.composite.TransientBuilder;
 import org.apache.zest.api.composite.TransientDescriptor;
-import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.entity.IdentityGenerator;
 import org.apache.zest.api.metrics.MetricsProvider;
@@ -50,11 +46,12 @@ import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.QueryBuilderFactory;
-import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.NoSuchServiceException;
-import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
+import org.apache.zest.api.structure.TypeLookup;
 import org.apache.zest.api.unitofwork.UnitOfWorkException;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.util.NullArgumentException;
@@ -69,12 +66,9 @@ import org.apache.zest.runtime.composite.FunctionStateResolver;
 import org.apache.zest.runtime.composite.StateResolver;
 import org.apache.zest.runtime.composite.TransientBuilderInstance;
 import org.apache.zest.runtime.composite.TransientStateInstance;
-import org.apache.zest.runtime.composite.TransientsModel;
 import org.apache.zest.runtime.composite.UsesInstance;
-import org.apache.zest.runtime.entity.EntitiesModel;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.object.ObjectModel;
-import org.apache.zest.runtime.object.ObjectsModel;
 import org.apache.zest.runtime.property.PropertyInstance;
 import org.apache.zest.runtime.property.PropertyModel;
 import org.apache.zest.runtime.query.QueryBuilderFactoryImpl;
@@ -86,17 +80,11 @@ import org.apache.zest.runtime.value.ValueBuilderInstance;
 import org.apache.zest.runtime.value.ValueBuilderWithPrototype;
 import org.apache.zest.runtime.value.ValueBuilderWithState;
 import org.apache.zest.runtime.value.ValueInstance;
-import org.apache.zest.runtime.value.ValuesModel;
 import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.metrics.MetricsProviderAdapter;
 import org.apache.zest.spi.module.ModuleSpi;
-import org.apache.zest.spi.structure.ModelModule;
-import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerialization;
 
-import static java.util.stream.Stream.concat;
-import static org.apache.zest.api.util.Classes.modelTypeSpecification;
 import static org.apache.zest.functional.Iterables.iterable;
-import static org.apache.zest.runtime.legacy.Specifications.translate;
 
 /**
  * Instance of a Zest Module. Contains the various composites for this Module.
@@ -106,18 +94,13 @@ public class ModuleInstance
 {
     // Constructor parameters
     private final ModuleModel model;
-    private final LayerInstance layer;
-    private final TransientsModel transients;
-    private final ValuesModel values;
-    private final ObjectsModel objects;
-    private final EntitiesModel entities;
+    private final LayerDescriptor layer;
+    private final TypeLookup typeLookup;
     private final ServicesInstance services;
     private final ImportedServicesInstance importedServices;
     // Eager instance objects
     private final ActivationDelegate activation;
-    private final TypeLookupImpl typeLookup;
     private final QueryBuilderFactory queryBuilderFactory;
-    private final ClassLoader classLoader;
     // Lazy assigned on accessors
     private EntityStore store;
     private IdentityGenerator generator;
@@ -126,26 +109,20 @@ public class ModuleInstance
     private UnitOfWorkFactory uowf;
 
     @SuppressWarnings( "LeakingThisInConstructor" )
-    public ModuleInstance( ModuleModel moduleModel, LayerInstance layerInstance, TransientsModel transientsModel,
-                           EntitiesModel entitiesModel, ObjectsModel objectsModel, ValuesModel valuesModel,
+    public ModuleInstance( ModuleModel moduleModel, LayerDescriptor layer, TypeLookup typeLookup,
                            ServicesModel servicesModel, ImportedServicesModel importedServicesModel
     )
     {
         // Constructor parameters
         model = moduleModel;
-        layer = layerInstance;
-        transients = transientsModel;
-        values = valuesModel;
-        entities = entitiesModel;
-        services = servicesModel.newInstance( this );
-        objects = objectsModel;
-        importedServices = importedServicesModel.newInstance( this );
+        this.layer = layer;
+        this.typeLookup = typeLookup;
+        services = servicesModel.newInstance( moduleModel );
+        importedServices = importedServicesModel.newInstance( moduleModel );
 
         // Eager instance objects
         activation = new ActivationDelegate( this );
-        typeLookup = new TypeLookupImpl( this );
         queryBuilderFactory = new QueryBuilderFactoryImpl( this );
-        classLoader = new ModuleClassLoader( this, Thread.currentThread().getContextClassLoader() );
 
         // Activation
         services.registerActivationEventListener( activation );
@@ -158,129 +135,17 @@ public class ModuleInstance
         return model.toString();
     }
 
+    @Override
+    public ModuleDescriptor descriptor()
+    {
+        return model;
+    }
+
     // Implementation of Module
     @Override
     public String name()
     {
         return model.name();
-    }
-
-    @Override
-    public ClassLoader classLoader()
-    {
-        return classLoader;
-    }
-
-    @Override
-    public EntityDescriptor entityDescriptor( String name )
-    {
-        try
-        {
-            Class<?> type = classLoader().loadClass( name );
-            ModelModule<EntityDescriptor> entityModel = typeLookup.lookupEntityModel( type );
-            if( entityModel == null )
-            {
-                return null;
-            }
-            return entityModel.model();
-        }
-        catch( ClassNotFoundException e )
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public ObjectDescriptor objectDescriptor( String typeName )
-    {
-        try
-        {
-            Class<?> type = classLoader().loadClass( typeName );
-            ModelModule<ObjectDescriptor> objectModel = typeLookup.lookupObjectModel( type );
-            if( objectModel == null )
-            {
-                return null;
-            }
-            return objectModel.model();
-        }
-        catch( ClassNotFoundException e )
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public TransientDescriptor transientDescriptor( String name )
-    {
-        try
-        {
-            Class<?> type = classLoader().loadClass( name );
-            ModelModule<TransientDescriptor> transientModel = typeLookup.lookupTransientModel( type );
-            if( transientModel == null )
-            {
-                return null;
-            }
-            return transientModel.model();
-        }
-        catch( ClassNotFoundException e )
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public ValueDescriptor valueDescriptor( String name )
-    {
-        try
-        {
-            Class<?> type = classLoader().loadClass( name );
-            ModelModule<ValueDescriptor> valueModel = typeLookup.lookupValueModel( type );
-            if( valueModel == null )
-            {
-                return null;
-            }
-            return valueModel.model();
-        }
-        catch( ClassNotFoundException e )
-        {
-            return null;
-        }
-    }
-
-    @Override
-    public Stream<? extends TransientDescriptor> transientComposites()
-    {
-        return transients.stream();
-    }
-
-    @Override
-    public Stream<? extends ValueDescriptor> valueComposites()
-    {
-        return values.stream();
-    }
-
-    @Override
-    public Stream<? extends ServiceDescriptor> serviceComposites()
-    {
-        return services.stream();
-    }
-
-    @Override
-    public Stream<? extends EntityDescriptor> entityComposites()
-    {
-        return entities.stream();
-    }
-
-    @Override
-    public Stream<? extends ImportedServiceDescriptor> importedServices()
-    {
-        return importedServices.stream();
-    }
-
-    @Override
-    public Stream<? extends ObjectDescriptor> objects()
-    {
-        return objects.stream();
     }
 
     // Implementation of MetaInfoHolder
@@ -296,15 +161,15 @@ public class ModuleInstance
         throws NoSuchObjectException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ObjectDescriptor> modelModule = typeLookup.lookupObjectModel( mixinType );
+        ObjectDescriptor model = typeLookup.lookupObjectModel( mixinType );
 
-        if( modelModule == null )
+        if( model == null )
         {
             throw new NoSuchObjectException( mixinType.getName(), name(), typeLookup.allVisibleObjects() );
         }
 
-        InjectionContext injectionContext = new InjectionContext( modelModule.module(), UsesInstance.EMPTY_USES.use( uses ) );
-        return mixinType.cast( ( (ObjectModel) modelModule.model() ).newInstance( injectionContext ) );
+        InjectionContext injectionContext = new InjectionContext( model.module(), UsesInstance.EMPTY_USES.use( uses ) );
+        return mixinType.cast( ( (ObjectModel) model ).newInstance( injectionContext ) );
     }
 
     @Override
@@ -312,15 +177,15 @@ public class ModuleInstance
         throws ConstructionException
     {
         NullArgumentException.validateNotNull( "instance", instance );
-        ModelModule<ObjectDescriptor> modelModule = typeLookup.lookupObjectModel( instance.getClass() );
+        ObjectDescriptor model = typeLookup.lookupObjectModel( instance.getClass() );
 
-        if( modelModule == null )
+        if( model == null )
         {
             throw new NoSuchObjectException( instance.getClass().getName(), name(), typeLookup.allVisibleObjects() );
         }
 
-        InjectionContext injectionContext = new InjectionContext( modelModule.module(), UsesInstance.EMPTY_USES.use( uses ) );
-        ( (ObjectModel) modelModule.model() ).inject( injectionContext, instance );
+        InjectionContext injectionContext = new InjectionContext( model.module(), UsesInstance.EMPTY_USES.use( uses ) );
+        ( (ObjectModel) model ).inject( injectionContext, instance );
     }
 
     // Implementation of TransientBuilderFactory
@@ -329,25 +194,25 @@ public class ModuleInstance
         throws NoSuchTransientException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<TransientDescriptor> modelModule = typeLookup.lookupTransientModel( mixinType );
+        TransientDescriptor model = typeLookup.lookupTransientModel( mixinType );
 
-        if( modelModule == null )
+        if( model == null )
         {
             throw new NoSuchTransientException( mixinType.getName(), name() );
         }
 
         Map<AccessibleObject, Property<?>> properties = new HashMap<>();
-        modelModule.model().state().properties().forEach(
+        model.state().properties().forEach(
             propertyModel ->
             {
                 Property<?> property = new PropertyInstance<>( ( (PropertyModel) propertyModel ).getBuilderInfo(),
-                                                               propertyModel.initialValue( modelModule.module() ) );
+                                                               propertyModel.initialValue( model.module() ) );
                 properties.put( propertyModel.accessor(), property );
             } );
 
         TransientStateInstance state = new TransientStateInstance( properties );
 
-        return new TransientBuilderInstance<>( modelModule, state, UsesInstance.EMPTY_USES );
+        return new TransientBuilderInstance<>( model, state, UsesInstance.EMPTY_USES );
     }
 
     @Override
@@ -370,7 +235,7 @@ public class ModuleInstance
         throws NoSuchValueException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ValueDescriptor> compositeModelModule = typeLookup.lookupValueModel( mixinType );
+        ValueDescriptor compositeModelModule = typeLookup.lookupValueModel( mixinType );
 
         if( compositeModelModule == null )
         {
@@ -394,7 +259,7 @@ public class ModuleInstance
         NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
         NullArgumentException.validateNotNull( "namedAssociationFunction", namedAssociationFunction );
 
-        ModelModule<ValueDescriptor> compositeModelModule = typeLookup.lookupValueModel( mixinType );
+        ValueDescriptor compositeModelModule = typeLookup.lookupValueModel( mixinType );
 
         if( compositeModelModule == null )
         {
@@ -410,9 +275,9 @@ public class ModuleInstance
     private static class InitialStateResolver
         implements StateResolver
     {
-        private final Module module;
+        private final ModuleDescriptor module;
 
-        private InitialStateResolver( Module module )
+        private InitialStateResolver( ModuleDescriptor module )
         {
             this.module = module;
         }
@@ -451,14 +316,14 @@ public class ModuleInstance
         ValueInstance valueInstance = ValueInstance.valueInstanceOf( (ValueComposite) prototype );
         Class<Composite> valueType = (Class<Composite>) valueInstance.types().findFirst().orElse( null );
 
-        ModelModule<ValueDescriptor> modelModule = typeLookup.lookupValueModel( valueType );
+        ValueDescriptor model = typeLookup.lookupValueModel( valueType );
 
-        if( modelModule == null )
+        if( model == null )
         {
             throw new NoSuchValueException( valueType.getName(), name() );
         }
 
-        return new ValueBuilderWithPrototype<>( modelModule, this, prototype );
+        return new ValueBuilderWithPrototype<>( model, this, prototype );
     }
 
     @Override
@@ -466,16 +331,16 @@ public class ModuleInstance
         throws NoSuchValueException, ConstructionException
     {
         NullArgumentException.validateNotNull( "mixinType", mixinType );
-        ModelModule<ValueDescriptor> modelModule = typeLookup.lookupValueModel( mixinType );
+        ValueDescriptor model = typeLookup.lookupValueModel( mixinType );
 
-        if( modelModule == null )
+        if( model == null )
         {
             throw new NoSuchValueException( mixinType.getName(), name() );
         }
 
         try
         {
-            return valueSerialization().deserialize( modelModule.model().valueType(), serializedState );
+            return valueSerialization().deserialize( model.module(), model.valueType(), serializedState );
         }
         catch( ValueSerializationException ex )
         {
@@ -490,29 +355,59 @@ public class ModuleInstance
         return queryBuilderFactory.newQueryBuilder( resultType );
     }
 
-    // Implementation of ServiceFinder
     @Override
     public <T> ServiceReference<T> findService( Class<T> serviceType )
+        throws NoSuchServiceException
     {
-        return typeLookup.lookupServiceReference( serviceType );
+        return findService( (Type) serviceType );
     }
 
     @Override
     public <T> ServiceReference<T> findService( Type serviceType )
     {
-        return typeLookup.lookupServiceReference( serviceType );
+        ModelDescriptor serviceModel = typeLookup.lookupServiceModel( serviceType );
+        if( serviceModel == null )
+        {
+            throw new NoSuchServiceException( serviceType.getTypeName(), name() );
+        }
+        ModuleInstance serviceLocation = (ModuleInstance) serviceModel.module().instance();
+        try
+        {
+            //noinspection unchecked
+            return serviceLocation.services
+                .references()
+                .filter( ref -> ref.hasType( serviceType ) )
+                .map( ref -> (ServiceReference<T>) ref )
+                .findAny().get();
+        }
+        catch( NoSuchElementException e )
+        {
+            throw new NoSuchServiceException( serviceType.getTypeName(), name() );
+        }
     }
 
     @Override
     public <T> Iterable<ServiceReference<T>> findServices( Class<T> serviceType )
     {
-        return typeLookup.lookupServiceReferences( serviceType );
+        return findServices( (Type) serviceType );
     }
 
     @Override
     public <T> Iterable<ServiceReference<T>> findServices( Type serviceType )
     {
-        return typeLookup.lookupServiceReferences( serviceType );
+        List<? extends ModelDescriptor> serviceModels = typeLookup.lookupServiceModels( serviceType );
+        if( serviceModels == null )
+        {
+            return Collections.emptyList();
+        }
+        //noinspection unchecked
+        return serviceModels.stream()
+            .flatMap(
+                model -> ( (ModuleInstance) model.module().instance() ).services.references()
+            )
+            .filter( ref -> ref.hasType( serviceType ) )
+            .map( ref -> (ServiceReference<T>) ref )
+            .collect( Collectors.toList() );
     }
 
     // Implementation of Activation
@@ -544,18 +439,18 @@ public class ModuleInstance
     }
 
     // Other methods
-    /* package */ ModuleModel model()
+    ModuleModel model()
     {
         return model;
     }
 
-    public LayerInstance layerInstance()
+    public LayerDescriptor layer()
     {
         return layer;
     }
 
     @Override
-    public TypeLookupImpl typeLookup()
+    public TypeLookup typeLookup()
     {
         return typeLookup;
     }
@@ -566,16 +461,15 @@ public class ModuleInstance
         {
             if( store == null )
             {
-                ServiceReference<EntityStore> service = null;
                 try
                 {
-                    service = findService( EntityStore.class );
+                    ServiceReference<EntityStore> service = findService( EntityStore.class );
+                    store = service.get();
                 }
                 catch( NoSuchServiceException e )
                 {
                     throw new UnitOfWorkException( "No EntityStore service available in module " + name() );
                 }
-                store = service.get();
             }
         }
         return store;
@@ -587,16 +481,15 @@ public class ModuleInstance
         {
             if( uowf == null )
             {
-                ServiceReference<UnitOfWorkFactory> service = null;
                 try
                 {
-                    service = findService( UnitOfWorkFactory.class );
+                    ServiceReference<UnitOfWorkFactory> service = findService( UnitOfWorkFactory.class );
+                    uowf = service.get();
                 }
                 catch( NoSuchServiceException e )
                 {
                     throw new UnitOfWorkException( "No UnitOfWorkFactory service available in module " + name() );
                 }
-                uowf = service.get();
             }
         }
         return uowf;
@@ -628,7 +521,7 @@ public class ModuleInstance
                 }
                 catch( NoSuchServiceException e )
                 {
-                    valueSerialization = new OrgJsonValueSerialization( layer.applicationInstance(), this, this );
+                    throw new ValueSerializationException( "No ValueSeriaservice available in module " + name() );
                 }
             }
         }
@@ -655,242 +548,24 @@ public class ModuleInstance
         return metrics;
     }
 
-    public Stream<ModelModule<ObjectDescriptor>> visibleObjects( Visibility visibility )
-    {
-        return objects.stream()
-            .filter( new Visibilitypredicate( visibility ) )
-            .map( ModelModule.<ObjectDescriptor>modelModuleFunction( this ) );
-    }
-
-    public Stream<ModelModule<TransientDescriptor>> visibleTransients( Visibility visibility )
-    {
-        return transients.models()
-            .filter( new Visibilitypredicate( visibility ) )
-            .map( ModelModule.<TransientDescriptor>modelModuleFunction( this ) );
-    }
-
-    public Stream<ModelModule<EntityDescriptor>> visibleEntities( Visibility visibility )
-    {
-        return entities.models()
-            .filter( new Visibilitypredicate( visibility ) )
-            .map( ModelModule.<EntityDescriptor>modelModuleFunction( this ) );
-    }
-
-    public Stream<ModelModule<ValueDescriptor>> visibleValues( Visibility visibility )
-    {
-        return values.models()
-            .filter( new Visibilitypredicate( visibility ) )
-            .map( ModelModule.<ValueDescriptor>modelModuleFunction( this ) );
-    }
-
-    public Stream<ServiceReference<?>> visibleServices( Visibility visibility )
-    {
-        return concat( services.visibleServices( visibility ),
-                       importedServices.visibleServices( visibility ) );
-    }
-
-    // Module ClassLoader
-    private static class ModuleClassLoader
-        extends ClassLoader
-    {
-
-        private final ModuleInstance moduleInstance;
-        private final Map<String, Class<?>> classes = new ConcurrentHashMap<>();
-
-        private ModuleClassLoader( ModuleInstance moduleInstance, ClassLoader classLoader )
-        {
-            super( classLoader );
-            this.moduleInstance = moduleInstance;
-        }
-
-        @Override
-        protected Class<?> findClass( String name )
-            throws ClassNotFoundException
-        {
-            Class<?> clazz = classes.get( name );
-            if( clazz == null )
-            {
-                Predicate<ModelDescriptor> modelTypeSpecification = modelTypeSpecification( name );
-                Predicate<ModelModule<? extends ModelDescriptor>> translation = translate( ModelModule.modelFunction(), modelTypeSpecification );
-                Stream<ModelModule<? extends ModelDescriptor>> moduleModels = concat(
-                    moduleInstance.visibleObjects( Visibility.module ),
-                    concat(
-                        moduleInstance.visibleEntities( Visibility.module ),
-                        concat(
-                            moduleInstance.visibleTransients( Visibility.module ),
-                            moduleInstance.visibleValues( Visibility.module )
-                        )
-                    )
-                ).filter( translation );
-
-                Iterator<ModelModule<? extends ModelDescriptor>> moduleModelsIter = moduleModels.iterator();
-                if( moduleModelsIter.hasNext() )
-                {
-                    clazz = moduleModelsIter.next().model().types().findFirst().orElse( null );
-
-                    if( moduleModelsIter.hasNext() )
-                    {
-                        // Ambiguous exception
-                        throw new ClassNotFoundException(
-                            name,
-                            new AmbiguousTypeException(
-                                "More than one model matches the classname " + name + ":" + moduleModelsIter.next()
-                            )
-                        );
-                    }
-                }
-
-                // Check layer
-                if( clazz == null )
-                {
-                    Stream<ModelModule<? extends ModelDescriptor>> modelsInLayer1 = concat(
-                        moduleInstance.layerInstance().visibleObjects( Visibility.layer ),
-                        concat(
-                            moduleInstance.layerInstance().visibleEntities( Visibility.layer ),
-                            concat(
-                                moduleInstance.layerInstance().visibleTransients( Visibility.layer ),
-                                moduleInstance.layerInstance().visibleValues( Visibility.layer )
-                            )
-                        )
-                    );
-                    // TODO: What does this actually represents?? Shouldn't 'application' visible models already be handed back from lasyerInstance().visibleXyz() ??
-                    Stream<ModelModule<? extends ModelDescriptor>> modelsInLayer2 = concat(
-                        moduleInstance.layerInstance().visibleObjects( Visibility.application ),
-                        concat(
-                            moduleInstance.layerInstance().visibleEntities( Visibility.application ),
-                            concat(
-                                moduleInstance.layerInstance().visibleTransients( Visibility.application ),
-                                moduleInstance.layerInstance().visibleValues( Visibility.application )
-                            )
-                        )
-                    );
-                    Stream<ModelModule<? extends ModelDescriptor>> layerModels = concat(
-                        modelsInLayer1,
-                        modelsInLayer2
-                    ).filter( translation );
-
-                    Iterator<ModelModule<? extends ModelDescriptor>> layerModelsIter = layerModels.iterator();
-                    if( layerModelsIter.hasNext() )
-                    {
-                        clazz = layerModelsIter.next().model().types().findFirst().orElse( null );
-
-                        if( layerModelsIter.hasNext() )
-                        {
-                            // Ambiguous exception
-                            throw new ClassNotFoundException(
-                                name,
-                                new AmbiguousTypeException(
-                                    "More than one model matches the classname " + name + ":" + layerModelsIter.next() )
-                            );
-                        }
-                    }
-                }
-
-                // Check used layers
-                if( clazz == null )
-                {
-                    Stream<ModelModule<? extends ModelDescriptor>> usedLayersModels = concat(
-                        moduleInstance.layerInstance().usedLayersInstance().visibleObjects(),
-                        concat(
-                            moduleInstance.layerInstance().usedLayersInstance().visibleEntities(),
-                            concat(
-                                moduleInstance.layerInstance().usedLayersInstance().visibleTransients(),
-                                moduleInstance.layerInstance().usedLayersInstance().visibleValues()
-                            )
-                        )
-                    ).filter( translation );
-
-                    Iterator<ModelModule<? extends ModelDescriptor>> usedLayersModelsIter = usedLayersModels.iterator();
-                    if( usedLayersModelsIter.hasNext() )
-                    {
-                        clazz = usedLayersModelsIter.next().model().types().findFirst().orElse( null );
-
-                        if( usedLayersModelsIter.hasNext() )
-                        {
-                            // Ambiguous exception
-                            throw new ClassNotFoundException(
-                                name,
-                                new AmbiguousTypeException(
-                                    "More than one model matches the classname " + name + ":" + usedLayersModelsIter.next()
-                                )
-                            );
-                        }
-                    }
-                }
-
-                if( clazz == null )
-                {
-                    throw new ClassNotFoundException( name );
-                }
-                classes.put( name, clazz );
-            }
-
-            return clazz;
-        }
-    }
-
-    public Stream<ModelModule<? extends ModelDescriptor>> findVisibleValueTypes()
-    {
-        return concat( visibleValues( Visibility.module ),
-                       concat(
-                           layerInstance().visibleValues( Visibility.layer ),
-                           concat(
-                               layerInstance().visibleValues( Visibility.application ),
-                               layerInstance().usedLayersInstance().visibleValues()
-                           )
-                       )
-        );
-    }
-
-    public Stream<ModelModule<? extends ModelDescriptor>> findVisibleEntityTypes()
-    {
-        return concat( visibleEntities( Visibility.module ),
-                       concat(
-                           layerInstance().visibleEntities( Visibility.layer ),
-                           concat(
-                               layerInstance().visibleEntities( Visibility.application ),
-                               layerInstance().usedLayersInstance().visibleEntities()
-                           )
-                       )
-        );
-    }
-
-    public Stream<ModelModule<? extends ModelDescriptor>> findVisibleTransientTypes()
-    {
-        return concat( visibleTransients( Visibility.module ),
-                       concat(
-                           layerInstance().visibleTransients( Visibility.layer ),
-                           concat(
-                               layerInstance().visibleTransients( Visibility.application ),
-                               layerInstance().usedLayersInstance().visibleTransients()
-                           )
-                       )
-        );
-    }
-
-    public Stream<ServiceReference<?>> findVisibleServiceTypes()
-    {
-        return concat( visibleServices( Visibility.module ),
-                       concat(
-                           layerInstance().visibleServices( Visibility.layer ),
-                           concat(
-                               layerInstance().visibleServices( Visibility.application ),
-                               layerInstance().usedLayersInstance().visibleServices()
-                           )
-                       )
-        );
-    }
-
-    public Stream<ModelModule<? extends ModelDescriptor>> findVisibleObjectTypes()
-    {
-        return concat( visibleObjects( Visibility.module ),
-                       concat(
-                           layerInstance().visibleObjects( Visibility.layer ),
-                           concat(
-                               layerInstance().visibleObjects( Visibility.application ),
-                               layerInstance().usedLayersInstance().visibleObjects()
-                           )
-                       )
-        );
-    }
+//    public Stream<ServiceReference<?>> visibleServices( Visibility visibility )
+//    {
+//        return concat( services.visibleServices( visibility ),
+//                       importedServices.visibleServices( visibility ) );
+//    }
+//
+//
+//
+//    public Stream<ServiceReference<?>> findVisibleServiceTypes()
+//    {
+//        return concat( visibleServices( Visibility.module ),
+//                       concat(
+//                           layer().visibleServices( Visibility.layer ),
+//                           concat(
+//                               layer().visibleServices( Visibility.application ),
+//                               layer().usedLayers().layers().flatMap( layer -> layer.visibleServices(Visibility.application) )
+//                           )
+//                       )
+//        );
+//    }
 }

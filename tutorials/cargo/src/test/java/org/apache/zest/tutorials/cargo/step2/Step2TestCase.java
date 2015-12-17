@@ -36,13 +36,13 @@ public class Step2TestCase
         throws Exception
     {
         super.setUp();
-        TransientBuilder<VoyageComposite> voyageBuilder = module.newTransientBuilder( VoyageComposite.class );
+        TransientBuilder<VoyageComposite> voyageBuilder = transientBuilderFactory.newTransientBuilder( VoyageComposite.class );
         voyageBuilder.prototypeFor( Voyage.class ).bookedCargoSize().set( 0.0 );
         voyageBuilder.prototypeFor( Voyage.class ).capacity().set( 100.0 );
         voyage = voyageBuilder.newInstance();
 
         TransientBuilder<ShippingServiceComposite> shippingBuilder =
-            module.newTransientBuilder( ShippingServiceComposite.class );
+            transientBuilderFactory.newTransientBuilder( ShippingServiceComposite.class );
         shippingService = shippingBuilder.newInstance();
     }
 
@@ -94,7 +94,7 @@ public class Step2TestCase
 
     private Cargo newCargo( double size )
     {
-        TransientBuilder<CargoComposite> builder = module.newTransientBuilder( CargoComposite.class );
+        TransientBuilder<CargoComposite> builder = transientBuilderFactory.newTransientBuilder( CargoComposite.class );
         builder.prototypeFor( Cargo.class ).size().set( size );
         return builder.newInstance();
     }

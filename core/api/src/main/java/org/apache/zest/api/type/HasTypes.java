@@ -20,6 +20,7 @@ package org.apache.zest.api.type;
 
 import java.lang.reflect.Type;
 import java.util.stream.Stream;
+import org.apache.zest.api.util.Classes;
 
 /**
  * Has types.
@@ -30,6 +31,7 @@ public interface HasTypes
 
     default boolean hasType( Type type )
     {
-        return types().anyMatch( type::equals );
+        Class<?> rawType = Classes.RAW_CLASS.apply( type );
+        return types().map( Classes.RAW_CLASS ).anyMatch( rawType::isAssignableFrom );
     }
 }

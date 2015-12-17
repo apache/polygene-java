@@ -49,7 +49,7 @@ public class ExternalDataSourceTest
     public void test()
             throws SQLException
     {
-        DataSource dataSource = module.findService( DataSource.class ).get();
+        DataSource dataSource = serviceFinder.findService( DataSource.class ).get();
         Connection connection = dataSource.getConnection();
         try {
             connection.getMetaData();

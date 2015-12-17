@@ -54,7 +54,7 @@ public class ThisInjectionTest
     public void givenCompositeWithThisInjectionsWhenInstantiatedThenCompositeIsInjected()
         throws Exception
     {
-        TestComposite testComposite = module.newTransient( TestComposite.class );
+        TestComposite testComposite = transientBuilderFactory.newTransient( TestComposite.class );
 
         assertThat( "Injection worked", testComposite.isInjected() && sideEffectInjected, is( equalTo( true ) ) );
     }

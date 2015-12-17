@@ -28,6 +28,7 @@ import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.structure.MetaInfoHolder;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 
 /**
@@ -207,7 +208,8 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
                                                     Function<PropertyDescriptor, Object> propertyFunction,
                                                     Function<AssociationDescriptor, EntityReference> associationFunction,
                                                     Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
-                                                    Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
+                                                    Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
+    )
         throws EntityTypeNotFoundException, AmbiguousTypeException;
 
     /**
@@ -234,7 +236,8 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
                                                     Function<PropertyDescriptor, Object> propertyFunction,
                                                     Function<AssociationDescriptor, EntityReference> associationFunction,
                                                     Function<AssociationDescriptor, Iterable<EntityReference>> manyAssociationFunction,
-                                                    Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction )
+                                                    Function<AssociationDescriptor, Map<String, EntityReference>> namedAssociationFunction
+    )
         throws EntityTypeNotFoundException, AmbiguousTypeException;
 
     /**
@@ -431,4 +434,12 @@ public interface UnitOfWork extends MetaInfoHolder, AutoCloseable
      * @return The new or updated Entity
      */
     <T extends Identity> T toEntity( Class<T> primaryType, T valueComposite );
+
+    /**
+     * The Module of the UnitOfWork is defined as the Module the UnitOfWorkFactory belonged to from where the
+     * UnitOfWork was created.
+     *
+     * @return the Module where this UnitOfWork was initialized.
+     */
+    ModuleDescriptor module();
 }

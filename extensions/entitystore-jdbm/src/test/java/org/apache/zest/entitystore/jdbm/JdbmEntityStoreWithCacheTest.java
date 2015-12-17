@@ -34,7 +34,7 @@ public class JdbmEntityStoreWithCacheTest
     @Before
     public void testDataCleanup()
     {
-        FileConfiguration fileConfig = module.findService( FileConfiguration.class ).get();
+        FileConfiguration fileConfig = serviceFinder.findService( FileConfiguration.class ).get();
         FileConfigurationDataWiper.registerApplicationPassivationDataWiper( fileConfig, application );
     }
 

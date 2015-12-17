@@ -23,17 +23,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
+import org.apache.zest.api.structure.ModuleDescriptor;
+import org.apache.zest.api.value.ValueSerializationException;
+import org.apache.zest.spi.value.ValueDeserializerAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.apache.zest.api.injection.scope.Service;
-import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.service.ServiceReference;
-import org.apache.zest.api.structure.Application;
-import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.value.ValueDeserializer;
-import org.apache.zest.api.value.ValueSerializationException;
-import org.apache.zest.spi.value.ValueDeserializerAdapter;
 
 /**
  * ValueDeserializer reading Values from JSON documents using org.json.
@@ -42,31 +37,15 @@ public class OrgJsonValueDeserializer
     extends ValueDeserializerAdapter<JSONTokener, Object>
 {
 
-    public OrgJsonValueDeserializer(
-        @Structure Application application,
-        @Structure Module module,
-        @Service ServiceReference<ValueDeserializer> serviceRef )
-    {
-        super( application, module, serviceRef );
-    }
-
-    /* package */ OrgJsonValueDeserializer(
-        Application application,
-        Module module,
-        Function<Application, Module> valuesModuleFinder )
-    {
-        super( application, module, valuesModuleFinder );
-    }
-
     @Override
-    protected JSONTokener adaptInput( InputStream input )
+    protected JSONTokener adaptInput( ModuleDescriptor module, InputStream input )
         throws Exception
     {
         return new JSONTokener( new InputStreamReader( input, "UTF-8" ) );
     }
 
     @Override
-    protected Object readPlainValue( JSONTokener input )
+    protected Object readPlainValue( ModuleDescriptor module, JSONTokener input )
         throws Exception
     {
         Object nextValue = input.nextValue();
@@ -75,18 +54,20 @@ public class OrgJsonValueDeserializer
             return null;
         }
         else // Object or Array
-        if( JSONObject.class.isAssignableFrom( nextValue.getClass() )
-            || JSONArray.class.isAssignableFrom( nextValue.getClass() ) )
-        {
-            throw new ValueSerializationException( "Asked for a Value but found an Object or an Array." );
-        }
+            if( JSONObject.class.isAssignableFrom( nextValue.getClass() )
+                || JSONArray.class.isAssignableFrom( nextValue.getClass() ) )
+            {
+                throw new ValueSerializationException( "Asked for a Value but found an Object or an Array." );
+            }
         return nextValue;
     }
 
     @Override
-    protected <T> Collection<T> readArrayInCollection( JSONTokener input,
+    protected <T> Collection<T> readArrayInCollection( ModuleDescriptor module,
+                                                       JSONTokener input,
                                                        Function<JSONTokener, T> deserializer,
-                                                       Collection<T> collection )
+                                                       Collection<T> collection
+    )
         throws Exception
     {
         char c = input.nextClean();
@@ -129,7 +110,7 @@ public class OrgJsonValueDeserializer
             return collection;
         }
         input.back();
-        for( ;; )
+        for(; ; )
         {
             if( input.nextClean() == ',' )
             {
@@ -144,32 +125,34 @@ public class OrgJsonValueDeserializer
             c = input.nextClean();
             switch( c )
             {
-                case ';':
-                case ',':
-                    if( input.nextClean() == ']' )
-                    {
-                        return collection;
-                    }
-                    input.back();
-                    break;
-                case ']':
-                case ')':
-                    if( q != c )
-                    {
-                        throw input.syntaxError( "Expected a '" + Character.valueOf( q ) + "'" );
-                    }
+            case ';':
+            case ',':
+                if( input.nextClean() == ']' )
+                {
                     return collection;
-                default:
-                    throw input.syntaxError( "Expected a ',' or ']'" );
+                }
+                input.back();
+                break;
+            case ']':
+            case ')':
+                if( q != c )
+                {
+                    throw input.syntaxError( "Expected a '" + Character.valueOf( q ) + "'" );
+                }
+                return collection;
+            default:
+                throw input.syntaxError( "Expected a ',' or ']'" );
             }
         }
     }
 
     @Override
-    protected <K, V> Map<K, V> readMapInMap( JSONTokener input,
+    protected <K, V> Map<K, V> readMapInMap( ModuleDescriptor module,
+                                             JSONTokener input,
                                              Function<JSONTokener, K> keyDeserializer,
                                              Function<JSONTokener, V> valueDeserializer,
-                                             Map<K, V> map )
+                                             Map<K, V> map
+    )
         throws Exception
     {
         char c = input.nextClean();
@@ -213,7 +196,7 @@ public class OrgJsonValueDeserializer
         }
         input.back();
 
-        for( ;; )
+        for(; ; )
         {
             if( input.nextClean() == ',' )
             {
@@ -238,14 +221,14 @@ public class OrgJsonValueDeserializer
                     c = input.nextClean();
                     switch( c )
                     {
-                        case 0:
-                            throw input.syntaxError( "A JSONObject text must end with '}'" );
-                        case '}':
-                            breakIteration = true;
-                            continue;
-                        default:
-                            input.back();
-                            objectKey = input.nextValue().toString();
+                    case 0:
+                        throw input.syntaxError( "A JSONObject text must end with '}'" );
+                    case '}':
+                        breakIteration = true;
+                        continue;
+                    default:
+                        input.back();
+                        objectKey = input.nextValue().toString();
                     }
 
                     /*
@@ -282,20 +265,20 @@ public class OrgJsonValueDeserializer
                      */
                     switch( input.nextClean() )
                     {
-                        case ';':
-                        case ',':
-                            if( input.nextClean() == '}' )
-                            {
-                                breakIteration = true;
-                                continue;
-                            }
-                            input.back();
-                            continue;
-                        case '}':
+                    case ';':
+                    case ',':
+                        if( input.nextClean() == '}' )
+                        {
                             breakIteration = true;
                             continue;
-                        default:
-                            throw input.syntaxError( "Expected a ',' or '}'" );
+                        }
+                        input.back();
+                        continue;
+                    case '}':
+                        breakIteration = true;
+                        continue;
+                    default:
+                        throw input.syntaxError( "Expected a ',' or '}'" );
                     }
                 }
                 if( key != null )
@@ -306,23 +289,23 @@ public class OrgJsonValueDeserializer
             c = input.nextClean();
             switch( c )
             {
-                case ';':
-                case ',':
-                    if( input.nextClean() == ']' )
-                    {
-                        return map;
-                    }
-                    input.back();
-                    break;
-                case ']':
-                case ')':
-                    if( q != c )
-                    {
-                        throw input.syntaxError( "Expected a '" + Character.valueOf( q ) + "'" );
-                    }
+            case ';':
+            case ',':
+                if( input.nextClean() == ']' )
+                {
                     return map;
-                default:
-                    throw input.syntaxError( "Expected a ',' or ']'" );
+                }
+                input.back();
+                break;
+            case ']':
+            case ')':
+                if( q != c )
+                {
+                    throw input.syntaxError( "Expected a '" + Character.valueOf( q ) + "'" );
+                }
+                return map;
+            default:
+                throw input.syntaxError( "Expected a ',' or ']'" );
             }
         }
     }
@@ -331,7 +314,9 @@ public class OrgJsonValueDeserializer
     // Deserialization - Tree parsing
     //
     @Override
-    protected JSONObject readObjectTree( JSONTokener input )
+    protected JSONObject readObjectTree( ModuleDescriptor module,
+                                         JSONTokener input
+    )
         throws Exception
     {
         Object objectTree = input.nextValue();
@@ -343,7 +328,7 @@ public class OrgJsonValueDeserializer
     }
 
     @Override
-    protected Object asSimpleValue( Object inputNode )
+    protected Object asSimpleValue( ModuleDescriptor module, Object inputNode )
         throws Exception
     {
         if( JSONObject.NULL.equals( inputNode ) )
@@ -358,7 +343,7 @@ public class OrgJsonValueDeserializer
     }
 
     @Override
-    protected boolean isObjectValue( Object inputNode )
+    protected boolean isObjectValue( ModuleDescriptor module, Object inputNode )
         throws Exception
     {
         if( JSONObject.NULL.equals( inputNode ) )
@@ -369,7 +354,7 @@ public class OrgJsonValueDeserializer
     }
 
     @Override
-    protected boolean objectHasField( Object inputNode, String key )
+    protected boolean objectHasField( ModuleDescriptor module, Object inputNode, String key )
         throws Exception
     {
         if( JSONObject.NULL.equals( inputNode ) )
@@ -385,7 +370,11 @@ public class OrgJsonValueDeserializer
     }
 
     @Override
-    protected <T> T getObjectFieldValue( Object inputNode, String key, Function<Object, T> valueDeserializer )
+    protected <T> T getObjectFieldValue( ModuleDescriptor module,
+                                         Object inputNode,
+                                         String key,
+                                         Function<Object, T> valueDeserializer
+    )
         throws Exception
     {
         JSONObject json = (JSONObject) inputNode;
@@ -399,7 +388,11 @@ public class OrgJsonValueDeserializer
     }
 
     @Override
-    protected <T> void putArrayNodeInCollection( Object inputNode, Function<Object, T> deserializer, Collection<T> collection )
+    protected <T> void putArrayNodeInCollection( ModuleDescriptor module,
+                                                 Object inputNode,
+                                                 Function<Object, T> deserializer,
+                                                 Collection<T> collection
+    )
         throws Exception
     {
         if( JSONObject.NULL.equals( inputNode ) )
@@ -420,7 +413,12 @@ public class OrgJsonValueDeserializer
     }
 
     @Override
-    protected <K, V> void putArrayNodeInMap( Object inputNode, Function<Object, K> keyDeserializer, Function<Object, V> valueDeserializer, Map<K, V> map )
+    protected <K, V> void putArrayNodeInMap( ModuleDescriptor module,
+                                             Object inputNode,
+                                             Function<Object, K> keyDeserializer,
+                                             Function<Object, V> valueDeserializer,
+                                             Map<K, V> map
+    )
         throws Exception
     {
         if( JSONObject.NULL.equals( inputNode ) )
@@ -452,7 +450,11 @@ public class OrgJsonValueDeserializer
     }
 
     @Override
-    protected <V> void putObjectNodeInMap( Object inputNode, Function<Object, V> valueDeserializer, Map<String, V> map )
+    protected <V> void putObjectNodeInMap( ModuleDescriptor module,
+                                           Object inputNode,
+                                           Function<Object, V> valueDeserializer,
+                                           Map<String, V> map
+    )
         throws Exception
     {
         if( JSONObject.NULL.equals( inputNode ) )

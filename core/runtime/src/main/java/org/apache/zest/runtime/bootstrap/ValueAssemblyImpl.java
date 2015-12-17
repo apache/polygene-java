@@ -18,30 +18,39 @@
  */
 package org.apache.zest.runtime.bootstrap;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Member;
+import java.util.List;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.GenericAssociationInfo;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
-import org.apache.zest.api.common.*;
+import org.apache.zest.api.common.InvalidApplicationException;
+import org.apache.zest.api.common.MetaInfo;
+import org.apache.zest.api.common.Optional;
+import org.apache.zest.api.common.QualifiedName;
+import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.property.GenericPropertyInfo;
 import org.apache.zest.api.property.Property;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.StateDeclarations;
 import org.apache.zest.bootstrap.ValueAssembly;
-import org.apache.zest.runtime.association.*;
+import org.apache.zest.runtime.association.AssociationModel;
+import org.apache.zest.runtime.association.AssociationsModel;
+import org.apache.zest.runtime.association.ManyAssociationModel;
+import org.apache.zest.runtime.association.ManyAssociationsModel;
+import org.apache.zest.runtime.association.NamedAssociationModel;
+import org.apache.zest.runtime.association.NamedAssociationsModel;
 import org.apache.zest.runtime.composite.StateModel;
 import org.apache.zest.runtime.composite.ValueConstraintsInstance;
 import org.apache.zest.runtime.composite.ValueConstraintsModel;
 import org.apache.zest.runtime.property.PropertyModel;
 import org.apache.zest.runtime.value.ValueModel;
 import org.apache.zest.runtime.value.ValueStateModel;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Member;
-import java.util.List;
 
 import static org.apache.zest.api.util.Annotations.isType;
 import static org.apache.zest.api.util.Classes.typeOf;
@@ -73,9 +82,9 @@ public final class ValueAssemblyImpl
         return new ValueStateModel( propertiesModel, associationsModel, manyAssociationsModel, namedAssociationsModel );
     }
 
-    ValueModel newValueModel(
-        StateDeclarations stateDeclarations,
-        AssemblyHelper helper
+    ValueModel newValueModel( ModuleDescriptor module,
+                              StateDeclarations stateDeclarations,
+                              AssemblyHelper helper
     )
     {
         try
@@ -86,7 +95,7 @@ public final class ValueAssemblyImpl
             buildComposite( helper, stateDeclarations );
 
             return new ValueModel(
-                types, visibility, metaInfo, mixinsModel, (ValueStateModel) stateModel, compositeMethodsModel );
+                module, types, visibility, metaInfo, mixinsModel, (ValueStateModel) stateModel, compositeMethodsModel );
         }
         catch( Exception e )
         {
@@ -134,7 +143,7 @@ public final class ValueAssemblyImpl
                                               List<Class<?>> constraintClasses
     )
     {
-        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn(accessor);
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
         ValueConstraintsModel valueConstraintsModel = constraintsFor( annotations.stream(), GenericPropertyInfo.propertyTypeOf( accessor ), ( (Member) accessor )
             .getName(), optional, constraintClasses, accessor );
@@ -153,7 +162,7 @@ public final class ValueAssemblyImpl
                                                  List<Class<?>> constraintClasses
     )
     {
-        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn(accessor);
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
 
         // Constraints for Association references
@@ -181,7 +190,7 @@ public final class ValueAssemblyImpl
                                                          List<Class<?>> constraintClasses
     )
     {
-        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn(accessor);
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
 
         // Constraints for entities in ManyAssociation
@@ -208,7 +217,7 @@ public final class ValueAssemblyImpl
                                                            List<Class<?>> constraintClasses
     )
     {
-        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn(accessor);
+        List<Annotation> annotations = Annotations.findAccessorAndTypeAnnotationsIn( accessor );
         boolean optional = annotations.stream().anyMatch( isType( Optional.class ) );
 
         // Constraints for entities in NamedAssociation

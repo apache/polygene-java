@@ -49,8 +49,8 @@ public class Qi230IssueTest
     public void whenDerefencingInsideConcernThisExpectItToWork()
         throws Exception
     {
-        Result result = module.findService( Result.class ).get();
-        Some some = module.findService( Some.class ).get();
+        Result result = serviceFinder.findService( Result.class ).get();
+        Some some = serviceFinder.findService( Some.class ).get();
         assertEquals( "method()", some.method() );
         assertEquals( some.identity(), result.some().identity() );
         assertEquals( some.identity().get(), result.some().identity().get() );

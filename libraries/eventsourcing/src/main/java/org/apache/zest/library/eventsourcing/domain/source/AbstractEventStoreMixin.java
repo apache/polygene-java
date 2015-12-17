@@ -29,6 +29,7 @@ import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.io.Output;
 import org.apache.zest.io.Receiver;
@@ -56,7 +57,7 @@ public abstract class AbstractEventStoreMixin
     protected Lock lock = new ReentrantLock();
 
     @Structure
-    protected Module module;
+    protected ModuleDescriptor module;
 
     private ExecutorService transactionNotifier;
 

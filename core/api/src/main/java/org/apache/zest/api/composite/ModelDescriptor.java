@@ -20,6 +20,7 @@ package org.apache.zest.api.composite;
 
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.structure.MetaInfoHolder;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.HasTypes;
 
 /**
@@ -28,6 +29,12 @@ import org.apache.zest.api.type.HasTypes;
 public interface ModelDescriptor extends HasTypes, MetaInfoHolder
 {
     Visibility visibility();
+
+    /** The Module that the Model is declared in.
+     *
+     * @return The Module that this Model was declared in.
+     */
+    ModuleDescriptor module();
 
     boolean isAssignableTo( Class<?> type );
 }

@@ -43,7 +43,6 @@ import org.apache.zest.api.sideeffect.SideEffectsDescriptor;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.ModuleDescriptor;
-import org.apache.zest.api.structure.UsedLayersDescriptor;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 
@@ -130,13 +129,13 @@ public final class ApplicationDetailDescriptorBuilder
                 currLayerDescriptor = getLayerDetailDescriptor( layerDescriptor );
                 applicationDescriptor.addLayer( currLayerDescriptor );
 
-                UsedLayersDescriptor usedLayesDescriptor = layerDescriptor.usedLayers();
-                Iterable<? extends LayerDescriptor> usedLayers = usedLayesDescriptor.layers();
-                for( LayerDescriptor usedLayer : usedLayers )
-                {
-                    LayerDetailDescriptor usedLayerDetailDesc = getLayerDetailDescriptor( usedLayer );
-                    currLayerDescriptor.addUsedLayer( usedLayerDetailDesc );
-                }
+                layerDescriptor.usedLayers().layers().forEach(
+                    usedLayer ->
+                    {
+                        LayerDetailDescriptor usedLayerDetailDesc = getLayerDetailDescriptor( usedLayer );
+                        currLayerDescriptor.addUsedLayer( usedLayerDetailDesc );
+                    }
+                );
             }
             else if( visited instanceof ModuleDescriptor )
             {
@@ -480,5 +479,4 @@ public final class ApplicationDetailDescriptorBuilder
             currMethodSideEffectDescriptor = null;
         }
     }
-
 }

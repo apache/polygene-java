@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.stream.Stream;
 import org.apache.zest.api.ZestAPI;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 
 /**
  * Thread-associated composites. This is basically a ThreadLocal which maintains a reference
@@ -30,10 +30,10 @@ import org.apache.zest.api.structure.Module;
 public class CompositeContext<T extends TransientComposite>
     extends ThreadLocal<T>
 {
-    private Module module;
+    private ModuleDescriptor module;
     private Class<T> type;
 
-    public CompositeContext( Module module, Class<T> type )
+    public CompositeContext( ModuleDescriptor module, Class<T> type )
     {
         this.module = module;
         this.type = type;
@@ -42,7 +42,7 @@ public class CompositeContext<T extends TransientComposite>
     @Override
     protected T initialValue()
     {
-        return module.newTransient( type );
+        return module.instance().newTransient( type );
     }
 
     @SuppressWarnings( "unchecked" )

@@ -92,7 +92,7 @@ public class ApplicationEventTest
     @Test
     public void testApplicationEvent() throws Exception
     {
-        Users users = module.newTransient( Users.class );
+        Users users = transientBuilderFactory.newTransient( Users.class );
 
         Principal administratorPrincipal = new Principal()
         {

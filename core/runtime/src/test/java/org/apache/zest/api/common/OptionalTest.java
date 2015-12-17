@@ -50,28 +50,28 @@ public class OptionalTest
     @Test
     public void givenOptionalMethodWhenCorrectInvokeThenNoException()
     {
-        TestComposite instance = module.newTransient( TestComposite.class );
+        TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
         instance.doStuff( "Hello WOrld", "Hello World" );
     }
 
     @Test( expected = ConstraintViolationException.class )
     public void givenOptionalMethodWhenMandatoryMissingThenException()
     {
-        TestComposite instance = module.newTransient( TestComposite.class );
+        TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
         instance.doStuff( "Hello World", null );
     }
 
     @Test
     public void givenOptionalMethodWhenOptionalMissingThenNoException()
     {
-        TestComposite instance = module.newTransient( TestComposite.class );
+        TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
         instance.doStuff( null, "Hello World" );
     }
 
     @Test
     public void givenOptionalPropertyWhenOptionalMissingThenNoException()
     {
-        TransientBuilder<TestComposite2> builder = module.newTransientBuilder( TestComposite2.class );
+        TransientBuilder<TestComposite2> builder = transientBuilderFactory.newTransientBuilder( TestComposite2.class );
         builder.prototype().mandatoryProperty().set( "Hello World" );
         TestComposite2 testComposite2 = builder.newInstance();
     }
@@ -79,7 +79,7 @@ public class OptionalTest
     @Test
     public void givenOptionalPropertyWhenOptionalSetThenNoException()
     {
-        TransientBuilder<TestComposite2> builder = module.newTransientBuilder( TestComposite2.class );
+        TransientBuilder<TestComposite2> builder = transientBuilderFactory.newTransientBuilder( TestComposite2.class );
         builder.prototype().mandatoryProperty().set( "Hello World" );
         builder.prototype().optionalProperty().set( "Hello World" );
         TestComposite2 testComposite2 = builder.newInstance();
@@ -88,7 +88,7 @@ public class OptionalTest
     @Test( expected = ConstraintViolationException.class )
     public void givenMandatoryPropertyWhenMandatoryMissingThenException()
     {
-        TestComposite2 testComposite2 = module.newTransient( TestComposite2.class );
+        TestComposite2 testComposite2 = transientBuilderFactory.newTransient( TestComposite2.class );
     }
 
     @Test

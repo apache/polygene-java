@@ -45,7 +45,7 @@ public class PrivateMixinTest
     @Test
     public void privateMixinFieldAndConstructorInjection()
     {
-        SpeakComposite test = module.newTransient( SpeakComposite.class );
+        SpeakComposite test = transientBuilderFactory.newTransient( SpeakComposite.class );
         assertThat( "Speak", test.speak(), is( equalTo( "I say it works!" ) ) );
     }
 

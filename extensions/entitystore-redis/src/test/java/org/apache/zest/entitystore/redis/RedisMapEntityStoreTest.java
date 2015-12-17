@@ -59,7 +59,7 @@ public class RedisMapEntityStoreTest
         throws Exception
     {
         super.setUp();
-        RedisMapEntityStoreService es = module.findService( RedisMapEntityStoreService.class ).get();
+        RedisMapEntityStoreService es = serviceFinder.findService( RedisMapEntityStoreService.class ).get();
         jedisPool = es.jedisPool();
 
     }

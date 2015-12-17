@@ -27,7 +27,7 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.service.ImportedServiceDescriptor;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.ServiceImporterException;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
@@ -89,6 +89,12 @@ public final class ImportedServiceModel
     }
 
     @Override
+    public ModuleDescriptor module()
+    {
+        return null;
+    }
+
+    @Override
     public <T> T metaInfo( Class<T> infoType )
     {
         return metaInfo.get( infoType );
@@ -119,7 +125,7 @@ public final class ImportedServiceModel
     }
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    public ActivatorsInstance<?> newActivatorsInstance( Module module )
+    public ActivatorsInstance<?> newActivatorsInstance( ModuleDescriptor module )
         throws Exception
     {
         return new ActivatorsInstance( activatorsModel.newInstances( module ) );
@@ -143,11 +149,11 @@ public final class ImportedServiceModel
     }
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    public <T> ImportedServiceInstance<T> importInstance( Module module )
+    public <T> ImportedServiceInstance<T> importInstance( ModuleDescriptor module )
     {
         try
         {
-            ServiceImporter importer = module.newObject( serviceImporter );
+            ServiceImporter importer = module.instance().newObject( serviceImporter );
             T instance = (T) importer.importService( this );
             return new ImportedServiceInstance<>( instance, importer );
         }

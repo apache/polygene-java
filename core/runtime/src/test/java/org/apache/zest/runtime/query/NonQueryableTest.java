@@ -45,7 +45,7 @@ public class NonQueryableTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            QueryBuilder<Abc> builder = module.newQueryBuilder( Abc.class );
+            QueryBuilder<Abc> builder = queryBuilderFactory.newQueryBuilder( Abc.class );
             Abc proto = templateFor( Abc.class );
             builder.where( eq( proto.isValid(), Boolean.TRUE ) );
             Assert.fail( "Exception was expected." );
@@ -66,7 +66,7 @@ public class NonQueryableTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            module.newQueryBuilder( Abc2.class );
+            queryBuilderFactory.newQueryBuilder( Abc2.class );
             Assert.fail( "Exception was expected." );
         }
         catch( QueryException e )

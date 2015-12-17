@@ -141,7 +141,7 @@ public class ContextResourceClientFactoryTest
         throws Exception
     {
         server = new Server( Protocol.HTTP, 8888 );
-        ContextRestlet restlet = module.newObject( ContextRestlet.class, new org.restlet.Context() );
+        ContextRestlet restlet = objectFactory.newObject( ContextRestlet.class, new org.restlet.Context() );
 
         ChallengeAuthenticator guard = new ChallengeAuthenticator(null, ChallengeScheme.HTTP_BASIC, "testRealm");
         MapVerifier mapVerifier = new MapVerifier();
@@ -156,7 +156,7 @@ public class ContextResourceClientFactoryTest
         //START SNIPPET: client-create1
         Client client =   new Client( Protocol.HTTP );
 
-        ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client );
+        ContextResourceClientFactory contextResourceClientFactory = objectFactory.newObject( ContextResourceClientFactory.class, client );
         contextResourceClientFactory.setAcceptedMediaTypes( MediaType.APPLICATION_JSON );
         //END SNIPPET: client-create1
 
@@ -249,7 +249,7 @@ public class ContextResourceClientFactoryTest
             @Override
             public HandlerCommand handleResult( TestQuery result, ContextResourceClient client )
             {
-                ValueBuilder<TestQuery> builder = module.newValueBuilderWithPrototype( result );
+                ValueBuilder<TestQuery> builder = valueBuilderFactory.newValueBuilderWithPrototype( result );
 
                 builder.prototype().abc().set( "abc" + builder.prototype().abc().get() );
 

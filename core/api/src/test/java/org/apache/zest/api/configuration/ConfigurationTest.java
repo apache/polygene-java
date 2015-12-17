@@ -49,7 +49,7 @@ public class ConfigurationTest extends AbstractZestTest
     public void testConfiguration()
         throws Exception
     {
-        MyService service = module.findService( MyService.class ).get();
+        MyService service = serviceFinder.findService( MyService.class ).get();
         PersonDetails details = service.details();
         assertThat(details.name().get(), equalTo( "Niclas" ) );
         assertThat(details.address().get().street1().get(), equalTo( "Henan Lu 555" ) );

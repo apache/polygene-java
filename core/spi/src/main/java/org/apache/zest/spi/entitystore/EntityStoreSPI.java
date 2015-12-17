@@ -16,8 +16,8 @@ package org.apache.zest.spi.entitystore;
 
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.spi.entity.EntityState;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * EntityStore SPI.
@@ -28,10 +28,9 @@ public interface EntityStoreSPI
                                 EntityReference identity, EntityDescriptor entityDescriptor
     );
 
-    EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleSpi module, EntityReference identity );
+    EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleDescriptor module, EntityReference identity );
 
     String versionOf( EntityStoreUnitOfWork unitOfWork, EntityReference identity );
 
-    StateCommitter applyChanges( EntityStoreUnitOfWork unitOfWork, Iterable<EntityState> state
-    );
+    StateCommitter applyChanges( EntityStoreUnitOfWork unitOfWork, Iterable<EntityState> state );
 }

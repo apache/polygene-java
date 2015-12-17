@@ -179,7 +179,7 @@ public class HasUoWFileTest
     @Before
     public void beforeTest()
     {
-        testService = module.<TestService>findService( TestService.class ).get();
+        testService = serviceFinder.findService( TestService.class ).get();
     }
 
     @Test

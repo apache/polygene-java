@@ -27,8 +27,6 @@ import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 
-import static org.apache.zest.functional.Iterables.first;
-
 final class ServiceLocator
     implements HierarchicalVisitor<Object, Object, RuntimeException>
 {

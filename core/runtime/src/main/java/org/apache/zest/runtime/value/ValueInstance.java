@@ -41,12 +41,11 @@ public final class ValueInstance
     }
 
     public ValueInstance( ValueModel compositeModel,
-                          ModuleSpi moduleInstance,
                           Object[] mixins,
                           ValueStateInstance state
     )
     {
-        super( compositeModel, moduleInstance, mixins, state );
+        super( compositeModel, mixins, state );
     }
 
     /**

@@ -80,9 +80,9 @@ public class AbstractAnyQueryTest
         throws Exception
     {
         super.setUp();
-        TestData.populate( module );
+        TestData.populate( module.instance() );
 
-        this.unitOfWork = this.module.unitOfWorkFactory().newUnitOfWork();
+        this.unitOfWork = this.module.instance().unitOfWorkFactory().newUnitOfWork();
     }
 
 

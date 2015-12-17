@@ -224,14 +224,14 @@ public class AlarmPointImplTest extends AbstractZestTest
 
     private AlarmPoint createAlarm( String name )
     {
-        ServiceReference<AlarmSystem> ref = module.findService( AlarmSystem.class );
+        ServiceReference<AlarmSystem> ref = serviceFinder.findService( AlarmSystem.class );
         alarmSystem = ref.get();
         return alarmSystem.createAlarm( name, createCategory( "AlarmPointImplTest" ) );
     }
 
     private AlarmCategory createCategory( String name )
     {
-        ValueBuilder<AlarmCategory> builder = module.newValueBuilder( AlarmCategory.class );
+        ValueBuilder<AlarmCategory> builder = valueBuilderFactory.newValueBuilder( AlarmCategory.class );
         builder.prototype().name().set( name );
         return builder.newInstance();
     }

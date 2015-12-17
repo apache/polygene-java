@@ -59,7 +59,7 @@ public class ApplicationXmlTest extends AbstractZestTest
     public void testApplicationXml()
         throws Exception
     {
-        FileConfiguration fileConfig = (FileConfiguration) module.findService( FileConfiguration.class ).get();
+        FileConfiguration fileConfig = serviceFinder.findService( FileConfiguration.class ).get();
         ApplicationSerializer parser = new ApplicationSerializer();
         Iterable<Statement> graph = parser.serialize( application ); // TODO Fix this
         writeN3( graph );

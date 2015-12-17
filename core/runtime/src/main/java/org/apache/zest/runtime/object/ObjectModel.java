@@ -21,6 +21,7 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.mixin.Initializable;
 import org.apache.zest.api.mixin.InitializationException;
 import org.apache.zest.api.object.ObjectDescriptor;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.composite.ConstructorsModel;
@@ -34,6 +35,7 @@ import org.apache.zest.runtime.injection.InjectionContext;
 public final class ObjectModel
     implements ObjectDescriptor, VisitableHierarchy<Object, Object>
 {
+    private final ModuleDescriptor module;
     private final Class<?> objectType;
     private final Visibility visibility;
     private final MetaInfo metaInfo;
@@ -41,11 +43,13 @@ public final class ObjectModel
     private final InjectedFieldsModel injectedFieldsModel;
     private final InjectedMethodsModel injectedMethodsModel;
 
-    public ObjectModel( Class<?> objectType,
+    public ObjectModel( ModuleDescriptor module,
+                        Class<?> objectType,
                         Visibility visibility,
                         MetaInfo metaInfo
     )
     {
+        this.module = module;
         this.objectType = objectType;
         this.visibility = visibility;
         this.metaInfo = metaInfo;
@@ -66,6 +70,12 @@ public final class ObjectModel
     public Visibility visibility()
     {
         return visibility;
+    }
+
+    @Override
+    public ModuleDescriptor module()
+    {
+        return module;
     }
 
     @Override

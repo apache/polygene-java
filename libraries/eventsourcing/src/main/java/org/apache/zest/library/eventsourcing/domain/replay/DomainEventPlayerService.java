@@ -75,7 +75,7 @@ public interface DomainEventPlayerService
                 {
                     currentEventValue = domainEventValue;
                     // Get the entity
-                    Class entityType = module.classLoader().loadClass( domainEventValue.entityType().get() );
+                    Class entityType = module.descriptor().classLoader().loadClass( domainEventValue.entityType().get() );
                     String id = domainEventValue.entityId().get();
                     Object entity = null;
                     try

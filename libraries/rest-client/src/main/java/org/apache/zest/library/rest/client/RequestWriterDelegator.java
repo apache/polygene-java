@@ -57,7 +57,7 @@ public class RequestWriterDelegator
       {
          try
          {
-            Class writerClass = module.classLoader().loadClass( className.trim() );
+            Class writerClass = module.descriptor().classLoader().loadClass( className.trim() );
             RequestWriter requestWriter = (RequestWriter) module.newObject( writerClass );
             registerRequestWriter(requestWriter);
          } catch (ClassNotFoundException e)

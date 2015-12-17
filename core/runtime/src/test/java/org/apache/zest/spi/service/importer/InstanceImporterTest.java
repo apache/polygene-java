@@ -46,7 +46,7 @@ public class InstanceImporterTest
     @Test
     public void givenSingletonServiceObjectWhenServicesAreInjectedThenSingletonIsFound()
     {
-        module.injectTo( this );
+        module.instance().injectTo( this );
 
         assertThat( "service is injected properly", service.helloWorld(), equalTo( "Hello World" ) );
     }

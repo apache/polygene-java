@@ -155,7 +155,7 @@ public class ApplicationInstance
     }
 
     // Other methods
-    /* package */ void addLayer( LayerInstance layer )
+    void addLayer( LayerInstance layer )
     {
         layer.registerActivationEventListener( activation );
         layerInstances.add( layer );

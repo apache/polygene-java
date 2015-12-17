@@ -19,13 +19,11 @@
  */
 package org.apache.zest.spi.entitystore.helpers;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.apache.zest.api.common.QualifiedName;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
 import org.apache.zest.api.property.PropertyDescriptor;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.ValueType;
 import org.apache.zest.api.value.ValueSerialization;
 import org.apache.zest.api.value.ValueSerializationException;
@@ -34,6 +32,9 @@ import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entity.ManyAssociationState;
 import org.apache.zest.spi.entity.NamedAssociationState;
 import org.apache.zest.spi.entitystore.EntityStoreException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Standard JSON implementation of EntityState.
@@ -51,6 +52,7 @@ public final class JSONEntityState
             JSONKeys.MODIFIED
         };
 
+    private final ModuleDescriptor module;
     private final ValueSerialization valueSerialization;
     private final String version;
     private final EntityReference identity;
@@ -60,23 +62,8 @@ public final class JSONEntityState
     private long lastModified;
     private JSONObject state;
 
-    /* package */ JSONEntityState( long time,
+    /* package */ JSONEntityState( ModuleDescriptor module,
                                    ValueSerialization valueSerialization,
-                                   EntityReference identity,
-                                   EntityDescriptor entityDescriptor,
-                                   JSONObject initialState
-    )
-    {
-        this( valueSerialization,
-              "",
-              time,
-              identity,
-              EntityStatus.NEW,
-              entityDescriptor,
-              initialState );
-    }
-
-    /* package */ JSONEntityState( ValueSerialization valueSerialization,
                                    String version,
                                    long lastModified,
                                    EntityReference identity,
@@ -85,6 +72,7 @@ public final class JSONEntityState
                                    JSONObject state
     )
     {
+        this.module = module;
         this.valueSerialization = valueSerialization;
         this.version = version;
         this.lastModified = lastModified;
@@ -130,7 +118,7 @@ public final class JSONEntityState
                 {
                     return null;
                 }
-                return valueSerialization.deserialize( descriptor.valueType(), json.toString() );
+                return valueSerialization.deserialize( module, descriptor.valueType(), json.toString() );
             }
         }
         catch( ValueSerializationException | JSONException e )

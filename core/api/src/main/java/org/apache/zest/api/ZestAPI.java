@@ -29,7 +29,7 @@ import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.service.ServiceDescriptor;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.value.ValueDescriptor;
 
 /**
@@ -57,7 +57,7 @@ public interface ZestAPI
      *
      * @return The Module instance where the Composite or UnitOfWork belongs to.
      */
-    Module moduleOf( Object compositeOrUow );
+    ModuleDescriptor moduleOf( Object compositeOrUow );
 
     /**
      * Returns the ModelDescriptor of the Composite.

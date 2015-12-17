@@ -51,7 +51,7 @@ public class PropertyMixinInvocationPerformanceTest
     public void testNewInstance()
     {
         {
-            TransientBuilder<SimpleComposite> builder = module.newTransientBuilder( SimpleComposite.class );
+            TransientBuilder<SimpleComposite> builder = transientBuilderFactory.newTransientBuilder( SimpleComposite.class );
             SimpleComposite simple = builder.newInstance();
 
             int rounds = 1;
@@ -62,7 +62,7 @@ public class PropertyMixinInvocationPerformanceTest
         }
 
         {
-            TransientBuilder<SimpleComposite> builder = module.newTransientBuilder( SimpleComposite.class );
+            TransientBuilder<SimpleComposite> builder = transientBuilderFactory.newTransientBuilder( SimpleComposite.class );
             SimpleComposite simple = builder.newInstance();
 
             int rounds = 1;

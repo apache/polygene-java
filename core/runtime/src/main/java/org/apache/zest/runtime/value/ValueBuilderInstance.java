@@ -21,7 +21,6 @@ import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.runtime.composite.StateResolver;
 import org.apache.zest.runtime.structure.ModuleInstance;
-import org.apache.zest.spi.structure.ModelModule;
 
 /**
  * Implementation of ValueBuilder
@@ -33,14 +32,14 @@ public final class ValueBuilderInstance<T>
     private final ModuleInstance currentModule;
     private final ValueInstance prototypeInstance;
 
-    public ValueBuilderInstance( ModelModule<ValueDescriptor> compositeModelModule,
+    public ValueBuilderInstance( ValueDescriptor compositeModel,
                                  ModuleInstance currentModule,
                                  StateResolver stateResolver
     )
     {
-        ValueStateInstance state = new ValueStateInstance( compositeModelModule, currentModule, stateResolver );
-        ValueModel model = (ValueModel) compositeModelModule.model();
-        prototypeInstance = model.newValueInstance( compositeModelModule.module(), state );
+        ValueStateInstance state = new ValueStateInstance( compositeModel, currentModule, stateResolver );
+        ValueModel model = (ValueModel) compositeModel;
+        prototypeInstance = model.newValueInstance( state );
         prototypeInstance.prepareToBuild();
         this.currentModule = currentModule;
     }
@@ -70,7 +69,7 @@ public final class ValueBuilderInstance<T>
     {
         Class<Composite> valueType = (Class<Composite>) prototypeInstance.types().findFirst().orElse( null );
 
-        ModelModule<ValueDescriptor> valueModel = currentModule.typeLookup().lookupValueModel( valueType );
+        ValueDescriptor valueModel = currentModule.typeLookup().lookupValueModel( valueType );
 
         if( valueModel == null )
         {

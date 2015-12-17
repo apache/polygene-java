@@ -17,9 +17,9 @@ package org.apache.zest.spi.entitystore;
 import java.util.HashMap;
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.spi.entity.EntityState;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Default EntityStore UnitOfWork.
@@ -27,18 +27,21 @@ import org.apache.zest.spi.module.ModuleSpi;
 public final class DefaultEntityStoreUnitOfWork
     implements EntityStoreUnitOfWork
 {
+    private final ModuleDescriptor module;
     private EntityStoreSPI entityStoreSPI;
     private String identity;
     private HashMap<EntityReference, EntityState> states = new HashMap<>();
     private Usecase usecase;
     private long currentTime;
 
-    public DefaultEntityStoreUnitOfWork( EntityStoreSPI entityStoreSPI,
+    public DefaultEntityStoreUnitOfWork( ModuleDescriptor module,
+                                         EntityStoreSPI entityStoreSPI,
                                          String identity,
                                          Usecase usecase,
                                          long currentTime
     )
     {
+        this.module = module;
         this.entityStoreSPI = entityStoreSPI;
         this.identity = identity;
         this.usecase = usecase;
@@ -62,7 +65,12 @@ public final class DefaultEntityStoreUnitOfWork
         return usecase;
     }
 
-    // EntityStore
+    @Override
+    public ModuleDescriptor module()
+    {
+        return module;
+    }
+// EntityStore
 
     @Override
     public EntityState newEntityState( EntityReference anIdentity, EntityDescriptor descriptor )
@@ -79,7 +87,7 @@ public final class DefaultEntityStoreUnitOfWork
     }
 
     @Override
-    public EntityState entityStateOf( ModuleSpi module, EntityReference anIdentity )
+    public EntityState entityStateOf( ModuleDescriptor module, EntityReference anIdentity )
         throws EntityNotFoundException
     {
         EntityState entityState = states.get( anIdentity );

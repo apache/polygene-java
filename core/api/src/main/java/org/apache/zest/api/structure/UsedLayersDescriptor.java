@@ -14,10 +14,12 @@
 
 package org.apache.zest.api.structure;
 
+import java.util.stream.Stream;
+
 /**
  * Used Layers Descriptor.
  */
 public interface UsedLayersDescriptor
 {
-    Iterable<? extends LayerDescriptor> layers();
+    Stream<? extends LayerDescriptor> layers();
 }

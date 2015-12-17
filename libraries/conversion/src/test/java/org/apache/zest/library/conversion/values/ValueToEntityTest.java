@@ -89,7 +89,7 @@ public class ValueToEntityTest
     public void givenQualifiedValueWhenCreatingEntityExpectCorrectEntity()
         throws UnitOfWorkCompletionException
     {
-        ValueBuilder<PersonValue> builder = module.newValueBuilder( PersonValue.class );
+        ValueBuilder<PersonValue> builder = valueBuilderFactory.newValueBuilder( PersonValue.class );
         builder.prototype().firstName().set( "Ed" );
         builder.prototype().lastName().set( "Flintstone" );
         builder.prototype().dateOfBirth().set( someBirthDate );
@@ -99,7 +99,7 @@ public class ValueToEntityTest
         try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreatingEntityFromQualifiedValue" ) ) )
         {
             // START SNIPPET: creation
-            ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
+            ValueToEntity conversion = serviceFinder.findService( ValueToEntity.class ).get();
             PersonEntity edEntity = conversion.create( PersonEntity.class, edValue );
             // END SNIPPET: creation
             assertThat( edEntity.firstName(), equalTo( "Ed" ) );
@@ -122,7 +122,7 @@ public class ValueToEntityTest
     public void givenUnqualifiedValueWhenCreatingEntityExpectCorrectEntity()
         throws UnitOfWorkCompletionException
     {
-        ValueBuilder<PersonValue2> builder = module.newValueBuilder( PersonValue2.class );
+        ValueBuilder<PersonValue2> builder = valueBuilderFactory.newValueBuilder( PersonValue2.class );
         builder.prototype().firstName().set( "Ed" );
         builder.prototype().lastName().set( "Flintstone" );
         builder.prototype().dateOfBirth().set( someBirthDate );
@@ -131,7 +131,7 @@ public class ValueToEntityTest
         PersonValue2 edValue = builder.newInstance();
         try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreatingEntityFromUnqualifiedValue" ) ) )
         {
-            ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
+            ValueToEntity conversion = serviceFinder.findService( ValueToEntity.class ).get();
 
             PersonEntity edEntity = conversion.create( PersonEntity.class, "id:Ed", edValue );
 
@@ -156,7 +156,7 @@ public class ValueToEntityTest
     public void givenUnqualifiedValue2WhenCreatingEntityExpectCorrectEntity()
         throws UnitOfWorkCompletionException
     {
-        ValueBuilder<PersonValue3> builder = module.newValueBuilder( PersonValue3.class );
+        ValueBuilder<PersonValue3> builder = valueBuilderFactory.newValueBuilder( PersonValue3.class );
         builder.prototype().firstName().set( "Ed" );
         builder.prototype().lastName().set( "Flintstone" );
         builder.prototype().dateOfBirth().set( someBirthDate );
@@ -165,7 +165,7 @@ public class ValueToEntityTest
         PersonValue3 edValue = builder.newInstance();
         try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreatingEntityFromUnqualifiedValue" ) ) )
         {
-            ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
+            ValueToEntity conversion = serviceFinder.findService( ValueToEntity.class ).get();
 
             PersonEntity edEntity = conversion.create( PersonEntity.class, "id:Ed", edValue );
 
@@ -190,7 +190,7 @@ public class ValueToEntityTest
     public void givenQualifiedValueNotFromSameInterfaceWhenCreatingEntityExpectNonOptionalException()
         throws UnitOfWorkCompletionException
     {
-        ValueBuilder<PersonValue4> builder = module.newValueBuilder( PersonValue4.class );
+        ValueBuilder<PersonValue4> builder = valueBuilderFactory.newValueBuilder( PersonValue4.class );
         builder.prototype().firstName().set( "Ed" );
         builder.prototype().lastName().set( "Flintstone" );
         builder.prototype().dateOfBirth().set( someBirthDate );
@@ -199,7 +199,7 @@ public class ValueToEntityTest
         PersonValue4 edValue = builder.newInstance();
         try( UnitOfWork uow = uowf.newUnitOfWork( newUsecase( "CreatingEntityFromUnqualifiedValue" ) ) )
         {
-            ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
+            ValueToEntity conversion = serviceFinder.findService( ValueToEntity.class ).get();
 
             PersonEntity edEntity = conversion.create( PersonEntity.class, "id:Ed", edValue );
 
@@ -223,7 +223,7 @@ public class ValueToEntityTest
             assertThat( ricky.children().count(), is( 1 ) );
             uow.complete();
         }
-        ValueBuilder<PersonValue> builder = module.newValueBuilder( PersonValue.class );
+        ValueBuilder<PersonValue> builder = valueBuilderFactory.newValueBuilder( PersonValue.class );
         builder.prototype().firstName().set( "Ricky" );
         builder.prototype().lastName().set( "Slaghoople" );
         builder.prototype().dateOfBirth().set( someBirthDate );
@@ -232,7 +232,7 @@ public class ValueToEntityTest
         {
             PersonEntity rickyEntity = uow.get( PersonEntity.class, rickyIdentity );
             // START SNIPPET: update
-            ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
+            ValueToEntity conversion = serviceFinder.findService( ValueToEntity.class ).get();
             conversion.update( rickyEntity, rickyNewStateValue );
             // END SNIPPET: update
 
@@ -259,7 +259,7 @@ public class ValueToEntityTest
             assertThat( ricky.children().count(), is( 1 ) );
             uow.complete();
         }
-        ValueBuilder<PersonValue2> builder = module.newValueBuilder( PersonValue2.class );
+        ValueBuilder<PersonValue2> builder = valueBuilderFactory.newValueBuilder( PersonValue2.class );
         builder.prototype().firstName().set( "Ricky" );
         builder.prototype().lastName().set( "Slaghoople" );
         builder.prototype().dateOfBirth().set( someBirthDate );
@@ -268,7 +268,7 @@ public class ValueToEntityTest
         {
             PersonEntity ricky = uow.get( PersonEntity.class, rickyIdentity );
 
-            ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
+            ValueToEntity conversion = serviceFinder.findService( ValueToEntity.class ).get();
             conversion.update( ricky, newStateValue );
 
             assertThat( ricky.lastName(), equalTo( "Slaghoople" ) );
@@ -294,7 +294,7 @@ public class ValueToEntityTest
             assertThat( ricky.children().count(), is( 1 ) );
             uow.complete();
         }
-        ValueBuilder<PersonValue3> builder = module.newValueBuilder( PersonValue3.class );
+        ValueBuilder<PersonValue3> builder = valueBuilderFactory.newValueBuilder( PersonValue3.class );
         builder.prototype().firstName().set( "Ricky" );
         builder.prototype().lastName().set( "Slaghoople" );
         builder.prototype().dateOfBirth().set( someBirthDate );
@@ -303,7 +303,7 @@ public class ValueToEntityTest
         {
             PersonEntity ricky = uow.get( PersonEntity.class, rickyIdentity );
 
-            ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
+            ValueToEntity conversion = serviceFinder.findService( ValueToEntity.class ).get();
             conversion.update( ricky, newStateValue );
 
             assertThat( ricky.lastName(), equalTo( "Slaghoople" ) );
@@ -329,7 +329,7 @@ public class ValueToEntityTest
             assertThat( ricky.children().count(), is( 1 ) );
             uow.complete();
         }
-        ValueBuilder<PersonValue4> builder = module.newValueBuilder( PersonValue4.class );
+        ValueBuilder<PersonValue4> builder = valueBuilderFactory.newValueBuilder( PersonValue4.class );
         builder.prototype().firstName().set( "Ricky" );
         builder.prototype().lastName().set( "Slaghoople" );
         builder.prototype().dateOfBirth().set( someBirthDate );
@@ -338,7 +338,7 @@ public class ValueToEntityTest
         {
             PersonEntity ricky = uow.get( PersonEntity.class, rickyIdentity );
 
-            ValueToEntity conversion = module.findService( ValueToEntity.class ).get();
+            ValueToEntity conversion = serviceFinder.findService( ValueToEntity.class ).get();
             conversion.update( ricky, newStateValue );
 
             assertThat( ricky.lastName(), equalTo( "Slaghople" ) );

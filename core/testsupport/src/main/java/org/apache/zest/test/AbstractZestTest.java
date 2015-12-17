@@ -14,18 +14,24 @@
 
 package org.apache.zest.test;
 
+import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.After;
-import org.junit.Before;
+import org.apache.zest.api.object.ObjectFactory;
+import org.apache.zest.api.query.QueryBuilderFactory;
+import org.apache.zest.api.service.ServiceFinder;
+import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.spi.module.ModuleSpi;
+import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Base class for Composite tests.
@@ -36,7 +42,23 @@ public abstract class AbstractZestTest extends AbstractZestBaseTest
     @Structure
     protected UnitOfWorkFactory uowf;
 
-    protected ModuleSpi module;
+    @Structure
+    protected TransientBuilderFactory transientBuilderFactory;
+
+    @Structure
+    protected ValueBuilderFactory valueBuilderFactory;
+
+    @Structure
+    protected ServiceFinder serviceFinder;
+
+    @Structure
+    protected ObjectFactory objectFactory;
+
+    @Structure
+    protected QueryBuilderFactory queryBuilderFactory;
+
+    @Structure
+    protected ModuleDescriptor module;
 
     @Before
     @Override
@@ -48,7 +70,7 @@ public abstract class AbstractZestTest extends AbstractZestBaseTest
         {
             return; // failure in Assembly.
         }
-        module = (ModuleSpi) application.findModule( "Layer 1", "Module 1" );
+        Module module = application.findModule( "Layer 1", "Module 1" );
         module.injectTo( this );
     }
 

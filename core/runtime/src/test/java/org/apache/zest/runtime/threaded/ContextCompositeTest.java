@@ -39,9 +39,9 @@ public class ContextCompositeTest
     {
         for( int i = 0; i < 5; i++ )
         {
-            TransientBuilder<MyCompositeContext> builder = module.newTransientBuilder( MyCompositeContext.class );
+            TransientBuilder<MyCompositeContext> builder = transientBuilderFactory.newTransientBuilder( MyCompositeContext.class );
             builder.prototypeFor( MyData.class ).data().set( 0 );
-            MyCompositeContext context = new CompositeContext<MyCompositeContext>( module, MyCompositeContext.class ).proxy();
+            MyCompositeContext context = new CompositeContext<>( module, MyCompositeContext.class ).proxy();
 
             Worker w1;
             Worker w2;

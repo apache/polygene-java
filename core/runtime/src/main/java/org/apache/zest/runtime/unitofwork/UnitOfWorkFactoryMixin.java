@@ -21,11 +21,9 @@
 package org.apache.zest.runtime.unitofwork;
 
 import java.util.Stack;
-import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.composite.TransientBuilderFactory;
 import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.injection.scope.Uses;
 import org.apache.zest.api.metrics.MetricsProvider;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
@@ -64,7 +62,7 @@ public class UnitOfWorkFactoryMixin
     @Override
     public UnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
     {
-        UnitOfWorkInstance unitOfWorkInstance = new UnitOfWorkInstance( usecase, currentTime, metricsProvider() );
+        UnitOfWorkInstance unitOfWorkInstance = new UnitOfWorkInstance( module, usecase, currentTime, metricsProvider() );
         return tbf.newTransient( UnitOfWork.class, unitOfWorkInstance );
     }
 

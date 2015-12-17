@@ -76,7 +76,7 @@ public class MetricsTest extends AbstractZestTest
     @Test
     public void givenNonInstrumentedCompositeWhenCallingUpdateNameExpectNoReport()
     {
-        Country underTest = module.newTransient( Country1.class );
+        Country underTest = transientBuilderFactory.newTransient( Country1.class );
         String result = runTest( underTest );
         result = result.replace( "\r", "" );
         assertTrue( lastLine( result, 1 ).contains( "=====================" ) );
@@ -86,7 +86,7 @@ public class MetricsTest extends AbstractZestTest
     @Test
     public void givenInstrumentedWithAllCompositeWhenCallingUpdateNameExpectReport()
     {
-        Country underTest = module.newTransient( Country2.class );
+        Country underTest = transientBuilderFactory.newTransient( Country2.class );
         String result = runTest( underTest );
         result = result.replace( "\r", "" );
         assertThat( lastLine( result, 34 ), equalTo( "org.apache.zest.library.metrics.Country.SomeApplication:" ) );
@@ -103,7 +103,7 @@ public class MetricsTest extends AbstractZestTest
     @Test
     public void givenOneMethodAnnotatedWhenCallingUpdateNameExpectReportForThatMethodOnly()
     {
-        Country underTest = module.newTransient( Country3.class );
+        Country underTest = transientBuilderFactory.newTransient( Country3.class );
         String result = runTest( underTest );
         result = result.replace( "\r", "" );
         assertThat( lastLine( result, 17 ), equalTo( "org.apache.zest.library.metrics.Country.SomeApplication:" ) );

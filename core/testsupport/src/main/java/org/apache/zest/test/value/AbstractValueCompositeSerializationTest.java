@@ -23,11 +23,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.structure.Module;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -68,6 +69,9 @@ public abstract class AbstractValueCompositeSerializationTest
     @Rule
     public TestName testName = new TestName();
 
+    @Structure
+    Module moduleInstance;
+
     @Override
     public void assemble( ModuleAssembly module )
         throws AssemblyException
@@ -77,12 +81,6 @@ public abstract class AbstractValueCompositeSerializationTest
 
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module.layer().module( "persistence" ) );
         module.entities( BarEntity.class );
-    }
-
-    @Before
-    public void before()
-    {
-        module.injectTo( this );
     }
 
     @Service
@@ -103,7 +101,7 @@ public abstract class AbstractValueCompositeSerializationTest
             String stateString = output.toString( "UTF-8" );
 
             // Deserialize using Module API
-            SomeValue some2 = module.newValueFromSerializedState( SomeValue.class, stateString );
+            SomeValue some2 = moduleInstance.newValueFromSerializedState( SomeValue.class, stateString );
 
             assertThat( "Same value toString", some.toString(), equalTo( some2.toString() ) );
             assertThat( "Same value", some, equalTo( some2 ) );
@@ -130,11 +128,11 @@ public abstract class AbstractValueCompositeSerializationTest
      */
     private SomeValue buildSomeValue()
     {
-        ValueBuilder<SomeValue> builder = module.newValueBuilder( SomeValue.class );
+        ValueBuilder<SomeValue> builder = moduleInstance.newValueBuilder( SomeValue.class );
         SomeValue proto = builder.prototype();
-        proto.anotherList().get().add( module.newValue( AnotherValue.class ) );
+        proto.anotherList().get().add( moduleInstance.newValue( AnotherValue.class ) );
 
-        ValueBuilder<SpecificCollection> specificColBuilder = module.newValueBuilder( SpecificCollection.class );
+        ValueBuilder<SpecificCollection> specificColBuilder = moduleInstance.newValueBuilder( SpecificCollection.class );
         SpecificCollection specificColProto = specificColBuilder.prototype();
         List<String> genericList = new ArrayList<>( 2 );
         genericList.add( "Some" );
@@ -173,10 +171,10 @@ public abstract class AbstractValueCompositeSerializationTest
         proto.another().set( anotherValue1 );
         // proto.arrayOfValues().set( new AnotherValue[] { anotherValue1, anotherValue2, anotherValue3 } );
         proto.serializable().set( new SerializableObject() );
-        proto.foo().set( module.newValue( FooValue.class ) );
-        proto.fooValue().set( module.newValue( FooValue.class ) );
-        proto.customFoo().set( module.newValue( CustomFooValue.class ) );
-        proto.customFooValue().set( module.newValue( CustomFooValue.class ) );
+        proto.foo().set( moduleInstance.newValue( FooValue.class ) );
+        proto.fooValue().set( moduleInstance.newValue( FooValue.class ) );
+        proto.customFoo().set( moduleInstance.newValue( CustomFooValue.class ) );
+        proto.customFooValue().set( moduleInstance.newValue( CustomFooValue.class ) );
 
         // Arrays
         // TODO FIXME Disabled as ValueComposite equality fails here
@@ -206,7 +204,7 @@ public abstract class AbstractValueCompositeSerializationTest
 
     private AnotherValue createAnotherValue( String val1, String val2 )
     {
-        ValueBuilder<AnotherValue> valueBuilder = module.newValueBuilder( AnotherValue.class );
+        ValueBuilder<AnotherValue> valueBuilder = moduleInstance.newValueBuilder( AnotherValue.class );
         valueBuilder.prototype().val1().set( val1 );
         valueBuilder.prototypeFor( AnotherValueInternalState.class ).val2().set( val2 );
         return valueBuilder.newInstance();

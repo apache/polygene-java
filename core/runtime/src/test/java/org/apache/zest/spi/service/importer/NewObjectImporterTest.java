@@ -45,8 +45,6 @@ public class NewObjectImporterTest
     @Test
     public void testImportServiceFromService()
     {
-        module.injectTo( this );
-
         Assert.assertThat( service.helloWorld(), CoreMatchers.equalTo( "Hello World" ) );
     }
 

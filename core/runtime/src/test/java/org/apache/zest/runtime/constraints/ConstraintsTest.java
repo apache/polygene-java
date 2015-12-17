@@ -53,7 +53,7 @@ public class ConstraintsTest
     public void givenCompositeWithConstraintsWhenInstantiatedThenUseDeclarationOnComposite()
         throws Throwable
     {
-        MyOne my = module.newTransient( MyOneComposite.class );
+        MyOne my = transientBuilderFactory.newTransient( MyOneComposite.class );
         ArrayList<String> list = new ArrayList<String>();
         list.add( "zout" );
         my.doSomething( "habba", list );
@@ -74,7 +74,7 @@ public class ConstraintsTest
     public void givenCompositeWithoutConstraintsWhenInstantiatedThenUseDeclarationOnConstraint()
         throws Throwable
     {
-        MyOne my = module.newTransient( MyOneComposite2.class );
+        MyOne my = transientBuilderFactory.newTransient( MyOneComposite2.class );
         ArrayList<String> list = new ArrayList<String>();
         list.add( "zout" );
         my.doSomething( "habba", list );
@@ -94,7 +94,7 @@ public class ConstraintsTest
     @Test
     public void givenConstrainedGenericWildcardParameterWhenInvokedThenUseConstraint()
     {
-        MyOne myOne = module.newTransient( MyOneComposite.class );
+        MyOne myOne = transientBuilderFactory.newTransient( MyOneComposite.class );
         ArrayList<String> list = new ArrayList<String>();
         list.add( "Foo" );
         myOne.doSomething2( list );
@@ -103,7 +103,7 @@ public class ConstraintsTest
     @Test
     public void givenCompositeConstraintWhenInvokedThenUseAllConstraints()
     {
-        MyOne myOne = module.newTransient( MyOneComposite.class );
+        MyOne myOne = transientBuilderFactory.newTransient( MyOneComposite.class );
         ArrayList<String> list = new ArrayList<String>();
         list.add( "Foo" );
         myOne.doSomething3( list );

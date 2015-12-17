@@ -42,9 +42,9 @@ public class UsesInjectionTest
         throws Exception
     {
         ToBeInjected toBeInjected = new ToBeInjected();
-        assertThat( "Injected object", module.newObject( InjectionTarget.class, toBeInjected, true )
+        assertThat( "Injected object", objectFactory.newObject( InjectionTarget.class, toBeInjected, true )
             .getUsedObject(), is( equalTo( toBeInjected ) ) );
-        assertThat( "Injected boolean", module.newObject( InjectionTarget.class, toBeInjected, true )
+        assertThat( "Injected boolean", objectFactory.newObject( InjectionTarget.class, toBeInjected, true )
             .isUsedBoolean(), is( equalTo( true ) ) );
     }
 
@@ -52,14 +52,14 @@ public class UsesInjectionTest
     public void givenUsedObjectBuilderWhenUseWithBuilderThenInjectNewInstance()
         throws Exception
     {
-        assertThat( "Injected object", module.newObject( InjectionTarget.class, module.newObject( ToBeInjected.class ), true ), is( notNullValue() ) );
+        assertThat( "Injected object", objectFactory.newObject( InjectionTarget.class, objectFactory.newObject( ToBeInjected.class ), true ), is( notNullValue() ) );
     }
 
     @Test
     public void givenNoUsesWhenBuilderNewInstanceThenInjectNewInstance()
         throws Exception
     {
-        assertThat( "Injected object", module.newObject( InjectionTarget.class, true ), is( notNullValue() ) );
+        assertThat( "Injected object", objectFactory.newObject( InjectionTarget.class, true ), is( notNullValue() ) );
     }
 
     public static class InjectionTarget

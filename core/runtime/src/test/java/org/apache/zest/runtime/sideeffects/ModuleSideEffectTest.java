@@ -43,7 +43,7 @@ public class ModuleSideEffectTest
     @Test
     public void testModuleSideEffect()
     {
-        module.newTransient( Foo.class ).test( "Foo", 42 );
+        transientBuilderFactory.newTransient( Foo.class ).test( "Foo", 42 );
         Assert.assertThat( "SideEffect has been called", ok, CoreMatchers.equalTo( true ) );
     }
 

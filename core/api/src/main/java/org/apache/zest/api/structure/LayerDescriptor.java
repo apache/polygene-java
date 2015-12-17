@@ -13,6 +13,14 @@
  */
 package org.apache.zest.api.structure;
 
+import java.util.stream.Stream;
+import org.apache.zest.api.common.Visibility;
+import org.apache.zest.api.composite.ModelDescriptor;
+import org.apache.zest.api.composite.TransientDescriptor;
+import org.apache.zest.api.entity.EntityDescriptor;
+import org.apache.zest.api.object.ObjectDescriptor;
+import org.apache.zest.api.value.ValueDescriptor;
+
 /**
  * Layer Descriptor.
  */
@@ -24,8 +32,20 @@ public interface LayerDescriptor
      */
     String name();
 
+    Layer instance();
+
     /**
      * @return Layers used by this Layer
      */
     UsedLayersDescriptor usedLayers();
+
+    Stream<? extends ObjectDescriptor> visibleObjects( Visibility visibility );
+
+    Stream<? extends TransientDescriptor> visibleTransients( Visibility visibility );
+
+    Stream<? extends EntityDescriptor> visibleEntities( Visibility visibility );
+
+    Stream<? extends ValueDescriptor> visibleValues( Visibility visibility );
+
+    Stream<? extends ModelDescriptor> visibleServices( Visibility visibility );
 }

@@ -16,17 +16,17 @@
  */
 package org.apache.zest.spi.entitystore;
 
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.io.Input;
 import org.apache.zest.spi.entity.EntityState;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * Interface that must be implemented by store for persistent state of EntityComposites.
  */
 public interface EntityStore
 {
-    EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, long currentTime );
+    EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, long currentTime );
 
-    Input<EntityState, EntityStoreException> entityStates( ModuleSpi module );
+    Input<EntityState, EntityStoreException> entityStates( ModuleDescriptor module );
 }

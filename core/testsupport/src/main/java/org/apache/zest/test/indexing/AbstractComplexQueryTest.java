@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.apache.zest.api.injection.scope.Structure;
+import org.apache.zest.api.structure.Module;
 import org.junit.Test;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.query.Query;
@@ -52,24 +54,28 @@ public abstract class AbstractComplexQueryTest
     private static final String JOE = "Joe Doe";
     private static final String JACK = "Jack Doe";
 
+    @Structure
+    Module moduleInstance;
+
+
     @Test
     public void showNetwork()
         throws IOException
     {
-        IndexExporter indexerExporter = module.findService( IndexExporter.class ).get();
+        IndexExporter indexerExporter = moduleInstance.findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
     }
 
     @Test
     public void script01()
     {
-        ValueBuilder<Address> addressBuilder = this.module.newValueBuilder( Address.class );
+        ValueBuilder<Address> addressBuilder = this.moduleInstance.newValueBuilder( Address.class );
         Address address = addressBuilder.prototype();
         address.line1().set( "Qi Street 4j" );
         address.line2().set( "Off main Java Street" );
         address.zipcode().set( "12345" );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<Address> addressProp = templateFor( Person.class ).address();
         qb = qb.where( eq( addressProp, addressBuilder.newInstance() ) );
         Query<Person> query = unitOfWork.newQuery( qb );
@@ -81,13 +87,13 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script02()
     {
-        ValueBuilder<Address> addressBuilder = this.module.newValueBuilder( Address.class );
+        ValueBuilder<Address> addressBuilder = this.moduleInstance.newValueBuilder( Address.class );
         Address address = addressBuilder.prototype();
         address.line1().set( "Qi Street 4j" );
         address.line2().set( "Off main Java Street" );
         address.zipcode().set( "12345" );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<Address> addressProp = templateFor( Person.class ).address();
         qb = qb.where( not( eq( addressProp, addressBuilder.newInstance() ) ) );
         Query<Person> query = unitOfWork.newQuery( qb );
@@ -99,20 +105,20 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script03()
     {
-        ValueBuilder<QueryParam> queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        ValueBuilder<QueryParam> queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         List<QueryParam> queryParams = new ArrayList<>( 2 );
         QueryParam param = queryParamBuilder.prototype();
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( eq( paramsProp, queryParams ) );
         Query<Person> query = unitOfWork.newQuery( qb );
@@ -124,7 +130,7 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script04()
     {
-        ValueBuilder<QueryParam> queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        ValueBuilder<QueryParam> queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         List<QueryParam> queryParams = new ArrayList<>( 2 );
         QueryParam param = queryParamBuilder.prototype();
         // Different order
@@ -132,13 +138,13 @@ public abstract class AbstractComplexQueryTest
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( eq( paramsProp, queryParams ) );
         Query<Person> query = unitOfWork.newQuery( qb );
@@ -150,20 +156,20 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script05()
     {
-        ValueBuilder<QueryParam> queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        ValueBuilder<QueryParam> queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         List<QueryParam> queryParams = new ArrayList<>( 2 );
         QueryParam param = queryParamBuilder.prototype();
         param.name().set( "user" );
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( not( eq( paramsProp, queryParams ) ) );
         Query<Person> query = unitOfWork.newQuery( qb );
@@ -175,9 +181,9 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script06()
     {
-        ValueBuilder<URL> urlBuilder = this.module.newValueBuilder( URL.class );
-        ValueBuilder<Protocol> protocolBuilder = this.module.newValueBuilder( Protocol.class );
-        ValueBuilder<QueryParam> queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        ValueBuilder<URL> urlBuilder = this.moduleInstance.newValueBuilder( URL.class );
+        ValueBuilder<Protocol> protocolBuilder = this.moduleInstance.newValueBuilder( Protocol.class );
+        ValueBuilder<QueryParam> queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
 
         Protocol protocol = protocolBuilder.prototype();
         protocol.value().set( "http" );
@@ -188,7 +194,7 @@ public abstract class AbstractComplexQueryTest
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
@@ -198,7 +204,7 @@ public abstract class AbstractComplexQueryTest
         url.protocol().set( protocolBuilder.newInstance() );
         url.queryParams().set( queryParams );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<URL> websiteProp = templateFor( Person.class ).personalWebsite();
         qb = qb.where( eq( websiteProp, urlBuilder.newInstance() ) );
         Query<Person> query = unitOfWork.newQuery( qb );
@@ -210,9 +216,9 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script07()
     {
-        ValueBuilder<URL> urlBuilder = this.module.newValueBuilder( URL.class );
-        ValueBuilder<Protocol> protocolBuilder = this.module.newValueBuilder( Protocol.class );
-        ValueBuilder<QueryParam> queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        ValueBuilder<URL> urlBuilder = this.moduleInstance.newValueBuilder( URL.class );
+        ValueBuilder<Protocol> protocolBuilder = this.moduleInstance.newValueBuilder( Protocol.class );
+        ValueBuilder<QueryParam> queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
 
         Protocol protocol = protocolBuilder.prototype();
         protocol.value().set( "http" );
@@ -223,7 +229,7 @@ public abstract class AbstractComplexQueryTest
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
@@ -233,7 +239,7 @@ public abstract class AbstractComplexQueryTest
         url.protocol().set( protocolBuilder.newInstance() );
         url.queryParams().set( queryParams );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<URL> websiteProp = templateFor( Person.class ).personalWebsite();
         qb = qb.where( not( eq( websiteProp, urlBuilder.newInstance() ) ) );
         Query<Person> query = unitOfWork.newQuery( qb );
@@ -245,12 +251,12 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script08()
     {
-        ValueBuilder<QueryParam> queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        ValueBuilder<QueryParam> queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         QueryParam param = queryParamBuilder.prototype();
         param.name().set( "user" );
         param.value().set( "jackdoe" );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( contains( paramsProp, queryParamBuilder.newInstance() ) );
         Query<Person> query = unitOfWork.newQuery( qb );
@@ -261,13 +267,13 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script09()
     {
-        ValueBuilder<QueryParam> queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        ValueBuilder<QueryParam> queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
 
         QueryParam param = queryParamBuilder.prototype();
         param.name().set( "user" );
         param.value().set( "jackdoe" );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( not( contains( paramsProp, queryParamBuilder.newInstance() ) ) );
         Query<Person> query = unitOfWork.newQuery( qb );
@@ -278,7 +284,7 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script10()
     {
-        ValueBuilder<QueryParam> queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        ValueBuilder<QueryParam> queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
 
         List<QueryParam> queryParams = new ArrayList<>( 2 );
         QueryParam param = queryParamBuilder.prototype();
@@ -286,13 +292,13 @@ public abstract class AbstractComplexQueryTest
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( containsAll( paramsProp, queryParams ) );
         Query<Person> query = unitOfWork.newQuery( qb );
@@ -303,7 +309,7 @@ public abstract class AbstractComplexQueryTest
     @Test
     public void script11()
     {
-        ValueBuilder<QueryParam> queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        ValueBuilder<QueryParam> queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
 
         List<QueryParam> queryParams = new ArrayList<>( 2 );
         QueryParam param = queryParamBuilder.prototype();
@@ -311,13 +317,13 @@ public abstract class AbstractComplexQueryTest
         param.value().set( "jackdoe" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        queryParamBuilder = this.module.newValueBuilder( QueryParam.class );
+        queryParamBuilder = this.moduleInstance.newValueBuilder( QueryParam.class );
         param = queryParamBuilder.prototype();
         param.name().set( "password" );
         param.value().set( "somepassword" );
         queryParams.add( queryParamBuilder.newInstance() );
 
-        QueryBuilder<Person> qb = this.module.newQueryBuilder( Person.class );
+        QueryBuilder<Person> qb = this.moduleInstance.newQueryBuilder( Person.class );
         Property<Collection<QueryParam>> paramsProp = templateFor( Person.class ).personalWebsite().get().queryParams();
         qb = qb.where( not( containsAll( paramsProp, queryParams ) ) );
         Query<Person> query = unitOfWork.newQuery( qb );

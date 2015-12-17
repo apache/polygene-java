@@ -121,8 +121,8 @@ public class PermissionsDomainTest
     @Before
     public void before_PermissionsDomainTest()
     {
-        userFactory = module.findService( UserFactory.class ).get();
-        roleFactory = module.findService( RoleFactory.class ).get();
+        userFactory = serviceFinder.findService( UserFactory.class ).get();
+        roleFactory = serviceFinder.findService( RoleFactory.class ).get();
     }
 
     @Test

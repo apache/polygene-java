@@ -42,6 +42,7 @@ import org.apache.zest.api.service.ServiceActivation;
 import org.apache.zest.api.service.ServiceDescriptor;
 import org.apache.zest.api.service.qualifier.Tagged;
 import org.apache.zest.api.structure.Application;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.CollectionType;
 import org.apache.zest.api.type.EnumType;
 import org.apache.zest.api.type.MapType;
@@ -67,8 +68,6 @@ import org.apache.zest.spi.entitystore.EntityStoreSPI;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.entitystore.StateCommitter;
 import org.apache.zest.spi.entitystore.helpers.DefaultEntityState;
-import org.apache.zest.spi.structure.ModelModule;
-import org.apache.zest.spi.module.ModuleSpi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,13 +168,13 @@ public class PreferencesEntityStoreMixin
     }
 
     @Override
-    public EntityStoreUnitOfWork newUnitOfWork( Usecase usecase, long currentTime )
+    public EntityStoreUnitOfWork newUnitOfWork( ModuleDescriptor module, Usecase usecase, long currentTime )
     {
-        return new DefaultEntityStoreUnitOfWork( entityStoreSpi, newUnitOfWorkId(), usecase, currentTime );
+        return new DefaultEntityStoreUnitOfWork( module, entityStoreSpi, newUnitOfWorkId(), usecase, currentTime );
     }
 
     @Override
-    public Input<EntityState, EntityStoreException> entityStates( final ModuleSpi module )
+    public Input<EntityState, EntityStoreException> entityStates( final ModuleDescriptor module )
     {
         return new Input<EntityState, EntityStoreException>()
         {
@@ -192,7 +191,7 @@ public class PreferencesEntityStoreMixin
                         UsecaseBuilder builder = UsecaseBuilder.buildUsecase( "zest.entitystore.preferences.visit" );
                         Usecase visitUsecase = builder.withMetaInfo( CacheOptions.NEVER ).newUsecase();
                         final EntityStoreUnitOfWork uow =
-                            newUnitOfWork( visitUsecase, System.currentTimeMillis() );
+                            newUnitOfWork( module, visitUsecase, System.currentTimeMillis() );
 
                         try
                         {
@@ -224,7 +223,10 @@ public class PreferencesEntityStoreMixin
     }
 
     @Override
-    public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork, ModuleSpi module, EntityReference identity )
+    public EntityState entityStateOf( EntityStoreUnitOfWork unitOfWork,
+                                      ModuleDescriptor module,
+                                      EntityReference identity
+    )
     {
         try
         {
@@ -241,51 +243,74 @@ public class PreferencesEntityStoreMixin
             EntityDescriptor entityDescriptor = module.entityDescriptor( type );
             if( entityDescriptor == null )
             {
-                throw new EntityTypeNotFoundException( type,
-                                                       module.name(),
-                                                       module.findVisibleEntityTypes()
-                                                           .map( ModelModule.toStringFunction )
-                );
+                throw EntityTypeNotFoundException.create( type, module );
             }
 
             Map<QualifiedName, Object> properties = new HashMap<>();
             final Preferences propsPrefs = entityPrefs.node( "properties" );
-            entityDescriptor.state().properties().forEach( persistentPropertyDescriptor ->
-            {
-                if( persistentPropertyDescriptor.qualifiedName().name().equals( "identity" ) )
+            entityDescriptor.state().properties().forEach(
+                persistentPropertyDescriptor ->
                 {
-                    // Fake identity property
-                    properties.put( persistentPropertyDescriptor.qualifiedName(), identity.identity() );
-                }
-                else
-                {
-                    ValueType propertyType = persistentPropertyDescriptor.valueType();
-                    Class<?> mainType = propertyType.mainType();
-                    if( Number.class.isAssignableFrom( mainType ) )
+                    if( persistentPropertyDescriptor.qualifiedName().name().equals( "identity" ) )
                     {
-                        if( mainType.equals( Long.class ) )
+                        // Fake identity property
+                        properties.put( persistentPropertyDescriptor.qualifiedName(), identity.identity() );
+                    }
+                    else
+                    {
+                        ValueType propertyType = persistentPropertyDescriptor.valueType();
+                        Class<?> mainType = propertyType.mainType();
+                        if( Number.class.isAssignableFrom( mainType ) )
                         {
-                            properties.put( persistentPropertyDescriptor.qualifiedName(),
-                                            this.getNumber( propsPrefs, persistentPropertyDescriptor, LONG_PARSER ) );
+                            if( mainType.equals( Long.class ) )
+                            {
+                                properties.put( persistentPropertyDescriptor.qualifiedName(),
+                                                this.getNumber( propsPrefs, persistentPropertyDescriptor, LONG_PARSER ) );
+                            }
+                            else if( mainType.equals( Integer.class ) )
+                            {
+                                properties.put( persistentPropertyDescriptor.qualifiedName(),
+                                                this.getNumber( propsPrefs, persistentPropertyDescriptor, INT_PARSER ) );
+                            }
+                            else if( mainType.equals( Double.class ) )
+                            {
+                                properties.put( persistentPropertyDescriptor.qualifiedName(),
+                                                this.getNumber( propsPrefs, persistentPropertyDescriptor, DOUBLE_PARSER ) );
+                            }
+                            else if( mainType.equals( Float.class ) )
+                            {
+                                properties.put( persistentPropertyDescriptor.qualifiedName(),
+                                                this.getNumber( propsPrefs, persistentPropertyDescriptor, FLOAT_PARSER ) );
+                            }
+                            else
+                            {
+                                // Load as string even though it's a number
+                                String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName()
+                                                                  .name(), null );
+                                Object value;
+                                if( json == null )
+                                {
+                                    value = null;
+                                }
+                                else
+                                {
+                                    value = valueSerialization.deserialize( module, persistentPropertyDescriptor.valueType(), json );
+                                }
+                                properties.put( persistentPropertyDescriptor.qualifiedName(), value );
+                            }
                         }
-                        else if( mainType.equals( Integer.class ) )
+                        else if( mainType.equals( Boolean.class ) )
                         {
+                            Boolean initialValue = (Boolean) persistentPropertyDescriptor.initialValue( module );
                             properties.put( persistentPropertyDescriptor.qualifiedName(),
-                                            this.getNumber( propsPrefs, persistentPropertyDescriptor, INT_PARSER ) );
+                                            propsPrefs.getBoolean( persistentPropertyDescriptor.qualifiedName().name(),
+                                                                   initialValue == null ? false : initialValue ) );
                         }
-                        else if( mainType.equals( Double.class ) )
+                        else if( propertyType instanceof ValueCompositeType
+                                 || propertyType instanceof MapType
+                                 || propertyType instanceof CollectionType
+                                 || propertyType instanceof EnumType )
                         {
-                            properties.put( persistentPropertyDescriptor.qualifiedName(),
-                                            this.getNumber( propsPrefs, persistentPropertyDescriptor, DOUBLE_PARSER ) );
-                        }
-                        else if( mainType.equals( Float.class ) )
-                        {
-                            properties.put( persistentPropertyDescriptor.qualifiedName(),
-                                            this.getNumber( propsPrefs, persistentPropertyDescriptor, FLOAT_PARSER ) );
-                        }
-                        else
-                        {
-                            // Load as string even though it's a number
                             String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
                             Object value;
                             if( json == null )
@@ -294,58 +319,33 @@ public class PreferencesEntityStoreMixin
                             }
                             else
                             {
-                                value = valueSerialization.deserialize( persistentPropertyDescriptor.valueType(), json );
+                                value = valueSerialization.deserialize( module, persistentPropertyDescriptor.valueType(), json );
                             }
                             properties.put( persistentPropertyDescriptor.qualifiedName(), value );
                         }
-                    }
-                    else if( mainType.equals( Boolean.class ) )
-                    {
-                        Boolean initialValue = (Boolean) persistentPropertyDescriptor.initialValue( module );
-                        properties.put( persistentPropertyDescriptor.qualifiedName(),
-                                        propsPrefs.getBoolean( persistentPropertyDescriptor.qualifiedName().name(),
-                                                               initialValue == null ? false : initialValue ) );
-                    }
-                    else if( propertyType instanceof ValueCompositeType
-                             || propertyType instanceof MapType
-                             || propertyType instanceof CollectionType
-                             || propertyType instanceof EnumType )
-                    {
-                        String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
-                        Object value;
-                        if( json == null )
-                        {
-                            value = null;
-                        }
                         else
                         {
-                            value = valueSerialization.deserialize( persistentPropertyDescriptor.valueType(), json );
-                        }
-                        properties.put( persistentPropertyDescriptor.qualifiedName(), value );
-                    }
-                    else
-                    {
-                        String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
-                        if( json == null )
-                        {
-                            if( persistentPropertyDescriptor.initialValue( module ) != null )
+                            String json = propsPrefs.get( persistentPropertyDescriptor.qualifiedName().name(), null );
+                            if( json == null )
                             {
-                                properties.put( persistentPropertyDescriptor.qualifiedName(), persistentPropertyDescriptor
-                                    .initialValue( module ) );
+                                if( persistentPropertyDescriptor.initialValue( module ) != null )
+                                {
+                                    properties.put( persistentPropertyDescriptor.qualifiedName(), persistentPropertyDescriptor
+                                        .initialValue( module ) );
+                                }
+                                else
+                                {
+                                    properties.put( persistentPropertyDescriptor.qualifiedName(), null );
+                                }
                             }
                             else
                             {
-                                properties.put( persistentPropertyDescriptor.qualifiedName(), null );
+                                Object value = valueSerialization.deserialize( module, propertyType, json );
+                                properties.put( persistentPropertyDescriptor.qualifiedName(), value );
                             }
                         }
-                        else
-                        {
-                            Object value = valueSerialization.deserialize( propertyType, json );
-                            properties.put( persistentPropertyDescriptor.qualifiedName(), value );
-                        }
                     }
-                }
-            } );
+                } );
 
             // Associations
             Map<QualifiedName, EntityReference> associations = new HashMap<>();
@@ -441,9 +441,7 @@ public class PreferencesEntityStoreMixin
             }
 
             Preferences entityPrefs = root.node( identity.identity() );
-
-            String version = entityPrefs.get( "version", "" );
-            return version;
+            return entityPrefs.get( "version", "" );
         }
         catch( BackingStoreException e )
         {
@@ -515,7 +513,7 @@ public class PreferencesEntityStoreMixin
             // Properties
             Preferences propsPrefs = entityPrefs.node( "properties" );
             state.entityDescriptor().state().properties()
-                .filter(property -> ! property.qualifiedName().name().equals( "identity" ))
+                .filter( property -> !property.qualifiedName().name().equals( "identity" ) )
                 .forEach( persistentProperty ->
                           {
                               Object value = state.properties().get( persistentProperty.qualifiedName() );
@@ -573,9 +571,9 @@ public class PreferencesEntityStoreMixin
                                   {
                                       String jsonString = valueSerialization.serialize( value );
                                       propsPrefs.put( persistentProperty.qualifiedName().name(), jsonString );
-                    }
-                }
-            });
+                                  }
+                              }
+                          } );
 
             // Associations
             if( !state.associations().isEmpty() )

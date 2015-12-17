@@ -25,7 +25,6 @@ import org.apache.zest.api.entity.LifecycleException;
 import org.apache.zest.runtime.composite.FunctionStateResolver;
 import org.apache.zest.runtime.entity.EntityInstance;
 import org.apache.zest.runtime.entity.EntityModel;
-import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entitystore.EntityStoreUnitOfWork;
 import org.apache.zest.spi.module.ModuleSpi;
@@ -42,7 +41,6 @@ public final class EntityBuilderInstance<T>
     private final EntityModel model;
     private final ModuleUnitOfWork uow;
     private final EntityStoreUnitOfWork store;
-    private final ModuleSpi module;
     private String identity;
 
     private final BuilderEntityState entityState;
@@ -61,7 +59,7 @@ public final class EntityBuilderInstance<T>
     }
 
     public EntityBuilderInstance(
-        ModelModule<EntityDescriptor> model,
+        EntityDescriptor model,
         ModuleUnitOfWork uow,
         EntityStoreUnitOfWork store,
         String identity
@@ -71,27 +69,26 @@ public final class EntityBuilderInstance<T>
     }
 
     public EntityBuilderInstance(
-        ModelModule<EntityDescriptor> model,
+        EntityDescriptor model,
         ModuleUnitOfWork uow,
         EntityStoreUnitOfWork store,
         String identity,
         FunctionStateResolver stateResolver
     )
     {
-        this.model = (EntityModel) model.model();
-        this.module = model.module();
+        this.model = (EntityModel) model;
         this.uow = uow;
         this.store = store;
         this.identity = identity;
         EntityReference reference = new EntityReference( identity );
-        entityState = new BuilderEntityState( model.model(), reference );
+        entityState = new BuilderEntityState( model, reference );
         this.model.initState( model.module(), entityState );
         if( stateResolver != null )
         {
             stateResolver.populateState( this.model, entityState );
         }
         entityState.setPropertyValue( IDENTITY_STATE_NAME, identity );
-        prototypeInstance = this.model.newInstance( uow, model.module(), entityState );
+        prototypeInstance = this.model.newInstance( uow, (ModuleSpi) model.module().instance(), entityState );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -128,7 +125,7 @@ public final class EntityBuilderInstance<T>
 
         entityState.copyTo( newEntityState );
 
-        EntityInstance instance = model.newInstance( uow, module, newEntityState );
+        EntityInstance instance = model.newInstance( uow, (ModuleSpi) model.module().instance(), newEntityState );
 
         Object proxy = instance.proxy();
 

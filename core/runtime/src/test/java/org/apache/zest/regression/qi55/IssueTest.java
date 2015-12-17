@@ -38,9 +38,7 @@ public class IssueTest
     @Test
     public void objectWithGenericUsage()
     {
-        assertEquals( "Using - Test string", module.
-            newObject( AClass.class, "Test string" ).
-            uses() );
+        assertEquals( "Using - Test string", objectFactory.newObject( AClass.class, "Test string" ).uses() );
     }
 
     public static class AClass<T>

@@ -21,12 +21,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.zest.api.sideeffect.SideEffectsDescriptor;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
-import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
 import org.apache.zest.runtime.injection.DependencyModel;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * JAVADOC
@@ -51,14 +50,14 @@ public final class SideEffectsModel
     }
 
     // Context
-    public SideEffectsInstance newInstance( Method method, ModuleSpi moduleInstance, InvocationHandler invoker )
+    public SideEffectsInstance newInstance( Method method, ModuleDescriptor module, InvocationHandler invoker )
     {
         ProxyReferenceInvocationHandler proxyHandler = new ProxyReferenceInvocationHandler();
         SideEffectInvocationHandlerResult result = new SideEffectInvocationHandlerResult();
         List<InvocationHandler> sideEffects = new ArrayList<InvocationHandler>( sideEffectModels.size() );
         for( SideEffectModel sideEffectModel : sideEffectModels )
         {
-            InvocationHandler sideEffect = sideEffectModel.newInstance( moduleInstance, result, proxyHandler, method );
+            InvocationHandler sideEffect = sideEffectModel.newInstance( module, result, proxyHandler, method );
             sideEffects.add( sideEffect );
         }
         return new SideEffectsInstance( sideEffects, result, proxyHandler, invoker );

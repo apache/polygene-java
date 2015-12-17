@@ -18,21 +18,19 @@ import org.apache.zest.api.common.ConstructionException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.runtime.composite.StateResolver;
-import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.runtime.structure.ModuleInstance;
 
 public class ValueBuilderWithState<T> implements ValueBuilder<T>
 {
-    private final ModelModule<ValueDescriptor> model;
+    private final ValueDescriptor model;
     private ValueInstance prototypeInstance;
 
-    public ValueBuilderWithState( ModelModule<ValueDescriptor> compositeModelModule,
+    public ValueBuilderWithState( ValueDescriptor compositeModelModule,
                                   ModuleInstance currentModule,
                                   StateResolver stateResolver )
     {
         ValueStateInstance state = new ValueStateInstance( compositeModelModule, currentModule, stateResolver );
-        ValueModel model = (ValueModel) compositeModelModule.model();
-        ValueInstance instance = model.newValueInstance( compositeModelModule.module(), state );
+        ValueInstance instance = ((ValueModel) compositeModelModule).newValueInstance( state );
         instance.prepareToBuild();
         this.model = compositeModelModule;
         this.prototypeInstance = instance;
@@ -70,7 +68,7 @@ public class ValueBuilderWithState<T> implements ValueBuilder<T>
         prototypeInstance.prepareBuilderState();
 
         // Check that it is valid
-        ((ValueModel) model.model()).checkConstraints( prototypeInstance.state() );
+        ((ValueModel) model).checkConstraints( prototypeInstance.state() );
 
         try
         {

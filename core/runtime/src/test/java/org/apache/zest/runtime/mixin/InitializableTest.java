@@ -43,14 +43,14 @@ public class InitializableTest
     @Test
     public void givenCompositeWithInitializableMixinWhenInstantiatedThenInvokeInitialize()
     {
-        TestComposite instance = module.newTransient( TestComposite.class );
+        TestComposite instance = transientBuilderFactory.newTransient( TestComposite.class );
         assertThat( "mixin has been initialized", instance.ok(), equalTo( true ) );
     }
 
     @Test
     public void givenObjectImplementingInitializableWhenInstantiatedThenInvokeInitialize()
     {
-        TestObject instance = module.newObject( TestObject.class );
+        TestObject instance = objectFactory.newObject( TestObject.class );
         assertThat( "object has been initialized", instance.ok(), equalTo( true ) );
     }
 

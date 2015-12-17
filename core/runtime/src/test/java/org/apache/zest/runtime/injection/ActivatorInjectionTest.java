@@ -163,8 +163,8 @@ public class ActivatorInjectionTest
     @Test
     public void test()
     {
-        assertThat( module.findService( ServiceA.class ).get().what(), equalTo( "A" ) );
-        assertThat( module.findService( ServiceB.class ).get().what(), equalTo( "B" ) );
+        assertThat( serviceFinder.findService( ServiceA.class ).get().what(), equalTo( "A" ) );
+        assertThat( serviceFinder.findService( ServiceB.class ).get().what(), equalTo( "B" ) );
     }
 
 }

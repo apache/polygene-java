@@ -35,7 +35,7 @@ public class ServiceAssemblyTest extends AbstractZestTest
     public void givenMyServiceWithTwoDeclarationsWhenActivatingServiceExpectServiceActivatedOnce()
         throws Exception
     {
-        ServiceReference<MyService> ref = module.findService( MyService.class );
+        ServiceReference<MyService> ref = serviceFinder.findService( MyService.class );
         MyService underTest = ref.get();
         assertThat(underTest.activated(), equalTo(1));
         underTest.passivateService();

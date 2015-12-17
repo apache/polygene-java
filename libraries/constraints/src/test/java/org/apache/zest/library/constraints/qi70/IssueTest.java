@@ -38,7 +38,7 @@ public class IssueTest
     @Test( expected = ConstraintViolationException.class )
     public void testNotEmpty()
     {
-        TransientBuilder<Sample> cb = module.newTransientBuilder( Sample.class );
+        TransientBuilder<Sample> cb = transientBuilderFactory.newTransientBuilder( Sample.class );
         cb.prototypeFor( Sample.class ).stuff().set( null );
     }
 }

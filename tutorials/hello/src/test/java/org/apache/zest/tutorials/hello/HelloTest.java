@@ -40,7 +40,7 @@ public class HelloTest extends AbstractZestTest
     @Test
     public void givenHelloValueInitializedToHelloWorldWhenCallingSayExpectHelloWorld()
     {
-        ValueBuilder<Hello> builder = module.newValueBuilder( Hello.class );
+        ValueBuilder<Hello> builder = valueBuilderFactory.newValueBuilder( Hello.class );
         builder.prototypeFor( Hello.State.class ).phrase().set( "Hello" );
         builder.prototypeFor( Hello.State.class ).name().set( "World" );
         Hello underTest = builder.newInstance();

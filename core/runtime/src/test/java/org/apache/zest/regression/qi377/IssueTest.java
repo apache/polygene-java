@@ -41,7 +41,7 @@ public class IssueTest
     @Test
     public void propertyNameCollisionsShouldWork()
     {
-        TeamMember m = module.newTransient( TeamMember.class );
+        TeamMember m = transientBuilderFactory.newTransient( TeamMember.class );
         m.name().set( "Niclas" );
         Person p = m;
         p.name().set( "Chris" );

@@ -40,7 +40,7 @@ public class UsesGraphTest
     public void givenGraphDependenciesWhenInstantiateAThenGetSameReferences()
     {
         D d = new D();
-        A a = module.newObject( A.class, module.newObject( C.class, d ), d );
+        A a = objectFactory.newObject( A.class, objectFactory.newObject( C.class, d ), d );
 
         Assert.assertThat( "Same reference expected", a.c, equalTo( a.b.c ) );
         Assert.assertThat( "Same reference expected", a.d, equalTo( a.b.c.d ) );
@@ -49,7 +49,7 @@ public class UsesGraphTest
     @Test
     public void givenGraphDependenciesWhenInstantiateUsingBuildersThenDontGetSameReferences()
     {
-        A a = module.newObject( A.class );
+        A a = objectFactory.newObject( A.class );
         Assert.assertThat( "Same reference not expected", a.c, not( equalTo( a.b.c ) ) );
         Assert.assertThat( "Same reference not expected", a.d, not( equalTo( a.b.c.d ) ) );
     }

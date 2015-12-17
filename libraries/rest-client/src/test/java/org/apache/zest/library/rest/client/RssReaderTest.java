@@ -84,7 +84,7 @@ public class RssReaderTest
     {
         Client client = new Client( Protocol.HTTPS );
         Reference ref = new Reference( "https://github.com/Qi4j/qi4j-sdk/commits/develop.atom" );
-        ContextResourceClientFactory contextResourceClientFactory = module.newObject( ContextResourceClientFactory.class, client );
+        ContextResourceClientFactory contextResourceClientFactory = objectFactory.newObject( ContextResourceClientFactory.class, client );
 
         contextResourceClientFactory.registerResponseReader( new ResponseReader()
         {

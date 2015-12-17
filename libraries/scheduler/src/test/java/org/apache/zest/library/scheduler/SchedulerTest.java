@@ -98,7 +98,7 @@ public class SchedulerTest
         long sleepMillis;
         try( UnitOfWork uow = uowf.newUnitOfWork( usecase ) )
         {
-            Scheduler scheduler = module.findService( Scheduler.class ).get();
+            Scheduler scheduler = serviceFinder.findService( Scheduler.class ).get();
 
             FooTask task = createFooTask( uow, usecase.name(), BAZAR );
             taskIdentity = task.identity().get();
@@ -119,7 +119,7 @@ public class SchedulerTest
         //noinspection unused
         try( UnitOfWork uow = uowf.newUnitOfWork( usecase ) )
         {
-            Timeline timeline = module.findService( Timeline.class ).get();
+            Timeline timeline = serviceFinder.findService( Timeline.class ).get();
             DateTime now = new DateTime();
 
             // Queries returning past records
@@ -147,7 +147,7 @@ public class SchedulerTest
         System.setProperty( "zest.entity.print.state", Boolean.TRUE.toString() );
         final Usecase usecase = UsecaseBuilder.newUsecase( "TestOnce" );
         final String taskIdentity;
-        Scheduler scheduler = module.findService( Scheduler.class ).get();
+        Scheduler scheduler = serviceFinder.findService( Scheduler.class ).get();
 
         Schedule schedule1;
         Schedule schedule2;

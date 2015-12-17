@@ -56,7 +56,7 @@ public class NestedValuesConversionTest
         try
         {
             FooEntity fooEntity = createFooEntity( uow, "Test nested values conversion" );
-            EntityToValueService conversion = module.findService( EntityToValueService.class ).get();
+            EntityToValueService conversion = serviceFinder.findService( EntityToValueService.class ).get();
             FooValue fooValue = conversion.convert( FooValue.class, fooEntity );
             assertThat( fooValue.name().get(), equalTo( "Test nested values conversion" ) );
             assertThat( fooValue.bar().get().bazar().get(), equalTo( "single" ) );
@@ -91,7 +91,7 @@ public class NestedValuesConversionTest
 
     private BarValue createBarValue( String bazar )
     {
-        ValueBuilder<BarValue> builder = module.newValueBuilder( BarValue.class );
+        ValueBuilder<BarValue> builder = valueBuilderFactory.newValueBuilder( BarValue.class );
         builder.prototype().bazar().set( bazar );
         return builder.newInstance();
     }

@@ -118,7 +118,7 @@ public class RDFPerformanceTest extends AbstractZestTest
     {
         List<ExampleEntity> list = new ArrayList<ExampleEntity>();
         UnitOfWork uow = this.uowf.newUnitOfWork();
-        Iterator<ExampleEntity> iter = uow.newQuery( this.module.newQueryBuilder( ExampleEntity.class ) ).iterator();
+        Iterator<ExampleEntity> iter = uow.newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ) ).iterator();
         int found = 0;
         while (iter.hasNext())
         {
@@ -141,7 +141,7 @@ public class RDFPerformanceTest extends AbstractZestTest
 
     private void doRemove( int howMany )
     {
-        Iterator<ExampleEntity> iter = this.uowf.currentUnitOfWork().newQuery( this.module.newQueryBuilder( ExampleEntity.class )).maxResults( howMany ).iterator();
+        Iterator<ExampleEntity> iter = this.uowf.currentUnitOfWork().newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class )).maxResults( howMany ).iterator();
         Integer removed = 0;
         while (iter.hasNext())
         {
@@ -175,7 +175,7 @@ public class RDFPerformanceTest extends AbstractZestTest
         UnitOfWork uow = this.uowf.newUnitOfWork();
         for (int i = 0; i < 1000; i++)
         {
-            Query<ExampleEntity> query = uow.newQuery( this.module.newQueryBuilder( ExampleEntity.class ).
+            Query<ExampleEntity> query = uow.newQuery( this.queryBuilderFactory.newQueryBuilder( ExampleEntity.class ).
                     where( QueryExpressions.contains( QueryExpressions.templateFor( ExampleEntity.class ).manyAssoc(), uow.get( ExampleEntity.class, "entity50" ) ) ));
             System.out.println(query.count());
         }
@@ -219,7 +219,7 @@ public class RDFPerformanceTest extends AbstractZestTest
         this.performTest( 200 );
 
         IndexExporter indexerExporter =
-                module.findService( IndexExporter.class ).get();
+                serviceFinder.findService( IndexExporter.class ).get();
         indexerExporter.exportReadableToStream( System.out );
     }
 

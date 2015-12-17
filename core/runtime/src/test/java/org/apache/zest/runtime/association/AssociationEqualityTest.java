@@ -431,7 +431,7 @@ public class AssociationEqualityTest
     {
         SomeWithAssociations some;
         {
-            ValueBuilder<SomeWithAssociations> builder = module.newValueBuilder( SomeWithAssociations.class );
+            ValueBuilder<SomeWithAssociations> builder = valueBuilderFactory.newValueBuilder( SomeWithAssociations.class );
             builder.prototype().anEntity().set( associated );
             builder.prototype().manyEntities().add( associated );
             builder.prototype().namedEntities().put( "someKey", associated );
@@ -444,7 +444,7 @@ public class AssociationEqualityTest
     {
         OtherWithAssociations some;
         {
-            ValueBuilder<OtherWithAssociations> builder = module.newValueBuilder( OtherWithAssociations.class );
+            ValueBuilder<OtherWithAssociations> builder = valueBuilderFactory.newValueBuilder( OtherWithAssociations.class );
             builder.prototype().anEntity().set( associated );
             builder.prototype().manyEntities().add( associated );
             builder.prototype().namedEntities().put( "someKey", associated );

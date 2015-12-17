@@ -65,7 +65,7 @@ public class ResponseWriterDelegator
         {
             try
             {
-                Class writerClass = module.classLoader().loadClass( className.trim() );
+                Class writerClass = module.descriptor().classLoader().loadClass( className.trim() );
                 ResponseWriter writer = (ResponseWriter) module.newObject( writerClass );
                 registerResultWriter( writer );
             }

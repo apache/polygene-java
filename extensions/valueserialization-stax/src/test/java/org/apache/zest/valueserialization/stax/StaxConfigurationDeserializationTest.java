@@ -46,7 +46,7 @@ public class StaxConfigurationDeserializationTest
     @Test
     public void serializeTest()
     {
-        ValueBuilder<ConfigSerializationConfig> builder = module.newValueBuilder( ConfigSerializationConfig.class );
+        ValueBuilder<ConfigSerializationConfig> builder = valueBuilderFactory.newValueBuilder( ConfigSerializationConfig.class );
         builder.prototype().name().set( "main" );
         builder.prototype().host().set( createHost() );
         builder.prototype().identity().set( "configtest" );
@@ -57,7 +57,7 @@ public class StaxConfigurationDeserializationTest
 
     private Host createHost()
     {
-        ValueBuilder<Host> builder = module.newValueBuilder( Host.class );
+        ValueBuilder<Host> builder = valueBuilderFactory.newValueBuilder( Host.class );
         builder.prototype().ip().set( "12.23.34.45" );
         builder.prototype().port().set( 1234 );
         return builder.newInstance();

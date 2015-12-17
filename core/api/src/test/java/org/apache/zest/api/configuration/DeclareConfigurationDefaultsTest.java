@@ -76,7 +76,7 @@ public class DeclareConfigurationDefaultsTest
     @Test
     public void testConfigurationDefaults()
     {
-        FooServiceComposite fooService = module.findService( FooServiceComposite.class ).get();
+        FooServiceComposite fooService = serviceFinder.findService( FooServiceComposite.class ).get();
         Assert.assertEquals( "bar", fooService.configuredFoo() );
     }
 

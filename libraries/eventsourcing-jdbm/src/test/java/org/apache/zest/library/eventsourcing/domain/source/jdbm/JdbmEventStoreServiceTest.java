@@ -87,7 +87,7 @@ public class JdbmEventStoreServiceTest
                 uow.complete();
             }
 
-            EventSource source = (EventSource) module.findService( EventSource.class ).get();
+            EventSource source = serviceFinder.findService( EventSource.class ).get();
 
             source.events( 0, Long.MAX_VALUE ).transferTo( Transforms.map( new Function<UnitOfWorkDomainEventsValue, String>()
                     {

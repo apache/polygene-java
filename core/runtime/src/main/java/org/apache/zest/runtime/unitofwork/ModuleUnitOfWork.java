@@ -48,7 +48,7 @@ import org.apache.zest.api.query.QueryBuilder;
 import org.apache.zest.api.query.QueryExecutionException;
 import org.apache.zest.api.query.grammar.OrderBy;
 import org.apache.zest.api.service.NoSuchServiceException;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.ConcurrentEntityModificationException;
 import org.apache.zest.api.unitofwork.EntityTypeNotFoundException;
 import org.apache.zest.api.unitofwork.NoSuchEntityException;
@@ -73,7 +73,6 @@ import org.apache.zest.spi.entity.EntityState;
 import org.apache.zest.spi.entity.EntityStatus;
 import org.apache.zest.spi.entity.NamedAssociationState;
 import org.apache.zest.spi.entitystore.EntityStore;
-import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.spi.module.ModuleSpi;
 import org.apache.zest.spi.query.EntityFinder;
 import org.apache.zest.spi.query.EntityFinderException;
@@ -106,12 +105,12 @@ public class ModuleUnitOfWork
     private UnitOfWorkInstance uow;
 
     @Structure
-    private ModuleSpi module;
+    private ModuleDescriptor module;
 
     @Service
     private UnitOfWorkFactory unitOfWorkFactory;
 
-    public Module module()
+    public ModuleDescriptor module()
     {
         return module;
     }
@@ -185,27 +184,24 @@ public class ModuleUnitOfWork
     public <T> EntityBuilder<T> newEntityBuilder( Class<T> type, String identity )
         throws EntityTypeNotFoundException
     {
-        ModelModule<EntityDescriptor> model = module.typeLookup().lookupEntityModel( type );
+        EntityDescriptor model = module.typeLookup().lookupEntityModel( type );
 
         if( model == null )
         {
-            throw new EntityTypeNotFoundException( type.getName(),
-                                                   module.name(),
-                                                   module.findVisibleEntityTypes().map( ModelModule.toStringFunction )
-            );
+            throw EntityTypeNotFoundException.create( type.getName(), module );
         }
 
-        EntityStore entityStore = ((ModuleSpi) model.module()).entityStore();
+        EntityStore entityStore = ( (ModuleSpi) model.module().instance() ).entityStore();
 
         // Generate id if necessary
         if( identity == null )
         {
-            IdentityGenerator idGen = ((ModuleSpi) model.module()).identityGenerator();
+            IdentityGenerator idGen = ( (ModuleSpi) model.module().instance() ).identityGenerator();
             if( idGen == null )
             {
                 throw new NoSuchServiceException( IdentityGenerator.class.getName(), model.module().name() );
             }
-            identity = idGen.generate( model.model().types().findFirst().orElse( null ) );
+            identity = idGen.generate( model.types().findFirst().orElse( null ) );
         }
         EntityBuilder<T> builder;
 
@@ -248,17 +244,15 @@ public class ModuleUnitOfWork
         NullArgumentException.validateNotNull( "manyAssociationFunction", manyAssociationFunction );
         NullArgumentException.validateNotNull( "namedAssociationFunction", namedAssociationFunction );
 
-        ModelModule<EntityDescriptor> model = module.typeLookup().lookupEntityModel( type );
+        EntityDescriptor model = module.typeLookup().lookupEntityModel( type );
 
         if( model == null )
         {
-            throw new EntityTypeNotFoundException( type.getName(),
-                                                   module.name(),
-                                                   module.findVisibleEntityTypes().map( ModelModule.toStringFunction )
-            );
+            throw EntityTypeNotFoundException.create( type.getName(), module );
         }
 
-        EntityStore entityStore = model.module().entityStore();
+        ModuleSpi moduleSpi = (ModuleSpi) model.module().instance();
+        EntityStore entityStore = moduleSpi.entityStore();
 
         FunctionStateResolver stateResolver = new FunctionStateResolver(
             propertyFunction, associationFunction, manyAssociationFunction, namedAssociationFunction
@@ -267,17 +261,19 @@ public class ModuleUnitOfWork
         if( identity == null )
         {
             // Use identity from StateResolver if available
-            PropertyModel identityModel = (PropertyModel) model.model().state().findPropertyModelByQualifiedName( IDENTITY_STATE_NAME );
+            PropertyModel identityModel = (PropertyModel) model
+                .state()
+                .findPropertyModelByQualifiedName( IDENTITY_STATE_NAME );
             identity = (String) stateResolver.getPropertyState( identityModel );
             if( identity == null )
             {
                 // Generate identity
-                IdentityGenerator idGen = model.module().identityGenerator();
+                IdentityGenerator idGen = moduleSpi.identityGenerator();
                 if( idGen == null )
                 {
                     throw new NoSuchServiceException( IdentityGenerator.class.getName(), model.module().name() );
                 }
-                identity = idGen.generate( model.model().types().findFirst().orElse( null ));
+                identity = idGen.generate( model.types().findFirst().orElse( null ) );
             }
         }
 
@@ -292,14 +288,11 @@ public class ModuleUnitOfWork
     public <T> T get( Class<T> type, String identity )
         throws EntityTypeNotFoundException, NoSuchEntityException
     {
-        Iterable<ModelModule<EntityDescriptor>> models = module.typeLookup().lookupEntityModels( type );
+        Iterable<? extends EntityDescriptor> models = module.typeLookup().lookupEntityModels( type );
 
         if( !models.iterator().hasNext() )
         {
-            throw new EntityTypeNotFoundException( type.getName(),
-                                                   module.name(),
-                                                   ((ModuleSpi) module).findVisibleEntityTypes().map( ModelModule.toStringFunction )
-            );
+            throw EntityTypeNotFoundException.create( type.getName(), module );
         }
 
         return uow.get( parseEntityReference( identity ), this, models, type );
@@ -312,7 +305,7 @@ public class ModuleUnitOfWork
     {
         EntityComposite entityComposite = (EntityComposite) entity;
         EntityInstance compositeInstance = EntityInstance.entityInstanceOf( entityComposite );
-        ModelModule<EntityDescriptor> model = new ModelModule<>( compositeInstance.module(), compositeInstance.entityModel() );
+        EntityDescriptor model = compositeInstance.entityModel();
         Class<T> type = (Class<T>) compositeInstance.types().findFirst().orElse( null );
         return uow.get( compositeInstance.identity(), this, Collections.singletonList( model ), type );
     }
@@ -441,7 +434,7 @@ public class ModuleUnitOfWork
         Function<AssociationDescriptor, Map<String, EntityReference>> namedAssocFunction = new ToValueNameAssociationMappingFunction<>( entityComposite );
 
         @SuppressWarnings( "unchecked" )
-        ValueBuilder<T> builder = module().newValueBuilderWithState(
+        ValueBuilder<T> builder = module().instance().newValueBuilderWithState(
             primaryType, propertyFunction, assocationFunction, manyAssocFunction, namedAssocFunction );
         return builder.newInstance();
     }
@@ -499,7 +492,10 @@ public class ModuleUnitOfWork
                            Map<String, Object> variables
         )
         {
-            final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
+            final EntityFinder entityFinder = moduleUnitOfWork.module()
+                .instance()
+                .findService( EntityFinder.class )
+                .get();
 
             try
             {
@@ -534,7 +530,7 @@ public class ModuleUnitOfWork
                                Map<String, Object> variables
         )
         {
-            final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
+            EntityFinder entityFinder = moduleUnitOfWork.module().instance().findService( EntityFinder.class ).get();
 
             try
             {
@@ -556,18 +552,19 @@ public class ModuleUnitOfWork
                                          Map<String, Object> variables
         )
         {
-            final EntityFinder entityFinder = moduleUnitOfWork.module().findService( EntityFinder.class ).get();
+            EntityFinder entityFinder = moduleUnitOfWork.module().instance().findService( EntityFinder.class ).get();
 
             try
             {
-                final Iterator<EntityReference> foundEntities = entityFinder.findEntities( resultType,
-                                                                                           whereClause,
-                                                                                           Iterables.toArray( OrderBy.class, orderBySegments ),
-                                                                                           firstResult,
-                                                                                           maxResults,
-                                                                                           variables == null ? Collections
-                                                                                               .<String, Object>emptyMap() : variables )
-                    .iterator();
+                final Iterator<EntityReference> foundEntities =
+                    entityFinder.findEntities(
+                        resultType,
+                        whereClause,
+                        Iterables.toArray( OrderBy.class, orderBySegments ),
+                        firstResult,
+                        maxResults,
+                        variables == null ? Collections.<String, Object>emptyMap() : variables
+                    ).iterator();
 
                 return new Iterator<T>()
                 {

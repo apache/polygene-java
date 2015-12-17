@@ -27,6 +27,7 @@ import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.entity.Queryable;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.property.StateHolder;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.unitofwork.EntityCompositeAlreadyExistsException;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.runtime.composite.CompositeMethodsModel;
@@ -60,7 +61,8 @@ public final class EntityModel extends CompositeModel
 
     private final boolean queryable;
 
-    public EntityModel( List<Class<?>> types,
+    public EntityModel( ModuleDescriptor module,
+                        List<Class<?>> types,
                         Visibility visibility,
                         MetaInfo info,
                         EntityMixinsModel mixinsModel,
@@ -68,7 +70,7 @@ public final class EntityModel extends CompositeModel
                         CompositeMethodsModel compositeMethodsModel
     )
     {
-        super( types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
+        super( module, types, visibility, info, mixinsModel, stateModel, compositeMethodsModel );
 
         this.queryable = types.stream()
             .flatMap( Annotations.ANNOTATIONS_OF )
@@ -92,7 +94,7 @@ public final class EntityModel extends CompositeModel
 
     public EntityInstance newInstance( ModuleUnitOfWork uow, ModuleSpi moduleInstance, EntityState state )
     {
-        return new EntityInstance( uow, moduleInstance, this, state );
+        return new EntityInstance( uow, this, state );
     }
 
     public Object[] newMixinHolder()
@@ -133,7 +135,7 @@ public final class EntityModel extends CompositeModel
         }
     }
 
-    public void initState( ModuleSpi module, EntityState entityState )
+    public void initState( ModuleDescriptor module, EntityState entityState )
     {
         // Set new properties to default value
         state().properties().forEach( propertyDescriptor -> {

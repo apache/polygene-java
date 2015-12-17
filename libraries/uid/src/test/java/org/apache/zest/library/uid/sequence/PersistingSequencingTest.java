@@ -43,7 +43,7 @@ public class PersistingSequencingTest extends AbstractZestTest
     public void whenTransientSequencingThenNumbersStartAtZero()
         throws Exception
     {
-        UnderTest underTest = module.newTransient( UnderTest.class );
+        UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
         assertEquals( 0, underTest.currentValue() );
     }
 
@@ -51,7 +51,7 @@ public class PersistingSequencingTest extends AbstractZestTest
     public void whenTransientSequencingThenFirstNextValueIsOne()
         throws Exception
     {
-        UnderTest underTest = module.newTransient( UnderTest.class );
+        UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
         assertEquals( 1, underTest.nextValue() );
         assertEquals( 1, underTest.currentValue() );
     }
@@ -60,7 +60,7 @@ public class PersistingSequencingTest extends AbstractZestTest
     public void whenTransientSequencingThenFirst100ValuesAreInSequence()
         throws Exception
     {
-        UnderTest underTest = module.newTransient( UnderTest.class );
+        UnderTest underTest = transientBuilderFactory.newTransient( UnderTest.class );
         for( int i = 1; i <= 100; i++ )
         {
             assertEquals( i, underTest.nextValue() );

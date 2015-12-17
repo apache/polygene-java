@@ -132,7 +132,7 @@ public class ImmenseTermTest
         {
             testEntity = uow.get( testEntity );
             Query<TestEntity2> query = uow.newQuery(
-                module.newQueryBuilder( TestEntity2.class ).where(
+                queryBuilderFactory.newQueryBuilder( TestEntity2.class ).where(
                     eq( templateFor( TestEntity2.class ).property(), "test" )
                 )
             );

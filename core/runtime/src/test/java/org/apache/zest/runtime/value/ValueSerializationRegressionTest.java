@@ -52,7 +52,7 @@ public class ValueSerializationRegressionTest extends AbstractZestTest
     public void givenNewValueWhenConvertingToEntityExpectNewEntityInStore()
         throws UnitOfWorkCompletionException
     {
-        ValueBuilder<DualFaced> builder = module.newValueBuilder( DualFaced.class );
+        ValueBuilder<DualFaced> builder = valueBuilderFactory.newValueBuilder( DualFaced.class );
         builder.prototype().identity().set( "1234" );
         builder.prototype().name().set( "Hedhman" );
         DualFaced value = builder.newInstance();

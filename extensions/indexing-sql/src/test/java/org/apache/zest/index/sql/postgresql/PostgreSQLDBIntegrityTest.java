@@ -72,7 +72,7 @@ public class PostgreSQLDBIntegrityTest
         super.setUp();
         if( this.module != null )
         {
-            SQLTestHelper.setUpTest( this.module );
+            SQLTestHelper.setUpTest( this.serviceFinder );
         }
     }
 
@@ -95,7 +95,7 @@ public class PostgreSQLDBIntegrityTest
         uow.remove( entity );
         uow.complete();
 
-        Connection connection = this.module.findService( DataSource.class ).get().getConnection();
+        Connection connection = this.serviceFinder.findService( DataSource.class ).get().getConnection();
         try
         {
             GenericDatabaseExplorer.visitDatabaseTables(

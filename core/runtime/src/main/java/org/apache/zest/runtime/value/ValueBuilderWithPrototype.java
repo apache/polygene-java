@@ -38,7 +38,6 @@ import org.apache.zest.runtime.composite.MixinsModel;
 import org.apache.zest.runtime.composite.StateResolver;
 import org.apache.zest.runtime.composite.UsesInstance;
 import org.apache.zest.runtime.injection.InjectionContext;
-import org.apache.zest.spi.structure.ModelModule;
 import org.apache.zest.runtime.structure.ModuleInstance;
 
 /**
@@ -50,12 +49,12 @@ public class ValueBuilderWithPrototype<T>
     private ValueInstance prototypeInstance;
     private final ValueModel valueModel;
 
-    public ValueBuilderWithPrototype( ModelModule<ValueDescriptor> compositeModelModule,
+    public ValueBuilderWithPrototype( ValueDescriptor compositeModelModule,
                                       ModuleInstance currentModule,
                                       T prototype
     )
     {
-        valueModel = (ValueModel) compositeModelModule.model();
+        valueModel = (ValueModel) compositeModelModule;
         // Only shallow clone, as all generic types of the ValueComposites are expected to be Immutable.
 
         MixinsModel mixinsModel = valueModel.mixinsModel();
@@ -70,7 +69,6 @@ public class ValueBuilderWithPrototype<T>
         ValueStateInstance state = new ValueStateInstance( compositeModelModule, currentModule, resolver );
         ValueInstance valueInstance = new ValueInstance(
             valueModel,
-            currentModule,
             mixins,
             state
         );

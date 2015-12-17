@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.zest.api.concern.ConcernsDescriptor;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.VisitableHierarchy;
@@ -50,7 +51,7 @@ public final class ConcernsModel
     }
 
     // Context
-    public ConcernsInstance newInstance( Method method, ModuleSpi moduleInstance,
+    public ConcernsInstance newInstance( Method method, ModuleDescriptor module,
                                          FragmentInvocationHandler mixinInvocationHandler
     )
     {
@@ -60,7 +61,7 @@ public final class ConcernsModel
         {
             ConcernModel concernModel = concernsFor.get( i );
 
-            nextConcern = concernModel.newInstance( moduleInstance, nextConcern, proxyHandler, method );
+            nextConcern = concernModel.newInstance( module, nextConcern, proxyHandler, method );
         }
 
         return new ConcernsInstance( nextConcern, mixinInvocationHandler, proxyHandler );

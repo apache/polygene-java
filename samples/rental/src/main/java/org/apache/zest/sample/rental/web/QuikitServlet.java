@@ -57,8 +57,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.SAXException;
 
-import static org.apache.zest.functional.Iterables.first;
-
 public class QuikitServlet
     extends HttpServlet
 {
@@ -74,7 +72,7 @@ public class QuikitServlet
     {
         try
         {
-            mountPoints = new TreeMap<String, Page>();
+            mountPoints = new TreeMap<>();
             documentFactory = DocumentBuilderFactory.newInstance();
             documentFactory.setNamespaceAware( true );
             ClassLoader cl = getClass().getClassLoader();
@@ -194,6 +192,7 @@ public class QuikitServlet
     private void renderPage( Page page, String path, PrintWriter output, HttpServletRequest httpRequest )
         throws ParserConfigurationException, SAXException, IOException, RenderException, TransformerException
     {
+        @SuppressWarnings( "unchecked" )
         Class<? extends Composite> pageClass =
             (Class<Composite>) ZestAPI.FUNCTION_DESCRIPTOR_FOR.apply( page ).types().findFirst().orElse( null );
 

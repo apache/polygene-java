@@ -46,7 +46,7 @@ public class FunctionalListTest extends AbstractZestTest
     @Test
     public void givenArrayListWithMapOpCapabilityWhenMappingIntegerToStringExpectCorrectResult()
     {
-        List<Integer> integers = module.newTransient( List.class );
+        List<Integer> integers = transientBuilderFactory.newTransient( List.class );
         integers.add( 5 );
         integers.add( 15 );
         integers.add( 45 );

@@ -20,16 +20,11 @@ import java.util.stream.Stream;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
-import org.apache.zest.api.common.Visibility;
-import org.apache.zest.api.composite.TransientDescriptor;
-import org.apache.zest.api.entity.EntityDescriptor;
-import org.apache.zest.api.object.ObjectDescriptor;
-import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Layer;
+import org.apache.zest.api.structure.LayerDescriptor;
 import org.apache.zest.api.structure.Module;
-import org.apache.zest.api.value.ValueDescriptor;
 import org.apache.zest.runtime.activation.ActivationDelegate;
-import org.apache.zest.spi.structure.ModelModule;
 
 /**
  * Instance of a Zest application layer. Contains a list of modules which are managed by this layer.
@@ -41,20 +36,18 @@ public class LayerInstance
     // Constructor parameters
     private final LayerModel layerModel;
     private final ApplicationInstance applicationInstance;
-    private final UsedLayersInstance usedLayersInstance;
+
     // Eager instance objects
     private final ActivationDelegate activation;
     private final List<ModuleInstance> moduleInstances;
 
     public LayerInstance( LayerModel model,
-                          ApplicationInstance applicationInstance,
-                          UsedLayersInstance usedLayersInstance
+                          ApplicationInstance applicationInstance
     )
     {
         // Constructor parameters
         this.layerModel = model;
         this.applicationInstance = applicationInstance;
-        this.usedLayersInstance = usedLayersInstance;
 
         // Eager instance objects
         activation = new ActivationDelegate( this );
@@ -72,6 +65,12 @@ public class LayerInstance
     public String name()
     {
         return layerModel.name();
+    }
+
+    @Override
+    public Application application()
+    {
+        return applicationInstance;
     }
 
     // Implementation of MetaInfoHolder
@@ -114,51 +113,21 @@ public class LayerInstance
         return moduleInstances.stream();
     }
 
-    // Other methods
-    /* package */ void addModule( ModuleInstance module )
+    @Override
+    public LayerDescriptor descriptor()
+    {
+        return layerModel;
+    }
+
+    void addModule( ModuleInstance module )
     {
         module.registerActivationEventListener( activation );
         moduleInstances.add( module );
     }
 
-    /* package */ LayerModel model()
+    public LayerModel model()
     {
         return layerModel;
-    }
-
-    public ApplicationInstance applicationInstance()
-    {
-        return applicationInstance;
-    }
-
-    /* package */ UsedLayersInstance usedLayersInstance()
-    {
-        return usedLayersInstance;
-    }
-
-    /* package */ Stream<ModelModule<ObjectDescriptor>> visibleObjects( final Visibility visibility )
-    {
-        return moduleInstances.stream().flatMap( module -> module.visibleObjects( visibility ) );
-    }
-
-    /* package */ Stream<ModelModule<TransientDescriptor>> visibleTransients( final Visibility visibility )
-    {
-        return moduleInstances.stream().flatMap( module -> module.visibleTransients( visibility ) );
-    }
-
-    /* package */ Stream<ModelModule<EntityDescriptor>> visibleEntities( final Visibility visibility )
-    {
-        return moduleInstances.stream().flatMap( module -> module.visibleEntities( visibility ) );
-    }
-
-    /* package */ Stream<ModelModule<ValueDescriptor>> visibleValues( final Visibility visibility )
-    {
-        return moduleInstances.stream().flatMap( module -> module.visibleValues( visibility ) );
-    }
-
-    /* package */ Stream<ServiceReference<?>> visibleServices( final Visibility visibility )
-    {
-        return moduleInstances.stream().flatMap( module -> module.visibleServices( visibility ) );
     }
 
     /* package */ ModuleInstance findModule( String moduleName )

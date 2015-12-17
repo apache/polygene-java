@@ -39,7 +39,7 @@ public class MixinsOnThisInjectionTest
     @Test
     public void givenCompositeWithThisInjectionAndNoMixinDeclarationWhenBindingCompositeThenUseInterfaceDeclaredMixin()
     {
-        TestCase TestCase = module.newTransient( TestCase.class );
+        TestCase TestCase = transientBuilderFactory.newTransient( TestCase.class );
         assertThat( "Composite can be instantiated", TestCase.sayHello(), equalTo( "Hello" ) );
     }
 

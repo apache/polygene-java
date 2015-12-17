@@ -60,7 +60,7 @@ public class RiakProtobufMapEntityStoreTest
         throws Exception
     {
         super.setUp();
-        RiakMapEntityStoreService es = module.findService( RiakMapEntityStoreService.class ).get();
+        RiakMapEntityStoreService es = serviceFinder.findService( RiakMapEntityStoreService.class ).get();
         riakClient = es.riakClient();
         bucketKey = es.bucket();
     }

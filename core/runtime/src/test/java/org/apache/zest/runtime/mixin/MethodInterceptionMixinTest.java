@@ -46,7 +46,7 @@ public class MethodInterceptionMixinTest
     @Test
     public void whenMixinCallsPublicMethodExpectInvocationStackToBeCalled()
     {
-        ServiceReference<SomeService> service = module.findService( SomeService.class );
+        ServiceReference<SomeService> service = serviceFinder.findService( SomeService.class );
         Collection<String> result1 = service.get().result();
         assertEquals( "Concern should have been called.", 1, result1.size() );
         assertEquals( "Concern should have been called.", "Concern1", result1.iterator().next() );

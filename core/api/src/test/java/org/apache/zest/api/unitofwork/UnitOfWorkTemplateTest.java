@@ -58,11 +58,11 @@ public class UnitOfWorkTemplateTest
                     {
                         prototype.name().set( "Rickard" );
                     }
-                }.newInstance( module );
+                }.newInstance( module.instance() );
 
                 return null;
             }
-        }.withModule( module );
+        }.withModule( module.instance() );
     }
 
     interface TestEntity

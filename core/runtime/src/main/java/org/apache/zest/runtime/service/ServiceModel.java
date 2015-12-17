@@ -33,7 +33,7 @@ import org.apache.zest.api.entity.Identity;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.service.ServiceDescriptor;
-import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.runtime.activation.ActivatorsInstance;
@@ -48,7 +48,6 @@ import org.apache.zest.runtime.composite.UsesInstance;
 import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectionContext;
 import org.apache.zest.runtime.property.PropertyInstance;
-import org.apache.zest.runtime.structure.ModuleInstance;
 
 import static org.apache.zest.runtime.legacy.Specifications.translate;
 
@@ -77,7 +76,8 @@ public final class ServiceModel extends CompositeModel
     private final ActivatorsModel<?> activatorsModel;
     private final Class configurationType;
 
-    public ServiceModel( List<Class<?>> types,
+    public ServiceModel( ModuleDescriptor module,
+                         List<Class<?>> types,
                          Visibility visibility,
                          MetaInfo metaInfo,
                          ActivatorsModel<?> activatorsModel,
@@ -88,7 +88,7 @@ public final class ServiceModel extends CompositeModel
                          boolean instantiateOnStartup
     )
     {
-        super( types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
+        super( module, types, visibility, metaInfo, mixinsModel, stateModel, compositeMethodsModel );
 
         this.identity = identity;
         this.instantiateOnStartup = instantiateOnStartup;
@@ -111,7 +111,7 @@ public final class ServiceModel extends CompositeModel
     }
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    public ActivatorsInstance<?> newActivatorsInstance( Module module )
+    public ActivatorsInstance<?> newActivatorsInstance( ModuleDescriptor module )
         throws Exception
     {
         return new ActivatorsInstance( activatorsModel.newInstances( module ) );
@@ -144,7 +144,7 @@ public final class ServiceModel extends CompositeModel
         return visitor.visitLeave( this );
     }
 
-    public ServiceInstance newInstance( final ModuleInstance module )
+    public ServiceInstance newInstance( final ModuleDescriptor module )
     {
         Object[] mixins = mixinsModel.newMixinHolder();
 
@@ -161,7 +161,7 @@ public final class ServiceModel extends CompositeModel
         } );
 
         TransientStateInstance state = new TransientStateInstance( properties );
-        ServiceInstance compositeInstance = new ServiceInstance( this, module, mixins, state );
+        ServiceInstance compositeInstance = new ServiceInstance( this, mixins, state );
 
         // Instantiate all mixins
         int i = 0;

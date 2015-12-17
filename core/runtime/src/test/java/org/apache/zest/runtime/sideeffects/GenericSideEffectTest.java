@@ -49,7 +49,7 @@ public class GenericSideEffectTest
     @Test
     public void testGenericSideEffect()
     {
-        SomeComposite some = module.newTransient( SomeComposite.class );
+        SomeComposite some = transientBuilderFactory.newTransient( SomeComposite.class );
         Property<Integer> count = some.count();
         assertThat( "count is zero", count.get(), equalTo( 0 ) );
         some.doStuff();

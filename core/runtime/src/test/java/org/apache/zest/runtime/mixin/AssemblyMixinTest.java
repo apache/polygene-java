@@ -46,7 +46,7 @@ public class AssemblyMixinTest
     @Test
     public void testAssemblyMixins()
     {
-        assertThat( "Custom mixin has executed", module.newTransient( Foo.class )
+        assertThat( "Custom mixin has executed", transientBuilderFactory.newTransient( Foo.class )
             .test( "Foo", 42 ), equalTo( "Foo/42" ) );
     }
 

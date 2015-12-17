@@ -33,6 +33,7 @@ import org.apache.zest.api.property.InvalidPropertyTypeException;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.property.PropertyDescriptor;
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.type.Serialization;
 import org.apache.zest.api.type.ValueCompositeType;
 import org.apache.zest.api.type.ValueType;
@@ -163,7 +164,7 @@ public class PropertyModel
     }
 
     @Override
-    public Object initialValue( Module module )
+    public Object initialValue( ModuleDescriptor module )
     {
         // Use supplied value from assembly
         Object value = initialValue;
@@ -173,7 +174,7 @@ public class PropertyModel
         {
             if( valueType instanceof ValueCompositeType )
             {
-                return module.newValue( valueType().types().findFirst().orElse( null ) );
+                return module.instance().newValue( valueType().types().findFirst().orElse( null ) );
             }
             else
             {

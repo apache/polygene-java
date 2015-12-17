@@ -19,6 +19,7 @@
 package org.apache.zest.api.value;
 
 import org.apache.zest.api.structure.Module;
+import org.apache.zest.api.structure.ModuleDescriptor;
 
 /**
  * Builder template for Values.
@@ -34,9 +35,9 @@ public abstract class ValueBuilderTemplate<T>
 
     protected abstract void build( T prototype );
 
-    public T newInstance( Module module )
+    public T newInstance( ModuleDescriptor module )
     {
-        ValueBuilder<T> builder = module.newValueBuilder( type );
+        ValueBuilder<T> builder = module.instance().newValueBuilder( type );
         build( builder.prototype() );
         return builder.newInstance();
     }

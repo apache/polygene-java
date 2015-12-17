@@ -67,7 +67,7 @@ public class CleanStackTraceTest
         {
             return;
         }
-        TestComposite composite = module.newTransient( TestComposite.class );
+        TestComposite composite = transientBuilderFactory.newTransient( TestComposite.class );
         try
         {
             composite.doStuff();

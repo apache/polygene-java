@@ -27,6 +27,7 @@ import org.apache.zest.api.entity.EntityComposite;
 import org.apache.zest.api.property.GenericPropertyInfo;
 import org.apache.zest.api.property.Immutable;
 import org.apache.zest.api.property.Property;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.util.Annotations;
 import org.apache.zest.api.util.Classes;
 import org.apache.zest.bootstrap.*;
@@ -85,6 +86,7 @@ public final class EntityAssemblyImpl
     }
 
     EntityModel newEntityModel(
+        ModuleDescriptor module,
         StateDeclarations stateDeclarations,
         AssociationDeclarations associationDecs,
         ManyAssociationDeclarations manyAssociationDecs,
@@ -102,7 +104,7 @@ public final class EntityAssemblyImpl
             namedAssociationsModel = new NamedAssociationsModel();
             buildComposite( helper, stateDeclarations );
 
-            return new EntityModel( types, visibility, metaInfo,
+            return new EntityModel( module, types, visibility, metaInfo,
                                     (EntityMixinsModel) mixinsModel,
                                     (EntityStateModel) stateModel, compositeMethodsModel );
         }

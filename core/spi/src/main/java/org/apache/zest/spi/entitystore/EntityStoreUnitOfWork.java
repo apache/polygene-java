@@ -16,9 +16,9 @@ package org.apache.zest.spi.entitystore;
 
 import org.apache.zest.api.entity.EntityDescriptor;
 import org.apache.zest.api.entity.EntityReference;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.usecase.Usecase;
 import org.apache.zest.spi.entity.EntityState;
-import org.apache.zest.spi.module.ModuleSpi;
 
 /**
  * EntityStore UnitOfWork.
@@ -49,6 +49,8 @@ public interface EntityStoreUnitOfWork
      * Get the EntityState for a given identity. Throws {@link EntityNotFoundException}
      * if the entity with given {@code anIdentity} is not found.
      *
+     *
+     * @param module
      * @param anIdentity The entity identity. This argument must not be {@code null}.
      *
      * @return Entity state given the composite descriptor and identity.
@@ -56,7 +58,7 @@ public interface EntityStoreUnitOfWork
      * @throws EntityStoreException    thrown if retrieval failed.
      * @throws EntityNotFoundException if requested entity does not exist
      */
-    EntityState entityStateOf( ModuleSpi module, EntityReference anIdentity )
+    EntityState entityStateOf( ModuleDescriptor module, EntityReference anIdentity )
         throws EntityStoreException, EntityNotFoundException;
 
     String versionOf( EntityReference anIdentity ) throws EntityStoreException;
@@ -67,4 +69,6 @@ public interface EntityStoreUnitOfWork
     void discard();
 
     Usecase usecase();
+
+    ModuleDescriptor module();
 }

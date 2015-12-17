@@ -18,9 +18,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.function.IntFunction;
 import java.util.stream.Stream;
 import org.apache.zest.api.common.ConstructionException;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.functional.VisitableHierarchy;
 import org.apache.zest.runtime.injection.Dependencies;
@@ -28,7 +28,6 @@ import org.apache.zest.runtime.injection.DependencyModel;
 import org.apache.zest.runtime.injection.InjectedFieldsModel;
 import org.apache.zest.runtime.injection.InjectedMethodsModel;
 import org.apache.zest.runtime.injection.InjectionContext;
-import org.apache.zest.spi.module.ModuleSpi;
 
 import static org.apache.zest.api.util.Classes.RAW_CLASS;
 import static org.apache.zest.api.util.Classes.interfacesOf;
@@ -99,13 +98,13 @@ public abstract class AbstractModifierModel
     }
 
     // Context
-    public InvocationHandler newInstance( ModuleSpi moduleInstance,
+    public InvocationHandler newInstance( ModuleDescriptor module,
                                           InvocationHandler next,
                                           ProxyReferenceInvocationHandler proxyHandler,
                                           Method method
     )
     {
-        InjectionContext injectionContext = new InjectionContext( moduleInstance, wrapNext( next ), proxyHandler );
+        InjectionContext injectionContext = new InjectionContext( module, wrapNext( next ), proxyHandler );
 
         Object modifier = constructorsModel.newInstance( injectionContext );
 

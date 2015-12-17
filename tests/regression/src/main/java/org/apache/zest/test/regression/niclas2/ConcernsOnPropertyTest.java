@@ -42,11 +42,10 @@ public class ConcernsOnPropertyTest
         module.transients( CarComposite.class );
     }
 
-
     @Test
     public void whenConcernOnPropertyThenConcernIsInvoked()
     {
-        TransientBuilder<Car> builder = module.newTransientBuilder( Car.class );
+        TransientBuilder<Car> builder = transientBuilderFactory.newTransientBuilder( Car.class );
         Car prototype = builder.prototypeFor( Car.class );
         prototype.manufacturer().set( "Volvo" );
         Car car = builder.newInstance();

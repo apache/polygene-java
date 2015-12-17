@@ -152,7 +152,7 @@ public interface EntityToValue
 
         private <T> ValueBuilder<?> doConversion( final Class<T> valueType, Object entity )
         {
-            ValueDescriptor valueDescriptor = module.valueDescriptor( valueType.getName() );
+            ValueDescriptor valueDescriptor = module.descriptor().valueDescriptor( valueType.getName() );
             if( valueDescriptor == null )
             {
                 throw new NoSuchValueException( valueType.getName(), module.name() );

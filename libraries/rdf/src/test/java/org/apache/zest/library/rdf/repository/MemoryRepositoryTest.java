@@ -43,13 +43,8 @@ public class MemoryRepositoryTest
     @Test
     public void testMemoryRepository() throws RepositoryException
     {
-        module.injectTo( this );
-
-
         RepositoryConnection conn = repository.getConnection();
-
         Assert.assertThat( "repository is open", conn.isOpen(), CoreMatchers.equalTo( true ) );
-
         conn.close();
     }
 }

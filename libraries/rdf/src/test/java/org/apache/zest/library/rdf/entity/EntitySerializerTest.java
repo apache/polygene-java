@@ -68,10 +68,7 @@ public class EntitySerializerTest
         throws Exception
     {
         super.setUp();
-
         createDummyData();
-
-        module.injectTo( this );
     }
 
     @Test
@@ -81,7 +78,7 @@ public class EntitySerializerTest
         EntityReference entityReference = new EntityReference( "test2" );
         Usecase usecase = UsecaseBuilder.newUsecase( "Test" );
         long currentTime = System.currentTimeMillis();
-        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( usecase, currentTime );
+        EntityStoreUnitOfWork unitOfWork = entityStore.newUnitOfWork( module, usecase, currentTime );
         EntityState entityState = unitOfWork.entityStateOf( module, entityReference );
 
         Iterable<Statement> graph = serializer.serialize( entityState );
@@ -98,9 +95,9 @@ public class EntitySerializerTest
         UnitOfWork unitOfWork = uowf.newUnitOfWork();
         try
         {
-            ValueBuilder<TestValue> valueBuilder = module.newValueBuilder( TestValue.class );
+            ValueBuilder<TestValue> valueBuilder = valueBuilderFactory.newValueBuilder( TestValue.class );
             valueBuilder.prototype().test1().set( 4L );
-            ValueBuilder<Test2Value> valueBuilder2 = module.newValueBuilder( Test2Value.class );
+            ValueBuilder<Test2Value> valueBuilder2 = valueBuilderFactory.newValueBuilder( Test2Value.class );
             valueBuilder2.prototype().data().set( "Habba" );
             valueBuilder.prototype().test3().set( valueBuilder2.newInstance() );
             TestValue testValue = valueBuilder.newInstance();
@@ -121,7 +118,7 @@ public class EntitySerializerTest
             niclasTemplate.group().add( 0, testEntity );
             niclasTemplate.group().add( 0, testEntity );
             niclasTemplate.group().add( 0, testEntity );
-            valueBuilder = module.newValueBuilderWithPrototype( testValue );
+            valueBuilder = valueBuilderFactory.newValueBuilderWithPrototype( testValue );
             valueBuilder.prototype().test1().set( 5L );
             testValue = valueBuilder.newInstance();
             niclasTemplate.value().set( testValue );

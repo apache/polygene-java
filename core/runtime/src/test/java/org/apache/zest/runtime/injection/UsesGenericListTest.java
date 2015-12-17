@@ -44,7 +44,7 @@ public class UsesGenericListTest
     @Test
     public void givenMixinUsesGenericListWhenUseListThenInjectWorks()
     {
-        TransientBuilder<TestCase> builder = module.newTransientBuilder( TestCase.class );
+        TransientBuilder<TestCase> builder = transientBuilderFactory.newTransientBuilder( TestCase.class );
 
         ArrayList<String> list = new ArrayList<String>();
         list.add( "Hello" );
