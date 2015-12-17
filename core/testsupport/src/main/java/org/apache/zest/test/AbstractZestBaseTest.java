@@ -19,8 +19,6 @@
 package org.apache.zest.test;
 
 import org.apache.zest.api.ZestAPI;
-import org.apache.zest.api.event.ZestEvent;
-import org.apache.zest.api.event.ZestUserEventHandler;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.bootstrap.ApplicationAssembler;
@@ -46,6 +44,7 @@ public abstract class AbstractZestBaseTest
         throws Exception
     {
         zest = new Energy4Java();
+        addUserEventHandlers( zest.applicationAssemblyFactory() );
         applicationModel = newApplication();
         if( applicationModel == null )
         {
@@ -58,9 +57,8 @@ public abstract class AbstractZestBaseTest
         application.activate();
     }
 
-    <H extends ZestUserEventHandler> void addUserEventHandler( ZestEvent.Type<H> type, H handler ) {
-        zest.applicationAssemblyFactory().addUserEventHandler( type, handler );
-    };
+    protected void addUserEventHandlers( ApplicationAssemblyFactory assemblyFactory ) {
+    }
 
     /** Called by the superclass for the test to define the entire application, every layer, every module and all
      * the contents of each module.

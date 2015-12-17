@@ -24,7 +24,7 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 
 public class ModuleAssembledEvent extends ZestAssemblyEvent<ModuleAssembledEvent.Handler>
 {
-    private static final Type<Handler> TYPE = new Type();
+    public static final Type<Handler> TYPE = new Type();
 
     private final ModuleAssembly module;
 
