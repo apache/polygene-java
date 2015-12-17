@@ -26,13 +26,31 @@ import java.util.ListIterator;
 import java.util.Map;
 import org.apache.zest.api.event.ZestEvent;
 import org.apache.zest.api.event.ZestEventHandler;
+import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
+import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.handler.ModuleAssembledEvent;
+import org.apache.zest.runtime.unitofwork.ModuleUnitOfWork;
+import org.apache.zest.runtime.unitofwork.UnitOfWorkFactoryMixin;
 
 public class EventBus
 {
     public EventBus() {
+        // emit ModuleAssembledEvent to interested users
         ModuleAssembledRuntimeEvent.Handler handler = event -> EventBus.this.emit( new ModuleAssembledEvent( event.getModuleAssembly() ) );
         addHandler( ModuleAssembledRuntimeEvent.TYPE, handler );
+        // add default UnitOfWork to all modules (of not already added by user)
+        addHandler( ModuleAssembledRuntimeEvent.TYPE, new ModuleAssembledRuntimeEvent.Handler(  ) {
+            @Override
+            public void onModuleAssembled( ModuleAssembledRuntimeEvent event )
+            {
+                ModuleAssembly moduleAssembly = event.getModuleAssembly();
+                // mixin will not be used, if user have already added a matching mixin
+                // @TODO make it possible to ask if service is already there (more robust)
+                moduleAssembly.services( UnitOfWorkFactory.class ).withMixins( UnitOfWorkFactoryMixin.class );
+                moduleAssembly.transients( UnitOfWork.class ).withMixins( ModuleUnitOfWork.class );
+            }
+        });
     }
 
     /**

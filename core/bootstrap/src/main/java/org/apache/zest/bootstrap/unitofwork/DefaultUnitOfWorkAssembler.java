@@ -20,8 +20,6 @@
 
 package org.apache.zest.bootstrap.unitofwork;
 
-import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -33,11 +31,12 @@ public class DefaultUnitOfWorkAssembler
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
-        Class factoryMixin = loadMixinClass( "org.apache.zest.runtime.unitofwork.UnitOfWorkFactoryMixin" );
-        module.services( UnitOfWorkFactory.class ).withMixins( factoryMixin );
+        // Do nothing - added automatically by EventBus
+        //Class factoryMixin = loadMixinClass( "org.apache.zest.runtime.unitofwork.UnitOfWorkFactoryMixin" );
+        //module.services( UnitOfWorkFactory.class ).withMixins( factoryMixin );
 
-        Class uowMixin = loadMixinClass( "org.apache.zest.runtime.unitofwork.ModuleUnitOfWork" );
-        module.transients( UnitOfWork.class ).withMixins( uowMixin );
+        //Class uowMixin = loadMixinClass( "org.apache.zest.runtime.unitofwork.ModuleUnitOfWork" );
+        //module.transients( UnitOfWork.class ).withMixins( uowMixin );
     }
 
     private Class<?> loadMixinClass( String name )
