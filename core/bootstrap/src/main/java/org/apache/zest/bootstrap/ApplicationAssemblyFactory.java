@@ -18,6 +18,9 @@
 
 package org.apache.zest.bootstrap;
 
+import org.apache.zest.api.event.ZestEvent;
+import org.apache.zest.api.event.ZestUserEventHandler;
+
 /**
  * Factory for creating new Zest application assemblies. Typically
  * you will implement one or more Assemblers, wrap them in an ApplicationAssembler,
@@ -25,6 +28,14 @@ package org.apache.zest.bootstrap;
  */
 public interface ApplicationAssemblyFactory
 {
+    /**
+     * Add an applicationassembly handler, listening for events in the assembly phase
+     *
+     * @param type
+     * @param handler A handler of ApplicationAssemblyEvents
+     */
+    <H extends ZestUserEventHandler> void addUserEventHandler( ZestEvent.Type<H> type, H handler );
+
     /**
      * Create a new application with one layer and one module.
      *

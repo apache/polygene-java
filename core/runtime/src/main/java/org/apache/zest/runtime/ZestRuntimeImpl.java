@@ -58,6 +58,7 @@ import org.apache.zest.runtime.bootstrap.ApplicationModelFactoryImpl;
 import org.apache.zest.runtime.composite.ProxyReferenceInvocationHandler;
 import org.apache.zest.runtime.composite.TransientInstance;
 import org.apache.zest.runtime.entity.EntityInstance;
+import org.apache.zest.runtime.event.EventBus;
 import org.apache.zest.runtime.property.PropertyInstance;
 import org.apache.zest.runtime.service.ImportedServiceReferenceInstance;
 import org.apache.zest.runtime.service.ServiceInstance;
@@ -78,11 +79,12 @@ public final class ZestRuntimeImpl
 {
     private final ApplicationAssemblyFactory applicationAssemblyFactory;
     private final ApplicationModelFactory applicationModelFactory;
+    private final EventBus eventBus = new EventBus();
 
     public ZestRuntimeImpl()
     {
-        applicationAssemblyFactory = new ApplicationAssemblyFactoryImpl();
-        applicationModelFactory = new ApplicationModelFactoryImpl();
+        applicationAssemblyFactory = new ApplicationAssemblyFactoryImpl(eventBus);
+        applicationModelFactory = new ApplicationModelFactoryImpl(eventBus);
     }
 
     @Override

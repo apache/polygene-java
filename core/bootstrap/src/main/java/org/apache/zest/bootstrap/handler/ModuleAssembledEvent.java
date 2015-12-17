@@ -16,42 +16,42 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.api.dataset.iterable;
+package org.apache.zest.bootstrap.handler;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-import org.apache.zest.api.dataset.DataSet;
-import org.apache.zest.api.dataset.Query;
-import org.apache.zest.functional.Iterables;
+import org.apache.zest.bootstrap.ZestAssemblyEvent;
+import org.apache.zest.bootstrap.ZestAssemblyEventHandler;
+import org.apache.zest.bootstrap.ModuleAssembly;
 
-/**
- * TODO
- */
-public class IterableDataSet<T>
-    implements DataSet<T>
+public class ModuleAssembledEvent extends ZestAssemblyEvent<ModuleAssembledEvent.Handler>
 {
-    private Iterable<T> iterable;
+    private static final Type<Handler> TYPE = new Type();
 
-    public IterableDataSet( Iterable<T> iterable )
+    private final ModuleAssembly module;
+
+    public ModuleAssembledEvent( ModuleAssembly source )
     {
-        this.iterable = iterable;
+        this.module = source;
+    }
+
+    public ModuleAssembly getModuleAssembly()
+    {
+        return module;
     }
 
     @Override
-    public DataSet<T> constrain( Predicate<T> selection )
+    public Type<Handler> getAssociatedType()
     {
-        return new IterableDataSet<T>( Iterables.filter( selection, iterable ) );
+        return TYPE;
     }
 
     @Override
-    public <U> DataSet<U> project( Function<T, U> conversion )
+    public void dispatch( Handler handler )
     {
-        return new IterableDataSet<U>( Iterables.map( conversion, iterable ) );
+        handler.onModuleAssembled( this );
     }
 
-    @Override
-    public Query<T> newQuery()
+    public interface Handler extends ZestAssemblyEventHandler
     {
-        return new IterableQuery<T>( iterable );
+        void onModuleAssembled(ModuleAssembledEvent event);
     }
 }

@@ -23,11 +23,14 @@ import java.util.List;
 import java.util.Map;
 import org.apache.zest.api.activation.Activator;
 import org.apache.zest.api.common.MetaInfo;
+import org.apache.zest.api.event.ZestApplicationEventHandler;
+import org.apache.zest.api.event.ZestEvent;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.AssemblyVisitor;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.runtime.event.EventBus;
 
 /**
  * The representation of an entire application. From
@@ -38,15 +41,17 @@ public final class ApplicationAssemblyImpl
     implements ApplicationAssembly
 {
     private final Map<String, LayerAssemblyImpl> layerAssemblies = new LinkedHashMap<>();
+    private final EventBus eventBus;
     private String name = "Application";
     private String version = "1.0"; // Default version
     private Application.Mode mode;
     private final MetaInfo metaInfo = new MetaInfo();
     private final List<Class<? extends Activator<Application>>> activators = new ArrayList<>();
 
-    public ApplicationAssemblyImpl()
+    public ApplicationAssemblyImpl( EventBus eventBus )
     {
         mode = Application.Mode.valueOf( System.getProperty( "mode", "production" ) );
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -116,6 +121,13 @@ public final class ApplicationAssemblyImpl
         {
             layerAssembly.visit( visitor );
         }
+    }
+
+    @Override
+    public <H extends ZestApplicationEventHandler> void addApplicationEventHandler( ZestEvent.Type<H> type, H handler
+    )
+    {
+        eventBus.addHandler( type, handler );
     }
 
     public Collection<LayerAssemblyImpl> layerAssemblies()

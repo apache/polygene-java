@@ -16,21 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.api.dataset;
+package org.apache.zest.runtime.event;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
+import org.apache.zest.api.event.ZestEventHandler;
 
-/**
- * definition.constrain(entity(Person.class))
- * builder.from(path(Person.class,Movie.))
- * TODO
- */
-public interface DataSet<T>
+public interface ZestRuntimeEventHandler extends ZestEventHandler
 {
-    DataSet<T> constrain( Predicate<T> selection );
-
-    <U> DataSet<U> project( Function<T, U> conversion );
-
-    Query<T> newQuery();
 }

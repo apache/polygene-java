@@ -16,12 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.zest.api.dataset;
+package org.apache.zest.api.event;
 
-/**
- * TODO
- */
-public interface DataSetSource
+public interface ZestApplicationEventHandler extends ZestUserEventHandler
 {
-    <T> DataSet<T> newDataSet( Class<T> type );
 }

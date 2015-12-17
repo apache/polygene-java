@@ -14,12 +14,15 @@
 
 package org.apache.zest.runtime.bootstrap;
 
+import org.apache.zest.api.event.ZestEvent;
+import org.apache.zest.api.event.ZestUserEventHandler;
 import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
+import org.apache.zest.runtime.event.EventBus;
 
 /**
  * Factory for ApplicationAssembly.
@@ -27,6 +30,19 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 public final class ApplicationAssemblyFactoryImpl
     implements ApplicationAssemblyFactory
 {
+    private final EventBus eventBus;
+
+    public ApplicationAssemblyFactoryImpl( EventBus eventBus )
+    {
+        this.eventBus = eventBus;
+    }
+
+    @Override
+    public <H extends ZestUserEventHandler> void addUserEventHandler( ZestEvent.Type<H> type, H handler )
+    {
+        eventBus.addHandler( type, handler );
+    }
+
     @Override
     public ApplicationAssembly newApplicationAssembly( Assembler assembler )
         throws AssemblyException
@@ -68,6 +84,6 @@ public final class ApplicationAssemblyFactoryImpl
     @Override
     public ApplicationAssembly newApplicationAssembly()
     {
-        return new ApplicationAssemblyImpl();
+        return new ApplicationAssemblyImpl( this.eventBus );
     }
 }
