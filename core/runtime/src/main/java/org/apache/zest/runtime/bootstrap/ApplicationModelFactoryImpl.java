@@ -29,9 +29,11 @@ import org.apache.zest.bootstrap.ApplicationModelFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.BindingException;
 import org.apache.zest.bootstrap.LayerAssembly;
+import org.apache.zest.bootstrap.handler.ModuleAssembledEvent;
 import org.apache.zest.functional.HierarchicalVisitor;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.composite.CompositeMethodModel;
+import org.apache.zest.runtime.event.EventBus;
 import org.apache.zest.runtime.injection.InjectedFieldModel;
 import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
@@ -46,6 +48,13 @@ import org.apache.zest.runtime.structure.UsedLayersModel;
 public final class ApplicationModelFactoryImpl
     implements ApplicationModelFactory
 {
+
+    private final EventBus eventBus;
+
+    public ApplicationModelFactoryImpl( EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
     @Override
     public ApplicationDescriptor newApplicationModel( ApplicationAssembly assembly )
         throws AssemblyException
@@ -83,6 +92,7 @@ public final class ApplicationModelFactoryImpl
 
             for( ModuleAssemblyImpl moduleAssembly : layerAssembly.moduleAssemblies() )
             {
+                eventBus.emit( new ModuleAssembledEvent( moduleAssembly ) );
                 moduleModels.add( moduleAssembly.assembleModule( helper ) );
             }
             mapAssemblyModel.put( layerAssembly, layerModel );

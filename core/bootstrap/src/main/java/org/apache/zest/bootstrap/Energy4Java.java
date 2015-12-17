@@ -84,6 +84,10 @@ public final class Energy4Java
         return model.newInstance( runtime.spi(), importedServiceInstances );
     }
 
+    public ApplicationAssemblyFactory  applicationAssemblyFactory() {
+        return runtime.applicationAssemblyFactory();
+    }
+
     public ZestSPI spi()
     {
         return runtime.spi();

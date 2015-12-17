@@ -20,6 +20,8 @@
 package org.apache.zest.bootstrap;
 
 import org.apache.zest.api.activation.Activator;
+import org.apache.zest.api.event.ZestApplicationEventHandler;
+import org.apache.zest.api.event.ZestEvent;
 import org.apache.zest.api.structure.Application;
 
 /**
@@ -107,4 +109,13 @@ public interface ApplicationAssembly
 
     <ThrowableType extends Throwable> void visit( AssemblyVisitor<ThrowableType> visitor )
         throws ThrowableType;
+
+    /**
+     * Add an applicationassembly handler, listening for events in the assembly phase
+     *
+     * @param type
+     * @param handler A handler of ApplicationAssemblyEvents
+     */
+    <H extends ZestApplicationEventHandler> void addApplicationEventHandler( ZestEvent.Type<H> type, H handler );
+
 }

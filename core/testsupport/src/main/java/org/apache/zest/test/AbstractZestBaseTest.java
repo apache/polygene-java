@@ -18,9 +18,9 @@
  */
 package org.apache.zest.test;
 
-import org.junit.After;
-import org.junit.Before;
 import org.apache.zest.api.ZestAPI;
+import org.apache.zest.api.event.ZestEvent;
+import org.apache.zest.api.event.ZestUserEventHandler;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.ApplicationDescriptor;
 import org.apache.zest.bootstrap.ApplicationAssembler;
@@ -29,6 +29,8 @@ import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.spi.ZestSPI;
+import org.junit.After;
+import org.junit.Before;
 
 public abstract class AbstractZestBaseTest
 {
@@ -55,6 +57,10 @@ public abstract class AbstractZestBaseTest
         api = spi = zest.spi();
         application.activate();
     }
+
+    <H extends ZestUserEventHandler> void addUserEventHandler( ZestEvent.Type<H> type, H handler ) {
+        zest.applicationAssemblyFactory().addUserEventHandler( type, handler );
+    };
 
     /** Called by the superclass for the test to define the entire application, every layer, every module and all
      * the contents of each module.
