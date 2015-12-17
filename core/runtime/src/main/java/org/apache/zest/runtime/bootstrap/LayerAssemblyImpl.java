@@ -45,6 +45,8 @@ import org.apache.zest.bootstrap.TransientAssembly;
 import org.apache.zest.bootstrap.TransientDeclaration;
 import org.apache.zest.bootstrap.ValueAssembly;
 import org.apache.zest.bootstrap.ValueDeclaration;
+import org.apache.zest.runtime.event.EventBus;
+import org.apache.zest.runtime.event.ModuleAssemblingRuntimeEvent;
 
 /**
  * Assembly of a Layer. From here you can create more ModuleAssemblies for
@@ -57,15 +59,17 @@ public final class LayerAssemblyImpl
     private final ApplicationAssembly applicationAssembly;
     private final HashMap<String, ModuleAssemblyImpl> moduleAssemblies;
     private final Set<LayerAssembly> uses;
+    private final EventBus eventBus;
 
     private String name;
     private final MetaInfo metaInfo = new MetaInfo();
     private final List<Class<? extends Activator<Layer>>> activators = new ArrayList<>();
 
-    public LayerAssemblyImpl( ApplicationAssembly applicationAssembly, String name )
+    public LayerAssemblyImpl( ApplicationAssembly applicationAssembly, String name, EventBus eventBus )
     {
         this.applicationAssembly = applicationAssembly;
         this.name = name;
+        this.eventBus = eventBus;
 
         moduleAssemblies = new LinkedHashMap<>();
         uses = new LinkedHashSet<>();
@@ -83,6 +87,7 @@ public final class LayerAssemblyImpl
             }
         }
         ModuleAssemblyImpl moduleAssembly = new ModuleAssemblyImpl( this, name );
+        eventBus.emit( new ModuleAssemblingRuntimeEvent( moduleAssembly ) );
         moduleAssemblies.put( name, moduleAssembly );
         return moduleAssembly;
     }

@@ -24,6 +24,7 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 
+@Deprecated
 public class DefaultUnitOfWorkAssembler
     implements Assembler
 {

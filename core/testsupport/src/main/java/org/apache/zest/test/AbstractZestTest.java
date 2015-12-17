@@ -15,17 +15,16 @@
 package org.apache.zest.test;
 
 import org.apache.zest.api.injection.scope.Structure;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.After;
-import org.junit.Before;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.ApplicationAssembly;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.spi.module.ModuleSpi;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * Base class for Composite tests.
@@ -58,7 +57,6 @@ public abstract class AbstractZestTest extends AbstractZestBaseTest
     {
         LayerAssembly layer = applicationAssembly.layer( "Layer 1" );
         ModuleAssembly module = layer.module( "Module 1" );
-        new DefaultUnitOfWorkAssembler().assemble( module );
         module.objects( AbstractZestTest.this.getClass() );
         assemble( module );
     }

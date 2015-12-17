@@ -65,7 +65,7 @@ public final class ApplicationAssemblyImpl
                 return existing;
             }
         }
-        LayerAssemblyImpl layerAssembly = new LayerAssemblyImpl( this, name );
+        LayerAssemblyImpl layerAssembly = new LayerAssemblyImpl( this, name, eventBus );
         layerAssemblies.put( name, layerAssembly );
         return layerAssembly;
     }

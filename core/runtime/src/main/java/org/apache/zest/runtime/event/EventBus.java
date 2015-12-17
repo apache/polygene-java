@@ -30,27 +30,29 @@ import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.handler.ModuleAssembledEvent;
+import org.apache.zest.bootstrap.handler.ModuleAssemblingEvent;
 import org.apache.zest.runtime.unitofwork.ModuleUnitOfWork;
 import org.apache.zest.runtime.unitofwork.UnitOfWorkFactoryMixin;
 
 public class EventBus
 {
-    public EventBus() {
+    public EventBus()
+    {
+        // add default UnitOfWork to all modules (may be customized by user afterwards)
+        addHandler( ModuleAssemblingRuntimeEvent.TYPE, event -> {
+            ModuleAssembly moduleAssembly = event.getModuleAssembly();
+            moduleAssembly.services( UnitOfWorkFactory.class ).withMixins( UnitOfWorkFactoryMixin.class );
+            moduleAssembly.transients( UnitOfWork.class ).withMixins( ModuleUnitOfWork.class );
+        } );
+        // emit ModuleAssemblingEvent to interested users
+        addHandler( ModuleAssemblingRuntimeEvent.TYPE, event ->
+            this.emit( new ModuleAssemblingEvent( event.getModuleAssembly() ) )
+        );
+
         // emit ModuleAssembledEvent to interested users
-        ModuleAssembledRuntimeEvent.Handler handler = event -> EventBus.this.emit( new ModuleAssembledEvent( event.getModuleAssembly() ) );
-        addHandler( ModuleAssembledRuntimeEvent.TYPE, handler );
-        // add default UnitOfWork to all modules (of not already added by user)
-        addHandler( ModuleAssembledRuntimeEvent.TYPE, new ModuleAssembledRuntimeEvent.Handler(  ) {
-            @Override
-            public void onModuleAssembled( ModuleAssembledRuntimeEvent event )
-            {
-                ModuleAssembly moduleAssembly = event.getModuleAssembly();
-                // mixin will not be used, if user have already added a matching mixin
-                // @TODO make it possible to ask if service is already there (more robust)
-                moduleAssembly.services( UnitOfWorkFactory.class ).withMixins( UnitOfWorkFactoryMixin.class );
-                moduleAssembly.transients( UnitOfWork.class ).withMixins( ModuleUnitOfWork.class );
-            }
-        });
+        addHandler( ModuleAssembledRuntimeEvent.TYPE, event ->
+            this.emit( new ModuleAssembledEvent( event.getModuleAssembly() ) )
+        );
     }
 
     /**
@@ -59,44 +61,52 @@ public class EventBus
     private final Map<ZestEvent.Type<?>, List<?>> map =
         new HashMap<>();
 
-
-    public <H extends ZestEventHandler> void addHandler(ZestEvent.Type<H> type, H handler) {
-        if (type == null) {
-            throw new NullPointerException("Cannot add a handler with a null type");
+    public <H extends ZestEventHandler> void addHandler( ZestEvent.Type<H> type, H handler )
+    {
+        if( type == null )
+        {
+            throw new NullPointerException( "Cannot add a handler with a null type" );
         }
-        if (handler == null) {
-            throw new NullPointerException("Cannot add a null handler");
+        if( handler == null )
+        {
+            throw new NullPointerException( "Cannot add a null handler" );
         }
 
         // safe, we control the puts.
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings( "unchecked" )
         List<H> handlers = (List<H>) map.get( type );
-        if (handlers == null) {
+        if( handlers == null )
+        {
             handlers = new ArrayList<>();
-            map.put( type, handlers);
+            map.put( type, handlers );
         }
 
         handlers.add( handler );
     }
 
-    public <H extends ZestEventHandler> void emit( ZestEvent<H> event) {
-        if (event == null) {
-            throw new NullPointerException("Cannot fire null event");
+    public <H extends ZestEventHandler> void emit( ZestEvent<H> event )
+    {
+        if( event == null )
+        {
+            throw new NullPointerException( "Cannot fire null event" );
         }
-        List<H> handlers = getDispatchList(event.getAssociatedType());
+        List<H> handlers = getDispatchList( event.getAssociatedType() );
 
         ListIterator<H> it = handlers.listIterator();
-        while (it.hasNext()) {
+        while( it.hasNext() )
+        {
             H handler = it.next();
-            event.dispatch(handler);
+            event.dispatch( handler );
         }
     }
 
-    private <H extends ZestEventHandler> List<H> getDispatchList(ZestEvent.Type<H> type) {
+    private <H extends ZestEventHandler> List<H> getDispatchList( ZestEvent.Type<H> type )
+    {
         // safe, we control the puts.
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings( "unchecked" )
         List<H> handlers = (List<H>) map.get( type );
-        if (handlers == null) {
+        if( handlers == null )
+        {
             return Collections.emptyList();
         }
 
