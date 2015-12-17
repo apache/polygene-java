@@ -39,6 +39,7 @@ import org.apache.zest.runtime.activation.ActivatorsModel;
 public final class ImportedServiceModel
     implements ImportedServiceDescriptor, VisitableHierarchy<Object, Object>
 {
+    private final ModuleDescriptor module;
     private final Class<?> type;
     private final Visibility visibility;
     @SuppressWarnings( "raw" )
@@ -50,7 +51,8 @@ public final class ImportedServiceModel
     private final String moduleName;
 
     @SuppressWarnings( "raw" )
-    public ImportedServiceModel( Class serviceType,
+    public ImportedServiceModel( ModuleDescriptor module,
+                                 Class serviceType,
                                  Visibility visibility,
                                  Class<? extends ServiceImporter> serviceImporter,
                                  String identity,
@@ -60,6 +62,7 @@ public final class ImportedServiceModel
                                  String moduleName
     )
     {
+        this.module = module;
         type = serviceType;
         this.visibility = visibility;
         this.serviceImporter = serviceImporter;
@@ -91,7 +94,7 @@ public final class ImportedServiceModel
     @Override
     public ModuleDescriptor module()
     {
-        return null;
+        return module;
     }
 
     @Override

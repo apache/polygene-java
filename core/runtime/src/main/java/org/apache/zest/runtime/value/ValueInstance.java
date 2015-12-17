@@ -168,6 +168,6 @@ public final class ValueInstance
     @Override
     public String toString()
     {
-        return ( (ModuleSpi) module() ).valueSerialization().serialize( this.<ValueComposite>proxy() );
+        return ( (ModuleSpi) module().instance() ).valueSerialization().serialize( this.<ValueComposite>proxy() );
     }
 }

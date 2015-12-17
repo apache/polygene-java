@@ -24,6 +24,7 @@ import org.apache.zest.api.common.MetaInfo;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.service.ServiceImporter;
 import org.apache.zest.api.service.importer.InstanceImporter;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.bootstrap.ImportedServiceAssembly;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.service.ImportedServiceModel;
@@ -59,7 +60,7 @@ public final class ImportedServiceAssemblyImpl
     }
 
     @SuppressWarnings( { "raw", "unchecked" } )
-    void addImportedServiceModel( List<ImportedServiceModel> serviceModels )
+    void addImportedServiceModel( ModuleDescriptor module, List<ImportedServiceModel> serviceModels )
     {
         try
         {
@@ -69,7 +70,8 @@ public final class ImportedServiceAssemblyImpl
                 id = generateId( serviceModels, serviceType );
             }
 
-            ImportedServiceModel serviceModel = new ImportedServiceModel( serviceType,
+            ImportedServiceModel serviceModel = new ImportedServiceModel( module,
+                                                                          serviceType,
                                                                           visibility,
                                                                           serviceProvider,
                                                                           id,

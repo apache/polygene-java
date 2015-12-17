@@ -568,7 +568,7 @@ public final class ModuleAssemblyImpl
 
         for( ImportedServiceAssemblyImpl importedServiceDeclaration : importedServiceAssemblies.values() )
         {
-            importedServiceDeclaration.addImportedServiceModel( importedServiceModels );
+            importedServiceDeclaration.addImportedServiceModel( moduleModel, importedServiceModels );
         }
 
         // Check for duplicate service identities
