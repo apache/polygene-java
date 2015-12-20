@@ -35,7 +35,6 @@ class ConfigModule
     public ModuleAssembly assemble( LayerAssembly layer, ModuleAssembly module )
         throws AssemblyException
     {
-        module.withDefaultUnitOfWorkFactory();
         module.services( MemoryEntityStoreService.class ).visibleIn( Visibility.application );
         return module;
     }

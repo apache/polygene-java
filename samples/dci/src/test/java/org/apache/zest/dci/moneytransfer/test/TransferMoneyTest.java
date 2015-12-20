@@ -14,13 +14,8 @@
 
 package org.apache.zest.dci.moneytransfer.test;
 
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.usecase.UsecaseBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
@@ -34,8 +29,12 @@ import org.apache.zest.dci.moneytransfer.rolemap.CheckingAccountRolemap;
 import org.apache.zest.dci.moneytransfer.rolemap.CreditorRolemap;
 import org.apache.zest.dci.moneytransfer.rolemap.SavingsAccountRolemap;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import static org.apache.zest.api.usecase.UsecaseBuilder.newUsecase;
+import static org.apache.zest.api.usecase.UsecaseBuilder.*;
 
 /**
  * Test of TransferMoneyContext
@@ -58,7 +57,6 @@ public class TransferMoneyTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
-                module.withDefaultUnitOfWorkFactory();
                 module.entities(
                     CheckingAccountRolemap.class,
                     SavingsAccountRolemap.class,

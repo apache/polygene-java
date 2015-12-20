@@ -57,7 +57,6 @@ import org.apache.zest.bootstrap.TransientAssembly;
 import org.apache.zest.bootstrap.TransientDeclaration;
 import org.apache.zest.bootstrap.ValueAssembly;
 import org.apache.zest.bootstrap.ValueDeclaration;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.runtime.activation.ActivatorsModel;
 import org.apache.zest.runtime.composite.TransientModel;
@@ -74,7 +73,7 @@ import org.apache.zest.runtime.structure.ModuleModel;
 import org.apache.zest.runtime.value.ValueModel;
 import org.apache.zest.runtime.value.ValuesModel;
 
-import static org.apache.zest.functional.Iterables.iterable;
+import static org.apache.zest.functional.Iterables.*;
 
 /**
  * Assembly of a Module. This is where you register all objects, Composites,
@@ -142,14 +141,6 @@ public final class ModuleAssemblyImpl
     public final ModuleAssembly withActivators( Class<? extends Activator<Module>>... activators )
     {
         this.activators.addAll( Arrays.asList( activators ) );
-        return this;
-    }
-
-    @Override
-    public ModuleAssembly withDefaultUnitOfWorkFactory()
-        throws AssemblyException
-    {
-        new DefaultUnitOfWorkAssembler().assemble( this );
         return this;
     }
 

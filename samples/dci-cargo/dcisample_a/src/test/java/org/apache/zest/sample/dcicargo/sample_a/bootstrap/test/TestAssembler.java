@@ -110,7 +110,7 @@ public class TestAssembler
     private void assembleBootstrapLayer( LayerAssembly bootstrapLayer )
         throws AssemblyException
     {
-        ModuleAssembly bootstrapModule = bootstrapLayer.module( "BOOTSTRAP-Bootstrap" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly bootstrapModule = bootstrapLayer.module( "BOOTSTRAP-Bootstrap" );
 
         // Load base data on startup
         bootstrapModule
@@ -124,7 +124,7 @@ public class TestAssembler
         throws AssemblyException
     {
         // Role-playing entities
-        ModuleAssembly entityRoleModule = contextLayer.module( "CONTEXT-EntityRole" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly entityRoleModule = contextLayer.module( "CONTEXT-EntityRole" );
         entityRoleModule
             .entities(
                 CargoRoleMap.class,
@@ -134,15 +134,14 @@ public class TestAssembler
             .visibleIn( application );
 
         // Role-playing values
-        ModuleAssembly valueRoleModule = contextLayer.module( "CONTEXT-ValueRole" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly valueRoleModule = contextLayer.module( "CONTEXT-ValueRole" );
         valueRoleModule
             .values(
                 ItineraryRoleMap.class,
                 RouteSpecificationRoleMap.class )
             .visibleIn( application );
 
-        ModuleAssembly contextSupportModule = contextLayer.module( "CONTEXT-ContextSupport" )
-            .withDefaultUnitOfWorkFactory();
+        ModuleAssembly contextSupportModule = contextLayer.module( "CONTEXT-ContextSupport" );
         contextSupportModule
             .addServices(
                 RoutingService.class,
@@ -159,7 +158,7 @@ public class TestAssembler
         throws AssemblyException
     {
         // Non-role-playing entities
-        ModuleAssembly entityModule = domainLayer.module( "DOMAIN-Entity" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly entityModule = domainLayer.module( "DOMAIN-Entity" );
         entityModule
             .entities(
                 LocationEntity.class,
@@ -167,7 +166,7 @@ public class TestAssembler
             .visibleIn( application );
 
         // Non-role-playing values
-        ModuleAssembly dataModule = domainLayer.module( "DOMAIN-Data" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly dataModule = domainLayer.module( "DOMAIN-Data" );
         dataModule
             .values(
                 TrackingId.class,
@@ -184,8 +183,7 @@ public class TestAssembler
     private void assembleInfrastructureLayer( LayerAssembly infrastructureLayer )
         throws AssemblyException
     {
-        ModuleAssembly serializationModule = infrastructureLayer.module( "INFRASTRUCTURE-Serialization" )
-            .withDefaultUnitOfWorkFactory();
+        ModuleAssembly serializationModule = infrastructureLayer.module( "INFRASTRUCTURE-Serialization" );
         serializationModule
             .services( OrgJsonValueSerializationService.class )
             .taggedWith( ValueSerialization.Formats.JSON )
@@ -199,8 +197,7 @@ public class TestAssembler
             } )
             .visibleIn( application );
 
-        ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" )
-            .withDefaultUnitOfWorkFactory();
+        ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" );
         indexingModule
             .objects(
                 EntityStateSerializer.class,
@@ -212,16 +209,14 @@ public class TestAssembler
                 RdfIndexingEngineService.class )
             .visibleIn( application );
 
-        ModuleAssembly entityStoreModule = infrastructureLayer.module( "INFRASTRUCTURE-EntityStore" )
-            .withDefaultUnitOfWorkFactory();
+        ModuleAssembly entityStoreModule = infrastructureLayer.module( "INFRASTRUCTURE-EntityStore" );
         entityStoreModule
             .addServices(
                 MemoryEntityStoreService.class,
                 UuidIdentityGeneratorService.class )
             .visibleIn( application );
 
-        ModuleAssembly externalServiceModule = infrastructureLayer.module( "INFRASTRUCTURE-ExternalService" )
-            .withDefaultUnitOfWorkFactory();
+        ModuleAssembly externalServiceModule = infrastructureLayer.module( "INFRASTRUCTURE-ExternalService" );
         externalServiceModule
             .importedServices(
                 GraphTraversalService.class )

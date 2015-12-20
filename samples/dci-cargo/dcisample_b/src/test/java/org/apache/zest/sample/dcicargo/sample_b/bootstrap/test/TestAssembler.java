@@ -113,7 +113,7 @@ public class TestAssembler
     private void assembleBootstrapLayer( LayerAssembly bootstrapLayer )
         throws AssemblyException
     {
-        ModuleAssembly bootstrapModule = bootstrapLayer.module( "BOOTSTRAP-Bootstrap" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly bootstrapModule = bootstrapLayer.module( "BOOTSTRAP-Bootstrap" );
 
         // Load base data on startup
         bootstrapModule
@@ -125,7 +125,7 @@ public class TestAssembler
     private void assembleContextLayer( LayerAssembly contextLayer )
         throws AssemblyException
     {
-        ModuleAssembly roleMapModule = contextLayer.module( "CONTEXT-RoleMap" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly roleMapModule = contextLayer.module( "CONTEXT-RoleMap" );
 
         // Role-playing entities
         roleMapModule
@@ -143,13 +143,13 @@ public class TestAssembler
                 VoyageEntity.class )
             .visibleIn( application );
 
-        ModuleAssembly interactionModule = contextLayer.module( "CONTEXT-Interaction" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly interactionModule = contextLayer.module( "CONTEXT-Interaction" );
         interactionModule
             .transients(
                 ProcessHandlingEvent.class )
             .visibleIn( application );
 
-        ModuleAssembly contextServiceModule = contextLayer.module( "CONTEXT-Service" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly contextServiceModule = contextLayer.module( "CONTEXT-Service" );
         contextServiceModule
             .services(
                 ParseHandlingEventData.class,
@@ -167,7 +167,7 @@ public class TestAssembler
         throws AssemblyException
     {
         // Non-role-playing values
-        ModuleAssembly structureModule = dataLayer.module( "DATA-Structure" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly structureModule = dataLayer.module( "DATA-Structure" );
         structureModule
             .values(
                 TrackingId.class,
@@ -187,14 +187,14 @@ public class TestAssembler
     private void assembleInfrastructureLayer( LayerAssembly infrastructureLayer )
         throws AssemblyException
     {
-        ModuleAssembly serializationModule = infrastructureLayer.module( "INFRASTRUCTURE-Serialization" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly serializationModule = infrastructureLayer.module( "INFRASTRUCTURE-Serialization" );
         serializationModule
             .services( OrgJsonValueSerializationService.class )
             .taggedWith( ValueSerialization.Formats.JSON )
             .setMetaInfo( (Function<Application, Module>) application -> application.findModule( "CONTEXT", "CONTEXT-RoleMap" ) )
         .visibleIn( application );
 
-        ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly indexingModule = infrastructureLayer.module( "INFRASTRUCTURE-Indexing" );
         indexingModule
             .objects(
                 EntityStateSerializer.class,
@@ -207,14 +207,14 @@ public class TestAssembler
             .visibleIn( application )
             .instantiateOnStartup();
 
-        ModuleAssembly entityStoreModule = infrastructureLayer.module( "INFRASTRUCTURE-EntityStore" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly entityStoreModule = infrastructureLayer.module( "INFRASTRUCTURE-EntityStore" );
         entityStoreModule
             .addServices(
                 MemoryEntityStoreService.class,
                 UuidIdentityGeneratorService.class )
             .visibleIn( application );
 
-        ModuleAssembly externalServiceModule = infrastructureLayer.module( "INFRASTRUCTURE-ExternalService" ).withDefaultUnitOfWorkFactory();
+        ModuleAssembly externalServiceModule = infrastructureLayer.module( "INFRASTRUCTURE-ExternalService" );
         externalServiceModule
             .importedServices(
                 GraphTraversalService.class )
