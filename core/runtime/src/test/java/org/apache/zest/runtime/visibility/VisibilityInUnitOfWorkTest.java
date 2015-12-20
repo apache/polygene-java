@@ -31,7 +31,6 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
@@ -142,16 +141,13 @@ public class VisibilityInUnitOfWorkTest
             ModuleAssembly infraModule = layer1.module( "Infra Module" );
             myModule.services( MyService.class );
             myModule.entities( MyEntity.class );
-            new DefaultUnitOfWorkAssembler().assemble( myModule );
             yourModule.entities( YourEntity.class );
             yourModule.services( YourService.class ).visibleIn( Visibility.layer );
-            new DefaultUnitOfWorkAssembler().assemble( yourModule );
             infraModule.services( MemoryEntityStoreService.class ).visibleIn( Visibility.layer );
             infraModule.services( UuidIdentityGeneratorService.class ).visibleIn( Visibility.layer );
             infraModule.services( OrgJsonValueSerializationService.class )
                 .visibleIn( Visibility.layer )
                 .taggedWith( ValueSerialization.Formats.JSON );
-            new DefaultUnitOfWorkAssembler().assemble( infraModule );
             return appAssembly;
         } );
     }

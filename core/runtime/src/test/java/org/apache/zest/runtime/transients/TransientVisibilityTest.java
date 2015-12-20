@@ -34,7 +34,6 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.After;
 import org.junit.Before;
@@ -660,7 +659,6 @@ public class TransientVisibilityTest
             module.transients( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
             module.transients( ModuleModuleVisible.class ).visibleIn( Visibility.module );
 
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -678,8 +676,6 @@ public class TransientVisibilityTest
             module.transients( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             new EntityTestAssembler().visibleIn( Visibility.application ).assemble( module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -695,8 +691,6 @@ public class TransientVisibilityTest
             module.transients( AboveApplicationVisible.class ).visibleIn( Visibility.application );
             module.transients( AboveLayerVisible.class ).visibleIn( Visibility.layer );
             module.transients( AboveModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -711,8 +705,6 @@ public class TransientVisibilityTest
             module.transients( BesideApplicationVisible.class ).visibleIn( Visibility.application );
             module.transients( BesideLayerVisible.class ).visibleIn( Visibility.layer );
             module.transients( BesideModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 

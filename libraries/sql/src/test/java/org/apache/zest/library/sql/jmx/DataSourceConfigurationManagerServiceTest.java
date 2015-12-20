@@ -18,9 +18,6 @@ import java.beans.PropertyVetoException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.sql.DataSource;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.injection.scope.Service;
@@ -41,6 +38,8 @@ import org.apache.zest.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.zest.library.sql.liquibase.LiquibaseConfiguration;
 import org.apache.zest.library.sql.liquibase.LiquibaseService;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Test of export of DataSources to JMX, and some other stuff
@@ -79,8 +78,6 @@ public class DataSourceConfigurationManagerServiceTest
 
                 // Create in-memory store for configurations
                 new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( module );
-
-                new DefaultUnitOfWorkAssembler().assemble( module );
 
                 // Set up DataSource service that will manage the connection pools
                 new DBCPDataSourceServiceAssembler().identifiedBy( "datasource-service" ).visibleIn( Visibility.layer ).assemble( module );

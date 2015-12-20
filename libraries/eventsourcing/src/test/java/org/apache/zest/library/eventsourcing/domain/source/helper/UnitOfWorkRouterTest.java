@@ -18,11 +18,9 @@
  */
 package org.apache.zest.library.eventsourcing.domain.source.helper;
 
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -32,10 +30,10 @@ import org.apache.zest.io.Inputs;
 import org.apache.zest.io.Receiver;
 import org.apache.zest.library.eventsourcing.domain.api.DomainEventValue;
 import org.apache.zest.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * TODO
@@ -54,7 +52,6 @@ public class UnitOfWorkRouterTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.values( UnitOfWorkDomainEventsValue.class, DomainEventValue.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 

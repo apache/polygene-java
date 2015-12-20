@@ -14,8 +14,6 @@
 
 package org.apache.zest.runtime.service;
 
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.Optional;
 import org.apache.zest.api.configuration.Configuration;
@@ -32,9 +30,10 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * JAVADOC
@@ -51,7 +50,6 @@ public class AvailableServiceTest
                 throws AssemblyException
             {
                 module.services( TestServiceComposite1.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 
@@ -74,7 +72,6 @@ public class AvailableServiceTest
                 module.entities( TestServiceConfiguration.class );
 
                 new EntityTestAssembler().assemble( module );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 
@@ -103,7 +100,6 @@ public class AvailableServiceTest
                 module.entities( TestServiceConfiguration.class );
 
                 new EntityTestAssembler().assemble( module );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 

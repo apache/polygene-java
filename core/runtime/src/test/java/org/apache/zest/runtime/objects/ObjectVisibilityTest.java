@@ -16,11 +16,6 @@
 
 package org.apache.zest.runtime.objects;
 
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.composite.TransientComposite;
 import org.apache.zest.api.entity.EntityComposite;
@@ -31,6 +26,7 @@ import org.apache.zest.api.service.ServiceComposite;
 import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.zest.bootstrap.Assembler;
@@ -38,6 +34,9 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ObjectVisibilityTest
 {
@@ -659,8 +658,6 @@ public class ObjectVisibilityTest
             module.objects( ModuleApplicationVisible.class ).visibleIn( Visibility.application );
             module.objects( ModuleLayerVisible.class ).visibleIn( Visibility.layer );
             module.objects( ModuleModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -678,7 +675,6 @@ public class ObjectVisibilityTest
             module.objects( BelowModuleVisible.class ).visibleIn( Visibility.module );
 
             new EntityTestAssembler().visibleIn( Visibility.application ).assemble( module );
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -694,8 +690,6 @@ public class ObjectVisibilityTest
             module.objects( AboveApplicationVisible.class ).visibleIn( Visibility.application );
             module.objects( AboveLayerVisible.class ).visibleIn( Visibility.layer );
             module.objects( AboveModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 
@@ -710,8 +704,6 @@ public class ObjectVisibilityTest
             module.objects( BesideApplicationVisible.class ).visibleIn( Visibility.application );
             module.objects( BesideLayerVisible.class ).visibleIn( Visibility.layer );
             module.objects( BesideModuleVisible.class ).visibleIn( Visibility.module );
-
-            new DefaultUnitOfWorkAssembler().assemble( module );
         }
     }
 

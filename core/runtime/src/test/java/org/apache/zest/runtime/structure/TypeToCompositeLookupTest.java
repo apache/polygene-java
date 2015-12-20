@@ -14,9 +14,6 @@
 package org.apache.zest.runtime.structure;
 
 import java.util.Iterator;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.composite.AmbiguousTypeException;
 import org.apache.zest.api.entity.Identity;
@@ -25,11 +22,13 @@ import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkCompletionException;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
 import org.apache.zest.functional.Iterables;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -98,7 +97,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.objects( SomeOtherFooImpl.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -120,7 +118,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.objects( SomeOtherFooImpl.class, BasicFooImpl.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -150,7 +147,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.transients( SomeOtherFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -172,7 +168,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.transients( SomeOtherFoo.class, BasicFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -202,7 +197,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.values( SomeOtherFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -224,7 +218,6 @@ public class TypeToCompositeLookupTest
                 throws AssemblyException
             {
                 module.values( SomeOtherFoo.class, BasicFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module();
@@ -255,7 +248,6 @@ public class TypeToCompositeLookupTest
             {
                 new EntityTestAssembler().assemble( module );
                 module.entities( SomeOtherFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module().unitOfWorkFactory();
@@ -298,7 +290,6 @@ public class TypeToCompositeLookupTest
             {
                 new EntityTestAssembler().assemble( module );
                 module.entities( SomeOtherFoo.class, BasicFoo.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
         }.module().unitOfWorkFactory();

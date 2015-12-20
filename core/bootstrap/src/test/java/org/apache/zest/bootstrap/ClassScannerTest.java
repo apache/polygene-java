@@ -18,16 +18,14 @@
  */
 package org.apache.zest.bootstrap;
 
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.bootstrap.somepackage.Test2Value;
 import org.apache.zest.functional.Iterables;
+import org.junit.Assert;
+import org.junit.Test;
 
-import static org.apache.zest.bootstrap.ClassScanner.findClasses;
-import static org.apache.zest.bootstrap.ClassScanner.matches;
-import static org.apache.zest.functional.Iterables.filter;
+import static org.apache.zest.bootstrap.ClassScanner.*;
+import static org.apache.zest.functional.Iterables.*;
 
 /**
  * Test and showcase of the ClassScanner assembly utility.
@@ -49,7 +47,6 @@ public class ClassScannerTest
                 for( Class aClass : filter( matches( ".*Value" ), findClasses( TestValue.class ) ) )
                 {
                     module.values( aClass );
-                    new DefaultUnitOfWorkAssembler().assemble( module );
                 }
             }
         };

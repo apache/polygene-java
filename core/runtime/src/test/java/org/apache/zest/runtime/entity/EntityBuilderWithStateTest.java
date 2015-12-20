@@ -17,8 +17,6 @@ package org.apache.zest.runtime.entity;
 
 import java.util.Arrays;
 import java.util.Collections;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Test;
 import org.apache.zest.api.association.Association;
 import org.apache.zest.api.association.ManyAssociation;
 import org.apache.zest.api.association.NamedAssociation;
@@ -33,9 +31,10 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 /**
  * EntityBuilder With State Test.
@@ -49,7 +48,6 @@ public class EntityBuilderWithStateTest
     {
         new EntityTestAssembler().assemble( module );
         module.entities( SomeEntity.class );
-        new DefaultUnitOfWorkAssembler().assemble( module );
     }
 
     @Test

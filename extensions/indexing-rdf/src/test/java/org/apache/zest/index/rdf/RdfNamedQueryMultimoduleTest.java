@@ -24,7 +24,6 @@ import org.apache.zest.api.common.Visibility;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.LayerAssembly;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.zest.test.EntityTestAssembler;
 
@@ -40,12 +39,10 @@ public class RdfNamedQueryMultimoduleTest
         assembleValues( module, Visibility.module );
 
         ModuleAssembly storeModule = layer.module( "store" );
-        new DefaultUnitOfWorkAssembler().assemble( storeModule );
         new EntityTestAssembler().visibleIn( Visibility.layer ).assemble( storeModule );
         assembleValues( storeModule, Visibility.module );
 
         ModuleAssembly indexModule = layer.module( "index" );
-        new DefaultUnitOfWorkAssembler().assemble( indexModule );
         new RdfMemoryStoreAssembler( Visibility.layer, Visibility.module ).assemble( indexModule );
     }
 

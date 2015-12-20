@@ -18,9 +18,8 @@
  */
 package org.apache.zest.library.eventsourcing.domain.source.helper;
 
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -28,16 +27,15 @@ import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
 import org.apache.zest.library.eventsourcing.domain.api.DomainEventValue;
 import org.apache.zest.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.apache.zest.functional.Iterables.count;
+import static org.apache.zest.functional.Iterables.*;
 import static org.apache.zest.io.Inputs.iterable;
-import static org.apache.zest.io.Outputs.systemOut;
-import static org.apache.zest.library.eventsourcing.domain.source.helper.Events.events;
+import static org.apache.zest.io.Outputs.*;
+import static org.apache.zest.library.eventsourcing.domain.source.helper.Events.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * TODO
@@ -56,7 +54,6 @@ public class EventsTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.values( UnitOfWorkDomainEventsValue.class, DomainEventValue.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 

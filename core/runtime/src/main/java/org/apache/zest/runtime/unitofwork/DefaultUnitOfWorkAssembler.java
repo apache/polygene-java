@@ -18,38 +18,20 @@
  *
  */
 
-package org.apache.zest.bootstrap.unitofwork;
+package org.apache.zest.runtime.unitofwork;
 
+import org.apache.zest.api.unitofwork.UnitOfWork;
+import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
 import org.apache.zest.bootstrap.Assembler;
-import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 
-@Deprecated
 public class DefaultUnitOfWorkAssembler
     implements Assembler
 {
     @Override
     public void assemble( ModuleAssembly module )
-        throws AssemblyException
     {
-        // Do nothing - added automatically by EventBus
-        //Class factoryMixin = loadMixinClass( "org.apache.zest.runtime.unitofwork.UnitOfWorkFactoryMixin" );
-        //module.services( UnitOfWorkFactory.class ).withMixins( factoryMixin );
-
-        //Class uowMixin = loadMixinClass( "org.apache.zest.runtime.unitofwork.ModuleUnitOfWork" );
-        //module.transients( UnitOfWork.class ).withMixins( uowMixin );
-    }
-
-    private Class<?> loadMixinClass( String name )
-        throws AssemblyException
-    {
-        try
-        {
-            return getClass().getClassLoader().loadClass( name );
-        }
-        catch( ClassNotFoundException e )
-        {
-            throw new AssemblyException( "Default UnitOfWorkFactory mixin is not present in the system." );
-        }
+        module.services( UnitOfWorkFactory.class ).withMixins( UnitOfWorkFactoryMixin.class );
+        module.transients( UnitOfWork.class ).withMixins( ModuleUnitOfWork.class );
     }
 }

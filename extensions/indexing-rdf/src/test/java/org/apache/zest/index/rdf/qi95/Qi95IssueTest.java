@@ -21,9 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Rule;
-import org.junit.Test;
 import org.apache.zest.api.common.Visibility;
 import org.apache.zest.api.entity.EntityBuilder;
 import org.apache.zest.api.entity.EntityComposite;
@@ -34,7 +31,14 @@ import org.apache.zest.api.structure.Application;
 import org.apache.zest.api.structure.Module;
 import org.apache.zest.api.unitofwork.UnitOfWork;
 import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.*;
+import org.apache.zest.bootstrap.ApplicationAssembler;
+import org.apache.zest.bootstrap.ApplicationAssembly;
+import org.apache.zest.bootstrap.ApplicationAssemblyFactory;
+import org.apache.zest.bootstrap.Assembler;
+import org.apache.zest.bootstrap.AssemblyException;
+import org.apache.zest.bootstrap.Energy4Java;
+import org.apache.zest.bootstrap.LayerAssembly;
+import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.entitystore.jdbm.JdbmConfiguration;
 import org.apache.zest.entitystore.jdbm.assembly.JdbmEntityStoreAssembler;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
@@ -43,8 +47,10 @@ import org.apache.zest.library.rdf.repository.NativeConfiguration;
 import org.apache.zest.test.EntityTestAssembler;
 import org.apache.zest.test.util.DelTreeAfter;
 import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssembler;
+import org.junit.Rule;
+import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class Qi95IssueTest
 {
@@ -279,7 +285,6 @@ public class Qi95IssueTest
                     throws AssemblyException
                 {
                     module.entities( ItemTypeEntity.class );
-                    new DefaultUnitOfWorkAssembler().assemble( module );
                 }
             } );
             return domainLayer;
@@ -295,7 +300,6 @@ public class Qi95IssueTest
                 throws AssemblyException
             {
                 new EntityTestAssembler().assemble( module );
-                new DefaultUnitOfWorkAssembler().assemble( module );
 
                 module.entities( NativeConfiguration.class ).visibleIn( Visibility.application );
                 module.forMixin( NativeConfiguration.class )
@@ -323,7 +327,6 @@ public class Qi95IssueTest
             {
                 new OrgJsonValueSerializationAssembler().assemble( module );
                 new JdbmEntityStoreAssembler().visibleIn( Visibility.application ).assemble( module );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
     }
@@ -333,7 +336,6 @@ public class Qi95IssueTest
     {
         ModuleAssembly moduleAssembly = layerAssembly.module( name );
         assembler.assemble( moduleAssembly );
-        new DefaultUnitOfWorkAssembler().assemble( moduleAssembly );
         return moduleAssembly;
     }
 

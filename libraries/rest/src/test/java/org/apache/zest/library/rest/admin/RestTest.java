@@ -40,7 +40,6 @@ import org.apache.zest.bootstrap.ApplicationAssemblerAdapter;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.entitystore.memory.MemoryEntityStoreService;
 import org.apache.zest.index.rdf.assembly.RdfMemoryStoreAssembler;
 import org.apache.zest.spi.uuid.UuidIdentityGeneratorService;
@@ -48,11 +47,8 @@ import org.apache.zest.test.AbstractZestTest;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 public class RestTest
     extends AbstractZestTest
@@ -69,8 +65,7 @@ public class RestTest
                         {
                             RestTest.this,
                             new RestAssembler(),
-                            new RdfMemoryStoreAssembler(),
-                            new DefaultUnitOfWorkAssembler()
+                            new RdfMemoryStoreAssembler()
                         }
                     }
                 } )

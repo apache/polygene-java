@@ -37,7 +37,6 @@ import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.Energy4Java;
 import org.apache.zest.bootstrap.ModuleAssembly;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.io.Inputs;
 import org.apache.zest.io.Outputs;
 import org.apache.zest.io.Transforms;
@@ -46,8 +45,8 @@ import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationAssem
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Snippets:
@@ -80,7 +79,6 @@ public class DocumentationSupport
         module.values( SomeValue.class ); // (2)
         // END SNIPPET: default
         new OrgJsonValueSerializationAssembler().assemble( module ); // (3)
-        new DefaultUnitOfWorkAssembler().assemble( module );
         // START SNIPPET: default
     }
     // END SNIPPET: default
@@ -227,7 +225,6 @@ public class DocumentationSupport
                                 valuesModule.setName( "VALUES-Module" );
 
                                 valuesModule.values( SomeValue.class );
-                                new DefaultUnitOfWorkAssembler().assemble( valuesModule );
                             }
                         },
                         {

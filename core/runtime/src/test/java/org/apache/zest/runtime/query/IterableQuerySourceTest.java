@@ -20,10 +20,6 @@ package org.apache.zest.runtime.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.query.Query;
 import org.apache.zest.api.query.QueryBuilder;
@@ -50,21 +46,12 @@ import org.apache.zest.runtime.query.model.values.ContactValue;
 import org.apache.zest.runtime.query.model.values.ContactsValue;
 import org.apache.zest.spi.query.EntityFinderException;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.apache.zest.api.query.QueryExpressions.eq;
-import static org.apache.zest.api.query.QueryExpressions.ge;
-import static org.apache.zest.api.query.QueryExpressions.gt;
-import static org.apache.zest.api.query.QueryExpressions.isNotNull;
-import static org.apache.zest.api.query.QueryExpressions.isNull;
-import static org.apache.zest.api.query.QueryExpressions.lt;
-import static org.apache.zest.api.query.QueryExpressions.matches;
-import static org.apache.zest.api.query.QueryExpressions.not;
-import static org.apache.zest.api.query.QueryExpressions.or;
-import static org.apache.zest.api.query.QueryExpressions.orderBy;
-import static org.apache.zest.api.query.QueryExpressions.property;
-import static org.apache.zest.api.query.QueryExpressions.templateFor;
+import static org.apache.zest.api.query.QueryExpressions.*;
+import static org.junit.Assert.*;
 
 public class IterableQuerySourceTest
 {
@@ -90,7 +77,6 @@ public class IterableQuerySourceTest
 
                 module.values( ContactsValue.class, ContactValue.class );
                 new EntityTestAssembler().assemble( module );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
         uow = assembler.module().unitOfWorkFactory().newUnitOfWork();

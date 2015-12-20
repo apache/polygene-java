@@ -18,11 +18,6 @@ package org.apache.zest.library.eventsourcing.domain.source.helper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.value.ValueBuilder;
 import org.apache.zest.bootstrap.AssemblyException;
@@ -32,9 +27,13 @@ import org.apache.zest.io.Inputs;
 import org.apache.zest.io.Receiver;
 import org.apache.zest.library.eventsourcing.domain.api.DomainEventValue;
 import org.apache.zest.library.eventsourcing.domain.api.UnitOfWorkDomainEventsValue;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
 
+import static org.apache.zest.test.util.JSONAssert.*;
 import static org.junit.Assert.assertEquals;
-import static org.apache.zest.test.util.JSONAssert.jsonObjectsEquals;
 
 public class EventRouterTest
 {
@@ -50,7 +49,6 @@ public class EventRouterTest
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
                 module.values( UnitOfWorkDomainEventsValue.class, DomainEventValue.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
 

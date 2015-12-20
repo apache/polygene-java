@@ -15,8 +15,6 @@
  */
 package org.apache.zest.runtime.injection;
 
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.concern.ConcernOf;
@@ -29,8 +27,9 @@ import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
 import org.junit.Ignore;
+import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 /**
  * This test is created in response to QI-359
@@ -50,7 +49,6 @@ public class ConstructorInjectionOfThisTest
                 throws AssemblyException
             {
                 module.values( Does.class ).withMixins( DoesMixin.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
         Module module = singletonAssembler.application().findModule( "Layer 1", "Module 1" );

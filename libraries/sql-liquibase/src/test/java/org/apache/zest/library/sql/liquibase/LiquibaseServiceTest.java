@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import javax.sql.DataSource;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationEvent;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
@@ -41,12 +39,12 @@ import org.apache.zest.library.sql.assembly.DataSourceAssembler;
 import org.apache.zest.library.sql.common.Databases;
 import org.apache.zest.library.sql.dbcp.DBCPDataSourceServiceAssembler;
 import org.apache.zest.test.EntityTestAssembler;
+import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.apache.zest.io.Outputs.collection;
-import static org.apache.zest.io.Transforms.map;
+import static org.apache.zest.io.Outputs.*;
+import static org.apache.zest.io.Transforms.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Test DataSource and Liquibase services
@@ -87,8 +85,6 @@ public class LiquibaseServiceTest
                 // END SNIPPET: assembly
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().enabled().set( true );
                 module.forMixin( LiquibaseConfiguration.class ).declareDefaults().changeLog().set( "changelog.xml" );
-
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
 
             @Override

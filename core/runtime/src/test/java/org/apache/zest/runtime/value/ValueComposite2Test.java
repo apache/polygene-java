@@ -18,9 +18,6 @@
 package org.apache.zest.runtime.value;
 
 import java.security.Guard;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.junit.Assert;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.injection.scope.Service;
 import org.apache.zest.api.injection.scope.Structure;
@@ -34,6 +31,8 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class ValueComposite2Test
 {
@@ -48,7 +47,6 @@ public class ValueComposite2Test
             {
                 module.values( SomeValue.class );
                 module.services( DummyService.class );
-                new DefaultUnitOfWorkAssembler().assemble( module );
             }
         };
         ValueBuilder<Some> builder = app.module().newValueBuilder( Some.class );

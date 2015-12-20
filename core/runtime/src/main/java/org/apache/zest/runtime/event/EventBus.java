@@ -26,23 +26,19 @@ import java.util.ListIterator;
 import java.util.Map;
 import org.apache.zest.api.event.ZestEvent;
 import org.apache.zest.api.event.ZestEventHandler;
-import org.apache.zest.api.unitofwork.UnitOfWork;
-import org.apache.zest.api.unitofwork.UnitOfWorkFactory;
-import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.handler.ModuleAssembledEvent;
 import org.apache.zest.bootstrap.handler.ModuleAssemblingEvent;
-import org.apache.zest.runtime.unitofwork.ModuleUnitOfWork;
-import org.apache.zest.runtime.unitofwork.UnitOfWorkFactoryMixin;
+import org.apache.zest.runtime.unitofwork.DefaultUnitOfWorkAssembler;
 
 public class EventBus
 {
     public EventBus()
     {
         // add default UnitOfWork to all modules (may be customized by user afterwards)
+        // @TODO add a way to ask for existing stuff duroing assembly - and give the user
+        // a chance of replacing the default
         addHandler( ModuleAssemblingRuntimeEvent.TYPE, event -> {
-            ModuleAssembly moduleAssembly = event.getModuleAssembly();
-            moduleAssembly.services( UnitOfWorkFactory.class ).withMixins( UnitOfWorkFactoryMixin.class );
-            moduleAssembly.transients( UnitOfWork.class ).withMixins( ModuleUnitOfWork.class );
+            new DefaultUnitOfWorkAssembler().assemble( event.getModuleAssembly() );
         } );
         // emit ModuleAssemblingEvent to interested users
         addHandler( ModuleAssemblingRuntimeEvent.TYPE, event ->

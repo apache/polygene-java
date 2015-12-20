@@ -16,11 +16,6 @@ package org.apache.zest.migration;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
-import org.hamcrest.CoreMatchers;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Test;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.service.importer.NewObjectImporter;
 import org.apache.zest.api.unitofwork.UnitOfWork;
@@ -40,8 +35,12 @@ import org.apache.zest.spi.entitystore.helpers.JSONKeys;
 import org.apache.zest.spi.entitystore.helpers.StateStore;
 import org.apache.zest.test.AbstractZestTest;
 import org.apache.zest.test.EntityTestAssembler;
+import org.hamcrest.CoreMatchers;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Test;
 
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * JAVADOC
@@ -54,7 +53,6 @@ public class MigrationTest
         throws AssemblyException
     {
         new EntityTestAssembler().assemble( module );
-        new DefaultUnitOfWorkAssembler().assemble( module );
 
         module.objects( MigrationEventLogger.class );
         module.importedServices( MigrationEventLogger.class ).importedBy( NewObjectImporter.class );

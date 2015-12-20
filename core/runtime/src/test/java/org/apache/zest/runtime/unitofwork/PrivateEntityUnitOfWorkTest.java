@@ -32,7 +32,6 @@ import org.apache.zest.api.value.ValueBuilderFactory;
 import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.Assembler;
 import org.apache.zest.bootstrap.Energy4Java;
-import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
 import org.apache.zest.test.EntityTestAssembler;
 import org.junit.Test;
 
@@ -61,7 +60,6 @@ public class PrivateEntityUnitOfWorkTest
                         {
                             module -> {
                                 module.objects( PrivateEntityUnitOfWorkTest.class );
-                                new DefaultUnitOfWorkAssembler().assemble( module );
                             }
                         }
                     },
@@ -72,7 +70,6 @@ public class PrivateEntityUnitOfWorkTest
                                 module.entities( ProductCatalogEntity.class ).visibleIn( application );
                                 module.values( ProductInfo.class );
                                 new EntityTestAssembler().assemble( module );
-                                new DefaultUnitOfWorkAssembler().assemble( module );
                             }
                         }
                     }
