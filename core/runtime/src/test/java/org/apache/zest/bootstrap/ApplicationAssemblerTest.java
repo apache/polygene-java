@@ -74,8 +74,10 @@ public class ApplicationAssemblerTest
                 if( visited instanceof ServiceDescriptor )
                 {
                     ServiceDescriptor serviceDescriptor = (ServiceDescriptor) visited;
-                    Assert.assertTrue( serviceDescriptor.isInstantiateOnStartup() );
-                    Assert.assertTrue( serviceDescriptor.visibility() == Visibility.layer );
+                    if (serviceDescriptor.isAssignableTo( TestService.class )) {
+                        Assert.assertTrue( serviceDescriptor.isInstantiateOnStartup() );
+                        Assert.assertTrue( serviceDescriptor.visibility() == Visibility.layer );
+                    }
                     return false;
                 }
                 else if( visited instanceof EntityDescriptor )
