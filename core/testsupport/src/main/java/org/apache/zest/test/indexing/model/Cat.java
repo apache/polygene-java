@@ -17,9 +17,12 @@
  */
 package org.apache.zest.test.indexing.model;
 
+import org.apache.zest.api.entity.Queryable;
+
 /**
  * JAVADOC Add JavaDoc
  */
+@Queryable(false)
 public interface Cat extends Pet
 {
 }
