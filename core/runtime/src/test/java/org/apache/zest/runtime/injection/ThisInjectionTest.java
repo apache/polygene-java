@@ -83,17 +83,25 @@ public class ThisInjectionTest
     public static class TestMixin
         implements Test
     {
-        @This
-        Test test;
+        @This Test test;
+        @This TestPrivate testPrivate;
+        Test ctorTest;
+        TestPrivate ctorTestPrivate;
 
-        @This
-        TestPrivate testPrivate;
-
-        public boolean isInjected()
+        public TestMixin( @This Test test, @This TestPrivate testPrivate )
         {
-            return test != null && !testPrivate.testPrivate().get();
+            ctorTest = test;
+            ctorTestPrivate = testPrivate;
         }
 
+        @Override
+        public boolean isInjected()
+        {
+            return test != null && ctorTest != null &&
+                    !testPrivate.testPrivate().get() && !ctorTestPrivate.testPrivate().get();
+        }
+
+        @Override
         public String test()
         {
             return "Foo";
@@ -104,17 +112,23 @@ public class ThisInjectionTest
         extends ConcernOf<Test>
         implements Test
     {
-        @This
-        Test test;
+        @This Test test;
+        @This TestPrivate testPrivate;
+        Test ctorTest;
+        TestPrivate ctorTestPrivate;
 
-        @This
-        TestPrivate testPrivate;
+        public TestConcern( @This Test test, @This TestPrivate testPrivate )
+        {
+            ctorTest = test;
+            ctorTestPrivate = testPrivate;
+        }
 
+        @Override
         public boolean isInjected()
         {
-            return test != null && test.test().equals( "Foo" ) &&
-                   !testPrivate.testPrivate().get() &&
-                   next.isInjected();
+            return test != null && ctorTest != null &&
+                    !testPrivate.testPrivate().get() && !ctorTestPrivate.testPrivate().get() &&
+                    next.isInjected();
         }
     }
 
@@ -122,14 +136,22 @@ public class ThisInjectionTest
         extends SideEffectOf<Test>
         implements Test
     {
-        @This
-        Test test;
-        @This
-        TestPrivate testPrivate;
+        @This Test test;
+        @This TestPrivate testPrivate;
+        Test ctorTest;
+        TestPrivate ctorTestPrivate;
 
+        public TestSideEffect( @This Test test, @This TestPrivate testPrivate )
+        {
+            ctorTest = test;
+            ctorTestPrivate = testPrivate;
+        }
+
+        @Override
         public boolean isInjected()
         {
-            sideEffectInjected = test != null && !testPrivate.testPrivate().get();
+            sideEffectInjected = test != null && ctorTest != null &&
+                    !testPrivate.testPrivate().get() && !ctorTestPrivate.testPrivate().get();
 
             return false;
         }
