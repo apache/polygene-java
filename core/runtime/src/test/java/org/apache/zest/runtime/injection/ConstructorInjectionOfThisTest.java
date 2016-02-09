@@ -26,7 +26,6 @@ import org.apache.zest.api.structure.Module;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.bootstrap.SingletonAssembler;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -43,7 +42,6 @@ public class ConstructorInjectionOfThisTest
     {
         SingletonAssembler singletonAssembler = new SingletonAssembler()
         {
-
             @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
@@ -56,13 +54,12 @@ public class ConstructorInjectionOfThisTest
         does.doSomething();
     }
 
-    @Test @Ignore
+    @Test
     public void givenConcernWithThisInConstructorWhenCreatingModelExpectNoException()
         throws ActivationException, AssemblyException
     {
         SingletonAssembler singletonAssembler = new SingletonAssembler()
         {
-
             @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
@@ -75,13 +72,12 @@ public class ConstructorInjectionOfThisTest
         does.doSomething();
     }
 
-    @Test @Ignore
+    @Test
     public void givenSideEffectWithThisInConstructorWhenCreatingModelExpectNoException()
         throws ActivationException, AssemblyException
     {
         SingletonAssembler singletonAssembler = new SingletonAssembler()
         {
-
             @Override
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
