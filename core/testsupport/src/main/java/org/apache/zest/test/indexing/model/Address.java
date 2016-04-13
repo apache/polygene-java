@@ -20,7 +20,7 @@ package org.apache.zest.test.indexing.model;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueComposite;
 
-public interface Address
+public interface Address extends ValueComposite // necessary, @See ZEST-137
 {
     Property<String> line1();
 
