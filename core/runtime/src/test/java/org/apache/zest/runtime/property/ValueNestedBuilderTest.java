@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Test;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.property.Property;
 import org.apache.zest.api.value.ValueBuilder;
@@ -25,23 +24,23 @@ import org.apache.zest.api.value.ValueComposite;
 import org.apache.zest.bootstrap.AssemblyException;
 import org.apache.zest.bootstrap.ModuleAssembly;
 import org.apache.zest.test.AbstractZestTest;
+import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
+import org.junit.Test;
 
 public class ValueNestedBuilderTest
-        extends AbstractZestTest
+    extends AbstractZestTest
 {
 
-    static interface InnerValue
-            extends ValueComposite
+    private interface InnerValue
+        extends ValueComposite
     {
-
         Property<List<String>> listProp();
 
         Property<Map<String, String>> mapProp();
-
     }
 
-    static interface InnerDefaultedValue
-            extends ValueComposite
+    private interface InnerDefaultedValue
+        extends ValueComposite
     {
 
         @UseDefaults
@@ -49,30 +48,28 @@ public class ValueNestedBuilderTest
 
         @UseDefaults
         Property<Map<String, String>> mapPropDefault();
-
     }
 
-    static interface OuterValue
-            extends ValueComposite
+    private interface OuterValue
+        extends ValueComposite
     {
 
         Property<List<InnerValue>> innerListProp();
-
     }
 
-    static interface OuterDefaultedValue
-            extends ValueComposite
+    private interface OuterDefaultedValue
+        extends ValueComposite
     {
 
         @UseDefaults
         Property<List<InnerDefaultedValue>> innerListPropDefault();
-
     }
 
     @Override
     public void assemble( ModuleAssembly module )
-            throws AssemblyException
+        throws AssemblyException
     {
+        module.services( OrgJsonValueSerializationService.class );
         module.values( InnerValue.class, InnerDefaultedValue.class, OuterValue.class, OuterDefaultedValue.class );
     }
 
@@ -127,5 +124,4 @@ public class ValueNestedBuilderTest
         System.out.println( outer.toString() );
         // If we reach this point, value creation went well
     }
-
 }

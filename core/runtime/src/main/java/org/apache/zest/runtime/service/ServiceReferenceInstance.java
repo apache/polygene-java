@@ -58,7 +58,7 @@ public final class ServiceReferenceInstance<T>
     private final ActivationDelegate activation = new ActivationDelegate( this );
     private boolean active = false;
 
-    public ServiceReferenceInstance( ServiceModel serviceModel, ModuleDescriptor module )
+    ServiceReferenceInstance( ServiceModel serviceModel, ModuleDescriptor module )
     {
         this.module = module;
         this.serviceModel = serviceModel;
@@ -100,6 +100,12 @@ public final class ServiceReferenceInstance<T>
     public boolean isAvailable()
     {
         return getInstance().isAvailable();
+    }
+
+    @Override
+    public ModelDescriptor model()
+    {
+        return serviceModel;
     }
 
     public ModuleDescriptor module()

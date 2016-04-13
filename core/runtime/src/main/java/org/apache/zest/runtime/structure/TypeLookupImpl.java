@@ -47,7 +47,7 @@ import static org.apache.zest.functional.Iterables.first;
 /**
  * Central place for Composite Type lookups.
  */
-public class TypeLookupImpl
+class TypeLookupImpl
     implements TypeLookup
 {
 
@@ -250,19 +250,15 @@ public class TypeLookupImpl
     {
         return servicesReferences.computeIfAbsent( type1, type ->
         {
-            List<ModelDescriptor> models =
-                allServices().filter(
-                    new ExactTypeMatching<>( type ).or( new AssignableFromTypeMatching<>( type ) )
-                )
-                    .distinct()
-                    .collect( Collectors.toList() );
-
-            // TODO: Needed??
-//            List<T> result = new ArrayList<>();
-//            //noinspection unchecked
-//            serviceRefs.forEach( descriptor -> result.add( (T) descriptor ) );
-
-            return models;
+            // There is a requirement that "exact match" services must be returned before "assignable match"
+            // services, hence the dual streams instead of a OR filter.
+            return Stream.concat(
+                allServices()
+                    .filter( new ExactTypeMatching<>( type ) ),
+                allServices()
+                    .filter( new AssignableFromTypeMatching<>( type ) ) )
+                .distinct()
+                .collect( Collectors.toList() );
         } );
     }
 

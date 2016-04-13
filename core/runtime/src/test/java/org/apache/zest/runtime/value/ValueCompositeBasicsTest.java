@@ -18,6 +18,7 @@
  */
 package org.apache.zest.runtime.value;
 
+import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.mixin.Mixins;
@@ -37,6 +38,7 @@ public class ValueCompositeBasicsTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        module.services( OrgJsonValueSerializationService.class );
         module.values( SomeValue.class );
     }
 

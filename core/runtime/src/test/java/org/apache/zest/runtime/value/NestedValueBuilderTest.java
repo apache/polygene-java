@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.junit.Test;
 import org.apache.zest.api.common.UseDefaults;
 import org.apache.zest.api.property.Property;
@@ -71,6 +72,7 @@ public class NestedValueBuilderTest
     public void assemble( ModuleAssembly module )
         throws AssemblyException
     {
+        module.services( OrgJsonValueSerializationService.class );
         module.values( InnerValue.class, InnerDefaultedValue.class, OuterValue.class, OuterDefaultedValue.class );
     }
 

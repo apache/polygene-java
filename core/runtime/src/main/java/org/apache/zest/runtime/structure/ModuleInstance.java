@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.zest.api.activation.Activation;
@@ -370,20 +371,7 @@ public class ModuleInstance
         {
             throw new NoSuchServiceException( serviceType.getTypeName(), name() );
         }
-        ModuleInstance serviceLocation = (ModuleInstance) serviceModel.module().instance();
-        try
-        {
-            //noinspection unchecked
-            return serviceLocation.services
-                .references()
-                .filter( ref -> ref.hasType( serviceType ) )
-                .map( ref -> (ServiceReference<T>) ref )
-                .findAny().get();
-        }
-        catch( NoSuchElementException e )
-        {
-            throw new NoSuchServiceException( serviceType.getTypeName(), name() );
-        }
+        return findServiceReferenceInstance( serviceModel );
     }
 
     @Override
@@ -402,12 +390,25 @@ public class ModuleInstance
         }
         //noinspection unchecked
         return serviceModels.stream()
-            .flatMap(
-                model -> ( (ModuleInstance) model.module().instance() ).services.references()
-            )
+            .map( this::findServiceReferenceInstance )
+            .filter( ref -> ref != null )
             .filter( ref -> ref.hasType( serviceType ) )
             .map( ref -> (ServiceReference<T>) ref )
             .collect( Collectors.toList() );
+    }
+
+    private <T> ServiceReference<T> findServiceReferenceInstance( ModelDescriptor model )
+    {
+        ModuleInstance moduleInstanceOfModel = (ModuleInstance) model.module().instance();
+        Optional<ServiceReference<?>> candidate = moduleInstanceOfModel.services.references()
+            .filter( ref -> ref.model().equals( model ) )
+            .findAny();
+        if( candidate.isPresent() )
+        {
+            ServiceReference<?> serviceReference = candidate.get();
+            return (ServiceReference<T>) serviceReference;
+        }
+        return null;
     }
 
     // Implementation of Activation

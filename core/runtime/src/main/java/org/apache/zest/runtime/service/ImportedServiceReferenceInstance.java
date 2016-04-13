@@ -24,6 +24,7 @@ import org.apache.zest.api.activation.Activation;
 import org.apache.zest.api.activation.ActivationEventListener;
 import org.apache.zest.api.activation.ActivationException;
 import org.apache.zest.api.activation.PassivationException;
+import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.service.ServiceImporterException;
 import org.apache.zest.api.service.ServiceReference;
 import org.apache.zest.api.service.ServiceUnavailableException;
@@ -131,6 +132,12 @@ public final class ImportedServiceReferenceInstance<T>
         {
             return false;
         }
+    }
+
+    @Override
+    public ModelDescriptor model()
+    {
+        return serviceModel;
     }
 
     public ModuleDescriptor module()

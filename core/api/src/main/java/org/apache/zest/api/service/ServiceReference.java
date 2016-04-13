@@ -15,6 +15,7 @@
 package org.apache.zest.api.service;
 
 import org.apache.zest.api.activation.ActivationEventListenerRegistration;
+import org.apache.zest.api.composite.ModelDescriptor;
 import org.apache.zest.api.structure.MetaInfoHolder;
 import org.apache.zest.api.type.HasTypes;
 
@@ -44,4 +45,10 @@ public interface ServiceReference<T>
      * @return TRUE if the service is available, otherwise return FALSE
      */
     boolean isAvailable();
+
+    /** Returns the ServiceModel of the service referenced by this ServiceReference.
+     *
+      * @return
+     */
+     ModelDescriptor model();
 }
