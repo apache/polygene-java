@@ -35,7 +35,7 @@ public class HelloSpeakerTest extends AbstractZestTest
     @Test
     public void testHello()
     {
-        HelloSpeaker speaker = module.newTransient( HelloSpeaker.class );
+        HelloSpeaker speaker = transientBuilderFactory.newTransient( HelloSpeaker.class );
         Assert.assertEquals( "Hello World!", speaker.sayHello( "World" ) );
     }
 

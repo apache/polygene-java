@@ -30,9 +30,12 @@ import org.apache.zest.api.common.AppliesToFilter;
 import org.apache.zest.api.composite.Composite;
 import org.apache.zest.api.composite.CompositeInstance;
 import org.apache.zest.api.injection.scope.Service;
+import org.apache.zest.api.injection.scope.Structure;
 import org.apache.zest.api.injection.scope.This;
 import org.apache.zest.api.service.ServiceReference;
+import org.apache.zest.api.structure.ModuleDescriptor;
 import org.apache.zest.api.util.Classes;
+import org.apache.zest.spi.ZestSPI;
 
 import static org.apache.zest.api.util.Classes.interfacesOf;
 
@@ -44,6 +47,9 @@ public class ScalaTraitMixin
     implements InvocationHandler
 {
     private static Map<Class<?>, Map<Method, InvocationHandler>> methods = new HashMap<>();
+
+    @Structure
+    private ZestSPI spi;
 
     private Class<?> compositeType;
 
@@ -79,8 +85,9 @@ public class ScalaTraitMixin
                             public Object invoke( Object composite, Method method, Object[] objects )
                                 throws Throwable
                             {
-                                return ( (CompositeInstance) Proxy.getInvocationHandler( composite ) ).module()
-                                    .findService( method.getReturnType() );
+                                CompositeInstance compositeInstance = (CompositeInstance) Proxy.getInvocationHandler( composite );
+                                ModuleDescriptor moduleDescriptor = compositeInstance.module();
+                                return moduleDescriptor.instance().findService( method.getReturnType() );
                             }
                         };
                         getHandlers( compositeType ).put( method, handler );
@@ -93,8 +100,9 @@ public class ScalaTraitMixin
                             public Object invoke( Object composite, Method method, Object[] objects )
                                 throws Throwable
                             {
-                                return ( (CompositeInstance) Proxy.getInvocationHandler( composite ) ).module()
-                                    .findService( method.getReturnType() ).get();
+                                CompositeInstance compositeInstance = (CompositeInstance) Proxy.getInvocationHandler( composite );
+                                ModuleDescriptor moduleDescriptor = compositeInstance.module();
+                                return moduleDescriptor.instance().findService( method.getReturnType() ).get();
                             }
                         };
                         getHandlers( compositeType ).put( method, handler );
