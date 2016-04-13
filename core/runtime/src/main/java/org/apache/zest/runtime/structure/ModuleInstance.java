@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -85,6 +84,7 @@ import org.apache.zest.spi.entitystore.EntityStore;
 import org.apache.zest.spi.metrics.MetricsProviderAdapter;
 import org.apache.zest.spi.module.ModuleSpi;
 
+import static java.util.stream.Stream.concat;
 import static org.apache.zest.functional.Iterables.iterable;
 
 /**
@@ -400,9 +400,10 @@ public class ModuleInstance
     private <T> ServiceReference<T> findServiceReferenceInstance( ModelDescriptor model )
     {
         ModuleInstance moduleInstanceOfModel = (ModuleInstance) model.module().instance();
-        Optional<ServiceReference<?>> candidate = moduleInstanceOfModel.services.references()
-            .filter( ref -> ref.model().equals( model ) )
-            .findAny();
+        Optional<ServiceReference<?>> candidate =
+            concat( moduleInstanceOfModel.services.references(), moduleInstanceOfModel.importedServices.references() )
+                .filter( ref -> ref.model().equals( model ) )
+                .findAny();
         if( candidate.isPresent() )
         {
             ServiceReference<?> serviceReference = candidate.get();

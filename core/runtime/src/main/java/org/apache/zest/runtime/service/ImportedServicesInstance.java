@@ -114,4 +114,10 @@ public class ImportedServicesInstance
     {
         return servicesModel.models();
     }
+
+    public Stream<ServiceReference<?>> references()
+    {
+        return serviceReferences.stream();
+    }
+
 }

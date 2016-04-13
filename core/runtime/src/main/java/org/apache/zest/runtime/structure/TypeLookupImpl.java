@@ -355,7 +355,7 @@ class TypeLookupImpl
                     )
             );
         Stream<? extends ModelDescriptor> importedServices =
-            concat( moduleModel.serviceComposites(),
+            concat( moduleModel.importedServices(),
                     concat(
                         concat(
                             moduleModel.layer()
