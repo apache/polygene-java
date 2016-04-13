@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.zest.bootstrap.unitofwork.DefaultUnitOfWorkAssembler;
+import org.apache.zest.valueserialization.orgjson.OrgJsonValueSerializationService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -49,6 +50,7 @@ public class EventRouterTest
             @Override
             public void assemble( ModuleAssembly module ) throws AssemblyException
             {
+                module.services( OrgJsonValueSerializationService.class );
                 module.values( UnitOfWorkDomainEventsValue.class, DomainEventValue.class );
                 new DefaultUnitOfWorkAssembler().assemble( module );
             }
