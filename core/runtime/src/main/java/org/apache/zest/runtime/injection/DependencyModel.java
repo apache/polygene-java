@@ -30,6 +30,7 @@ import org.apache.zest.functional.Iterables;
 import org.apache.zest.functional.Visitable;
 import org.apache.zest.functional.Visitor;
 import org.apache.zest.runtime.injection.provider.InjectionProviderException;
+import org.apache.zest.runtime.injection.provider.ServiceInjectionProviderFactory;
 import org.apache.zest.runtime.model.Binder;
 import org.apache.zest.runtime.model.Resolution;
 
@@ -297,13 +298,19 @@ public final class DependencyModel
             String message = "[Module " + context.module().name() + "] Non-optional @" +
                              simpleName + " " + injectionType.toString() +
                              " was null in " + injectedClass.getName();
-            if( simpleName.toLowerCase().contains( "service" ) )
+            if( simpleName.toLowerCase().contains( "service" )
+                && !isServiceInjectionProvider() )
             {
                 message = message + ". Did you mean the @Service injection scope?";
             }
             throw new ConstructionException( message );
         }
         return getInjectedValue( injectedValue );
+    }
+
+    private boolean isServiceInjectionProvider()
+    {
+        return ServiceInjectionProviderFactory.ServiceInjectionProvider.class.isAssignableFrom( injectionProvider.getClass() );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -345,7 +352,7 @@ public final class DependencyModel
         double.class, Double.class,
         float.class, Float.class,
         int.class, Integer.class,
-    };
+        };
 
     private Class<?> mapPrimitiveTypes( Class<?> rawInjectionType )
     {

@@ -176,7 +176,7 @@ public final class ServiceInjectionProviderFactory
         }
     }
 
-    private abstract static class ServiceInjectionProvider
+    public abstract static class ServiceInjectionProvider
         implements InjectionProvider
     {
         private final Type serviceType;
