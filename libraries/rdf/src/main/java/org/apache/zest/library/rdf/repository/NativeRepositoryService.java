@@ -44,7 +44,7 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
     void shutDown()
         throws RepositoryException;
 
-    public static class Activator
+    class Activator
         extends ActivatorAdapter<ServiceReference<NativeRepositoryService>>
     {
 
@@ -63,7 +63,7 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
         }
     }
 
-    public static abstract class NativeRepositoryMixin
+    abstract class NativeRepositoryMixin
         implements NativeRepositoryService, ResetableRepository
     {
         @Optional
@@ -179,6 +179,10 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
         private void delete( File dataDir )
         {
             File[] children = dataDir.listFiles();
+            if( children == null )
+            {
+                return;
+            }
             for( File child : children )
             {
                 if( child.isDirectory() )
@@ -208,6 +212,7 @@ public interface NativeRepositoryService extends Repository, ServiceComposite, A
             store.setDataDir( dataDir );
             store.setTripleIndexes( tripleIndexes );
             store.setForceSync( forceSync );
+            System.err.println( "NICLASS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
             repo.initialize();
             isNotInitialized = false;
         }
