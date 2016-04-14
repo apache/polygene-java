@@ -112,8 +112,8 @@ public abstract class AbstractNamedQueryTest
             .newQueryBuilder( Nameable.class )
             .where( queries.get( "script03" ) ) );
         System.out.println( "*** script03: " + query );
-        verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
-                                "Programming", "Cars" );
+        verifyUnorderedResults( query, "Joe Doe", "Felix", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking",
+                                "Gaming", "Programming", "Cars" );
     }
 
     @Test
@@ -267,14 +267,15 @@ public abstract class AbstractNamedQueryTest
         throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
+        Predicate<Composite> predicate = queries.get( "script17" );
         final Query<Nameable> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Nameable.class )
-            .where( queries.get( "script17" ) ) );
+            .where( predicate ) );
         query.orderBy( orderBy( nameable.name() ) );
         query.firstResult( 3 );
         query.maxResults( 3 );
         System.out.println( "*** script17: " + query );
-        verifyOrderedResults( query, "Gaming", "Jack Doe", "Joe Doe" );
+        verifyOrderedResults( query, "Felix", "Gaming", "Jack Doe" );
     }
 
     @Test
@@ -282,13 +283,14 @@ public abstract class AbstractNamedQueryTest
         throws EntityFinderException
     {
         Nameable nameable = templateFor( Nameable.class );
+        Predicate<Composite> predicate = queries.get( "script18" );
         final Query<Nameable> query = unitOfWork.newQuery( this.moduleInstance
             .newQueryBuilder( Nameable.class )
-            .where( queries.get( "script18" ) ) );
+            .where( predicate ) );
         query.orderBy( orderBy( nameable.name() ) );
         System.out.println( "*** script18: " + query );
-        verifyOrderedResults( query, "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur",
-                              "Penang", "Programming" );
+        verifyOrderedResults( query, "Ann Doe", "Cars", "Cooking", "Felix", "Gaming", "Jack Doe", "Joe Doe",
+                              "Kuala Lumpur", "Penang", "Programming" );
     }
 
     @Test
@@ -301,7 +303,7 @@ public abstract class AbstractNamedQueryTest
             .where( queries.get( "script19" ) ) );
         query.orderBy( orderBy( nameable.name() ) );
         System.out.println( "*** script19: " + query );
-        verifyOrderedResults( query, "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming" );
+        verifyOrderedResults( query, "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming" );
     }
 
     @Test

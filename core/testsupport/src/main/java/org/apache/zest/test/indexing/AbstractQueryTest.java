@@ -117,7 +117,7 @@ public abstract class AbstractQueryTest
         QueryBuilder<Nameable> qb = this.moduleInstance.newQueryBuilder( Nameable.class );
         Query<Nameable> query = unitOfWork.newQuery( qb );
         System.out.println( "*** script03: " + query );
-        verifyUnorderedResults( query, "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
+        verifyUnorderedResults( query,  "Felix", "Joe Doe", "Ann Doe", "Jack Doe", "Penang", "Kuala Lumpur", "Cooking", "Gaming",
                                 "Programming", "Cars" );
     }
 
@@ -314,7 +314,7 @@ public abstract class AbstractQueryTest
         query.firstResult( 3 );
         query.maxResults( 2 );
         System.out.println( "*** script17: " + query );
-        verifyOrderedResults( query, "Gaming", "Jack Doe" );
+        verifyOrderedResults( query, "Felix", "Gaming" );
     }
 
     @Test
@@ -327,7 +327,7 @@ public abstract class AbstractQueryTest
         Query<Nameable> query = unitOfWork.newQuery( qb );
         query.orderBy( orderBy( nameable.name() ) );
         System.out.println( "*** script18: " + query );
-        verifyOrderedResults( query, "Ann Doe", "Cars", "Cooking", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur",
+        verifyOrderedResults( query, "Ann Doe", "Cars", "Cooking", "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur",
                               "Penang", "Programming" );
     }
 
@@ -341,7 +341,7 @@ public abstract class AbstractQueryTest
         Query<Nameable> query = unitOfWork.newQuery( qb.where( gt( nameable.name(), "D" ) ) );
         query.orderBy( orderBy( nameable.name() ) );
         System.out.println( "*** script19: " + query );
-        verifyOrderedResults( query, "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming" );
+        verifyOrderedResults( query, "Felix", "Gaming", "Jack Doe", "Joe Doe", "Kuala Lumpur", "Penang", "Programming" );
     }
 
     @Test

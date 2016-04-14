@@ -238,6 +238,7 @@ public class TestData
                 Cat felix = catBuilder.instance();
                 felix.name().set( "Felix" );
                 catBuilder.newInstance();
+                NameableAssert.trace( felix );
             }
             unitOfWork.complete();
         }

@@ -19,6 +19,7 @@ package org.apache.zest.test.indexing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -97,7 +98,8 @@ public class NameableAssert
 
     public static String[] allNames()
     {
-        return world.values().toArray( new String[ world.size() ] );
+        Collection<String> values = world.values();
+        return values.toArray( new String[ world.size() ] );
     }
 
     public static void verifyUnorderedResults( final Iterable<? extends Nameable> results, final String... names )

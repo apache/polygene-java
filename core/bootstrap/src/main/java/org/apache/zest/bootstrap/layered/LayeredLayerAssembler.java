@@ -28,15 +28,15 @@ public abstract class LayeredLayerAssembler
 {
     private HashMap<Class<? extends ModuleAssembler>, ModuleAssembler> assemblers = new HashMap<>();
 
-    protected ModuleAssembly createModule( LayerAssembly layer, Class<? extends ModuleAssembler> modulerAssemblerClass )
+    protected ModuleAssembly createModule( LayerAssembly layer, Class<? extends ModuleAssembler> moduleAssemblerClass )
     {
         try
         {
-            ModuleAssembler moduleAssembler = instantiateAssembler( layer, modulerAssemblerClass );
-            String moduleName = createModuleName( modulerAssemblerClass );
-            LayeredApplicationAssembler.setNameIfPresent( modulerAssemblerClass, moduleName );
+            ModuleAssembler moduleAssembler = instantiateAssembler( layer, moduleAssemblerClass );
+            String moduleName = createModuleName( moduleAssemblerClass );
+            LayeredApplicationAssembler.setNameIfPresent( moduleAssemblerClass, moduleName );
             ModuleAssembly module = layer.module( moduleName );
-            assemblers.put( modulerAssemblerClass, moduleAssembler );
+            assemblers.put( moduleAssemblerClass, moduleAssembler );
             ModuleAssembly assembly = moduleAssembler.assemble( layer, module );
             if( assembly == null )
             {
@@ -46,7 +46,7 @@ public abstract class LayeredLayerAssembler
         }
         catch( Exception e )
         {
-            throw new IllegalArgumentException( "Unable to instantiate module with " + modulerAssemblerClass.getSimpleName(), e );
+            throw new IllegalArgumentException( "Unable to instantiate module with " + moduleAssemblerClass.getSimpleName(), e );
         }
     }
 
