@@ -58,7 +58,7 @@ public class ConstructorInjectionOfThisTest
         does.doSomething();
     }
 
-    @Test @Ignore
+    @Test
     public void givenConcernWithThisInConstructorWhenCreatingModelExpectNoException()
         throws ActivationException, AssemblyException
     {
@@ -69,6 +69,7 @@ public class ConstructorInjectionOfThisTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
+                module.withDefaultUnitOfWorkFactory();
                 module.values( Does.class ).withMixins( NoopMixin.class ).withConcerns( DoesConcern.class );
             }
         };
@@ -77,7 +78,7 @@ public class ConstructorInjectionOfThisTest
         does.doSomething();
     }
 
-    @Test @Ignore
+    @Test
     public void givenSideEffectWithThisInConstructorWhenCreatingModelExpectNoException()
         throws ActivationException, AssemblyException
     {
@@ -88,6 +89,7 @@ public class ConstructorInjectionOfThisTest
             public void assemble( ModuleAssembly module )
                 throws AssemblyException
             {
+                module.withDefaultUnitOfWorkFactory();
                 module.values( Does.class ).withMixins( NoopMixin.class ).withSideEffects( DoesSideEffect.class );
             }
         };
