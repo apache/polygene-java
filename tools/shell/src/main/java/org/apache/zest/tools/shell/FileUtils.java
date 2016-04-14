@@ -18,7 +18,12 @@
  */
 package org.apache.zest.tools.shell;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -27,14 +32,15 @@ import java.util.Properties;
 
 public class FileUtils
 {
-    public static void createDir( String directoryName )
+    public static File createDir( String directoryName )
     {
         File dir = new File( directoryName ).getAbsoluteFile();
         if( !dir.mkdirs() )
         {
             System.err.println( "Unable to create directory " + dir );
-            System.exit( 1 );
+//            System.exit( 1 );   during testing, I am tired of deleting directory over and over again.
         }
+        return dir;
     }
 
     public static Map<String, String> readPropertiesResource( String resourceName )
@@ -51,7 +57,7 @@ public class FileUtils
             }
             return result;
         }
-        catch( IOException e )
+        catch( Exception e )
         {
             System.err.println( "Unable to read resource " + resourceName );
             System.exit( 2 );
@@ -65,5 +71,20 @@ public class FileUtils
         Properties p = new Properties();
         p.load( in );
         return p;
+    }
+
+    public static void copyFile( File srcFile, File dest )
+        throws IOException
+    {
+        byte[] buffer = new byte[100000];
+        try(BufferedInputStream in = new BufferedInputStream( new FileInputStream(srcFile) )){
+            try(BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( dest ) )){
+                int bytes;
+                while( (bytes = in.read( buffer )) != -1 ){
+                    out.write( buffer, 0, bytes );
+                }
+                out.flush();
+            }
+        }
     }
 }

@@ -21,23 +21,29 @@ package org.apache.zest.tools.shell;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.TreeMap;
 import org.apache.zest.tools.shell.create.CreateProject;
 import org.apache.zest.tools.shell.help.HelpCommand;
 
 public class Main
 {
-    private TreeSet<Command> commands = new TreeSet<Command>();
+    private Map<String, Command> commands = new TreeMap<>();
 
     public static void main( String[] args )
     {
         new Main().run( args );
     }
 
-    public Main()
+    private Main()
     {
-        this.commands.add( new HelpCommand() );
-        this.commands.add( new CreateProject() );
+        addCommand( new HelpCommand() );
+        addCommand( new CreateProject() );
+    }
+
+    private void addCommand( Command command )
+    {
+        commands.put( command.name(), command );
     }
 
     private void run( String[] args )
@@ -49,9 +55,21 @@ public class Main
         }
         if( args.length == 0 )
         {
-            HelpCommand helpCommand = new HelpCommand();
-            helpCommand.setCommands( commands );
-            helpCommand.execute( args, input(), output() );
+            commands.get( "help" ).execute( args, input(), error() );
+        }
+        else
+        {
+            Command command = commands.get( args[ 0 ] );
+            if( command == null )
+            {
+                System.err.println( "Command " + args[ 0 ] + " is unknown." );
+                System.err.println( "" );
+                commands.get( "help" ).execute( args, input(), error() );
+            }
+            else
+            {
+                command.execute( args, input(), output() );
+            }
         }
     }
 
@@ -65,6 +83,11 @@ public class Main
             }
         }
         return false;
+    }
+
+    private PrintWriter error()
+    {
+        return new PrintWriter( System.err );
     }
 
     private PrintWriter output()

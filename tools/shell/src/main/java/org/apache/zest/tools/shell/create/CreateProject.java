@@ -19,11 +19,13 @@
 package org.apache.zest.tools.shell.create;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.Map;
 import org.apache.zest.tools.shell.AbstractCommand;
 import org.apache.zest.tools.shell.FileUtils;
 import org.apache.zest.tools.shell.HelpNeededException;
+import org.apache.zest.tools.shell.create.project.ProjectCreator;
 
 public class CreateProject extends AbstractCommand
 {
@@ -32,24 +34,42 @@ public class CreateProject extends AbstractCommand
     public void execute( String[] args, BufferedReader input, PrintWriter output )
         throws HelpNeededException
     {
-        if( args.length < 1 )
-            throw new HelpNeededException();
-        String projectName = args[0];
-        String template = "defaultproject";
-        if( args.length < 2 )
-            template = args[1];
-        FileUtils.createDir( projectName );
-        Map<String, String> props = FileUtils.readPropertiesResource( "templates/" + template + "/project.properties" );
-        for( Map.Entry<String,String> p: props.entrySet() )
+        if( args.length < 4 )
         {
-
+            throw new HelpNeededException();
+        }
+        String template = args[ 1 ];
+        String projectName = args[ 2 ];
+        String rootPackage = args[ 3 ];
+        File projectDir = FileUtils.createDir( projectName );
+        Map<String, String> props = FileUtils.readPropertiesResource( "templates/" + template + "/project.properties" );
+        if( props == null )
+        {
+            System.err.println( "Project Template " + template + " does not exist. " );
+            System.exit( 1 );
+        }
+        props.put( "project.dir", projectDir.getAbsolutePath() );
+        props.put( "project.name", projectName);
+        props.put( "template", template);
+        props.put( "root.package", rootPackage);
+        props.put( "zest.home", System.getProperty( "zest.home" ) );
+        String classname = props.get( "creator.class" );
+        try
+        {
+            ProjectCreator creator = (ProjectCreator) Class.forName( classname ).newInstance();
+            creator.create( args[ 0 ], projectDir, props );
+        }
+        catch( Exception e )
+        {
+            e.printStackTrace();
+            throw new RuntimeException( "Unable to create the Project Creator." );
         }
     }
 
     @Override
     public String description()
     {
-        return "create-project";
+        return "create project";
     }
 
     @Override

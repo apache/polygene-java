@@ -1,0 +1,8 @@
+
+dependencies {
+  compile project( ":model" )
+
+  compile "org.apache.zest.core:org.apache.zest.core.api:$zestVersion"
+  compile "org.apache.zest.library:org.apache.zest.library.restlet:$zestVersion"
+
+}
